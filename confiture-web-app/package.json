@@ -1,0 +1,36 @@
+{
+  "name": "confiture-web-app",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint '{src,scripts}/**/*.{ts,vue}'"
+  },
+  "dependencies": {
+    "ky": "^0.31.0",
+    "vue": "^3.2.25",
+    "vue-router": "^4.1.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/vue": "^6.6.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "c8": "^7.11.3",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.2.0",
+    "jsdom": "^20.0.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vitest": "^0.18.0",
+    "vue-tsc": "^0.34.7"
+  }
+}
