@@ -14,7 +14,7 @@ import { PrismaService } from './prisma.service';
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string()
           .uri({
-            scheme: 'postgresql',
+            scheme: 'postgres',
           })
           .required(),
         MAILER_USER: Joi.string().email().required(),
