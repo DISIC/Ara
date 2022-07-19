@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuditService } from './audit.service';
+import { MailerService } from './mailer.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly auditService: AuditService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @Get()
@@ -21,8 +23,12 @@ export class AppController {
   }
 
   @Post('audits')
-  createAudit() {
-    return this.auditService.createAudit();
+  async createAudit() {
+    const audit = await this.auditService.createAudit();
+
+    await this.mailerService.sendAuditCreatedMail(audit);
+
+    return audit;
   }
 
   @Get('audits/:uniqueId')
