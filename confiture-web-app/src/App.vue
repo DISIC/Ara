@@ -1,4 +1,17 @@
 <template>
+  <div class="fr-skiplinks">
+    <nav class="fr-container" role="navigation" aria-label="Accès rapide">
+      <ul class="fr-skiplinks__list">
+        <li>
+          <a class="fr-link" href="#main">Contenu</a>
+        </li>
+        <li>
+          <a class="fr-link" href="#footer">Pied de page</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
   <header role="banner" class="fr-header">
     <div class="fr-header__body">
       <div class="fr-container">
@@ -72,11 +85,11 @@
     </div>
   </header>
 
-  <main class="fr-container fr-mb-12w fr-mt-9w">
+  <main id="main" class="fr-container fr-mb-12w fr-mt-9w">
     <RouterView />
   </main>
 
-  <footer class="fr-footer" role="contentinfo">
+  <footer id="footer" class="fr-footer" role="contentinfo">
     <div class="fr-container">
       <div class="fr-footer__body">
         <div class="fr-footer__brand fr-enlarge-link">
