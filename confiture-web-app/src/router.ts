@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomePage from "./pages/HomePage.vue";
 import NotFoundPage from "./pages/NotFoundPage.vue";
+import NewAuditPage from "./pages/NewAuditPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
 
 const router = createRouter({
@@ -10,6 +11,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomePage,
+    },
+    {
+      path: "/audits/nouveau",
+      name: "new-audit",
+      component: NewAuditPage,
     },
     {
       path: "/audits/:uniqueId",
