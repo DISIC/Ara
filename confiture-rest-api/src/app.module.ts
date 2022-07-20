@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuditService } from './audit.service';
 import { MailerService } from './mailer.service';
 import { PrismaService } from './prisma.service';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -25,8 +26,11 @@ import { PrismaService } from './prisma.service';
         FRONT_BASE_URL: Joi.string()
           .uri({ scheme: ['http', 'https'] })
           .default('http://localhost:3000'),
+        NOTION_ACCESS_TOKEN: Joi.string().required(),
+        NOTION_DATABASE_ID: Joi.string().required(),
       }),
     }),
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, AuditService, MailerService],

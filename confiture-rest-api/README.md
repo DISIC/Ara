@@ -20,6 +20,9 @@ The applicatoin requires the following environement variables.
 
 **`FONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
 
+**`NOTION_ACCESS_TOKEN`** : "Internal Integration Token" of the Notion integration used to add feeback rows.
+**`NOTION_DATABASE_ID`**: ID of the Notion database storing feedbacks.
+
 Here's an example of a `.env` file.
 
 ```ini
@@ -32,6 +35,9 @@ MAILER_SMTP_PORT=587
 MAILER_SMTP_SECURE=false
 
 FRONT_BASE_URL="http://example.com"
+
+NOTION_ACCESS_TOKEN="secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+NOTION_DATABASE_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ## How to run
