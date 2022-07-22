@@ -1,0 +1,50 @@
+<script setup lang="ts">
+const links = [
+  { label: "Accueil", href: "/" },
+  { label: "Ressources", href: "/ressources" },
+  { label: "Glossaire", href: "/glossaire" },
+  { label: "Outils", href: "/outils" },
+  { label: "Formations accessibilité", href: "/formations-accessibilite" },
+  { label: "Aide", href: "/aide" },
+  { label: "Obligations légales", href: "/obligations-legales" },
+  { label: "RGAA", href: "/rgaa" },
+  { label: "Déclaration d’accessibilité", href: "/declaration-accessibilite" },
+  { label: "Schéma pluriannuel", href: "/schema-pluriannuel" },
+  { label: "Donner mon avis", href: "/donner-mon-avis" },
+  { label: "Plan du site", href: "/plan-du-site" },
+  { label: "Accessibilité", href: "/accessibilite" },
+  { label: "Mentions légales", href: "/mentions-legales" },
+  { label: "Données personnelles", href: "/donnees-personnelles" },
+];
+</script>
+
+<template>
+  <section class="fr-my-0 fr-mx-auto content">
+    <h1>Plan du site</h1>
+
+    <ul role="list" class="fr-pl-0 list">
+      <li v-for="link in links" :key="link.href">
+        <RouterLink
+          class="fr-link fr-fi-arrow-right-line fr-link--icon-right"
+          :to="link.href"
+        >
+          {{ link.label }}
+        </RouterLink>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<style scoped>
+.content {
+  max-width: 49.5rem;
+}
+
+.list {
+  list-style-type: none;
+  padding-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+</style>

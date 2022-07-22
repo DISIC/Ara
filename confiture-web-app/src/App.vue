@@ -155,7 +155,7 @@
           </li>
           <li class="fr-footer__bottom-item">
             <RouterLink class="fr-footer__bottom-link" to="/accessibilite">
-              Accessibilité: non conforme
+              Accessibilité : non conforme
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
