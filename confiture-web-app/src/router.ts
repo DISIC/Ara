@@ -9,6 +9,10 @@ import NotFoundPage from "./pages/NotFoundPage.vue";
 import NewAuditPage from "./pages/NewAuditPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
 import HelpPage from "./pages/HelpPage.vue";
+import LegalRequirementsPage from "./pages/LegalRequirementsPage.vue";
+import RGAAPage from "./pages/RGAAPage.vue";
+import AccessibilityStatementPage from "./pages/AccessibilityStatementPage.vue";
+import AccessibilityPlanPage from "./pages/AccessibilityPlanPage.vue";
 
 const router = createRouter({
   routes: [
@@ -55,6 +59,28 @@ const router = createRouter({
       name: "help",
       component: HelpPage,
     },
+    {
+      path: "/aide/obligations-legales",
+      name: "legal-requirements",
+      component: LegalRequirementsPage,
+    },
+    {
+      path: "/aide/rgaa",
+      name: "rgaa",
+      component: RGAAPage,
+    },
+    {
+      path: "/aide/declaration-accessibilite",
+      name: "accessibility-statement",
+      component: AccessibilityStatementPage,
+    },
+    {
+      path: "/aide/schema-pluriannuel",
+      name: "accessibility-plan",
+      component: AccessibilityPlanPage,
+    },
+
+    // Error pages
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
