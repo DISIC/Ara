@@ -9,6 +9,9 @@ import NotFoundPage from "./pages/NotFoundPage.vue";
 import NewAuditPage from "./pages/NewAuditPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
 import ResourcesPage from "./pages/ResourcesPage.vue";
+import AccessibilityTrainingPage from "./pages/AccessibilityTrainingPage.vue";
+import ToolsPage from "./pages/ToolsPage.vue";
+import GlossaryPage from "./pages/GlossaryPage.vue";
 import HelpPage from "./pages/HelpPage.vue";
 import LegalRequirementsPage from "./pages/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/RGAAPage.vue";
@@ -59,6 +62,21 @@ const router = createRouter({
       path: "/ressources",
       name: "resources",
       component: ResourcesPage,
+    },
+    {
+      path: "/ressources/formations-accessibilite",
+      name: "accessibility-training",
+      component: AccessibilityTrainingPage,
+    },
+    {
+      path: "/ressources/outils",
+      name: "tools",
+      component: ToolsPage,
+    },
+    {
+      path: "/ressources/glossaire",
+      name: "glossary",
+      component: GlossaryPage,
     },
     // Help pages
     {
