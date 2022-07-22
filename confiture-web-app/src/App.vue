@@ -12,7 +12,7 @@
     </nav>
   </div>
 
-  <header role="banner" class="fr-header">
+  <header id="header" role="banner" class="fr-header">
     <div class="fr-header__body">
       <div class="fr-container">
         <div class="fr-header__body-row">

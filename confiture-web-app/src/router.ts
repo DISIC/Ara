@@ -8,9 +8,11 @@ import PersonalDataPage from "./pages/PersonalDataPage.vue";
 import NotFoundPage from "./pages/NotFoundPage.vue";
 import NewAuditPage from "./pages/NewAuditPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
+import HelpPage from "./pages/HelpPage.vue";
 
 const router = createRouter({
   routes: [
+    // Base pages
     {
       path: "/",
       name: "home",
@@ -36,6 +38,7 @@ const router = createRouter({
       name: "personal-data",
       component: PersonalDataPage,
     },
+    // Audit pages
     {
       path: "/audits/nouveau",
       name: "new-audit",
@@ -45,6 +48,12 @@ const router = createRouter({
       path: "/audits/:uniqueId",
       name: "audit",
       component: AuditPage,
+    },
+    // Help pages
+    {
+      path: "/aide",
+      name: "help",
+      component: HelpPage,
     },
     {
       path: "/:pathMatch(.*)*",
