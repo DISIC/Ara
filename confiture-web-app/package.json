@@ -13,6 +13,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.6.0",
     "ky": "^0.31.0",
+    "slugify": "^1.6.5",
     "vue": "^3.2.25",
     "vue-router": "^4.1.2"
   },

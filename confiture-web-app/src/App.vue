@@ -78,6 +78,9 @@
                   Ressources
                 </RouterLink>
               </li>
+              <li class="fr-nav__item">
+                <RouterLink class="fr-nav__link" to="/aide">Aide</RouterLink>
+              </li>
             </ul>
           </nav>
         </div>
