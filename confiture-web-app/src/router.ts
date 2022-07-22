@@ -8,6 +8,7 @@ import PersonalDataPage from "./pages/PersonalDataPage.vue";
 import NotFoundPage from "./pages/NotFoundPage.vue";
 import NewAuditPage from "./pages/NewAuditPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
+import ResourcesPage from "./pages/ResourcesPage.vue";
 import HelpPage from "./pages/HelpPage.vue";
 import LegalRequirementsPage from "./pages/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/RGAAPage.vue";
@@ -52,6 +53,12 @@ const router = createRouter({
       path: "/audits/:uniqueId",
       name: "audit",
       component: AuditPage,
+    },
+    // Resources pages
+    {
+      path: "/ressources",
+      name: "resources",
+      component: ResourcesPage,
     },
     // Help pages
     {
