@@ -17,6 +17,7 @@ import LegalRequirementsPage from "./pages/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/RGAAPage.vue";
 import AccessibilityStatementPage from "./pages/AccessibilityStatementPage.vue";
 import AccessibilityPlanPage from "./pages/AccessibilityPlanPage.vue";
+import FeedbackPage from "./pages/FeedbackPage.vue";
 
 const router = createRouter({
   routes: [
@@ -104,7 +105,12 @@ const router = createRouter({
       name: "accessibility-plan",
       component: AccessibilityPlanPage,
     },
-
+    // Feedback page
+    {
+      path: "/donner-mon-avis",
+      name: "feedback",
+      component: FeedbackPage,
+    },
     // Error pages
     {
       path: "/:pathMatch(.*)*",
