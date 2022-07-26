@@ -6,7 +6,8 @@ import AccessibilityPage from "./pages/AccessibilityPage.vue";
 import LegalPage from "./pages/LegalPage.vue";
 import PersonalDataPage from "./pages/PersonalDataPage.vue";
 import NotFoundPage from "./pages/NotFoundPage.vue";
-import NewAuditPage from "./pages/NewAuditPage.vue";
+import NewAuditStepOnePage from "./pages/NewAuditStepOnePage.vue";
+import NewAuditStepTwoPage from "./pages/NewAuditStepTwoPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
 import ResourcesPage from "./pages/ResourcesPage.vue";
 import AccessibilityTrainingPage from "./pages/AccessibilityTrainingPage.vue";
@@ -49,9 +50,14 @@ const router = createRouter({
     },
     // Audit pages
     {
-      path: "/audits/nouveau",
-      name: "new-audit",
-      component: NewAuditPage,
+      path: "/audits/nouveau/1",
+      name: "new-audit-step-one",
+      component: NewAuditStepOnePage,
+    },
+    {
+      path: "/audits/nouveau/2",
+      name: "new-audit-step-two",
+      component: NewAuditStepTwoPage,
     },
     {
       path: "/audits/:uniqueId",

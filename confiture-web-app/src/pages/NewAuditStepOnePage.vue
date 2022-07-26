@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
+import router from "../router";
 
+const procedureEntity = ref("");
 const procedureName = ref("");
-const procedureMinistry = ref("");
-const procedureAdministration = ref("");
 const procedureSiteUrl = ref("");
 const procedureManagerName = ref("");
 const procedureManagerEmail = ref("");
@@ -30,22 +30,22 @@ async function addContact() {
 }
 
 /**
- * Delete contact at index and focus previous name field.
+ * Delete contact at index and focus previous or first name field.
  * @param {number} i
  */
 async function deleteContact(i: number) {
   procedureRecipients.value.splice(i, 1);
   await nextTick();
-  const previousInput = contactNameRefs.value[i - 1];
+  const previousInput =
+    i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
   previousInput.focus();
 }
 
-function submitFirstStep() {
+function submitStepOne() {
   // TODO: complete
   const data = {
+    procedureEntity: procedureEntity.value,
     procedureName: procedureName.value,
-    procedureMinistry: procedureMinistry.value,
-    procedureAdministration: procedureAdministration.value,
     procedureSiteUrl: procedureSiteUrl.value,
     procedureManagerName: procedureManagerName.value,
     procedureManagerEmail: procedureManagerEmail.value,
@@ -55,15 +55,16 @@ function submitFirstStep() {
     procedureAuditorEmail: procedureAuditorEmail.value,
   };
   console.log(data);
+  router.push({ name: "new-audit-step-two" });
 }
 
 /**
+ * TODO: remove this
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {
+  procedureEntity.value = "Mairie de Tours";
   procedureName.value = "Ma procédure";
-  procedureMinistry.value = "Ministère de l’éducation";
-  procedureAdministration.value = "Mon projet d’école";
   procedureSiteUrl.value = "https://example.com";
   procedureManagerName.value = "Philipinne Jolivet";
   procedureManagerEmail.value = "philipinne-jolivet@example.com";
@@ -92,15 +93,32 @@ function fillFields() {
       <span class="fr-text--bold">Étape suivante :</span> Paramètres de l’audit
     </p>
   </div>
-  <form class="content" @submit.prevent="submitFirstStep">
+  <form class="content" @submit.prevent="submitStepOne">
     <h1>📄 Informations générales de la démarche à auditer</h1>
 
-    <button class="fr-btn fr-mb-1w" type="button" @click="fillFields">
-      [DEV] Remplir les champs
-    </button>
+    <div class="fr-input-group">
+      <label class="fr-label" for="procedure-entity">
+        Entité qui demande l’audit
+        <span class="fr-hint-text">
+          Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc
+        </span>
+      </label>
+      <input
+        id="procedure-entity"
+        v-model="procedureEntity"
+        class="fr-input"
+        type="text"
+        required
+      />
+    </div>
 
     <div class="fr-input-group">
-      <label class="fr-label" for="procedure-name">Nom de la démarche</label>
+      <label class="fr-label" for="procedure-name">
+        Nom de l’audit
+        <span class="fr-hint-text">
+          Il peut s’agir du site ou du parcours que vous allez auditer
+        </span>
+      </label>
       <input
         id="procedure-name"
         v-model="procedureName"
@@ -110,59 +128,16 @@ function fillFields() {
       />
     </div>
 
-    <fieldset class="fr-fieldset fr-mt-6w">
-      <legend>
-        <h2 class="fr-h4 fr-mb-2w">Ministère qui fait la demande</h2>
-      </legend>
-
-      <div id="header-search" class="fr-search-bar fr-mb-2w" role="search">
-        <label class="fr-label" for="procedure-ministry">
-          Rechercher un ministère
-        </label>
-        <input
-          id="procedure-ministry"
-          v-model="procedureMinistry"
-          class="fr-input"
-          placeholder="Rechercher un ministère"
-          type="search"
-        />
-        <button class="fr-btn" title="Rechercher">Rechercher</button>
-      </div>
-
-      <div class="fr-input-group fr-input-group--disabled">
-        <label class="fr-label" for="procedure-administration">
-          Administration
-        </label>
-        <input
-          id="procedure-administration"
-          v-model="procedureAdministration"
-          class="fr-input"
-          type="text"
-          required
-          disabled
-        />
-      </div>
-    </fieldset>
-
-    <fieldset class="fr-fieldset fr-mt-6w">
-      <legend>
-        <h2 class="fr-h4 fr-mb-2w">La démarche à auditer</h2>
-      </legend>
-
-      <div class="fr-input-group">
-        <label class="fr-label" for="procedure-site-url">
-          URL du site de la démarche
-          <span class="fr-hint-text">Par exemple http://demarche.gouv.fr</span>
-        </label>
-        <input
-          id="procedure-site-url"
-          v-model="procedureSiteUrl"
-          class="fr-input"
-          type="url"
-          required
-        />
-      </div>
-    </fieldset>
+    <div class="fr-input-group">
+      <label class="fr-label" for="procedure-url">URL du site à auditer</label>
+      <input
+        id="procedure-url"
+        v-model="procedureSiteUrl"
+        class="fr-input"
+        type="text"
+        required
+      />
+    </div>
 
     <fieldset class="fr-fieldset fr-mt-6w">
       <legend>
@@ -234,7 +209,7 @@ function fillFields() {
       >
         <div class="fr-mb-2w contact-header">
           <legend>
-            <h3 class="fr-h6 fr-mb-0">Contact {{ i + 1 }}</h3>
+            <h3 class="fr-text--lg fr-mb-0">Contact {{ i + 1 }}</h3>
           </legend>
 
           <button
@@ -317,6 +292,12 @@ function fillFields() {
         />
       </div>
     </fieldset>
+
+    <div>
+      <button class="fr-btn fr-mt-6w" type="button" @click="fillFields">
+        [DEV] Remplir les champs
+      </button>
+    </div>
 
     <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
   </form>
