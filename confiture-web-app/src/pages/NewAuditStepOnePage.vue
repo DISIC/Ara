@@ -2,6 +2,8 @@
 import { ref, nextTick } from "vue";
 import router from "../router";
 
+import LeaveModal from "../components/LeaveModal.vue";
+
 const procedureEntity = ref("");
 const procedureName = ref("");
 const procedureSiteUrl = ref("");
@@ -16,6 +18,8 @@ const procedureRecipients = ref([
 ]);
 const procedureAuditorName = ref("");
 const procedureAuditorEmail = ref("");
+
+const isLeaveModalOpen = ref(false);
 
 const contactNameRefs = ref<HTMLInputElement[]>([]);
 
@@ -39,6 +43,14 @@ async function deleteContact(i: number) {
   const previousInput =
     i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
   previousInput.focus();
+}
+
+async function showLeaveModal() {
+  isLeaveModalOpen.value = true;
+}
+
+async function confirmLeave() {
+  router.push({ name: "home" });
 }
 
 function submitStepOne() {
@@ -294,13 +306,41 @@ function fillFields() {
     </fieldset>
 
     <div>
-      <button class="fr-btn fr-mt-6w" type="button" @click="fillFields">
+      <button
+        class="fr-btn fr-mt-6w fr-mr-2w"
+        type="button"
+        @click="fillFields"
+      >
         [DEV] Remplir les champs
+      </button>
+      <button
+        class="fr-btn fr-mt-6w fr-mb-1w"
+        type="button"
+        :data-fr-opened="isLeaveModalOpen"
+        aria-controls="leave-modal"
+        @click="showLeaveModal"
+      >
+        [DEV] Afficher la modale
       </button>
     </div>
 
     <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
   </form>
+
+  <LeaveModal
+    v-if="isLeaveModalOpen"
+    title="Vous allez quitter l’audit"
+    confirm="Oui, quitter l’audit"
+    cancel="Non, poursuivre l’audit"
+    @confirm="confirmLeave"
+  >
+    <p>
+      A ce stade aucune des informations saisies ne sera sauvegardées. C’est à
+      partir de l’étape 2 que vous pourrez quitter votre audit et y revenir sans
+      perdre vos informations.
+    </p>
+    <p>Souhaitez-vous quitter l’audit ?</p>
+  </LeaveModal>
 </template>
 
 <style scoped>

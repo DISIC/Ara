@@ -2,6 +2,7 @@
 import { ref, nextTick } from "vue";
 import router from "../router";
 import AuditType from "../components/AuditType.vue";
+import LeaveModal from "../components/LeaveModal.vue";
 
 const availableAuditTypes = [
   { label: "Rapide", value: "fast", badge: "25 critères" },
@@ -50,6 +51,7 @@ const environments = ref([
     browser: "",
   },
 ]);
+const isLeaveModalOpen = ref(false);
 
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
@@ -114,6 +116,14 @@ async function deleteEnvironment(i: number) {
   const previousInput =
     i === 0 ? envSupportRefs.value[0] : envSupportRefs.value[i - 1];
   previousInput.focus();
+}
+
+async function showLeaveModal() {
+  isLeaveModalOpen.value = true;
+}
+
+async function confirmLeave() {
+  router.push({ name: "home" });
 }
 
 function submitStepTwo() {
@@ -367,11 +377,20 @@ function fillFields() {
 
     <div>
       <button
-        class="fr-btn fr-mt-6w fr-mb-1w"
+        class="fr-btn fr-mt-6w fr-mb-1w fr-mr-2w"
         type="button"
         @click="fillFields"
       >
         [DEV] Remplir les champs
+      </button>
+      <button
+        class="fr-btn fr-mt-6w fr-mb-1w"
+        type="button"
+        :data-fr-opened="isLeaveModalOpen"
+        aria-controls="leave-modal"
+        @click="showLeaveModal"
+      >
+        [DEV] Afficher la modale
       </button>
     </div>
 
@@ -386,6 +405,20 @@ function fillFields() {
       <button class="fr-btn" type="submit">Suivant</button>
     </div>
   </form>
+  <LeaveModal
+    v-if="isLeaveModalOpen"
+    title="Vous allez quitter l’audit"
+    confirm="Oui, quitter l’audit"
+    cancel="Non, poursuivre l’audit"
+    @confirm="confirmLeave"
+  >
+    <p>
+      Mais pas de panique, vos informations ont été sauvegardées. Vous pouvez
+      revenir sur la création de votre audit en utilisant le lien administrateur
+      que vous avez reçu par e-mail.
+    </p>
+    <p>Souhaitez-vous quitter l’audit ?</p>
+  </LeaveModal>
 </template>
 
 <style scoped>
