@@ -2,6 +2,8 @@
 import slugify from "slugify";
 import { onMounted, ref } from "vue";
 
+import TopLink from "../components/TopLink.vue";
+
 // TODO: fetch glossary from GitHub: https://github.com/DISIC/accessibilite.numerique.gouv.fr/blob/main/RGAA/4.1/glossaire.json
 import glossary from "../glossaire.json";
 
@@ -83,9 +85,7 @@ function getTermSlug(title: string) {
       </template>
     </dl>
 
-    <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#header"
-      >Haut de page</a
-    >
+    <TopLink />
   </section>
 </template>
 
