@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
 import router from "../router";
+import { createAudit } from "../api/createAudit";
 
 import LeaveModal from "../components/LeaveModal.vue";
 
@@ -54,20 +55,23 @@ async function confirmLeave() {
 }
 
 function submitStepOne() {
-  // TODO: complete
-  const data = {
-    procedureEntity: procedureEntity.value,
-    procedureName: procedureName.value,
-    procedureSiteUrl: procedureSiteUrl.value,
-    procedureManagerName: procedureManagerName.value,
-    procedureManagerEmail: procedureManagerEmail.value,
-    procedureManagerFormUrl: procedureManagerFormUrl.value,
-    procedureRecipients: procedureRecipients.value,
-    procedureAuditorName: procedureAuditorName.value,
-    procedureAuditorEmail: procedureAuditorEmail.value,
-  };
-  console.log(data);
-  router.push({ name: "new-audit-step-two" });
+  createAudit({
+    initiator: procedureEntity.value,
+    procedure: procedureName.value,
+    procedureUrl: procedureSiteUrl.value,
+    contactName: procedureManagerName.value,
+    contactEmail: procedureManagerEmail.value,
+    contactFormUrl: procedureManagerFormUrl.value,
+    recipients: procedureRecipients.value,
+    auditorName: procedureAuditorName.value,
+    auditorEmail: procedureAuditorEmail.value,
+  }).then((audit) => {
+    // TODO: replace current history entry with the edit page
+    router.push({
+      name: "edit-audit-step-two",
+      params: { uniqueId: audit.editUniqueId },
+    });
+  });
 }
 
 /**

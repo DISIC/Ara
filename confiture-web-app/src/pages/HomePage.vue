@@ -17,7 +17,7 @@
             faire votre audit et le vérifier avant de le livrer à
             l’administration.
           </p>
-          <RouterLink to="/audits/nouveau/1" class="fr-btn fr-btn--sm">
+          <RouterLink to="/audits/nouveau" class="fr-btn fr-btn--sm">
             Je démarre mon audit
           </RouterLink>
         </div>

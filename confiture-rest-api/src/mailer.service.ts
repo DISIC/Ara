@@ -35,10 +35,10 @@ export class MailerService {
 
   sendAuditCreatedMail(audit: Audit) {
     const auditUrl = `${this.config.get('FRONT_BASE_URL')}/audits/${
-      audit.uniqueId
+      audit.editUniqueId
     }`;
     return this.sendMail(
-      'contact@slash-tmp.dev',
+      audit.auditorEmail,
       'Nouvel audit créé',
       `Votre audit pour "${audit.procedure}" a été créé sur Confiture et est éditable à l'addresse: ${auditUrl}`,
     );

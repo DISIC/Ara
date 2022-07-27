@@ -10,9 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Audit {
-  id       Int    @id @default(autoincrement())
-  uniqueId String @unique
+model Recipent {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String
 
-  procedure String?
+  Audit   Audit? @relation(fields: [auditId], references: [id])
+  auditId Int?
+}
+
+model Audit {
+  id Int @id @default(autoincrement())
+
+  editUniqueId    String @unique
+  consultUniqueId String @unique
+
+  initiator String
+
+  procedure String
+  url       String
+
+  contactName    String?
+  contactEmail   String
+  contactFormUrl String
+
+  recipients Recipent[]
+
+  auditorName  String
+  auditorEmail String
 }
