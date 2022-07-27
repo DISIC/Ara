@@ -6,6 +6,7 @@ import ReportResults from "../components/ReportResults.vue";
 import ReportErrors from "../components/ReportErrors.vue";
 import TopLink from "../components/TopLink.vue";
 
+// TODO: add the chart
 const stats = [
   {
     value: "80%",
