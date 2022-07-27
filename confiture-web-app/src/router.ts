@@ -66,14 +66,14 @@ const router = createRouter({
       component: EditAuditStepTwoPage,
     },
     {
-      path: "/rapports/:uniqueId",
-      name: "report",
-      component: ReportPage,
-    },
-    {
       path: "/audits/:uniqueId",
       name: "audit",
       component: AuditPage,
+    },
+    {
+      path: "/rapports/:uniqueId",
+      name: "report",
+      component: ReportPage,
     },
     // Resources pages
     {
