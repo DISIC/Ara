@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+import ReportContext from "../components/ReportContext.vue";
+import ReportResults from "../components/ReportResults.vue";
+import ReportErrors from "../components/ReportErrors.vue";
+import TopLink from "../components/TopLink.vue";
+
 const stats = [
   {
     value: "80%",
@@ -17,6 +22,12 @@ const stats = [
     title: "Critères applicables",
     description: "Sur un total de 106 critères",
   },
+];
+
+const tabs = [
+  { title: "Contexte", component: ReportContext },
+  { title: "Résultats", component: ReportResults },
+  { title: "Description des erreurs", component: ReportErrors },
 ];
 
 const showCopyAlert = ref(false);
@@ -80,7 +91,7 @@ function hideReportAlert() {
   </div>
 
   <h2>Synthèse des résultats</h2>
-  <div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-grid-row fr-grid-row--gutters fr-mb-8w">
     <div v-for="stat in stats" :key="stat.title" class="fr-col-12 fr-col-lg-4">
       <div class="fr-p-3w card">
         <span class="fr-display--lg fr-mb-0 card-value">{{ stat.value }}</span>
@@ -93,6 +104,36 @@ function hideReportAlert() {
       </div>
     </div>
   </div>
+
+  <div class="fr-tabs">
+    <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
+      <li v-for="tab in tabs" :key="tab.title" role="presentation">
+        <button
+          :id="`tabpanel-${tab.title}`"
+          class="fr-tabs__tab"
+          tabindex="0"
+          role="tab"
+          aria-selected="true"
+          :aria-controls="`tabpanel-${tab.title}-panel`"
+        >
+          {{ tab.title }}
+        </button>
+      </li>
+    </ul>
+    <div
+      v-for="tab in tabs"
+      :id="`tabpanel-${tab.title}-panel`"
+      :key="tab.title"
+      class="fr-tabs__panel fr-tabs__panel--selected"
+      role="tabpanel"
+      :aria-labelledby="`tabpanel-${tab.title}`"
+      tabindex="0"
+    >
+      <component :is="tab.component" />
+    </div>
+  </div>
+
+  <TopLink />
 </template>
 
 <style>
