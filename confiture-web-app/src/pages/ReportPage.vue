@@ -1,6 +1,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const stats = [
+  {
+    value: "80%",
+    title: "D’accessibilité",
+    description: "Taux global de conformité au RGAA",
+  },
+  {
+    value: "34",
+    title: "Erreurs d’accessibilité",
+    description: "Dont 8 bloquantes pour l’usager",
+  },
+  {
+    value: "54",
+    title: "Critères applicables",
+    description: "Sur un total de 106 critères",
+  },
+];
+
 const showCopyAlert = ref(false);
 
 async function copyReportUrl() {
@@ -60,6 +78,21 @@ function hideReportAlert() {
     <p class="fr-mb-0"><strong>Référenciel</strong> : RGAA version 4.1</p>
     <p class="fr-mb-0"><strong>Auditeur</strong> : Prénom Nom</p>
   </div>
+
+  <h2>Synthèse des résultats</h2>
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div v-for="stat in stats" :key="stat.title" class="fr-col-12 fr-col-lg-4">
+      <div class="fr-p-3w card">
+        <span class="fr-display--lg fr-mb-0 card-value">{{ stat.value }}</span>
+        <div class="card-info">
+          <p class="fr-h6 fr-mb-1v card-title">{{ stat.title }}</p>
+          <p class="fr-text--xs fr-mb-0 card-description">
+            {{ stat.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style>
@@ -73,5 +106,25 @@ function hideReportAlert() {
 
 .dates {
   color: var(--text-disabled-grey);
+}
+
+.card {
+  border: 1px solid var(--border-default-grey);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-value,
+.card-title {
+  color: var(--text-title-grey);
+}
+
+.card-info {
+  flex-grow: 1;
+}
+
+.card-description {
+  color: var(--text-mention-grey);
 }
 </style>
