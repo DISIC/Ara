@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import TopLink from "../components/TopLink.vue";
+
 const tileLinks = [
   {
     title: "Obligations légales",
@@ -163,9 +165,7 @@ const accordions = [
         <strong>prenom.nom@prestataire.modernisation.gouv.fr</strong>.
       </p>
     </section>
-    <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#header"
-      >Haut de page</a
-    >
+    <TopLink />
   </div>
 </template>
 

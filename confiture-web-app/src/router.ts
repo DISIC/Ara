@@ -9,6 +9,7 @@ import NotFoundPage from "./pages/NotFoundPage.vue";
 import NewAuditStepOnePage from "./pages/NewAuditStepOnePage.vue";
 import EditAuditStepTwoPage from "./pages/EditAuditStepTwoPage.vue";
 import AuditPage from "./pages/AuditPage.vue";
+import ReportPage from "./pages/ReportPage.vue";
 import ResourcesPage from "./pages/ResourcesPage.vue";
 import AccessibilityTrainingPage from "./pages/AccessibilityTrainingPage.vue";
 import ToolsPage from "./pages/ToolsPage.vue";
@@ -68,6 +69,11 @@ const router = createRouter({
       path: "/audits/:uniqueId",
       name: "audit",
       component: AuditPage,
+    },
+    {
+      path: "/rapports/:uniqueId",
+      name: "report",
+      component: ReportPage,
     },
     // Resources pages
     {

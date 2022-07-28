@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import TopLink from "../components/TopLink.vue";
+</script>
+
 <template>
   <section class="fr-my-0 content">
     <RouterLink
@@ -14,9 +18,7 @@
       veritatis? Illum quaerat aperiam modi!
     </p>
 
-    <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#header"
-      >Haut de page</a
-    >
+    <TopLink />
   </section>
 </template>
 
