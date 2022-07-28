@@ -137,7 +137,7 @@ function hideReportAlert() {
   <TopLink />
 </template>
 
-<style>
+<style scoped>
 .heading {
   display: flex;
   justify-content: space-between;
