@@ -13,8 +13,8 @@ export class AuditService {
         editUniqueId: nanoid(),
         consultUniqueId: nanoid(),
 
-        procedure: data.procedure,
-        url: data.procedureUrl,
+        procedureName: data.procedureName,
+        procedureUrl: data.procedureUrl,
 
         initiator: data.initiator,
 

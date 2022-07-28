@@ -27,8 +27,8 @@ model Audit {
 
   initiator String
 
-  procedure String
-  url       String
+  procedureName String
+  procedureUrl  String
 
   contactName    String?
   contactEmail   String

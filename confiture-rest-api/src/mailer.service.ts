@@ -40,7 +40,7 @@ export class MailerService {
     return this.sendMail(
       audit.auditorEmail,
       'Nouvel audit créé',
-      `Votre audit pour "${audit.procedure}" a été créé sur Confiture et est éditable à l'addresse: ${auditUrl}`,
+      `Votre audit pour "${audit.procedureName}" a été créé sur Confiture et est éditable à l'addresse: ${auditUrl}`,
     );
   }
 }
