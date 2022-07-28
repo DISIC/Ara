@@ -4,7 +4,6 @@ import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
-import AuditPage from "./pages/AuditPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
 import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
 import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
