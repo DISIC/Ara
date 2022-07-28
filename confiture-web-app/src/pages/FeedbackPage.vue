@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { createFeedback } from "../api";
 
 const availableJobs = [
   "Designer",
@@ -39,7 +40,16 @@ function submitFeedback() {
   };
   console.log(data);
 
-  showSuccess.value = true;
+  createFeedback({
+    feedback: generalFeedback.value,
+    ...(contact.value === "yes" && {
+      email: email.value,
+      name: name.value,
+      occupations: jobs.value,
+    }),
+  }).then(() => {
+    showSuccess.value = true;
+  });
 }
 </script>
 

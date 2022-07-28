@@ -31,3 +31,10 @@ export type CreateAuditRequestData = Omit<
 > & { recipients: Omit<AuditRecipent, "id">[] };
 
 export type UpdateAuditRequestData = CreateAuditRequestData;
+
+export interface CreateFeedbackRequestData {
+  feedback: string;
+  name?: string;
+  email?: string;
+  occupations?: string[];
+}

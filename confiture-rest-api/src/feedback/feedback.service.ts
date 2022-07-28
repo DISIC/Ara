@@ -18,7 +18,7 @@ export class FeedbackService {
             title: [
               {
                 text: {
-                  content: 'Pouet',
+                  content: feedback.name,
                 },
               },
             ],
