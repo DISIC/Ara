@@ -33,7 +33,12 @@ export type CreateAuditRequestData = Omit<
 export type UpdateAuditRequestData = CreateAuditRequestData;
 
 export interface CreateFeedbackRequestData {
+  easyToUse: string;
+  easyToUnderstand: string;
+
   feedback: string;
+  suggestions: string;
+
   name?: string;
   email?: string;
   occupations?: string[];

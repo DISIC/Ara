@@ -27,21 +27,11 @@ const showSuccess = ref(false);
  * Submit form and display success notice
  */
 function submitFeedback() {
-  // TODO: connect feedback to API
-  const data = {
-    easeOfUse: easeOfUse.value,
-    languageLevel: languageLevel.value,
-    generalFeedback: generalFeedback.value,
-    changes: changes.value,
-    contact: contact.value,
-    name: name.value,
-    email: email.value,
-    jobs: jobs.value,
-  };
-  console.log(data);
-
   createFeedback({
+    easyToUse: easeOfUse.value,
+    easyToUnderstand: languageLevel.value,
     feedback: generalFeedback.value,
+    suggestions: changes.value,
     ...(contact.value === "yes" && {
       email: email.value,
       name: name.value,
@@ -94,7 +84,7 @@ function submitFeedback() {
               v-model="easeOfUse"
               type="radio"
               name="easeOfUse"
-              value="yes"
+              value="Oui"
               required
             />
             <label class="fr-label" for="ease-of-use-yes">Oui</label>
@@ -105,7 +95,7 @@ function submitFeedback() {
               v-model="easeOfUse"
               type="radio"
               name="easeOfUse"
-              value="medium"
+              value="Moyen"
               required
             />
             <label class="fr-label" for="ease-of-use-medium">Moyen</label>
@@ -116,7 +106,7 @@ function submitFeedback() {
               v-model="easeOfUse"
               type="radio"
               name="easeOfUse"
-              value="no"
+              value="Non"
               required
             />
             <label class="fr-label" for="ease-of-use-no">Non</label>
@@ -139,7 +129,7 @@ function submitFeedback() {
               v-model="languageLevel"
               type="radio"
               name="languageLevel"
-              value="yes"
+              value="Oui"
               required
             />
             <label class="fr-label" for="language-level-yes">Oui</label>
@@ -150,7 +140,7 @@ function submitFeedback() {
               v-model="languageLevel"
               type="radio"
               name="languageLevel"
-              value="medium"
+              value="Moyen"
               required
             />
             <label class="fr-label" for="language-level-medium">Moyen</label>
@@ -161,7 +151,7 @@ function submitFeedback() {
               v-model="languageLevel"
               type="radio"
               name="languageLevel"
-              value="no"
+              value="Non"
               required
             />
             <label class="fr-label" for="language-level-no">Non</label>

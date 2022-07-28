@@ -12,10 +12,10 @@ export class FeedbackService {
       records: [
         {
           fields: {
-            // 'Facile à utiliser': '',
-            // 'Facile à comprendre': '',
+            'Facile à utiliser': feedback.easyToUse,
+            'Facile à comprendre': feedback.easyToUnderstand,
             'Remarques générales': feedback.feedback,
-            // Suggestions: '',
+            Suggestions: feedback.suggestions,
             Nom: feedback.name,
             Email: feedback.email,
             Occupations: feedback.occupations,
@@ -33,12 +33,11 @@ export class FeedbackService {
           json: data,
           headers: {
             Authorization: `Bearer ${this.config.get('AIRTABLE_ACCESS_TOKEN')}`,
-            // 'Notion-Version': '2022-06-28',
           },
         },
       )
-      .json<{ id: string }>();
+      .json<{ records: { id: string }[] }>();
 
-    console.log('Added feedback to notion database : %s', response.id);
+    console.log('Added feedback to Airtable : %s', response.records[0].id);
   }
 }

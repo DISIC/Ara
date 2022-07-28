@@ -17,10 +17,23 @@ const OCCUPATIONS = [
   'Autre',
 ];
 
+const EASE_OF_USE = ['Oui', 'Moyen', 'Non'];
+
 export class NewFeedbackDto {
+  @IsString()
+  @IsIn(EASE_OF_USE)
+  easyToUse: string;
+
+  @IsString()
+  @IsIn(EASE_OF_USE)
+  easyToUnderstand: string;
+
   @IsString()
   // @MaxLength(1000)
   feedback: string;
+
+  @IsString()
+  suggestions: string;
 
   @IsString()
   @IsOptional()
