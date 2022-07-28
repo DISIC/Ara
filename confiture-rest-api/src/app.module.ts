@@ -26,8 +26,9 @@ import { AuditsModule } from './audits/audits.module';
         FRONT_BASE_URL: Joi.string()
           .uri({ scheme: ['http', 'https'] })
           .default('http://localhost:3000'),
-        NOTION_ACCESS_TOKEN: Joi.string().required(),
-        NOTION_DATABASE_ID: Joi.string().required(),
+        AIRTABLE_BASE_ID: Joi.string().required(),
+        AIRTABLE_TABLE_ID: Joi.string().required(),
+        AIRTABLE_ACCESS_TOKEN: Joi.string().required(),
       }),
     }),
     FeedbackModule,

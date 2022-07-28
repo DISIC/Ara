@@ -20,8 +20,9 @@ The applicatoin requires the following environement variables.
 
 **`FONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
 
-**`NOTION_ACCESS_TOKEN`** : "Internal Integration Token" of the Notion integration used to add feeback rows.
-**`NOTION_DATABASE_ID`**: ID of the Notion database storing feedbacks.
+**`AIRTABLE_ACCESS_TOKEN`** : API token used to add feeback rows on Airtable.
+**`AIRTABLE_BASE_ID`**: ID of the Airtable base storing feedbacks.
+**`AIRTABLE_TABLE_ID`**: ID of the Airtable table storing feedbacks.
 
 Here's an example of a `.env` file.
 
@@ -36,8 +37,9 @@ MAILER_SMTP_SECURE=false
 
 FRONT_BASE_URL="http://example.com"
 
-NOTION_ACCESS_TOKEN="secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-NOTION_DATABASE_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+AIRTABLE_ACCESS_TOKEN="xxxxxxxxxxxxxxxxxxxx"
+AIRTABLE_BASE_ID="xxxxxxxxxxxxxxxxxxxx"
+AIRTABLE_TABLE_ID="xxxxxxxxxxxxxxxxxxxx"
 ```
 
 ## How to run
