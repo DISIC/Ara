@@ -48,7 +48,7 @@ const moreLinks = [
 
 <template>
   <section class="fr-my-0 content">
-    <h1 class="fr-mt-6w">Ressources</h1>
+    <h1>Ressources</h1>
     <p>
       Retrouvez une selection de ressources et d’outils pour vous aider à vous
       préparer et à mener votre chantier accessibilité.

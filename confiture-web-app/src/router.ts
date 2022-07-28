@@ -77,21 +77,48 @@ const router = createRouter({
       path: "/ressources",
       name: "resources",
       component: ResourcesPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+        ],
+      },
     },
     {
       path: "/ressources/formations-accessibilite",
       name: "accessibility-training",
       component: AccessibilityTrainingPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Formations accessibilité", name: "accessibility-training" },
+        ],
+      },
     },
     {
       path: "/ressources/outils",
       name: "tools",
       component: ToolsPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Outils", name: "tools" },
+        ],
+      },
     },
     {
       path: "/ressources/glossaire",
       name: "glossary",
       component: GlossaryPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Glossaire RGAA", name: "glossary" },
+        ],
+      },
     },
     // Help pages
     {
@@ -103,27 +130,64 @@ const router = createRouter({
       path: "/aide/obligations-legales",
       name: "legal-requirements",
       component: LegalRequirementsPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Aide", name: "help" },
+          { label: "Obligations légales", name: "legal-requirements" },
+        ],
+      },
     },
     {
       path: "/aide/rgaa",
       name: "rgaa",
       component: RGAAPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Aide", name: "help" },
+          { label: "RGAA", name: "rgaa" },
+        ],
+      },
     },
     {
       path: "/aide/declaration-accessibilite",
       name: "accessibility-statement",
       component: AccessibilityStatementPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Aide", name: "help" },
+          {
+            label: "Déclaration d’accessibilité",
+            name: "accessibility-statement",
+          },
+        ],
+      },
     },
     {
       path: "/aide/schema-pluriannuel",
       name: "accessibility-plan",
       component: AccessibilityPlanPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Aide", name: "help" },
+          { label: "Schéma pluriannuel", name: "accessibility-plan" },
+        ],
+      },
     },
     // Feedback page
     {
       path: "/donner-mon-avis",
       name: "feedback",
       component: FeedbackPage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Donner mon avis", name: "feedback" },
+        ],
+      },
     },
     // Error pages
     {
