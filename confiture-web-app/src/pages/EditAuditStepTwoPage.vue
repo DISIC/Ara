@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
+import { useRoute } from "vue-router";
+
 import router from "../router";
 import AuditType from "../components/AuditType.vue";
 import LeaveModal from "../components/LeaveModal.vue";
+
+const route = useRoute();
+const uniqueId = route.params.uniqueId as string;
 
 const availableAuditTypes = [
   { label: "Rapide", value: "fast", badge: "25 critères" },
@@ -138,7 +143,7 @@ function submitStepTwo() {
 }
 
 function toStepOne() {
-  router.push({ name: "new-audit-step-one" });
+  router.push({ name: "edit-audit-step-one", params: { uniqueId } });
 }
 
 /**

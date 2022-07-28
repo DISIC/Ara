@@ -5,10 +5,12 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { MailerService } from 'src/mailer.service';
 import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
+import { UpdateAuditDto } from './update-audit.dto';
 
 @Controller('audits')
 export class AuditsController {
@@ -27,6 +29,20 @@ export class AuditsController {
   @Get('/:uniqueId')
   async getAudit(@Param('uniqueId') uniqueId: string) {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      throw new NotFoundException();
+    }
+
+    return audit;
+  }
+
+  @Put('/:uniqueId')
+  async updateAudit(
+    @Param('uniqueId') uniqueId: string,
+    @Body() body: UpdateAuditDto,
+  ) {
+    const audit = await this.auditService.updateAudit(uniqueId, body);
 
     if (!audit) {
       throw new NotFoundException();

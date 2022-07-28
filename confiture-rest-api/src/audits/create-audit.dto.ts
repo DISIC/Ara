@@ -18,7 +18,7 @@ class CreateAuditRecipients {
 
 export class CreateAuditDto {
   @IsString()
-  procedure: string;
+  procedureName: string;
 
   @IsUrl()
   procedureUrl: string;

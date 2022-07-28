@@ -15,8 +15,10 @@ model Recipent {
   name  String
   email String
 
-  Audit   Audit? @relation(fields: [auditId], references: [id])
-  auditId Int?
+  Audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  auditUniqueId String?
+
+  @@unique([email, auditUniqueId])
 }
 
 model Audit {
@@ -27,8 +29,8 @@ model Audit {
 
   initiator String
 
-  procedure String
-  url       String
+  procedureName String
+  procedureUrl  String
 
   contactName    String?
   contactEmail   String

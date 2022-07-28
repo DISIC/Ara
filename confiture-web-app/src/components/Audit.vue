@@ -7,5 +7,5 @@ defineProps<{
 </script>
 
 <template>
-  <div>An audit of {{ audit.procedure }}.</div>
+  <div>An audit of {{ audit.procedureName }}.</div>
 </template>
