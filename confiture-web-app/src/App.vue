@@ -2,12 +2,11 @@
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import Breadcrumb from "./components/layout/Breadcrumb.vue";
+import Breadcrumb, { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
 import FeedbackNotice from "./components/layout/FeedbackNotice.vue";
 import Footer from "./components/layout/Footer.vue";
 import Header from "./components/layout/Header.vue";
 import SkipLinks from "./components/layout/SkipLinks.vue";
-import { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
 
 const breadcrumbLinks = ref<BreadcrumbLink[]>([]);
 
