@@ -56,6 +56,12 @@ const router = createRouter({
       path: "/audits/nouveau",
       name: "new-audit-step-one",
       component: NewAuditStepOnePage,
+      meta: {
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Informations générales", name: "new-audit-step-one" },
+        ],
+      },
     },
     {
       path: "/audits/:uniqueId/informations-generales",
@@ -66,6 +72,7 @@ const router = createRouter({
       path: "/audits/:uniqueId/parametres",
       name: "edit-audit-step-two",
       component: EditAuditStepTwoPage,
+      // TODO: add breadcrumb links when edit step one is ready.
     },
     {
       path: "/rapports/:uniqueId",

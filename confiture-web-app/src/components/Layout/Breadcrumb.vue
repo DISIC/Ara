@@ -18,12 +18,20 @@ defineProps<{
     <div id="breadcrumb" class="fr-collapse">
       <ol class="fr-breadcrumb__list">
         <li v-for="(link, i) in links" :key="i">
+          <a
+            v-if="i === links.length - 1"
+            class="fr-breadcrumb__link"
+            aria-current="page"
+          >
+            {{ link.label }}
+          </a>
           <RouterLink
+            v-else
             class="fr-breadcrumb__link"
             :to="{ name: link.name, params: link.params }"
-            :aria-current="i === links.length + 1 ? 'page' : null"
-            >{{ link.label }}</RouterLink
           >
+            {{ link.label }}
+          </RouterLink>
         </li>
       </ol>
     </div>
