@@ -7,8 +7,9 @@ import FeedbackNotice from "./components/layout/FeedbackNotice.vue";
 import Footer from "./components/layout/Footer.vue";
 import Header from "./components/layout/Header.vue";
 import SkipLinks from "./components/layout/SkipLinks.vue";
+import { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
 
-const links = ref([]);
+const breadcrumbLinks = ref<BreadcrumbLink[]>([]);
 
 const route = useRoute();
 
@@ -18,11 +19,12 @@ const route = useRoute();
 */
 watch(route, () => {
   if (!route.meta) return;
-  // TODO: fix TS issues
-  try {
-    links.value = route.meta.breadcrumbLinks();
-  } catch (err) {
-    links.value = route.meta.breadcrumbLinks || [];
+
+  if (typeof route.meta.breadcrumbLinks === "function") {
+    breadcrumbLinks.value = route.meta.breadcrumbLinks();
+  } else {
+    breadcrumbLinks.value =
+      (route.meta.breadcrumbLinks as BreadcrumbLink[]) || [];
   }
 });
 </script>
@@ -34,9 +36,13 @@ watch(route, () => {
 
   <main
     id="main"
-    :class="['fr-container fr-mb-12w', { 'fr-mt-9w': !links.length }]"
+    :class="['fr-container fr-mb-12w', { 'fr-mt-9w': !breadcrumbLinks.length }]"
   >
-    <Breadcrumb v-if="links.length" class="fr-mb-9w" :links="links" />
+    <Breadcrumb
+      v-if="breadcrumbLinks.length"
+      class="fr-mb-9w"
+      :links="breadcrumbLinks"
+    />
     <RouterView />
   </main>
 

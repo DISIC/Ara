@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import type { RouteParams } from "vue-router";
 
-defineProps<{
-  links: { label: string; name: string; params: RouteParams }[];
-}>();
+export interface BreadcrumbLink {
+  label: string;
+  name: string;
+  params?: RouteParams;
+}
+
+defineProps<{ links: BreadcrumbLink[] }>();
 </script>
 
 <template>
