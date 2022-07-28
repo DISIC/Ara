@@ -2,11 +2,11 @@
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import Breadcrumb from "./components/Layout/Breadcrumb.vue";
-import FeedbackNotice from "./components/Layout/FeedbackNotice.vue";
-import Footer from "./components/Layout/Footer.vue";
-import Header from "./components/Layout/Header.vue";
-import SkipLinks from "./components/Layout/SkipLinks.vue";
+import Breadcrumb from "./components/layout/Breadcrumb.vue";
+import FeedbackNotice from "./components/layout/FeedbackNotice.vue";
+import Footer from "./components/layout/Footer.vue";
+import Header from "./components/layout/Header.vue";
+import SkipLinks from "./components/layout/SkipLinks.vue";
 
 const links = ref([]);
 
