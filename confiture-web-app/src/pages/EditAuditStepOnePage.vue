@@ -1,20 +1,24 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
-import { useAudit } from "../api";
+import { useAudit, updateAudit } from "../api";
 import AuditGeneralInformationsForm from "../components/AuditGeneralInformationsForm.vue";
 import { CreateAuditRequestData } from "../types";
 
-function submitStepOne(data: CreateAuditRequestData) {
-  console.log(
-    "🚀 ~ file: EditAuditStepOnePage.vue ~ line 10 ~ submitStepOne ~ data",
-    data
-  );
-}
+const router = useRouter();
 
 const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
 const { data } = useAudit(auditUniqueId);
+
+function submitStepOne(data: CreateAuditRequestData) {
+  updateAudit(auditUniqueId, data).then((audit) => {
+    router.push({
+      name: "edit-audit-step-two",
+      params: { uniqueId: audit.editUniqueId },
+    });
+  });
+}
 </script>
 
 <template>

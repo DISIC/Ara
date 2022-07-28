@@ -29,3 +29,5 @@ export type CreateAuditRequestData = Omit<
   Audit,
   "id" | "editUniqueId" | "consultUniqueId" | "recipients"
 > & { recipients: Omit<AuditRecipent, "id">[] };
+
+export type UpdateAuditRequestData = CreateAuditRequestData;
