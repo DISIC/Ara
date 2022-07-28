@@ -2,9 +2,9 @@
 import { ref, nextTick } from "vue";
 import { useRoute } from "vue-router";
 
-import router from "../router";
-import AuditType from "../components/AuditType.vue";
-import LeaveModal from "../components/LeaveModal.vue";
+import router from "../../router";
+import AuditType from "../../components/AuditType.vue";
+import LeaveModal from "../../components/LeaveModal.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;

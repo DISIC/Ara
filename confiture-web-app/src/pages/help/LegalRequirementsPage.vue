@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TopLink from "../components/TopLink.vue";
+import TopLink from "../../components/TopLink.vue";
 </script>
 
 <template>
@@ -10,9 +10,7 @@ import TopLink from "../components/TopLink.vue";
     >
       Retourner à la page d’aide
     </RouterLink>
-    <h1 class="fr-mt-6w">
-      Le Référentiel général d’amélioration de l’accessibilité (RGAA)
-    </h1>
+    <h1 class="fr-mt-6w">Obligations légales et sanctions</h1>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi
       reiciendis adipisci provident voluptate error accusamus, voluptas quia

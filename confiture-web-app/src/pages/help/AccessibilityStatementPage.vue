@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import TopLink from "../components/TopLink.vue";
+import TopLink from "../../components/TopLink.vue";
 </script>
 
 <template>
   <section class="fr-my-0 content">
     <RouterLink
       class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
-      to="/ressources"
+      to="/aide"
     >
-      Retourner à la page ressources
+      Retourner à la page d’aide
     </RouterLink>
-    <h1 class="fr-mt-6w">Formations accessibilité</h1>
+    <h1 class="fr-mt-6w">Déclaration d’accessibilité</h1>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi
       reiciendis adipisci provident voluptate error accusamus, voluptas quia

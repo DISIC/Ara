@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-import { createAudit } from "../api/createAudit";
-import AuditGeneralInformationsForm from "../components/AuditGeneralInformationsForm.vue";
-import LeaveModal from "../components/LeaveModal.vue";
-import router from "../router";
-import { CreateAuditRequestData } from "../types";
+import { createAudit } from "../../api/createAudit";
+import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import LeaveModal from "../../components/LeaveModal.vue";
+import router from "../../router";
+import { CreateAuditRequestData } from "../../types";
 
 const isLeaveModalOpen = ref(false);
 

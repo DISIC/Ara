@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import ReportContext from "../components/ReportContext.vue";
-import ReportResults from "../components/ReportResults.vue";
-import ReportErrors from "../components/ReportErrors.vue";
-import TopLink from "../components/TopLink.vue";
+import ReportContext from "../../components/ReportContext.vue";
+import ReportResults from "../../components/ReportResults.vue";
+import ReportErrors from "../../components/ReportErrors.vue";
+import TopLink from "../../components/TopLink.vue";
 
 // TODO: add the chart
 const stats = [

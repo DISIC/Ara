@@ -2,9 +2,9 @@
 import { watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAudit, updateAudit } from "../api";
-import AuditGeneralInformationsForm from "../components/AuditGeneralInformationsForm.vue";
-import { CreateAuditRequestData } from "../types";
+import { useAudit, updateAudit } from "../../api";
+import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import { CreateAuditRequestData } from "../../types";
 
 const router = useRouter();
 
