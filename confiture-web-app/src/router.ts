@@ -1,26 +1,27 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import HomePage from "./pages/HomePage.vue";
-import SiteMapPage from "./pages/SiteMapPage.vue";
 import AccessibilityPage from "./pages/AccessibilityPage.vue";
-import LegalPage from "./pages/LegalPage.vue";
-import PersonalDataPage from "./pages/PersonalDataPage.vue";
-import NotFoundPage from "./pages/NotFoundPage.vue";
-import NewAuditStepOnePage from "./pages/NewAuditStepOnePage.vue";
+import AccessibilityPlanPage from "./pages/AccessibilityPlanPage.vue";
+import AccessibilityStatementPage from "./pages/AccessibilityStatementPage.vue";
+import AccessibilityTrainingPage from "./pages/AccessibilityTrainingPage.vue";
+import AuditPage from "./pages/AuditPage.vue";
 import EditAuditStepOnePage from "./pages/EditAuditStepOnePage.vue";
 import EditAuditStepTwoPage from "./pages/EditAuditStepTwoPage.vue";
-import AuditPage from "./pages/AuditPage.vue";
-import ReportPage from "./pages/ReportPage.vue";
-import ResourcesPage from "./pages/ResourcesPage.vue";
-import AccessibilityTrainingPage from "./pages/AccessibilityTrainingPage.vue";
-import ToolsPage from "./pages/ToolsPage.vue";
+import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
+import NotFoundPage from "./pages/error/NotFoundPage.vue";
+import FeedbackPage from "./pages/FeedbackPage.vue";
 import GlossaryPage from "./pages/GlossaryPage.vue";
 import HelpPage from "./pages/HelpPage.vue";
+import HomePage from "./pages/HomePage.vue";
+import LegalPage from "./pages/LegalPage.vue";
 import LegalRequirementsPage from "./pages/LegalRequirementsPage.vue";
+import NewAuditStepOnePage from "./pages/NewAuditStepOnePage.vue";
+import PersonalDataPage from "./pages/PersonalDataPage.vue";
+import ReportPage from "./pages/ReportPage.vue";
+import ResourcesPage from "./pages/ResourcesPage.vue";
 import RGAAPage from "./pages/RGAAPage.vue";
-import AccessibilityStatementPage from "./pages/AccessibilityStatementPage.vue";
-import AccessibilityPlanPage from "./pages/AccessibilityPlanPage.vue";
-import FeedbackPage from "./pages/FeedbackPage.vue";
+import SiteMapPage from "./pages/SiteMapPage.vue";
+import ToolsPage from "./pages/ToolsPage.vue";
 
 const router = createRouter({
   routes: [
@@ -134,6 +135,11 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: NotFoundPage,
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "AuditNotFound",
+      component: AuditNotFoundPage,
     },
   ],
   history: createWebHistory(),

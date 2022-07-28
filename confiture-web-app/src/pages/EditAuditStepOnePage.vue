@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAudit, updateAudit } from "../api";
@@ -9,7 +10,18 @@ const router = useRouter();
 
 const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
-const { data } = useAudit(auditUniqueId);
+const { data, error } = useAudit(auditUniqueId);
+
+watch(error, (error) => {
+  if (error?.response?.status === 404) {
+    router.replace({
+      name: "AuditNotFound",
+      params: { pathMatch: route.path.substring(1).split("/") },
+      query: route.query,
+      hash: route.hash,
+    });
+  }
+});
 
 function submitStepOne(data: CreateAuditRequestData) {
   updateAudit(auditUniqueId, data).then((audit) => {
