@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { /* nextTick, */ ref } from "vue";
 import { CreateAuditRequestData } from "../types";
 
 const props = defineProps<{
@@ -16,40 +16,40 @@ const procedureSiteUrl = ref(props.defaultValues?.procedureUrl ?? "");
 const procedureManagerName = ref(props.defaultValues?.contactName ?? "");
 const procedureManagerEmail = ref(props.defaultValues?.contactEmail ?? "");
 const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
-const procedureRecipients = ref(
-  props.defaultValues?.recipients ?? [
-    {
-      name: "",
-      email: "",
-    },
-  ]
-);
+// const procedureRecipients = ref(
+//   props.defaultValues?.recipients ?? [
+//     {
+//       name: "",
+//       email: "",
+//     },
+//   ]
+// );
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
 
-const contactNameRefs = ref<HTMLInputElement[]>([]);
+// const contactNameRefs = ref<HTMLInputElement[]>([]);
 
 /**
  * Create a new contact and focus its name first
  */
-async function addContact() {
-  procedureRecipients.value.push({ name: "", email: "" });
-  await nextTick();
-  const lastInput = contactNameRefs.value[contactNameRefs.value.length - 1];
-  lastInput.focus();
-}
+// async function addContact() {
+//   procedureRecipients.value.push({ name: "", email: "" });
+//   await nextTick();
+//   const lastInput = contactNameRefs.value[contactNameRefs.value.length - 1];
+//   lastInput.focus();
+// }
 
 /**
  * Delete contact at index and focus previous or first name field.
  * @param {number} i
  */
-async function deleteContact(i: number) {
-  procedureRecipients.value.splice(i, 1);
-  await nextTick();
-  const previousInput =
-    i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
-  previousInput.focus();
-}
+// async function deleteContact(i: number) {
+//   procedureRecipients.value.splice(i, 1);
+//   await nextTick();
+//   const previousInput =
+//     i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
+//   previousInput.focus();
+// }
 
 /**
  * TODO: remove this
@@ -62,10 +62,10 @@ function fillFields() {
   procedureManagerName.value = "Philipinne Jolivet";
   procedureManagerEmail.value = "philipinne-jolivet@example.com";
   procedureManagerFormUrl.value = "https://example.com/contact";
-  procedureRecipients.value = [
-    { name: "Isabelle", email: "isabelle@example.com" },
-    { name: "Marc", email: "marc@example.com" },
-  ];
+  // procedureRecipients.value = [
+  //   { name: "Isabelle", email: "isabelle@example.com" },
+  //   { name: "Marc", email: "marc@example.com" },
+  // ];
   procedureAuditorName.value = "Etienne Dupont";
   procedureAuditorEmail.value = "etienne-dupont@example.com";
 }
@@ -78,7 +78,7 @@ function onSubmit() {
     contactName: procedureManagerName.value,
     contactEmail: procedureManagerEmail.value,
     contactFormUrl: procedureManagerFormUrl.value,
-    recipients: procedureRecipients.value,
+    recipients: [],
     auditorName: procedureAuditorName.value,
     auditorEmail: procedureAuditorEmail.value,
   });
@@ -122,13 +122,19 @@ function onSubmit() {
     </div>
 
     <div class="fr-input-group">
-      <label class="fr-label" for="procedure-url">URL du site à auditer</label>
+      <label class="fr-label" for="procedure-url">
+        URL du site à auditer
+        <span class="fr-hint-text">
+          Saisissez une URL valide, commençant par http://
+        </span>
+      </label>
       <input
         id="procedure-url"
         v-model="procedureSiteUrl"
         class="fr-input"
         type="text"
         required
+        placeholder="http://"
       />
     </div>
 
@@ -173,6 +179,9 @@ function onSubmit() {
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-manager-form-url">
           URL vers formulaire de contact
+          <span class="fr-hint-text">
+            Saisissez une URL valide, commençant par http://
+          </span>
         </label>
         <input
           id="procedure-manager-form-url"
@@ -180,11 +189,12 @@ function onSubmit() {
           class="fr-input"
           type="url"
           required
+          placeholder="http://"
         />
       </div>
     </fieldset>
 
-    <div class="fr-mt-4w">
+    <!-- <div class="fr-mt-4w">
       <h2 class="fr-h4 fr-mb-2w">Destinataires de l’audit</h2>
 
       <p>
@@ -251,12 +261,18 @@ function onSubmit() {
       >
         Ajouter contact
       </button>
-    </div>
+    </div> -->
 
     <fieldset class="fr-fieldset fr-mt-6w">
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
       </legend>
+
+      <p>
+        Ces informations seront affichées sur le rapport d’audit, elles
+        permettent à l’entité qui fait la demande d’audit de pouvoir contacter
+        facilement l’auditeur en cas de questions.
+      </p>
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-auditor-name">
