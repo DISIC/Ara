@@ -12,14 +12,14 @@ const availableJobs = [
   "Autre",
 ];
 
-const easeOfUse = ref("");
-const languageLevel = ref("");
-const generalFeedback = ref("");
-const changes = ref("");
+const easyToUse = ref("");
+const easyToUnderstand = ref("");
+const feedback = ref("");
+const suggestions = ref("");
 const contact = ref();
 const name = ref("");
 const email = ref("");
-const jobs = ref([]);
+const occupations = ref([]);
 
 const showSuccess = ref(false);
 
@@ -28,18 +28,22 @@ const showSuccess = ref(false);
  */
 function submitFeedback() {
   createFeedback({
-    easyToUse: easeOfUse.value,
-    easyToUnderstand: languageLevel.value,
-    feedback: generalFeedback.value,
-    suggestions: changes.value,
+    easyToUse: easyToUse.value,
+    easyToUnderstand: easyToUnderstand.value,
+    feedback: feedback.value,
+    suggestions: suggestions.value,
     ...(contact.value === "yes" && {
       email: email.value,
       name: name.value,
-      occupations: jobs.value,
+      occupations: occupations.value,
     }),
   }).then(() => {
     showSuccess.value = true;
   });
+  // TODO: handle error
+  // .catch((err) => {
+  //   console.log(err)
+  // });
 }
 </script>
 
@@ -81,7 +85,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-yes"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
               value="Oui"
@@ -92,7 +96,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-medium"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
               value="Moyen"
@@ -103,7 +107,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-no"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
               value="Non"
@@ -126,7 +130,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-yes"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
               value="Oui"
@@ -137,7 +141,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-medium"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
               value="Moyen"
@@ -148,7 +152,7 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-no"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
               value="Non"
@@ -172,7 +176,7 @@ function submitFeedback() {
       </label>
       <textarea
         id="general-feedback"
-        v-model="generalFeedback"
+        v-model="feedback"
         class="fr-input"
         required
       />
@@ -188,7 +192,7 @@ function submitFeedback() {
           Vous pouvez exprimer vos besoins ou proposer vos idées d’amélioration
         </span>
       </label>
-      <textarea id="changes" v-model="changes" class="fr-input" required />
+      <textarea id="changes" v-model="suggestions" class="fr-input" required />
     </section>
 
     <section>
@@ -275,7 +279,7 @@ function submitFeedback() {
               >
                 <input
                   :id="`job-${job}`"
-                  v-model="jobs"
+                  v-model="occupations"
                   type="checkbox"
                   :name="`job-${job}`"
                   :value="job"
