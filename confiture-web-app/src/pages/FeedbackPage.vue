@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { createFeedback } from "../api";
 
 const availableJobs = [
   "Designer",
@@ -11,14 +12,14 @@ const availableJobs = [
   "Autre",
 ];
 
-const easeOfUse = ref("");
-const languageLevel = ref("");
-const generalFeedback = ref("");
-const changes = ref("");
+const easyToUse = ref("");
+const easyToUnderstand = ref("");
+const feedback = ref("");
+const suggestions = ref("");
 const contact = ref();
 const name = ref("");
 const email = ref("");
-const jobs = ref([]);
+const occupations = ref([]);
 
 const showSuccess = ref(false);
 
@@ -26,20 +27,23 @@ const showSuccess = ref(false);
  * Submit form and display success notice
  */
 function submitFeedback() {
-  // TODO: connect feedback to API
-  const data = {
-    easeOfUse: easeOfUse.value,
-    languageLevel: languageLevel.value,
-    generalFeedback: generalFeedback.value,
-    changes: changes.value,
-    contact: contact.value,
-    name: name.value,
-    email: email.value,
-    jobs: jobs.value,
-  };
-  console.log(data);
-
-  showSuccess.value = true;
+  createFeedback({
+    easyToUse: easyToUse.value,
+    easyToUnderstand: easyToUnderstand.value,
+    feedback: feedback.value,
+    suggestions: suggestions.value,
+    ...(contact.value === "yes" && {
+      email: email.value,
+      name: name.value,
+      occupations: occupations.value,
+    }),
+  }).then(() => {
+    showSuccess.value = true;
+  });
+  // TODO: handle error
+  // .catch((err) => {
+  //   console.log(err)
+  // });
 }
 </script>
 
@@ -81,10 +85,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-yes"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
-              value="yes"
+              value="Oui"
               required
             />
             <label class="fr-label" for="ease-of-use-yes">Oui</label>
@@ -92,10 +96,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-medium"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
-              value="medium"
+              value="Moyen"
               required
             />
             <label class="fr-label" for="ease-of-use-medium">Moyen</label>
@@ -103,10 +107,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="ease-of-use-no"
-              v-model="easeOfUse"
+              v-model="easyToUse"
               type="radio"
               name="easeOfUse"
-              value="no"
+              value="Non"
               required
             />
             <label class="fr-label" for="ease-of-use-no">Non</label>
@@ -126,10 +130,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-yes"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
-              value="yes"
+              value="Oui"
               required
             />
             <label class="fr-label" for="language-level-yes">Oui</label>
@@ -137,10 +141,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-medium"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
-              value="medium"
+              value="Moyen"
               required
             />
             <label class="fr-label" for="language-level-medium">Moyen</label>
@@ -148,10 +152,10 @@ function submitFeedback() {
           <div class="fr-radio-group">
             <input
               id="language-level-no"
-              v-model="languageLevel"
+              v-model="easyToUnderstand"
               type="radio"
               name="languageLevel"
-              value="no"
+              value="Non"
               required
             />
             <label class="fr-label" for="language-level-no">Non</label>
@@ -172,7 +176,7 @@ function submitFeedback() {
       </label>
       <textarea
         id="general-feedback"
-        v-model="generalFeedback"
+        v-model="feedback"
         class="fr-input"
         required
       />
@@ -188,7 +192,7 @@ function submitFeedback() {
           Vous pouvez exprimer vos besoins ou proposer vos idées d’amélioration
         </span>
       </label>
-      <textarea id="changes" v-model="changes" class="fr-input" required />
+      <textarea id="changes" v-model="suggestions" class="fr-input" required />
     </section>
 
     <section>
@@ -275,7 +279,7 @@ function submitFeedback() {
               >
                 <input
                   :id="`job-${job}`"
-                  v-model="jobs"
+                  v-model="occupations"
                   type="checkbox"
                   :name="`job-${job}`"
                   :value="job"
