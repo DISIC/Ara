@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 import { createFeedback } from "../api";
+import emojiYes from "../assets/images/emoji-yes.svg";
+import emojiMedium from "../assets/images/emoji-medium.svg";
+import emojiNo from "../assets/images/emoji-no.svg";
+
+const availableRadioAnswers = [
+  { label: "Oui", slug: "yes", emoji: emojiYes },
+  { label: "Moyen", slug: "medium", emoji: emojiMedium },
+  { label: "Non", slug: "no", emoji: emojiNo },
+];
 
 const availableJobs = [
   "Designer",
@@ -82,38 +92,24 @@ function submitFeedback() {
           </h2>
         </legend>
         <div class="fr-fieldset__content">
-          <div class="fr-radio-group">
+          <div
+            v-for="answer in availableRadioAnswers"
+            :key="answer.slug"
+            class="fr-radio-group fr-radio-rich"
+          >
             <input
-              id="ease-of-use-yes"
+              :id="`easy-to-use-${answer.slug}`"
               v-model="easyToUse"
               type="radio"
-              name="easeOfUse"
-              value="Oui"
-              required
+              name="easyToUse"
+              :value="answer.label"
             />
-            <label class="fr-label" for="ease-of-use-yes">Oui</label>
-          </div>
-          <div class="fr-radio-group">
-            <input
-              id="ease-of-use-medium"
-              v-model="easyToUse"
-              type="radio"
-              name="easeOfUse"
-              value="Moyen"
-              required
-            />
-            <label class="fr-label" for="ease-of-use-medium">Moyen</label>
-          </div>
-          <div class="fr-radio-group">
-            <input
-              id="ease-of-use-no"
-              v-model="easyToUse"
-              type="radio"
-              name="easeOfUse"
-              value="Non"
-              required
-            />
-            <label class="fr-label" for="ease-of-use-no">Non</label>
+            <label class="fr-label" :for="`easy-to-use-${answer.slug}`">
+              {{ answer.label }}
+            </label>
+            <div class="fr-radio-rich__img">
+              <img class="fr-p-2w" :src="answer.emoji" alt="" />
+            </div>
           </div>
         </div>
       </fieldset>
@@ -127,38 +123,24 @@ function submitFeedback() {
           </h2>
         </legend>
         <div class="fr-fieldset__content">
-          <div class="fr-radio-group">
+          <div
+            v-for="answer in availableRadioAnswers"
+            :key="answer.slug"
+            class="fr-radio-group fr-radio-rich"
+          >
             <input
-              id="language-level-yes"
+              :id="`easy-to-understand-${answer.slug}`"
               v-model="easyToUnderstand"
               type="radio"
-              name="languageLevel"
-              value="Oui"
-              required
+              name="easyToUnderstand"
+              :value="answer.label"
             />
-            <label class="fr-label" for="language-level-yes">Oui</label>
-          </div>
-          <div class="fr-radio-group">
-            <input
-              id="language-level-medium"
-              v-model="easyToUnderstand"
-              type="radio"
-              name="languageLevel"
-              value="Moyen"
-              required
-            />
-            <label class="fr-label" for="language-level-medium">Moyen</label>
-          </div>
-          <div class="fr-radio-group">
-            <input
-              id="language-level-no"
-              v-model="easyToUnderstand"
-              type="radio"
-              name="languageLevel"
-              value="Non"
-              required
-            />
-            <label class="fr-label" for="language-level-no">Non</label>
+            <label class="fr-label" :for="`easy-to-understand-${answer.slug}`">
+              {{ answer.label }}
+            </label>
+            <div class="fr-radio-rich__img">
+              <img class="fr-p-2w" :src="answer.emoji" alt="" />
+            </div>
           </div>
         </div>
       </fieldset>
