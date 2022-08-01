@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, nextTick } from "vue";
+import { ref, nextTick, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import router from "../../router";
@@ -42,7 +42,11 @@ const availableBrowsers = [
 ];
 
 const auditType = ref<string>("");
-const tools = ref<string[]>([]);
+const defaultTools = ref<string[]>([]);
+const customTools = ref<string[]>([""]);
+const tools = computed(() => {
+  return [...defaultTools.value, ...customTools.value].filter(Boolean);
+});
 const pages = ref([
   {
     name: "",
@@ -58,21 +62,32 @@ const environments = ref([
 ]);
 const isLeaveModalOpen = ref(false);
 
+const customToolNameRefs = ref<HTMLInputElement[]>([]);
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
 
 /**
- * Add or remove a tool from the list.
- * @param {string} tool
+ * Create a new tool and focus its field.
  */
-async function toggleTool(tool: string) {
-  const toolIndex = tools.value.indexOf(tool);
+async function addTool() {
+  customTools.value.push("");
+  await nextTick();
+  const lastInput =
+    customToolNameRefs.value[customToolNameRefs.value.length - 1];
+  lastInput.focus();
+}
 
-  if (toolIndex === -1) {
-    tools.value.push(tool);
-  } else {
-    tools.value.splice(toolIndex, 1);
-  }
+/**
+ * Delete custom tool at index and focus previous or first field.
+ * @param {number} i
+ */
+async function deleteCustomTool(i: number) {
+  customTools.value.splice(i, 1);
+  await nextTick();
+  const lastInput =
+    i === 0 ? customToolNameRefs.value[0] : customToolNameRefs.value[i - 1];
+  console.log(lastInput);
+  lastInput.focus();
 }
 
 /**
@@ -152,7 +167,8 @@ function toStepOne() {
  */
 function fillFields() {
   auditType.value = "complementary";
-  tools.value = [
+  defaultTools.value = ["Color Contrast Analyser"];
+  customTools.value = [
     "WCAG Contrast checker",
     "Firefox Devtools",
     "Web Accessibility Toolbar",
@@ -215,20 +231,65 @@ function fillFields() {
 
     <div class="content">
       <section class="fr-mb-4w">
-        <h2 class="fr-h4">Les outils d’audit</h2>
-        <ul class="fr-tags-group">
-          <li v-for="(tool, i) in availableTools" :key="i">
+        <div class="fr-form-group">
+          <fieldset class="fr-fieldset">
+            <legend class="fr-fieldset__legend fr-text--regular">
+              <h2 class="fr-h4 fr-mb-0">Les outils d’assistance</h2>
+            </legend>
+            <div class="fr-fieldset__content">
+              <div
+                v-for="(tool, i) in availableTools"
+                :key="i"
+                class="fr-checkbox-group"
+              >
+                <input
+                  :id="`tool-${i}`"
+                  v-model="defaultTools"
+                  type="checkbox"
+                  :value="tool"
+                />
+                <label class="fr-label" :for="`tool-${i}`">
+                  {{ tool }}
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <template v-for="(tool, i) in customTools" :key="i">
+          <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tool-${i}`">
+            Ajouter un outil d’assistance (optionnel)
+          </label>
+          <div class="delete-custom-tool">
+            <input
+              :id="`custom-tool-${i}`"
+              ref="customToolNameRefs"
+              v-model="customTools[i]"
+              class="fr-input"
+              type="text"
+            />
             <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+              :disabled="customTools.length === 1"
               type="button"
-              class="fr-tag"
-              aria-pressed="false"
-              @click="toggleTool(tool)"
+              @click="deleteCustomTool(i)"
             >
-              {{ tool }}
+              Supprimer
             </button>
-          </li>
-        </ul>
+          </div>
+        </template>
+
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+          type="button"
+          @click="addTool"
+        >
+          Ajouter un outil
+        </button>
       </section>
+
+      {{ tools }}
+
       <h2 class="fr-h4">Les environnements de test</h2>
       <fieldset
         v-for="(env, i) in environments"
@@ -316,11 +377,11 @@ function fillFields() {
         </div>
       </fieldset>
       <button
-        class="fr-link fr-mt-4w fr-mb-5w fr-link--icon-left fr-icon-add-line"
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
         type="button"
         @click="addEnvironment"
       >
-        Ajouter environnement
+        Ajouter un environnement
       </button>
 
       <h2 class="fr-h4">Les pages et URL à auditer</h2>
@@ -373,11 +434,11 @@ function fillFields() {
       </fieldset>
     </div>
     <button
-      class="fr-link fr-mt-4w fr-link--icon-left fr-icon-add-line"
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w"
       type="button"
       @click="addPage"
     >
-      Ajouter page
+      Ajouter une page
     </button>
 
     <div>
@@ -439,6 +500,10 @@ function fillFields() {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+}
+
+.delete-custom-tool {
+  display: flex;
 }
 
 .env-card,
