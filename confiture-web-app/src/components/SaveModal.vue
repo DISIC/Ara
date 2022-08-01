@@ -10,6 +10,9 @@ defineExpose({ open });
 const modalRef = ref();
 
 function open() {
+  // eslint-disable-next-line
+  // @ts-ignore:next-line
+  // eslint-disable-next-line
   dsfr(modalRef.value).modal.disclose();
 }
 
