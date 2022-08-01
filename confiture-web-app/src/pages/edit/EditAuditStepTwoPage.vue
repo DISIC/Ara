@@ -66,7 +66,7 @@ const envSupportRefs = ref<HTMLInputElement[]>([]);
 
 const isSaveModalVisible = ref(false);
 const saveModalRef = ref();
-const stepTitleRef = ref(HTMLHeadingElement);
+const stepTitleRef = ref<HTMLHeadingElement>();
 
 async function openSaveModal() {
   isSaveModalVisible.value = true;
@@ -77,7 +77,7 @@ async function openSaveModal() {
 async function closeSaveModal() {
   isSaveModalVisible.value = false;
   await nextTick();
-  stepTitleRef.value.focus();
+  stepTitleRef.value?.focus();
 }
 
 onMounted(async () => {
