@@ -34,6 +34,7 @@ const tabs = [
 const showCopyAlert = ref(false);
 
 async function copyReportUrl() {
+  // TODO: set correct content
   const url = "Pouet pouet";
   navigator.clipboard
     .writeText(url)

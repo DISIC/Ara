@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, nextTick, computed } from "vue";
+import { ref, nextTick, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 import router from "../../router";
 import AuditType from "../../components/AuditType.vue";
-import LeaveModal from "../../components/LeaveModal.vue";
+import SaveModal from "../../components/SaveModal.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -60,11 +60,33 @@ const environments = ref([
     browser: "",
   },
 ]);
-const isLeaveModalOpen = ref(false);
-
 const customToolNameRefs = ref<HTMLInputElement[]>([]);
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
+
+const isSaveModalVisible = ref(false);
+const saveModalRef = ref();
+const stepTitleRef = ref(HTMLHeadingElement);
+
+async function openSaveModal() {
+  isSaveModalVisible.value = true;
+  await nextTick();
+  saveModalRef.value.open();
+}
+
+async function closeSaveModal() {
+  isSaveModalVisible.value = false;
+  await nextTick();
+  stepTitleRef.value.focus();
+}
+
+onMounted(async () => {
+  // FIXME: find a better way to wait for DSFR to be loaded
+  // TODO: define when should the modal be seen
+  setTimeout(() => {
+    openSaveModal();
+  }, 1000);
+});
 
 /**
  * Create a new tool and focus its field.
@@ -138,14 +160,6 @@ async function deleteEnvironment(i: number) {
   previousInput.focus();
 }
 
-async function showLeaveModal() {
-  isLeaveModalOpen.value = true;
-}
-
-async function confirmLeave() {
-  router.push({ name: "home" });
-}
-
 function submitStepTwo() {
   // TODO: complete
   const data = {
@@ -205,7 +219,9 @@ function fillFields() {
     ></div>
   </div>
   <form @submit.prevent="submitStepTwo">
-    <h1 class="fr-mb-3v">📄 Informations sur l’audit</h1>
+    <h1 ref="stepTitleRef" tabindex="-1" class="fr-mb-3v">
+      📄 Informations sur l’audit
+    </h1>
     <p class="fr-text--sm mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
@@ -287,8 +303,6 @@ function fillFields() {
           Ajouter un outil
         </button>
       </section>
-
-      {{ tools }}
 
       <h2 class="fr-h4">Les environnements de test</h2>
       <fieldset
@@ -449,15 +463,6 @@ function fillFields() {
       >
         [DEV] Remplir les champs
       </button>
-      <button
-        class="fr-btn fr-mt-6w fr-mb-1w"
-        type="button"
-        :data-fr-opened="isLeaveModalOpen"
-        aria-controls="leave-modal"
-        @click="showLeaveModal"
-      >
-        [DEV] Afficher la modale
-      </button>
     </div>
 
     <div class="fr-mt-6w">
@@ -471,20 +476,13 @@ function fillFields() {
       <button class="fr-btn" type="submit">Suivant</button>
     </div>
   </form>
-  <LeaveModal
-    v-if="isLeaveModalOpen"
-    title="Vous allez quitter l’audit"
-    confirm="Oui, quitter l’audit"
-    cancel="Non, poursuivre l’audit"
-    @confirm="confirmLeave"
-  >
-    <p>
-      Mais pas de panique, vos informations ont été sauvegardées. Vous pouvez
-      revenir sur la création de votre audit en utilisant le lien administrateur
-      que vous avez reçu par e-mail.
-    </p>
-    <p>Souhaitez-vous quitter l’audit ?</p>
-  </LeaveModal>
+
+  <SaveModal
+    v-if="isSaveModalVisible"
+    ref="saveModalRef"
+    :audit-id="uniqueId"
+    v-on="{ close: closeSaveModal, 'dsfr.conceal': closeSaveModal }"
+  />
 </template>
 
 <style scoped>
