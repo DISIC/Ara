@@ -4,11 +4,8 @@ import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
-import AuditPage from "./pages/AuditPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
 import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
-import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
-import NotFoundPage from "./pages/error/NotFoundPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import HelpPage from "./pages/help/HelpPage.vue";
@@ -22,6 +19,10 @@ import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import RGAAPage from "./pages/help/RGAAPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
+import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
+import NotFoundPage from "./pages/error/NotFoundPage.vue";
+import ServerErrorPage from "./pages/error/ServerErrorPage.vue";
+import ServiceUnavailablePage from "./pages/error/ServiceUnavailablePage.vue";
 
 const router = createRouter({
   routes: [
@@ -135,6 +136,27 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "AuditNotFound",
       component: AuditNotFoundPage,
+    },
+    // TODO: fake error pages for dev purpose, to remove.
+    {
+      path: "/404",
+      name: "PageNotFound",
+      component: NotFoundPage,
+    },
+    {
+      path: "/410",
+      name: "AuditNotFound",
+      component: AuditNotFoundPage,
+    },
+    {
+      path: "/500",
+      name: "ServerError",
+      component: ServerErrorPage,
+    },
+    {
+      path: "/503",
+      name: "ServiceUnavailable",
+      component: ServiceUnavailablePage,
     },
   ],
   history: createWebHistory(),
