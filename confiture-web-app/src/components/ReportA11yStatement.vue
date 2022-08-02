@@ -1,5 +1,5 @@
 <template>
-  <h3>Contexte</h3>
+  <h3>Déclaration d’accessibilité</h3>
   <p>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium rem
     saepe cupiditate. Ex, a, quidem consectetur error accusantium unde quam,

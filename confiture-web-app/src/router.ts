@@ -15,6 +15,7 @@ import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
 import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
+import ContextPage from "./pages/consult/ContextPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import RGAAPage from "./pages/help/RGAAPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
@@ -72,6 +73,11 @@ const router = createRouter({
       path: "/rapports/:uniqueId",
       name: "report",
       component: ReportPage,
+    },
+    {
+      path: "/rapports/:uniqueId/contexte",
+      name: "context",
+      component: ContextPage,
     },
     // Resources pages
     {
