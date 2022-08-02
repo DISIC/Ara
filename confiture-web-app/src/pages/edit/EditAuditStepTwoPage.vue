@@ -1,18 +1,46 @@
 <script lang="ts" setup>
-import { ref, nextTick, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-import router from "../../router";
-import AuditType from "../../components/AuditType.vue";
+import { updateAudit, useAudit } from "../../api";
+import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
 import SaveModal from "../../components/SaveModal.vue";
+import { AuditType } from "../../types";
+
+const router = useRouter();
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
+const { data: audit, error } = useAudit(uniqueId);
+
+watch(error, (error) => {
+  // TODO: handle other kind of errors
+  if (error?.response?.status === 404) {
+    router.replace({
+      name: "AuditNotFound",
+      params: { pathMatch: route.path.substring(1).split("/") },
+      query: route.query,
+      hash: route.hash,
+    });
+  }
+});
 
 const availableAuditTypes = [
-  { label: "Rapide", value: "fast", badge: "25 critères" },
-  { label: "Complémentaire", value: "complementary", badge: "50 critères" },
-  { label: "Complet", value: "full", badge: "106 critères" },
+  {
+    label: "Rapide",
+    value: AuditType.FAST,
+    badge: "25 critères",
+  },
+  {
+    label: "Complémentaire",
+    value: AuditType.COMPLEMENTARY,
+    badge: "50 critères",
+  },
+  {
+    label: "Complet",
+    value: AuditType.FULL,
+    badge: "106 critères",
+  },
 ];
 const availableTools = [
   "Web Accessibility Toolbar",
@@ -41,10 +69,10 @@ const availableBrowsers = [
   { label: "Safari", value: "safari" },
 ];
 
-const auditType = ref<string>("");
+const auditType = ref<AuditType | null>(null);
 const defaultTools = ref<string[]>([]);
 const customTools = ref<string[]>([""]);
-const tools = computed(() => {
+const auditTools = computed(() => {
   return [...defaultTools.value, ...customTools.value].filter(Boolean);
 });
 const pages = ref([
@@ -55,8 +83,8 @@ const pages = ref([
 ]);
 const environments = ref([
   {
-    support: "",
-    at: "",
+    platform: "",
+    assistiveTechnology: "",
     browser: "",
   },
 ]);
@@ -86,6 +114,36 @@ onMounted(async () => {
   setTimeout(() => {
     openSaveModal();
   }, 1000);
+});
+
+watch(audit, (audit) => {
+  if (!audit) {
+    return;
+  }
+  auditType.value = audit.auditType ?? null;
+  defaultTools.value = audit.auditTools.length
+    ? audit.auditTools.filter((tool) => availableTools.includes(tool))
+    : [];
+  customTools.value = audit.auditTools.length
+    ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
+    : [""];
+  pages.value = audit.pages.length
+    ? audit.pages
+    : [
+        {
+          name: "",
+          url: "",
+        },
+      ];
+  environments.value = audit.environments.length
+    ? audit.environments
+    : [
+        {
+          platform: "",
+          assistiveTechnology: "",
+          browser: "",
+        },
+      ];
 });
 
 /**
@@ -139,8 +197,8 @@ async function deletePage(i: number) {
  */
 async function addEnvironment() {
   environments.value.push({
-    support: "",
-    at: "",
+    platform: "",
+    assistiveTechnology: "",
     browser: "",
   });
   await nextTick();
@@ -160,19 +218,30 @@ async function deleteEnvironment(i: number) {
   previousInput.focus();
 }
 
-function submitStepTwo() {
-  // TODO: complete
+function saveAuditChanges() {
   const data = {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ...audit.value!,
     auditType: auditType.value,
-    tools: tools.value,
+    auditTools: auditTools.value,
     environments: environments.value,
     pages: pages.value,
   };
-  console.log(data);
+
+  return updateAudit(uniqueId, data);
 }
 
 function toStepOne() {
-  router.push({ name: "edit-audit-step-one", params: { uniqueId } });
+  saveAuditChanges().then(() => {
+    router.push({ name: "edit-audit-step-one", params: { uniqueId } });
+  });
+}
+
+function toStepThree() {
+  saveAuditChanges().then(() => {
+    // TODO: redirect to correct URL
+    router.push(`/audits/${uniqueId}/la-troisieme-etape`);
+  });
 }
 
 /**
@@ -180,22 +249,18 @@ function toStepOne() {
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {
-  auditType.value = "complementary";
+  auditType.value = AuditType.COMPLEMENTARY;
   defaultTools.value = ["Color Contrast Analyser"];
-  customTools.value = [
-    "WCAG Contrast checker",
-    "Firefox Devtools",
-    "Web Accessibility Toolbar",
-  ];
+  customTools.value = ["Firefox Devtools", "AXE Webextension"];
   environments.value = [
     {
-      support: "desktop",
-      at: "jaws-latest",
+      platform: "desktop",
+      assistiveTechnology: "jaws-latest",
       browser: "edge",
     },
     {
-      support: "mobile",
-      at: "nvda-previous",
+      platform: "mobile",
+      assistiveTechnology: "nvda-previous",
       browser: "chrome",
     },
   ];
@@ -218,10 +283,8 @@ function fillFields() {
       data-fr-steps="2"
     ></div>
   </div>
-  <form @submit.prevent="submitStepTwo">
-    <h1 ref="stepTitleRef" tabindex="-1" class="fr-mb-3v">
-      📄 Informations sur l’audit
-    </h1>
+  <form v-if="audit" @submit.prevent="toStepThree">
+    <h1 ref="stepTitleRef" class="fr-mb-3v">📄 Informations sur l’audit</h1>
     <p class="fr-text--sm mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
@@ -232,7 +295,7 @@ function fillFields() {
           <h2 class="fr-h4 fr-mb-0">Type d’audit</h2>
         </legend>
         <div class="fr-fieldset__content audit-types">
-          <AuditType
+          <AuditTypeRadio
             v-for="type in availableAuditTypes"
             :key="type.value"
             v-model="auditType"
@@ -333,7 +396,7 @@ function fillFields() {
                 <input
                   :id="`env-support-desktop-${i}`"
                   ref="envSupportRefs"
-                  v-model="env.support"
+                  v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
                   value="desktop"
@@ -345,7 +408,7 @@ function fillFields() {
               <div class="fr-radio-group">
                 <input
                   :id="`env-support-mobile-${i}`"
-                  v-model="env.support"
+                  v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
                   value="mobile"
@@ -357,11 +420,15 @@ function fillFields() {
             </div>
           </fieldset>
         </div>
-        <div v-if="env.support" class="fr-select-group">
+        <div v-if="env.platform" class="fr-select-group">
           <label class="fr-label" :for="`env-at-${i}`">
             Technologie d’assistance
           </label>
-          <select :id="`env-at-${i}`" v-model="env.at" class="fr-select">
+          <select
+            :id="`env-at-${i}`"
+            v-model="env.assistiveTechnology"
+            class="fr-select"
+          >
             <option value="" selected disabled hidden>
               Selectionnez une option
             </option>
@@ -370,7 +437,7 @@ function fillFields() {
             </option>
           </select>
         </div>
-        <div v-if="env.at" class="fr-select-group">
+        <div v-if="env.assistiveTechnology" class="fr-select-group">
           <label class="fr-label" :for="`env-browser-${i}`">Navigateur</label>
           <select
             :id="`env-browser-${i}`"

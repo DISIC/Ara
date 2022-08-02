@@ -10,9 +10,10 @@ const router = useRouter();
 
 const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
-const { data, error } = useAudit(auditUniqueId);
+const { data: audit, error } = useAudit(auditUniqueId);
 
 watch(error, (error) => {
+  // TODO: handle other kind of errors
   if (error?.response?.status === 404) {
     router.replace({
       name: "AuditNotFound",
@@ -24,7 +25,11 @@ watch(error, (error) => {
 });
 
 function submitStepOne(data: CreateAuditRequestData) {
-  updateAudit(auditUniqueId, data).then((audit) => {
+  updateAudit(auditUniqueId, {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ...audit.value!,
+    ...data,
+  }).then((audit) => {
     router.push({
       name: "edit-audit-step-two",
       params: { uniqueId: audit.editUniqueId },
@@ -50,8 +55,8 @@ function submitStepOne(data: CreateAuditRequestData) {
   </div>
 
   <AuditGeneralInformationsForm
-    v-if="data"
-    :default-values="data"
+    v-if="audit"
+    :default-values="audit"
     @submit="submitStepOne"
   />
 </template>

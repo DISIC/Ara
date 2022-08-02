@@ -146,22 +146,22 @@ const router = createRouter({
     // TODO: fake error pages for dev purpose, to remove.
     {
       path: "/404",
-      name: "PageNotFound",
+      name: "PageNotFoundDev",
       component: NotFoundPage,
     },
     {
       path: "/410",
-      name: "AuditNotFound",
+      name: "AuditNotFoundDev",
       component: AuditNotFoundPage,
     },
     {
       path: "/500",
-      name: "ServerError",
+      name: "ServerErrorDev",
       component: ServerErrorPage,
     },
     {
       path: "/503",
-      name: "ServiceUnavailable",
+      name: "ServiceUnavailableDev",
       component: ServiceUnavailablePage,
     },
   ],

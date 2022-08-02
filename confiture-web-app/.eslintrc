@@ -16,5 +16,8 @@
   },
   "env": {
     "jest": true
+  },
+  "globals": {
+    "dsfr": true
   }
 }

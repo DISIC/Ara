@@ -8,6 +8,8 @@ import { UpdateAuditDto } from './update-audit.dto';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
+  environments: true,
+  pages: true,
 };
 
 @Injectable()
@@ -92,6 +94,60 @@ export class AuditService {
               },
               create: recipient,
               update: recipient,
+            })),
+          },
+
+          // step 2
+          auditType: data.auditType,
+          auditTools: data.auditTools,
+          environments: {
+            deleteMany: {
+              OR: [
+                {
+                  assistiveTechnology: {
+                    notIn: data.environments.map((e) => e.assistiveTechnology),
+                  },
+                },
+                {
+                  browser: {
+                    notIn: data.environments.map((e) => e.browser),
+                  },
+                },
+                {
+                  platform: {
+                    notIn: data.environments.map((e) => e.platform),
+                  },
+                },
+              ],
+            },
+            upsert: data.environments.map((environment) => ({
+              where: {
+                platform_assistiveTechnology_browser_auditUniqueId: {
+                  auditUniqueId: uniqueId,
+                  assistiveTechnology: environment.assistiveTechnology,
+                  browser: environment.browser,
+                  platform: environment.platform,
+                },
+              },
+              create: environment,
+              update: environment,
+            })),
+          },
+          pages: {
+            deleteMany: {
+              url: {
+                notIn: data.pages.map((p) => p.url),
+              },
+            },
+            upsert: data.pages.map((page) => ({
+              where: {
+                url_auditUniqueId: {
+                  auditUniqueId: uniqueId,
+                  url: page.url,
+                },
+              },
+              create: page,
+              update: page,
             })),
           },
         },

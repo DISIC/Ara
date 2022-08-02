@@ -21,11 +21,19 @@ model Recipent {
   @@unique([email, auditUniqueId])
 }
 
+enum AuditType {
+  FAST // 25 criteria
+  COMPLEMENTARY // 50 criteria
+  FULL // 106 criteria
+}
+
 model Audit {
   id Int @id @default(autoincrement())
 
   editUniqueId    String @unique
   consultUniqueId String @unique
+
+  // Step 1
 
   initiator String
 
@@ -40,4 +48,34 @@ model Audit {
 
   auditorName  String
   auditorEmail String
+
+  // Step 2 (all fields must be optionnal)
+
+  auditType    AuditType?
+  auditTools   String[]
+  environments TestEnvironment[]
+  pages        AuditedPage[]
+}
+
+model TestEnvironment {
+  id                  Int    @id @default(autoincrement())
+  platform            String
+  assistiveTechnology String
+  browser             String
+
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  auditUniqueId String?
+
+  @@unique([platform, assistiveTechnology, browser, auditUniqueId])
+}
+
+model AuditedPage {
+  id   Int    @id @default(autoincrement())
+  name String
+  url  String
+
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  auditUniqueId String?
+
+  @@unique([url, auditUniqueId])
 }
