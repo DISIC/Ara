@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import { createAudit } from "../../api/createAudit";
@@ -33,6 +33,20 @@ onBeforeRouteLeave((to) => {
   }
 });
 
+// Display the native browser confirm modal when leaving site
+function onBeforeUnload(e: BeforeUnloadEvent) {
+  e.preventDefault();
+  e.returnValue = "Rester sur la page";
+}
+
+onMounted(() => {
+  window.addEventListener("beforeunload", onBeforeUnload);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("beforeunload", onBeforeUnload);
+});
+
 const isSubmitting = ref(false);
 
 function submitStepOne(data: CreateAuditRequestData) {
@@ -40,7 +54,7 @@ function submitStepOne(data: CreateAuditRequestData) {
   createAudit(data)
     .then((audit) => {
       // TODO: replace current history entry with the edit page
-      router.push({
+      return router.push({
         name: "edit-audit-step-two",
         params: { uniqueId: audit.editUniqueId },
       });
