@@ -6,10 +6,6 @@ import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
 import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
 import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
 import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
-import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
-import NotFoundPage from "./pages/error/NotFoundPage.vue";
-import ServerErrorPage from "./pages/error/ServerErrorPage.vue";
-import ServiceUnavailablePage from "./pages/error/ServiceUnavailablePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
@@ -25,6 +21,7 @@ import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPa
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
+import ErrorPage from "./pages/error/ErrorPage.vue";
 
 export const history = createWebHistory();
 
@@ -143,34 +140,8 @@ const router = createRouter({
     // Error pages
     {
       path: "/:pathMatch(.*)*",
-      name: "NotFound",
-      component: NotFoundPage,
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      name: "AuditNotFound",
-      component: AuditNotFoundPage,
-    },
-    // TODO: fake error pages for dev purpose, to remove.
-    {
-      path: "/404",
-      name: "PageNotFoundDev",
-      component: NotFoundPage,
-    },
-    {
-      path: "/410",
-      name: "AuditNotFoundDev",
-      component: AuditNotFoundPage,
-    },
-    {
-      path: "/500",
-      name: "ServerErrorDev",
-      component: ServerErrorPage,
-    },
-    {
-      path: "/503",
-      name: "ServiceUnavailableDev",
-      component: ServiceUnavailablePage,
+      name: "Error",
+      component: ErrorPage,
     },
   ],
   history,

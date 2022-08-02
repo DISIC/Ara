@@ -17,10 +17,13 @@ watch(error, (error) => {
   // TODO: handle other kind of errors
   if (error?.response?.status === 404) {
     router.replace({
-      name: "AuditNotFound",
+      name: "Error",
       params: { pathMatch: route.path.substring(1).split("/") },
       query: route.query,
       hash: route.hash,
+      state: {
+        errorStatus: 410,
+      },
     });
   }
 });
