@@ -5,23 +5,28 @@ import ReportContext from "../../components/ReportContext.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import TopLink from "../../components/TopLink.vue";
+import SummaryCard from "../../components/SummaryCard.vue";
 
-// TODO: add the chart
 const stats = [
   {
-    value: "80%",
     title: "D’accessibilité",
     description: "Taux global de conformité au RGAA",
+    value: 90,
+    total: 100,
+    unit: "%",
   },
   {
-    value: "34",
     title: "Erreurs d’accessibilité",
     description: "Dont 8 bloquantes pour l’usager",
+    value: 8,
+    total: 34,
+    danger: true,
   },
   {
-    value: "54",
     title: "Critères applicables",
     description: "Sur un total de 106 critères",
+    value: 54,
+    total: 106,
   },
 ];
 
@@ -95,15 +100,14 @@ function hideReportAlert() {
   <h2>Synthèse des résultats</h2>
   <div class="fr-grid-row fr-grid-row--gutters fr-mb-8w">
     <div v-for="stat in stats" :key="stat.title" class="fr-col-12 fr-col-lg-4">
-      <div class="fr-p-3w card">
-        <span class="fr-display--lg fr-mb-0 card-value">{{ stat.value }}</span>
-        <div class="card-info">
-          <p class="fr-h6 fr-mb-1v card-title">{{ stat.title }}</p>
-          <p class="fr-text--xs fr-mb-0 card-description">
-            {{ stat.description }}
-          </p>
-        </div>
-      </div>
+      <SummaryCard
+        :title="stat.title"
+        :description="stat.description"
+        :value="stat.value"
+        :total="stat.total"
+        :unit="stat.unit"
+        :danger="stat.danger"
+      />
     </div>
   </div>
 
@@ -149,25 +153,5 @@ function hideReportAlert() {
 
 .dates {
   color: var(--text-disabled-grey);
-}
-
-.card {
-  border: 1px solid var(--border-default-grey);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.card-value,
-.card-title {
-  color: var(--text-title-grey);
-}
-
-.card-info {
-  flex-grow: 1;
-}
-
-.card-description {
-  color: var(--text-mention-grey);
 }
 </style>
