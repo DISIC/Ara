@@ -4,7 +4,7 @@ defineProps<{
   badge: string;
   value: string | undefined;
   checked: boolean;
-  modelValue: string | undefined;
+  modelValue: string | null;
 }>();
 defineEmits(["update:modelValue"]);
 </script>
@@ -20,6 +20,7 @@ defineEmits(["update:modelValue"]);
         type="radio"
         name="audit-type"
         :value="value"
+        :checked="value === modelValue"
         @change="
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
         "

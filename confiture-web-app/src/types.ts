@@ -4,11 +4,32 @@ export interface AuditRecipent {
   email: string;
 }
 
+export interface AuditEnvironment {
+  id: number;
+  platform: string;
+  assistiveTechnology: string;
+  browser: string;
+}
+
+export interface AuditPage {
+  id: number;
+  name: string;
+  url: string;
+}
+
+export enum AuditType {
+  FAST = "FAST",
+  COMPLEMENTARY = "COMPLEMENTARY",
+  FULL = "FULL",
+}
+
+/** An audit object as returned by the API. */
 export interface Audit {
   id: number;
   editUniqueId: string;
   consultUniqueId: string;
 
+  // Step 1
   initiator: string;
 
   procedureName: string;
@@ -22,15 +43,35 @@ export interface Audit {
   auditorEmail: string;
 
   recipients: AuditRecipent[];
+
+  // Step 2
+  auditType: null | AuditType;
+  auditTools: string[];
+  environments: AuditEnvironment[];
+  pages: AuditPage[];
 }
 
-/** Audit type but without the generated IDs */
-export type CreateAuditRequestData = Omit<
+/** Audit type but without the generated IDs and step 2 fields */
+export type CreateAuditRequestData = Pick<
   Audit,
-  "id" | "editUniqueId" | "consultUniqueId" | "recipients"
-> & { recipients: Omit<AuditRecipent, "id">[] };
+  | "initiator"
+  | "procedureName"
+  | "procedureUrl"
+  | "contactName"
+  | "contactEmail"
+  | "contactFormUrl"
+  | "auditorName"
+  | "auditorEmail"
+> & {
+  recipients: Omit<AuditRecipent, "id">[];
+};
 
-export type UpdateAuditRequestData = CreateAuditRequestData;
+/** Creation data type plus step 2 fields. */
+export type UpdateAuditRequestData = CreateAuditRequestData &
+  Pick<Audit, "auditType" | "auditTools"> & {
+    environments: Omit<AuditEnvironment, "id">[];
+    pages: Omit<AuditPage, "id">[];
+  };
 
 export interface CreateFeedbackRequestData {
   easyToUse: string;

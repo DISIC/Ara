@@ -9,6 +9,7 @@ export function useAudit(uniqueId: string) {
 
   onMounted(async () => {
     try {
+      // await new Promise((r) => setTimeout(r, 1000));
       data.value = await ky.get(`/api/audits/${uniqueId}`).json();
     } catch (e) {
       console.error(e);
