@@ -79,8 +79,8 @@ defineProps<{
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
-  background: #fff;
-  color: #161616;
+  background: var(--background-default-grey);
+  color: var(--text-title-grey);
 }
 
 .card-hole-content {
