@@ -26,6 +26,8 @@ import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 
+export const history = createWebHistory();
+
 const router = createRouter({
   routes: [
     // Base pages
@@ -171,7 +173,7 @@ const router = createRouter({
       component: ServiceUnavailablePage,
     },
   ],
-  history: createWebHistory(),
+  history,
   scrollBehavior(to) {
     if (to.hash) {
       return { el: to.hash };

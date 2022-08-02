@@ -5,6 +5,8 @@ import { createFeedback } from "../api";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
+import { history } from "../router";
+import { useRouter } from "vue-router";
 
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
@@ -55,6 +57,10 @@ function submitFeedback() {
   //   console.log(err)
   // });
 }
+const router = useRouter();
+const previousPageUrl = (history.state.back ??
+  router.resolve({ name: "home" }).href) as string;
+const previousPageName = history.state.back ? "précédente" : "d’accueil";
 </script>
 
 <template>
@@ -69,12 +75,12 @@ function submitFeedback() {
         Nous vous remercions pour le temps que vous avez pris, tous les avis
         partagés seront étudiés.
       </p>
-      <!-- TODO: set page name -->
       <RouterLink
         class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
-        :to="{ name: 'help' }"
+        :to="previousPageUrl"
       >
-        Retourner à la page [nom de la page]
+        <!-- TODO: set page name -->
+        Retourner à la page {{ previousPageName }}
       </RouterLink>
     </template>
   </div>
@@ -83,7 +89,6 @@ function submitFeedback() {
       Sauf mentions contraires, tous les champs sont obligatoires
     </p>
 
-    <!-- TODO: use custom radio -->
     <section class="fr-form-group">
       <fieldset class="fr-fieldset fr-fieldset--inline">
         <legend class="fr-fieldset__legend fr-text--regular">

@@ -10,10 +10,6 @@ defineExpose({ open });
 const modalRef = ref();
 
 function open() {
-  // TODO: define "dsfr" as global variable
-  // eslint-disable-next-line
-  // @ts-ignore:next-line
-  // eslint-disable-next-line
   dsfr(modalRef.value).modal.disclose();
 }
 
