@@ -239,8 +239,7 @@ function toStepOne() {
 
 function toStepThree() {
   saveAuditChanges().then(() => {
-    // TODO: redirect to correct URL
-    router.push(`/audits/${uniqueId}/la-troisieme-etape`);
+    router.push({ name: "edit-audit-step-three", params: { uniqueId } });
   });
 }
 

@@ -1,29 +1,30 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
-import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
-import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
-import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
-import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
-import FeedbackPage from "./pages/FeedbackPage.vue";
-import GlossaryPage from "./pages/resources/GlossaryPage.vue";
-import HelpPage from "./pages/help/HelpPage.vue";
-import HomePage from "./pages/HomePage.vue";
-import LegalPage from "./pages/misc/LegalPage.vue";
-import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
-import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
-import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
-import ReportPage from "./pages/consult/ReportPage.vue";
 import ContextPage from "./pages/consult/ContextPage.vue";
-import ResourcesPage from "./pages/resources/ResourcesPage.vue";
-import RGAAPage from "./pages/help/RGAAPage.vue";
-import SiteMapPage from "./pages/misc/SiteMapPage.vue";
-import ToolsPage from "./pages/resources/ToolsPage.vue";
+import ReportPage from "./pages/consult/ReportPage.vue";
+import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
+import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
+import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
+import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import AuditNotFoundPage from "./pages/error/AuditNotFoundPage.vue";
 import NotFoundPage from "./pages/error/NotFoundPage.vue";
 import ServerErrorPage from "./pages/error/ServerErrorPage.vue";
 import ServiceUnavailablePage from "./pages/error/ServiceUnavailablePage.vue";
+import FeedbackPage from "./pages/FeedbackPage.vue";
+import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
+import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
+import HelpPage from "./pages/help/HelpPage.vue";
+import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
+import RGAAPage from "./pages/help/RGAAPage.vue";
+import HomePage from "./pages/HomePage.vue";
+import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
+import LegalPage from "./pages/misc/LegalPage.vue";
+import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
+import SiteMapPage from "./pages/misc/SiteMapPage.vue";
+import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
+import GlossaryPage from "./pages/resources/GlossaryPage.vue";
+import ResourcesPage from "./pages/resources/ResourcesPage.vue";
+import ToolsPage from "./pages/resources/ToolsPage.vue";
 
 const router = createRouter({
   routes: [
@@ -68,6 +69,11 @@ const router = createRouter({
       path: "/audits/:uniqueId/parametres",
       name: "edit-audit-step-two",
       component: EditAuditStepTwoPage,
+    },
+    {
+      path: "/audits/:uniqueId/generation",
+      name: "edit-audit-step-three",
+      component: EditAuditStepThreePage,
     },
     {
       path: "/rapports/:uniqueId",
