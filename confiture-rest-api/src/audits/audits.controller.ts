@@ -50,4 +50,17 @@ export class AuditsController {
 
     return audit;
   }
+
+  @Get('/:uniqueId/results')
+  async getAuditResults(@Param('uniqueId') uniqueId: string) {
+    const results = await this.auditService.getResultsWithEditUniqueId(
+      uniqueId,
+    );
+
+    if (!results) {
+      throw new NotFoundException();
+    }
+
+    return results;
+  }
 }
