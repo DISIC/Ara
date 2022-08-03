@@ -55,6 +55,10 @@ model Audit {
   auditTools   String[]
   environments TestEnvironment[]
   pages        AuditedPage[]
+
+  // Step 3
+
+  results CriterionResult[]
 }
 
 model TestEnvironment {
@@ -78,4 +82,38 @@ model AuditedPage {
   auditUniqueId String?
 
   @@unique([url, auditUniqueId])
+}
+
+model CriterionResult {
+  id Int @id @default(autoincrement())
+
+  status CriterionResultStatus @default(NOT_TESTED)
+
+  compliantComment String?
+
+  errorDescription String?
+  userImpact       CriterionResultUserImpact?
+  recommandation   String?
+
+  notApplicableComment String?
+
+  topic         Int
+  criterium     Int
+  auditUniqueId String
+  audit         Audit  @relation(fields: [auditUniqueId], references: [editUniqueId])
+
+  @@unique([auditUniqueId, topic, criterium])
+}
+
+enum CriterionResultStatus {
+  COMPLIANT
+  NOT_COMPLIANT
+  NOT_APPLICABLE
+  NOT_TESTED
+}
+
+enum CriterionResultUserImpact {
+  MINOR
+  MAJOR
+  BLOCKING
 }
