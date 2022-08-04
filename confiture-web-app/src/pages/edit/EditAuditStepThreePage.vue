@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
-import AuditGenerationCriteria from "../../components/AuditGenerationCriteria.vue";
+import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 
 interface AuditFilter {
   search?: string;
@@ -38,6 +38,15 @@ const topics = ref([
   { title: "Navigation", value: 4 },
   { title: "Consultation", value: 56 },
 ]);
+
+const pages = [
+  "Accueil",
+  "Contact",
+  "FAQ",
+  "Mentions légales",
+  "Création de permis de visite",
+  "Gestion de permis de visite",
+];
 </script>
 
 <template>
@@ -58,7 +67,33 @@ const topics = ref([
       />
     </div>
     <div class="fr-col-12 fr-col-md-9">
-      <AuditGenerationCriteria />
+      <div class="fr-tabs">
+        <ul class="fr-tabs__list" role="tablist" aria-label="Pages de l’audit">
+          <li v-for="(page, i) in pages" :key="i" role="presentation">
+            <button
+              :id="`page-panel-${i}`"
+              class="fr-tabs__tab"
+              tabindex="0"
+              role="tab"
+              aria-selected="true"
+              :aria-controls="`page-panel-${i}-panel`"
+            >
+              {{ page }}
+            </button>
+          </li>
+        </ul>
+        <div
+          v-for="(page, i) in pages"
+          :id="`page-panel-${i}-panel`"
+          :key="i"
+          class="fr-tabs__panel fr-tabs__panel--selected"
+          role="tabpanel"
+          :aria-labelledby="`page-panel-${i}`"
+          tabindex="0"
+        >
+          <AuditGenerationPageCriteria :page="page" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
