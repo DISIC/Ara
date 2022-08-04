@@ -35,7 +35,7 @@ function openOptions() {
     </ul>
   </div>
 
-  <dl class="fr-grid-row fr-grid-row--gutters fr-m-0 fr-mb-3v">
+  <dl class="fr-grid-row fr-grid-row--gutters fr-mb-3v">
     <div class="fr-col-12 fr-col-md-4">
       <div class="fr-px-3w fr-py-3v info">
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
