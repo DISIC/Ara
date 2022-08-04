@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationCriteria from "../../components/AuditGenerationCriteria.vue";
+
+interface AuditFilter {
+  search?: string;
+  topics: string[];
+}
 
 const auditName = ref("Mon audit");
 const auditType = ref("Complet");
@@ -13,8 +19,8 @@ function validateAudit() {
   console.log("validateAudit");
 }
 
-function search(value: string) {
-  console.log("search: " + value);
+function filter(payload: AuditFilter) {
+  console.log("filter", payload);
 }
 
 const topics = ref([
@@ -48,7 +54,7 @@ const topics = ref([
       <AuditGenerationFilters
         :results-count="21"
         :topics="topics"
-        @search="search"
+        @filter="filter"
       />
     </div>
     <div class="fr-col-12 fr-col-md-9">

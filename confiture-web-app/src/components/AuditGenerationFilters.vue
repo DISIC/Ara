@@ -5,70 +5,89 @@ defineProps<{
   resultsCount: number;
   topics: { title: string; value: number }[];
 }>();
-const emit = defineEmits(["search"]);
+const emit = defineEmits(["filter"]);
 
 const search = ref("");
 const currentSearch = ref("");
 const searchInputRef = ref<HTMLInputElement>();
+const selectedTopics = ref<string[]>([]);
 
-async function onReset() {
-  onSearchReset();
-}
-
-async function onSearchReset() {
+function onGlobalReset() {
   search.value = "";
   currentSearch.value = "";
-  emit("search", search.value);
+  selectedTopics.value = [];
+
   searchInputRef.value?.focus();
+
+  submit();
 }
 
-async function onSearch() {
+function onSearchReset() {
+  search.value = "";
+  currentSearch.value = "";
+
+  searchInputRef.value?.focus();
+
+  submit();
+}
+
+function onFilter() {
   currentSearch.value = search.value;
-  emit("search", search.value);
+
+  submit();
+}
+
+function submit() {
+  const payload = {
+    search: search.value,
+    topics: selectedTopics.value,
+  };
+  emit("filter", payload);
 }
 </script>
 
 <template>
   <h2 class="fr-h4 fr-mb-2w">Filtres</h2>
   <button
-    v-if="currentSearch"
+    v-if="currentSearch || selectedTopics.length"
     class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
-    @click="onReset"
+    @click="onGlobalReset"
   >
     Réinitialiser
   </button>
-  <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
-    Rechercher par mots clés
-  </label>
-  <div class="fr-search-bar" role="search">
-    <input
-      id="filters-search"
-      ref="searchInputRef"
-      v-model="search"
-      class="fr-input"
-      placeholder="Rechercher"
-      type="search"
-    />
-    <button class="fr-btn" title="Rechercher" @click="onSearch">
-      Rechercher
-    </button>
-  </div>
+  <form @submit.prevent="onFilter">
+    <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
+      Rechercher par mots clés
+    </label>
+    <div class="fr-search-bar" role="search">
+      <input
+        id="filters-search"
+        ref="searchInputRef"
+        v-model="search"
+        class="fr-input"
+        placeholder="Rechercher"
+        type="search"
+      />
+      <button type="submit" class="fr-btn" title="Rechercher">
+        Rechercher
+      </button>
+    </div>
+  </form>
 
-  <template v-if="currentSearch">
-    <p class="fr-mt-2w fr-mb-1w">
-      {{ resultsCount }} résultat<template v-if="resultsCount !== 1"
-        >s</template
-      >
+  <div role="alert" aria-live="polite">
+    <p v-if="currentSearch" class="fr-mt-2w fr-mb-1w">
+      {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
     </p>
     <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
-    <button
-      class="fr-tag fr-tag--dismiss"
-      :aria-label="`Retirer la recherche ${currentSearch}`"
-      @click="onSearchReset"
-    >
-      {{ currentSearch }}
-    </button>
-  </template>
+  </div>
+  <button
+    v-if="currentSearch"
+    class="fr-tag fr-tag--dismiss"
+    :aria-label="`Retirer la recherche ${currentSearch}`"
+    @click="onSearchReset"
+  >
+    {{ currentSearch }}
+  </button>
 
   <div class="fr-form-group fr-mt-4w">
     <fieldset class="fr-fieldset">
@@ -83,7 +102,13 @@ async function onSearch() {
           :style="{ '--topic-filter-value': topic.value + '%' }"
         >
           <div class="fr-checkbox-group topic-filter-checkbox">
-            <input :id="`topic-filter-${i}`" type="checkbox" />
+            <input
+              :id="`topic-filter-${i}`"
+              v-model="selectedTopics"
+              type="checkbox"
+              :value="topic.title"
+              @change="onFilter"
+            />
             <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
               {{ i + 1 }}. {{ topic.title }}
             </label>
