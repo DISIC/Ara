@@ -1,15 +1,61 @@
 <script setup lang="ts">
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
+import rgaa from "../criteres.json";
+
+console.log(rgaa);
+
 defineProps<{
   page: string;
 }>();
 </script>
 
 <template>
-  <h3>1 Images</h3>
-  <AuditGenerationCriterium v-for="i in 4" :key="i" />
-  <h3>2 Cadres</h3>
-  <AuditGenerationCriterium v-for="i in 2" :key="i" />
-  <h3>3 Couleurs</h3>
-  <AuditGenerationCriterium v-for="i in 8" :key="i" />
+  <section v-for="topic in rgaa.topics" :key="topic.number" class="fr-mb-6w">
+    <div class="fr-mb-3w topic-header">
+      <h3 class="fr-m-0 topic-heading">
+        {{ topic.number }}. {{ topic.topic }}
+      </h3>
+      <div class="fr-toggle fr-toggle--label-left">
+        <input
+          :id="`topic-switch-${topic.number}`"
+          type="checkbox"
+          class="fr-toggle__input"
+        />
+        <label
+          class="fr-toggle__label topic-switch-label"
+          :for="`topic-switch-${topic.number}`"
+        >
+          Label action interrupteur
+        </label>
+      </div>
+    </div>
+    <ol class="fr-p-0 fr-m-0">
+      <AuditGenerationCriterium
+        v-for="criterium in topic.criteria"
+        :key="criterium.criterium.number"
+        class="fr-mb-3w"
+        :criterium="criterium.criterium"
+        :topic-number="topic.number"
+      />
+    </ol>
+  </section>
 </template>
+
+<style scoped>
+.topic-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.topic-heading {
+  color: var(--text-action-high-blue-france);
+}
+
+.topic-switch-label {
+  /* FIXME: seems there is a bug in DSFR when the
+  label is on the left. There is no padding on it. */
+  padding-right: 1rem;
+}
+</style>
