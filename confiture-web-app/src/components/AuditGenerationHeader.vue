@@ -64,7 +64,7 @@ function openOptions() {
     </div>
   </dl>
 
-  <p class="fr-text--sm mandatory-notice">
+  <p class="fr-text--sm fr-mb-6w mandatory-notice">
     Sauf mention contraire, tous les champs sont obligatoires.
   </p>
 </template>
