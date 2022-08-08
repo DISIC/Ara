@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { Audit, Prisma } from '@prisma/client';
+import {
+  Audit,
+  CriterionResult,
+  CriterionResultStatus,
+  Prisma,
+} from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import * as rgaa from '../rgaa.json';
@@ -49,15 +54,6 @@ export class AuditService {
             data: data.recipients,
           },
         },
-
-        results: {
-          createMany: {
-            data: CRITERIA.map((c) => ({
-              topic: c.topic,
-              criterium: c.criterium,
-            })),
-          },
-        },
       },
       include: AUDIT_EDIT_INCLUDE,
     });
@@ -76,10 +72,48 @@ export class AuditService {
     });
   }
 
-  getResultsWithEditUniqueId(uniqueId: string) {
-    return this.prisma.audit
-      .findUnique({ where: { editUniqueId: uniqueId } })
-      .results();
+  async getResultsWithEditUniqueId(
+    uniqueId: string,
+  ): Promise<Omit<CriterionResult, 'id'>[]> {
+    const pages = await this.prisma.auditedPage.findMany({
+      where: { auditUniqueId: uniqueId },
+    });
+
+    const existingResults = await this.prisma.criterionResult.findMany({
+      where: {
+        page: {
+          auditUniqueId: uniqueId,
+        },
+      },
+    });
+
+    // We do not create every empty criterion result rows in the db when creating pages.
+    // Instead we return the results in the database and fill missing criteria with placeholder data.
+    return pages.flatMap((page) =>
+      CRITERIA.map((criterion) => {
+        const existingResult = existingResults.find(
+          (result) =>
+            result.pageId === page.id &&
+            result.topic === criterion.topic &&
+            result.criterium == criterion.criterium,
+        );
+
+        if (existingResult) return existingResult;
+
+        // return placeholder result
+        return {
+          status: CriterionResultStatus.NOT_TESTED,
+          compliantComment: null,
+          errorDescription: null,
+          userImpact: null,
+          recommandation: null,
+          notApplicableComment: null,
+          topic: criterion.topic,
+          criterium: criterion.criterium,
+          pageId: page.id,
+        };
+      }),
+    );
   }
 
   async updateAudit(

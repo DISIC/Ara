@@ -55,10 +55,6 @@ model Audit {
   auditTools   String[]
   environments TestEnvironment[]
   pages        AuditedPage[]
-
-  // Step 3
-
-  results CriterionResult[]
 }
 
 model TestEnvironment {
@@ -81,6 +77,8 @@ model AuditedPage {
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
   auditUniqueId String?
 
+  results CriterionResult[]
+
   @@unique([url, auditUniqueId])
 }
 
@@ -97,12 +95,12 @@ model CriterionResult {
 
   notApplicableComment String?
 
-  topic         Int
-  criterium     Int
-  auditUniqueId String
-  audit         Audit  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  topic     Int
+  criterium Int
+  pageId    Int
+  page      AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
-  @@unique([auditUniqueId, topic, criterium])
+  @@unique([pageId, topic, criterium])
 }
 
 enum CriterionResultStatus {
