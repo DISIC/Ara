@@ -2,10 +2,8 @@
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import rgaa from "../criteres.json";
 
-console.log(rgaa);
-
 defineProps<{
-  page: string;
+  pageNumber: number;
 }>();
 </script>
 
@@ -25,7 +23,7 @@ defineProps<{
           class="fr-toggle__label topic-switch-label"
           :for="`topic-switch-${topic.number}`"
         >
-          Label action interrupteur
+          Non applicable sur la page
         </label>
       </div>
     </div>
@@ -33,6 +31,7 @@ defineProps<{
       <AuditGenerationCriterium
         v-for="criterium in topic.criteria"
         :key="criterium.criterium.number"
+        :page-number="pageNumber"
         class="fr-mb-3w"
         :criterium="criterium.criterium"
         :topic-number="topic.number"

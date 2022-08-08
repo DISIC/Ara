@@ -5,6 +5,7 @@ defineProps<{
   topicNumber: number;
   // FIXME: type things
   criterium: any;
+  pageNumber: number;
 }>();
 </script>
 
@@ -26,13 +27,13 @@ defineProps<{
         <button
           class="fr-accordion__btn"
           aria-expanded="false"
-          :aria-controls="`tests-refs-${topicNumber}-${criterium.number}`"
+          :aria-controls="`tests-refs-${pageNumber}-${topicNumber}-${criterium.number}`"
         >
           Tests et références du test {{ topicNumber }}.{{ criterium.number }}
         </button>
       </span>
       <div
-        :id="`tests-refs-${topicNumber}-${criterium.number}`"
+        :id="`tests-refs-${pageNumber}-${topicNumber}-${criterium.number}`"
         class="fr-collapse"
       >
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consectetur

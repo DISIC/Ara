@@ -47,6 +47,12 @@ const pages = [
   "Création de permis de visite",
   "Gestion de permis de visite",
 ];
+
+const currentPageId = ref(0);
+
+function updateCurrentPageId(i: number) {
+  currentPageId.value = i;
+}
 </script>
 
 <template>
@@ -69,29 +75,49 @@ const pages = [
     <div class="fr-col-12 fr-col-md-9">
       <div class="fr-tabs">
         <ul class="fr-tabs__list" role="tablist" aria-label="Pages de l’audit">
-          <li v-for="(page, i) in pages" :key="i" role="presentation">
+          <li role="presentation">
             <button
-              :id="`page-panel-${i}`"
+              :id="`page-panel-0`"
               class="fr-tabs__tab"
               tabindex="0"
               role="tab"
               aria-selected="true"
-              :aria-controls="`page-panel-${i}-panel`"
+              :aria-controls="`page-panel-0-panel`"
+            >
+              {{ pages[0] }}
+            </button>
+          </li>
+          <li
+            v-for="(page, i) in pages.slice(1)"
+            :key="i + 1"
+            role="presentation"
+          >
+            <button
+              :id="`page-panel-${i + 1}`"
+              class="fr-tabs__tab"
+              tabindex="0"
+              role="tab"
+              aria-selected="false"
+              :aria-controls="`page-panel-${i + 1}-panel`"
             >
               {{ page }}
             </button>
           </li>
         </ul>
         <div
-          v-for="(page, i) in pages"
+          v-for="(_, i) in pages"
           :id="`page-panel-${i}-panel`"
           :key="i"
           class="fr-tabs__panel fr-tabs__panel--selected"
           role="tabpanel"
           :aria-labelledby="`page-panel-${i}`"
           tabindex="0"
+          v-on="{ 'dsfr.disclose': () => updateCurrentPageId(i) }"
         >
-          <AuditGenerationPageCriteria :page="page" />
+          <AuditGenerationPageCriteria
+            v-if="currentPageId === i"
+            :page-number="i"
+          />
         </div>
       </div>
     </div>
