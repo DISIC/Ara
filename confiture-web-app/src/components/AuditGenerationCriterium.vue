@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { marked } from "marked";
 
+import CriteriumCommentAccordion from "./CriteriumCommentAccordion.vue";
+
 defineProps<{
   topicNumber: number;
   // FIXME: type things
@@ -22,6 +24,17 @@ defineProps<{
         />
       </div>
     </div>
+
+    <!-- STATUS -->
+    <!-- TODO: add status radios, checkboxes...? -->
+
+    <!-- COMMENT / DESCRIPTION -->
+    <CriteriumCommentAccordion
+      :id="`${pageNumber}-${topicNumber}-${criterium.number}`"
+      status="not-compliant"
+    />
+
+    <!-- TESTS + REFS -->
     <div class="fr-accordion">
       <span class="fr-accordion__title">
         <button
@@ -36,6 +49,7 @@ defineProps<{
         :id="`tests-refs-${pageNumber}-${topicNumber}-${criterium.number}`"
         class="fr-collapse"
       >
+        <!-- TODO: update content -->
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consectetur
         quos, est distinctio illum porro eligendi itaque iusto inventore eaque
         veniam optio laborum voluptas accusamus unde sed beatae? Aperiam,
@@ -64,5 +78,11 @@ defineProps<{
 .criterium-number,
 .criterium-title {
   color: var(--text-action-high-grey);
+}
+
+.status-radios {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 </style>

@@ -8,7 +8,11 @@ defineProps<{
 </script>
 
 <template>
-  <section v-for="topic in rgaa.topics" :key="topic.number" class="fr-mb-6w">
+  <section
+    v-for="topic in rgaa.topics.slice(0, 1)"
+    :key="topic.number"
+    class="fr-mb-6w"
+  >
     <div class="fr-mb-3w topic-header">
       <h3 class="fr-m-0 topic-heading">
         {{ topic.number }}. {{ topic.topic }}
@@ -29,7 +33,7 @@ defineProps<{
     </div>
     <ol class="fr-p-0 fr-m-0">
       <AuditGenerationCriterium
-        v-for="criterium in topic.criteria"
+        v-for="criterium in topic.criteria.slice(0, 1)"
         :key="criterium.criterium.number"
         :page-number="pageNumber"
         class="fr-mb-3w"
