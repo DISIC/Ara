@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import type { Audit, Prisma } from '@prisma/client';
+import {
+  Audit,
+  CriterionResult,
+  CriterionResultStatus,
+  Prisma,
+} from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
 import { CreateAuditDto } from './create-audit.dto';
+import { CRITERIA } from './criteria';
 import { UpdateAuditDto } from './update-audit.dto';
+import { UpdateResultsDto } from './update-results.dto';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -55,6 +62,51 @@ export class AuditService {
       where: { editUniqueId: uniqueId },
       include: AUDIT_EDIT_INCLUDE,
     });
+  }
+
+  async getResultsWithEditUniqueId(
+    uniqueId: string,
+  ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
+    const pages = await this.prisma.auditedPage.findMany({
+      where: { auditUniqueId: uniqueId },
+    });
+
+    const existingResults = await this.prisma.criterionResult.findMany({
+      where: {
+        page: {
+          auditUniqueId: uniqueId,
+        },
+      },
+    });
+
+    // We do not create every empty criterion result rows in the db when creating pages.
+    // Instead we return the results in the database and fill missing criteria with placeholder data.
+    return pages.flatMap((page) =>
+      CRITERIA.map((criterion) => {
+        const existingResult = existingResults.find(
+          (result) =>
+            result.pageUrl === page.url &&
+            result.topic === criterion.topic &&
+            result.criterium == criterion.criterium,
+        );
+
+        if (existingResult) return existingResult;
+
+        // return placeholder result
+        return {
+          status: CriterionResultStatus.NOT_TESTED,
+          compliantComment: null,
+          errorDescription: null,
+          userImpact: null,
+          recommandation: null,
+          notApplicableComment: null,
+
+          topic: criterion.topic,
+          criterium: criterion.criterium,
+          pageUrl: page.url,
+        };
+      }),
+    );
   }
 
   async updateAudit(
@@ -161,5 +213,42 @@ export class AuditService {
       }
       throw e;
     }
+  }
+
+  async updateResults(uniqueId: string, body: UpdateResultsDto) {
+    const item = body.data[0];
+
+    const data: Prisma.CriterionResultUpsertArgs['create'] = {
+      criterium: item.criterium,
+      topic: item.topic,
+      page: {
+        connect: {
+          url_auditUniqueId: {
+            auditUniqueId: uniqueId,
+            url: item.pageUrl,
+          },
+        },
+      },
+
+      status: item.status,
+      compliantComment: item.compliantComment,
+      errorDescription: item.errorDescription,
+      notApplicableComment: item.notApplicableComment,
+      recommandation: item.recommandation,
+      userImpact: item.userImpact,
+    };
+
+    await this.prisma.criterionResult.upsert({
+      where: {
+        auditUniqueId_pageUrl_topic_criterium: {
+          auditUniqueId: uniqueId,
+          criterium: item.criterium,
+          pageUrl: item.pageUrl,
+          topic: item.topic,
+        },
+      },
+      create: data,
+      update: data,
+    });
   }
 }

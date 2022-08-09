@@ -77,5 +77,44 @@ model AuditedPage {
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
   auditUniqueId String?
 
+  results CriterionResult[]
+
   @@unique([url, auditUniqueId])
+}
+
+model CriterionResult {
+  id Int @id @default(autoincrement())
+
+  status CriterionResultStatus @default(NOT_TESTED)
+
+  compliantComment String?
+
+  errorDescription String?
+  userImpact       CriterionResultUserImpact?
+  recommandation   String?
+
+  notApplicableComment String?
+
+  topic     Int
+  criterium Int
+
+  // Results are linked through the page url and audit unique id.
+  auditUniqueId String
+  pageUrl       String
+  page          AuditedPage @relation(fields: [pageUrl, auditUniqueId], references: [url, auditUniqueId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([auditUniqueId, pageUrl, topic, criterium])
+}
+
+enum CriterionResultStatus {
+  COMPLIANT
+  NOT_COMPLIANT
+  NOT_APPLICABLE
+  NOT_TESTED
+}
+
+enum CriterionResultUserImpact {
+  MINOR
+  MAJOR
+  BLOCKING
 }
