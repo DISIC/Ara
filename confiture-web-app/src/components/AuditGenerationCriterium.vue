@@ -1,13 +1,5 @@
-<script setup lang="ts">
+<script lang="ts">
 import { marked } from "marked";
-import { computed, ref, watch } from "vue";
-
-import { updateResults } from "../api";
-import { AuditPage, CriteriumResultStatus } from "../types";
-import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
-import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
-import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
-import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 
 // TODO: use a <RouterLink />
 const renderer = {
@@ -17,6 +9,19 @@ const renderer = {
 };
 
 marked.use({ renderer });
+</script>
+
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+
+import { AuditPage, CriteriumResultStatus } from "../types";
+import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
+import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
+import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
+import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
+import { useResultsStore } from "../store";
+
+const store = useResultsStore();
 
 const props = defineProps<{
   topicNumber: number;
@@ -33,20 +38,24 @@ const statuses = [
   { label: "Non testé", value: CriteriumResultStatus.NOT_TESTED },
 ];
 
-const status = ref(CriteriumResultStatus.NOT_TESTED);
+const status = ref(
+  // This component should not be rendered before the audit results are fetched
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  store.getCriteriumResult(
+    props.page.url,
+    props.topicNumber,
+    props.criterium.number
+  )!.status
+);
+
 watch(status, async (newValue) => {
-  console.log(
-    "🚀 ~ file: AuditGenerationCriterium.vue ~ line 31 ~ watch ~ newValue",
-    newValue
-  );
   try {
-    await updateResults(props.auditUniqueId, [
+    await store.updateResults(props.auditUniqueId, [
       {
         // ID
         topic: props.topicNumber,
         criterium: props.criterium.number,
         pageUrl: props.page.url,
-
         // DATA
         status: status.value,
         // compliantComment: string | null,
@@ -89,7 +98,7 @@ const uniqueId = computed(() => {
         :id="`status-${uniqueId}-${s.value}`"
         v-model="status"
         type="radio"
-        name="status"
+        :name="`status-${uniqueId}`"
         :value="s.value"
         class="fr-mr-2w"
       />

@@ -41,7 +41,7 @@ function openOptions() {
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
           Type d’audit
         </dt>
-        <dd class="fr-m-0 fr-h3 info-value">{{ auditType }}</dd>
+        <dd class="fr-m-0 fr-h3 info-value">{{ auditType.toLowerCase() }}</dd>
       </div>
     </div>
     <div class="fr-col-12 fr-col-md-4">
@@ -80,6 +80,10 @@ function openOptions() {
 
 .info {
   border: 1px solid var(--border-default-grey);
+}
+
+.info-value {
+  text-transform: capitalize;
 }
 
 .info-label {

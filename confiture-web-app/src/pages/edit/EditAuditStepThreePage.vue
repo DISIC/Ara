@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAudit } from "../../api";
+import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
+import { CriteriumResultStatus } from "../../types";
 
 interface AuditFilter {
   search?: string;
@@ -15,6 +17,12 @@ interface AuditFilter {
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const { data: audit, error } = useAudit(uniqueId);
+
+const store = useResultsStore();
+
+onMounted(() => {
+  store.fetchResults(uniqueId);
+});
 
 function validateAudit() {
   console.log("validateAudit");
@@ -45,16 +53,47 @@ const currentPageId = ref(0);
 function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
+
+// FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
+const complianceLevel = computed(() => {
+  const testedCount =
+    store.results?.filter(
+      (result) =>
+        result.status !== CriteriumResultStatus.NOT_TESTED &&
+        result.status !== CriteriumResultStatus.NOT_APPLICABLE
+    ).length ?? 0;
+
+  const compliantCount =
+    store.results?.filter(
+      (result) => result.status === CriteriumResultStatus.COMPLIANT
+    ).length ?? 0;
+
+  if (testedCount === 0) {
+    return 0;
+  }
+
+  return Math.round((compliantCount / testedCount) * 100);
+});
+
+const risk = computed(() => {
+  if (complianceLevel.value < 50) {
+    return "Élevé";
+  } else if (complianceLevel.value < 75) {
+    return "Moyen";
+  } else {
+    return "Bas";
+  }
+});
 </script>
 
 <template>
   <!-- FIXME: handle loading states -->
-  <template v-if="audit">
+  <template v-if="audit && store.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
       :audit-type="audit.auditType!"
-      audit-risk="Inconnus"
-      :audit-compliance-level="42"
+      :audit-risk="risk"
+      :audit-compliance-level="complianceLevel"
       @validate="validateAudit"
     />
 
