@@ -84,3 +84,31 @@ export interface CreateFeedbackRequestData {
   email?: string;
   occupations?: string[];
 }
+
+export enum CriteriumResultStatus {
+  NOT_TESTED = "NOT_TESTED",
+  COMPLIANT = "COMPLIANT",
+  NOT_COMPLIANT = "NOT_COMPLIANT",
+  NOT_APPLICABLE = "NOT_APPLICABLE",
+}
+
+export enum CriterionResultUserImpact {
+  MINOR = "MINOR",
+  MAJOR = "MAJOR",
+  BLOCKING = "BLOCKING",
+}
+export interface CriteriumResult {
+  // ID
+  topic: number;
+  criterium: number;
+  pageUrl: string;
+
+  // DATA
+  status: CriteriumResultStatus;
+
+  compliantComment?: string | null;
+  errorDescription?: string | null;
+  userImpact?: CriterionResultUserImpact | null;
+  recommandation?: string | null;
+  notApplicableComment?: string | null;
+}

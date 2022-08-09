@@ -2,6 +2,8 @@
 import { marked } from "marked";
 import { computed, ref, watch } from "vue";
 
+import { updateResults } from "../api";
+import { AuditPage, CriteriumResultStatus } from "../types";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -9,7 +11,7 @@ import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion
 
 // TODO: use a <RouterLink />
 const renderer = {
-  link(href: string, text: string) {
+  link(href: string, title: string, text: string) {
     return `<a href="/ressources/glossaire${href}">${text}</a>`;
   },
 };
@@ -20,17 +22,48 @@ const props = defineProps<{
   topicNumber: number;
   // FIXME: type things
   criterium: any;
-  pageNumber: number;
+  page: AuditPage;
+  auditUniqueId: string;
 }>();
 
-const status = ref("nt");
-watch(status, (newValue) => {
-  console.log("[PATCH] Update status: " + newValue);
+const statuses = [
+  { label: "Conforme", value: CriteriumResultStatus.COMPLIANT },
+  { label: "Non conforme", value: CriteriumResultStatus.NOT_COMPLIANT },
+  { label: "Non applicable", value: CriteriumResultStatus.NOT_APPLICABLE },
+  { label: "Non testé", value: CriteriumResultStatus.NOT_TESTED },
+];
+
+const status = ref(CriteriumResultStatus.NOT_TESTED);
+watch(status, async (newValue) => {
+  console.log(
+    "🚀 ~ file: AuditGenerationCriterium.vue ~ line 31 ~ watch ~ newValue",
+    newValue
+  );
+  try {
+    await updateResults(props.auditUniqueId, [
+      {
+        // ID
+        topic: props.topicNumber,
+        criterium: props.criterium.number,
+        pageUrl: props.page.url,
+
+        // DATA
+        status: status.value,
+        // compliantComment: string | null,
+        // errorDescription: string | null,
+        // userImpact: CriterionResultUserImpact | null,
+        // recommandation: string | null,
+        // notApplicableComment: string | null,
+      },
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
-  return `${props.pageNumber}-${props.topicNumber}-${props.criterium.number}`;
+  return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
 });
 </script>
 
@@ -48,58 +81,33 @@ const uniqueId = computed(() => {
 
     <!-- STATUS -->
     <!-- TODO: temp status radios -->
-    <label class="fr-mr-1w" :for="`status-${uniqueId}-c`">Conforme</label>
-    <input
-      :id="`status-${uniqueId}-c`"
-      v-model="status"
-      type="radio"
-      name="status"
-      value="c"
-      class="fr-mr-2w"
-    />
-    <label class="fr-mr-1w" :for="`status-${uniqueId}-nc`">Non-conforme</label>
-    <input
-      :id="`status-${uniqueId}-nc`"
-      v-model="status"
-      type="radio"
-      name="status"
-      value="nc"
-      class="fr-mr-2w"
-    />
-    <label class="fr-mr-1w" :for="`status-${uniqueId}-na`"
-      >Non-applicable</label
-    >
-    <input
-      :id="`status-${uniqueId}-na`"
-      v-model="status"
-      type="radio"
-      name="status"
-      value="na"
-      class="fr-mr-2w"
-    />
-    <label class="fr-mr-1w" :for="`status-${uniqueId}-nt`">Non-testé</label>
-    <input
-      :id="`status-${uniqueId}-nt`"
-      v-model="status"
-      type="radio"
-      name="status"
-      value="nt"
-      class="fr-mr-2w fr-mb-2w"
-    />
+    <template v-for="s in statuses" :key="s.value">
+      <label class="fr-mr-1w" :for="`status-${uniqueId}-${s.value}`">
+        {{ s.label }}
+      </label>
+      <input
+        :id="`status-${uniqueId}-${s.value}`"
+        v-model="status"
+        type="radio"
+        name="status"
+        :value="s.value"
+        class="fr-mr-2w"
+      />
+    </template>
 
     <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCompliantAccordion
-      v-if="status === 'c'"
+      v-if="status === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
     />
 
     <CriteriumNotApplicableAccordion
-      v-else-if="status === 'na'"
+      v-else-if="status === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
     />
 
-    <template v-else-if="status === 'nc'">
+    <template v-else-if="status === CriteriumResultStatus.NOT_COMPLIANT">
       <CriteriumNotCompliantAccordion
         :id="`not-compliant-accordion-${uniqueId}`"
       />

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute } from "vue-router";
 
+import { useAudit } from "../../api";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
@@ -10,10 +12,9 @@ interface AuditFilter {
   topics: string[];
 }
 
-const auditName = ref("Mon audit");
-const auditType = ref("Complet");
-const auditRisk = ref("Moyen");
-const auditComplianceLevel = ref(42);
+const route = useRoute();
+const uniqueId = route.params.uniqueId as string;
+const { data: audit, error } = useAudit(uniqueId);
 
 function validateAudit() {
   console.log("validateAudit");
@@ -39,15 +40,6 @@ const topics = ref([
   { title: "Consultation", value: 56 },
 ]);
 
-const pages = [
-  "Accueil",
-  "Contact",
-  "FAQ",
-  "Mentions légales",
-  "Création de permis de visite",
-  "Gestion de permis de visite",
-];
-
 const currentPageId = ref(0);
 
 function updateCurrentPageId(i: number) {
@@ -56,70 +48,78 @@ function updateCurrentPageId(i: number) {
 </script>
 
 <template>
-  <AuditGenerationHeader
-    :audit-name="auditName"
-    :audit-type="auditType"
-    :audit-risk="auditRisk"
-    :audit-compliance-level="auditComplianceLevel"
-    @validate="validateAudit"
-  />
+  <!-- FIXME: handle loading states -->
+  <template v-if="audit">
+    <AuditGenerationHeader
+      :audit-name="audit.procedureName"
+      :audit-type="audit.auditType!"
+      audit-risk="Inconnus"
+      :audit-compliance-level="42"
+      @validate="validateAudit"
+    />
 
-  <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-12 fr-col-md-3">
-      <AuditGenerationFilters
-        :results-count="21"
-        :topics="topics"
-        @filter="filter"
-      />
-    </div>
-    <div class="fr-col-12 fr-col-md-9">
-      <div class="fr-tabs">
-        <ul class="fr-tabs__list" role="tablist" aria-label="Pages de l’audit">
-          <li role="presentation">
-            <button
-              :id="`page-panel-0`"
-              class="fr-tabs__tab"
-              tabindex="0"
-              role="tab"
-              aria-selected="true"
-              :aria-controls="`page-panel-0-panel`"
-            >
-              {{ pages[0] }}
-            </button>
-          </li>
-          <li
-            v-for="(page, i) in pages.slice(1)"
-            :key="i + 1"
-            role="presentation"
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-md-3">
+        <AuditGenerationFilters
+          :results-count="21"
+          :topics="topics"
+          @filter="filter"
+        />
+      </div>
+      <div class="fr-col-12 fr-col-md-9">
+        <div class="fr-tabs">
+          <ul
+            class="fr-tabs__list"
+            role="tablist"
+            aria-label="Pages de l’audit"
           >
-            <button
-              :id="`page-panel-${i + 1}`"
-              class="fr-tabs__tab"
-              tabindex="0"
-              role="tab"
-              aria-selected="false"
-              :aria-controls="`page-panel-${i + 1}-panel`"
+            <li role="presentation">
+              <button
+                :id="`page-panel-${audit.pages[0].id}`"
+                class="fr-tabs__tab"
+                tabindex="0"
+                role="tab"
+                aria-selected="true"
+                :aria-controls="`page-panel-${audit.pages[0].id}-panel`"
+              >
+                {{ audit.pages[0].name }}
+              </button>
+            </li>
+            <li
+              v-for="page in audit.pages.slice(1)"
+              :key="page.id"
+              role="presentation"
             >
-              {{ page }}
-            </button>
-          </li>
-        </ul>
-        <div
-          v-for="(_, i) in pages"
-          :id="`page-panel-${i}-panel`"
-          :key="i"
-          class="fr-tabs__panel fr-tabs__panel--selected"
-          role="tabpanel"
-          :aria-labelledby="`page-panel-${i}`"
-          tabindex="0"
-          v-on="{ 'dsfr.disclose': () => updateCurrentPageId(i) }"
-        >
-          <AuditGenerationPageCriteria
-            v-if="currentPageId === i"
-            :page-number="i"
-          />
+              <button
+                :id="`page-panel-${page.id}`"
+                class="fr-tabs__tab"
+                tabindex="0"
+                role="tab"
+                aria-selected="false"
+                :aria-controls="`page-panel-${page.id}-panel`"
+              >
+                {{ page.name }}
+              </button>
+            </li>
+          </ul>
+          <div
+            v-for="page in audit.pages"
+            :id="`page-panel-${page.id}-panel`"
+            :key="page.id"
+            class="fr-tabs__panel fr-tabs__panel--selected"
+            role="tabpanel"
+            :aria-labelledby="`page-panel-${page.id}`"
+            tabindex="0"
+            v-on="{ 'dsfr.disclose': () => updateCurrentPageId(page.id) }"
+          >
+            <AuditGenerationPageCriteria
+              v-if="currentPageId === page.id"
+              :page="page"
+              :audit-unique-id="uniqueId"
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </template>
 </template>

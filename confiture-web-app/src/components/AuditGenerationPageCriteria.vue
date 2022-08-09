@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import rgaa from "../criteres.json";
+import { AuditPage } from "../types";
 
 defineProps<{
-  pageNumber: number;
+  page: AuditPage;
+  auditUniqueId: string;
 }>();
 </script>
 
@@ -31,10 +33,11 @@ defineProps<{
       <AuditGenerationCriterium
         v-for="criterium in topic.criteria"
         :key="criterium.criterium.number"
-        :page-number="pageNumber"
+        :page="page"
         class="fr-mb-3w"
         :criterium="criterium.criterium"
         :topic-number="topic.number"
+        :audit-unique-id="auditUniqueId"
       />
     </ol>
   </section>
