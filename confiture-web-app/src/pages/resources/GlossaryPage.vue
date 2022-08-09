@@ -40,7 +40,11 @@ function renderLetterAnchor(i: number) {
  * @param {string} title
  */
 function getTermSlug(title: string) {
-  return slugify(title, { lower: true });
+  return slugify(title, {
+    lower: true,
+    strict: false,
+    remove: /[(),«»]/g,
+  }).replace(/[/']/g, "-");
 }
 </script>
 

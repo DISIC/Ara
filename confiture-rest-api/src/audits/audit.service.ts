@@ -216,39 +216,41 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const item = body.data[0];
-
-    const data: Prisma.CriterionResultUpsertArgs['create'] = {
-      criterium: item.criterium,
-      topic: item.topic,
-      page: {
-        connect: {
-          url_auditUniqueId: {
-            auditUniqueId: uniqueId,
-            url: item.pageUrl,
+    const promises = body.data.map((item) => {
+      const data: Prisma.CriterionResultUpsertArgs['create'] = {
+        criterium: item.criterium,
+        topic: item.topic,
+        page: {
+          connect: {
+            url_auditUniqueId: {
+              auditUniqueId: uniqueId,
+              url: item.pageUrl,
+            },
           },
         },
-      },
 
-      status: item.status,
-      compliantComment: item.compliantComment,
-      errorDescription: item.errorDescription,
-      notApplicableComment: item.notApplicableComment,
-      recommandation: item.recommandation,
-      userImpact: item.userImpact,
-    };
+        status: item.status,
+        compliantComment: item.compliantComment,
+        errorDescription: item.errorDescription,
+        notApplicableComment: item.notApplicableComment,
+        recommandation: item.recommandation,
+        userImpact: item.userImpact,
+      };
 
-    await this.prisma.criterionResult.upsert({
-      where: {
-        auditUniqueId_pageUrl_topic_criterium: {
-          auditUniqueId: uniqueId,
-          criterium: item.criterium,
-          pageUrl: item.pageUrl,
-          topic: item.topic,
+      return this.prisma.criterionResult.upsert({
+        where: {
+          auditUniqueId_pageUrl_topic_criterium: {
+            auditUniqueId: uniqueId,
+            criterium: item.criterium,
+            pageUrl: item.pageUrl,
+            topic: item.topic,
+          },
         },
-      },
-      create: data,
-      update: data,
+        create: data,
+        update: data,
+      });
     });
+
+    await Promise.all(promises);
   }
 }
