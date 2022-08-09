@@ -1,61 +1,46 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useFiltersStore } from "../store";
 
 defineProps<{
   resultsCount: number;
-  topics: { title: string; value: number }[];
+  topics: { title: string; number: number; value: number }[];
 }>();
-const emit = defineEmits(["filter"]);
+
+const store = useFiltersStore();
 
 const search = ref("");
-const currentSearch = ref("");
 const searchInputRef = ref<HTMLInputElement>();
-const selectedTopics = ref<string[]>([]);
 
 function onGlobalReset() {
+  store.$reset();
+
   search.value = "";
-  currentSearch.value = "";
-  selectedTopics.value = [];
-
   searchInputRef.value?.focus();
-
-  submit();
 }
 
 function onSearchReset() {
   search.value = "";
-  currentSearch.value = "";
+  store.search = "";
 
   searchInputRef.value?.focus();
-
-  submit();
-}
-
-function onFilter() {
-  currentSearch.value = search.value;
-
-  submit();
 }
 
 function submit() {
-  const payload = {
-    search: search.value,
-    topics: selectedTopics.value,
-  };
-  emit("filter", payload);
+  store.search = search.value;
 }
 </script>
 
 <template>
   <h2 class="fr-h4 fr-mb-2w">Filtres</h2>
   <button
-    v-if="currentSearch || selectedTopics.length"
+    v-if="store.search || store.topics.length"
     class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
     @click="onGlobalReset"
   >
     Réinitialiser
   </button>
-  <form @submit.prevent="onFilter">
+  <form @submit.prevent="submit">
     <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
       Rechercher par mots clés
     </label>
@@ -75,18 +60,18 @@ function submit() {
   </form>
 
   <div role="alert" aria-live="polite">
-    <p v-if="currentSearch" class="fr-mt-2w fr-mb-1w">
+    <p v-if="store.search" class="fr-mt-2w fr-mb-1w">
       {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
     </p>
     <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
   </div>
   <button
-    v-if="currentSearch"
+    v-if="store.search"
     class="fr-tag fr-tag--dismiss"
-    :aria-label="`Retirer la recherche ${currentSearch}`"
+    :aria-label="`Retirer la recherche ${store.search}`"
     @click="onSearchReset"
   >
-    {{ currentSearch }}
+    {{ store.search }}
   </button>
 
   <div class="fr-form-group fr-mt-4w">
@@ -104,10 +89,9 @@ function submit() {
           <div class="fr-checkbox-group topic-filter-checkbox">
             <input
               :id="`topic-filter-${i}`"
-              v-model="selectedTopics"
+              v-model="store.topics"
               type="checkbox"
-              :value="topic.title"
-              @change="onFilter"
+              :value="topic.number"
             />
             <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
               {{ i + 1 }}. {{ topic.title }}

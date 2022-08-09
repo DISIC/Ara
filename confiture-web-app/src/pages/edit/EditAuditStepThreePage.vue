@@ -10,11 +10,6 @@ import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCri
 import { CriteriumResultStatus } from "../../types";
 import rgaa from "../../criteres.json";
 
-interface AuditFilter {
-  search?: string;
-  topics: string[];
-}
-
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const { data: audit, error } = useAudit(uniqueId);
@@ -27,10 +22,6 @@ onMounted(() => {
 
 function validateAudit() {
   console.log("validateAudit");
-}
-
-function filter(payload: AuditFilter) {
-  console.log("filter", payload);
 }
 
 /** Available topic filters and their global progression. */
@@ -51,6 +42,7 @@ const topics = computed(() => {
 
     return {
       title: topic.topic,
+      number: topic.number,
       value: Math.round((testedCount / relevantCount) * 100),
     };
   });
@@ -107,11 +99,7 @@ const risk = computed(() => {
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
-        <AuditGenerationFilters
-          :results-count="21"
-          :topics="topics"
-          @filter="filter"
-        />
+        <AuditGenerationFilters :results-count="21" :topics="topics" />
       </div>
       <div class="fr-col-12 fr-col-md-9">
         <div class="fr-tabs">

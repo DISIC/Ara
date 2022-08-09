@@ -1,16 +1,29 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import rgaa from "../criteres.json";
 import { AuditPage } from "../types";
+import { useFiltersStore } from "../store";
 
 defineProps<{
   page: AuditPage;
   auditUniqueId: string;
 }>();
+
+const store = useFiltersStore();
+
+const filteredTopics = computed(() => {
+  if (!store.topics.length) return rgaa.topics;
+
+  return rgaa.topics.filter((t) => {
+    return store.topics.includes(t.number);
+  });
+});
 </script>
 
 <template>
-  <section v-for="topic in rgaa.topics" :key="topic.number" class="fr-mb-6w">
+  <section v-for="topic in filteredTopics" :key="topic.number" class="fr-mb-6w">
     <div class="fr-mb-3w topic-header">
       <h3 class="fr-m-0 topic-heading">
         {{ topic.number }}. {{ topic.topic }}

@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import ky from "ky";
 
 import { CriteriumResult } from "../types";
+import { stringify } from "querystring";
 
 interface ResultsStoreState {
   results: CriteriumResult[] | null;
@@ -17,16 +18,13 @@ export const useResultsStore = defineStore("results", {
         topicNumber: number,
         criteriumNumber: number
       ) => {
-        const r = this.results?.find((r) => {
+        return this.results?.find((r) => {
           return (
             r.pageUrl === pageUrl &&
             r.topic === topicNumber &&
             r.criterium === criteriumNumber
           );
         });
-        console.log("🚀 ~ file: index.ts ~ line 27 ~ r ~ r", r);
-
-        return r;
       };
     },
   },
@@ -63,4 +61,13 @@ export const useResultsStore = defineStore("results", {
       }
     },
   },
+});
+
+interface FiltersStoreState {
+  search: string;
+  topics: number[];
+}
+
+export const useFiltersStore = defineStore("filters", {
+  state: (): FiltersStoreState => ({ search: "", topics: [] }),
 });
