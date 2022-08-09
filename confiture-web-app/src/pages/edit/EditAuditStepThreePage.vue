@@ -8,6 +8,7 @@ import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import { CriteriumResultStatus } from "../../types";
+import rgaa from "../../criteres.json";
 
 interface AuditFilter {
   search?: string;
@@ -32,21 +33,28 @@ function filter(payload: AuditFilter) {
   console.log("filter", payload);
 }
 
-const topics = ref([
-  { title: "Images", value: 25 },
-  { title: "Cadres", value: 12 },
-  { title: "Couleurs", value: 3 },
-  { title: "Multimédia", value: 0 },
-  { title: "Tableaux", value: 12 },
-  { title: "Liens", value: 0 },
-  { title: "Scripts", value: 88 },
-  { title: "Éléments obligatoires", value: 100 },
-  { title: "Structuration de l'information", value: 67 },
-  { title: "Présentation de l'information", value: 0 },
-  { title: "Formulaires", value: 23 },
-  { title: "Navigation", value: 4 },
-  { title: "Consultation", value: 56 },
-]);
+/** Available topic filters and their global progression. */
+const topics = computed(() => {
+  return rgaa.topics.map((topic) => {
+    // Every results for the current topic
+    const relevantResults =
+      store.results?.filter((result) => result.topic === topic.number) ?? [];
+
+    // number of criteria for the topic accross all pages
+    const relevantCount = relevantResults.length;
+
+    // number of tested criteria for the topic accross all pages
+    const testedCount =
+      relevantResults.filter(
+        (result) => result.status !== CriteriumResultStatus.NOT_TESTED
+      ).length ?? 0;
+
+    return {
+      title: topic.topic,
+      value: Math.round((testedCount / relevantCount) * 100),
+    };
+  });
+});
 
 const currentPageId = ref(0);
 

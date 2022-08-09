@@ -48,7 +48,7 @@ const status = ref(
   )!.status
 );
 
-watch(status, async (newValue) => {
+watch(status, async () => {
   try {
     await store.updateResults(props.auditUniqueId, [
       {
