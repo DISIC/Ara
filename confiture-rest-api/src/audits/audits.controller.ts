@@ -71,6 +71,12 @@ export class AuditsController {
     @Param('uniqueId') uniqueId: string,
     @Body() body: UpdateResultsDto,
   ) {
+    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      throw new NotFoundException();
+    }
+
     await this.auditService.updateResults(uniqueId, body);
   }
 }

@@ -7,10 +7,9 @@ import {
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-import * as rgaa from '../rgaa.json';
-
 import { PrismaService } from '../prisma.service';
 import { CreateAuditDto } from './create-audit.dto';
+import { CRITERIA } from './criteria';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 
@@ -19,14 +18,6 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   environments: true,
   pages: true,
 };
-
-const CRITERIA = rgaa.topics.flatMap((topic) =>
-  topic.criteria.map((c) => ({
-    topic: topic.number,
-    criterium: c.criterium.number,
-  })),
-);
-console.log('🚀 ~ file: audit.service.ts ~ line 20 ~ CRITERIA', CRITERIA);
 
 @Injectable()
 export class AuditService {
