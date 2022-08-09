@@ -13,16 +13,33 @@ defineProps<{
 
 const store = useFiltersStore();
 
+// Filter topics by topic name and by search.
 const filteredTopics = computed(() => {
-  if (!store.topics.length) return rgaa.topics;
+  let filteredTopics = rgaa.topics as any[];
 
-  return rgaa.topics.filter((t) => {
-    return store.topics.includes(t.number);
+  if (store.topics.length) {
+    filteredTopics = rgaa.topics.filter((t) => {
+      return store.topics.includes(t.number);
+    });
+  }
+
+  filteredTopics = filteredTopics.map((t) => {
+    return {
+      ...t,
+      criteria: t.criteria.filter((c: any) =>
+        c.criterium.title.toLowerCase().includes(store.search.toLowerCase())
+      ),
+    };
   });
+
+  filteredTopics = filteredTopics.filter((t) => t.criteria.length);
+
+  return filteredTopics;
 });
 </script>
 
 <template>
+  <!-- TODO: handle empty state -->
   <section v-for="topic in filteredTopics" :key="topic.number" class="fr-mb-6w">
     <div class="fr-mb-3w topic-header">
       <h3 class="fr-m-0 topic-heading">

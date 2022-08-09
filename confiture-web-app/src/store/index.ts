@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import ky from "ky";
 
 import { CriteriumResult } from "../types";
-import { stringify } from "querystring";
 
 interface ResultsStoreState {
   results: CriteriumResult[] | null;

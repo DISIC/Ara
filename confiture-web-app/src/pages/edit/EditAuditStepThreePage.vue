@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAudit } from "../../api";
-import { useResultsStore } from "../../store";
+import { useResultsStore, useFiltersStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
@@ -14,10 +14,10 @@ const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const { data: audit, error } = useAudit(uniqueId);
 
-const store = useResultsStore();
+const resultsStore = useResultsStore();
 
 onMounted(() => {
-  store.fetchResults(uniqueId);
+  resultsStore.fetchResults(uniqueId);
 });
 
 function validateAudit() {
@@ -29,7 +29,8 @@ const topics = computed(() => {
   return rgaa.topics.map((topic) => {
     // Every results for the current topic
     const relevantResults =
-      store.results?.filter((result) => result.topic === topic.number) ?? [];
+      resultsStore.results?.filter((result) => result.topic === topic.number) ??
+      [];
 
     // number of criteria for the topic accross all pages
     const relevantCount = relevantResults.length;
@@ -57,14 +58,14 @@ function updateCurrentPageId(i: number) {
 // FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
 const complianceLevel = computed(() => {
   const testedCount =
-    store.results?.filter(
+    resultsStore.results?.filter(
       (result) =>
         result.status !== CriteriumResultStatus.NOT_TESTED &&
         result.status !== CriteriumResultStatus.NOT_APPLICABLE
     ).length ?? 0;
 
   const compliantCount =
-    store.results?.filter(
+    resultsStore.results?.filter(
       (result) => result.status === CriteriumResultStatus.COMPLIANT
     ).length ?? 0;
 
@@ -88,7 +89,7 @@ const risk = computed(() => {
 
 <template>
   <!-- FIXME: handle loading states -->
-  <template v-if="audit && store.results">
+  <template v-if="audit && resultsStore.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
       :audit-type="audit.auditType!"
@@ -99,6 +100,7 @@ const risk = computed(() => {
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
+        <!-- TODO: compute results count -->
         <AuditGenerationFilters :results-count="21" :topics="topics" />
       </div>
       <div class="fr-col-12 fr-col-md-9">
