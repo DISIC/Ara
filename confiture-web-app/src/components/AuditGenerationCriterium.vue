@@ -7,6 +7,15 @@ import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.v
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 
+// TODO: use a <RouterLink />
+const renderer = {
+  link(href: string, text: string) {
+    return `<a href="/ressources/glossaire${href}">${text}</a>`;
+  },
+};
+
+marked.use({ renderer });
+
 const props = defineProps<{
   topicNumber: number;
   // FIXME: type things
@@ -78,6 +87,7 @@ const uniqueId = computed(() => {
       class="fr-mr-2w fr-mb-2w"
     />
 
+    <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCompliantAccordion
       v-if="status === 'c'"
