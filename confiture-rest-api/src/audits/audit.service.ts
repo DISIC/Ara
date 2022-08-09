@@ -12,6 +12,7 @@ import * as rgaa from '../rgaa.json';
 import { PrismaService } from '../prisma.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
+import { UpdateResultsDto } from './update-results.dto';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -74,7 +75,7 @@ export class AuditService {
 
   async getResultsWithEditUniqueId(
     uniqueId: string,
-  ): Promise<Omit<CriterionResult, 'id'>[]> {
+  ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
     const pages = await this.prisma.auditedPage.findMany({
       where: { auditUniqueId: uniqueId },
     });
@@ -93,7 +94,7 @@ export class AuditService {
       CRITERIA.map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
-            result.pageId === page.id &&
+            result.pageUrl === page.url &&
             result.topic === criterion.topic &&
             result.criterium == criterion.criterium,
         );
@@ -108,9 +109,10 @@ export class AuditService {
           userImpact: null,
           recommandation: null,
           notApplicableComment: null,
+
           topic: criterion.topic,
           criterium: criterion.criterium,
-          pageId: page.id,
+          pageUrl: page.url,
         };
       }),
     );
@@ -220,5 +222,42 @@ export class AuditService {
       }
       throw e;
     }
+  }
+
+  async updateResults(uniqueId: string, body: UpdateResultsDto) {
+    const item = body.data[0];
+
+    const data: Prisma.CriterionResultUpsertArgs['create'] = {
+      criterium: item.criterium,
+      topic: item.topic,
+      page: {
+        connect: {
+          url_auditUniqueId: {
+            auditUniqueId: uniqueId,
+            url: item.pageUrl,
+          },
+        },
+      },
+
+      status: item.status,
+      compliantComment: item.compliantComment,
+      errorDescription: item.errorDescription,
+      notApplicableComment: item.notApplicableComment,
+      recommandation: item.recommandation,
+      userImpact: item.userImpact,
+    };
+
+    await this.prisma.criterionResult.upsert({
+      where: {
+        auditUniqueId_pageUrl_topic_criterium: {
+          auditUniqueId: uniqueId,
+          criterium: item.criterium,
+          pageUrl: item.pageUrl,
+          topic: item.topic,
+        },
+      },
+      create: data,
+      update: data,
+    });
   }
 }

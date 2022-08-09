@@ -97,10 +97,13 @@ model CriterionResult {
 
   topic     Int
   criterium Int
-  pageId    Int
-  page      AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
-  @@unique([pageId, topic, criterium])
+  // Results are linked through the page url and audit unique id.
+  auditUniqueId String
+  pageUrl       String
+  page          AuditedPage @relation(fields: [pageUrl, auditUniqueId], references: [url, auditUniqueId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([auditUniqueId, pageUrl, topic, criterium])
 }
 
 enum CriterionResultStatus {

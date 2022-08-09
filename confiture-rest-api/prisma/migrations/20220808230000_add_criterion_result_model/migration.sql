@@ -15,13 +15,14 @@ CREATE TABLE "CriterionResult" (
     "notApplicableComment" TEXT,
     "topic" INTEGER NOT NULL,
     "criterium" INTEGER NOT NULL,
-    "pageId" INTEGER NOT NULL,
+    "auditUniqueId" TEXT NOT NULL,
+    "pageUrl" TEXT NOT NULL,
 
     CONSTRAINT "CriterionResult_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CriterionResult_pageId_topic_criterium_key" ON "CriterionResult"("pageId", "topic", "criterium");
+CREATE UNIQUE INDEX "CriterionResult_auditUniqueId_pageUrl_topic_criterium_key" ON "CriterionResult"("auditUniqueId", "pageUrl", "topic", "criterium");
 
 -- AddForeignKey
-ALTER TABLE "CriterionResult" ADD CONSTRAINT "CriterionResult_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "AuditedPage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CriterionResult" ADD CONSTRAINT "CriterionResult_pageUrl_auditUniqueId_fkey" FOREIGN KEY ("pageUrl", "auditUniqueId") REFERENCES "AuditedPage"("url", "auditUniqueId") ON DELETE CASCADE ON UPDATE CASCADE;
