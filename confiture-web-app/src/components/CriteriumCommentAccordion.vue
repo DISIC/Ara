@@ -1,38 +1,38 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import Radio, { RadioStatus } from "./Radio.vue";
+// import Radio, { RadioStatus } from "./Radio.vue";
 
-enum CriterionResultUserImpact {
-  MINOR = "MINOR",
-  MAJOR = "MAJOR",
-  BLOCKING = "BLOCKING",
-}
+// enum CriterionResultUserImpact {
+//   MINOR = "MINOR",
+//   MAJOR = "MAJOR",
+//   BLOCKING = "BLOCKING",
+// }
 
 const props = defineProps<{
   status: string;
   id: string;
 }>();
 
-const radios = [
-  {
-    label: "Mineur",
-    id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.MINOR}`,
-    status: RadioStatus.NEUTRAL,
-  },
-  {
-    label: "Majeur",
-    id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.MAJOR}`,
-    status: RadioStatus.WARNING,
-  },
-  {
-    label: "Bloquant",
-    id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.BLOCKING}`,
-    status: RadioStatus.DANGER,
-  },
-];
+// const radios = [
+//   {
+//     label: "Mineur",
+//     id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.MINOR}`,
+//     status: RadioStatus.NEUTRAL,
+//   },
+//   {
+//     label: "Majeur",
+//     id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.MAJOR}`,
+//     status: RadioStatus.WARNING,
+//   },
+//   {
+//     label: "Bloquant",
+//     id: `criterium-user-impact-${props.id}-${CriterionResultUserImpact.BLOCKING}`,
+//     status: RadioStatus.DANGER,
+//   },
+// ];
 
 const comment = ref<string>("");
-const userImpact = ref<string>("");
+// const userImpact = ref<string>("");
 
 const isNotCompliant = computed(() => props.status === "not-compliant");
 const label = computed(() => {
@@ -80,7 +80,7 @@ const label = computed(() => {
       </div>
 
       <!-- USER IMPACT -->
-      <template v-if="isNotCompliant">
+      <!-- <template v-if="isNotCompliant">
         <p class="fr-mt-4w fr-mb-3v fr-text--bold">Impact sur l’usager</p>
         <div class="radios">
           <Radio
@@ -93,7 +93,7 @@ const label = computed(() => {
             :status="radio.status"
           />
         </div>
-      </template>
+      </template> -->
     </div>
   </div>
 </template>

@@ -17,16 +17,14 @@ defineProps<{
       <span class="fr-text--bold criterium-number">
         {{ topicNumber }}.{{ criterium.number }}
       </span>
-      <div>
-        <span
-          class="fr-text--bold criterium-title"
-          v-html="marked.parseInline(criterium.title)"
-        />
-      </div>
+      <div
+        class="fr-text--bold criterium-title"
+        v-html="marked.parseInline(criterium.title)"
+      />
     </div>
 
     <!-- STATUS -->
-    <!-- TODO: add status radios, checkboxes...? -->
+    <!-- TODO: add status -->
 
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCommentAccordion

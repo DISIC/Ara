@@ -9,6 +9,7 @@ export enum RadioStatus {
 </script>
 
 <script setup lang="ts">
+// TODO: checkboxes or radios?
 defineProps<{
   label: string;
   id: string;
@@ -21,13 +22,13 @@ defineEmits(["update:modelValue"]);
 
 <template>
   <div>
-    <!-- TODO: plug fucking model -->
     <input
       :id="id"
       class="sr-only"
       type="radio"
       :name="name"
-      :value="modelValue"
+      :checked="status === modelValue"
+      :value="status"
       @input="
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)
       "
