@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "yarn generate:methodologies && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
