@@ -12,9 +12,10 @@ marked.use({ renderer });
 </script>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, reactive } from "vue";
+import { debounce } from "lodash-es";
 
-import { AuditPage, CriteriumResultStatus } from "../types";
+import { AuditPage, CriteriumResult, CriteriumResultStatus } from "../types";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -38,37 +39,27 @@ const statuses = [
   { label: "Non testé", value: CriteriumResultStatus.NOT_TESTED },
 ];
 
-const status = ref(
+const result = reactive<CriteriumResult>({
   // This component should not be rendered before the audit results are fetched
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  store.getCriteriumResult(
+  ...store.getCriteriumResult(
     props.page.url,
     props.topicNumber,
     props.criterium.number
-  )!.status
-);
-
-watch(status, async () => {
-  try {
-    await store.updateResults(props.auditUniqueId, [
-      {
-        // ID
-        topic: props.topicNumber,
-        criterium: props.criterium.number,
-        pageUrl: props.page.url,
-        // DATA
-        status: status.value,
-        // compliantComment: string | null,
-        // errorDescription: string | null,
-        // userImpact: CriterionResultUserImpact | null,
-        // recommandation: string | null,
-        // notApplicableComment: string | null,
-      },
-    ]);
-  } catch (error) {
-    console.log(error);
-  }
+  )!,
 });
+
+watch(
+  result,
+  // Wait 500ms since the last modification before sending the PATCH request
+  debounce(async () => {
+    try {
+      await store.updateResults(props.auditUniqueId, [result]);
+    } catch (error) {
+      console.log(error);
+    }
+  }, 500)
+);
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
@@ -90,38 +81,46 @@ const uniqueId = computed(() => {
 
     <!-- STATUS -->
     <!-- TODO: temp status radios -->
-    <template v-for="s in statuses" :key="s.value">
-      <label class="fr-mr-1w" :for="`status-${uniqueId}-${s.value}`">
-        {{ s.label }}
-      </label>
-      <input
-        :id="`status-${uniqueId}-${s.value}`"
-        v-model="status"
-        type="radio"
-        :name="`status-${uniqueId}`"
-        :value="s.value"
-        class="fr-mr-2w"
-      />
-    </template>
+    <div class="fr-mb-2w">
+      <template v-for="s in statuses" :key="s.value">
+        <input
+          :id="`status-${uniqueId}-${s.value}`"
+          v-model="result.status"
+          type="radio"
+          :name="`status-${uniqueId}`"
+          :value="s.value"
+          class="fr-mr-1w"
+        />
+        <label class="fr-mr-2w" :for="`status-${uniqueId}-${s.value}`">
+          {{ s.label }}
+        </label>
+      </template>
+    </div>
 
     <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCompliantAccordion
-      v-if="status === CriteriumResultStatus.COMPLIANT"
+      v-if="result.status === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
+      v-model:comment="result.compliantComment"
     />
 
     <CriteriumNotApplicableAccordion
-      v-else-if="status === CriteriumResultStatus.NOT_APPLICABLE"
+      v-else-if="result.status === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
+      v-model:comment="result.notApplicableComment"
     />
 
-    <template v-else-if="status === CriteriumResultStatus.NOT_COMPLIANT">
+    <template v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT">
       <CriteriumNotCompliantAccordion
         :id="`not-compliant-accordion-${uniqueId}`"
+        v-model:comment="result.errorDescription"
       />
       <!-- RECOMMENDATION -->
-      <CriteriumRecommendationAccordion :id="`recommendation-${uniqueId}`" />
+      <CriteriumRecommendationAccordion
+        :id="`recommendation-${uniqueId}`"
+        v-model:comment="result.recommandation"
+      />
     </template>
 
     <!-- TESTS + REFS -->

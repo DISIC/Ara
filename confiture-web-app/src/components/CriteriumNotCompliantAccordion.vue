@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
+defineProps<{
+  id: string;
+  comment: string | null;
+}>();
 
-defineProps<{ id: string }>();
-
-const comment = ref<string>("");
+defineEmits<{
+  (e: "update:comment", payload: string): void;
+}>();
 </script>
 
 <template>
@@ -25,9 +28,15 @@ const comment = ref<string>("");
         </label>
         <textarea
           :id="`criterum-comment-field-${id}`"
-          v-model="comment"
+          :value="comment ?? ''"
           class="fr-mt-0 fr-input"
           rows="5"
+          @input="
+            $emit(
+              'update:comment',
+              ($event.target as HTMLTextAreaElement).value
+            )
+          "
         ></textarea>
       </div>
 

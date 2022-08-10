@@ -106,9 +106,9 @@ export interface CriteriumResult {
   // DATA
   status: CriteriumResultStatus;
 
-  compliantComment?: string | null;
-  errorDescription?: string | null;
-  userImpact?: CriterionResultUserImpact | null;
-  recommandation?: string | null;
-  notApplicableComment?: string | null;
+  compliantComment: string | null;
+  errorDescription: string | null;
+  userImpact: CriterionResultUserImpact | null;
+  recommandation: string | null;
+  notApplicableComment: string | null;
 }

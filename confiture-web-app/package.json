@@ -13,6 +13,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.6.0",
     "ky": "^0.31.0",
+    "lodash-es": "^4.17.21",
     "marked": "^4.0.18",
     "pinia": "^2.0.17",
     "slugify": "^1.6.5",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/vue": "^6.6.0",
+    "@types/lodash-es": "^4.17.6",
     "@types/marked": "^4.0.3",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
