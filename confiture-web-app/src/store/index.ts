@@ -1,7 +1,12 @@
 import { defineStore } from "pinia";
 import ky from "ky";
+import { sample } from "lodash-es";
 
-import { CriteriumResult } from "../types";
+import {
+  CriteriumResult,
+  CriteriumResultStatus,
+  CriterionResultUserImpact,
+} from "../types";
 
 interface ResultsStoreState {
   results: CriteriumResult[] | null;
@@ -58,6 +63,22 @@ export const useResultsStore = defineStore("results", {
           }
         });
       }
+    },
+    async DEV_fillResults(uniqueId: string) {
+      const updates =
+        this.results?.map((r) => ({
+          ...r,
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
+          status: sample(CriteriumResultStatus)!,
+          compliantComment: sample(["Commentaire conforme", "Rien"])!,
+          errorDescription: sample(["Commentaire non conforme", "Rien"])!,
+          notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
+          recommandation: sample(["Recommandation", "Rien"])!,
+          userImpact: sample(CriterionResultUserImpact)!,
+          /* eslint-enable @typescript-eslint/no-non-null-assertion */
+        })) ?? [];
+
+      await this.updateResults(uniqueId, updates);
     },
   },
 });

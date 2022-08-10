@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from "vue-router";
+import { useResultsStore } from "../store";
+
 defineProps<{
   auditName: string;
   auditType: string;
@@ -12,9 +15,19 @@ defineEmits(["validate"]);
 function openOptions() {
   console.log("openOptions");
 }
+
+const route = useRoute();
+const uniqueId = route.params.uniqueId as string;
+const resultsStore = useResultsStore();
 </script>
 
 <template>
+  <div class="fr-mb-4w">
+    <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
+      [DEV] Remplir l’audit
+    </button>
+  </div>
+
   <p class="fr-badge fr-badge--purple-glycine fr-mb-1v">🔍 Audit en cours</p>
   <div class="fr-mb-3w heading">
     <h1 class="fr-mb-0">{{ auditName }}</h1>
