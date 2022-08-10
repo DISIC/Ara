@@ -15,7 +15,6 @@ function open() {
 
 const showCopyAlert = ref(false);
 const link = computed(() => {
-  console.log(import.meta.env);
   return `${import.meta.env.VITE_BASE_URL}/audits/${
     props.auditId
   }/informations-generales`;

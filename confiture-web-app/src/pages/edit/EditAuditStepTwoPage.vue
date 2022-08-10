@@ -169,7 +169,6 @@ async function deleteCustomTool(i: number) {
   await nextTick();
   const lastInput =
     i === 0 ? customToolNameRefs.value[0] : customToolNameRefs.value[i - 1];
-  console.log(lastInput);
   lastInput.focus();
 }
 
