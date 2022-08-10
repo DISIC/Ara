@@ -1,17 +1,5 @@
-<script lang="ts">
-import { marked } from "marked";
-
-// TODO: use a <RouterLink />
-const renderer = {
-  link(href: string, title: string, text: string) {
-    return `<a href="/ressources/glossaire${href}">${text}</a>`;
-  },
-};
-
-marked.use({ renderer });
-</script>
-
 <script setup lang="ts">
+import { marked } from "marked";
 import { computed, watch, reactive } from "vue";
 import { debounce } from "lodash-es";
 
@@ -20,6 +8,7 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
+import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore } from "../store";
 
 const store = useResultsStore();
@@ -65,20 +54,6 @@ watch(
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
 });
-
-const testsHtml = Object.values(
-  props.criterium.tests as Record<string, string | string[]>
-).map((test) =>
-  marked.parse(
-    Array.isArray(test)
-      ? test.map((line, i) => (i === 0 ? line : `- ${line}`)).join("\n")
-      : test
-  )
-);
-console.log(
-  "🚀 ~ file: AuditGenerationCriterium.vue ~ line 74 ~ testsHtml",
-  testsHtml
-);
 </script>
 
 <template>
@@ -137,52 +112,12 @@ console.log(
       />
     </template>
 
-    <!-- TESTS + REFS -->
-    <div class="fr-accordion">
-      <span class="fr-accordion__title">
-        <button
-          class="fr-accordion__btn"
-          aria-expanded="false"
-          :aria-controls="`tests-refs-${uniqueId}`"
-        >
-          Tests et références du critère {{ topicNumber }}.{{
-            criterium.number
-          }}
-        </button>
-      </span>
-      <div :id="`tests-refs-${uniqueId}`" class="fr-collapse">
-        <template v-for="(test, i) in testsHtml" :key="i">
-          <div class="criterium-test">
-            <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
-            <div v-html="test" />
-          </div>
-
-          <div
-            class="fr-accordion"
-            :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
-          >
-            <span class="fr-accordion__title">
-              <button
-                class="fr-accordion__btn"
-                aria-expanded="false"
-                :aria-controls="`tests-method-${uniqueId}-${i}`"
-              >
-                Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
-                  i + 1
-                }}
-              </button>
-            </span>
-            <div :id="`tests-method-${uniqueId}-${i}`" class="fr-collapse">
-              <!-- TODO: update content -->
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Consectetur quos, est distinctio illum porro eligendi itaque iusto
-              inventore eaque veniam optio laborum voluptas accusamus unde sed
-              beatae? Aperiam, similique tempore.
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
+    <!-- TESTS + METHODO -->
+    <CriteriumTestsAccordion
+      :id="uniqueId"
+      :topic-number="topicNumber"
+      :criterium="criterium"
+    />
   </li>
 </template>
 
@@ -205,10 +140,5 @@ console.log(
 .criterium-number,
 .criterium-title {
   color: var(--text-action-high-grey);
-}
-
-.criterium-test {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
 }
 </style>

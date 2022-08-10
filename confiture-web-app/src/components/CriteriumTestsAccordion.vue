@@ -1,0 +1,88 @@
+<script setup lang="ts">
+import { marked } from "marked";
+import methodologies from "../methodologies.json";
+
+const props = defineProps<{
+  topicNumber: number;
+  id: string;
+  // FIXME: type things
+  criterium: any;
+}>();
+
+const testsHtml = Object.values(
+  props.criterium.tests as Record<string, string | string[]>
+).map((test) =>
+  marked.parse(
+    Array.isArray(test)
+      ? test.map((line, i) => (i === 0 ? line : `- ${line}`)).join("\n")
+      : test
+  )
+);
+
+const methodologiesHtml = Object.values(
+  props.criterium.tests as Record<string, string | string[]>
+).map((_, i) => {
+  const key = `${props.topicNumber}.${props.criterium.number}.${
+    i + 1
+  }` as string;
+  return marked.parse((methodologies as Record<string, string>)[key]);
+});
+</script>
+
+<template>
+  <div class="fr-accordion">
+    <span class="fr-accordion__title">
+      <button
+        class="fr-accordion__btn"
+        aria-expanded="false"
+        :aria-controls="`tests-refs-${id}`"
+      >
+        Tests et références du critère {{ topicNumber }}.{{ criterium.number }}
+      </button>
+    </span>
+    <div :id="`tests-refs-${id}`" class="fr-collapse">
+      <template v-for="(test, i) in testsHtml" :key="i">
+        <div class="criterium-test">
+          <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
+          <div v-html="test" />
+        </div>
+
+        <div
+          class="fr-accordion"
+          :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
+        >
+          <span class="fr-accordion__title">
+            <button
+              class="fr-accordion__btn"
+              aria-expanded="false"
+              :aria-controls="`tests-method-${id}-${i}`"
+            >
+              Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
+                i + 1
+              }}
+            </button>
+          </span>
+          <div
+            :id="`tests-method-${id}-${i}`"
+            class="fr-collapse criterium-test-methodology"
+          >
+            <div v-html="methodologiesHtml[i]" />
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.criterium-test {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+}
+
+/* Fixes ol numbering used by dsfr to only show the test number. */
+.criterium-test-methodology ::v-deep ol {
+  counter-reset: none;
+  counter-set: li-counter 0;
+}
+</style>
