@@ -9,11 +9,19 @@ La partie style utilise le [DSFR (Système de Design de l'État)](https://www.sy
 ## Développement
 
 Installer les dépendances :
+
 ```sh
 yarn
 ```
 
+Générer le fichier de méthodologies de test :
+
+```sh
+yarn generate:methodologies
+```
+
 Lancer le [serveur local sur le port 3000](http://localhost:3000) :
+
 ```sh
 yarn dev
 ```

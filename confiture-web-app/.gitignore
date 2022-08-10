@@ -26,3 +26,6 @@ dist-ssr
 coverage
 
 .env
+
+accessibilite.numerique.gouv.fr
+src/methodologies.json

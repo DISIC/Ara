@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "lint": "eslint '{src,scripts}/**/*.{ts,vue}'"
+    "lint": "eslint '{src,scripts}/**/*.{ts,vue}'",
+    "generate:methodologies": "node scripts/build-test-methodologies.js"
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.6.0",
