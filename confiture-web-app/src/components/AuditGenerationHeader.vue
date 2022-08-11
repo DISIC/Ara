@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { deleteAudit } from "../api/deleteAudit";
 import { useResultsStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
 
@@ -13,6 +14,8 @@ defineProps<{
 }>();
 
 defineEmits(["validate"]);
+
+const router = useRouter();
 
 // TODO: handle options dropdown
 function openOptions() {
@@ -29,10 +32,17 @@ function closeDeleteModal() {
   isDeleteModalOpen.value = false;
 }
 
-const router = useRouter();
-
+/**
+ * Delete audit and redirect to home page
+ */
 function confirmDelete() {
-  router.push({ name: "home", query: { deleteAudit: "true" } });
+  deleteAudit(uniqueId)
+    .then(() => {
+      router.push({ name: "home", query: { deleteAudit: "true" } });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 const route = useRoute();
