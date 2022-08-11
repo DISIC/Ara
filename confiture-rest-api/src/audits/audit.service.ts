@@ -24,10 +24,13 @@ export class AuditService {
   constructor(private readonly prisma: PrismaService) {}
 
   createAudit(data: CreateAuditDto) {
+    const editUniqueId = nanoid();
+    const consultUniqueId = nanoid();
+
     return this.prisma.audit.create({
       data: {
-        editUniqueId: nanoid(),
-        consultUniqueId: nanoid(),
+        editUniqueId,
+        consultUniqueId,
 
         procedureName: data.procedureName,
         procedureUrl: data.procedureUrl,
@@ -44,6 +47,13 @@ export class AuditService {
         recipients: {
           createMany: {
             data: data.recipients,
+          },
+        },
+
+        auditTrace: {
+          create: {
+            auditConsultUniqueId: consultUniqueId,
+            auditEditUniqueId: editUniqueId,
           },
         },
       },
@@ -252,5 +262,36 @@ export class AuditService {
     });
 
     await Promise.all(promises);
+  }
+
+  /**
+   * Delete an audit and the data associated with it.
+   * @returns True if an audit was deleted, false otherwise.
+   */
+  async deleteAudit(uniqueId: string): Promise<boolean> {
+    try {
+      await this.prisma.audit.delete({ where: { editUniqueId: uniqueId } });
+      return true;
+    } catch (e) {
+      if (e?.code === 'P2025') {
+        return false;
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Checks if an audit was deleted by checking the presence of an audit trace.
+   * @param uniqueId edit unique id of the checked audit
+   */
+  async checkIfAuditWasDeleted(uniqueId: string): Promise<boolean> {
+    try {
+      await this.prisma.auditTrace.findUniqueOrThrow({
+        where: { auditEditUniqueId: uniqueId },
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

@@ -15,7 +15,7 @@ model Recipent {
   name  String
   email String
 
-  Audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  Audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
 
   @@unique([email, auditUniqueId])
@@ -55,6 +55,11 @@ model Audit {
   auditTools   String[]
   environments TestEnvironment[]
   pages        AuditedPage[]
+
+  auditTraceId Int        @unique
+  auditTrace   AuditTrace @relation(fields: [auditTraceId], references: [id])
+
+  @@unique([editUniqueId, consultUniqueId])
 }
 
 model TestEnvironment {
@@ -63,7 +68,7 @@ model TestEnvironment {
   assistiveTechnology String
   browser             String
 
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
 
   @@unique([platform, assistiveTechnology, browser, auditUniqueId])
@@ -74,7 +79,7 @@ model AuditedPage {
   name String
   url  String
 
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId])
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
 
   results CriterionResult[]
@@ -117,4 +122,11 @@ enum CriterionResultUserImpact {
   MINOR
   MAJOR
   BLOCKING
+}
+
+model AuditTrace {
+  id                   Int    @id @default(autoincrement())
+  auditEditUniqueId    String @unique
+  auditConsultUniqueId String @unique
+  Audit                Audit?
 }

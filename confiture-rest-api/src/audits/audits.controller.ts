@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  GoneException,
   NotFoundException,
   Param,
   Patch,
@@ -33,7 +35,7 @@ export class AuditsController {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      throw new NotFoundException();
+      return this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -47,7 +49,7 @@ export class AuditsController {
     const audit = await this.auditService.updateAudit(uniqueId, body);
 
     if (!audit) {
-      throw new NotFoundException();
+      return this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -60,7 +62,7 @@ export class AuditsController {
     );
 
     if (!results) {
-      throw new NotFoundException();
+      return this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return results;
@@ -74,9 +76,30 @@ export class AuditsController {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      throw new NotFoundException();
+      return this.sendAuditNotFoundStatus(uniqueId);
     }
 
     await this.auditService.updateResults(uniqueId, body);
+  }
+
+  @Delete('/:uniqueId')
+  async deleteAudit(@Param('uniqueId') uniqueId: string) {
+    const deleted = await this.auditService.deleteAudit(uniqueId);
+
+    if (!deleted) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+  }
+
+  /**
+   * Send 404 (Not Found) status for audits that never existed
+   * and 410 (Gone) for audits that existed but were deleted.
+   */
+  private async sendAuditNotFoundStatus(editUniqueId: string) {
+    if (await this.auditService.checkIfAuditWasDeleted(editUniqueId)) {
+      throw new GoneException();
+    } else {
+      throw new NotFoundException();
+    }
   }
 }
