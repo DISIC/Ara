@@ -9,7 +9,6 @@ import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
 
 const isLeaveModalOpen = ref(false);
-const leaveModalRef = ref();
 const leaveModalDestination = ref<string>("");
 
 function showLeaveModal() {
@@ -98,7 +97,6 @@ function submitStepOne(data: CreateAuditRequestData) {
 
   <LeaveModal
     v-if="isLeaveModalOpen"
-    ref="leaveModalRef"
     title="Vous allez quitter l’audit"
     icon="fr-icon-warning-line"
     confirm="Oui, quitter l’audit"
