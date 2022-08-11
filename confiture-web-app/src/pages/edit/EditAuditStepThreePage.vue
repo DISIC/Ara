@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import { useAudit } from "../../api";
-import { useResultsStore, useFiltersStore } from "../../store";
+import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
@@ -11,8 +11,25 @@ import { CriteriumResultStatus } from "../../types";
 import rgaa from "../../criteres.json";
 
 const route = useRoute();
+const router = useRouter();
+
 const uniqueId = route.params.uniqueId as string;
 const { data: audit, error } = useAudit(uniqueId);
+
+watch(error, (error) => {
+  // TODO: handle other kind of errors
+  if (error?.response?.status === 410) {
+    router.replace({
+      name: "Error",
+      params: { pathMatch: route.path.substring(1).split("/") },
+      query: route.query,
+      hash: route.hash,
+      state: {
+        errorStatus: 410,
+      },
+    });
+  }
+});
 
 const resultsStore = useResultsStore();
 
