@@ -32,7 +32,7 @@ function hideCopyAlert() {
 
 <template>
   <p>LE HEADER ICI</p>
-  <div class="content">
+  <section class="content">
     <h2 class="fr-h4">Votre audit est prêt à être envoyé</h2>
     <p class="fr-mb-4w">
       Vous pouvez consulter et vérifier le
@@ -76,7 +76,9 @@ function hideCopyAlert() {
         </div>
       </div>
     </div>
+  </section>
 
+  <section class="content">
     <h2 class="fr-h4">Bon à savoir</h2>
     <p>Indiquez à vos destinataires les prochaines étapes qui les attends :</p>
     <ul>
@@ -84,7 +86,7 @@ function hideCopyAlert() {
       <li>Corriger les erreurs relevées</li>
       <li>Demander un contre-audit</li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <style scoped>
