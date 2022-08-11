@@ -89,7 +89,7 @@ function hideCopyAlert() {
 
 <style scoped>
 .content {
-  max-width: 792px;
+  max-width: 49.5rem;
 }
 
 .copy-block {
