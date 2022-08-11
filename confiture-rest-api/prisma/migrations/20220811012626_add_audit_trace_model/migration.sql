@@ -29,18 +29,18 @@ CREATE TABLE "AuditTrace" (
 );
 
 -- Insert AuditTrace rows for each existing audit
-INSERT INTO "AuditTrace" 
+INSERT INTO "AuditTrace"
   ("auditEditUniqueId", "auditConsultUniqueId")
-SELECT 
+SELECT
   "editUniqueId", "consultUniqueId"
 FROM "Audit";
 
 -- Update Audit.auditTraceId with newly created auditTrace ids
 UPDATE "Audit" as a
 SET "auditTraceId" = (
-  SELECT t."id" FROM "AuditTrace" as t 
-  WHERE 
-        t."auditEditUniqueId" = a."editUniqueId" 
+  SELECT t."id" FROM "AuditTrace" as t
+  WHERE
+        t."auditEditUniqueId" = a."editUniqueId"
     AND t."auditConsultUniqueId" = a."consultUniqueId"
 );
 
