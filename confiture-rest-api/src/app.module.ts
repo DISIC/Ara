@@ -1,10 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { MailerService } from './mailer.service';
-import { PrismaService } from './prisma.service';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AuditsModule } from './audits/audits.module';
 
@@ -34,7 +30,5 @@ import { AuditsModule } from './audits/audits.module';
     FeedbackModule,
     AuditsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, PrismaService, MailerService],
 })
 export class AppModule {}
