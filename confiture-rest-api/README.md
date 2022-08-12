@@ -54,3 +54,8 @@ yarn migrate:dev
 # Run development server
 yarn start:dev
 ```
+
+## API documentation
+
+The API routes are documented using Swagger. Go to http://localhost:4000/swagger
+to see the list of available routes.

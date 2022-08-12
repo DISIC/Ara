@@ -10,6 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated/nestjs-dto"
+  outputToNestJsResourceStructure = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  fileNamingStyle                 = "camel"
+}
+
 model Recipent {
   id    Int    @id @default(autoincrement())
   name  String
@@ -54,6 +68,7 @@ model Audit {
   auditType    AuditType?
   auditTools   String[]
   environments TestEnvironment[]
+  /// @DtoEntityHidden
   pages        AuditedPage[]
 
   auditTraceId Int        @unique
@@ -106,6 +121,7 @@ model CriterionResult {
   // Results are linked through the page url and audit unique id.
   auditUniqueId String
   pageUrl       String
+  /// @DtoEntityHidden
   page          AuditedPage @relation(fields: [pageUrl, auditUniqueId], references: [url, auditUniqueId], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([auditUniqueId, pageUrl, topic, criterium])

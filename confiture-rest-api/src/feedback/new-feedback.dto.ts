@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsEmail,
-  IsIn,
-  IsOptional,
-  IsString,
-  // MaxLength,
-} from 'class-validator';
+import { IsArray, IsEmail, IsIn, IsOptional, IsString } from 'class-validator';
 
 const OCCUPATIONS = [
   'Designer',
@@ -20,36 +13,55 @@ const OCCUPATIONS = [
 const EASE_OF_USE = ['Oui', 'Moyen', 'Non'];
 
 export class NewFeedbackDto {
+  /**
+   * @example "Moyen"
+   */
   @IsString()
   @IsIn(EASE_OF_USE)
   easyToUse: string;
 
+  /**
+   * @example "Oui"
+   */
   @IsString()
   @IsIn(EASE_OF_USE)
   easyToUnderstand: string;
 
+  /**
+   * @example "Très pratique !"
+   */
   @IsString()
-  // @MaxLength(1000)
   feedback: string;
 
+  /**
+   * @example "Un bouton pour faire ceci ou celà."
+   */
   @IsString()
   suggestions: string;
 
+  /**
+   * @example "Pierre Poljak"
+   */
   @IsString()
   @IsOptional()
-  // @MaxLength(150)
   name?: string;
 
+  /**
+   * @example "person@organization.com"
+   */
   @IsString()
   @IsOptional()
   @IsEmail()
-  // @MaxLength(100)
   email?: string;
 
+  /**
+   * @example ["Designer", "Chef de produit"]
+   */
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
+  // FIXME: the @nestjs/swagger CLI plugin doesnt seem to pick up on the each option
+  // see: https://github.com/nestjs/swagger/issues/2027
   @IsIn(OCCUPATIONS, { each: true })
-  // @MaxLength(50, { each: true })
   occupations?: string[];
 }
