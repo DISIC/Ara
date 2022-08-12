@@ -38,7 +38,10 @@ function closeDeleteModal() {
 function confirmDelete() {
   deleteAudit(uniqueId)
     .then(() => {
-      router.push({ name: "home", query: { deleteAudit: "true" } });
+      router.push({
+        name: "home",
+        state: { deleteAudit: "true" },
+      });
     })
     .catch((error) => {
       console.error(error);

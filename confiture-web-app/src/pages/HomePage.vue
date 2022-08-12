@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter, createWebHistory } from "vue-router";
 
-const route = useRoute();
 const router = useRouter();
+const history = createWebHistory();
 
 const isDeleteAlertVisible = ref(false);
 const headingRef = ref();
@@ -11,7 +11,7 @@ const closeAlertRef = ref();
 
 // Display alert and focus its close button
 onMounted(async () => {
-  if (route.query.deleteAudit) {
+  if (history.state.deleteAudit) {
     isDeleteAlertVisible.value = true;
     await nextTick();
     closeAlertRef.value.focus();
