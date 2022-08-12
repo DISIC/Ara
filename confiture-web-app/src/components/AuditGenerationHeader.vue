@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { deleteAudit } from "../api/deleteAudit";
 import { useResultsStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
 
-defineProps<{
+/* TODO: set correct props between:
+- One unique "audit" prop
+- Many optional props
+*/
+const props = defineProps<{
   auditName: string;
+  auditStatus: string;
   auditType: string;
   auditRisk: string;
   auditComplianceLevel: number;
@@ -51,16 +56,29 @@ function confirmDelete() {
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const resultsStore = useResultsStore();
+
+const isCompleted = computed(() => {
+  return props.auditStatus === "completed";
+});
 </script>
 
 <template>
-  <div class="fr-mb-4w">
+  <div v-if="!isCompleted" class="fr-mb-4w">
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>
   </div>
 
-  <p class="fr-badge fr-badge--purple-glycine fr-mb-1v">🔍 Audit en cours</p>
+  <p
+    :class="`fr-badge ${
+      isCompleted
+        ? 'fr-badge--success fr-badge--no-icon'
+        : 'fr-badge--purple-glycine'
+    } fr-mb-1v`"
+  >
+    {{ isCompleted ? "🎉 audit terminé" : "🔍 Audit en cours" }}
+  </p>
+  <span v-if="isCompleted" class="fr-text--xs fr-ml-3v">Le 30 juin 2022</span>
   <div class="fr-mb-3w heading">
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--icon-right">
@@ -83,15 +101,27 @@ const resultsStore = useResultsStore();
         </button>
       </li>
       <li>
-        <button class="fr-btn" @click="$emit('validate')">
+        <!-- TODO: icon left? -->
+        <RouterLink
+          v-if="isCompleted"
+          class="fr-btn fr-btn--icon-left fr-icon-eye-line"
+          to="#"
+        >
+          Consulter le rapport d’audit
+        </RouterLink>
+        <button v-else class="fr-btn" @click="$emit('validate')">
           Valider l’audit
         </button>
       </li>
     </ul>
   </div>
 
-  <dl class="fr-grid-row fr-grid-row--gutters fr-mb-3v">
-    <div class="fr-col-12 fr-col-md-4">
+  <dl
+    :class="`fr-grid-row fr-grid-row--gutters ${
+      isCompleted ? 'fr-mb-4w' : 'fr-mb-3v'
+    }`"
+  >
+    <div :class="`fr-col-12 ${isCompleted ? 'fr-col-md-3' : 'fr-col-md-4'}`">
       <div class="fr-px-3w fr-py-3v info">
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
           Type d’audit
@@ -99,7 +129,31 @@ const resultsStore = useResultsStore();
         <dd class="fr-m-0 fr-h3 info-value">{{ auditType.toLowerCase() }}</dd>
       </div>
     </div>
-    <div class="fr-col-12 fr-col-md-4">
+    <template v-if="isCompleted">
+      <div class="fr-col-12 fr-col-md-3">
+        <div class="fr-px-3w fr-py-3v info">
+          <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
+            Critères applicables
+          </dt>
+          <dd class="fr-m-0 fr-h3 info-value">
+            54&nbsp;<span class="fr-text--md info-sub-text">/&nbsp;106</span>
+          </dd>
+        </div>
+      </div>
+      <div class="fr-col-12 fr-col-md-3">
+        <div class="fr-px-3w fr-py-3v info">
+          <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
+            Erreurs d’accessibilité
+          </dt>
+          <dd class="fr-m-0 fr-h3 info-value">
+            34&nbsp;<span class="fr-text--md info-sub-text"
+              >dont 8 bloquantes</span
+            >
+          </dd>
+        </div>
+      </div>
+    </template>
+    <div v-else class="fr-col-12 fr-col-md-4">
       <div class="fr-px-3w fr-py-3v info">
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
           Risque de l’audit
@@ -107,19 +161,22 @@ const resultsStore = useResultsStore();
         <dd class="fr-m-0 fr-h3 info-value">{{ auditRisk }}</dd>
       </div>
     </div>
-    <div class="fr-col-12 fr-col-md-4">
+    <div :class="`fr-col-12 ${isCompleted ? 'fr-col-md-3' : 'fr-col-md-4'}`">
       <div class="fr-px-3w fr-py-3v info">
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
           Taux de conformité au RGAA actuel
         </dt>
         <dd class="fr-m-0 fr-h3 info-value">
-          {{ auditComplianceLevel }}&nbsp;<span class="fr-text--md">%</span>
+          {{ auditComplianceLevel }}&nbsp;<span
+            class="fr-text--md info-sub-text"
+            >%</span
+          >
         </dd>
       </div>
     </div>
   </dl>
 
-  <p class="fr-text--sm fr-mb-6w mandatory-notice">
+  <p v-if="!isCompleted" class="fr-text--sm fr-mb-6w mandatory-notice">
     Sauf mention contraire, tous les champs sont obligatoires.
   </p>
 
@@ -142,6 +199,7 @@ const resultsStore = useResultsStore();
 
 .info {
   border: 1px solid var(--border-default-grey);
+  min-height: 100%;
 }
 
 .info-value {
@@ -150,6 +208,10 @@ const resultsStore = useResultsStore();
 
 .info-label {
   color: var(--text-mention-grey);
+}
+
+.info-sub-text {
+  text-transform: none;
 }
 
 .mandatory-notice {

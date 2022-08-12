@@ -2,6 +2,8 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 
+import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
+
 const route = useRoute();
 
 const showCopyAlert = ref(false);
@@ -31,7 +33,15 @@ function hideCopyAlert() {
 </script>
 
 <template>
-  <p>LE HEADER ICI</p>
+  <!-- TODO: plug data -->
+  <AuditGenerationHeader
+    audit-name="Ma procédure"
+    audit-status="completed"
+    audit-type="Complet"
+    audit-risk="Moyen"
+    :audit-compliance-level="62"
+  />
+
   <section class="content">
     <h2 class="fr-h4">Votre audit est prêt à être envoyé</h2>
     <p class="fr-mb-4w">
