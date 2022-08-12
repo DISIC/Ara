@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import { deleteAudit } from "../api/deleteAudit";
 import { useResultsStore } from "../store";
+import DeleteModal from "./DeleteModal.vue";
 
 defineProps<{
   auditName: string;
@@ -11,9 +15,37 @@ defineProps<{
 
 defineEmits(["validate"]);
 
+const router = useRouter();
+
 // TODO: handle options dropdown
 function openOptions() {
   console.log("openOptions");
+}
+
+const isDeleteModalOpen = ref(false);
+
+function openDeleteModal() {
+  isDeleteModalOpen.value = true;
+}
+
+function closeDeleteModal() {
+  isDeleteModalOpen.value = false;
+}
+
+/**
+ * Delete audit and redirect to home page
+ */
+function confirmDelete() {
+  deleteAudit(uniqueId)
+    .then(() => {
+      router.push({
+        name: "home",
+        state: { deleteAudit: "true" },
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 const route = useRoute();
@@ -38,6 +70,16 @@ const resultsStore = useResultsStore();
           @click="openOptions"
         >
           Options
+        </button>
+      </li>
+      <li>
+        <button
+          class="fr-btn fr-btn--secondary"
+          aria-controls="delete-modal"
+          data-fr-opened="true"
+          @click="openDeleteModal"
+        >
+          Supprimer l’audit
         </button>
       </li>
       <li>
@@ -80,6 +122,13 @@ const resultsStore = useResultsStore();
   <p class="fr-text--sm fr-mb-6w mandatory-notice">
     Sauf mention contraire, tous les champs sont obligatoires.
   </p>
+
+  <DeleteModal
+    v-if="isDeleteModalOpen"
+    @confirm="confirmDelete"
+    @cancel="closeDeleteModal"
+    v-on="{ 'dsfr.conceal': closeDeleteModal }"
+  />
 </template>
 
 <style scoped>

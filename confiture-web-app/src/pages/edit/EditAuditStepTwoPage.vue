@@ -14,15 +14,16 @@ const uniqueId = route.params.uniqueId as string;
 const { data: audit, error } = useAudit(uniqueId);
 
 watch(error, (error) => {
-  // TODO: handle other kind of errors
-  if (error?.response?.status === 404) {
+  const errorStatus: number = error?.response?.status || 404;
+
+  if ([404, 410].includes(errorStatus)) {
     router.replace({
       name: "Error",
       params: { pathMatch: route.path.substring(1).split("/") },
       query: route.query,
       hash: route.hash,
       state: {
-        errorStatus: 410,
+        errorStatus,
       },
     });
   }
