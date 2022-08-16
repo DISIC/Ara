@@ -6,6 +6,7 @@ import { useAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
+import { storeToRefs } from "pinia";
 
 const route = useRoute();
 const router = useRouter();
@@ -56,19 +57,16 @@ function hideCopyAlert() {
 
 const resultsStore = useResultsStore();
 
-const applicableCriteriaCount = ref<number>(0);
-const errorsCount = ref();
-const complianceLevel = ref<number>(0);
-
 onMounted(() => {
-  resultsStore.fetchResults(uniqueId).then(() => {
-    useAuditStats(resultsStore.results, audit.value?.pages.length).then((r) => {
-      applicableCriteriaCount.value = r.applicableCriteriaCount.value;
-      errorsCount.value = r.errorsCount.value;
-      complianceLevel.value = r.complianceLevel.value;
-    });
-  });
+  resultsStore.fetchResults(uniqueId);
 });
+
+const { results } = storeToRefs(resultsStore);
+
+const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
+  results,
+  audit.value?.pages.length
+);
 
 const headerInfos = computed(() => [
   { label: "Type d’audit", value: audit.value?.auditType as string },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAudit } from "../../api";
@@ -35,16 +36,8 @@ watch(error, (error) => {
 
 const resultsStore = useResultsStore();
 
-const risk = ref<string>("");
-const complianceLevel = ref<number>(0);
-
 onMounted(() => {
-  resultsStore.fetchResults(uniqueId).then(() => {
-    useAuditStats(resultsStore.results, audit.value?.pages.length).then((r) => {
-      risk.value = r.risk.value;
-      complianceLevel.value = r.complianceLevel.value;
-    });
-  });
+  resultsStore.fetchResults(uniqueId);
 });
 
 function toStepFour() {
@@ -82,6 +75,13 @@ const currentPageId = ref(0);
 function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
+
+const { results } = storeToRefs(resultsStore);
+
+const { risk, complianceLevel } = useAuditStats(
+  results,
+  audit.value?.pages.length
+);
 
 const headerInfos = computed(() => [
   { label: "Type d’audit", value: audit.value?.auditType as string },

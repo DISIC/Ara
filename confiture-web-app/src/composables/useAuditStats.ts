@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, Ref } from "vue";
 import { countBy } from "lodash-es";
 
 import {
@@ -7,15 +7,20 @@ import {
   CriterionResultUserImpact,
 } from "../types";
 
-export async function useAuditStats(
-  results: CriteriumResult[] | null,
+// FIXME: watch results?
+export function useAuditStats(
+  results: Ref<CriteriumResult[] | null>,
   pagesCount: number | undefined
 ) {
+  // watch(results, () => {
+  //   console.log("pouet");
+  // });
+
   const applicableCriteriaCount = computed(
     () =>
       Object.values(
         countBy(
-          results
+          results.value
             ?.filter((r) => {
               return r.status === CriteriumResultStatus.NOT_APPLICABLE;
             })
@@ -27,19 +32,17 @@ export async function useAuditStats(
       ).filter((r) => r !== pagesCount).length
   );
 
-  console.log(applicableCriteriaCount);
-
   // FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
   const complianceLevel = computed(() => {
     const testedCount =
-      results?.filter(
+      results.value?.filter(
         (result) =>
           result.status !== CriteriumResultStatus.NOT_TESTED &&
           result.status !== CriteriumResultStatus.NOT_APPLICABLE
       ).length ?? 0;
 
     const compliantCount =
-      results?.filter(
+      results.value?.filter(
         (result) => result.status === CriteriumResultStatus.COMPLIANT
       ).length ?? 0;
 
@@ -62,12 +65,12 @@ export async function useAuditStats(
 
   const errorsCount = computed(() => {
     const total =
-      results?.filter((r) => {
+      results.value?.filter((r) => {
         return r.status === CriteriumResultStatus.NOT_COMPLIANT;
       }).length || 0;
 
     const blocking =
-      results?.filter((r) => {
+      results.value?.filter((r) => {
         return (
           r.status === CriteriumResultStatus.NOT_COMPLIANT &&
           r.userImpact === CriterionResultUserImpact.BLOCKING
