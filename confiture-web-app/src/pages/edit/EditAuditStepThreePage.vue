@@ -38,8 +38,9 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
-function validateAudit() {
-  console.log("validateAudit");
+function toStepFour() {
+  // TODO: validate API
+  router.push({ name: "edit-audit-step-four", params: { uniqueId } });
 }
 
 /** Available topic filters and their global progression. */
@@ -103,6 +104,16 @@ const risk = computed(() => {
     return "Bas";
   }
 });
+
+const headerInfos = [
+  { label: "Type d’audit", value: "Complet" },
+  { label: "Risque de l’audit", value: risk.value },
+  {
+    label: " Taux de conformité au RGAA actuel ",
+    value: "0",
+    description: "%",
+  },
+];
 </script>
 
 <template>
@@ -110,10 +121,8 @@ const risk = computed(() => {
   <template v-if="audit && resultsStore.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
-      :audit-type="audit.auditType!"
-      :audit-risk="risk"
-      :audit-compliance-level="complianceLevel"
-      @validate="validateAudit"
+      :key-infos="headerInfos"
+      @validate="toStepFour"
     />
 
     <div class="fr-grid-row fr-grid-row--gutters">

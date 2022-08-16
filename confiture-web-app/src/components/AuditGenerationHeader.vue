@@ -6,16 +6,14 @@ import { deleteAudit } from "../api/deleteAudit";
 import { useResultsStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
 
-/* TODO: set correct props between:
-- One unique "audit" prop
-- Many optional props
-*/
 const props = defineProps<{
   auditName: string;
-  auditStatus: string;
-  auditType: string;
-  auditRisk: string;
-  auditComplianceLevel: number;
+  auditStatus?: string;
+  keyInfos: {
+    label: string;
+    value: string;
+    description?: string;
+  }[];
 }>();
 
 defineEmits(["validate"]);
@@ -121,56 +119,22 @@ const isCompleted = computed(() => {
       isCompleted ? 'fr-mb-4w' : 'fr-mb-3v'
     }`"
   >
-    <div :class="`fr-col-12 ${isCompleted ? 'fr-col-md-3' : 'fr-col-md-4'}`">
+    <div
+      v-for="info in keyInfos"
+      :key="info.label"
+      :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
+    >
       <div class="fr-px-3w fr-py-3v info">
         <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-          Type d’audit
-        </dt>
-        <dd class="fr-m-0 fr-h3 info-value">{{ auditType.toLowerCase() }}</dd>
-      </div>
-    </div>
-    <template v-if="isCompleted">
-      <div class="fr-col-12 fr-col-md-3">
-        <div class="fr-px-3w fr-py-3v info">
-          <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-            Critères applicables
-          </dt>
-          <dd class="fr-m-0 fr-h3 info-value">
-            54&nbsp;<span class="fr-text--md info-sub-text">/&nbsp;106</span>
-          </dd>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-md-3">
-        <div class="fr-px-3w fr-py-3v info">
-          <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-            Erreurs d’accessibilité
-          </dt>
-          <dd class="fr-m-0 fr-h3 info-value">
-            34&nbsp;<span class="fr-text--md info-sub-text"
-              >dont 8 bloquantes</span
-            >
-          </dd>
-        </div>
-      </div>
-    </template>
-    <div v-else class="fr-col-12 fr-col-md-4">
-      <div class="fr-px-3w fr-py-3v info">
-        <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-          Risque de l’audit
-        </dt>
-        <dd class="fr-m-0 fr-h3 info-value">{{ auditRisk }}</dd>
-      </div>
-    </div>
-    <div :class="`fr-col-12 ${isCompleted ? 'fr-col-md-3' : 'fr-col-md-4'}`">
-      <div class="fr-px-3w fr-py-3v info">
-        <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-          Taux de conformité au RGAA actuel
+          {{ info.label }}
         </dt>
         <dd class="fr-m-0 fr-h3 info-value">
-          {{ auditComplianceLevel }}&nbsp;<span
-            class="fr-text--md info-sub-text"
-            >%</span
-          >
+          {{ info.value }}
+          <template v-if="info.description">
+            <span class="fr-text--md info-sub-text">
+              {{ info.description }}
+            </span>
+          </template>
         </dd>
       </div>
     </div>

@@ -1,10 +1,31 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
+import { useAudit } from "../../api";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 
 const route = useRoute();
+const router = useRouter();
+
+const uniqueId = route.params.uniqueId as string;
+const { data: audit, error } = useAudit(uniqueId);
+
+watch(error, (error) => {
+  const errorStatus: number = error?.response?.status || 404;
+
+  if ([404, 410].includes(errorStatus)) {
+    router.replace({
+      name: "Error",
+      params: { pathMatch: route.path.substring(1).split("/") },
+      query: route.query,
+      hash: route.hash,
+      state: {
+        errorStatus,
+      },
+    });
+  }
+});
 
 const showCopyAlert = ref(false);
 
@@ -30,17 +51,32 @@ async function copyLink() {
 function hideCopyAlert() {
   showCopyAlert.value = false;
 }
+
+const headerInfos = [
+  { label: "Type d’audit", value: "Complet" },
+  { label: "Critères applicables", value: "54", description: "/ 106" },
+  {
+    label: "Erreurs d’accessibilité",
+    value: "34",
+    description: "dont 8 bloquantes",
+  },
+  {
+    label: " Taux de conformité au RGAA actuel ",
+    value: "0",
+    description: "%",
+  },
+];
 </script>
 
 <template>
-  <!-- TODO: plug data -->
-  <AuditGenerationHeader
-    audit-name="Ma procédure"
-    audit-status="completed"
-    audit-type="Complet"
-    audit-risk="Moyen"
-    :audit-compliance-level="62"
-  />
+  <!-- TODO: plug audit status -->
+  <template v-if="audit">
+    <AuditGenerationHeader
+      :audit-name="audit.procedureName"
+      audit-status="completed"
+      :key-infos="headerInfos"
+    />
+  </template>
 
   <section class="content">
     <h2 class="fr-h4">Votre audit est prêt à être envoyé</h2>
