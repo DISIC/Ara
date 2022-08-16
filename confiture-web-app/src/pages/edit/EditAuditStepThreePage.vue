@@ -105,15 +105,15 @@ const risk = computed(() => {
   }
 });
 
-const headerInfos = [
-  { label: "Type d’audit", value: "Complet" },
+const headerInfos = computed(() => [
+  { label: "Type d’audit", value: audit.value?.auditType as string },
   { label: "Risque de l’audit", value: risk.value },
   {
-    label: " Taux de conformité au RGAA actuel ",
-    value: "0",
+    label: "Taux de conformité au RGAA actuel",
+    value: complianceLevel.value.toString(),
     description: "%",
   },
-];
+]);
 </script>
 
 <template>

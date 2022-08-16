@@ -11,9 +11,10 @@ const props = defineProps<{
   auditStatus?: string;
   keyInfos: {
     label: string;
-    value: string;
+    value: string | number;
     description?: string;
   }[];
+  editUniqueId?: string;
 }>();
 
 defineEmits(["validate"]);
@@ -103,7 +104,7 @@ const isCompleted = computed(() => {
         <RouterLink
           v-if="isCompleted"
           class="fr-btn fr-btn--icon-left fr-icon-eye-line"
-          to="#"
+          :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
         >
           Consulter le rapport d’audit
         </RouterLink>
@@ -129,7 +130,7 @@ const isCompleted = computed(() => {
           {{ info.label }}
         </dt>
         <dd class="fr-m-0 fr-h3 info-value">
-          {{ info.value }}
+          {{ info.value?.toString().toLowerCase() }}
           <template v-if="info.description">
             <span class="fr-text--md info-sub-text">
               {{ info.description }}
