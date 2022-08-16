@@ -3,8 +3,8 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAudit } from "../../api";
+import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
-import { CriterionResultUserImpact, CriteriumResultStatus } from "../../types";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 
 const route = useRoute();
@@ -56,55 +56,18 @@ function hideCopyAlert() {
 
 const resultsStore = useResultsStore();
 
+const applicableCriteriaCount = ref<number>(0);
+const errorsCount = ref();
+const complianceLevel = ref<number>(0);
+
 onMounted(() => {
-  resultsStore.fetchResults(uniqueId);
-});
-
-/* TODO: make a `useSomething` to compute:
-  - complianceLevel
-  - applicableCriteraCount
-  - errorsCount
-  ?
-*/
-const complianceLevel = computed(() => {
-  const testedCount =
-    resultsStore.results?.filter(
-      (result) =>
-        result.status !== CriteriumResultStatus.NOT_TESTED &&
-        result.status !== CriteriumResultStatus.NOT_APPLICABLE
-    ).length ?? 0;
-
-  const compliantCount =
-    resultsStore.results?.filter(
-      (result) => result.status === CriteriumResultStatus.COMPLIANT
-    ).length ?? 0;
-
-  if (testedCount === 0) {
-    return 0;
-  }
-
-  return Math.round((compliantCount / testedCount) * 100);
-});
-
-const applicableCriteriaCount = computed(() => {
-  return 34;
-});
-
-const errorsCount = computed(() => {
-  const total =
-    resultsStore.results?.filter((r) => {
-      return r.status === CriteriumResultStatus.NOT_COMPLIANT;
-    }).length || 0;
-
-  const blocking =
-    resultsStore.results?.filter((r) => {
-      return (
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.BLOCKING
-      );
-    }).length || 0;
-
-  return { total, blocking };
+  resultsStore.fetchResults(uniqueId).then(() => {
+    useAuditStats(resultsStore.results).then((r) => {
+      applicableCriteriaCount.value = r.applicableCriteriaCount.value;
+      errorsCount.value = r.errorsCount.value;
+      complianceLevel.value = r.complianceLevel.value;
+    });
+  });
 });
 
 const headerInfos = computed(() => [
@@ -116,8 +79,8 @@ const headerInfos = computed(() => [
   },
   {
     label: "Erreurs d’accessibilité",
-    value: errorsCount.value.total,
-    description: `dont ${errorsCount.value.blocking} bloquantes`,
+    value: errorsCount.value?.total,
+    description: `dont ${errorsCount.value?.blocking} bloquantes`,
   },
   {
     label: "Taux de conformité au RGAA actuel",
@@ -129,7 +92,7 @@ const headerInfos = computed(() => [
 
 <template>
   <!-- TODO: plug audit status -->
-  <template v-if="audit">
+  <template v-if="audit && resultsStore.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
       audit-status="completed"

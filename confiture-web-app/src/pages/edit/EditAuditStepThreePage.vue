@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAudit } from "../../api";
+import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -34,8 +35,16 @@ watch(error, (error) => {
 
 const resultsStore = useResultsStore();
 
+const risk = ref<string>("");
+const complianceLevel = ref<number>(0);
+
 onMounted(() => {
-  resultsStore.fetchResults(uniqueId);
+  resultsStore.fetchResults(uniqueId).then(() => {
+    useAuditStats(resultsStore.results).then((r) => {
+      risk.value = r.risk.value;
+      complianceLevel.value = r.complianceLevel.value;
+    });
+  });
 });
 
 function toStepFour() {
@@ -74,43 +83,12 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-// FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
-const complianceLevel = computed(() => {
-  const testedCount =
-    resultsStore.results?.filter(
-      (result) =>
-        result.status !== CriteriumResultStatus.NOT_TESTED &&
-        result.status !== CriteriumResultStatus.NOT_APPLICABLE
-    ).length ?? 0;
-
-  const compliantCount =
-    resultsStore.results?.filter(
-      (result) => result.status === CriteriumResultStatus.COMPLIANT
-    ).length ?? 0;
-
-  if (testedCount === 0) {
-    return 0;
-  }
-
-  return Math.round((compliantCount / testedCount) * 100);
-});
-
-const risk = computed(() => {
-  if (complianceLevel.value < 50) {
-    return "Élevé";
-  } else if (complianceLevel.value < 75) {
-    return "Moyen";
-  } else {
-    return "Bas";
-  }
-});
-
 const headerInfos = computed(() => [
   { label: "Type d’audit", value: audit.value?.auditType as string },
   { label: "Risque de l’audit", value: risk.value },
   {
     label: "Taux de conformité au RGAA actuel",
-    value: complianceLevel.value.toString(),
+    value: complianceLevel.value,
     description: "%",
   },
 ]);
