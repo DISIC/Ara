@@ -74,6 +74,11 @@ model Audit {
   auditTraceId Int        @unique
   auditTrace   AuditTrace @relation(fields: [auditTraceId], references: [id])
 
+  // Step 4
+
+  publicationDate DateTime?
+  editionDate     DateTime?
+
   @@unique([editUniqueId, consultUniqueId])
 }
 

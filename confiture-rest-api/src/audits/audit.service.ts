@@ -124,97 +124,103 @@ export class AuditService {
     data: UpdateAuditDto,
   ): Promise<Audit | undefined> {
     try {
-      return await this.prisma.audit.update({
-        where: { editUniqueId: uniqueId },
-        data: {
-          procedureName: data.procedureName,
-          procedureUrl: data.procedureUrl,
+      const [audit] = await this.prisma.$transaction([
+        this.prisma.audit.update({
+          where: { editUniqueId: uniqueId },
+          data: {
+            procedureName: data.procedureName,
+            procedureUrl: data.procedureUrl,
 
-          initiator: data.initiator,
+            initiator: data.initiator,
 
-          auditorEmail: data.auditorEmail,
-          auditorName: data.auditorName,
+            auditorEmail: data.auditorEmail,
+            auditorName: data.auditorName,
 
-          contactName: data.contactName,
-          contactEmail: data.contactEmail,
-          contactFormUrl: data.contactFormUrl,
+            contactName: data.contactName,
+            contactEmail: data.contactEmail,
+            contactFormUrl: data.contactFormUrl,
 
-          recipients: {
-            deleteMany: {
-              email: {
-                notIn: data.recipients.map((r) => r.email),
-              },
-            },
-
-            // create or update recipients
-            upsert: data.recipients.map((recipient) => ({
-              where: {
-                email_auditUniqueId: {
-                  auditUniqueId: uniqueId,
-                  email: recipient.email,
+            recipients: {
+              deleteMany: {
+                email: {
+                  notIn: data.recipients.map((r) => r.email),
                 },
               },
-              create: recipient,
-              update: recipient,
-            })),
-          },
 
-          // step 2
-          auditType: data.auditType,
-          auditTools: data.auditTools,
-          environments: {
-            deleteMany: {
-              OR: [
-                {
-                  assistiveTechnology: {
-                    notIn: data.environments.map((e) => e.assistiveTechnology),
+              // create or update recipients
+              upsert: data.recipients.map((recipient) => ({
+                where: {
+                  email_auditUniqueId: {
+                    auditUniqueId: uniqueId,
+                    email: recipient.email,
                   },
                 },
-                {
-                  browser: {
-                    notIn: data.environments.map((e) => e.browser),
+                create: recipient,
+                update: recipient,
+              })),
+            },
+
+            // step 2
+            auditType: data.auditType,
+            auditTools: data.auditTools,
+            environments: {
+              deleteMany: {
+                OR: [
+                  {
+                    assistiveTechnology: {
+                      notIn: data.environments.map(
+                        (e) => e.assistiveTechnology,
+                      ),
+                    },
+                  },
+                  {
+                    browser: {
+                      notIn: data.environments.map((e) => e.browser),
+                    },
+                  },
+                  {
+                    platform: {
+                      notIn: data.environments.map((e) => e.platform),
+                    },
+                  },
+                ],
+              },
+              upsert: data.environments.map((environment) => ({
+                where: {
+                  platform_assistiveTechnology_browser_auditUniqueId: {
+                    auditUniqueId: uniqueId,
+                    assistiveTechnology: environment.assistiveTechnology,
+                    browser: environment.browser,
+                    platform: environment.platform,
                   },
                 },
-                {
-                  platform: {
-                    notIn: data.environments.map((e) => e.platform),
+                create: environment,
+                update: environment,
+              })),
+            },
+            pages: {
+              deleteMany: {
+                url: {
+                  notIn: data.pages.map((p) => p.url),
+                },
+              },
+              upsert: data.pages.map((page) => ({
+                where: {
+                  url_auditUniqueId: {
+                    auditUniqueId: uniqueId,
+                    url: page.url,
                   },
                 },
-              ],
+                create: page,
+                update: page,
+              })),
             },
-            upsert: data.environments.map((environment) => ({
-              where: {
-                platform_assistiveTechnology_browser_auditUniqueId: {
-                  auditUniqueId: uniqueId,
-                  assistiveTechnology: environment.assistiveTechnology,
-                  browser: environment.browser,
-                  platform: environment.platform,
-                },
-              },
-              create: environment,
-              update: environment,
-            })),
           },
-          pages: {
-            deleteMany: {
-              url: {
-                notIn: data.pages.map((p) => p.url),
-              },
-            },
-            upsert: data.pages.map((page) => ({
-              where: {
-                url_auditUniqueId: {
-                  auditUniqueId: uniqueId,
-                  url: page.url,
-                },
-              },
-              create: page,
-              update: page,
-            })),
-          },
-        },
-        include: AUDIT_EDIT_INCLUDE,
-      });
+          include: AUDIT_EDIT_INCLUDE,
+        }),
+        this.updateAuditEditDate(uniqueId),
+      ]);
+      return audit;
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
@@ -261,7 +267,11 @@ export class AuditService {
       });
     });
 
-    await Promise.all(promises);
+    // await Promise.all(promises);
+    await this.prisma.$transaction([
+      ...promises,
+      this.updateAuditEditDate(uniqueId),
+    ]);
   }
 
   /**
@@ -293,5 +303,31 @@ export class AuditService {
     } catch {
       return false;
     }
+  }
+
+  async publishAudit(uniqueId: string) {
+    try {
+      return await this.prisma.audit.update({
+        where: {
+          editUniqueId: uniqueId,
+        },
+        data: {
+          publicationDate: new Date(),
+          editionDate: null,
+        },
+      });
+    } catch (e) {
+      if (e?.code === 'P2025') {
+        return;
+      }
+      throw e;
+    }
+  }
+
+  private updateAuditEditDate(uniqueId: string) {
+    return this.prisma.audit.updateMany({
+      where: { editUniqueId: uniqueId, publicationDate: { not: null } },
+      data: { editionDate: new Date() },
+    });
   }
 }

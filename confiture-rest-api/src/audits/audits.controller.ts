@@ -118,6 +118,21 @@ export class AuditsController {
     await this.auditService.updateResults(uniqueId, body);
   }
 
+  /** Flag an audit as "published", completed. */
+  @Put('/:uniqueId/publish')
+  @ApiOkResponse({ type: Audit })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  async publishAudit(@Param('uniqueId') uniqueId: string) {
+    const audit = await this.auditService.publishAudit(uniqueId);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    return audit;
+  }
+
   /** Delete an audit from the database. */
   @Delete('/:uniqueId')
   @ApiOkResponse({ description: 'The audit has been successfully deleted.' })
