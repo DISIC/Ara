@@ -40,7 +40,7 @@ const complianceLevel = ref<number>(0);
 
 onMounted(() => {
   resultsStore.fetchResults(uniqueId).then(() => {
-    useAuditStats(resultsStore.results).then((r) => {
+    useAuditStats(resultsStore.results, audit.value?.pages.length).then((r) => {
       risk.value = r.risk.value;
       complianceLevel.value = r.complianceLevel.value;
     });

@@ -1,4 +1,5 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { countBy } from "lodash-es";
 
 import {
   CriteriumResult,
@@ -6,8 +7,27 @@ import {
   CriterionResultUserImpact,
 } from "../types";
 
-export async function useAuditStats(results: CriteriumResult[] | null) {
-  const applicableCriteriaCount = ref(34);
+export async function useAuditStats(
+  results: CriteriumResult[] | null,
+  pagesCount: number | undefined
+) {
+  const applicableCriteriaCount = computed(
+    () =>
+      Object.values(
+        countBy(
+          results
+            ?.filter((r) => {
+              return r.status === CriteriumResultStatus.NOT_APPLICABLE;
+            })
+            .map((r) => {
+              return { ...r, tc: `${r.topic}.${r.criterium}` };
+            }),
+          (r) => r.tc
+        )
+      ).filter((r) => r !== pagesCount).length
+  );
+
+  console.log(applicableCriteriaCount);
 
   // FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
   const complianceLevel = computed(() => {
