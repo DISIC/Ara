@@ -361,7 +361,8 @@ export class AuditService {
       procedureName: audit.procedureName,
       procedureUrl: audit.procedureUrl,
       auditType: audit.auditType,
-      publishDate: new Date(),
+      publishDate: audit.publicationDate,
+      updateDate: audit.editionDate,
 
       errorCount: results.filter(
         (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
@@ -435,8 +436,6 @@ export class AuditService {
         notApplicable: 50,
         notCompliant: 6,
       })),
-
-      updateDate: null,
     };
 
     return report;

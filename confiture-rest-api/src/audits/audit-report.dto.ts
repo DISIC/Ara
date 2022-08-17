@@ -8,7 +8,7 @@ export class AuditReportDto {
   procedureName: string;
   procedureUrl: string;
 
-  publishDate: Date;
+  publishDate?: Date;
   updateDate?: Date;
 
   @ApiProperty({ enum: AuditType })
