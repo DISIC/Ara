@@ -31,6 +31,13 @@ export const useAuditStore = defineStore("audit", {
       this.data = data;
     },
 
+    async fetchAuditIfNeeded(editUniqueId: string) {
+      if (editUniqueId === this.data?.editUniqueId) {
+        return;
+      }
+      await this.fetchAudit(editUniqueId);
+    },
+
     async updateAudit(
       uniqueId: string,
       data: UpdateAuditRequestData

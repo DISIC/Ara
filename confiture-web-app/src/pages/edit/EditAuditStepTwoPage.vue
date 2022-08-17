@@ -15,7 +15,7 @@ const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
 onMounted(() => {
-  auditStore.fetchAudit(uniqueId).catch((error) => {
+  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
     const errorStatus: number = error?.response?.status || 404;
 
     if ([404, 410].includes(errorStatus)) {
@@ -125,35 +125,39 @@ onMounted(async () => {
 
 const { data: audit } = storeToRefs(auditStore);
 
-watch([audit], ([audit]) => {
-  if (!audit) {
-    return;
-  }
-  auditType.value = audit.auditType ?? null;
-  defaultTools.value = audit.auditTools.length
-    ? audit.auditTools.filter((tool) => availableTools.includes(tool))
-    : [];
-  customTools.value = audit.auditTools.length
-    ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
-    : [""];
-  pages.value = audit.pages.length
-    ? audit.pages
-    : [
-        {
-          name: "",
-          url: "",
-        },
-      ];
-  environments.value = audit.environments.length
-    ? audit.environments
-    : [
-        {
-          platform: "",
-          assistiveTechnology: "",
-          browser: "",
-        },
-      ];
-});
+watch(
+  [audit],
+  ([audit]) => {
+    if (!audit) {
+      return;
+    }
+    auditType.value = audit.auditType ?? null;
+    defaultTools.value = audit.auditTools.length
+      ? audit.auditTools.filter((tool) => availableTools.includes(tool))
+      : [];
+    customTools.value = audit.auditTools.length
+      ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
+      : [""];
+    pages.value = audit.pages.length
+      ? audit.pages
+      : [
+          {
+            name: "",
+            url: "",
+          },
+        ];
+    environments.value = audit.environments.length
+      ? audit.environments
+      : [
+          {
+            platform: "",
+            assistiveTechnology: "",
+            browser: "",
+          },
+        ];
+  },
+  { immediate: true }
+);
 
 /**
  * Create a new tool and focus its field.

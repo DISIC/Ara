@@ -18,7 +18,7 @@ const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
 onMounted(() => {
-  auditStore.fetchAudit(uniqueId).catch((error) => {
+  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
     const errorStatus: number = error?.response?.status || 404;
 
     if ([404, 410].includes(errorStatus)) {
