@@ -49,6 +49,9 @@ export interface Audit {
   auditTools: string[];
   environments: AuditEnvironment[];
   pages: AuditPage[];
+
+  publicationDate?: string;
+  editionDate?: string;
 }
 
 /** Audit type but without the generated IDs and step 2 fields */

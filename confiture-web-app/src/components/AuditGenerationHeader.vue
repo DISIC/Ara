@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { deleteAudit } from "../api/deleteAudit";
+import { deleteAudit } from "../api";
 import { useResultsStore } from "../store";
-import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 
-const props = defineProps<{
+defineProps<{
   auditName: string;
-  auditStatus?: string;
+  auditPublicationDate?: string;
   keyInfos: {
     label: string;
     value: string | number;
@@ -19,24 +18,6 @@ const props = defineProps<{
 }>();
 
 defineEmits(["validate"]);
-
-const auditTypes = [
-  {
-    label: "Rapide",
-    value: AuditType.FAST,
-    criteriaCount: 25,
-  },
-  {
-    label: "Complémentaire",
-    value: AuditType.COMPLEMENTARY,
-    criteriaCount: 50,
-  },
-  {
-    label: "Complet",
-    value: AuditType.FULL,
-    criteriaCount: 106,
-  },
-];
 
 const router = useRouter();
 
@@ -75,13 +56,21 @@ const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const resultsStore = useResultsStore();
 
-const isCompleted = computed(() => {
-  return props.auditStatus === "completed";
-});
+/**
+ * Format a string intro a readable date ("17 août 2022")
+ */
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("fr-FR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
 </script>
 
 <template>
-  <div v-if="!isCompleted" class="fr-mb-4w">
+  <div v-if="!auditPublicationDate" class="fr-mb-4w">
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>
@@ -89,14 +78,16 @@ const isCompleted = computed(() => {
 
   <p
     :class="`fr-badge ${
-      isCompleted
+      auditPublicationDate
         ? 'fr-badge--success fr-badge--no-icon'
         : 'fr-badge--purple-glycine'
     } fr-mb-1v`"
   >
-    {{ isCompleted ? "🎉 audit terminé" : "🔍 Audit en cours" }}
+    {{ auditPublicationDate ? "🎉 audit terminé" : "🔍 Audit en cours" }}
   </p>
-  <span v-if="isCompleted" class="fr-text--xs fr-ml-3v">Le 30 juin 2022</span>
+  <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
+    Le {{ formatDate(auditPublicationDate) }}
+  </span>
   <div class="fr-mb-3w heading">
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--icon-right">
@@ -121,7 +112,7 @@ const isCompleted = computed(() => {
       <li>
         <!-- TODO: icon left? -->
         <RouterLink
-          v-if="isCompleted"
+          v-if="auditPublicationDate"
           class="fr-btn fr-btn--icon-left fr-icon-eye-line"
           :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
         >
@@ -136,7 +127,7 @@ const isCompleted = computed(() => {
 
   <dl
     :class="`fr-grid-row fr-grid-row--gutters ${
-      isCompleted ? 'fr-mb-4w' : 'fr-mb-3v'
+      auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
     }`"
   >
     <div
@@ -160,7 +151,7 @@ const isCompleted = computed(() => {
     </div>
   </dl>
 
-  <p v-if="!isCompleted" class="fr-text--sm fr-mb-6w mandatory-notice">
+  <p v-if="!auditPublicationDate" class="fr-text--sm fr-mb-6w mandatory-notice">
     Sauf mention contraire, tous les champs sont obligatoires.
   </p>
 

@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAudit } from "../../api";
+import { useAudit, publishAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
@@ -39,9 +39,17 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
+/**
+ * Publish audit and move to final step
+ */
 function toStepFour() {
-  // TODO: validate API
-  router.push({ name: "edit-audit-step-four", params: { uniqueId } });
+  publishAudit(uniqueId)
+    .then(() => {
+      router.push({ name: "edit-audit-step-four", params: { uniqueId } });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 /** Available topic filters and their global progression. */
@@ -94,6 +102,8 @@ const headerInfos = computed(() => [
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
       :key-infos="headerInfos"
+      :audit-publication-date="audit.publicationDate"
+      :edit-unique-id="uniqueId"
       @validate="toStepFour"
     />
 

@@ -89,9 +89,9 @@ const headerInfos = computed(() => [
   <template v-if="audit && resultsStore.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
-      audit-status="completed"
       :key-infos="headerInfos"
       :edit-unique-id="audit.editUniqueId"
+      :audit-publication-date="audit.publicationDate"
     />
 
     <section class="content">
