@@ -6,7 +6,6 @@ import { useAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
-import { storeToRefs } from "pinia";
 
 const route = useRoute();
 const router = useRouter();
@@ -61,10 +60,7 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
-const { results } = storeToRefs(resultsStore);
-
 const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
-  results,
   audit.value?.pages.length
 );
 

@@ -1,20 +1,14 @@
-import { computed, Ref } from "vue";
+import { computed } from "vue";
 import { countBy } from "lodash-es";
+import { storeToRefs } from "pinia";
 
-import {
-  CriteriumResult,
-  CriteriumResultStatus,
-  CriterionResultUserImpact,
-} from "../types";
+import { CriteriumResultStatus, CriterionResultUserImpact } from "../types";
+import { useResultsStore } from "../store";
 
-// FIXME: watch results?
-export function useAuditStats(
-  results: Ref<CriteriumResult[] | null>,
-  pagesCount: number | undefined
-) {
-  // watch(results, () => {
-  //   console.log("pouet");
-  // });
+// TODO: get pagesCount directly from the store
+export function useAuditStats(pagesCount: number | undefined) {
+  const store = useResultsStore();
+  const { results } = storeToRefs(store);
 
   const applicableCriteriaCount = computed(
     () =>

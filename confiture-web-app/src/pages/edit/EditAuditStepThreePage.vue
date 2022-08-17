@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
-import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAudit } from "../../api";
@@ -76,12 +75,7 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-const { results } = storeToRefs(resultsStore);
-
-const { risk, complianceLevel } = useAuditStats(
-  results,
-  audit.value?.pages.length
-);
+const { risk, complianceLevel } = useAuditStats(audit.value?.pages.length);
 
 const headerInfos = computed(() => [
   { label: "Type d’audit", value: audit.value?.auditType as string },

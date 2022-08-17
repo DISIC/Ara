@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { deleteAudit } from "../api/deleteAudit";
 import { useResultsStore } from "../store";
+import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 
 const props = defineProps<{
@@ -18,6 +19,24 @@ const props = defineProps<{
 }>();
 
 defineEmits(["validate"]);
+
+const auditTypes = [
+  {
+    label: "Rapide",
+    value: AuditType.FAST,
+    criteriaCount: 25,
+  },
+  {
+    label: "Complémentaire",
+    value: AuditType.COMPLEMENTARY,
+    criteriaCount: 50,
+  },
+  {
+    label: "Complet",
+    value: AuditType.FULL,
+    criteriaCount: 106,
+  },
+];
 
 const router = useRouter();
 
