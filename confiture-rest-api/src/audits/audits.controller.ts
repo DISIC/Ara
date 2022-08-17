@@ -20,6 +20,7 @@ import {
 import { Audit } from 'src/generated/nestjs-dto/audit.entity';
 import { CriterionResult } from 'src/generated/nestjs-dto/criterionResult.entity';
 import { MailerService } from 'src/mailer.service';
+import { AuditReportDto } from './audit-report.dto';
 import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
@@ -144,6 +145,14 @@ export class AuditsController {
     if (!deleted) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
+  }
+
+  @Get('/:consultUniqueId/report')
+  @ApiOkResponse({ type: AuditReportDto })
+  async getAuditReport(@Param('consultUniqueId') consultUniqueId: string) {
+    const report = await this.auditService.getAuditReportData(consultUniqueId);
+
+    return report;
   }
 
   /**

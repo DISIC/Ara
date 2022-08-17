@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import {
   Audit,
+  AuditedPage,
+  AuditType,
   CriterionResult,
   CriterionResultStatus,
+  CriterionResultUserImpact,
   Prisma,
+  TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
+import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
 import { CRITERIA } from './criteria';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import * as RGAA from '../rgaa.json';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -329,5 +335,110 @@ export class AuditService {
       where: { editUniqueId: uniqueId, publicationDate: { not: null } },
       data: { editionDate: new Date() },
     });
+  }
+
+  async getAuditReportData(
+    consultUniqueId: string,
+  ): Promise<AuditReportDto | undefined> {
+    const audit = (await this.prisma.audit.findUnique({
+      where: { consultUniqueId },
+      include: AUDIT_EDIT_INCLUDE,
+    })) as Audit & { environments: TestEnvironment[]; pages: AuditedPage[] };
+
+    if (!audit) {
+      return;
+    }
+
+    const results = await this.prisma.criterionResult.findMany({
+      where: {
+        auditUniqueId: audit.editUniqueId,
+      },
+    });
+
+    const report: AuditReportDto = {
+      consultUniqueId: audit.consultUniqueId,
+
+      procedureName: audit.procedureName,
+      procedureUrl: audit.procedureUrl,
+      auditType: audit.auditType,
+      publishDate: new Date(),
+
+      errorCount: results.filter(
+        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+      ).length,
+      applicableCriteriaCount: {
+        [AuditType.FULL]: 106,
+        [AuditType.COMPLEMENTARY]: 50,
+        [AuditType.FAST]: 25,
+      }[audit.auditType],
+
+      accessibilityRate: 85,
+      blockingErrorCount: results.filter(
+        (r) =>
+          r.status === CriterionResultStatus.NOT_COMPLIANT &&
+          r.userImpact === CriterionResultUserImpact.BLOCKING,
+      ).length,
+
+      context: {
+        auditorName: audit.auditorName,
+        desktopEnvironments: audit.environments
+          .filter((e) => e.platform === 'desktop')
+          .map((e) => ({
+            assistiveTechnology: e.assistiveTechnology,
+            browser: e.browser,
+            // TODO
+            os: 'Windows 11',
+          })),
+        mobileEnvironments: audit.environments
+          .filter((e) => e.platform === 'mobile')
+          .map((e) => ({
+            assistiveTechnology: e.assistiveTechnology,
+            browser: e.browser,
+            // TODO
+            os: 'Windows 11',
+          })),
+        // TODO
+        referencial: 'RGAA Version 4.1',
+        samples: audit.pages.map((p, i) => ({
+          name: p.name,
+          number: i + 1,
+          url: p.url,
+        })),
+
+        // TODO
+        technologies: ['HTML', 'CSS', 'Javascript'],
+        tools: audit.auditTools.map((t) => ({
+          name: t,
+          function: 'Todo',
+          url: 'https://example.com',
+        })),
+      },
+
+      // TODO
+      totalCriteriaCount: 106,
+      pageDistributions: audit.pages.map((p) => ({
+        name: p.name,
+        compliant: 50,
+        notApplicable: 50,
+        notCompliant: 6,
+      })),
+
+      resultDistribution: {
+        compliant: 50,
+        notApplicable: 50,
+        notCompliant: 6,
+      },
+
+      topicDistributions: RGAA.topics.map((t) => ({
+        name: t.topic,
+        compliant: 50,
+        notApplicable: 50,
+        notCompliant: 6,
+      })),
+
+      updateDate: null,
+    };
+
+    return report;
   }
 }
