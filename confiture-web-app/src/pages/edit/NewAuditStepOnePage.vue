@@ -2,11 +2,11 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import { createAudit } from "../../api/createAudit";
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
 import LeaveModal from "../../components/LeaveModal.vue";
 import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
+import { useAuditStore } from "../../store";
 
 const isLeaveModalOpen = ref(false);
 const leaveModalDestination = ref<string>("");
@@ -48,9 +48,12 @@ onUnmounted(() => {
 
 const isSubmitting = ref(false);
 
+const auditStore = useAuditStore();
+
 function submitStepOne(data: CreateAuditRequestData) {
   isSubmitting.value = true;
-  createAudit(data)
+  auditStore
+    .createAudit(data)
     .then((audit) => {
       // TODO: replace current history entry with the edit page
       return router.push({

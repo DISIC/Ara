@@ -1,32 +1,35 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { updateAudit, useAudit } from "../../api";
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
 import SaveModal from "../../components/SaveModal.vue";
+import { useAuditStore } from "../../store";
 import { AuditType } from "../../types";
 
 const router = useRouter();
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
-const { data: audit, error } = useAudit(uniqueId);
+const auditStore = useAuditStore();
 
-watch(error, (error) => {
-  const errorStatus: number = error?.response?.status || 404;
+onMounted(() => {
+  auditStore.fetchAudit(uniqueId).catch((error) => {
+    const errorStatus: number = error?.response?.status || 404;
 
-  if ([404, 410].includes(errorStatus)) {
-    router.replace({
-      name: "Error",
-      params: { pathMatch: route.path.substring(1).split("/") },
-      query: route.query,
-      hash: route.hash,
-      state: {
-        errorStatus,
-      },
-    });
-  }
+    if ([404, 410].includes(errorStatus)) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: route.path.substring(1).split("/") },
+        query: route.query,
+        hash: route.hash,
+        state: {
+          errorStatus,
+        },
+      });
+    }
+  });
 });
 
 const availableAuditTypes = [
@@ -120,7 +123,9 @@ onMounted(async () => {
   }, 1000);
 });
 
-watch(audit, (audit) => {
+const { data: audit } = storeToRefs(auditStore);
+
+watch([audit], ([audit]) => {
   if (!audit) {
     return;
   }
@@ -224,14 +229,14 @@ async function deleteEnvironment(i: number) {
 function saveAuditChanges() {
   const data = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ...audit.value!,
+    ...auditStore.data!,
     auditType: auditType.value,
     auditTools: auditTools.value,
     environments: environments.value,
     pages: pages.value,
   };
 
-  return updateAudit(uniqueId, data);
+  return auditStore.updateAudit(uniqueId, data);
 }
 
 function toStepOne() {
@@ -285,7 +290,7 @@ function fillFields() {
       data-fr-steps="2"
     ></div>
   </div>
-  <form v-if="audit" @submit.prevent="toStepThree">
+  <form v-if="auditStore.data" @submit.prevent="toStepThree">
     <h1 ref="stepTitleRef" class="fr-mb-3v">📄 Informations sur l’audit</h1>
     <p class="fr-text--sm mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.

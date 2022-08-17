@@ -1,44 +1,48 @@
 <script lang="ts" setup>
-import { watch } from "vue";
+import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAudit, updateAudit } from "../../api";
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import { useAuditStore } from "../../store";
 import { CreateAuditRequestData } from "../../types";
 
 const router = useRouter();
 
 const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
-const { data: audit, error } = useAudit(auditUniqueId);
+const auditStore = useAuditStore();
 
-watch(error, (error) => {
-  const errorStatus: number = error?.response?.status || 404;
+onMounted(() => {
+  auditStore.fetchAudit(auditUniqueId).catch((error) => {
+    const errorStatus: number = error?.response?.status || 404;
 
-  if ([404, 410].includes(errorStatus)) {
-    router.replace({
-      name: "Error",
-      params: { pathMatch: route.path.substring(1).split("/") },
-      query: route.query,
-      hash: route.hash,
-      state: {
-        errorStatus,
-      },
-    });
-  }
+    if ([404, 410].includes(errorStatus)) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: route.path.substring(1).split("/") },
+        query: route.query,
+        hash: route.hash,
+        state: {
+          errorStatus,
+        },
+      });
+    }
+  });
 });
 
 function submitStepOne(data: CreateAuditRequestData) {
-  updateAudit(auditUniqueId, {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ...audit.value!,
-    ...data,
-  }).then((audit) => {
-    router.push({
-      name: "edit-audit-step-two",
-      params: { uniqueId: audit.editUniqueId },
+  auditStore
+    .updateAudit(auditUniqueId, {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ...auditStore.data!,
+      ...data,
+    })
+    .then((audit) => {
+      router.push({
+        name: "edit-audit-step-two",
+        params: { uniqueId: audit.editUniqueId },
+      });
     });
-  });
 }
 </script>
 
@@ -59,8 +63,8 @@ function submitStepOne(data: CreateAuditRequestData) {
   </div>
 
   <AuditGeneralInformationsForm
-    v-if="audit"
-    :default-values="audit"
+    v-if="auditStore.data"
+    :default-values="auditStore.data"
     @submit="submitStepOne"
   />
 </template>

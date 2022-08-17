@@ -2,8 +2,7 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { deleteAudit } from "../api";
-import { useResultsStore } from "../store";
+import { useResultsStore, useAuditStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
 import { formatDate } from "../utils";
 
@@ -37,11 +36,14 @@ function closeDeleteModal() {
   isDeleteModalOpen.value = false;
 }
 
+const auditStore = useAuditStore();
+
 /**
  * Delete audit and redirect to home page
  */
 function confirmDelete() {
-  deleteAudit(uniqueId)
+  auditStore
+    .deleteAudit(uniqueId)
     .then(() => {
       router.push({
         name: "home",

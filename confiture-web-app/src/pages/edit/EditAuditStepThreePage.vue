@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAudit, publishAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
@@ -16,22 +15,24 @@ const route = useRoute();
 const router = useRouter();
 
 const uniqueId = route.params.uniqueId as string;
-const { data: audit, error } = useAudit(uniqueId);
+const auditStore = useAuditStore();
 
-watch(error, (error) => {
-  const errorStatus: number = error?.response?.status || 404;
+onMounted(() => {
+  auditStore.fetchAudit(uniqueId).catch((error) => {
+    const errorStatus: number = error?.response?.status || 404;
 
-  if ([404, 410].includes(errorStatus)) {
-    router.replace({
-      name: "Error",
-      params: { pathMatch: route.path.substring(1).split("/") },
-      query: route.query,
-      hash: route.hash,
-      state: {
-        errorStatus,
-      },
-    });
-  }
+    if ([404, 410].includes(errorStatus)) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: route.path.substring(1).split("/") },
+        query: route.query,
+        hash: route.hash,
+        state: {
+          errorStatus,
+        },
+      });
+    }
+  });
 });
 
 const resultsStore = useResultsStore();
@@ -44,7 +45,8 @@ onMounted(() => {
  * Publish audit and move to final step
  */
 function toStepFour() {
-  publishAudit(uniqueId)
+  auditStore
+    .publishAudit(uniqueId)
     .then(() => {
       router.push({ name: "edit-audit-step-four", params: { uniqueId } });
     })
@@ -84,12 +86,12 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-const { risk, complianceLevel } = useAuditStats(audit.value?.pages.length);
+const { risk, complianceLevel } = useAuditStats(auditStore.data?.pages.length);
 
 const headerInfos = computed(() => [
   {
     label: "Type d’audit",
-    value: formatAuditType(audit.value!.auditType as AuditType),
+    value: formatAuditType(auditStore.data!.auditType as AuditType),
   },
   { label: "Risque de l’audit", value: risk.value },
   {
@@ -102,11 +104,11 @@ const headerInfos = computed(() => [
 
 <template>
   <!-- FIXME: handle loading states -->
-  <template v-if="audit && resultsStore.results">
+  <template v-if="auditStore.data && resultsStore.results">
     <AuditGenerationHeader
-      :audit-name="audit.procedureName"
+      :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
-      :audit-publication-date="audit.publicationDate"
+      :audit-publication-date="auditStore.data.publicationDate"
       :edit-unique-id="uniqueId"
       @validate="toStepFour"
     />
@@ -125,18 +127,18 @@ const headerInfos = computed(() => [
           >
             <li role="presentation">
               <button
-                :id="`page-panel-${audit.pages[0].id}`"
+                :id="`page-panel-${auditStore.data.pages[0].id}`"
                 class="fr-tabs__tab"
                 tabindex="0"
                 role="tab"
                 aria-selected="true"
-                :aria-controls="`page-panel-${audit.pages[0].id}-panel`"
+                :aria-controls="`page-panel-${auditStore.data.pages[0].id}-panel`"
               >
-                {{ audit.pages[0].name }}
+                {{ auditStore.data.pages[0].name }}
               </button>
             </li>
             <li
-              v-for="page in audit.pages.slice(1)"
+              v-for="page in auditStore.data.pages.slice(1)"
               :key="page.id"
               role="presentation"
             >
@@ -153,7 +155,7 @@ const headerInfos = computed(() => [
             </li>
           </ul>
           <div
-            v-for="page in audit.pages"
+            v-for="page in auditStore.data.pages"
             :id="`page-panel-${page.id}-panel`"
             :key="page.id"
             class="fr-tabs__panel fr-tabs__panel--selected"

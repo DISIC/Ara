@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { AuditType } from "../../types";
-import { useAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useResultsStore } from "../../store";
+import { useResultsStore, useAuditStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import { formatAuditType } from "../../utils";
 
@@ -13,22 +12,25 @@ const route = useRoute();
 const router = useRouter();
 
 const uniqueId = route.params.uniqueId as string;
-const { data: audit, error } = useAudit(uniqueId);
 
-watch(error, (error) => {
-  const errorStatus: number = error?.response?.status || 404;
+const auditStore = useAuditStore();
 
-  if ([404, 410].includes(errorStatus)) {
-    router.replace({
-      name: "Error",
-      params: { pathMatch: route.path.substring(1).split("/") },
-      query: route.query,
-      hash: route.hash,
-      state: {
-        errorStatus,
-      },
-    });
-  }
+onMounted(() => {
+  auditStore.fetchAudit(uniqueId).catch((error) => {
+    const errorStatus: number = error?.response?.status || 404;
+
+    if ([404, 410].includes(errorStatus)) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: route.path.substring(1).split("/") },
+        query: route.query,
+        hash: route.hash,
+        state: {
+          errorStatus,
+        },
+      });
+    }
+  });
 });
 
 const showCopyAlert = ref(false);
@@ -63,13 +65,13 @@ onMounted(() => {
 });
 
 const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
-  audit.value?.pages.length
+  auditStore.data?.pages.length
 );
 
 const headerInfos = computed(() => [
   {
     label: "Type d’audit",
-    value: formatAuditType(audit.value!.auditType as AuditType),
+    value: formatAuditType(auditStore.data!.auditType as AuditType),
   },
   {
     label: "Critères applicables",
@@ -91,12 +93,12 @@ const headerInfos = computed(() => [
 
 <template>
   <!-- TODO: plug audit status -->
-  <template v-if="audit && resultsStore.results">
+  <template v-if="auditStore.data && resultsStore.results">
     <AuditGenerationHeader
-      :audit-name="audit.procedureName"
+      :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
-      :edit-unique-id="audit.editUniqueId"
-      :audit-publication-date="audit.publicationDate"
+      :edit-unique-id="auditStore.data.editUniqueId"
+      :audit-publication-date="auditStore.data.publicationDate"
     />
 
     <section class="content">
@@ -105,7 +107,10 @@ const headerInfos = computed(() => [
         Vous pouvez consulter et vérifier le
         <RouterLink
           class="fr-link"
-          :to="{ name: 'report', params: { uniqueId: audit.editUniqueId } }"
+          :to="{
+            name: 'report',
+            params: { uniqueId: auditStore.data.editUniqueId },
+          }"
           target="_blank"
         >
           rapport d’audit
