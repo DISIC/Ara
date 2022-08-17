@@ -355,6 +355,36 @@ export class AuditService {
       },
     });
 
+    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
+      (acc, c) => {
+        const key = `${c.topic}.${c.criterium}`;
+        if (acc[key]) {
+          acc[key].push(c);
+        } else {
+          acc[key] = [c];
+        }
+        return acc;
+      },
+      {},
+    );
+
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) =>
+        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE),
+    );
+
+    const compliantCriteria = applicableCriteria.filter((criteria) =>
+      criteria.every(
+        (c) =>
+          c.status === CriterionResultStatus.COMPLIANT ||
+          c.status === CriterionResultStatus.NOT_APPLICABLE,
+      ),
+    );
+
+    const accessibilityRate = Math.round(
+      (compliantCriteria.length / applicableCriteria.length) * 100,
+    );
+
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
 
@@ -367,19 +397,18 @@ export class AuditService {
       errorCount: results.filter(
         (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
       ).length,
-      applicableCriteriaCount: {
-        [AuditType.FULL]: 106,
-        [AuditType.COMPLEMENTARY]: 50,
-        [AuditType.FAST]: 25,
-      }[audit.auditType],
 
-      accessibilityRate: 85,
       blockingErrorCount: results.filter(
         (r) =>
           r.status === CriterionResultStatus.NOT_COMPLIANT &&
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
+      applicableCriteriaCount: applicableCriteria.length,
+
+      accessibilityRate,
+
+      // FIXME: some of the return data is never asked to the user
       context: {
         auditorName: audit.auditorName,
         desktopEnvironments: audit.environments
@@ -387,7 +416,6 @@ export class AuditService {
           .map((e) => ({
             assistiveTechnology: e.assistiveTechnology,
             browser: e.browser,
-            // TODO
             os: 'Windows 11',
           })),
         mobileEnvironments: audit.environments
@@ -395,10 +423,8 @@ export class AuditService {
           .map((e) => ({
             assistiveTechnology: e.assistiveTechnology,
             browser: e.browser,
-            // TODO
-            os: 'Windows 11',
+            os: 'Android 12',
           })),
-        // TODO
         referencial: 'RGAA Version 4.1',
         samples: audit.pages.map((p, i) => ({
           name: p.name,
@@ -406,7 +432,6 @@ export class AuditService {
           url: p.url,
         })),
 
-        // TODO
         technologies: ['HTML', 'CSS', 'Javascript'],
         tools: audit.auditTools.map((t) => ({
           name: t,
@@ -415,26 +440,60 @@ export class AuditService {
         })),
       },
 
-      // TODO
-      totalCriteriaCount: 106,
+      totalCriteriaCount: {
+        [AuditType.FULL]: 106,
+        [AuditType.COMPLEMENTARY]: 50,
+        [AuditType.FAST]: 25,
+      }[audit.auditType],
+
+      // TODO: should the distribution be calculated by criteria accross all pages or individually ?
       pageDistributions: audit.pages.map((p) => ({
         name: p.name,
-        compliant: 50,
-        notApplicable: 50,
-        notCompliant: 6,
+        compliant: results.filter(
+          (r) =>
+            r.pageUrl === p.url && r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) =>
+            r.pageUrl === p.url &&
+            r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) =>
+            r.pageUrl === p.url &&
+            r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
       })),
 
       resultDistribution: {
-        compliant: 50,
-        notApplicable: 50,
-        notCompliant: 6,
+        compliant: results.filter(
+          (r) => r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
       },
 
       topicDistributions: RGAA.topics.map((t) => ({
         name: t.topic,
-        compliant: 50,
-        notApplicable: 50,
-        notCompliant: 6,
+        compliant: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
       })),
     };
 
