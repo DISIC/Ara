@@ -1,5 +1,16 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  GoneException,
+  NotFoundException,
+  Param,
+} from '@nestjs/common';
+import {
+  ApiGoneResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { AuditReportDto } from './audit-report.dto';
 import { AuditService } from './audit.service';
@@ -9,11 +20,34 @@ import { AuditService } from './audit.service';
 export class ReportsController {
   constructor(private readonly auditService: AuditService) {}
 
+  /** Get final report data for a particular audit. */
   @Get('/:consultUniqueId')
-  @ApiOkResponse({ type: AuditReportDto })
+  @ApiOkResponse({ description: 'The audit was found.', type: AuditReportDto })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
   async getAuditReport(@Param('consultUniqueId') consultUniqueId: string) {
     const report = await this.auditService.getAuditReportData(consultUniqueId);
 
+    if (!report) {
+      return this.sendAuditNotFoundStatus(consultUniqueId);
+    }
+
     return report;
+  }
+
+  /**
+   * Send 404 (Not Found) status for audits that never existed
+   * and 410 (Gone) for audits that existed but were deleted.
+   */
+  private async sendAuditNotFoundStatus(consultUniqueId: string) {
+    if (
+      await this.auditService.checkIfAuditWasDeletedWithConsultId(
+        consultUniqueId,
+      )
+    ) {
+      throw new GoneException();
+    } else {
+      throw new NotFoundException();
+    }
   }
 }

@@ -311,6 +311,23 @@ export class AuditService {
     }
   }
 
+  /**
+   * Checks if an audit was deleted by checking the presence of an audit trace.
+   * @param consultUniqueId consult unique id of the checked audit
+   */
+  async checkIfAuditWasDeletedWithConsultId(
+    consultUniqueId: string,
+  ): Promise<boolean> {
+    try {
+      await this.prisma.auditTrace.findUniqueOrThrow({
+        where: { auditConsultUniqueId: consultUniqueId },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async publishAudit(uniqueId: string) {
     try {
       return await this.prisma.audit.update({
@@ -404,6 +421,12 @@ export class AuditService {
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
+      totalCriteriaCount: {
+        [AuditType.FULL]: 106,
+        [AuditType.COMPLEMENTARY]: 50,
+        [AuditType.FAST]: 25,
+      }[audit.auditType],
+
       applicableCriteriaCount: applicableCriteria.length,
 
       accessibilityRate,
@@ -439,12 +462,6 @@ export class AuditService {
           url: 'https://example.com',
         })),
       },
-
-      totalCriteriaCount: {
-        [AuditType.FULL]: 106,
-        [AuditType.COMPLEMENTARY]: 50,
-        [AuditType.FAST]: 25,
-      }[audit.auditType],
 
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
       pageDistributions: audit.pages.map((p) => ({
