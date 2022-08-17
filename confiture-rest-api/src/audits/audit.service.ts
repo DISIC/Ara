@@ -421,11 +421,13 @@ export class AuditService {
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
-      totalCriteriaCount: {
-        [AuditType.FULL]: 106,
-        [AuditType.COMPLEMENTARY]: 50,
-        [AuditType.FAST]: 25,
-      }[audit.auditType],
+      // TODO: take audit type into account in generation steps
+      // totalCriteriaCount: {
+      //   [AuditType.FULL]: 106,
+      //   [AuditType.COMPLEMENTARY]: 50,
+      //   [AuditType.FAST]: 25,
+      // }[audit.auditType],
+      totalCriteriaCount: 106,
 
       applicableCriteriaCount: applicableCriteria.length,
 

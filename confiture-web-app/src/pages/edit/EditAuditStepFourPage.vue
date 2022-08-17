@@ -2,10 +2,12 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { AuditType } from "../../types";
 import { useAudit } from "../../api";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
+import { formatAuditType } from "../../utils";
 
 const route = useRoute();
 const router = useRouter();
@@ -65,7 +67,10 @@ const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
 );
 
 const headerInfos = computed(() => [
-  { label: "Type d’audit", value: audit.value?.auditType as string },
+  {
+    label: "Type d’audit",
+    value: formatAuditType(audit.value!.auditType as AuditType),
+  },
   {
     label: "Critères applicables",
     value: applicableCriteriaCount.value,

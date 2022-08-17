@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { deleteAudit } from "../api";
 import { useResultsStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
+import { formatDate } from "../utils";
 
 defineProps<{
   auditName: string;
@@ -55,18 +56,6 @@ function confirmDelete() {
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const resultsStore = useResultsStore();
-
-/**
- * Format a string intro a readable date ("17 août 2022")
- */
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
-}
 </script>
 
 <template>

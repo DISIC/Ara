@@ -8,7 +8,8 @@ import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
-import { CriteriumResultStatus } from "../../types";
+import { AuditType, CriteriumResultStatus } from "../../types";
+import { formatAuditType } from "../../utils";
 import rgaa from "../../criteres.json";
 
 const route = useRoute();
@@ -86,7 +87,10 @@ function updateCurrentPageId(i: number) {
 const { risk, complianceLevel } = useAuditStats(audit.value?.pages.length);
 
 const headerInfos = computed(() => [
-  { label: "Type d’audit", value: audit.value?.auditType as string },
+  {
+    label: "Type d’audit",
+    value: formatAuditType(audit.value!.auditType as AuditType),
+  },
   { label: "Risque de l’audit", value: risk.value },
   {
     label: "Taux de conformité au RGAA actuel",

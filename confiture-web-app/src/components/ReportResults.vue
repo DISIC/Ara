@@ -1,28 +1,33 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
+import { useReportStore } from "../store";
 import SummaryCard from "./SummaryCard.vue";
 
-const stats = [
+const report = useReportStore();
+
+const stats = computed(() => [
   {
     title: "D’accessibilité",
     description: "Taux global de conformité au RGAA",
-    value: 90,
+    value: report.data.accessibilityRate,
     total: 100,
     unit: "%",
   },
   {
     title: "Erreurs d’accessibilité",
-    description: "Dont 8 bloquantes pour l’usager",
-    value: 8,
-    total: 34,
+    description: `Dont ${report.data.blockingErrorCount} bloquantes pour l’usager`,
+    value: report.data.errorCount,
+    total: 200, // TODO
     danger: true,
   },
   {
     title: "Critères applicables",
-    description: "Sur un total de 106 critères",
-    value: 54,
-    total: 106,
+    description: `Sur un total de ${report.data.totalCriteriaCount} critères`,
+    value: report.data.applicableCriteriaCount,
+    total: report.data.totalCriteriaCount,
   },
-];
+]);
 </script>
 
 <template>

@@ -1,10 +1,22 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 
-import ReportResults from "../../components/ReportResults.vue";
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
+import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
+import { useReportStore } from "../../store";
+import { formatDate, formatAuditType } from "../../utils";
+
+const report = useReportStore();
+
+const route = useRoute();
+const uniqueId = route.params.uniqueId as string;
+
+onMounted(() => {
+  report.fetchReport(uniqueId);
+});
 
 const tabs = [
   { title: "Résultats", component: ReportResults },
@@ -16,7 +28,8 @@ const showCopyAlert = ref(false);
 
 async function copyReportUrl() {
   // TODO: set correct content
-  const url = "Pouet pouet";
+  const url = `${import.meta.env.VITE_BASE_URL}/rapports/${uniqueId}`;
+
   navigator.clipboard
     .writeText(url)
     .then(() => {
@@ -56,56 +69,69 @@ function hideReportAlert() {
     </div>
   </div>
 
-  <div class="fr-mb-6w fr-mb-md-12w header">
-    <p class="fr-text--lead fr-mb-2w">Nom du site audité</p>
-    <p class="fr-text--light fr-mb-4w dates">
-      Publié le 30 juin 2022 - Mis à jour le 03 août 2022
-    </p>
+  <template v-if="report.data">
+    <div class="fr-mb-6w fr-mb-md-12w header">
+      <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
+      <p class="fr-text--light fr-mb-4w dates">
+        Publié le {{ formatDate(report.data.publishDate) }}
+        <template v-if="report.data.updateDate">
+          - Mis à jour le {{ formatDate(report.data.updateDate) }}
+        </template>
+      </p>
 
-    <p class="fr-mb-0">
-      <strong>URL du site</strong> :
-      <a class="fr-link" target="_blank" href="https://example.com">
-        https://example.com
-      </a>
-    </p>
-    <p class="fr-mb-0">
-      <strong>Type d’audit</strong> : complet (106 critères)
-    </p>
-    <p class="fr-mb-0"><strong>Référenciel</strong> : RGAA version 4.1</p>
-    <p class="fr-mb-1v"><strong>Auditeur</strong> : Prénom Nom</p>
+      <p class="fr-mb-0">
+        <strong>URL du site</strong> :
+        <a class="fr-link" target="_blank" :href="report.data.procedureUrl">
+          {{ report.data.procedureUrl }}
+        </a>
+      </p>
+      <p class="fr-mb-0">
+        <strong>Type d’audit</strong> :
+        {{ formatAuditType(report.data.auditType) }} ({{
+          report.data.totalCriteriaCount
+        }}
+        critères)
+      </p>
+      <p class="fr-mb-0">
+        <strong>Référenciel</strong> : {{ report.data.context.referencial }}
+      </p>
+      <p class="fr-mb-1v">
+        <strong>Auditeur</strong> : {{ report.data.context.auditorName }}
+      </p>
 
-    <RouterLink class="fr-link" :to="{ name: 'context' }">
-      Voir le contexte de l’audit
-    </RouterLink>
-  </div>
-
-  <div class="fr-tabs">
-    <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
-      <li v-for="tab in tabs" :key="tab.title" role="presentation">
-        <button
-          :id="`tabpanel-${tab.title}`"
-          class="fr-tabs__tab"
-          tabindex="0"
-          role="tab"
-          aria-selected="true"
-          :aria-controls="`tabpanel-${tab.title}-panel`"
-        >
-          {{ tab.title }}
-        </button>
-      </li>
-    </ul>
-    <div
-      v-for="tab in tabs"
-      :id="`tabpanel-${tab.title}-panel`"
-      :key="tab.title"
-      class="fr-tabs__panel fr-tabs__panel--selected"
-      role="tabpanel"
-      :aria-labelledby="`tabpanel-${tab.title}`"
-      tabindex="0"
-    >
-      <component :is="tab.component" />
+      <RouterLink class="fr-link" :to="{ name: 'context' }">
+        Voir le contexte de l’audit
+      </RouterLink>
     </div>
-  </div>
+
+    <div class="fr-tabs">
+      <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
+        <li v-for="tab in tabs" :key="tab.title" role="presentation">
+          <button
+            :id="`tabpanel-${tab.title}`"
+            class="fr-tabs__tab"
+            tabindex="0"
+            role="tab"
+            aria-selected="true"
+            :aria-controls="`tabpanel-${tab.title}-panel`"
+          >
+            {{ tab.title }}
+          </button>
+        </li>
+      </ul>
+      <div
+        v-for="tab in tabs"
+        :id="`tabpanel-${tab.title}-panel`"
+        :key="tab.title"
+        class="fr-tabs__panel fr-tabs__panel--selected"
+        role="tabpanel"
+        :aria-labelledby="`tabpanel-${tab.title}`"
+        tabindex="0"
+      >
+        <component :is="tab.component" />
+      </div>
+    </div>
+  </template>
 
   <TopLink />
 </template>
@@ -120,6 +146,6 @@ function hideReportAlert() {
 }
 
 .dates {
-  color: var(--text-disabled-grey);
+  color: var(--text-mention-grey);
 }
 </style>
