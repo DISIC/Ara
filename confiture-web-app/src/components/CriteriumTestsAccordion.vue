@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { marked } from "marked";
+
 import methodologies from "../methodologies.json";
+import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   topicNumber: number;
@@ -30,48 +32,39 @@ const methodologiesHtml = Object.values(
 </script>
 
 <template>
-  <div class="fr-accordion">
-    <span class="fr-accordion__title">
-      <button
-        class="fr-accordion__btn"
-        aria-expanded="false"
-        :aria-controls="`tests-refs-${id}`"
-      >
-        Tests et références du critère {{ topicNumber }}.{{ criterium.number }}
-      </button>
-    </span>
-    <div :id="`tests-refs-${id}`" class="fr-collapse">
-      <template v-for="(test, i) in testsHtml" :key="i">
-        <div class="criterium-test">
-          <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
-          <div v-html="test" />
-        </div>
+  <LazyAccordion
+    :title="`Tests et références du critère ${topicNumber}.${criterium.number}`"
+  >
+    <template v-for="(test, i) in testsHtml" :key="i">
+      <div class="criterium-test">
+        <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
+        <div v-html="test" />
+      </div>
 
-        <div
-          class="fr-accordion"
-          :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
-        >
-          <span class="fr-accordion__title">
-            <button
-              class="fr-accordion__btn"
-              aria-expanded="false"
-              :aria-controls="`tests-method-${id}-${i}`"
-            >
-              Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
-                i + 1
-              }}
-            </button>
-          </span>
-          <div
-            :id="`tests-method-${id}-${i}`"
-            class="fr-collapse criterium-test-methodology"
+      <div
+        class="fr-accordion"
+        :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
+      >
+        <span class="fr-accordion__title">
+          <button
+            class="fr-accordion__btn"
+            aria-expanded="false"
+            :aria-controls="`tests-method-${id}-${i}`"
           >
-            <div v-html="methodologiesHtml[i]" />
-          </div>
+            Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
+              i + 1
+            }}
+          </button>
+        </span>
+        <div
+          :id="`tests-method-${id}-${i}`"
+          class="fr-collapse criterium-test-methodology"
+        >
+          <div v-html="methodologiesHtml[i]" />
         </div>
-      </template>
-    </div>
-  </div>
+      </div>
+    </template>
+  </LazyAccordion>
 </template>
 
 <style scoped>
