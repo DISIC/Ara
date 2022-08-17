@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import {
   Audit,
+  AuditedPage,
+  AuditType,
   CriterionResult,
   CriterionResultStatus,
+  CriterionResultUserImpact,
   Prisma,
+  TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
+import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
 import { CRITERIA } from './criteria';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import * as RGAA from '../rgaa.json';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -305,6 +311,23 @@ export class AuditService {
     }
   }
 
+  /**
+   * Checks if an audit was deleted by checking the presence of an audit trace.
+   * @param consultUniqueId consult unique id of the checked audit
+   */
+  async checkIfAuditWasDeletedWithConsultId(
+    consultUniqueId: string,
+  ): Promise<boolean> {
+    try {
+      await this.prisma.auditTrace.findUniqueOrThrow({
+        where: { auditConsultUniqueId: consultUniqueId },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async publishAudit(uniqueId: string) {
     try {
       return await this.prisma.audit.update({
@@ -329,5 +352,168 @@ export class AuditService {
       where: { editUniqueId: uniqueId, publicationDate: { not: null } },
       data: { editionDate: new Date() },
     });
+  }
+
+  async getAuditReportData(
+    consultUniqueId: string,
+  ): Promise<AuditReportDto | undefined> {
+    const audit = (await this.prisma.audit.findUnique({
+      where: { consultUniqueId },
+      include: AUDIT_EDIT_INCLUDE,
+    })) as Audit & { environments: TestEnvironment[]; pages: AuditedPage[] };
+
+    if (!audit) {
+      return;
+    }
+
+    const results = await this.prisma.criterionResult.findMany({
+      where: {
+        auditUniqueId: audit.editUniqueId,
+      },
+    });
+
+    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
+      (acc, c) => {
+        const key = `${c.topic}.${c.criterium}`;
+        if (acc[key]) {
+          acc[key].push(c);
+        } else {
+          acc[key] = [c];
+        }
+        return acc;
+      },
+      {},
+    );
+
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) =>
+        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE),
+    );
+
+    const compliantCriteria = applicableCriteria.filter((criteria) =>
+      criteria.every(
+        (c) =>
+          c.status === CriterionResultStatus.COMPLIANT ||
+          c.status === CriterionResultStatus.NOT_APPLICABLE,
+      ),
+    );
+
+    const accessibilityRate = Math.round(
+      (compliantCriteria.length / applicableCriteria.length) * 100,
+    );
+
+    const report: AuditReportDto = {
+      consultUniqueId: audit.consultUniqueId,
+
+      procedureName: audit.procedureName,
+      procedureUrl: audit.procedureUrl,
+      auditType: audit.auditType,
+      publishDate: audit.publicationDate,
+      updateDate: audit.editionDate,
+
+      errorCount: results.filter(
+        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+      ).length,
+
+      blockingErrorCount: results.filter(
+        (r) =>
+          r.status === CriterionResultStatus.NOT_COMPLIANT &&
+          r.userImpact === CriterionResultUserImpact.BLOCKING,
+      ).length,
+
+      totalCriteriaCount: {
+        [AuditType.FULL]: 106,
+        [AuditType.COMPLEMENTARY]: 50,
+        [AuditType.FAST]: 25,
+      }[audit.auditType],
+
+      applicableCriteriaCount: applicableCriteria.length,
+
+      accessibilityRate,
+
+      // FIXME: some of the return data is never asked to the user
+      context: {
+        auditorName: audit.auditorName,
+        desktopEnvironments: audit.environments
+          .filter((e) => e.platform === 'desktop')
+          .map((e) => ({
+            assistiveTechnology: e.assistiveTechnology,
+            browser: e.browser,
+            os: 'Windows 11',
+          })),
+        mobileEnvironments: audit.environments
+          .filter((e) => e.platform === 'mobile')
+          .map((e) => ({
+            assistiveTechnology: e.assistiveTechnology,
+            browser: e.browser,
+            os: 'Android 12',
+          })),
+        referencial: 'RGAA Version 4.1',
+        samples: audit.pages.map((p, i) => ({
+          name: p.name,
+          number: i + 1,
+          url: p.url,
+        })),
+
+        technologies: ['HTML', 'CSS', 'Javascript'],
+        tools: audit.auditTools.map((t) => ({
+          name: t,
+          function: 'Todo',
+          url: 'https://example.com',
+        })),
+      },
+
+      // TODO: should the distribution be calculated by criteria accross all pages or individually ?
+      pageDistributions: audit.pages.map((p) => ({
+        name: p.name,
+        compliant: results.filter(
+          (r) =>
+            r.pageUrl === p.url && r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) =>
+            r.pageUrl === p.url &&
+            r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) =>
+            r.pageUrl === p.url &&
+            r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
+      })),
+
+      resultDistribution: {
+        compliant: results.filter(
+          (r) => r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
+      },
+
+      topicDistributions: RGAA.topics.map((t) => ({
+        name: t.topic,
+        compliant: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.COMPLIANT,
+        ).length,
+        notApplicable: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.NOT_APPLICABLE,
+        ).length,
+        notCompliant: results.filter(
+          (r) =>
+            r.topic === t.number &&
+            r.status === CriterionResultStatus.NOT_COMPLIANT,
+        ).length,
+      })),
+    };
+
+    return report;
   }
 }

@@ -26,7 +26,7 @@ import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 
 @Controller('audits')
-@ApiTags('audits')
+@ApiTags('Audits')
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
