@@ -2,7 +2,8 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAudit } from "../../api";
+import { useAudit, publishAudit } from "../../api";
+import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -38,8 +39,17 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
-function validateAudit() {
-  console.log("validateAudit");
+/**
+ * Publish audit and move to final step
+ */
+function toStepFour() {
+  publishAudit(uniqueId)
+    .then(() => {
+      router.push({ name: "edit-audit-step-four", params: { uniqueId } });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 /** Available topic filters and their global progression. */
@@ -73,36 +83,17 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-// FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
-const complianceLevel = computed(() => {
-  const testedCount =
-    resultsStore.results?.filter(
-      (result) =>
-        result.status !== CriteriumResultStatus.NOT_TESTED &&
-        result.status !== CriteriumResultStatus.NOT_APPLICABLE
-    ).length ?? 0;
+const { risk, complianceLevel } = useAuditStats(audit.value?.pages.length);
 
-  const compliantCount =
-    resultsStore.results?.filter(
-      (result) => result.status === CriteriumResultStatus.COMPLIANT
-    ).length ?? 0;
-
-  if (testedCount === 0) {
-    return 0;
-  }
-
-  return Math.round((compliantCount / testedCount) * 100);
-});
-
-const risk = computed(() => {
-  if (complianceLevel.value < 50) {
-    return "Élevé";
-  } else if (complianceLevel.value < 75) {
-    return "Moyen";
-  } else {
-    return "Bas";
-  }
-});
+const headerInfos = computed(() => [
+  { label: "Type d’audit", value: audit.value?.auditType as string },
+  { label: "Risque de l’audit", value: risk.value },
+  {
+    label: "Taux de conformité au RGAA actuel",
+    value: complianceLevel.value,
+    description: "%",
+  },
+]);
 </script>
 
 <template>
@@ -110,10 +101,10 @@ const risk = computed(() => {
   <template v-if="audit && resultsStore.results">
     <AuditGenerationHeader
       :audit-name="audit.procedureName"
-      :audit-type="audit.auditType!"
-      :audit-risk="risk"
-      :audit-compliance-level="complianceLevel"
-      @validate="validateAudit"
+      :key-infos="headerInfos"
+      :audit-publication-date="audit.publicationDate"
+      :edit-unique-id="uniqueId"
+      @validate="toStepFour"
     />
 
     <div class="fr-grid-row fr-grid-row--gutters">

@@ -556,7 +556,7 @@ function fillFields() {
 
 <style scoped>
 .content {
-  max-width: 792px;
+  max-width: 49.5rem;
 }
 
 .mandatory-notice {

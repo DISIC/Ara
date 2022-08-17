@@ -3,8 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import ContextPage from "./pages/consult/ContextPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
-import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
 import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
+import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
+import EditAuditStepFourPage from "./pages/edit/EditAuditStepFourPage.vue";
 import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
@@ -73,6 +74,11 @@ const router = createRouter({
       path: "/audits/:uniqueId/generation",
       name: "edit-audit-step-three",
       component: EditAuditStepThreePage,
+    },
+    {
+      path: "/audits/:uniqueId/partage",
+      name: "edit-audit-step-four",
+      component: EditAuditStepFourPage,
     },
     {
       path: "/rapports/:uniqueId",
