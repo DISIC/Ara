@@ -16,7 +16,7 @@ const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
 onMounted(() => {
-  auditStore.fetchAudit(uniqueId).catch((error) => {
+  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
     const errorStatus: number = error?.response?.status || 404;
 
     if ([404, 410].includes(errorStatus)) {
@@ -35,15 +35,20 @@ onMounted(() => {
 
 const showCopyAlert = ref(false);
 
-const link = computed(() => {
-  return `${import.meta.env.VITE_BASE_URL}/audits/${
-    route.params.uniqueId
-  }/partage`;
+const reportRouteLocation = computed(() => ({
+  name: "report",
+  params: { uniqueId: auditStore.data?.consultUniqueId },
+}));
+
+const fullReportUrl = computed(() => {
+  return (
+    window.location.origin + router.resolve(reportRouteLocation.value).fullPath
+  );
 });
 
 async function copyLink() {
   navigator.clipboard
-    .writeText(link.value)
+    .writeText(fullReportUrl.value)
     .then(() => {
       showCopyAlert.value = true;
     })
@@ -105,16 +110,9 @@ const headerInfos = computed(() => [
       <h2 class="fr-h4">Votre audit est prêt à être envoyé</h2>
       <p class="fr-mb-4w">
         Vous pouvez consulter et vérifier le
-        <RouterLink
-          class="fr-link"
-          :to="{
-            name: 'report',
-            params: { uniqueId: auditStore.data.editUniqueId },
-          }"
-          target="_blank"
+        <RouterLink class="fr-link" :to="reportRouteLocation" target="_blank">
+          rapport d’audit</RouterLink
         >
-          rapport d’audit
-        </RouterLink>
         ou la
         <!-- TODO: link to page + selected tab -->
         <RouterLink class="fr-link" to="/" target="_blank"
@@ -129,13 +127,13 @@ const headerInfos = computed(() => [
           Lien public du rapport d’audit
         </p>
         <p class="fr-callout__text fr-text--md copy-block">
-          <a
+          <RouterLink
             class="fr-link"
-            :href="link"
+            :to="reportRouteLocation"
             title="lien public du rapport d’audit"
           >
-            {{ link }}
-          </a>
+            {{ fullReportUrl }}
+          </RouterLink>
           <!-- FIXME: icon "copy" does not seem to exist -->
           <button
             class="fr-btn fr-btn--secondary fr-icon-file-line fr-btn--icon-left fr-m-0"
