@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
 import SaveModal from "../../components/SaveModal.vue";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
 import { AuditType } from "../../types";
 
@@ -14,23 +15,7 @@ const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
-onMounted(() => {
-  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
-    const errorStatus: number = error?.response?.status || 404;
-
-    if ([404, 410].includes(errorStatus)) {
-      router.replace({
-        name: "Error",
-        params: { pathMatch: route.path.substring(1).split("/") },
-        query: route.query,
-        hash: route.hash,
-        state: {
-          errorStatus,
-        },
-      });
-    }
-  });
-});
+useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 const availableAuditTypes = [
   {

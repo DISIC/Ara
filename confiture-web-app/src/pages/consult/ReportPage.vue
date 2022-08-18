@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatDate, formatAuditType } from "../../utils";
+import { formatAuditType, formatDate } from "../../utils";
 
 const report = useReportStore();
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 
-onMounted(() => {
-  report.fetchReport(uniqueId);
-});
+useWrappedFetch(() => report.fetchReport(uniqueId));
 
 const tabs = [
   { title: "Résultats", component: ReportResults },

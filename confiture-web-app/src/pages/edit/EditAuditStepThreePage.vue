@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAuditStats } from "../../composables/useAuditStats";
-import { useAuditStore, useResultsStore } from "../../store";
-import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
+import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
+import { useAuditStats } from "../../composables/useAuditStats";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import rgaa from "../../criteres.json";
+import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
 import { formatAuditType } from "../../utils";
-import rgaa from "../../criteres.json";
 
 const route = useRoute();
 const router = useRouter();
@@ -17,23 +18,7 @@ const router = useRouter();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
-onMounted(() => {
-  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
-    const errorStatus: number = error?.response?.status || 404;
-
-    if ([404, 410].includes(errorStatus)) {
-      router.replace({
-        name: "Error",
-        params: { pathMatch: route.path.substring(1).split("/") },
-        query: route.query,
-        hash: route.hash,
-        state: {
-          errorStatus,
-        },
-      });
-    }
-  });
-});
+useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 const resultsStore = useResultsStore();
 

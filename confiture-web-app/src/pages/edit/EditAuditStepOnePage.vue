@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
 import { CreateAuditRequestData } from "../../types";
 
@@ -12,23 +12,7 @@ const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
-onMounted(() => {
-  auditStore.fetchAuditIfNeeded(auditUniqueId).catch((error) => {
-    const errorStatus: number = error?.response?.status || 404;
-
-    if ([404, 410].includes(errorStatus)) {
-      router.replace({
-        name: "Error",
-        params: { pathMatch: route.path.substring(1).split("/") },
-        query: route.query,
-        hash: route.hash,
-        state: {
-          errorStatus,
-        },
-      });
-    }
-  });
-});
+useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
 
 function submitStepOne(data: CreateAuditRequestData) {
   auditStore

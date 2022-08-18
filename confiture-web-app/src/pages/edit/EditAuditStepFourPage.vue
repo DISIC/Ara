@@ -7,6 +7,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore, useAuditStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import { formatAuditType } from "../../utils";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,23 +16,7 @@ const uniqueId = route.params.uniqueId as string;
 
 const auditStore = useAuditStore();
 
-onMounted(() => {
-  auditStore.fetchAuditIfNeeded(uniqueId).catch((error) => {
-    const errorStatus: number = error?.response?.status || 404;
-
-    if ([404, 410].includes(errorStatus)) {
-      router.replace({
-        name: "Error",
-        params: { pathMatch: route.path.substring(1).split("/") },
-        query: route.query,
-        hash: route.hash,
-        state: {
-          errorStatus,
-        },
-      });
-    }
-  });
-});
+useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 const showCopyAlert = ref(false);
 
