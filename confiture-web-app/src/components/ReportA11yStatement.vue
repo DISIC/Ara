@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../composables/useWrappedFetch";
@@ -21,6 +22,41 @@ function getA11yLevel() {
     return "non";
   }
 }
+
+const statementRef = ref<HTMLDivElement>();
+const showCopyAlert = ref(false);
+
+/**
+ * TODO:
+ * - remove "class" attributes
+ * - remove "data-*" attributes
+ */
+async function copyA11yStatementHTML() {
+  const html = statementRef.value?.innerHTML
+    ?.replaceAll("<h3", "<h1")
+    .replaceAll("</h3>", "</h1>")
+    .replaceAll("<h4", "<h2")
+    .replaceAll("</h4>", "</h2>")
+    .replaceAll("<h5", "<h3")
+    .replaceAll("</h5>", "</h3>")
+    .replaceAll(/class="[a-zA-Z0-9:;.\s()\-,]*"/g, "");
+  // .replaceAll(/data-v-.*=""/g, "");
+  // .replaceAll(/data-v-.=""/g, "")
+  // .replaceAll(/<\s*(\w+)[^/>]*>/g, "");
+  console.log(html);
+
+  // navigator.clipboard
+  //   .writeText(html)
+  //   .then(() => {
+  //     showCopyAlert.value = true;
+  //   })
+  //   .catch((err) => {
+  //     console.error(
+  //       `Error copying a11y statement HTLM to the clipboard: ${err}.`
+  //     );
+  //   });
+}
+
 /**
  * Missing a lot of data:
  * - entity name (API)
@@ -61,11 +97,14 @@ function getA11yLevel() {
     </p>
 
     <!-- FIXME: icon "copy" does not seem to exist -->
-    <button class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w">
+    <button
+      class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
+      @click="copyA11yStatementHTML"
+    >
       Copier le code HTML
     </button>
 
-    <div class="fr-p-6w statement-container">
+    <div ref="statementRef" class="fr-p-6w statement-container">
       <h3 class="fr-h2">Déclaration d’accessibilité</h3>
       <p>
         <strong>[Nom de l’entité]</strong> s’engage à rendre ses sites internet,
