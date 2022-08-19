@@ -52,7 +52,7 @@ const stats = computed(() => [
   <h2 class="fr-mt-8w">Détails des résultats</h2>
 
   <ResultDetailsCard
-    class="fr-mb-6w"
+    class="fr-mb-6w result-card"
     title="Répartition des critères par résutats"
     accordion-title="En savoir plus"
   >
@@ -74,7 +74,7 @@ const stats = computed(() => [
   </ResultDetailsCard>
 
   <ResultDetailsCard
-    class="fr-mb-6w"
+    class="fr-mb-6w result-card"
     title="Répartition des critères par pages"
     accordion-title="En savoir plus"
   >
@@ -94,6 +94,7 @@ const stats = computed(() => [
   </ResultDetailsCard>
 
   <ResultDetailsCard
+    class="result-card"
     title="Répartition des critères par thématiques"
     accordion-title="En savoir plus"
   >
@@ -114,6 +115,9 @@ const stats = computed(() => [
 </template>
 
 <style scoped>
+.result-card {
+  max-width: 49.5rem;
+}
 .card-content {
   display: flex;
   gap: 3rem;
