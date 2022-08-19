@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.6.0",
+    "chart.js": "^3.9.1",
     "ky": "^0.31.0",
     "lodash-es": "^4.17.21",
     "marked": "^4.0.18",

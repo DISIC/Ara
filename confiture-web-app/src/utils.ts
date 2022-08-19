@@ -25,3 +25,10 @@ const FORMATTED_TYPES = {
 export function formatAuditType(auditType: AuditType): string {
   return FORMATTED_TYPES[auditType];
 }
+
+/**
+ * Get a CSS variable value from the root element.
+ */
+export function getCssVarValue(varName: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName);
+}

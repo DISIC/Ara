@@ -3,6 +3,10 @@ import { computed } from "vue";
 
 import { useReportStore } from "../store";
 import SummaryCard from "./SummaryCard.vue";
+import ResultDetailsCard from "./ResultDetailsCard.vue";
+import ChartLegend from "./ChartLegend.vue";
+import PieChart from "./PieChart.vue";
+import StackBarChart from "./StackBarChart.vue";
 
 const report = useReportStore();
 
@@ -44,4 +48,90 @@ const stats = computed(() => [
       />
     </div>
   </div>
+
+  <h2 class="fr-mt-8w">Détails des résultats</h2>
+
+  <ResultDetailsCard
+    class="fr-mb-6w"
+    title="Répartition des critères par résutats"
+    accordion-title="En savoir plus"
+  >
+    <div class="card-content">
+      <ChartLegend class="card-legend" />
+      <PieChart
+        :compliant="report.data.resultDistribution.compliant"
+        :not-compliant="report.data.resultDistribution.notCompliant"
+        :not-applicable="report.data.resultDistribution.notApplicable"
+      />
+    </div>
+
+    <template #accordion>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
+      aspernatur commodi cupiditate a aut placeat consequatur sed exercitationem
+      praesentium, corporis dolorem quas fugiat consequuntur quod illo eaque
+      mollitia iusto alias!
+    </template>
+  </ResultDetailsCard>
+
+  <ResultDetailsCard
+    class="fr-mb-6w"
+    title="Répartition des critères par pages"
+    accordion-title="En savoir plus"
+  >
+    <div class="card-content">
+      <ChartLegend class="card-legend" />
+      <div class="card-main">
+        <StackBarChart :data="report.data.pageDistributions" />
+      </div>
+    </div>
+
+    <template #accordion>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
+      aspernatur commodi cupiditate a aut placeat consequatur sed exercitationem
+      praesentium, corporis dolorem quas fugiat consequuntur quod illo eaque
+      mollitia iusto alias!
+    </template>
+  </ResultDetailsCard>
+
+  <ResultDetailsCard
+    title="Répartition des critères par thématiques"
+    accordion-title="En savoir plus"
+  >
+    <div class="card-content">
+      <ChartLegend class="card-legend" />
+      <div class="card-main">
+        <StackBarChart :data="report.data.topicDistributions" />
+      </div>
+    </div>
+
+    <template #accordion>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
+      aspernatur commodi cupiditate a aut placeat consequatur sed exercitationem
+      praesentium, corporis dolorem quas fugiat consequuntur quod illo eaque
+      mollitia iusto alias!
+    </template>
+  </ResultDetailsCard>
 </template>
+
+<style scoped>
+.card-content {
+  display: flex;
+  gap: 3rem;
+}
+
+.card-legend {
+  flex-shrink: 0;
+}
+
+.card-main {
+  flex: 1;
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  .card-content {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+</style>
