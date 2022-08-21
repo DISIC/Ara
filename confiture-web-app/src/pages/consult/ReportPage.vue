@@ -9,6 +9,7 @@ import TopLink from "../../components/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatAuditType, formatDate } from "../../utils";
+import OnboardingModal from "../../components/OnboardingModal.vue";
 
 const report = useReportStore();
 
@@ -69,6 +70,8 @@ function hideReportAlert() {
   </div>
 
   <template v-if="report.data">
+    <OnboardingModal />
+
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
       <p class="fr-text--light fr-mb-4w dates">
