@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { AuditType } from "../types";
+import { getCriteriaCount } from "../utils";
+
 defineProps<{
   label: string;
-  badge: string;
-  value: string | undefined;
+  value: AuditType;
   checked: boolean;
   modelValue: string | null;
 }>();
@@ -12,7 +14,7 @@ defineEmits(["update:modelValue"]);
 <template>
   <div :class="['fr-p-3w container', { checked: checked }]">
     <p class="fr-badge fr-badge--sm fr-badge--purple-glycine fr-mb-2w">
-      {{ badge }}
+      {{ getCriteriaCount(value) }} critères
     </p>
     <div class="fr-radio-group group">
       <input

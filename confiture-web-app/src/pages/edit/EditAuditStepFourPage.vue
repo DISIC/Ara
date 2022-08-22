@@ -6,7 +6,7 @@ import { AuditType } from "../../types";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore, useAuditStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
-import { formatAuditType } from "../../utils";
+import { formatAuditType, getCriteriaCount } from "../../utils";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 
 const route = useRoute();
@@ -66,7 +66,9 @@ const headerInfos = computed(() => [
   {
     label: "Critères applicables",
     value: applicableCriteriaCount.value,
-    description: "/ 106",
+    description: `/ ${getCriteriaCount(
+      auditStore.data!.auditType as AuditType
+    )}`,
   },
   {
     label: "Erreurs d’accessibilité",

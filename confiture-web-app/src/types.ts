@@ -115,3 +115,19 @@ export interface CriteriumResult {
   recommandation: string | null;
   notApplicableComment: string | null;
 }
+
+export enum AssistiveTechnology {
+  JAWS_LATEST = "jaws-latest",
+  JAWS_PREVIOUS = "jaws-previous",
+  NVDA_LATEST = "nvda-latest",
+  NVDA_PREVIOUS = "nvda-previous",
+  VOICEOVER_LATEST = "voiceover-latest",
+  VOICEOVER_PREVIOUS = "voiceover-previous",
+}
+
+export enum Browser {
+  CHROME = "chrome",
+  FIREFOX = "firefox",
+  SAFARI = "safari",
+  EDGE = "edge",
+}

@@ -21,17 +21,14 @@ const availableAuditTypes = [
   {
     label: "Rapide",
     value: AuditType.FAST,
-    badge: "25 critères",
   },
   {
     label: "Complémentaire",
     value: AuditType.COMPLEMENTARY,
-    badge: "50 critères",
   },
   {
     label: "Complet",
     value: AuditType.FULL,
-    badge: "106 critères",
   },
 ];
 const availableTools = [
@@ -297,7 +294,6 @@ function fillFields() {
             v-model="auditType"
             :value="type.value"
             :label="type.label"
-            :badge="type.badge"
             :checked="auditType === type.value"
           />
         </div>
