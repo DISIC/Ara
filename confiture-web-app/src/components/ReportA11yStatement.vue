@@ -26,35 +26,40 @@ function getA11yLevel() {
 const statementRef = ref<HTMLDivElement>();
 const showCopyAlert = ref(false);
 
-/**
- * TODO:
- * - remove "class" attributes
- * - remove "data-*" attributes
- */
 async function copyA11yStatementHTML() {
   const html = statementRef.value?.innerHTML
-    ?.replaceAll("<h3", "<h1")
+    // Replace heading levels
+    .replaceAll("<h3", "<h1")
     .replaceAll("</h3>", "</h1>")
     .replaceAll("<h4", "<h2")
     .replaceAll("</h4>", "</h2>")
     .replaceAll("<h5", "<h3")
     .replaceAll("</h5>", "</h3>")
-    .replaceAll(/class="[a-zA-Z0-9:;.\s()\-,]*"/g, "");
-  // .replaceAll(/data-v-.*=""/g, "");
-  // .replaceAll(/data-v-.=""/g, "")
-  // .replaceAll(/<\s*(\w+)[^/>]*>/g, "");
-  console.log(html);
 
-  // navigator.clipboard
-  //   .writeText(html)
-  //   .then(() => {
-  //     showCopyAlert.value = true;
-  //   })
-  //   .catch((err) => {
-  //     console.error(
-  //       `Error copying a11y statement HTLM to the clipboard: ${err}.`
-  //     );
-  //   });
+    // Remove class attributes
+    .replaceAll(/class="[a-zA-Z0-9:;.\s()\-,]*"/g, "")
+    // Remove comments
+    .replaceAll(/(<!--.*?-->)|(<!--[\S\s]+?-->)|(<!--[\S\s]*?$)/g, "")
+
+    // Remove Vue.js data attributes
+    .replaceAll(/data-v-.*?=""/g, "");
+
+  if (html) {
+    navigator.clipboard
+      .writeText(html)
+      .then(() => {
+        showCopyAlert.value = true;
+      })
+      .catch((err) => {
+        console.error(
+          `Error copying a11y statement HTML to the clipboard: ${err}.`
+        );
+      });
+  }
+}
+
+function hideCopyAlert() {
+  showCopyAlert.value = false;
 }
 
 /**
@@ -100,9 +105,23 @@ async function copyA11yStatementHTML() {
     <button
       class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
       @click="copyA11yStatementHTML"
+      @blur="hideCopyAlert"
     >
       Copier le code HTML
     </button>
+
+    <div role="alert" aria-live="polite">
+      <div
+        v-if="showCopyAlert"
+        class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
+      >
+        <p>
+          Le code
+          <abbr title="Hypertext Markup Language">HTML</abbr> de la déclaration
+          d’accessibilité a bien été copié dans le presse-papier.
+        </p>
+      </div>
+    </div>
 
     <div ref="statementRef" class="fr-p-6w statement-container">
       <h3 class="fr-h2">Déclaration d’accessibilité</h3>
