@@ -5,6 +5,7 @@ import uploadIllustration from "../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../assets/images/onboarding-hammer.svg";
 import magnifierIllustration from "../assets/images/onboarding-magnifier.svg";
 import handsIllustration from "../assets/images/onboarding-hands.svg";
+import StatDonut from "./StatDonut.vue";
 
 const props = defineProps<{
   accessibilityRate: number;
@@ -97,7 +98,16 @@ watch(currentStep, () => {
 
               <div ref="contentEl" class="fr-modal__content" tabindex="-1">
                 <div class="content">
+                  <StatDonut
+                    v-if="currentStep === 0"
+                    class="stat-donut"
+                    :value="accessibilityRate"
+                    :total="100"
+                    unit="%"
+                  />
+
                   <div
+                    v-else
                     class="circle"
                     :style="{
                       '--illustration': steps[currentStep].illustration,
@@ -166,14 +176,23 @@ watch(currentStep, () => {
   column-gap: 76px;
   row-gap: 1rem;
 }
+
+.stat-donut {
+  font-size: 2rem;
+}
+
+.stat-donut,
 .circle {
   width: 12rem;
   height: 12rem;
-  border-radius: 50%;
-  background-color: #f5f5f5;
   grid-column: 1 / 2;
   grid-row: 1 / 5;
   align-self: center;
+}
+
+.circle {
+  border-radius: 50%;
+  background-color: #f5f5f5;
   background-image: var(--illustration);
   background-position: center;
   background-repeat: no-repeat;

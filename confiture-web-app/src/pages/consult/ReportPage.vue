@@ -1,3 +1,8 @@
+<!-- 
+  TODO: Show alert on report page when onboarding modal is not finished
+  TODO: 
+-->
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";

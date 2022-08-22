@@ -46,8 +46,8 @@ defineProps<{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 5rem;
-  height: 5rem;
+  width: 80%;
+  height: 80%;
   border-radius: 50%;
   background: var(--background-default-grey);
   color: var(--text-title-grey);
@@ -57,7 +57,8 @@ defineProps<{
   display: flex;
   align-items: baseline;
   justify-content: center;
-  font-size: 2.25rem;
+  font-size: 2.25em;
+  line-height: 1.5;
   font-weight: bold;
 }
 </style>
