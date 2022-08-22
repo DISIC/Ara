@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
@@ -9,6 +9,7 @@ import TopLink from "../../components/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatAuditType, formatDate } from "../../utils";
+import OnboardingModal from "../../components/OnboardingModal.vue";
 
 const report = useReportStore();
 
@@ -26,8 +27,7 @@ const tabs = [
 const showCopyAlert = ref(false);
 
 async function copyReportUrl() {
-  // TODO: set correct content
-  const url = `${import.meta.env.VITE_BASE_URL}/rapports/${uniqueId}`;
+  const url = `${window.location.origin}/rapports/${uniqueId}`;
 
   navigator.clipboard
     .writeText(url)
@@ -42,9 +42,45 @@ async function copyReportUrl() {
 function hideReportAlert() {
   showCopyAlert.value = false;
 }
+
+const showOnboardingModal = ref(
+  localStorage.getItem("confiture:seen-onboarding") !== "true"
+);
+
+const showOnboardingAlert = ref(
+  localStorage.getItem("confiture:hide-onboarding-alert") !== "true"
+);
+
+function onOnboardingClose(confirmed: boolean) {
+  localStorage.setItem("confiture:seen-onboarding", "true");
+  showOnboardingAlert.value = !confirmed;
+  if (confirmed) {
+    localStorage.setItem("confiture:hide-onboarding-alert", "true");
+  }
+}
+
+function onOnboardingAlertClose() {
+  showOnboardingAlert.value = false;
+  localStorage.setItem("confiture:hide-onboarding-alert", "true");
+}
 </script>
 
 <template>
+  <div v-if="showOnboardingAlert" class="fr-alert fr-alert--info fr-mb-6w">
+    <p class="fr-alert__title">Vous ne savez pas par quel bout commencer ?</p>
+    <p>
+      Retrouver tous nos conseils dans la page
+      <RouterLink to="/aide">Aide</RouterLink>
+    </p>
+    <button
+      class="fr-btn--close fr-btn"
+      title="Masquer le message"
+      @click="onOnboardingAlertClose"
+    >
+      Masquer le message
+    </button>
+  </div>
+
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div>
@@ -69,6 +105,12 @@ function hideReportAlert() {
   </div>
 
   <template v-if="report.data">
+    <OnboardingModal
+      :show="showOnboardingModal"
+      :accessibility-rate="report.data.accessibilityRate"
+      @close="onOnboardingClose"
+    />
+
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
       <p class="fr-text--light fr-mb-4w dates">
