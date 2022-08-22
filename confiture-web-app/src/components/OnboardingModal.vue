@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 
 import uploadIllustration from "../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../assets/images/onboarding-hammer.svg";
 import magnifierIllustration from "../assets/images/onboarding-magnifier.svg";
 import handsIllustration from "../assets/images/onboarding-hands.svg";
+
+const props = defineProps<{
+  accessibilityRate: number;
+}>();
 
 const modal = ref<HTMLDialogElement>();
 
@@ -14,23 +18,22 @@ onMounted(() => {
   });
 });
 
-const STEPS = [
+const steps = computed(() => [
   {
     title: "Bienvenue sur votre rapport d’audit",
     subTitle: "",
-    // TODO: accessibility
-    text: "Wow ! Le taux d’accessibilité de votre site est de 82%, ce qui est super mais on peut faire encore mieux ! Et pour ça nous allons vous aider.",
+    text: `Wow ! Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, ce qui est super mais on peut faire encore mieux ! Et pour ça nous allons vous aider.`,
     illustration: `url(${uploadIllustration})`,
   },
   {
     title: "Je mets en ligne la déclaration d’accessibilité",
-    subTitle: "Par quoi commencer ? ",
+    subTitle: "Par quoi commencer ?",
     text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournis avec ce rapport sur votre site. ",
     illustration: `url(${uploadIllustration})`,
   },
   {
     title: "Je corrige les erreurs relevées",
-    subTitle: "Ensuite ? ",
+    subTitle: "Ensuite ?",
     text: "Prioriser, corriger, tester. Vous trouverez dans ce rapport toutes les informations nécessaires pour vous aider dans chacune de ses tâches.",
     illustration: `url(${hammerIllustration})`,
   },
@@ -42,14 +45,14 @@ const STEPS = [
   },
   {
     title: "Je peux trouver de l’aide",
-    subTitle: "Et si jamais ? ",
-    // TODO: bold text
-    text: "L’auditeur qui à réalisé cet audit peut vous aider, n’hésiter pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la page Aide ou auprès de la communauté Slack.",
+    subTitle: "Et si jamais ?",
+    text: "L’<strong>auditeur</strong> qui à réalisé cet audit peut vous aider, n’hésiter pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong> ou auprès de la <strong>communauté Slack</strong>.",
     illustration: `url(${handsIllustration})`,
   },
-];
+]);
 
 const currentStep = ref(0);
+const contentEl = ref<HTMLDivElement>();
 
 const previousStep = () => {
   currentStep.value = Math.max(0, currentStep.value - 1);
@@ -62,6 +65,11 @@ const nextStep = () => {
 
   currentStep.value = Math.min(4, currentStep.value + 1);
 };
+
+watch(currentStep, () => {
+  // reset focus on the modal content when text changes
+  contentEl.value?.focus();
+});
 </script>
 
 <template>
@@ -86,26 +94,28 @@ const nextStep = () => {
                   Fermer
                 </button>
               </div>
-              <div class="fr-modal__content">
+
+              <div ref="contentEl" class="fr-modal__content" tabindex="-1">
                 <div class="content">
                   <div
                     class="circle"
                     :style="{
-                      '--illustration': STEPS[currentStep].illustration,
+                      '--illustration': steps[currentStep].illustration,
                     }"
                   ></div>
 
                   <p class="fr-text--xs content-sub-title">
-                    {{ STEPS[currentStep].subTitle }}
+                    {{ steps[currentStep].subTitle }}
                   </p>
 
                   <p class="fr-modal__title content-title">
-                    {{ STEPS[currentStep].title }}
+                    {{ steps[currentStep].title }}
                   </p>
-                  <p class="content-text">
-                    {{ STEPS[currentStep].text }}
-                  </p>
-                  <div class="steps">
+                  <p class="content-text" v-html="steps[currentStep].text"></p>
+                  <div
+                    class="steps"
+                    :aria-label="`Étape ${currentStep + 1} sur ${steps.length}`"
+                  >
                     <div
                       v-for="i in 5"
                       :key="i"
@@ -114,20 +124,27 @@ const nextStep = () => {
                   </div>
                 </div>
               </div>
+
               <div class="fr-modal__footer">
                 <ul
-                  class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left"
+                  class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left"
                 >
                   <li>
                     <button
-                      class="fr-btn fr-btn--secondary"
+                      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-s-line"
+                      :disabled="currentStep === 0"
                       @click="previousStep"
                     >
                       Précedent
                     </button>
                   </li>
                   <li>
-                    <button class="fr-btn" @click="nextStep">Suivant</button>
+                    <button
+                      class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
+                      @click="nextStep"
+                    >
+                      {{ currentStep === 4 ? "Accéder au rapport" : "Suivant" }}
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -142,10 +159,12 @@ const nextStep = () => {
 <style scoped>
 .content {
   display: grid;
-  grid-template-rows: auto auto 12rem auto;
+  height: 20rem;
+  grid-template-rows: 1fr auto auto 1fr;
   grid-template-columns: repeat(2, auto);
   grid-auto-flow: row;
   column-gap: 76px;
+  row-gap: 1rem;
 }
 .circle {
   width: 12rem;
@@ -153,11 +172,15 @@ const nextStep = () => {
   border-radius: 50%;
   background-color: #f5f5f5;
   grid-column: 1 / 2;
-  grid-row: 1 / 4;
+  grid-row: 1 / 5;
   align-self: center;
   background-image: var(--illustration);
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.content-sub-title {
+  align-self: flex-end;
 }
 
 .content-sub-title,
@@ -165,11 +188,13 @@ const nextStep = () => {
 .content-text,
 .steps {
   grid-column: 2 / 3;
+  margin: 0;
 }
 
 .steps {
   display: flex;
   gap: 6px;
+  align-self: center;
 }
 
 .steps > * {

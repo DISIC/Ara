@@ -70,7 +70,7 @@ function hideReportAlert() {
   </div>
 
   <template v-if="report.data">
-    <OnboardingModal />
+    <OnboardingModal :accessibility-rate="report.data.accessibilityRate" />
 
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
