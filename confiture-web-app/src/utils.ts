@@ -1,4 +1,10 @@
-import { AuditType, AssistiveTechnology, Browser } from "./types";
+import {
+  AuditType,
+  AssistiveTechnology,
+  Browser,
+  CriterionResultUserImpact,
+  CriteriumResultStatus,
+} from "./types";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
@@ -56,6 +62,36 @@ const FORMATTED_BROWSER = {
  */
 export function formatBrowser(browser: Browser): string {
   return FORMATTED_BROWSER[browser];
+}
+
+const FORMATTED_USER_IMPACT = {
+  [CriterionResultUserImpact.MINOR]: "Impact mineur",
+  [CriterionResultUserImpact.MAJOR]: "Impact Majeur",
+  [CriterionResultUserImpact.BLOCKING]: "Impact bloquant",
+};
+
+/**
+ * Format a criterion result user impact type string into French.
+ */
+export function formatUserImpact(
+  userImpact: CriterionResultUserImpact
+): string {
+  return FORMATTED_USER_IMPACT[userImpact];
+}
+
+// TODO: replace everywhere in the app
+const FORMATTED_STATUS = {
+  [CriteriumResultStatus.NOT_TESTED]: "Non testé",
+  [CriteriumResultStatus.COMPLIANT]: "Conforme",
+  [CriteriumResultStatus.NOT_COMPLIANT]: "Non conforme",
+  [CriteriumResultStatus.NOT_APPLICABLE]: "Non applicable",
+};
+
+/**
+ * Format a criterion result status type string into French.
+ */
+export function formatStatus(status: CriteriumResultStatus): string {
+  return FORMATTED_STATUS[status];
 }
 
 const CRITERIA_COUNT = {
