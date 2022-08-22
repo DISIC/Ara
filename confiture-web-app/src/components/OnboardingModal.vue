@@ -13,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:show", payload: boolean): void;
+  (e: "update:show", value: boolean): void;
 }>();
 
 const modal = ref<HTMLDialogElement>();
@@ -100,7 +100,6 @@ watch(currentStep, () => {
       class="fr-modal"
       v-on="{
         'dsfr.conceal': () => $emit('update:show', false),
-        'dsfr.disclose': () => $emit('update:show', true),
       }"
     >
       <div class="fr-container fr-container--fluid fr-container-md">

@@ -46,9 +46,27 @@ function hideReportAlert() {
 
 // TODO: compute initial value
 const showOnboardingModal = ref(true);
+
+// TODO: only show when closing onboarding modal without going to the last step
+const showOnboardingAlert = ref(true);
 </script>
 
 <template>
+  <div v-if="showOnboardingAlert" class="fr-alert fr-alert--info fr-mb-6w">
+    <p class="fr-alert__title">Vous ne savez pas par quel bout commencer ?</p>
+    <p>
+      Retrouver tous nos conseils dans la page
+      <RouterLink to="/aide">Aide</RouterLink>
+    </p>
+    <button
+      class="fr-btn--close fr-btn"
+      title="Masquer le message"
+      @click="showOnboardingAlert = false"
+    >
+      Masquer le message
+    </button>
+  </div>
+
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div>
