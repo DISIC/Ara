@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 import uploadIllustration from "../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../assets/images/onboarding-hammer.svg";
@@ -13,27 +13,18 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:show", value: boolean): void;
+  (e: "close", confirmed: boolean): void;
 }>();
 
 const modal = ref<HTMLDialogElement>();
 
-watch(
-  () => props.show,
-  (show) => {
-    // FIXME: wrapping calls to dsfr in setTimeout seems to fix the issue
-    // of the dsfr modal not being initialized yet when dsfr() is called
-    // immediately on mounted
-    setTimeout(() => {
-      if (show) {
-        dsfr(modal.value).modal.disclose();
-      } else {
-        dsfr(modal.value).modal.conceal();
-      }
-    });
-  },
-  { immediate: true }
-);
+onMounted(() => {
+  setTimeout(() => {
+    if (props.show) {
+      dsfr(modal.value).modal.disclose();
+    }
+  });
+});
 
 const steps = computed(() => [
   {
@@ -78,7 +69,8 @@ const previousStep = () => {
 
 const nextStep = () => {
   if (currentStep.value === 4) {
-    emit("update:show", false);
+    dsfr(modal.value).modal.conceal();
+    emit("close", true);
   }
 
   currentStep.value = Math.min(4, currentStep.value + 1);
@@ -99,7 +91,7 @@ watch(currentStep, () => {
       role="dialog"
       class="fr-modal"
       v-on="{
-        'dsfr.conceal': () => $emit('update:show', false),
+        'dsfr.conceal': () => $emit('close', false),
       }"
     >
       <div class="fr-container fr-container--fluid fr-container-md">

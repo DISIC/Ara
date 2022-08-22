@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
@@ -27,8 +27,7 @@ const tabs = [
 const showCopyAlert = ref(false);
 
 async function copyReportUrl() {
-  // TODO: set correct content
-  const url = `${import.meta.env.VITE_BASE_URL}/rapports/${uniqueId}`;
+  const url = `${window.location.origin}/rapports/${uniqueId}`;
 
   navigator.clipboard
     .writeText(url)
@@ -44,11 +43,26 @@ function hideReportAlert() {
   showCopyAlert.value = false;
 }
 
-// TODO: compute initial value
-const showOnboardingModal = ref(true);
+const showOnboardingModal = ref(
+  localStorage.getItem("confiture:seen-onboarding") !== "true"
+);
 
-// TODO: only show when closing onboarding modal without going to the last step
-const showOnboardingAlert = ref(true);
+const showOnboardingAlert = ref(
+  localStorage.getItem("confiture:hide-onboarding-alert") !== "true"
+);
+
+function onOnboardingClose(confirmed: boolean) {
+  localStorage.setItem("confiture:seen-onboarding", "true");
+  showOnboardingAlert.value = !confirmed;
+  if (confirmed) {
+    localStorage.setItem("confiture:hide-onboarding-alert", "true");
+  }
+}
+
+function onOnboardingAlertClose() {
+  showOnboardingAlert.value = false;
+  localStorage.setItem("confiture:hide-onboarding-alert", "true");
+}
 </script>
 
 <template>
@@ -61,7 +75,7 @@ const showOnboardingAlert = ref(true);
     <button
       class="fr-btn--close fr-btn"
       title="Masquer le message"
-      @click="showOnboardingAlert = false"
+      @click="onOnboardingAlertClose"
     >
       Masquer le message
     </button>
@@ -92,8 +106,9 @@ const showOnboardingAlert = ref(true);
 
   <template v-if="report.data">
     <OnboardingModal
-      v-model:show="showOnboardingModal"
+      :show="showOnboardingModal"
       :accessibility-rate="report.data.accessibilityRate"
+      @close="onOnboardingClose"
     />
 
     <div class="fr-mb-6w fr-mb-md-12w header">
