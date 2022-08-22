@@ -1,8 +1,3 @@
-<!-- 
-  TODO: Show alert on report page when onboarding modal is not finished
-  TODO: 
--->
-
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
@@ -48,6 +43,9 @@ async function copyReportUrl() {
 function hideReportAlert() {
   showCopyAlert.value = false;
 }
+
+// TODO: compute initial value
+const showOnboardingModal = ref(true);
 </script>
 
 <template>
@@ -75,7 +73,10 @@ function hideReportAlert() {
   </div>
 
   <template v-if="report.data">
-    <OnboardingModal :accessibility-rate="report.data.accessibilityRate" />
+    <OnboardingModal
+      v-model:show="showOnboardingModal"
+      :accessibility-rate="report.data.accessibilityRate"
+    />
 
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 
 import uploadIllustration from "../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../assets/images/onboarding-hammer.svg";
@@ -9,20 +9,37 @@ import StatDonut from "./StatDonut.vue";
 
 const props = defineProps<{
   accessibilityRate: number;
+  show: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:show", payload: boolean): void;
 }>();
 
 const modal = ref<HTMLDialogElement>();
 
-onMounted(() => {
-  setTimeout(() => {
-    dsfr(modal.value).modal.disclose();
-  });
-});
+watch(
+  () => props.show,
+  (show) => {
+    // FIXME: wrapping calls to dsfr in setTimeout seems to fix the issue
+    // of the dsfr modal not being initialized yet when dsfr() is called
+    // immediately on mounted
+    setTimeout(() => {
+      if (show) {
+        dsfr(modal.value).modal.disclose();
+      } else {
+        dsfr(modal.value).modal.conceal();
+      }
+    });
+  },
+  { immediate: true }
+);
 
 const steps = computed(() => [
   {
     title: "Bienvenue sur votre rapport d’audit",
     subTitle: "",
+    // FIXME: different wording when accessibility rate is low ?
     text: `Wow ! Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, ce qui est super mais on peut faire encore mieux ! Et pour ça nous allons vous aider.`,
     illustration: `url(${uploadIllustration})`,
   },
@@ -61,7 +78,7 @@ const previousStep = () => {
 
 const nextStep = () => {
   if (currentStep.value === 4) {
-    dsfr(modal.value).modal.conceal();
+    emit("update:show", false);
   }
 
   currentStep.value = Math.min(4, currentStep.value + 1);
@@ -81,6 +98,10 @@ watch(currentStep, () => {
       aria-label="Bienvenue sur votre rapport d’audit"
       role="dialog"
       class="fr-modal"
+      v-on="{
+        'dsfr.conceal': () => $emit('update:show', false),
+        'dsfr.disclose': () => $emit('update:show', true),
+      }"
     >
       <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
