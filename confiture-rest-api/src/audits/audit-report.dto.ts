@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuditType } from '@prisma/client';
+import {
+  AuditType,
+  CriterionResultStatus,
+  CriterionResultUserImpact,
+} from '@prisma/client';
 
 export class AuditReportDto {
   /** Unique ID used to construct the report URL. */
@@ -50,6 +54,8 @@ export class AuditReportDto {
 
   /** Distribution of criteria by topic */
   topicDistributions: TopicResultDistribution[];
+
+  results: ReportCriterionResult[];
 }
 
 class ResultDistribution {
@@ -139,4 +145,39 @@ class Environment {
    * @example "Windows 11"
    */
   os: string;
+}
+
+class ReportCriterionResult {
+  /** @example 2 */
+  topic: number;
+  /** @example 3 */
+  criterium: number;
+  /**
+   * @example "https://example.com/contact"
+   */
+  pageUrl: string;
+
+  /**
+   * @example "NOT_COMPLIANT"
+   */
+  @ApiProperty({ enum: CriterionResultStatus })
+  status: CriterionResultStatus;
+
+  compliantComment: string | null;
+
+  /**
+   * @example "There is an accessibility error there."
+   */
+  errorDescription: string | null;
+  /**
+   * @example "MAJOR"
+   */
+  @ApiProperty({ enum: CriterionResultUserImpact })
+  userImpact: CriterionResultUserImpact | null;
+  /**
+   * @example "You could do this or do that."
+   */
+  recommandation: string | null;
+
+  notApplicableComment: string | null;
 }

@@ -514,6 +514,20 @@ export class AuditService {
             r.status === CriterionResultStatus.NOT_COMPLIANT,
         ).length,
       })),
+
+      results: results.map((r) => ({
+        pageUrl: r.pageUrl,
+        topic: r.topic,
+        criterium: r.criterium,
+
+        status: r.status,
+
+        compliantComment: r.compliantComment,
+        errorDescription: r.errorDescription,
+        notApplicableComment: r.notApplicableComment,
+        recommandation: r.recommandation,
+        userImpact: r.userImpact,
+      })),
     };
 
     return report;
