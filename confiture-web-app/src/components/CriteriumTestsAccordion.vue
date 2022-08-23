@@ -1,3 +1,7 @@
+<script lang="ts">
+let nextId = 1;
+</script>
+
 <script setup lang="ts">
 import { marked } from "marked";
 
@@ -6,10 +10,11 @@ import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   topicNumber: number;
-  id: string;
   // FIXME: type things
   criterium: any;
 }>();
+
+const uniqueId = nextId++;
 
 const testsHtml = Object.values(
   props.criterium.tests as Record<string, string | string[]>
@@ -49,7 +54,7 @@ const methodologiesHtml = Object.values(
           <button
             class="fr-accordion__btn"
             aria-expanded="false"
-            :aria-controls="`tests-method-${id}-${i}`"
+            :aria-controls="`criterium-tests-accordion-${uniqueId}`"
           >
             Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
               i + 1
@@ -57,7 +62,7 @@ const methodologiesHtml = Object.values(
           </button>
         </span>
         <div
-          :id="`tests-method-${id}-${i}`"
+          :id="`criterium-tests-accordion-${uniqueId}`"
           class="fr-collapse criterium-test-methodology"
         >
           <div v-html="methodologiesHtml[i]" />

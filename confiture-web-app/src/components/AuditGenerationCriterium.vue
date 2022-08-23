@@ -114,7 +114,6 @@ const uniqueId = computed(() => {
 
     <!-- TESTS + METHODO -->
     <CriteriumTestsAccordion
-      :id="uniqueId"
       :topic-number="topicNumber"
       :criterium="criterium"
     />

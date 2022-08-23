@@ -7,6 +7,8 @@ import { marked } from "marked";
 import { useReportStore } from "../store";
 import { formatUserImpact, formatStatus } from "../utils";
 import { CriteriumResultStatus } from "../types";
+import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
+import LazyAccordion from "./LazyAccordion.vue";
 import rgaa from "../criteres.json";
 
 const report = useReportStore();
@@ -67,10 +69,13 @@ function getCriterium(topicNumber: number, criteriumNumber: number) {
   const criterium = rgaa.topics
     .find((t) => t.number === topicNumber)
     // @ts-expect-error The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
-    ?.criteria.find((c) => c.criterium.number === criteriumNumber)
-    .criterium.title;
+    ?.criteria.find((c) => c.criterium.number === criteriumNumber).criterium;
 
-  return marked.parseInline(criterium);
+  return criterium;
+}
+
+function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
+  return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
 }
 
 function getPageName(pageUrl: string) {
@@ -147,21 +152,30 @@ function getCriteriumUniqueId(
 
     <div>
       <section v-for="page in errors" :key="page.pageUrl" class="fr-mb-8w">
-        <h3
+        <h2
           :id="`${getPageSlug(page.pageUrl as string)}`"
-          class="fr-mb-4w page-title"
+          class="fr-mb-4w fr-h3 page-title"
         >
           {{ page.pageName }}
-        </h3>
+        </h2>
 
-        <div v-for="topic in page.topics" :key="topic.topic" class="fr-mb-9v">
+        <div
+          v-for="(topic, i) in page.topics"
+          :key="topic.topic"
+          :class="{ 'fr-mt-9v': i !== 0 }"
+        >
           <p class="fr-tag fr-tag--sm fr-mb-3w">
             {{ topic.name }}
           </p>
-          <template v-for="(error, i) in topic.errors" :key="i">
-            <p class="fr-text--lg fr-text--bold fr-mb-2w">
+          <template v-for="(error, j) in topic.errors" :key="j">
+            <p
+              :class="[
+                'fr-text--lg fr-text--bold criterium-title',
+                { 'fr-mt-9v': j !== 0 },
+              ]"
+            >
               {{ error.topic }}.{{ error.criterium }}&nbsp;
-              <span v-html="getCriterium(error.topic, error.criterium)" />
+              <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
             </p>
 
             <!-- FIXME: tags like this are not customizable (color) -->
@@ -175,109 +189,57 @@ function getCriteriumUniqueId(
             </ul>
 
             <!-- Error -->
-            <section class="fr-accordion">
-              <h4 class="fr-accordion__title">
-                <button
-                  class="fr-accordion__btn"
-                  aria-expanded="false"
-                  :aria-controls="
-                    getCriteriumUniqueId(
-                      page.pageUrl,
-                      error.topic,
-                      error.criterium,
-                      'error'
-                    )
-                  "
-                >
-                  Erreur
-                </button>
-              </h4>
-              <div
-                :id="
-                  getCriteriumUniqueId(
-                    page.pageUrl,
-                    error.topic,
-                    error.criterium,
-                    'error'
-                  )
-                "
-                class="fr-collapse"
-              >
-                <p class="fr-mb-3w">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-                  saepe earum voluptates rem possimus rerum aut id tempora
-                  veniam quibusdam sint vero, iste quidem. Praesentium voluptate
-                  dolorem amet magnam quibusdam.
-                </p>
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div class="fr-grid-row fr-grid-row--gutters">
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/123/300/200"
-                        alt=""
-                      />
-                    </div>
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/43/300/200"
-                        alt=""
-                      />
-                    </div>
+            <LazyAccordion title="Erreur">
+              <p class="fr-mb-3w">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
+                saepe earum voluptates rem possimus rerum aut id tempora veniam
+                quibusdam sint vero, iste quidem. Praesentium voluptate dolorem
+                amet magnam quibusdam.
+              </p>
+              <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                Exemple(s) d’erreur(s)
+              </p>
+              <div class="fr-container--fluid">
+                <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-md-6 fr-col-12">
+                    <img
+                      style="width: 100%"
+                      src="https://picsum.photos/id/123/300/200"
+                      alt=""
+                    />
+                  </div>
+                  <div class="fr-col-md-6 fr-col-12">
+                    <img
+                      style="width: 100%"
+                      src="https://picsum.photos/id/43/300/200"
+                      alt=""
+                    />
                   </div>
                 </div>
-                <p
-                  class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle"
-                >
-                  URL de la page concernée
-                </p>
-                <p class="fr-mb-0">
-                  <a href="https://example.com" target="_blank" class="fr-link"
-                    >https://example.com</a
-                  >
-                </p>
               </div>
-            </section>
+              <p class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle">
+                URL de la page concernée
+              </p>
+              <p class="fr-mb-0">
+                <a href="https://example.com" target="_blank" class="fr-link"
+                  >https://example.com</a
+                >
+              </p>
+            </LazyAccordion>
 
             <!-- Recommendation -->
-            <section class="fr-accordion">
-              <h4 class="fr-accordion__title">
-                <button
-                  class="fr-accordion__btn"
-                  aria-expanded="false"
-                  :aria-controls="
-                    getCriteriumUniqueId(
-                      page.pageUrl,
-                      error.topic,
-                      error.criterium,
-                      'recommendation'
-                    )
-                  "
-                >
-                  Recommandation de correction
-                </button>
-              </h4>
-              <div
-                :id="
-                  getCriteriumUniqueId(
-                    page.pageUrl,
-                    error.topic,
-                    error.criterium,
-                    'recommendation'
-                  )
-                "
-                class="fr-collapse"
-              >
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Quisquam commodi cumque consequuntur est. Nulla pariatur quo
-                molestiae ipsam ut dicta dignissimos repellendus, accusamus
-                velit corporis iste cumque adipisci doloribus odit?
-              </div>
-            </section>
+            <LazyAccordion title="Recommandation de correction">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam
+              commodi cumque consequuntur est. Nulla pariatur quo molestiae
+              ipsam ut dicta dignissimos repellendus, accusamus velit corporis
+              iste cumque adipisci doloribus odit?
+            </LazyAccordion>
+
+            <!-- Tests -->
+            <CriteriumTestsAccordion
+              :topic-number="error.topic"
+              :criterium="getCriterium(error.topic, error.criterium)"
+            />
           </template>
         </div>
       </section>
@@ -300,6 +262,10 @@ function getCriteriumUniqueId(
 
 .page-title {
   color: var(--text-active-blue-france);
+}
+
+.criterium-title {
+  color: var(--text-title-grey);
 }
 
 .error-accordion-subtitle {
