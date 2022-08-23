@@ -1,33 +1,95 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
 import slugify from "slugify";
+import { groupBy, mapValues } from "lodash";
+import { marked } from "marked";
 
 import { useReportStore } from "../store";
 import { formatUserImpact, formatStatus } from "../utils";
-import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
+import { CriteriumResultStatus } from "../types";
 import rgaa from "../criteres.json";
 
 const report = useReportStore();
 
-const errorsCount = ref(34);
-const status = ref(CriteriumResultStatus.NOT_COMPLIANT);
-const userImpact = ref(CriterionResultUserImpact.BLOCKING);
+/*
+[{
+  pageUrl: "https://example.com",
+  pageName: "Accueil"
+  topics: [{
+    topic: 2,
+    name: "Cadres",
+    errors: [{ ... }]
+  }]
+}]
+
+*/
+
+const errors = computed(() => {
+  // TODO: make more legible
+  const data = Object.values(
+    mapValues(
+      groupBy(
+        report.data.results.filter(
+          (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
+        ),
+        "pageUrl"
+      ),
+      (results, pageUrl) => {
+        return {
+          pageUrl,
+          pageName: getPageName(pageUrl),
+          topics: Object.values(
+            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+              return {
+                topic: topicNumber,
+                name: getTopicName(Number(topicNumber)),
+                errors: results,
+              };
+            })
+          ),
+        };
+      }
+    )
+  );
+
+  return data;
+});
 
 function expandAll() {
   console.log("expandAll");
 }
 
-function getPageSlug(pageName: string) {
-  return slugify(pageName, { lower: true });
+function getTopicName(topicNumber: number) {
+  return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
+}
+
+function getCriterium(topicNumber: number, criteriumNumber: number) {
+  const criterium = rgaa.topics
+    .find((t) => t.number === topicNumber)
+    // @ts-expect-error The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
+    ?.criteria.find((c) => c.criterium.number === criteriumNumber)
+    .criterium.title;
+
+  return marked.parseInline(criterium);
+}
+
+function getPageName(pageUrl: string) {
+  return report.data.context.samples.find(
+    (p: { name: string; url: string; number: number }) => p.url === pageUrl
+  ).name;
+}
+
+function getPageSlug(pageUrl: string) {
+  return slugify(getPageName(pageUrl), { lower: true });
 }
 
 function getCriteriumUniqueId(
-  pageName: string,
+  pageUrl: string,
   topicNumber: number,
   criteriumNumber: number,
   suffix?: string
 ): string {
-  return `${getPageSlug(pageName)}-${topicNumber}-${criteriumNumber}${
+  return `${getPageSlug(pageUrl)}-${topicNumber}-${criteriumNumber}${
     suffix ? `-${suffix}` : null
   }`;
 }
@@ -36,7 +98,7 @@ function getCriteriumUniqueId(
 <template>
   <div class="fr-mb-6w header">
     <span class="fr-mb-0 fr-text--xl fr-text--bold"
-      >{{ errorsCount }} erreurs d’accessibilité</span
+      >{{ errors.length }} erreurs d’accessibilité</span
     >
     <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
       Tout déplier
@@ -60,20 +122,20 @@ function getCriteriumUniqueId(
               <!-- FIXME: seems there is an issue with anchor links inside tabs -->
               <a
                 class="fr-sidemenu__link"
-                :href="`#${getPageSlug(report.data.pageDistributions[0].name)}`"
+                :href="`#${getPageSlug(report.data.context.samples[0].url)}`"
                 target="_self"
                 aria-current="page"
-                >{{ report.data.pageDistributions[0].name }}</a
+                >{{ report.data.context.samples[0].name }}</a
               >
             </li>
             <li
-              v-for="page in report.data.pageDistributions.slice(1)"
+              v-for="page in report.data.context.samples.slice(1)"
               :key="page.name"
               class="fr-sidemenu__item"
             >
               <a
                 class="fr-sidemenu__link"
-                :href="`#${getPageSlug(page.name)}`"
+                :href="`#${getPageSlug(page.url)}`"
                 target="_self"
                 >{{ page.name }}</a
               >
@@ -84,123 +146,139 @@ function getCriteriumUniqueId(
     </nav>
 
     <div>
-      <section
-        v-for="page in report.data.pageDistributions"
-        :key="page.name"
-        class="fr-mb-8w"
-      >
-        <h3 :id="`${getPageSlug(page.name)}`" class="fr-mb-4w page-title">
-          {{ page.name }}
+      <section v-for="page in errors" :key="page.pageUrl" class="fr-mb-8w">
+        <h3
+          :id="`${getPageSlug(page.pageUrl as string)}`"
+          class="fr-mb-4w page-title"
+        >
+          {{ page.pageName }}
         </h3>
 
-        <div v-for="topic in rgaa.topics" :key="topic.number" class="fr-mb-9v">
-          <p class="fr-tag fr-tag--sm fr-mb-3w">{{ topic.topic }}</p>
-          <p
-            class="fr-text--lg fr-text--bold fr-mb-2w"
-            v-html="
-              '1.1 Chaque image porteuse d’information a-t-elle une alternative textuelle ?'
-            "
-          />
-          <!-- FIXME: tags like this are not customizable (color) -->
-          <ul class="fr-tags-group fr-mb-2w">
-            <li>
-              <p class="fr-tag">{{ formatStatus(status) }}</p>
-            </li>
-            <li>
-              <p class="fr-tag">{{ formatUserImpact(userImpact) }}</p>
-            </li>
-          </ul>
+        <div v-for="topic in page.topics" :key="topic.topic" class="fr-mb-9v">
+          <p class="fr-tag fr-tag--sm fr-mb-3w">
+            {{ topic.name }}
+          </p>
+          <template v-for="(error, i) in topic.errors" :key="i">
+            <p class="fr-text--lg fr-text--bold fr-mb-2w">
+              {{ error.topic }}.{{ error.criterium }}&nbsp;
+              <span v-html="getCriterium(error.topic, error.criterium)" />
+            </p>
 
-          <!-- Error -->
-          <section class="fr-accordion">
-            <h4 class="fr-accordion__title">
-              <button
-                class="fr-accordion__btn"
-                aria-expanded="false"
-                :aria-controls="
-                  getCriteriumUniqueId(page.name, topic.number, 1, 'error')
+            <!-- FIXME: tags like this are not customizable (color) -->
+            <ul class="fr-tags-group fr-mb-2w">
+              <li>
+                <p class="fr-tag">{{ formatStatus(error.status) }}</p>
+              </li>
+              <li>
+                <p class="fr-tag">{{ formatUserImpact(error.userImpact) }}</p>
+              </li>
+            </ul>
+
+            <!-- Error -->
+            <section class="fr-accordion">
+              <h4 class="fr-accordion__title">
+                <button
+                  class="fr-accordion__btn"
+                  aria-expanded="false"
+                  :aria-controls="
+                    getCriteriumUniqueId(
+                      page.pageUrl,
+                      error.topic,
+                      error.criterium,
+                      'error'
+                    )
+                  "
+                >
+                  Erreur
+                </button>
+              </h4>
+              <div
+                :id="
+                  getCriteriumUniqueId(
+                    page.pageUrl,
+                    error.topic,
+                    error.criterium,
+                    'error'
+                  )
                 "
+                class="fr-collapse"
               >
-                Erreur
-              </button>
-            </h4>
-            <div
-              :id="getCriteriumUniqueId(page.name, topic.number, 1, 'error')"
-              class="fr-collapse"
-            >
-              <p class="fr-mb-3w">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-                saepe earum voluptates rem possimus rerum aut id tempora veniam
-                quibusdam sint vero, iste quidem. Praesentium voluptate dolorem
-                amet magnam quibusdam.
-              </p>
-              <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                Exemple(s) d’erreur(s)
-              </p>
-              <div class="fr-container--fluid">
-                <div class="fr-grid-row fr-grid-row--gutters">
-                  <div class="fr-col-md-6 fr-col-12">
-                    <img
-                      style="width: 100%"
-                      src="https://picsum.photos/id/123/300/200"
-                      alt=""
-                    />
-                  </div>
-                  <div class="fr-col-md-6 fr-col-12">
-                    <img
-                      style="width: 100%"
-                      src="https://picsum.photos/id/43/300/200"
-                      alt=""
-                    />
+                <p class="fr-mb-3w">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
+                  saepe earum voluptates rem possimus rerum aut id tempora
+                  veniam quibusdam sint vero, iste quidem. Praesentium voluptate
+                  dolorem amet magnam quibusdam.
+                </p>
+                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                  Exemple(s) d’erreur(s)
+                </p>
+                <div class="fr-container--fluid">
+                  <div class="fr-grid-row fr-grid-row--gutters">
+                    <div class="fr-col-md-6 fr-col-12">
+                      <img
+                        style="width: 100%"
+                        src="https://picsum.photos/id/123/300/200"
+                        alt=""
+                      />
+                    </div>
+                    <div class="fr-col-md-6 fr-col-12">
+                      <img
+                        style="width: 100%"
+                        src="https://picsum.photos/id/43/300/200"
+                        alt=""
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle">
-                URL de la page concernée
-              </p>
-              <p class="fr-mb-0">
-                <a href="https://example.com" target="_blank" class="fr-link"
-                  >https://example.com</a
+                <p
+                  class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle"
                 >
-              </p>
-            </div>
-          </section>
+                  URL de la page concernée
+                </p>
+                <p class="fr-mb-0">
+                  <a href="https://example.com" target="_blank" class="fr-link"
+                    >https://example.com</a
+                  >
+                </p>
+              </div>
+            </section>
 
-          <!-- Recommendation -->
-          <section class="fr-accordion">
-            <h4 class="fr-accordion__title">
-              <button
-                class="fr-accordion__btn"
-                aria-expanded="false"
-                :aria-controls="
+            <!-- Recommendation -->
+            <section class="fr-accordion">
+              <h4 class="fr-accordion__title">
+                <button
+                  class="fr-accordion__btn"
+                  aria-expanded="false"
+                  :aria-controls="
+                    getCriteriumUniqueId(
+                      page.pageUrl,
+                      error.topic,
+                      error.criterium,
+                      'recommendation'
+                    )
+                  "
+                >
+                  Recommandation de correction
+                </button>
+              </h4>
+              <div
+                :id="
                   getCriteriumUniqueId(
-                    page.name,
-                    topic.number,
-                    1,
+                    page.pageUrl,
+                    error.topic,
+                    error.criterium,
                     'recommendation'
                   )
                 "
+                class="fr-collapse"
               >
-                Recommandation de correction
-              </button>
-            </h4>
-            <div
-              :id="
-                getCriteriumUniqueId(
-                  page.name,
-                  topic.number,
-                  1,
-                  'recommendation'
-                )
-              "
-              class="fr-collapse"
-            >
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam
-              commodi cumque consequuntur est. Nulla pariatur quo molestiae
-              ipsam ut dicta dignissimos repellendus, accusamus velit corporis
-              iste cumque adipisci doloribus odit?
-            </div>
-          </section>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Quisquam commodi cumque consequuntur est. Nulla pariatur quo
+                molestiae ipsam ut dicta dignissimos repellendus, accusamus
+                velit corporis iste cumque adipisci doloribus odit?
+              </div>
+            </section>
+          </template>
         </div>
       </section>
     </div>
