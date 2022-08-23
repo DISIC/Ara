@@ -5,8 +5,8 @@ import { createFeedback } from "../api";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
-import { history } from "../router";
 import { useRouter } from "vue-router";
+import { usePreviousRoute } from "../composables/usePreviousRoute";
 
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
@@ -58,9 +58,10 @@ function submitFeedback() {
   // });
 }
 const router = useRouter();
-const previousPageUrl = (history.state.back ??
-  router.resolve({ name: "home" }).href) as string;
-const previousPageName = history.state.back ? "précédente" : "d’accueil";
+
+const { route, url } = usePreviousRoute();
+const previousPageUrl = url ?? router.resolve({ name: "home" }).href;
+const previousPageName = route?.meta.name ?? "précédente";
 </script>
 
 <template>

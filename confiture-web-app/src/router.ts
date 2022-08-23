@@ -24,6 +24,13 @@ import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
+declare module "vue-router" {
+  interface RouteMeta {
+    // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
+    name: string;
+  }
+}
+
 export const history = createWebHistory();
 
 const router = createRouter({
@@ -33,26 +40,31 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomePage,
+      meta: { name: "Accueil" },
     },
     {
       path: "/plan-du-site",
       name: "site-map",
       component: SiteMapPage,
+      meta: { name: "Plan du site" },
     },
     {
       path: "/accessibilite",
       name: "accessibility",
       component: AccessibilityPage,
+      meta: { name: "Accessibilité" },
     },
     {
       path: "/mentions-legales",
       name: "legal",
       component: LegalPage,
+      meta: { name: "Mentions légales" },
     },
     {
       path: "/donnees-personnelles",
       name: "personal-data",
       component: PersonalDataPage,
+      meta: { name: "Données personnelles" },
     },
     // Audit pages
     {

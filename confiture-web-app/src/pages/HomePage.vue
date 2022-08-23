@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from "vue";
-import { useRouter, createWebHistory } from "vue-router";
+import { useRouter } from "vue-router";
+
+import { history } from "../router";
 
 const router = useRouter();
-const history = createWebHistory();
 
 const isDeleteAlertVisible = ref(false);
 const headingRef = ref();
