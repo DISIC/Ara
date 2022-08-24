@@ -1,4 +1,8 @@
-import { AuditType, AssistiveTechnology, Browser } from "./types";
+import {
+  AuditType,
+  CriterionResultUserImpact,
+  CriteriumResultStatus,
+} from "./types";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
@@ -26,36 +30,34 @@ export function formatAuditType(auditType: AuditType): string {
   return FORMATTED_TYPES[auditType];
 }
 
-const FORMATTED_ASSISTIVE_TECHNOLOGY = {
-  [AssistiveTechnology.JAWS_LATEST]: "JAWS (dernière version)",
-  [AssistiveTechnology.JAWS_PREVIOUS]: "JAWS (version précédente)",
-  [AssistiveTechnology.NVDA_LATEST]: "NVDA (dernière version)",
-  [AssistiveTechnology.NVDA_PREVIOUS]: "NVDA (version précédente)",
-  [AssistiveTechnology.VOICEOVER_LATEST]: "VoiceOver (dernière version)",
-  [AssistiveTechnology.VOICEOVER_PREVIOUS]: "VoiceOver (version précédente)",
+const FORMATTED_USER_IMPACT = {
+  [CriterionResultUserImpact.MINOR]: "Impact mineur",
+  [CriterionResultUserImpact.MAJOR]: "Impact Majeur",
+  [CriterionResultUserImpact.BLOCKING]: "Impact bloquant",
 };
 
 /**
- * Format an assistive technology type string into French.
+ * Format a criterion result user impact type string into French.
  */
-export function formatAssistiveTechnology(
-  technology: AssistiveTechnology
+export function formatUserImpact(
+  userImpact: CriterionResultUserImpact
 ): string {
-  return FORMATTED_ASSISTIVE_TECHNOLOGY[technology];
+  return FORMATTED_USER_IMPACT[userImpact];
 }
 
-const FORMATTED_BROWSER = {
-  [Browser.CHROME]: "Google Chrome",
-  [Browser.FIREFOX]: "Firefox",
-  [Browser.SAFARI]: "Safari",
-  [Browser.EDGE]: "Edge",
+// TODO: replace everywhere in the app
+const FORMATTED_STATUS = {
+  [CriteriumResultStatus.NOT_TESTED]: "Non testé",
+  [CriteriumResultStatus.COMPLIANT]: "Conforme",
+  [CriteriumResultStatus.NOT_COMPLIANT]: "Non conforme",
+  [CriteriumResultStatus.NOT_APPLICABLE]: "Non applicable",
 };
 
 /**
- * Format an browser type string into French.
+ * Format a criterion result status type string into French.
  */
-export function formatBrowser(browser: Browser): string {
-  return FORMATTED_BROWSER[browser];
+export function formatStatus(status: CriteriumResultStatus): string {
+  return FORMATTED_STATUS[status];
 }
 
 const CRITERIA_COUNT = {

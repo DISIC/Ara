@@ -44,18 +44,18 @@ const availableTools = [
   "PEAT (Photosensitive Epilepsy Analysis Tool)",
 ];
 const availableAT = [
-  { label: "NVDA (dernière version)", value: "nvda-latest" },
-  { label: "JAWS (dernière version)", value: "jaws-latest" },
-  { label: "VoiceOver (dernière version)", value: "vo-latest" },
-  { label: "NVDA (version précédente)", value: "nvda-previous" },
-  { label: "JAWS (version précédente)", value: "jaws-previous" },
-  { label: "VoiceOver (version précédente)", value: "vo-previous" },
+  "NVDA (dernière version)",
+  "JAWS (dernière version)",
+  "VoiceOver (dernière version)",
+  "NVDA (version précédente)",
+  "JAWS (version précédente)",
+  "VoiceOver (version précédente)",
 ];
 const availableBrowsers = [
-  { label: "Firefox", value: "firefox" },
-  { label: "Google Chrome", value: "chrome" },
-  { label: "Microsoft Edge", value: "edge" },
-  { label: "Safari", value: "safari" },
+  "Firefox",
+  "Google Chrome",
+  "Microsoft Edge",
+  "Safari",
 ];
 
 const auditType = ref<AuditType | null>(null);
@@ -248,13 +248,13 @@ function fillFields() {
   environments.value = [
     {
       platform: "desktop",
-      assistiveTechnology: "jaws-latest",
-      browser: "edge",
+      assistiveTechnology: "VoiceOver (version précédente)",
+      browser: "Microsoft Edge",
     },
     {
       platform: "mobile",
-      assistiveTechnology: "nvda-previous",
-      browser: "chrome",
+      assistiveTechnology: "NVDA (dernière version)",
+      browser: "Google Chrome",
     },
   ];
   pages.value = [
@@ -424,8 +424,8 @@ function fillFields() {
             <option value="" selected disabled hidden>
               Selectionnez une option
             </option>
-            <option v-for="at in availableAT" :key="at.value" :value="at.value">
-              {{ at.label }}
+            <option v-for="at in availableAT" :key="at" :value="at">
+              {{ at }}
             </option>
           </select>
         </div>
@@ -441,10 +441,10 @@ function fillFields() {
             </option>
             <option
               v-for="browser in availableBrowsers"
-              :key="browser.value"
-              :value="browser.value"
+              :key="browser"
+              :value="browser"
             >
-              {{ browser.label }}
+              {{ browser }}
             </option>
           </select>
         </div>

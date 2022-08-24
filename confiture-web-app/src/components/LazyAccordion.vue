@@ -25,13 +25,13 @@ function onDisclose() {
       <button
         class="fr-accordion__btn"
         aria-expanded="false"
-        :aria-controls="`tests-refs-${uniqueId}`"
+        :aria-controls="`accordion-${uniqueId}`"
       >
         {{ title }}
       </button>
     </span>
     <div
-      :id="`tests-refs-${uniqueId}`"
+      :id="`accordion-${uniqueId}`"
       class="fr-collapse"
       v-on="{ 'dsfr.disclose': onDisclose, 'dsfr.conceal': onConceal }"
     >
