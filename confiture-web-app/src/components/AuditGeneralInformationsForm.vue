@@ -125,7 +125,7 @@ function onSubmit() {
       <label class="fr-label" for="procedure-url">
         URL du site à auditer
         <span class="fr-hint-text">
-          Saisissez une URL valide, commençant par http://
+          Saisissez une URL valide, commençant par http:// ou https://
         </span>
       </label>
       <input
@@ -134,7 +134,7 @@ function onSubmit() {
         class="fr-input"
         type="text"
         required
-        placeholder="http://"
+        placeholder="https://"
       />
     </div>
 
@@ -180,7 +180,7 @@ function onSubmit() {
         <label class="fr-label" for="procedure-manager-form-url">
           URL vers formulaire de contact
           <span class="fr-hint-text">
-            Saisissez une URL valide, commençant par http://
+            Saisissez une URL valide, commençant par http:// ou https://
           </span>
         </label>
         <input
@@ -189,7 +189,7 @@ function onSubmit() {
           class="fr-input"
           type="url"
           required
-          placeholder="http://"
+          placeholder="https://"
         />
       </div>
     </fieldset>
