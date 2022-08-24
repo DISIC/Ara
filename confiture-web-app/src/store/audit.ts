@@ -59,6 +59,7 @@ export const useAuditStore = defineStore("audit", {
       const response = (await ky
         .put(`/api/audits/${uniqueId}/publish`)
         .json()) as Audit;
+      this.data = response;
       return response;
     },
   },

@@ -338,6 +338,7 @@ export class AuditService {
           publicationDate: new Date(),
           editionDate: null,
         },
+        include: AUDIT_EDIT_INCLUDE,
       });
     } catch (e) {
       if (e?.code === 'P2025') {
