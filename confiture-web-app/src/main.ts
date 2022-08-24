@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { marked } from "marked";
+import { createHead } from "@vueuse/head";
 
 import App from "./App.vue";
 
@@ -24,5 +25,6 @@ import router from "./router";
 }
 
 const pinia = createPinia();
+const head = createHead();
 
-createApp(App).use(router).use(pinia).mount("#app");
+createApp(App).use(router).use(pinia).use(head).mount("#app");

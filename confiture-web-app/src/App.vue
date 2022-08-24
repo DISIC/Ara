@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { useHead } from "@vueuse/head";
+
+// Default meta tags
+useHead({
+  title: "default title",
+  titleTemplate: "%s | Confiture",
+  meta: [
+    { name: "description", content: "description" },
+    { name: "og:title", content: "default title" },
+    { name: "og:description", content: "description" },
+    { name: "og:url", content: "URL" },
+    { name: "og:image", content: "image" },
+    { name: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ],
+});
+</script>
+
 <template>
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">

@@ -3,6 +3,7 @@ import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { history } from "../router";
+import PageMeta from "../components/PageMeta.vue";
 
 const router = useRouter();
 
@@ -29,6 +30,11 @@ async function hideDeleteAlert() {
 </script>
 
 <template>
+  <PageMeta
+    title="Accueil"
+    description="Faire des audits RGAA, les rendre lisibles et suivre l’amélioration de leur taux de conformité"
+  />
+
   <div
     v-if="isDeleteAlertVisible"
     role="alert"
