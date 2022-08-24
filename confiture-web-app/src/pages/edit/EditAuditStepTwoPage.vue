@@ -292,6 +292,7 @@ function fillFields() {
             v-for="type in availableAuditTypes"
             :key="type.value"
             v-model="auditType"
+            class="audit-type"
             :value="type.value"
             :label="type.label"
             :checked="auditType === type.value"
@@ -554,9 +555,13 @@ function fillFields() {
 }
 
 .audit-types {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audit-type {
+  flex: 1 1 0;
 }
 
 .delete-custom-tool {
