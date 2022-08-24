@@ -16,7 +16,7 @@ import router from "./router";
   // TODO: use a <RouterLink />
   const renderer = {
     link(href: string, title: string, text: string) {
-      return `<a href="/ressources/glossaire${href}" target="_blank">${text}</a>`;
+      return `<a href="/ressources/glossaire${href}">${text}</a>`;
     },
   };
 
