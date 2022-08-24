@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
@@ -113,7 +113,7 @@ function onOnboardingAlertClose() {
 
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
-      <p class="fr-text--light fr-mb-4w dates">
+      <p v-if="report.data.publishDate" class="fr-text--light fr-mb-4w dates">
         Publié le {{ formatDate(report.data.publishDate) }}
         <template v-if="report.data.updateDate">
           - Mis à jour le {{ formatDate(report.data.updateDate) }}

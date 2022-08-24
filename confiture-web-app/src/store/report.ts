@@ -1,8 +1,10 @@
 import ky from "ky";
 import { defineStore } from "pinia";
 
+import { AuditReport } from "../types";
+
 interface ReportStoreState {
-  data: any | null;
+  data: AuditReport | null;
 }
 
 export const useReportStore = defineStore("report", {
@@ -14,7 +16,7 @@ export const useReportStore = defineStore("report", {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const data = (await ky
         .get(`/api/reports/${consultUniqueId}`)
-        .json()) as object;
+        .json()) as AuditReport;
       this.data = data;
     },
   },

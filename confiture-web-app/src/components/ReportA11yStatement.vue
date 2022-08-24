@@ -14,9 +14,9 @@ const uniqueId = route.params.uniqueId as string;
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
 function getA11yLevel() {
-  if (report.data.accessibilityRate === 100) {
+  if (report.data!.accessibilityRate === 100) {
     return "totalement";
-  } else if (report.data.accessibilityRate >= 50) {
+  } else if (report.data!.accessibilityRate >= 50) {
     return "partiellement";
   } else {
     return "non";
@@ -197,7 +197,7 @@ function hideCopyAlert() {
         <li>...</li>
       </ul>
       <h4 class="fr-h2">Établissement de cette déclaration d’accessibilité</h4>
-      <p class="fr-mb-2w fr-mb-md-3w">
+      <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
         Cette déclaration a été établie le
         <strong>{{ formatDate(report.data.publishDate) }}</strong
         >.

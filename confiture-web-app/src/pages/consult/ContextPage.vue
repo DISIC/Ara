@@ -3,12 +3,7 @@ import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import {
-  formatAuditType,
-  formatAssistiveTechnology,
-  formatBrowser,
-  getCriteriaCount,
-} from "../../utils";
+import { formatAuditType, getCriteriaCount } from "../../utils";
 import TopLink from "../../components/TopLink.vue";
 
 const report = useReportStore();
@@ -169,7 +164,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       >
     </p>
 
-    <h2 class="fr-mb-2w fr-mb-md-3w">Outils d’assitance</h2>
+    <h2 class="fr-mb-2w fr-mb-md-3w">Outils d’assistance</h2>
 
     <p>
       L’outil le plus utilisé pour réaliser cet audit a été l’inspecteur de code
@@ -237,8 +232,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
             v-for="(env, i) in report.data.context.desktopEnvironments"
             :key="i"
           >
-            <td>{{ formatAssistiveTechnology(env.assistiveTechnology) }}</td>
-            <td>{{ formatBrowser(env.browser) }}</td>
+            <td>{{ env.assistiveTechnology }}</td>
+            <td>{{ env.browser }}</td>
             <td>{{ env.os }}</td>
           </tr>
         </tbody>
@@ -264,8 +259,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
             v-for="(env, i) in report.data.context.mobileEnvironments"
             :key="i"
           >
-            <td>{{ formatAssistiveTechnology(env.assistiveTechnology) }}</td>
-            <td>{{ formatBrowser(env.browser) }}</td>
+            <td>{{ env.assistiveTechnology }}</td>
+            <td>{{ env.browser }}</td>
             <td>{{ env.os }}</td>
           </tr>
         </tbody>
