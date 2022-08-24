@@ -89,7 +89,10 @@ const uniqueId = computed(() => {
     </div>
 
     <!-- STATUS -->
-    <div class="fr-mb-2w criterium-radios-container">
+    <fieldset
+      class="fr-mb-2w fr-ml-5w fr-mx-0 fr-p-0 criterium-radios-container"
+    >
+      <legend class="sr-only">Statut du critère</legend>
       <Radio
         v-for="s in statuses"
         :id="`status-${uniqueId}-${s.value}`"
@@ -100,7 +103,7 @@ const uniqueId = computed(() => {
         :value="s.value"
         :color="s.color"
       />
-    </div>
+    </fieldset>
 
     <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
@@ -120,6 +123,7 @@ const uniqueId = computed(() => {
       <CriteriumNotCompliantAccordion
         :id="`not-compliant-accordion-${uniqueId}`"
         v-model:comment="result.errorDescription"
+        v-model:user-impact="result.userImpact"
       />
       <!-- RECOMMENDATION -->
       <CriteriumRecommendationAccordion
@@ -158,6 +162,7 @@ const uniqueId = computed(() => {
 }
 
 .criterium-radios-container {
+  border: none;
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;

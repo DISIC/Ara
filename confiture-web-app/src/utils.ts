@@ -31,9 +31,9 @@ export function formatAuditType(auditType: AuditType): string {
 }
 
 const FORMATTED_USER_IMPACT = {
-  [CriterionResultUserImpact.MINOR]: "Impact mineur",
-  [CriterionResultUserImpact.MAJOR]: "Impact Majeur",
-  [CriterionResultUserImpact.BLOCKING]: "Impact bloquant",
+  [CriterionResultUserImpact.MINOR]: "mineur",
+  [CriterionResultUserImpact.MAJOR]: "majeur",
+  [CriterionResultUserImpact.BLOCKING]: "bloquant",
 };
 
 /**

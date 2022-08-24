@@ -173,7 +173,9 @@ function getPageSlug(pageUrl: string) {
                   <p class="fr-tag">{{ formatStatus(error.status) }}</p>
                 </li>
                 <li v-if="error.userImpact">
-                  <p class="fr-tag">{{ formatUserImpact(error.userImpact) }}</p>
+                  <p class="fr-tag">
+                    Impact {{ formatUserImpact(error.userImpact) }}
+                  </p>
                 </li>
               </ul>
 

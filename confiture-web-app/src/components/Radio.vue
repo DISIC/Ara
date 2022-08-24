@@ -9,8 +9,8 @@ defineProps<{
   id: string;
   name: string;
   color?: RadioColor;
-  value: string;
-  modelValue: string;
+  value: string | null;
+  modelValue: string | null;
 }>();
 defineEmits(["update:modelValue"]);
 </script>
@@ -47,6 +47,7 @@ defineEmits(["update:modelValue"]);
   display: inline-flex;
   padding: 0.25rem 0.5rem 0.25rem 2rem;
   gap: 0.5rem;
+  text-transform: capitalize;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
