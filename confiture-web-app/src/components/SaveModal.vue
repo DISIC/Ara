@@ -57,7 +57,9 @@ function hideCopyAlert() {
               <h1 id="save-modal-title" class="fr-modal__title fr-mb-4w">
                 Sauvegardez le lien de votre audit
               </h1>
-              <div class="fr-callout fr-icon-warning-line">
+              <div
+                class="fr-callout fr-callout--orange-terre-battue fr-icon-warning-line"
+              >
                 <p class="fr-callout__title fr-text--xl fr-mb-1w">
                   Lien administrateur
                 </p>
