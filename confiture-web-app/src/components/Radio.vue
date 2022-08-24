@@ -1,11 +1,5 @@
 <script lang="ts">
-export enum RadioStatus {
-  SUCCESS = "SUCCESS",
-  NEUTRAL = "NEUTRAL",
-  WARNING = "WARNING",
-  DANGER = "DANGER",
-  DEFAULT = "DEFAULT",
-}
+export type RadioColor = "red" | "green" | "yellow" | "grey";
 </script>
 
 <script setup lang="ts">
@@ -14,7 +8,8 @@ defineProps<{
   label: string;
   id: string;
   name: string;
-  status: RadioStatus;
+  color?: RadioColor;
+  value: string;
   modelValue: string;
 }>();
 defineEmits(["update:modelValue"]);
@@ -27,13 +22,13 @@ defineEmits(["update:modelValue"]);
       class="sr-only"
       type="radio"
       :name="name"
-      :checked="status === modelValue"
-      :value="status"
+      :checked="value === modelValue"
+      :value="value"
       @input="
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)
       "
     />
-    <label :class="['fr-text--sm label', status.toLowerCase()]" :for="id">
+    <label :class="['fr-text--sm fr-mb-0 label', color]" :for="id">
       {{ label }}
     </label>
   </div>
@@ -55,26 +50,26 @@ defineEmits(["update:modelValue"]);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-input:checked + .label.default {
+input:checked + .label {
   --background-color: transparent;
   --text-color: var(--text-default-grey);
 }
 
-input:checked + .label.neutral {
+input:checked + .label.grey {
   --background-color: var(--background-disabled-grey);
 }
 
-input:checked + .label.success {
+input:checked + .label.green {
   --background-color: var(--background-contrast-success);
   --text-color: var(--text-default-success);
 }
 
-input:checked + .label.warning {
+input:checked + .label.yellow {
   --background-color: var(--background-alt-yellow-moutarde);
   --text-color: var(--text-label-yellow-moutarde);
 }
 
-input:checked + .label.danger {
+input:checked + .label.red {
   --background-color: var(--background-contrast-error);
   --text-color: var(--text-default-error);
 }

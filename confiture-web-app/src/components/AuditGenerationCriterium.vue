@@ -9,6 +9,7 @@ import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.v
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
+import Radio, { RadioColor } from "./Radio.vue";
 import { useResultsStore } from "../store";
 
 const store = useResultsStore();
@@ -21,11 +22,30 @@ const props = defineProps<{
   auditUniqueId: string;
 }>();
 
-const statuses = [
-  { label: "Conforme", value: CriteriumResultStatus.COMPLIANT },
-  { label: "Non conforme", value: CriteriumResultStatus.NOT_COMPLIANT },
-  { label: "Non applicable", value: CriteriumResultStatus.NOT_APPLICABLE },
-  { label: "Non testé", value: CriteriumResultStatus.NOT_TESTED },
+const statuses: Array<{
+  label: string;
+  value: CriteriumResultStatus;
+  color?: RadioColor;
+}> = [
+  {
+    label: "Conforme",
+    value: CriteriumResultStatus.COMPLIANT,
+    color: "green",
+  },
+  {
+    label: "Non conforme",
+    value: CriteriumResultStatus.NOT_COMPLIANT,
+    color: "red",
+  },
+  {
+    label: "Non applicable",
+    value: CriteriumResultStatus.NOT_APPLICABLE,
+    color: "grey",
+  },
+  {
+    label: "Non testé",
+    value: CriteriumResultStatus.NOT_TESTED,
+  },
 ];
 
 const result = reactive<CriteriumResult>({
@@ -69,21 +89,17 @@ const uniqueId = computed(() => {
     </div>
 
     <!-- STATUS -->
-    <!-- TODO: temp status radios -->
-    <div class="fr-mb-2w">
-      <template v-for="s in statuses" :key="s.value">
-        <input
-          :id="`status-${uniqueId}-${s.value}`"
-          v-model="result.status"
-          type="radio"
-          :name="`status-${uniqueId}`"
-          :value="s.value"
-          class="fr-mr-1w"
-        />
-        <label class="fr-mr-2w" :for="`status-${uniqueId}-${s.value}`">
-          {{ s.label }}
-        </label>
-      </template>
+    <div class="fr-mb-2w criterium-radios-container">
+      <Radio
+        v-for="s in statuses"
+        :id="`status-${uniqueId}-${s.value}`"
+        :key="s.value"
+        v-model="result.status"
+        :label="s.label"
+        :name="`status-${uniqueId}`"
+        :value="s.value"
+        :color="s.color"
+      />
     </div>
 
     <!-- FIXME: left/right arrow bug -->
@@ -139,5 +155,11 @@ const uniqueId = computed(() => {
 .criterium-number,
 .criterium-title {
   color: var(--text-action-high-grey);
+}
+
+.criterium-radios-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 </style>
