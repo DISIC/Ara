@@ -1,8 +1,27 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
+
+import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
+
+const route = useRoute();
+
+const breadcrumbLinks = ref<BreadcrumbLink[]>([]);
+
+watch(route, () => {
+  if (!route.meta || !route.meta.breadcrumbLinks) breadcrumbLinks.value = [];
+  if (typeof route.meta.breadcrumbLinks === "function") {
+    breadcrumbLinks.value = route.meta.breadcrumbLinks();
+  } else {
+    breadcrumbLinks.value =
+      (route.meta.breadcrumbLinks as BreadcrumbLink[]) || [];
+  }
+});
 
 // Default meta tags
 useHead({
+  // TODO: change this
   title: "default title",
   titleTemplate: "%s | Confiture",
   meta: [
@@ -118,7 +137,11 @@ useHead({
     </div>
   </div>
 
-  <main id="main" class="fr-container fr-mb-12w fr-mt-9w">
+  <main
+    id="main"
+    :class="['fr-container fr-mb-12w', { 'fr-mt-9w': !breadcrumbLinks.length }]"
+  >
+    <Breadcrumb v-if="breadcrumbLinks.length" :links="breadcrumbLinks" />
     <RouterView />
   </main>
 
