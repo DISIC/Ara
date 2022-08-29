@@ -73,6 +73,7 @@ watch(showContent, () => {
 <style scoped>
 .dropdown-container {
   position: relative;
+  z-index: 2;
 }
 
 .dropdown-content {
