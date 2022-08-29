@@ -219,7 +219,7 @@ function saveAuditChanges() {
     auditType: auditType.value,
     auditTools: auditTools.value,
     environments: environments.value,
-    pages: pages.value,
+    pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
   };
 
   return auditStore.updateAudit(uniqueId, data);
