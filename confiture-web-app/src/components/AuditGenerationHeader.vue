@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useResultsStore, useAuditStore } from "../store";
-import DeleteModal from "./DeleteModal.vue";
 import { formatDate } from "../utils";
+import { AuditType } from "../types";
+import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 
 defineProps<{
@@ -51,6 +52,10 @@ function confirmDelete() {
     });
 }
 
+const hasA11yStatement = computed(() => {
+  return auditStore.data?.auditType === AuditType.FULL;
+});
+
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const resultsStore = useResultsStore();
@@ -83,7 +88,7 @@ const resultsStore = useResultsStore();
           <!-- TODO: icon left? -->
           <ul class="dropdown-list">
             <template v-if="!!auditPublicationDate">
-              <li>
+              <li v-if="hasA11yStatement">
                 <RouterLink
                   :to="{
                     name: 'report',

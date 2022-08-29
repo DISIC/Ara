@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
@@ -10,6 +10,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatAuditType, formatDate } from "../../utils";
 import OnboardingModal from "../../components/OnboardingModal.vue";
+import { AuditType } from "../../types";
 
 const report = useReportStore();
 
@@ -18,9 +19,15 @@ const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
+const hasA11yStatement = computed(() => {
+  return report.data?.auditType === AuditType.FULL;
+});
+
 const tabs = [
   { title: "Résultats", component: ReportResults },
-  { title: "Déclaration d’accessibilité", component: ReportA11yStatement },
+  ...(hasA11yStatement.value
+    ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
+    : []),
   { title: "Description des erreurs", component: ReportErrors },
 ];
 

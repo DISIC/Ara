@@ -81,6 +81,10 @@ const headerInfos = computed(() => [
     description: "%",
   },
 ]);
+
+const hasA11yStatement = computed(() => {
+  return auditStore.data?.auditType === AuditType.FULL;
+});
 </script>
 
 <template>
@@ -100,10 +104,12 @@ const headerInfos = computed(() => [
         <RouterLink class="fr-link" :to="reportRouteLocation" target="_blank">
           rapport d’audit</RouterLink
         >
-        ou la
-        <!-- TODO: link to page + selected tab -->
-        <RouterLink class="fr-link" to="/" target="_blank"
-          >déclaration d’accessibilité</RouterLink
+        <template v-if="hasA11yStatement">
+          ou la
+          <!-- TODO: link to page + selected tab -->
+          <RouterLink class="fr-link" to="/" target="_blank"
+            >déclaration d’accessibilité</RouterLink
+          ></template
         >
         avant envoi. Pour envoyer le rapport d’audit il suffit de transmettre
         par e-mail le lien ci-dessous.
@@ -149,7 +155,9 @@ const headerInfos = computed(() => [
     <h2 class="fr-h4">Bon à savoir</h2>
     <p>Indiquez à vos destinataires les prochaines étapes qui les attends :</p>
     <ul>
-      <li>Mettre en ligne la déclaration d’accessibilité</li>
+      <li v-if="hasA11yStatement">
+        Mettre en ligne la déclaration d’accessibilité
+      </li>
       <li>Corriger les erreurs relevées</li>
       <li>Demander un contre-audit</li>
     </ul>
