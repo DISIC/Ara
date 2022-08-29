@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useResultsStore, useAuditStore } from "../store";
 import DeleteModal from "./DeleteModal.vue";
 import { formatDate } from "../utils";
+import Dropdown from "./Dropdown.vue";
 
 defineProps<{
   auditName: string;
@@ -20,11 +21,6 @@ defineProps<{
 defineEmits(["validate"]);
 
 const router = useRouter();
-
-// TODO: handle options dropdown
-function openOptions() {
-  console.log("openOptions");
-}
 
 const isDeleteModalOpen = ref(false);
 
@@ -83,22 +79,40 @@ const resultsStore = useResultsStore();
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--icon-right">
       <li>
-        <button
-          class="fr-btn fr-btn--secondary fr-icon-arrow-down-s-line fr-btn--icon-right"
-          @click="openOptions"
-        >
-          Options
-        </button>
-      </li>
-      <li>
-        <button
-          class="fr-btn fr-btn--secondary"
-          aria-controls="delete-modal"
-          data-fr-opened="true"
-          @click="openDeleteModal"
-        >
-          Supprimer l’audit
-        </button>
+        <Dropdown title="Options">
+          <!-- TODO: icon left? -->
+          <ul class="dropdown-list">
+            <li>
+              <RouterLink
+                :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0"
+              >
+                Prévisusaliser le rapport d’audit
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                :to="{
+                  name: 'edit-audit-step-one',
+                  params: { uniqueId: editUniqueId },
+                }"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+              >
+                Modifier les paramètres
+              </RouterLink>
+            </li>
+            <li>
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                aria-controls="delete-modal"
+                data-fr-opened="true"
+                @click="openDeleteModal"
+              >
+                Supprimer l’audit
+              </button>
+            </li>
+          </ul>
+        </Dropdown>
       </li>
       <li>
         <!-- TODO: icon left? -->
@@ -161,6 +175,12 @@ const resultsStore = useResultsStore();
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.dropdown-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .info {
