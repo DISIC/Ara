@@ -85,7 +85,10 @@ const resultsStore = useResultsStore();
             <template v-if="!!auditPublicationDate">
               <li>
                 <RouterLink
-                  :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
+                  :to="{
+                    name: 'report',
+                    params: { uniqueId: auditStore.data?.consultUniqueId },
+                  }"
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0"
                 >
                   Consulter la déclaration d’accessibilité
@@ -105,7 +108,10 @@ const resultsStore = useResultsStore();
             </template>
             <li v-else>
               <RouterLink
-                :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
+                :to="{
+                  name: 'report',
+                  params: { uniqueId: auditStore.data?.consultUniqueId },
+                }"
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0"
               >
                 Prévisusaliser le rapport d’audit
@@ -140,7 +146,10 @@ const resultsStore = useResultsStore();
         <RouterLink
           v-if="auditPublicationDate"
           class="fr-btn fr-btn--icon-left fr-icon-eye-line"
-          :to="{ name: 'report', params: { uniqueId: editUniqueId } }"
+          :to="{
+            name: 'report',
+            params: { uniqueId: auditStore.data?.consultUniqueId },
+          }"
         >
           Consulter le rapport d’audit
         </RouterLink>
