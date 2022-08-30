@@ -1,22 +1,29 @@
 <script lang="ts" setup>
-const status = "error";
-const title = "Erreur : titre du message";
-const description = "Description";
+import { useNotificationStore } from "../store";
+
+const store = useNotificationStore();
 </script>
 
 <template>
   <Teleport to="body">
-    <div
-      class="toast-notification fr-alert"
-      :class="`fr-alert--${status}`"
-      role="alert"
-    >
-      <p class="fr-alert__title">{{ title }}</p>
-      <p>{{ description }}</p>
-      <button class="fr-btn--close fr-btn" title="Masquer le message">
-        Masquer le message
-      </button>
-    </div>
+    <Transition>
+      <div
+        v-if="store.notification"
+        class="toast-notification fr-alert"
+        :class="`fr-alert--${store.notification.status}`"
+        role="alert"
+      >
+        <p class="fr-alert__title">{{ store.notification.title }}</p>
+        <p>{{ store.notification.description }}</p>
+        <button
+          class="fr-btn--close fr-btn"
+          title="Masquer le message"
+          @click="store.hideNotification"
+        >
+          Masquer le message
+        </button>
+      </div>
+    </Transition>
   </Teleport>
 </template>
 
@@ -25,5 +32,16 @@ const description = "Description";
   position: fixed;
   right: 1rem;
   bottom: 1rem;
+  background-color: var(--grey-1000-50);
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
