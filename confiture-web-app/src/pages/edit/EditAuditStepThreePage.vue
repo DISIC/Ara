@@ -100,7 +100,6 @@ const headerInfos = computed(() => [
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
-        <!-- TODO: compute results count -->
         <AuditGenerationFilters :topics="topics" />
       </div>
       <div class="fr-col-12 fr-col-md-9">
