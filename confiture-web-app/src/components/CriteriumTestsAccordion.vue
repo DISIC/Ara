@@ -79,7 +79,7 @@ const methodologiesHtml = Object.values(
 }
 
 /* Fixes ol numbering used by dsfr to only show the test number. */
-.criterium-test-methodology ::v-deep ol {
+.criterium-test-methodology :deep(ol) {
   counter-reset: none;
   counter-set: li-counter 0;
 }
