@@ -5,6 +5,7 @@ import { createFeedback } from "../api";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
+import greenCheck from "../assets/images/green-check.svg";
 import { useRouter } from "vue-router";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
 
@@ -68,8 +69,8 @@ const previousPageName = route?.meta.name ?? "précédente";
   <h1 class="fr-mb-6w">Donner mon avis</h1>
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">
-      <p class="fr-h3">
-        <span class="fr-icon-checkbox-circle-fill fr-fi--lg check-icon" />
+      <p class="fr-h3 success-title">
+        <img class="fr-mr-2w" :src="greenCheck" alt="" />
         Votre avis a bien été envoyé
       </p>
       <p>
@@ -304,6 +305,11 @@ const previousPageName = route?.meta.name ?? "précédente";
 </template>
 
 <style scoped>
+.success-title {
+  display: flex;
+  align-items: center;
+}
+
 .content {
   max-width: 49.5rem;
 }
