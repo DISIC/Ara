@@ -41,28 +41,31 @@ export const useResultsStore = defineStore("results", {
       this.results = data;
     },
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
-      await ky.patch(`/api/audits/${uniqueId}/results`, {
-        json: {
-          data: updates,
-        },
-      });
+      // FIXME: remove this line. for debugging purpose
+      throw new Error("Pouet");
 
-      if (!this.results) {
-        return;
-      }
+      // await ky.patch(`/api/audits/${uniqueId}/results`, {
+      //   json: {
+      //     data: updates,
+      //   },
+      // });
 
-      for (let i = 0; i < this.results.length; i++) {
-        const element = this.results[i];
-        updates.forEach((update) => {
-          if (
-            update.pageUrl === element.pageUrl &&
-            update.topic === element.topic &&
-            update.criterium === element.criterium
-          ) {
-            this.results?.splice(i, 1, update);
-          }
-        });
-      }
+      // if (!this.results) {
+      //   return;
+      // }
+
+      // for (let i = 0; i < this.results.length; i++) {
+      //   const element = this.results[i];
+      //   updates.forEach((update) => {
+      //     if (
+      //       update.pageUrl === element.pageUrl &&
+      //       update.topic === element.topic &&
+      //       update.criterium === element.criterium
+      //     ) {
+      //       this.results?.splice(i, 1, update);
+      //     }
+      //   });
+      // }
     },
     async DEV_fillResults(uniqueId: string) {
       const updates =
