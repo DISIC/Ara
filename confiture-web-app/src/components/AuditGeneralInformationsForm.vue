@@ -87,7 +87,10 @@ function onSubmit() {
 
 <template>
   <form class="content" @submit.prevent="onSubmit">
-    <h1>📄 Informations générales de la démarche à auditer</h1>
+    <h1 class="fr-mb-3v">📄 Informations générales de la démarche à auditer</h1>
+    <p class="fr-text--sm fr-mb-4w mandatory-notice">
+      Sauf mention contraire, tous les champs sont obligatoires.
+    </p>
 
     <div class="fr-input-group">
       <label class="fr-label" for="procedure-entity">
@@ -153,8 +156,8 @@ function onSubmit() {
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-manager-name">
-          Nom et prénom du contact (optionnel)</label
-        >
+          Nom et prénom du contact (optionnel)
+        </label>
         <input
           id="procedure-manager-name"
           v-model="procedureManagerName"
@@ -276,7 +279,7 @@ function onSubmit() {
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-auditor-name">
-          Nom et prénom de l’auditeur
+          Nom et prénom de l’auditeur (optionnel)
         </label>
         <input
           id="procedure-auditor-name"
@@ -319,6 +322,10 @@ function onSubmit() {
 <style scoped>
 .content {
   max-width: 49.5rem;
+}
+
+.mandatory-notice {
+  color: var(--text-mention-grey);
 }
 
 .contact-card {
