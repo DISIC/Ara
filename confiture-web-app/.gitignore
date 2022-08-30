@@ -29,3 +29,5 @@ coverage
 
 accessibilite.numerique.gouv.fr
 src/methodologies.json
+src/glossaire.json
+src/criteres.json

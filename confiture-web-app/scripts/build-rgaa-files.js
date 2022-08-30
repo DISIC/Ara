@@ -14,12 +14,14 @@ const fs = require("fs").promises;
 
 const exec = util.promisify(child_process.exec);
 
-async function generateMethodologies() {
+async function cloneRgaaRepository() {
   await exec("rm -rf accessibilite.numerique.gouv.fr");
   await exec(
-    "git clone https://github.com/DISIC/accessibilite.numerique.gouv.fr "
+    "git clone https://github.com/DISIC/accessibilite.numerique.gouv.fr"
   );
+}
 
+async function generateMethodologies() {
   const METHODOLOGY_SOURCE = path.join(
     __dirname,
     "..",
@@ -77,10 +79,47 @@ async function generateMethodologies() {
     return acc;
   }, {});
 
-  fs.writeFile(METHODOLOGY_DESTINATION, JSON.stringify(jsonData, null, 2));
+  await fs.writeFile(
+    METHODOLOGY_DESTINATION,
+    JSON.stringify(jsonData, null, 2)
+  );
 }
 
-generateMethodologies().catch((err) => {
-  console.log("An error happened");
-  console.error(err);
-});
+async function generateGlossary() {
+  const GLOSSARY_SOURCE = path.join(
+    __dirname,
+    "..",
+    "./accessibilite.numerique.gouv.fr/RGAA/4.1/glossaire.json"
+  );
+
+  const GLOSSARY_DESTINATION = path.join(
+    __dirname,
+    "..",
+    "./src/glossaire.json"
+  );
+
+  await fs.copyFile(GLOSSARY_SOURCE, GLOSSARY_DESTINATION);
+}
+
+async function generateCriteria() {
+  const CRITERIA_SOURCE = path.join(
+    __dirname,
+    "..",
+    "./accessibilite.numerique.gouv.fr/RGAA/4.1/criteres.json"
+  );
+
+  const CRITERIA_DESTINATION = path.join(
+    __dirname,
+    "..",
+    "./src/criteres.json"
+  );
+
+  await fs.copyFile(CRITERIA_SOURCE, CRITERIA_DESTINATION);
+}
+
+(async function main() {
+  await cloneRgaaRepository();
+  await generateMethodologies();
+  await generateGlossary();
+  await generateCriteria();
+})();
