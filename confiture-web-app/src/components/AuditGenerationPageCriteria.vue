@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
-import rgaa from "../criteres.json";
 import { AuditPage } from "../types";
 import { useFiltersStore } from "../store";
 
@@ -12,35 +9,15 @@ defineProps<{
 }>();
 
 const store = useFiltersStore();
-
-// Filter topics by topic name and by search.
-const filteredTopics = computed(() => {
-  let filteredTopics = rgaa.topics as any[];
-
-  if (store.topics.length) {
-    filteredTopics = rgaa.topics.filter((t) => {
-      return store.topics.includes(t.number);
-    });
-  }
-
-  filteredTopics = filteredTopics.map((t) => {
-    return {
-      ...t,
-      criteria: t.criteria.filter((c: any) =>
-        c.criterium.title.toLowerCase().includes(store.search.toLowerCase())
-      ),
-    };
-  });
-
-  filteredTopics = filteredTopics.filter((t) => t.criteria.length);
-
-  return filteredTopics;
-});
 </script>
 
 <template>
   <!-- TODO: handle empty state -->
-  <section v-for="topic in filteredTopics" :key="topic.number" class="fr-mb-6w">
+  <section
+    v-for="topic in store.filteredTopics"
+    :key="topic.number"
+    class="fr-mb-6w"
+  >
     <div class="fr-mb-3w topic-header">
       <h3 class="fr-m-0 topic-heading">
         {{ topic.number }}. {{ topic.topic }}
