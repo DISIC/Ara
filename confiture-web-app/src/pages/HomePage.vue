@@ -3,7 +3,7 @@ import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { history } from "../router";
-import PageMeta from "../components/PageMeta.vue";
+import PageMeta from "../components/PageMeta";
 
 const router = useRouter();
 
