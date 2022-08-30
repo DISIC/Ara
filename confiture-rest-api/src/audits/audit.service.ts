@@ -533,4 +533,15 @@ export class AuditService {
 
     return report;
   }
+
+  async isAuditComplete(uniqueId: string): Promise<boolean> {
+    const notTestedCount = await this.prisma.criterionResult.count({
+      where: {
+        auditUniqueId: uniqueId,
+        status: CriterionResultStatus.NOT_TESTED,
+      },
+    });
+
+    return notTestedCount === 0;
+  }
 }

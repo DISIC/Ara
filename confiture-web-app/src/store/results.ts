@@ -69,7 +69,11 @@ export const useResultsStore = defineStore("results", {
         this.results?.map((r) => ({
           ...r,
           /* eslint-disable @typescript-eslint/no-non-null-assertion */
-          status: sample(CriteriumResultStatus)!,
+          status: sample([
+            CriteriumResultStatus.COMPLIANT,
+            CriteriumResultStatus.NOT_COMPLIANT,
+            CriteriumResultStatus.NOT_APPLICABLE,
+          ])!,
           compliantComment: sample(["Commentaire conforme", "Rien"])!,
           errorDescription: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,

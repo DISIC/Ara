@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useResultsStore, useAuditStore } from "../store";
 import { formatDate } from "../utils";
-import { AuditType } from "../types";
+import { AuditType, CriteriumResultStatus } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 
@@ -59,6 +59,12 @@ const hasA11yStatement = computed(() => {
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const resultsStore = useResultsStore();
+
+const disableSubmission = computed(() =>
+  resultsStore.results?.some(
+    (r) => r.status === CriteriumResultStatus.NOT_TESTED
+  )
+);
 </script>
 
 <template>
@@ -68,18 +74,25 @@ const resultsStore = useResultsStore();
     </button>
   </div>
 
-  <p
-    :class="`fr-badge ${
-      auditPublicationDate
-        ? 'fr-badge--success fr-badge--no-icon'
-        : 'fr-badge--purple-glycine'
-    } fr-mb-1v`"
-  >
-    {{ auditPublicationDate ? "🎉 audit terminé" : "🔍 Audit en cours" }}
-  </p>
-  <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
-    Le {{ formatDate(auditPublicationDate) }}
-  </span>
+  <div class="fr-mb-1v sub-header">
+    <div>
+      <p
+        :class="`fr-badge ${
+          auditPublicationDate
+            ? 'fr-badge--success fr-badge--no-icon'
+            : 'fr-badge--purple-glycine'
+        }`"
+      >
+        {{ auditPublicationDate ? "🎉 audit terminé" : "🔍 Audit en cours" }}
+      </p>
+      <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
+        Le {{ formatDate(auditPublicationDate) }}
+      </span>
+    </div>
+    <p v-if="disableSubmission" class="fr-text--xs fr-m-0 submit-notice">
+      Validation possible à la fin de l’audit
+    </p>
+  </div>
   <div class="fr-mb-3w heading">
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--icon-right">
@@ -158,7 +171,12 @@ const resultsStore = useResultsStore();
         >
           Consulter le rapport d’audit
         </RouterLink>
-        <button v-else class="fr-btn" @click="$emit('validate')">
+        <button
+          v-else
+          :disabled="disableSubmission"
+          class="fr-btn"
+          @click="$emit('validate')"
+        >
           Valider l’audit
         </button>
       </li>
@@ -204,6 +222,11 @@ const resultsStore = useResultsStore();
 </template>
 
 <style scoped>
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .heading {
   align-items: center;
   display: flex;
@@ -235,7 +258,8 @@ const resultsStore = useResultsStore();
   text-transform: none;
 }
 
-.mandatory-notice {
+.mandatory-notice,
+.submit-notice {
   color: var(--text-mention-grey);
 }
 </style>

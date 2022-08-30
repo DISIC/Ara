@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -124,6 +126,13 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: 'The audit does not exist.' })
   @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
   async publishAudit(@Param('uniqueId') uniqueId: string) {
+    const auditIsComplete = await this.auditService.isAuditComplete(uniqueId);
+    if (!auditIsComplete) {
+      throw new ConflictException(
+        'Cannot publish audit if it is not complete.',
+      );
+    }
+
     const audit = await this.auditService.publishAudit(uniqueId);
 
     if (!audit) {
@@ -138,7 +147,6 @@ export class AuditsController {
   @ApiOkResponse({ description: 'The audit has been successfully deleted.' })
   @ApiNotFoundResponse({ description: 'The audit does not exist.' })
   @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-
   async deleteAudit(@Param('uniqueId') uniqueId: string) {
     const deleted = await this.auditService.deleteAudit(uniqueId);
 
