@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "yarn generate:methodologies && vue-tsc --noEmit && vite build",
+    "build": "yarn generate:rgaa && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "eslint '{src,scripts}/**/*.{ts,vue}'",
-    "generate:methodologies": "node scripts/build-test-methodologies.js"
+    "generate:rgaa": "node scripts/build-rgaa-files.js"
   },
   "dependencies": {
     "@gouvfr/dsfr": "1.7.2",
