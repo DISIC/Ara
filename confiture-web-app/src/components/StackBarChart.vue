@@ -148,6 +148,6 @@ useChartColorsUpdate(
       width: '100%',
     }"
   >
-    <canvas ref="canvas" />
+    <canvas ref="canvas" aria-hidden="true" />
   </div>
 </template>

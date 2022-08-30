@@ -3,6 +3,8 @@ let nextId = 1;
 </script>
 
 <script lang="ts" setup>
+import slugify from "slugify";
+
 defineProps<{
   title: string;
   accordionTitle: string;
@@ -14,7 +16,7 @@ const uniqueId = nextId++;
 <template>
   <div class="card">
     <div class="fr-py-5v fr-px-2w card-header">
-      <h3 class="fr-h4 fr-m-0">{{ title }}</h3>
+      <h3 :id="slugify(title)" class="fr-h4 fr-m-0">{{ title }}</h3>
     </div>
 
     <div class="fr-px-4v content">

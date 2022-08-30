@@ -1,5 +1,5 @@
 <template>
-  <div class="fr-py-5v">
+  <div class="fr-py-5v" aria-hidden="true">
     <div class="fr-mb-2w fr-text--xs legend-title">Légende</div>
 
     <div class="fr-text--sm fr-text--bold fr-mb-1v legend-item">

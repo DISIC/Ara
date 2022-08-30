@@ -58,7 +58,7 @@ useChartColorsUpdate(
 
 <template>
   <div class="pie-chart-container fr-m-5v">
-    <canvas ref="canvas"></canvas>
+    <canvas ref="canvas" aria-hidden="true"></canvas>
   </div>
 </template>
 
