@@ -9,7 +9,10 @@ defineEmits<{
 </script>
 
 <template>
-  <LazyAccordion title="Recommandation de correction (optionnel)">
+  <LazyAccordion
+    title="Recommandation de correction (optionnel)"
+    disclose-color="var(--background-default-grey)"
+  >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-4w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">

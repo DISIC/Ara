@@ -26,7 +26,10 @@ const userImpacts: Array<{
 </script>
 
 <template>
-  <LazyAccordion title="Description de l’erreur (optionnel)">
+  <LazyAccordion
+    title="Description de l’erreur (optionnel)"
+    disclose-color="var(--background-default-grey)"
+  >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-4w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">

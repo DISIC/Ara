@@ -39,6 +39,7 @@ const methodologiesHtml = Object.values(
 <template>
   <LazyAccordion
     :title="`Tests et références du critère ${topicNumber}.${criterium.number}`"
+    disclose-color="var(--background-default-grey)"
   >
     <template v-for="(test, i) in testsHtml" :key="i">
       <div class="criterium-test">
