@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 
 import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
+import ToastNotification from "./components/ToastNotification.vue";
 
 const route = useRoute();
 
@@ -249,4 +250,6 @@ useHead({
       </div>
     </div>
   </footer>
+
+  <ToastNotification />
 </template>
