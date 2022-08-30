@@ -217,7 +217,7 @@ const showHelpMenuItem = computed(() => {
           <li class="fr-footer__bottom-item">
             <RouterLink
               class="fr-footer__bottom-link"
-              :to="{ name: 'sitemap' }"
+              :to="{ name: 'site-map' }"
             >
               Plan du site
             </RouterLink>
