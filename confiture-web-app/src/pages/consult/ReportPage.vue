@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import slugify from "slugify";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
@@ -156,12 +157,12 @@ function onOnboardingAlertClose() {
       <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
         <li v-for="tab in tabs" :key="tab.title" role="presentation">
           <button
-            :id="`tabpanel-${tab.title}`"
+            :id="`tabpanel-${slugify(tab.title)}`"
             class="fr-tabs__tab"
             tabindex="0"
             role="tab"
             aria-selected="true"
-            :aria-controls="`tabpanel-${tab.title}-panel`"
+            :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
           >
             {{ tab.title }}
           </button>
@@ -169,11 +170,11 @@ function onOnboardingAlertClose() {
       </ul>
       <div
         v-for="tab in tabs"
-        :id="`tabpanel-${tab.title}-panel`"
+        :id="`tabpanel-${slugify(tab.title)}-panel`"
         :key="tab.title"
         class="fr-tabs__panel fr-tabs__panel--selected"
         role="tabpanel"
-        :aria-labelledby="`tabpanel-${tab.title}`"
+        :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
       >
         <component :is="tab.component" />
