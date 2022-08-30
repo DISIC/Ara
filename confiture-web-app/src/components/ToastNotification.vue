@@ -6,24 +6,29 @@ const store = useNotificationStore();
 
 <template>
   <Teleport to="body">
-    <Transition>
-      <div
-        v-if="store.notification"
-        class="toast-notification fr-alert"
-        :class="`fr-alert--${store.notification.status}`"
-        role="alert"
-      >
-        <p class="fr-alert__title">{{ store.notification.title }}</p>
-        <p>{{ store.notification.description }}</p>
-        <button
-          class="fr-btn--close fr-btn"
-          title="Masquer le message"
-          @click="store.hideNotification"
+    <div aria-live="polite">
+      <Transition>
+        <div
+          v-if="store.notification"
+          :key="store.notification.id"
+          class="toast-notification fr-alert"
+          :class="`fr-alert--${store.notification.status}`"
+          aria-atomic="true"
+          role="alert"
         >
-          Masquer le message
-        </button>
-      </div>
-    </Transition>
+          <p class="fr-alert__title">{{ store.notification.title }}</p>
+          <p>{{ store.notification.description }}</p>
+          <button
+            class="fr-btn--close fr-btn"
+            title="Masquer le message"
+            aria-hidden="true"
+            @click="store.hideNotification"
+          >
+            Masquer le message
+          </button>
+        </div>
+      </Transition>
+    </div>
   </Teleport>
 </template>
 
