@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 
@@ -33,6 +33,12 @@ useHead({
     { name: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ],
+});
+
+const showHelpMenuItem = computed(() => {
+  if (!route.name) return false;
+
+  return !(route.name as string).includes("-audit-step-");
 });
 </script>
 
@@ -76,7 +82,7 @@ useHead({
               </div>
             </div>
             <div class="fr-header__service">
-              <RouterLink to="/" title="Accueil - Confiture">
+              <RouterLink :to="{ name: 'home' }" title="Accueil - Confiture">
                 <p class="fr-header__service-title">
                   Confiture
                   <span
@@ -109,15 +115,19 @@ useHead({
           <nav class="fr-nav" role="navigation" aria-label="Menu principal">
             <ul class="fr-nav__list">
               <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" to="/">Accueil</RouterLink>
+                <RouterLink class="fr-nav__link" :to="{ name: 'home' }"
+                  >Accueil</RouterLink
+                >
               </li>
               <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" to="/ressources">
+                <RouterLink class="fr-nav__link" :to="{ name: 'resources' }">
                   Ressources
                 </RouterLink>
               </li>
-              <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" to="/aide">Aide</RouterLink>
+              <li v-if="showHelpMenuItem" class="fr-nav__item">
+                <RouterLink class="fr-nav__link" :to="{ name: 'help' }"
+                  >Aide</RouterLink
+                >
               </li>
             </ul>
           </nav>
@@ -149,7 +159,7 @@ useHead({
     <div class="fr-container">
       <div class="fr-footer__body">
         <div class="fr-footer__brand fr-enlarge-link">
-          <RouterLink to="/" title="Retour à l’accueil">
+          <RouterLink :to="{ name: 'home' }" title="Retour à l’accueil">
             <p class="fr-logo" title="république française">
               République<br />
               Française
@@ -205,34 +215,32 @@ useHead({
       <div class="fr-footer__bottom">
         <ul class="fr-footer__bottom-list">
           <li class="fr-footer__bottom-item">
-            <RouterLink class="fr-footer__bottom-link" to="/plan-du-site">
+            <RouterLink
+              class="fr-footer__bottom-link"
+              :to="{ name: 'sitemap' }"
+            >
               Plan du site
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
-            <RouterLink class="fr-footer__bottom-link" to="/accessibilite">
+            <RouterLink
+              class="fr-footer__bottom-link"
+              :to="{ name: 'accessibility' }"
+            >
               Accessibilité : non conforme
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
-            <RouterLink class="fr-footer__bottom-link" to="/mentions-legales">
+            <RouterLink class="fr-footer__bottom-link" :to="{ name: 'legal' }">
               Mentions légales
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
             <RouterLink
               class="fr-footer__bottom-link"
-              to="/donnees-personnelles"
+              :to="{ name: 'personal-data' }"
             >
               Données personnelles
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              to="/gestion-des-cookies"
-            >
-              Gestion des cookies
             </RouterLink>
           </li>
         </ul>
