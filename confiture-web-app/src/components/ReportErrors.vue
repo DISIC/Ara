@@ -6,7 +6,7 @@ import { marked } from "marked";
 
 import { useReportStore } from "../store";
 import { formatUserImpact, formatStatus } from "../utils";
-import { CriteriumResultStatus } from "../types";
+import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 import rgaa from "../criteres.json";
@@ -167,13 +167,24 @@ function getPageSlug(pageUrl: string) {
                 />
               </p>
 
-              <!-- FIXME: tags like this are not customizable (color) -->
-              <ul class="fr-tags-group fr-mb-2w">
+              <ul class="fr-badges-group fr-mb-2w">
                 <li>
-                  <p class="fr-tag">{{ formatStatus(error.status) }}</p>
+                  <p
+                    class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
+                  >
+                    {{ formatStatus(error.status) }}
+                  </p>
                 </li>
                 <li v-if="error.userImpact">
-                  <p class="fr-tag">
+                  <p
+                    class="fr-badge fr-badge--sm"
+                    :class="{
+                      'fr-badge--yellow-moutarde':
+                        error.userImpact === CriterionResultUserImpact.MAJOR,
+                      'fr-badge--error fr-badge--no-icon':
+                        error.userImpact === CriterionResultUserImpact.BLOCKING,
+                    }"
+                  >
                     Impact {{ formatUserImpact(error.userImpact) }}
                   </p>
                 </li>
