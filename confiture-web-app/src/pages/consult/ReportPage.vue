@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import slugify from "slugify";
 
+import OnboardingModal from "../../components/OnboardingModal.vue";
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatAuditType, formatDate } from "../../utils";
-import OnboardingModal from "../../components/OnboardingModal.vue";
 import { AuditType } from "../../types";
+import { formatAuditType, formatDate, slugify } from "../../utils";
 
 const report = useReportStore();
 
@@ -24,13 +23,13 @@ const hasA11yStatement = computed(() => {
   return report.data?.auditType === AuditType.FULL;
 });
 
-const tabs = [
+const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasA11yStatement.value
     ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
     : []),
   { title: "Description des erreurs", component: ReportErrors },
-];
+]);
 
 const showCopyAlert = ref(false);
 
@@ -73,10 +72,12 @@ function onOnboardingAlertClose() {
 }
 
 const targetTab = route.params.tab as string | undefined;
-let targetTabIndex = tabs.findIndex(
-  (t) => slugify(t.title).toLowerCase() === targetTab?.toLowerCase()
-);
-if (targetTabIndex === -1) targetTabIndex = 0;
+const targetTabIndex = computed(() => {
+  let index = tabs.value.findIndex(
+    (t) => slugify(t.title).toLowerCase() === targetTab?.toLowerCase()
+  );
+  return index === -1 ? 0 : index;
+});
 const router = useRouter();
 
 function handleTabChange(tab: { title: string }) {
