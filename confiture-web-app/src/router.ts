@@ -21,6 +21,7 @@ import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
+import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
@@ -223,6 +224,22 @@ const router = createRouter({
           { label: "Accueil", name: "home" },
           { label: "Ressources", name: "resources" },
           { label: "Glossaire", name: "glossary" },
+        ],
+      },
+    },
+    {
+      path: "/ressources/realiser-audit-accessibilite",
+      name: "make-a11y-audit",
+      component: MakeA11yAuditPage,
+      meta: {
+        name: "Réaliser un audit accessibilité",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          {
+            label: "Réaliser soi-même un audit accessibilité",
+            name: "make-a11y-audit",
+          },
         ],
       },
     },
