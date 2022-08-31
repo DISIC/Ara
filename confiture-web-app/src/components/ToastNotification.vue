@@ -38,7 +38,7 @@ const store = useNotificationStore();
   right: 1rem;
   bottom: 1rem;
   background-color: var(--background-default-grey);
-  max-width: 50rem;
+  max-width: min(50rem, calc(100vw - 2rem));
   z-index: 2;
 }
 
