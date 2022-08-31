@@ -1,75 +1,90 @@
 <script setup lang="ts">
+import AfterReport from "../../components/FaqAccordionsContent/AfterReport.vue";
+import Prioritize from "../../components/FaqAccordionsContent/Prioritize.vue";
+import Test from "../../components/FaqAccordionsContent/Test.vue";
+import AfterCorrection from "../../components/FaqAccordionsContent/AfterCorrection.vue";
+import QuickWin from "../../components/FaqAccordionsContent/QuickWin.vue";
+import FullyAccessible from "../../components/FaqAccordionsContent/FullyAccessible.vue";
+import SelfAuditing from "../../components/FaqAccordionsContent/SelfAuditing.vue";
+import LegalRequirements from "../../components/FaqAccordionsContent/LegalRequirements.vue";
+import TeamTraining from "../../components/FaqAccordionsContent/TeamTraining.vue";
 import TopLink from "../../components/TopLink.vue";
-
-const tileLinks = [
-  {
-    title: "Obligations légales",
-    description: "Soyez rassuré une bonne fois pour toutes",
-    href: "/aide/obligations-legales",
-  },
-  {
-    title: "RGAA",
-    description: "Kesako ? Tout savoir sur le RGAA",
-    href: "/aide/rgaa",
-  },
-  {
-    title: "Déclaration d’a11é",
-    description: "À quoi ça sert ? Comment ça marche ?",
-    href: "/aide/declaration-accessibilite",
-  },
-  {
-    title: "Schéma pluriannuel",
-    description: "À quoi ça sert ? Comment ça marche ?",
-    href: "/aide/schema-pluriannuel",
-  },
-];
 
 const accordions = [
   {
-    title: "Comment me former ou former mon équipe ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
-  },
-  {
     title: "Que faire après avoir reçu mon rapport ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+    component: AfterReport,
   },
   {
     title: "Comment prioriser les correctifs ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
-  },
-  {
-    title: "Comment faire remonter rapidement le taux d’accessibilité ? ",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
-  },
-  {
-    title: "Comment être accessible à 100% ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+    component: Prioritize,
   },
   {
     title: "Comment tester mes correctifs ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+    component: Test,
   },
   {
     title:
       "Que faire après avoir corrigé les anomalies et testé les corrections ?",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+    component: AfterCorrection,
+  },
+  {
+    title: "Comment faire remonter rapidement le taux d’accessibilité ? ",
+    component: QuickWin,
+  },
+  {
+    title: "Comment être accessible à 100% ?",
+    component: FullyAccessible,
   },
   {
     title: "Comment réaliser soi-même un audit accessibilité ? ",
-    description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+    component: SelfAuditing,
   },
   {
     title: "Quelles sont mes obligations légales ?",
+    component: LegalRequirements,
+  },
+  {
+    title: "Comment me former ou former mon équipe ?",
+    component: TeamTraining,
+  },
+];
+
+const tileLinks = [
+  {
+    title: "Mes obligations légales",
+    description: "Soyez rassuré une bonne fois pour toutes",
+    routeName: "legal-requirements",
+  },
+  {
+    title: "RGAA",
+    description: "Kesako ? Tout savoir sur le RGAA",
+    routeName: "rgaa",
+  },
+  {
+    title: "Déclaration d’a11é",
+    description: "À quoi ça sert ? Comment ça marche ?",
+    routeName: "accessibility-statement",
+  },
+  {
+    title: "Le shéma pluriannuel",
+    description: "À quoi ça sert ? Comment ça marche ?",
+    routeName: "accessibility-plan",
+  },
+];
+
+const moreLinks = [
+  {
+    title: "DesignGouv",
     description:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis, neque. Ex, perferendis fugit obcaecati dicta incidunt corrupti cumque officiis esse sed, quia nesciunt ullam illo nemo ea necessitatibus, vel magni?",
+      "notre site dédié au design et à l’accessibilité des services numériques",
+    href: "https://design.numerique.gouv.fr/",
+  },
+  {
+    title: "RGAA",
+    description:
+      "enjeux, tests, obligations légales, méthode, tout le RGAA en plus clair",
+    href: "https://accessibilite.numerique.gouv.fr/",
   },
 ];
 </script>
@@ -95,8 +110,7 @@ const accordions = [
             </button>
           </h3>
           <div :id="`accordion-${i}`" class="fr-collapse">
-            <!-- TODO: fill correct description -->
-            <p>{{ accordion.description }}</p>
+            <component :is="accordion.component" />
           </div>
         </section>
       </div>
@@ -111,25 +125,19 @@ const accordions = [
       <div class="fr-grid-row fr-grid-row--gutters fr-mb-7w">
         <div
           v-for="link in tileLinks"
-          :key="link.href"
+          :key="link.routeName"
           class="fr-col-12 fr-col-md-6"
         >
           <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
             <div class="fr-tile__body">
               <h3 class="fr-tile__title">
-                <RouterLink class="fr-tile__link" :to="link.href">{{
-                  link.title
-                }}</RouterLink>
+                <RouterLink
+                  class="fr-tile__link"
+                  :to="{ name: link.routeName }"
+                  >{{ link.title }}</RouterLink
+                >
               </h3>
               <p class="fr-tile__desc">{{ link.description }}</p>
-            </div>
-            <div class="fr-tile__img">
-              <!-- TODO: replace img src -->
-              <img
-                src="https://picsum.photos/id/94/200/200"
-                class="fr-responsive-img"
-                alt=""
-              />
             </div>
           </div>
         </div>
@@ -139,21 +147,11 @@ const accordions = [
       <p>Retrouver plus d’information les sites officiels :</p>
 
       <ul class="fr-mb-7w">
-        <li>
-          <a
-            class="fr-link"
-            href="https://design.numerique.gouv.fr/"
-            target="_blank"
-            >DesignGouv</a
-          >
-        </li>
-        <li>
-          <a
-            class="fr-link"
-            href="https://accessibilite.numerique.gouv.fr/"
-            target="_blank"
-            >RGAA (RGAA.Netify.app)</a
-          >
+        <li v-for="link in moreLinks" :key="link.title">
+          <a class="fr-link" :href="link.href" target="_blank">{{
+            link.title
+          }}</a>
+          : {{ link.description }}
         </li>
       </ul>
     </section>
