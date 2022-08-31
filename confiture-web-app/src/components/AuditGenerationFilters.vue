@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { ref } from "vue";
 import { useFiltersStore } from "../store";
 
 defineProps<{
-  resultsCount: number;
   topics: { title: string; number: number; value: number }[];
 }>();
 
 const store = useFiltersStore();
+
+const resultsCount = computed(() => store.filteredTopics.length);
 
 const search = ref("");
 const searchInputRef = ref<HTMLInputElement>();
