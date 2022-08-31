@@ -215,7 +215,7 @@ import PageMeta from "../../components/PageMeta";
     <h3>Photosensibilité</h3>
     <ul class="fr-mb-5w">
       <li>
-        <a class="fr-link" href="" target="_blank"
+        <a class="fr-link" href="https://trace.umd.edu/peat/" target="_blank"
           >PEAT (Photosensitive Epilepsy Analysis Tool) pour Windows</a
         >
         : logiciel ancien mais toujours utile pour évaluer la potentialité de
