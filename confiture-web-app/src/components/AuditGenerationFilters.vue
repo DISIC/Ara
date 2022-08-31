@@ -9,7 +9,11 @@ defineProps<{
 
 const store = useFiltersStore();
 
-const resultsCount = computed(() => store.filteredTopics.length);
+const resultsCount = computed(() =>
+  store.filteredTopics
+    .map((t) => t.criteria.length)
+    .reduce((total, length) => (total += length), 0)
+);
 
 const search = ref("");
 const searchInputRef = ref<HTMLInputElement>();
