@@ -11,6 +11,7 @@ import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import Radio, { RadioColor } from "./Radio.vue";
 import { useResultsStore } from "../store";
+import { useNotifications } from "../composables/useNotifications";
 
 const store = useResultsStore();
 
@@ -58,6 +59,8 @@ const result = reactive<CriteriumResult>({
   )!,
 });
 
+const notify = useNotifications();
+
 watch(
   result,
   // Wait 500ms since the last modification before sending the PATCH request
@@ -66,6 +69,11 @@ watch(
       await store.updateResults(props.auditUniqueId, [result]);
     } catch (error) {
       console.log(error);
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+      );
     }
   }, 500)
 );
