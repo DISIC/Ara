@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import slugify from "slugify";
 
@@ -71,6 +71,10 @@ function onOnboardingAlertClose() {
   showOnboardingAlert.value = false;
   localStorage.setItem("confiture:hide-onboarding-alert", "true");
 }
+
+const targetTab = route.query.onglet as string | undefined;
+let targetTabIndex = tabs.findIndex((t) => slugify(t.title) === targetTab);
+if (targetTabIndex === -1) targetTabIndex = 0;
 </script>
 
 <template>
@@ -155,13 +159,13 @@ function onOnboardingAlertClose() {
 
     <div class="fr-tabs">
       <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
-        <li v-for="tab in tabs" :key="tab.title" role="presentation">
+        <li v-for="(tab, i) in tabs" :key="tab.title" role="presentation">
           <button
             :id="`tabpanel-${slugify(tab.title)}`"
             class="fr-tabs__tab"
             tabindex="0"
             role="tab"
-            aria-selected="true"
+            :aria-selected="i === targetTabIndex"
             :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
           >
             {{ tab.title }}
@@ -169,10 +173,11 @@ function onOnboardingAlertClose() {
         </li>
       </ul>
       <div
-        v-for="tab in tabs"
+        v-for="(tab, i) in tabs"
         :id="`tabpanel-${slugify(tab.title)}-panel`"
         :key="tab.title"
         class="fr-tabs__panel fr-tabs__panel--selected"
+        :class="{ 'fr-tabs__panel--selected': i === targetTabIndex }"
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
