@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useResultsStore, useAuditStore } from "../store";
 import { formatDate } from "../utils";
-import { AuditType, CriteriumResultStatus } from "../types";
+import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 
@@ -58,13 +58,9 @@ const hasA11yStatement = computed(() => {
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
-const resultsStore = useResultsStore();
 
-const disableSubmission = computed(() =>
-  resultsStore.results?.some(
-    (r) => r.status === CriteriumResultStatus.NOT_TESTED
-  )
-);
+const resultsStore = useResultsStore();
+const disableSubmission = computed(() => !resultsStore.everyCriteriumAreTested);
 </script>
 
 <template>

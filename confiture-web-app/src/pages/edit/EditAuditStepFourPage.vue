@@ -96,7 +96,7 @@ const hasA11yStatement = computed(() => {
 
 <template>
   <!-- TODO: plug audit status -->
-  <template v-if="auditStore.data && resultsStore.results">
+  <template v-if="auditStore.data && resultsStore.data">
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"

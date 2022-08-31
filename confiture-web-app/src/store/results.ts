@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ky from "ky";
-import { sample, update } from "lodash-es";
+import { sample } from "lodash-es";
 
 import {
   CriteriumResult,
@@ -13,7 +13,6 @@ type TopicNumber = number;
 type CriteriumNumber = number;
 
 interface ResultsStoreState {
-  results: CriteriumResult[] | null;
   data: {
     [key: PageUrl]: {
       [key: TopicNumber]: {
@@ -25,7 +24,6 @@ interface ResultsStoreState {
 
 export const useResultsStore = defineStore("results", {
   state: (): ResultsStoreState => ({
-    results: null,
     data: null,
   }),
 
@@ -51,12 +49,33 @@ export const useResultsStore = defineStore("results", {
 
     getTopicResults() {
       return (pageUrl: string, topicNumber: number) => {
-        return (
-          this.results?.filter((r) => {
-            return r.pageUrl === pageUrl && r.topic === topicNumber;
-          }) ?? []
-        );
+        if (
+          !this.data ||
+          !this.data[pageUrl] ||
+          !this.data[pageUrl][topicNumber]
+        ) {
+          return [];
+        }
+
+        return Object.values(this.data[pageUrl][topicNumber]);
       };
+    },
+
+    allResults(): CriteriumResult[] | undefined {
+      if (!this.data) {
+        return;
+      }
+      return Object.values(this.data)
+        .map((page) => Object.values(page).map((topic) => Object.values(topic)))
+        .flat(2);
+    },
+
+    everyCriteriumAreTested(): boolean {
+      return (
+        !this.allResults?.some(
+          (r) => r.status === CriteriumResultStatus.NOT_TESTED
+        ) ?? false
+      );
     },
   },
 
@@ -65,10 +84,10 @@ export const useResultsStore = defineStore("results", {
       const response = (await ky
         .get(`/api/audits/${uniqueId}/results`)
         .json()) as CriteriumResult[];
-      this.results = response;
 
       const data: ResultsStoreState["data"] = {};
-      this.results.forEach((r) => {
+
+      response.forEach((r) => {
         if (!(r.pageUrl in data)) {
           data[r.pageUrl] = {};
         }
@@ -79,6 +98,7 @@ export const useResultsStore = defineStore("results", {
 
         data[r.pageUrl][r.topic][r.criterium] = r;
       });
+
       this.data = data;
     },
 
@@ -88,23 +108,6 @@ export const useResultsStore = defineStore("results", {
           data: updates,
         },
       });
-
-      if (!this.results) {
-        return;
-      }
-
-      for (let i = 0; i < this.results.length; i++) {
-        const element = this.results[i];
-        updates.forEach((update) => {
-          if (
-            update.pageUrl === element.pageUrl &&
-            update.topic === element.topic &&
-            update.criterium === element.criterium
-          ) {
-            this.results?.splice(i, 1, update);
-          }
-        });
-      }
 
       if (!this.data) {
         return;
@@ -121,10 +124,10 @@ export const useResultsStore = defineStore("results", {
       topicNumber: number,
       status: CriteriumResultStatus
     ) {
-      const updates =
-        this.results
-          ?.filter((r) => r.pageUrl === pageUrl && r.topic === topicNumber)
-          .map((r) => ({ ...r, status })) ?? [];
+      const updates = this.getTopicResults(pageUrl, topicNumber).map((r) => ({
+        ...r,
+        status,
+      }));
       await this.updateResults(uniqueId, updates);
     },
 
@@ -143,7 +146,7 @@ export const useResultsStore = defineStore("results", {
 
     async DEV_fillResults(uniqueId: string) {
       const updates =
-        this.results?.map((r) => ({
+        this.allResults?.map((r) => ({
           ...r,
           /* eslint-disable @typescript-eslint/no-non-null-assertion */
           status: sample([
