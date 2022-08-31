@@ -37,8 +37,9 @@ const store = useNotificationStore();
   position: fixed;
   right: 1rem;
   bottom: 1rem;
-  background-color: var(--grey-1000-50);
+  background-color: var(--background-default-grey);
   max-width: 50rem;
+  z-index: 2;
 }
 
 .v-enter-active,
