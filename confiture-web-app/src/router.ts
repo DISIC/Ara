@@ -155,11 +155,6 @@ const router = createRouter({
     },
     // Report pages
     {
-      path: "/rapports/:uniqueId",
-      name: "report",
-      component: ReportPage,
-    },
-    {
       path: "/rapports/:uniqueId/contexte",
       name: "context",
       component: ContextPage,
@@ -173,6 +168,11 @@ const router = createRouter({
         //   ];
         // },
       },
+    },
+    {
+      path: "/rapports/:uniqueId/:tab?",
+      name: "report",
+      component: ReportPage,
     },
     // Resources pages
     {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import slugify from "slugify";
 
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
@@ -72,9 +72,27 @@ function onOnboardingAlertClose() {
   localStorage.setItem("confiture:hide-onboarding-alert", "true");
 }
 
-const targetTab = route.query.onglet as string | undefined;
-let targetTabIndex = tabs.findIndex((t) => slugify(t.title) === targetTab);
+const targetTab = route.params.tab as string | undefined;
+let targetTabIndex = tabs.findIndex(
+  (t) => slugify(t.title).toLowerCase() === targetTab?.toLowerCase()
+);
 if (targetTabIndex === -1) targetTabIndex = 0;
+const router = useRouter();
+
+function handleTabChange(tab: { title: string }) {
+  // change the URL in the browser adress bar without triggering vue-router navigation
+  history.pushState(
+    {},
+    "null",
+    router.resolve({
+      name: "report",
+      params: {
+        uniqueId,
+        tab: slugify(tab.title),
+      },
+    }).fullPath
+  );
+}
 </script>
 
 <template>
@@ -181,6 +199,7 @@ if (targetTabIndex === -1) targetTabIndex = 0;
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab) }"
       >
         <component :is="tab.component" />
       </div>
