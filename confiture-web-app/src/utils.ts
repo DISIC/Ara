@@ -83,5 +83,5 @@ export function getCssVarValue(varName: string): string {
 }
 
 export function slugify(value: string): string {
-  return baseSlugify(value, { strict: true });
+  return baseSlugify(value, { strict: true, lower: true });
 }

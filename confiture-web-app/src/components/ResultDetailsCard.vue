@@ -3,7 +3,7 @@ let nextId = 1;
 </script>
 
 <script lang="ts" setup>
-import slugify from "slugify";
+import { slugify } from "../utils";
 
 defineProps<{
   title: string;

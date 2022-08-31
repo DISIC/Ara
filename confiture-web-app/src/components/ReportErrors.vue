@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import slugify from "slugify";
 import { groupBy, mapValues } from "lodash";
 import { marked } from "marked";
+import { computed } from "vue";
 
+import rgaa from "../criteres.json";
 import { useReportStore } from "../store";
-import { formatUserImpact, formatStatus } from "../utils";
 import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
+import { formatStatus, formatUserImpact, slugify } from "../utils";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
-import rgaa from "../criteres.json";
 
 const report = useReportStore();
 
@@ -82,7 +81,7 @@ function getPageName(pageUrl: string) {
 }
 
 function getPageSlug(pageUrl: string) {
-  return slugify(getPageName(pageUrl), { lower: true });
+  return slugify(getPageName(pageUrl));
 }
 </script>
 
