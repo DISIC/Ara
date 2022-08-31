@@ -95,11 +95,10 @@ const disableSubmission = computed(() =>
   </div>
   <div class="fr-mb-3w heading">
     <h1 class="fr-mb-0">{{ auditName }}</h1>
-    <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--icon-right">
-      <li>
+    <ul class="top-actions" role="list">
+      <li class="fr-mr-2w">
         <Dropdown title="Options">
-          <!-- TODO: icon left? -->
-          <ul class="dropdown-list">
+          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
               <li v-if="hasA11yStatement">
                 <RouterLink
@@ -107,7 +106,7 @@ const disableSubmission = computed(() =>
                     name: 'report',
                     params: { uniqueId: auditStore.data?.consultUniqueId },
                   }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-line fr-m-0"
                 >
                   Consulter la déclaration d’accessibilité
                 </RouterLink>
@@ -160,7 +159,6 @@ const disableSubmission = computed(() =>
         </Dropdown>
       </li>
       <li>
-        <!-- TODO: icon left? -->
         <RouterLink
           v-if="auditPublicationDate"
           class="fr-btn fr-btn--icon-left fr-icon-eye-line"
@@ -235,10 +233,16 @@ const disableSubmission = computed(() =>
   flex-wrap: wrap;
 }
 
+.top-actions {
+  display: flex;
+  list-style: none;
+}
+
 .dropdown-list {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: end;
+  list-style: none;
 }
 
 .info {

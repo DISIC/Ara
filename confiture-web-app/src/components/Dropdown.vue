@@ -82,7 +82,7 @@ watch(showContent, () => {
   background: var(--background-default-grey);
   box-shadow: 0px 4px 12px var(--shadow-color);
   position: absolute;
-  top: calc(100% - 1rem);
+  top: 100%;
   right: 0.5rem;
   padding: 1.5rem 2rem;
   width: max-content;
