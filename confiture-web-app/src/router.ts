@@ -19,6 +19,8 @@ import LegalPage from "./pages/misc/LegalPage.vue";
 import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
+import A11yIntroTrainingPage from "./pages/resources/A11yIntroTrainingPage.vue";
+import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
@@ -198,6 +200,40 @@ const router = createRouter({
           { label: "Accueil", name: "home" },
           { label: "Ressources", name: "resources" },
           { label: "Formations accessibilité", name: "accessibility-training" },
+        ],
+      },
+    },
+    {
+      path: "/ressources/formations-accessibilite/introduction-accessibilite-numerique",
+      name: "a11y-intro-training",
+      component: A11yIntroTrainingPage,
+      meta: {
+        name: "Introduction à l’accessibilité numérique",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Formations accessibilité", name: "accessibility-training" },
+          {
+            label: "Introduction à l’accessibilité numérique",
+            name: "a11y-intro-training",
+          },
+        ],
+      },
+    },
+    {
+      path: "/ressources/formations-accessibilite/numerique-public",
+      name: "public-digital",
+      component: PublicDigitalTrainingPage,
+      meta: {
+        name: "Bien faire du numérique public",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Formations accessibilité", name: "accessibility-training" },
+          {
+            label: "Bien faire du numérique public",
+            name: "public-digital",
+          },
         ],
       },
     },

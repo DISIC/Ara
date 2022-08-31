@@ -17,7 +17,7 @@ import PageMeta from "../../components/PageMeta";
           <div class="fr-card__body">
             <div class="fr-card__content">
               <h3 class="fr-card__title">
-                <RouterLink to="#">
+                <RouterLink :to="{ name: 'a11y-intro-training' }">
                   Introduction à l’accessibilité numérique
                 </RouterLink>
               </h3>
@@ -38,7 +38,9 @@ import PageMeta from "../../components/PageMeta";
           <div class="fr-card__body">
             <div class="fr-card__content">
               <h3 class="fr-card__title">
-                <RouterLink to="#"> Bien faire du numérique public </RouterLink>
+                <RouterLink :to="{ name: 'public-digital' }">
+                  Bien faire du numérique public
+                </RouterLink>
               </h3>
               <p class="fr-card__desc">
                 Pourquoi et comment designer de bons services publics numériques
