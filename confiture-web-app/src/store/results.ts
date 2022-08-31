@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ky from "ky";
-import { sample } from "lodash-es";
+import { sample, update } from "lodash-es";
 
 import {
   CriteriumResult,
@@ -8,12 +8,26 @@ import {
   CriterionResultUserImpact,
 } from "../types";
 
+type PageUrl = string;
+type TopicNumber = number;
+type CriteriumNumber = number;
+
 interface ResultsStoreState {
   results: CriteriumResult[] | null;
+  data: {
+    [key: PageUrl]: {
+      [key: TopicNumber]: {
+        [key: CriteriumNumber]: CriteriumResult;
+      };
+    };
+  } | null;
 }
 
 export const useResultsStore = defineStore("results", {
-  state: (): ResultsStoreState => ({ results: null }),
+  state: (): ResultsStoreState => ({
+    results: null,
+    data: null,
+  }),
 
   getters: {
     getCriteriumResult() {
@@ -22,13 +36,16 @@ export const useResultsStore = defineStore("results", {
         topicNumber: number,
         criteriumNumber: number
       ) => {
-        return this.results?.find((r) => {
-          return (
-            r.pageUrl === pageUrl &&
-            r.topic === topicNumber &&
-            r.criterium === criteriumNumber
-          );
-        });
+        if (
+          !this.data ||
+          !this.data[pageUrl] ||
+          !this.data[pageUrl][topicNumber] ||
+          !this.data[pageUrl][topicNumber][criteriumNumber]
+        ) {
+          return;
+        }
+
+        return this.data[pageUrl][topicNumber][criteriumNumber];
       };
     },
 
@@ -45,10 +62,24 @@ export const useResultsStore = defineStore("results", {
 
   actions: {
     async fetchResults(uniqueId: string) {
-      const data = (await ky
+      const response = (await ky
         .get(`/api/audits/${uniqueId}/results`)
         .json()) as CriteriumResult[];
-      this.results = data;
+      this.results = response;
+
+      const data: ResultsStoreState["data"] = {};
+      this.results.forEach((r) => {
+        if (!(r.pageUrl in data)) {
+          data[r.pageUrl] = {};
+        }
+
+        if (!(r.topic in data[r.pageUrl])) {
+          data[r.pageUrl][r.topic] = {};
+        }
+
+        data[r.pageUrl][r.topic][r.criterium] = r;
+      });
+      this.data = data;
     },
 
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
@@ -74,6 +105,14 @@ export const useResultsStore = defineStore("results", {
           }
         });
       }
+
+      if (!this.data) {
+        return;
+      }
+
+      updates.forEach((update) => {
+        this.data![update.pageUrl][update.topic][update.criterium] = update;
+      });
     },
 
     async setTopicStatus(

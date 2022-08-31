@@ -59,6 +59,23 @@ const result = reactive<CriteriumResult>({
   )!,
 });
 
+/* 
+the result status can be updated from an external source (the not applicable
+page switch and the autofill debug button)
+So we watch the store to make sure to update our local state if needed.
+*/
+watch(
+  () =>
+    store.getCriteriumResult(
+      props.page.url,
+      props.topicNumber,
+      props.criterium.number
+    ),
+  (newValue) => {
+    result.status = newValue!.status;
+  }
+);
+
 const notify = useNotifications();
 
 watch(
