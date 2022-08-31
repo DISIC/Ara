@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { result } from "lodash";
 import { watch, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useResultsStore } from "../store";
@@ -23,7 +22,15 @@ const switchValue = ref(isChecked.value);
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 
+watch(isChecked, (isChecked) => {
+  switchValue.value = isChecked;
+});
+
 watch(switchValue, (switchValue) => {
+  if (switchValue === isChecked.value) {
+    return;
+  }
+
   if (switchValue) {
     resultsStore.setTopicStatus(
       uniqueId,

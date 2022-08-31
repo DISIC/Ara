@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ky from "ky";
-import { sample } from "lodash-es";
+import { has, sample, set, setWith, unset } from "lodash-es";
 
 import {
   CriteriumResult,
@@ -20,11 +20,20 @@ interface ResultsStoreState {
       };
     };
   } | null;
+
+  previousStatuses: {
+    [key: PageUrl]: {
+      [key: TopicNumber]: {
+        [key: CriteriumNumber]: CriteriumResultStatus;
+      };
+    };
+  };
 }
 
 export const useResultsStore = defineStore("results", {
   state: (): ResultsStoreState => ({
     data: null,
+    previousStatuses: {},
   }),
 
   getters: {
@@ -124,10 +133,24 @@ export const useResultsStore = defineStore("results", {
       topicNumber: number,
       status: CriteriumResultStatus
     ) {
-      const updates = this.getTopicResults(pageUrl, topicNumber).map((r) => ({
+      const results = this.getTopicResults(pageUrl, topicNumber);
+
+      if (status === CriteriumResultStatus.NOT_APPLICABLE) {
+        results.forEach((r) => {
+          setWith(
+            this.previousStatuses,
+            [r.pageUrl, r.topic, r.criterium],
+            r.status,
+            Object
+          );
+        });
+      }
+
+      const updates = results.map((r) => ({
         ...r,
         status,
       }));
+
       await this.updateResults(uniqueId, updates);
     },
 
@@ -136,12 +159,29 @@ export const useResultsStore = defineStore("results", {
       pageUrl: string,
       topicNumber: number
     ) {
-      await this.setTopicStatus(
-        uniqueId,
-        pageUrl,
-        topicNumber,
-        CriteriumResultStatus.NOT_TESTED
-      );
+      if (has(this.previousStatuses, [pageUrl, topicNumber])) {
+        const updates = Object.entries(
+          this.previousStatuses[pageUrl][topicNumber]
+        ).map(([criterium, status]) => {
+          return {
+            ...this.getCriteriumResult(
+              pageUrl,
+              topicNumber,
+              Number(criterium)
+            )!,
+            status,
+          };
+        });
+        await this.updateResults(uniqueId, updates);
+        unset(this.previousStatuses, [pageUrl, topicNumber]);
+      } else {
+        await this.setTopicStatus(
+          uniqueId,
+          pageUrl,
+          topicNumber,
+          CriteriumResultStatus.NOT_TESTED
+        );
+      }
     },
 
     async DEV_fillResults(uniqueId: string) {
