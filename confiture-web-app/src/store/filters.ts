@@ -19,11 +19,20 @@ export const useFiltersStore = defineStore("filters", {
         });
       }
 
+      /**
+       * Filter based on search on:
+       * - topic title ("Images")
+       * - criteria title ("Dans chaque page web, l’ouverture...")
+       */
       filteredTopics = filteredTopics.map((t) => {
         return {
           ...t,
-          criteria: t.criteria.filter((c: any) =>
-            c.criterium.title.toLowerCase().includes(this.search.toLowerCase())
+          criteria: t.criteria.filter(
+            (c: any) =>
+              c.criterium.title
+                .toLowerCase()
+                .includes(this.search.toLowerCase()) ||
+              t.topic.toLowerCase().includes(this.search.toLocaleLowerCase())
           ),
         };
       });
