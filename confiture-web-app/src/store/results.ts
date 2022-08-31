@@ -31,6 +31,16 @@ export const useResultsStore = defineStore("results", {
         });
       };
     },
+
+    getTopicResults() {
+      return (pageUrl: string, topicNumber: number) => {
+        return (
+          this.results?.filter((r) => {
+            return r.pageUrl === pageUrl && r.topic === topicNumber;
+          }) ?? []
+        );
+      };
+    },
   },
 
   actions: {
@@ -40,6 +50,7 @@ export const useResultsStore = defineStore("results", {
         .json()) as CriteriumResult[];
       this.results = data;
     },
+
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
       await ky.patch(`/api/audits/${uniqueId}/results`, {
         json: {
@@ -64,6 +75,33 @@ export const useResultsStore = defineStore("results", {
         });
       }
     },
+
+    async setTopicStatus(
+      uniqueId: string,
+      pageUrl: string,
+      topicNumber: number,
+      status: CriteriumResultStatus
+    ) {
+      const updates =
+        this.results
+          ?.filter((r) => r.pageUrl === pageUrl && r.topic === topicNumber)
+          .map((r) => ({ ...r, status })) ?? [];
+      await this.updateResults(uniqueId, updates);
+    },
+
+    async revertTopicStatus(
+      uniqueId: string,
+      pageUrl: string,
+      topicNumber: number
+    ) {
+      await this.setTopicStatus(
+        uniqueId,
+        pageUrl,
+        topicNumber,
+        CriteriumResultStatus.NOT_TESTED
+      );
+    },
+
     async DEV_fillResults(uniqueId: string) {
       const updates =
         this.results?.map((r) => ({
