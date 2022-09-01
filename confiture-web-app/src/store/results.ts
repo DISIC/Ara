@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ky from "ky";
-import { has, sample, set, setWith, unset } from "lodash-es";
+import { has, sample, setWith, unset } from "lodash-es";
 
 import {
   CriteriumResult,
@@ -21,6 +21,10 @@ interface ResultsStoreState {
     };
   } | null;
 
+  /**
+   * Store the statuses history when using the "Topic not applicable"
+   * switch in case of a misclick.
+   */
   previousStatuses: {
     [key: PageUrl]: {
       [key: TopicNumber]: {
@@ -37,6 +41,9 @@ export const useResultsStore = defineStore("results", {
   }),
 
   getters: {
+    /**
+     * @returns A single criterium result if it is available, undefined otherwise.
+     */
     getCriteriumResult() {
       return (
         pageUrl: string,
@@ -56,6 +63,9 @@ export const useResultsStore = defineStore("results", {
       };
     },
 
+    /**
+     * @returns A getter returning all the results concerning a particular topic on a particular audited page.
+     */
     getTopicResults() {
       return (pageUrl: string, topicNumber: number) => {
         if (
@@ -70,6 +80,9 @@ export const useResultsStore = defineStore("results", {
       };
     },
 
+    /**
+     * @returns Every results in a list. Or undefined if the data is not fetched yet.
+     */
     allResults(): CriteriumResult[] | undefined {
       if (!this.data) {
         return;
@@ -79,6 +92,9 @@ export const useResultsStore = defineStore("results", {
         .flat(2);
     },
 
+    /**
+     * @returns True when every criterium in the audit have been tested (status is different from NOT_TESTED)
+     */
     everyCriteriumAreTested(): boolean {
       return (
         !this.allResults?.some(
@@ -127,6 +143,13 @@ export const useResultsStore = defineStore("results", {
       });
     },
 
+    /**
+     * Send a batch of updates to the API setting the status of every
+     * criterium of a particular topic in a particular audited page to the
+     * given value.
+     *
+     * Also save the current status values in order to revert the change if needed.
+     */
     async setTopicStatus(
       uniqueId: string,
       pageUrl: string,
@@ -154,6 +177,13 @@ export const useResultsStore = defineStore("results", {
       await this.updateResults(uniqueId, updates);
     },
 
+    /**
+     * Send a batch of updates to the API setting the status of every
+     * criterium of a particular topic in a particular audited page to the
+     * values they had at the time of calling setTopicStatus().
+     *
+     * If there are no previous values saved, all statuses are set to NOT_TESTED.
+     */
     async revertTopicStatus(
       uniqueId: string,
       pageUrl: string,
@@ -184,6 +214,9 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
+    /**
+     * Fill the entire audit with random values for debugging purpose.
+     */
     async DEV_fillResults(uniqueId: string) {
       const updates =
         this.allResults?.map((r) => ({
