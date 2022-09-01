@@ -53,18 +53,10 @@ watch(switchValue, (switchValue) => {
       class="fr-toggle__input"
     />
     <label
-      class="fr-toggle__label topic-switch-label"
+      class="fr-toggle__label fr-pr-2w"
       :for="`topic-switch-${topicNumber}`"
     >
       Non applicable sur la page
     </label>
   </div>
 </template>
-
-<style scoped>
-.topic-switch-label {
-  /* FIXME: seems there is a bug in DSFR when the
-  label is on the left. There is no padding on it. */
-  padding-right: 1rem;
-}
-</style>
