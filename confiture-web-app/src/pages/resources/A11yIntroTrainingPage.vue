@@ -69,7 +69,7 @@ import BenoitPicture from "../../assets/images/benoit-dequick.png";
       <li class="trainer">
         <img class="fr-mr-2w" :src="BenoitPicture" alt="" />
         <div>
-          <strong>Erwan le Gall</strong><br />
+          <strong>Benoît Dequick</strong><br />
           <span>Expert accessibilité au sein de DesignGouv</span>
         </div>
       </li>

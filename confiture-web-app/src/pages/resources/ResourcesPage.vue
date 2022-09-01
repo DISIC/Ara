@@ -18,7 +18,7 @@ const tileLinks = [
     routeName: "glossary",
   },
   {
-    title: "Réaliser un audit a11é",
+    title: "Réaliser un audit accessibilité (a11é)",
     description: "Tout savoir pour réaliser un audit a11é",
     routeName: "make-a11y-audit",
   },
