@@ -4,7 +4,7 @@ import TopLink from "../../components/TopLink.vue";
 
 <template>
   <section class="fr-my-0 content">
-    <h1 class="fr-mt-6w">
+    <h1 class="fr-mt-6w fr-mb-9v">
       Le Référentiel général d’amélioration de l’accessibilité (RGAA)
     </h1>
     <h2>À quoi ça sert ?</h2>

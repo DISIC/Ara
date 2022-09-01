@@ -4,7 +4,7 @@ import TopLink from "../../components/TopLink.vue";
 
 <template>
   <section class="fr-my-0 content">
-    <h1 class="fr-mt-6w">Obligations légales et sanctions</h1>
+    <h1 class="fr-mt-6w fr-mb-9v">Obligations légales et sanctions</h1>
     <h2>Introduction</h2>
     <p>
       Les obligations d’accessibilité des sites publics aux personnes en
