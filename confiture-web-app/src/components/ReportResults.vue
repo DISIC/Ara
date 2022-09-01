@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import slugify from "slugify";
 
 import { useReportStore } from "../store";
-import SummaryCard from "./SummaryCard.vue";
-import ResultDetailsCard from "./ResultDetailsCard.vue";
+import { slugify } from "../utils";
 import ChartLegend from "./ChartLegend.vue";
 import PieChart from "./PieChart.vue";
+import ResultDetailsCard from "./ResultDetailsCard.vue";
 import StackBarChart from "./StackBarChart.vue";
+import SummaryCard from "./SummaryCard.vue";
 
 const report = useReportStore();
 

@@ -24,6 +24,13 @@ const reportRouteLocation = computed(() => ({
   name: "report",
   params: { uniqueId: auditStore.data?.consultUniqueId },
 }));
+const accessibilityStatementLocation = computed(() => ({
+  name: "report",
+  params: {
+    uniqueId: auditStore.data?.consultUniqueId,
+    tab: "declaration-daccessibilite",
+  },
+}));
 
 const fullReportUrl = computed(() => {
   return (
@@ -107,7 +114,10 @@ const hasA11yStatement = computed(() => {
         <template v-if="hasA11yStatement">
           ou la
           <!-- TODO: link to page + selected tab -->
-          <RouterLink class="fr-link" to="/" target="_blank"
+          <RouterLink
+            class="fr-link"
+            :to="accessibilityStatementLocation"
+            target="_blank"
             >déclaration d’accessibilité</RouterLink
           ></template
         >

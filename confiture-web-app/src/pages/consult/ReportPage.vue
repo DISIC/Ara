@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
-import slugify from "slugify";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
+import OnboardingModal from "../../components/OnboardingModal.vue";
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatAuditType, formatDate } from "../../utils";
-import OnboardingModal from "../../components/OnboardingModal.vue";
 import { AuditType } from "../../types";
+import { formatAuditType, formatDate, slugify } from "../../utils";
 
 const report = useReportStore();
 
@@ -24,13 +23,13 @@ const hasA11yStatement = computed(() => {
   return report.data?.auditType === AuditType.FULL;
 });
 
-const tabs = [
+const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasA11yStatement.value
     ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
     : []),
   { title: "Description des erreurs", component: ReportErrors },
-];
+]);
 
 const showCopyAlert = ref(false);
 
@@ -70,6 +69,30 @@ function onOnboardingClose(confirmed: boolean) {
 function onOnboardingAlertClose() {
   showOnboardingAlert.value = false;
   localStorage.setItem("confiture:hide-onboarding-alert", "true");
+}
+
+const targetTab = route.params.tab as string | undefined;
+const targetTabIndex = computed(() => {
+  let index = tabs.value.findIndex(
+    (t) => slugify(t.title).toLowerCase() === targetTab?.toLowerCase()
+  );
+  return index === -1 ? 0 : index;
+});
+const router = useRouter();
+
+function handleTabChange(tab: { title: string }) {
+  // change the URL in the browser adress bar without triggering vue-router navigation
+  history.pushState(
+    {},
+    "null",
+    router.resolve({
+      name: "report",
+      params: {
+        uniqueId,
+        tab: slugify(tab.title),
+      },
+    }).fullPath
+  );
 }
 </script>
 
@@ -155,13 +178,13 @@ function onOnboardingAlertClose() {
 
     <div class="fr-tabs">
       <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
-        <li v-for="tab in tabs" :key="tab.title" role="presentation">
+        <li v-for="(tab, i) in tabs" :key="tab.title" role="presentation">
           <button
             :id="`tabpanel-${slugify(tab.title)}`"
             class="fr-tabs__tab"
             tabindex="0"
             role="tab"
-            aria-selected="true"
+            :aria-selected="i === targetTabIndex"
             :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
           >
             {{ tab.title }}
@@ -169,13 +192,15 @@ function onOnboardingAlertClose() {
         </li>
       </ul>
       <div
-        v-for="tab in tabs"
+        v-for="(tab, i) in tabs"
         :id="`tabpanel-${slugify(tab.title)}-panel`"
         :key="tab.title"
         class="fr-tabs__panel fr-tabs__panel--selected"
+        :class="{ 'fr-tabs__panel--selected': i === targetTabIndex }"
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab) }"
       >
         <component :is="tab.component" />
       </div>

@@ -4,6 +4,8 @@ import {
   CriteriumResultStatus,
 } from "./types";
 
+import baseSlugify from "slugify";
+
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
   month: "long",
@@ -78,4 +80,8 @@ export function getCriteriaCount(auditType: AuditType): number {
  */
 export function getCssVarValue(varName: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(varName);
+}
+
+export function slugify(value: string): string {
+  return baseSlugify(value, { strict: true, lower: true });
 }
