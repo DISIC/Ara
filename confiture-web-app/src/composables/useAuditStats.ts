@@ -8,13 +8,12 @@ import { useResultsStore } from "../store";
 // TODO: get pagesCount directly from the store
 export function useAuditStats(pagesCount: number | undefined) {
   const store = useResultsStore();
-  const { results } = storeToRefs(store);
 
   const applicableCriteriaCount = computed(
     () =>
       Object.values(
         countBy(
-          results.value
+          store.allResults
             ?.filter((r) => {
               return r.status === CriteriumResultStatus.NOT_APPLICABLE;
             })
@@ -29,14 +28,14 @@ export function useAuditStats(pagesCount: number | undefined) {
   // FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
   const complianceLevel = computed(() => {
     const testedCount =
-      results.value?.filter(
+      store.allResults?.filter(
         (result) =>
           result.status !== CriteriumResultStatus.NOT_TESTED &&
           result.status !== CriteriumResultStatus.NOT_APPLICABLE
       ).length ?? 0;
 
     const compliantCount =
-      results.value?.filter(
+      store.allResults?.filter(
         (result) => result.status === CriteriumResultStatus.COMPLIANT
       ).length ?? 0;
 
@@ -59,12 +58,12 @@ export function useAuditStats(pagesCount: number | undefined) {
 
   const errorsCount = computed(() => {
     const total =
-      results.value?.filter((r) => {
+      store.allResults?.filter((r) => {
         return r.status === CriteriumResultStatus.NOT_COMPLIANT;
       }).length || 0;
 
     const blocking =
-      results.value?.filter((r) => {
+      store.allResults?.filter((r) => {
         return (
           r.status === CriteriumResultStatus.NOT_COMPLIANT &&
           r.userImpact === CriterionResultUserImpact.BLOCKING

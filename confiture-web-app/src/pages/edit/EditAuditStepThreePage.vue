@@ -45,8 +45,9 @@ const topics = computed(() => {
   return rgaa.topics.map((topic) => {
     // Every results for the current topic
     const relevantResults =
-      resultsStore.results?.filter((result) => result.topic === topic.number) ??
-      [];
+      resultsStore.allResults?.filter(
+        (result) => result.topic === topic.number
+      ) ?? [];
 
     // number of criteria for the topic accross all pages
     const relevantCount = relevantResults.length;
@@ -89,7 +90,7 @@ const headerInfos = computed(() => [
 
 <template>
   <!-- FIXME: handle loading states -->
-  <template v-if="auditStore.data && resultsStore.results">
+  <template v-if="auditStore.data && resultsStore.data">
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
