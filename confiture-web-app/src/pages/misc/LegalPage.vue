@@ -3,7 +3,7 @@ import PageMeta from "../../components/PageMeta";
 </script>
 
 <!--
-  Missing elements:
+  TODO: missing elements:
   - product name
   - editor info
   - publishing info
