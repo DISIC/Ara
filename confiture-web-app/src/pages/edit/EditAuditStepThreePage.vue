@@ -160,3 +160,12 @@ const headerInfos = computed(() => [
     </div>
   </template>
 </template>
+
+<style scoped>
+.fr-tabs {
+  transition: none !important;
+}
+.fr-tabs__panel {
+  transition: none !important;
+}
+</style>
