@@ -1,25 +1,55 @@
+<script lang="ts">
+interface SiteMapLink {
+  label: string;
+  name: string;
+  children?: SiteMapLink[];
+}
+</script>
+
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
 
-const links = [
-  { label: "Accueil", href: "/" },
-  { label: "Ressources", href: "/ressources" },
-  { label: "Glossaire", href: "/glossaire" },
-  { label: "Outils", href: "/outils" },
-  { label: "Formations accessibilité", href: "/formations-accessibilite" },
-  { label: "Aide", href: "/aide" },
-  { label: "Obligations légales", href: "/aide/obligations-legales" },
-  { label: "RGAA", href: "/aide/rgaa" },
+const links: SiteMapLink[] = [
   {
-    label: "Déclaration d’accessibilité",
-    href: "/aide/declaration-accessibilite",
+    label: "Ressources",
+    name: "resources",
+    children: [
+      {
+        label: "Formations accessibilité",
+        name: "accessibility-training",
+        children: [
+          {
+            label: "Introduction à l’accessibilité numérique",
+            name: "a11y-intro-training",
+          },
+          {
+            label: "Bien faire du numérique public",
+            name: "public-digital",
+          },
+        ],
+      },
+      { label: "Outils", name: "tools" },
+      { label: "Glossaire RGAA", name: "glossary" },
+      { label: "Réaliser un audit accessibilité", name: "make-a11y-audit" },
+    ],
   },
-  { label: "Schéma pluriannuel", href: "/aide/schema-pluriannuel" },
-  { label: "Donner mon avis", href: "/donner-mon-avis" },
-  { label: "Plan du site", href: "/plan-du-site" },
-  { label: "Accessibilité", href: "/accessibilite" },
-  { label: "Mentions légales", href: "/mentions-legales" },
-  { label: "Données personnelles", href: "/donnees-personnelles" },
+  {
+    label: "Aide",
+    name: "help",
+    children: [
+      { label: "Obligations légales", name: "legal-requirements" },
+      { label: "RGAA", name: "rgaa" },
+      {
+        label: "Déclaration d’accessibilité",
+        name: "accessibility-statement",
+      },
+      { label: "Schéma pluriannuel", name: "accessibility-plan" },
+    ],
+  },
+  { label: "Donner mon avis", name: "feedback" },
+  { label: "Accessibilité", name: "accessibility" },
+  { label: "Mentions légales", name: "legal" },
+  { label: "Données personnelles", name: "personal-data" },
 ];
 </script>
 
@@ -33,13 +63,38 @@ const links = [
     <h1>Plan du site</h1>
 
     <ul role="list" class="fr-pl-0 list">
-      <li v-for="link in links" :key="link.href">
+      <li v-for="link in links" :key="link.name" class="">
         <RouterLink
           class="fr-link fr-fi-arrow-right-line fr-link--icon-right"
-          :to="link.href"
+          :to="{ name: link.name }"
         >
           {{ link.label }}
         </RouterLink>
+        <ul v-if="link.children" role="list" class="fr-pl-2w fr-mt-2w list">
+          <li v-for="subLink in link.children" :key="subLink.name">
+            <RouterLink
+              class="fr-link fr-fi-arrow-right-line fr-link--icon-right fr-text--sm"
+              :to="{ name: subLink.name }"
+            >
+              {{ subLink.label }}
+            </RouterLink>
+
+            <ul
+              v-if="subLink.children"
+              role="list"
+              class="fr-pl-2w fr-mt-2w list"
+            >
+              <li v-for="subSubLink in subLink.children" :key="subSubLink.name">
+                <RouterLink
+                  class="fr-link fr-fi-arrow-right-line fr-link--icon-right fr-text--sm"
+                  :to="{ name: subSubLink.name }"
+                >
+                  {{ subSubLink.label }}
+                </RouterLink>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </li>
     </ul>
   </section>
@@ -52,9 +107,12 @@ const links = [
 
 .list {
   list-style-type: none;
-  padding-inline-start: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
+}
+
+.list .list {
+  gap: 1rem;
 }
 </style>
