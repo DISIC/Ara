@@ -6,6 +6,7 @@ import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue"
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
+import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { useAuditStore, useResultsStore } from "../../store";
@@ -21,6 +22,7 @@ const auditStore = useAuditStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 const resultsStore = useResultsStore();
+const notify = useNotifications();
 
 onMounted(() => {
   resultsStore.fetchResults(uniqueId);
@@ -37,6 +39,11 @@ function toStepFour() {
     })
     .catch((error) => {
       console.error(error);
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+      );
     });
 }
 

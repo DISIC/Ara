@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
 import { CreateAuditRequestData } from "../../types";
@@ -13,6 +14,8 @@ const auditUniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
+
+const notify = useNotifications();
 
 function submitStepOne(data: CreateAuditRequestData) {
   auditStore
@@ -26,6 +29,14 @@ function submitStepOne(data: CreateAuditRequestData) {
         name: "edit-audit-step-two",
         params: { uniqueId: audit.editUniqueId },
       });
+    })
+    .catch((err) => {
+      console.error(err);
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+      );
     });
 }
 </script>

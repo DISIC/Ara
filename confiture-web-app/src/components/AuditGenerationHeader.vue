@@ -7,6 +7,7 @@ import { formatDate } from "../utils";
 import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
+import { useNotifications } from "../composables/useNotifications";
 
 defineProps<{
   auditName: string;
@@ -34,6 +35,7 @@ function closeDeleteModal() {
 }
 
 const auditStore = useAuditStore();
+const notify = useNotifications();
 
 /**
  * Delete audit and redirect to home page
@@ -49,6 +51,14 @@ function confirmDelete() {
     })
     .catch((error) => {
       console.error(error);
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+      );
+    })
+    .finally(() => {
+      closeDeleteModal();
     });
 }
 
