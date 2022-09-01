@@ -7,6 +7,7 @@ import LeaveModal from "../../components/LeaveModal.vue";
 import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
 import { useAuditStore } from "../../store";
+import { useNotifications } from "../../composables/useNotifications";
 
 const isLeaveModalOpen = ref(false);
 const leaveModalDestination = ref<string>("");
@@ -50,6 +51,8 @@ const isSubmitting = ref(false);
 
 const auditStore = useAuditStore();
 
+const notify = useNotifications();
+
 function submitStepOne(data: CreateAuditRequestData) {
   isSubmitting.value = true;
   auditStore
@@ -60,6 +63,14 @@ function submitStepOne(data: CreateAuditRequestData) {
         name: "edit-audit-step-two",
         params: { uniqueId: audit.editUniqueId },
       });
+    })
+    .catch((err) => {
+      console.error(err);
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+      );
     })
     .finally(() => {
       isSubmitting.value = false;
