@@ -532,19 +532,36 @@ export class AuditService {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter((r) => r.status === CriterionResultStatus.COMPLIANT)
+              .length /
+              results.length) *
+              100,
+          ),
         },
         notApplicable: {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
+            ).length /
+              results.length) *
+              100,
+          ),
         },
         notCompliant: {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+            ).length /
+              results.length) *
+              100,
+          ),
         },
       },
 
