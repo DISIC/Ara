@@ -483,15 +483,14 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.COMPLIANT,
             ).length /
               106) *
-              100,
-          ),
+            100,
         },
         notApplicable: {
           raw: results.filter(
@@ -499,15 +498,14 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
               106) *
-              100,
-          ),
+            100,
         },
         notCompliant: {
           raw: results.filter(
@@ -515,15 +513,14 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
               106) *
-              100,
-          ),
+            100,
         },
       })),
 
@@ -532,36 +529,33 @@ export class AuditService {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter((r) => r.status === CriterionResultStatus.COMPLIANT)
               .length /
               results.length) *
-              100,
-          ),
+            100,
         },
         notApplicable: {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
               results.length) *
-              100,
-          ),
+            100,
         },
         notCompliant: {
           raw: results.filter(
             (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
               results.length) *
-              100,
-          ),
+            100,
         },
       },
 
@@ -573,15 +567,14 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.COMPLIANT,
             ).length /
               results.filter((r) => r.topic === t.number).length) *
-              100,
-          ),
+            100,
         },
         notApplicable: {
           raw: results.filter(
@@ -589,15 +582,14 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
               results.filter((r) => r.topic === t.number).length) *
-              100,
-          ),
+            100,
         },
         notCompliant: {
           raw: results.filter(
@@ -605,15 +597,14 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: Math.round(
+          percentage:
             (results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
               results.filter((r) => r.topic === t.number).length) *
-              100,
-          ),
+            100,
         },
       })),
 

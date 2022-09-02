@@ -89,16 +89,23 @@ const chartsName = {
       <template #accordion>
         <ul id="result-distribution-description">
           <li>
-            {{ report.data.resultDistribution.compliant.percentage }}% de
-            critères conformes
+            {{
+              Math.round(report.data.resultDistribution.compliant.percentage)
+            }}% de critères conformes
           </li>
           <li>
-            {{ report.data.resultDistribution.notCompliant.percentage }}% de
-            critères non conformes
+            {{
+              Math.round(
+                report.data.resultDistribution.notCompliant.percentage
+              )
+            }}% de critères non conformes
           </li>
           <li>
-            {{ report.data.resultDistribution.notApplicable.percentage }}% de
-            critères non applicables
+            {{
+              Math.round(
+                report.data.resultDistribution.notApplicable.percentage
+              )
+            }}% de critères non applicables
           </li>
         </ul>
       </template>
@@ -124,9 +131,10 @@ const chartsName = {
       <template #accordion>
         <ul id="page-distribution-description">
           <li v-for="page in report.data.pageDistributions" :key="page.name">
-            "{{ page.name }}" : {{ page.compliant.percentage }}% de critères
-            conformes, {{ page.notCompliant.percentage }}% de critères non
-            conformes et {{ page.notApplicable.percentage }}% de critères non
+            "{{ page.name }}" : {{ Math.round(page.compliant.percentage) }}% de
+            critères conformes, {{ Math.round(page.notCompliant.percentage) }}%
+            de critères non conformes et
+            {{ Math.round(page.notApplicable.percentage) }}% de critères non
             applicables.
           </li>
         </ul>
@@ -153,10 +161,11 @@ const chartsName = {
       <template #accordion>
         <ul id="topic-distribution-description">
           <li v-for="topic in report.data.topicDistributions" :key="topic.name">
-            "{{ topic.name }}" : {{ topic.compliant.percentage }}% de critères
-            conformes, {{ topic.notCompliant.percentage }}% de critères non
-            conformes et {{ topic.notApplicable.percentage }}% de critères non
-            applicables.
+            "{{ topic.name }}" : {{ Math.round(topic.compliant.percentage) }}%
+            de critères conformes,
+            {{ Math.round(topic.notCompliant.percentage) }}% de critères non
+            conformes et {{ Math.round(topic.notApplicable.percentage) }}% de
+            critères non applicables.
           </li>
         </ul>
       </template>
