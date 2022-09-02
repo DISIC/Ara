@@ -25,23 +25,6 @@ const props = defineProps<{
   data: DataItem[];
 }>();
 
-// const percentagaData = props.data.map((item) => {
-//   const r = {
-//     name: item.name,
-//     compliant:
-//       item.compliant /
-//       (item.compliant + item.notApplicable + item.notCompliant),
-//     notCompliant:
-//       item.notCompliant /
-//       (item.compliant + item.notApplicable + item.notCompliant),
-//     notApplicable:
-//       item.notApplicable /
-//       (item.compliant + item.notApplicable + item.notCompliant),
-//   };
-
-//   return r;
-// });
-
 const chartLabels = props.data.map((item) => item.name);
 const chartDatasets = [
   {
