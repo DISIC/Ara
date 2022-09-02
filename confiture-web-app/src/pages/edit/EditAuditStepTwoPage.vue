@@ -4,7 +4,6 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
-import SaveModal from "../../components/SaveModal.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
@@ -83,26 +82,11 @@ const customToolNameRefs = ref<HTMLInputElement[]>([]);
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
 
-const isSaveModalVisible = ref(false);
-const saveModalRef = ref();
 const stepTitleRef = ref<HTMLHeadingElement>();
-
 const showAdminAlert = ref(false);
 
 async function hideAdminAlert() {
   showAdminAlert.value = false;
-  await nextTick();
-  stepTitleRef.value?.focus();
-}
-
-async function openSaveModal() {
-  isSaveModalVisible.value = true;
-  await nextTick();
-  saveModalRef.value.open();
-}
-
-async function closeSaveModal() {
-  isSaveModalVisible.value = false;
   await nextTick();
   stepTitleRef.value?.focus();
 }
@@ -571,13 +555,6 @@ function fillFields() {
       <button class="fr-btn" type="submit">Suivant</button>
     </div>
   </form>
-
-  <!-- <SaveModal
-    v-if="isSaveModalVisible"
-    ref="saveModalRef"
-    :audit-id="uniqueId"
-    v-on="{ close: closeSaveModal, 'dsfr.conceal': closeSaveModal }"
-  /> -->
 </template>
 
 <style scoped>
