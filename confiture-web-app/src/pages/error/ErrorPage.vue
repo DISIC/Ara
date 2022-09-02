@@ -26,15 +26,15 @@ const errorDescription =
 const errorInstruction = {
   404: [
     "Si vous avez tapé l’adresse web dans le navigateur, vérifiez qu’elle est correcte. La page n’est peut-être plus disponible.",
-    "Dans ce cas, pour continuer votre visite vous pouvez consulter notre page d’accueil, ou effectuer une recherche avec notre moteur de recherche en haut de page.Sinon contactez-nous pour que l’on puisse vous rediriger vers la bonne information.",
+    "Dans ce cas, pour continuer votre visite vous pouvez consulter notre page d’accueil ou nous contacter en utilisant l’adresse électronique rgaa@design.numerique.gouv.fr.",
   ],
   500: [
     "Essayez de rafraîchir la page ou bien ressayez plus tard.",
-    "Si vous avez besoin d’une aide immédiate, merci de nous contacter.",
+    "Si vous avez besoin d’une aide immédiate, merci de nous contacter en utilisant l’adresse électronique rgaa@design.numerique.gouv.fr.",
   ],
   503: [
     "Merci de réessayer plus tard, vous serez bientôt en mesure de réutiliser le service.",
-    "Si vous avez besoin d’une aide immédiate, merci de nous contacter.",
+    "Si vous avez besoin d’une aide immédiate, merci de nous contacter en utilisant l’adresse électronique rgaa@design.numerique.gouv.fr.",
   ],
 }[statusCode] ?? [
   // TODO: get real wording
@@ -70,14 +70,6 @@ const errorInstruction = {
           :to="{ name: 'home' }"
         >
           Page d’accueil
-        </RouterLink>
-        <!-- FIXME: link URL? -->
-        <RouterLink
-          v-if="statusCode !== 410"
-          class="fr-btn fr-btn--secondary"
-          :to="{ name: 'home' }"
-        >
-          Contactez-nous
         </RouterLink>
       </div>
     </div>
