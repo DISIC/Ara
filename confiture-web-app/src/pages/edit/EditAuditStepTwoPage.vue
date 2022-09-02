@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
@@ -91,13 +91,11 @@ async function hideAdminAlert() {
   stepTitleRef.value?.focus();
 }
 
-onMounted(() => {
-  // Show alert only when coming from first step on new audit
-  const { route } = usePreviousRoute();
-  if (route?.name === "new-audit-step-one") {
-    showAdminAlert.value = true;
-  }
-});
+// Show alert only when coming from first step on new audit
+const { route: previousRoute } = usePreviousRoute();
+if (previousRoute?.name === "new-audit-step-one") {
+  showAdminAlert.value = true;
+}
 
 const { data: audit } = storeToRefs(auditStore);
 
