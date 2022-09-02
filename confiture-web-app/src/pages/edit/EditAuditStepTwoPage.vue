@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
-import SaveModal from "../../components/SaveModal.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAuditStore } from "../../store";
 import { AuditType } from "../../types";
 
 const router = useRouter();
-
 const route = useRoute();
+
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
@@ -82,29 +82,20 @@ const customToolNameRefs = ref<HTMLInputElement[]>([]);
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
 
-const isSaveModalVisible = ref(false);
-const saveModalRef = ref();
 const stepTitleRef = ref<HTMLHeadingElement>();
+const showAdminAlert = ref(false);
 
-async function openSaveModal() {
-  isSaveModalVisible.value = true;
-  await nextTick();
-  saveModalRef.value.open();
-}
-
-async function closeSaveModal() {
-  isSaveModalVisible.value = false;
+async function hideAdminAlert() {
+  showAdminAlert.value = false;
   await nextTick();
   stepTitleRef.value?.focus();
 }
 
-onMounted(async () => {
-  // FIXME: find a better way to wait for DSFR to be loaded
-  // TODO: define when should the modal be seen
-  setTimeout(() => {
-    openSaveModal();
-  }, 1000);
-});
+// Show alert only when coming from first step on new audit
+const { route: previousRoute } = usePreviousRoute();
+if (previousRoute?.name === "new-audit-step-one") {
+  showAdminAlert.value = true;
+}
 
 const { data: audit } = storeToRefs(auditStore);
 
@@ -275,6 +266,22 @@ function fillFields() {
 </script>
 
 <template>
+  <div
+    v-if="showAdminAlert"
+    class="fr-alert fr-alert--info fr-alert--sm fr-my-9v"
+  >
+    <p>
+      Nous vous avons envoyé un e-mail avec le lien administrateur de l’audit.
+      Conservez-le et ne le partagez-pas, il vous permet de modifier l’audit.
+    </p>
+    <button
+      class="fr-btn--close fr-btn"
+      title="Masquer le message"
+      @click="hideAdminAlert"
+    >
+      Masquer le message
+    </button>
+  </div>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 2 sur 2</span>
@@ -546,13 +553,6 @@ function fillFields() {
       <button class="fr-btn" type="submit">Suivant</button>
     </div>
   </form>
-
-  <SaveModal
-    v-if="isSaveModalVisible"
-    ref="saveModalRef"
-    :audit-id="uniqueId"
-    v-on="{ close: closeSaveModal, 'dsfr.conceal': closeSaveModal }"
-  />
 </template>
 
 <style scoped>
