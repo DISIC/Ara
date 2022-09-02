@@ -78,6 +78,10 @@ const environments = ref([
     browser: "",
   },
 ]);
+const notCompliantContent = ref("");
+const derogatedContent = ref("");
+const notInScopeContent = ref("");
+
 const customToolNameRefs = ref<HTMLInputElement[]>([]);
 const pageNameRefs = ref<HTMLInputElement[]>([]);
 const envSupportRefs = ref<HTMLInputElement[]>([]);
@@ -138,6 +142,10 @@ watch(
             browser: "",
           },
         ];
+    // TODO: prefill values
+    // notCompliantContent.value = audit.notCompliantContent;
+    // derogatedContent.value = audit.derogatedContent;
+    // notInScopeContent.value = audit.notInScopeContent;
   },
   { immediate: true }
 );
@@ -223,6 +231,10 @@ function saveAuditChanges() {
     auditTools: auditTools.value,
     environments: environments.value,
     pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
+    // TODO: plug not accessible content
+    // notCompliantContent: notCompliantContent.value,
+    // derogatedContent: derogatedContent.value,
+    // notInScopeContent: notInScopeContent.value,
   };
 
   return auditStore.updateAudit(uniqueId, data).catch((err) => {
@@ -271,6 +283,12 @@ function fillFields() {
     { name: "Accueil", url: "https://example.com" },
     { name: "Contact", url: "https://example.com/contact" },
   ];
+  notCompliantContent.value =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, veniam? Rerum laborum eaque fugiat, harum beatae magni quia eius. Aliquam cumque minima facere excepturi et temporibus voluptatibus recusandae animi minus?";
+  derogatedContent.value =
+    "Rerum tenetur, minima id voluptatem soluta dolor, illo consequatur magni obcaecati, quasi eligendi enim mollitia facere. Itaque provident, perspiciatis nesciunt iure excepturi, dignissimos fugit facilis consequuntur voluptates expedita quae laudantium!";
+  notInScopeContent.value =
+    "Magnam, consectetur dolorum excepturi, corporis enim pariatur illo eius, rerum inventore aliquam facere sunt voluptate totam asperiores porro dicta? Sit maiores neque esse iure labore illum dicta quaerat eius totam.";
 }
 </script>
 
@@ -516,14 +534,58 @@ function fillFields() {
           />
         </div>
       </fieldset>
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        type="button"
+        @click="addPage"
+      >
+        Ajouter une page
+      </button>
+
+      <h2 class="fr-h4">Contenus non accessibles</h2>
+      <p>
+        Mentionnez ici les contenus non accessibles présents sur le site. Ces
+        informations seront affichées sur la déclaration d’accessibilité.
+      </p>
+
+      <div class="fr-input-group">
+        <label class="fr-label" for="notCompliantContent"
+          >Non-conformités (optionnel)</label
+        >
+        <textarea
+          id="notCompliantContent"
+          v-model="notCompliantContent"
+          class="fr-input"
+        />
+      </div>
+
+      <div class="fr-input-group">
+        <label class="fr-label" for="derogatedContent">
+          Dérogations pour charge disproportionnée (optionnel)
+          <span class="fr-hint-text"
+            >Il s’agit des contenus qu’il serait trop coûteux de rendre
+            accessibles.</span
+          >
+        </label>
+        <textarea
+          id="derogatedContent"
+          v-model="derogatedContent"
+          class="fr-input"
+        />
+      </div>
+
+      <div class="fr-input-group">
+        <label class="fr-label" for="notInScopeContent">
+          Contenus non soumis à l’obligation d’accessibilité (optionnel)
+          <span class="fr-hint-text">Exemple : Cartes interactives, etc</span>
+        </label>
+        <textarea
+          id="notInScopeContent"
+          v-model="notInScopeContent"
+          class="fr-input"
+        />
+      </div>
     </div>
-    <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w"
-      type="button"
-      @click="addPage"
-    >
-      Ajouter une page
-    </button>
 
     <div>
       <button
