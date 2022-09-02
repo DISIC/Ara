@@ -124,10 +124,10 @@ const chartsName = {
       <template #accordion>
         <ul id="page-distribution-description">
           <li v-for="page in report.data.pageDistributions" :key="page.name">
-            Page "{{ page.name }}" : {{ page.compliant.percentage }}% de
-            critères conformes, {{ page.notCompliant.percentage }}% de critères
-            non conformes et {{ page.notApplicable.percentage }}% de critères
-            non applicables.
+            "{{ page.name }}" : {{ page.compliant.percentage }}% de critères
+            conformes, {{ page.notCompliant.percentage }}% de critères non
+            conformes et {{ page.notApplicable.percentage }}% de critères non
+            applicables.
           </li>
         </ul>
       </template>
@@ -153,10 +153,10 @@ const chartsName = {
       <template #accordion>
         <ul id="topic-distribution-description">
           <li v-for="topic in report.data.topicDistributions" :key="topic.name">
-            Thématique "{{ topic.name }}" : {{ topic.compliant.percentage }}% de
-            critères conformes, {{ topic.notCompliant.percentage }}% de critères
-            non conformes et {{ topic.notApplicable.percentage }}% de critères
-            non applicables.
+            "{{ topic.name }}" : {{ topic.compliant.percentage }}% de critères
+            conformes, {{ topic.notCompliant.percentage }}% de critères non
+            conformes et {{ topic.notApplicable.percentage }}% de critères non
+            applicables.
           </li>
         </ul>
       </template>

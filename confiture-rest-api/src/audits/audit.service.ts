@@ -474,6 +474,7 @@ export class AuditService {
       },
 
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
+      // TODO: update total criteria count for percentages (106)
       pageDistributions: audit.pages.map((p) => ({
         name: p.name,
         compliant: {
@@ -482,11 +483,15 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          // const total = el.compliant + el.notCompliant + el.notApplicable;
-          // const compliant = Math.round((el.compliant / total) * 100);
-          // const notCompliant = Math.round((el.notCompliant / total) * 100);
-          // const notApplicable = Math.round((el.notApplicable / total) * 100);
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.pageUrl === p.url &&
+                r.status === CriterionResultStatus.COMPLIANT,
+            ).length /
+              106) *
+              100,
+          ),
         },
         notApplicable: {
           raw: results.filter(
@@ -494,7 +499,15 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.pageUrl === p.url &&
+                r.status === CriterionResultStatus.NOT_APPLICABLE,
+            ).length /
+              106) *
+              100,
+          ),
         },
         notCompliant: {
           raw: results.filter(
@@ -502,7 +515,15 @@ export class AuditService {
               r.pageUrl === p.url &&
               r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.pageUrl === p.url &&
+                r.status === CriterionResultStatus.NOT_COMPLIANT,
+            ).length /
+              106) *
+              100,
+          ),
         },
       })),
 
@@ -535,7 +556,15 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.COMPLIANT,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.topic === t.number &&
+                r.status === CriterionResultStatus.COMPLIANT,
+            ).length /
+              results.filter((r) => r.topic === t.number).length) *
+              100,
+          ),
         },
         notApplicable: {
           raw: results.filter(
@@ -543,7 +572,15 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.topic === t.number &&
+                r.status === CriterionResultStatus.NOT_APPLICABLE,
+            ).length /
+              results.filter((r) => r.topic === t.number).length) *
+              100,
+          ),
         },
         notCompliant: {
           raw: results.filter(
@@ -551,7 +588,15 @@ export class AuditService {
               r.topic === t.number &&
               r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
-          percentage: 100,
+          percentage: Math.round(
+            (results.filter(
+              (r) =>
+                r.topic === t.number &&
+                r.status === CriterionResultStatus.NOT_COMPLIANT,
+            ).length /
+              results.filter((r) => r.topic === t.number).length) *
+              100,
+          ),
         },
       })),
 
