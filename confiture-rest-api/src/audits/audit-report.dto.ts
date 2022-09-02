@@ -66,15 +66,24 @@ class ResultDistribution {
   /**
    * @example 47
    */
-  compliant: number;
+  compliant: {
+    raw: number;
+    percentage: number;
+  };
   /**
    * @example 7
    */
-  notCompliant: number;
+  notCompliant: {
+    raw: number;
+    percentage: number;
+  };
   /**
    * @example 52
    */
-  notApplicable: number;
+  notApplicable: {
+    raw: number;
+    percentage: number;
+  };
 }
 
 class PageResultDistribution extends ResultDistribution {

@@ -476,51 +476,83 @@ export class AuditService {
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
       pageDistributions: audit.pages.map((p) => ({
         name: p.name,
-        compliant: results.filter(
-          (r) =>
-            r.pageUrl === p.url && r.status === CriterionResultStatus.COMPLIANT,
-        ).length,
-        notApplicable: results.filter(
-          (r) =>
-            r.pageUrl === p.url &&
-            r.status === CriterionResultStatus.NOT_APPLICABLE,
-        ).length,
-        notCompliant: results.filter(
-          (r) =>
-            r.pageUrl === p.url &&
-            r.status === CriterionResultStatus.NOT_COMPLIANT,
-        ).length,
+        compliant: {
+          raw: results.filter(
+            (r) =>
+              r.pageUrl === p.url &&
+              r.status === CriterionResultStatus.COMPLIANT,
+          ).length,
+          // const total = el.compliant + el.notCompliant + el.notApplicable;
+          // const compliant = Math.round((el.compliant / total) * 100);
+          // const notCompliant = Math.round((el.notCompliant / total) * 100);
+          // const notApplicable = Math.round((el.notApplicable / total) * 100);
+          percentage: 100,
+        },
+        notApplicable: {
+          raw: results.filter(
+            (r) =>
+              r.pageUrl === p.url &&
+              r.status === CriterionResultStatus.NOT_APPLICABLE,
+          ).length,
+          percentage: 100,
+        },
+        notCompliant: {
+          raw: results.filter(
+            (r) =>
+              r.pageUrl === p.url &&
+              r.status === CriterionResultStatus.NOT_COMPLIANT,
+          ).length,
+          percentage: 100,
+        },
       })),
 
       resultDistribution: {
-        compliant: results.filter(
-          (r) => r.status === CriterionResultStatus.COMPLIANT,
-        ).length,
-        notApplicable: results.filter(
-          (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
-        ).length,
-        notCompliant: results.filter(
-          (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
-        ).length,
+        compliant: {
+          raw: results.filter(
+            (r) => r.status === CriterionResultStatus.COMPLIANT,
+          ).length,
+          percentage: 100,
+        },
+        notApplicable: {
+          raw: results.filter(
+            (r) => r.status === CriterionResultStatus.NOT_APPLICABLE,
+          ).length,
+          percentage: 100,
+        },
+        notCompliant: {
+          raw: results.filter(
+            (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+          ).length,
+          percentage: 100,
+        },
       },
 
       topicDistributions: RGAA.topics.map((t) => ({
         name: t.topic,
-        compliant: results.filter(
-          (r) =>
-            r.topic === t.number &&
-            r.status === CriterionResultStatus.COMPLIANT,
-        ).length,
-        notApplicable: results.filter(
-          (r) =>
-            r.topic === t.number &&
-            r.status === CriterionResultStatus.NOT_APPLICABLE,
-        ).length,
-        notCompliant: results.filter(
-          (r) =>
-            r.topic === t.number &&
-            r.status === CriterionResultStatus.NOT_COMPLIANT,
-        ).length,
+        compliant: {
+          raw: results.filter(
+            (r) =>
+              r.topic === t.number &&
+              r.status === CriterionResultStatus.COMPLIANT,
+          ).length,
+          percentage: 100,
+        },
+        notApplicable: {
+          raw: results.filter(
+            (r) =>
+              r.topic === t.number &&
+              r.status === CriterionResultStatus.NOT_APPLICABLE,
+          ).length,
+          percentage: 100,
+        },
+        notCompliant: {
+          raw: results.filter(
+            (r) =>
+              r.topic === t.number &&
+              r.status === CriterionResultStatus.NOT_COMPLIANT,
+          ).length,
+          percentage: 100,
+        },
       })),
 
       results: results.map((r) => ({

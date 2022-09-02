@@ -7,49 +7,58 @@ import { useChartColorsUpdate } from "../composables/useChartColorsUpdate";
 
 interface DataItem {
   name: string;
-  compliant: number;
-  notCompliant: number;
-  notApplicable: number;
+  compliant: {
+    raw: number;
+    percentage: number;
+  };
+  notCompliant: {
+    raw: number;
+    percentage: number;
+  };
+  notApplicable: {
+    raw: number;
+    percentage: number;
+  };
 }
 
 const props = defineProps<{
   data: DataItem[];
 }>();
 
-const percentagaData = props.data.map((item) => {
-  const r = {
-    name: item.name,
-    compliant:
-      item.compliant /
-      (item.compliant + item.notApplicable + item.notCompliant),
-    notCompliant:
-      item.notCompliant /
-      (item.compliant + item.notApplicable + item.notCompliant),
-    notApplicable:
-      item.notApplicable /
-      (item.compliant + item.notApplicable + item.notCompliant),
-  };
+// const percentagaData = props.data.map((item) => {
+//   const r = {
+//     name: item.name,
+//     compliant:
+//       item.compliant /
+//       (item.compliant + item.notApplicable + item.notCompliant),
+//     notCompliant:
+//       item.notCompliant /
+//       (item.compliant + item.notApplicable + item.notCompliant),
+//     notApplicable:
+//       item.notApplicable /
+//       (item.compliant + item.notApplicable + item.notCompliant),
+//   };
 
-  return r;
-});
+//   return r;
+// });
 
 const chartLabels = props.data.map((item) => item.name);
 const chartDatasets = [
   {
     label: "Conforme",
-    data: percentagaData.map((item) => item.compliant),
+    data: props.data.map((d) => d.compliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-success"),
     barThickness: 16,
   },
   {
     label: "Non conforme",
-    data: percentagaData.map((item) => item.notCompliant),
+    data: props.data.map((d) => d.notCompliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-error"),
     barThickness: 16,
   },
   {
     label: "Non applicable",
-    data: percentagaData.map((item) => item.notApplicable),
+    data: props.data.map((d) => d.notApplicable.percentage),
     backgroundColor: getCssVarValue("--background-contrast-grey"),
     barThickness: 16,
   },
@@ -77,7 +86,9 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
               context.datasetIndex
             ] as keyof DataItem;
 
-            return `${context.dataset.label} : ${data![key]}`;
+            return `${context.dataset.label} : ${
+              (data![key] as { raw: number; percentage: number }).raw
+            }`;
           },
         },
       },

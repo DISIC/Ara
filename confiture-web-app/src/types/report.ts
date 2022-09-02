@@ -40,9 +40,18 @@ export interface AuditReport {
 }
 
 interface ResultDistribution {
-  compliant: number;
-  notCompliant: number;
-  notApplicable: number;
+  compliant: {
+    raw: number;
+    percentage: number;
+  };
+  notCompliant: {
+    raw: number;
+    percentage: number;
+  };
+  notApplicable: {
+    raw: number;
+    percentage: number;
+  };
 }
 
 interface PageResultDistribution extends ResultDistribution {
