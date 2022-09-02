@@ -192,10 +192,10 @@ function getPageSlug(pageUrl: string) {
               <!-- Error -->
               <LazyAccordion title="Erreur">
                 <p class="fr-mb-3w">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-                  saepe earum voluptates rem possimus rerum aut id tempora
-                  veniam quibusdam sint vero, iste quidem. Praesentium voluptate
-                  dolorem amet magnam quibusdam.
+                  {{
+                    error.errorDescription ||
+                    "Aucune description de l’erreur fournie."
+                  }}
                 </p>
                 <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
@@ -232,10 +232,12 @@ function getPageSlug(pageUrl: string) {
 
               <!-- Recommendation -->
               <LazyAccordion title="Recommandation de correction">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Quisquam commodi cumque consequuntur est. Nulla pariatur quo
-                molestiae ipsam ut dicta dignissimos repellendus, accusamus
-                velit corporis iste cumque adipisci doloribus odit?
+                <p class="fr-mb-0">
+                  {{
+                    error.recommandation ||
+                    "Aucune recommandation de correction fournie."
+                  }}
+                </p>
               </LazyAccordion>
 
               <!-- Tests -->
