@@ -73,4 +73,16 @@ export class UpdateAuditDto extends CreateAuditDto {
   @Type(() => UpdateAuditPage)
   @IsOptional()
   pages?: UpdateAuditPage[];
+
+  @IsString()
+  @IsOptional()
+  notCompliantContent?: string;
+
+  @IsString()
+  @IsOptional()
+  derogatedContent?: string;
+
+  @IsString()
+  @IsOptional()
+  notInScopeContent?: string;
 }

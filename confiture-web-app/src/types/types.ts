@@ -50,6 +50,10 @@ export interface Audit {
   environments: AuditEnvironment[];
   pages: AuditPage[];
 
+  notCompliantContent?: string;
+  derogatedContent?: string;
+  notInScopeContent?: string;
+
   publicationDate?: string;
   editionDate?: string;
 }

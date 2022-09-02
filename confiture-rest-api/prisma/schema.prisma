@@ -71,6 +71,10 @@ model Audit {
   /// @DtoEntityHidden
   pages        AuditedPage[]
 
+  notCompliantContent String?
+  derogatedContent    String?
+  notInScopeContent   String?
+
   auditTraceId Int        @unique
   auditTrace   AuditTrace @relation(fields: [auditTraceId], references: [id])
 

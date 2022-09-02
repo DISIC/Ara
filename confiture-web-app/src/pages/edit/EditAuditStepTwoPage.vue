@@ -143,9 +143,9 @@ watch(
           },
         ];
     // TODO: prefill values
-    // notCompliantContent.value = audit.notCompliantContent;
-    // derogatedContent.value = audit.derogatedContent;
-    // notInScopeContent.value = audit.notInScopeContent;
+    notCompliantContent.value = audit.notCompliantContent ?? "";
+    derogatedContent.value = audit.derogatedContent ?? "";
+    notInScopeContent.value = audit.notInScopeContent ?? "";
   },
   { immediate: true }
 );
@@ -232,9 +232,9 @@ function saveAuditChanges() {
     environments: environments.value,
     pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
     // TODO: plug not accessible content
-    // notCompliantContent: notCompliantContent.value,
-    // derogatedContent: derogatedContent.value,
-    // notInScopeContent: notInScopeContent.value,
+    notCompliantContent: notCompliantContent.value,
+    derogatedContent: derogatedContent.value,
+    notInScopeContent: notInScopeContent.value,
   };
 
   return auditStore.updateAudit(uniqueId, data).catch((err) => {
