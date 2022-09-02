@@ -9,6 +9,10 @@ export interface AuditReport {
   publishDate?: string;
   updateDate?: string;
 
+  notCompliantContent?: string;
+  derogatedContent?: string;
+  notInScopeContent?: string;
+
   auditType: AuditType;
 
   context: AuditReportContext;

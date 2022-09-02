@@ -180,22 +180,36 @@ function hideCopyAlert() {
           <strong>[url]</strong> pour télécharger la grille d’audit.
         </li>
       </ul>
-      <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
-      <h5 class="fr-h3">Non-conformités</h5>
-      <p>Exemples :</p>
-      <ul class="fr-mb-2w fr-mb-md-3w">
-        <li>...</li>
-      </ul>
-      <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-      <p>Exemples :</p>
-      <ul class="fr-mb-2w fr-mb-md-3w">
-        <li>...</li>
-      </ul>
-      <h5 class="fr-h3">Contenus non soumis à l’obligation d’accessibilité</h5>
-      <p>Exemples :</p>
-      <ul class="fr-mb-9v fr-mb-md-6w">
-        <li>...</li>
-      </ul>
+
+      <h4
+        v-if="
+          report.data.notCompliantContent ||
+          report.data.derogatedContent ||
+          report.data.notInScopeContent
+        "
+        class="fr-h2 fr-mb-2w fr-mb-md-3w"
+      >
+        Contenus non accessibles
+      </h4>
+      <template v-if="report.data.notCompliantContent">
+        <h5 class="fr-h3">Non-conformités</h5>
+        <p class="fr-mb-2w fr-mb-md-3w">
+          {{ report.data.notCompliantContent }}
+        </p>
+      </template>
+
+      <template v-if="report.data.derogatedContent">
+        <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+        <p class="fr-mb-2w fr-mb-md-3w">{{ report.data.derogatedContent }}</p>
+      </template>
+
+      <template v-if="report.data.notInScopeContent">
+        <h5 class="fr-h3">
+          Contenus non soumis à l’obligation d’accessibilité
+        </h5>
+        <p class="fr-mb-2w fr-mb-md-3w">{{ report.data.notInScopeContent }}</p>
+      </template>
+
       <h4 class="fr-h2">Établissement de cette déclaration d’accessibilité</h4>
       <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
         Cette déclaration a été établie le

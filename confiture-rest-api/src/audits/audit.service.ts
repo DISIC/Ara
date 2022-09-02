@@ -221,6 +221,9 @@ export class AuditService {
                 update: page,
               })),
             },
+            notCompliantContent: data.notCompliantContent,
+            derogatedContent: data.derogatedContent,
+            notInScopeContent: data.notInScopeContent,
           },
           include: AUDIT_EDIT_INCLUDE,
         }),
@@ -411,6 +414,10 @@ export class AuditService {
       auditType: audit.auditType,
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
+
+      notCompliantContent: audit.notCompliantContent,
+      derogatedContent: audit.derogatedContent,
+      notInScopeContent: audit.notInScopeContent,
 
       errorCount: results.filter(
         (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
