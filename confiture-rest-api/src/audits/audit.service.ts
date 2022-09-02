@@ -415,6 +415,10 @@ export class AuditService {
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
 
+      notCompliantContent: audit.notCompliantContent,
+      derogatedContent: audit.derogatedContent,
+      notInScopeContent: audit.notInScopeContent,
+
       errorCount: results.filter(
         (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
       ).length,
