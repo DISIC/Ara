@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
 import SaveModal from "../../components/SaveModal.vue";
+import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
 import { AuditType } from "../../types";
@@ -212,6 +213,8 @@ async function deleteEnvironment(i: number) {
   previousInput.focus();
 }
 
+const notify = useNotifications();
+
 function saveAuditChanges() {
   const data = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -222,7 +225,14 @@ function saveAuditChanges() {
     pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
   };
 
-  return auditStore.updateAudit(uniqueId, data);
+  return auditStore.updateAudit(uniqueId, data).catch((err) => {
+    notify(
+      "error",
+      "Une erreur est survenue",
+      "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+    );
+    throw err;
+  });
 }
 
 function toStepOne() {
