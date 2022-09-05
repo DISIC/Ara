@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, RouteLocationRaw } from "vue-router";
 import { useHead } from "@vueuse/head";
 
 import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
 import ToastNotification from "./components/ToastNotification.vue";
+import { useAuditStore, useReportStore } from "./store";
 
 const route = useRoute();
 
@@ -43,11 +44,40 @@ useHead({
   ],
 });
 
-const showHelpMenuItem = computed(() => {
-  if (!route.name) return false;
+const reportStore = useReportStore();
+const auditStore = useAuditStore();
 
-  return !(route.name as string).includes("-audit-step-");
-});
+const homeLocation = { label: "Accueil", to: { name: "home" } };
+const helpLocation = { label: "Aide", to: { name: "help" } };
+const resourcesLocation = { label: "Ressources", to: { name: "resources" } };
+
+const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
+  () => {
+    if (reportStore.data) {
+      const reportLocation = {
+        to: {
+          name: "report",
+          params: { uniqueId: reportStore.data.consultUniqueId },
+        },
+        label: "Rapport d’audit",
+      };
+      return [reportLocation, resourcesLocation, helpLocation];
+    }
+
+    if (auditStore.data) {
+      const auditLocation = {
+        label: `Audit ${auditStore.data.procedureName}`,
+        to: auditStore.lastVisitedStepLocation ?? {
+          name: "edit-audit-step-one",
+          params: { uniqueId: auditStore.data.editUniqueId },
+        },
+      };
+      return [homeLocation, auditLocation, resourcesLocation];
+    }
+
+    return [homeLocation, resourcesLocation, helpLocation];
+  }
+);
 </script>
 
 <template>
@@ -122,20 +152,14 @@ const showHelpMenuItem = computed(() => {
           <div class="fr-header__menu-links"></div>
           <nav class="fr-nav" role="navigation" aria-label="Menu principal">
             <ul class="fr-nav__list">
-              <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" :to="{ name: 'home' }"
-                  >Accueil</RouterLink
-                >
-              </li>
-              <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" :to="{ name: 'resources' }">
-                  Ressources
+              <li
+                v-for="item in menuItems"
+                :key="item.label"
+                class="fr-nav__item"
+              >
+                <RouterLink class="fr-nav__link" :to="item.to">
+                  {{ item.label }}
                 </RouterLink>
-              </li>
-              <li v-if="showHelpMenuItem" class="fr-nav__item">
-                <RouterLink class="fr-nav__link" :to="{ name: 'help' }"
-                  >Aide</RouterLink
-                >
               </li>
             </ul>
           </nav>
