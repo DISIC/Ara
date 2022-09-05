@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
+import PageMeta from "../../components/PageMeta";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -96,6 +97,11 @@ const headerInfos = computed(() => [
 </script>
 
 <template>
+  <PageMeta
+    title="Réalisation de l'audit"
+    description="Réalisez simplement et validez votre audit d'accessibilité numérique."
+  />
+
   <!-- FIXME: handle loading states -->
   <template v-if="auditStore.data && resultsStore.data">
     <AuditGenerationHeader

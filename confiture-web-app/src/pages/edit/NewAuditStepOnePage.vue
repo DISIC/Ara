@@ -4,6 +4,7 @@ import { onBeforeRouteLeave } from "vue-router";
 
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
 import LeaveModal from "../../components/LeaveModal.vue";
+import PageMeta from "../../components/PageMeta";
 import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
 import { useAuditStore } from "../../store";
@@ -79,6 +80,11 @@ function submitStepOne(data: CreateAuditRequestData) {
 </script>
 
 <template>
+  <PageMeta
+    title="Informations générales sur le site à auditer"
+    description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
+  />
+
   <div
     class="fr-stepper"
     aria-controls="leave-modal"

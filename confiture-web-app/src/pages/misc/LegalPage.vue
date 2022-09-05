@@ -1,4 +1,13 @@
+<script setup lang="ts">
+import PageMeta from "../../components/PageMeta";
+</script>
+
 <template>
+  <PageMeta
+    title="Mentions légales"
+    description="Mentions légales du site confiture.numerique.gouv.fr"
+  />
+
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Mentions légales</h1>
     <p>

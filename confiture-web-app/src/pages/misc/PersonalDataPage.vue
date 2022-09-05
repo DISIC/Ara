@@ -1,4 +1,13 @@
+<script setup lang="ts">
+import PageMeta from "../../components/PageMeta";
+</script>
+
 <template>
+  <PageMeta
+    title="Données personnelles"
+    description="Gestion des données personnelles du site confiture.numerique.gouv.fr"
+  />
+
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Données personnelles</h1>
     <p>

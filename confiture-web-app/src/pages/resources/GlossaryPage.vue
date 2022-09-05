@@ -3,6 +3,7 @@ import slugify from "slugify";
 import { onMounted, ref } from "vue";
 
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 
 // TODO: fetch glossary from GitHub: https://github.com/DISIC/accessibilite.numerique.gouv.fr/blob/main/RGAA/4.1/glossaire.json
 import glossary from "../../glossaire.json";
@@ -49,6 +50,11 @@ function getTermSlug(title: string) {
 </script>
 
 <template>
+  <PageMeta
+    title="Glossaire"
+    description="Tous les termes du glossaire du référentiel général d’amélioration de l’accessibilité."
+  />
+
   <section class="fr-my-0 content">
     <RouterLink
       class="fr-link fr-icon-arrow-left-line fr-link--icon-left"

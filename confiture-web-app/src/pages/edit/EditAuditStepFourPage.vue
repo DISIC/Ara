@@ -6,6 +6,7 @@ import { AuditType } from "../../types";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore, useAuditStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
+import PageMeta from "../../components/PageMeta";
 import { formatAuditType, getCriteriaCount } from "../../utils";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 
@@ -95,6 +96,11 @@ const hasA11yStatement = computed(() => {
 </script>
 
 <template>
+  <PageMeta
+    title="Audit terminé"
+    description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
+  />
+
   <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
     <AuditGenerationHeader

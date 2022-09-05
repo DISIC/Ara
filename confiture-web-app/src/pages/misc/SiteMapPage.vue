@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageMeta from "../../components/PageMeta";
+
 const links = [
   { label: "Accueil", href: "/" },
   { label: "Ressources", href: "/ressources" },
@@ -22,6 +24,11 @@ const links = [
 </script>
 
 <template>
+  <PageMeta
+    title="Plan du site"
+    description="Plan du site confiture.numerique.gouv.fr."
+  />
+
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Plan du site</h1>
 

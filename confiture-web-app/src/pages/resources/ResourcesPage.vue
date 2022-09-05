@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageMeta from "../../components/PageMeta";
+
 const tileLinks = [
   {
     title: "Formations accessibilité",
@@ -47,6 +49,11 @@ const moreLinks = [
 </script>
 
 <template>
+  <PageMeta
+    title="Ressources"
+    description="Retrouvez les formations de l'équipe Design des services numériques, les outils et le glossaire vous permettant de réaliser sereinement votre audit d'accessibilité numérique."
+  />
+
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w">Ressources</h1>
     <p>

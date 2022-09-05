@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Déclaration d'accessibilité"
+    description="La déclaration d’accessibilité est le résultat d’une évaluation effective de la conformité du service de communication au public en ligne à la norme de référence."
+  />
+
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w fr-mb-9v">Déclaration d’accessibilité</h1>
     <h2>À quoi ça sert ?</h2>

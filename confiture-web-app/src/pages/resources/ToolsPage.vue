@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Les outils pour estimer l'accessibilité numérique"
+    description="Découvrez les outils pour auditer des produits et services numériques."
+  />
+
   <section class="fr-my-0 content">
     <RouterLink
       class="fr-link fr-icon-arrow-left-line fr-link--icon-left"

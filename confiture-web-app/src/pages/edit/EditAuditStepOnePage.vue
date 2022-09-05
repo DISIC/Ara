@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
@@ -42,6 +43,11 @@ function submitStepOne(data: CreateAuditRequestData) {
 </script>
 
 <template>
+  <PageMeta
+    title="Informations générales sur le site à auditer"
+    description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
+  />
+
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 1 sur 2</span>

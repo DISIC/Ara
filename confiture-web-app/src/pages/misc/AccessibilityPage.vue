@@ -1,4 +1,12 @@
+<script setup lang="ts">
+import PageMeta from "../../components/PageMeta";
+</script>
+
 <template>
+  <PageMeta
+    title="Accessibilité"
+    description="Déclaration d’accessibilité du site confiture.numerique.gouv.fr"
+  />
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Déclaration d’accessibilité</h1>
     <p>
