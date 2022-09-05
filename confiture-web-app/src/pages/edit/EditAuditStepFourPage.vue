@@ -102,6 +102,7 @@ const hasA11yStatement = computed(() => {
       :key-infos="headerInfos"
       :edit-unique-id="auditStore.data.editUniqueId"
       :audit-publication-date="auditStore.data.publicationDate"
+      :audit-edition-date="auditStore.data.editionDate"
     />
 
     <section class="content">

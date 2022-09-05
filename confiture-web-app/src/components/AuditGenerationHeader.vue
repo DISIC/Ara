@@ -12,6 +12,7 @@ import { useNotifications } from "../composables/useNotifications";
 defineProps<{
   auditName: string;
   auditPublicationDate?: string;
+  auditEditionDate?: string;
   keyInfos: {
     label: string;
     value: string | number;
@@ -84,12 +85,16 @@ const disableSubmission = computed(() => !resultsStore.everyCriteriumAreTested);
     <div>
       <p
         :class="`fr-badge ${
-          auditPublicationDate
+          auditPublicationDate && !auditEditionDate
             ? 'fr-badge--success fr-badge--no-icon'
             : 'fr-badge--purple-glycine'
         }`"
       >
-        {{ auditPublicationDate ? "🎉 audit terminé" : "🔍 Audit en cours" }}
+        {{
+          auditPublicationDate && !auditEditionDate
+            ? "🎉 audit terminé"
+            : "🔍 Audit en cours"
+        }}
       </p>
       <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
         Le {{ formatDate(auditPublicationDate) }}

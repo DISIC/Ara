@@ -102,6 +102,7 @@ const headerInfos = computed(() => [
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
       :audit-publication-date="auditStore.data.publicationDate"
+      :audit-edition-date="auditStore.data.editionDate"
       :edit-unique-id="uniqueId"
       @validate="toStepFour"
     />
