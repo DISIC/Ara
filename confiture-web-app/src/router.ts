@@ -27,6 +27,8 @@ import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
+import { useAuditStore } from "./store";
+
 declare module "vue-router" {
   interface RouteMeta {
     // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
@@ -35,6 +37,14 @@ declare module "vue-router" {
 }
 
 export const history = createWebHistory();
+
+/**
+ * Fetch the audit name from store to display in breadcrumb.
+ */
+function getProcedureName() {
+  const auditStore = useAuditStore();
+  return auditStore.data?.procedureName ?? "Mon audit";
+}
 
 const router = createRouter({
   routes: [
@@ -114,9 +124,12 @@ const router = createRouter({
       component: EditAuditStepOnePage,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-one" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-one",
+          },
         ],
       },
     },
@@ -126,9 +139,12 @@ const router = createRouter({
       component: EditAuditStepTwoPage,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-two" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-two",
+          },
         ],
       },
     },
@@ -138,9 +154,12 @@ const router = createRouter({
       component: EditAuditStepThreePage,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-three" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-three",
+          },
         ],
       },
     },
@@ -150,9 +169,12 @@ const router = createRouter({
       component: EditAuditStepFourPage,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-four" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-four",
+          },
         ],
       },
     },
@@ -163,13 +185,10 @@ const router = createRouter({
       component: ContextPage,
       meta: {
         name: "Contexte",
-        // breadcrumbLinks: (smth) => {
-        //   console.log(smth);
-        //   return [
-        //     { label: "Rapport d’audit", name: "report" },
-        //     { label: "Contexte", name: "context" },
-        //   ];
-        // },
+        breadcrumbLinks: [
+          { label: "Rapport d’audit", name: "report" },
+          { label: "Contexte", name: "context" },
+        ],
       },
     },
     {
