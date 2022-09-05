@@ -62,28 +62,21 @@ export class AuditReportDto {
   results: ReportCriterionResult[];
 }
 
-class ResultDistribution {
+class RawAndPercentage {
   /**
    * @example 47
    */
-  compliant: {
-    raw: number;
-    percentage: number;
-  };
+  raw: number;
   /**
-   * @example 7
+   * @example 44.34
    */
-  notCompliant: {
-    raw: number;
-    percentage: number;
-  };
-  /**
-   * @example 52
-   */
-  notApplicable: {
-    raw: number;
-    percentage: number;
-  };
+  percentage: number;
+}
+
+class ResultDistribution {
+  compliant: RawAndPercentage;
+  notCompliant: RawAndPercentage;
+  notApplicable: RawAndPercentage;
 }
 
 class PageResultDistribution extends ResultDistribution {
