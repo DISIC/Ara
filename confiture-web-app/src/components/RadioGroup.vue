@@ -47,7 +47,7 @@ function handleChange(value: string) {
         @input="handleChange(item.value)"
       />
       <label
-        class="fr-text--sm fr-mb-0 label"
+        class="fr-text--sm fr-mb-0 fr-py-1v fr-pr-1w fr-pl-4w label"
         :class="item.color"
         :for="`checkbox-group-${uniqueId}--${i}`"
       >
@@ -75,7 +75,6 @@ function handleChange(value: string) {
   border-radius: 1.875rem;
   border: 1px solid currentColor;
   display: inline-flex;
-  padding: 0.25rem 0.5rem 0.25rem 2rem;
   gap: 0.5rem;
   text-transform: capitalize;
   transition: background-color 0.2s ease, color 0.2s ease;

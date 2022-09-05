@@ -16,14 +16,6 @@ defineEmits<{
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
 }>();
 
-// const userImpacts: Array<{
-//   color?: RadioColor;
-//   userImpact: CriterionResultUserImpact;
-// }> = [
-//   { userImpact: CriterionResultUserImpact.MINOR, color: "grey" },
-//   { userImpact: CriterionResultUserImpact.MAJOR, color: "yellow" },
-//   { userImpact: CriterionResultUserImpact.BLOCKING, color: "red" },
-// ];
 const userImpacts: Array<{
   label: string;
   value: CriterionResultUserImpact;
