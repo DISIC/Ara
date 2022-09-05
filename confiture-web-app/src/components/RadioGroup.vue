@@ -7,6 +7,7 @@ let nextId = 1;
 <script lang="ts" setup>
 const props = defineProps<{
   label: string;
+  hideLabel?: boolean;
   items: {
     value: any;
     label: string;
@@ -33,8 +34,10 @@ function handleChange(value: string) {
 </script>
 
 <template>
-  <fieldset class="fr-mb-2w fr-ml-5w fr-mx-0 fr-p-0 fieldset">
-    <legend class="sr-only">{{ label }}</legend>
+  <fieldset class="fr-mb-2w fr-mx-0 fr-p-0 fieldset">
+    <legend :class="hideLabel ? 'sr-only' : 'fr-text--bold fr-label fr-mb-3v'">
+      {{ label }}
+    </legend>
     <div v-for="(item, i) in items" :key="i">
       <input
         :id="`checkbox-group-${uniqueId}--${i}`"

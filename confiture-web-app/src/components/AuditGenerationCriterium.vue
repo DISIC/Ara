@@ -112,7 +112,9 @@ const uniqueId = computed(() => {
     <!-- STATUS -->
     <RadioGroup
       v-model="result.status"
+      class="fr-ml-5w"
       label="Statut du critère"
+      hide-label
       :default-value="CriteriumResultStatus.NOT_TESTED"
       :items="statuses"
     />
