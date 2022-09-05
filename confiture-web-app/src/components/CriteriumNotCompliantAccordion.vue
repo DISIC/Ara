@@ -3,6 +3,7 @@ import { CriterionResultUserImpact } from "../types";
 import { formatUserImpact } from "../utils";
 import LazyAccordion from "./LazyAccordion.vue";
 import Radio, { RadioColor } from "./Radio.vue";
+import RadioGroup from "./RadioGroup.vue";
 
 defineProps<{
   id: string;
@@ -16,12 +17,25 @@ defineEmits<{
 }>();
 
 const userImpacts: Array<{
+  label: string;
+  value: CriterionResultUserImpact;
   color?: RadioColor;
-  userImpact: CriterionResultUserImpact;
 }> = [
-  { userImpact: CriterionResultUserImpact.MINOR, color: "grey" },
-  { userImpact: CriterionResultUserImpact.MAJOR, color: "yellow" },
-  { userImpact: CriterionResultUserImpact.BLOCKING, color: "red" },
+  {
+    value: CriterionResultUserImpact.MINOR,
+    label: formatUserImpact(CriterionResultUserImpact.MINOR),
+    color: "grey",
+  },
+  {
+    value: CriterionResultUserImpact.MAJOR,
+    label: formatUserImpact(CriterionResultUserImpact.MAJOR),
+    color: "yellow",
+  },
+  {
+    value: CriterionResultUserImpact.BLOCKING,
+    label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
+    color: "red",
+  },
 ];
 </script>
 
@@ -59,22 +73,13 @@ const userImpacts: Array<{
     </div>
 
     <!-- USER IMPACT -->
-    <fieldset class="fr-mx-0 fr-p-0 user-impact-container">
-      <legend class="fr-text--bold fr-label fr-mb-3v">
-        Impact sur l’usager
-      </legend>
-      <Radio
-        v-for="u in userImpacts"
-        :id="`user-impact-${id}-${u.userImpact}`"
-        :key="u.userImpact"
-        :label="u.userImpact ? formatUserImpact(u.userImpact) : 'Non-renseigné'"
-        :name="`user-impact-${id}`"
-        :value="u.userImpact"
-        :color="u.color"
-        :model-value="userImpact"
-        @update:model-value="$emit('update:userImpact', $event)"
-      />
-    </fieldset>
+    <RadioGroup
+      :model-value="userImpact"
+      :items="userImpacts"
+      label="Impact sur l’usager"
+      :default-value="null"
+      @update:model-value="$emit('update:userImpact', $event)"
+    />
   </LazyAccordion>
 </template>
 

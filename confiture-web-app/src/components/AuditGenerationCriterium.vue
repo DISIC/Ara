@@ -9,9 +9,9 @@ import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.v
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import Radio, { RadioColor } from "./Radio.vue";
 import { useResultsStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
+import RadioGroup, { RadioColor } from "./RadioGroup.vue";
 
 const store = useResultsStore();
 
@@ -42,10 +42,6 @@ const statuses: Array<{
     label: "Non applicable",
     value: CriteriumResultStatus.NOT_APPLICABLE,
     color: "grey",
-  },
-  {
-    label: "Non testé",
-    value: CriteriumResultStatus.NOT_TESTED,
   },
 ];
 
@@ -114,21 +110,14 @@ const uniqueId = computed(() => {
     </div>
 
     <!-- STATUS -->
-    <fieldset
-      class="fr-mb-2w fr-ml-5w fr-mx-0 fr-p-0 criterium-radios-container"
-    >
-      <legend class="sr-only">Statut du critère</legend>
-      <Radio
-        v-for="s in statuses"
-        :id="`status-${uniqueId}-${s.value}`"
-        :key="s.value"
-        v-model="result.status"
-        :label="s.label"
-        :name="`status-${uniqueId}`"
-        :value="s.value"
-        :color="s.color"
-      />
-    </fieldset>
+    <RadioGroup
+      v-model="result.status"
+      class="fr-ml-5w"
+      label="Statut du critère"
+      hide-label
+      :default-value="CriteriumResultStatus.NOT_TESTED"
+      :items="statuses"
+    />
 
     <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
