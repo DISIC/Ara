@@ -45,58 +45,6 @@ const chartsName = {
   pageDistribution: "Répartition des critères par pages",
   topicDistribution: "Répartition des critères par thématiques",
 };
-
-const resultDistributionPercentages = computed(() => {
-  const total =
-    report.data!.resultDistribution.compliant +
-    report.data!.resultDistribution.notCompliant +
-    report.data!.resultDistribution.notApplicable;
-  const compliant = Math.round(
-    (report.data!.resultDistribution.compliant / total) * 100
-  );
-  const notCompliant = Math.round(
-    (report.data!.resultDistribution.notCompliant / total) * 100
-  );
-  const notApplicable = Math.round(
-    (report.data!.resultDistribution.notApplicable / total) * 100
-  );
-
-  return {
-    compliant,
-    notCompliant,
-    notApplicable,
-  };
-});
-
-const pageDistributionDescription = computed(() => {
-  return report
-    .data!.pageDistributions.map((el) => {
-      const total = el.compliant + el.notCompliant + el.notApplicable;
-      const compliant = Math.round((el.compliant / total) * 100);
-      const notCompliant = Math.round((el.notCompliant / total) * 100);
-      const notApplicable = Math.round((el.notApplicable / total) * 100);
-
-      return `Page "${el.name}" : ${compliant}% de critères conformes,
-      ${notCompliant}% de critères non conformes
-      et ${notApplicable}% de critères non applicables.`;
-    })
-    .join(" ");
-});
-
-const topicDistributionDescription = computed(() => {
-  return report
-    .data!.topicDistributions.map((el) => {
-      const total = el.compliant + el.notCompliant + el.notApplicable;
-      const compliant = Math.round((el.compliant / total) * 100);
-      const notCompliant = Math.round((el.notCompliant / total) * 100);
-      const notApplicable = Math.round((el.notApplicable / total) * 100);
-
-      return `Thématique "${el.name}" : ${compliant}% de critères conformes,
-      ${notCompliant}% de critères non conformes
-      et ${notApplicable}% de critères non applicables.`;
-    })
-    .join(" ");
-});
 </script>
 
 <template>
@@ -129,9 +77,9 @@ const topicDistributionDescription = computed(() => {
       <div class="card-content">
         <ChartLegend class="card-legend" />
         <PieChart
-          :compliant="report.data.resultDistribution.compliant"
-          :not-compliant="report.data.resultDistribution.notCompliant"
-          :not-applicable="report.data.resultDistribution.notApplicable"
+          :compliant="report.data.resultDistribution.compliant.raw"
+          :not-compliant="report.data.resultDistribution.notCompliant.raw"
+          :not-applicable="report.data.resultDistribution.notApplicable.raw"
           :aria-labelledby="slugify(chartsName.resultDistribution)"
           aria-describedby="result-distribution-description"
           role="img"
@@ -141,15 +89,23 @@ const topicDistributionDescription = computed(() => {
       <template #accordion>
         <ul id="result-distribution-description">
           <li>
-            {{ resultDistributionPercentages.compliant }}% de critères conformes
+            {{
+              Math.round(report.data.resultDistribution.compliant.percentage)
+            }}% de critères conformes
           </li>
           <li>
-            {{ resultDistributionPercentages.notCompliant }}% de critères non
-            conformes
+            {{
+              Math.round(
+                report.data.resultDistribution.notCompliant.percentage
+              )
+            }}% de critères non conformes
           </li>
           <li>
-            {{ resultDistributionPercentages.notApplicable }}% de critères non
-            applicables
+            {{
+              Math.round(
+                report.data.resultDistribution.notApplicable.percentage
+              )
+            }}% de critères non applicables
           </li>
         </ul>
       </template>
@@ -172,11 +128,16 @@ const topicDistributionDescription = computed(() => {
         </div>
       </div>
 
-      <!-- TODO: use lists once content will be pre-formatted -->
       <template #accordion>
-        <span id="page-distribution-description">
-          {{ pageDistributionDescription }}
-        </span>
+        <ul id="page-distribution-description">
+          <li v-for="page in report.data.pageDistributions" :key="page.name">
+            "{{ page.name }}" : {{ Math.round(page.compliant.percentage) }}% de
+            critères conformes, {{ Math.round(page.notCompliant.percentage) }}%
+            de critères non conformes et
+            {{ Math.round(page.notApplicable.percentage) }}% de critères non
+            applicables.
+          </li>
+        </ul>
       </template>
     </ResultDetailsCard>
 
@@ -197,11 +158,16 @@ const topicDistributionDescription = computed(() => {
         </div>
       </div>
 
-      <!-- TODO: use lists once content will be pre-formatted -->
       <template #accordion>
-        <span id="topic-distribution-description">
-          {{ topicDistributionDescription }}
-        </span>
+        <ul id="topic-distribution-description">
+          <li v-for="topic in report.data.topicDistributions" :key="topic.name">
+            "{{ topic.name }}" : {{ Math.round(topic.compliant.percentage) }}%
+            de critères conformes,
+            {{ Math.round(topic.notCompliant.percentage) }}% de critères non
+            conformes et {{ Math.round(topic.notApplicable.percentage) }}% de
+            critères non applicables.
+          </li>
+        </ul>
       </template>
     </ResultDetailsCard>
   </template>
