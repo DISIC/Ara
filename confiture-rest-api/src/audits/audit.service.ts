@@ -7,6 +7,7 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
+  Tool,
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
@@ -168,7 +169,39 @@ export class AuditService {
 
             // step 2
             auditType: data.auditType,
-            auditTools: data.auditTools,
+            tools: {
+              deleteMany: {
+                OR: [
+                  {
+                    name: {
+                      notIn: data.tools.map((t) => t.name),
+                    },
+                  },
+                  {
+                    function: {
+                      notIn: data.tools.map((t) => t.function),
+                    },
+                  },
+                  {
+                    url: {
+                      notIn: data.tools.map((t) => t.url),
+                    },
+                  },
+                ],
+              },
+              upsert: data.tools.map((tool) => ({
+                where: {
+                  name_function_url_auditUniqueId: {
+                    auditUniqueId: uniqueId,
+                    name: tool.name,
+                    function: tool.function,
+                    url: tool.url,
+                  },
+                },
+                create: tool,
+                update: tool,
+              })),
+            },
             environments: {
               deleteMany: {
                 OR: [
@@ -364,7 +397,11 @@ export class AuditService {
     const audit = (await this.prisma.audit.findUnique({
       where: { consultUniqueId },
       include: AUDIT_EDIT_INCLUDE,
-    })) as Audit & { environments: TestEnvironment[]; pages: AuditedPage[] };
+    })) as Audit & {
+      tools: Tool[];
+      environments: TestEnvironment[];
+      pages: AuditedPage[];
+    };
 
     if (!audit) {
       return;
@@ -466,10 +503,10 @@ export class AuditService {
         })),
 
         technologies: ['HTML', 'CSS', 'Javascript'],
-        tools: audit.auditTools.map((t) => ({
-          name: t,
-          function: 'Todo',
-          url: 'https://example.com',
+        tools: audit.tools.map((t) => ({
+          name: t.name,
+          function: t.function,
+          url: t.url,
         })),
       },
 

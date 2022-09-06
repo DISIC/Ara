@@ -33,23 +33,47 @@ const availableAuditTypes = [
   },
 ];
 const availableTools = [
-  { name: "Web Accessibility Toolbar", function: "", url: "" },
-  { name: "Validateur en ligne W3C", function: "", url: "" },
-  { name: "WCAG Contrast checker", function: "", url: "" },
-  { name: "Color Contrast Analyser", function: "", url: "" },
-  { name: "HeadingsMap", function: "", url: "" },
-  { name: "PAC (PDF Accessibility Checker)", function: "", url: "" },
+  {
+    name: "Web Accessibility Toolbar",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "Validateur en ligne W3C",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "WCAG Contrast checker",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "Color Contrast Analyser",
+    function: "todo",
+    url: "https://example.com",
+  },
+  { name: "HeadingsMap", function: "todo", url: "https://example.com" },
+  {
+    name: "PAC (PDF Accessibility Checker)",
+    function: "todo",
+    url: "https://example.com",
+  },
   {
     name: "Word Accessibility Plug-in pour Microsoft Office Windows",
-    function: "",
-    url: "",
+    function: "todo",
+    url: "https://example.com",
   },
-  { name: "AccessODF pour LibreOffice", function: "", url: "" },
-  { name: "Ace by DAISY App", function: "", url: "" },
+  {
+    name: "AccessODF pour LibreOffice",
+    function: "todo",
+    url: "https://example.com",
+  },
+  { name: "Ace by DAISY App", function: "todo", url: "https://example.com" },
   {
     name: "PEAT (Photosensitive Epilepsy Analysis Tool)",
-    function: "",
-    url: "",
+    function: "todo",
+    url: "https://example.com",
   },
 ];
 const availableAT = [
@@ -83,7 +107,7 @@ const customTools = ref([
   },
 ]);
 // FIXME: make required fields inside nested form
-const auditTools = computed(() => {
+const tools = computed(() => {
   return [...defaultTools.value, ...customTools.value].filter(
     (t) => t.name !== "" || t.function !== "" || t.url !== ""
   );
@@ -133,8 +157,8 @@ watch(
       return;
     }
     auditType.value = audit.auditType ?? null;
-    defaultTools.value = audit.auditTools.length
-      ? audit.auditTools.filter((tool) => availableTools.includes(tool))
+    defaultTools.value = audit.tools.length
+      ? audit.tools.filter((tool) => availableTools.includes(tool))
       : [
           {
             name: "",
@@ -142,8 +166,8 @@ watch(
             url: "",
           },
         ];
-    customTools.value = audit.auditTools.length
-      ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
+    customTools.value = audit.tools.length
+      ? audit.tools.filter((tool) => !availableTools.includes(tool))
       : [
           {
             name: "",
@@ -258,7 +282,7 @@ function saveAuditChanges() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ...auditStore.data!,
     auditType: auditType.value,
-    auditTools: auditTools.value,
+    tools: tools.value,
     environments: environments.value,
     pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
     // TODO: plug not accessible content
@@ -298,20 +322,20 @@ function fillFields() {
   defaultTools.value = [
     {
       name: "Color Contrast Analyser",
-      function: "",
-      url: "",
+      function: "Relever les contrastes non conforme au sein d’une page web.",
+      url: "https://www.tpgi.com/color-contrast-checker/",
     },
   ];
   customTools.value = [
     {
       name: "Firefox Devtools",
-      function: "",
-      url: "",
+      function: "Inspecter et débugguer le code d’une page web.",
+      url: "https://firefox-dev.tools/",
     },
     {
       name: "AXE Webextension",
-      function: "",
-      url: "",
+      function: "Analyser les problèmes d’accessibilité d’une page web.",
+      url: "https://www.deque.com/axe/devtools/",
     },
   ];
   environments.value = [
