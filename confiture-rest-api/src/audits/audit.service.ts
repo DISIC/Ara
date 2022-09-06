@@ -22,6 +22,7 @@ import * as RGAA from '../rgaa.json';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
+  tools: true,
   environments: true,
   pages: true,
 };
