@@ -18,17 +18,8 @@ const procedureSiteUrl = ref(props.defaultValues?.procedureUrl ?? "");
 const procedureManagerName = ref(props.defaultValues?.contactName ?? "");
 const procedureManagerEmail = ref(props.defaultValues?.contactEmail ?? "");
 const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
-// const procedureRecipients = ref(
-//   props.defaultValues?.recipients ?? [
-//     {
-//       name: "",
-//       email: "",
-//     },
-//   ]
-// );
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
-
 const defaultTechnologies = ref<string[]>([]);
 const customTechnologies = ref<string[]>([""]);
 const auditTechnologies = computed(() => {
@@ -61,29 +52,6 @@ async function deleteCustomTech(i: number) {
     i === 0 ? customTechNameRefs.value[0] : customTechNameRefs.value[i - 1];
   lastInput.focus();
 }
-// const contactNameRefs = ref<HTMLInputElement[]>([]);
-
-/**
- * Create a new contact and focus its name first
- */
-// async function addContact() {
-//   procedureRecipients.value.push({ name: "", email: "" });
-//   await nextTick();
-//   const lastInput = contactNameRefs.value[contactNameRefs.value.length - 1];
-//   lastInput.focus();
-// }
-
-/**
- * Delete contact at index and focus previous or first name field.
- * @param {number} i
- */
-// async function deleteContact(i: number) {
-//   procedureRecipients.value.splice(i, 1);
-//   await nextTick();
-//   const previousInput =
-//     i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
-//   previousInput.focus();
-// }
 
 /**
  * TODO: remove this
@@ -233,75 +201,6 @@ function onSubmit() {
         />
       </div>
     </fieldset>
-
-    <!-- <div class="fr-mt-4w">
-      <h2 class="fr-h4 fr-mb-2w">Destinataires de l’audit</h2>
-
-      <p>
-        Il s’agit des personnes qui doivent être averties que l’audit est
-        terminé et du taux d’accessibilité de la démarche. Il peut s’agir des
-        porteurs de la démarche, référents accessibilité, chefs de projet,
-        développeurs, etc. Ils seront les destinataires de la livraison de
-        l’audit.
-      </p>
-
-      <fieldset
-        v-for="(contact, i) in procedureRecipients"
-        :key="i"
-        class="fr-fieldset fr-mt-4w fr-p-4w contact-card"
-      >
-        <div class="fr-mb-2w contact-header">
-          <legend>
-            <h3 class="fr-text--lg fr-mb-0">Contact {{ i + 1 }}</h3>
-          </legend>
-
-          <button
-            class="fr-link"
-            type="button"
-            :disabled="procedureRecipients.length === 1"
-            @click="deleteContact(i)"
-          >
-            Supprimer
-          </button>
-        </div>
-
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`procedure-auditor-name-${i + 1}`">
-            Nom et prénom du contact
-          </label>
-          <input
-            :id="`procedure-auditor-name-${i + 1}`"
-            ref="contactNameRefs"
-            v-model="contact.name"
-            class="fr-input"
-          />
-        </div>
-
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`procedure-auditor-email-${i + 1}`">
-            Adresse e-mail du contact
-            <span class="fr-hint-text">
-              Exemple : prenom.nom@ministere.gouv.fr
-            </span>
-          </label>
-          <input
-            :id="`procedure-auditor-email-${i + 1}`"
-            v-model="contact.email"
-            class="fr-input"
-            type="email"
-            required
-          />
-        </div>
-      </fieldset>
-
-      <button
-        class="fr-link fr-mt-4w fr-link--icon-left fr-icon-add-line"
-        type="button"
-        @click="addContact"
-      >
-        Ajouter contact
-      </button>
-    </div> -->
 
     <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
       <legend>
