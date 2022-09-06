@@ -33,16 +33,24 @@ const availableAuditTypes = [
   },
 ];
 const availableTools = [
-  "Web Accessibility Toolbar",
-  "Validateur en ligne W3C",
-  "WCAG Contrast checker",
-  "Color Contrast Analyser",
-  "HeadingsMap",
-  "PAC (PDF Accessibility Checker)",
-  "Word Accessibility Plug-in pour Microsoft Office Windows",
-  "AccessODF pour LibreOffice",
-  "Ace by DAISY App",
-  "PEAT (Photosensitive Epilepsy Analysis Tool)",
+  { name: "Web Accessibility Toolbar", function: "", url: "" },
+  { name: "Validateur en ligne W3C", function: "", url: "" },
+  { name: "WCAG Contrast checker", function: "", url: "" },
+  { name: "Color Contrast Analyser", function: "", url: "" },
+  { name: "HeadingsMap", function: "", url: "" },
+  { name: "PAC (PDF Accessibility Checker)", function: "", url: "" },
+  {
+    name: "Word Accessibility Plug-in pour Microsoft Office Windows",
+    function: "",
+    url: "",
+  },
+  { name: "AccessODF pour LibreOffice", function: "", url: "" },
+  { name: "Ace by DAISY App", function: "", url: "" },
+  {
+    name: "PEAT (Photosensitive Epilepsy Analysis Tool)",
+    function: "",
+    url: "",
+  },
 ];
 const availableAT = [
   "NVDA (dernière version)",
@@ -60,10 +68,25 @@ const availableBrowsers = [
 ];
 
 const auditType = ref<AuditType | null>(null);
-const defaultTools = ref<string[]>([]);
-const customTools = ref<string[]>([""]);
+const defaultTools = ref<
+  {
+    name: string;
+    function: string;
+    url: string;
+  }[]
+>([]);
+const customTools = ref([
+  {
+    name: "",
+    function: "",
+    url: "",
+  },
+]);
+// FIXME: make required fields inside nested form
 const auditTools = computed(() => {
-  return [...defaultTools.value, ...customTools.value].filter(Boolean);
+  return [...defaultTools.value, ...customTools.value].filter(
+    (t) => t.name !== "" || t.function !== "" || t.url !== ""
+  );
 });
 const pages = ref([
   {
@@ -112,10 +135,22 @@ watch(
     auditType.value = audit.auditType ?? null;
     defaultTools.value = audit.auditTools.length
       ? audit.auditTools.filter((tool) => availableTools.includes(tool))
-      : [];
+      : [
+          {
+            name: "",
+            function: "",
+            url: "",
+          },
+        ];
     customTools.value = audit.auditTools.length
       ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
-      : [""];
+      : [
+          {
+            name: "",
+            function: "",
+            url: "",
+          },
+        ];
     pages.value = audit.pages.length
       ? audit.pages
       : [
@@ -145,7 +180,11 @@ watch(
  * Create a new tool and focus its field.
  */
 async function addTool() {
-  customTools.value.push("");
+  customTools.value.push({
+    name: "",
+    function: "",
+    url: "",
+  });
   await nextTick();
   const lastInput =
     customToolNameRefs.value[customToolNameRefs.value.length - 1];
@@ -256,8 +295,25 @@ function toStepThree() {
  */
 function fillFields() {
   auditType.value = AuditType.COMPLEMENTARY;
-  defaultTools.value = ["Color Contrast Analyser"];
-  customTools.value = ["Firefox Devtools", "AXE Webextension"];
+  defaultTools.value = [
+    {
+      name: "Color Contrast Analyser",
+      function: "",
+      url: "",
+    },
+  ];
+  customTools.value = [
+    {
+      name: "Firefox Devtools",
+      function: "",
+      url: "",
+    },
+    {
+      name: "AXE Webextension",
+      function: "",
+      url: "",
+    },
+  ];
   environments.value = [
     {
       platform: "desktop",
@@ -337,63 +393,100 @@ function fillFields() {
     </section>
 
     <div class="content">
-      <section class="fr-mb-4w">
-        <div class="fr-form-group">
-          <fieldset class="fr-fieldset">
-            <legend class="fr-fieldset__legend fr-text--regular">
-              <h2 class="fr-h4 fr-mb-0">Les outils d’assistance</h2>
-            </legend>
-            <div class="fr-fieldset__content">
-              <div
-                v-for="(tool, i) in availableTools"
-                :key="i"
-                class="fr-checkbox-group"
-              >
-                <input
-                  :id="`tool-${i}`"
-                  v-model="defaultTools"
-                  type="checkbox"
-                  :value="tool"
-                />
-                <label class="fr-label" :for="`tool-${i}`">
-                  {{ tool }}
-                </label>
-              </div>
+      <div class="fr-form-group">
+        <fieldset class="fr-fieldset">
+          <legend class="fr-fieldset__legend fr-text--regular">
+            <h2 class="fr-h4 fr-mb-0">Les outils d’assistance</h2>
+          </legend>
+          <div class="fr-fieldset__content">
+            <div
+              v-for="(tool, i) in availableTools"
+              :key="i"
+              class="fr-checkbox-group"
+            >
+              <input
+                :id="`tool-${i}`"
+                v-model="defaultTools"
+                type="checkbox"
+                :value="tool"
+              />
+              <label class="fr-label" :for="`tool-${i}`">
+                {{ tool.name }}
+              </label>
             </div>
-          </fieldset>
+          </div>
+        </fieldset>
+      </div>
+
+      <h2 class="fr-h4">Ajouter un outil d’assistance (optionnel)</h2>
+
+      <fieldset
+        v-for="(tool, i) in customTools"
+        :key="i"
+        class="fr-fieldset fr-mt-4w fr-p-4w tools-card"
+      >
+        <div class="fr-mb-2w tools-header">
+          <legend class="fr-legend fr-mb-1w" :for="`custom-tool-${i}`">
+            <h3 class="fr-h6 fr-mb-0">Outil {{ i + 1 }}</h3>
+          </legend>
+
+          <button
+            class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+            type="button"
+            :disabled="customTools.length === 1"
+            @click="deleteCustomTool(i)"
+          >
+            Supprimer
+          </button>
         </div>
 
-        <template v-for="(tool, i) in customTools" :key="i">
-          <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tool-${i}`">
-            Ajouter un outil d’assistance (optionnel)
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-name-${i + 1}`">
+            Nom de l’outil
           </label>
-          <div class="delete-custom-tool">
-            <input
-              :id="`custom-tool-${i}`"
-              ref="customToolNameRefs"
-              v-model="customTools[i]"
-              class="fr-input"
-              type="text"
-            />
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
-              :disabled="customTools.length === 1"
-              type="button"
-              @click="deleteCustomTool(i)"
-            >
-              Supprimer
-            </button>
-          </div>
-        </template>
+          <input
+            :id="`tool-name-${i + 1}`"
+            ref="customToolNameRefs"
+            v-model="tool.name"
+            class="fr-input"
+            required
+          />
+        </div>
 
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
-          type="button"
-          @click="addTool"
-        >
-          Ajouter un outil
-        </button>
-      </section>
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-function-${i + 1}`">
+            Fonction
+          </label>
+          <input
+            :id="`tool-function-${i + 1}`"
+            v-model="tool.function"
+            class="fr-input"
+            required
+          />
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-url-${i + 1}`">
+            URL de l’outil
+          </label>
+          <input
+            :id="`tool-url-${i + 1}`"
+            v-model="tool.url"
+            class="fr-input"
+            type="url"
+            required
+            placeholder="http://"
+          />
+        </div>
+      </fieldset>
+
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        type="button"
+        @click="addTool"
+      >
+        Ajouter un outil
+      </button>
 
       <h2 class="fr-h4">Les environnements de test</h2>
       <fieldset
@@ -401,12 +494,12 @@ function fillFields() {
         :key="i"
         class="fr-fieldset fr-mt-4w fr-p-4w env-card"
       >
-        <div class="env-header">
+        <div class="fr-mb-2w env-header">
           <legend>
-            <h3>Environnement {{ i + 1 }}</h3>
+            <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
           </legend>
           <button
-            class="fr-link"
+            class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="environments.length === 1"
             @click="deleteEnvironment(i)"
@@ -502,11 +595,11 @@ function fillFields() {
       >
         <div class="fr-mb-2w page-header">
           <legend>
-            <h3 class="fr-text--lg fr-mb-0">Page {{ i + 1 }}</h3>
+            <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
           </legend>
 
           <button
-            class="fr-link"
+            class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="pages.length === 1"
             @click="deletePage(i)"
@@ -640,11 +733,13 @@ function fillFields() {
   display: flex;
 }
 
+.tools-card,
 .env-card,
 .page-card {
   border: 1px solid var(--border-default-grey);
 }
 
+.tools-header,
 .env-header,
 .page-header {
   display: flex;
