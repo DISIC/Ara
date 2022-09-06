@@ -76,4 +76,11 @@ export class CreateAuditDto {
    */
   @IsEmail()
   auditorEmail: string;
+
+  /**
+   * @example ["HTML", "CSS"]
+   */
+  @IsArray()
+  @IsString({ each: true })
+  technologies: string[];
 }
