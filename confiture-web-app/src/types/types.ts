@@ -44,6 +44,8 @@ export interface Audit {
 
   recipients: AuditRecipent[];
 
+  technologies: string[];
+
   // Step 2
   auditType: null | AuditType;
   auditTools: string[];
@@ -69,6 +71,7 @@ export type CreateAuditRequestData = Pick<
   | "contactFormUrl"
   | "auditorName"
   | "auditorEmail"
+  | "technologies"
 > & {
   recipients: Omit<AuditRecipent, "id">[];
 };

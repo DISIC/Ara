@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { /* nextTick, */ ref } from "vue";
+import { nextTick, ref, computed } from "vue";
 import { CreateAuditRequestData } from "../types";
 
 const props = defineProps<{
@@ -9,6 +9,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
 }>();
+
+const availableTechnologies = ["HTML", "CSS", "JavaScript", "PHP", "MySQL"];
 
 const procedureEntity = ref(props.defaultValues?.initiator ?? "");
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
@@ -27,6 +29,38 @@ const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
 
+const defaultTechnologies = ref<string[]>([]);
+const customTechnologies = ref<string[]>([""]);
+const auditTechnologies = computed(() => {
+  return [...defaultTechnologies.value, ...customTechnologies.value].filter(
+    Boolean
+  );
+});
+
+const customTechNameRefs = ref<HTMLInputElement[]>([]);
+
+/**
+ * Create a new tech and focus its field.
+ */
+async function addTech() {
+  customTechnologies.value.push("");
+  await nextTick();
+  const lastInput =
+    customTechNameRefs.value[customTechNameRefs.value.length - 1];
+  lastInput.focus();
+}
+
+/**
+ * Delete custom tech at index and focus previous or first field.
+ * @param {number} i
+ */
+async function deleteCustomTech(i: number) {
+  customTechnologies.value.splice(i, 1);
+  await nextTick();
+  const lastInput =
+    i === 0 ? customTechNameRefs.value[0] : customTechNameRefs.value[i - 1];
+  lastInput.focus();
+}
 // const contactNameRefs = ref<HTMLInputElement[]>([]);
 
 /**
@@ -68,6 +102,8 @@ function fillFields() {
   // ];
   procedureAuditorName.value = "Etienne Dupont";
   procedureAuditorEmail.value = "etienne-dupont@example.com";
+  defaultTechnologies.value = ["HTML", "CSS"];
+  customTechnologies.value = ["WordPress"];
 }
 
 function onSubmit() {
@@ -81,6 +117,7 @@ function onSubmit() {
     recipients: [],
     auditorName: procedureAuditorName.value,
     auditorEmail: procedureAuditorEmail.value,
+    technologies: auditTechnologies.value,
   });
 }
 </script>
@@ -266,7 +303,7 @@ function onSubmit() {
       </button>
     </div> -->
 
-    <fieldset class="fr-fieldset fr-mt-6w">
+    <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
       </legend>
@@ -305,6 +342,63 @@ function onSubmit() {
       </div>
     </fieldset>
 
+    <fieldset class="fr-fieldset">
+      <legend class="fr-fieldset__legend">
+        <h2 class="fr-h4 fr-mb-0">
+          Technologies utilisées pour la réalisation du site
+        </h2>
+      </legend>
+
+      <div class="fr-fieldset__content">
+        <div
+          v-for="(tech, i) in availableTechnologies"
+          :key="i"
+          class="fr-checkbox-group"
+        >
+          <input
+            :id="`tech-${i}`"
+            v-model="defaultTechnologies"
+            type="checkbox"
+            :value="tech"
+          />
+          <label class="fr-label" :for="`tech-${i}`">
+            {{ tech }}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <template v-for="(_, i) in customTechnologies" :key="i">
+      <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tech-${i}`">
+        Ajouter une technologie (optionnel)
+      </label>
+      <div class="delete-custom-tech">
+        <input
+          :id="`custom-tech-${i}`"
+          ref="customTechNameRefs"
+          v-model="customTechnologies[i]"
+          class="fr-input"
+          type="text"
+        />
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+          :disabled="customTechnologies.length === 1"
+          type="button"
+          @click="deleteCustomTech(i)"
+        >
+          Supprimer
+        </button>
+      </div>
+    </template>
+
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+      type="button"
+      @click="addTech"
+    >
+      Ajouter un outil
+    </button>
+
     <div>
       <button
         class="fr-btn fr-mt-6w fr-mr-2w"
@@ -338,5 +432,9 @@ function onSubmit() {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.delete-custom-tech {
+  display: flex;
 }
 </style>
