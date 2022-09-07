@@ -63,6 +63,8 @@ model Audit {
   auditorName  String
   auditorEmail String
 
+  technologies String[]
+
   // Step 2 (all fields must be optionnal)
 
   auditType    AuditType?

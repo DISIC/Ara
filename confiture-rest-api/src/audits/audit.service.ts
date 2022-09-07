@@ -50,6 +50,8 @@ export class AuditService {
         contactEmail: data.contactEmail,
         contactFormUrl: data.contactFormUrl,
 
+        technologies: data.technologies,
+
         recipients: {
           createMany: {
             data: data.recipients,
@@ -465,7 +467,7 @@ export class AuditService {
           url: p.url,
         })),
 
-        technologies: ['HTML', 'CSS', 'Javascript'],
+        technologies: audit.technologies,
         tools: audit.auditTools.map((t) => ({
           name: t,
           function: 'Todo',
