@@ -20,8 +20,20 @@ const procedureManagerEmail = ref(props.defaultValues?.contactEmail ?? "");
 const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
-const defaultTechnologies = ref<string[]>([]);
-const customTechnologies = ref<string[]>([""]);
+const defaultTechnologies = ref<string[]>(
+  props.defaultValues?.technologies.length
+    ? props.defaultValues?.technologies.filter((tech) =>
+        availableTechnologies.includes(tech)
+      )
+    : []
+);
+const customTechnologies = ref<string[]>(
+  props.defaultValues?.technologies.length
+    ? props.defaultValues?.technologies.filter(
+        (tech) => !availableTechnologies.includes(tech)
+      )
+    : [""]
+);
 const auditTechnologies = computed(() => {
   return [...defaultTechnologies.value, ...customTechnologies.value].filter(
     Boolean
