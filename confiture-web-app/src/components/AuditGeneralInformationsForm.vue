@@ -104,7 +104,7 @@ function onSubmit() {
 
 <template>
   <form class="content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3v">📄 Informations générales de la démarche à auditer</h1>
+    <h1 class="fr-mb-3v">📄 Informations générales du site à auditer</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
