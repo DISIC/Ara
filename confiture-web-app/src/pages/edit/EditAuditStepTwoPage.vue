@@ -556,9 +556,9 @@ function fillFields() {
       </p>
 
       <div class="fr-input-group">
-        <label class="fr-label" for="notCompliantContent"
-          >Non-conformités (optionnel)</label
-        >
+        <label class="fr-label" for="notCompliantContent">
+          Non-conformités
+        </label>
         <textarea
           id="notCompliantContent"
           v-model="notCompliantContent"
@@ -568,7 +568,7 @@ function fillFields() {
 
       <div class="fr-input-group">
         <label class="fr-label" for="derogatedContent">
-          Dérogations pour charge disproportionnée (optionnel)
+          Dérogations pour charge disproportionnée
           <span class="fr-hint-text"
             >Il s’agit des contenus qu’il serait trop coûteux de rendre
             accessibles.</span
@@ -583,7 +583,7 @@ function fillFields() {
 
       <div class="fr-input-group">
         <label class="fr-label" for="notInScopeContent">
-          Contenus non soumis à l’obligation d’accessibilité (optionnel)
+          Contenus non soumis à l’obligation d’accessibilité
           <span class="fr-hint-text">Exemple : Cartes interactives, etc</span>
         </label>
         <textarea
