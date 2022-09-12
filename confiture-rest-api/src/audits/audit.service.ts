@@ -463,6 +463,8 @@ export class AuditService {
       (compliantCriteria.length / applicableCriteria.length) * 100,
     );
 
+    const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
+
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
 
@@ -486,7 +488,7 @@ export class AuditService {
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
-      totalCriteriaCount: CRITERIA_BY_AUDIT_TYPE[audit.auditType].length,
+      totalCriteriaCount,
 
       applicableCriteriaCount: applicableCriteria.length,
 
@@ -524,7 +526,6 @@ export class AuditService {
       },
 
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
-      // TODO: update total criteria count for percentages (106)
       pageDistributions: audit.pages.map((p) => ({
         name: p.name,
         compliant: {
@@ -539,7 +540,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.COMPLIANT,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
         notApplicable: {
@@ -554,7 +555,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
         notCompliant: {
@@ -569,7 +570,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
       })),
@@ -609,54 +610,59 @@ export class AuditService {
         },
       },
 
-      topicDistributions: RGAA.topics.map((t) => ({
-        name: t.topic,
-        compliant: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.COMPLIANT,
-          ).length,
-          percentage:
-            (results.filter(
+      topicDistributions: RGAA.topics
+        .map((t) => ({
+          name: t.topic,
+          compliant: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.COMPLIANT,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-        notApplicable: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.NOT_APPLICABLE,
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.COMPLIANT,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+          notApplicable: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-        notCompliant: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.NOT_COMPLIANT,
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.NOT_APPLICABLE,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+          notCompliant: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-      })),
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.NOT_COMPLIANT,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+        }))
+        // remove empty topics (for fast and complementary audits)
+        .filter(
+          (t) => t.compliant.raw + t.notApplicable.raw + t.notCompliant.raw > 0,
+        ),
 
       results: results.map((r) => ({
         pageUrl: r.pageUrl,
