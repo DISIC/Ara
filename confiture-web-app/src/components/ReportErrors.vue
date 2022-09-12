@@ -89,7 +89,7 @@ function getPageSlug(pageUrl: string) {
   <template v-if="report.data">
     <div class="fr-mb-6w header">
       <span class="fr-mb-0 fr-text--xl fr-text--bold"
-        >{{ errors.length }} erreurs d’accessibilité</span
+        >{{ report.data.errorCount }} erreurs d’accessibilité</span
       >
       <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
         Tout déplier
