@@ -2,24 +2,22 @@ import { Injectable } from '@nestjs/common';
 import {
   Audit,
   AuditedPage,
-  AuditType,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
-  Tool,
-  PrismaPromise,
   TestEnvironment,
+  Tool,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
+import * as RGAA from '../rgaa.json';
 import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
-import { CRITERIA } from './criteria';
-import { UpdateAuditDto, UpdateAuditPage } from './update-audit.dto';
+import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
+import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
-import * as RGAA from '../rgaa.json';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -88,22 +86,28 @@ export class AuditService {
   async getResultsWithEditUniqueId(
     uniqueId: string,
   ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
-    const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId },
-    });
-
-    const existingResults = await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          auditUniqueId: uniqueId,
+    const [audit, pages, existingResults] = await Promise.all([
+      this.prisma.audit.findUnique({
+        where: {
+          editUniqueId: uniqueId,
         },
-      },
-    });
+      }),
+      this.prisma.auditedPage.findMany({
+        where: { auditUniqueId: uniqueId },
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: uniqueId,
+          },
+        },
+      }),
+    ]);
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
     return pages.flatMap((page) =>
-      CRITERIA.map((criterion) => {
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
             result.pageUrl === page.url &&
