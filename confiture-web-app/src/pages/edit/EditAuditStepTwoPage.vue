@@ -117,7 +117,7 @@ watch(
       ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
       : [""];
     pages.value = audit.pages.length
-      ? audit.pages
+      ? audit.pages.map((p) => ({ ...p }))
       : [
           {
             name: "",

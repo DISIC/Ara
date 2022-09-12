@@ -7,6 +7,7 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
+  PrismaPromise,
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
@@ -15,7 +16,7 @@ import { PrismaService } from '../prisma.service';
 import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
 import { CRITERIA } from './criteria';
-import { UpdateAuditDto } from './update-audit.dto';
+import { UpdateAuditDto, UpdateAuditPage } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import * as RGAA from '../rgaa.json';
 
@@ -132,6 +133,9 @@ export class AuditService {
     data: UpdateAuditDto,
   ): Promise<Audit | undefined> {
     try {
+      const updatedPages = data.pages.filter((p) => p.id);
+      const newPages = data.pages.filter((p) => !p.id);
+
       const [audit] = await this.prisma.$transaction([
         this.prisma.audit.update({
           where: { editUniqueId: uniqueId },
@@ -208,20 +212,23 @@ export class AuditService {
             },
             pages: {
               deleteMany: {
-                url: {
-                  notIn: data.pages.map((p) => p.url),
+                id: {
+                  notIn: updatedPages.map((p) => p.id),
                 },
               },
-              upsert: data.pages.map((page) => ({
-                where: {
-                  url_auditUniqueId: {
-                    auditUniqueId: uniqueId,
-                    url: page.url,
-                  },
+              update: updatedPages.map((p) => ({
+                where: { id: p.id },
+                data: {
+                  name: p.name,
+                  url: p.url,
                 },
-                create: page,
-                update: page,
               })),
+              createMany: {
+                data: newPages.map((p) => ({
+                  name: p.name,
+                  url: p.url,
+                })),
+              },
             },
             notCompliantContent: data.notCompliantContent,
             derogatedContent: data.derogatedContent,
