@@ -38,12 +38,6 @@ const moreLinks = [
     href: "https://accessibilite.numerique.gouv.fr/",
   },
   {
-    title: "Design-accessible.fr",
-    description:
-      "ressources pour concevoir des services utiles et utilisables pour toutes et tous",
-    href: "https://design-accessible.fr/",
-  },
-  {
     title: "DSFR",
     description: "le site officiel du Système de Design de l’État",
     href: "https://www.systeme-de-design.gouv.fr/",
