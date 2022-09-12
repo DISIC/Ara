@@ -72,7 +72,6 @@ const chartsName = {
     <ResultDetailsCard
       class="fr-mb-6w result-card"
       :title="chartsName.resultDistribution"
-      accordion-title="En savoir plus"
     >
       <div class="card-content">
         <ChartLegend class="card-legend" />
@@ -84,37 +83,22 @@ const chartsName = {
           aria-describedby="result-distribution-description"
           role="img"
         />
+        <span id="result-distribution-description" class="sr-only">
+          {{ Math.round(report.data.resultDistribution.compliant.percentage) }}%
+          de critères conformes,
+          {{
+            Math.round(report.data.resultDistribution.notCompliant.percentage)
+          }}% de critères non conformes,
+          {{
+            Math.round(report.data.resultDistribution.notApplicable.percentage)
+          }}% de critères non applicables
+        </span>
       </div>
-
-      <template #accordion>
-        <ul id="result-distribution-description">
-          <li>
-            {{
-              Math.round(report.data.resultDistribution.compliant.percentage)
-            }}% de critères conformes
-          </li>
-          <li>
-            {{
-              Math.round(
-                report.data.resultDistribution.notCompliant.percentage
-              )
-            }}% de critères non conformes
-          </li>
-          <li>
-            {{
-              Math.round(
-                report.data.resultDistribution.notApplicable.percentage
-              )
-            }}% de critères non applicables
-          </li>
-        </ul>
-      </template>
     </ResultDetailsCard>
 
     <ResultDetailsCard
       class="fr-mb-6w result-card"
       :title="chartsName.pageDistribution"
-      accordion-title="En savoir plus"
     >
       <div class="card-content">
         <ChartLegend class="card-legend" />
@@ -126,25 +110,24 @@ const chartsName = {
             role="img"
           />
         </div>
-      </div>
-
-      <template #accordion>
-        <ul id="page-distribution-description">
-          <li v-for="page in report.data.pageDistributions" :key="page.name">
+        <span id="page-distribution-description" class="sr-only">
+          <template
+            v-for="page in report.data.pageDistributions"
+            :key="page.name"
+          >
             "{{ page.name }}" : {{ Math.round(page.compliant.percentage) }}% de
             critères conformes, {{ Math.round(page.notCompliant.percentage) }}%
             de critères non conformes et
             {{ Math.round(page.notApplicable.percentage) }}% de critères non
             applicables.
-          </li>
-        </ul>
-      </template>
+          </template>
+        </span>
+      </div>
     </ResultDetailsCard>
 
     <ResultDetailsCard
       class="result-card"
       :title="chartsName.topicDistribution"
-      accordion-title="En savoir plus"
     >
       <div class="card-content">
         <ChartLegend class="card-legend" />
@@ -156,19 +139,19 @@ const chartsName = {
             role="img"
           />
         </div>
-      </div>
-
-      <template #accordion>
-        <ul id="topic-distribution-description">
-          <li v-for="topic in report.data.topicDistributions" :key="topic.name">
+        <span id="topic-distribution-description" class="sr-only">
+          <template
+            v-for="topic in report.data.topicDistributions"
+            :key="topic.name"
+          >
             "{{ topic.name }}" : {{ Math.round(topic.compliant.percentage) }}%
             de critères conformes,
             {{ Math.round(topic.notCompliant.percentage) }}% de critères non
             conformes et {{ Math.round(topic.notApplicable.percentage) }}% de
             critères non applicables.
-          </li>
-        </ul>
-      </template>
+          </template>
+        </span>
+      </div>
     </ResultDetailsCard>
   </template>
 </template>

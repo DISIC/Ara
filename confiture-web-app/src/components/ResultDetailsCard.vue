@@ -1,16 +1,7 @@
-<script lang="ts">
-let nextId = 1;
-</script>
-
 <script lang="ts" setup>
 import { slugify } from "../utils";
 
-defineProps<{
-  title: string;
-  accordionTitle: string;
-}>();
-
-const uniqueId = nextId++;
+defineProps<{ title: string }>();
 </script>
 
 <template>
@@ -21,23 +12,6 @@ const uniqueId = nextId++;
 
     <div class="fr-px-4v content">
       <slot />
-    </div>
-    <div class="fr-accordion">
-      <span class="fr-accordion__title">
-        <button
-          class="fr-accordion__btn"
-          aria-expanded="false"
-          :aria-controls="`tests-method-${uniqueId}`"
-        >
-          {{ accordionTitle }}
-        </button>
-      </span>
-      <div
-        :id="`tests-method-${uniqueId}`"
-        class="fr-collapse criterium-test-methodology"
-      >
-        <slot name="accordion" />
-      </div>
     </div>
   </div>
 </template>
