@@ -78,6 +78,22 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
     return [homeLocation, resourcesLocation, helpLocation];
   }
 );
+
+const logoLink = computed(() => {
+  if (reportStore.data) {
+    return {
+      route: {
+        name: "report",
+        params: { uniqueId: reportStore.data.consultUniqueId },
+      },
+      title: "Rapport d’audit - Confiture",
+    };
+  }
+  return {
+    route: { name: "home" },
+    title: "Accueil - Confiture",
+  };
+});
 </script>
 
 <template>
@@ -120,7 +136,7 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
               </div>
             </div>
             <div class="fr-header__service">
-              <RouterLink :to="{ name: 'home' }" title="Accueil - Confiture">
+              <RouterLink :to="logoLink.route" :title="logoLink.title">
                 <p class="fr-header__service-title">
                   Confiture
                   <span
