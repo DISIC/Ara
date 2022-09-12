@@ -4,6 +4,12 @@ export interface AuditRecipent {
   email: string;
 }
 
+export interface AuditTool {
+  name: string;
+  function: string;
+  url: string;
+}
+
 export interface AuditEnvironment {
   id: number;
   platform: string;
@@ -48,7 +54,7 @@ export interface Audit {
 
   // Step 2
   auditType: null | AuditType;
-  auditTools: string[];
+  tools: AuditTool[];
   environments: AuditEnvironment[];
   pages: AuditPage[];
 
@@ -78,7 +84,8 @@ export type CreateAuditRequestData = Pick<
 
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = CreateAuditRequestData &
-  Pick<Audit, "auditType" | "auditTools"> & {
+  Pick<Audit, "auditType"> & {
+    tools: Omit<AuditTool, "id">[];
     environments: Omit<AuditEnvironment, "id">[];
     pages: Omit<AuditPage, "id">[];
   };

@@ -12,6 +12,25 @@ import {
 
 import { CreateAuditDto } from './create-audit.dto';
 
+class UpdateAuditTool {
+  /**
+   * @example "Firefox Developer Tools"
+   */
+  @IsString()
+  name: string;
+  /**
+   * @example "Inspecter et débugguer le code d’une page web"
+   */
+  @IsString()
+  function: string;
+  /**
+   * @example "https://firefox-dev.tools/"
+   */
+  @IsString()
+  @IsUrl()
+  url: string;
+}
+
 export class UpdateAuditPage {
   /**
    * Include the page ID in order to update an existing page.
@@ -19,7 +38,6 @@ export class UpdateAuditPage {
   @IsNumber()
   @IsOptional()
   id?: number;
-
   /**
    * @example "Page de contact"
    */
@@ -62,13 +80,11 @@ export class UpdateAuditDto extends CreateAuditDto {
   @IsOptional()
   auditType?: AuditType;
 
-  /**
-   * @example ["Contrast Checker", "AXE Devtools"]
-   */
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => UpdateAuditTool)
   @IsOptional()
-  auditTools?: string[];
+  tools?: UpdateAuditTool[];
 
   @IsArray()
   @ValidateNested({ each: true })

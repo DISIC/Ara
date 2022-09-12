@@ -33,16 +33,48 @@ const availableAuditTypes = [
   },
 ];
 const availableTools = [
-  "Web Accessibility Toolbar",
-  "Validateur en ligne W3C",
-  "WCAG Contrast checker",
-  "Color Contrast Analyser",
-  "HeadingsMap",
-  "PAC (PDF Accessibility Checker)",
-  "Word Accessibility Plug-in pour Microsoft Office Windows",
-  "AccessODF pour LibreOffice",
-  "Ace by DAISY App",
-  "PEAT (Photosensitive Epilepsy Analysis Tool)",
+  {
+    name: "Web Accessibility Toolbar",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "Validateur en ligne W3C",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "WCAG Contrast checker",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "Color Contrast Analyser",
+    function: "todo",
+    url: "https://example.com",
+  },
+  { name: "HeadingsMap", function: "todo", url: "https://example.com" },
+  {
+    name: "PAC (PDF Accessibility Checker)",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "Word Accessibility Plug-in pour Microsoft Office Windows",
+    function: "todo",
+    url: "https://example.com",
+  },
+  {
+    name: "AccessODF pour LibreOffice",
+    function: "todo",
+    url: "https://example.com",
+  },
+  { name: "Ace by DAISY App", function: "todo", url: "https://example.com" },
+  {
+    name: "PEAT (Photosensitive Epilepsy Analysis Tool)",
+    function: "todo",
+    url: "https://example.com",
+  },
 ];
 const availableAT = [
   "NVDA (dernière version)",
@@ -60,10 +92,25 @@ const availableBrowsers = [
 ];
 
 const auditType = ref<AuditType | null>(null);
-const defaultTools = ref<string[]>([]);
-const customTools = ref<string[]>([""]);
-const auditTools = computed(() => {
-  return [...defaultTools.value, ...customTools.value].filter(Boolean);
+const defaultTools = ref<
+  {
+    name: string;
+    function: string;
+    url: string;
+  }[]
+>([]);
+const customTools = ref([
+  {
+    name: "",
+    function: "",
+    url: "",
+  },
+]);
+// FIXME: make required fields inside nested form
+const tools = computed(() => {
+  return [...defaultTools.value, ...customTools.value].filter(
+    (t) => t.name !== "" || t.function !== "" || t.url !== ""
+  );
 });
 const pages = ref([
   {
@@ -110,12 +157,24 @@ watch(
       return;
     }
     auditType.value = audit.auditType ?? null;
-    defaultTools.value = audit.auditTools.length
-      ? audit.auditTools.filter((tool) => availableTools.includes(tool))
-      : [];
-    customTools.value = audit.auditTools.length
-      ? audit.auditTools.filter((tool) => !availableTools.includes(tool))
-      : [""];
+    defaultTools.value = audit.tools.length
+      ? audit.tools.filter((tool) => availableTools.includes(tool))
+      : [
+          {
+            name: "",
+            function: "",
+            url: "",
+          },
+        ];
+    customTools.value = audit.tools.length
+      ? audit.tools.filter((tool) => !availableTools.includes(tool))
+      : [
+          {
+            name: "",
+            function: "",
+            url: "",
+          },
+        ];
     pages.value = audit.pages.length
       ? audit.pages.map((p) => ({ ...p }))
       : [
@@ -145,7 +204,11 @@ watch(
  * Create a new tool and focus its field.
  */
 async function addTool() {
-  customTools.value.push("");
+  customTools.value.push({
+    name: "",
+    function: "",
+    url: "",
+  });
   await nextTick();
   const lastInput =
     customToolNameRefs.value[customToolNameRefs.value.length - 1];
@@ -219,7 +282,7 @@ function saveAuditChanges() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ...auditStore.data!,
     auditType: auditType.value,
-    auditTools: auditTools.value,
+    tools: tools.value,
     environments: environments.value,
     pages: pages.value.filter((p) => p.name !== "" || p.url !== ""),
     // TODO: plug not accessible content
@@ -256,8 +319,25 @@ function toStepThree() {
  */
 function fillFields() {
   auditType.value = AuditType.COMPLEMENTARY;
-  defaultTools.value = ["Color Contrast Analyser"];
-  customTools.value = ["Firefox Devtools", "AXE Webextension"];
+  defaultTools.value = [
+    {
+      name: "Color Contrast Analyser",
+      function: "Relever les contrastes non conforme au sein d’une page web.",
+      url: "https://www.tpgi.com/color-contrast-checker/",
+    },
+  ];
+  customTools.value = [
+    {
+      name: "Firefox Devtools",
+      function: "Inspecter et débugguer le code d’une page web.",
+      url: "https://firefox-dev.tools/",
+    },
+    {
+      name: "AXE Webextension",
+      function: "Analyser les problèmes d’accessibilité d’une page web.",
+      url: "https://www.deque.com/axe/devtools/",
+    },
+  ];
   environments.value = [
     {
       platform: "desktop",
@@ -337,63 +417,100 @@ function fillFields() {
     </section>
 
     <div class="content">
-      <section class="fr-mb-4w">
-        <div class="fr-form-group">
-          <fieldset class="fr-fieldset">
-            <legend class="fr-fieldset__legend fr-text--regular">
-              <h2 class="fr-h4 fr-mb-0">Les outils d’assistance</h2>
-            </legend>
-            <div class="fr-fieldset__content">
-              <div
-                v-for="(tool, i) in availableTools"
-                :key="i"
-                class="fr-checkbox-group"
-              >
-                <input
-                  :id="`tool-${i}`"
-                  v-model="defaultTools"
-                  type="checkbox"
-                  :value="tool"
-                />
-                <label class="fr-label" :for="`tool-${i}`">
-                  {{ tool }}
-                </label>
-              </div>
+      <div class="fr-form-group">
+        <fieldset class="fr-fieldset">
+          <legend class="fr-fieldset__legend fr-text--regular">
+            <h2 class="fr-h4 fr-mb-0">Les outils d’assistance</h2>
+          </legend>
+          <div class="fr-fieldset__content">
+            <div
+              v-for="(tool, i) in availableTools"
+              :key="i"
+              class="fr-checkbox-group"
+            >
+              <input
+                :id="`tool-${i}`"
+                v-model="defaultTools"
+                type="checkbox"
+                :value="tool"
+              />
+              <label class="fr-label" :for="`tool-${i}`">
+                {{ tool.name }}
+              </label>
             </div>
-          </fieldset>
+          </div>
+        </fieldset>
+      </div>
+
+      <h2 class="fr-h4">Ajouter un outil d’assistance (optionnel)</h2>
+
+      <fieldset
+        v-for="(tool, i) in customTools"
+        :key="i"
+        class="fr-fieldset fr-mt-4w fr-p-4w tools-card"
+      >
+        <div class="fr-mb-2w tools-header">
+          <legend class="fr-legend fr-mb-1w" :for="`custom-tool-${i}`">
+            <h3 class="fr-h6 fr-mb-0">Outil {{ i + 1 }}</h3>
+          </legend>
+
+          <button
+            class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+            type="button"
+            :disabled="customTools.length === 1"
+            @click="deleteCustomTool(i)"
+          >
+            Supprimer
+          </button>
         </div>
 
-        <template v-for="(tool, i) in customTools" :key="i">
-          <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tool-${i}`">
-            Ajouter un outil d’assistance (optionnel)
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-name-${i + 1}`">
+            Nom de l’outil
           </label>
-          <div class="delete-custom-tool">
-            <input
-              :id="`custom-tool-${i}`"
-              ref="customToolNameRefs"
-              v-model="customTools[i]"
-              class="fr-input"
-              type="text"
-            />
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
-              :disabled="customTools.length === 1"
-              type="button"
-              @click="deleteCustomTool(i)"
-            >
-              Supprimer
-            </button>
-          </div>
-        </template>
+          <input
+            :id="`tool-name-${i + 1}`"
+            ref="customToolNameRefs"
+            v-model="tool.name"
+            class="fr-input"
+            required
+          />
+        </div>
 
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
-          type="button"
-          @click="addTool"
-        >
-          Ajouter un outil
-        </button>
-      </section>
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-function-${i + 1}`">
+            Fonction
+          </label>
+          <input
+            :id="`tool-function-${i + 1}`"
+            v-model="tool.function"
+            class="fr-input"
+            required
+          />
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`tool-url-${i + 1}`">
+            URL de l’outil
+          </label>
+          <input
+            :id="`tool-url-${i + 1}`"
+            v-model="tool.url"
+            class="fr-input"
+            type="url"
+            required
+            placeholder="http://"
+          />
+        </div>
+      </fieldset>
+
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        type="button"
+        @click="addTool"
+      >
+        Ajouter un outil
+      </button>
 
       <h2 class="fr-h4">Les environnements de test</h2>
       <fieldset
@@ -401,12 +518,12 @@ function fillFields() {
         :key="i"
         class="fr-fieldset fr-mt-4w fr-p-4w env-card"
       >
-        <div class="env-header">
+        <div class="fr-mb-2w env-header">
           <legend>
-            <h3>Environnement {{ i + 1 }}</h3>
+            <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
           </legend>
           <button
-            class="fr-link"
+            class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="environments.length === 1"
             @click="deleteEnvironment(i)"
@@ -502,11 +619,11 @@ function fillFields() {
       >
         <div class="fr-mb-2w page-header">
           <legend>
-            <h3 class="fr-text--lg fr-mb-0">Page {{ i + 1 }}</h3>
+            <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
           </legend>
 
           <button
-            class="fr-link"
+            class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="pages.length === 1"
             @click="deletePage(i)"
@@ -640,11 +757,13 @@ function fillFields() {
   display: flex;
 }
 
+.tools-card,
 .env-card,
 .page-card {
   border: 1px solid var(--border-default-grey);
 }
 
+.tools-header,
 .env-header,
 .page-header {
   display: flex;

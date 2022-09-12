@@ -68,7 +68,7 @@ model Audit {
   // Step 2 (all fields must be optionnal)
 
   auditType    AuditType?
-  auditTools   String[]
+  tools        Tool[]
   environments TestEnvironment[]
   /// @DtoEntityHidden
   pages        AuditedPage[]
@@ -86,6 +86,18 @@ model Audit {
   editionDate     DateTime?
 
   @@unique([editUniqueId, consultUniqueId])
+}
+
+model Tool {
+  id       Int    @id @default(autoincrement())
+  name     String
+  function String
+  url      String
+
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
+  auditUniqueId String?
+
+  @@unique([name, function, url, auditUniqueId])
 }
 
 model TestEnvironment {
