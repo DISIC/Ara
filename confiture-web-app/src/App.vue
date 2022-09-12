@@ -22,13 +22,20 @@ watch(route, () => {
 
 // Default meta tags
 useHead({
-  // TODO: change this
-  title: "default title",
-  titleTemplate: "%s | Confiture",
+  title: "Audit d’accessibilité numérique",
+  titleTemplate: "%s - Confiture",
   meta: [
-    { name: "description", content: "description" },
-    { name: "og:title", content: "default title" },
-    { name: "og:description", content: "description" },
+    {
+      name: "description",
+      content:
+        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+    },
+    { name: "og:title", content: "Audit d’accessibilité numérique" },
+    {
+      name: "og:description",
+      content:
+        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+    },
     { name: "og:url", content: "URL" },
     { name: "og:image", content: "image" },
     { name: "og:type", content: "website" },

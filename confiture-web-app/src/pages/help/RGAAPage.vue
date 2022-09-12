@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Le RGAA"
+    description="Tout savoir sur le Référentiel général d’amélioration de l’accessibilité (RGAA)."
+  />
+
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w fr-mb-9v">
       Le Référentiel général d’amélioration de l’accessibilité (RGAA)

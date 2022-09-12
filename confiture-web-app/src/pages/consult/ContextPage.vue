@@ -5,6 +5,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatAuditType, getCriteriaCount } from "../../utils";
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 
 const report = useReportStore();
 
@@ -26,6 +27,10 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
 <template>
   <div v-if="report.data" class="content">
+    <PageMeta
+      title="Contexte"
+      :description="`Découvrez en détails le contexte de l’audit ${report.data.procedureName}.`"
+    />
     <h1 class="fr-mb-3w fr-mb-md-9v">Contexte de l’audit</h1>
     <h2 class="fr-mb-2w fr-mb-md-3w">Introduction</h2>
     <!-- FIXME: different wording per auditType? -->

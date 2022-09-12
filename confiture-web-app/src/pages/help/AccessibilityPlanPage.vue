@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Schéma pluriannuel de mise en accessibilité"
+    description="Le schéma pluriannuel, d’une durée maximum de trois ans, présente la politique de l’entité concernée en matière d’accessibilité numérique."
+  />
+
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w fr-mb-9v">
       Schéma pluriannuel de mise en accessibilité

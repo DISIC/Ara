@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Formations accessibilité"
+    description="Retrouvez en vidéo les formations de l'équipe Design des services numériques pour réaliser."
+  />
+
   <section class="fr-my-0 content">
     <RouterLink
       class="fr-link fr-icon-arrow-left-line fr-link--icon-left"

@@ -7,6 +7,7 @@ import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { AuditType } from "../../types";
@@ -136,6 +137,10 @@ function handleTabChange(tab: { title: string }) {
   </div>
 
   <template v-if="report.data">
+    <PageMeta
+      title="Rapport d’audit accessibilité"
+      :description="`Découvrez la synthèse de l'audit de ${report.data?.procedureName}.`"
+    />
     <OnboardingModal
       :show="showOnboardingModal"
       :accessibility-rate="report.data.accessibilityRate"

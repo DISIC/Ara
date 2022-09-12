@@ -31,8 +31,8 @@ async function hideDeleteAlert() {
 
 <template>
   <PageMeta
-    title="Accueil"
-    description="Faire des audits RGAA, les rendre lisibles et suivre l’amélioration de leur taux de conformité"
+    title="Audit d’accessibilité numérique"
+    description="Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
   />
 
   <div

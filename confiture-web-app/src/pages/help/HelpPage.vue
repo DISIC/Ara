@@ -9,6 +9,7 @@ import SelfAuditing from "../../components/FaqAccordionsContent/SelfAuditing.vue
 import LegalRequirements from "../../components/FaqAccordionsContent/LegalRequirements.vue";
 import TeamTraining from "../../components/FaqAccordionsContent/TeamTraining.vue";
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 
 const accordions = [
   {
@@ -90,6 +91,11 @@ const moreLinks = [
 </script>
 
 <template>
+  <PageMeta
+    title="Aide"
+    description="Obtenez des réponses à vos questions les plus fréquentes ou contactez l'équipe Design des services numériques."
+  />
+
   <div class="fr-my-0 content">
     <h1>Aide</h1>
     <section>

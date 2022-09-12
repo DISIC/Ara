@@ -4,6 +4,7 @@ import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditTypeRadio from "../../components/AuditTypeRadio.vue";
+import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
@@ -364,6 +365,10 @@ function fillFields() {
 </script>
 
 <template>
+  <PageMeta
+    title="Paramètres de l’audit"
+    description="Saisissez le type d'audit que vous souhaitez réaliser et l'ensemble des paramètres de votre futur audit."
+  />
   <div
     v-if="showAdminAlert"
     class="fr-alert fr-alert--info fr-alert--sm fr-my-9v"

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 import { createFeedback } from "../api";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
 import greenCheck from "../assets/images/green-check.svg";
-import { useRouter } from "vue-router";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
+import PageMeta from "../components/PageMeta";
 
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
@@ -66,6 +67,11 @@ const previousPageName = route?.meta.name ?? "précédente";
 </script>
 
 <template>
+  <PageMeta
+    title="Donner mon avis"
+    description="Contribuez à l’amélioration de l’outil Confiture en donnant votre avis."
+  />
+
   <h1 class="fr-mb-6w">Donner mon avis</h1>
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">

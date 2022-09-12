@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 </script>
 
 <template>
+  <PageMeta
+    title="Obligations légales et sanctions"
+    description="Les obligations d’accessibilité des sites publics aux personnes en situation de handicap ont été introduites par l’article 47 de la loi du 11 février 2005."
+  />
+
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w fr-mb-9v">Obligations légales et sanctions</h1>
     <h2>Introduction</h2>
