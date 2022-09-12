@@ -132,7 +132,7 @@ const hasA11yStatement = computed(() => {
         par e-mail le lien ci-dessous.
       </p>
 
-      <div class="fr-callout fr-callout--green-bourgeon fr-mb-4w">
+      <div class="fr-callout fr-mb-4w">
         <p class="fr-callout__title fr-text--xl fr-mb-2w">
           Lien public du rapport d’audit
         </p>
