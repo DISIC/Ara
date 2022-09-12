@@ -424,6 +424,12 @@ export class AuditService {
     const results = await this.prisma.criterionResult.findMany({
       where: {
         auditUniqueId: audit.editUniqueId,
+        criterium: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+        },
+        topic: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
+        },
       },
     });
 
@@ -480,13 +486,7 @@ export class AuditService {
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
-      // TODO: take audit type into account in generation steps
-      // totalCriteriaCount: {
-      //   [AuditType.FULL]: 106,
-      //   [AuditType.COMPLEMENTARY]: 50,
-      //   [AuditType.FAST]: 25,
-      // }[audit.auditType],
-      totalCriteriaCount: 106,
+      totalCriteriaCount: CRITERIA_BY_AUDIT_TYPE[audit.auditType].length,
 
       applicableCriteriaCount: applicableCriteria.length,
 
@@ -677,13 +677,29 @@ export class AuditService {
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const notTestedCount = await this.prisma.criterionResult.count({
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: { pages: true },
+    });
+
+    const testedCount = await this.prisma.criterionResult.count({
       where: {
         auditUniqueId: uniqueId,
-        status: CriterionResultStatus.NOT_TESTED,
+        criterium: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+        },
+        topic: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
+        },
+        status: {
+          not: CriterionResultStatus.NOT_TESTED,
+        },
       },
     });
 
-    return notTestedCount === 0;
+    const expectedCount =
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
+
+    return testedCount === expectedCount;
   }
 }
