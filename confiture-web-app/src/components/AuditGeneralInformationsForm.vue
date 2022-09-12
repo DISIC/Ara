@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { /* nextTick, */ ref } from "vue";
+import { nextTick, ref, computed } from "vue";
 import { CreateAuditRequestData } from "../types";
 
 const props = defineProps<{
@@ -10,46 +10,60 @@ const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
 }>();
 
+const availableTechnologies = ["HTML", "CSS", "JavaScript", "PHP", "MySQL"];
+
 const procedureEntity = ref(props.defaultValues?.initiator ?? "");
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
 const procedureSiteUrl = ref(props.defaultValues?.procedureUrl ?? "");
 const procedureManagerName = ref(props.defaultValues?.contactName ?? "");
 const procedureManagerEmail = ref(props.defaultValues?.contactEmail ?? "");
 const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
-// const procedureRecipients = ref(
-//   props.defaultValues?.recipients ?? [
-//     {
-//       name: "",
-//       email: "",
-//     },
-//   ]
-// );
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
+const defaultTechnologies = ref<string[]>(
+  props.defaultValues?.technologies.length
+    ? props.defaultValues?.technologies.filter((tech) =>
+        availableTechnologies.includes(tech)
+      )
+    : []
+);
+const customTechnologies = ref<string[]>(
+  props.defaultValues?.technologies.length
+    ? props.defaultValues?.technologies.filter(
+        (tech) => !availableTechnologies.includes(tech)
+      )
+    : [""]
+);
+const auditTechnologies = computed(() => {
+  return [...defaultTechnologies.value, ...customTechnologies.value].filter(
+    Boolean
+  );
+});
 
-// const contactNameRefs = ref<HTMLInputElement[]>([]);
+const customTechNameRefs = ref<HTMLInputElement[]>([]);
 
 /**
- * Create a new contact and focus its name first
+ * Create a new tech and focus its field.
  */
-// async function addContact() {
-//   procedureRecipients.value.push({ name: "", email: "" });
-//   await nextTick();
-//   const lastInput = contactNameRefs.value[contactNameRefs.value.length - 1];
-//   lastInput.focus();
-// }
+async function addTech() {
+  customTechnologies.value.push("");
+  await nextTick();
+  const lastInput =
+    customTechNameRefs.value[customTechNameRefs.value.length - 1];
+  lastInput.focus();
+}
 
 /**
- * Delete contact at index and focus previous or first name field.
+ * Delete custom tech at index and focus previous or first field.
  * @param {number} i
  */
-// async function deleteContact(i: number) {
-//   procedureRecipients.value.splice(i, 1);
-//   await nextTick();
-//   const previousInput =
-//     i === 0 ? contactNameRefs.value[0] : contactNameRefs.value[i - 1];
-//   previousInput.focus();
-// }
+async function deleteCustomTech(i: number) {
+  customTechnologies.value.splice(i, 1);
+  await nextTick();
+  const lastInput =
+    i === 0 ? customTechNameRefs.value[0] : customTechNameRefs.value[i - 1];
+  lastInput.focus();
+}
 
 /**
  * TODO: remove this
@@ -68,6 +82,8 @@ function fillFields() {
   // ];
   procedureAuditorName.value = "Etienne Dupont";
   procedureAuditorEmail.value = "etienne-dupont@example.com";
+  defaultTechnologies.value = ["HTML", "CSS"];
+  customTechnologies.value = ["WordPress"];
 }
 
 function onSubmit() {
@@ -81,13 +97,14 @@ function onSubmit() {
     recipients: [],
     auditorName: procedureAuditorName.value,
     auditorEmail: procedureAuditorEmail.value,
+    technologies: auditTechnologies.value,
   });
 }
 </script>
 
 <template>
   <form class="content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3v">📄 Informations générales de la démarche à auditer</h1>
+    <h1 class="fr-mb-3v">📄 Informations générales du site à auditer</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
@@ -197,76 +214,7 @@ function onSubmit() {
       </div>
     </fieldset>
 
-    <!-- <div class="fr-mt-4w">
-      <h2 class="fr-h4 fr-mb-2w">Destinataires de l’audit</h2>
-
-      <p>
-        Il s’agit des personnes qui doivent être averties que l’audit est
-        terminé et du taux d’accessibilité de la démarche. Il peut s’agir des
-        porteurs de la démarche, référents accessibilité, chefs de projet,
-        développeurs, etc. Ils seront les destinataires de la livraison de
-        l’audit.
-      </p>
-
-      <fieldset
-        v-for="(contact, i) in procedureRecipients"
-        :key="i"
-        class="fr-fieldset fr-mt-4w fr-p-4w contact-card"
-      >
-        <div class="fr-mb-2w contact-header">
-          <legend>
-            <h3 class="fr-text--lg fr-mb-0">Contact {{ i + 1 }}</h3>
-          </legend>
-
-          <button
-            class="fr-link"
-            type="button"
-            :disabled="procedureRecipients.length === 1"
-            @click="deleteContact(i)"
-          >
-            Supprimer
-          </button>
-        </div>
-
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`procedure-auditor-name-${i + 1}`">
-            Nom et prénom du contact
-          </label>
-          <input
-            :id="`procedure-auditor-name-${i + 1}`"
-            ref="contactNameRefs"
-            v-model="contact.name"
-            class="fr-input"
-          />
-        </div>
-
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`procedure-auditor-email-${i + 1}`">
-            Adresse e-mail du contact
-            <span class="fr-hint-text">
-              Exemple : prenom.nom@ministere.gouv.fr
-            </span>
-          </label>
-          <input
-            :id="`procedure-auditor-email-${i + 1}`"
-            v-model="contact.email"
-            class="fr-input"
-            type="email"
-            required
-          />
-        </div>
-      </fieldset>
-
-      <button
-        class="fr-link fr-mt-4w fr-link--icon-left fr-icon-add-line"
-        type="button"
-        @click="addContact"
-      >
-        Ajouter contact
-      </button>
-    </div> -->
-
-    <fieldset class="fr-fieldset fr-mt-6w">
+    <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
       </legend>
@@ -305,6 +253,63 @@ function onSubmit() {
       </div>
     </fieldset>
 
+    <fieldset class="fr-fieldset">
+      <legend class="fr-fieldset__legend">
+        <h2 class="fr-h4 fr-mb-0">
+          Technologies utilisées pour la réalisation du site
+        </h2>
+      </legend>
+
+      <div class="fr-fieldset__content">
+        <div
+          v-for="(tech, i) in availableTechnologies"
+          :key="i"
+          class="fr-checkbox-group"
+        >
+          <input
+            :id="`tech-${i}`"
+            v-model="defaultTechnologies"
+            type="checkbox"
+            :value="tech"
+          />
+          <label class="fr-label" :for="`tech-${i}`">
+            {{ tech }}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <template v-for="(_, i) in customTechnologies" :key="i">
+      <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tech-${i}`">
+        Ajouter une technologie (optionnel)
+      </label>
+      <div class="delete-custom-tech">
+        <input
+          :id="`custom-tech-${i}`"
+          ref="customTechNameRefs"
+          v-model="customTechnologies[i]"
+          class="fr-input"
+          type="text"
+        />
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+          :disabled="customTechnologies.length === 1"
+          type="button"
+          @click="deleteCustomTech(i)"
+        >
+          Supprimer
+        </button>
+      </div>
+    </template>
+
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+      type="button"
+      @click="addTech"
+    >
+      Ajouter un outil
+    </button>
+
     <div>
       <button
         class="fr-btn fr-mt-6w fr-mr-2w"
@@ -338,5 +343,9 @@ function onSubmit() {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.delete-custom-tech {
+  display: flex;
 }
 </style>

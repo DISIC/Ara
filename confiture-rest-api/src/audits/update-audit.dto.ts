@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsIn,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
@@ -30,7 +31,13 @@ class UpdateAuditTool {
   url: string;
 }
 
-class UpdateAuditPage {
+export class UpdateAuditPage {
+  /**
+   * Include the page ID in order to update an existing page.
+   */
+  @IsNumber()
+  @IsOptional()
+  id?: number;
   /**
    * @example "Page de contact"
    */
