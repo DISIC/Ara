@@ -491,6 +491,7 @@ export class AuditService {
       // FIXME: some of the return data is never asked to the user
       context: {
         auditorName: audit.auditorName,
+        auditorEmail: audit.auditorEmail,
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({
