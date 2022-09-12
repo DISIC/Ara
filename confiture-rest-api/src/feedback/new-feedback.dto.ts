@@ -1,11 +1,10 @@
 import { IsArray, IsEmail, IsIn, IsOptional, IsString } from 'class-validator';
 
 const OCCUPATIONS = [
-  'Designer',
-  'Développeur',
-  'Chef de projet',
-  'Chef de produit',
-  'Décideur',
+  'Designer (ou lead)',
+  'Développeur / Développeuse (ou lead)',
+  'Chef / Cheffe de projet (product manager)',
+  'Chef / Cheffe de produit (product owner)',
   'Référent accessibilité',
   'Autre',
 ];

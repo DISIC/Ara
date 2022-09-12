@@ -18,7 +18,7 @@ export class FeedbackService {
             Suggestions: feedback.suggestions,
             Nom: feedback.name,
             Email: feedback.email,
-            Occupations: feedback.occupations,
+            Expertises: feedback.occupations,
           },
         },
       ],
