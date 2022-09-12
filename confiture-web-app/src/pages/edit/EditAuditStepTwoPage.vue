@@ -77,6 +77,8 @@ const availableTools = [
     url: "https://example.com",
   },
 ];
+const availableOS = ["Mac", "Windows"];
+
 const availableAT = [
   "NVDA (dernière version)",
   "JAWS (dernière version)",
@@ -122,8 +124,12 @@ const pages = ref([
 const environments = ref([
   {
     platform: "",
+    operatingSystem: "",
+    operatingSystemVersion: "",
     assistiveTechnology: "",
+    assistiveTechnologyVersion: "",
     browser: "",
+    browserVersion: "",
   },
 ]);
 const notCompliantContent = ref("");
@@ -189,8 +195,12 @@ watch(
       : [
           {
             platform: "",
+            operatingSystem: "",
+            operatingSystemVersion: "",
             assistiveTechnology: "",
+            assistiveTechnologyVersion: "",
             browser: "",
+            browserVersion: "",
           },
         ];
     // TODO: prefill values
@@ -256,8 +266,12 @@ async function deletePage(i: number) {
 async function addEnvironment() {
   environments.value.push({
     platform: "",
+    operatingSystem: "",
+    operatingSystemVersion: "",
     assistiveTechnology: "",
+    assistiveTechnologyVersion: "",
     browser: "",
+    browserVersion: "",
   });
   await nextTick();
   const lastInput = envSupportRefs.value[envSupportRefs.value.length - 1];
@@ -342,13 +356,21 @@ function fillFields() {
   environments.value = [
     {
       platform: "desktop",
-      assistiveTechnology: "VoiceOver (version précédente)",
-      browser: "Microsoft Edge",
+      operatingSystem: "Windows",
+      operatingSystemVersion: "11",
+      assistiveTechnology: "NVDA (version précédente)",
+      assistiveTechnologyVersion: "",
+      browser: "Firefox",
+      browserVersion: "104",
     },
     {
-      platform: "mobile",
-      assistiveTechnology: "NVDA (dernière version)",
-      browser: "Google Chrome",
+      platform: "desktop",
+      operatingSystem: "MacOS",
+      operatingSystemVersion: "12.5",
+      assistiveTechnology: "VoiceOver (dernière version)",
+      assistiveTechnologyVersion: "",
+      browser: "Safari",
+      browserVersion: "15.6",
     },
   ];
   pages.value = [
@@ -571,6 +593,34 @@ function fillFields() {
           </fieldset>
         </div>
         <div v-if="env.platform" class="fr-select-group">
+          <label class="fr-label" :for="`env-os-${i}`">
+            Logiciel d’exploitation
+          </label>
+          <select
+            :id="`env-os-${i}`"
+            v-model="env.operatingSystem"
+            class="fr-select"
+          >
+            <option value="" selected disabled hidden>
+              Selectionnez une option
+            </option>
+            <option v-for="os in availableOS" :key="os" :value="os">
+              {{ os }}
+            </option>
+          </select>
+        </div>
+        <div v-if="env.operatingSystem" class="fr-input-group">
+          <label class="fr-label" :for="`env-os-version-${i}`">
+            Version du logiciel d’exploitation (optionnel)
+          </label>
+          <input
+            :id="`env-os-version-${i}`"
+            v-model="env.operatingSystemVersion"
+            class="fr-input"
+          />
+        </div>
+
+        <div v-if="env.operatingSystem" class="fr-select-group">
           <label class="fr-label" :for="`env-at-${i}`">
             Technologie d’assistance
           </label>
@@ -587,8 +637,19 @@ function fillFields() {
             </option>
           </select>
         </div>
+        <div v-if="env.assistiveTechnology" class="fr-input-group">
+          <label class="fr-label" :for="`env-at-version-${i}`">
+            Version de la technologie d’assistance (optionnel)
+          </label>
+          <input
+            :id="`env-at-version-${i}`"
+            v-model="env.assistiveTechnologyVersion"
+            class="fr-input"
+          />
+        </div>
+
         <div v-if="env.assistiveTechnology" class="fr-select-group">
-          <label class="fr-label" :for="`env-browser-${i}`">Navigateur</label>
+          <label class="fr-label" :for="`env-browser-${i}`"> Navigateur </label>
           <select
             :id="`env-browser-${i}`"
             v-model="env.browser"
@@ -605,6 +666,16 @@ function fillFields() {
               {{ browser }}
             </option>
           </select>
+        </div>
+        <div v-if="env.browser" class="fr-input-group">
+          <label class="fr-label" :for="`env-browser-version-${i}`">
+            Version du navigateur (optionnel)
+          </label>
+          <input
+            :id="`env-browser-version-${i}`"
+            v-model="env.browserVersion"
+            class="fr-input"
+          />
         </div>
       </fieldset>
       <button
