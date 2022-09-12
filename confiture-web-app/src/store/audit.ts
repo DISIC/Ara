@@ -8,11 +8,13 @@ import {
 
 interface AuditStoreState {
   data: Audit | null;
+  lastVisitedStepLocation: string | null;
 }
 
 export const useAuditStore = defineStore("audit", {
   state: (): AuditStoreState => ({
     data: null,
+    lastVisitedStepLocation: null,
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {

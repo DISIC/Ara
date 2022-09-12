@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 
 import ContextPage from "./pages/consult/ContextPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
@@ -27,14 +27,37 @@ import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
+import { useAuditStore } from "./store";
+
 declare module "vue-router" {
   interface RouteMeta {
     // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
     name: string;
+    breadcrumbLinks?:
+      | Array<{ label: string; name: string }>
+      | (() => Array<{ label: string; name: string }>);
+    hideHomeLink?: boolean;
   }
 }
 
 export const history = createWebHistory();
+
+/**
+ * Fetch the audit name from store to display in breadcrumb.
+ */
+function getProcedureName() {
+  const auditStore = useAuditStore();
+  return auditStore.data?.procedureName ?? "Mon audit";
+}
+
+/**
+ * When entering an "edit page", store the current page url to use in the header menu.
+ */
+function saveCurrentEditionStep(to: RouteLocation) {
+  const auditStore = useAuditStore();
+  auditStore.lastVisitedStepLocation = to.fullPath;
+  return true;
+}
 
 const router = createRouter({
   routes: [
@@ -112,11 +135,15 @@ const router = createRouter({
       path: "/audits/:uniqueId/informations-generales",
       name: "edit-audit-step-one",
       component: EditAuditStepOnePage,
+      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-one" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-one",
+          },
         ],
       },
     },
@@ -124,11 +151,15 @@ const router = createRouter({
       path: "/audits/:uniqueId/parametres",
       name: "edit-audit-step-two",
       component: EditAuditStepTwoPage,
+      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-two" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-two",
+          },
         ],
       },
     },
@@ -136,11 +167,15 @@ const router = createRouter({
       path: "/audits/:uniqueId/generation",
       name: "edit-audit-step-three",
       component: EditAuditStepThreePage,
+      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-three" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-three",
+          },
         ],
       },
     },
@@ -148,11 +183,15 @@ const router = createRouter({
       path: "/audits/:uniqueId/partage",
       name: "edit-audit-step-four",
       component: EditAuditStepFourPage,
+      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Accueil", name: "home" },
-          { label: "Mon audit", name: "edit-audit-step-four" },
+          {
+            label: getProcedureName(),
+            name: "edit-audit-step-four",
+          },
         ],
       },
     },
@@ -163,19 +202,21 @@ const router = createRouter({
       component: ContextPage,
       meta: {
         name: "Contexte",
-        // breadcrumbLinks: (smth) => {
-        //   console.log(smth);
-        //   return [
-        //     { label: "Rapport d’audit", name: "report" },
-        //     { label: "Contexte", name: "context" },
-        //   ];
-        // },
+        hideHomeLink: true,
+        breadcrumbLinks: [
+          { label: "Rapport d’audit", name: "report" },
+          { label: "Contexte", name: "context" },
+        ],
       },
     },
     {
       path: "/rapports/:uniqueId/:tab?",
       name: "report",
       component: ReportPage,
+      meta: {
+        name: "Rapport d’audit",
+        hideHomeLink: true,
+      },
     },
     // Resources pages
     {
