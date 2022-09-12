@@ -56,7 +56,8 @@ import PageMeta from "../../components/PageMeta";
     </div>
 
     <div class="content">
-      <h3>Nos ateliers</h3>
+      <!-- TODO: hide until newsletter page is created -->
+      <!-- <h3>Nos ateliers</h3>
       <p>
         Vous êtes un agent de l’État ? Nous organisons régulièrement des
         ateliers collaboratifs, inscrivez-vous à notre newsletter et soyez
@@ -64,7 +65,7 @@ import PageMeta from "../../components/PageMeta";
       </p>
       <RouterLink to="#" class="fr-btn fr-btn--secondary fr-mb-6w"
         >Être tenu informé</RouterLink
-      >
+      > -->
       <h2>Formations d’autres organismes</h2>
       <h3>Initiations</h3>
       <ul class="fr-mb-7v">

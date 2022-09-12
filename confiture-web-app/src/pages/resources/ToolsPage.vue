@@ -42,17 +42,6 @@ import PageMeta from "../../components/PageMeta";
       le repérage visuel de certains éléments dans un document :
     </p>
     <ul>
-      <!-- TODO: IE? -->
-      <!-- <li>
-        <a
-          class="fr-link"
-          href="https://addons.mozilla.org/fr/firefox/addon/wcag-contrast-checker/"
-          target="_blank"
-          >Web Accessibility Toolbar pour Internet Explorer</a
-        >
-        : barre d’outils de vérification de certains points d’accessibilité d’un
-        document.
-      </li> -->
       <li>
         <a
           class="fr-link"
@@ -179,16 +168,6 @@ import PageMeta from "../../components/PageMeta";
         : logiciel qui permet de contrôler certains points d’accessibilité des
         documents PDF
       </li>
-      <!-- TODO: this tool seems to be gone -->
-      <!-- <li>
-        <a class="fr-link" href="#" target="_blank"
-          >Word Accessibility Plug-in pour Microsoft Office Windows</a
-        >
-        : extension du logiciel Microsoft Word permet d’éditer et de contrôler
-        l’accessibilité d’un document bureautique éditable au format .doc ; à
-        noter que les versions récentes des outils bureautiques de Microsoft
-        offrent une fonctionnalité intégrée de validation de l’accessibilité
-      </li> -->
       <li>
         <a
           class="fr-link"

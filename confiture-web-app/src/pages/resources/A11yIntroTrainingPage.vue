@@ -2,6 +2,7 @@
 import TopLink from "../../components/TopLink.vue";
 import ErwanPicture from "../../assets/images/erwan-legall.png";
 import BenoitPicture from "../../assets/images/benoit-dequick.png";
+import transcriptionUrl from "../../assets/Transcription-Accessibilite-18novembre2021.docx";
 </script>
 
 <template>
@@ -22,10 +23,9 @@ import BenoitPicture from "../../assets/images/benoit-dequick.png";
 
     <div class="fr-download fr-mb-6w">
       <p>
-        <!-- TODO: add file + change weight -->
-        <a href="[À MODIFIER]" download class="fr-download__link"
+        <a :href="transcriptionUrl" download class="fr-download__link"
           >Télécharger la transcription
-          <span class="fr-download__detail">DOCX (Word) – 61,88 Ko</span>
+          <span class="fr-download__detail">DOCX (Word) – 44 Ko</span>
         </a>
       </p>
     </div>

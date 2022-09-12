@@ -2,6 +2,7 @@
 import TopLink from "../../components/TopLink.vue";
 import UgoPicture from "../../assets/images/ugo-dessertine.png";
 import MarinePicture from "../../assets/images/marine-boudeau.png";
+import transcriptionUrl from "../../assets/Transcription-Bienfairedunumerique-19mai2022.docx";
 </script>
 
 <template>
@@ -22,10 +23,9 @@ import MarinePicture from "../../assets/images/marine-boudeau.png";
 
     <div class="fr-download fr-mb-6w">
       <p>
-        <!-- TODO: add file + change weight -->
-        <a href="[À MODIFIER]" download class="fr-download__link"
+        <a :href="transcriptionUrl" download class="fr-download__link"
           >Télécharger la transcription
-          <span class="fr-download__detail">DOCX (Word) – 61,88 Ko</span>
+          <span class="fr-download__detail">DOCX (Word) – 51 Ko</span>
         </a>
       </p>
     </div>
