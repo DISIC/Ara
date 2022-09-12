@@ -19,8 +19,11 @@ import LegalPage from "./pages/misc/LegalPage.vue";
 import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
+import A11yIntroTrainingPage from "./pages/resources/A11yIntroTrainingPage.vue";
+import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
 import ResourcesPage from "./pages/resources/ResourcesPage.vue";
+import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
@@ -201,6 +204,40 @@ const router = createRouter({
       },
     },
     {
+      path: "/ressources/formations-accessibilite/introduction-accessibilite-numerique",
+      name: "a11y-intro-training",
+      component: A11yIntroTrainingPage,
+      meta: {
+        name: "Introduction à l’accessibilité numérique",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Formations accessibilité", name: "accessibility-training" },
+          {
+            label: "Introduction à l’accessibilité numérique",
+            name: "a11y-intro-training",
+          },
+        ],
+      },
+    },
+    {
+      path: "/ressources/formations-accessibilite/numerique-public",
+      name: "public-digital",
+      component: PublicDigitalTrainingPage,
+      meta: {
+        name: "Bien faire du numérique public",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          { label: "Formations accessibilité", name: "accessibility-training" },
+          {
+            label: "Bien faire du numérique public",
+            name: "public-digital",
+          },
+        ],
+      },
+    },
+    {
       path: "/ressources/outils",
       name: "tools",
       component: ToolsPage,
@@ -223,6 +260,22 @@ const router = createRouter({
           { label: "Accueil", name: "home" },
           { label: "Ressources", name: "resources" },
           { label: "Glossaire", name: "glossary" },
+        ],
+      },
+    },
+    {
+      path: "/ressources/realiser-audit-accessibilite",
+      name: "make-a11y-audit",
+      component: MakeA11yAuditPage,
+      meta: {
+        name: "Réaliser un audit accessibilité",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Ressources", name: "resources" },
+          {
+            label: "Réaliser soi-même un audit accessibilité",
+            name: "make-a11y-audit",
+          },
         ],
       },
     },

@@ -5,44 +5,53 @@ const tileLinks = [
   {
     title: "Formations accessibilité",
     description: "Me former ou former mon équipe",
-    href: "/ressources/formations-accessibilite",
+    routeName: "accessibility-training",
   },
   {
     title: "Outils",
-    description: "Aide à la mise en oeuvre des correctifs et des tests",
-    href: "/ressources/outils",
+    description: "Aide à la mise en oeuvre des tests",
+    routeName: "tools",
   },
   {
     title: "Glossaire",
     description: "Définitions de tous les termes du RGAA",
-    href: "/ressources/glossaire",
+    routeName: "glossary",
+  },
+  {
+    title: "Réaliser un audit accessibilité (a11é)",
+    description: "Tout savoir pour réaliser un audit a11é",
+    routeName: "make-a11y-audit",
   },
 ];
 
 const moreLinks = [
   {
     title: "DesignGouv",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "notre site officiel dédié au design et à l’accessibilité des services numériques",
     href: "https://design.numerique.gouv.fr/",
   },
   {
     title: "RGAA",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "enjeux, tests, obligations légales, méthode, tout le RGAA en plus clair",
     href: "https://accessibilite.numerique.gouv.fr/",
   },
   {
     title: "Design-accessible.fr",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "ressources pour concevoir des services utiles et utilisables pour toutes et tous",
     href: "https://design-accessible.fr/",
   },
   {
     title: "DSFR",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description: "le site officiel du Système de Design de l’État",
     href: "https://www.systeme-de-design.gouv.fr/",
   },
   {
     title: "Jeu de l’OAA",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "le jeu qui vous guidera dans la mise en accessibilité de votre service numérique",
     href: "https://design.numerique.gouv.fr/accessibilite-numerique/jeu-de-oaa/",
   },
 ];
@@ -58,30 +67,24 @@ const moreLinks = [
     <h1 class="fr-mt-6w">Ressources</h1>
     <p>
       Retrouvez une selection de ressources et d’outils pour vous aider à vous
-      préparer et à mener votre chantier accessibilité.
+      préparer et à mener votre chantier accessibilité :
     </p>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-7w">
       <div
         v-for="link in tileLinks"
-        :key="link.href"
+        :key="link.routeName"
         class="fr-col-12 fr-col-md-6"
       >
         <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
           <div class="fr-tile__body">
             <h3 class="fr-tile__title">
-              <RouterLink class="fr-tile__link" :to="link.href">{{
-                link.title
-              }}</RouterLink>
+              <RouterLink
+                class="fr-tile__link"
+                :to="{ name: link.routeName }"
+                >{{ link.title }}</RouterLink
+              >
             </h3>
             <p class="fr-tile__desc">{{ link.description }}</p>
-          </div>
-          <div class="fr-tile__img">
-            <!-- TODO: replace img src -->
-            <img
-              src="https://picsum.photos/id/20/200/200"
-              class="fr-responsive-img"
-              alt=""
-            />
           </div>
         </div>
       </div>
@@ -91,16 +94,16 @@ const moreLinks = [
   <section class="content">
     <h2>Aller plus loin</h2>
     <p>
-      Vous souhaitez plus de ressources ou en savoir plus sur les bonnes
+      Vous souhaitez plus de ressources ou en savoir d’avantage sur les bonnes
       pratiques liées à l’accessibilité numérique ?
     </p>
 
     <ul>
       <li v-for="link in moreLinks" :key="link.href">
-        {{ link.description }}
         <a class="fr-link" :href="link.href" target="_blank">{{
           link.title
         }}</a>
+        : {{ link.description }}
       </li>
     </ul>
   </section>

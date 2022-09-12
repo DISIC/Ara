@@ -6,3 +6,6 @@ declare module "*.vue" {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+// Allow importing DOCX files
+declare module "*.docx";
