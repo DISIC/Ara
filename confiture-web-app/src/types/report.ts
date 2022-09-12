@@ -66,6 +66,7 @@ interface AuditReportContext {
   referencial: string;
 
   auditorName: string;
+  auditorEmail: string;
 
   technologies: string[];
 
