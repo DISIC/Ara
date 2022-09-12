@@ -515,9 +515,10 @@ export class AuditService {
           name: t.name,
           function: t.function,
           url: t.url,
-        technologies: audit.technologies,
         })),
       },
+
+      technologies: audit.technologies,
 
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
       // TODO: update total criteria count for percentages (106)
