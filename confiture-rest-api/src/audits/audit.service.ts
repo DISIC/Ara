@@ -131,8 +131,6 @@ export class AuditService {
     data: UpdateAuditDto,
   ): Promise<Audit | undefined> {
     try {
-      console.log(data.pages);
-
       const updatedPages = data.pages.filter((p) => p.id);
       const newPages = data.pages.filter((p) => !p.id);
 
