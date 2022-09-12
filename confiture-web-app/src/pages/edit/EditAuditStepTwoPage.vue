@@ -685,6 +685,7 @@ function fillFields() {
           id="notCompliantContent"
           v-model="notCompliantContent"
           class="fr-input"
+          required
         />
       </div>
 
@@ -700,6 +701,7 @@ function fillFields() {
           id="derogatedContent"
           v-model="derogatedContent"
           class="fr-input"
+          required
         />
       </div>
 
@@ -712,6 +714,7 @@ function fillFields() {
           id="notInScopeContent"
           v-model="notInScopeContent"
           class="fr-input"
+          required
         />
       </div>
     </div>
