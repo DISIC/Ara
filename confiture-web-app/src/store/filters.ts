@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import rgaa from "../criteres.json";
+import { CRITERIA_BY_AUDIT_TYPE } from "../criteria";
+import { AuditType } from "../types";
+import { useAuditStore } from "./audit";
 
 interface FiltersStoreState {
   search: string;
@@ -7,10 +10,16 @@ interface FiltersStoreState {
 }
 
 export const useFiltersStore = defineStore("filters", {
-  state: (): FiltersStoreState => ({ search: "", topics: [] }),
+  state: (): FiltersStoreState => ({
+    search: "",
+    topics: [],
+  }),
   getters: {
     /** Filter topics by topic name and by search. */
     filteredTopics() {
+      const auditStore = useAuditStore();
+      const auditType = auditStore.data?.auditType ?? AuditType.FULL;
+
       let filteredTopics = rgaa.topics as any[];
 
       if (this.topics.length) {
@@ -23,16 +32,23 @@ export const useFiltersStore = defineStore("filters", {
        * Filter based on search on:
        * - topic title ("Images")
        * - criteria title ("Dans chaque page web, l’ouverture...")
+       * - audit type (fast, complementary, full)
        */
       filteredTopics = filteredTopics.map((t) => {
         return {
           ...t,
           criteria: t.criteria.filter(
             (c: any) =>
-              c.criterium.title
+              // audit type filter
+              !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
+                (fc) =>
+                  fc.criterium === c.criterium.number && fc.topic === t.number
+              ) &&
+              // search filter
+              (c.criterium.title
                 .toLowerCase()
                 .includes(this.search.toLowerCase()) ||
-              t.topic.toLowerCase().includes(this.search.toLocaleLowerCase())
+                t.topic.toLowerCase().includes(this.search.toLocaleLowerCase()))
           ),
         };
       });
