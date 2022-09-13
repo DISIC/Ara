@@ -99,14 +99,11 @@ export class UpdateAuditDto extends CreateAuditDto {
   pages?: UpdateAuditPage[];
 
   @IsString()
-  @IsOptional()
-  notCompliantContent?: string;
+  notCompliantContent: string;
 
   @IsString()
-  @IsOptional()
-  derogatedContent?: string;
+  derogatedContent: string;
 
   @IsString()
-  @IsOptional()
-  notInScopeContent?: string;
+  notInScopeContent: string;
 }
