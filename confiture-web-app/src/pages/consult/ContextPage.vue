@@ -84,10 +84,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     <p class="fr-mb-9v fr-mb-md-6w">
       Cet audit a été réalisé par
       <strong>{{ report.data.context.auditorName }}</strong
-      >, expert accessibilité à la Direction interministérielle du numérique
-      (DINUM). Pour toute questions relative à cet audit, vous pouvez le
-      contacter par e-mail à l’adresse suivante :
-      <strong>[nom.prenom@prestataire.modernisation.gouv.fr]</strong>
+      >. Pour toute questions relative à cet audit, vous pouvez contacter
+      l’auditeur par e-mail à l’adresse suivante :
+      <strong>{{ report.data.context.auditorEmail }}</strong>.
     </p>
 
     <h2 class="fr-mb-2w fr-mb-md-3w">Méthodologie et référentiel</h2>

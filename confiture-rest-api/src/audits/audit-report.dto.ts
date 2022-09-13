@@ -103,6 +103,10 @@ class ReportContext {
    * @example "Pierre Poljak"
    */
   auditorName: string;
+  /**
+   * @example "john-doe@example.com"
+   */
+  auditorEmail: string;
 
   technologies: string[];
 
