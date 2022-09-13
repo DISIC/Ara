@@ -2,7 +2,11 @@ import { computed } from "vue";
 import { countBy } from "lodash-es";
 import { storeToRefs } from "pinia";
 
-import { CriteriumResultStatus, CriterionResultUserImpact } from "../types";
+import {
+  CriteriumResultStatus,
+  CriterionResultUserImpact,
+  CriteriumResult,
+} from "../types";
 import { useResultsStore } from "../store";
 
 // TODO: get pagesCount directly from the store
@@ -25,25 +29,34 @@ export function useAuditStats(pagesCount: number | undefined) {
       ).filter((r) => r !== pagesCount).length
   );
 
-  // FIXME: calculate compliance by dedoubling criteria (compliance accross all pages)
   const complianceLevel = computed(() => {
-    const testedCount =
-      store.allResults?.filter(
-        (result) =>
-          result.status !== CriteriumResultStatus.NOT_TESTED &&
-          result.status !== CriteriumResultStatus.NOT_APPLICABLE
-      ).length ?? 0;
+    const groupedCriteria =
+      store.allResults?.reduce<Record<string, CriteriumResult[]>>((acc, c) => {
+        const key = `${c.topic}.${c.criterium}`;
+        if (acc[key]) {
+          acc[key].push(c);
+        } else {
+          acc[key] = [c];
+        }
+        return acc;
+      }, {}) || {};
 
-    const compliantCount =
-      store.allResults?.filter(
-        (result) => result.status === CriteriumResultStatus.COMPLIANT
-      ).length ?? 0;
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) =>
+        criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+    );
 
-    if (testedCount === 0) {
-      return 0;
-    }
+    const compliantCriteria = applicableCriteria.filter((criteria) =>
+      criteria.every(
+        (c) =>
+          c.status === CriteriumResultStatus.COMPLIANT ||
+          c.status === CriteriumResultStatus.NOT_APPLICABLE
+      )
+    );
 
-    return Math.round((compliantCount / testedCount) * 100);
+    return Math.round(
+      (compliantCriteria.length / applicableCriteria.length) * 100
+    );
   });
 
   const risk = computed(() => {
