@@ -225,8 +225,19 @@ function hideCopyAlert() {
             v-for="(env, i) in report.data.context.desktopEnvironments"
             :key="i"
           >
-            Sur ordinateur avec {{ env.browser }} et
+            Sur ordinateur {{ env.operatingSystem }}
+            <template v-if="env.operatingSystemVersion">{{
+              env.operatingSystemVersion
+            }}</template>
+            avec {{ env.browser }}
+            <template v-if="env.browserVersion">{{
+              env.browserVersion
+            }}</template>
+            et
             {{ env.assistiveTechnology }}
+            <template v-if="env.assistiveTechnologyVersion">{{
+              env.assistiveTechnologyVersion
+            }}</template>
           </li>
         </template>
         <template v-if="report.data.context.mobileEnvironments.length">
@@ -234,8 +245,19 @@ function hideCopyAlert() {
             v-for="(env, i) in report.data.context.mobileEnvironments"
             :key="i"
           >
-            Sur mobile avec {{ env.browser }} et
+            Sur mobile {{ env.operatingSystem }}
+            <template v-if="env.operatingSystemVersion">{{
+              env.operatingSystemVersion
+            }}</template>
+            avec {{ env.browser }}
+            <template v-if="env.browserVersion">{{
+              env.browserVersion
+            }}</template>
+            et
             {{ env.assistiveTechnology }}
+            <template v-if="env.assistiveTechnologyVersion">{{
+              env.assistiveTechnologyVersion
+            }}</template>
           </li>
         </template>
       </ul>

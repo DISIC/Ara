@@ -213,9 +213,33 @@ export class AuditService {
               deleteMany: {
                 OR: [
                   {
+                    platform: {
+                      notIn: data.environments.map((e) => e.platform),
+                    },
+                  },
+                  {
+                    operatingSystem: {
+                      notIn: data.environments.map((e) => e.operatingSystem),
+                    },
+                  },
+                  {
+                    operatingSystemVersion: {
+                      notIn: data.environments.map(
+                        (e) => e.operatingSystemVersion,
+                      ),
+                    },
+                  },
+                  {
                     assistiveTechnology: {
                       notIn: data.environments.map(
                         (e) => e.assistiveTechnology,
+                      ),
+                    },
+                  },
+                  {
+                    assistiveTechnologyVersion: {
+                      notIn: data.environments.map(
+                        (e) => e.assistiveTechnologyVersion,
                       ),
                     },
                   },
@@ -225,20 +249,27 @@ export class AuditService {
                     },
                   },
                   {
-                    platform: {
-                      notIn: data.environments.map((e) => e.platform),
+                    browserVersion: {
+                      notIn: data.environments.map((e) => e.browserVersion),
                     },
                   },
                 ],
               },
               upsert: data.environments.map((environment) => ({
                 where: {
-                  platform_assistiveTechnology_browser_auditUniqueId: {
-                    auditUniqueId: uniqueId,
-                    assistiveTechnology: environment.assistiveTechnology,
-                    browser: environment.browser,
-                    platform: environment.platform,
-                  },
+                  platform_operatingSystem_operatingSystemVersion_assistiveTechnology_assistiveTechnologyVersion_browser_browserVersion_auditUniqueId:
+                    {
+                      auditUniqueId: uniqueId,
+                      platform: environment.platform,
+                      operatingSystem: environment.operatingSystem,
+                      operatingSystemVersion:
+                        environment.operatingSystemVersion,
+                      assistiveTechnology: environment.assistiveTechnology,
+                      assistiveTechnologyVersion:
+                        environment.assistiveTechnologyVersion,
+                      browser: environment.browser,
+                      browserVersion: environment.browserVersion,
+                    },
                 },
                 create: environment,
                 update: environment,
@@ -498,16 +529,22 @@ export class AuditService {
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({
+            operatingSystem: e.operatingSystem,
+            operatingSystemVersion: e.operatingSystemVersion,
             assistiveTechnology: e.assistiveTechnology,
+            assistiveTechnologyVersion: e.assistiveTechnologyVersion,
             browser: e.browser,
-            os: 'Windows 11',
+            browserVersion: e.browserVersion,
           })),
         mobileEnvironments: audit.environments
           .filter((e) => e.platform === 'mobile')
           .map((e) => ({
+            operatingSystem: e.operatingSystem,
+            operatingSystemVersion: e.operatingSystemVersion,
             assistiveTechnology: e.assistiveTechnology,
+            assistiveTechnologyVersion: e.assistiveTechnologyVersion,
             browser: e.browser,
-            os: 'Android 12',
+            browserVersion: e.browserVersion,
           })),
         referencial: 'RGAA Version 4.1',
         samples: audit.pages.map((p, i) => ({

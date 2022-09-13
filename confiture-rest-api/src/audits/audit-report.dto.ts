@@ -147,17 +147,34 @@ class Tool {
 
 class Environment {
   /**
-   * @example "NVDA 2020.1"
+   * @example "Windows"
+   */
+  operatingSystem: string;
+
+  /**
+   * @example "11"
+   */
+  operatingSystemVersion: string;
+
+  /**
+   * @example "JAWS"
    */
   assistiveTechnology: string;
+
+  /**
+   * @example "14.2"
+   */
+  assistiveTechnologyVersion: string;
+
   /**
    * @example "Firefox"
    */
   browser: string;
+
   /**
-   * @example "Windows 11"
+   * @example "104"
    */
-  os: string;
+  browserVersion: string;
 }
 
 class ReportCriterionResult {

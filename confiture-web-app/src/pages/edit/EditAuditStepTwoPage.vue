@@ -9,7 +9,13 @@ import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAuditStore } from "../../store";
-import { AuditType } from "../../types";
+import { AuditType, AuditEnvironment } from "../../types";
+import {
+  PLATFORM,
+  OPERATING_SYSTEM,
+  ASSISTIVE_TECHNOLOGY,
+  BROWSERS,
+} from "../../enums";
 
 const router = useRouter();
 const route = useRoute();
@@ -94,20 +100,54 @@ const availableTools = [
     url: "https://trace.umd.edu/peat/",
   },
 ];
-const availableAT = [
-  "NVDA (dernière version)",
-  "JAWS (dernière version)",
-  "VoiceOver (dernière version)",
-  "NVDA (version précédente)",
-  "JAWS (version précédente)",
-  "VoiceOver (version précédente)",
-];
-const availableBrowsers = [
-  "Firefox",
-  "Google Chrome",
-  "Microsoft Edge",
-  "Safari",
-];
+
+function availableOs(platform: string) {
+  switch (platform) {
+    case PLATFORM.DESKTOP:
+      return [OPERATING_SYSTEM.WINDOWS, OPERATING_SYSTEM.MAC_OS];
+    case PLATFORM.MOBILE:
+      return [OPERATING_SYSTEM.ANDROID, OPERATING_SYSTEM.I_OS];
+  }
+}
+
+function availableAT(os: string) {
+  switch (os) {
+    case OPERATING_SYSTEM.WINDOWS:
+      return [ASSISTIVE_TECHNOLOGY.NVDA, ASSISTIVE_TECHNOLOGY.JAWS];
+    case OPERATING_SYSTEM.MAC_OS:
+    case OPERATING_SYSTEM.I_OS:
+      return [ASSISTIVE_TECHNOLOGY.VOICE_OVER];
+    case OPERATING_SYSTEM.ANDROID:
+      return [ASSISTIVE_TECHNOLOGY.TALKBACK];
+    default:
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
+  }
+}
+
+function availableBrowsers(os: string) {
+  switch (os) {
+    case OPERATING_SYSTEM.WINDOWS:
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
+    case OPERATING_SYSTEM.MAC_OS:
+      return [
+        BROWSERS.FIREFOX,
+        BROWSERS.CHROME,
+        BROWSERS.EDGE,
+        BROWSERS.SAFARI,
+      ];
+    case OPERATING_SYSTEM.I_OS:
+      return [BROWSERS.SAFARI, BROWSERS.CHROME];
+    case OPERATING_SYSTEM.ANDROID:
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME];
+    default:
+      return [
+        BROWSERS.FIREFOX,
+        BROWSERS.CHROME,
+        BROWSERS.EDGE,
+        BROWSERS.SAFARI,
+      ];
+  }
+}
 
 const auditType = ref<AuditType | null>(null);
 const defaultTools = ref<
@@ -139,8 +179,12 @@ const pages = ref([
 const environments = ref([
   {
     platform: "",
+    operatingSystem: "",
+    operatingSystemVersion: "",
     assistiveTechnology: "",
+    assistiveTechnologyVersion: "",
     browser: "",
+    browserVersion: "",
   },
 ]);
 const notCompliantContent = ref("");
@@ -206,8 +250,12 @@ watch(
       : [
           {
             platform: "",
+            operatingSystem: "",
+            operatingSystemVersion: "",
             assistiveTechnology: "",
+            assistiveTechnologyVersion: "",
             browser: "",
+            browserVersion: "",
           },
         ];
     // TODO: prefill values
@@ -273,8 +321,12 @@ async function deletePage(i: number) {
 async function addEnvironment() {
   environments.value.push({
     platform: "",
+    operatingSystem: "",
+    operatingSystemVersion: "",
     assistiveTechnology: "",
+    assistiveTechnologyVersion: "",
     browser: "",
+    browserVersion: "",
   });
   await nextTick();
   const lastInput = envSupportRefs.value[envSupportRefs.value.length - 1];
@@ -291,6 +343,30 @@ async function deleteEnvironment(i: number) {
   const previousInput =
     i === 0 ? envSupportRefs.value[0] : envSupportRefs.value[i - 1];
   previousInput.focus();
+}
+
+const forceShowEnvFields = ref(false);
+
+async function onPlatformChange(env: Omit<AuditEnvironment, "id">) {
+  if (!env.operatingSystem && !env.browser && !env.assistiveTechnology) return;
+
+  if (env.operatingSystem && env.browser && env.assistiveTechnology) {
+    forceShowEnvFields.value = true;
+  }
+  if (env.operatingSystem) env.operatingSystem = "";
+  if (env.assistiveTechnology) env.assistiveTechnology = "";
+  if (env.browser) env.browser = "";
+}
+
+async function onOsChange(env: Omit<AuditEnvironment, "id">) {
+  if (!env.browser && !env.assistiveTechnology) return;
+
+  if (env.browser && env.assistiveTechnology) {
+    forceShowEnvFields.value = true;
+  }
+
+  if (env.assistiveTechnology) env.assistiveTechnology = "";
+  if (env.browser) env.browser = "";
 }
 
 const notify = useNotifications();
@@ -358,14 +434,22 @@ function fillFields() {
   ];
   environments.value = [
     {
-      platform: "desktop",
-      assistiveTechnology: "VoiceOver (version précédente)",
-      browser: "Microsoft Edge",
+      platform: PLATFORM.DESKTOP,
+      operatingSystem: OPERATING_SYSTEM.WINDOWS,
+      operatingSystemVersion: "11",
+      assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+      assistiveTechnologyVersion: "",
+      browser: BROWSERS.FIREFOX,
+      browserVersion: "104",
     },
     {
-      platform: "mobile",
-      assistiveTechnology: "NVDA (dernière version)",
-      browser: "Google Chrome",
+      platform: PLATFORM.DESKTOP,
+      operatingSystem: OPERATING_SYSTEM.MAC_OS,
+      operatingSystemVersion: "12.5",
+      assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+      assistiveTechnologyVersion: "",
+      browser: BROWSERS.SAFARI,
+      browserVersion: "15.6",
     },
   ];
   pages.value = [
@@ -566,10 +650,11 @@ function fillFields() {
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  value="desktop"
+                  :value="PLATFORM.DESKTOP"
+                  @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-desktop-${i}`"
-                  >Desktop</label
+                  >Ordinateur</label
                 >
               </div>
               <div class="fr-radio-group">
@@ -578,7 +663,8 @@ function fillFields() {
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  value="mobile"
+                  :value="PLATFORM.MOBILE"
+                  @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-mobile-${i}`"
                   >Mobile</label
@@ -588,6 +674,45 @@ function fillFields() {
           </fieldset>
         </div>
         <div v-if="env.platform" class="fr-select-group">
+          <label class="fr-label" :for="`env-os-${i}`">
+            Logiciel d’exploitation
+          </label>
+          <select
+            :id="`env-os-${i}`"
+            v-model="env.operatingSystem"
+            class="fr-select"
+            @change="onOsChange(environments[i])"
+          >
+            <option value="" selected disabled hidden>
+              Selectionnez une option
+            </option>
+            <option
+              v-for="os in availableOs(env.platform)"
+              :key="os"
+              :value="os"
+            >
+              {{ os }}
+            </option>
+          </select>
+        </div>
+        <div
+          v-if="env.operatingSystem || forceShowEnvFields"
+          class="fr-input-group"
+        >
+          <label class="fr-label" :for="`env-os-version-${i}`">
+            Version du logiciel d’exploitation (optionnel)
+          </label>
+          <input
+            :id="`env-os-version-${i}`"
+            v-model="env.operatingSystemVersion"
+            class="fr-input"
+          />
+        </div>
+
+        <div
+          v-if="env.operatingSystem || forceShowEnvFields"
+          class="fr-select-group"
+        >
           <label class="fr-label" :for="`env-at-${i}`">
             Technologie d’assistance
           </label>
@@ -599,13 +724,34 @@ function fillFields() {
             <option value="" selected disabled hidden>
               Selectionnez une option
             </option>
-            <option v-for="at in availableAT" :key="at" :value="at">
+            <option
+              v-for="at in availableAT(env.operatingSystem)"
+              :key="at"
+              :value="at"
+            >
               {{ at }}
             </option>
           </select>
         </div>
-        <div v-if="env.assistiveTechnology" class="fr-select-group">
-          <label class="fr-label" :for="`env-browser-${i}`">Navigateur</label>
+        <div
+          v-if="env.assistiveTechnology || forceShowEnvFields"
+          class="fr-input-group"
+        >
+          <label class="fr-label" :for="`env-at-version-${i}`">
+            Version de la technologie d’assistance (optionnel)
+          </label>
+          <input
+            :id="`env-at-version-${i}`"
+            v-model="env.assistiveTechnologyVersion"
+            class="fr-input"
+          />
+        </div>
+
+        <div
+          v-if="env.assistiveTechnology || forceShowEnvFields"
+          class="fr-select-group"
+        >
+          <label class="fr-label" :for="`env-browser-${i}`"> Navigateur </label>
           <select
             :id="`env-browser-${i}`"
             v-model="env.browser"
@@ -615,13 +761,23 @@ function fillFields() {
               Selectionnez une option
             </option>
             <option
-              v-for="browser in availableBrowsers"
+              v-for="browser in availableBrowsers(env.operatingSystem)"
               :key="browser"
               :value="browser"
             >
               {{ browser }}
             </option>
           </select>
+        </div>
+        <div v-if="env.browser || forceShowEnvFields" class="fr-input-group">
+          <label class="fr-label" :for="`env-browser-version-${i}`">
+            Version du navigateur (optionnel)
+          </label>
+          <input
+            :id="`env-browser-version-${i}`"
+            v-model="env.browserVersion"
+            class="fr-input"
+          />
         </div>
       </fieldset>
       <button

@@ -22,7 +22,6 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
  * - technologies
  * - derogated content
  * - tools function
- * - environment OS
  */
 </script>
 
@@ -229,64 +228,100 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       conformément aux environnements de test suivants :
     </p>
 
-    <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Ordinateur</h3>
+    <template v-if="report.data.context.desktopEnvironments.length">
+      <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Ordinateur</h3>
 
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-      <table>
-        <caption>
-          Environnements de test sur ordinateur
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Technologie d’assistance</th>
-            <th scope="col">Navigateur</th>
-            <th scope="col">Système d’exploitation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(env, i) in report.data.context.desktopEnvironments"
-            :key="i"
-          >
-            <td>{{ env.assistiveTechnology }}</td>
-            <td>{{ env.browser }}</td>
-            <td>{{ env.os }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
+        <table>
+          <caption>
+            Environnements de test sur ordinateur
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Technologie d’assistance</th>
+              <th scope="col">Navigateur</th>
+              <th scope="col">Système d’exploitation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(env, i) in report.data.context.desktopEnvironments"
+              :key="i"
+            >
+              <td>
+                {{ env.assistiveTechnology }}
+                <template v-if="env.assistiveTechnologyVersion">{{
+                  env.assistiveTechnologyVersion
+                }}</template>
+              </td>
+              <td>
+                {{ env.browser }}
+                <template v-if="env.browserVersion">{{
+                  env.browserVersion
+                }}</template>
+              </td>
+              <td>
+                {{ env.operatingSystem }}
+                <template v-if="env.operatingSystemVersion">{{
+                  env.operatingSystemVersion
+                }}</template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
 
-    <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Mobile</h3>
+    <template v-if="report.data.context.mobileEnvironments.length">
+      <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Mobile</h3>
 
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-      <table>
-        <caption>
-          Environnements de test sur mobile
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Technologie d’assistance</th>
-            <th scope="col">Navigateur</th>
-            <th scope="col">Système d’exploitation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(env, i) in report.data.context.mobileEnvironments"
-            :key="i"
-          >
-            <td>{{ env.assistiveTechnology }}</td>
-            <td>{{ env.browser }}</td>
-            <td>{{ env.os }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
+        <table>
+          <caption>
+            Environnements de test sur mobile
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Technologie d’assistance</th>
+              <th scope="col">Navigateur</th>
+              <th scope="col">Système d’exploitation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(env, i) in report.data.context.mobileEnvironments"
+              :key="i"
+            >
+              <td>
+                {{ env.assistiveTechnology }}
+                <template v-if="env.assistiveTechnologyVersion">{{
+                  env.assistiveTechnologyVersion
+                }}</template>
+              </td>
+              <td>
+                {{ env.browser }}
+                <template v-if="env.browserVersion">
+                  {{ env.browserVersion }}
+                </template>
+              </td>
+              <td>
+                {{ env.operatingSystem }}
+                <template v-if="env.operatingSystemVersion">{{
+                  env.operatingSystemVersion
+                }}</template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
 
-    <!-- TODO: link destination -->
     <p>
-      <RouterLink to="#" target="_blank" class="fr-link"
-        >Plus d’information sur l’environnement de test</RouterLink
+      <a
+        href="https://accessibilite.numerique.gouv.fr/methode/environnement-de-test/"
+        target="_blank"
+        class="fr-link"
+        >Plus d’information sur l’environnement de test</a
       >
     </p>
 
