@@ -36,45 +36,62 @@ const availableAuditTypes = [
 const availableTools = [
   {
     name: "Web Accessibility Toolbar",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Barre d’outils Firefox ou Chrome qui peut aider à retrouver visuellement certains éléments dans un document pour en contrôler l’accessibilité",
+    url: "https://chrome.google.com/webstore/detail/web-developer/bfbameneiokkgbdmiekhjnmfkcnldhhm?hl=fr",
   },
   {
     name: "Validateur en ligne W3C",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Outils en ligne permettant de détecter des erreurs dans le code source d’un document HTML",
+    url: "https://validator.w3.org/nu/",
   },
   {
     name: "WCAG Contrast checker",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Extension Firefox qui permet un contrôle automatique des contrastes de couleurs les textes d’un document",
+    url: "https://addons.mozilla.org/fr/firefox/addon/wcag-contrast-checker/",
   },
   {
     name: "Color Contrast Analyser",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Application Windows ou Mac qui permet de contrôler des contrastes de couleurs",
+    url: "https://www.tpgi.com/color-contrast-checker/",
   },
-  { name: "HeadingsMap", function: "todo", url: "https://example.com" },
+  {
+    name: "HeadingsMap",
+    function:
+      "Extension Firefox ou Chrome qui permet de donner un aperçu du plan du document et de son arborescence",
+    url: "https://addons.mozilla.org/fr/firefox/addon/headingsmap/",
+  },
   {
     name: "PAC (PDF Accessibility Checker)",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Logiciel Windows qui permet de contrôler certains points d’accessibilité des documents PDF",
+    url: "https://pdfua.foundation/fr/pdf-accessibility-checker-pac",
   },
   {
     name: "Word Accessibility Plug-in pour Microsoft Office Windows",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Fonctionnalité intégrée à Microsoft Office permettant de valider l’accessibilité d’un document",
+    url: "https://support.microsoft.com/fr-fr/office/rendre-vos-documents-word-accessibles-aux-personnes-atteintes-d-un-handicap-d9bf3683-87ac-47ea-b91a-78dcacb3c66d",
   },
   {
     name: "AccessODF pour LibreOffice",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Extension LibreOffice permettant de vérifier l’accessibilité d’un document LibreOffice Writer ; à noter que cette extension n’est plus compatible avec les dernières versions de LibreOffice (supérieures à la version 4.0)",
+    url: "https://extensions.libreoffice.org/en/extensions/show/accessodf",
   },
-  { name: "Ace by DAISY App", function: "todo", url: "https://example.com" },
+  {
+    name: "Ace by DAISY App",
+    function: "Utilitaire pour vérifier l’accessibilité d’un fichier EPUB",
+    url: "https://inclusivepublishing.org/toolbox/ace-by-daisy-app/",
+  },
   {
     name: "PEAT (Photosensitive Epilepsy Analysis Tool)",
-    function: "todo",
-    url: "https://example.com",
+    function:
+      "Logiciel pour évaluer la potentialité de certains contenus web à causer des crises d’épilepsie",
+    url: "https://trace.umd.edu/peat/",
   },
 ];
 const availableAT = [
