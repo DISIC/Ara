@@ -34,7 +34,6 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     <h1 class="fr-mb-3w fr-mb-md-9v">Contexte de l’audit</h1>
     <h2 class="fr-mb-2w fr-mb-md-3w">Introduction</h2>
     <!-- FIXME: different wording per auditType? -->
-    <!-- TODO: link destination -->
     <p>
       Cet audit est un
       <strong
@@ -43,7 +42,12 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       >, l’intégralité des critères du RGAA (<strong
         >{{ getCriteriaCount(report.data.auditType) }} critères</strong
       >) ont été appliqués sur l’ensemble des pages défini préalablement comme
-      <RouterLink to="#" class="fr-link">échantillon</RouterLink>.
+      <a
+        href="https://accessibilite.numerique.gouv.fr/obligations/evaluation-conformite/#echantillon"
+        target="_blank"
+        class="fr-link"
+        >échantillon</a
+      >.
     </p>
     <p>
       Cet audit <strong>liste chaque type d’erreur</strong> rencontré
@@ -86,7 +90,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       <strong>{{ report.data.context.auditorName }}</strong
       >. Pour toute questions relative à cet audit, vous pouvez contacter
       l’auditeur par e-mail à l’adresse suivante :
-      <strong>{{ report.data.context.auditorEmail }}</strong>.
+      <strong>{{ report.data.context.auditorEmail }}</strong
+      >.
     </p>
 
     <h2 class="fr-mb-2w fr-mb-md-3w">Méthodologie et référentiel</h2>
@@ -158,7 +163,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     </p>
 
     <ul class="fr-mb-2w">
-      <li>Aucun contenu n’est dérogés dans cet audit</li>
+      <li>Aucun contenu n’est dérogé dans cet audit</li>
     </ul>
 
     <!-- TODO: link destination -->
