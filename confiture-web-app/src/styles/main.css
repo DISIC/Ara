@@ -14,3 +14,8 @@
   transition: none !important;
   animation: none !important;
 }
+
+/* Prevent textareas inside accordion to be horizontally resized */
+.fr-accordion textarea.fr-input {
+  resize: vertical;
+}
