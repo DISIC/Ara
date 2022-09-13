@@ -10,6 +10,12 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAuditStore } from "../../store";
 import { AuditType, AuditEnvironment } from "../../types";
+import {
+  PLATFORM,
+  OPERATING_SYSTEM,
+  ASSISTIVE_TECHNOLOGY,
+  BROWSERS,
+} from "../../enums";
 
 const router = useRouter();
 const route = useRoute();
@@ -80,39 +86,49 @@ const availableTools = [
 
 function availableOs(platform: string) {
   switch (platform) {
-    case "desktop":
-      return ["Windows", "MacOS"];
-    case "mobile":
-      return ["Android", "iOS"];
+    case PLATFORM.DESKTOP:
+      return [OPERATING_SYSTEM.WINDOWS, OPERATING_SYSTEM.MAC_OS];
+    case PLATFORM.MOBILE:
+      return [OPERATING_SYSTEM.ANDROID, OPERATING_SYSTEM.I_OS];
   }
 }
 
 function availableAT(os: string) {
   switch (os) {
-    case "Windows":
-      return ["NVDA", "JAWS"];
-    case "MacOS":
-    case "iOS":
-      return ["VoiceOver"];
-    case "Android":
-      return ["Talkback"];
+    case OPERATING_SYSTEM.WINDOWS:
+      return [ASSISTIVE_TECHNOLOGY.NVDA, ASSISTIVE_TECHNOLOGY.JAWS];
+    case OPERATING_SYSTEM.MAC_OS:
+    case OPERATING_SYSTEM.I_OS:
+      return [ASSISTIVE_TECHNOLOGY.VOICE_OVER];
+    case OPERATING_SYSTEM.ANDROID:
+      return [ASSISTIVE_TECHNOLOGY.TALKBACK];
     default:
-      return ["Firefox", "Google Chrome", "Microsoft Edge"];
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
   }
 }
 
 function availableBrowsers(os: string) {
   switch (os) {
-    case "Windows":
-      return ["Firefox", "Google Chrome", "Microsoft Edge"];
-    case "MacOS":
-      return ["Firefox", "Google Chrome", "Microsoft Edge", "Safari"];
-    case "iOS":
-      return ["Safari", "Google Chrome"];
-    case "Android":
-      return ["Firefox", "Google Chrome"];
+    case OPERATING_SYSTEM.WINDOWS:
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
+    case OPERATING_SYSTEM.MAC_OS:
+      return [
+        BROWSERS.FIREFOX,
+        BROWSERS.CHROME,
+        BROWSERS.EDGE,
+        BROWSERS.SAFARI,
+      ];
+    case OPERATING_SYSTEM.I_OS:
+      return [BROWSERS.SAFARI, BROWSERS.CHROME];
+    case OPERATING_SYSTEM.ANDROID:
+      return [BROWSERS.FIREFOX, BROWSERS.CHROME];
     default:
-      return ["Firefox", "Google Chrome", "Microsoft Edge", "Safari"];
+      return [
+        BROWSERS.FIREFOX,
+        BROWSERS.CHROME,
+        BROWSERS.EDGE,
+        BROWSERS.SAFARI,
+      ];
   }
 }
 
@@ -401,21 +417,21 @@ function fillFields() {
   ];
   environments.value = [
     {
-      platform: "desktop",
-      operatingSystem: "Windows",
+      platform: PLATFORM.DESKTOP,
+      operatingSystem: OPERATING_SYSTEM.WINDOWS,
       operatingSystemVersion: "11",
-      assistiveTechnology: "NVDA",
+      assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
       assistiveTechnologyVersion: "",
-      browser: "Firefox",
+      browser: BROWSERS.FIREFOX,
       browserVersion: "104",
     },
     {
-      platform: "desktop",
-      operatingSystem: "MacOS",
+      platform: PLATFORM.DESKTOP,
+      operatingSystem: OPERATING_SYSTEM.MAC_OS,
       operatingSystemVersion: "12.5",
-      assistiveTechnology: "VoiceOver",
+      assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
       assistiveTechnologyVersion: "",
-      browser: "Safari",
+      browser: BROWSERS.SAFARI,
       browserVersion: "15.6",
     },
   ];
@@ -617,11 +633,11 @@ function fillFields() {
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  value="desktop"
+                  :value="PLATFORM.DESKTOP"
                   @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-desktop-${i}`"
-                  >Desktop</label
+                  >Ordinateur</label
                 >
               </div>
               <div class="fr-radio-group">
@@ -630,7 +646,7 @@ function fillFields() {
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  value="mobile"
+                  :value="PLATFORM.MOBILE"
                   @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-mobile-${i}`"
