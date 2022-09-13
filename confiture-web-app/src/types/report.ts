@@ -94,7 +94,10 @@ interface Tool {
 }
 
 interface Environment {
+  operatingSystem: string;
+  operatingSystemVersion?: string;
   assistiveTechnology: string;
+  assistiveTechnologyVersion?: string;
   browser: string;
-  os: string;
+  browserVersion?: string;
 }
