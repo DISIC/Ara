@@ -6,6 +6,7 @@ import { useReportStore } from "../../store";
 import { formatAuditType, getCriteriaCount } from "../../utils";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
+import { AuditType } from "../../types";
 
 const report = useReportStore();
 
@@ -33,15 +34,20 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     />
     <h1 class="fr-mb-3w fr-mb-md-9v">Contexte de l’audit</h1>
     <h2 class="fr-mb-2w fr-mb-md-3w">Introduction</h2>
-    <!-- FIXME: different wording per auditType? -->
     <p>
-      Cet audit est un
-      <strong
-        >audit
-        {{ formatAuditType(report.data.auditType).toLowerCase() }}</strong
-      >, l’intégralité des critères du RGAA (<strong
-        >{{ getCriteriaCount(report.data.auditType) }} critères</strong
-      >) ont été appliqués sur l’ensemble des pages défini préalablement comme
+      Cet audit est un audit
+      <strong>{{ formatAuditType(report.data.auditType).toLowerCase() }}</strong
+      >,
+      {{
+        report.data.auditType === AuditType.FULL
+          ? "l’intégralité"
+          : "une partie"
+      }}
+      des critères du RGAA (<strong>{{
+        getCriteriaCount(report.data.auditType)
+      }}</strong>
+      critères) ont été appliqués sur l’ensemble des pages défini préalablement
+      comme
       <a
         href="https://accessibilite.numerique.gouv.fr/obligations/evaluation-conformite/#echantillon"
         target="_blank"
@@ -49,6 +55,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         >échantillon</a
       >.
     </p>
+
     <p>
       Cet audit <strong>liste chaque type d’erreur</strong> rencontré
       (non-conformité) dans les pages de l’échantillon et

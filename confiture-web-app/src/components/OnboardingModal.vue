@@ -31,7 +31,7 @@ const steps = computed(() => [
     title: "Bienvenue sur votre rapport d’audit",
     subTitle: "",
     // FIXME: different wording when accessibility rate is low ?
-    text: `Wow ! Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, ce qui est super mais on peut faire encore mieux ! Et pour ça nous allons vous aider.`,
+    text: `Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, on peut faire encore mieux et pour ça nous allons vous aider !`,
     illustration: `url(${uploadIllustration})`,
   },
   {
