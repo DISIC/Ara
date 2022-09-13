@@ -26,7 +26,9 @@ const stats = computed(() => {
         report.data!.blockingErrorCount
       } bloquantes pour l’usager`,
       value: report.data!.errorCount,
-      total: 200, // TODO
+      // FIXME: to confirm : error count is out of every criteria or only applicable criteria
+      total:
+        report.data!.totalCriteriaCount * report.data!.context.samples.length,
       danger: true,
     },
     {

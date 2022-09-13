@@ -2,24 +2,22 @@ import { Injectable } from '@nestjs/common';
 import {
   Audit,
   AuditedPage,
-  AuditType,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
-  Tool,
-  PrismaPromise,
   TestEnvironment,
+  Tool,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
+import * as RGAA from '../rgaa.json';
 import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
-import { CRITERIA } from './criteria';
-import { UpdateAuditDto, UpdateAuditPage } from './update-audit.dto';
+import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
+import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
-import * as RGAA from '../rgaa.json';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -88,22 +86,28 @@ export class AuditService {
   async getResultsWithEditUniqueId(
     uniqueId: string,
   ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
-    const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId },
-    });
-
-    const existingResults = await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          auditUniqueId: uniqueId,
+    const [audit, pages, existingResults] = await Promise.all([
+      this.prisma.audit.findUnique({
+        where: {
+          editUniqueId: uniqueId,
         },
-      },
-    });
+      }),
+      this.prisma.auditedPage.findMany({
+        where: { auditUniqueId: uniqueId },
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: uniqueId,
+          },
+        },
+      }),
+    ]);
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
     return pages.flatMap((page) =>
-      CRITERIA.map((criterion) => {
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
             result.pageUrl === page.url &&
@@ -451,6 +455,12 @@ export class AuditService {
     const results = await this.prisma.criterionResult.findMany({
       where: {
         auditUniqueId: audit.editUniqueId,
+        criterium: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+        },
+        topic: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
+        },
       },
     });
 
@@ -484,6 +494,8 @@ export class AuditService {
       (compliantCriteria.length / applicableCriteria.length) * 100,
     );
 
+    const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
+
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
 
@@ -510,13 +522,7 @@ export class AuditService {
           r.userImpact === CriterionResultUserImpact.BLOCKING,
       ).length,
 
-      // TODO: take audit type into account in generation steps
-      // totalCriteriaCount: {
-      //   [AuditType.FULL]: 106,
-      //   [AuditType.COMPLEMENTARY]: 50,
-      //   [AuditType.FAST]: 25,
-      // }[audit.auditType],
-      totalCriteriaCount: 106,
+      totalCriteriaCount,
 
       applicableCriteriaCount: applicableCriteria.length,
 
@@ -561,7 +567,6 @@ export class AuditService {
       },
 
       // TODO: should the distribution be calculated by criteria accross all pages or individually ?
-      // TODO: update total criteria count for percentages (106)
       pageDistributions: audit.pages.map((p) => ({
         name: p.name,
         compliant: {
@@ -576,7 +581,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.COMPLIANT,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
         notApplicable: {
@@ -591,7 +596,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
         notCompliant: {
@@ -606,7 +611,7 @@ export class AuditService {
                 r.pageUrl === p.url &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
-              106) *
+              totalCriteriaCount) *
             100,
         },
       })),
@@ -646,54 +651,59 @@ export class AuditService {
         },
       },
 
-      topicDistributions: RGAA.topics.map((t) => ({
-        name: t.topic,
-        compliant: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.COMPLIANT,
-          ).length,
-          percentage:
-            (results.filter(
+      topicDistributions: RGAA.topics
+        .map((t) => ({
+          name: t.topic,
+          compliant: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.COMPLIANT,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-        notApplicable: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.NOT_APPLICABLE,
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.COMPLIANT,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+          notApplicable: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-        notCompliant: {
-          raw: results.filter(
-            (r) =>
-              r.topic === t.number &&
-              r.status === CriterionResultStatus.NOT_COMPLIANT,
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.NOT_APPLICABLE,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+          notCompliant: {
+            raw: results.filter(
               (r) =>
                 r.topic === t.number &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
-            ).length /
-              results.filter((r) => r.topic === t.number).length) *
-            100,
-        },
-      })),
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.topic === t.number &&
+                  r.status === CriterionResultStatus.NOT_COMPLIANT,
+              ).length /
+                results.filter((r) => r.topic === t.number).length) *
+              100,
+          },
+        }))
+        // remove empty topics (for fast and complementary audits)
+        .filter(
+          (t) => t.compliant.raw + t.notApplicable.raw + t.notCompliant.raw > 0,
+        ),
 
       results: results.map((r) => ({
         pageUrl: r.pageUrl,
@@ -714,13 +724,29 @@ export class AuditService {
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const notTestedCount = await this.prisma.criterionResult.count({
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: { pages: true },
+    });
+
+    const testedCount = await this.prisma.criterionResult.count({
       where: {
         auditUniqueId: uniqueId,
-        status: CriterionResultStatus.NOT_TESTED,
+        criterium: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+        },
+        topic: {
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
+        },
+        status: {
+          not: CriterionResultStatus.NOT_TESTED,
+        },
       },
     });
 
-    return notTestedCount === 0;
+    const expectedCount =
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
+
+    return testedCount === expectedCount;
   }
 }

@@ -1,5 +1,5 @@
-import { AuditType } from '@prisma/client';
-import * as rgaa from '../rgaa.json';
+import rgaa from "./criteres.json";
+import { AuditType } from "./types";
 
 interface CriteriumId {
   topic: number;
@@ -10,7 +10,7 @@ export const CRITERIA = rgaa.topics.flatMap((topic) =>
   topic.criteria.map((c) => ({
     topic: topic.number,
     criterium: c.criterium.number,
-  })),
+  }))
 );
 
 /**
