@@ -456,6 +456,9 @@ export class AuditService {
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
 
+      contactFormUrl: audit.contactFormUrl,
+
+      procedureInitiator: audit.initiator,
       procedureName: audit.procedureName,
       procedureUrl: audit.procedureUrl,
       auditType: audit.auditType,

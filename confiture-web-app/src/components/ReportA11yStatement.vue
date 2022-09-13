@@ -126,14 +126,14 @@ function hideCopyAlert() {
     <div ref="statementRef" class="fr-p-6w statement-container">
       <h3 class="fr-h2">Déclaration d’accessibilité</h3>
       <p>
-        <strong>[Nom de l’entité]</strong> s’engage à rendre ses sites internet,
-        intranet, extranet et ses progiciels accessibles (et ses applications
-        mobiles et mobilier urbain numérique) conformément à l’article 47 de la
-        loi n°2005-102 du 11 février 2005.
+        <strong>{{ report.data.procedureInitiator }}</strong> s’engage à rendre
+        ses sites internet, intranet, extranet et ses progiciels accessibles (et
+        ses applications mobiles et mobilier urbain numérique) conformément à
+        l’article 47 de la loi n°2005-102 du 11 février 2005.
       </p>
       <p>
-        À cette fin, <strong>[Nom de l’entité]</strong> met en œuvre la
-        stratégie et les actions suivantes :
+        À cette fin, <strong>{{ report.data.procedureInitiator }}</strong> met
+        en œuvre la stratégie et les actions suivantes :
       </p>
       <ul>
         <li>
@@ -164,7 +164,7 @@ function hideCopyAlert() {
       <h4 class="fr-h2">Résultats des tests</h4>
       <p>
         L’audit de conformité réalisé par
-        <strong>[nom de l’entité qui a réalisé l’audit]</strong> révèle que :
+        <strong>{{ report.data.procedureInitiator }}</strong> révèle que :
       </p>
       <ul class="fr-mb-9v fr-mb-md-6w">
         <li>
@@ -261,13 +261,13 @@ function hideCopyAlert() {
       </p>
       <ul class="fr-mb-9v fr-mb-md-6w">
         <li>
-          Envoyer un message <strong>[url du formulaire en ligne]</strong> ;
+          Envoyer un message <strong>{{ report.data.contactFormUrl }}</strong> ;
         </li>
         <li>
           Contacter
           <strong
-            >[Nom de l’entité responsable du service en ligne et
-            coordonnées]</strong
+            >{{ report.data.procedureInitiator }} :
+            {{ report.data.contactFormUrl }}</strong
           >.
         </li>
       </ul>
