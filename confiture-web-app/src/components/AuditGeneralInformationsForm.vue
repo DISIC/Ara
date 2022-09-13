@@ -323,7 +323,9 @@ const isDevMode = useDevMode();
       </button>
     </div>
 
-    <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
+    <div>
+      <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
+    </div>
   </form>
 </template>
 

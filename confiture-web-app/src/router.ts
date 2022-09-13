@@ -421,21 +421,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  console.log(
-    "🚀 ~ file: router.ts ~ line 425 ~ router.beforeEach ~ from.query.dev",
-    from.query.dev
-  );
   if (from.query.dev && !to.query.dev) {
     return {
-      name: to.name!,
-      params: to.params,
-      // query: {
-      //   ...to.query,
-      //   dev: "true",
-      // },
+      ...to,
       query: {
         ...to.query,
-        dev: "true",
+        dev: from.query.dev,
       },
     };
   }
