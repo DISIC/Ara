@@ -101,15 +101,19 @@ model Tool {
 }
 
 model TestEnvironment {
-  id                  Int    @id @default(autoincrement())
-  platform            String
-  assistiveTechnology String
-  browser             String
+  id                         Int     @id @default(autoincrement())
+  platform                   String
+  operatingSystem            String
+  operatingSystemVersion     String?
+  assistiveTechnology        String
+  assistiveTechnologyVersion String?
+  browser                    String
+  browserVersion             String?
 
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
 
-  @@unique([platform, assistiveTechnology, browser, auditUniqueId])
+  @@unique([platform, operatingSystem, operatingSystemVersion, assistiveTechnology, assistiveTechnologyVersion, browser, browserVersion, auditUniqueId])
 }
 
 model AuditedPage {
