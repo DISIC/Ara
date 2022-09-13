@@ -94,6 +94,12 @@ const headerInfos = computed(() => [
     description: "%",
   },
 ]);
+
+async function handleDevButtonClick() {
+  await resultsStore.DEV_fillResults(uniqueId);
+  // uncoment to make the button slightly less annoying to use
+  // window.scrollTo({ top: 0, behavior: "smooth" });
+}
 </script>
 
 <template>
@@ -172,6 +178,13 @@ const headerInfos = computed(() => [
         </div>
       </div>
     </div>
+
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline"
+      @click="handleDevButtonClick"
+    >
+      [DEV] Remplir l’audit
+    </button>
   </template>
 </template>
 

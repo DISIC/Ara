@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, ref, computed } from "vue";
+import { useDevMode } from "../composables/useDevMode";
 import { CreateAuditRequestData } from "../types";
 
 const props = defineProps<{
@@ -100,6 +101,8 @@ function onSubmit() {
     technologies: auditTechnologies.value,
   });
 }
+
+const isDevMode = useDevMode();
 </script>
 
 <template>
@@ -310,7 +313,7 @@ function onSubmit() {
       Ajouter un outil
     </button>
 
-    <div>
+    <div v-if="isDevMode">
       <button
         class="fr-btn fr-mt-6w fr-mr-2w"
         type="button"
@@ -320,7 +323,9 @@ function onSubmit() {
       </button>
     </div>
 
-    <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
+    <div>
+      <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
+    </div>
   </form>
 </template>
 

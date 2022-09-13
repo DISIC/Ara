@@ -8,6 +8,7 @@ import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import { useNotifications } from "../composables/useNotifications";
+import { useDevMode } from "../composables/useDevMode";
 
 defineProps<{
   auditName: string;
@@ -72,10 +73,12 @@ const uniqueId = route.params.uniqueId as string;
 
 const resultsStore = useResultsStore();
 const disableSubmission = computed(() => !resultsStore.everyCriteriumAreTested);
+
+const isDevMode = useDevMode();
 </script>
 
 <template>
-  <div v-if="!auditPublicationDate" class="fr-mb-4w">
+  <div v-if="!auditPublicationDate && isDevMode" class="fr-mb-4w">
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>

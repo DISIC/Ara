@@ -10,6 +10,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAuditStore } from "../../store";
 import { AuditType, AuditEnvironment } from "../../types";
+import { useDevMode } from "../../composables/useDevMode";
 import {
   PLATFORM,
   OPERATING_SYSTEM,
@@ -463,6 +464,8 @@ function fillFields() {
   notInScopeContent.value =
     "Magnam, consectetur dolorum excepturi, corporis enim pariatur illo eius, rerum inventore aliquam facere sunt voluptate totam asperiores porro dicta? Sit maiores neque esse iure labore illum dicta quaerat eius totam.";
 }
+
+const isDevMode = useDevMode();
 </script>
 
 <template>
@@ -892,7 +895,7 @@ function fillFields() {
       </div>
     </div>
 
-    <div>
+    <div v-if="isDevMode">
       <button
         class="fr-btn fr-mt-6w fr-mb-1w fr-mr-2w"
         type="button"
