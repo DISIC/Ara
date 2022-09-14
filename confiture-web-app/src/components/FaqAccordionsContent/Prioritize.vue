@@ -35,11 +35,14 @@
       l’usager
     </li>
     <li>
-      Les erreurs plus complexes à corriger avec un fort majeur et bloquant pour
+      Les erreurs plus complexes à corriger avec un impact majeur et bloquant pour
       l’usager
     </li>
     <li>
       Les erreurs facilement corrigeables avec un impact mineur pour l’usager
+    </li>
+     <li>
+      Les erreurs plus complexes à corriger avec un impact mineur pour l’usager
     </li>
   </ol>
 </template>
