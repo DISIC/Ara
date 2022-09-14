@@ -20,10 +20,10 @@
       >
     </li>
     <!-- TODO: what should be the link destination -->
-    <li>
+    <!-- <li>
       Auprès de la communauté Slack pour les agents de l’État et prestataire
       externes œuvrant pour l’accessibilité des services numériques publics.
       Rejoindre la communauté
-    </li>
+    </li> -->
   </ul>
 </template>
