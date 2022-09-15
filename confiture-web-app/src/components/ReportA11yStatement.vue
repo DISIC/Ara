@@ -64,12 +64,8 @@ function hideCopyAlert() {
 
 /**
  * Missing a lot of data:
- * - entity name (API)
  * - schéma pluriannuel + plan d'action url
  * - RGAA grid url
- * - contact name + email (API)
- * - contact form URL (API)
- * - derogated content
  */
 </script>
 
@@ -131,7 +127,7 @@ function hideCopyAlert() {
         ses applications mobiles et mobilier urbain numérique) conformément à
         l’article 47 de la loi n°2005-102 du 11 février 2005.
       </p>
-      <p>
+      <!-- <p>
         À cette fin, <strong>{{ report.data.procedureInitiator }}</strong> met
         en œuvre la stratégie et les actions suivantes :
       </p>
@@ -142,7 +138,7 @@ function hideCopyAlert() {
         </li>
         <li>Actions réalisées en 2020-2021 <strong>[url]</strong> ;</li>
         <li>Plan d’actions 2022-2024 <strong>[url]</strong>.</li>
-      </ul>
+      </ul> -->
       <p class="fr-mb-9v fr-mb-md-6w">
         Cette déclaration d’accessibilité s’applique à
         <strong>{{ report.data.procedureUrl }}</strong
@@ -171,14 +167,14 @@ function hideCopyAlert() {
           <strong>[nn]</strong>% des critères du RGAA version 4 sont respectés ;
         </li>
         <li>
-          (Facultatif) Le taux moyen de conformité du site s’élève à
+          Le taux moyen de conformité du site s’élève à
           <strong>{{ report.data.accessibilityRate }}</strong
           >% ;
         </li>
-        <li>
+        <!-- <li>
           (Facultatif) Accès à la grille d’audit RGAA
           <strong>[url]</strong> pour télécharger la grille d’audit.
-        </li>
+        </li> -->
       </ul>
 
       <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
