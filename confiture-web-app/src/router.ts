@@ -106,18 +106,19 @@ const router = createRouter({
         ],
       },
     },
-    {
-      path: "/donnees-personnelles",
-      name: "personal-data",
-      component: PersonalDataPage,
-      meta: {
-        name: "Données personnelles",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
-          { label: "Données personnelles", name: "personal-data" },
-        ],
-      },
-    },
+    // TODO: nothing to put on that page for now
+    // {
+    //   path: "/donnees-personnelles",
+    //   name: "personal-data",
+    //   component: PersonalDataPage,
+    //   meta: {
+    //     name: "Données personnelles",
+    //     breadcrumbLinks: [
+    //       { label: "Accueil", name: "home" },
+    //       { label: "Données personnelles", name: "personal-data" },
+    //     ],
+    //   },
+    // },
     // Audit pages
     {
       path: "/audits/nouveau",

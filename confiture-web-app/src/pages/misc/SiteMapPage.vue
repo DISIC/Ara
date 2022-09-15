@@ -49,7 +49,7 @@ const links: SiteMapLink[] = [
   { label: "Donner mon avis", name: "feedback" },
   { label: "Accessibilité", name: "accessibility" },
   { label: "Mentions légales", name: "legal" },
-  { label: "Données personnelles", name: "personal-data" },
+  // { label: "Données personnelles", name: "personal-data" },
 ];
 </script>
 

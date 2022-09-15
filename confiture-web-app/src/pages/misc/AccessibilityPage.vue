@@ -13,29 +13,31 @@ import PageMeta from "../../components/PageMeta";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Déclaration d’accessibilité</h1>
     <p>
-      <strong>[Nom de l’entité]</strong> s’engage à rendre ses sites internet,
-      intranet, extranet et ses progiciels accessibles (et ses applications
-      mobiles et mobilier urbain numérique) conformément à l’article 47 de la
-      loi n°2005-102 du 11 février 2005.
+      La
+      <strong>direction interministérielle du numérique (DINUM)</strong>
+      s’engage à rendre ses sites internet, intranet, extranet et ses progiciels
+      accessibles (et ses applications mobiles et mobilier urbain numérique)
+      conformément à l’article 47 de la loi n°2005-102 du 11 février 2005.
     </p>
 
-    <p>
-      À cette fin, <strong>[Nom de l’entité]</strong> met en œuvre la stratégie
-      et les actions suivantes :
-    </p>
+    <!-- <p>
+      À cette fin, la
+      <strong>direction interministérielle du numérique (DINUM)</strong> met en
+      œuvre la stratégie et les actions suivantes :
+    </p> -->
 
-    <ul>
+    <!-- <ul>
       <li>
         Schéma pluriannuel de mise en accessibilité 2022-2024
         <strong>[url]</strong> ;
       </li>
       <li>Actions réalisées en 2020-2021 <strong>[url]</strong> ;</li>
       <li>Plan d’actions 2022-2024 <strong>[url]</strong>.</li>
-    </ul>
+    </ul> -->
 
     <p>
       Cette déclaration d’accessibilité s’applique à
-      <strong>[www.nomdusite.gouv.fr]</strong>.
+      <strong>confiture.netlify.app</strong>.
     </p>
 
     <nav
@@ -50,7 +52,7 @@ import PageMeta from "../../components/PageMeta";
             >État de conformité</a
           >
         </li>
-        <li>
+        <!-- <li>
           <a class="fr-summary__link" href="#resultats-tests"
             >Résultats des tests</a
           >
@@ -64,7 +66,7 @@ import PageMeta from "../../components/PageMeta";
           <a class="fr-summary__link" href="#etablissement-declaration"
             >Établissement de cette déclaration d'accessibilité</a
           >
-        </li>
+        </li> -->
         <li>
           <a class="fr-summary__link" href="#contact"
             >Retour d'information et contact</a
@@ -79,13 +81,12 @@ import PageMeta from "../../components/PageMeta";
     <h2 id="etat-conformite">État de conformité</h2>
 
     <p>
-      <strong>[Nom du site (url du site)]</strong> est
-      <strong>non/partiellement/totalement</strong> conforme avec le référentiel
-      général d’amélioration de l’accessibilité (RGAA), version 4 en raison des
-      non-conformités et des dérogations énumérées ci-dessous.
+      <strong>confiture.netlify.app</strong> est
+      <strong>non conforme</strong> est avec le référentiel général
+      d'amélioration de l'accessibilité (RGAA). Aucun audit n’a été effectué.
     </p>
 
-    <h2 id="resultats-tests">Résultats des tests</h2>
+    <!-- <h2 id="resultats-tests">Résultats des tests</h2>
     <p>
       L’audit de conformité réalisé par [nom de l’entité qui a réalisé l’audit]
       révèle que :
@@ -166,16 +167,23 @@ import PageMeta from "../../components/PageMeta";
       <li>Bla bla</li>
       <li>Bla blla</li>
       <li>Bla bla bla</li>
-    </ul>
+    </ul> -->
 
     <h2 id="contact">Retour d'information et contact</h2>
     <p>
-      Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez
-      contacter le responsable de [nom du site] pour être orienté vers une
-      alternative accessible ou obtenir le contenu sous une autre forme.
+      La direction interministérielle du numérique (DINUM) s’engage à prendre
+      les moyens nécessaires afin de donner accès, dans un délai raisonnable,
+      aux informations et fonctionnalités recherchées par la personne
+      handicapée, que le contenu fasse l’objet d’une dérogation ou non.
+    </p>
+    <p>
+      La DINUM invite les personnes qui rencontreraient des difficultés à la
+      contacter par courriel à communication.dinum@modernisation.gouv.fr afin
+      qu’une assistance puisse être apportée (alternative accessible,
+      information et contenu donnés sous une autre forme).
     </p>
 
-    <ul class="fr-mb-6w">
+    <!-- <ul class="fr-mb-6w">
       <li>
         Envoyer un message <strong>[url du formulaire en ligne]</strong> ;
       </li>
@@ -186,27 +194,48 @@ import PageMeta from "../../components/PageMeta";
           coordonnées]</strong
         >.
       </li>
-    </ul>
+    </ul> -->
 
     <h2 id="recours">Voies de recours</h2>
     <p>
       Si vous constatez un défaut d’accessibilité vous empêchant d’accéder à un
       contenu ou une fonctionnalité du site, que vous nous le signalez et que
-      vous ne parvenez pas à obtenir une réponse de notre part, vous êtes en
-      droit de faire parvenir vos doléances ou une demande de saisine au
+      vous ne parvenez pas à obtenir une réponse rapide de notre part, vous êtes
+      en droit de faire parvenir vos doléances ou une demande de saisine au
       Défenseur des droits.
     </p>
     <p>Plusieurs moyens sont à votre disposition :</p>
 
     <ul>
-      <li>Écrire un message au Défenseur des droits</li>
-      <li>Contacter le délégué du Défenseur des droits dans votre région</li>
+      <li>
+        un
+        <a
+          href="https://www.defenseurdesdroits.fr/nous-contacter"
+          target="_blank"
+          >formulaire de contact</a
+        >
+      </li>
+      <li>
+        la
+        <a
+          href="https://www.defenseurdesdroits.fr/fr/saisir/delegues"
+          target="_blank"
+          >liste des délégués de votre région</a
+        >
+        avec leurs informations de contact directs
+      </li>
+      <li>
+        un numéro de téléphone : le +33 (0) 9 69 39 00 00 du lundi au vendredi
+        de 8h30 à 19h30 (coût d’un appel local)
+      </li>
+      <li>
+        une adresse postale dans l’<a
+          href="https://lannuaire.service-public.fr/autorites-independantes/1867f065-c823-4362-8d0f-8ca6b011a10f"
+          tarrget="_blank"
+          >annuaire de l’administration</a
+        >
+      </li>
     </ul>
-
-    <p>
-      Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre)
-      Défenseur des droits Libre réponse 71120 75342 Paris CEDEX 07
-    </p>
   </section>
 </template>
 

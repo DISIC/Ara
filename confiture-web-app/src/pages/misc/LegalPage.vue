@@ -17,7 +17,7 @@ import PageMeta from "../../components/PageMeta";
   />
 
   <section class="fr-my-0 fr-mx-auto content">
-    <h1>Mentions légales de [Nom du produit]</h1>
+    <h1>Mentions légales de Confiture</h1>
     <nav
       class="fr-summary fr-mb-6w"
       role="navigation"
@@ -25,21 +25,21 @@ import PageMeta from "../../components/PageMeta";
     >
       <p id="fr-summary-title" class="fr-summary__title">Sommaire</p>
       <ol class="fr-summary__list">
-        <li>
+        <!-- <li>
           <a class="fr-summary__link" href="#editeur-plateforme"
             >Éditeur de la Plateforme</a
           >
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <a class="fr-summary__link" href="#directeur-publication"
             >Directeur de la publication</a
           >
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <a class="fr-summary__link" href="#hebergement-plateforme"
             >Hébergement de la Plateforme</a
           >
-        </li>
+        </li> -->
         <li>
           <a class="fr-summary__link" href="#accessibilite">Accessibilité</a>
         </li>
@@ -57,19 +57,19 @@ import PageMeta from "../../components/PageMeta";
       </ol>
     </nav>
 
-    <h2 id="editeur-plateforme">Éditeur de la Plateforme</h2>
+    <!-- <h2 id="editeur-plateforme">Éditeur de la Plateforme</h2>
     <p class="fr-mb-6w">
       La Plateforme [Nom du Produit] est éditée par [Nom de l’éditeur] situé :
       [Adresse éditeur] [Téléphone éditeur] [Mail éditeur]
-    </p>
+    </p> -->
 
-    <h2 id="directeur-publication">Directeur de la publication</h2>
-    <p class="fr-mb-6w">[Nom du Directeur de la publication]</p>
+    <!-- <h2 id="directeur-publication">Directeur de la publication</h2>
+    <p class="fr-mb-6w">[Nom du Directeur de la publication]</p> -->
 
-    <h2 id="hebergement-plateforme">Hébergement de la Plateforme</h2>
+    <!-- <h2 id="hebergement-plateforme">Hébergement de la Plateforme</h2>
     <p class="fr-mb-6w">
       Ce site est hébergé en propre par [Hébergeur] : [Adresse de l’hébergeur]
-    </p>
+    </p> -->
 
     <h2 id="accessibilite">Accessibilité</h2>
     <p class="fr-mb-6w">
