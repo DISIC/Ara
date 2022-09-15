@@ -83,11 +83,15 @@ const headerInfos = computed(() => [
     value: errorsCount.value?.total,
     description: `dont ${errorsCount.value?.blocking} bloquantes`,
   },
-  {
-    label: "Taux de conformité au RGAA actuel",
-    value: complianceLevel.value,
-    description: "%",
-  },
+  ...(auditStore.data?.auditType === AuditType.FULL
+    ? [
+        {
+          label: "Taux de conformité au RGAA actuel",
+          value: complianceLevel.value,
+          description: "%",
+        },
+      ]
+    : []),
 ]);
 
 const hasA11yStatement = computed(() => {

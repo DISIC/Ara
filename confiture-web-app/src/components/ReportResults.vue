@@ -2,6 +2,7 @@
 import { computed } from "vue";
 
 import { useReportStore } from "../store";
+import { AuditType } from "../types";
 import { slugify } from "../utils";
 import ChartLegend from "./ChartLegend.vue";
 import PieChart from "./PieChart.vue";
@@ -13,13 +14,18 @@ const report = useReportStore();
 
 const stats = computed(() => {
   return [
-    {
-      title: "D’accessibilité",
-      description: "Taux global de conformité au RGAA",
-      value: report.data!.accessibilityRate,
-      total: 100,
-      unit: "%",
-    },
+    ...(report.data?.auditType === AuditType.FULL
+      ? [
+          {
+            title: "D’accessibilité",
+            description: "Taux global de conformité au RGAA",
+            value: report.data!.accessibilityRate,
+            total: 100,
+            unit: "%",
+          },
+        ]
+      : []),
+
     {
       title: "Erreurs d’accessibilité",
       description: `Dont ${
@@ -56,7 +62,7 @@ const chartsName = {
       <div
         v-for="stat in stats"
         :key="stat.title"
-        class="fr-col-12 fr-col-lg-4"
+        :class="`fr-col-12 fr-col-lg-${12 / stats.length}`"
       >
         <SummaryCard
           :title="stat.title"

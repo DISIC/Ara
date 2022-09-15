@@ -88,11 +88,15 @@ const headerInfos = computed(() => [
     value: formatAuditType(auditStore.data!.auditType as AuditType),
   },
   { label: "Risque de l’audit", value: risk.value },
-  {
-    label: "Taux de conformité au RGAA actuel",
-    value: complianceLevel.value,
-    description: "%",
-  },
+  ...(auditStore.data?.auditType === AuditType.FULL
+    ? [
+        {
+          label: "Taux de conformité au RGAA actuel",
+          value: complianceLevel.value,
+          description: "%",
+        },
+      ]
+    : []),
 ]);
 
 async function handleDevButtonClick() {
