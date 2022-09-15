@@ -1,13 +1,10 @@
-<<<<<<< HEAD
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
 </script>
 
-=======
 <!--
   TODO: complete all content once the audit will be done.
  -->
->>>>>>> 6cb3e29 (write accessibility page content)
 <template>
   <PageMeta
     title="Accessibilité"
