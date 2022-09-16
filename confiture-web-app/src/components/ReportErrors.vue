@@ -33,7 +33,7 @@ const errors = computed(() => {
           if (r.userImpact) {
             return (
               r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              userImpactFilters.value.includes(r.userImpact)
+              (userImpactFilters.value.includes(r.userImpact) || !r.status)
             );
           }
           return r.status === CriteriumResultStatus.NOT_COMPLIANT;
@@ -100,7 +100,7 @@ function getPageSlug(pageUrl: string) {
 <template>
   <template v-if="report.data">
     <div class="main">
-      <div>
+      <div class="sidebar">
         <nav class="fr-sidemenu fr-mb-4w" aria-label="Liste des pages">
           <div class="fr-sidemenu__inner">
             <button
@@ -292,7 +292,10 @@ function getPageSlug(pageUrl: string) {
 
               <!-- Error -->
               <!-- TODO: complete condition to include example images -->
-              <LazyAccordion v-if="error.errorDescription" title="Erreur">
+              <LazyAccordion
+                v-if="error.errorDescription"
+                title="Description de l'erreur"
+              >
                 <p class="fr-mb-3w">
                   {{ error.errorDescription }}
                 </p>
@@ -370,6 +373,10 @@ function getPageSlug(pageUrl: string) {
   gap: 2rem;
 }
 
+.sidebar {
+  box-shadow: inset -1px 0 0 0 var(--border-default-grey);
+}
+
 .page-title {
   color: var(--text-active-blue-france);
 }
@@ -380,5 +387,19 @@ function getPageSlug(pageUrl: string) {
 
 .error-accordion-subtitle {
   color: var(--text-mention-grey);
+}
+
+.fr-sidemenu__inner {
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    box-shadow: none;
+  }
 }
 </style>
