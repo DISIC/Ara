@@ -67,8 +67,20 @@ const userImpactFilters = ref<CriterionResultUserImpact[]>([
   CriterionResultUserImpact.BLOCKING,
 ]);
 
+const disabledResetFilters = computed(
+  () => userImpactFilters.value.length === 3
+);
+
 function expandAll() {
   console.log("expandAll");
+}
+
+function resetFilters() {
+  userImpactFilters.value = [
+    CriterionResultUserImpact.MINOR,
+    CriterionResultUserImpact.MAJOR,
+    CriterionResultUserImpact.BLOCKING,
+  ];
 }
 
 function getTopicName(topicNumber: number) {
@@ -112,7 +124,7 @@ function getPageSlug(pageUrl: string) {
               Pages
             </button>
             <div id="fr-sidemenu-wrapper" class="fr-collapse">
-              <div class="fr-sidemenu__title fr-text--xl">Pages</div>
+              <div class="fr-sidemenu__title fr-text--xl fr-mb-2w">Pages</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item fr-sidemenu__item--active">
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
@@ -142,7 +154,16 @@ function getPageSlug(pageUrl: string) {
             </div>
           </div>
         </nav>
-        <div class="fr-text--bold fr-text--xl filter-title">Filtres</div>
+        <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">
+          Filtres
+        </div>
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-3w"
+          :disabled="disabledResetFilters"
+          @click="resetFilters"
+        >
+          Réinitialiser les filtres
+        </button>
         <!-- <div class="fr-form-group">
           <fieldset class="fr-fieldset">
             <legend
