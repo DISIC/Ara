@@ -221,16 +221,14 @@ watch(
     }
     auditType.value = audit.auditType ?? null;
     defaultTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => availableTools.includes(tool))
-      : [
-          {
-            name: "",
-            function: "",
-            url: "",
-          },
-        ];
+      ? audit.tools.filter((tool) => {
+          return availableTools.map((t) => t.name).includes(tool.name);
+        })
+      : [];
     customTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => !availableTools.includes(tool))
+      ? audit.tools.filter((tool) => {
+          return !availableTools.map((t) => t.name).includes(tool.name);
+        })
       : [
           {
             name: "",
