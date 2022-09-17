@@ -61,16 +61,15 @@ const userImpacts: Array<{
     </div>
 
     <!-- FILE -->
-    <div class="fr-upload-group fr-mb-4w">
+    <!-- <div class="fr-upload-group fr-mb-4w">
       <label class="fr-text--bold fr-label" :for="`file-upload-${id}`">
         Ajouter un exemple
         <span class="fr-mt-1v fr-text--regular fr-hint-text">
           Taille maximale par fichier : 1 Mo, formats : jpg, png, pdf
         </span>
       </label>
-      <!-- TODO: handle file upload -->
       <input :id="`file-upload-${id}`" class="fr-upload" type="file" />
-    </div>
+    </div> -->
 
     <!-- USER IMPACT -->
     <RadioGroup
