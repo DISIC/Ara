@@ -30,13 +30,10 @@ const errors = computed(() => {
     mapValues(
       groupBy(
         report.data?.results.filter((r) => {
-          if (r.userImpact) {
-            return (
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              (userImpactFilters.value.includes(r.userImpact) || !r.status)
-            );
-          }
-          return r.status === CriteriumResultStatus.NOT_COMPLIANT;
+          return (
+            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+            userImpactFilters.value.includes(r.userImpact)
+          );
         }),
         "pageUrl"
       ),
@@ -61,14 +58,19 @@ const errors = computed(() => {
   return data;
 });
 
-const userImpactFilters = ref<CriterionResultUserImpact[]>([
+const defaultUserImpactFillters = [
   CriterionResultUserImpact.MINOR,
   CriterionResultUserImpact.MAJOR,
   CriterionResultUserImpact.BLOCKING,
-]);
+  null,
+];
+
+const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
+  defaultUserImpactFillters
+);
 
 const disabledResetFilters = computed(
-  () => userImpactFilters.value.length === 3
+  () => userImpactFilters.value.length === defaultUserImpactFillters.length
 );
 
 function expandAll() {
@@ -76,11 +78,7 @@ function expandAll() {
 }
 
 function resetFilters() {
-  userImpactFilters.value = [
-    CriterionResultUserImpact.MINOR,
-    CriterionResultUserImpact.MAJOR,
-    CriterionResultUserImpact.BLOCKING,
-  ];
+  userImpactFilters.value = defaultUserImpactFillters;
 }
 
 function getTopicName(topicNumber: number) {
@@ -243,6 +241,17 @@ function getPageSlug(pageUrl: string) {
                   <span class="fr-hint-text"
                     >Empêche totalement l’utilisation du site</span
                   >
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input
+                  id="user-impact-filter-unknown"
+                  v-model="userImpactFilters"
+                  :value="null"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="user-impact-filter-unknown"
+                  >Non renseigné
                 </label>
               </div>
             </div>
