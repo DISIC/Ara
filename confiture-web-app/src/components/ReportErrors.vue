@@ -329,7 +329,7 @@ function getPageSlug(pageUrl: string) {
                 <p class="fr-mb-3w">
                   {{ error.errorDescription }}
                 </p>
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <!-- <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
@@ -349,7 +349,7 @@ function getPageSlug(pageUrl: string) {
                       />
                     </div>
                   </div>
-                </div>
+                </div> -->
                 <p
                   class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle"
                 >
