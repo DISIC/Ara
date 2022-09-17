@@ -2,6 +2,7 @@
 import { groupBy, mapValues } from "lodash";
 import { marked } from "marked";
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 
 import rgaa from "../criteres.json";
 import { useReportStore } from "../store";
@@ -11,6 +12,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const report = useReportStore();
+const router = useRouter();
 
 /*
 [{
@@ -105,13 +107,42 @@ function getPageName(pageUrl: string) {
 function getPageSlug(pageUrl: string) {
   return slugify(getPageName(pageUrl));
 }
+
+/**
+ * Manually reproduce DSFR menu item anchor links
+ * See following issue: https://github.com/DISIC/Confiture/issues/130
+ */
+function updateActiveAnchorLink(id: string, event: MouseEvent) {
+  event.preventDefault();
+
+  const previousSelectedAnchor = document.querySelector(
+    '[aria-current="page"]'
+  );
+  if (previousSelectedAnchor) {
+    previousSelectedAnchor.removeAttribute("aria-current");
+    previousSelectedAnchor.parentElement?.classList.remove(
+      "fr-sidemenu__item--active"
+    );
+  }
+  const target = event.target as HTMLAnchorElement;
+  if (target) {
+    target.setAttribute("aria-current", "page");
+    target.parentElement?.classList.add("fr-sidemenu__item--active");
+
+    const anchor = document.querySelector(`#${id}`);
+    if (anchor) {
+      anchor.scrollIntoView();
+      router.push({ hash: `#${id}` });
+    }
+  }
+}
 </script>
 
 <template>
   <template v-if="report.data">
     <div class="main">
       <div class="sidebar">
-        <nav class="fr-sidemenu fr-mb-4w" aria-label="Liste des pages">
+        <nav class="fr-sidemenu" aria-label="Liste des pages">
           <div class="fr-sidemenu__inner">
             <button
               class="fr-sidemenu__btn"
@@ -122,7 +153,7 @@ function getPageSlug(pageUrl: string) {
               Pages
             </button>
             <div id="fr-sidemenu-wrapper" class="fr-collapse">
-              <div class="fr-sidemenu__title fr-text--xl fr-mb-2w">Pages</div>
+              <div class="fr-sidemenu__title">Pages</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item fr-sidemenu__item--active">
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
@@ -133,6 +164,12 @@ function getPageSlug(pageUrl: string) {
                     )}`"
                     target="_self"
                     aria-current="page"
+                    @click="
+                      updateActiveAnchorLink(
+                        getPageSlug(report.data!.context.samples[0].url),
+                        $event
+                      )
+                    "
                     >{{ report.data.context.samples[0].name }}</a
                   >
                 </li>
@@ -141,6 +178,15 @@ function getPageSlug(pageUrl: string) {
                   :key="page.name"
                   class="fr-sidemenu__item"
                 >
+                  <a
+                    class="fr-sidemenu__link"
+                    :href="`#${getPageSlug(page.url)}`"
+                    target="_self"
+                    @click="
+                      updateActiveAnchorLink(getPageSlug(page.url), $event)
+                    "
+                    >{{ page.name }}</a
+                  >
                   <a
                     class="fr-sidemenu__link"
                     :href="`#${getPageSlug(page.url)}`"
