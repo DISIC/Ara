@@ -76,7 +76,23 @@ const disabledResetFilters = computed(
 );
 
 function expandAll() {
-  console.log("expandAll");
+  const collapses = Array.from(
+    document.querySelectorAll("[data-accordion] > [data-fr-js-collapse]")
+  );
+
+  const everyCollapseIsOpen = collapses.every((el) => {
+    return el.classList.contains("fr-collapse--expanded");
+  });
+
+  if (!everyCollapseIsOpen) {
+    collapses.forEach((el) => {
+      dsfr(el).collapse.disclose();
+    });
+  } else {
+    collapses.forEach((el) => {
+      dsfr(el).collapse.conceal();
+    });
+  }
 }
 
 function resetFilters() {
@@ -365,6 +381,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               <LazyAccordion
                 v-if="error.errorDescription"
                 title="Description de l'erreur"
+                data-accordion
               >
                 <p class="fr-mb-3w">
                   {{ error.errorDescription }}
@@ -406,6 +423,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               <LazyAccordion
                 v-if="error.recommandation"
                 title="Recommandation de correction"
+                data-accordion
               >
                 <p class="fr-mb-0">
                   {{ error.recommandation }}
