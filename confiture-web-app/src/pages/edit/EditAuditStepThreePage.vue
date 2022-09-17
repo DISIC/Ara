@@ -125,7 +125,9 @@ async function handleDevButtonClick() {
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
-        <AuditGenerationFilters :topics="topics" />
+        <div class="filters-wrapper">
+          <AuditGenerationFilters :topics="topics" />
+        </div>
       </div>
       <div class="fr-col-12 fr-col-md-9">
         <div class="fr-tabs">
@@ -198,5 +200,12 @@ async function handleDevButtonClick() {
 }
 .fr-tabs__panel {
   transition: none !important;
+}
+
+.filters-wrapper {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 </style>
