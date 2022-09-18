@@ -7,6 +7,7 @@ import {
   CriteriumResultStatus,
   CriterionResultUserImpact,
 } from "../types";
+import { useAuditStore } from "./audit";
 
 type PageUrl = string;
 type TopicNumber = number;
@@ -141,6 +142,13 @@ export const useResultsStore = defineStore("results", {
       updates.forEach((update) => {
         this.data![update.pageUrl][update.topic][update.criterium] = update;
       });
+
+      // update the edition date of the local audit. It will not be the same
+      // value as the one stored in the DB but it is close enough in our case
+      const auditStore = useAuditStore();
+      if (auditStore.data) {
+        auditStore.data.editionDate = new Date().toISOString();
+      }
     },
 
     /**

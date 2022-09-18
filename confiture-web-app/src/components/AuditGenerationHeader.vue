@@ -174,7 +174,7 @@ const isDevMode = useDevMode();
       </li>
       <li>
         <RouterLink
-          v-if="auditPublicationDate"
+          v-if="auditPublicationDate && !auditEditionDate"
           class="fr-btn fr-btn--icon-left fr-icon-eye-line"
           :to="{
             name: 'report',
