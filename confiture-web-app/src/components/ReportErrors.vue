@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { groupBy, mapValues } from "lodash";
 import { marked } from "marked";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import rgaa from "../criteres.json";
 import { useReportStore } from "../store";
@@ -29,9 +29,12 @@ const errors = computed(() => {
   const data = Object.values(
     mapValues(
       groupBy(
-        report.data?.results.filter(
-          (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
-        ),
+        report.data?.results.filter((r) => {
+          return (
+            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+            userImpactFilters.value.includes(r.userImpact)
+          );
+        }),
         "pageUrl"
       ),
       (results, pageUrl) => {
@@ -55,8 +58,27 @@ const errors = computed(() => {
   return data;
 });
 
+const defaultUserImpactFillters = [
+  CriterionResultUserImpact.MINOR,
+  CriterionResultUserImpact.MAJOR,
+  CriterionResultUserImpact.BLOCKING,
+  null,
+];
+
+const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
+  defaultUserImpactFillters
+);
+
+const disabledResetFilters = computed(
+  () => userImpactFilters.value.length === defaultUserImpactFillters.length
+);
+
 function expandAll() {
   console.log("expandAll");
+}
+
+function resetFilters() {
+  userImpactFilters.value = defaultUserImpactFillters;
 }
 
 function getTopicName(topicNumber: number) {
@@ -87,56 +109,165 @@ function getPageSlug(pageUrl: string) {
 
 <template>
   <template v-if="report.data">
-    <div class="fr-mb-6w header">
-      <span class="fr-mb-0 fr-text--xl fr-text--bold"
-        >{{ report.data.errorCount }} erreurs d’accessibilité</span
-      >
-      <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
-        Tout déplier
-      </button>
-    </div>
     <div class="main">
-      <nav class="fr-sidemenu" aria-label="Liste des pages">
-        <div class="fr-sidemenu__inner">
-          <button
-            class="fr-sidemenu__btn"
-            hidden
-            aria-controls="fr-sidemenu-wrapper"
-            aria-expanded="false"
-          >
-            Pages
-          </button>
-          <div id="fr-sidemenu-wrapper" class="fr-collapse">
-            <div class="fr-sidemenu__title">Pages</div>
-            <ul class="fr-sidemenu__list">
-              <li class="fr-sidemenu__item fr-sidemenu__item--active">
-                <!-- FIXME: seems there is an issue with anchor links inside tabs -->
-                <a
-                  class="fr-sidemenu__link"
-                  :href="`#${getPageSlug(report.data.context.samples[0].url)}`"
-                  target="_self"
-                  aria-current="page"
-                  >{{ report.data.context.samples[0].name }}</a
+      <div class="sidebar">
+        <nav class="fr-sidemenu fr-mb-4w" aria-label="Liste des pages">
+          <div class="fr-sidemenu__inner">
+            <button
+              class="fr-sidemenu__btn"
+              hidden
+              aria-controls="fr-sidemenu-wrapper"
+              aria-expanded="false"
+            >
+              Pages
+            </button>
+            <div id="fr-sidemenu-wrapper" class="fr-collapse">
+              <div class="fr-sidemenu__title fr-text--xl fr-mb-2w">Pages</div>
+              <ul class="fr-sidemenu__list">
+                <li class="fr-sidemenu__item fr-sidemenu__item--active">
+                  <!-- FIXME: seems there is an issue with anchor links inside tabs -->
+                  <a
+                    class="fr-sidemenu__link"
+                    :href="`#${getPageSlug(
+                      report.data.context.samples[0].url
+                    )}`"
+                    target="_self"
+                    aria-current="page"
+                    >{{ report.data.context.samples[0].name }}</a
+                  >
+                </li>
+                <li
+                  v-for="page in report.data.context.samples.slice(1)"
+                  :key="page.name"
+                  class="fr-sidemenu__item"
                 >
-              </li>
-              <li
-                v-for="page in report.data.context.samples.slice(1)"
-                :key="page.name"
-                class="fr-sidemenu__item"
-              >
-                <a
-                  class="fr-sidemenu__link"
-                  :href="`#${getPageSlug(page.url)}`"
-                  target="_self"
-                  >{{ page.name }}</a
-                >
-              </li>
-            </ul>
+                  <a
+                    class="fr-sidemenu__link"
+                    :href="`#${getPageSlug(page.url)}`"
+                    target="_self"
+                    >{{ page.name }}</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
+        </nav>
+        <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">
+          Filtres
         </div>
-      </nav>
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-3w"
+          :disabled="disabledResetFilters"
+          @click="resetFilters"
+        >
+          Réinitialiser les filtres
+        </button>
+        <!-- <div class="fr-form-group">
+          <fieldset class="fr-fieldset">
+            <legend
+              id="checkboxes-hint-element-legend"
+              class="fr-fieldset__legend fr-text--regular fr-text--bold"
+            >
+              Critères
+            </legend>
+            <div class="fr-fieldset__content">
+              <div class="fr-checkbox-group">
+                <input id="user-impact-filter-minor" type="checkbox" />
+                <label class="fr-label" for="user-impact-filter-minor"
+                  >Conformes (10)
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input id="user-impact-filter-major" type="checkbox" />
+                <label class="fr-label" for="user-impact-filter-major"
+                  >Non conforme (34)
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input id="user-impact-filter-blocking" type="checkbox" />
+                <label class="fr-label" for="user-impact-filter-blocking"
+                  >Non applicable (56)
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div> -->
+        <div class="fr-form-group">
+          <fieldset class="fr-fieldset">
+            <legend
+              id="checkboxes-hint-element-legend"
+              class="fr-fieldset__legend fr-text--regular fr-text--bold"
+            >
+              Impact de l’erreur
+            </legend>
+            <div class="fr-fieldset__content">
+              <div class="fr-checkbox-group">
+                <input
+                  id="user-impact-filter-minor"
+                  v-model="userImpactFilters"
+                  :value="CriterionResultUserImpact.MINOR"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="user-impact-filter-minor"
+                  >Mineur (10)
+                  <span class="fr-hint-text"
+                    >Gêne dans l’utilisation du site</span
+                  >
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input
+                  id="user-impact-filter-major"
+                  v-model="userImpactFilters"
+                  :value="CriterionResultUserImpact.MAJOR"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="user-impact-filter-major"
+                  >Majeur (16)
+                  <span class="fr-hint-text"
+                    >Compléxifie grandement l’utilisation du site</span
+                  >
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input
+                  id="user-impact-filter-blocking"
+                  v-model="userImpactFilters"
+                  :value="CriterionResultUserImpact.BLOCKING"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="user-impact-filter-blocking"
+                  >Bloquant (8)
+                  <span class="fr-hint-text"
+                    >Empêche totalement l’utilisation du site</span
+                  >
+                </label>
+              </div>
+              <div class="fr-checkbox-group">
+                <input
+                  id="user-impact-filter-unknown"
+                  v-model="userImpactFilters"
+                  :value="null"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="user-impact-filter-unknown"
+                  >Non renseigné
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
 
       <div>
+        <div class="fr-mb-6w header">
+          <span class="fr-mb-0 fr-text--xl fr-text--bold"
+            >{{ report.data.errorCount }} résultats</span
+          >
+          <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
+            Tout déplier
+          </button>
+        </div>
         <section v-for="page in errors" :key="page.pageUrl" class="fr-mb-8w">
           <h2
             :id="`${getPageSlug(page.pageUrl as string)}`"
@@ -191,7 +322,10 @@ function getPageSlug(pageUrl: string) {
 
               <!-- Error -->
               <!-- TODO: complete condition to include example images -->
-              <LazyAccordion v-if="error.errorDescription" title="Erreur">
+              <LazyAccordion
+                v-if="error.errorDescription"
+                title="Description de l'erreur"
+              >
                 <p class="fr-mb-3w">
                   {{ error.errorDescription }}
                 </p>
@@ -259,9 +393,18 @@ function getPageSlug(pageUrl: string) {
   gap: 1rem;
 }
 
+.filter-title {
+  color: var(--text-title-grey);
+}
+
 .main {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20rem 1fr;
   gap: 2rem;
+}
+
+.sidebar {
+  box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
 .page-title {
@@ -274,5 +417,19 @@ function getPageSlug(pageUrl: string) {
 
 .error-accordion-subtitle {
   color: var(--text-mention-grey);
+}
+
+.fr-sidemenu__inner {
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    box-shadow: none;
+  }
 }
 </style>

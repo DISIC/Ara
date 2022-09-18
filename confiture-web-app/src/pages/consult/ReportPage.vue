@@ -29,7 +29,7 @@ const tabs = computed(() => [
   ...(hasA11yStatement.value
     ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
     : []),
-  { title: "Description des erreurs", component: ReportErrors },
+  { title: "Détail des résultats", component: ReportErrors },
 ]);
 
 const showCopyAlert = ref(false);
