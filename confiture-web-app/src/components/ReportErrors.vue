@@ -116,7 +116,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   event.preventDefault();
 
   const previousSelectedAnchor = document.querySelector(
-    '[aria-current="page"]'
+    '.fr-sidemenu__link[aria-current="page"]'
   );
   if (previousSelectedAnchor) {
     previousSelectedAnchor.removeAttribute("aria-current");
@@ -142,7 +142,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   <template v-if="report.data">
     <div class="main">
       <div class="sidebar">
-        <nav class="fr-sidemenu" aria-label="Liste des pages">
+        <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
           <div class="fr-sidemenu__inner">
             <button
               class="fr-sidemenu__btn"
@@ -153,7 +153,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               Pages
             </button>
             <div id="fr-sidemenu-wrapper" class="fr-collapse">
-              <div class="fr-sidemenu__title">Pages</div>
+              <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item fr-sidemenu__item--active">
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
@@ -185,12 +185,6 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     @click="
                       updateActiveAnchorLink(getPageSlug(page.url), $event)
                     "
-                    >{{ page.name }}</a
-                  >
-                  <a
-                    class="fr-sidemenu__link"
-                    :href="`#${getPageSlug(page.url)}`"
-                    target="_self"
                     >{{ page.name }}</a
                   >
                 </li>
