@@ -138,7 +138,7 @@ const logoLink = computed(() => {
             <div class="fr-header__service">
               <RouterLink :to="logoLink.route" :title="logoLink.title">
                 <p class="fr-header__service-title">
-                  Confiture
+                  Nom du service
                   <span
                     class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
                     >BETA</span
