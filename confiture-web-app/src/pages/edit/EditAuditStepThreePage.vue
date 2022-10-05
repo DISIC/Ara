@@ -13,6 +13,7 @@ import rgaa from "../../criteres.json";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
 import { formatAuditType } from "../../utils";
+import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 
 const route = useRoute();
 const router = useRouter();
@@ -50,28 +51,41 @@ function toStepFour() {
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
-  return rgaa.topics.map((topic) => {
-    // Every results for the current topic
-    const relevantResults =
-      resultsStore.allResults?.filter(
-        (result) => result.topic === topic.number
-      ) ?? [];
+  if (!auditStore.data?.auditType) {
+    return [];
+  }
 
-    // number of criteria for the topic accross all pages
-    const relevantCount = relevantResults.length;
+  return (
+    rgaa.topics
+      // hide topics not present in audit type
+      .filter((topic) => {
+        return CRITERIA_BY_AUDIT_TYPE[auditStore.data!.auditType!].find(
+          (criterium) => criterium.topic === topic.number
+        );
+      })
+      .map((topic) => {
+        // Every results for the current topic
+        const relevantResults =
+          resultsStore.allResults?.filter(
+            (result) => result.topic === topic.number
+          ) ?? [];
 
-    // number of tested criteria for the topic accross all pages
-    const testedCount =
-      relevantResults.filter(
-        (result) => result.status !== CriteriumResultStatus.NOT_TESTED
-      ).length ?? 0;
+        // number of criteria for the topic accross all pages
+        const relevantCount = relevantResults.length;
 
-    return {
-      title: topic.topic,
-      number: topic.number,
-      value: Math.round((testedCount / relevantCount) * 100),
-    };
-  });
+        // number of tested criteria for the topic accross all pages
+        const testedCount =
+          relevantResults.filter(
+            (result) => result.status !== CriteriumResultStatus.NOT_TESTED
+          ).length ?? 0;
+
+        return {
+          title: topic.topic,
+          number: topic.number,
+          value: Math.round((testedCount / relevantCount) * 100),
+        };
+      })
+  );
 });
 
 const currentPageId = ref(0);

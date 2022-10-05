@@ -100,7 +100,7 @@ function submit() {
               :value="topic.number"
             />
             <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
-              {{ i + 1 }}. {{ topic.title }}
+              {{ topic.number }}. {{ topic.title }}
             </label>
           </div>
           <span class="fr-text--sm fr-m-0 fr-ml-1w topic-filter-value"
