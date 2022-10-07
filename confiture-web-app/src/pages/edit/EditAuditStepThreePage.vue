@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -21,14 +21,13 @@ const router = useRouter();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 
-useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
+useWrappedFetch(async () => {
+  await auditStore.fetchAuditIfNeeded(uniqueId);
+  await resultsStore.fetchResults(uniqueId);
+});
 
 const resultsStore = useResultsStore();
 const notify = useNotifications();
-
-onMounted(() => {
-  resultsStore.fetchResults(uniqueId);
-});
 
 /**
  * Publish audit and move to final step
