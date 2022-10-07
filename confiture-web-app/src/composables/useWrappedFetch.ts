@@ -1,5 +1,6 @@
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { TimeoutError } from "ky";
 
 /**
  * Hook wrapping a function returning a promise. If the function fails with
@@ -16,19 +17,22 @@ export function useWrappedFetch(func: () => Promise<unknown>) {
 
   onMounted(() => {
     func().catch((error) => {
-      const errorStatus: number = error?.response?.status || 404;
+      let errorStatus = error?.response?.status;
 
-      if ([404, 410].includes(errorStatus)) {
-        router.replace({
-          name: "Error",
-          params: { pathMatch: route.path.substring(1).split("/") },
-          query: route.query,
-          hash: route.hash,
-          state: {
-            errorStatus,
-          },
-        });
+      // display an 408 Request Timeout error page in case of ky request timing out
+      if (error instanceof TimeoutError) {
+        errorStatus = 408;
       }
+
+      router.replace({
+        name: "Error",
+        params: { pathMatch: route.path.substring(1).split("/") },
+        query: route.query,
+        hash: route.hash,
+        state: {
+          errorStatus,
+        },
+      });
     });
   });
 }
