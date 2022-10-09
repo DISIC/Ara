@@ -132,7 +132,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   event.preventDefault();
 
   const previousSelectedAnchor = document.querySelector(
-    '.fr-sidemenu__link[aria-current="page"]'
+    '.fr-sidemenu__link[aria-current="true"]'
   );
   if (previousSelectedAnchor) {
     previousSelectedAnchor.removeAttribute("aria-current");
@@ -142,7 +142,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   }
   const target = event.target as HTMLAnchorElement;
   if (target) {
-    target.setAttribute("aria-current", "page");
+    target.setAttribute("aria-current", "true");
     target.parentElement?.classList.add("fr-sidemenu__item--active");
 
     const anchor = document.querySelector(`#${id}`);
@@ -179,7 +179,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                       report.data.context.samples[0].url
                     )}`"
                     target="_self"
-                    aria-current="page"
+                    aria-current="true"
                     @click="
                       updateActiveAnchorLink(
                         getPageSlug(report.data!.context.samples[0].url),
