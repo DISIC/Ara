@@ -27,7 +27,7 @@ import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 
-import { useAuditStore } from "./store";
+import { useAuditStore, useReportStore } from "./store";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -48,6 +48,25 @@ export const history = createWebHistory();
 function getProcedureName() {
   const auditStore = useAuditStore();
   return auditStore.data?.procedureName ?? "Mon audit";
+}
+
+/**
+ * Change the first link depending on the context (audit creation or report).
+ */
+function getFirstBreadcrumbLink() {
+  const reportStore = useReportStore();
+
+  if (reportStore.data) {
+    return {
+      label: "Rapport d’audit",
+      name: "report",
+      params: {
+        uniqueId: reportStore.data.consultUniqueId,
+      },
+    };
+  }
+
+  return { label: "Accueil", name: "home" };
 }
 
 /**
@@ -76,8 +95,8 @@ const router = createRouter({
       component: SiteMapPage,
       meta: {
         name: "Plan du site",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Plan du site", name: "site-map" },
         ],
       },
@@ -88,8 +107,8 @@ const router = createRouter({
       component: AccessibilityPage,
       meta: {
         name: "Accessibilité",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Accessibilité", name: "accessibility" },
         ],
       },
@@ -100,8 +119,8 @@ const router = createRouter({
       component: LegalPage,
       meta: {
         name: "Mentions légales",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Mentions légales", name: "legal" },
         ],
       },
@@ -113,8 +132,8 @@ const router = createRouter({
     //   component: PersonalDataPage,
     //   meta: {
     //     name: "Données personnelles",
-    //     breadcrumbLinks: [
-    //       { label: "Accueil", name: "home" },
+    //     breadcrumbLinks: () => [
+    //       getFirstBreadcrumbLink(),
     //       { label: "Données personnelles", name: "personal-data" },
     //     ],
     //   },
@@ -126,8 +145,8 @@ const router = createRouter({
       component: NewAuditStepOnePage,
       meta: {
         name: "Nouvel audit",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Nouvel audit", name: "new-audit-step-one" },
         ],
       },
@@ -140,7 +159,7 @@ const router = createRouter({
       meta: {
         name: "Mon audit",
         breadcrumbLinks: () => [
-          { label: "Accueil", name: "home" },
+          getFirstBreadcrumbLink(),
           {
             label: getProcedureName(),
             name: "edit-audit-step-one",
@@ -156,7 +175,7 @@ const router = createRouter({
       meta: {
         name: "Mon audit",
         breadcrumbLinks: () => [
-          { label: "Accueil", name: "home" },
+          getFirstBreadcrumbLink(),
           {
             label: getProcedureName(),
             name: "edit-audit-step-two",
@@ -172,7 +191,7 @@ const router = createRouter({
       meta: {
         name: "Mon audit",
         breadcrumbLinks: () => [
-          { label: "Accueil", name: "home" },
+          getFirstBreadcrumbLink(),
           {
             label: getProcedureName(),
             name: "edit-audit-step-three",
@@ -188,7 +207,7 @@ const router = createRouter({
       meta: {
         name: "Mon audit",
         breadcrumbLinks: () => [
-          { label: "Accueil", name: "home" },
+          getFirstBreadcrumbLink(),
           {
             label: getProcedureName(),
             name: "edit-audit-step-four",
@@ -204,7 +223,7 @@ const router = createRouter({
       meta: {
         name: "Contexte",
         hideHomeLink: true,
-        breadcrumbLinks: [
+        breadcrumbLinks: () => [
           { label: "Rapport d’audit", name: "report" },
           { label: "Contexte", name: "context" },
         ],
@@ -226,8 +245,8 @@ const router = createRouter({
       component: ResourcesPage,
       meta: {
         name: "Ressources",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
         ],
       },
@@ -238,8 +257,8 @@ const router = createRouter({
       component: AccessibilityTrainingPage,
       meta: {
         name: "Formations accessibilité",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           { label: "Formations accessibilité", name: "accessibility-training" },
         ],
@@ -251,8 +270,8 @@ const router = createRouter({
       component: A11yIntroTrainingPage,
       meta: {
         name: "Introduction à l’accessibilité numérique",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           { label: "Formations accessibilité", name: "accessibility-training" },
           {
@@ -268,8 +287,8 @@ const router = createRouter({
       component: PublicDigitalTrainingPage,
       meta: {
         name: "Bien faire du numérique public",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           { label: "Formations accessibilité", name: "accessibility-training" },
           {
@@ -285,8 +304,8 @@ const router = createRouter({
       component: ToolsPage,
       meta: {
         name: "Outils",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           { label: "Outils", name: "tools" },
         ],
@@ -298,8 +317,8 @@ const router = createRouter({
       component: GlossaryPage,
       meta: {
         name: "Glossaire",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           { label: "Glossaire", name: "glossary" },
         ],
@@ -311,8 +330,8 @@ const router = createRouter({
       component: MakeA11yAuditPage,
       meta: {
         name: "Réaliser un audit accessibilité",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
           {
             label: "Réaliser soi-même un audit accessibilité",
@@ -328,8 +347,8 @@ const router = createRouter({
       component: HelpPage,
       meta: {
         name: "Formations accessibilité",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Aide", name: "help" },
         ],
       },
@@ -340,8 +359,8 @@ const router = createRouter({
       component: LegalRequirementsPage,
       meta: {
         name: "Obligations légales et sanctions",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Aide", name: "help" },
           {
             label: "Obligations légales et sanctions",
@@ -356,8 +375,8 @@ const router = createRouter({
       component: RGAAPage,
       meta: {
         name: "RGAA",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Aide", name: "help" },
           { label: "RGAA", name: "rgaa" },
         ],
@@ -369,8 +388,8 @@ const router = createRouter({
       component: AccessibilityStatementPage,
       meta: {
         name: "Déclaration d’accessibilité",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Aide", name: "help" },
           {
             label: "Déclaration d’accessibilité",
@@ -385,8 +404,8 @@ const router = createRouter({
       component: AccessibilityPlanPage,
       meta: {
         name: "Schéma pluriannuel",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Aide", name: "help" },
           { label: "Schéma pluriannuel", name: "accessibility-plan" },
         ],
@@ -399,8 +418,8 @@ const router = createRouter({
       component: FeedbackPage,
       meta: {
         name: "Donner mon avis",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
           { label: "Donner mon avis", name: "feedback" },
         ],
       },
