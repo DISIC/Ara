@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit } from '@prisma/client';
 import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
+import { buildEmailHtmlTemplate, buildEmailTextTemplate } from './build-email-template'
 
 @Injectable()
 export class MailerService {
@@ -19,13 +20,14 @@ export class MailerService {
     });
   }
 
-  private sendMail(to: string, subject: string, text: string) {
+  private sendMail(to: string, subject: string, text: string, html: string) {
     return this.transporter
       .sendMail({
         from: this.config.get('MAILER_USER'),
         to,
         subject,
         text,
+        html
       })
       .then((info) => {
         // TODO: check if the test url thing works with "real" email addresses
@@ -41,8 +43,9 @@ export class MailerService {
     // FIXME: what to do if the mail fails to send for some reason ?
     return this.sendMail(
       audit.auditorEmail,
-      'Nouvel audit créé',
-      `Votre audit pour "${audit.procedureName}" a été créé sur Confiture et est éditable à l'addresse: ${auditUrl}`,
+      `Création d’un nouvel audit : ${audit.procedureName}`,
+      buildEmailTextTemplate(audit.auditorName, audit.procedureName, auditUrl),
+      buildEmailHtmlTemplate(audit.auditorName, audit.procedureName, auditUrl),
     );
   }
 }
