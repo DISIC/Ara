@@ -291,6 +291,14 @@ const logoLink = computed(() => {
               Données personnelles
             </RouterLink>
           </li> -->
+          <li class="fr-footer__bottom-item">
+            <RouterLink
+              class="fr-footer__bottom-link"
+              :to="{ name: 'contact' }"
+            >
+              Contact et contributions
+            </RouterLink>
+          </li>
         </ul>
         <div class="fr-footer__bottom-copy">
           <p>

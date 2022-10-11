@@ -16,8 +16,9 @@ import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";
 import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
-import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
+// import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
+import ContactPage from "./pages/misc/ContactPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
 import A11yIntroTrainingPage from "./pages/resources/A11yIntroTrainingPage.vue";
 import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
@@ -122,6 +123,19 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getFirstBreadcrumbLink(),
           { label: "Mentions légales", name: "legal" },
+        ],
+      },
+    },
+    // Contact page
+    {
+      path: "/contact-contributions",
+      name: "contact",
+      component: ContactPage,
+      meta: {
+        name: "Contact",
+        breadcrumbLinks: [
+          { label: "Accueil", name: "home" },
+          { label: "Contactez-nous ou contribuez", name: "contact" },
         ],
       },
     },
