@@ -33,11 +33,14 @@ const reportStore = useReportStore();
       <strong>rgaa@design.numérique.gouv.fr</strong>.
     </p>
 
-    <div v-if="reportStore.data?.context.auditorEmail" class="fr-callout">
+    <div v-if="reportStore.data" class="fr-callout">
       <p class="fr-callout__text">
         Pour toute question relative au rapport d’audit, veuillez contacter
-        l’auditeur qui a réalisé cet audit à cette adresse e-mail :
-        <strong>{{ reportStore.data.context.auditorEmail }}</strong
+        l’auditeur qui a réalisé cet audit<template
+          v-if="reportStore.data.context.auditorEmail"
+        >
+          à cette adresse e-mail
+          <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
         >.
       </p>
     </div>
