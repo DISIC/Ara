@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
+import { useReportStore } from "../../store";
+
+const reportStore = useReportStore();
 </script>
 
 <template>
@@ -30,14 +33,14 @@ import PageMeta from "../../components/PageMeta";
       <strong>rgaa@design.numérique.gouv.fr</strong>.
     </p>
 
-    <!-- TODO: what if we're not on an audit page? -->
-    <!-- <div class="fr-callout">
+    <div v-if="reportStore.data?.context.auditorEmail" class="fr-callout">
       <p class="fr-callout__text">
         Pour toute question relative au rapport d’audit, veuillez contacter
-        l’auditeur qui a réalisé cet audit [(si adresse connue) à cette adresse
-        e-mail : [adresse e-mail]].
+        l’auditeur qui a réalisé cet audit à cette adresse e-mail :
+        <strong>{{ reportStore.data.context.auditorEmail }}</strong
+        >.
       </p>
-    </div> -->
+    </div>
 
     <h2>Vos contributions sont les bienvenues !</h2>
 
