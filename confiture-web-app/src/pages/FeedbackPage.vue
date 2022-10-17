@@ -295,7 +295,7 @@ const previousPageName = route?.meta.name ?? "précédente";
       d’opposition et d’un droit à la limitation du traitement de données vous
       concernant, ainsi que d’un droit d’accès, de rectification, de portabilité
       et d’effacement de vos données. Vous pouvez exercer vos droits en nous
-      écrivant à l’adresse électronique suivante :
+      écrivant par e-mail à l’adresse suivante :
       contact@design.numerique.gouv.fr.
     </p>
     <button class="fr-btn fr-mb-5w" type="submit">Envoyer mon avis</button>
