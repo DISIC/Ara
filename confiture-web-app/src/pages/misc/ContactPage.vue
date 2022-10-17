@@ -60,17 +60,13 @@ const reportStore = useReportStore();
           target="_blank"
           href="https://github.com/DISIC/confiture"
           >dépôt</a
-        >.
-        <!--
-          TODO: create a CONTRIBUTING.md file
-          Le guide de contribution est disponible à la racine du dépôt :
-          <a
-            class="fr-link"
-            target="_blank"
-            href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
-            >https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md</a
-          >
-         -->
+        >. Le guide de contribution est disponible à la racine du dépôt :
+        <a
+          class="fr-link"
+          target="_blank"
+          href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
+          >https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md</a
+        >
       </li>
     </ul>
   </section>
