@@ -37,13 +37,13 @@ const steps = computed(() => [
   {
     title: "Je mets en ligne la déclaration d’accessibilité",
     subTitle: "Par quoi commencer ?",
-    text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournis avec ce rapport sur votre site. ",
+    text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournis avec ce rapport sur votre site.",
     illustration: `url(${uploadIllustration})`,
   },
   {
     title: "Je corrige les erreurs relevées",
     subTitle: "Ensuite ?",
-    text: "Prioriser, corriger, tester. Vous trouverez dans ce rapport toutes les informations nécessaires pour vous aider dans chacune de ses tâches.",
+    text: "Prioriser, corriger, tester. Vous trouverez dans ce rapport toutes les informations nécessaires pour vous aider dans chacune de ces tâches.",
     illustration: `url(${hammerIllustration})`,
   },
   {
@@ -55,7 +55,7 @@ const steps = computed(() => [
   {
     title: "Je peux trouver de l’aide",
     subTitle: "Et si jamais ?",
-    text: "L’<strong>auditeur</strong> qui à réalisé cet audit peut vous aider, n’hésiter pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong> ou auprès de la <strong>communauté Slack</strong>.",
+    text: "L’<strong>auditeur</strong> qui à réalisé cet audit peut vous aider, n’hésiter pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
     illustration: `url(${handsIllustration})`,
   },
 ]);
