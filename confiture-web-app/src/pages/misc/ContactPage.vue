@@ -8,7 +8,7 @@ const reportStore = useReportStore();
 <template>
   <PageMeta
     title="Contactez-nous ou contribuez !"
-    description="Contactez-nous ou contribuez à l'amélioration du site Confiture"
+    description="Contactez-nous ou contribuez à l'amélioration de Confiture"
   />
 
   <section class="fr-mx-auto content">
@@ -36,10 +36,10 @@ const reportStore = useReportStore();
     <div v-if="reportStore.data" class="fr-callout">
       <p class="fr-callout__text">
         Pour toute question relative au rapport d’audit, veuillez contacter
-        l’auditeur qui a réalisé cet audit<template
+        l’auditeur ou l’auditrice qui a réalisé cet audit<template
           v-if="reportStore.data.context.auditorEmail"
         >
-          à cette adresse e-mail
+          à cette adresse électronique
           <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
         >.
       </p>
@@ -51,7 +51,7 @@ const reportStore = useReportStore();
     <ul>
       <li>
         En nous écrivant par e-mail à :
-        <strong>rgaa@confiture.numerique.gouv.fr</strong>.
+        <strong>rgaa@design.numerique.gouv.fr</strong>.
       </li>
       <li>
         En créant une issue sur le
