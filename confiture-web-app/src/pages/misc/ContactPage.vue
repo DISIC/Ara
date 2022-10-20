@@ -8,7 +8,7 @@ const reportStore = useReportStore();
 <template>
   <PageMeta
     title="Contactez-nous ou contribuez !"
-    description="Contactez-nous ou contribuez à l'amélioration de Confiture"
+    description="Contactez-nous ou contribuez à l’amélioration de Confiture"
   />
 
   <section class="fr-mx-auto content">
