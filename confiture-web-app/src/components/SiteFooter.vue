@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import fiphfpLogo from "../assets/images/fiphfp.png";
+</script>
+
 <template>
   <footer id="footer" class="fr-footer" role="contentinfo">
     <div class="fr-container">
@@ -13,11 +17,21 @@
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
             Ce site est réalisé par
-            <a href="https://design.numerique.gouv.fr/" target="_blank"
+            <a
+              class="fr-link fr-text--sm"
+              href="https://design.numerique.gouv.fr/"
+              target="_blank"
               >DesignGouv</a
-            >, le pôle Design des services numériques de la
-            <a href="https://www.numerique.gouv.fr/dinum/" target="_blank"
-              >direction interministérielle du numérique</a
+            >, le pôle Design des services numériques de la direction
+            interministérielle du numérique avec le soutien du
+            <a
+              class="fr-link fr-text--sm"
+              href="https://www.fiphfp.fr/"
+              target="_blank"
+              >FIPHFP<span class="sr-only"
+                >Fonds pour l’insertion des personnes handicapées dans la
+                Fonction publique</span
+              > </a
             >.
           </p>
           <ul class="fr-footer__content-list">
@@ -54,6 +68,20 @@
               >
             </li>
           </ul>
+        </div>
+      </div>
+      <div class="fr-footer__partners">
+        <p class="fr-footer__partners-title fr-mb-1w">Notre partenaire :</p>
+        <div class="fr-footer__partners-logos">
+          <div class="fr-footer__partners-main">
+            <a class="fr-footer__partners-link" href="https://www.fiphfp.fr/">
+              <img
+                class="fr-footer__logo logo-partner"
+                :src="fiphfpLogo"
+                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique"
+              />
+            </a>
+          </div>
         </div>
       </div>
       <div class="fr-footer__bottom">
@@ -110,3 +138,9 @@
     </div>
   </footer>
 </template>
+
+<style scoped>
+.logo-partner {
+  border: 1px solid var(--border-default-grey);
+}
+</style>
