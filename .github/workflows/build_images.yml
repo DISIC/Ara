@@ -1,0 +1,82 @@
+name: Build container images
+
+on:
+  - push
+
+jobs:
+
+
+  build_backend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log into registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: "ghcr.io/disic/designgouv-confiture/rest-api"
+          tags: |
+            type=schedule
+            # type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            # add sha
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./confiture-rest-api
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
+  build_frontend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log into registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: "ghcr.io/disic/designgouv-confiture/web-app"
+          tags: |
+            type=schedule
+            # type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            # add sha
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./confiture-web-app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
