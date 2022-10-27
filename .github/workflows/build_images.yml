@@ -26,7 +26,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: "ghcr.io/disic/designgouv-confiture/rest-api"
+          images: "ghcr.io/disic/designgouv-confiture/backend"
           tags: |
             type=schedule
             # type=ref,event=branch
@@ -64,7 +64,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: "ghcr.io/disic/designgouv-confiture/web-app"
+          images: "ghcr.io/disic/designgouv-confiture/frontend"
           tags: |
             type=schedule
             # type=ref,event=branch
