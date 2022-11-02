@@ -1,7 +1,7 @@
 name: Build frontend container image
 
 on:
-  push
+  push:
     branches:
       - 'main'
     paths:
