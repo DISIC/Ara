@@ -1,4 +1,4 @@
-name: Build container images
+name: Build backend container image
 
 on:
   workflow_dispatch:
