@@ -1,6 +1,7 @@
 name: Build frontend container image
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'main'
