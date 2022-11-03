@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AuditsModule } from './audits/audits.module';
+import { HealthCheckController } from './health-check.controller';
 
 @Module({
   imports: [
@@ -30,5 +31,6 @@ import { AuditsModule } from './audits/audits.module';
     FeedbackModule,
     AuditsModule,
   ],
+  controllers: [HealthCheckController]
 })
 export class AppModule {}
