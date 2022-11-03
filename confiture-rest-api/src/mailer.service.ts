@@ -37,6 +37,8 @@ export class MailerService {
     const auditUrl = `${this.config.get('FRONT_BASE_URL')}/audits/${
       audit.editUniqueId
     }`;
+    
+    // FIXME: what to do if the mail fails to send for some reason ?
     return this.sendMail(
       audit.auditorEmail,
       'Nouvel audit créé',

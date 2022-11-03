@@ -43,7 +43,8 @@ export class AuditsController {
   })
   async createAudit(@Body() body: CreateAuditDto) {
     const audit = await this.auditService.createAudit(body);
-    await this.mailer.sendAuditCreatedMail(audit);
+    // FIXME: the whole requests fails if the mail fails to send properly
+    // await this.mailer.sendAuditCreatedMail(audit);
     return audit;
   }
 
