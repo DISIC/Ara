@@ -1,9 +1,7 @@
-import { AuditType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsIn,
-  IsNumber,
+  IsEmail,
   IsOptional,
   IsString,
   IsUrl,
@@ -27,26 +25,6 @@ class UpdateAuditTool {
    * @example "https://firefox-dev.tools/"
    */
   @IsString()
-  @IsUrl()
-  url: string;
-}
-
-export class UpdateAuditPage {
-  /**
-   * Include the page ID in order to update an existing page.
-   */
-  @IsNumber()
-  @IsOptional()
-  id?: number;
-  /**
-   * @example "Page de contact"
-   */
-  @IsString()
-  name: string;
-
-  /**
-   * @example "https://example.com/contact"
-   */
   @IsUrl()
   url: string;
 }
@@ -98,14 +76,56 @@ class UpdateAuditEnvironment {
   browserVersion: string;
 }
 
+// class CreateAuditRecipients {
+//   /**
+//    * @example "Pierre Poljak"
+//    */
+//   @IsString()
+//   name: string;
+
+//   /**
+//    * @example "ministre@government.com"
+//    */
+//   @IsEmail()
+//   email: string;
+// }
+
 export class UpdateAuditDto extends CreateAuditDto {
   /**
-   * @example "FULL"
+   * @example "https://procedure.government.com"
+   */
+  @IsUrl()
+  procedureUrl: string;
+
+  /**
+   * @example "Ministry of Internet"
    */
   @IsString()
-  @IsIn(Object.values(AuditType))
+  initiator: string;
+
+  /**
+   * @example "John Referent"
+   */
+  @IsString()
   @IsOptional()
-  auditType?: AuditType;
+  contactName?: string;
+
+  /**
+   * @example "accessibility@procedure.government.com"
+   */
+  @IsEmail()
+  contactEmail: string;
+
+  /**
+   * @example "https://procedure.government.com/contact-a11y"
+   */
+  @IsUrl()
+  contactFormUrl: string;
+
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => CreateAuditRecipients)
+  // recipients: CreateAuditRecipients[];
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -119,11 +139,12 @@ export class UpdateAuditDto extends CreateAuditDto {
   @IsOptional()
   environments?: UpdateAuditEnvironment[];
 
+  /**
+   * @example ["HTML", "CSS"]
+   */
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateAuditPage)
-  @IsOptional()
-  pages?: UpdateAuditPage[];
+  @IsString({ each: true })
+  technologies: string[];
 
   @IsString()
   notCompliantContent: string;

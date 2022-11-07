@@ -1,69 +1,54 @@
+import { AuditType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEmail,
+  IsIn,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
   ValidateNested,
 } from 'class-validator';
 
-class CreateAuditRecipients {
+export class CreateAuditPage {
   /**
-   * @example "Pierre Poljak"
+   * Include the page ID in order to update an existing page.
+   */
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+  /**
+   * @example "Page de contact"
    */
   @IsString()
   name: string;
 
   /**
-   * @example "ministre@government.com"
+   * @example "https://example.com/contact"
    */
-  @IsEmail()
-  email: string;
+  @IsUrl()
+  url: string;
 }
 
 export class CreateAuditDto {
+  /**
+   * @example "FULL"
+   */
+  @IsString()
+  @IsIn(Object.values(AuditType))
+  auditType: AuditType;
+
   /**
    * @example "My procedure"
    */
   @IsString()
   procedureName: string;
 
-  /**
-   * @example "https://procedure.government.com"
-   */
-  @IsUrl()
-  procedureUrl: string;
-
-  /**
-   * @example "Ministry of Internet"
-   */
-  @IsString()
-  initiator: string;
-
-  /**
-   * @example "John Referent"
-   */
-  @IsString()
-  @IsOptional()
-  contactName?: string;
-
-  /**
-   * @example "accessibility@procedure.government.com"
-   */
-  @IsEmail()
-  contactEmail: string;
-
-  /**
-   * @example "https://procedure.government.com/contact-a11y"
-   */
-  @IsUrl()
-  contactFormUrl: string;
-
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateAuditRecipients)
-  recipients: CreateAuditRecipients[];
+  @Type(() => CreateAuditPage)
+  pages: CreateAuditPage[];
 
   /**
    * @example "John Auditor"
@@ -75,12 +60,12 @@ export class CreateAuditDto {
    * @example "john@audit.com"
    */
   @IsEmail()
-  auditorEmail: string;
+  @IsOptional()
+  auditorEmail?: string;
 
   /**
-   * @example ["HTML", "CSS"]
+   * @example "WEB AUDIT SARL"
    */
-  @IsArray()
-  @IsString({ each: true })
-  technologies: string[];
+  @IsString()
+  auditorOrganisation: string;
 }
