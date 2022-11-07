@@ -61,7 +61,7 @@ function submitStepOne(data: CreateAuditRequestData) {
     .then((audit) => {
       // TODO: replace current history entry with the edit page
       return router.push({
-        name: "edit-audit-step-two",
+        name: "edit-audit-step-three",
         params: { uniqueId: audit.editUniqueId },
       });
     })
