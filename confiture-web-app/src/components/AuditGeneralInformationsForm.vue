@@ -31,10 +31,13 @@ const auditType = ref(props.defaultValues?.auditType ?? null);
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
 const pages = ref(
   props.defaultValues?.pages ?? [
-    {
-      name: "",
-      url: "",
-    },
+    { name: "Accueil", url: "" },
+    { name: "Contact", url: "" },
+    { name: "Mentions légales", url: "" },
+    { name: "Accessibilité", url: "" },
+    { name: "Plan du site", url: "" },
+    { name: "Aide", url: "" },
+    { name: "Authentification", url: "" },
   ]
 );
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
