@@ -81,7 +81,7 @@ function submitStepOne(data: CreateAuditRequestData) {
 
 <template>
   <PageMeta
-    title="Informations générales sur le site à auditer"
+    title="Paramètres de l'audit"
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 

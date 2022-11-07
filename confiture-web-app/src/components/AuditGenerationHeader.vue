@@ -12,8 +12,8 @@ import { useDevMode } from "../composables/useDevMode";
 
 defineProps<{
   auditName: string;
-  auditPublicationDate?: string;
-  auditEditionDate?: string;
+  auditPublicationDate: string | null;
+  auditEditionDate: string | null;
   keyInfos: {
     label: string;
     value: string | number;
