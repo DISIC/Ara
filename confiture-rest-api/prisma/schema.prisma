@@ -45,6 +45,7 @@ model Audit {
   id Int @id @default(autoincrement())
 
   // Audit creation step
+  auditType           AuditType
   procedureName       String
   /// @DtoEntityHidden
   pages               AuditedPage[]
@@ -59,7 +60,6 @@ model Audit {
   contactEmail        String?
   contactFormUrl      String?
   technologies        String[]
-  auditType           AuditType
   tools               Tool[]
   environments        TestEnvironment[]
   notCompliantContent String?
