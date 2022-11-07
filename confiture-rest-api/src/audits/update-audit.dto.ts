@@ -47,7 +47,7 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  operatingSystemVersion: string;
+  operatingSystemVersion?: string;
 
   /**
    * @example "JAWS"
@@ -60,7 +60,7 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  assistiveTechnologyVersion: string;
+  assistiveTechnologyVersion?: string;
 
   /**
    * @example "Firefox"
@@ -73,7 +73,7 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  browserVersion: string;
+  browserVersion?: string;
 }
 
 // class CreateAuditRecipients {
@@ -95,13 +95,15 @@ export class UpdateAuditDto extends CreateAuditDto {
    * @example "https://procedure.government.com"
    */
   @IsUrl()
-  procedureUrl: string;
+  @IsOptional()
+  procedureUrl?: string;
 
   /**
    * @example "Ministry of Internet"
    */
   @IsString()
-  initiator: string;
+  @IsOptional()
+  initiator?: string;
 
   /**
    * @example "John Referent"
@@ -114,13 +116,15 @@ export class UpdateAuditDto extends CreateAuditDto {
    * @example "accessibility@procedure.government.com"
    */
   @IsEmail()
-  contactEmail: string;
+  @IsOptional()
+  contactEmail?: string;
 
   /**
    * @example "https://procedure.government.com/contact-a11y"
    */
   @IsUrl()
-  contactFormUrl: string;
+  @IsOptional()
+  contactFormUrl?: string;
 
   // @IsArray()
   // @ValidateNested({ each: true })
@@ -144,14 +148,18 @@ export class UpdateAuditDto extends CreateAuditDto {
    */
   @IsArray()
   @IsString({ each: true })
-  technologies: string[];
+  @IsOptional()
+  technologies?: string[];
 
   @IsString()
-  notCompliantContent: string;
+  @IsOptional()
+  notCompliantContent?: string;
 
   @IsString()
-  derogatedContent: string;
+  @IsOptional()
+  derogatedContent?: string;
 
   @IsString()
-  notInScopeContent: string;
+  @IsOptional()
+  notInScopeContent?: string;
 }
