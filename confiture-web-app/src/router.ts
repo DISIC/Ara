@@ -182,22 +182,6 @@ const router = createRouter({
       },
     },
     {
-      path: "/audits/:uniqueId/parametres",
-      name: "edit-audit-step-two",
-      component: EditAuditStepTwoPage,
-      beforeEnter: saveCurrentEditionStep,
-      meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getFirstBreadcrumbLink(),
-          {
-            label: getProcedureName(),
-            name: "edit-audit-step-two",
-          },
-        ],
-      },
-    },
-    {
       path: "/audits/:uniqueId/generation",
       name: "edit-audit-step-three",
       component: EditAuditStepThreePage,

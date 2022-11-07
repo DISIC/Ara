@@ -1,9 +1,7 @@
-import { AuditType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsIn,
-  IsNumber,
+  IsEmail,
   IsOptional,
   IsString,
   IsUrl,
@@ -31,26 +29,6 @@ class UpdateAuditTool {
   url: string;
 }
 
-export class UpdateAuditPage {
-  /**
-   * Include the page ID in order to update an existing page.
-   */
-  @IsNumber()
-  @IsOptional()
-  id?: number;
-  /**
-   * @example "Page de contact"
-   */
-  @IsString()
-  name: string;
-
-  /**
-   * @example "https://example.com/contact"
-   */
-  @IsUrl()
-  url: string;
-}
-
 class UpdateAuditEnvironment {
   /**
    * @example "Desktop"
@@ -69,7 +47,7 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  operatingSystemVersion: string;
+  operatingSystemVersion?: string;
 
   /**
    * @example "JAWS"
@@ -82,7 +60,7 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  assistiveTechnologyVersion: string;
+  assistiveTechnologyVersion?: string;
 
   /**
    * @example "Firefox"
@@ -95,17 +73,63 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   @IsOptional()
-  browserVersion: string;
+  browserVersion?: string;
 }
+
+// class CreateAuditRecipients {
+//   /**
+//    * @example "Pierre Poljak"
+//    */
+//   @IsString()
+//   name: string;
+
+//   /**
+//    * @example "ministre@government.com"
+//    */
+//   @IsEmail()
+//   email: string;
+// }
 
 export class UpdateAuditDto extends CreateAuditDto {
   /**
-   * @example "FULL"
+   * @example "https://procedure.government.com"
+   */
+  @IsUrl()
+  @IsOptional()
+  procedureUrl?: string;
+
+  /**
+   * @example "Ministry of Internet"
    */
   @IsString()
-  @IsIn(Object.values(AuditType))
   @IsOptional()
-  auditType?: AuditType;
+  initiator?: string;
+
+  /**
+   * @example "John Referent"
+   */
+  @IsString()
+  @IsOptional()
+  contactName?: string;
+
+  /**
+   * @example "accessibility@procedure.government.com"
+   */
+  @IsEmail()
+  @IsOptional()
+  contactEmail?: string;
+
+  /**
+   * @example "https://procedure.government.com/contact-a11y"
+   */
+  @IsUrl()
+  @IsOptional()
+  contactFormUrl?: string;
+
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => CreateAuditRecipients)
+  // recipients: CreateAuditRecipients[];
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -119,18 +143,23 @@ export class UpdateAuditDto extends CreateAuditDto {
   @IsOptional()
   environments?: UpdateAuditEnvironment[];
 
+  /**
+   * @example ["HTML", "CSS"]
+   */
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateAuditPage)
+  @IsString({ each: true })
   @IsOptional()
-  pages?: UpdateAuditPage[];
+  technologies?: string[];
 
   @IsString()
-  notCompliantContent: string;
+  @IsOptional()
+  notCompliantContent?: string;
 
   @IsString()
-  derogatedContent: string;
+  @IsOptional()
+  derogatedContent?: string;
 
   @IsString()
-  notInScopeContent: string;
+  @IsOptional()
+  notInScopeContent?: string;
 }

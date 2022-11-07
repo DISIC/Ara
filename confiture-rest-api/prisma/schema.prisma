@@ -44,46 +44,36 @@ enum AuditType {
 model Audit {
   id Int @id @default(autoincrement())
 
-  editUniqueId    String @unique
-  consultUniqueId String @unique
-
-  // Step 1
-
-  initiator String
-
-  procedureName String
-  procedureUrl  String
-
-  contactName    String?
-  contactEmail   String
-  contactFormUrl String
-
-  recipients Recipent[]
-
-  auditorName  String
-  auditorEmail String
-
-  technologies String[]
-
-  // Step 2 (all fields must be optionnal)
-
-  auditType    AuditType?
-  tools        Tool[]
-  environments TestEnvironment[]
+  // Audit creation step
+  auditType           AuditType
+  procedureName       String
   /// @DtoEntityHidden
-  pages        AuditedPage[]
+  pages               AuditedPage[]
+  auditorName         String?
+  auditorEmail        String
+  auditorOrganisation String
 
+  // A11y declaration edition step
+  initiator           String?
+  procedureUrl        String?
+  contactName         String?
+  contactEmail        String?
+  contactFormUrl      String?
+  technologies        String[]
+  tools               Tool[]
+  environments        TestEnvironment[]
   notCompliantContent String?
   derogatedContent    String?
   notInScopeContent   String?
 
-  auditTraceId Int        @unique
-  auditTrace   AuditTrace @relation(fields: [auditTraceId], references: [id])
-
-  // Step 4
-
+  // Misc
+  recipients      Recipent[] // unused for now
   publicationDate DateTime?
   editionDate     DateTime?
+  editUniqueId    String     @unique
+  consultUniqueId String     @unique
+  auditTraceId    Int        @unique
+  auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
 
   @@unique([editUniqueId, consultUniqueId])
 }

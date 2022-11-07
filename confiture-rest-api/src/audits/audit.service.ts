@@ -40,22 +40,16 @@ export class AuditService {
         consultUniqueId,
 
         procedureName: data.procedureName,
-        procedureUrl: data.procedureUrl,
 
-        initiator: data.initiator,
+        auditType: data.auditType,
 
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
+        auditorOrganisation: data.auditorOrganisation,
 
-        contactName: data.contactName,
-        contactEmail: data.contactEmail,
-        contactFormUrl: data.contactFormUrl,
-
-        technologies: data.technologies,
-
-        recipients: {
+        pages: {
           createMany: {
-            data: data.recipients,
+            data: data.pages,
           },
         },
 
@@ -158,25 +152,25 @@ export class AuditService {
             contactEmail: data.contactEmail,
             contactFormUrl: data.contactFormUrl,
 
-            recipients: {
-              deleteMany: {
-                email: {
-                  notIn: data.recipients.map((r) => r.email),
-                },
-              },
+            // recipients: {
+            //   deleteMany: {
+            //     email: {
+            //       notIn: data.recipients.map((r) => r.email),
+            //     },
+            //   },
 
-              // create or update recipients
-              upsert: data.recipients.map((recipient) => ({
-                where: {
-                  email_auditUniqueId: {
-                    auditUniqueId: uniqueId,
-                    email: recipient.email,
-                  },
-                },
-                create: recipient,
-                update: recipient,
-              })),
-            },
+            //   // create or update recipients
+            //   upsert: data.recipients.map((recipient) => ({
+            //     where: {
+            //       email_auditUniqueId: {
+            //         auditUniqueId: uniqueId,
+            //         email: recipient.email,
+            //       },
+            //     },
+            //     create: recipient,
+            //     update: recipient,
+            //   })),
+            // },
 
             // step 2
             auditType: data.auditType,
