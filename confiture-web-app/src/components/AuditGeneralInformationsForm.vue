@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { nextTick, ref, computed } from "vue";
+import { nextTick, ref } from "vue";
 import { useDevMode } from "../composables/useDevMode";
-import { CreateAuditRequestData } from "../types";
+import { AuditType, CreateAuditRequestData } from "../types";
+import AuditTypeRadio from "./AuditTypeRadio.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -11,59 +12,58 @@ const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
 }>();
 
-const availableTechnologies = ["HTML", "CSS", "JavaScript", "PHP", "MySQL"];
+const availableAuditTypes = [
+  {
+    label: "Rapide",
+    value: AuditType.FAST,
+  },
+  {
+    label: "Complémentaire",
+    value: AuditType.COMPLEMENTARY,
+  },
+  {
+    label: "Complet",
+    value: AuditType.FULL,
+  },
+];
 
-const procedureEntity = ref(props.defaultValues?.initiator ?? "");
+const auditType = ref(props.defaultValues?.auditType ?? null);
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
-const procedureSiteUrl = ref(props.defaultValues?.procedureUrl ?? "");
-const procedureManagerName = ref(props.defaultValues?.contactName ?? "");
-const procedureManagerEmail = ref(props.defaultValues?.contactEmail ?? "");
-const procedureManagerFormUrl = ref(props.defaultValues?.contactFormUrl ?? "");
+const pages = ref(
+  props.defaultValues?.pages ?? [
+    {
+      name: "",
+      url: "",
+    },
+  ]
+);
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
-const defaultTechnologies = ref<string[]>(
-  props.defaultValues?.technologies.length
-    ? props.defaultValues?.technologies.filter((tech) =>
-        availableTechnologies.includes(tech)
-      )
-    : []
+const procedureAuditorOrganisation = ref(
+  props.defaultValues?.auditorOrganisation ?? ""
 );
-const customTechnologies = ref<string[]>(
-  props.defaultValues?.technologies.length
-    ? props.defaultValues?.technologies.filter(
-        (tech) => !availableTechnologies.includes(tech)
-      )
-    : [""]
-);
-const auditTechnologies = computed(() => {
-  return [...defaultTechnologies.value, ...customTechnologies.value].filter(
-    Boolean
-  );
-});
-
-const customTechNameRefs = ref<HTMLInputElement[]>([]);
+const pageNameRefs = ref<HTMLInputElement[]>([]);
 
 /**
- * Create a new tech and focus its field.
+ * Create a new page and focus its name field.
  */
-async function addTech() {
-  customTechnologies.value.push("");
+async function addPage() {
+  pages.value.push({ name: "", url: "" });
   await nextTick();
-  const lastInput =
-    customTechNameRefs.value[customTechNameRefs.value.length - 1];
+  const lastInput = pageNameRefs.value[pageNameRefs.value.length - 1];
   lastInput.focus();
 }
 
 /**
- * Delete custom tech at index and focus previous or first field.
+ * Delete page at index and focus previous or first name field.
  * @param {number} i
  */
-async function deleteCustomTech(i: number) {
-  customTechnologies.value.splice(i, 1);
+async function deletePage(i: number) {
+  pages.value.splice(i, 1);
   await nextTick();
-  const lastInput =
-    i === 0 ? customTechNameRefs.value[0] : customTechNameRefs.value[i - 1];
-  lastInput.focus();
+  const previousInput =
+    i === 0 ? pageNameRefs.value[0] : pageNameRefs.value[i - 1];
+  previousInput.focus();
 }
 
 /**
@@ -71,34 +71,25 @@ async function deleteCustomTech(i: number) {
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {
-  procedureEntity.value = "Mairie de Tours";
+  auditType.value = AuditType.FULL;
   procedureName.value = "Ma procédure";
-  procedureSiteUrl.value = "https://example.com";
-  procedureManagerName.value = "Philipinne Jolivet";
-  procedureManagerEmail.value = "philipinne-jolivet@example.com";
-  procedureManagerFormUrl.value = "https://example.com/contact";
-  // procedureRecipients.value = [
-  //   { name: "Isabelle", email: "isabelle@example.com" },
-  //   { name: "Marc", email: "marc@example.com" },
-  // ];
+  pages.value = [
+    { name: "Accueil", url: "https://example.com" },
+    { name: "Contact", url: "https://example.com/contact" },
+  ];
   procedureAuditorName.value = "Etienne Dupont";
   procedureAuditorEmail.value = "etienne-dupont@example.com";
-  defaultTechnologies.value = ["HTML", "CSS"];
-  customTechnologies.value = ["WordPress"];
+  procedureAuditorOrganisation.value = "Example Organisation";
 }
 
 function onSubmit() {
   emit("submit", {
-    initiator: procedureEntity.value,
+    auditType: auditType.value!,
     procedureName: procedureName.value,
-    procedureUrl: procedureSiteUrl.value,
-    contactName: procedureManagerName.value,
-    contactEmail: procedureManagerEmail.value,
-    contactFormUrl: procedureManagerFormUrl.value,
-    recipients: [],
+    pages: pages.value,
     auditorName: procedureAuditorName.value,
     auditorEmail: procedureAuditorEmail.value,
-    technologies: auditTechnologies.value,
+    auditorOrganisation: procedureAuditorOrganisation.value,
   });
 }
 
@@ -107,33 +98,33 @@ const isDevMode = useDevMode();
 
 <template>
   <form class="content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3v">📄 Informations générales du site à auditer</h1>
+    <h1 class="fr-mb-3v">⚙️ Paramètres de l’audit</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
-    <div class="fr-input-group">
-      <label class="fr-label" for="procedure-entity">
-        Entité qui demande l’audit
-        <span class="fr-hint-text">
-          Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc
-        </span>
-      </label>
-      <input
-        id="procedure-entity"
-        v-model="procedureEntity"
-        class="fr-input"
-        type="text"
-        required
-      />
-    </div>
+    <section class="fr-form-group">
+      <fieldset class="fr-fieldset">
+        <legend id="radio-rich-legend" class="fr-fieldset__legend">
+          <h2 class="fr-h4 fr-mb-0">Type d’audit</h2>
+        </legend>
+        <div class="fr-fieldset__content audit-types">
+          <AuditTypeRadio
+            v-for="type in availableAuditTypes"
+            :key="type.value"
+            v-model="auditType"
+            class="audit-type"
+            :value="type.value"
+            :label="type.label"
+            :checked="auditType === type.value"
+          />
+        </div>
+      </fieldset>
+    </section>
 
     <div class="fr-input-group">
       <label class="fr-label" for="procedure-name">
-        Nom de l’audit
-        <span class="fr-hint-text">
-          Il peut s’agir du site ou du parcours que vous allez auditer
-        </span>
+        Nom du site à auditer
       </label>
       <input
         id="procedure-name"
@@ -144,93 +135,92 @@ const isDevMode = useDevMode();
       />
     </div>
 
-    <div class="fr-input-group">
-      <label class="fr-label" for="procedure-url">
-        URL du site à auditer
-        <span class="fr-hint-text">
-          Saisissez une URL valide, commençant par http:// ou https://
-        </span>
-      </label>
-      <input
-        id="procedure-url"
-        v-model="procedureSiteUrl"
-        class="fr-input"
-        type="text"
-        required
-        placeholder="https://"
-      />
-    </div>
+    <h2 class="fr-h4">Les pages et URL à auditer</h2>
 
-    <fieldset class="fr-fieldset fr-mt-6w">
-      <legend>
-        <h2 class="fr-h4 fr-mb-2w">Responsable du site</h2>
-      </legend>
+    <fieldset
+      v-for="(page, i) in pages"
+      :key="i"
+      class="fr-fieldset fr-mt-4w fr-p-4w page-card"
+    >
+      <div class="fr-mb-2w page-header">
+        <legend>
+          <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+        </legend>
 
-      <p>
-        Ces informations seront affichées dans la déclaration d’accessibilité.
-        Elles permettent aux usagers qui rencontrent des difficultés pour
-        accéder à du contenu ou à un service d’être orienté vers une solution
-        adaptée. Au moins un des moyens de contact (adresse e-mail ou URL vers
-        formulaire de contact) doit être rempli.
-      </p>
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline"
+          type="button"
+          :disabled="pages.length === 1"
+          @click="deletePage(i)"
+        >
+          Supprimer
+        </button>
+      </div>
 
       <div class="fr-input-group">
-        <label class="fr-label" for="procedure-manager-name">
-          Nom et prénom du contact (optionnel)
+        <label class="fr-label" :for="`page-name-${i + 1}`">
+          Nom de la page
         </label>
         <input
-          id="procedure-manager-name"
-          v-model="procedureManagerName"
+          :id="`page-name-${i + 1}`"
+          ref="pageNameRefs"
+          v-model="page.name"
           class="fr-input"
         />
       </div>
 
       <div class="fr-input-group">
-        <label class="fr-label" for="procedure-manager-email">
-          Adresse e-mail
-          <span class="fr-hint-text">Exemple : contact@ministere.gouv.fr</span>
+        <label class="fr-label" :for="`page-url-${i + 1}`">
+          URL de la page
         </label>
         <input
-          id="procedure-manager-email"
-          v-model="procedureManagerEmail"
-          class="fr-input"
-          type="email"
-          required
-        />
-      </div>
-
-      <div class="fr-input-group">
-        <label class="fr-label" for="procedure-manager-form-url">
-          URL vers formulaire de contact
-          <span class="fr-hint-text">
-            Saisissez une URL valide, commençant par http:// ou https://
-          </span>
-        </label>
-        <input
-          id="procedure-manager-form-url"
-          v-model="procedureManagerFormUrl"
+          :id="`page-url-${i + 1}`"
+          v-model="page.url"
           class="fr-input"
           type="url"
           required
-          placeholder="https://"
+          placeholder="http://"
         />
       </div>
     </fieldset>
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+      type="button"
+      @click="addPage"
+    >
+      Ajouter une page
+    </button>
 
     <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
       </legend>
 
-      <p>
-        Ces informations seront affichées sur le rapport d’audit, elles
-        permettent à l’entité qui fait la demande d’audit de pouvoir contacter
-        facilement l’auditeur en cas de questions.
-      </p>
+      <div class="fr-input-group">
+        <label for="procedure-auditor-organisation" class="fr-label">
+          Nom de la structure qui réalise l'audit
+          <span class="fr-hint-text">
+            Le nom de la structure sera visible sur le rapport d’audit.
+          </span>
+        </label>
+        <input
+          id="procedure-auditor-organisation"
+          v-model="procedureAuditorOrganisation"
+          class="fr-input"
+          required
+        />
+      </div>
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-auditor-name">
           Nom et prénom de l’auditeur (optionnel)
+          <span class="fr-hint-text">
+            Permet au demandeur de l’audit de plus facilement vous identifier si
+            il a des questions ou besoin d’aide.
+            <br />
+            Vous avez le choix de publier ou non cette information sur le
+            rapport d’audit.
+          </span>
         </label>
         <input
           id="procedure-auditor-name"
@@ -241,10 +231,14 @@ const isDevMode = useDevMode();
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-auditor-email">
-          Adresse e-mail de l’auditeur
-          <span class="fr-hint-text"
-            >Exemple : prenom.nom@modernisation.gouv.fr</span
-          >
+          Adresse e-mail de la structure ou de l’auditeur
+          <span class="fr-hint-text">
+            Permet de vous envoyer le futur lien administrateur de l’audit et le
+            lien du rapport d’audit.
+            <br />
+            Vous avez le choix de publier ou non cette information sur le
+            rapport d’audit.
+          </span>
         </label>
         <input
           id="procedure-auditor-email"
@@ -255,63 +249,6 @@ const isDevMode = useDevMode();
         />
       </div>
     </fieldset>
-
-    <fieldset class="fr-fieldset">
-      <legend class="fr-fieldset__legend">
-        <h2 class="fr-h4 fr-mb-0">
-          Technologies utilisées pour la réalisation du site
-        </h2>
-      </legend>
-
-      <div class="fr-fieldset__content">
-        <div
-          v-for="(tech, i) in availableTechnologies"
-          :key="i"
-          class="fr-checkbox-group"
-        >
-          <input
-            :id="`tech-${i}`"
-            v-model="defaultTechnologies"
-            type="checkbox"
-            :value="tech"
-          />
-          <label class="fr-label" :for="`tech-${i}`">
-            {{ tech }}
-          </label>
-        </div>
-      </div>
-    </fieldset>
-
-    <template v-for="(_, i) in customTechnologies" :key="i">
-      <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tech-${i}`">
-        Ajouter une technologie (optionnel)
-      </label>
-      <div class="delete-custom-tech">
-        <input
-          :id="`custom-tech-${i}`"
-          ref="customTechNameRefs"
-          v-model="customTechnologies[i]"
-          class="fr-input"
-          type="text"
-        />
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
-          :disabled="customTechnologies.length === 1"
-          type="button"
-          @click="deleteCustomTech(i)"
-        >
-          Supprimer
-        </button>
-      </div>
-    </template>
-
-    <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
-      type="button"
-      @click="addTech"
-    >
-      Ajouter un outil
-    </button>
 
     <div v-if="isDevMode">
       <button
@@ -324,7 +261,7 @@ const isDevMode = useDevMode();
     </div>
 
     <div>
-      <button class="fr-btn fr-mt-6w" type="submit">Suivant</button>
+      <button class="fr-btn fr-mt-6w" type="submit">Commencer l'audit</button>
     </div>
   </form>
 </template>
@@ -338,19 +275,25 @@ const isDevMode = useDevMode();
   color: var(--text-mention-grey);
 }
 
-.contact-card {
+.audit-types {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audit-type {
+  flex: 1 1 0;
+}
+
+.page-card {
   border: 1px solid var(--border-default-grey);
 }
 
-.contact-header {
+.page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-}
-
-.delete-custom-tech {
-  display: flex;
 }
 </style>

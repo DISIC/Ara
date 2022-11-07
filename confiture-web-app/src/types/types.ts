@@ -39,59 +39,46 @@ export interface Audit {
   editUniqueId: string;
   consultUniqueId: string;
 
-  // Step 1
-  initiator: string;
+  publicationDate: string | null;
+  editionDate: string | null;
 
+  // Audit creation
+  auditType: AuditType;
   procedureName: string;
-  procedureUrl: string;
-
-  contactName: string | null;
-  contactEmail: string;
-  contactFormUrl: string;
-
-  auditorName: string;
+  pages: AuditPage[];
   auditorEmail: string;
+  auditorName: string | null;
+  auditorOrganisation: string;
 
-  recipients: AuditRecipent[];
-
+  // A11y declaration edition
   technologies: string[];
-
-  // Step 2
-  auditType: null | AuditType;
+  procedureUrl: string | null;
+  initiator: string | null;
   tools: AuditTool[];
   environments: AuditEnvironment[];
-  pages: AuditPage[];
-
-  notCompliantContent?: string;
-  derogatedContent?: string;
-  notInScopeContent?: string;
-
-  publicationDate?: string;
-  editionDate?: string;
+  contactName: string | null;
+  contactEmail: string | null;
+  contactFormUrl: string | null;
+  notCompliantContent: string | null;
+  derogatedContent: string | null;
+  notInScopeContent: string | null;
 }
 
 /** Audit type but without the generated IDs and step 2 fields */
 export type CreateAuditRequestData = Pick<
   Audit,
-  | "initiator"
+  | "auditType"
   | "procedureName"
-  | "procedureUrl"
-  | "contactName"
-  | "contactEmail"
-  | "contactFormUrl"
-  | "auditorName"
   | "auditorEmail"
-  | "technologies"
-> & {
-  recipients: Omit<AuditRecipent, "id">[];
-};
+  | "auditorName"
+  | "auditorOrganisation"
+> & { pages: Omit<AuditPage, "id">[] };
 
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = CreateAuditRequestData &
   Pick<Audit, "auditType"> & {
     tools: Omit<AuditTool, "id">[];
     environments: Omit<AuditEnvironment, "id">[];
-    pages: Omit<AuditPage, "id">[];
   };
 
 export interface CreateFeedbackRequestData {

@@ -85,25 +85,6 @@ function submitStepOne(data: CreateAuditRequestData) {
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 
-  <div
-    class="fr-stepper"
-    aria-controls="leave-modal"
-    :data-fr-opened="isLeaveModalOpen"
-  >
-    <h2 class="fr-stepper__title">
-      <span class="fr-stepper__state">Étape 1 sur 2</span>
-      Informations générales
-    </h2>
-    <div
-      class="fr-stepper__steps"
-      data-fr-current-step="1"
-      data-fr-steps="2"
-    ></div>
-    <p class="fr-stepper__details">
-      <span class="fr-text--bold">Étape suivante :</span> Paramètres de l’audit
-    </p>
-  </div>
-
   <AuditGeneralInformationsForm @submit="submitStepOne" />
 
   <!-- FIXME: find a proper solution to display the modal -->
