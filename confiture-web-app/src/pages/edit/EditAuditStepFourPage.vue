@@ -97,6 +97,11 @@ const headerInfos = computed(() => [
 const hasA11yStatement = computed(() => {
   return auditStore.data?.auditType === AuditType.FULL;
 });
+
+const isStatementFilled = computed(() => {
+  // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
+  return !!auditStore.data?.initiator;
+});
 </script>
 
 <template>
@@ -107,6 +112,23 @@ const hasA11yStatement = computed(() => {
 
   <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
+    <div v-if="isStatementFilled" class="fr-alert fr-alert--success fr-mb-4w">
+      <p>
+        Votre déclaration d’accessibilité est terminée, vous n’avez plus qu’à
+        l’envoyer au responsable du site.
+      </p>
+    </div>
+
+    <div
+      v-else-if="!!auditStore.data.publicationDate"
+      class="fr-alert fr-alert--success fr-mb-4w"
+    >
+      <p>
+        L’audit est terminé et le rapport est prêt à être livré. Il ne vous
+        reste plus qu’à rédiger la déclaration d’accessibilité.
+      </p>
+    </div>
+
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"

@@ -50,7 +50,7 @@ watch(showContent, () => {
     <slot name="button" />
     <button
       ref="buttonRef"
-      class="fr-btn fr-btn--secondary fr-icon-arrow-down-s-line fr-btn--icon-right"
+      class="fr-btn fr-btn--tertiary-no-outline fr-icon-arrow-down-s-line fr-btn--icon-right"
       aria-haspopup="true"
       :aria-expanded="showContent"
       :aria-controls="`dropdown-${uniqueId}`"

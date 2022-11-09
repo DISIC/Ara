@@ -114,7 +114,7 @@ const isDevMode = useDevMode();
         <Dropdown title="Options">
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
-              <li v-if="hasA11yStatement">
+              <!-- <li v-if="hasA11yStatement">
                 <RouterLink
                   :to="{
                     name: 'report',
@@ -124,7 +124,7 @@ const isDevMode = useDevMode();
                 >
                   Consulter la déclaration d’accessibilité
                 </RouterLink>
-              </li>
+              </li> -->
               <li>
                 <RouterLink
                   :to="{
@@ -161,7 +161,7 @@ const isDevMode = useDevMode();
             </li>
             <li>
               <button
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
                 aria-controls="delete-modal"
                 data-fr-opened="true"
                 @click="openDeleteModal"
@@ -172,17 +172,29 @@ const isDevMode = useDevMode();
           </ul>
         </Dropdown>
       </li>
-      <li>
+      <li class="fr-mr-2w">
         <RouterLink
-          v-if="auditPublicationDate && !auditEditionDate"
-          class="fr-btn fr-btn--icon-left fr-icon-eye-line"
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line"
           :to="{
             name: 'report',
             params: { uniqueId: auditStore.data?.consultUniqueId },
           }"
         >
-          Consulter le rapport d’audit
+          Consulter le rapport d'audit
         </RouterLink>
+      </li>
+      <li>
+        <RouterLink
+          v-if="!!auditPublicationDate"
+          class="fr-btn fr-btn--icon-left fr-icon-edit-line"
+          :to="{
+            name: 'edit-audit-declaration',
+            params: { uniqueId: editUniqueId },
+          }"
+        >
+          Préparer la déclaration d'accessibilité
+        </RouterLink>
+
         <button
           v-else
           :disabled="disableSubmission"
@@ -257,6 +269,10 @@ const isDevMode = useDevMode();
   flex-direction: column;
   align-items: end;
   list-style: none;
+}
+
+.delete-button {
+  color: var(--error-425-625);
 }
 
 .info {

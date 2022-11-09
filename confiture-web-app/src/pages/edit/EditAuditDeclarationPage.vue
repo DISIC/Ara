@@ -334,6 +334,9 @@ watch(
 
     derogatedContent.value = audit.derogatedContent ?? "";
     notInScopeContent.value = audit.notInScopeContent ?? "";
+  },
+  {
+    immediate: true,
   }
 );
 
