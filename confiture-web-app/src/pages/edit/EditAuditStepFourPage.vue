@@ -102,6 +102,16 @@ const isStatementFilled = computed(() => {
   // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
   return !!auditStore.data?.initiator;
 });
+
+const successAlertContent = computed(() => {
+  if (!hasA11yStatement.value) {
+    return "L’audit est terminé et le rapport est prêt à être livré.";
+  } else if (isStatementFilled.value) {
+    return "Votre déclaration d’accessibilité est terminée, vous n’avez plus qu’à l’envoyer au responsable du site.";
+  } else {
+    return "L’audit est terminé et le rapport est prêt à être livré. Il ne vous reste plus qu’à rédiger la déclaration d’accessibilité.";
+  }
+});
 </script>
 
 <template>
@@ -112,20 +122,9 @@ const isStatementFilled = computed(() => {
 
   <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
-    <div v-if="isStatementFilled" class="fr-alert fr-alert--success fr-mb-4w">
+    <div class="fr-alert fr-alert--success fr-mb-4w">
       <p>
-        Votre déclaration d’accessibilité est terminée, vous n’avez plus qu’à
-        l’envoyer au responsable du site.
-      </p>
-    </div>
-
-    <div
-      v-else-if="!!auditStore.data.publicationDate"
-      class="fr-alert fr-alert--success fr-mb-4w"
-    >
-      <p>
-        L’audit est terminé et le rapport est prêt à être livré. Il ne vous
-        reste plus qu’à rédiger la déclaration d’accessibilité.
+        {{ successAlertContent }}
       </p>
     </div>
 

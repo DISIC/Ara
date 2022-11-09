@@ -184,8 +184,17 @@ const isDevMode = useDevMode();
         </RouterLink>
       </li>
       <li>
+        <button
+          v-if="!auditPublicationDate"
+          :disabled="disableSubmission"
+          class="fr-btn"
+          @click="$emit('validate')"
+        >
+          Valider l’audit
+        </button>
+
         <RouterLink
-          v-if="!!auditPublicationDate"
+          v-else-if="hasA11yStatement"
           class="fr-btn fr-btn--icon-left fr-icon-edit-line"
           :to="{
             name: 'edit-audit-declaration',
@@ -194,15 +203,6 @@ const isDevMode = useDevMode();
         >
           Préparer la déclaration d'accessibilité
         </RouterLink>
-
-        <button
-          v-else
-          :disabled="disableSubmission"
-          class="fr-btn"
-          @click="$emit('validate')"
-        >
-          Valider l’audit
-        </button>
       </li>
     </ul>
   </div>
