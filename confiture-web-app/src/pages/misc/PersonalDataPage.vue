@@ -8,7 +8,7 @@ import PageMeta from "../../components/PageMeta";
 <template>
   <PageMeta
     title="Données personnelles"
-    description="Gestion des données personnelles du site confiture.numerique.gouv.fr"
+    description="Gestion des données personnelles du site ara.numerique.gouv.fr"
   />
 
   <section class="fr-my-0 fr-mx-auto content">

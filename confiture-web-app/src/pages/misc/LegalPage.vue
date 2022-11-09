@@ -13,7 +13,7 @@ import PageMeta from "../../components/PageMeta";
 <template>
   <PageMeta
     title="Mentions légales"
-    description="Mentions légales du site confiture.numerique.gouv.fr"
+    description="Mentions légales du site ara.numerique.gouv.fr"
   />
 
   <section class="fr-my-0 fr-mx-auto content">

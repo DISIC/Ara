@@ -8,7 +8,7 @@ import PageMeta from "../../components/PageMeta";
 <template>
   <PageMeta
     title="Accessibilité"
-    description="Déclaration d’accessibilité du site confiture.numerique.gouv.fr"
+    description="Déclaration d’accessibilité du site ara.numerique.gouv.fr"
   />
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Déclaration d’accessibilité</h1>

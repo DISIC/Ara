@@ -56,7 +56,7 @@ const links: SiteMapLink[] = [
 <template>
   <PageMeta
     title="Plan du site"
-    description="Plan du site confiture.numerique.gouv.fr."
+    description="Plan du site ara.numerique.gouv.fr."
   />
 
   <section class="fr-my-0 fr-mx-auto content">
