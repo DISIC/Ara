@@ -75,11 +75,14 @@ export type CreateAuditRequestData = Pick<
 > & { pages: Omit<AuditPage, "id">[] };
 
 /** Creation data type plus step 2 fields. */
-export type UpdateAuditRequestData = CreateAuditRequestData &
-  Pick<Audit, "auditType"> & {
-    tools: Omit<AuditTool, "id">[];
-    environments: Omit<AuditEnvironment, "id">[];
-  };
+export type UpdateAuditRequestData = Omit<
+  Audit,
+  "tools" | "environments" | "pages"
+> & {
+  tools: Omit<AuditTool, "id">[];
+  environments: Omit<AuditEnvironment, "id">[];
+  pages: Omit<AuditPage, "id">[];
+};
 
 export interface CreateFeedbackRequestData {
   easyToUse: string;
