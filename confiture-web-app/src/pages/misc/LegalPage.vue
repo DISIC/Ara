@@ -19,7 +19,7 @@ import PageMeta from "../../components/PageMeta";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Mentions légales</h1>
 
-<p>Ce site est édité par l’équipe <a href="https://design.numerique.gouv.fr" title="Design des services numériques - nouvelle fenêtre" target="_blank" >Design des services numériques</a> de la Direction interministérielle du numérique, un service du Premier ministre.</p>
+<p>Ce site est édité par l’équipe <a href="https://design.numerique.gouv.fr" title="Design des services numériques - nouvelle fenêtre"  rel="noreferrer noopener" target="_blank" >Design des services numériques</a> de la Direction interministérielle du numérique, un service du Premier ministre.</p>
 <p>DINUM<br>
 20 avenue de Ségur<br>
 75007 Paris<br>
@@ -31,10 +31,10 @@ SIREN : 120 001 011</p>
 <p>Stéphanie Schaer, directrice interministérielle du numérique.</p>
 
 <h2>Conception et gestion du site</h2>
-<p>Ce site est conçu et développé par l’équipe <a href="https://design.numerique.gouv.fr" title="Design des services numériques - nouvelle fenêtre" target="_blank" >Design des services numériques</a> et utilise le système de design de l’État.</p>
+<p>Ce site est conçu et développé par l’équipe <a href="https://design.numerique.gouv.fr" title="Design des services numériques - nouvelle fenêtre"  rel="noreferrer noopener" target="_blank" >Design des services numériques</a> et utilise le système de design de l’État.</p>
 
 <h2>Code source du site</h2>
-<p>Le code source du site est disponible sur <a href="https://github.com/DISIC/confiture/" title="Github - nouvelle fenêtre" target="_blank" >Github</a>.</p>
+<p>Le code source du site est disponible sur <a href="https://github.com/DISIC/confiture/" title="Github - nouvelle fenêtre"  rel="noreferrer noopener" target="_blank" >Github</a>.</p>
 
 <h2>Propriété intellectuelle et liens</h2>
 <p>Tout site public ou privé est autorisé à établir, sans autorisation préalable, un lien vers les informations diffusées sur ara.numerique.gouv.fr.</p>
