@@ -152,8 +152,9 @@ const isDevMode = useDevMode();
 
         <button
           class="fr-btn fr-btn--tertiary-no-outline"
-          type="button"
+          type="button" 
           :disabled="pages.length === 1"
+           :aria-label="`Supprimer page ${i + 1}`" 
           @click="deletePage(i)"
         >
           Supprimer
