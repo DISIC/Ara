@@ -95,7 +95,7 @@ const moreLinks = [
     <ul>
       <li v-for="link in moreLinks" :key="link.href">
         <a class="fr-link" :href="link.href" :title="
-            link.title + ' - nouvelle fenêtre'" target="_blank">{{
+            link.title + ' - nouvelle fenêtre'" rel="noreferrer noopener"  target="_blank">{{
           link.title
         }}</a>
         : {{ link.description }}.

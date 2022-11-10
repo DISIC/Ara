@@ -58,12 +58,14 @@ const reportStore = useReportStore();
         <a
           class="fr-link"
           target="_blank"
+          rel="noreferrer noopener" 
           title="dépôt - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture"
           >dépôt</a
         >. <br>Le <a
           class="fr-link"
           target="_blank"
+          rel="noreferrer noopener"
           title="guide de contribution - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
           >guide de contribution</a
