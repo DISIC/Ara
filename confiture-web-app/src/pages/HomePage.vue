@@ -51,17 +51,17 @@ async function hideDeleteAlert() {
   </div>
 
   <section>
-    <h1 ref="headingRef" tabindex="0">Audit d’accessibilité numérique</h1>
+    <h1 ref="headingRef">Audit d’accessibilité numérique</h1>
     <p>
       Avant de démarrer un nouvel audit vous passerez par 2 étapes afin de
-      saisir :
+      saisir :
     </p>
     <ul>
       <li>Les information générales du site à auditer</li>
       <li>Les informations générales de l’audit lui-même</li>
     </ul>
     <p class="fr-mb-4w">
-      ⏱️ Ces 2 étapes vous prendront environ 15 min. Vous pourrez ensuite faire
+      <span aria-hidden="true">⏱️ </span>Ces 2 étapes vous prendront environ 15 min. Vous pourrez ensuite faire
       votre audit.
     </p>
 
