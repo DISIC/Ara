@@ -34,7 +34,7 @@ const accordions = [
     component: QuickWin,
   },
   {
-    title: "Comment être accessible à 100% ?",
+    title: "Comment être conforme à 100% ?",
     component: FullyAccessible,
   },
   {
@@ -42,7 +42,7 @@ const accordions = [
     component: SelfAuditing,
   },
   {
-    title: "Quelles sont mes obligations légales ?",
+    title: "Quelles sont les obligations légales ?",
     component: LegalRequirements,
   },
   {
@@ -53,23 +53,23 @@ const accordions = [
 
 const tileLinks = [
   {
-    title: "Mes obligations légales",
-    description: "Soyez rassuré une bonne fois pour toutes",
+    title: "Les obligations légales",
+    description: "",
     routeName: "legal-requirements",
   },
   {
-    title: "RGAA",
-    description: "Kesako ? Tout savoir sur le RGAA",
+    title: "Le RGAA",
+    description: "",
     routeName: "rgaa",
   },
   {
-    title: "Déclaration d’a11é",
-    description: "À quoi ça sert ? Comment ça marche ?",
+    title: "La déclaration d’accessibilité",
+    description: "",
     routeName: "accessibility-statement",
   },
   {
     title: "Le shéma pluriannuel",
-    description: "À quoi ça sert ? Comment ça marche ?",
+    description: "",
     routeName: "accessibility-plan",
   },
 ];
@@ -136,20 +136,20 @@ const moreLinks = [
         >
           <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
             <div class="fr-tile__body">
-              <h3 class="fr-tile__title">
+              <h3>
                 <RouterLink
                   class="fr-tile__link"
                   :to="{ name: link.routeName }"
                   >{{ link.title }}</RouterLink
                 >
               </h3>
-              <p class="fr-tile__desc">{{ link.description }}</p>
+              <p v-if="link.description" class="fr-tile__desc">{{ link.description }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <h3>Aller plus loin</h3>
+      <h2>Aller plus loin</h2>
       <p>Retrouver plus d’informations sur les sites officiels :</p>
 
       <ul class="fr-mb-7w">

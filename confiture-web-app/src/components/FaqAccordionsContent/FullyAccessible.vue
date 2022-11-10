@@ -1,10 +1,8 @@
 <template>
-  <p>
-    Être accessible à 100% est difficile, d’autant plus quand le sujet de
-    l'accessibilité n’a pas été pris en compte lors de la phase de conception de
-    votre produit, mais cela ne veut pas dire que c’est impossible. Pour
-    parvenir à cet objectif il vous faut impérativement :
-  </p>
+  <p>Être conforme à 100% n’est pas facile, d’autant plus quand le sujet de
+    l’accessibilité n’a pas été pris en compte lors de la phase de conception de
+    votre produit, mais cela ne veut pas dire que c’est impossible.</p>    
+  <p>Pour parvenir à cet objectif il vous faut impérativement :</p>
   <ul class="fr-mb-0">
     <li>Former vos équipes.</li>
     <li>
