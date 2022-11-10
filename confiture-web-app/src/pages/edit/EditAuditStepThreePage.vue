@@ -134,7 +134,30 @@ async function handleDevButtonClick() {
       :audit-edition-date="auditStore.data.editionDate"
       :edit-unique-id="uniqueId"
       @validate="toStepFour"
-    />
+    >
+      <template #actions>
+        <li class="fr-mr-2w">
+          <RouterLink
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line"
+            :to="{
+              name: 'report',
+              params: { uniqueId: auditStore.data?.consultUniqueId },
+            }"
+          >
+            Consulter le rapport d'audit
+          </RouterLink>
+        </li>
+        <li>
+          <button
+            :disabled="!resultsStore.everyCriteriumAreTested"
+            class="fr-btn"
+            @click="toStepFour"
+          >
+            Valider l’audit
+          </button>
+        </li>
+      </template>
+    </AuditGenerationHeader>
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">

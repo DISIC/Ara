@@ -9,6 +9,7 @@ import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import PageMeta from "../../components/PageMeta";
 import { formatAuditType, getCriteriaCount } from "../../utils";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import CopyBlock from "../../components/CopyBlock.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -136,60 +137,104 @@ const successAlertContent = computed(() => {
       :audit-edition-date="auditStore.data.editionDate"
     />
 
-    <section class="content">
-      <h2 class="fr-h4">Votre audit est prêt à être envoyé</h2>
+    <section class="content fr-mb-6w">
+      <h2 class="fr-h4">
+        <span
+          class="fr-icon-checkbox-circle-fill fr-icon--lg ready-icon"
+          aria-hidden="true"
+        ></span>
+        Votre audit est prêt à être envoyé
+      </h2>
       <p class="fr-mb-4w">
-        Vous pouvez consulter et vérifier le
-        <RouterLink class="fr-link" :to="reportRouteLocation" target="_blank">
-          rapport d’audit</RouterLink
-        >
-        <template v-if="hasA11yStatement">
-          ou la
-          <!-- TODO: link to page + selected tab -->
-          <RouterLink
-            class="fr-link"
-            :to="accessibilityStatementLocation"
-            target="_blank"
-            >déclaration d’accessibilité</RouterLink
-          ></template
-        >
-        avant envoi. Pour envoyer le rapport d’audit il suffit de transmettre
-        par e-mail le lien ci-dessous.
+        Pensez à vérifier le rapport d’audit avant de le livrer. Pour le livrer
+        vous pouvez copier le lien ci-dessous et l’envoyer par e-mail au
+        responsable du site audité.
       </p>
 
-      <div class="fr-callout fr-mb-4w">
-        <p class="fr-callout__title fr-text--xl fr-mb-2w">
-          Lien public du rapport d’audit
+      <RouterLink
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mb-5w"
+        :to="{
+          name: 'report',
+          params: { uniqueId: auditStore.data.consultUniqueId },
+        }"
+      >
+        Consulter le rapport d'audit
+      </RouterLink>
+
+      <CopyBlock
+        class="fr-mb-4w"
+        :to="reportRouteLocation"
+        description="Lien public du rapport d’audit"
+        success-message="Le lien public du rapport d’audit a bien été copié dans le presse-papier."
+      />
+
+      <template v-if="!isStatementFilled">
+        <h2 class="fr-h4">
+          <span
+            class="fr-icon-error-warning-fill fr-icon--lg not-ready-icon"
+            aria-hidden="true"
+          ></span>
+          Déclaration d’accessibilité à remplir
+        </h2>
+        <p class="fr-mb-4w">
+          Vous pouvez rédiger dès maintenant la déclaration d’accessibilité
         </p>
-        <p class="fr-callout__text fr-text--md copy-block">
-          <RouterLink
-            class="fr-link"
-            :to="reportRouteLocation"
-            title="lien public du rapport d’audit"
-          >
-            {{ fullReportUrl }}
-          </RouterLink>
-          <!-- FIXME: icon "copy" does not seem to exist -->
-          <button
-            class="fr-btn fr-btn--secondary fr-icon-file-line fr-btn--icon-left fr-m-0"
-            @click="copyLink"
-            @blur="hideCopyAlert"
-          >
-            Copier
-          </button>
+
+        <RouterLink
+          class="fr-btn fr-btn--icon-left fr-icon-edit-line"
+          :to="{
+            name: 'edit-audit-declaration',
+            params: { uniqueId: auditStore.data.editUniqueId },
+          }"
+        >
+          Remplir la déclaration d'accessibilité
+        </RouterLink>
+      </template>
+
+      <template v-else>
+        <h2 class="fr-h4">
+          <span
+            class="fr-icon-error-warning-fill fr-icon--lg ready-icon"
+            aria-hidden="true"
+          ></span>
+          Déclaration d’accessibilité prête à être livrée
+        </h2>
+        <p class="fr-mb-4w">
+          Pensez à vérifier la déclaration d’accessibilité avant de la livrer.
+          Pour la livrer vous pouvez copier le lien ci-dessous et l’envoyer par
+          e-mail au responsable du site audité.
         </p>
-        <div role="alert" aria-live="polite">
-          <div
-            v-if="showCopyAlert"
-            class="fr-alert fr-alert--success fr-alert--sm fr-mt-2w"
-          >
-            <p>
-              Le lien public du rapport d’audit a bien été copié dans le
-              presse-papier.
-            </p>
-          </div>
-        </div>
-      </div>
+
+        <RouterLink
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mr-5w"
+          :to="{
+            name: 'report',
+            params: {
+              uniqueId: auditStore.data.consultUniqueId,
+              tab: 'declaration-daccessibilite',
+            },
+          }"
+        >
+          Consulter la déclaration d'accessibilité
+        </RouterLink>
+
+        <RouterLink
+          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
+          :to="{
+            name: 'edit-audit-declaration',
+            params: { uniqueId: auditStore.data.editUniqueId },
+          }"
+        >
+          Modifier la déclaration d’accessilbilité
+        </RouterLink>
+
+        <CopyBlock
+          class="fr-mb-4w"
+          :to="reportRouteLocation"
+          description="Lien public du rapport d’audit"
+          success-message="Le lien public du rapport d’audit a bien été copié dans le presse-papier."
+        />
+      </template>
     </section>
   </template>
 
@@ -211,11 +256,11 @@ const successAlertContent = computed(() => {
   max-width: 49.5rem;
 }
 
-.copy-block {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+.ready-icon {
+  color: var(--success-425-625);
+}
+
+.not-ready-icon {
+  color: var(--error-425-625);
 }
 </style>

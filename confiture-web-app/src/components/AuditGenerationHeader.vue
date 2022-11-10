@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useResultsStore, useAuditStore } from "../store";
 import { formatDate } from "../utils";
-import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import { useNotifications } from "../composables/useNotifications";
@@ -21,8 +20,6 @@ defineProps<{
   }[];
   editUniqueId?: string;
 }>();
-
-defineEmits(["validate"]);
 
 const router = useRouter();
 
@@ -63,10 +60,6 @@ function confirmDelete() {
       closeDeleteModal();
     });
 }
-
-const hasA11yStatement = computed(() => {
-  return auditStore.data?.auditType === AuditType.FULL;
-});
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -172,38 +165,8 @@ const isDevMode = useDevMode();
           </ul>
         </Dropdown>
       </li>
-      <li class="fr-mr-2w">
-        <RouterLink
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line"
-          :to="{
-            name: 'report',
-            params: { uniqueId: auditStore.data?.consultUniqueId },
-          }"
-        >
-          Consulter le rapport d'audit
-        </RouterLink>
-      </li>
-      <li>
-        <button
-          v-if="!auditPublicationDate"
-          :disabled="disableSubmission"
-          class="fr-btn"
-          @click="$emit('validate')"
-        >
-          Valider l’audit
-        </button>
 
-        <RouterLink
-          v-else-if="hasA11yStatement"
-          class="fr-btn fr-btn--icon-left fr-icon-edit-line"
-          :to="{
-            name: 'edit-audit-declaration',
-            params: { uniqueId: editUniqueId },
-          }"
-        >
-          Préparer la déclaration d'accessibilité
-        </RouterLink>
-      </li>
+      <slot name="actions" />
     </ul>
   </div>
 
