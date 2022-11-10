@@ -150,24 +150,17 @@ const moreLinks = [
       </div>
 
       <h3>Aller plus loin</h3>
-      <p>Retrouver plus d’information les sites officiels :</p>
+      <p>Retrouver plus d’informations sur les sites officiels :</p>
 
       <ul class="fr-mb-7w">
         <li v-for="link in moreLinks" :key="link.title">
-          <a class="fr-link" :href="link.href" target="_blank">{{
+          <a class="fr-link" :href="link.href" :title="
+            link.title + ' - nouvelle fenêtre'" target="_blank">{{
             link.title
           }}</a>
-          : {{ link.description }}
+          : {{ link.description }}.
         </li>
       </ul>
-    </section>
-    <section class="fr-mb-10v">
-      <h2>Toujours pas de réponse à votre problème ?</h2>
-      <p>
-        Vous pouvez contacter l’auditeur qui a réalisé cet audit en utilisant
-        l’adresse e-mail
-        <strong>prenom.nom@prestataire.modernisation.gouv.fr</strong>.
-      </p>
     </section>
     <TopLink />
   </div>

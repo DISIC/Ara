@@ -88,16 +88,17 @@ const moreLinks = [
   <section class="content">
     <h2>Aller plus loin</h2>
     <p>
-      Vous souhaitez plus de ressources ou en savoir d’avantage sur les bonnes
+      Vous souhaitez plus de ressources ou en savoir davantage sur les bonnes
       pratiques liées à l’accessibilité numérique ?
     </p>
 
     <ul>
       <li v-for="link in moreLinks" :key="link.href">
-        <a class="fr-link" :href="link.href" target="_blank">{{
+        <a class="fr-link" :href="link.href" :title="
+            link.title + ' - nouvelle fenêtre'" target="_blank">{{
           link.title
         }}</a>
-        : {{ link.description }}
+        : {{ link.description }}.
       </li>
     </ul>
   </section>

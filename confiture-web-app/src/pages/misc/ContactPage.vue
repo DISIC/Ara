@@ -58,16 +58,16 @@ const reportStore = useReportStore();
         <a
           class="fr-link"
           target="_blank"
+          title="dépôt - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture"
           >dépôt</a
-        >. Le guide de contribution est disponible à la racine du dépôt :
-        <a
+        >. <br>Le <a
           class="fr-link"
           target="_blank"
+          title="guide de contribution - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
-          >https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md</a
-        >
-      </li>
+          >guide de contribution</a
+        > est disponible à la racine du dépôt.</li>
     </ul>
   </section>
 </template>
