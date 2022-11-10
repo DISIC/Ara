@@ -30,7 +30,7 @@ const reportStore = useReportStore();
     </p>
     <p>
       Vous pouvez nous contacter par e-mail à l’adresse :
-      <strong>rgaa@design.numérique.gouv.fr</strong>.
+      <strong>rgaa@design.numerique.gouv.fr</strong>.
     </p>
 
     <div v-if="reportStore.data" class="fr-callout">
