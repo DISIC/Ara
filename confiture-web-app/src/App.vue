@@ -24,18 +24,18 @@ watch(route, () => {
 // Default meta tags
 useHead({
   title: "Audit d’accessibilité numérique",
-  titleTemplate: "%s - Confiture",
+  titleTemplate: "%s - Ara",
   meta: [
     {
       name: "description",
       content:
-        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
     },
     { name: "og:title", content: "Audit d’accessibilité numérique" },
     {
       name: "og:description",
       content:
-        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
     },
     { name: "og:url", content: "URL" },
     { name: "og:image", content: "image" },
@@ -86,12 +86,12 @@ const logoLink = computed(() => {
         name: "report",
         params: { uniqueId: reportStore.data.consultUniqueId },
       },
-      title: "Rapport d’audit - Confiture",
+      title: "Rapport d’audit - Ara",
     };
   }
   return {
     route: { name: "home" },
-    title: "Accueil - Confiture",
+    title: "Accueil - Ara",
   };
 });
 </script>

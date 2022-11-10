@@ -14,7 +14,7 @@ const reportStore = useReportStore();
   <section class="fr-mx-auto content">
     <h1>Contact</h1>
     <p>
-      Confiture est un outil propulsé par
+      Ara est un outil propulsé par
       <a
         class="fr-link"
         target="_blank"
