@@ -8,6 +8,8 @@ La partie style utilise le [DSFR (Système de Design de l'État)](https://www.sy
 
 ## Développement
 
+Depuis le répertoire `confiture-web-app`
+
 Installer les dépendances :
 
 ```sh
@@ -17,7 +19,7 @@ yarn
 Générer le fichier de méthodologies de test :
 
 ```sh
-yarn generate:methodologies
+yarn generate:rgaa
 ```
 
 Lancer le [serveur local sur le port 3000](http://localhost:3000) :
