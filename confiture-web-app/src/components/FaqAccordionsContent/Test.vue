@@ -1,5 +1,5 @@
 <template>
-  <p>Pour vérifier que les correctifs ont bien résolu les erreurs relevées :</p>
+  <p>Pour vérifier que les correctifs ont bien résolu les erreurs relevées&nbsp;:</p>
   <ul class="fr-mb-0">
     <li>
       Effectuez les tests associés aux erreurs relevées. Ces tests se
