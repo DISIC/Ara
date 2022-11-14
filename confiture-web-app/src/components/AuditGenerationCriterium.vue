@@ -49,7 +49,7 @@ const result = reactive<CriteriumResult>({
   // This component should not be rendered before the audit results are fetched
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   ...store.getCriteriumResult(
-    props.page.url,
+    props.page.id,
     props.topicNumber,
     props.criterium.number
   )!,
@@ -63,7 +63,7 @@ So we watch the store to make sure to update our local state if needed.
 watch(
   () =>
     store.getCriteriumResult(
-      props.page.url,
+      props.page.id,
       props.topicNumber,
       props.criterium.number
     ),

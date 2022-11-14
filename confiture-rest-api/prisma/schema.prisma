@@ -115,8 +115,6 @@ model AuditedPage {
   auditUniqueId String?
 
   results CriterionResult[]
-
-  @@unique([url, auditUniqueId])
 }
 
 model CriterionResult {
@@ -136,12 +134,11 @@ model CriterionResult {
   criterium Int
 
   // Results are linked through the page url and audit unique id.
-  auditUniqueId String
-  pageUrl       String
+  pageId Int
   /// @DtoEntityHidden
-  page          AuditedPage @relation(fields: [pageUrl, auditUniqueId], references: [url, auditUniqueId], onDelete: Cascade, onUpdate: Cascade)
+  page   AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@unique([auditUniqueId, pageUrl, topic, criterium])
+  @@unique([pageId, topic, criterium])
 }
 
 enum CriterionResultStatus {

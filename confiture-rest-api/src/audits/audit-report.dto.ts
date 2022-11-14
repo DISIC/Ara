@@ -125,6 +125,7 @@ class ReportContext {
 }
 
 class PageSample {
+  id: number;
   number: number;
   name: string;
   url: string;
@@ -182,10 +183,8 @@ class ReportCriterionResult {
   topic: number;
   /** @example 3 */
   criterium: number;
-  /**
-   * @example "https://example.com/contact"
-   */
-  pageUrl: string;
+  /** @example 234 */
+  pageId: number;
 
   /**
    * @example "NOT_COMPLIANT"

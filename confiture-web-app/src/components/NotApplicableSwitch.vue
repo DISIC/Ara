@@ -5,7 +5,7 @@ import { useResultsStore } from "../store";
 import { CriteriumResultStatus } from "../types";
 
 const props = defineProps<{
-  pageUrl: string;
+  pageId: number;
   topicNumber: number;
 }>();
 
@@ -13,7 +13,7 @@ const resultsStore = useResultsStore();
 
 const isChecked = computed(() =>
   resultsStore
-    .getTopicResults(props.pageUrl, props.topicNumber)
+    .getTopicResults(props.pageId, props.topicNumber)
     .every((r) => r.status === CriteriumResultStatus.NOT_APPLICABLE)
 );
 
@@ -34,12 +34,12 @@ watch(switchValue, (switchValue) => {
   if (switchValue) {
     resultsStore.setTopicStatus(
       uniqueId,
-      props.pageUrl,
+      props.pageId,
       props.topicNumber,
       CriteriumResultStatus.NOT_APPLICABLE
     );
   } else {
-    resultsStore.revertTopicStatus(uniqueId, props.pageUrl, props.topicNumber);
+    resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
   }
 });
 </script>

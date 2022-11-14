@@ -24,7 +24,7 @@ const store = useFiltersStore();
       <h3 class="fr-m-0 topic-heading">
         {{ topic.number }}. {{ topic.topic }}
       </h3>
-      <NotApplicableSwitch :page-url="page.url" :topic-number="topic.number" />
+      <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
     </div>
     <ol class="fr-p-0 fr-m-0">
       <AuditGenerationCriterium

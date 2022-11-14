@@ -92,7 +92,7 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            auditUniqueId: uniqueId,
+            // auditUniqueId: uniqueId,
           },
         },
       }),
@@ -104,7 +104,7 @@ export class AuditService {
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
-            result.pageUrl === page.url &&
+            result.pageId === page.id &&
             result.topic === criterion.topic &&
             result.criterium == criterion.criterium,
         );
@@ -122,7 +122,7 @@ export class AuditService {
 
           topic: criterion.topic,
           criterium: criterion.criterium,
-          pageUrl: page.url,
+          pageId: page.id,
         };
       }),
     );
@@ -319,10 +319,11 @@ export class AuditService {
         topic: item.topic,
         page: {
           connect: {
-            url_auditUniqueId: {
-              auditUniqueId: uniqueId,
-              url: item.pageUrl,
-            },
+            // url_auditUniqueId: {
+            //   auditUniqueId: uniqueId,
+            //   url: item.pageUrl,
+            // },
+            id: item.pageId,
           },
         },
 
@@ -336,11 +337,16 @@ export class AuditService {
 
       return this.prisma.criterionResult.upsert({
         where: {
-          auditUniqueId_pageUrl_topic_criterium: {
-            auditUniqueId: uniqueId,
+          // auditUniqueId_pageUrl_topic_criterium: {
+          //   auditUniqueId: uniqueId,
+          //   criterium: item.criterium,
+          //   pageUrl: item.pageUrl,
+          //   topic: item.topic,
+          // },
+          pageId_topic_criterium: {
             criterium: item.criterium,
-            pageUrl: item.pageUrl,
             topic: item.topic,
+            pageId: item.pageId,
           },
         },
         create: data,
@@ -448,7 +454,9 @@ export class AuditService {
 
     const results = await this.prisma.criterionResult.findMany({
       where: {
-        auditUniqueId: audit.editUniqueId,
+        page: {
+          auditUniqueId: audit.editUniqueId,
+        },
         criterium: {
           in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
         },
@@ -469,14 +477,6 @@ export class AuditService {
         return acc;
       },
       {},
-    );
-
-    console.log('groupedCriteria', Object.keys(groupedCriteria).length);
-
-    console.log(
-      '---\n',
-      Object.values(groupedCriteria).map((c) => c.map((x) => x.status)),
-      '\n---',
     );
 
     const applicableCriteria = Object.values(groupedCriteria).filter(
@@ -502,21 +502,6 @@ export class AuditService {
     const notCompliantCriteria = applicableCriteria.filter((criteria) =>
       criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT),
     );
-
-    function mapCriteria(cs: CriterionResult[]) {
-      return {
-        cc: cs.map((c) => c.topic + '.' + c.criterium),
-        s: cs.map((c) => c.status),
-      };
-    }
-
-    console.log('applicableCriteria', applicableCriteria.map(mapCriteria));
-    console.log(
-      'notApplicableCriteria',
-      notApplicableCriteria.map(mapCriteria),
-    );
-    console.log('compliantCriteria', compliantCriteria.map(mapCriteria));
-    console.log('notCompliantCriteria', notCompliantCriteria.map(mapCriteria));
 
     const accessibilityRate = Math.round(
       (compliantCriteria.length / applicableCriteria.length) * 100,
@@ -585,6 +570,7 @@ export class AuditService {
           name: p.name,
           number: i + 1,
           url: p.url,
+          id: p.id,
         })),
         tools: audit.tools.map((t) => ({
           name: t.name,
@@ -599,13 +585,12 @@ export class AuditService {
         compliant: {
           raw: results.filter(
             (r) =>
-              r.pageUrl === p.url &&
-              r.status === CriterionResultStatus.COMPLIANT,
+              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT,
           ).length,
           percentage:
             (results.filter(
               (r) =>
-                r.pageUrl === p.url &&
+                r.pageId === p.id &&
                 r.status === CriterionResultStatus.COMPLIANT,
             ).length /
               totalCriteriaCount) *
@@ -614,13 +599,13 @@ export class AuditService {
         notApplicable: {
           raw: results.filter(
             (r) =>
-              r.pageUrl === p.url &&
+              r.pageId === p.id &&
               r.status === CriterionResultStatus.NOT_APPLICABLE,
           ).length,
           percentage:
             (results.filter(
               (r) =>
-                r.pageUrl === p.url &&
+                r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE,
             ).length /
               totalCriteriaCount) *
@@ -629,13 +614,13 @@ export class AuditService {
         notCompliant: {
           raw: results.filter(
             (r) =>
-              r.pageUrl === p.url &&
+              r.pageId === p.id &&
               r.status === CriterionResultStatus.NOT_COMPLIANT,
           ).length,
           percentage:
             (results.filter(
               (r) =>
-                r.pageUrl === p.url &&
+                r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT,
             ).length /
               totalCriteriaCount) *
@@ -698,7 +683,7 @@ export class AuditService {
         ),
 
       results: results.map((r) => ({
-        pageUrl: r.pageUrl,
+        pageId: r.pageId,
         topic: r.topic,
         criterium: r.criterium,
 
@@ -723,7 +708,9 @@ export class AuditService {
 
     const testedCount = await this.prisma.criterionResult.count({
       where: {
-        auditUniqueId: uniqueId,
+        page: {
+          auditUniqueId: uniqueId,
+        },
         criterium: {
           in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
         },
