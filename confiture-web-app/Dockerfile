@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile --non-interactive --production=false
 COPY . .
-RUN yarn build
+RUN VITE_MATOMO_ENABLE=1 yarn build
 
 FROM ghcr.io/disic/designgouv-confiture/nginx:1.22.1-r0 AS production
 ARG VERSION=1.0
