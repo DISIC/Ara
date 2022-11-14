@@ -146,7 +146,7 @@ const logoLink = computed(() => {
                 </p>
               </RouterLink>
               <p class="fr-header__service-tagline">
-                Réaliser des audits d'accessibilité
+                Réaliser des audits d’accessibilité
               </p>
             </div>
           </div>
