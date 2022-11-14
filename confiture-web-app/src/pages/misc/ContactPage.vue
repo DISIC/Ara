@@ -14,7 +14,7 @@ const reportStore = useReportStore();
   <section class="fr-mx-auto content">
     <h1>Contact</h1>
     <p>
-      Confiture est un outil propulsé par
+      Ara est un outil propulsé par
       <a
         class="fr-link"
         target="_blank"
@@ -30,7 +30,7 @@ const reportStore = useReportStore();
     </p>
     <p>
       Vous pouvez nous contacter par e-mail à l’adresse :
-      <strong>rgaa@design.numérique.gouv.fr</strong>.
+      <strong>rgaa@design.numerique.gouv.fr</strong>.
     </p>
 
     <div v-if="reportStore.data" class="fr-callout">
@@ -58,16 +58,18 @@ const reportStore = useReportStore();
         <a
           class="fr-link"
           target="_blank"
+          rel="noreferrer noopener" 
+          title="dépôt - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture"
           >dépôt</a
-        >. Le guide de contribution est disponible à la racine du dépôt :
-        <a
+        >. <br>Le <a
           class="fr-link"
           target="_blank"
+          rel="noreferrer noopener"
+          title="guide de contribution - nouvelle fenêtre"
           href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
-          >https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md</a
-        >
-      </li>
+          >guide de contribution</a
+        > est disponible à la racine du dépôt.</li>
     </ul>
   </section>
 </template>

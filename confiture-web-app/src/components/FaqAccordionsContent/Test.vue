@@ -1,8 +1,8 @@
 <template>
-  <p>Pour vérifier que vos correctifs on résolut l’erreur relevée :</p>
+  <p>Pour vérifier que les correctifs ont bien résolu les erreurs relevées&nbsp;:</p>
   <ul class="fr-mb-0">
     <li>
-      Effectuées tous les tests associés aux erreurs relevées. Ces tests se
+      Effectuez les tests associés aux erreurs relevées. Ces tests se
       retrouvent dans l’accordéon “tests du critère” de chaque critère.
     </li>
     <li>

@@ -34,7 +34,7 @@ const accordions = [
     component: QuickWin,
   },
   {
-    title: "Comment être accessible à 100% ?",
+    title: "Comment être conforme à 100% ?",
     component: FullyAccessible,
   },
   {
@@ -42,7 +42,7 @@ const accordions = [
     component: SelfAuditing,
   },
   {
-    title: "Quelles sont mes obligations légales ?",
+    title: "Quelles sont les obligations légales ?",
     component: LegalRequirements,
   },
   {
@@ -53,23 +53,19 @@ const accordions = [
 
 const tileLinks = [
   {
-    title: "Mes obligations légales",
-    description: "Soyez rassuré une bonne fois pour toutes",
+    title: "Les obligations légales",
     routeName: "legal-requirements",
   },
   {
-    title: "RGAA",
-    description: "Kesako ? Tout savoir sur le RGAA",
+    title: "Le RGAA",
     routeName: "rgaa",
   },
   {
-    title: "Déclaration d’a11é",
-    description: "À quoi ça sert ? Comment ça marche ?",
+    title: "La déclaration d’accessibilité",
     routeName: "accessibility-statement",
   },
   {
     title: "Le shéma pluriannuel",
-    description: "À quoi ça sert ? Comment ça marche ?",
     routeName: "accessibility-plan",
   },
 ];
@@ -135,39 +131,33 @@ const moreLinks = [
           class="fr-col-12 fr-col-md-6"
         >
           <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
-            <div class="fr-tile__body">
-              <h3 class="fr-tile__title">
-                <RouterLink
-                  class="fr-tile__link"
-                  :to="{ name: link.routeName }"
-                  >{{ link.title }}</RouterLink
-                >
-              </h3>
-              <p class="fr-tile__desc">{{ link.description }}</p>
+            <div class="fr-h3 fr-tile__body">
+              <RouterLink
+                class="fr-tile__link"
+                :to="{ name: link.routeName }"
+                >{{ link.title }}</RouterLink
+              >
             </div>
           </div>
         </div>
       </div>
 
-      <h3>Aller plus loin</h3>
-      <p>Retrouver plus d’information les sites officiels :</p>
+      <h2>Aller plus loin</h2>
+      <p>Retrouver plus d’informations sur les sites officiels&nbsp;:</p>
 
       <ul class="fr-mb-7w">
         <li v-for="link in moreLinks" :key="link.title">
-          <a class="fr-link" :href="link.href" target="_blank">{{
-            link.title
-          }}</a>
-          : {{ link.description }}
+          <a
+            class="fr-link"
+            :href="link.href"
+            :title="link.title + ' - nouvelle fenêtre'"
+            target="_blank"
+          >
+            {{ link.title }}
+          </a>
+          : {{ link.description }}.
         </li>
       </ul>
-    </section>
-    <section class="fr-mb-10v">
-      <h2>Toujours pas de réponse à votre problème ?</h2>
-      <p>
-        Vous pouvez contacter l’auditeur qui a réalisé cet audit en utilisant
-        l’adresse e-mail
-        <strong>prenom.nom@prestataire.modernisation.gouv.fr</strong>.
-      </p>
     </section>
     <TopLink />
   </div>

@@ -24,18 +24,18 @@ watch(route, () => {
 // Default meta tags
 useHead({
   title: "Audit d’accessibilité numérique",
-  titleTemplate: "%s - Confiture",
+  titleTemplate: "%s - Ara",
   meta: [
     {
       name: "description",
       content:
-        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
     },
     { name: "og:title", content: "Audit d’accessibilité numérique" },
     {
       name: "og:description",
       content:
-        "Confiture est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
     },
     { name: "og:url", content: "URL" },
     { name: "og:image", content: "image" },
@@ -86,12 +86,12 @@ const logoLink = computed(() => {
         name: "report",
         params: { uniqueId: reportStore.data.consultUniqueId },
       },
-      title: "Rapport d’audit - Confiture",
+      title: "Rapport d’audit - Ara",
     };
   }
   return {
     route: { name: "home" },
-    title: "Accueil - Confiture",
+    title: "Accueil - Ara",
   };
 });
 </script>
@@ -189,7 +189,7 @@ const logoLink = computed(() => {
         <p class="fr-notice__title">
           Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas à
           nous faire part de vos retours depuis ce
-          <RouterLink :to="{ name: 'feedback' }">court formulaire</RouterLink>
+          <RouterLink :to="{ name: 'feedback' }" title="court formulaire - nouvelle fenêtre" target="_blank">court formulaire</RouterLink>
         </p>
       </div>
     </div>
@@ -217,10 +217,10 @@ const logoLink = computed(() => {
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
             Ce site est réalisé par
-            <a href="https://design.numerique.gouv.fr/" target="_blank"
+            <a href="https://design.numerique.gouv.fr/" title="DesignGouv - nouvelle fenêtre" target="_blank" rel="noreferrer noopener" 
               >DesignGouv</a
             >, le pôle Design des services numériques de la
-            <a href="https://www.numerique.gouv.fr/dinum/" target="_blank"
+            <a href="https://www.numerique.gouv.fr/dinum/" title="direction interministérielle du numérique - nouvelle fenêtre"  rel="noreferrer noopener"  target="_blank"
               >direction interministérielle du numérique</a
             >.
           </p>
@@ -230,6 +230,8 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
+                rel="noreferrer noopener" 
+                title="legifrance.gouv.fr - nouvelle fenêtre"
                 >legifrance.gouv.fr</a
               >
             </li>
@@ -238,6 +240,8 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://gouvernement.fr"
                 target="_blank"
+                rel="noreferrer noopener" 
+                title="gouvernement.fr - nouvelle fenêtre"
                 >gouvernement.fr</a
               >
             </li>
@@ -246,6 +250,8 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://service-public.fr"
                 target="_blank"
+                rel="noreferrer noopener" 
+                title="service-public.fr - nouvelle fenêtre"
                 >service-public.fr</a
               >
             </li>
@@ -254,6 +260,8 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
+                rel="noreferrer noopener" 
+                title="data.gouv.fr - nouvelle fenêtre"
                 >data.gouv.fr</a
               >
             </li>
@@ -305,7 +313,8 @@ const logoLink = computed(() => {
             Sauf mention contraire, tous les contenus de ce site sont sous
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-              target="_blank"
+              target="_blank"  rel="noreferrer noopener" 
+              title="licence etalab-2.0 - nouvelle fenêtre" 
               >licence etalab-2.0</a
             >
           </p>

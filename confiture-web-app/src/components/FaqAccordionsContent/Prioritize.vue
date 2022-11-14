@@ -5,16 +5,16 @@
       De l’impact des erreurs sur l’usager :
       <ul>
         <li>
-          <strong>Mineur</strong>
-          : gêne dans l’utilisation du site
+          <strong>Bloquant</strong>
+          : empêche totalement l’utilisation du site
         </li>
         <li>
           <strong>Majeur</strong>
           : complexifie grandement l’utilisation du site
         </li>
         <li>
-          <strong>Bloquant</strong>
-          : empêche totalement l’utilisation du site
+          <strong>Mineur</strong>
+          : gêne dans l’utilisation du site
         </li>
       </ul>
     </li>
@@ -31,11 +31,11 @@
   <p>Nous recommandons de prioriser les corrections de la manière suivante :</p>
   <ol class="fr-mb-0">
     <li>
-      Les erreurs facilement corrigeables avec un impact majeur et bloquant pour
+      Les erreurs facilement corrigeables avec un impact bloquant et majeur pour
       l’usager
     </li>
     <li>
-      Les erreurs plus complexes à corriger avec un impact majeur et bloquant pour
+      Les erreurs plus complexes à corriger avec un impact bloquant et majeur pour
       l’usager
     </li>
     <li>

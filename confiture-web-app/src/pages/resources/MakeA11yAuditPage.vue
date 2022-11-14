@@ -8,6 +8,7 @@
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/"
         target="_blank"
+        rel="noreferrer noopener" title="RGAA - nouvelle fenêtre"
         >RGAA</a
       >
 
@@ -16,6 +17,7 @@
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/methode/introduction/"
         target="_blank"
+        rel="noreferrer noopener" title="méthode technique - nouvelle fenêtre"
         >méthode technique</a
       >
       et
@@ -23,6 +25,7 @@
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/ressources/references/"
         target="_blank"
+        rel="noreferrer noopener" title="ressources - nouvelle fenêtre"
         >ressources</a
       >.
     </p>

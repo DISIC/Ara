@@ -9,7 +9,7 @@ const tileLinks = [
   },
   {
     title: "Outils",
-    description: "Aide à la mise en oeuvre des tests",
+    description: "Aide à la mise en œuvre des tests",
     routeName: "tools",
   },
   {
@@ -18,8 +18,8 @@ const tileLinks = [
     routeName: "glossary",
   },
   {
-    title: "Réaliser un audit accessibilité (a11é)",
-    description: "Tout savoir pour réaliser un audit a11é",
+    title: "Réaliser un audit accessibilité",
+    description: "Tout savoir pour réaliser un audit",
     routeName: "make-a11y-audit",
   },
 ];
@@ -60,8 +60,8 @@ const moreLinks = [
   <section class="fr-my-0 content">
     <h1 class="fr-mt-6w">Ressources</h1>
     <p>
-      Retrouvez une selection de ressources et d’outils pour vous aider à vous
-      préparer et à mener votre chantier accessibilité :
+      Retrouvez une sélection de ressources et d’outils pour vous aider à vous
+      préparer et à mener votre chantier accessibilité&nbsp;:
     </p>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-7w">
       <div
@@ -78,7 +78,7 @@ const moreLinks = [
                 >{{ link.title }}</RouterLink
               >
             </h3>
-            <p class="fr-tile__desc">{{ link.description }}</p>
+            <p class="fr-tile__desc">{{ link.description }}.</p>
           </div>
         </div>
       </div>
@@ -88,16 +88,22 @@ const moreLinks = [
   <section class="content">
     <h2>Aller plus loin</h2>
     <p>
-      Vous souhaitez plus de ressources ou en savoir d’avantage sur les bonnes
+      Vous souhaitez plus de ressources ou en savoir davantage sur les bonnes
       pratiques liées à l’accessibilité numérique ?
     </p>
 
     <ul>
       <li v-for="link in moreLinks" :key="link.href">
-        <a class="fr-link" :href="link.href" target="_blank">{{
-          link.title
-        }}</a>
-        : {{ link.description }}
+        <a
+          class="fr-link"
+          :href="link.href"
+          :title="link.title + ' - nouvelle fenêtre'"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          {{ link.title }}
+        </a>
+        : {{ link.description }}.
       </li>
     </ul>
   </section>
