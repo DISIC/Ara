@@ -289,6 +289,7 @@ const procedureUrl = ref("");
 const contactName = ref("");
 const contactEmail = ref("");
 const contactFormUrl = ref("");
+const notCompliantContent = ref("");
 const derogatedContent = ref("");
 const notInScopeContent = ref("");
 
@@ -332,6 +333,7 @@ watch(
           },
         ];
 
+    notCompliantContent.value = audit.notCompliantContent ?? "";
     derogatedContent.value = audit.derogatedContent ?? "";
     notInScopeContent.value = audit.notInScopeContent ?? "";
   },
@@ -360,6 +362,7 @@ function handleSubmit() {
     tools: tools.value,
 
     // TODO: plug not accessible content
+    notCompliantContent: notCompliantContent.value,
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value,
   };
@@ -397,6 +400,8 @@ function DEBUG_fillFields() {
   defaultTechnologies.value = ["HTML", "CSS"];
   customTechnologies.value = ["WordPress"];
 
+  notCompliantContent.value =
+    "Sit aliquip velit adipisicing esse cupidatat. Dolor nisi do Lorem laboris cillum anim adipisicing reprehenderit laboris id ullamco. Cillum aute do consectetur et exercitation consequat exercitation sunt sunt id dolore aliquip. Dolor cillum anim do id ipsum occaecat quis voluptate. Commodo adipisicing sit proident consequat ex incididunt. Minim sit esse ad id do pariatur in occaecat proident eiusmod velit.";
   notInScopeContent.value =
     "Non officia voluptate id magna culpa consectetur ex officia quis magna quis sint.";
   derogatedContent.value =
@@ -879,6 +884,22 @@ const isDevMode = useDevMode();
           des contenus dérogés. Si aucun contenu n’est à déroger, laissez les
           deux champs vides.
         </p>
+
+        <div class="fr-input-group">
+          <label class="fr-label" for="notCompliantContent">
+            Non-conformités (optionnel)
+            <span class="fr-hint-text">
+              Il s’agit d’un résumé des contenus et fonctionnalités non
+              conformes identifiés sur le site. Ils doivent être rédigés dans un
+              langage simple et compréhensible par toutes et tous.
+            </span>
+          </label>
+          <textarea
+            id="notCompliantContent"
+            class="fr-input"
+            v-model="notCompliantContent"
+          />
+        </div>
 
         <div class="fr-input-group">
           <label class="fr-label" for="derogatedContent">
