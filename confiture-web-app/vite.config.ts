@@ -9,8 +9,7 @@ export default defineConfig({
     vue(),
     ViteEjsPlugin((config) => {
       return {
-        VITE_MATOMO_BASE_URL: config.env.VITE_MATOMO_BASE_URL,
-        VITE_MATOMO_SITE_ID: config.env.VITE_MATOMO_SITE_ID,
+        VITE_MATOMO_ENABLE: config.env.VITE_MATOMO_ENABLE,
       };
     }),
   ],
