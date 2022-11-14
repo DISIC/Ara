@@ -54,22 +54,18 @@ const accordions = [
 const tileLinks = [
   {
     title: "Les obligations légales",
-    description: "",
     routeName: "legal-requirements",
   },
   {
     title: "Le RGAA",
-    description: "",
     routeName: "rgaa",
   },
   {
     title: "La déclaration d’accessibilité",
-    description: "",
     routeName: "accessibility-statement",
   },
   {
     title: "Le shéma pluriannuel",
-    description: "",
     routeName: "accessibility-plan",
   },
 ];
@@ -150,14 +146,18 @@ const moreLinks = [
       </div>
 
       <h2>Aller plus loin</h2>
-      <p>Retrouver plus d’informations sur les sites officiels :</p>
+      <p>Retrouver plus d’informations sur les sites officiels&nbsp;:</p>
 
       <ul class="fr-mb-7w">
         <li v-for="link in moreLinks" :key="link.title">
-          <a class="fr-link" :href="link.href" :title="
-            link.title + ' - nouvelle fenêtre'" target="_blank">{{
-            link.title
-          }}</a>
+          <a
+            class="fr-link"
+            :href="link.href"
+            :title="link.title + ' - nouvelle fenêtre'"
+            target="_blank"
+          >
+            {{ link.title }}
+          </a>
           : {{ link.description }}.
         </li>
       </ul>

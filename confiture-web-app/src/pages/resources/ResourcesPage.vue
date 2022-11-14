@@ -61,7 +61,7 @@ const moreLinks = [
     <h1 class="fr-mt-6w">Ressources</h1>
     <p>
       Retrouvez une sélection de ressources et d’outils pour vous aider à vous
-      préparer et à mener votre chantier accessibilité :
+      préparer et à mener votre chantier accessibilité&nbsp;:
     </p>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-7w">
       <div
@@ -94,10 +94,15 @@ const moreLinks = [
 
     <ul>
       <li v-for="link in moreLinks" :key="link.href">
-        <a class="fr-link" :href="link.href" :title="
-            link.title + ' - nouvelle fenêtre'" rel="noreferrer noopener"  target="_blank">{{
-          link.title
-        }}</a>
+        <a
+          class="fr-link"
+          :href="link.href"
+          :title="link.title + ' - nouvelle fenêtre'"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          {{ link.title }}
+        </a>
         : {{ link.description }}.
       </li>
     </ul>
