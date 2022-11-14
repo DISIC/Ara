@@ -27,6 +27,7 @@ import ResourcesPage from "./pages/resources/ResourcesPage.vue";
 import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
+import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
 
 import { useAuditStore, useReportStore } from "./store";
 
@@ -209,6 +210,22 @@ const router = createRouter({
           {
             label: getProcedureName(),
             name: "edit-audit-step-four",
+          },
+        ],
+      },
+    },
+    {
+      path: "/audits/:uniqueId/declaration",
+      name: "edit-audit-declaration",
+      component: EditAuditDeclarationPage,
+      beforeEnter: saveCurrentEditionStep,
+      meta: {
+        name: "Mon audit",
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
+          {
+            label: getProcedureName(),
+            name: "edit-audit-declaration",
           },
         ],
       },

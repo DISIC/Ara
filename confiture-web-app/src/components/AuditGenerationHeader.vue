@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useResultsStore, useAuditStore } from "../store";
 import { formatDate } from "../utils";
-import { AuditType } from "../types";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import { useNotifications } from "../composables/useNotifications";
@@ -21,8 +20,6 @@ defineProps<{
   }[];
   editUniqueId?: string;
 }>();
-
-defineEmits(["validate"]);
 
 const router = useRouter();
 
@@ -63,10 +60,6 @@ function confirmDelete() {
       closeDeleteModal();
     });
 }
-
-const hasA11yStatement = computed(() => {
-  return auditStore.data?.auditType === AuditType.FULL;
-});
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -114,7 +107,7 @@ const isDevMode = useDevMode();
         <Dropdown title="Options">
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
-              <li v-if="hasA11yStatement">
+              <!-- <li v-if="hasA11yStatement">
                 <RouterLink
                   :to="{
                     name: 'report',
@@ -124,7 +117,7 @@ const isDevMode = useDevMode();
                 >
                   Consulter la déclaration d’accessibilité
                 </RouterLink>
-              </li>
+              </li> -->
               <li>
                 <RouterLink
                   :to="{
@@ -161,7 +154,7 @@ const isDevMode = useDevMode();
             </li>
             <li>
               <button
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
                 aria-controls="delete-modal"
                 data-fr-opened="true"
                 @click="openDeleteModal"
@@ -172,26 +165,8 @@ const isDevMode = useDevMode();
           </ul>
         </Dropdown>
       </li>
-      <li>
-        <RouterLink
-          v-if="auditPublicationDate && !auditEditionDate"
-          class="fr-btn fr-btn--icon-left fr-icon-eye-line"
-          :to="{
-            name: 'report',
-            params: { uniqueId: auditStore.data?.consultUniqueId },
-          }"
-        >
-          Consulter le rapport d’audit
-        </RouterLink>
-        <button
-          v-else
-          :disabled="disableSubmission"
-          class="fr-btn"
-          @click="$emit('validate')"
-        >
-          Valider l’audit
-        </button>
-      </li>
+
+      <slot name="actions" />
     </ul>
   </div>
 
@@ -257,6 +232,10 @@ const isDevMode = useDevMode();
   flex-direction: column;
   align-items: end;
   list-style: none;
+}
+
+.delete-button {
+  color: var(--error-425-625);
 }
 
 .info {
