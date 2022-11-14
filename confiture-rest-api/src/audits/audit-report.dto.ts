@@ -125,6 +125,7 @@ class ReportContext {
 }
 
 class PageSample {
+  id: number;
   number: number;
   name: string;
   url: string;

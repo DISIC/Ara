@@ -109,7 +109,7 @@ export interface CriteriumResult {
   // ID
   topic: number;
   criterium: number;
-  pageUrl: string;
+  pageId: number;
 
   // DATA
   status: CriteriumResultStatus;

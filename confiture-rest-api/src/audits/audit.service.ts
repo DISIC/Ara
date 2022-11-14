@@ -570,6 +570,7 @@ export class AuditService {
           name: p.name,
           number: i + 1,
           url: p.url,
+          id: p.id,
         })),
         tools: audit.tools.map((t) => ({
           name: t.name,

@@ -9,13 +9,13 @@ import {
 } from "../types";
 import { useAuditStore } from "./audit";
 
-type PageUrl = string;
+type PageId = number;
 type TopicNumber = number;
 type CriteriumNumber = number;
 
 interface ResultsStoreState {
   data: {
-    [key: PageUrl]: {
+    [key: PageId]: {
       [key: TopicNumber]: {
         [key: CriteriumNumber]: CriteriumResult;
       };
@@ -27,7 +27,7 @@ interface ResultsStoreState {
    * switch in case of a misclick.
    */
   previousStatuses: {
-    [key: PageUrl]: {
+    [key: PageId]: {
       [key: TopicNumber]: {
         [key: CriteriumNumber]: CriteriumResultStatus;
       };
@@ -46,21 +46,17 @@ export const useResultsStore = defineStore("results", {
      * @returns A single criterium result if it is available, undefined otherwise.
      */
     getCriteriumResult() {
-      return (
-        pageUrl: string,
-        topicNumber: number,
-        criteriumNumber: number
-      ) => {
+      return (pageId: number, topicNumber: number, criteriumNumber: number) => {
         if (
           !this.data ||
-          !this.data[pageUrl] ||
-          !this.data[pageUrl][topicNumber] ||
-          !this.data[pageUrl][topicNumber][criteriumNumber]
+          !this.data[pageId] ||
+          !this.data[pageId][topicNumber] ||
+          !this.data[pageId][topicNumber][criteriumNumber]
         ) {
           return;
         }
 
-        return this.data[pageUrl][topicNumber][criteriumNumber];
+        return this.data[pageId][topicNumber][criteriumNumber];
       };
     },
 
@@ -68,16 +64,16 @@ export const useResultsStore = defineStore("results", {
      * @returns A getter returning all the results concerning a particular topic on a particular audited page.
      */
     getTopicResults() {
-      return (pageUrl: string, topicNumber: number) => {
+      return (pageId: number, topicNumber: number) => {
         if (
           !this.data ||
-          !this.data[pageUrl] ||
-          !this.data[pageUrl][topicNumber]
+          !this.data[pageId] ||
+          !this.data[pageId][topicNumber]
         ) {
           return [];
         }
 
-        return Object.values(this.data[pageUrl][topicNumber]);
+        return Object.values(this.data[pageId][topicNumber]);
       };
     },
 
@@ -114,15 +110,15 @@ export const useResultsStore = defineStore("results", {
       const data: ResultsStoreState["data"] = {};
 
       response.forEach((r) => {
-        if (!(r.pageUrl in data)) {
-          data[r.pageUrl] = {};
+        if (!(r.pageId in data)) {
+          data[r.pageId] = {};
         }
 
-        if (!(r.topic in data[r.pageUrl])) {
-          data[r.pageUrl][r.topic] = {};
+        if (!(r.topic in data[r.pageId])) {
+          data[r.pageId][r.topic] = {};
         }
 
-        data[r.pageUrl][r.topic][r.criterium] = r;
+        data[r.pageId][r.topic][r.criterium] = r;
       });
 
       this.data = data;
@@ -140,7 +136,7 @@ export const useResultsStore = defineStore("results", {
       }
 
       updates.forEach((update) => {
-        this.data![update.pageUrl][update.topic][update.criterium] = update;
+        this.data![update.pageId][update.topic][update.criterium] = update;
       });
 
       // update the edition date of the local audit. It will not be the same
@@ -160,17 +156,17 @@ export const useResultsStore = defineStore("results", {
      */
     async setTopicStatus(
       uniqueId: string,
-      pageUrl: string,
+      pageId: number,
       topicNumber: number,
       status: CriteriumResultStatus
     ) {
-      const results = this.getTopicResults(pageUrl, topicNumber);
+      const results = this.getTopicResults(pageId, topicNumber);
 
       if (status === CriteriumResultStatus.NOT_APPLICABLE) {
         results.forEach((r) => {
           setWith(
             this.previousStatuses,
-            [r.pageUrl, r.topic, r.criterium],
+            [r.pageId, r.topic, r.criterium],
             r.status,
             Object
           );
@@ -194,28 +190,24 @@ export const useResultsStore = defineStore("results", {
      */
     async revertTopicStatus(
       uniqueId: string,
-      pageUrl: string,
+      pageId: number,
       topicNumber: number
     ) {
-      if (has(this.previousStatuses, [pageUrl, topicNumber])) {
+      if (has(this.previousStatuses, [pageId, topicNumber])) {
         const updates = Object.entries(
-          this.previousStatuses[pageUrl][topicNumber]
+          this.previousStatuses[pageId][topicNumber]
         ).map(([criterium, status]) => {
           return {
-            ...this.getCriteriumResult(
-              pageUrl,
-              topicNumber,
-              Number(criterium)
-            )!,
+            ...this.getCriteriumResult(pageId, topicNumber, Number(criterium))!,
             status,
           };
         });
         await this.updateResults(uniqueId, updates);
-        unset(this.previousStatuses, [pageUrl, topicNumber]);
+        unset(this.previousStatuses, [pageId, topicNumber]);
       } else {
         await this.setTopicStatus(
           uniqueId,
-          pageUrl,
+          pageId,
           topicNumber,
           CriteriumResultStatus.NOT_TESTED
         );

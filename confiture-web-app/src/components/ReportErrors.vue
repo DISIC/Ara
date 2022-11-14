@@ -37,12 +37,12 @@ const errors = computed(() => {
             userImpactFilters.value.includes(r.userImpact)
           );
         }),
-        "pageUrl"
+        "pageId"
       ),
-      (results, pageUrl) => {
+      (results, pageId) => {
         return {
-          pageUrl,
-          pageName: getPageName(pageUrl),
+          pageId: Number(pageId),
+          pageName: getPageName(Number(pageId)),
           topics: Object.values(
             mapValues(groupBy(results, "topic"), (results, topicNumber) => {
               return {
@@ -116,12 +116,12 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
   return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
 }
 
-function getPageName(pageUrl: string) {
-  return report.data!.context.samples.find((p) => p.url === pageUrl)!.name;
+function getPageName(pageId: number) {
+  return report.data!.context.samples.find((p) => p.id === pageId)!.name;
 }
 
-function getPageSlug(pageUrl: string) {
-  return slugify(getPageName(pageUrl));
+function getPageSlug(pageId: number) {
+  return slugify(getPageName(pageId));
 }
 
 /**
@@ -175,14 +175,12 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
                   <a
                     class="fr-sidemenu__link"
-                    :href="`#${getPageSlug(
-                      report.data.context.samples[0].url
-                    )}`"
+                    :href="`#${getPageSlug(report.data.context.samples[0].id)}`"
                     target="_self"
                     aria-current="true"
                     @click="
                       updateActiveAnchorLink(
-                        getPageSlug(report.data!.context.samples[0].url),
+                        getPageSlug(report.data!.context.samples[0].id),
                         $event
                       )
                     "
@@ -196,10 +194,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 >
                   <a
                     class="fr-sidemenu__link"
-                    :href="`#${getPageSlug(page.url)}`"
+                    :href="`#${getPageSlug(page.id)}`"
                     target="_self"
                     @click="
-                      updateActiveAnchorLink(getPageSlug(page.url), $event)
+                      updateActiveAnchorLink(getPageSlug(page.id), $event)
                     "
                     >{{ page.name }}</a
                   >
@@ -324,9 +322,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             Tout déplier
           </button>
         </div>
-        <section v-for="page in errors" :key="page.pageUrl" class="fr-mb-8w">
+        <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
           <h2
-            :id="`${getPageSlug(page.pageUrl as string)}`"
+            :id="`${getPageSlug(page.pageId)}`"
             class="fr-mb-4w fr-h3 page-title"
           >
             {{ page.pageName }}
