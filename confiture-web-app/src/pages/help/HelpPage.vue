@@ -131,14 +131,12 @@ const moreLinks = [
           class="fr-col-12 fr-col-md-6"
         >
           <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
-            <div class="fr-tile__body">
-              <h3>
-                <RouterLink
-                  class="fr-tile__link"
-                  :to="{ name: link.routeName }"
-                  >{{ link.title }}</RouterLink
-                >
-              </h3>
+            <div class="fr-h3 fr-tile__body">
+              <RouterLink
+                class="fr-tile__link"
+                :to="{ name: link.routeName }"
+                >{{ link.title }}</RouterLink
+              >
             </div>
           </div>
         </div>
