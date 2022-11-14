@@ -21,6 +21,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
+              title="DesignGouv - nouvelle fenêtre"
               >DesignGouv</a
             >, le pôle Design des services numériques de la direction
             interministérielle du numérique avec le soutien du
@@ -28,10 +29,12 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
-              >FIPHFP<span class="sr-only"
+              title="Fonds pour l’insertion des personnes handicapées dans la
+                Fonction publique - nouvelle fenêtre"
+              >FIPHFP <span class="sr-only"
                 >Fonds pour l’insertion des personnes handicapées dans la
                 Fonction publique</span
-              > </a
+              ></a
             >.
           </p>
           <ul class="fr-footer__content-list">
@@ -40,6 +43,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
+                title="legifrance.gouv.fr - nouvelle fenêtre"
                 >legifrance.gouv.fr</a
               >
             </li>
@@ -48,6 +52,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
                 class="fr-footer__content-link"
                 href="https://gouvernement.fr"
                 target="_blank"
+                title="gouvernement.fr - nouvelle fenêtre"
                 >gouvernement.fr</a
               >
             </li>
@@ -56,6 +61,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
                 class="fr-footer__content-link"
                 href="https://service-public.fr"
                 target="_blank"
+                title="service-public.fr - nouvelle fenêtre"
                 >service-public.fr</a
               >
             </li>
@@ -64,6 +70,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
+                title="data.gouv.fr - nouvelle fenêtre"
                 >data.gouv.fr</a
               >
             </li>
@@ -71,14 +78,14 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
         </div>
       </div>
       <div class="fr-footer__partners">
-        <p class="fr-footer__partners-title fr-mb-1w">Notre partenaire :</p>
+        <p class="fr-footer__partners-title fr-mb-1w">Conçu avec le soutien de notre partenaire :</p>
         <div class="fr-footer__partners-logos">
           <div class="fr-footer__partners-main">
-            <a class="fr-footer__partners-link" href="https://www.fiphfp.fr/">
+            <a class="fr-footer__partners-link" target="_blank" href="https://www.fiphfp.fr/">
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique"
+                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique - nouvelle fenêtre"
               />
             </a>
           </div>
@@ -129,7 +136,8 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
             Sauf mention contraire, tous les contenus de ce site sont sous
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-              target="_blank"
+              target="_blank" 
+              title="licence etalab-2.0 - nouvelle fenêtre"
               >licence etalab-2.0</a
             >
           </p>
