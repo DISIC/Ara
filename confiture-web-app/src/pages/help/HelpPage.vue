@@ -139,7 +139,6 @@ const moreLinks = [
                   >{{ link.title }}</RouterLink
                 >
               </h3>
-              <p v-if="link.description" class="fr-tile__desc">{{ link.description }}</p>
             </div>
           </div>
         </div>
