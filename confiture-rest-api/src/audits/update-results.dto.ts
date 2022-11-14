@@ -7,6 +7,7 @@ import {
   IsArray,
   IsIn,
   IsInt,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -46,10 +47,10 @@ class UpdateResultsItem {
   // ID
 
   /**
-   * @example "https://example.com/contact"
+   * @example 123
    */
-  @IsString()
-  pageUrl: string;
+  @IsNumber()
+  pageId: number;
 
   /**
    * @example 3
