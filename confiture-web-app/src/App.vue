@@ -146,7 +146,7 @@ const logoLink = computed(() => {
                 </p>
               </RouterLink>
               <p class="fr-header__service-tagline">
-                Audit RGAA & Accessibilité
+                Réaliser des audits d’accessibilité
               </p>
             </div>
           </div>
@@ -217,7 +217,7 @@ const logoLink = computed(() => {
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
             Ce site est réalisé par
-            <a href="https://design.numerique.gouv.fr/" title="DesignGouv - nouvelle fenêtre" target="_blank" rel="noreferrer noopener" 
+            <a href="https://design.numerique.gouv.fr/" title="DesignGouv - nouvelle fenêtre" target="_blank" rel="noreferrer noopener"
               >DesignGouv</a
             >, le pôle Design des services numériques de la
             <a href="https://www.numerique.gouv.fr/dinum/" title="direction interministérielle du numérique - nouvelle fenêtre"  rel="noreferrer noopener"  target="_blank"
@@ -230,7 +230,7 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
-                rel="noreferrer noopener" 
+                rel="noreferrer noopener"
                 title="legifrance.gouv.fr - nouvelle fenêtre"
                 >legifrance.gouv.fr</a
               >
@@ -240,7 +240,7 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://gouvernement.fr"
                 target="_blank"
-                rel="noreferrer noopener" 
+                rel="noreferrer noopener"
                 title="gouvernement.fr - nouvelle fenêtre"
                 >gouvernement.fr</a
               >
@@ -250,7 +250,7 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://service-public.fr"
                 target="_blank"
-                rel="noreferrer noopener" 
+                rel="noreferrer noopener"
                 title="service-public.fr - nouvelle fenêtre"
                 >service-public.fr</a
               >
@@ -260,7 +260,7 @@ const logoLink = computed(() => {
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
-                rel="noreferrer noopener" 
+                rel="noreferrer noopener"
                 title="data.gouv.fr - nouvelle fenêtre"
                 >data.gouv.fr</a
               >
@@ -313,8 +313,8 @@ const logoLink = computed(() => {
             Sauf mention contraire, tous les contenus de ce site sont sous
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-              target="_blank"  rel="noreferrer noopener" 
-              title="licence etalab-2.0 - nouvelle fenêtre" 
+              target="_blank"  rel="noreferrer noopener"
+              title="licence etalab-2.0 - nouvelle fenêtre"
               >licence etalab-2.0</a
             >
           </p>
