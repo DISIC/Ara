@@ -65,7 +65,7 @@ const tileLinks = [
     routeName: "accessibility-statement",
   },
   {
-    title: "Le shéma pluriannuel",
+    title: "Le schéma pluriannuel",
     routeName: "accessibility-plan",
   },
 ];
