@@ -79,8 +79,7 @@ const steps = [
           L’outil qui va simplifier vos audits d’accessibilité numérique
         </h1>
         <p class="fr-text--lg fr-text--bold">
-          Que vous soyez expert·e en accessibilité numérique ou non vous allez
-          pouvoir démarrer en quelques clics l’audit de votre service.
+          Démarrez en quelques clics l’audit de votre service ! 
         </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
