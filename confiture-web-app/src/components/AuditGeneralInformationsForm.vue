@@ -219,11 +219,8 @@ const isDevMode = useDevMode();
         <label class="fr-label" for="procedure-auditor-name">
           Nom et prénom de l’auditeur (optionnel)
           <span class="fr-hint-text">
-            Permet au demandeur de l’audit de plus facilement vous identifier si
-            il a des questions ou besoin d’aide.
+            Permet au demandeur de l’audit de plus facilement vous identifier s'il a des questions ou besoin d’aide.
             <br />
-            Vous avez le choix de publier ou non cette information sur le
-            rapport d’audit.
           </span>
         </label>
         <input
@@ -240,8 +237,6 @@ const isDevMode = useDevMode();
             Permet de vous envoyer le futur lien administrateur de l’audit et le
             lien du rapport d’audit.
             <br />
-            Vous avez le choix de publier ou non cette information sur le
-            rapport d’audit.
           </span>
         </label>
         <input
