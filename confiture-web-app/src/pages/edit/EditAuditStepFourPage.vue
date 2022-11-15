@@ -240,7 +240,7 @@ const successAlertContent = computed(() => {
 
   <section class="content">
     <h2 class="fr-h4">Bon à savoir</h2>
-    <p>Indiquez à vos destinataires les prochaines étapes qui les attends :</p>
+    <p>Indiquez à vos destinataires les prochaines étapes qui les attendent :</p>
     <ul>
       <li v-if="hasA11yStatement">
         Mettre en ligne la déclaration d’accessibilité
