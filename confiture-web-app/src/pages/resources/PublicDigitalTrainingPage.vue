@@ -61,7 +61,7 @@ import transcriptionUrl from "../../assets/Transcription-Bienfairedunumerique-19
     </p>
     <p class="fr-mb-3v"><strong>Programme :</strong></p>
     <ul class="fr-mb-3w">
-      <li>Contexte : la numérisation du service publict</li>
+      <li>Contexte : la numérisation du service public</li>
       <li>Qu’est-ce qu’un bon service public numérique ?</li>
       <li>Comment faire un bon service public numérique ?</li>
       <li>Quelles sont les difficultés rencontrées et comment les lever ?</li>
