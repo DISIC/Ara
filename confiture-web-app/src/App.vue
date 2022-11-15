@@ -141,7 +141,7 @@ const logoLink = computed(() => {
                   ARA
                   <span
                     class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
-                    >BETA</span
+                    >BÊTA</span
                   >
                 </p>
               </RouterLink>
