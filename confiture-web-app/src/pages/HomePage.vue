@@ -33,19 +33,19 @@ const steps = [
   {
     title: "1. Paramétrer l’audit",
     description:
-      "Vous saisirez le type d’audit, l’échantillon des pages à auditer et une adresse e-mail",
+      "Vous saisirez le type d’audit, l’échantillon des pages à auditer et une adresse e-mail.",
     icon: "⚙️",
   },
   {
     title: "2. Auditer le service",
     description:
-      "Évaluer la conformité des critères sur l’ensemble de l’échantillon et valider l’audit",
+      "Évaluer la conformité des critères sur l’ensemble de l’échantillon et valider l’audit.",
     icon: "🔎",
   },
   {
     title: "3. Rédiger la déclaration d’accessibilité",
     description:
-      "À ce stade l’audit est terminé et le rapport est prêt mais il reste à remplir la déclaration",
+      "À ce stade l’audit est terminé et le rapport est prêt mais il reste à remplir la déclaration.",
     icon: "📃",
   },
 ];
@@ -108,19 +108,20 @@ const steps = [
     </div>
 
     <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
-
-    <div class="steps">
+    <div class="fr-grid-row fr-grid-row--gutters">
       <div
         v-for="step in steps"
         :key="step.title"
-        class="fr-tile fr-tile--horizontal"
+        class="fr-col"
       >
-        <div class="fr-tile__body step-content">
-          <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
-          <h3 class="fr-tile__title">
-            {{ step.title }}
-          </h3>
-          <p class="fr-tile__desc">{{ step.description }}</p>
+        <div class="fr-tile fr-tile--horizontal">
+          <div class="fr-tile__body step-content">
+            <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
+            <h3 class="fr-tile__title">
+              {{ step.title }}
+            </h3>
+            <p class="fr-tile__desc">{{ step.description }}</p>
+          </div>
         </div>
       </div>
     </div>
