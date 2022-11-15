@@ -26,7 +26,7 @@
       intégré au cycle de vie d’un produit
     </li>
     <li>
-      De refaire des audits si des nouvelles fonctionnalités, des refontes
+      De refaire des audits si de nouvelles fonctionnalités, des refontes
       partielles ou totales de votre site ont été effectuées ou si votre
       déclaration d’accessibilité à plus de 3 ans.
     </li>
