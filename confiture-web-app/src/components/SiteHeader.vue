@@ -93,7 +93,7 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
                 </p>
               </RouterLink>
               <p class="fr-header__service-tagline">
-                Réaliser des audits d’accessibilité
+                Réalisez simplement vos audits d’accessibilité numérique
               </p>
             </div>
           </div>
