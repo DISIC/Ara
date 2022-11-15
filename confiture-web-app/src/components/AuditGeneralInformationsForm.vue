@@ -203,9 +203,6 @@ const isDevMode = useDevMode();
       <div class="fr-input-group">
         <label for="procedure-auditor-organisation" class="fr-label">
           Nom de la structure qui réalise l'audit
-          <span class="fr-hint-text">
-            Le nom de la structure sera visible sur le rapport d’audit.
-          </span>
         </label>
         <input
           id="procedure-auditor-organisation"
