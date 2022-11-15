@@ -151,4 +151,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
 .logo-partner {
   border: 1px solid var(--border-default-grey);
 }
+.fr-footer__partners-link::after {
+  content: none;
+}
 </style>
