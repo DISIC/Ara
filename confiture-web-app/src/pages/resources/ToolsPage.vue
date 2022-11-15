@@ -90,7 +90,7 @@ import PageMeta from "../../components/PageMeta";
       >. À noter que pour valider le code source généré par le navigateur, il
       faut utiliser l’option "Validate by Direct Input" en y copiant la source
       HTML proposée par l’inspecteur de code du navigateur. Des extensions de
-      navigateur sont aussi disponibles, mais il faut être vigilant, car les
+      navigateur sont aussi disponibles mais il faut être vigilant car les
       algorithmes de validation de ces extensions ne sont pas forcément à jour
       par rapport au validateur du W3C et les résultats obtenus peuvent donc
       être différents.
