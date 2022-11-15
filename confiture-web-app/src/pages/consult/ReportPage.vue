@@ -101,7 +101,7 @@ function handleTabChange(tab: { title: string }) {
   <div v-if="showOnboardingAlert" class="fr-alert fr-alert--info fr-mb-6w">
     <p class="fr-alert__title">Vous ne savez pas par quel bout commencer ?</p>
     <p>
-      Retrouver tous nos conseils dans la page
+      Retrouvez tous nos conseils dans la page
       <RouterLink to="/aide">Aide</RouterLink>
     </p>
     <button
