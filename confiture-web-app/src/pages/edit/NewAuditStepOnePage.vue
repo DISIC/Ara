@@ -108,8 +108,8 @@ function submitStepOne(data: CreateAuditRequestData) {
     v-on="{ 'dsfr.conceal': closeLeaveModal }"
   >
     <p>
-      A ce stade aucune des informations saisies ne sera sauvegardées. C’est à
-      partir de l’étape 2 que vous pourrez quitter votre audit et y revenir sans
+      A ce stade aucune des informations saisies ne sera sauvegardée. C’est à
+      partir de l’étape suivante que vous pourrez quitter votre audit et y revenir sans
       perdre vos informations. Souhaitez-vous quitter l’audit ?
     </p>
   </LeaveModal>
