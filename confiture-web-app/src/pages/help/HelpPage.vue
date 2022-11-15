@@ -80,7 +80,7 @@ const moreLinks = [
   {
     title: "RGAA",
     description:
-      "enjeux, tests, obligations légales, méthode, tout le RGAA en plus clair",
+      "enjeux, tests, obligations légales, méthodes, tout le RGAA en plus clair",
     href: "https://accessibilite.numerique.gouv.fr/",
   },
 ];
