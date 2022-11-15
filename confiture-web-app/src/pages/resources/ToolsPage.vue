@@ -60,7 +60,7 @@ import PageMeta from "../../components/PageMeta";
           target="_blank"
           >Web Developer Toolbar pour Chrome</a
         >
-        : la même barre d’outils que précédemment, pour Chrome.
+        : la même barre d’outils que précédemment pour Chrome.
       </li>
     </ul>
 
