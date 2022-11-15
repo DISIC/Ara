@@ -23,19 +23,27 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
               target="_blank"
               title="DesignGouv - nouvelle fenêtre"
               >DesignGouv</a
-            >, le pôle Design des services numériques de la direction
-            interministérielle du numérique avec le soutien du
+            >, le pôle Design des services numériques de la
+            <a
+              class="fr-link fr-text--sm"
+              href="https://www.numerique.gouv.fr/dinum/"
+              title="direction interministérielle du numérique - nouvelle fenêtre"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              direction interministérielle du numérique</a
+            >
+            avec le soutien du
             <a
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
               title="Fonds pour l’insertion des personnes handicapées dans la
                 Fonction publique - nouvelle fenêtre"
-              >FIPHFP
-              <span class="sr-only"
-                >Fonds pour l’insertion des personnes handicapées dans la
-                Fonction publique</span
-              ></a
+              >FIPHFP<span class="sr-only">
+                Fonds pour l’insertion des personnes handicapées dans la
+                Fonction publique
+              </span></a
             >.
           </p>
           <ul class="fr-footer__content-list">
