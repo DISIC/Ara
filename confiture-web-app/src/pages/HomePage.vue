@@ -33,19 +33,19 @@ const steps = [
   {
     title: "1. Paramétrer l’audit",
     description:
-      "Vous saisirez le type d’audit, l’échantillon des pages à auditer et une adresse e-mail",
+      "Vous saisirez le type d’audit, l’échantillon des pages à auditer et une adresse e-mail.",
     icon: "⚙️",
   },
   {
     title: "2. Auditer le service",
     description:
-      "Évaluer la conformité des critères sur l’ensemble de l’échantillon et valider l’audit",
+      "Évaluer la conformité des critères sur l’ensemble de l’échantillon et valider l’audit.",
     icon: "🔎",
   },
   {
     title: "3. Rédiger la déclaration d’accessibilité",
     description:
-      "À ce stade l’audit est terminé et le rapport est prêt mais il reste à remplir la déclaration",
+      "À ce stade l’audit est terminé et le rapport est prêt mais il reste à remplir la déclaration.",
     icon: "📃",
   },
 ];
@@ -74,13 +74,12 @@ const steps = [
 
   <section>
     <div class="fr-grid-row fr-mt-9w">
-      <div class="fr-col-8 fr-mb-0">
+      <div class="fr-col fr-mb-0">
         <h1 ref="headingRef">
           L’outil qui va simplifier vos audits d’accessibilité numérique
         </h1>
         <p class="fr-text--lg fr-text--bold">
-          Que vous soyez expert·e en accessibilité numérique ou non vous allez
-          pouvoir démarrer en quelques clics l’audit de votre service.
+          Démarrez en quelques clics l’audit de votre service ! 
         </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
@@ -102,25 +101,26 @@ const steps = [
           Je démarre un audit
         </RouterLink>
       </div>
-      <div class="fr-col-4">
+      <div class="fr-displayed-lg">
         <img :src="AuditIllustationUrl" alt="" />
       </div>
     </div>
 
     <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
-
-    <div class="steps">
+    <div class="fr-grid-row fr-grid-row--gutters">
       <div
         v-for="step in steps"
         :key="step.title"
-        class="fr-tile fr-tile--horizontal"
+        class="fr-col"
       >
-        <div class="fr-tile__body step-content">
-          <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
-          <h3 class="fr-tile__title">
-            {{ step.title }}
-          </h3>
-          <p class="fr-tile__desc">{{ step.description }}</p>
+        <div class="fr-tile fr-tile--horizontal">
+          <div class="fr-tile__body step-content">
+            <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
+            <h3 class="fr-tile__title">
+              {{ step.title }}
+            </h3>
+            <p class="fr-tile__desc">{{ step.description }}</p>
+          </div>
         </div>
       </div>
     </div>
