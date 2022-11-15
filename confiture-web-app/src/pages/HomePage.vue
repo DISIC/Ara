@@ -74,7 +74,7 @@ const steps = [
 
   <section>
     <div class="fr-grid-row fr-mt-9w">
-      <div class="fr-col-8 fr-mb-0">
+      <div class="fr-col fr-mb-0">
         <h1 ref="headingRef">
           L’outil qui va simplifier vos audits d’accessibilité numérique
         </h1>
@@ -102,7 +102,7 @@ const steps = [
           Je démarre un audit
         </RouterLink>
       </div>
-      <div class="fr-col-4">
+      <div class="fr-displayed-lg">
         <img :src="AuditIllustationUrl" alt="" />
       </div>
     </div>
