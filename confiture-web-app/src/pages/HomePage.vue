@@ -33,13 +33,13 @@ const steps = [
   {
     title: "1. Paramétrer l’audit",
     description:
-      "Vous saisirez le type d’audit, l’échantillon des pages à auditer et une adresse e-mail.",
+      "Vous saisissez le type d’audit, l’échantillon des pages à auditer et une adresse électronique.",
     icon: "⚙️",
   },
   {
     title: "2. Auditer le service",
     description:
-      "Évaluer la conformité des critères sur l’ensemble de l’échantillon et valider l’audit.",
+      "Vous évaluez la conformité des critères sur l’ensemble de l’échantillon et validez l’audit.",
     icon: "🔎",
   },
   {
@@ -83,7 +83,7 @@ const steps = [
         </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
-          l'accessibilité (RGAA 4.1) vous pourrez&nbsp;:
+          l'accessibilité (RGAA 4.1) vous pouvez&nbsp;:
         </p>
         <ul>
           <li>Faire un audit rapide (25 critères)</li>
