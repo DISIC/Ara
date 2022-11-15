@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 
 import { history } from "../router";
 import PageMeta from "../components/PageMeta";
+import AuditIllustationUrl from "../assets/images/audit-illustration.svg";
 
 const router = useRouter();
 
@@ -72,26 +73,35 @@ const steps = [
   </div>
 
   <section>
-    <h1 ref="headingRef">
-      L’outil qui va simplifier vos audits d’accessibilité numérique
-    </h1>
-    <p>
-      Basé sur la dernière version du référentiel général d'amélioration de
-      l'accessibilité (RGAA 4.1) vous pourrez&nbsp;:
-    </p>
-    <ul>
-      <li>Faire un audit rapide (25 critères)</li>
-      <li>Faire un audit complémentaire (50 critères)</li>
-      <li>Faire un audit complet, dit de conformité (106 critères)</li>
-      <li>Générer vos rapports d’audit et vos déclarations d’accessibilité</li>
-    </ul>
+    <div class="fr-grid-row fr-mt-9w">
+      <div class="fr-col-6 fr-mb-0">
+        <h1 ref="headingRef">
+          L’outil qui va simplifier vos audits d’accessibilité numérique
+        </h1>
+        <p>
+          Basé sur la dernière version du référentiel général d'amélioration de
+          l'accessibilité (RGAA 4.1) vous pourrez&nbsp;:
+        </p>
+        <ul>
+          <li>Faire un audit rapide (25 critères)</li>
+          <li>Faire un audit complémentaire (50 critères)</li>
+          <li>Faire un audit complet, dit de conformité (106 critères)</li>
+          <li>
+            Générer vos rapports d’audit et vos déclarations d’accessibilité
+          </li>
+        </ul>
 
-    <RouterLink
-      :to="{ name: 'new-audit-step-one' }"
-      class="fr-btn fr-mt-5w fr-mb-7w"
-    >
-      Je démarre un audit
-    </RouterLink>
+        <RouterLink
+          :to="{ name: 'new-audit-step-one' }"
+          class="fr-btn fr-mt-5w fr-mb-7w"
+        >
+          Je démarre un audit
+        </RouterLink>
+      </div>
+      <div class="fr-col-3 fr-col-offset-1">
+        <img :src="AuditIllustationUrl" alt="" />
+      </div>
+    </div>
 
     <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
 
