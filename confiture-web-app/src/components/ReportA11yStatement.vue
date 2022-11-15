@@ -77,14 +77,14 @@ function hideCopyAlert() {
     </p>
     <ol>
       <li>
-        Vérifier les informations contenu dans ce document et corrigez si besoin
+        Vérifiez les informations contenues dans ce document et corrigez les si besoin.
       </li>
       <li>
-        Publier sur votre site cette déclaration d’accessibilité dans une page
+        Publiez sur votre site cette déclaration d’accessibilité dans une page
         dédiée.
       </li>
       <li>
-        Dès la page d’accueil et sur toutes les pages, afficher la mention
+        Dès la page d’accueil et sur toutes les pages, affichez la mention
         <strong>“Accessibilité : {{ getA11yLevel() }} conforme”</strong>. Cette
         mention peut être un lien, par exemple dans le pied de page, vers cette
         déclaration.
