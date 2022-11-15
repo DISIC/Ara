@@ -74,10 +74,14 @@ const steps = [
 
   <section>
     <div class="fr-grid-row fr-mt-9w">
-      <div class="fr-col-6 fr-mb-0">
+      <div class="fr-col-8 fr-mb-0">
         <h1 ref="headingRef">
           L’outil qui va simplifier vos audits d’accessibilité numérique
         </h1>
+        <p class="fr-text--lg fr-text--bold">
+          Que vous soyez expert·e en accessibilité numérique ou non vous allez
+          pouvoir démarrer en quelques clics l’audit de votre service.
+        </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
           l'accessibilité (RGAA 4.1) vous pourrez&nbsp;:
@@ -98,7 +102,7 @@ const steps = [
           Je démarre un audit
         </RouterLink>
       </div>
-      <div class="fr-col-3 fr-col-offset-1">
+      <div class="fr-col-4">
         <img :src="AuditIllustationUrl" alt="" />
       </div>
     </div>
