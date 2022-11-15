@@ -6,7 +6,7 @@
       retrouvent dans l’accordéon “tests du critère” de chaque critère.
     </li>
     <li>
-      Aidez-vous des éventuels outils d'assistances indiqués dans l’accordéon
+      Aidez-vous des éventuels outils d'assistance indiqués dans l’accordéon
       “méthodologie du test...”.
     </li>
     <li>
