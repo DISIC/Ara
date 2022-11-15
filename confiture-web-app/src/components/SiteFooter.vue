@@ -31,7 +31,8 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
               target="_blank"
               title="Fonds pour l’insertion des personnes handicapées dans la
                 Fonction publique - nouvelle fenêtre"
-              >FIPHFP <span class="sr-only"
+              >FIPHFP
+              <span class="sr-only"
                 >Fonds pour l’insertion des personnes handicapées dans la
                 Fonction publique</span
               ></a
@@ -78,10 +79,16 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
         </div>
       </div>
       <div class="fr-footer__partners">
-        <p class="fr-footer__partners-title fr-mb-1w">Conçu avec le soutien de notre partenaire :</p>
+        <p class="fr-footer__partners-title fr-mb-1w">
+          Conçu avec le soutien de notre partenaire :
+        </p>
         <div class="fr-footer__partners-logos">
           <div class="fr-footer__partners-main">
-            <a class="fr-footer__partners-link" target="_blank" href="https://www.fiphfp.fr/">
+            <a
+              class="fr-footer__partners-link"
+              target="_blank"
+              href="https://www.fiphfp.fr/"
+            >
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
@@ -136,7 +143,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
             Sauf mention contraire, tous les contenus de ce site sont sous
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-              target="_blank" 
+              target="_blank"
               title="licence etalab-2.0 - nouvelle fenêtre"
               >licence etalab-2.0</a
             >

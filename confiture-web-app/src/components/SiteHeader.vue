@@ -85,15 +85,15 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
             <div class="fr-header__service">
               <RouterLink :to="logoLink.route" :title="logoLink.title">
                 <p class="fr-header__service-title">
-                  Nom du service
+                  ARA
                   <span
                     class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
-                    >BETA</span
+                    >BÊTA</span
                   >
                 </p>
               </RouterLink>
               <p class="fr-header__service-tagline">
-                Précisions sur l'organisation
+                Réaliser des audits d’accessibilité
               </p>
             </div>
           </div>
