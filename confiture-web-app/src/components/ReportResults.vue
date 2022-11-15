@@ -49,7 +49,7 @@ const stats = computed(() => {
 });
 
 const chartsName = {
-  resultDistribution: "Répartition des critères par résutats",
+  resultDistribution: "Répartition des critères par résultats",
   pageDistribution: "Répartition des critères par pages",
   topicDistribution: "Répartition des critères par thématiques",
 };
