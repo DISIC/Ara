@@ -18,11 +18,13 @@ defineEmits(["update:modelValue"]);
     </p>
     <div class="fr-radio-group group">
       <input
+        class="radio-input"
         :id="`audit-type-${value}`"
         type="radio"
         name="audit-type"
         :value="value"
         :checked="value === modelValue"
+        required
         @change="
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
         "
@@ -45,6 +47,11 @@ defineEmits(["update:modelValue"]);
 
 .container.checked {
   border-color: var(--border-plain-blue-france);
+}
+
+.radio-input {
+  /* When the browser scrolls to the required input from the bottom of the form, show the entire "radio block" */
+  scroll-margin-top: 6rem;
 }
 
 .label::before {
