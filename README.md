@@ -1,11 +1,11 @@
-# ARA
+# Ara
 
 Faire des audits RGAA, les rendre lisibles et suivre l’amélioration de leur taux de conformité.
 
 ## Développement
 
-- La partie front est une application Vue.js 3 avec Typescript. [Voir les instructions de développement](https://github.com/DISIC/confiture/blob/main/confiture-web-app/README.md).
-- La partie back est une API Nest.js et utilise une base de données PostgreSQL. [Voir les instructions de développement](https://github.com/DISIC/confiture/blob/main/confiture-rest-api/README.md).
+- La partie front est une application Vue.js 3 avec Typescript. [Voir les instructions de développement](https://github.com/DISIC/Ara/blob/main/confiture-web-app/README.md).
+- La partie back est une API Nest.js et utilise une base de données PostgreSQL. [Voir les instructions de développement](https://github.com/DISIC/Ara/blob/main/confiture-rest-api/README.md).
 
 ## Licence
 
