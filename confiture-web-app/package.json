@@ -21,6 +21,7 @@
     "pinia": "^2.0.17",
     "slugify": "^1.6.5",
     "vue": "^3.2.25",
+    "vue-matomo": "^4.2.0",
     "vue-router": "^4.1.2"
   },
   "devDependencies": {

@@ -2,6 +2,8 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { marked } from "marked";
 import { createHead } from "@vueuse/head";
+// @ts-expect-error vue-matomo does not have any sort of typescript support :'(
+import Matomo from "vue-matomo";
 
 import App from "./App.vue";
 
@@ -27,4 +29,15 @@ import router from "./router";
 const pinia = createPinia();
 const head = createHead();
 
-createApp(App).use(router).use(pinia).use(head).mount("#app");
+const app = createApp(App);
+app.use(router).use(pinia).use(head);
+
+if (import.meta.env.VITE_MATOMO_ENABLE) {
+  app.use(Matomo, {
+    host: "https://stats.data.gouv.fr",
+    siteId: 269,
+    router,
+  });
+}
+
+app.mount("#app");
