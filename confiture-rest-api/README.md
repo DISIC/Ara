@@ -1,4 +1,4 @@
-# Confiture API
+# Ara API
 
 ## Requirements
 
