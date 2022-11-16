@@ -14,12 +14,12 @@ const logoLink = computed(() => {
         name: "report",
         params: { uniqueId: reportStore.data.consultUniqueId },
       },
-      title: "Rapport d’audit - Confiture",
+      title: "Rapport d’audit - Ara",
     };
   }
   return {
     route: { name: "home" },
-    title: "Accueil - Confiture",
+    title: "Accueil - Ara",
   };
 });
 
