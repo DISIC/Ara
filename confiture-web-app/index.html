@@ -8,9 +8,6 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ara - Réaliser des audits d’accessibilité</title>
-  </head>
-  <body>
-    <div id="app"></div>
 
     <% if (VITE_MATOMO_ENABLE) { %>
     <!-- Matomo -->
@@ -34,6 +31,9 @@
     </script>
     <!-- End Matomo Code -->
     <% } %>
+  </head>
+  <body>
+    <div id="app"></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
