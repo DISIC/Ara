@@ -1,6 +1,7 @@
 # Ara
 
-Faire des audits RGAA, les rendre lisibles et suivre l’amélioration de leur taux de conformité.
+Réaliser des audits d'accessibilité numérique sur la base du référentiel général d'amélioration de l'accessibilité (RGAA). 
+Générer et consulter les rapports de ces audits et les déclarations d'accessibilité.
 
 ## Développement
 
