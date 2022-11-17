@@ -220,13 +220,6 @@ async function handleDevButtonClick() {
         </div>
       </div>
     </div>
-
-    <button
-      class="fr-btn fr-btn--tertiary-no-outline"
-      @click="handleDevButtonClick"
-    >
-      [DEV] Remplir l’audit
-    </button>
   </template>
 </template>
 
