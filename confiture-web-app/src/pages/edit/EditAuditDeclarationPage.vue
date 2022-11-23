@@ -480,7 +480,7 @@ const isDevMode = useDevMode();
         <label class="fr-label" for="procedure-url">
           URL de la page d’accueil du site à auditer
           <span class="fr-hint-text">
-            Saisissez une url valide, commençant par <code>http://</code> ou
+            Saisissez une url valide, commençant par
             <code>https://</code>
           </span>
         </label>
@@ -490,7 +490,6 @@ const isDevMode = useDevMode();
           class="fr-input"
           type="url"
           required
-          placeholder="https://"
         />
       </div>
 
@@ -691,7 +690,7 @@ const isDevMode = useDevMode();
               class="fr-input"
               type="url"
               required
-              placeholder="http://"
+              placeholder="https://"
             />
           </div>
         </fieldset>
