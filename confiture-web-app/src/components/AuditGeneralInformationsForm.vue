@@ -101,7 +101,9 @@ const isDevMode = useDevMode();
 
 <template>
   <form class="content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3v"><span aria-hidden="true">⚙️</span> Paramètres de l’audit</h1>
+    <h1 class="fr-mb-3v">
+      <span aria-hidden="true">⚙️</span> Paramètres de l’audit
+    </h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
@@ -152,9 +154,9 @@ const isDevMode = useDevMode();
 
         <button
           class="fr-btn fr-btn--tertiary-no-outline"
-          type="button" 
+          type="button"
           :disabled="pages.length === 1"
-           :aria-label="`Supprimer page ${i + 1}`" 
+          :aria-label="`Supprimer page ${i + 1}`"
           @click="deletePage(i)"
         >
           Supprimer
@@ -176,6 +178,9 @@ const isDevMode = useDevMode();
       <div class="fr-input-group">
         <label class="fr-label" :for="`page-url-${i + 1}`">
           URL de la page
+          <span class="fr-hint-text">
+            L’URL de la page doit commencer par <code>https://</code>
+          </span>
         </label>
         <input
           :id="`page-url-${i + 1}`"
@@ -183,7 +188,6 @@ const isDevMode = useDevMode();
           class="fr-input"
           type="url"
           required
-          placeholder="http://"
         />
       </div>
     </fieldset>
@@ -216,7 +220,8 @@ const isDevMode = useDevMode();
         <label class="fr-label" for="procedure-auditor-name">
           Nom et prénom de l’auditeur (optionnel)
           <span class="fr-hint-text">
-            Permet au demandeur de l’audit de plus facilement vous identifier s'il a des questions ou besoin d’aide.
+            Permet au demandeur de l’audit de plus facilement vous identifier
+            s'il a des questions ou besoin d’aide.
             <br />
           </span>
         </label>
