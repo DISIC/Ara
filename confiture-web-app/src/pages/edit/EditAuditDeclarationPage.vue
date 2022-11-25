@@ -316,11 +316,12 @@ watch(
         )
       : [];
 
+    const auditToolNames = audit.tools.map((t) => t.name);
     defaultTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => {
-          return availableTools.map((t) => t.name).includes(tool.name);
-        })
+      ? // Cannot use filtered audit.tools because the checkbox array v-model binding wont work with different object refs
+        availableTools.filter((tool) => auditToolNames.includes(tool.name))
       : [];
+
     customTools.value = audit.tools.length
       ? audit.tools.filter((tool) => {
           return !availableTools.map((t) => t.name).includes(tool.name);
