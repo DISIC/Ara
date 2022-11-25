@@ -77,7 +77,8 @@ function hideCopyAlert() {
     </p>
     <ol>
       <li>
-        Vérifiez les informations contenues dans ce document et corrigez les si besoin.
+        Vérifiez les informations contenues dans ce document et corrigez les si
+        besoin.
       </li>
       <li>
         Publiez sur votre site cette déclaration d’accessibilité dans une page
@@ -164,12 +165,8 @@ function hideCopyAlert() {
       </p>
       <ul class="fr-mb-9v fr-mb-md-6w">
         <li>
-          <strong>[nn]</strong>% des critères du RGAA version 4 sont respectés ;
-        </li>
-        <li>
-          Le taux moyen de conformité du site s’élève à
           <strong>{{ report.data.accessibilityRate }}</strong
-          >% ;
+          >% des critères du RGAA version 4 sont respectés ;
         </li>
         <!-- <li>
           (Facultatif) Accès à la grille d’audit RGAA
