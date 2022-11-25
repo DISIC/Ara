@@ -75,6 +75,31 @@ const disabledResetFilters = computed(
   () => userImpactFilters.value.length === defaultUserImpactFillters.length
 );
 
+const minorUserImpactErrorCount = computed(
+  () =>
+    report.data?.results.filter(
+      (r) => r.userImpact === CriterionResultUserImpact.MINOR
+    ).length
+);
+
+const majorUserImpactErrorCount = computed(
+  () =>
+    report.data?.results.filter(
+      (r) => r.userImpact === CriterionResultUserImpact.MAJOR
+    ).length
+);
+
+const blockingUserImpactErrorCount = computed(
+  () =>
+    report.data?.results.filter(
+      (r) => r.userImpact === CriterionResultUserImpact.BLOCKING
+    ).length
+);
+
+const unknownUserImpactErrorCount = computed(
+  () => report.data?.results.filter((r) => r.userImpact === null).length
+);
+
 function expandAll() {
   const collapses = Array.from(
     document.querySelectorAll("[data-accordion] > [data-fr-js-collapse]")
@@ -262,11 +287,11 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   :value="CriterionResultUserImpact.MINOR"
                   type="checkbox"
                 />
-                <label class="fr-label" for="user-impact-filter-minor"
-                  >Mineur (10)
-                  <span class="fr-hint-text"
-                    >Gêne dans l’utilisation du site</span
-                  >
+                <label class="fr-label" for="user-impact-filter-minor">
+                  Mineur ({{ minorUserImpactErrorCount }})
+                  <span class="fr-hint-text">
+                    Gêne dans l’utilisation du site
+                  </span>
                 </label>
               </div>
               <div class="fr-checkbox-group">
@@ -276,11 +301,11 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   :value="CriterionResultUserImpact.MAJOR"
                   type="checkbox"
                 />
-                <label class="fr-label" for="user-impact-filter-major"
-                  >Majeur (16)
-                  <span class="fr-hint-text"
-                    >Compléxifie grandement l’utilisation du site</span
-                  >
+                <label class="fr-label" for="user-impact-filter-major">
+                  Majeur ({{ majorUserImpactErrorCount }})
+                  <span class="fr-hint-text">
+                    Compléxifie grandement l’utilisation du site
+                  </span>
                 </label>
               </div>
               <div class="fr-checkbox-group">
@@ -290,11 +315,11 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   :value="CriterionResultUserImpact.BLOCKING"
                   type="checkbox"
                 />
-                <label class="fr-label" for="user-impact-filter-blocking"
-                  >Bloquant (8)
-                  <span class="fr-hint-text"
-                    >Empêche totalement l’utilisation du site</span
-                  >
+                <label class="fr-label" for="user-impact-filter-blocking">
+                  Bloquant ({{ blockingUserImpactErrorCount }})
+                  <span class="fr-hint-text">
+                    Empêche totalement l’utilisation du site
+                  </span>
                 </label>
               </div>
               <div class="fr-checkbox-group">
@@ -304,8 +329,8 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   :value="null"
                   type="checkbox"
                 />
-                <label class="fr-label" for="user-impact-filter-unknown"
-                  >Non renseigné
+                <label class="fr-label" for="user-impact-filter-unknown">
+                  Impact non renseigné ({{ unknownUserImpactErrorCount }})
                 </label>
               </div>
             </div>
