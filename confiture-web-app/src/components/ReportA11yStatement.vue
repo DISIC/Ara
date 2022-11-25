@@ -159,21 +159,20 @@ function hideCopyAlert() {
       </p>
 
       <h4 class="fr-h2">Résultats des tests</h4>
-      <p>
+      <p class="fr-mb-9v fr-mb-md-6w">
         L’audit de conformité réalisé par
-        <strong>{{ report.data.procedureInitiator }}</strong> révèle que :
+        <strong>{{ report.data.procedureInitiator }}</strong> révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des critères du RGAA version 4 sont respectés.
       </p>
-      <ul class="fr-mb-9v fr-mb-md-6w">
+      <!--ul class="fr-mb-9v fr-mb-md-6w">
         <li>
           <strong>{{ report.data.accessibilityRate }}</strong
           >% des critères du RGAA version 4 sont respectés ;
         </li>
-        <!-- <li>
+        < <li>
           (Facultatif) Accès à la grille d’audit RGAA
           <strong>[url]</strong> pour télécharger la grille d’audit.
-        </li> -->
-      </ul>
-
+        </li> 
+      </ul-->
       <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
       <h5 class="fr-h3">Non-conformités</h5>
       <p class="fr-mb-2w fr-mb-md-3w">
