@@ -68,7 +68,7 @@ const previousPageName = route?.meta.name ?? "précédente";
 <template>
   <PageMeta
     title="Donner mon avis"
-    description="Contribuez à l’amélioration de l’outil Confiture en donnant votre avis."
+    description="Contribuez à l’amélioration de l’outil Ara en donnant votre avis."
   />
 
   <h1 class="fr-mb-6w">Donner mon avis</h1>

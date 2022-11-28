@@ -151,7 +151,7 @@ function getPageSlug(pageId: number) {
 
 /**
  * Manually reproduce DSFR menu item anchor links
- * See following issue: https://github.com/DISIC/Confiture/issues/130
+ * See following issue: https://github.com/DISIC/Ara/issues/130
  */
 function updateActiveAnchorLink(id: string, event: MouseEvent) {
   event.preventDefault();
