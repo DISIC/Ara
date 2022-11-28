@@ -684,6 +684,10 @@ const isDevMode = useDevMode();
           <div class="fr-input-group">
             <label class="fr-label" :for="`tool-url-${i + 1}`">
               URL de l’outil
+              <span class="fr-hint-text">
+                Saisissez une url valide, commençant par
+                <code>https://</code>
+              </span>
             </label>
             <input
               :id="`tool-url-${i + 1}`"
@@ -691,7 +695,6 @@ const isDevMode = useDevMode();
               class="fr-input"
               type="url"
               required
-              placeholder="https://"
             />
           </div>
         </fieldset>
@@ -896,8 +899,8 @@ const isDevMode = useDevMode();
           </label>
           <textarea
             id="notCompliantContent"
-            class="fr-input"
             v-model="notCompliantContent"
+            class="fr-input"
           />
         </div>
 
@@ -911,8 +914,8 @@ const isDevMode = useDevMode();
           </label>
           <textarea
             id="derogatedContent"
-            class="fr-input"
             v-model="derogatedContent"
+            class="fr-input"
           />
         </div>
 
@@ -927,8 +930,8 @@ const isDevMode = useDevMode();
           </label>
           <textarea
             id="notInScopeContent"
-            class="fr-input"
             v-model="notInScopeContent"
+            class="fr-input"
           />
         </div>
       </div>
