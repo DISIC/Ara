@@ -27,8 +27,12 @@ const statementRef = ref<HTMLDivElement>();
 const showCopyAlert = ref(false);
 
 async function copyA11yStatementHTML() {
-  // "<XX  >"
-  const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g;
+  const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g; // "<XX  >"
+  const whitespaceFollowedTags = /<(?<tagName>p)>\s{1}/g; // "<p> "
+  const whitespaceFollowingTags = /\s{1}<\/(?<tagName>p)>/g; // " </p>"
+  const oneLineBreakTags = /<(?<tagName>\/li|ul)>/g; // "</li>" or "<ul>"
+  const twoLineBreakTags = /<\/(?<tagName>h1|h2|h3|p|ul)>/g; // "</XX>"
+  const indentedTags = /<(?<tagName>li)>/g; // "<li>"
 
   const html = statementRef.value?.innerHTML
     // Replace heading levels
@@ -47,8 +51,13 @@ async function copyA11yStatementHTML() {
     // Remove Vue.js data attributes
     .replaceAll(/data-v-.*?=""/g, "")
 
-    // Remove whitespaces in tags
-    .replaceAll(tagsWithSpacesRegex, "<$<tagName>>");
+    // Insert line breaks, indentation and remove extra whitespaces
+    .replaceAll(tagsWithSpacesRegex, "<$<tagName>>")
+    .replaceAll(whitespaceFollowedTags, "<$<tagName>>")
+    .replaceAll(whitespaceFollowingTags, "</$<tagName>>")
+    .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
+    .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
+    .replaceAll(indentedTags, "  <$<tagName>>");
 
   if (html) {
     navigator.clipboard
