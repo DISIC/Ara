@@ -634,7 +634,7 @@ const isDevMode = useDevMode();
           </fieldset>
         </div>
 
-        <h2 class="fr-h4">Ajouter un outil d’assistance (optionnel)</h2>
+        <h2 class="fr-h4">Ajouter un outil d’assistance</h2>
 
         <fieldset
           v-for="(tool, i) in customTools"
