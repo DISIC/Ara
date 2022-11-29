@@ -152,6 +152,8 @@ export class AuditService {
             contactEmail: data.contactEmail,
             contactFormUrl: data.contactFormUrl,
 
+            technologies: data.technologies,
+
             // recipients: {
             //   deleteMany: {
             //     email: {
