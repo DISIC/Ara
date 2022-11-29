@@ -39,13 +39,13 @@ const steps = [
   {
     title: "2. Auditer le service",
     description:
-      "Vous évaluez la conformité des critères sur l’ensemble de l’échantillon et validez l’audit.",
+      "Vous évaluez la conformité des critères sur l’ensemble des pages de l’échantillon et validez l’audit.",
     icon: "🔎",
   },
   {
     title: "3. Rédiger la déclaration d’accessibilité",
     description:
-      "À ce stade l’audit est terminé et le rapport est prêt mais il reste à remplir la déclaration.",
+      "Une fois l’audit complet terminé, le rapport est prêt. Il reste à générer la déclaration.",
     icon: "📃",
   },
 ];
@@ -81,16 +81,20 @@ const steps = [
         <p class="fr-text--lg fr-text--bold">
           Démarrez en quelques clics l’audit de votre service ! 
         </p>
+        <p class="fr-text--lg">
+          Ara nécessite une bonne connaissance de la méthode technique du <abbr title="référentiel général d'amélioration de
+          l'accessibilité">RGAA</abbr>. Ce n’est pas un outil d’audit automatique.
+        </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
           l'accessibilité (RGAA 4.1) vous pouvez&nbsp;:
         </p>
         <ul>
-          <li>Faire un audit rapide (25 critères)</li>
-          <li>Faire un audit complémentaire (50 critères)</li>
+          <li>Commencer par un audit rapide (25 critères)</li>
+          <li>Poursuivre par un audit complémentaire (50 critères)</li>
           <li>Faire un audit complet, dit de conformité (106 critères)</li>
           <li>
-            Générer vos rapports d’audit et vos déclarations d’accessibilité
+            Générer votre rapport d’audit et votre déclaration d’accessibilité
           </li>
         </ul>
 
