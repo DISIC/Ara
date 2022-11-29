@@ -8,7 +8,7 @@ const reportStore = useReportStore();
 <template>
   <PageMeta
     title="Contactez-nous ou contribuez !"
-    description="Contactez-nous ou contribuez à l’amélioration de Confiture"
+    description="Contactez-nous ou contribuez à l’amélioration d’Ara"
   />
 
   <section class="fr-mx-auto content">
@@ -60,14 +60,14 @@ const reportStore = useReportStore();
           target="_blank"
           rel="noreferrer noopener" 
           title="dépôt - nouvelle fenêtre"
-          href="https://github.com/DISIC/confiture"
+          href="https://github.com/DISIC/Ara"
           >dépôt</a
         >. <br>Le <a
           class="fr-link"
           target="_blank"
           rel="noreferrer noopener"
           title="guide de contribution - nouvelle fenêtre"
-          href="https://github.com/DISIC/confiture/blob/main/CONTRIBUTING.md"
+          href="https://github.com/DISIC/Ara/blob/main/CONTRIBUTING.md"
           >guide de contribution</a
         > est disponible à la racine du dépôt.</li>
     </ul>

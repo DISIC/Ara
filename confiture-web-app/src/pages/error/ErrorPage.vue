@@ -20,7 +20,7 @@ const errorTitle =
 const errorDescription =
   {
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
-    408: "Désolé, la page n'a pa pu être affichée, le serveur de confiture.netlify.app a mis trop de temps à répondre.",
+    408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
     410: "Désolé, l’audit que vous cherchez a été supprimé.",
     500: "Désolé, le service rencontre un problème. Nous travaillons pour le résoudre le plus rapidement possible.",
     503: "Désolé, le service est temporairement inaccessible, la page demandée ne peut être affichée.",
