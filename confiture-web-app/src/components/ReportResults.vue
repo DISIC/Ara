@@ -17,7 +17,7 @@ const stats = computed(() => {
     ...(report.data?.auditType === AuditType.FULL
       ? [
           {
-            title: "D’accessibilité",
+            title: "Conformité RGAA",
             description: "Taux global de conformité au RGAA",
             value: report.data!.accessibilityRate,
             total: 100,
