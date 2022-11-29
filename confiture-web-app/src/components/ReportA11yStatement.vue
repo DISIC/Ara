@@ -27,6 +27,13 @@ const statementRef = ref<HTMLDivElement>();
 const showCopyAlert = ref(false);
 
 async function copyA11yStatementHTML() {
+  const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g; // "<XX  >"
+  const whitespaceFollowedTags = /<(?<tagName>p)>\s{1}/g; // "<p> "
+  const whitespaceFollowingTags = /\s{1}<\/(?<tagName>p)>/g; // " </p>"
+  const oneLineBreakTags = /<(?<tagName>\/li|ul)>/g; // "</li>" or "<ul>"
+  const twoLineBreakTags = /<\/(?<tagName>h1|h2|h3|p|ul)>/g; // "</XX>"
+  const indentedTags = /<(?<tagName>li)>/g; // "<li>"
+
   const html = statementRef.value?.innerHTML
     // Replace heading levels
     .replaceAll("<h3", "<h1")
@@ -42,7 +49,15 @@ async function copyA11yStatementHTML() {
     .replaceAll(/(<!--.*?-->)|(<!--[\S\s]+?-->)|(<!--[\S\s]*?$)/g, "")
 
     // Remove Vue.js data attributes
-    .replaceAll(/data-v-.*?=""/g, "");
+    .replaceAll(/data-v-.*?=""/g, "")
+
+    // Insert line breaks, indentation and remove extra whitespaces
+    .replaceAll(tagsWithSpacesRegex, "<$<tagName>>")
+    .replaceAll(whitespaceFollowedTags, "<$<tagName>>")
+    .replaceAll(whitespaceFollowingTags, "</$<tagName>>")
+    .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
+    .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
+    .replaceAll(indentedTags, "  <$<tagName>>");
 
   if (html) {
     navigator.clipboard
@@ -161,7 +176,9 @@ function hideCopyAlert() {
       <h4 class="fr-h2">Résultats des tests</h4>
       <p class="fr-mb-9v fr-mb-md-6w">
         L’audit de conformité réalisé par
-        <strong>{{ report.data.procedureInitiator }}</strong> révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des critères du RGAA version 4 sont respectés.
+        <strong>{{ report.data.procedureInitiator }}</strong> révèle que
+        <strong>{{ report.data.accessibilityRate }}%</strong> des critères du
+        RGAA version 4 sont respectés.
       </p>
       <!--ul class="fr-mb-9v fr-mb-md-6w">
         <li>
@@ -171,7 +188,7 @@ function hideCopyAlert() {
         < <li>
           (Facultatif) Accès à la grille d’audit RGAA
           <strong>[url]</strong> pour télécharger la grille d’audit.
-        </li> 
+        </li>
       </ul-->
       <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
       <h5 class="fr-h3">Non-conformités</h5>
