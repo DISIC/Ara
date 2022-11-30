@@ -86,52 +86,63 @@ function hideCopyAlert() {
 
 <template>
   <template v-if="report.data">
-    <p>
-      Vous pouvez publier dès maintenant cette déclaration d’accessibilité sur
-      votre site
-    </p>
-    <ol>
-      <li>
-        Vérifiez les informations contenues dans ce document et corrigez les si
-        besoin.
-      </li>
-      <li>
-        Publiez sur votre site cette déclaration d’accessibilité dans une page
-        dédiée.
-      </li>
-      <li>
-        Dès la page d’accueil et sur toutes les pages, affichez la mention
-        <strong>“Accessibilité : {{ getA11yLevel() }} conforme”</strong>. Cette
-        mention peut être un lien, par exemple dans le pied de page, vers cette
-        déclaration.
-      </li>
-    </ol>
-    <p class="fr-mb-9v fr-mb-md-6w">
-      <!-- TODO: link destination -->
-      <a href="#" class="fr-link" target="_blank"
-        >Tout savoir sur la déclaration d’accessibilité</a
-      >
-    </p>
-
-    <!-- FIXME: icon "copy" does not seem to exist -->
-    <button
-      class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
-      @click="copyA11yStatementHTML"
-      @blur="hideCopyAlert"
-    >
-      Copier le code HTML
-    </button>
-
-    <div role="alert" aria-live="polite">
-      <div
-        v-if="showCopyAlert"
-        class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
-      >
-        <p>
-          Le code
-          <abbr title="Hypertext Markup Language">HTML</abbr> de la déclaration
-          d’accessibilité a bien été copié dans le presse-papier.
+    <div class="info-container">
+      <p class="fr-text--xl fr-text--bold">
+        Vous pouvez publier dès maintenant cette déclaration d’accessibilité sur
+        votre site
+      </p>
+      <ol class="fr-mb-3w">
+        <li>
+          Vérifiez les informations contenues dans ce document et corrigez les
+          si besoin.
+        </li>
+        <li>
+          Publiez sur votre site cette déclaration d’accessibilité dans une page
+          dédiée.
+        </li>
+        <li>
+          Dès la page d’accueil et sur toutes les pages, affichez la mention
+          <strong>“Accessibilité : {{ getA11yLevel() }} conforme”</strong>.
+          Cette mention peut être un lien, par exemple dans le pied de page,
+          vers cette déclaration.
+        </li>
+      </ol>
+      <div class="fr-callout fr-mb-6w">
+        <p class="fr-callout__text fr-mb-2w">
+          Cette déclaration d’accessibilité adopte un format obligatoire donné
+          par le RGAA. Vous devez publier l’intégralité de cette déclaration sur
+          votre site et ne modifier que si nécessaire les données qui vous
+          concernent.
         </p>
+        <a
+          href="https://accessibilite.numerique.gouv.fr/obligations/declaration-accessibilite/"
+          class="fr-link"
+          target="_blank"
+        >
+          Tout savoir sur la déclaration d’accessibilité
+        </a>
+      </div>
+
+      <!-- FIXME: icon "copy" does not seem to exist -->
+      <button
+        class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
+        @click="copyA11yStatementHTML"
+        @blur="hideCopyAlert"
+      >
+        Copier le code HTML
+      </button>
+
+      <div role="alert" aria-live="polite">
+        <div
+          v-if="showCopyAlert"
+          class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
+        >
+          <p>
+            Le code
+            <abbr title="Hypertext Markup Language">HTML</abbr> de la
+            déclaration d’accessibilité a bien été copié dans le presse-papier.
+          </p>
+        </div>
       </div>
     </div>
 
@@ -327,7 +338,12 @@ function hideCopyAlert() {
 </template>
 
 <style scoped>
+.info-container {
+  max-width: 49.5rem;
+}
+
 .statement-container {
   border: 1px solid var(--border-default-grey);
+  max-width: 58rem;
 }
 </style>
