@@ -172,11 +172,14 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       <li>Aucun contenu n’est dérogé dans cet audit</li>
     </ul>
 
-    <!-- TODO: link destination -->
     <p class="fr-mb-9v fr-mb-md-6w">
-      <RouterLink to="#" target="_blank" class="fr-link"
-        >Plus d’information sur les contenus dérogés</RouterLink
+      <a
+        href="https://accessibilite.numerique.gouv.fr/obligations/champ-application/"
+        target="_blank"
+        class="fr-link"
       >
+        Plus d’information sur les contenus dérogés
+      </a>
     </p>
 
     <h2 class="fr-mb-2w fr-mb-md-3w">Outils d’assistance</h2>
@@ -214,10 +217,12 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       </table>
     </div>
 
-    <!-- TODO: link destination -->
     <p class="fr-mb-9v fr-mb-md-6w">
-      <RouterLink to="#" target="_blank" class="fr-link"
-        >Plus d’information sur les outils d’assistance</RouterLink
+      <a
+        href="https://accessibilite.numerique.gouv.fr/ressources/methodologie-de-test/"
+        target="_blank"
+        class="fr-link"
+        >Plus d’information sur les outils d’assistance</a
       >
     </p>
 
