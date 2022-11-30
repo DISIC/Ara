@@ -6,7 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Autres changements ⚙️
 
-- Ajout du changelog
+- Ajout du changelog ([#207](https://github.com/DISIC/Ara/pull/207))
 
 ## 16/11/2022
 
