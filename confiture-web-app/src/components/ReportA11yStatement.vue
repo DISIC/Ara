@@ -107,7 +107,7 @@ function hideCopyAlert() {
           vers cette déclaration.
         </li>
       </ol>
-      <div class="fr-callout fr-mb-6w">
+      <div class="fr-callout fr-callout--blue-ecume fr-mb-6w">
         <p class="fr-callout__text fr-mb-2w">
           Cette déclaration d’accessibilité adopte un format obligatoire donné
           par le RGAA. Vous devez publier l’intégralité de cette déclaration sur
@@ -118,8 +118,10 @@ function hideCopyAlert() {
           href="https://accessibilite.numerique.gouv.fr/obligations/declaration-accessibilite/"
           class="fr-link"
           target="_blank"
+          rel="noopener"
         >
           Tout savoir sur la déclaration d’accessibilité
+          <span class="sr-only">(nouvel onglet)</span>
         </a>
       </div>
 
