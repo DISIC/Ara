@@ -43,12 +43,10 @@ export class AuditsController {
     type: Audit,
   })
   async createAudit(@Body() body: CreateAuditDto) {
-    throw new InternalServerErrorException();
-
-    // const audit = await this.auditService.createAudit(body);
-    // // FIXME: the whole requests fails if the mail fails to send properly
-    // // await this.mailer.sendAuditCreatedMail(audit);
-    // return audit;
+    const audit = await this.auditService.createAudit(body);
+    // FIXME: the whole requests fails if the mail fails to send properly
+    // await this.mailer.sendAuditCreatedMail(audit);
+    return audit;
   }
 
   /** Retrieve an audit from the database. */
