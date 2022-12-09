@@ -37,14 +37,9 @@ const showCopyAlert = ref(false);
 async function copyReportUrl() {
   const url = `${window.location.origin}/rapports/${uniqueId}`;
 
-  navigator.clipboard
-    .writeText(url)
-    .then(() => {
-      showCopyAlert.value = true;
-    })
-    .catch((err) => {
-      console.error(`Error copying report URL to the clipboard: ${err}.`);
-    });
+  navigator.clipboard.writeText(url).then(() => {
+    showCopyAlert.value = true;
+  });
 }
 
 function hideReportAlert() {

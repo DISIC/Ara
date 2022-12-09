@@ -1,6 +1,7 @@
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { TimeoutError } from "ky";
+import { captureException } from "@sentry/vue";
 
 /**
  * Hook wrapping a function returning a promise. If the function fails with
@@ -33,6 +34,8 @@ export function useWrappedFetch(func: () => Promise<unknown>) {
           errorStatus,
         },
       });
+
+      captureException(error);
     });
   });
 }

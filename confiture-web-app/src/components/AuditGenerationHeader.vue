@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useResultsStore, useAuditStore } from "../store";
+import { captureException } from "@sentry/vue";
+import { useDevMode } from "../composables/useDevMode";
+import { useNotifications } from "../composables/useNotifications";
+import { useAuditStore, useResultsStore } from "../store";
 import { formatDate } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
-import { useNotifications } from "../composables/useNotifications";
-import { useDevMode } from "../composables/useDevMode";
 
 defineProps<{
   auditName: string;
@@ -49,12 +50,12 @@ function confirmDelete() {
       });
     })
     .catch((error) => {
-      console.error(error);
       notify(
         "error",
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
+      captureException(error);
     })
     .finally(() => {
       closeDeleteModal();

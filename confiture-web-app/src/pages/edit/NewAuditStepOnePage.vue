@@ -9,6 +9,7 @@ import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
 import { useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
+import { captureException } from "@sentry/core";
 
 const isLeaveModalOpen = ref(false);
 const leaveModalDestination = ref<string>("");
@@ -66,12 +67,12 @@ function submitStepOne(data: CreateAuditRequestData) {
       });
     })
     .catch((err) => {
-      console.error(err);
       notify(
         "error",
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
+      captureException(err);
     })
     .finally(() => {
       isSubmitting.value = false;
@@ -109,8 +110,8 @@ function submitStepOne(data: CreateAuditRequestData) {
   >
     <p>
       A ce stade aucune des informations saisies ne sera sauvegardée. C’est à
-      partir de l’étape suivante que vous pourrez quitter votre audit et y revenir sans
-      perdre vos informations. Souhaitez-vous quitter l’audit ?
+      partir de l’étape suivante que vous pourrez quitter votre audit et y
+      revenir sans perdre vos informations. Souhaitez-vous quitter l’audit ?
     </p>
   </LeaveModal>
 </template>

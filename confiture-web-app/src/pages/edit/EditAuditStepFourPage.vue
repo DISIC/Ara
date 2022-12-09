@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
-import { AuditType } from "../../types";
-import { useAuditStats } from "../../composables/useAuditStats";
-import { useResultsStore, useAuditStore } from "../../store";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
-import PageMeta from "../../components/PageMeta";
-import { formatAuditType, getCriteriaCount } from "../../utils";
-import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import CopyBlock from "../../components/CopyBlock.vue";
+import PageMeta from "../../components/PageMeta";
+import { useAuditStats } from "../../composables/useAuditStats";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { useAuditStore, useResultsStore } from "../../store";
+import { AuditType } from "../../types";
+import { formatAuditType, getCriteriaCount } from "../../utils";
 
 const route = useRoute();
-const router = useRouter();
 
 const uniqueId = route.params.uniqueId as string;
 
@@ -20,42 +19,10 @@ const auditStore = useAuditStore();
 
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-const showCopyAlert = ref(false);
-
 const reportRouteLocation = computed(() => ({
   name: "report",
   params: { uniqueId: auditStore.data?.consultUniqueId },
 }));
-const accessibilityStatementLocation = computed(() => ({
-  name: "report",
-  params: {
-    uniqueId: auditStore.data?.consultUniqueId,
-    tab: "declaration-daccessibilite",
-  },
-}));
-
-const fullReportUrl = computed(() => {
-  return (
-    window.location.origin + router.resolve(reportRouteLocation.value).fullPath
-  );
-});
-
-async function copyLink() {
-  navigator.clipboard
-    .writeText(fullReportUrl.value)
-    .then(() => {
-      showCopyAlert.value = true;
-    })
-    .catch((err) => {
-      console.error(
-        `Error copying report public URL to the clipboard: ${err}.`
-      );
-    });
-}
-
-function hideCopyAlert() {
-  showCopyAlert.value = false;
-}
 
 const resultsStore = useResultsStore();
 
@@ -240,7 +207,9 @@ const successAlertContent = computed(() => {
 
   <section class="content">
     <h2 class="fr-h4">Bon à savoir</h2>
-    <p>Indiquez à vos destinataires les prochaines étapes qui les attendent :</p>
+    <p>
+      Indiquez à vos destinataires les prochaines étapes qui les attendent :
+    </p>
     <ul>
       <li v-if="hasA11yStatement">
         Mettre en ligne la déclaration d’accessibilité

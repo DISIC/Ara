@@ -54,9 +54,6 @@ function submitFeedback() {
     showSuccess.value = true;
   });
   // TODO: handle error
-  // .catch((err) => {
-  //   console.log(err)
-  // });
 }
 const router = useRouter();
 
