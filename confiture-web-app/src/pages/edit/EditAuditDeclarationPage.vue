@@ -21,38 +21,40 @@ useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 // Technologies
 
-const availableTechnologies = ["HTML", "CSS", "JavaScript", "PHP", "MySQL"];
-const defaultTechnologies = ref<string[]>([]);
-const customTechnologies = ref<string[]>([""]);
-const auditTechnologies = computed(() => {
-  return [...defaultTechnologies.value, ...customTechnologies.value].filter(
-    Boolean
-  );
-});
-
-const customTechNameRefs = ref<HTMLInputElement[]>([]);
+const tempTechnologies = ref("");
+const validatedTechnologies = ref<string[]>([]);
+const validatedTechnologiesRefs = ref<HTMLButtonElement[]>([]);
+const validateTechnologiesRef = ref<HTMLButtonElement>();
 
 /**
- * Create a new tech and focus its field.
+ * Create technologies tags.
  */
-async function addTech() {
-  customTechnologies.value.push("");
-  await nextTick();
-  const lastInput =
-    customTechNameRefs.value[customTechNameRefs.value.length - 1];
-  lastInput.focus();
+async function validateTechnologies() {
+  const tech = tempTechnologies.value.split(",").filter(Boolean);
+  tech.forEach((t) => {
+    validatedTechnologies.value.push(t.trim());
+  });
+
+  tempTechnologies.value = "";
 }
 
 /**
- * Delete custom tech at index and focus previous or first field.
- * @param {number} i
+ * Remove technology tag and focus next one or validate button.
  */
-async function deleteCustomTech(i: number) {
-  customTechnologies.value.splice(i, 1);
+async function removeTechnology(index: number) {
+  validatedTechnologies.value = validatedTechnologies.value.filter((_, i) => {
+    return i !== index;
+  });
+
   await nextTick();
-  const lastInput =
-    i === 0 ? customTechNameRefs.value[0] : customTechNameRefs.value[i - 1];
-  lastInput.focus();
+
+  const nextTechnologyButton: HTMLButtonElement =
+    validatedTechnologiesRefs.value[index];
+  if (nextTechnologyButton) {
+    nextTechnologyButton.focus();
+  } else {
+    validateTechnologiesRef.value?.focus();
+  }
 }
 
 // Tools
@@ -305,15 +307,8 @@ watch(
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
-    defaultTechnologies.value = audit.technologies.length
-      ? audit.technologies.filter((tech) =>
-          availableTechnologies.includes(tech)
-        )
-      : [];
-    customTechnologies.value = audit.technologies.length
-      ? audit.technologies.filter(
-          (tech) => !availableTechnologies.includes(tech)
-        )
+    validatedTechnologies.value = audit.technologies.length
+      ? audit.technologies
       : [];
 
     const auditToolNames = audit.tools.map((t) => t.name);
@@ -358,7 +353,7 @@ function handleSubmit() {
     contactFormUrl: contactFormUrl.value,
     contactName: contactName.value,
 
-    technologies: auditTechnologies.value,
+    technologies: validatedTechnologies.value,
     environments: environments.value,
     tools: tools.value,
 
@@ -398,8 +393,7 @@ function DEBUG_fillFields() {
   procedureUrl.value = "https://example.com";
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
-  defaultTechnologies.value = ["HTML", "CSS"];
-  customTechnologies.value = ["WordPress"];
+  validatedTechnologies.value = ["HTML", "CSS"];
 
   notCompliantContent.value =
     "Sit aliquip velit adipisicing esse cupidatat. Dolor nisi do Lorem laboris cillum anim adipisicing reprehenderit laboris id ullamco. Cillum aute do consectetur et exercitation consequat exercitation sunt sunt id dolore aliquip. Dolor cillum anim do id ipsum occaecat quis voluptate. Commodo adipisicing sit proident consequat ex incididunt. Minim sit esse ad id do pariatur in occaecat proident eiusmod velit.";
@@ -494,7 +488,7 @@ const isDevMode = useDevMode();
         />
       </div>
 
-      <fieldset class="fr-fieldset fr-mt-6w">
+      <fieldset class="fr-fieldset fr-mt-6w fr-mb-6w">
         <legend>
           <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
         </legend>
@@ -551,59 +545,47 @@ const isDevMode = useDevMode();
         </div>
       </fieldset>
 
-      <fieldset class="fr-fieldset fr-mt-6w">
-        <legend class="fr-fieldset__legend">
-          <h2 class="fr-h4 fr-mb-0">Technologies utilisées sur le site</h2>
-        </legend>
+      <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-        <div class="fr-fieldset__content">
-          <div
-            v-for="(tech, i) in availableTechnologies"
-            :key="i"
-            class="fr-checkbox-group"
-          >
-            <input
-              :id="`tech-${i}`"
-              v-model="defaultTechnologies"
-              type="checkbox"
-              :value="tech"
-            />
-            <label class="fr-label" :for="`tech-${i}`">
-              {{ tech }}
-            </label>
-          </div>
-        </div>
-      </fieldset>
-
-      <template v-for="(_, i) in customTechnologies" :key="i">
-        <label class="fr-label fr-mb-1w fr-mt-4w" :for="`custom-tech-${i}`">
-          Ajouter une technologie
+      <div class="fr-input-group fr-mb-2w">
+        <label class="fr-label" for="temp-technologies">
+          Ajouter des technologies
+          <span class="fr-hint-text">
+            Insérez une virgule pour séparer les technologies. Appuyez sur
+            ENTRÉE ou cliquez sur “Valider les technologies” pour les valider.
+            Exemple de technologies : HTML, CSS, Javascript, etc.
+          </span>
         </label>
-        <div class="delete-custom-tech">
-          <input
-            :id="`custom-tech-${i}`"
-            ref="customTechNameRefs"
-            v-model="customTechnologies[i]"
-            class="fr-input"
-            type="text"
-          />
+        <input
+          id="temp-technologies"
+          v-model="tempTechnologies"
+          class="fr-input"
+          :required="!validatedTechnologies.length"
+          @keydown.enter.prevent="validateTechnologies"
+        />
+      </div>
+
+      <ul class="fr-tags-group">
+        <li v-for="(techno, i) in validatedTechnologies" :key="i">
           <button
-            class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
-            :disabled="customTechnologies.length === 1"
+            ref="validatedTechnologiesRefs"
+            class="fr-tag fr-tag--sm fr-tag--dismiss"
             type="button"
-            @click="deleteCustomTech(i)"
+            :aria-label="`Retirer ${techno}`"
+            @click="removeTechnology(i)"
           >
-            Supprimer
+            {{ techno }}
           </button>
-        </div>
-      </template>
+        </li>
+      </ul>
 
       <button
-        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        ref="validateTechnologiesRef"
+        class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
         type="button"
-        @click="addTech"
+        @click="validateTechnologies"
       >
-        Ajouter un outil
+        Valider les technologies
       </button>
 
       <div class="content">
