@@ -5,14 +5,7 @@ import { ViteEjsPlugin } from "vite-plugin-ejs";
 // https://vitejs.dev/config/
 export default defineConfig({
   assetsInclude: ["**/*.docx"],
-  plugins: [
-    vue(),
-    ViteEjsPlugin((config) => {
-      return {
-        VITE_MATOMO_ENABLE: config.env.VITE_MATOMO_ENABLE,
-      };
-    }),
-  ],
+  plugins: [vue()],
   server: {
     proxy: {
       "/api": "http://localhost:4000",

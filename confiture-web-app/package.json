@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "1.7.2",
+    "@sentry/tracing": "^7.24.2",
+    "@sentry/vue": "^7.24.2",
     "@vueuse/head": "^0.7.9",
     "chart.js": "^3.9.1",
     "ky": "^0.31.0",

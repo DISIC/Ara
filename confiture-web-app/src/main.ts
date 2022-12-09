@@ -5,6 +5,9 @@ import { createHead } from "@vueuse/head";
 // @ts-expect-error vue-matomo does not have any sort of typescript support :'(
 import Matomo from "vue-matomo";
 
+import * as Sentry from "@sentry/vue";
+import { BrowserTracing } from "@sentry/tracing";
+
 import App from "./App.vue";
 
 import "./styles/main.css";
@@ -41,6 +44,33 @@ if (import.meta.env.VITE_MATOMO_ENABLE) {
     host: "https://stats.data.gouv.fr",
     siteId: 269,
     router,
+  });
+}
+
+// setup Sentry error logging
+if (import.meta.env.VITE_SENTRY_DSN) {
+  Sentry.init({
+    app,
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    integrations: [
+      new BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        tracePropagationTargets: [window.location.hostname, /^\//],
+      }),
+    ],
+
+    // Set to a value between 0 and 1.0 to enable performance monitoring
+    // 0.5 means half the events will be transferred
+    tracesSampleRate: 0,
+
+    /*
+      Differentiate between the various environments of the app
+      example values :
+      - "local" : Local development
+      - "preview" : Pre-production application
+      - "production" : Production application
+    */
+    environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
   });
 }
 
