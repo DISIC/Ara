@@ -85,8 +85,3 @@ export function getCssVarValue(varName: string): string {
 export function slugify(value: string): string {
   return baseSlugify(value, { strict: true, lower: true });
 }
-
-let nextId = 1;
-export function getUniqueId(): string {
-  return "" + nextId++;
-}
