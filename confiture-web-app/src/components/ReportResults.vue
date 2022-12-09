@@ -73,10 +73,10 @@ const chartsName = {
           :unit="stat.unit"
           :danger="stat.danger"
         >
-          <template v-if="stat.hasDetails" #summary>
+          <template v-if="stat.hasDetails" #accordion-title>
             En savoir plus sur le calcul du taux
           </template>
-          <template v-if="stat.hasDetails" #details>
+          <template v-if="stat.hasDetails" #accordion-content>
             <p>
               Le taux global de conformité au RGAA est calculé de la manière
               suivante :

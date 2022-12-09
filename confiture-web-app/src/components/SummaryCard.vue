@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSlots, computed } from "vue";
+import { useUniqueId } from "../composables/useUniqueId";
 import StatDonut from "./StatDonut.vue";
 
 defineProps<{
@@ -12,7 +13,10 @@ defineProps<{
 }>();
 
 const slots = useSlots();
-const showDetails = computed(() => slots.summary && slots.details);
+const showDetails = computed(
+  () => slots["accordion-title"] && slots["accordion-content"]
+);
+const uniqueId = useUniqueId();
 </script>
 
 <template>
@@ -28,24 +32,20 @@ const showDetails = computed(() => slots.summary && slots.details);
       </div>
     </div>
 
-    <details v-if="showDetails" class="card-details">
-      <summary class="fr-py-3v fr-px-3v">
-        <span>
-          <slot name="summary"></slot>
-        </span>
-        <span
-          class="fr-icon-add-line fr-icon--sm summary-icon summary-icon-open"
-          aria-hidden="true"
-        />
-        <span
-          class="fr-icon-subtract-line fr-icon--sm summary-icon summary-icon-close"
-          aria-hidden="true"
-        />
-      </summary>
-      <div class="fr-py-3w fr-px-3v">
-        <slot name="details"></slot>
+    <section v-if="showDetails" class="fr-accordion">
+      <h3 class="fr-accordion__title">
+        <button
+          class="fr-accordion__btn"
+          aria-expanded="false"
+          :aria-controls="`accordion-${uniqueId}`"
+        >
+          <slot name="accordion-title"></slot>
+        </button>
+      </h3>
+      <div :id="`accordion-${uniqueId}`" class="fr-collapse">
+        <slot name="accordion-content" />
       </div>
-    </details>
+    </section>
   </div>
 </template>
 
@@ -71,32 +71,6 @@ const showDetails = computed(() => slots.summary && slots.details);
 
 .card-description {
   color: var(--text-mention-grey);
-}
-
-.card-details > summary {
-  list-style: none;
-  border-top: 1px solid var(--border-default-grey);
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-}
-
-.card-details > :not(summary) {
-  cursor: auto;
-}
-
-.card-details > summary:hover {
-  background-color: var(--background-contrast-grey);
-}
-
-.summary-icon {
-  display: none;
-}
-.card-details[open] .summary-icon-close {
-  display: initial;
-}
-.card-details:not([open]) .summary-icon-open {
-  display: initial;
 }
 
 @media (max-width: 992px) {
