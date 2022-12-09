@@ -135,15 +135,15 @@ function hideCopyAlert() {
           d’accessibilité sur leur site et d’afficher le niveau de conformité au
           RGAA dès la page d’accueil.
         </p>
-        <a
-          href="https://design.numerique.gouv.fr/accessibilite-numerique/cadre-legal/"
+        <RouterLink
           class="fr-link"
           target="_blank"
           rel="noopener"
+          :to="{ name: 'legal-requirements' }"
         >
           Tout savoir sur les obligations légales et sanctions
           <span class="sr-only">(nouvel onglet)</span>
-        </a>
+        </RouterLink>
       </div>
 
       <!-- FIXME: icon "copy" does not seem to exist -->
