@@ -343,8 +343,8 @@ function hideCopyAlert() {
         </ul>
         <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
         <ul class="fr-mb-2w fr-mb-md-3w">
-          <li v-for="tool in report.data.context.tools" :key="tool.name">
-            {{ tool.name }}
+          <li v-for="tool in report.data.context.tools" :key="tool">
+            {{ tool }}
           </li>
         </ul>
         <h5 class="fr-h3">

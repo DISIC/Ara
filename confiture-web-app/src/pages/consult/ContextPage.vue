@@ -188,7 +188,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       L’outil le plus utilisé pour réaliser cet audit a été l’inspecteur de code
       que propose chaque navigateur. Un ensemble d’outils ont également été
       utilisés afin de s’assurer d’une restitution correcte de contenus
-      accessibles dans le cas où l’examen du code seul n’a pas suffit.
+      accessibles dans le cas où l’examen du code seul n’a pas suffi.
     </p>
 
     <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
@@ -199,19 +199,11 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         <thead>
           <tr>
             <th scope="col">Nom</th>
-            <th scope="col">Fonction</th>
-            <th scope="col">URL</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(tool, i) in report.data.context.tools" :key="i">
-            <td>{{ tool.name }}</td>
-            <td>{{ tool.function }}</td>
-            <td>
-              <RouterLink class="fr-link" target="_blank" :to="tool.url">
-                {{ tool.url }}
-              </RouterLink>
-            </td>
+            <td>{{ tool }}</td>
           </tr>
         </tbody>
       </table>

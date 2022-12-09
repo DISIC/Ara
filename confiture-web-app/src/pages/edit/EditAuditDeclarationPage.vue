@@ -59,114 +59,57 @@ async function removeTechnology(index: number) {
 
 // Tools
 
-const defaultTools = ref<
-  {
-    name: string;
-    function: string;
-    url: string;
-  }[]
->([]);
-const customTools = ref([
-  {
-    name: "",
-    function: "",
-    url: "",
-  },
-]);
+const tempTools = ref("");
+const validatedTools = ref<string[]>([]);
+const validatedToolsRefs = ref<HTMLButtonElement[]>([]);
+const validateToolsRef = ref<HTMLButtonElement>();
+
+const defaultTools = ref<string[]>([]);
 const tools = computed(() => {
-  return [...defaultTools.value, ...customTools.value].filter(
-    (t) => t.name !== "" || t.function !== "" || t.url !== ""
-  );
+  return [...defaultTools.value, ...validatedTools.value].filter(Boolean);
 });
 
-const customToolNameRefs = ref<HTMLInputElement[]>([]);
-
 const availableTools = [
-  {
-    name: "Web Accessibility Toolbar",
-    function:
-      "Barre d’outils Firefox ou Chrome qui peut aider à retrouver visuellement certains éléments dans un document pour en contrôler l’accessibilité",
-    url: "https://chrome.google.com/webstore/detail/web-developer/bfbameneiokkgbdmiekhjnmfkcnldhhm?hl=fr",
-  },
-  {
-    name: "Validateur en ligne W3C",
-    function:
-      "Outils en ligne permettant de détecter des erreurs dans le code source d’un document HTML",
-    url: "https://validator.w3.org/nu/",
-  },
-  {
-    name: "WCAG Contrast checker",
-    function:
-      "Extension Firefox qui permet un contrôle automatique des contrastes de couleurs les textes d’un document",
-    url: "https://addons.mozilla.org/fr/firefox/addon/wcag-contrast-checker/",
-  },
-  {
-    name: "Color Contrast Analyser",
-    function:
-      "Application Windows ou Mac qui permet de contrôler des contrastes de couleurs",
-    url: "https://www.tpgi.com/color-contrast-checker/",
-  },
-  {
-    name: "HeadingsMap",
-    function:
-      "Extension Firefox ou Chrome qui permet de donner un aperçu du plan du document et de son arborescence",
-    url: "https://addons.mozilla.org/fr/firefox/addon/headingsmap/",
-  },
-  {
-    name: "PAC (PDF Accessibility Checker)",
-    function:
-      "Logiciel Windows qui permet de contrôler certains points d’accessibilité des documents PDF",
-    url: "https://pdfua.foundation/fr/pdf-accessibility-checker-pac",
-  },
-  {
-    name: "Word Accessibility Plug-in pour Microsoft Office Windows",
-    function:
-      "Fonctionnalité intégrée à Microsoft Office permettant de valider l’accessibilité d’un document",
-    url: "https://support.microsoft.com/fr-fr/office/rendre-vos-documents-word-accessibles-aux-personnes-atteintes-d-un-handicap-d9bf3683-87ac-47ea-b91a-78dcacb3c66d",
-  },
-  {
-    name: "AccessODF pour LibreOffice",
-    function:
-      "Extension LibreOffice permettant de vérifier l’accessibilité d’un document LibreOffice Writer ; à noter que cette extension n’est plus compatible avec les dernières versions de LibreOffice (supérieures à la version 4.0)",
-    url: "https://extensions.libreoffice.org/en/extensions/show/accessodf",
-  },
-  {
-    name: "Ace by DAISY App",
-    function: "Utilitaire pour vérifier l’accessibilité d’un fichier EPUB",
-    url: "https://inclusivepublishing.org/toolbox/ace-by-daisy-app/",
-  },
-  {
-    name: "PEAT (Photosensitive Epilepsy Analysis Tool)",
-    function:
-      "Logiciel pour évaluer la potentialité de certains contenus web à causer des crises d’épilepsie",
-    url: "https://trace.umd.edu/peat/",
-  },
+  "Web Accessibility Toolbar",
+  "Validateur en ligne W3C",
+  "WCAG Contrast checker",
+  "Color Contrast Analyser",
+  "HeadingsMap",
+  "PAC (PDF Accessibility Checker)",
+  "Word Accessibility Plug-in pour Microsoft Office Windows",
+  "AccessODF pour LibreOffice",
+  "Ace by DAISY App",
+  "PEAT (Photosensitive Epilepsy Analysis Tool)",
 ];
 
 /**
- * Create a new tool and focus its field.
+ * Create tools tags.
  */
-async function addTool() {
-  customTools.value.push({
-    name: "",
-    function: "",
-    url: "",
+async function validateTools() {
+  const tech = tempTools.value.split(",").filter(Boolean);
+  tech.forEach((t) => {
+    validatedTools.value.push(t.trim());
   });
-  await nextTick();
-  const lastInput =
-    customToolNameRefs.value[customToolNameRefs.value.length - 1];
-  lastInput.focus();
+
+  tempTools.value = "";
 }
+
 /**
- * Delete custom tool at index and focus previous or first field.
- * @param {number} i
+ * Remove tool tag and focus next one or validate button.
  */
-async function deleteCustomTool(i: number) {
-  customTools.value.splice(i, 1);
+async function removeTool(index: number) {
+  validatedTools.value = validatedTools.value.filter((_, i) => {
+    return i !== index;
+  });
+
   await nextTick();
-  const lastInput =
-    i === 0 ? customToolNameRefs.value[0] : customToolNameRefs.value[i - 1];
-  lastInput.focus();
+
+  const nextToolButton: HTMLButtonElement = validatedToolsRefs.value[index];
+  if (nextToolButton) {
+    nextToolButton.focus();
+  } else {
+    validateToolsRef.value?.focus();
+  }
 }
 
 // Environment
@@ -311,23 +254,13 @@ watch(
       ? audit.technologies
       : [];
 
-    const auditToolNames = audit.tools.map((t) => t.name);
     defaultTools.value = audit.tools.length
       ? // Cannot use filtered audit.tools because the checkbox array v-model binding wont work with different object refs
-        availableTools.filter((tool) => auditToolNames.includes(tool.name))
+        availableTools.filter((tool) => audit.tools.includes(tool))
       : [];
-
-    customTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => {
-          return !availableTools.map((t) => t.name).includes(tool.name);
-        })
-      : [
-          {
-            name: "",
-            function: "",
-            url: "",
-          },
-        ];
+    validatedTools.value = audit.tools.length
+      ? audit.tools.filter((tool) => !availableTools.includes(tool))
+      : [];
 
     notCompliantContent.value = audit.notCompliantContent ?? "";
     derogatedContent.value = audit.derogatedContent ?? "";
@@ -381,40 +314,19 @@ function handleSubmit() {
 }
 
 /**
- * TODO: remove this
  * Dev function to avoid filling all fields manually
  */
 function DEBUG_fillFields() {
-  console.log(
-    "🚀 ~ file: EditAuditDeclarationPage.vue ~ line 339 ~ DEBUG_fillFields ~ DEBUG_fillFields",
-    DEBUG_fillFields
-  );
   auditInitiator.value = "Mairie de Tours";
   procedureUrl.value = "https://example.com";
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
+
   validatedTechnologies.value = ["HTML", "CSS"];
 
-  notCompliantContent.value =
-    "Sit aliquip velit adipisicing esse cupidatat. Dolor nisi do Lorem laboris cillum anim adipisicing reprehenderit laboris id ullamco. Cillum aute do consectetur et exercitation consequat exercitation sunt sunt id dolore aliquip. Dolor cillum anim do id ipsum occaecat quis voluptate. Commodo adipisicing sit proident consequat ex incididunt. Minim sit esse ad id do pariatur in occaecat proident eiusmod velit.";
-  notInScopeContent.value =
-    "Non officia voluptate id magna culpa consectetur ex officia quis magna quis sint.";
-  derogatedContent.value =
-    "Nostrud duis ut sint et et. Consequat fugiat sunt est elit sunt.";
-
   defaultTools.value = [availableTools[2]];
-  customTools.value = [
-    {
-      name: "Firefox Devtools",
-      function: "Inspecter et débugguer le code d’une page web.",
-      url: "https://firefox-dev.tools/",
-    },
-    {
-      name: "AXE Webextension",
-      function: "Analyser les problèmes d’accessibilité d’une page web.",
-      url: "https://www.deque.com/axe/devtools/",
-    },
-  ];
+  validatedTools.value = ["Firefox Devtools", "AXE Webextension"];
+
   environments.value = [
     {
       platform: PLATFORM.DESKTOP,
@@ -435,6 +347,13 @@ function DEBUG_fillFields() {
       browserVersion: "15.6",
     },
   ];
+
+  notCompliantContent.value =
+    "Sit aliquip velit adipisicing esse cupidatat. Dolor nisi do Lorem laboris cillum anim adipisicing reprehenderit laboris id ullamco. Cillum aute do consectetur et exercitation consequat exercitation sunt sunt id dolore aliquip. Dolor cillum anim do id ipsum occaecat quis voluptate. Commodo adipisicing sit proident consequat ex incididunt. Minim sit esse ad id do pariatur in occaecat proident eiusmod velit.";
+  notInScopeContent.value =
+    "Non officia voluptate id magna culpa consectetur ex officia quis magna quis sint.";
+  derogatedContent.value =
+    "Nostrud duis ut sint et et. Consequat fugiat sunt est elit sunt.";
 }
 
 const isDevMode = useDevMode();
@@ -569,7 +488,7 @@ const isDevMode = useDevMode();
         <li v-for="(techno, i) in validatedTechnologies" :key="i">
           <button
             ref="validatedTechnologiesRefs"
-            class="fr-tag fr-tag--sm fr-tag--dismiss"
+            class="fr-tag fr-tag--dismiss"
             type="button"
             :aria-label="`Retirer ${techno}`"
             @click="removeTechnology(i)"
@@ -609,84 +528,51 @@ const isDevMode = useDevMode();
                   :value="tool"
                 />
                 <label class="fr-label" :for="`tool-${i}`">
-                  {{ tool.name }}
+                  {{ tool }}
                 </label>
               </div>
             </div>
           </fieldset>
         </div>
 
-        <h2 class="fr-h4">Ajouter un outil d’assistance</h2>
+        <div class="fr-input-group fr-mb-2w">
+          <label class="fr-label" for="temp-tools">
+            Ajouter des outils d’assistance
+            <span class="fr-hint-text">
+              Insérez une virgule pour séparer les outils d’assistance. Appuyez
+              sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider.
+            </span>
+          </label>
+          <input
+            id="temp-tools"
+            v-model="tempTools"
+            class="fr-input"
+            :required="!validatedTools.length"
+            @keydown.enter.prevent="validateTools"
+          />
+        </div>
 
-        <fieldset
-          v-for="(tool, i) in customTools"
-          :key="i"
-          class="fr-fieldset fr-mt-4w fr-p-4w tools-card"
-        >
-          <div class="fr-mb-2w tools-header">
-            <legend class="fr-legend fr-mb-1w" :for="`custom-tool-${i}`">
-              <h3 class="fr-h6 fr-mb-0">Outil {{ i + 1 }}</h3>
-            </legend>
-
+        <ul class="fr-tags-group">
+          <li v-for="(tool, i) in validatedTools" :key="i">
             <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-ml-3v"
+              ref="validatedToolsRefs"
+              class="fr-tag fr-tag--dismiss"
               type="button"
-              :disabled="customTools.length === 1"
-              @click="deleteCustomTool(i)"
+              :aria-label="`Retirer ${tool}`"
+              @click="removeTool(i)"
             >
-              Supprimer
+              {{ tool }}
             </button>
-          </div>
-
-          <div class="fr-input-group">
-            <label class="fr-label" :for="`tool-name-${i + 1}`">
-              Nom de l’outil
-            </label>
-            <input
-              :id="`tool-name-${i + 1}`"
-              ref="customToolNameRefs"
-              v-model="tool.name"
-              class="fr-input"
-              required
-            />
-          </div>
-
-          <div class="fr-input-group">
-            <label class="fr-label" :for="`tool-function-${i + 1}`">
-              Fonction
-            </label>
-            <input
-              :id="`tool-function-${i + 1}`"
-              v-model="tool.function"
-              class="fr-input"
-              required
-            />
-          </div>
-
-          <div class="fr-input-group">
-            <label class="fr-label" :for="`tool-url-${i + 1}`">
-              URL de l’outil
-              <span class="fr-hint-text">
-                Saisissez une url valide, commençant par
-                <code>https://</code>
-              </span>
-            </label>
-            <input
-              :id="`tool-url-${i + 1}`"
-              v-model="tool.url"
-              class="fr-input"
-              type="url"
-              required
-            />
-          </div>
-        </fieldset>
+          </li>
+        </ul>
 
         <button
-          class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+          ref="validateToolsRef"
+          class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
           type="button"
-          @click="addTool"
+          @click="validateTools"
         >
-          Ajouter un outil
+          Valider les outils
         </button>
 
         <h2 class="fr-h4 fr-mt-6w">Les environnements de test</h2>
