@@ -22,6 +22,7 @@ const stats = computed(() => {
             value: report.data!.accessibilityRate,
             total: 100,
             unit: "%",
+            hasDetails: true,
           },
         ]
       : []),
@@ -71,7 +72,26 @@ const chartsName = {
           :total="stat.total"
           :unit="stat.unit"
           :danger="stat.danger"
-        />
+        >
+          <template v-if="stat.hasDetails" #summary>
+            En savoir plus sur le calcul du taux
+          </template>
+          <template v-if="stat.hasDetails" #details>
+            <p>
+              Le taux global de conformité au RGAA est calculé de la manière
+              suivante :
+            </p>
+
+            <p class="fr-text--bold">C / (C + NC)</p>
+
+            <p class="fr-m-0">
+              <span class="fr-text--bold">C</span> = nombre de critères
+              conformes<br />
+              <span class="fr-text--bold">NC</span> = nombre de critères non
+              conformes
+            </p>
+          </template>
+        </SummaryCard>
       </div>
     </div>
 
