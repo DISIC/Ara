@@ -10,6 +10,7 @@ import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
 import { formatStatus, formatUserImpact, slugify } from "../utils";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
+import MarkdownRenderer from "./MarkdownRenderer.vue";
 
 const report = useReportStore();
 const router = useRouter();
@@ -406,9 +407,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 title="Description de l'erreur"
                 data-accordion
               >
-                <p class="fr-mb-3w">
-                  {{ error.errorDescription }}
-                </p>
+                <MarkdownRenderer
+                  class="fr-mb-3w"
+                  :markdown="error.errorDescription"
+                />
                 <!-- <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
                 </p>
@@ -448,9 +450,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 title="Recommandation de correction"
                 data-accordion
               >
-                <p class="fr-mb-0">
-                  {{ error.recommandation }}
-                </p>
+                <MarkdownRenderer
+                  class="fr-mb-0"
+                  :markdown="error.recommandation"
+                />
               </LazyAccordion>
 
               <!-- Tests -->
