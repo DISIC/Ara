@@ -187,6 +187,7 @@ const mobileEnvironments = [
     ],
   },
 ];
+const selectedDesktopEnvironments = ref<string[]>([]);
 const environments = ref([
   {
     platform: "",
@@ -661,16 +662,19 @@ const isDevMode = useDevMode();
       </p>
     </div>
 
+    {{ selectedDesktopEnvironments }}
     <div class="fr-mb-3w suggested-environments">
       <AuditEnvironmentCheckbox
         v-for="env in desktopEnvironments"
         :key="env.title"
+        v-model="selectedDesktopEnvironments"
+        :value="env.title"
         :platform="PLATFORM.DESKTOP"
         :title="env.title"
         :combinations="env.combinations"
       />
     </div>
-    <div class="suggested-environments">
+    <!-- <div class="suggested-environments">
       <AuditEnvironmentCheckbox
         v-for="env in mobileEnvironments"
         :key="env.title"
@@ -678,7 +682,7 @@ const isDevMode = useDevMode();
         :title="env.title"
         :combinations="env.combinations"
       />
-    </div>
+    </div> -->
     <div class="narrow-content">
       <fieldset
         v-for="(env, i) in environments"

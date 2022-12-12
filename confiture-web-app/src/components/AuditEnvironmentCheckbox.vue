@@ -4,10 +4,14 @@ import { PLATFORM } from "../enums";
 
 defineProps<{
   // FIXME: use something like "keyof typeof PLATFORM" for platform, browser and AT
+  value: string;
+  modelValue: string[];
   platform: string;
   title: string;
   combinations: { browser: string; assistiveTechnology: string }[];
 }>();
+
+defineEmits(["update:modelValue"]);
 </script>
 
 <template>
@@ -25,8 +29,13 @@ defineProps<{
     <div class="fr-checkbox-group fr-mb-1w">
       <input
         :id="slugify(`suggested-env-${title}-${platform}`)"
+        :value="value"
+        :checked="modelValue.includes(value)"
         type="checkbox"
-        name="checkbox"
+        :aria-describedby="slugify(`combinations-table-${title}-${platform}`)"
+        @input="
+          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
+        "
       />
       <label
         class="fr-label fr-text--xl fr-text--bold fr-mb-0 label"
@@ -36,7 +45,7 @@ defineProps<{
     </div>
 
     <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-0">
-      <table>
+      <table :id="slugify(`combinations-table-${title}-${platform}`)">
         <caption>
           Couples navigateur et technologie d’assistance sur
           {{
