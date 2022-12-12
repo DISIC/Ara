@@ -14,6 +14,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
   - Contenus non soumis à l’obligation d’accessibilité
 - Ajout d'une explication sur le calcul du taux de conformité sur le rapport ([#232](https://github.com/DISIC/Ara/pull/232))
 
+### Corrections
+
+- Fixe les liens des pages auditées dans la page de contexte ([#235](https://github.com/DISIC/Ara/pull/235)).
+
 ## 30/11/2022
 
 ### Nouvelles fonctionnalités 🚀
