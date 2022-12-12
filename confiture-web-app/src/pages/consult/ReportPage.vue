@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import OnboardingModal from "../../components/OnboardingModal.vue";
@@ -46,12 +46,29 @@ function hideReportAlert() {
   showCopyAlert.value = false;
 }
 
-const showOnboardingModal = ref(
-  localStorage.getItem("confiture:seen-onboarding") !== "true"
-);
+const auditIsInProgress = computed(() => {
+  // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
+  // FIXME: add a flag on the audit
+  return report.data && !report.data.procedureInitiator;
+});
 
-const showOnboardingAlert = ref(
-  localStorage.getItem("confiture:hide-onboarding-alert") !== "true"
+const showOnboardingModal = ref(false);
+
+const showOnboardingAlert = ref(false);
+
+watch(
+  () => report.data,
+  (report) => {
+    if (report) {
+      showOnboardingModal.value =
+        !auditIsInProgress.value &&
+        localStorage.getItem("confiture:seen-onboarding") !== "true";
+
+      showOnboardingAlert.value =
+        !auditIsInProgress.value &&
+        localStorage.getItem("confiture:hide-onboarding-alert") !== "true";
+    }
+  }
 );
 
 function onOnboardingClose(confirmed: boolean) {
@@ -108,6 +125,14 @@ function handleTabChange(tab: { title: string }) {
     </button>
   </div>
 
+  <div v-if="auditIsInProgress" class="fr-alert fr-alert--warning fr-mb-6w">
+    <p class="fr-alert__title">Audit en cours</p>
+    <p>
+      Tous les résultats de ce rapport sont provisoires tant que l’audit n’est
+      pas terminé.
+    </p>
+  </div>
+
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div>
@@ -144,7 +169,18 @@ function handleTabChange(tab: { title: string }) {
 
     <div class="fr-mb-6w fr-mb-md-12w header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
-      <p v-if="report.data.publishDate" class="fr-text--light fr-mb-4w dates">
+
+      <p
+        v-if="auditIsInProgress && report.data.creationDate"
+        class="fr-text--light fr-mb-4w dates"
+      >
+        Audit commencé le {{ formatDate(report.data.creationDate) }}
+      </p>
+
+      <p
+        v-else-if="report.data.publishDate"
+        class="fr-text--light fr-mb-4w dates"
+      >
         Publié le {{ formatDate(report.data.publishDate) }}
         <template v-if="report.data.updateDate">
           - Mis à jour le {{ formatDate(report.data.updateDate) }}
@@ -153,9 +189,15 @@ function handleTabChange(tab: { title: string }) {
 
       <p class="fr-mb-0">
         <strong>URL du site</strong> :
-        <a class="fr-link" target="_blank" :href="report.data.procedureUrl">
+        <a
+          v-if="report.data.procedureUrl"
+          class="fr-link"
+          target="_blank"
+          :href="report.data.procedureUrl"
+        >
           {{ report.data.procedureUrl }}
         </a>
+        <template v-else>Non renseignée</template>
       </p>
       <p class="fr-mb-0">
         <strong>Type d’audit</strong> :

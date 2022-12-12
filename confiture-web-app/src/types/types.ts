@@ -39,6 +39,7 @@ export interface Audit {
   editUniqueId: string;
   consultUniqueId: string;
 
+  creationDate: string | null;
   publicationDate: string | null;
   editionDate: string | null;
 
