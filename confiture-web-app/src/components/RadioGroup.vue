@@ -1,10 +1,10 @@
 <script lang="ts">
 export type RadioColor = "red" | "green" | "yellow" | "grey";
-
-let nextId = 1;
 </script>
 
 <script lang="ts" setup>
+import { useUniqueId } from "../composables/useUniqueId";
+
 const props = defineProps<{
   label: string;
   hideLabel?: boolean;
@@ -22,7 +22,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;
 }>();
 
-const uniqueId = nextId++;
+const uniqueId = useUniqueId();
 
 function handleChange(value: string) {
   if (value === props.modelValue) {

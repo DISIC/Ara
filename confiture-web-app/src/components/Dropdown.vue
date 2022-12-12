@@ -1,16 +1,13 @@
-<script lang="ts">
-let nextId = 1;
-</script>
-
 <script setup lang="ts">
 import { ref, watch } from "vue";
-
-const uniqueId = nextId++;
+import { useUniqueId } from "../composables/useUniqueId";
 
 defineProps<{
   title: string;
   buttonProps?: object;
 }>();
+
+const uniqueId = useUniqueId();
 
 const showContent = ref(false);
 const buttonRef = ref();
