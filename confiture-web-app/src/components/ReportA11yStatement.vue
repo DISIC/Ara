@@ -204,25 +204,42 @@ function hideCopyAlert() {
           <strong>[url]</strong> pour télécharger la grille d’audit.
         </li>
       </ul-->
-      <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
 
-      <h5 class="fr-h3">Non-conformités</h5>
-      <MarkdownRenderer
-        class="fr-mb-2w fr-mb-md-3w"
-        :markdown="report.data.notCompliantContent"
-      />
+      <template
+        v-if="
+          report.data.notCompliantContent ||
+          report.data.derogatedContent ||
+          report.data.notInScopeContent
+        "
+      >
+        <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
 
-      <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-      <MarkdownRenderer
-        class="fr-mb-2w fr-mb-md-3w"
-        :markdown="report.data.derogatedContent"
-      />
+        <template v-if="report.data.notCompliantContent">
+          <h5 class="fr-h3">Non-conformités</h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.notCompliantContent"
+          />
+        </template>
 
-      <h5 class="fr-h3">Contenus non soumis à l’obligation d’accessibilité</h5>
-      <MarkdownRenderer
-        class="fr-mb-2w fr-mb-md-3w"
-        :markdown="report.data.notInScopeContent"
-      />
+        <template v-if="report.data.derogatedContent">
+          <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.derogatedContent"
+          />
+        </template>
+
+        <template v-if="report.data.notInScopeContent">
+          <h5 class="fr-h3">
+            Contenus non soumis à l’obligation d’accessibilité
+          </h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.notInScopeContent"
+          />
+        </template>
+      </template>
 
       <h4 class="fr-h2">Établissement de cette déclaration d’accessibilité</h4>
       <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
