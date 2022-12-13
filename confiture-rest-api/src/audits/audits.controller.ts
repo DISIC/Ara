@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -11,7 +10,10 @@ import {
   Patch,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiCreatedResponse,
   ApiGoneResponse,
@@ -26,6 +28,7 @@ import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import { UploadImageDto } from './upload-image.dto';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -82,6 +85,26 @@ export class AuditsController {
     }
 
     return audit;
+  }
+
+  @Post('/:uniqueId/results/examples')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadExampleImage(
+    @Param('uniqueId') uniqueId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: UploadImageDto,
+  ) {
+    // TODO: check audit exists
+    // TODO: check max number of example
+    // TODO: validate file
+    // TODO: upload multiple files
+    return await this.auditService.saveExampleImage(
+      uniqueId,
+      body.pageId,
+      body.topic,
+      body.criterium,
+      file,
+    );
   }
 
   /** Retrieve the results of an audit (compliance data) from the database. */

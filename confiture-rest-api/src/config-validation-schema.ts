@@ -17,4 +17,13 @@ export const configValidationSchema = Joi.object({
   AIRTABLE_BASE_ID: Joi.string().required(),
   AIRTABLE_TABLE_ID: Joi.string().required(),
   AIRTABLE_ACCESS_TOKEN: Joi.string().required(),
+
+  S3_ENDPOINT: Joi.string()
+    .uri({ scheme: ['https'] })
+    .required(),
+  S3_REGION: Joi.string().required(),
+  S3_BUCKET: Joi.string().required(),
+  S3_VIRTUAL_HOST: Joi.string()
+    .uri({ scheme: ['https'] })
+    .required(),
 });

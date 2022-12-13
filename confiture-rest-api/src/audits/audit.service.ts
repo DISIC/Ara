@@ -6,6 +6,7 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
+  StoredFile,
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
@@ -15,6 +16,7 @@ import * as RGAA from '../rgaa.json';
 import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
 import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
+import { FileStorageService } from './file-storage.service';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 
@@ -26,7 +28,10 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
 
 @Injectable()
 export class AuditService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly fileStorageService: FileStorageService,
+  ) {}
 
   createAudit(data: CreateAuditDto) {
     const editUniqueId = nanoid();
@@ -330,6 +335,41 @@ export class AuditService {
       ...promises,
       this.updateAuditEditDate(uniqueId),
     ]);
+  }
+
+  async saveExampleImage(
+    editUniqueId: string,
+    pageId: number,
+    topic: number,
+    criterium: number,
+    file: Express.Multer.File,
+  ) {
+    const randomPrefix = nanoid();
+    const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
+
+    await this.fileStorageService.uploadFile(file, key);
+
+    const publicUrl = this.fileStorageService.getPublicUrl(key);
+
+    const storedFile = await this.prisma.storedFile.create({
+      data: {
+        criterionResult: {
+          connect: {
+            pageId_topic_criterium: {
+              pageId,
+              topic,
+              criterium,
+            },
+          },
+        },
+
+        originalFilename: file.originalname,
+        size: file.size,
+        url: publicUrl,
+      },
+    });
+
+    return storedFile;
   }
 
   /**
