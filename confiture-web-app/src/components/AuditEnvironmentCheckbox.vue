@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { slugify } from "../utils";
-import { Platform } from "../enums";
+import { AssistiveTechnology, Browsers, Platform } from "../enums";
 
 const props = defineProps<{
-  // FIXME: use something like "keyof typeof PLATFORM" for platform, browser and AT
   value: string;
   modelValue: string[];
   platform: Platform;
   title: string;
-  combinations: { browser: string; assistiveTechnology: string }[];
+  combinations: {
+    browser: Browsers;
+    assistiveTechnology: AssistiveTechnology;
+  }[];
 }>();
 
 const emit = defineEmits(["update:modelValue"]);

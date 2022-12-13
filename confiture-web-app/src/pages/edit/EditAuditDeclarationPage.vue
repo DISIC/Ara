@@ -9,9 +9,9 @@ import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import {
-  ASSISTIVE_TECHNOLOGY,
-  BROWSERS,
-  OPERATING_SYSTEM,
+  AssistiveTechnology,
+  Browsers,
+  OperatingSystem,
   Platform,
 } from "../../enums";
 import { useAuditStore } from "../../store";
@@ -121,27 +121,27 @@ const desktopEnvironments = [
     title: "Combinaison 1",
     combinations: [
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.FIREFOX,
+        browser: Browsers.FIREFOX,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnology: AssistiveTechnology.NVDA,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.FIREFOX,
+        browser: Browsers.FIREFOX,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnology: AssistiveTechnology.JAWS,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystem: OperatingSystem.MAC_OS,
         operatingSystemVersion: "",
-        browser: BROWSERS.SAFARI,
+        browser: Browsers.SAFARI,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
         assistiveTechnologyVersion: "",
       },
     ],
@@ -150,27 +150,27 @@ const desktopEnvironments = [
     title: "Combinaison 2",
     combinations: [
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.FIREFOX,
+        browser: Browsers.FIREFOX,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnology: AssistiveTechnology.NVDA,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.EDGE,
+        browser: Browsers.EDGE,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnology: AssistiveTechnology.JAWS,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystem: OperatingSystem.MAC_OS,
         operatingSystemVersion: "",
-        browser: BROWSERS.SAFARI,
+        browser: Browsers.SAFARI,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
         assistiveTechnologyVersion: "",
       },
     ],
@@ -179,27 +179,27 @@ const desktopEnvironments = [
     title: "Combinaison 3",
     combinations: [
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.EDGE,
+        browser: Browsers.EDGE,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnology: AssistiveTechnology.NVDA,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
-        browser: BROWSERS.FIREFOX,
+        browser: Browsers.FIREFOX,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnology: AssistiveTechnology.JAWS,
         assistiveTechnologyVersion: "",
       },
       {
-        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystem: OperatingSystem.MAC_OS,
         operatingSystemVersion: "",
-        browser: BROWSERS.SAFARI,
+        browser: Browsers.SAFARI,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
         assistiveTechnologyVersion: "",
       },
     ],
@@ -210,11 +210,11 @@ const mobileEnvironments = [
     title: "Combinaison 1",
     combinations: [
       {
-        operatingSystem: OPERATING_SYSTEM.I_OS,
+        operatingSystem: OperatingSystem.I_OS,
         operatingSystemVersion: "",
-        browser: BROWSERS.SAFARI,
+        browser: Browsers.SAFARI,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
         assistiveTechnologyVersion: "",
       },
     ],
@@ -223,11 +223,11 @@ const mobileEnvironments = [
     title: "Combinaison 2",
     combinations: [
       {
-        operatingSystem: OPERATING_SYSTEM.ANDROID,
+        operatingSystem: OperatingSystem.ANDROID,
         operatingSystemVersion: "",
-        browser: BROWSERS.CHROME,
+        browser: Browsers.CHROME,
         browserVersion: "",
-        assistiveTechnology: ASSISTIVE_TECHNOLOGY.TALKBACK,
+        assistiveTechnology: AssistiveTechnology.TALKBACK,
         assistiveTechnologyVersion: "",
       },
     ],
@@ -250,47 +250,47 @@ const environments = ref([
 function availableOs(platform: string) {
   switch (platform) {
     case Platform.DESKTOP:
-      return [OPERATING_SYSTEM.WINDOWS, OPERATING_SYSTEM.MAC_OS];
+      return [OperatingSystem.WINDOWS, OperatingSystem.MAC_OS];
     case Platform.MOBILE:
-      return [OPERATING_SYSTEM.ANDROID, OPERATING_SYSTEM.I_OS];
+      return [OperatingSystem.ANDROID, OperatingSystem.I_OS];
   }
 }
 
 function availableAT(os: string) {
   switch (os) {
-    case OPERATING_SYSTEM.WINDOWS:
-      return [ASSISTIVE_TECHNOLOGY.NVDA, ASSISTIVE_TECHNOLOGY.JAWS];
-    case OPERATING_SYSTEM.MAC_OS:
-    case OPERATING_SYSTEM.I_OS:
-      return [ASSISTIVE_TECHNOLOGY.VOICE_OVER];
-    case OPERATING_SYSTEM.ANDROID:
-      return [ASSISTIVE_TECHNOLOGY.TALKBACK];
+    case OperatingSystem.WINDOWS:
+      return [AssistiveTechnology.NVDA, AssistiveTechnology.JAWS];
+    case OperatingSystem.MAC_OS:
+    case OperatingSystem.I_OS:
+      return [AssistiveTechnology.VOICE_OVER];
+    case OperatingSystem.ANDROID:
+      return [AssistiveTechnology.TALKBACK];
     default:
-      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
+      return [Browsers.FIREFOX, Browsers.CHROME, Browsers.EDGE];
   }
 }
 
 function availableBrowsers(os: string) {
   switch (os) {
-    case OPERATING_SYSTEM.WINDOWS:
-      return [BROWSERS.FIREFOX, BROWSERS.CHROME, BROWSERS.EDGE];
-    case OPERATING_SYSTEM.MAC_OS:
+    case OperatingSystem.WINDOWS:
+      return [Browsers.FIREFOX, Browsers.CHROME, Browsers.EDGE];
+    case OperatingSystem.MAC_OS:
       return [
-        BROWSERS.FIREFOX,
-        BROWSERS.CHROME,
-        BROWSERS.EDGE,
-        BROWSERS.SAFARI,
+        Browsers.FIREFOX,
+        Browsers.CHROME,
+        Browsers.EDGE,
+        Browsers.SAFARI,
       ];
-    case OPERATING_SYSTEM.I_OS:
-      return [BROWSERS.SAFARI, BROWSERS.CHROME];
-    case OPERATING_SYSTEM.ANDROID:
-      return [BROWSERS.FIREFOX, BROWSERS.CHROME];
+    case OperatingSystem.I_OS:
+      return [Browsers.SAFARI, Browsers.CHROME];
+    case OperatingSystem.ANDROID:
+      return [Browsers.FIREFOX, Browsers.CHROME];
     default:
       return [
-        BROWSERS.FIREFOX,
-        BROWSERS.CHROME,
-        BROWSERS.EDGE,
-        BROWSERS.SAFARI,
+        Browsers.FIREFOX,
+        Browsers.CHROME,
+        Browsers.EDGE,
+        Browsers.SAFARI,
       ];
   }
 }
@@ -494,20 +494,20 @@ function DEBUG_fillFields() {
   environments.value = [
     {
       platform: Platform.DESKTOP,
-      operatingSystem: OPERATING_SYSTEM.WINDOWS,
+      operatingSystem: OperatingSystem.WINDOWS,
       operatingSystemVersion: "11",
-      assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+      assistiveTechnology: AssistiveTechnology.NVDA,
       assistiveTechnologyVersion: "",
-      browser: BROWSERS.FIREFOX,
+      browser: Browsers.FIREFOX,
       browserVersion: "104",
     },
     {
       platform: Platform.DESKTOP,
-      operatingSystem: OPERATING_SYSTEM.MAC_OS,
+      operatingSystem: OperatingSystem.MAC_OS,
       operatingSystemVersion: "12.5",
-      assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+      assistiveTechnology: AssistiveTechnology.VOICE_OVER,
       assistiveTechnologyVersion: "",
-      browser: BROWSERS.SAFARI,
+      browser: Browsers.SAFARI,
       browserVersion: "15.6",
     },
   ];
