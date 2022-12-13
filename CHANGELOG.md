@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Nouvelles fonctionnalités 🚀
 
 - Ajout d'une description à chaque type d’audit lors de la création d’un audit ([#229](https://github.com/DISIC/Ara/pull/229))
+- Ajout de l'URL de la page près de son nom dans le rapport d’erreurs ([#231](https://github.com/DISIC/Ara/pull/231))
 
 ### Autres changements ⚙️
 

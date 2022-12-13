@@ -43,7 +43,8 @@ const errors = computed(() => {
       (results, pageId) => {
         return {
           pageId: Number(pageId),
-          pageName: getPageName(Number(pageId)),
+          pageName: getPage(Number(pageId)).name,
+          pageUrl: getPage(Number(pageId)).url,
           topics: Object.values(
             mapValues(groupBy(results, "topic"), (results, topicNumber) => {
               return {
@@ -142,12 +143,13 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
   return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
 }
 
-function getPageName(pageId: number) {
-  return report.data!.context.samples.find((p) => p.id === pageId)!.name;
+/** Get a page by its id */
+function getPage(pageId: number) {
+  return report.data!.context.samples.find((p) => p.id === pageId)!;
 }
 
 function getPageSlug(pageId: number) {
-  return slugify(getPageName(pageId));
+  return slugify(getPage(pageId)?.name);
 }
 
 /**
@@ -349,12 +351,18 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           </button>
         </div>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <h2
-            :id="`${getPageSlug(page.pageId)}`"
-            class="fr-mb-4w fr-h3 page-title"
-          >
-            {{ page.pageName }}
-          </h2>
+          <div class="fr-mb-4w page-title-container">
+            <h2
+              :id="`${getPageSlug(page.pageId)}`"
+              class="fr-h3 fr-mb-0 page-title"
+            >
+              {{ page.pageName }}
+            </h2>
+            <a :href="page.pageUrl" class="" target="_blank" rel="noopener">
+              {{ page.pageUrl }}
+              <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
+            </a>
+          </div>
 
           <div
             v-for="(topic, i) in page.topics"
@@ -432,16 +440,6 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     </div>
                   </div>
                 </div> -->
-                <p
-                  class="fr-text--xs fr-mt-3w fr-mb-1w error-accordion-subtitle"
-                >
-                  URL de la page concernée
-                </p>
-                <p class="fr-mb-0">
-                  <a href="https://example.com" target="_blank" class="fr-link"
-                    >https://example.com</a
-                  >
-                </p>
               </LazyAccordion>
 
               <!-- Recommendation -->
@@ -491,6 +489,14 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
+.page-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .page-title {
   color: var(--text-active-blue-france);
 }
@@ -499,9 +505,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   color: var(--text-title-grey);
 }
 
-.error-accordion-subtitle {
+/* .error-accordion-subtitle {
   color: var(--text-mention-grey);
-}
+} */
 
 .fr-sidemenu__inner {
   box-shadow: none !important;
