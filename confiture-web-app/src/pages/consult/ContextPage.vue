@@ -152,9 +152,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
             <td>{{ i + 1 }}</td>
             <td>{{ page.name }}</td>
             <td>
-              <RouterLink class="fr-link" target="_blank" :to="page.url">
+              <a class="fr-link" target="_blank" :href="page.url">
                 {{ page.url }}
-              </RouterLink>
+              </a>
             </td>
           </tr>
         </tbody>

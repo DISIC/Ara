@@ -7,19 +7,24 @@ defineProps<{
   value: AuditType;
   checked: boolean;
   modelValue: string | null;
+  description: string;
+  highlighted?: boolean;
 }>();
 defineEmits(["update:modelValue"]);
 </script>
 
 <template>
-  <div :class="['fr-p-3w container', { checked: checked }]">
-    <p class="fr-badge fr-badge--sm fr-badge--purple-glycine fr-mb-2w">
+  <div :class="['fr-p-3w fr-tile container', { checked: checked }]">
+    <p
+      class="fr-badge fr-badge--sm fr-mb-1w"
+      :class="{ 'fr-badge--green-bourgeon': highlighted }"
+    >
       {{ getCriteriaCount(value) }} critères
     </p>
-    <div class="fr-radio-group group">
+    <div class="fr-radio-group">
       <input
-        class="radio-input"
         :id="`audit-type-${value}`"
+        class="radio-input"
         type="radio"
         name="audit-type"
         :value="value"
@@ -35,6 +40,9 @@ defineEmits(["update:modelValue"]);
         :for="`audit-type-${value}`"
       >
         {{ label }}
+        <span class="fr-text fr-text--md fr-text--regular fr-mb-0 fr-mt-3v">
+          {{ description }}
+        </span>
       </label>
     </div>
   </div>
@@ -42,11 +50,11 @@ defineEmits(["update:modelValue"]);
 
 <style scoped>
 .container {
-  border: 1px solid var(--border-default-grey);
+  flex-direction: column;
 }
 
 .container.checked {
-  border-color: var(--border-plain-blue-france);
+  --border-default-grey: var(--border-plain-blue-france);
 }
 
 .radio-input {

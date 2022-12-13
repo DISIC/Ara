@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { useReportStore } from "../store";
 import { formatDate } from "../utils";
+import MarkdownRenderer from "./MarkdownRenderer.vue";
 
 const report = useReportStore();
 
@@ -87,32 +88,32 @@ function hideCopyAlert() {
 <template>
   <template v-if="report.data">
     <div class="info-container">
-      <p class="fr-text--xl fr-text--bold">
-        Vous pouvez publier dès maintenant cette déclaration d’accessibilité sur
-        votre site
-      </p>
+      <h2 class="fr-h3">
+        Comment publier la déclaration d’accessibilité sur mon site ?
+      </h2>
       <ol class="fr-mb-3w">
         <li>
-          Vérifiez les informations contenues dans ce document et corrigez les
-          si besoin.
+          Vérifier les informations contenues dans la déclaration ci-dessous et
+          corrigez si besoin les données qui vous concernent
         </li>
         <li>
-          Publiez sur votre site cette déclaration d’accessibilité dans une page
+          Publier sur votre site cette déclaration d’accessibilité dans une page
           dédiée.
         </li>
         <li>
-          Dès la page d’accueil et sur toutes les pages, affichez la mention
+          Dès la page d’accueil et sur toutes les pages, afficher la mention
           <strong>“Accessibilité : {{ getA11yLevel() }} conforme”</strong>.
           Cette mention peut être un lien, par exemple dans le pied de page,
           vers cette déclaration.
         </li>
       </ol>
-      <div class="fr-callout fr-callout--blue-ecume fr-mb-6w">
+
+      <div class="fr-callout fr-callout--blue-ecume fr-mb-3w">
+        <h3 class="fr-h4">Format obligatoire</h3>
         <p class="fr-callout__text fr-mb-2w">
           Cette déclaration d’accessibilité adopte un format obligatoire donné
           par le RGAA. Vous devez publier l’intégralité de cette déclaration sur
-          votre site et ne modifier que si nécessaire les données qui vous
-          concernent.
+          votre site.
         </p>
         <a
           href="https://accessibilite.numerique.gouv.fr/obligations/declaration-accessibilite/"
@@ -123,6 +124,26 @@ function hideCopyAlert() {
           Tout savoir sur la déclaration d’accessibilité
           <span class="sr-only">(nouvel onglet)</span>
         </a>
+      </div>
+
+      <div class="fr-callout fr-callout--blue-ecume fr-mb-6w">
+        <h3 class="fr-h4">
+          Mention et publication obligatoire pour les sites publics
+        </h3>
+        <p class="fr-callout__text fr-mb-2w">
+          Les sites publics ont l’obligation de publier une déclaration
+          d’accessibilité sur leur site et d’afficher le niveau de conformité au
+          RGAA dès la page d’accueil.
+        </p>
+        <RouterLink
+          class="fr-link"
+          target="_blank"
+          rel="noopener"
+          :to="{ name: 'legal-requirements' }"
+        >
+          Tout savoir sur les obligations légales et sanctions
+          <span class="sr-only">(nouvel onglet)</span>
+        </RouterLink>
       </div>
 
       <!-- FIXME: icon "copy" does not seem to exist -->
@@ -203,17 +224,42 @@ function hideCopyAlert() {
           <strong>[url]</strong> pour télécharger la grille d’audit.
         </li>
       </ul-->
-      <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
-      <h5 class="fr-h3">Non-conformités</h5>
-      <p class="fr-mb-2w fr-mb-md-3w">
-        {{ report.data.notCompliantContent }}
-      </p>
 
-      <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-      <p class="fr-mb-2w fr-mb-md-3w">{{ report.data.derogatedContent }}</p>
+      <template
+        v-if="
+          report.data.notCompliantContent ||
+          report.data.derogatedContent ||
+          report.data.notInScopeContent
+        "
+      >
+        <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
 
-      <h5 class="fr-h3">Contenus non soumis à l’obligation d’accessibilité</h5>
-      <p class="fr-mb-2w fr-mb-md-3w">{{ report.data.notInScopeContent }}</p>
+        <template v-if="report.data.notCompliantContent">
+          <h5 class="fr-h3">Non-conformités</h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.notCompliantContent"
+          />
+        </template>
+
+        <template v-if="report.data.derogatedContent">
+          <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.derogatedContent"
+          />
+        </template>
+
+        <template v-if="report.data.notInScopeContent">
+          <h5 class="fr-h3">
+            Contenus non soumis à l’obligation d’accessibilité
+          </h5>
+          <MarkdownRenderer
+            class="fr-mb-2w fr-mb-md-3w"
+            :markdown="report.data.notInScopeContent"
+          />
+        </template>
+      </template>
 
       <h4 class="fr-h2">Établissement de cette déclaration d’accessibilité</h4>
       <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">

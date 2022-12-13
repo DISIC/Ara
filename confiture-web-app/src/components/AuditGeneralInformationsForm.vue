@@ -16,14 +16,21 @@ const availableAuditTypes = [
   {
     label: "Rapide",
     value: AuditType.FAST,
+    description:
+      "25 critères du RGAA absolument essentiels. L’évaluation de ces critères nécessite malgré tout une bonne connaissance du RGAA.",
   },
   {
     label: "Complémentaire",
     value: AuditType.COMPLEMENTARY,
+    description:
+      "50 critères dont les 25 critères de l’audit rapide. Permet de donner une idée plus précise de l’accessibilité numérique de votre service.",
   },
   {
-    label: "Complet",
+    label: "Complet, de conformité",
     value: AuditType.FULL,
+    description:
+      "L’audit complet dit de conformité est le seul audit ayant une valeur légale et permettant de générer une déclaration d’accessibilité.",
+    highlighted: true,
   },
 ];
 
@@ -100,7 +107,7 @@ const isDevMode = useDevMode();
 </script>
 
 <template>
-  <form class="content" @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit">
     <h1 class="fr-mb-3v">
       <span aria-hidden="true">⚙️</span> Paramètres de l’audit
     </h1>
@@ -122,153 +129,157 @@ const isDevMode = useDevMode();
             :value="type.value"
             :label="type.label"
             :checked="auditType === type.value"
+            :description="type.description"
+            :highlighted="type.highlighted"
           />
         </div>
       </fieldset>
     </section>
 
-    <div class="fr-input-group">
-      <label class="fr-label" for="procedure-name">
-        Nom du site à auditer
-      </label>
-      <input
-        id="procedure-name"
-        v-model="procedureName"
-        class="fr-input"
-        type="text"
-        required
-      />
-    </div>
+    <div class="narrow-content">
+      <div class="fr-input-group">
+        <label class="fr-label" for="procedure-name">
+          Nom du site à auditer
+        </label>
+        <input
+          id="procedure-name"
+          v-model="procedureName"
+          class="fr-input"
+          type="text"
+          required
+        />
+      </div>
 
-    <h2 class="fr-h4">Les pages et URL à auditer</h2>
+      <h2 class="fr-h4">Les pages et URL à auditer</h2>
 
-    <fieldset
-      v-for="(page, i) in pages"
-      :key="i"
-      class="fr-fieldset fr-mt-4w fr-p-4w page-card"
-    >
-      <div class="fr-mb-2w page-header">
+      <fieldset
+        v-for="(page, i) in pages"
+        :key="i"
+        class="fr-fieldset fr-mt-4w fr-p-4w page-card"
+      >
+        <div class="fr-mb-2w page-header">
+          <legend>
+            <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+          </legend>
+
+          <button
+            class="fr-btn fr-btn--tertiary-no-outline"
+            type="button"
+            :disabled="pages.length === 1"
+            :aria-label="`Supprimer page ${i + 1}`"
+            @click="deletePage(i)"
+          >
+            Supprimer
+          </button>
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`page-name-${i + 1}`">
+            Nom de la page
+          </label>
+          <input
+            :id="`page-name-${i + 1}`"
+            ref="pageNameRefs"
+            v-model="page.name"
+            class="fr-input"
+          />
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" :for="`page-url-${i + 1}`">
+            URL de la page
+            <span class="fr-hint-text">
+              L’URL de la page doit commencer par <code>https://</code>
+            </span>
+          </label>
+          <input
+            :id="`page-url-${i + 1}`"
+            v-model="page.url"
+            class="fr-input"
+            type="url"
+            required
+          />
+        </div>
+      </fieldset>
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        type="button"
+        @click="addPage"
+      >
+        Ajouter une page
+      </button>
+
+      <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
         <legend>
-          <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+          <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
         </legend>
 
+        <div class="fr-input-group">
+          <label for="procedure-auditor-organisation" class="fr-label">
+            Nom de la structure qui réalise l'audit
+          </label>
+          <input
+            id="procedure-auditor-organisation"
+            v-model="procedureAuditorOrganisation"
+            class="fr-input"
+            required
+          />
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" for="procedure-auditor-name">
+            Nom et prénom de l’auditeur (optionnel)
+            <span class="fr-hint-text">
+              Permet au demandeur de l’audit de plus facilement vous identifier
+              s'il a des questions ou besoin d’aide.
+              <br />
+            </span>
+          </label>
+          <input
+            id="procedure-auditor-name"
+            v-model="procedureAuditorName"
+            class="fr-input"
+          />
+        </div>
+
+        <div class="fr-input-group">
+          <label class="fr-label" for="procedure-auditor-email">
+            Adresse e-mail de la structure ou de l’auditeur
+            <span class="fr-hint-text">
+              Permet de vous envoyer le futur lien administrateur de l’audit et
+              le lien du rapport d’audit.
+              <br />
+            </span>
+          </label>
+          <input
+            id="procedure-auditor-email"
+            v-model="procedureAuditorEmail"
+            class="fr-input"
+            type="email"
+            required
+          />
+        </div>
+      </fieldset>
+
+      <div v-if="isDevMode">
         <button
-          class="fr-btn fr-btn--tertiary-no-outline"
+          class="fr-btn fr-mt-6w fr-mr-2w"
           type="button"
-          :disabled="pages.length === 1"
-          :aria-label="`Supprimer page ${i + 1}`"
-          @click="deletePage(i)"
+          @click="fillFields"
         >
-          Supprimer
+          [DEV] Remplir les champs
         </button>
       </div>
 
-      <div class="fr-input-group">
-        <label class="fr-label" :for="`page-name-${i + 1}`">
-          Nom de la page
-        </label>
-        <input
-          :id="`page-name-${i + 1}`"
-          ref="pageNameRefs"
-          v-model="page.name"
-          class="fr-input"
-        />
+      <div>
+        <button class="fr-btn fr-mt-6w" type="submit">Commencer l'audit</button>
       </div>
-
-      <div class="fr-input-group">
-        <label class="fr-label" :for="`page-url-${i + 1}`">
-          URL de la page
-          <span class="fr-hint-text">
-            L’URL de la page doit commencer par <code>https://</code>
-          </span>
-        </label>
-        <input
-          :id="`page-url-${i + 1}`"
-          v-model="page.url"
-          class="fr-input"
-          type="url"
-          required
-        />
-      </div>
-    </fieldset>
-    <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
-      type="button"
-      @click="addPage"
-    >
-      Ajouter une page
-    </button>
-
-    <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
-      <legend>
-        <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
-      </legend>
-
-      <div class="fr-input-group">
-        <label for="procedure-auditor-organisation" class="fr-label">
-          Nom de la structure qui réalise l'audit
-        </label>
-        <input
-          id="procedure-auditor-organisation"
-          v-model="procedureAuditorOrganisation"
-          class="fr-input"
-          required
-        />
-      </div>
-
-      <div class="fr-input-group">
-        <label class="fr-label" for="procedure-auditor-name">
-          Nom et prénom de l’auditeur (optionnel)
-          <span class="fr-hint-text">
-            Permet au demandeur de l’audit de plus facilement vous identifier
-            s'il a des questions ou besoin d’aide.
-            <br />
-          </span>
-        </label>
-        <input
-          id="procedure-auditor-name"
-          v-model="procedureAuditorName"
-          class="fr-input"
-        />
-      </div>
-
-      <div class="fr-input-group">
-        <label class="fr-label" for="procedure-auditor-email">
-          Adresse e-mail de la structure ou de l’auditeur
-          <span class="fr-hint-text">
-            Permet de vous envoyer le futur lien administrateur de l’audit et le
-            lien du rapport d’audit.
-            <br />
-          </span>
-        </label>
-        <input
-          id="procedure-auditor-email"
-          v-model="procedureAuditorEmail"
-          class="fr-input"
-          type="email"
-          required
-        />
-      </div>
-    </fieldset>
-
-    <div v-if="isDevMode">
-      <button
-        class="fr-btn fr-mt-6w fr-mr-2w"
-        type="button"
-        @click="fillFields"
-      >
-        [DEV] Remplir les champs
-      </button>
-    </div>
-
-    <div>
-      <button class="fr-btn fr-mt-6w" type="submit">Commencer l'audit</button>
     </div>
   </form>
 </template>
 
 <style scoped>
-.content {
+.narrow-content {
   max-width: 49.5rem;
 }
 
