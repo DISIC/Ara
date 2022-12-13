@@ -1,9 +1,6 @@
-<script lang="ts">
-let nextId = 1;
-</script>
-
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useUniqueId } from "../composables/useUniqueId";
 
 defineProps<{
   /** Label of the accordion toggle button. */
@@ -13,7 +10,7 @@ defineProps<{
 }>();
 
 const showContent = ref(false);
-const uniqueId = nextId++;
+const uniqueId = useUniqueId();
 
 function onConceal() {
   showContent.value = false;

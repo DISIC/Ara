@@ -9,18 +9,18 @@ export class AuditReportDto {
   /** Unique ID used to construct the report URL. */
   consultUniqueId: string;
 
-  contactFormUrl: string;
+  contactFormUrl?: string;
 
-  procedureInitiator: string;
+  procedureInitiator?: string;
   procedureName: string;
-  procedureUrl: string;
+  procedureUrl?: string;
 
   publishDate?: Date;
   updateDate?: Date;
 
-  notCompliantContent: string;
-  derogatedContent: string;
-  notInScopeContent: string;
+  notCompliantContent?: string;
+  derogatedContent?: string;
+  notInScopeContent?: string;
 
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;

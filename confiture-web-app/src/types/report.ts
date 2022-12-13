@@ -3,18 +3,18 @@ import { AuditType, CriteriumResult } from "../types";
 export interface AuditReport {
   consultUniqueId: string;
 
-  contactFormUrl: string;
+  contactFormUrl?: string;
 
-  procedureInitiator: string;
+  procedureInitiator?: string;
   procedureName: string;
-  procedureUrl: string;
+  procedureUrl?: string;
 
   publishDate?: string;
   updateDate?: string;
 
-  notCompliantContent: string;
-  derogatedContent: string;
-  notInScopeContent: string;
+  notCompliantContent?: string;
+  derogatedContent?: string;
+  notInScopeContent?: string;
 
   auditType: AuditType;
 
