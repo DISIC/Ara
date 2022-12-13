@@ -1,23 +1,34 @@
 <script lang="ts" setup>
 import { slugify } from "../utils";
-import { PLATFORM } from "../enums";
+import { Platform } from "../enums";
 
-defineProps<{
+const props = defineProps<{
   // FIXME: use something like "keyof typeof PLATFORM" for platform, browser and AT
   value: string;
   modelValue: string[];
-  platform: string;
+  platform: Platform;
   title: string;
   combinations: { browser: string; assistiveTechnology: string }[];
 }>();
 
-defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
+
+function onInput() {
+  if (props.modelValue.includes(props.value)) {
+    emit(
+      "update:modelValue",
+      props.modelValue.filter((el) => el !== props.value)
+    );
+  } else {
+    emit("update:modelValue", [...props.modelValue, props.value]);
+  }
+}
 </script>
 
 <template>
   <div class="fr-p-3w container">
     <p
-      v-if="platform === PLATFORM.DESKTOP"
+      v-if="platform === Platform.DESKTOP"
       class="fr-badge fr-badge--sm fr-badge--purple-glycine fr-mb-1w"
     >
       Ordinateur
@@ -29,13 +40,10 @@ defineEmits(["update:modelValue"]);
     <div class="fr-checkbox-group fr-mb-1w">
       <input
         :id="slugify(`suggested-env-${title}-${platform}`)"
-        :value="value"
         :checked="modelValue.includes(value)"
         type="checkbox"
         :aria-describedby="slugify(`combinations-table-${title}-${platform}`)"
-        @input="
-          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-        "
+        @input="onInput"
       />
       <label
         class="fr-label fr-text--xl fr-text--bold fr-mb-0 label"
@@ -44,12 +52,14 @@ defineEmits(["update:modelValue"]);
       >
     </div>
 
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-0">
+    <div
+      class="fr-table fr-table--bordered fr-table--layout-fixed fr-table--no-caption fr-mb-0"
+    >
       <table :id="slugify(`combinations-table-${title}-${platform}`)">
         <caption>
           Couples navigateur et technologie d’assistance sur
           {{
-            platform === PLATFORM.DESKTOP ? "ordinateur" : "mobile"
+            platform === Platform.DESKTOP ? "ordinateur" : "mobile"
           }}
         </caption>
         <thead>

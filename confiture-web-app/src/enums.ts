@@ -1,7 +1,7 @@
-export const PLATFORM = {
-  DESKTOP: "desktop",
-  MOBILE: "mobile",
-};
+export enum Platform {
+  DESKTOP = "desktop",
+  MOBILE = "mobile",
+}
 
 export const OPERATING_SYSTEM = {
   MAC_OS: "MacOS",

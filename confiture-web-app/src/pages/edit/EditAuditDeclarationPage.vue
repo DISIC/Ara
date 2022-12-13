@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { uniqWith } from "lodash-es";
+
 import AuditEnvironmentCheckbox from "../../components/AuditEnvironmentCheckbox.vue";
 import PageMeta from "../../components/PageMeta";
 import { useDevMode } from "../../composables/useDevMode";
@@ -10,7 +12,7 @@ import {
   ASSISTIVE_TECHNOLOGY,
   BROWSERS,
   OPERATING_SYSTEM,
-  PLATFORM,
+  Platform,
 } from "../../enums";
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
@@ -119,16 +121,28 @@ const desktopEnvironments = [
     title: "Combinaison 1",
     combinations: [
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.FIREFOX,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.FIREFOX,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystemVersion: "",
         browser: BROWSERS.SAFARI,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnologyVersion: "",
       },
     ],
   },
@@ -136,16 +150,28 @@ const desktopEnvironments = [
     title: "Combinaison 2",
     combinations: [
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.FIREFOX,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.EDGE,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystemVersion: "",
         browser: BROWSERS.SAFARI,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnologyVersion: "",
       },
     ],
   },
@@ -153,16 +179,28 @@ const desktopEnvironments = [
     title: "Combinaison 3",
     combinations: [
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.EDGE,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.WINDOWS,
+        operatingSystemVersion: "",
         browser: BROWSERS.FIREFOX,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.JAWS,
+        assistiveTechnologyVersion: "",
       },
       {
+        operatingSystem: OPERATING_SYSTEM.MAC_OS,
+        operatingSystemVersion: "",
         browser: BROWSERS.SAFARI,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnologyVersion: "",
       },
     ],
   },
@@ -172,8 +210,12 @@ const mobileEnvironments = [
     title: "Combinaison 1",
     combinations: [
       {
+        operatingSystem: OPERATING_SYSTEM.I_OS,
+        operatingSystemVersion: "",
         browser: BROWSERS.SAFARI,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
+        assistiveTechnologyVersion: "",
       },
     ],
   },
@@ -181,13 +223,18 @@ const mobileEnvironments = [
     title: "Combinaison 2",
     combinations: [
       {
+        operatingSystem: OPERATING_SYSTEM.ANDROID,
+        operatingSystemVersion: "",
         browser: BROWSERS.CHROME,
+        browserVersion: "",
         assistiveTechnology: ASSISTIVE_TECHNOLOGY.TALKBACK,
+        assistiveTechnologyVersion: "",
       },
     ],
   },
 ];
 const selectedDesktopEnvironments = ref<string[]>([]);
+const selectedMobileEnvironments = ref<string[]>([]);
 const environments = ref([
   {
     platform: "",
@@ -202,9 +249,9 @@ const environments = ref([
 
 function availableOs(platform: string) {
   switch (platform) {
-    case PLATFORM.DESKTOP:
+    case Platform.DESKTOP:
       return [OPERATING_SYSTEM.WINDOWS, OPERATING_SYSTEM.MAC_OS];
-    case PLATFORM.MOBILE:
+    case Platform.MOBILE:
       return [OPERATING_SYSTEM.ANDROID, OPERATING_SYSTEM.I_OS];
   }
 }
@@ -301,6 +348,49 @@ async function onOsChange(env: Omit<AuditEnvironment, "id">) {
   if (env.browser) env.browser = "";
 }
 
+/**
+ * Combine suggested desktop and mobile environments with custom ones.
+ */
+function combineEnvironments(): Omit<AuditEnvironment, "id">[] {
+  const desktop = selectedDesktopEnvironments.value.length
+    ? desktopEnvironments
+        .filter((env) => {
+          return selectedDesktopEnvironments.value.includes(env.title);
+        })
+        .map((env) => {
+          return env.combinations.map((c) => {
+            return {
+              platform: Platform.DESKTOP,
+              ...c,
+            };
+          });
+        })
+        .flat(2)
+    : [];
+
+  const mobile = selectedMobileEnvironments.value.length
+    ? mobileEnvironments
+        .filter((env) => {
+          return selectedMobileEnvironments.value.includes(env.title);
+        })
+        .map((env) => {
+          return env.combinations.map((c) => {
+            return {
+              platform: Platform.MOBILE,
+              ...c,
+            };
+          });
+        })
+        .flat(2)
+    : [];
+
+  return uniqWith([...environments.value, ...desktop, ...mobile], (a, b) => {
+    return (
+      a.browser === b.browser && a.assistiveTechnology === b.assistiveTechnology
+    );
+  });
+}
+
 // Other data
 
 const auditInitiator = ref("");
@@ -361,7 +451,7 @@ function handleSubmit() {
     contactName: contactName.value,
 
     technologies: validatedTechnologies.value,
-    environments: environments.value,
+    environments: combineEnvironments(),
     tools: tools.value,
 
     // TODO: plug not accessible content
@@ -403,7 +493,7 @@ function DEBUG_fillFields() {
 
   environments.value = [
     {
-      platform: PLATFORM.DESKTOP,
+      platform: Platform.DESKTOP,
       operatingSystem: OPERATING_SYSTEM.WINDOWS,
       operatingSystemVersion: "11",
       assistiveTechnology: ASSISTIVE_TECHNOLOGY.NVDA,
@@ -412,7 +502,7 @@ function DEBUG_fillFields() {
       browserVersion: "104",
     },
     {
-      platform: PLATFORM.DESKTOP,
+      platform: Platform.DESKTOP,
       operatingSystem: OPERATING_SYSTEM.MAC_OS,
       operatingSystemVersion: "12.5",
       assistiveTechnology: ASSISTIVE_TECHNOLOGY.VOICE_OVER,
@@ -662,27 +752,29 @@ const isDevMode = useDevMode();
       </p>
     </div>
 
-    {{ selectedDesktopEnvironments }}
     <div class="fr-mb-3w suggested-environments">
       <AuditEnvironmentCheckbox
         v-for="env in desktopEnvironments"
         :key="env.title"
         v-model="selectedDesktopEnvironments"
         :value="env.title"
-        :platform="PLATFORM.DESKTOP"
+        :platform="Platform.DESKTOP"
         :title="env.title"
         :combinations="env.combinations"
       />
     </div>
-    <!-- <div class="suggested-environments">
+
+    <div class="suggested-environments">
       <AuditEnvironmentCheckbox
         v-for="env in mobileEnvironments"
         :key="env.title"
-        :platform="PLATFORM.MOBILE"
+        v-model="selectedMobileEnvironments"
+        :value="env.title"
+        :platform="Platform.MOBILE"
         :title="env.title"
         :combinations="env.combinations"
       />
-    </div> -->
+    </div>
     <div class="narrow-content">
       <fieldset
         v-for="(env, i) in environments"
@@ -715,7 +807,7 @@ const isDevMode = useDevMode();
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  :value="PLATFORM.DESKTOP"
+                  :value="Platform.DESKTOP"
                   @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-desktop-${i}`"
@@ -728,7 +820,7 @@ const isDevMode = useDevMode();
                   v-model="env.platform"
                   type="radio"
                   :name="`env-support-${i}`"
-                  :value="PLATFORM.MOBILE"
+                  :value="Platform.MOBILE"
                   @change="onPlatformChange(environments[i])"
                 />
                 <label class="fr-label" :for="`env-support-mobile-${i}`">
