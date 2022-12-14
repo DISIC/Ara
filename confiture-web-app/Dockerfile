@@ -2,7 +2,9 @@ FROM node:16 AS builder
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN
-ARG SENTRY_RELEASE
+ARG VITE_SENTRY_DSN
+ARG VITE_SENTRY_ENVIRONMENT
+ARG VITE_SENTRY_RELEASE
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile --non-interactive --production=false
