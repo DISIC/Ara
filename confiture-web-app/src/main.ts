@@ -49,6 +49,7 @@ if (import.meta.env.VITE_MATOMO_ENABLE) {
 
 // setup Sentry error logging
 if (import.meta.env.VITE_SENTRY_DSN) {
+  console.log("setup Sentry");
   Sentry.init({
     app,
     dsn: import.meta.env.VITE_SENTRY_DSN,
