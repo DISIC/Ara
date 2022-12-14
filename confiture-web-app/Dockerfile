@@ -1,9 +1,12 @@
 FROM node:16 AS builder
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+ARG SENTRY_AUTH_TOKEN
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile --non-interactive --production=false
 COPY . .
-RUN VITE_MATOMO_ENABLE=1 yarn build
+RUN VITE_MATOMO_ENABLE=1 SENTRY_ORG=${SENTRY_ORG} SENTRY_PROJECT=${SENTRY_PROJECT} SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} yarn build
 
 FROM ghcr.io/disic/designgouv-confiture/nginx:1.22.1-r0 AS production
 ARG VERSION=1.0
