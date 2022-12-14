@@ -5,7 +5,8 @@ import sentryVitePlugin from "@sentry/vite-plugin";
 const uploadSourceMapsToSentry =
   process.env.SENTRY_ORG &&
   process.env.SENTRY_PROJECT &&
-  process.env.SENTRY_AUTH_TOKEN;
+  process.env.SENTRY_AUTH_TOKEN &&
+  process.env.VITE_SENTRY_RELEASE;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,6 +23,7 @@ export default defineConfig({
             org: process.env.SENTRY_ORG,
             project: process.env.SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
+            release: process.env.VITE_SENTRY_RELEASE,
           }),
         ]
       : []),

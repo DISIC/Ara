@@ -71,6 +71,8 @@ if (import.meta.env.VITE_SENTRY_DSN) {
       - "production" : Production application
     */
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
+
+    release: import.meta.env.VITE_SENTRY_RELEASE,
   });
 }
 
