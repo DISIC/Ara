@@ -15,6 +15,7 @@ export class AuditReportDto {
   procedureName: string;
   procedureUrl?: string;
 
+  creationDate?: Date;
   publishDate?: Date;
   updateDate?: Date;
 

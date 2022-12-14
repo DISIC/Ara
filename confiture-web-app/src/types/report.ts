@@ -9,6 +9,7 @@ export interface AuditReport {
   procedureName: string;
   procedureUrl?: string;
 
+  creationDate?: string;
   publishDate?: string;
   updateDate?: string;
 

@@ -68,6 +68,7 @@ model Audit {
 
   // Misc
   recipients      Recipent[] // unused for now
+  creationDate    DateTime?
   publicationDate DateTime?
   editionDate     DateTime?
   editUniqueId    String     @unique

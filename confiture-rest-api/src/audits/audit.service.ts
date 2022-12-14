@@ -39,6 +39,8 @@ export class AuditService {
         editUniqueId,
         consultUniqueId,
 
+        creationDate: new Date(),
+
         procedureName: data.procedureName,
 
         auditType: data.auditType,
@@ -520,6 +522,7 @@ export class AuditService {
       procedureName: audit.procedureName,
       procedureUrl: audit.procedureUrl,
       auditType: audit.auditType,
+      creationDate: audit.creationDate,
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
 
