@@ -7,10 +7,6 @@ const uploadSourceMapsToSentry =
   process.env.SENTRY_PROJECT &&
   process.env.SENTRY_AUTH_TOKEN;
 
-console.log(
-  "🚀 ~ file: vite.config.ts:6 ~ uploadSourceMapsToSentry",
-  uploadSourceMapsToSentry
-);
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
