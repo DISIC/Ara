@@ -6,7 +6,6 @@ import {
   Delete,
   Get,
   GoneException,
-  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
