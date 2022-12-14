@@ -61,16 +61,9 @@ async function copyA11yStatementHTML() {
     .replaceAll(indentedTags, "  <$<tagName>>");
 
   if (html) {
-    navigator.clipboard
-      .writeText(html)
-      .then(() => {
-        showCopyAlert.value = true;
-      })
-      .catch((err) => {
-        console.error(
-          `Error copying a11y statement HTML to the clipboard: ${err}.`
-        );
-      });
+    navigator.clipboard.writeText(html).then(() => {
+      showCopyAlert.value = true;
+    });
   }
 }
 

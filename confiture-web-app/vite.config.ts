@@ -1,17 +1,30 @@
 import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
-import { ViteEjsPlugin } from "vite-plugin-ejs";
+import sentryVitePlugin from "@sentry/vite-plugin";
+
+const uploadSourceMapsToSentry =
+  process.env.SENTRY_ORG &&
+  process.env.SENTRY_PROJECT &&
+  process.env.SENTRY_AUTH_TOKEN;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    sourcemap: true, // Source map generation must be turned on
+  },
   assetsInclude: ["**/*.docx"],
   plugins: [
     vue(),
-    ViteEjsPlugin((config) => {
-      return {
-        VITE_MATOMO_ENABLE: config.env.VITE_MATOMO_ENABLE,
-      };
-    }),
+    ...(uploadSourceMapsToSentry
+      ? [
+          sentryVitePlugin({
+            include: "./dist",
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+          }),
+        ]
+      : []),
   ],
   server: {
     proxy: {

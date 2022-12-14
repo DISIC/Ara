@@ -4,18 +4,15 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - "main"
     paths:
-      - 'confiture-web-app/**'
-      
+      - "confiture-web-app/**"
+
 jobs:
-
   build_frontend:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -46,3 +43,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}
+            VITE_SENTRY_ENVIRONMENT=${{ secrets.VITE_SENTRY_ENVIRONMENT }}
+            SENTRY_ORG=${{ secrets.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}

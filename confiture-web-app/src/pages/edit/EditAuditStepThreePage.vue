@@ -14,6 +14,7 @@ import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
 import { formatAuditType } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
+import { captureException } from "@sentry/core";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,12 +40,12 @@ function toStepFour() {
       router.push({ name: "edit-audit-step-four", params: { uniqueId } });
     })
     .catch((error) => {
-      console.error(error);
       notify(
         "error",
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
+      captureException(error);
     });
 }
 

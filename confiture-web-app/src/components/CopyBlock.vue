@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { RouteLocationRaw } from "vue-router";
 import router from "../router";
 
@@ -16,16 +16,9 @@ const fullReportUrl = computed(
 );
 
 async function copyLink() {
-  navigator.clipboard
-    .writeText(fullReportUrl.value)
-    .then(() => {
-      showCopyAlert.value = true;
-    })
-    .catch((err) => {
-      console.error(
-        `Error copying report public URL to the clipboard: ${err}.`
-      );
-    });
+  navigator.clipboard.writeText(fullReportUrl.value).then(() => {
+    showCopyAlert.value = true;
+  });
 }
 </script>
 
