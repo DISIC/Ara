@@ -151,6 +151,8 @@ watch(
       ? audit.tools.filter((tool) => !availableTools.includes(tool))
       : [];
 
+    environments.value = audit.environments ?? [];
+
     notCompliantContent.value = audit.notCompliantContent ?? "";
     derogatedContent.value = audit.derogatedContent ?? "";
     notInScopeContent.value = audit.notInScopeContent ?? "";

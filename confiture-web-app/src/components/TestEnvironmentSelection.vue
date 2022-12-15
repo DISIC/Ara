@@ -19,44 +19,10 @@ const emit = defineEmits<{
   (e: "update:modelValue", payload: Omit<AuditEnvironment, "id">[]): void;
 }>();
 
-const customEnvironments = ref([
-  {
-    platform: "",
-    operatingSystem: "",
-    operatingSystemVersion: "",
-    assistiveTechnology: "",
-    assistiveTechnologyVersion: "",
-    browser: "",
-    browserVersion: "",
-  },
-]);
-
-const selectedDesktopEnvironments = ref<string[]>([]);
-const selectedMobileEnvironments = ref<string[]>([]);
-
-watch(
-  [customEnvironments, selectedDesktopEnvironments, selectedMobileEnvironments],
-  ([
-    customEnvironments,
-    selectedDesktopEnvironments,
-    selectedMobileEnvironments,
-  ]) => {
-    const result = combineEnvironments(
-      customEnvironments,
-      selectedDesktopEnvironments,
-      selectedMobileEnvironments
-    );
-    emit("update:modelValue", result);
-  },
-  {
-    deep: true,
-  }
-);
-
-const desktopEnvironments = [
+const desktopCombinations = [
   {
     title: "Combinaison 1",
-    combinations: [
+    environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
@@ -85,7 +51,7 @@ const desktopEnvironments = [
   },
   {
     title: "Combinaison 2",
-    combinations: [
+    environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
@@ -114,7 +80,7 @@ const desktopEnvironments = [
   },
   {
     title: "Combinaison 3",
-    combinations: [
+    environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
         operatingSystemVersion: "",
@@ -142,10 +108,11 @@ const desktopEnvironments = [
     ],
   },
 ];
-const mobileEnvironments = [
+
+const mobileCombinations = [
   {
     title: "Combinaison 1",
-    combinations: [
+    environments: [
       {
         operatingSystem: OperatingSystem.I_OS,
         operatingSystemVersion: "",
@@ -158,7 +125,7 @@ const mobileEnvironments = [
   },
   {
     title: "Combinaison 2",
-    combinations: [
+    environments: [
       {
         operatingSystem: OperatingSystem.ANDROID,
         operatingSystemVersion: "",
@@ -170,6 +137,143 @@ const mobileEnvironments = [
     ],
   },
 ];
+
+function getDesktopCombinations(
+  environments: Omit<AuditEnvironment, "id">[]
+): string[] {
+  const candidateEnvs = environments.filter((env) => {
+    return (
+      env.platform === Platform.DESKTOP &&
+      !env.assistiveTechnologyVersion &&
+      !env.operatingSystemVersion &&
+      !env.browserVersion
+    );
+  });
+
+  return desktopCombinations
+    .filter((comb) => {
+      return comb.environments.every((env) =>
+        candidateEnvs.find(
+          (candidate) =>
+            env.assistiveTechnology === candidate.assistiveTechnology &&
+            env.browser === candidate.browser &&
+            env.operatingSystem === candidate.operatingSystem
+        )
+      );
+    })
+    .map((comb) => comb.title);
+}
+
+function getMobileCombinations(
+  environments: Omit<AuditEnvironment, "id">[]
+): string[] {
+  const candidateEnvs = environments.filter((env) => {
+    return (
+      env.platform === Platform.MOBILE &&
+      !env.assistiveTechnologyVersion &&
+      !env.operatingSystemVersion &&
+      !env.browserVersion
+    );
+  });
+
+  return mobileCombinations
+    .filter((comb) => {
+      return comb.environments.every((env) =>
+        candidateEnvs.find(
+          (candidate) =>
+            env.assistiveTechnology === candidate.assistiveTechnology &&
+            env.browser === candidate.browser &&
+            env.operatingSystem === candidate.operatingSystem
+        )
+      );
+    })
+    .map((comb) => comb.title);
+}
+
+function getCustomEnvironments(
+  environments: Omit<AuditEnvironment, "id">[]
+): Omit<AuditEnvironment, "id">[] {
+  const d = getDesktopCombinations(environments)
+    .map((title) => desktopCombinations.find((comb) => comb.title === title))
+    .map((comb) => comb?.environments)
+    .flat()
+    .filter(Boolean);
+
+  const m = getMobileCombinations(environments)
+    .map((title) => mobileCombinations.find((comb) => comb.title === title))
+    .map((comb) => comb?.environments)
+    .flat()
+    .filter(Boolean);
+
+  return environments.filter((env) => {
+    if (
+      env.assistiveTechnologyVersion ||
+      env.operatingSystemVersion ||
+      env.browserVersion
+    ) {
+      return true;
+    }
+
+    return !(
+      d.some(
+        (desktopEnv) =>
+          desktopEnv?.assistiveTechnology === env.assistiveTechnology &&
+          desktopEnv.browser === env.browser &&
+          desktopEnv.operatingSystem === env.operatingSystem
+      ) ||
+      m.some(
+        (mobileEnv) =>
+          mobileEnv?.assistiveTechnology === env.assistiveTechnology &&
+          mobileEnv.browser === env.browser &&
+          mobileEnv.operatingSystem === env.operatingSystem
+      )
+    );
+  });
+}
+
+const selectedDesktopEnvironments = ref<string[]>(
+  getDesktopCombinations(props.modelValue)
+);
+
+const selectedMobileEnvironments = ref<string[]>(
+  getMobileCombinations(props.modelValue)
+);
+
+const customEnvironments = ref([
+  ...getCustomEnvironments(props.modelValue),
+  ...(props.modelValue.length === 0
+    ? [
+        {
+          platform: "",
+          operatingSystem: "",
+          operatingSystemVersion: "",
+          assistiveTechnology: "",
+          assistiveTechnologyVersion: "",
+          browser: "",
+          browserVersion: "",
+        },
+      ]
+    : []),
+]);
+
+watch(
+  [customEnvironments, selectedDesktopEnvironments, selectedMobileEnvironments],
+  ([
+    customEnvironments,
+    selectedDesktopEnvironments,
+    selectedMobileEnvironments,
+  ]) => {
+    const result = combineEnvironments(
+      customEnvironments,
+      selectedDesktopEnvironments,
+      selectedMobileEnvironments
+    );
+    emit("update:modelValue", result);
+  },
+  {
+    deep: true,
+  }
+);
 
 function availableOs(platform: string) {
   switch (platform) {
@@ -281,13 +385,14 @@ function combineEnvironments(
   selectedMobileEnvironments: string[]
 ): Omit<AuditEnvironment, "id">[] {
   const desktop = selectedDesktopEnvironments.length
-    ? desktopEnvironments
-        .filter((env) => {
-          return selectedDesktopEnvironments.includes(env.title);
+    ? desktopCombinations
+        .filter((combination) => {
+          return selectedDesktopEnvironments.includes(combination.title);
         })
-        .map((env) => {
-          return env.combinations.map((c) => {
+        .map((combination) => {
+          return combination.environments.map((c) => {
             return {
+              // TODO: set platform directly in desktopCombinations
               platform: Platform.DESKTOP,
               ...c,
             };
@@ -297,12 +402,12 @@ function combineEnvironments(
     : [];
 
   const mobile = selectedMobileEnvironments.length
-    ? mobileEnvironments
-        .filter((env) => {
-          return selectedMobileEnvironments.includes(env.title);
+    ? mobileCombinations
+        .filter((combination) => {
+          return selectedMobileEnvironments.includes(combination.title);
         })
-        .map((env) => {
-          return env.combinations.map((c) => {
+        .map((combination) => {
+          return combination.environments.map((c) => {
             return {
               platform: Platform.MOBILE,
               ...c,
@@ -346,25 +451,25 @@ function combineEnvironments(
 
   <div class="fr-mb-3w suggested-environments">
     <AuditEnvironmentCheckbox
-      v-for="env in desktopEnvironments"
+      v-for="env in desktopCombinations"
       :key="env.title"
       v-model="selectedDesktopEnvironments"
       :value="env.title"
       :platform="Platform.DESKTOP"
       :title="env.title"
-      :combinations="env.combinations"
+      :combinations="env.environments"
     />
   </div>
 
   <div class="suggested-environments">
     <AuditEnvironmentCheckbox
-      v-for="env in mobileEnvironments"
+      v-for="env in mobileCombinations"
       :key="env.title"
       v-model="selectedMobileEnvironments"
       :value="env.title"
       :platform="Platform.MOBILE"
       :title="env.title"
-      :combinations="env.combinations"
+      :combinations="env.environments"
     />
   </div>
 
