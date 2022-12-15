@@ -3,7 +3,7 @@ import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
-import TestEnvironmentSelection from "../../components/TestEnvironmentSelection.vue";
+import TestEnvironmentSelection from "../../components/TestEnvironmentSelection/TestEnvironmentSelection.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";

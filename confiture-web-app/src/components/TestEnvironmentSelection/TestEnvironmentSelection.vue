@@ -7,9 +7,16 @@ import {
   Browsers,
   OperatingSystem,
   Platform,
-} from "../enums";
-import { AuditEnvironment } from "../types";
-import AuditEnvironmentCheckbox from "./AuditEnvironmentCheckbox.vue";
+} from "../../enums";
+import { AuditEnvironment } from "../../types";
+import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
+import {
+  desktopCombinations,
+  getCustomEnvironments,
+  getDesktopCombinations,
+  getMobileCombinations,
+  mobileCombinations,
+} from "./combinations";
 
 const props = defineProps<{
   modelValue: Omit<AuditEnvironment, "id">[];
@@ -19,226 +26,17 @@ const emit = defineEmits<{
   (e: "update:modelValue", payload: Omit<AuditEnvironment, "id">[]): void;
 }>();
 
-const desktopCombinations = [
-  {
-    title: "Combinaison 1",
-    environments: [
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
-        browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
-  {
-    title: "Combinaison 2",
-    environments: [
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.EDGE,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
-        browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
-  {
-    title: "Combinaison 3",
-    environments: [
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.EDGE,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
-        browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
-      },
-      {
-        operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
-        browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
-];
-
-const mobileCombinations = [
-  {
-    title: "Combinaison 1",
-    environments: [
-      {
-        operatingSystem: OperatingSystem.I_OS,
-        operatingSystemVersion: "",
-        browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
-  {
-    title: "Combinaison 2",
-    environments: [
-      {
-        operatingSystem: OperatingSystem.ANDROID,
-        operatingSystemVersion: "",
-        browser: Browsers.CHROME,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.TALKBACK,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
-];
-
-function getDesktopCombinations(
-  environments: Omit<AuditEnvironment, "id">[]
-): string[] {
-  const candidateEnvs = environments.filter((env) => {
-    return (
-      env.platform === Platform.DESKTOP &&
-      !env.assistiveTechnologyVersion &&
-      !env.operatingSystemVersion &&
-      !env.browserVersion
-    );
-  });
-
-  return desktopCombinations
-    .filter((comb) => {
-      return comb.environments.every((env) =>
-        candidateEnvs.find(
-          (candidate) =>
-            env.assistiveTechnology === candidate.assistiveTechnology &&
-            env.browser === candidate.browser &&
-            env.operatingSystem === candidate.operatingSystem
-        )
-      );
-    })
-    .map((comb) => comb.title);
-}
-
-function getMobileCombinations(
-  environments: Omit<AuditEnvironment, "id">[]
-): string[] {
-  const candidateEnvs = environments.filter((env) => {
-    return (
-      env.platform === Platform.MOBILE &&
-      !env.assistiveTechnologyVersion &&
-      !env.operatingSystemVersion &&
-      !env.browserVersion
-    );
-  });
-
-  return mobileCombinations
-    .filter((comb) => {
-      return comb.environments.every((env) =>
-        candidateEnvs.find(
-          (candidate) =>
-            env.assistiveTechnology === candidate.assistiveTechnology &&
-            env.browser === candidate.browser &&
-            env.operatingSystem === candidate.operatingSystem
-        )
-      );
-    })
-    .map((comb) => comb.title);
-}
-
-function getCustomEnvironments(
-  environments: Omit<AuditEnvironment, "id">[]
-): Omit<AuditEnvironment, "id">[] {
-  const d = getDesktopCombinations(environments)
-    .map((title) => desktopCombinations.find((comb) => comb.title === title))
-    .map((comb) => comb?.environments)
-    .flat()
-    .filter(Boolean);
-
-  const m = getMobileCombinations(environments)
-    .map((title) => mobileCombinations.find((comb) => comb.title === title))
-    .map((comb) => comb?.environments)
-    .flat()
-    .filter(Boolean);
-
-  return environments.filter((env) => {
-    if (
-      env.assistiveTechnologyVersion ||
-      env.operatingSystemVersion ||
-      env.browserVersion
-    ) {
-      return true;
-    }
-
-    return !(
-      d.some(
-        (desktopEnv) =>
-          desktopEnv?.assistiveTechnology === env.assistiveTechnology &&
-          desktopEnv.browser === env.browser &&
-          desktopEnv.operatingSystem === env.operatingSystem
-      ) ||
-      m.some(
-        (mobileEnv) =>
-          mobileEnv?.assistiveTechnology === env.assistiveTechnology &&
-          mobileEnv.browser === env.browser &&
-          mobileEnv.operatingSystem === env.operatingSystem
-      )
-    );
-  });
-}
-
+/** List of selected desktop environement combinations */
 const selectedDesktopEnvironments = ref<string[]>(
   getDesktopCombinations(props.modelValue)
 );
 
+/** List of selected mobile environement combinations */
 const selectedMobileEnvironments = ref<string[]>(
   getMobileCombinations(props.modelValue)
 );
 
+/** List of custom environments */
 const customEnvironments = ref([
   ...getCustomEnvironments(props.modelValue),
   ...(props.modelValue.length === 0
