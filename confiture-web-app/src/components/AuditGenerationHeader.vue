@@ -108,6 +108,7 @@ const isDevMode = useDevMode();
         <Dropdown title="Options">
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
+              <!-- FIXME: would this still be useful? -->
               <!-- <li v-if="hasA11yStatement">
                 <RouterLink
                   :to="{
@@ -131,17 +132,6 @@ const isDevMode = useDevMode();
                 </RouterLink>
               </li>
             </template>
-            <li v-else>
-              <RouterLink
-                :to="{
-                  name: 'report',
-                  params: { uniqueId: auditStore.data?.consultUniqueId },
-                }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0"
-              >
-                Prévisusaliser le rapport d’audit
-              </RouterLink>
-            </li>
             <li>
               <RouterLink
                 :to="{
