@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 15/12/2022
+
+### Corrections 🐛
+
+- Supprime le lien vers le rapport dans le dropdown du header de la génération d’audit (déjà présent à côté) ([#245](https://github.com/DISIC/Ara/pull/245)).
+
 ## 14/12/2022
 
 ### Nouvelles fonctionnalités 🚀
@@ -37,7 +43,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 - Cache les sections "Contenus non accessibles" vides dans le rapport
 - Ajoute un message d'information sur la page de rapport d'un audit en cours ([#236](https://github.com/DISIC/Ara/pull/236)).
 
-### Corrections
+### Corrections 🐛
 
 - Fixe les liens des pages auditées dans la page de contexte ([#235](https://github.com/DISIC/Ara/pull/235)).
 
