@@ -131,8 +131,8 @@ const successAlertContent = computed(() => {
       <CopyBlock
         class="fr-mb-4w"
         :to="reportRouteLocation"
-        description="Lien public du rapport d’audit"
-        success-message="Le lien public du rapport d’audit a bien été copié dans le presse-papier."
+        description="Rapport d’audit"
+        success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
       />
 
       <template v-if="!isStatementFilled">
@@ -197,9 +197,15 @@ const successAlertContent = computed(() => {
 
         <CopyBlock
           class="fr-mb-4w"
-          :to="reportRouteLocation"
-          description="Lien public du rapport d’audit"
-          success-message="Le lien public du rapport d’audit a bien été copié dans le presse-papier."
+          :to="{
+            name: 'report',
+            params: {
+              uniqueId: auditStore.data.consultUniqueId,
+              tab: 'declaration-daccessibilite',
+            },
+          }"
+          description="Déclaration d’accessibilité"
+          success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
         />
       </template>
     </section>
