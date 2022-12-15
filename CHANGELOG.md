@@ -15,6 +15,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 15/12/2022
 
+### Nouvelles fonctionnalités 🚀
+
+- Nouvelle interface pour les technologies, outils d’assistance et environnements lors du remplissage de la déclaration d’accessibilité ([#233](https://github.com/DISIC/Ara/pull/233)).
+
 ### Corrections 🐛
 
 - Mise à jour du wording et du lien pour copier la déclaration d’accessibilité ([#247](https://github.com/DISIC/Ara/pull/247))
