@@ -351,18 +351,21 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           </button>
         </div>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <div class="fr-mb-4w page-title-container">
-            <h2
-              :id="`${getPageSlug(page.pageId)}`"
-              class="fr-h3 fr-mb-0 page-title"
-            >
-              {{ page.pageName }}
-            </h2>
-            <a :href="page.pageUrl" class="" target="_blank" rel="noopener">
-              {{ page.pageUrl }}
-              <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
-            </a>
-          </div>
+          <h2
+            :id="`${getPageSlug(page.pageId)}`"
+            class="fr-h3 fr-mb-2w page-title"
+          >
+            {{ page.pageName }}
+          </h2>
+          <a
+            :href="page.pageUrl"
+            class="fr-mb-4w page-url"
+            target="_blank"
+            rel="noopener"
+          >
+            {{ page.pageUrl }}
+            <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
+          </a>
 
           <div
             v-for="(topic, i) in page.topics"
@@ -489,16 +492,12 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-.page-title-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .page-title {
   color: var(--text-active-blue-france);
+}
+
+.page-url {
+  display: inline-block;
 }
 
 .criterium-title {
