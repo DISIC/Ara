@@ -346,9 +346,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           <span class="fr-mb-0 fr-text--xl fr-text--bold"
             >{{ report.data.errorCount }} résultats</span
           >
-          <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
+          <!-- FIXME: make this work -->
+          <!-- <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
             Tout déplier
-          </button>
+          </button> -->
         </div>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
           <div class="fr-mb-4w page-title-container">
