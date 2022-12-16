@@ -16,7 +16,7 @@
     "@sentry/tracing": "^7.27.0",
     "@sentry/vue": "^7.27.0",
     "@vueuse/head": "^0.7.9",
-    "chart.js": "^3.9.1",
+    "chart.js": "^4.1.0",
     "dompurify": "^2.4.1",
     "ky": "^0.33.0",
     "lodash-es": "^4.17.21",

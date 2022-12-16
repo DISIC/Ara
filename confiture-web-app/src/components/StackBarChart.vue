@@ -82,8 +82,10 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
     scales: {
       x: {
         display: false,
+        border: {
+          display: false,
+        },
         grid: {
-          drawBorder: false,
           display: false,
         },
         stacked: true,
@@ -98,7 +100,6 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
       y: {
         stacked: true,
         grid: {
-          drawBorder: false,
           display: false,
         },
         ticks: {
