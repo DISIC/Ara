@@ -15,7 +15,7 @@
     "@gouvfr/dsfr": "1.7.2",
     "@sentry/tracing": "^7.27.0",
     "@sentry/vue": "^7.27.0",
-    "@vueuse/head": "^0.7.9",
+    "@vueuse/head": "^1.0.22",
     "chart.js": "^4.1.0",
     "dompurify": "^2.4.1",
     "ky": "^0.33.0",
