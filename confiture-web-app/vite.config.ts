@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import sentryVitePlugin from "@sentry/vite-plugin";
 
@@ -32,10 +32,5 @@ export default defineConfig({
     proxy: {
       "/api": "http://localhost:4000",
     },
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["src/setupTests.ts"],
   },
 });
