@@ -81,6 +81,7 @@ useHead({
 
   <main
     id="main"
+    role="main"
     :class="['fr-container fr-mb-12w', { 'fr-mt-9w': !breadcrumbLinks.length }]"
   >
     <Breadcrumb v-if="breadcrumbLinks.length" :links="breadcrumbLinks" />
