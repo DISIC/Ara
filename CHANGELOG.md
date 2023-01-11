@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 9/12/2022
 
+### Corrections 🐛
+
+- Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
+
 ### Autres changements ⚙️
 
 - Dans le rapport, déplace l'URL de la page sous son nom ([#257](https://github.com/DISIC/Ara/pull/257))
