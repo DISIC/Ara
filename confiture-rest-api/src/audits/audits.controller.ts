@@ -5,8 +5,10 @@ import {
   Delete,
   Get,
   GoneException,
+  HttpStatus,
   NotFoundException,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Put,
@@ -91,7 +93,19 @@ export class AuditsController {
   @UseInterceptors(FileInterceptor('image'))
   async uploadExampleImage(
     @Param('uniqueId') uniqueId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'image',
+        })
+        .addMaxSizeValidator({
+          maxSize: 1000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @Body() body: UploadImageDto,
   ) {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
@@ -101,7 +115,6 @@ export class AuditsController {
     }
 
     // TODO: check max number of example
-    // TODO: validate file
     // TODO: upload multiple files
     return await this.auditService.saveExampleImage(
       uniqueId,
