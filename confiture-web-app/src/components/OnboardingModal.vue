@@ -110,6 +110,8 @@ watch(currentStep, () => {
 
               <div ref="contentEl" class="fr-modal__content" tabindex="-1">
                 <div class="content">
+                  <h1 class="sr-only">{{ steps[0].title }}</h1>
+
                   <StatDonut
                     v-if="currentStep === 0"
                     class="stat-donut"
@@ -130,7 +132,10 @@ watch(currentStep, () => {
                     {{ steps[currentStep].subTitle }}
                   </p>
 
-                  <p class="fr-modal__title content-title">
+                  <p
+                    class="fr-modal__title content-title"
+                    :aria-hidden="currentStep === 0"
+                  >
                     {{ steps[currentStep].title }}
                   </p>
                   <p class="content-text" v-html="steps[currentStep].text"></p>
