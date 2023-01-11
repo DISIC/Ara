@@ -227,6 +227,8 @@ function combineEnvironments(
     [...filteredCustomEnvironments, ...desktop, ...mobile],
     (a, b) => {
       return (
+        a.platform === b.platform &&
+        a.operatingSystem === b.operatingSystem &&
         a.browser === b.browser &&
         a.assistiveTechnology === b.assistiveTechnology
       );
