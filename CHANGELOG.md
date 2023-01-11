@@ -2,7 +2,11 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 9/12/2022
+## 09/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Nouvelle interface pour les technologies, outils d’assistance et environnements lors du remplissage de la déclaration d’accessibilité ([#233](https://github.com/DISIC/Ara/pull/233)).
 
 ### Corrections 🐛
 

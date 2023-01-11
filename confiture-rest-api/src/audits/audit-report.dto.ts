@@ -119,7 +119,7 @@ class ReportContext {
   // TODO: derogated content
   // derogatedContent: any
 
-  tools: Tool[];
+  tools: string[];
 
   desktopEnvironments: Environment[];
   mobileEnvironments: Environment[];
@@ -129,21 +129,6 @@ class PageSample {
   id: number;
   number: number;
   name: string;
-  url: string;
-}
-
-class Tool {
-  /**
-   * @example "Contrast Finder 0.10.0"
-   */
-  name: string;
-  /**
-   * @example "Vérification des contrastes de couleurs"
-   */
-  function: string;
-  /**
-   * @example "https://app.contrast-finder.org/?lang=fr"
-   */
   url: string;
 }
 

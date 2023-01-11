@@ -7,7 +7,6 @@ import {
   CriterionResultUserImpact,
   Prisma,
   TestEnvironment,
-  Tool,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
@@ -21,7 +20,6 @@ import { UpdateResultsDto } from './update-results.dto';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
-  tools: true,
   environments: true,
   pages: true,
 };
@@ -156,6 +154,8 @@ export class AuditService {
 
             technologies: data.technologies,
 
+            tools: data.tools,
+
             // recipients: {
             //   deleteMany: {
             //     email: {
@@ -176,41 +176,8 @@ export class AuditService {
             //   })),
             // },
 
-            // step 2
             auditType: data.auditType,
-            tools: {
-              deleteMany: {
-                OR: [
-                  {
-                    name: {
-                      notIn: data.tools.map((t) => t.name),
-                    },
-                  },
-                  {
-                    function: {
-                      notIn: data.tools.map((t) => t.function),
-                    },
-                  },
-                  {
-                    url: {
-                      notIn: data.tools.map((t) => t.url),
-                    },
-                  },
-                ],
-              },
-              upsert: data.tools.map((tool) => ({
-                where: {
-                  name_function_url_auditUniqueId: {
-                    auditUniqueId: uniqueId,
-                    name: tool.name,
-                    function: tool.function,
-                    url: tool.url,
-                  },
-                },
-                create: tool,
-                update: tool,
-              })),
-            },
+
             environments: {
               deleteMany: {
                 OR: [
@@ -447,7 +414,6 @@ export class AuditService {
       where: { consultUniqueId },
       include: AUDIT_EDIT_INCLUDE,
     })) as Audit & {
-      tools: Tool[];
       environments: TestEnvironment[];
       pages: AuditedPage[];
     };
@@ -577,11 +543,7 @@ export class AuditService {
           url: p.url,
           id: p.id,
         })),
-        tools: audit.tools.map((t) => ({
-          name: t.name,
-          function: t.function,
-          url: t.url,
-        })),
+        tools: audit.tools,
         technologies: audit.technologies,
       },
 

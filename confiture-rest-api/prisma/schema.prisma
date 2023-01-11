@@ -60,7 +60,7 @@ model Audit {
   contactEmail        String?
   contactFormUrl      String?
   technologies        String[]
-  tools               Tool[]
+  tools               String[]
   environments        TestEnvironment[]
   notCompliantContent String?
   derogatedContent    String?
@@ -77,18 +77,6 @@ model Audit {
   auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
 
   @@unique([editUniqueId, consultUniqueId])
-}
-
-model Tool {
-  id       Int    @id @default(autoincrement())
-  name     String
-  function String
-  url      String
-
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
-  auditUniqueId String?
-
-  @@unique([name, function, url, auditUniqueId])
 }
 
 model TestEnvironment {
