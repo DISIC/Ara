@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
+- Ajout du numéro de la thématique et du critère dans les labels des boutons radio de conformité ([#253](https://github.com/DISIC/Ara/pull/253))
 
 ### Autres changements ⚙️
 

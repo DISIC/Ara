@@ -55,7 +55,7 @@ const result = reactive<CriteriumResult>({
   )!,
 });
 
-/* 
+/*
 the result status can be updated from an external source (the not applicable
 page switch and the autofill debug button)
 So we watch the store to make sure to update our local state if needed.
@@ -113,7 +113,7 @@ const uniqueId = computed(() => {
     <RadioGroup
       v-model="result.status"
       class="fr-ml-5w"
-      label="Statut du critère"
+      :label="`Statut du critère ${topicNumber}.${criterium.number}`"
       hide-label
       :default-value="CriteriumResultStatus.NOT_TESTED"
       :items="statuses"
