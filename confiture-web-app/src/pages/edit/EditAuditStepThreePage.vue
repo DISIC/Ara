@@ -162,7 +162,7 @@ async function handleDevButtonClick() {
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
-        <div class="filters-wrapper">
+        <div class="filters-wrapper" role="search">
           <AuditGenerationFilters :topics="topics" />
         </div>
       </div>
