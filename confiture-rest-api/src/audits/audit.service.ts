@@ -10,6 +10,7 @@ import {
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
+import { resourceLimits } from 'worker_threads';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
@@ -84,7 +85,12 @@ export class AuditService {
 
   async getResultsWithEditUniqueId(
     uniqueId: string,
-  ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
+  ): Promise<
+    Omit<
+      CriterionResult & { exampleImages: StoredFile[] },
+      'id' | 'auditUniqueId'
+    >[]
+  > {
     const [audit, pages, existingResults] = await Promise.all([
       this.prisma.audit.findUnique({
         where: {
@@ -97,8 +103,13 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            // auditUniqueId: uniqueId,
+            audit: {
+              editUniqueId: uniqueId,
+            },
           },
+        },
+        include: {
+          exampleImages: true,
         },
       }),
     ]);
@@ -124,6 +135,7 @@ export class AuditService {
           userImpact: null,
           recommandation: null,
           notApplicableComment: null,
+          exampleImages: [],
 
           topic: criterion.topic,
           criterium: criterion.criterium,

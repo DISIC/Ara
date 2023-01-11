@@ -94,7 +94,12 @@ export class AuditsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadImageDto,
   ) {
-    // TODO: check audit exists
+    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
     // TODO: check max number of example
     // TODO: validate file
     // TODO: upload multiple files
