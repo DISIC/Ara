@@ -22,7 +22,7 @@ import PageMeta from "../../components/PageMeta";
         class="fr-link"
         href="https://www.w3.org/WAI/standards-guidelines/wcag/fr"
         target="_blank"
-        >WCAG</a
+        >WCAG <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
       <strong
         >En France, le taux d’accessibilité d’un site est calculé en l’auditant
@@ -45,6 +45,7 @@ import PageMeta from "../../components/PageMeta";
         target="_blank"
       >
         Consulter les critères du RGAA
+        <span class="sr-only">(nouvelle fenêtre)</span>
       </a>
     </p>
 

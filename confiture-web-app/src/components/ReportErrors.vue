@@ -365,7 +365,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             rel="noopener"
           >
             {{ page.pageUrl }}
-            <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
 
           <div

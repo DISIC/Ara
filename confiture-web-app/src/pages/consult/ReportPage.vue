@@ -196,6 +196,7 @@ function handleTabChange(tab: { title: string }) {
           :href="report.data.procedureUrl"
         >
           {{ report.data.procedureUrl }}
+          <span class="sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>

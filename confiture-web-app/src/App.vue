@@ -68,12 +68,10 @@ useHead({
         <p class="fr-notice__title">
           Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas à
           nous faire part de vos retours depuis ce
-          <RouterLink
-            :to="{ name: 'feedback' }"
-            title="court formulaire - nouvelle fenêtre"
-            target="_blank"
-            >court formulaire</RouterLink
-          >
+          <RouterLink :to="{ name: 'feedback' }" target="_blank">
+            court formulaire
+            <span class="sr-only">(nouvelle fenêtre)</span>
+          </RouterLink>
         </p>
       </div>
     </div>

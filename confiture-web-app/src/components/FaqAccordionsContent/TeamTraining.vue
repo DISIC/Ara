@@ -11,11 +11,12 @@
     <a
       class="fr-link"
       href="https://design.numerique.gouv.fr/accessibilite-numerique/prestations-accessibilite-numerique/"
-      target="_blank" rel="noreferrer noopener" 
+      target="_blank"
+      rel="noreferrer noopener"
       >En savoir plus
       <span class="sr-only"
         >sur le financement de formations individuelles ou collectives pour
-        votre équipe</span
+        votre équipe (nouvelle fenêtre)</span
       ></a
     >.
   </p>
