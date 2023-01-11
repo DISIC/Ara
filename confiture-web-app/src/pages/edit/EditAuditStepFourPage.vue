@@ -83,13 +83,13 @@ const successAlertContent = computed(() => {
 </script>
 
 <template>
-  <PageMeta
-    title="Audit terminé"
-    description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
-  />
-
   <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
+    <PageMeta
+      :title="`Audit ${auditStore.data.procedureName} terminé`"
+      description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
+    />
+
     <div class="fr-alert fr-alert--success fr-mb-4w">
       <p>
         {{ successAlertContent }}
@@ -97,7 +97,7 @@ const successAlertContent = computed(() => {
     </div>
 
     <AuditGenerationHeader
-      :audit-name="auditStore.data.procedureName"
+      :audit-name="`L’audit ${auditStore.data.procedureName} est terminé`"
       :key-infos="headerInfos"
       :edit-unique-id="auditStore.data.editUniqueId"
       :audit-publication-date="auditStore.data.publicationDate"
