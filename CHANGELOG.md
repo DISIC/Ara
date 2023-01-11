@@ -2,7 +2,7 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 09/01/2023
+## 11/01/2023
 
 ### Nouvelles fonctionnalités 🚀
 
@@ -12,6 +12,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
 - Ajout du numéro de la thématique et du critère dans les labels des boutons radio de conformité ([#253](https://github.com/DISIC/Ara/pull/253))
+- Gère l’annonce des liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
 
 ### Autres changements ⚙️
 
