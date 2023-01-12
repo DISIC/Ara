@@ -101,36 +101,34 @@ const {
   blockingCriteriaCount,
 } = useAuditStats(auditStore.data?.pages.length);
 
-const headerInfos = computed(() => {
-  return [
-    ...(auditStore.data?.auditType === AuditType.FULL
-      ? [
-          {
-            title: "Taux global de conformité",
-            description: "RGAA version 4.1",
-            value: complianceLevel.value,
-            total: 100,
-            unit: "%",
-          },
-        ]
-      : []),
-    {
-      title: "Critères non conformes",
-      description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
-      value: notCompliantCriteriaCount.value,
-      total: getCriteriaCount(auditStore.data?.auditType as AuditType),
-      danger: true,
-    },
-    {
-      title: "Critères non applicables",
-      description: `Sur un total de ${getCriteriaCount(
-        auditStore.data?.auditType as AuditType
-      )} critères`,
-      value: notApplicableCriteriaCount.value,
-      total: getCriteriaCount(auditStore.data?.auditType as AuditType),
-    },
-  ];
-});
+const headerInfos = computed(() => [
+  ...(auditStore.data?.auditType === AuditType.FULL
+    ? [
+        {
+          title: "Taux global de conformité",
+          description: "RGAA version 4.1",
+          value: complianceLevel.value,
+          total: 100,
+          unit: "%",
+        },
+      ]
+    : []),
+  {
+    title: "Critères non conformes",
+    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    value: notCompliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    danger: true,
+  },
+  {
+    title: "Critères non applicables",
+    description: `Sur un total de ${getCriteriaCount(
+      auditStore.data?.auditType as AuditType
+    )} critères`,
+    value: notApplicableCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+  },
+]);
 </script>
 
 <template>
