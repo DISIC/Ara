@@ -3,7 +3,12 @@ import { marked } from "marked";
 import { computed, watch, reactive } from "vue";
 import { debounce } from "lodash-es";
 
-import { AuditPage, CriteriumResult, CriteriumResultStatus } from "../types";
+import {
+  AuditPage,
+  CriteriumResult,
+  CriteriumResultStatus,
+  ExampleImage,
+} from "../types";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -91,6 +96,55 @@ watch(
   }, 500)
 );
 
+function handleUploadExample(file: File) {
+  // TODO
+  store
+    .uploadExampleImage(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      file
+    )
+    .then((result) => {
+      console.log(
+        "🚀 ~ file: AuditGenerationCriterium.vue:104 ~ handleUploadExample ~ result",
+        result
+      );
+    })
+    .catch((error) => {
+      console.error(
+        "🚀 ~ file: AuditGenerationCriterium.vue:106 ~ handleUploadExample ~ error",
+        error
+      );
+    });
+}
+
+function handleDeleteExample(image: ExampleImage) {
+  // TODO
+  console.log("Deleting", image);
+  store
+    .deleteExampleImage(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      image.id
+    )
+    .then((result) => {
+      console.log(
+        "🚀 ~ file: AuditGenerationCriterium.vue:135 ~ .then ~ result",
+        result
+      );
+    })
+    .catch((error) => {
+      console.log(
+        "🚀 ~ file: AuditGenerationCriterium.vue:139 ~ handleDeleteExample ~ error",
+        error
+      );
+    });
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -138,6 +192,9 @@ const uniqueId = computed(() => {
         :id="`not-compliant-accordion-${uniqueId}`"
         v-model:comment="result.errorDescription"
         v-model:user-impact="result.userImpact"
+        :example-images="result.exampleImages"
+        @upload-example="handleUploadExample"
+        @delete-example="handleDeleteExample"
       />
       <!-- RECOMMENDATION -->
       <CriteriumRecommendationAccordion

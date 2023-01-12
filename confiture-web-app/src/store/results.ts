@@ -6,6 +6,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   CriterionResultUserImpact,
+  ExampleImage,
 } from "../types";
 import { useAuditStore } from "./audit";
 
@@ -211,6 +212,52 @@ export const useResultsStore = defineStore("results", {
           topicNumber,
           CriteriumResultStatus.NOT_TESTED
         );
+      }
+    },
+
+    async uploadExampleImage(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      file: File
+    ) {
+      const formData = new FormData();
+      formData.append("pageId", pageId.toString());
+      formData.append("topic", topic.toString());
+      formData.append("criterium", criterium.toString());
+      formData.append("image", file);
+
+      const exampleImage = (await ky
+        .post(`/api/audits/${uniqueId}/results/examples`, {
+          body: formData,
+        })
+        .json()) as ExampleImage;
+
+      const result = this.data![pageId][topic][criterium];
+
+      if (result) {
+        result.exampleImages.push(exampleImage);
+      }
+    },
+
+    async deleteExampleImage(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      exampleId: number
+    ) {
+      await ky.delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`);
+
+      const result = this.data![pageId][topic][criterium];
+
+      if (result) {
+        const exampleIndex = result.exampleImages.findIndex(
+          (ex) => ex.id === exampleId
+        );
+
+        result.exampleImages.splice(exampleIndex, 1);
       }
     },
 
