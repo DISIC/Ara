@@ -12,7 +12,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
-import { formatAuditType } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { captureException } from "@sentry/core";
 
@@ -94,30 +94,43 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-const { risk, complianceLevel } = useAuditStats(auditStore.data?.pages.length);
+const {
+  complianceLevel,
+  notApplicableCriteriaCount,
+  notCompliantCriteriaCount,
+  blockingCriteriaCount,
+} = useAuditStats(auditStore.data?.pages.length);
 
-const headerInfos = computed(() => [
-  {
-    label: "Type d’audit",
-    value: formatAuditType(auditStore.data!.auditType as AuditType),
-  },
-  { label: "Risque de l’audit", value: risk.value },
-  ...(auditStore.data?.auditType === AuditType.FULL
-    ? [
-        {
-          label: "Taux de conformité au RGAA actuel",
-          value: complianceLevel.value,
-          description: "%",
-        },
-      ]
-    : []),
-]);
-
-async function handleDevButtonClick() {
-  await resultsStore.DEV_fillResults(uniqueId);
-  // uncoment to make the button slightly less annoying to use
-  // window.scrollTo({ top: 0, behavior: "smooth" });
-}
+const headerInfos = computed(() => {
+  return [
+    ...(auditStore.data?.auditType === AuditType.FULL
+      ? [
+          {
+            title: "Taux global de conformité",
+            description: "RGAA version 4.1",
+            value: complianceLevel.value,
+            total: 100,
+            unit: "%",
+          },
+        ]
+      : []),
+    {
+      title: "Critères non conformes",
+      description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+      value: notCompliantCriteriaCount.value,
+      total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+      danger: true,
+    },
+    {
+      title: "Critères non applicables",
+      description: `Sur un total de ${getCriteriaCount(
+        auditStore.data?.auditType as AuditType
+      )} critères`,
+      value: notApplicableCriteriaCount.value,
+      total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    },
+  ];
+});
 </script>
 
 <template>

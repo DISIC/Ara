@@ -9,15 +9,19 @@ import { useAuditStore, useResultsStore } from "../store";
 import { formatDate } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
+import SummaryCard from "./SummaryCard.vue";
 
 defineProps<{
   auditName: string;
   auditPublicationDate: string | null;
   auditEditionDate: string | null;
   keyInfos: {
-    label: string;
-    value: string | number;
-    description?: string;
+    title: string;
+    description: string;
+    value: number;
+    total: number;
+    unit?: string;
+    danger?: boolean;
   }[];
   editUniqueId?: string;
 }>();
@@ -161,31 +165,26 @@ const isDevMode = useDevMode();
     </ul>
   </div>
 
-  <dl
+  <div
     :class="`fr-grid-row fr-grid-row--gutters ${
       auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
     }`"
   >
     <div
       v-for="info in keyInfos"
-      :key="info.label"
+      :key="info.title"
       :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
     >
-      <div class="fr-px-3w fr-py-3v info">
-        <dt class="fr-text--xs fr-m-0 fr-text--bold info-label">
-          {{ info.label }}
-        </dt>
-        <dd class="fr-m-0 fr-h3 info-value">
-          {{ info.value?.toString().toLowerCase() }}
-          <template v-if="info.description">
-            <span class="fr-text--md info-sub-text">
-              {{ info.description }}
-            </span>
-          </template>
-        </dd>
-      </div>
+      <SummaryCard
+        :title="info.title"
+        :description="info.description"
+        :value="info.value"
+        :total="info.total"
+        :unit="info.unit"
+        :danger="info.danger"
+      />
     </div>
-  </dl>
+  </div>
 
   <p v-if="!auditPublicationDate" class="fr-text--sm fr-mb-6w mandatory-notice">
     Sauf mention contraire, tous les champs sont obligatoires.
