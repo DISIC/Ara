@@ -4,6 +4,7 @@ CREATE TABLE "StoredFile" (
     "originalFilename" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "size" INTEGER NOT NULL,
+    "key" TEXT NOT NULL,
     "criterionResultId" INTEGER,
 
     CONSTRAINT "StoredFile_pkey" PRIMARY KEY ("id")

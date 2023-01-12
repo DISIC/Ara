@@ -375,6 +375,7 @@ export class AuditService {
           },
         },
 
+        key,
         originalFilename: file.originalname,
         size: file.size,
         url: publicUrl,
@@ -382,6 +383,36 @@ export class AuditService {
     });
 
     return storedFile;
+  }
+
+  /**
+   * Returns true if stored filed was found and deleted. False if not found.
+   */
+  async deleteExampleImage(
+    editUniqueId: string,
+    exampleId: number,
+  ): Promise<boolean> {
+    const storedFilePromise = this.prisma.storedFile.findUnique({
+      where: {
+        id: exampleId,
+      },
+    });
+
+    const storedFile = await storedFilePromise;
+    const audit = await storedFilePromise.criterionResult().page().audit();
+
+    if (!audit || audit.editUniqueId !== editUniqueId) {
+      return false;
+    }
+
+    await this.fileStorageService.deleteStoredFile(storedFile.key);
+    await this.prisma.storedFile.delete({
+      where: {
+        id: exampleId,
+      },
+    });
+
+    return true;
   }
 
   /**

@@ -1,4 +1,8 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -19,11 +23,21 @@ export class FileStorageService {
       Key: key,
       ACL: 'public-read',
       Body: file.buffer,
+      ContentType: file.mimetype,
     });
     await this.s3Client.send(command);
   }
 
   getPublicUrl(key: string): string {
     return `${this.config.get('S3_VIRTUAL_HOST')}${key}`;
+  }
+
+  async deleteStoredFile(key: string) {
+    const command = new DeleteObjectCommand({
+      Bucket: this.config.get<string>('S3_BUCKET'),
+      Key: key,
+    });
+
+    await this.s3Client.send(command);
   }
 }

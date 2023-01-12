@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Param,
   ParseFilePipeBuilder,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -123,6 +124,21 @@ export class AuditsController {
       body.criterium,
       file,
     );
+  }
+
+  @Delete('/:uniqueId/results/examples/:exampleId')
+  async deleteExampleImage(
+    @Param('uniqueId') uniqueId: string,
+    @Param('exampleId', new ParseIntPipe()) exampleId: number,
+  ) {
+    const deleted = await this.auditService.deleteExampleImage(
+      uniqueId,
+      Number(exampleId),
+    );
+
+    if (!deleted) {
+      throw new NotFoundException();
+    }
   }
 
   /** Retrieve the results of an audit (compliance data) from the database. */
