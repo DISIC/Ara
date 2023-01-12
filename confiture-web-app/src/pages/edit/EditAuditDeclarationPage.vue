@@ -72,16 +72,14 @@ const tools = computed(() => {
 });
 
 const availableTools = [
-  "Web Accessibility Toolbar",
-  "Validateur en ligne W3C",
-  "WCAG Contrast checker",
-  "Color Contrast Analyser",
+  "Web Developer Toolbar",
+  "Colour Contrast Analyser",
   "HeadingsMap",
-  "PAC (PDF Accessibility Checker)",
-  "Word Accessibility Plug-in pour Microsoft Office Windows",
-  "AccessODF pour LibreOffice",
-  "Ace by DAISY App",
-  "PEAT (Photosensitive Epilepsy Analysis Tool)",
+  "ArcToolkit",
+  "WCAG Contrast checker",
+  "Inspecteur de composants",
+  "Assistant RGAA",
+  "Validateur HTML du W3C",
 ];
 
 /**
