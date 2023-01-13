@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
 import { useDevMode } from "../composables/useDevMode";
+import { useNotifications } from "../composables/useNotifications";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 
@@ -69,10 +70,12 @@ async function addPage() {
  * @param {number} i
  */
 async function deletePage(i: number) {
+  const pageName = pages.value[i].name;
   pages.value.splice(i, 1);
   await nextTick();
   const previousInput =
     i === 0 ? pageNameRefs.value[0] : pageNameRefs.value[i - 1];
+  notify("success", `La page ${pageName ? pageName : ""} a bien été supprimée`);
   previousInput.focus();
 }
 
@@ -104,6 +107,7 @@ function onSubmit() {
 }
 
 const isDevMode = useDevMode();
+const notify = useNotifications();
 </script>
 
 <template>
@@ -166,10 +170,10 @@ const isDevMode = useDevMode();
             class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="pages.length === 1"
-            :aria-label="`Supprimer page ${i + 1}`"
             @click="deletePage(i)"
           >
             Supprimer
+            <span class="sr-only">la page {{ i + 1 }}</span>
           </button>
         </div>
 
