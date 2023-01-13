@@ -139,13 +139,15 @@ async function handleDevButtonClick() {
       <template #actions>
         <li class="fr-mr-2w">
           <RouterLink
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line"
+            class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
               params: { uniqueId: auditStore.data?.consultUniqueId },
             }"
+            target="_blank"
           >
             Consulter le rapport d'audit
+            <span class="sr-only">(Nouvelle fenêtre)</span>
           </RouterLink>
         </li>
         <li>

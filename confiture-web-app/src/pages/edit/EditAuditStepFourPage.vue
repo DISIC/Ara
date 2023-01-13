@@ -119,13 +119,15 @@ const successAlertContent = computed(() => {
       </p>
 
       <RouterLink
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mb-5w"
+        class="fr-btn fr-btn--secondary fr-mb-5w"
         :to="{
           name: 'report',
           params: { uniqueId: auditStore.data.consultUniqueId },
         }"
+        target="_blank"
       >
         Consulter le rapport d'audit
+        <span class="sr-only">(Nouvelle fenêtre)</span>
       </RouterLink>
 
       <CopyBlock
