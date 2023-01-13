@@ -2,6 +2,7 @@
 import { marked } from "marked";
 import { computed, watch, reactive } from "vue";
 import { debounce } from "lodash-es";
+import { HTTPError } from "ky";
 
 import {
   AuditPage,
@@ -17,6 +18,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
+import { captureException } from "@sentry/core";
 
 const store = useResultsStore();
 
@@ -97,7 +99,6 @@ watch(
 );
 
 function handleUploadExample(file: File) {
-  // TODO
   store
     .uploadExampleImage(
       props.auditUniqueId,
@@ -106,23 +107,48 @@ function handleUploadExample(file: File) {
       props.criterium.number,
       file
     )
-    .then((result) => {
-      console.log(
-        "🚀 ~ file: AuditGenerationCriterium.vue:104 ~ handleUploadExample ~ result",
-        result
-      );
+    .then(() => {
+      notify("success", "Image téléchargée avec succès.");
     })
-    .catch((error) => {
-      console.error(
-        "🚀 ~ file: AuditGenerationCriterium.vue:106 ~ handleUploadExample ~ error",
-        error
-      );
+    .catch(async (error) => {
+      if (error instanceof HTTPError) {
+        // Unprocessable Entity
+        if (error.response.status === 422) {
+          const body = await error.response.json();
+
+          if (body.message.includes("expected type")) {
+            notify(
+              "error",
+              "Téléchargement échoué",
+              "Format de fichier non supporté"
+            );
+          } else if (body.message.includes("expected size")) {
+            notify(
+              "error",
+              "Téléchargement échoué",
+              "Poids du fichier trop lourd"
+            );
+          } else {
+            notify(
+              "error",
+              "Téléchargement échoué",
+              "Une erreur inconnue est survenue"
+            );
+            captureException(error);
+          }
+        } else {
+          notify(
+            "error",
+            "Téléchargement échoué",
+            "Une erreur inconnue est survenue"
+          );
+          captureException(error);
+        }
+      }
     });
 }
 
 function handleDeleteExample(image: ExampleImage) {
-  // TODO
-  console.log("Deleting", image);
   store
     .deleteExampleImage(
       props.auditUniqueId,
@@ -131,16 +157,14 @@ function handleDeleteExample(image: ExampleImage) {
       props.criterium.number,
       image.id
     )
-    .then((result) => {
-      console.log(
-        "🚀 ~ file: AuditGenerationCriterium.vue:135 ~ .then ~ result",
-        result
-      );
+    .then(() => {
+      notify("info", "Exemple supprimé");
     })
-    .catch((error) => {
-      console.log(
-        "🚀 ~ file: AuditGenerationCriterium.vue:139 ~ handleDeleteExample ~ error",
-        error
+    .catch(() => {
+      notify(
+        "error",
+        "Echec de la suppression de l'exemple",
+        "Une erreur inconnue empêche la suppression de l'exemple."
       );
     });
 }
