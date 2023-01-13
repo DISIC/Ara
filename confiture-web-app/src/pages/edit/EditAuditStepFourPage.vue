@@ -46,6 +46,7 @@ const headerInfos = computed(() => [
           value: complianceLevel.value,
           total: 100,
           unit: "%",
+          theme: "france",
         },
       ]
     : []),
@@ -54,7 +55,7 @@ const headerInfos = computed(() => [
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.data?.auditType as AuditType),
-    danger: true,
+    theme: "marianne",
   },
   {
     title: "Critères non applicables",

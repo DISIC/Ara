@@ -21,7 +21,7 @@ defineProps<{
     value: number;
     total: number;
     unit?: string;
-    danger?: boolean;
+    theme?: string;
   }[];
   editUniqueId?: string;
 }>();
@@ -181,7 +181,7 @@ const isDevMode = useDevMode();
         :value="info.value"
         :total="info.total"
         :unit="info.unit"
-        :danger="info.danger"
+        :theme="info.theme"
       />
     </div>
   </div>

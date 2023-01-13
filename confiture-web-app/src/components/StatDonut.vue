@@ -3,12 +3,13 @@ defineProps<{
   value: number;
   total: number;
   unit?: string;
-  danger?: boolean;
+  // "france" for blue | "marianne" for red
+  theme?: string;
 }>();
 </script>
 
 <template>
-  <div class="card-donut" :class="{ 'is-danger': danger }">
+  <div class="card-donut" :class="theme ? `theme-${theme}` : null">
     <div class="fr-m-0 card-hole">
       <p class="fr-m-0 card-hole-content">
         {{ value }}
@@ -30,12 +31,19 @@ defineProps<{
   align-items: center;
   justify-content: center;
   background: conic-gradient(
-    var(--background-action-high-blue-france) 0deg var(--pie-deg),
-    var(--background-alt-grey) var(--pie-deg) 360deg
+    var(--border-plain-grey) 0deg var(--pie-deg),
+    var(--border-disabled-grey) var(--pie-deg) 360deg
   );
 }
 
-.is-danger {
+.theme-france {
+  background: conic-gradient(
+    var(--background-active-blue-france) 0deg var(--pie-deg),
+    var(--background-contrast-info) var(--pie-deg) 360deg
+  );
+}
+
+.theme-marianne {
   background: conic-gradient(
     var(--red-marianne-main-472) 0deg var(--pie-deg),
     var(--background-action-low-pink-macaron) var(--pie-deg) 360deg
