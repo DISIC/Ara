@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import { join } from 'path';
 
 export const configValidationSchema = Joi.object({
   DATABASE_URL: Joi.string()
@@ -26,4 +27,6 @@ export const configValidationSchema = Joi.object({
   S3_VIRTUAL_HOST: Joi.string()
     .uri({ scheme: ['https'] })
     .required(),
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
 });

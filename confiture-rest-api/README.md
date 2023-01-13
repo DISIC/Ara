@@ -21,8 +21,13 @@ The applicatoin requires the following environement variables.
 **`FONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
 
 **`AIRTABLE_ACCESS_TOKEN`** : API token used to add feeback rows on Airtable.
+
 **`AIRTABLE_BASE_ID`**: ID of the Airtable base storing feedbacks.
-**`AIRTABLE_TABLE_ID`**: ID of the Airtable table storing feedbacks.
+
+**`S3_ENDPOINT`**,
+**`S3_REGION`**,
+**`S3_BUCKET`** and
+**`S3_VIRTUAL_HOST`** : S3 Object storage configuration.
 
 Here's an example of a `.env` file.
 
