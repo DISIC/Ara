@@ -6,7 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
-- Vocalise le nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254))
+- Vocalise le nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254)) et les suppressions de pages ([#258](https://github.com/DISIC/Ara/pull/258))
 
 ## 11/01/2023
 
