@@ -184,6 +184,7 @@ class ReportCriterionResult {
    * @example "There is an accessibility error there."
    */
   errorDescription: string | null;
+  exampleImages: ExampleImage[];
   /**
    * @example "MAJOR"
    */
@@ -195,4 +196,11 @@ class ReportCriterionResult {
   recommandation: string | null;
 
   notApplicableComment: string | null;
+}
+
+class ExampleImage {
+  /** @example "https://example.com/mon-image.jpg" */
+  url: string;
+  /** @example "mon-image.jpg" */
+  filename: string;
 }

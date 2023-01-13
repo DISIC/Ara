@@ -541,6 +541,9 @@ export class AuditService {
           in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
         },
       },
+      include: {
+        exampleImages: true,
+      },
     });
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
@@ -768,6 +771,10 @@ export class AuditService {
         notApplicableComment: r.notApplicableComment,
         recommandation: r.recommandation,
         userImpact: r.userImpact,
+        exampleImages: r.exampleImages.map((img) => ({
+          url: img.url,
+          filename: img.originalFilename,
+        })),
       })),
     };
 

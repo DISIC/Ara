@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { groupBy, mapValues } from "lodash";
+import { chunk, groupBy, mapValues } from "lodash";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -442,27 +442,24 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <!-- <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
-                  <div class="fr-grid-row fr-grid-row--gutters">
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/123/300/200"
-                        alt=""
-                      />
-                    </div>
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/43/300/200"
-                        alt=""
-                      />
+                  <div
+                    v-for="(line, k) in chunk(error.exampleImages, 2)"
+                    :key="k"
+                    class="fr-grid-row fr-grid-row--gutters"
+                  >
+                    <div
+                      v-for="example in line"
+                      :key="example.url"
+                      class="fr-col-md-6 fr-col-12"
+                    >
+                      <img style="width: 100%" :src="example.url" alt="" />
                     </div>
                   </div>
-                </div> -->
+                </div>
               </LazyAccordion>
 
               <!-- Recommendation -->
