@@ -116,7 +116,8 @@ import PageMeta from "../../components/PageMeta";
         class="fr-link"
         href="https://www.numerique.gouv.fr/accessibilite/"
         target="_blank"
-        >exemple de schéma et plans pluriannuels de mise en accessibilité</a
+        >exemple de schéma et plans pluriannuels de mise en accessibilité
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
 

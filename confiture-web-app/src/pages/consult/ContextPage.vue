@@ -51,7 +51,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         href="https://accessibilite.numerique.gouv.fr/obligations/evaluation-conformite/#echantillon"
         target="_blank"
         class="fr-link"
-        >échantillon</a
+        >échantillon <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
 
@@ -114,7 +114,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         href="https://accessibilite.numerique.gouv.fr/ressources/methodologie-de-test/"
         target="_blank"
         class="fr-link"
-        >Plus d’information sur la méthodologie de test</a
+        >Plus d’information sur la méthodologie de test
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >
     </p>
 
@@ -153,7 +154,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
             <td>{{ page.name }}</td>
             <td>
               <a class="fr-link" target="_blank" :href="page.url">
-                {{ page.url }}
+                {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
               </a>
             </td>
           </tr>
@@ -179,6 +180,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         class="fr-link"
       >
         Plus d’information sur les contenus dérogés
+        <span class="sr-only">(nouvelle fenêtre)</span>
       </a>
     </p>
 
@@ -214,7 +216,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         href="https://accessibilite.numerique.gouv.fr/ressources/methodologie-de-test/"
         target="_blank"
         class="fr-link"
-        >Plus d’information sur les outils d’assistance</a
+        >Plus d’information sur les outils d’assistance
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >
     </p>
 
@@ -318,7 +321,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         href="https://accessibilite.numerique.gouv.fr/methode/environnement-de-test/"
         target="_blank"
         class="fr-link"
-        >Plus d’information sur l’environnement de test</a
+        >Plus d’information sur l’environnement de test
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >
     </p>
 

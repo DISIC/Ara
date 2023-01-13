@@ -6,7 +6,8 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
-- Vocalise le nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254)) et les suppressions de pages ([#258](https://github.com/DISIC/Ara/pull/258))
+- Ajout de la vocalisation du nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254)) et des suppressions de pages ([#258](https://github.com/DISIC/Ara/pull/258))
+- Ajout d'une mention textuelle pour les liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
 
 ## 11/01/2023
 
@@ -18,6 +19,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
 - Ajout du numéro de la thématique et du critère dans les labels des boutons radio de conformité ([#253](https://github.com/DISIC/Ara/pull/253))
+- Gère l’annonce des liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
 
 ### Autres changements ⚙️
 

@@ -97,11 +97,10 @@ const moreLinks = [
         <a
           class="fr-link"
           :href="link.href"
-          :title="link.title + ' - nouvelle fenêtre'"
           rel="noreferrer noopener"
           target="_blank"
         >
-          {{ link.title }}
+          {{ link.title }} <span class="sr-only">(nouvelle fenêtre)</span>
         </a>
         : {{ link.description }}.
       </li>

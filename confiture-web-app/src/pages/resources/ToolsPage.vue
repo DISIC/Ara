@@ -22,7 +22,8 @@ import PageMeta from "../../components/PageMeta";
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/methode/environnement-de-test/"
         target="_blank"
-        >environnement de test</a
+        >environnement de test
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >
       constituent un second ensemble d’outils indispensables; ils sont, en
       effet, requis pour s’assurer d’une restitution correcte de contenus
@@ -47,7 +48,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://addons.mozilla.org/fr/firefox/addon/web-developer/"
           target="_blank"
-          >Web Developer Toolbar pour Firefox</a
+          >Web Developer Toolbar pour Firefox
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : barre d’outils pour les développeurs qui peut aider à retrouver
         visuellement certains éléments dans un document pour en contrôler
@@ -58,7 +60,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://chrome.google.com/webstore/detail/web-developer/bfbameneiokkgbdmiekhjnmfkcnldhhm"
           target="_blank"
-          >Web Developer Toolbar pour Chrome</a
+          >Web Developer Toolbar pour Chrome
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : la même barre d’outils que précédemment pour Chrome.
       </li>
@@ -72,21 +75,23 @@ import PageMeta from "../../components/PageMeta";
       certains de ces aspects. C’est ce que propose Wave, une solution
       disponible à la fois
       <a class="fr-link" href="https://wave.webaim.org/" target="_blank"
-        >en ligne</a
+        >en ligne <span class="sr-only">(nouvelle fenêtre)</span></a
       >
       et comme
       <a
         class="fr-link"
         href="https://wave.webaim.org/extension/"
         target="_blank"
-        >extension de navigateur</a
+        >extension de navigateur
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
 
     <p>
       La validation du code source d’un document HTML utilise le
       <a class="fr-link" href="https://validator.w3.org/" target="_blank"
-        >validateur en ligne du W3C</a
+        >validateur en ligne du W3C
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >. À noter que pour valider le code source généré par le navigateur, il
       faut utiliser l’option "Validate by Direct Input" en y copiant la source
       HTML proposée par l’inspecteur de code du navigateur. Des extensions de
@@ -107,7 +112,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://addons.mozilla.org/fr/firefox/addon/wcag-contrast-checker/"
           target="_blank"
-          >WCAG Contrast checker</a
+          >WCAG Contrast checker
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : extension Firefox qui permet un contrôle automatique des contrastes de
         couleurs des textes d’un document
@@ -117,7 +123,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://www.tpgi.com/color-contrast-checker/"
           target="_blank"
-          >Color Contrast Analyser</a
+          >Color Contrast Analyser
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : application Windows ou Mac qui permet de contrôler des contrastes de
         couleurs
@@ -135,7 +142,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://addons.mozilla.org/fr/firefox/addon/headingsmap/"
           target="_blank"
-          >HeadingsMap pour Firefox</a
+          >HeadingsMap pour Firefox
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : extension Firefox qui permet de donner un aperçu du plan du document
         et de son arborescence
@@ -145,7 +153,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://chrome.google.com/webstore/detail/headingsmap/flbjommegcjonpdmenkdiocclhjacmbi?hl=en"
           target="_blank"
-          >HeadingsMap pour Chrome</a
+          >HeadingsMap pour Chrome
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : même extension que la précédente pour Chrome
       </li>
@@ -163,7 +172,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://pdfua.foundation/en/pdf-accessibility-checker-pac"
           target="_blank"
-          >PAC (PDF Accessibility Checker) version 3 pour Windows</a
+          >PAC (PDF Accessibility Checker) version 3 pour Windows
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : logiciel qui permet de contrôler certains points d’accessibilité des
         documents PDF
@@ -173,7 +183,8 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://extensions.libreoffice.org/en/extensions/show/accessodf"
           target="_blank"
-          >AccessODF pour LibreOffice</a
+          >AccessODF pour LibreOffice
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : extension du logiciel Microsoft Word permet d’éditer et de contrôler
         l’accessibilité d’un document bureautique éditable au format .doc ; à
@@ -185,7 +196,7 @@ import PageMeta from "../../components/PageMeta";
           class="fr-link"
           href="https://inclusivepublishing.org/toolbox/ace-by-daisy-app/"
           target="_blank"
-          >Ace by DAISY App</a
+          >Ace by DAISY App <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : est un utilitaire pour vérifier l’accessibilité d’un fichier EPUB
       </li>
@@ -195,7 +206,8 @@ import PageMeta from "../../components/PageMeta";
     <ul class="fr-mb-5w">
       <li>
         <a class="fr-link" href="https://trace.umd.edu/peat/" target="_blank"
-          >PEAT (Photosensitive Epilepsy Analysis Tool) pour Windows</a
+          >PEAT (Photosensitive Epilepsy Analysis Tool) pour Windows
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         : logiciel ancien mais toujours utile pour évaluer la potentialité de
         certains contenus web à causer des crises d’épilepsie
@@ -209,7 +221,7 @@ import PageMeta from "../../components/PageMeta";
         class="fr-link"
         href="https://design.numerique.gouv.fr/"
         target="_blank"
-        >DesignGouv</a
+        >DesignGouv <span class="sr-only">(nouvelle fenêtre)</span></a
       >
     </p>
 
