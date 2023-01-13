@@ -10,7 +10,7 @@ import {
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
-import { resourceLimits } from 'worker_threads';
+import * as sharp from 'sharp';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
@@ -357,11 +357,29 @@ export class AuditService {
     file: Express.Multer.File,
   ) {
     const randomPrefix = nanoid();
+
     const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
 
-    await this.fileStorageService.uploadFile(file, key);
+    const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
+
+    const thumbnailBuffer = await sharp(file.buffer)
+      .resize(200, 200, { fit: 'cover' })
+      .jpeg({
+        mozjpeg: true,
+      })
+      .toBuffer();
+
+    await Promise.all([
+      this.fileStorageService.uploadFile(file.buffer, file.mimetype, key),
+      this.fileStorageService.uploadFile(
+        thumbnailBuffer,
+        'image/jpeg',
+        thumbnailKey,
+      ),
+    ]);
 
     const publicUrl = this.fileStorageService.getPublicUrl(key);
+    const thumbnailUrl = this.fileStorageService.getPublicUrl(thumbnailKey);
 
     const storedFile = await this.prisma.storedFile.create({
       data: {
@@ -379,6 +397,9 @@ export class AuditService {
         originalFilename: file.originalname,
         size: file.size,
         url: publicUrl,
+
+        thumbnailKey,
+        thumbnailUrl,
       },
     });
 
@@ -405,7 +426,10 @@ export class AuditService {
       return false;
     }
 
-    await this.fileStorageService.deleteStoredFile(storedFile.key);
+    await Promise.all([
+      this.fileStorageService.deleteStoredFile(storedFile.key),
+      this.fileStorageService.deleteStoredFile(storedFile.thumbnailKey),
+    ]);
     await this.prisma.storedFile.delete({
       where: {
         id: exampleId,

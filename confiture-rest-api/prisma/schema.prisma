@@ -160,6 +160,9 @@ model StoredFile {
   // S3 storage key
   key String
 
+  thumbnailUrl String
+  thumbnailKey String
+
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id])
   criterionResultId Int?
 }

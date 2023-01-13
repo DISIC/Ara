@@ -17,13 +17,13 @@ export class FileStorageService {
     });
   }
 
-  async uploadFile(file: Express.Multer.File, key: string) {
+  async uploadFile(buffer: Buffer, contentType: string, key: string) {
     const command = new PutObjectCommand({
       Bucket: this.config.get<string>('S3_BUCKET'),
       Key: key,
       ACL: 'public-read',
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Body: buffer,
+      ContentType: contentType,
     });
     await this.s3Client.send(command);
   }

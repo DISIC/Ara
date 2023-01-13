@@ -109,7 +109,13 @@ function deleteImage(image: ExampleImage) {
     <!-- EXAMPLE IMAGES -->
     <ul class="example-images">
       <li v-for="image in exampleImages" :key="image.id">
-        <img width="50" height="50" :src="image.url" alt="" />
+        <img
+          width="50"
+          height="50"
+          :src="image.thumbnailUrl"
+          alt=""
+          loading="lazy"
+        />
         <a
           class="fr-link"
           :href="image.url"

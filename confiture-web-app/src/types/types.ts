@@ -105,6 +105,8 @@ export interface ExampleImage {
   originalFilename: string;
   size: number;
   url: string;
+
+  thumbnailUrl: string;
 }
 
 export interface CriteriumResult {
