@@ -70,11 +70,12 @@ async function addPage() {
  * @param {number} i
  */
 async function deletePage(i: number) {
+  const pageName = pages.value[i].name;
   pages.value.splice(i, 1);
   await nextTick();
   const previousInput =
     i === 0 ? pageNameRefs.value[0] : pageNameRefs.value[i - 1];
-  notify("success", "La page a bien été supprimée");
+  notify("success", `La page ${pageName ? pageName : ""} a bien été supprimée`);
   previousInput.focus();
 }
 
