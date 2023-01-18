@@ -87,7 +87,7 @@ function deleteImage(image: ExampleImage) {
         </span>
       </div>
 
-      <div class="upload-line">
+      <div class="upload-line fr-mt-2w">
         <label
           class="fr-btn fr-btn--tertiary upload-label"
           :for="`file-upload-${id}`"
@@ -129,7 +129,7 @@ function deleteImage(image: ExampleImage) {
           @click="deleteImage(image)"
         >
           Supprimer
-          <!-- TODO: more explicit label -->
+          <span class="sr-only">{{ image.originalFilename }}</span>
         </button>
       </li>
     </ul>
