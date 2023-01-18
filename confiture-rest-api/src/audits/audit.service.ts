@@ -426,10 +426,11 @@ export class AuditService {
       return false;
     }
 
-    await Promise.all([
-      this.fileStorageService.deleteStoredFile(storedFile.key),
-      this.fileStorageService.deleteStoredFile(storedFile.thumbnailKey),
-    ]);
+    await this.fileStorageService.deleteMultipleFiles(
+      storedFile.key,
+      storedFile.thumbnailKey,
+    );
+
     await this.prisma.storedFile.delete({
       where: {
         id: exampleId,
@@ -445,7 +446,25 @@ export class AuditService {
    */
   async deleteAudit(uniqueId: string): Promise<boolean> {
     try {
-      await this.prisma.audit.delete({ where: { editUniqueId: uniqueId } });
+      const storedFiles = await this.prisma.storedFile.findMany({
+        where: {
+          criterionResult: {
+            page: {
+              auditUniqueId: uniqueId,
+            },
+          },
+        },
+      });
+
+      await Promise.all([
+        await this.prisma.audit.delete({
+          where: { editUniqueId: uniqueId },
+        }),
+        this.fileStorageService.deleteMultipleFiles(
+          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat(),
+        ),
+      ]);
+
       return true;
     } catch (e) {
       if (e?.code === 'P2025') {

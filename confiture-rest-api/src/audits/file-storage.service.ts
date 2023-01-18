@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -40,6 +41,17 @@ export class FileStorageService {
     const command = new DeleteObjectCommand({
       Bucket: this.config.get<string>('S3_BUCKET'),
       Key: key,
+    });
+
+    await this.s3Client.send(command);
+  }
+
+  async deleteMultipleFiles(...keys: string[]) {
+    const command = new DeleteObjectsCommand({
+      Bucket: this.config.get<string>('S3_BUCKET'),
+      Delete: {
+        Objects: keys.map((Key) => ({ Key })),
+      },
     });
 
     await this.s3Client.send(command);

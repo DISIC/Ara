@@ -13,4 +13,4 @@ CREATE TABLE "StoredFile" (
 );
 
 -- AddForeignKey
-ALTER TABLE "StoredFile" ADD CONSTRAINT "StoredFile_criterionResultId_fkey" FOREIGN KEY ("criterionResultId") REFERENCES "CriterionResult"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "StoredFile" ADD CONSTRAINT "StoredFile_criterionResultId_fkey" FOREIGN KEY ("criterionResultId") REFERENCES "CriterionResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

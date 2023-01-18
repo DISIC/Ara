@@ -163,6 +163,6 @@ model StoredFile {
   thumbnailUrl String
   thumbnailKey String
 
-  criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id])
+  criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criterionResultId Int?
 }

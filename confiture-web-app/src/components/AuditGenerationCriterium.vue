@@ -108,7 +108,7 @@ function handleUploadExample(file: File) {
       file
     )
     .then(() => {
-      notify("success", "Image téléchargée avec succès.");
+      notify("success", "Exemple téléchargé avec succès.");
     })
     .catch(async (error) => {
       if (error instanceof HTTPError) {
@@ -158,7 +158,7 @@ function handleDeleteExample(image: ExampleImage) {
       image.id
     )
     .then(() => {
-      notify("info", "Exemple supprimé");
+      notify("success", "Exemple supprimé avec succès");
     })
     .catch(() => {
       notify(
