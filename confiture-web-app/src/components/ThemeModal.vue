@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import light from "@gouvfr/dsfr/dist/artwork/light.svg";
+import dark from "@gouvfr/dsfr/dist/artwork/dark.svg";
+import system from "@gouvfr/dsfr/dist/artwork/system.svg";
+</script>
+
 <template>
-  xxx
   <dialog
     id="fr-theme-modal"
     class="fr-modal"
@@ -54,15 +59,15 @@
                           >
                             <use
                               class="fr-artwork-decorative"
-                              xlink:href="../../../dist/artwork/light.svg#artwork-decorative"
+                              :xlink:href="`${light}#artwork-decorative`"
                             ></use>
                             <use
                               class="fr-artwork-minor"
-                              xlink:href="../../../dist/artwork/light.svg#artwork-minor"
+                              :xlink:href="`${light}#artwork-minor`"
                             ></use>
                             <use
                               class="fr-artwork-major"
-                              xlink:href="../../../dist/artwork/light.svg#artwork-major"
+                              :xlink:href="`${light}#artwork-major`"
                             ></use>
                           </svg>
                         </div>
@@ -87,15 +92,15 @@
                           >
                             <use
                               class="fr-artwork-decorative"
-                              xlink:href="../../../dist/artwork/dark.svg#artwork-decorative"
+                              :xlink:href="`${dark}#artwork-decorative`"
                             ></use>
                             <use
                               class="fr-artwork-minor"
-                              xlink:href="../../../dist/artwork/dark.svg#artwork-minor"
+                              :xlink:href="`${dark}#artwork-minor`"
                             ></use>
                             <use
                               class="fr-artwork-major"
-                              xlink:href="../../../dist/artwork/dark.svg#artwork-major"
+                              :xlink:href="`${dark}#artwork-major`"
                             ></use>
                           </svg>
                         </div>
@@ -123,15 +128,15 @@
                           >
                             <use
                               class="fr-artwork-decorative"
-                              xlink:href="../../../dist/artwork/system.svg#artwork-decorative"
+                              :xlink:href="`${system}#artwork-decorative`"
                             ></use>
                             <use
                               class="fr-artwork-minor"
-                              xlink:href="../../../dist/artwork/system.svg#artwork-minor"
+                              :xlink:href="`${system}#artwork-minor`"
                             ></use>
                             <use
                               class="fr-artwork-major"
-                              xlink:href="../../../dist/artwork/system.svg#artwork-major"
+                              :xlink:href="`${system}#artwork-major`"
                             ></use>
                           </svg>
                         </div>
