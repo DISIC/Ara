@@ -1,35 +1,46 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 
-import ContextPage from "./pages/consult/ContextPage.vue";
-import ReportPage from "./pages/consult/ReportPage.vue";
-import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
-import EditAuditStepTwoPage from "./pages/edit/EditAuditStepTwoPage.vue";
-import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
-import EditAuditStepFourPage from "./pages/edit/EditAuditStepFourPage.vue";
-import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
-import FeedbackPage from "./pages/FeedbackPage.vue";
-import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
-import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import HelpPage from "./pages/help/HelpPage.vue";
-import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
-import RGAAPage from "./pages/help/RGAAPage.vue";
-import HomePage from "./pages/HomePage.vue";
-import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
-import LegalPage from "./pages/misc/LegalPage.vue";
-// import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
-import SiteMapPage from "./pages/misc/SiteMapPage.vue";
-import ContactPage from "./pages/misc/ContactPage.vue";
-import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
-import A11yIntroTrainingPage from "./pages/resources/A11yIntroTrainingPage.vue";
-import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
-import GlossaryPage from "./pages/resources/GlossaryPage.vue";
-import ResourcesPage from "./pages/resources/ResourcesPage.vue";
-import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
-import ToolsPage from "./pages/resources/ToolsPage.vue";
-import ErrorPage from "./pages/error/ErrorPage.vue";
-import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
-
 import { useAuditStore, useReportStore } from "./store";
+
+// import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
+const ContextPage = import("./pages/consult/ContextPage.vue");
+const ReportPage = import("./pages/consult/ReportPage.vue");
+const EditAuditStepOnePage = import("./pages/edit/EditAuditStepOnePage.vue");
+const EditAuditStepThreePage = import(
+  "./pages/edit/EditAuditStepThreePage.vue"
+);
+const EditAuditStepFourPage = import("./pages/edit/EditAuditStepFourPage.vue");
+const NewAuditStepOnePage = import("./pages/edit/NewAuditStepOnePage.vue");
+const FeedbackPage = import("./pages/FeedbackPage.vue");
+const AccessibilityPlanPage = import("./pages/help/AccessibilityPlanPage.vue");
+const AccessibilityStatementPage = import(
+  "./pages/help/AccessibilityStatementPage.vue"
+);
+const HelpPage = import("./pages/help/HelpPage.vue");
+const LegalRequirementsPage = import("./pages/help/LegalRequirementsPage.vue");
+const RGAAPage = import("./pages/help/RGAAPage.vue");
+const HomePage = import("./pages/HomePage.vue");
+const AccessibilityPage = import("./pages/misc/AccessibilityPage.vue");
+const LegalPage = import("./pages/misc/LegalPage.vue");
+const SiteMapPage = import("./pages/misc/SiteMapPage.vue");
+const ContactPage = import("./pages/misc/ContactPage.vue");
+const AccessibilityTrainingPage = import(
+  "./pages/resources/AccessibilityTrainingPage.vue"
+);
+const A11yIntroTrainingPage = import(
+  "./pages/resources/A11yIntroTrainingPage.vue"
+);
+const PublicDigitalTrainingPage = import(
+  "./pages/resources/PublicDigitalTrainingPage.vue"
+);
+const GlossaryPage = import("./pages/resources/GlossaryPage.vue");
+const ResourcesPage = import("./pages/resources/ResourcesPage.vue");
+const MakeA11yAuditPage = import("./pages/resources/MakeA11yAuditPage.vue");
+const ToolsPage = import("./pages/resources/ToolsPage.vue");
+const ErrorPage = import("./pages/error/ErrorPage.vue");
+const EditAuditDeclarationPage = import(
+  "./pages/edit/EditAuditDeclarationPage.vue"
+);
 
 declare module "vue-router" {
   interface RouteMeta {
