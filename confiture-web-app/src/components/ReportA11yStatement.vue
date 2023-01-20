@@ -129,7 +129,7 @@ function hideCopyAlert() {
             rel="noopener"
           >
             Tout savoir sur la déclaration d’accessibilité
-            <span class="sr-only">(nouvel onglet)</span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
         </div>
 
@@ -149,7 +149,7 @@ function hideCopyAlert() {
             :to="{ name: 'legal-requirements' }"
           >
             Tout savoir sur les obligations légales et sanctions
-            <span class="sr-only">(nouvel onglet)</span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </RouterLink>
         </div>
 

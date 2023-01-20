@@ -74,7 +74,8 @@ import PageMeta from "../../components/PageMeta";
             class="fr-link"
             href="https://www.fun-mooc.fr/en/cours/accessibilite-numerique/"
             target="_blank"
-            >L’accessibilité numérique</a
+            >L’accessibilité numérique
+            <span class="sr-only">(nouvelle fenêtre)</span></a
           >
           : 13 heures, gratuit.
         </li>
@@ -83,7 +84,8 @@ import PageMeta from "../../components/PageMeta";
             class="fr-link"
             href="https://fr.wikiversity.org/wiki/Mise_en_%C5%93uvre_de_l_accessibilite_numerique#comprendrelaccessibilite"
             target="_blank"
-            >Mise en œuvre de l’accessibilité numérique</a
+            >Mise en œuvre de l’accessibilité numérique
+            <span class="sr-only">(nouvelle fenêtre)</span></a
           >
           : 14 heures, gratuit.
         </li>
@@ -96,7 +98,8 @@ import PageMeta from "../../components/PageMeta";
                 class="fr-link"
                 href="https://mentor.gouv.fr/local/catalog/pages/training.php?trainingid=314"
                 target="_blank"
-                >L’accessibilité numérique selon votre métier</a
+                >L’accessibilité numérique selon votre métier
+                <span class="sr-only">(nouvelle fenêtre)</span></a
               >
               : de 1h20 à 8h suivant les modules choisis, gratuit.
             </li>
@@ -106,6 +109,7 @@ import PageMeta from "../../components/PageMeta";
                 href="https://mentor.gouv.fr/local/catalog/pages/training.php?trainingid=262"
                 target="_blank"
                 >L’essentiel de l’accessibilité de la communication de l’État
+                <span class="sr-only">(nouvelle fenêtre)</span>
               </a>
               : 3h30, gratuit.
             </li>
@@ -120,7 +124,8 @@ import PageMeta from "../../components/PageMeta";
             class="fr-link"
             href="https://formations.access42.net/certifications/developper-des-sites-web-accessibles/"
             target="_blank"
-            >Développer des sites web accessibles</a
+            >Développer des sites web accessibles
+            <span class="sr-only">(nouvelle fenêtre)</span></a
           >
           : 9 heures, payant.
         </li>

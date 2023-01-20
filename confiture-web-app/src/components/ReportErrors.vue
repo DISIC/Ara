@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { groupBy, mapValues } from "lodash";
+import { groupBy, mapValues } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -80,27 +80,44 @@ const disabledResetFilters = computed(
 const minorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.MINOR
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.MINOR
     ).length
 );
 
 const majorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.MAJOR
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.MAJOR
     ).length
 );
 
 const blockingUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.BLOCKING
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.BLOCKING
     ).length
 );
 
 const unknownUserImpactErrorCount = computed(
-  () => report.data?.results.filter((r) => r.userImpact === null).length
+  () =>
+    report.data?.results.filter(
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === null
+    ).length
 );
+
+const displayedErrorCount = computed(() => {
+  return errors.value
+    .map((page) => page.topics.map((topic) => topic.errors))
+    .flat(2).length;
+});
 
 function expandAll() {
   const collapses = Array.from(
@@ -343,9 +360,11 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
       <div>
         <div class="fr-mb-6w header">
-          <span class="fr-mb-0 fr-text--xl fr-text--bold"
-            >{{ report.data.errorCount }} résultats</span
-          >
+          <div role="alert" aria-live="polite">
+            <p class="fr-mb-0 fr-text--xl fr-text--bold">
+              {{ displayedErrorCount }} résultats
+            </p>
+          </div>
           <!-- FIXME: make this work -->
           <!-- <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
             Tout déplier
@@ -365,7 +384,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             rel="noopener"
           >
             {{ page.pageUrl }}
-            <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
 
           <div

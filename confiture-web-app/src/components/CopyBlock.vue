@@ -28,8 +28,9 @@ async function copyLink() {
       {{ description }}
     </p>
     <p class="fr-callout__text fr-text--md copy-block">
-      <RouterLink class="fr-link" :to="to" :title="description">
+      <RouterLink class="fr-link" :to="to" :title="description" target="_blank">
         {{ fullReportUrl }}
+        <span class="sr-only">(Nouvelle fenêtre)</span>
       </RouterLink>
       <!-- FIXME: icon "copy" does not seem to exist -->
       <button

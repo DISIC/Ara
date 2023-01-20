@@ -2,7 +2,29 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 09/01/2023
+## 20/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout des paramètres d'affichage pour changer manuellement de thème de couleur ([#279](https://github.com/DISIC/Ara/pull/279))
+
+### Corrections 🐛
+
+- Pertinence des titres ([#273](https://github.com/DISIC/Ara/pull/273))
+
+## 13/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ouverture des liens du rapport dans un nouvelle fenêtre ([#275](https://github.com/DISIC/Ara/pull/275))
+- Mise à jour des outils d’assistance proposés par défaut ([#274](https://github.com/DISIC/Ara/pull/274))
+
+### Corrections 🐛
+
+- Ajout de la vocalisation du nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254)) et des suppressions de pages ([#258](https://github.com/DISIC/Ara/pull/258))
+- Ajout d'une mention textuelle pour les liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
+
+## 11/01/2023
 
 ### Nouvelles fonctionnalités 🚀
 
@@ -12,7 +34,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
 - Ajout du numéro de la thématique et du critère dans les labels des boutons radio de conformité ([#253](https://github.com/DISIC/Ara/pull/253))
-- Pertinence des titres ([#273](https://github.com/DISIC/Ara/pull/273))
+- Gère l’annonce des liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
 
 ### Autres changements ⚙️
 

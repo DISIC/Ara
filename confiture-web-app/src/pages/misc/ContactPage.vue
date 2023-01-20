@@ -19,13 +19,14 @@ const reportStore = useReportStore();
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
-        >DesignGouv</a
+        >DesignGouv <span class="sr-only">(nouvelle fenêtre)</span></a
       >, le pôle design des services numériques de la
       <a
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
-        >direction interministérielle du numérique</a
+        >direction interministérielle du numérique
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
     <p>
@@ -58,18 +59,20 @@ const reportStore = useReportStore();
         <a
           class="fr-link"
           target="_blank"
-          rel="noreferrer noopener" 
-          title="dépôt - nouvelle fenêtre"
+          rel="noreferrer noopener"
           href="https://github.com/DISIC/Ara"
-          >dépôt</a
-        >. <br>Le <a
+          >dépôt <span class="sr-only">(nouvelle fenêtre)</span></a
+        >. <br />Le
+        <a
           class="fr-link"
           target="_blank"
           rel="noreferrer noopener"
-          title="guide de contribution - nouvelle fenêtre"
           href="https://github.com/DISIC/Ara/blob/main/CONTRIBUTING.md"
-          >guide de contribution</a
-        > est disponible à la racine du dépôt.</li>
+          >guide de contribution
+          <span class="sr-only">(nouvelle fenêtre)</span></a
+        >
+        est disponible à la racine du dépôt.
+      </li>
     </ul>
   </section>
 </template>
