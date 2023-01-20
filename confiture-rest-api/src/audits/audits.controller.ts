@@ -100,7 +100,7 @@ export class AuditsController {
           fileType: 'image',
         })
         .addMaxSizeValidator({
-          maxSize: 1000000,
+          maxSize: 2000000,
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,

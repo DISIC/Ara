@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { CriterionResultUserImpact, ExampleImage } from "../types";
 import { formatBytes, formatUserImpact } from "../utils";
 import LazyAccordion from "./LazyAccordion.vue";
 import { RadioColor } from "./Radio.vue";
 import RadioGroup from "./RadioGroup.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
@@ -54,6 +54,17 @@ function handleFileChange() {
 function deleteImage(image: ExampleImage) {
   emit("delete-example", image);
 }
+
+const selectedFiles = computed(() => {
+  const len = props.exampleImages.length;
+  if (len === 0) {
+    return "Aucun fichier sélectionné.";
+  } else if (len === 1) {
+    return `${len} fichier sélectionné.`;
+  } else {
+    return `${len} fichiers sélectionnés.`;
+  }
+});
 </script>
 
 <template>
@@ -82,7 +93,7 @@ function deleteImage(image: ExampleImage) {
       <div :id="`file-upload-description-${id}`" class="fr-text--bold fr-label">
         Ajouter un exemple de l’erreur
         <span class="fr-mt-1v fr-text--regular fr-hint-text">
-          Taille maximale par fichier : 1 Mo. Formats : jpg, png, pdf. Plusieurs
+          Taille maximale par fichier : 2 Mo. Formats : jpg, png. Plusieurs
           fichiers possibles.
         </span>
       </div>
@@ -103,6 +114,8 @@ function deleteImage(image: ExampleImage) {
           :aria-describedby="`file-upload-description-${id}`"
           @change="handleFileChange"
         />
+
+        <p class="fr-mb-0 fr-ml-2w">{{ selectedFiles }}</p>
       </div>
     </div>
 
@@ -179,6 +192,11 @@ function deleteImage(image: ExampleImage) {
 
 .upload-label:not(:disabled):active {
   background-color: var(--active-tint);
+}
+
+.upload-line {
+  display: flex;
+  align-items: center;
 }
 
 .example-images {
