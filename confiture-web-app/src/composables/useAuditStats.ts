@@ -8,8 +8,7 @@ import {
 } from "../types";
 import { useResultsStore } from "../store";
 
-// TODO: get pagesCount directly from the store
-export function useAuditStats(pagesCount: number | undefined) {
+export function useAuditStats() {
   const store = useResultsStore();
 
   const applicableCriteriaCount = computed(
@@ -25,7 +24,7 @@ export function useAuditStats(pagesCount: number | undefined) {
             }),
           (r) => r.tc
         )
-      ).filter((r) => r !== pagesCount).length
+      ).filter((r) => r !== store.pagesCount).length
   );
 
   const notApplicableCriteriaCount = computed(
@@ -41,7 +40,7 @@ export function useAuditStats(pagesCount: number | undefined) {
             }),
           (r) => r.tc
         )
-      ).filter((r) => r === pagesCount).length
+      ).filter((r) => r === store.pagesCount).length
   );
 
   const notCompliantCriteriaCount = computed(

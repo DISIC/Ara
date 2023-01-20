@@ -99,7 +99,7 @@ const {
   notApplicableCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount,
-} = useAuditStats(auditStore.data?.pages.length);
+} = useAuditStats();
 
 const headerInfos = computed(() => [
   ...(auditStore.data?.auditType === AuditType.FULL

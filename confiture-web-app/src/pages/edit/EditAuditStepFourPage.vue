@@ -9,7 +9,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
-import { formatAuditType, getCriteriaCount } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 
 const route = useRoute();
 
@@ -35,7 +35,7 @@ const {
   notApplicableCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount,
-} = useAuditStats(auditStore.data?.pages.length);
+} = useAuditStats();
 
 const headerInfos = computed(() => [
   ...(auditStore.data?.auditType === AuditType.FULL
