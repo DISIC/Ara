@@ -223,10 +223,11 @@ export const useResultsStore = defineStore("results", {
       file: File
     ) {
       const formData = new FormData();
-      formData.append("pageId", pageId.toString());
-      formData.append("topic", topic.toString());
-      formData.append("criterium", criterium.toString());
-      formData.append("image", file);
+      formData.set("pageId", pageId.toString());
+      formData.set("topic", topic.toString());
+      formData.set("criterium", criterium.toString());
+      // To handle non-ascii characters, we encode the filename here and decode it on the back
+      formData.set("image", file, encodeURI(file.name));
 
       const exampleImage = (await ky
         .post(`/api/audits/${uniqueId}/results/examples`, {
