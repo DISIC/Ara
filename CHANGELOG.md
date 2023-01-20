@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajout des paramètres d'affichage pour changer manuellement de thème de couleur ([#279](https://github.com/DISIC/Ara/pull/279))
 
+### Corrections 🐛
+
+- Pertinence des titres ([#273](https://github.com/DISIC/Ara/pull/273))
+
 ## 13/01/2023
 
 ### Nouvelles fonctionnalités 🚀
