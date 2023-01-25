@@ -21,8 +21,16 @@ The applicatoin requires the following environement variables.
 **`FONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
 
 **`AIRTABLE_ACCESS_TOKEN`** : API token used to add feeback rows on Airtable.
+
 **`AIRTABLE_BASE_ID`**: ID of the Airtable base storing feedbacks.
-**`AIRTABLE_TABLE_ID`**: ID of the Airtable table storing feedbacks.
+
+**`S3_ENDPOINT`**,
+**`S3_REGION`**,
+**`S3_BUCKET`** and
+**`S3_VIRTUAL_HOST`** : S3 Object storage configuration.
+
+**`AWS_ACCESS_KEY_ID`** and
+**`AWS_SECRET_ACCESS_KEY`** : AWS user credentials used to access S3 Object Storage.
 
 Here's an example of a `.env` file.
 
@@ -40,6 +48,13 @@ FRONT_BASE_URL="http://example.com"
 AIRTABLE_ACCESS_TOKEN="xxxxxxxxxxxxxxxxxxxx"
 AIRTABLE_BASE_ID="xxxxxxxxxxxxxxxxxxxx"
 AIRTABLE_TABLE_ID="xxxxxxxxxxxxxxxxxxxx"
+
+S3_ENDPOINT="https://aws-endpoint.com/"
+S3_REGION="region"
+S3_BUCKET="my-bucket"
+S3_VIRTUAL_HOST="https://my-bucket.s3.example.com/"
+AWS_ACCESS_KEY_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxx"
+AWS_SECRET_ACCESS_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ## How to run

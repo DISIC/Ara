@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { groupBy, mapValues } from "lodash-es";
+import { chunk, groupBy, mapValues } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -432,37 +432,39 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               </ul>
 
               <!-- Error -->
-              <!-- TODO: complete condition to include example images -->
               <LazyAccordion
-                v-if="error.errorDescription"
-                title="Description de l'erreur"
+                v-if="error.errorDescription || error.exampleImages.length > 0"
+                title="Description de l’erreur"
                 data-accordion
               >
                 <MarkdownRenderer
+                  v-if="error.errorDescription"
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <!-- <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
-                  <div class="fr-grid-row fr-grid-row--gutters">
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/123/300/200"
-                        alt=""
-                      />
-                    </div>
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/43/300/200"
-                        alt=""
-                      />
-                    </div>
+                  <div
+                    v-for="(line, k) in chunk(error.exampleImages, 2)"
+                    :key="k"
+                    class="fr-grid-row fr-grid-row--gutters"
+                  >
+                    <a
+                      v-for="example in line"
+                      :key="example.url"
+                      class="fr-col-md-6 fr-col-12 image-link"
+                      :href="example.url"
+                      target="_blank"
+                    >
+                      <span class="sr-only">
+                        Ouvrir l’image dans une nouvelle fenêtre
+                      </span>
+                      <img style="width: 100%" :src="example.url" alt="" />
+                    </a>
                   </div>
-                </div> -->
+                </div>
               </LazyAccordion>
 
               <!-- Recommendation -->
@@ -530,6 +532,13 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
 .fr-sidemenu__inner {
   box-shadow: none !important;
+}
+
+.image-link {
+  background: none;
+}
+.image-link::after {
+  content: none;
 }
 
 @media (max-width: 768px) {

@@ -116,6 +116,7 @@ model CriterionResult {
   errorDescription String?
   userImpact       CriterionResultUserImpact?
   recommandation   String?
+  exampleImages    StoredFile[]
 
   notApplicableComment String?
 
@@ -148,4 +149,20 @@ model AuditTrace {
   auditEditUniqueId    String @unique
   auditConsultUniqueId String @unique
   Audit                Audit?
+}
+
+model StoredFile {
+  id               Int    @id @default(autoincrement())
+  originalFilename String
+  url              String
+  size             Int
+
+  // S3 storage key
+  key String
+
+  thumbnailUrl String
+  thumbnailKey String
+
+  criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  criterionResultId Int?
 }

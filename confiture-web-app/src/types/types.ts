@@ -99,6 +99,16 @@ export enum CriterionResultUserImpact {
   MAJOR = "MAJOR",
   BLOCKING = "BLOCKING",
 }
+
+export interface ExampleImage {
+  id: number;
+  originalFilename: string;
+  size: number;
+  url: string;
+
+  thumbnailUrl: string;
+}
+
 export interface CriteriumResult {
   // ID
   topic: number;
@@ -113,4 +123,5 @@ export interface CriteriumResult {
   userImpact: CriterionResultUserImpact | null;
   recommandation: string | null;
   notApplicableComment: string | null;
+  exampleImages: ExampleImage[];
 }

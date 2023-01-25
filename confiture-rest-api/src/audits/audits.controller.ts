@@ -1,17 +1,22 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
   Delete,
   Get,
   GoneException,
+  HttpStatus,
   NotFoundException,
   Param,
+  ParseFilePipeBuilder,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiCreatedResponse,
   ApiGoneResponse,
@@ -26,6 +31,7 @@ import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import { UploadImageDto } from './upload-image.dto';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -82,6 +88,55 @@ export class AuditsController {
     }
 
     return audit;
+  }
+
+  @Post('/:uniqueId/results/examples')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadExampleImage(
+    @Param('uniqueId') uniqueId: string,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'image',
+        })
+        .addMaxSizeValidator({
+          maxSize: 2000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Body() body: UploadImageDto,
+  ) {
+    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    return await this.auditService.saveExampleImage(
+      uniqueId,
+      body.pageId,
+      body.topic,
+      body.criterium,
+      file,
+    );
+  }
+
+  @Delete('/:uniqueId/results/examples/:exampleId')
+  async deleteExampleImage(
+    @Param('uniqueId') uniqueId: string,
+    @Param('exampleId', new ParseIntPipe()) exampleId: number,
+  ) {
+    const deleted = await this.auditService.deleteExampleImage(
+      uniqueId,
+      Number(exampleId),
+    );
+
+    if (!deleted) {
+      throw new NotFoundException();
+    }
   }
 
   /** Retrieve the results of an audit (compliance data) from the database. */

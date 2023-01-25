@@ -40,7 +40,14 @@ export interface AuditReport {
   /** Distribution of criteria by topic */
   topicDistributions: TopicResultDistribution[];
 
-  results: CriteriumResult[];
+  results: Array<
+    Omit<CriteriumResult, "exampleImages"> & {
+      exampleImages: {
+        url: string;
+        filename: string;
+      }[];
+    }
+  >;
 }
 
 interface ResultDistribution {

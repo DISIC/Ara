@@ -6,15 +6,18 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
+  StoredFile,
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
+import * as sharp from 'sharp';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
 import { AuditReportDto } from './audit-report.dto';
 import { CreateAuditDto } from './create-audit.dto';
 import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
+import { FileStorageService } from './file-storage.service';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 
@@ -26,7 +29,10 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
 
 @Injectable()
 export class AuditService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly fileStorageService: FileStorageService,
+  ) {}
 
   createAudit(data: CreateAuditDto) {
     const editUniqueId = nanoid();
@@ -79,7 +85,12 @@ export class AuditService {
 
   async getResultsWithEditUniqueId(
     uniqueId: string,
-  ): Promise<Omit<CriterionResult, 'id' | 'auditUniqueId'>[]> {
+  ): Promise<
+    Omit<
+      CriterionResult & { exampleImages: StoredFile[] },
+      'id' | 'auditUniqueId'
+    >[]
+  > {
     const [audit, pages, existingResults] = await Promise.all([
       this.prisma.audit.findUnique({
         where: {
@@ -92,8 +103,13 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            // auditUniqueId: uniqueId,
+            audit: {
+              editUniqueId: uniqueId,
+            },
           },
+        },
+        include: {
+          exampleImages: true,
         },
       }),
     ]);
@@ -119,6 +135,7 @@ export class AuditService {
           userImpact: null,
           recommandation: null,
           notApplicableComment: null,
+          exampleImages: [],
 
           topic: criterion.topic,
           criterium: criterion.criterium,
@@ -332,13 +349,122 @@ export class AuditService {
     ]);
   }
 
+  async saveExampleImage(
+    editUniqueId: string,
+    pageId: number,
+    topic: number,
+    criterium: number,
+    file: Express.Multer.File,
+  ) {
+    const randomPrefix = nanoid();
+
+    const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
+
+    const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
+
+    const thumbnailBuffer = await sharp(file.buffer)
+      .resize(200, 200, { fit: 'cover' })
+      .jpeg({
+        mozjpeg: true,
+      })
+      .toBuffer();
+
+    await Promise.all([
+      this.fileStorageService.uploadFile(file.buffer, file.mimetype, key),
+      this.fileStorageService.uploadFile(
+        thumbnailBuffer,
+        'image/jpeg',
+        thumbnailKey,
+      ),
+    ]);
+
+    const publicUrl = this.fileStorageService.getPublicUrl(key);
+    const thumbnailUrl = this.fileStorageService.getPublicUrl(thumbnailKey);
+
+    const storedFile = await this.prisma.storedFile.create({
+      data: {
+        criterionResult: {
+          connect: {
+            pageId_topic_criterium: {
+              pageId,
+              topic,
+              criterium,
+            },
+          },
+        },
+
+        key,
+        originalFilename: file.originalname,
+        size: file.size,
+        url: publicUrl,
+
+        thumbnailKey,
+        thumbnailUrl,
+      },
+    });
+
+    return storedFile;
+  }
+
+  /**
+   * Returns true if stored filed was found and deleted. False if not found.
+   */
+  async deleteExampleImage(
+    editUniqueId: string,
+    exampleId: number,
+  ): Promise<boolean> {
+    const storedFilePromise = this.prisma.storedFile.findUnique({
+      where: {
+        id: exampleId,
+      },
+    });
+
+    const storedFile = await storedFilePromise;
+    const audit = await storedFilePromise.criterionResult().page().audit();
+
+    if (!audit || audit.editUniqueId !== editUniqueId) {
+      return false;
+    }
+
+    await this.fileStorageService.deleteMultipleFiles(
+      storedFile.key,
+      storedFile.thumbnailKey,
+    );
+
+    await this.prisma.storedFile.delete({
+      where: {
+        id: exampleId,
+      },
+    });
+
+    return true;
+  }
+
   /**
    * Delete an audit and the data associated with it.
    * @returns True if an audit was deleted, false otherwise.
    */
   async deleteAudit(uniqueId: string): Promise<boolean> {
     try {
-      await this.prisma.audit.delete({ where: { editUniqueId: uniqueId } });
+      const storedFiles = await this.prisma.storedFile.findMany({
+        where: {
+          criterionResult: {
+            page: {
+              auditUniqueId: uniqueId,
+            },
+          },
+        },
+      });
+
+      await Promise.all([
+        await this.prisma.audit.delete({
+          where: { editUniqueId: uniqueId },
+        }),
+        this.fileStorageService.deleteMultipleFiles(
+          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat(),
+        ),
+      ]);
+
       return true;
     } catch (e) {
       if (e?.code === 'P2025') {
@@ -433,6 +559,9 @@ export class AuditService {
         topic: {
           in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
         },
+      },
+      include: {
+        exampleImages: true,
       },
     });
 
@@ -661,6 +790,10 @@ export class AuditService {
         notApplicableComment: r.notApplicableComment,
         recommandation: r.recommandation,
         userImpact: r.userImpact,
+        exampleImages: r.exampleImages.map((img) => ({
+          url: img.url,
+          filename: img.originalFilename,
+        })),
       })),
     };
 

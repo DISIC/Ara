@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { marked } from "marked";
-import { computed, watch, reactive } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import { debounce } from "lodash-es";
+import { HTTPError } from "ky";
 
-import { AuditPage, CriteriumResult, CriteriumResultStatus } from "../types";
+import {
+  AuditPage,
+  CriteriumResult,
+  CriteriumResultStatus,
+  ExampleImage,
+} from "../types";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -12,6 +18,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
+import { captureException } from "@sentry/core";
 
 const store = useResultsStore();
 
@@ -91,6 +98,85 @@ watch(
   }, 500)
 );
 
+const showFileSizeError = ref(false);
+const showFileFormatError = ref(false);
+
+function handleUploadExample(file: File) {
+  showFileSizeError.value = false;
+  showFileFormatError.value = false;
+
+  store
+    .uploadExampleImage(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      file
+    )
+    .then(() => {
+      notify("success", "Exemple téléchargé avec succès.");
+    })
+    .catch(async (error) => {
+      if (error instanceof HTTPError) {
+        // Unprocessable Entity
+        if (error.response.status === 422) {
+          const body = await error.response.json();
+
+          if (body.message.includes("expected type")) {
+            showFileFormatError.value = true;
+            notify(
+              "error",
+              "Le téléchargement de l'exemple a échoué",
+              "Format de fichier non supporté"
+            );
+          } else if (body.message.includes("expected size")) {
+            showFileSizeError.value = true;
+            notify(
+              "error",
+              "Le téléchargement de l'exemple a échoué",
+              "Poids du fichier trop lourd"
+            );
+          } else {
+            notify(
+              "error",
+              "Le téléchargement de l'exemple a échoué",
+              "Une erreur inconnue est survenue"
+            );
+            captureException(error);
+          }
+        } else {
+          notify(
+            "error",
+            "Téléchargement échoué",
+            "Une erreur inconnue est survenue"
+          );
+          captureException(error);
+        }
+      }
+    });
+}
+
+function handleDeleteExample(image: ExampleImage) {
+  store
+    .deleteExampleImage(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      image.id
+    )
+    .then(() => {
+      notify("success", "Exemple supprimé avec succès");
+    })
+    .catch(() => {
+      notify(
+        "error",
+        "Echec de la suppression de l'exemple",
+        "Une erreur inconnue empêche la suppression de l'exemple."
+      );
+    });
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -138,6 +224,11 @@ const uniqueId = computed(() => {
         :id="`not-compliant-accordion-${uniqueId}`"
         v-model:comment="result.errorDescription"
         v-model:user-impact="result.userImpact"
+        :example-images="result.exampleImages"
+        :show-file-format-error="showFileFormatError"
+        :show-file-size-error="showFileSizeError"
+        @upload-example="handleUploadExample"
+        @delete-example="handleDeleteExample"
       />
       <!-- RECOMMENDATION -->
       <CriteriumRecommendationAccordion
