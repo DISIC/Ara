@@ -1,4 +1,4 @@
-import { Chart } from "chart.js/auto";
+import type { Chart } from "chart.js";
 import { onMounted, onUnmounted } from "vue";
 
 import { getCssVarValue } from "../utils";

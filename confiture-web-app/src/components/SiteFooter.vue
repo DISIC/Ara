@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import fiphfpLogo from "../assets/images/fiphfp.png";
+import ThemeModal from "./ThemeModal.vue";
 </script>
 
 <template>
@@ -142,6 +143,15 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
               Contact et contributions
             </RouterLink>
           </li>
+          <li class="fr-footer__bottom-item">
+            <button
+              class="fr-footer__bottom-link fr-fi-theme-fill fr-link--icon-left"
+              aria-controls="fr-theme-modal"
+              data-fr-opened="false"
+            >
+              Paramètres d'affichage
+            </button>
+          </li>
         </ul>
         <div class="fr-footer__bottom-copy">
           <p>
@@ -157,6 +167,7 @@ import fiphfpLogo from "../assets/images/fiphfp.png";
       </div>
     </div>
   </footer>
+  <ThemeModal />
 </template>
 
 <style scoped>

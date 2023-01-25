@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chunk, groupBy, mapValues } from "lodash";
+import { chunk, groupBy, mapValues } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";

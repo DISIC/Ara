@@ -1,6 +1,5 @@
 import { computed } from "vue";
-import { countBy } from "lodash-es";
-import { storeToRefs } from "pinia";
+import { countBy, uniqWith } from "lodash-es";
 
 import {
   CriteriumResultStatus,
@@ -9,8 +8,7 @@ import {
 } from "../types";
 import { useResultsStore } from "../store";
 
-// TODO: get pagesCount directly from the store
-export function useAuditStats(pagesCount: number | undefined) {
+export function useAuditStats() {
   const store = useResultsStore();
 
   const applicableCriteriaCount = computed(
@@ -26,7 +24,50 @@ export function useAuditStats(pagesCount: number | undefined) {
             }),
           (r) => r.tc
         )
-      ).filter((r) => r !== pagesCount).length
+      ).filter((r) => r !== store.pagesCount).length
+  );
+
+  const notApplicableCriteriaCount = computed(
+    () =>
+      Object.values(
+        countBy(
+          store.allResults
+            ?.filter((r) => {
+              return r.status === CriteriumResultStatus.NOT_APPLICABLE;
+            })
+            .map((r) => {
+              return { ...r, tc: `${r.topic}.${r.criterium}` };
+            }),
+          (r) => r.tc
+        )
+      ).filter((r) => r === store.pagesCount).length
+  );
+
+  const notCompliantCriteriaCount = computed(
+    () =>
+      uniqWith(
+        store.allResults?.filter((r) => {
+          return r.status === CriteriumResultStatus.NOT_COMPLIANT;
+        }),
+        (a, b) => {
+          return a.topic === b.topic && a.criterium === b.criterium;
+        }
+      ).length
+  );
+
+  const blockingCriteriaCount = computed(
+    () =>
+      uniqWith(
+        store.allResults?.filter((r) => {
+          return (
+            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+            r.userImpact === CriterionResultUserImpact.BLOCKING
+          );
+        }),
+        (a, b) => {
+          return a.topic === b.topic && a.criterium === b.criterium;
+        }
+      ).length
   );
 
   const complianceLevel = computed(() => {
@@ -59,16 +100,6 @@ export function useAuditStats(pagesCount: number | undefined) {
     );
   });
 
-  const risk = computed(() => {
-    if (complianceLevel.value < 50) {
-      return "Élevé";
-    } else if (complianceLevel.value < 75) {
-      return "Moyen";
-    } else {
-      return "Bas";
-    }
-  });
-
   const errorsCount = computed(() => {
     const total =
       store.allResults?.filter((r) => {
@@ -88,8 +119,10 @@ export function useAuditStats(pagesCount: number | undefined) {
 
   return {
     applicableCriteriaCount,
+    notApplicableCriteriaCount,
+    notCompliantCriteriaCount,
+    blockingCriteriaCount,
     complianceLevel,
-    risk,
     errorsCount,
   };
 }

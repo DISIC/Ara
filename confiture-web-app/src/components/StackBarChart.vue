@@ -1,5 +1,17 @@
+<script lang="ts">
+import {
+  Chart as ChartJS,
+  LinearScale,
+  BarController,
+  BarElement,
+  CategoryScale,
+} from "chart.js";
+
+ChartJS.register(LinearScale, CategoryScale, BarController, BarElement);
+</script>
+
 <script lang="ts" setup>
-import Chart, { ChartConfiguration } from "chart.js/auto";
+import { Chart, ChartConfiguration } from "chart.js";
 import { ref, onMounted, onUnmounted } from "vue";
 
 import { getCssVarValue } from "../utils";
@@ -82,8 +94,10 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
     scales: {
       x: {
         display: false,
+        border: {
+          display: false,
+        },
         grid: {
-          drawBorder: false,
           display: false,
         },
         stacked: true,
@@ -98,7 +112,6 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
       y: {
         stacked: true,
         grid: {
-          drawBorder: false,
           display: false,
         },
         ticks: {
