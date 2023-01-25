@@ -115,8 +115,6 @@ export class AuditsController {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    // TODO: check max number of example
-    // TODO: upload multiple files
     return await this.auditService.saveExampleImage(
       uniqueId,
       body.pageId,

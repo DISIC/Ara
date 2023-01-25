@@ -432,13 +432,13 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               </ul>
 
               <!-- Error -->
-              <!-- TODO: complete condition to include example images -->
               <LazyAccordion
-                v-if="error.errorDescription"
-                title="Description de l'erreur"
+                v-if="error.errorDescription || error.exampleImages.length > 0"
+                title="Description de l’erreur"
                 data-accordion
               >
                 <MarkdownRenderer
+                  v-if="error.errorDescription"
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
@@ -451,13 +451,18 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     :key="k"
                     class="fr-grid-row fr-grid-row--gutters"
                   >
-                    <div
+                    <a
                       v-for="example in line"
                       :key="example.url"
-                      class="fr-col-md-6 fr-col-12"
+                      class="fr-col-md-6 fr-col-12 image-link"
+                      :href="example.url"
+                      target="_blank"
                     >
+                      <span class="sr-only">
+                        Ouvrir l’image dans une nouvelle fenêtre
+                      </span>
                       <img style="width: 100%" :src="example.url" alt="" />
-                    </div>
+                    </a>
                   </div>
                 </div>
               </LazyAccordion>
@@ -527,6 +532,13 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
 .fr-sidemenu__inner {
   box-shadow: none !important;
+}
+
+.image-link {
+  background: none;
+}
+.image-link::after {
+  content: none;
 }
 
 @media (max-width: 768px) {

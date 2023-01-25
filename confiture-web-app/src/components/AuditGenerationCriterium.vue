@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { marked } from "marked";
-import { computed, watch, reactive } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import { debounce } from "lodash-es";
 import { HTTPError } from "ky";
 
@@ -98,7 +98,13 @@ watch(
   }, 500)
 );
 
+const showFileSizeError = ref(false);
+const showFileFormatError = ref(false);
+
 function handleUploadExample(file: File) {
+  showFileSizeError.value = false;
+  showFileFormatError.value = false;
+
   store
     .uploadExampleImage(
       props.auditUniqueId,
@@ -117,21 +123,23 @@ function handleUploadExample(file: File) {
           const body = await error.response.json();
 
           if (body.message.includes("expected type")) {
+            showFileFormatError.value = true;
             notify(
               "error",
-              "Téléchargement échoué",
+              "Le téléchargement de l'exemple a échoué",
               "Format de fichier non supporté"
             );
           } else if (body.message.includes("expected size")) {
+            showFileSizeError.value = true;
             notify(
               "error",
-              "Téléchargement échoué",
+              "Le téléchargement de l'exemple a échoué",
               "Poids du fichier trop lourd"
             );
           } else {
             notify(
               "error",
-              "Téléchargement échoué",
+              "Le téléchargement de l'exemple a échoué",
               "Une erreur inconnue est survenue"
             );
             captureException(error);
@@ -217,6 +225,8 @@ const uniqueId = computed(() => {
         v-model:comment="result.errorDescription"
         v-model:user-impact="result.userImpact"
         :example-images="result.exampleImages"
+        :show-file-format-error="showFileFormatError"
+        :show-file-size-error="showFileSizeError"
         @upload-example="handleUploadExample"
         @delete-example="handleDeleteExample"
       />

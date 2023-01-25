@@ -11,6 +11,9 @@ const props = defineProps<{
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
   exampleImages: ExampleImage[];
+
+  showFileFormatError: boolean;
+  showFileSizeError: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -98,7 +101,7 @@ const selectedFiles = computed(() => {
         </span>
       </div>
 
-      <div class="upload-line fr-mt-2w">
+      <div class="upload-line fr-mt-2w fr-mb-2w">
         <label
           class="fr-btn fr-btn--tertiary upload-label"
           :for="`file-upload-${id}`"
@@ -111,12 +114,28 @@ const selectedFiles = computed(() => {
           ref="fileInputRef"
           class="sr-only"
           type="file"
-          :aria-describedby="`file-upload-description-${id}`"
+          :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
           @change="handleFileChange"
         />
 
         <p class="fr-mb-0 fr-ml-2w">{{ selectedFiles }}</p>
       </div>
+
+      <p
+        v-if="showFileFormatError"
+        :id="`file-upload-error-format-${id}`"
+        class="fr-error-text fr-mt-0"
+      >
+        Format de fichier non supporté.
+      </p>
+
+      <p
+        v-if="showFileSizeError"
+        :id="`file-upload-error-size-${id}`"
+        class="fr-error-text fr-mt-0"
+      >
+        Poids du fichier trop lourd.
+      </p>
     </div>
 
     <!-- EXAMPLE IMAGES -->
