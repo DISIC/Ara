@@ -114,6 +114,7 @@ const selectedFiles = computed(() => {
           ref="fileInputRef"
           class="sr-only"
           type="file"
+          accept="image/*"
           :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
           @change="handleFileChange"
         />
