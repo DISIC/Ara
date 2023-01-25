@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -130,6 +130,21 @@ const headerInfos = computed(() => [
     total: getCriteriaCount(auditStore.data?.auditType as AuditType),
   },
 ]);
+
+const showAutoSaveAlert = ref(true);
+
+function closeAutoSaveAlert() {
+  showAutoSaveAlert.value = false;
+  localStorage.setItem("confiture:hide-autosave-alert", "true");
+}
+
+onMounted(() => {
+  const hideAutosave = localStorage.getItem("confiture:hide-autosave-alert");
+
+  if (hideAutosave) {
+    showAutoSaveAlert.value = false;
+  }
+});
 </script>
 
 <template>
@@ -140,6 +155,20 @@ const headerInfos = computed(() => [
 
   <!-- FIXME: handle loading states -->
   <template v-if="auditStore.data && resultsStore.data">
+    <div
+      v-if="showAutoSaveAlert"
+      class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
+    >
+      <p>😎 Ara enregistre automatiquement votre travail</p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAutoSaveAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
