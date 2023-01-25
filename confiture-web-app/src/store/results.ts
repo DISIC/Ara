@@ -99,6 +99,13 @@ export const useResultsStore = defineStore("results", {
         ) ?? false
       );
     },
+
+    /**
+     * @returns Number of pages in the audit
+     */
+    pagesCount(): number {
+      return this.data ? Object.keys(this.data).length : 0;
+    },
   },
 
   actions: {

@@ -9,7 +9,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
-import { formatAuditType, getCriteriaCount } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 
 const route = useRoute();
 
@@ -30,36 +30,41 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
-const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
-  auditStore.data?.pages.length
-);
+const {
+  complianceLevel,
+  notApplicableCriteriaCount,
+  notCompliantCriteriaCount,
+  blockingCriteriaCount,
+} = useAuditStats();
 
 const headerInfos = computed(() => [
-  {
-    label: "Type d’audit",
-    value: formatAuditType(auditStore.data!.auditType as AuditType),
-  },
-  {
-    label: "Critères applicables",
-    value: applicableCriteriaCount.value,
-    description: `/ ${getCriteriaCount(
-      auditStore.data!.auditType as AuditType
-    )}`,
-  },
-  {
-    label: "Erreurs d’accessibilité",
-    value: errorsCount.value?.total,
-    description: `dont ${errorsCount.value?.blocking} bloquantes`,
-  },
   ...(auditStore.data?.auditType === AuditType.FULL
     ? [
         {
-          label: "Taux de conformité au RGAA actuel",
+          title: "Taux global de conformité",
+          description: "RGAA version 4.1",
           value: complianceLevel.value,
-          description: "%",
+          total: 100,
+          unit: "%",
+          theme: "france",
         },
       ]
     : []),
+  {
+    title: "Critères non conformes",
+    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    value: notCompliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    theme: "marianne",
+  },
+  {
+    title: "Critères non applicables",
+    description: `Sur un total de ${getCriteriaCount(
+      auditStore.data?.auditType as AuditType
+    )} critères`,
+    value: notApplicableCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+  },
 ]);
 
 const hasA11yStatement = computed(() => {

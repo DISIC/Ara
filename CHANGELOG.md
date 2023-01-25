@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 25/01/2023
+
+### Autres changements ⚙️
+
+- Mise à jour des données des donuts dans l'en-tête de l’audit ([#276](https://github.com/DISIC/Ara/pull/276))
+
 ## 20/01/2023
 
 ### Nouvelles fonctionnalités 🚀

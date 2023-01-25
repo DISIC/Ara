@@ -9,7 +9,7 @@ defineProps<{
   value: number;
   total: number;
   unit?: string;
-  danger?: boolean;
+  theme?: string;
 }>();
 
 const slots = useSlots();
@@ -22,7 +22,7 @@ const uniqueId = useUniqueId();
 <template>
   <div class="card">
     <div class="fr-p-3w card-main-content">
-      <StatDonut :value="value" :total="total" :unit="unit" :danger="danger" />
+      <StatDonut :value="value" :total="total" :unit="unit" :theme="theme" />
 
       <div class="card-info">
         <p class="fr-h6 fr-mb-1v card-title">{{ title }}</p>
