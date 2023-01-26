@@ -136,6 +136,10 @@ const showAutoSaveAlert = ref(true);
 function closeAutoSaveAlert() {
   showAutoSaveAlert.value = false;
   localStorage.setItem("confiture:hide-autosave-alert", "true");
+
+  const pageHeading = document.querySelector("h1");
+  pageHeading?.setAttribute("tabindex", "-1");
+  pageHeading?.focus();
 }
 
 onMounted(() => {
