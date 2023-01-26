@@ -7,39 +7,12 @@ import { useAuditStore, useReportStore } from "../store";
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
 
-const logoLink = computed(() => {
-  if (reportStore.data) {
-    return {
-      route: {
-        name: "report",
-        params: { uniqueId: reportStore.data.consultUniqueId },
-      },
-      title: "Rapport d’audit - Ara",
-    };
-  }
-  return {
-    route: { name: "home" },
-    title: "Accueil - Ara",
-  };
-});
-
 const homeLocation = { label: "Accueil", to: { name: "home" } };
 const helpLocation = { label: "Aide", to: { name: "help" } };
 const resourcesLocation = { label: "Ressources", to: { name: "resources" } };
 
 const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
   () => {
-    if (reportStore.data) {
-      const reportLocation = {
-        to: {
-          name: "report",
-          params: { uniqueId: reportStore.data.consultUniqueId },
-        },
-        label: "Rapport d’audit",
-      };
-      return [reportLocation, resourcesLocation, helpLocation];
-    }
-
     if (auditStore.data) {
       const auditLocation = {
         label: `Audit ${auditStore.data.procedureName}`,
@@ -49,6 +22,17 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
         },
       };
       return [homeLocation, auditLocation, resourcesLocation];
+    }
+
+    if (reportStore.data) {
+      const reportLocation = {
+        to: {
+          name: "report",
+          params: { uniqueId: reportStore.data.consultUniqueId },
+        },
+        label: "Rapport d’audit",
+      };
+      return [homeLocation, reportLocation, resourcesLocation, helpLocation];
     }
 
     return [homeLocation, resourcesLocation, helpLocation];
@@ -83,15 +67,13 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
               </div>
             </div>
             <div class="fr-header__service">
-              <RouterLink :to="logoLink.route" :title="logoLink.title">
-                <p class="fr-header__service-title">
-                  Ara
-                  <span
-                    class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
-                    >BÊTA</span
-                  >
-                </p>
-              </RouterLink>
+              <p class="fr-header__service-title">
+                Ara
+                <span
+                  class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
+                  >BÊTA</span
+                >
+              </p>
               <p class="fr-header__service-tagline">
                 Réalisez simplement vos audits d’accessibilité numérique
               </p>
@@ -131,3 +113,10 @@ const menuItems = computed<Array<{ to: RouteLocationRaw; label: string }>>(
     </div>
   </header>
 </template>
+
+<style scoped>
+.fr-header__brand.fr-enlarge-link:hover,
+.fr-header__brand.fr-enlarge-link:active {
+  background-color: transparent !important; /* Remove link on brand logo */
+}
+</style>
