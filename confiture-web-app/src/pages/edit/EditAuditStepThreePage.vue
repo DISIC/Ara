@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -135,20 +135,11 @@ const showAutoSaveAlert = ref(true);
 
 function closeAutoSaveAlert() {
   showAutoSaveAlert.value = false;
-  localStorage.setItem("confiture:hide-autosave-alert", "true");
 
   const pageHeading = document.querySelector("h1");
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
 }
-
-onMounted(() => {
-  const hideAutosave = localStorage.getItem("confiture:hide-autosave-alert");
-
-  if (hideAutosave) {
-    showAutoSaveAlert.value = false;
-  }
-});
 </script>
 
 <template>
