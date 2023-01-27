@@ -1,5 +1,7 @@
 import {
+  AuditReport,
   AuditType,
+  AuditStatus,
   CriterionResultUserImpact,
   CriteriumResultStatus,
 } from "./types";
@@ -73,6 +75,23 @@ const CRITERIA_COUNT = {
  */
 export function getCriteriaCount(auditType: AuditType): number {
   return CRITERIA_COUNT[auditType];
+}
+
+/**
+ * Return the audit status based on the completion of criteria and a11y statement.
+ */
+export function getAuditStatus(report: AuditReport): string {
+  if (
+    report.results.some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
+  ) {
+    return AuditStatus.IN_PROGRESS;
+  }
+
+  if (report.procedureInitiator) {
+    return AuditStatus.PUBLISHABLE;
+  }
+
+  return AuditStatus.COMPLETED;
 }
 
 /**
