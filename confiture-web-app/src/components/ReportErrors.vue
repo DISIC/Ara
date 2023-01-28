@@ -324,7 +324,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 <label class="fr-label" for="user-impact-filter-major">
                   Majeur ({{ majorUserImpactErrorCount }})
                   <span class="fr-hint-text">
-                    Compléxifie grandement l’utilisation du site
+                    Complexifie grandement l’utilisation du site
                   </span>
                 </label>
               </div>

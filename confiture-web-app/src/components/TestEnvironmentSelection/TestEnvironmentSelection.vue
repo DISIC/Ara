@@ -242,7 +242,7 @@ function combineEnvironments(
     <h2 class="fr-h4">Les environnements de test</h2>
     <p>
       Nous vous proposons par défaut les combinaisons d’environnements de test
-      prévus au RGAA. Il appartient à l’auditeur, en concertation avec les
+      prévus au RGAA. Il appartient à l’auditeur ou auditrice, en concertation avec les
       responsables du site audité, de définir les environnements en adéquation
       avec le contexte d’usage du site. Vous pouvez ajouter vos propres
       environnements de test si vous le souhaitez.
