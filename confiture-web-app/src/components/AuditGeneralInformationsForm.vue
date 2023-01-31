@@ -233,11 +233,6 @@ const notify = useNotifications();
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-name">
             Nom et prénom (optionnel)
-            <span class="fr-hint-text">
-              Permet au demandeur de l’audit de plus facilement vous identifier
-              s'il a des questions ou besoin d’aide.
-              <br />
-            </span>
           </label>
           <input
             id="procedure-auditor-name"
@@ -250,8 +245,7 @@ const notify = useNotifications();
           <label class="fr-label" for="procedure-auditor-email">
             Adresse électronique
             <span class="fr-hint-text">
-              Permet de vous envoyer le futur lien administrateur de l’audit et
-              le lien du rapport d’audit.
+              Permet de vous envoyer les liens de l’audit et du rapport d’audit.
               <br />
             </span>
           </label>
