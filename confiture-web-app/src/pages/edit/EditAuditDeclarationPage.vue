@@ -472,11 +472,7 @@ const isDevMode = useDevMode();
     <div class="narrow-content">
       <h2 class="fr-h4">Dérogations</h2>
       <p>
-        Ces informations doivent faire l’objet d’une discussion entre l’auditeur ou l'auditrice
-        et le responsable du site audité. C’est le responsable du site audité
-        qui accepte de prendre le risque juridique de mentionner des contenus
-        dérogés. Si aucun contenu n’est à déroger, laissez les deux champs
-        vides.
+        Ces informations doivent faire l’objet d’une discussion entre l’auditeur ou l’auditrice et le responsable du site audité. C’est le responsable du site audité qui accepte de prendre le risque juridique de mentionner des contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux champs vides.
       </p>
 
       <div class="fr-input-group">

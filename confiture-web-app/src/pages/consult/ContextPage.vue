@@ -89,13 +89,13 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       </p>
     </div>
 
-    <h2 class="fr-mb-2w fr-mb-md-3w">Auditeur ou Auditrice</h2>
+    <h2 class="fr-mb-2w fr-mb-md-3w">Auditeur ou auditrice</h2>
 
     <p class="fr-mb-9v fr-mb-md-6w">
       Cet audit a été réalisé par
       <strong>{{ report.data.context.auditorName }}</strong
       >. Pour toute questions relative à cet audit, vous pouvez contacter
-      l’auditeur ou l'auditrice par e-mail à l’adresse suivante :
+      l’auditeur ou l’auditrice à l’adresse suivante :
       <strong>{{ report.data.context.auditorEmail }}</strong
       >.
     </p>
