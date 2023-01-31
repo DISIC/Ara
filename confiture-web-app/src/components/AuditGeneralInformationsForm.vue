@@ -215,12 +215,12 @@ const notify = useNotifications();
 
       <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
         <legend>
-          <h2 class="fr-h4 fr-mb-2w">Auditeur/Auditrice</h2>
+          <h2 class="fr-h4">Auditeur ou auditrice</h2>
         </legend>
 
-        <div class="fr-input-group">
+        <div class="fr-mt-2w fr-input-group">
           <label for="procedure-auditor-organisation" class="fr-label">
-            Nom de la structure qui réalise l'audit
+            Nom de la structure 
           </label>
           <input
             id="procedure-auditor-organisation"
@@ -232,12 +232,7 @@ const notify = useNotifications();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-name">
-            Nom et prénom de l’auditeur ou de l'auditricre (optionnel)
-            <span class="fr-hint-text">
-              Permet au demandeur de l’audit de plus facilement vous identifier
-              s'il a des questions ou besoin d’aide.
-              <br />
-            </span>
+            Nom et prénom (optionnel)
           </label>
           <input
             id="procedure-auditor-name"
@@ -248,10 +243,9 @@ const notify = useNotifications();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-email">
-            Adresse e-mail de la structure ou de l’auditeur ou auditrice
+            Adresse électronique
             <span class="fr-hint-text">
-              Permet de vous envoyer le futur lien administrateur de l’audit et
-              le lien du rapport d’audit.
+              Permet de vous envoyer les liens de l’audit et du rapport d’audit.
               <br />
             </span>
           </label>
@@ -276,7 +270,7 @@ const notify = useNotifications();
       </div>
 
       <div>
-        <button class="fr-btn fr-mt-6w" type="submit">Commencer l'audit</button>
+        <button class="fr-btn fr-mt-6w" type="submit">Commencer l’audit</button>
       </div>
     </div>
   </form>

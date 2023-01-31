@@ -88,8 +88,7 @@ function hideCopyAlert() {
     <div v-if="auditIsInProgress" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
       <p>
-        L’auditeur ou l'auditricre doit d’abord terminer l’audit avant de rédiger la déclaration
-        d’accessibilité.
+        L’auditeur ou l’auditrice doit d’abord terminer l’audit avant de rédiger la déclaration d’accessibilité.
       </p>
     </div>
 

@@ -40,7 +40,7 @@ const reportStore = useReportStore();
         l’auditeur ou l’auditrice qui a réalisé cet audit<template
           v-if="reportStore.data.context.auditorEmail"
         >
-          à cette adresse électronique
+          à l’adresse suivante : 
           <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
         >.
       </p>
@@ -51,7 +51,7 @@ const reportStore = useReportStore();
     <p>Vous pouvez contribuer à l’amélioration de ce site :</p>
     <ul>
       <li>
-        En nous écrivant par e-mail à :
+        En nous écrivant à :
         <strong>rgaa@design.numerique.gouv.fr</strong>.
       </li>
       <li>
