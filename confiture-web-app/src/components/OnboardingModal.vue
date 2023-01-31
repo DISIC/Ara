@@ -55,7 +55,7 @@ const steps = computed(() => [
   {
     title: "Je peux trouver de l’aide",
     subTitle: "Et si jamais ?",
-    text: "L’<strong>auditeur</strong> qui à réalisé cet audit peut vous aider, n’hésitez pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
+    text: "L’<strong>auditeur</strong> ou <strong>auditrice</strong> qui à réalisé cet audit peut vous aider, n’hésitez pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
     illustration: `url(${handsIllustration})`,
   },
 ]);

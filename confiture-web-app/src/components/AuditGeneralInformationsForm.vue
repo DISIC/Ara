@@ -215,7 +215,7 @@ const notify = useNotifications();
 
       <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
         <legend>
-          <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
+          <h2 class="fr-h4 fr-mb-2w">Auditeur/Auditrice</h2>
         </legend>
 
         <div class="fr-input-group">
@@ -232,7 +232,7 @@ const notify = useNotifications();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-name">
-            Nom et prénom de l’auditeur (optionnel)
+            Nom et prénom de l’auditeur ou de l'auditricre (optionnel)
             <span class="fr-hint-text">
               Permet au demandeur de l’audit de plus facilement vous identifier
               s'il a des questions ou besoin d’aide.
@@ -248,7 +248,7 @@ const notify = useNotifications();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-email">
-            Adresse e-mail de la structure ou de l’auditeur
+            Adresse e-mail de la structure ou de l’auditeur ou auditrice
             <span class="fr-hint-text">
               Permet de vous envoyer le futur lien administrateur de l’audit et
               le lien du rapport d’audit.

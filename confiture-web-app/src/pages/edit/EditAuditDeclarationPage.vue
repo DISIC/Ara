@@ -196,7 +196,7 @@ function handleSubmit() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       throw err;
     });
@@ -472,7 +472,7 @@ const isDevMode = useDevMode();
     <div class="narrow-content">
       <h2 class="fr-h4">Dérogations</h2>
       <p>
-        Ces informations doivent faire l’objet d’une discussion entre l’auditeur
+        Ces informations doivent faire l’objet d’une discussion entre l’auditeur ou l'auditrice
         et le responsable du site audité. C’est le responsable du site audité
         qui accepte de prendre le risque juridique de mentionner des contenus
         dérogés. Si aucun contenu n’est à déroger, laissez les deux champs
