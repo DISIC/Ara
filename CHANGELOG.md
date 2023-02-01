@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 01/02/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’un statut d’enregistrement en haut de la page de remplissage de l’audit ([#281](https://github.com/DISIC/Ara/pull/281))
+
 ## 25/01/2023
 
 ### Nouvelles fonctionnalités 🚀
