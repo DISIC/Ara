@@ -82,7 +82,8 @@ export function getCriteriaCount(auditType: AuditType): number {
  */
 export function getAuditStatus(report: AuditReport): string {
   if (
-    report.results.some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
+    !report?.results.length ||
+    report?.results.some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
   ) {
     return AuditStatus.IN_PROGRESS;
   }

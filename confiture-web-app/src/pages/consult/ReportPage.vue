@@ -218,7 +218,8 @@ function handleTabChange(tab: { title: string }) {
         <strong>Référentiel</strong> : {{ report.data.context.referencial }}
       </p>
       <p class="fr-mb-1v">
-        <strong>Auditeur</strong> ou <strong>auditrice</strong> : {{ report.data.context.auditorName }}
+        <strong>Auditeur</strong> ou <strong>auditrice</strong> :
+        {{ report.data.context.auditorName }}
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">
