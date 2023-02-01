@@ -130,6 +130,16 @@ const headerInfos = computed(() => [
     total: getCriteriaCount(auditStore.data?.auditType as AuditType),
   },
 ]);
+
+const showAutoSaveAlert = ref(true);
+
+function closeAutoSaveAlert() {
+  showAutoSaveAlert.value = false;
+
+  const pageHeading = document.querySelector("h1");
+  pageHeading?.setAttribute("tabindex", "-1");
+  pageHeading?.focus();
+}
 </script>
 
 <template>
@@ -140,6 +150,20 @@ const headerInfos = computed(() => [
 
   <!-- FIXME: handle loading states -->
   <template v-if="auditStore.data && resultsStore.data">
+    <div
+      v-if="showAutoSaveAlert"
+      class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
+    >
+      <p>😎 Ara enregistre automatiquement votre travail</p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAutoSaveAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"

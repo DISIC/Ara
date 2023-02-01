@@ -79,11 +79,15 @@ const steps = [
           L’outil qui va simplifier vos audits d’accessibilité numérique
         </h1>
         <p class="fr-text--lg fr-text--bold">
-          Démarrez en quelques clics l’audit de votre service ! 
+          Démarrez en quelques clics l’audit de votre service !
         </p>
         <p class="fr-text--lg">
-          Ara nécessite une bonne connaissance de la méthode technique du <abbr title="référentiel général d'amélioration de
-          l'accessibilité">RGAA</abbr>. Ce n’est pas un outil d’audit automatique.
+          Ara nécessite une bonne connaissance de la méthode technique du
+          <abbr
+            title="référentiel général d'amélioration de
+          l'accessibilité"
+            >RGAA</abbr
+          >. Ce n’est pas un outil d’audit automatique.
         </p>
         <p>
           Basé sur la dernière version du référentiel général d'amélioration de
@@ -112,11 +116,7 @@ const steps = [
 
     <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div
-        v-for="step in steps"
-        :key="step.title"
-        class="fr-col"
-      >
+      <div v-for="step in steps" :key="step.title" class="fr-col">
         <div class="fr-tile fr-tile--horizontal">
           <div class="fr-tile__body step-content">
             <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
