@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajout d’un statut d’enregistrement en haut de la page de remplissage de l’audit ([#281](https://github.com/DISIC/Ara/pull/281))
 
+### Corrections 🐛
+
+- Harmonise la navigation entre l’audit et le rapport (#[283](https://github.com/DISIC/Ara/pull/283))
+
 ## 25/01/2023
 
 ### Nouvelles fonctionnalités 🚀
