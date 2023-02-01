@@ -40,6 +40,6 @@
   background-color: var(--background-action-high-error);
 }
 .legend-color.not-applicable {
-  background-color: var(--background-contrast-grey);
+  background-color: var(--border-plain-grey);
 }
 </style>

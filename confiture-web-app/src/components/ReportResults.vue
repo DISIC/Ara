@@ -23,6 +23,7 @@ const stats = computed(() => {
             total: 100,
             unit: "%",
             hasDetails: true,
+            theme: "france",
           },
         ]
       : []),
@@ -37,6 +38,7 @@ const stats = computed(() => {
       total:
         report.data!.totalCriteriaCount * report.data!.context.samples.length,
       danger: true,
+      theme: "marianne",
     },
     {
       title: "Critères applicables",
@@ -72,6 +74,7 @@ const chartsName = {
           :total="stat.total"
           :unit="stat.unit"
           :danger="stat.danger"
+          :theme="stat.theme"
         >
           <template v-if="stat.hasDetails" #accordion-title>
             En savoir plus sur le calcul du taux

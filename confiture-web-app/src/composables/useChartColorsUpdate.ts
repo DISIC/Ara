@@ -28,7 +28,7 @@ export function useChartColorsUpdate(
     const newColors = [
       getCssVarValue("--background-action-high-success"),
       getCssVarValue("--background-action-high-error"),
-      getCssVarValue("--background-contrast-grey"),
+      getCssVarValue("--border-plain-grey"),
     ];
 
     setNewColors(chart, newColors);
