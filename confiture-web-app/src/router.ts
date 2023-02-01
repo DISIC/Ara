@@ -28,7 +28,7 @@ import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
 
-import { useAuditStore, useReportStore } from "./store";
+import { useAuditStore } from "./store";
 
 declare module "vue-router" {
   interface RouteMeta {

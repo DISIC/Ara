@@ -16,6 +16,7 @@ const matchedRoutesNames = computed(() => {
  * Determine if the navigation link should has be highlighted.
  */
 function isCurrent(to: RouteLocationRaw, match?: string) {
+  console.log(match);
   if (typeof to === "string") {
     if (match && to.startsWith(match)) {
       return "true";
@@ -28,6 +29,10 @@ function isCurrent(to: RouteLocationRaw, match?: string) {
   }
 
   if (match && currentRoute.path.startsWith(match)) {
+    // Exclude home link to be matched for other routes
+    if (match === "/" && currentRoute.fullPath !== "/") {
+      return null;
+    }
     return "true";
   }
 }
