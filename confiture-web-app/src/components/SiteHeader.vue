@@ -16,7 +16,6 @@ const matchedRoutesNames = computed(() => {
  * Determine if the navigation link should has be highlighted.
  */
 function isCurrent(to: RouteLocationRaw, match?: string) {
-  console.log(match);
   if (typeof to === "string") {
     if (match && to.startsWith(match)) {
       return "true";
