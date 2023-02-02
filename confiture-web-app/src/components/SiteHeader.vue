@@ -13,9 +13,9 @@ const matchedRoutesNames = computed(() => {
 });
 
 /**
- * Determine if the navigation link should has be highlighted.
+ * Determine if the navigation link should has the `aria-current` attribute.
  */
-function isCurrent(to: RouteLocationRaw, match?: string) {
+function getAriaCurrentValue(to: RouteLocationRaw, match?: string) {
   if (typeof to === "string") {
     if (match && to.startsWith(match)) {
       return "true";
@@ -140,7 +140,7 @@ const menuItems = computed<
                 <RouterLink
                   class="fr-nav__link"
                   :to="item.to"
-                  :aria-current="isCurrent(item.to, item.match)"
+                  :aria-current="getAriaCurrentValue(item.to, item.match)"
                 >
                   {{ item.label }}
                 </RouterLink>
