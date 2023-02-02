@@ -38,8 +38,9 @@ function close() {
                 Vous allez supprimer l’audit
               </h1>
               <p>
-                Toutes les informations saisies seront effacées. Cette action
-                est irréversible. Souhaitez-vous supprimer l’audit ?
+                Toutes les informations saisies seront effacées (cela comprend
+                l’audit, le rapport et toute donnée personnelle associée). Cette
+                action est irréversible. Souhaitez-vous supprimer l’audit ?
               </p>
             </div>
             <div class="fr-modal__footer">
