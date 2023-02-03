@@ -34,7 +34,7 @@ import PageMeta from "../../components/PageMeta";
     </ul>
 
     <h2>À propos des <span lang="en">cookies</span> </h2>
-    <p>Nous utilisons différents <span lang="en">cookies</span> sur le site pour mesurer l’audience et intégrer des services permettant d’améliorer l’interactivité du site.</p>
+    <p>Le site ara.numérique.gouv.fr utilise des <span lang="en">cookies</span> uniquement à des fins statistiques de mesure d’audience.</p>
     <h3>Qu’est-ce qu’un &laquo;<span lang="en">cookie</span>&raquo; ?</h3>
     <p>Un &laquo;<span lang="en">cookie</span>&raquo; est une suite d'informations, généralement de petite taille et identifié par un nom, qui peut être transmis à votre navigateur par un site <span lang="en">web</span> sur lequel vous vous connectez. Votre navigateur <span lang="en">web</span> le conservera pendant une certaine durée, et le renverra au serveur web chaque fois que vous vous y re-connecterez. Les cookies ont de multiples usages : ils peuvent servir à mémoriser votre identifiant client auprès d'un site marchand, le contenu courant de votre panier d'achat, un identifiant permettant de tracer votre navigation pour des finalités statistiques ou publicitaires, etc. </p>
     
