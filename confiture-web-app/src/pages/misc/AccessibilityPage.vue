@@ -25,13 +25,23 @@ import PageMeta from "../../components/PageMeta";
 
     <h2 id="etat-conformite">État de conformité</h2>
 
-    <p>Aucun audit n’a été encore effectué.<br/>
-    Ara.numerique.gouv.fr est non conforme avec le référentiel général
-      d’amélioration de l’accessibilité (RGAA).</p>
-    <p>Un audit de conformité est bien planifié et l’état de conformité sera mis à jour avant la fin de la version bêta.</p>
+    <p>
+      Aucun audit n’a été encore effectué.<br />
+      Ara.numerique.gouv.fr est non conforme avec le référentiel général
+      d’amélioration de l’accessibilité (RGAA).
+    </p>
+    <p>
+      Un audit de conformité est bien planifié et l’état de conformité sera mis
+      à jour avant la fin de la version bêta.
+    </p>
 
     <h2 id="contact">Retour d’information et contact</h2>
-    <p>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez nous contacter par courriel à l’adresse <strong>contact@design.numerique.gouv.fr</strong> pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.</p>
+    <p>
+      Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez
+      nous contacter par courriel à l’adresse
+      <strong>contact@design.numerique.gouv.fr</strong> pour être orienté vers
+      une alternative accessible ou obtenir le contenu sous une autre forme.
+    </p>
 
     <h2 id="recours">Voies de recours</h2>
     <p>
@@ -48,16 +58,20 @@ import PageMeta from "../../components/PageMeta";
         un
         <a
           href="https://www.defenseurdesdroits.fr/nous-contacter"
-          target="_blank" el="noreferrer noopener" title="formulaire de contact - nouvelle fenêtre"
-          >formulaire de contact</a
+          target="_blank"
+          el="noreferrer noopener"
+          >formulaire de contact
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
       </li>
       <li>
         la
         <a
-          href="https://www.defenseurdesdroits.fr/fr/saisir/delegues" el="noreferrer noopener" 
-          target="_blank" title="liste des délégués de votre région - nouvelle fenêtre"
-          >liste des délégués de votre région</a
+          href="https://www.defenseurdesdroits.fr/fr/saisir/delegues"
+          el="noreferrer noopener"
+          target="_blank"
+          >liste des délégués de votre région
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
         avec leurs informations de contact directs
       </li>
@@ -67,9 +81,11 @@ import PageMeta from "../../components/PageMeta";
       </li>
       <li>
         une adresse postale dans l’<a
-          href="https://lannuaire.service-public.fr/autorites-independantes/1867f065-c823-4362-8d0f-8ca6b011a10f" rel="noreferrer noopener" 
-          target="_blank" title="annuaire de l’administration - nouvelle fenêtre"
-          >annuaire de l’administration</a
+          href="https://lannuaire.service-public.fr/autorites-independantes/1867f065-c823-4362-8d0f-8ca6b011a10f"
+          rel="noreferrer noopener"
+          target="_blank"
+          >annuaire de l’administration
+          <span class="sr-only">(nouvelle fenêtre)</span></a
         >
       </li>
     </ul>

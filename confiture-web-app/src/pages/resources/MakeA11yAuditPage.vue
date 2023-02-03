@@ -8,8 +8,8 @@
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/"
         target="_blank"
-        rel="noreferrer noopener" title="RGAA - nouvelle fenêtre"
-        >RGAA</a
+        rel="noreferrer noopener"
+        >RGAA <span class="sr-only">(nouvelle fenêtre)</span></a
       >
 
       rubriques
@@ -17,16 +17,16 @@
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/methode/introduction/"
         target="_blank"
-        rel="noreferrer noopener" title="méthode technique - nouvelle fenêtre"
-        >méthode technique</a
+        rel="noreferrer noopener"
+        >méthode technique <span class="sr-only">(nouvelle fenêtre)</span></a
       >
       et
       <a
         class="fr-link"
         href="https://accessibilite.numerique.gouv.fr/ressources/references/"
         target="_blank"
-        rel="noreferrer noopener" title="ressources - nouvelle fenêtre"
-        >ressources</a
+        rel="noreferrer noopener"
+        >ressources <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
   </section>

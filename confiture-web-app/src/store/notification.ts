@@ -8,7 +8,7 @@ interface NotificationStoreState {
     id: number;
     status: NotificationStatus;
     title: string;
-    description: string;
+    description?: string;
   } | null;
 }
 
@@ -23,7 +23,7 @@ export const useNotificationStore = defineStore("notification", {
     showNotification(
       status: NotificationStatus,
       title: string,
-      description: string
+      description?: string
     ) {
       this.notification = {
         id: this.nextId++,

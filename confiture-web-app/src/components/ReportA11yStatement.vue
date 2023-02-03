@@ -88,8 +88,7 @@ function hideCopyAlert() {
     <div v-if="auditIsInProgress" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
       <p>
-        L’auditeur doit d’abord terminer l’audit avant de rédiger la déclaration
-        d’accessibilité.
+        L’auditeur ou l’auditrice doit d’abord terminer l’audit avant de rédiger la déclaration d’accessibilité.
       </p>
     </div>
 
@@ -129,7 +128,7 @@ function hideCopyAlert() {
             rel="noopener"
           >
             Tout savoir sur la déclaration d’accessibilité
-            <span class="sr-only">(nouvel onglet)</span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
         </div>
 
@@ -149,7 +148,7 @@ function hideCopyAlert() {
             :to="{ name: 'legal-requirements' }"
           >
             Tout savoir sur les obligations légales et sanctions
-            <span class="sr-only">(nouvel onglet)</span>
+            <span class="sr-only">(nouvelle fenêtre)</span>
           </RouterLink>
         </div>
 
@@ -343,8 +342,8 @@ function hideCopyAlert() {
         </ul>
         <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
         <ul class="fr-mb-2w fr-mb-md-3w">
-          <li v-for="tool in report.data.context.tools" :key="tool.name">
-            {{ tool.name }}
+          <li v-for="tool in report.data.context.tools" :key="tool">
+            {{ tool }}
           </li>
         </ul>
         <h5 class="fr-h3">

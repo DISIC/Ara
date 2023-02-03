@@ -4,21 +4,15 @@ export interface AuditRecipent {
   email: string;
 }
 
-export interface AuditTool {
-  name: string;
-  function: string;
-  url: string;
-}
-
 export interface AuditEnvironment {
   id: number;
   platform: string;
   operatingSystem: string;
-  operatingSystemVersion: string;
+  operatingSystemVersion?: string;
   assistiveTechnology: string;
-  assistiveTechnologyVersion: string;
+  assistiveTechnologyVersion?: string;
   browser: string;
-  browserVersion: string;
+  browserVersion?: string;
 }
 
 export interface AuditPage {
@@ -55,7 +49,7 @@ export interface Audit {
   technologies: string[];
   procedureUrl: string | null;
   initiator: string | null;
-  tools: AuditTool[];
+  tools: string[];
   environments: AuditEnvironment[];
   contactName: string | null;
   contactEmail: string | null;
@@ -76,11 +70,7 @@ export type CreateAuditRequestData = Pick<
 > & { pages: Omit<AuditPage, "id">[] };
 
 /** Creation data type plus step 2 fields. */
-export type UpdateAuditRequestData = Omit<
-  Audit,
-  "tools" | "environments" | "pages"
-> & {
-  tools: Omit<AuditTool, "id">[];
+export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   environments: Omit<AuditEnvironment, "id">[];
   pages: Omit<AuditPage, "id">[];
 };
@@ -109,6 +99,16 @@ export enum CriterionResultUserImpact {
   MAJOR = "MAJOR",
   BLOCKING = "BLOCKING",
 }
+
+export interface ExampleImage {
+  id: number;
+  originalFilename: string;
+  size: number;
+  url: string;
+
+  thumbnailUrl: string;
+}
+
 export interface CriteriumResult {
   // ID
   topic: number;
@@ -123,4 +123,5 @@ export interface CriteriumResult {
   userImpact: CriterionResultUserImpact | null;
   recommandation: string | null;
   notApplicableComment: string | null;
+  exampleImages: ExampleImage[];
 }

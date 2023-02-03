@@ -55,7 +55,7 @@ const steps = computed(() => [
   {
     title: "Je peux trouver de l’aide",
     subTitle: "Et si jamais ?",
-    text: "L’<strong>auditeur</strong> qui à réalisé cet audit peut vous aider, n’hésitez pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
+    text: "L’<strong>auditeur</strong> ou l’<strong>auditrice</strong> qui a réalisé cet audit peut vous aider, n’hésitez pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
     illustration: `url(${handsIllustration})`,
   },
 ]);
@@ -110,6 +110,8 @@ watch(currentStep, () => {
 
               <div ref="contentEl" class="fr-modal__content" tabindex="-1">
                 <div class="content">
+                  <h1 class="sr-only">{{ steps[0].title }}</h1>
+
                   <StatDonut
                     v-if="currentStep === 0"
                     class="stat-donut"
@@ -130,7 +132,10 @@ watch(currentStep, () => {
                     {{ steps[currentStep].subTitle }}
                   </p>
 
-                  <p class="fr-modal__title content-title">
+                  <p
+                    class="fr-modal__title content-title"
+                    :aria-hidden="currentStep === 0"
+                  >
                     {{ steps[currentStep].title }}
                   </p>
                   <p class="content-text" v-html="steps[currentStep].text"></p>

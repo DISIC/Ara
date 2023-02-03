@@ -65,7 +65,7 @@ import PageMeta from "../../components/PageMeta";
         href="https://www.numerique.gouv.fr/uploads/rgaa/rgaa4-2019-exemple-declaration.pdf"
         target="_blank"
         ><span class="sr-only">exemple de déclaration d’accessibilité au </span
-        >format pdf</a
+        >format pdf <span class="sr-only">(nouvelle fenêtre)</span></a
       >
       ou au
       <a
@@ -73,7 +73,7 @@ import PageMeta from "../../components/PageMeta";
         href="https://design.numerique.gouv.fr/outils/exemple-declaration-accessibilite/"
         target="_blank"
         ><span class="sr-only">exemple de déclaration d’accessibilité au </span
-        >format html</a
+        >format html <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
 

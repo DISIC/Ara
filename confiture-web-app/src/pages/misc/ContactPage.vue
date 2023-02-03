@@ -19,13 +19,14 @@ const reportStore = useReportStore();
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
-        >DesignGouv</a
+        >DesignGouv <span class="sr-only">(nouvelle fenêtre)</span></a
       >, le pôle design des services numériques de la
       <a
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
-        >direction interministérielle du numérique</a
+        >direction interministérielle du numérique
+        <span class="sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
     <p>
@@ -39,7 +40,7 @@ const reportStore = useReportStore();
         l’auditeur ou l’auditrice qui a réalisé cet audit<template
           v-if="reportStore.data.context.auditorEmail"
         >
-          à cette adresse électronique
+          à l’adresse suivante : 
           <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
         >.
       </p>
@@ -50,7 +51,7 @@ const reportStore = useReportStore();
     <p>Vous pouvez contribuer à l’amélioration de ce site :</p>
     <ul>
       <li>
-        En nous écrivant par e-mail à :
+        En nous écrivant à :
         <strong>rgaa@design.numerique.gouv.fr</strong>.
       </li>
       <li>
@@ -58,18 +59,20 @@ const reportStore = useReportStore();
         <a
           class="fr-link"
           target="_blank"
-          rel="noreferrer noopener" 
-          title="dépôt - nouvelle fenêtre"
+          rel="noreferrer noopener"
           href="https://github.com/DISIC/Ara"
-          >dépôt</a
-        >. <br>Le <a
+          >dépôt <span class="sr-only">(nouvelle fenêtre)</span></a
+        >. <br />Le
+        <a
           class="fr-link"
           target="_blank"
           rel="noreferrer noopener"
-          title="guide de contribution - nouvelle fenêtre"
           href="https://github.com/DISIC/Ara/blob/main/CONTRIBUTING.md"
-          >guide de contribution</a
-        > est disponible à la racine du dépôt.</li>
+          >guide de contribution
+          <span class="sr-only">(nouvelle fenêtre)</span></a
+        >
+        est disponible à la racine du dépôt.
+      </li>
     </ul>
   </section>
 </template>

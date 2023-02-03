@@ -40,7 +40,14 @@ export interface AuditReport {
   /** Distribution of criteria by topic */
   topicDistributions: TopicResultDistribution[];
 
-  results: CriteriumResult[];
+  results: Array<
+    Omit<CriteriumResult, "exampleImages"> & {
+      exampleImages: {
+        url: string;
+        filename: string;
+      }[];
+    }
+  >;
 }
 
 interface ResultDistribution {
@@ -79,7 +86,7 @@ interface AuditReportContext {
   // TODO: derogated content
   // derogatedContent: any
 
-  tools: Tool[];
+  tools: string[];
 
   desktopEnvironments: Environment[];
   mobileEnvironments: Environment[];
@@ -89,12 +96,6 @@ interface PageSample {
   // number: number;
   id: number;
   name: string;
-  url: string;
-}
-
-interface Tool {
-  name: string;
-  function: string;
   url: string;
 }
 

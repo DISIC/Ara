@@ -10,25 +10,6 @@ import {
 
 import { CreateAuditDto } from './create-audit.dto';
 
-class UpdateAuditTool {
-  /**
-   * @example "Firefox Developer Tools"
-   */
-  @IsString()
-  name: string;
-  /**
-   * @example "Inspecter et débugguer le code d’une page web"
-   */
-  @IsString()
-  function: string;
-  /**
-   * @example "https://firefox-dev.tools/"
-   */
-  @IsString()
-  @IsUrl()
-  url: string;
-}
-
 class UpdateAuditEnvironment {
   /**
    * @example "Desktop"
@@ -131,11 +112,13 @@ export class UpdateAuditDto extends CreateAuditDto {
   // @Type(() => CreateAuditRecipients)
   // recipients: CreateAuditRecipients[];
 
+  /**
+   * @example ["Firefox devtools", "Axe"]
+   */
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateAuditTool)
+  @IsString({ each: true })
   @IsOptional()
-  tools?: UpdateAuditTool[];
+  tools?: string[];
 
   @IsArray()
   @ValidateNested({ each: true })

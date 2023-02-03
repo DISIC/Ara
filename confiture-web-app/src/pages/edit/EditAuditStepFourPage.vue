@@ -9,7 +9,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
-import { formatAuditType, getCriteriaCount } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 
 const route = useRoute();
 
@@ -30,36 +30,41 @@ onMounted(() => {
   resultsStore.fetchResults(uniqueId);
 });
 
-const { applicableCriteriaCount, errorsCount, complianceLevel } = useAuditStats(
-  auditStore.data?.pages.length
-);
+const {
+  complianceLevel,
+  notApplicableCriteriaCount,
+  notCompliantCriteriaCount,
+  blockingCriteriaCount,
+} = useAuditStats();
 
 const headerInfos = computed(() => [
-  {
-    label: "Type d’audit",
-    value: formatAuditType(auditStore.data!.auditType as AuditType),
-  },
-  {
-    label: "Critères applicables",
-    value: applicableCriteriaCount.value,
-    description: `/ ${getCriteriaCount(
-      auditStore.data!.auditType as AuditType
-    )}`,
-  },
-  {
-    label: "Erreurs d’accessibilité",
-    value: errorsCount.value?.total,
-    description: `dont ${errorsCount.value?.blocking} bloquantes`,
-  },
   ...(auditStore.data?.auditType === AuditType.FULL
     ? [
         {
-          label: "Taux de conformité au RGAA actuel",
+          title: "Taux global de conformité",
+          description: "RGAA version 4.1",
           value: complianceLevel.value,
-          description: "%",
+          total: 100,
+          unit: "%",
+          theme: "france",
         },
       ]
     : []),
+  {
+    title: "Critères non conformes",
+    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    value: notCompliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    theme: "marianne",
+  },
+  {
+    title: "Critères non applicables",
+    description: `Sur un total de ${getCriteriaCount(
+      auditStore.data?.auditType as AuditType
+    )} critères`,
+    value: notApplicableCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+  },
 ]);
 
 const hasA11yStatement = computed(() => {
@@ -83,13 +88,13 @@ const successAlertContent = computed(() => {
 </script>
 
 <template>
-  <PageMeta
-    title="Audit terminé"
-    description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
-  />
-
   <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
+    <PageMeta
+      :title="`Audit ${auditStore.data.procedureName} terminé`"
+      description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
+    />
+
     <div class="fr-alert fr-alert--success fr-mb-4w">
       <p>
         {{ successAlertContent }}
@@ -97,7 +102,7 @@ const successAlertContent = computed(() => {
     </div>
 
     <AuditGenerationHeader
-      :audit-name="auditStore.data.procedureName"
+      :audit-name="`L’audit ${auditStore.data.procedureName} est terminé`"
       :key-infos="headerInfos"
       :edit-unique-id="auditStore.data.editUniqueId"
       :audit-publication-date="auditStore.data.publicationDate"
@@ -119,13 +124,15 @@ const successAlertContent = computed(() => {
       </p>
 
       <RouterLink
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mb-5w"
+        class="fr-btn fr-btn--secondary fr-mb-5w"
         :to="{
           name: 'report',
           params: { uniqueId: auditStore.data.consultUniqueId },
         }"
+        target="_blank"
       >
         Consulter le rapport d'audit
+        <span class="sr-only">(Nouvelle fenêtre)</span>
       </RouterLink>
 
       <CopyBlock

@@ -1,7 +1,7 @@
 <template>
   <ol class="fr-mb-4w">
     <li>
-      Organiser une réunion de restitution avec l’auditeur qui a réalisé cet
+      Organiser une réunion de restitution avec l’auditeur ou l’auditrice qui a réalisé cet
       audit
     </li>
     <li>Publier la déclaration d’accessibilité sur votre site</li>
@@ -9,9 +9,9 @@
     <li>Corriger les erreurs et tester vos corrections</li>
     <li>Réaliser un contre-audit (audit de conformité)</li>
   </ol>
-  <p>A tout moment vous pouvez trouver de l’aide :</p>
+  <p>A tout moment vous pouvez trouver de l’aide :</p>
   <ul class="fr-mb-0">
-    <li>Auprès de l’auditeur qui à réalisé cet audit</li>
+    <li>Auprès de l’auditeur ou de l’auditrice qui a réalisé cet audit</li>
     <li>
       Dans les pages
       <RouterLink class="fr-link" :to="{ name: 'help' }">Aide</RouterLink> et

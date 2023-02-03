@@ -12,7 +12,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
-import { formatAuditType } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { captureException } from "@sentry/core";
 
@@ -43,7 +43,7 @@ function toStepFour() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       captureException(error);
     });
@@ -94,29 +94,51 @@ function updateCurrentPageId(i: number) {
   currentPageId.value = i;
 }
 
-const { risk, complianceLevel } = useAuditStats(auditStore.data?.pages.length);
+const {
+  complianceLevel,
+  notApplicableCriteriaCount,
+  notCompliantCriteriaCount,
+  blockingCriteriaCount,
+} = useAuditStats();
 
 const headerInfos = computed(() => [
-  {
-    label: "Type d’audit",
-    value: formatAuditType(auditStore.data!.auditType as AuditType),
-  },
-  { label: "Risque de l’audit", value: risk.value },
   ...(auditStore.data?.auditType === AuditType.FULL
     ? [
         {
-          label: "Taux de conformité au RGAA actuel",
+          title: "Taux global de conformité",
+          description: "RGAA version 4.1",
           value: complianceLevel.value,
-          description: "%",
+          total: 100,
+          unit: "%",
+          theme: "france",
         },
       ]
     : []),
+  {
+    title: "Critères non conformes",
+    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    value: notCompliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    theme: "marianne",
+  },
+  {
+    title: "Critères non applicables",
+    description: `Sur un total de ${getCriteriaCount(
+      auditStore.data?.auditType as AuditType
+    )} critères`,
+    value: notApplicableCriteriaCount.value,
+    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+  },
 ]);
 
-async function handleDevButtonClick() {
-  await resultsStore.DEV_fillResults(uniqueId);
-  // uncoment to make the button slightly less annoying to use
-  // window.scrollTo({ top: 0, behavior: "smooth" });
+const showAutoSaveAlert = ref(true);
+
+function closeAutoSaveAlert() {
+  showAutoSaveAlert.value = false;
+
+  const pageHeading = document.querySelector("h1");
+  pageHeading?.setAttribute("tabindex", "-1");
+  pageHeading?.focus();
 }
 </script>
 
@@ -128,6 +150,20 @@ async function handleDevButtonClick() {
 
   <!-- FIXME: handle loading states -->
   <template v-if="auditStore.data && resultsStore.data">
+    <div
+      v-if="showAutoSaveAlert"
+      class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
+    >
+      <p>😎 Ara enregistre automatiquement votre travail</p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAutoSaveAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
@@ -139,13 +175,15 @@ async function handleDevButtonClick() {
       <template #actions>
         <li class="fr-mr-2w">
           <RouterLink
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line"
+            class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
               params: { uniqueId: auditStore.data?.consultUniqueId },
             }"
+            target="_blank"
           >
             Consulter le rapport d'audit
+            <span class="sr-only">(Nouvelle fenêtre)</span>
           </RouterLink>
         </li>
         <li>
@@ -162,7 +200,7 @@ async function handleDevButtonClick() {
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-3">
-        <div class="filters-wrapper">
+        <div class="filters-wrapper" role="search">
           <AuditGenerationFilters :topics="topics" />
         </div>
       </div>

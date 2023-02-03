@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
 import { useDevMode } from "../composables/useDevMode";
+import { useNotifications } from "../composables/useNotifications";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 
@@ -69,10 +70,12 @@ async function addPage() {
  * @param {number} i
  */
 async function deletePage(i: number) {
+  const pageName = pages.value[i].name;
   pages.value.splice(i, 1);
   await nextTick();
   const previousInput =
     i === 0 ? pageNameRefs.value[0] : pageNameRefs.value[i - 1];
+  notify("success", `La page ${pageName ? pageName : ""} a bien été supprimée`);
   previousInput.focus();
 }
 
@@ -104,6 +107,7 @@ function onSubmit() {
 }
 
 const isDevMode = useDevMode();
+const notify = useNotifications();
 </script>
 
 <template>
@@ -166,10 +170,10 @@ const isDevMode = useDevMode();
             class="fr-btn fr-btn--tertiary-no-outline"
             type="button"
             :disabled="pages.length === 1"
-            :aria-label="`Supprimer page ${i + 1}`"
             @click="deletePage(i)"
           >
             Supprimer
+            <span class="sr-only">la page {{ i + 1 }}</span>
           </button>
         </div>
 
@@ -211,12 +215,12 @@ const isDevMode = useDevMode();
 
       <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
         <legend>
-          <h2 class="fr-h4 fr-mb-2w">Auditeur</h2>
+          <h2 class="fr-h4">Auditeur ou auditrice</h2>
         </legend>
 
-        <div class="fr-input-group">
+        <div class="fr-mt-2w fr-input-group">
           <label for="procedure-auditor-organisation" class="fr-label">
-            Nom de la structure qui réalise l'audit
+            Nom de la structure 
           </label>
           <input
             id="procedure-auditor-organisation"
@@ -228,12 +232,7 @@ const isDevMode = useDevMode();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-name">
-            Nom et prénom de l’auditeur (optionnel)
-            <span class="fr-hint-text">
-              Permet au demandeur de l’audit de plus facilement vous identifier
-              s'il a des questions ou besoin d’aide.
-              <br />
-            </span>
+            Nom et prénom (optionnel)
           </label>
           <input
             id="procedure-auditor-name"
@@ -244,10 +243,9 @@ const isDevMode = useDevMode();
 
         <div class="fr-input-group">
           <label class="fr-label" for="procedure-auditor-email">
-            Adresse e-mail de la structure ou de l’auditeur
+            Adresse électronique
             <span class="fr-hint-text">
-              Permet de vous envoyer le futur lien administrateur de l’audit et
-              le lien du rapport d’audit.
+              Permet de vous envoyer les liens de l’audit et du rapport d’audit.
               <br />
             </span>
           </label>
@@ -272,7 +270,7 @@ const isDevMode = useDevMode();
       </div>
 
       <div>
-        <button class="fr-btn fr-mt-6w" type="submit">Commencer l'audit</button>
+        <button class="fr-btn fr-mt-6w" type="submit">Commencer l’audit</button>
       </div>
     </div>
   </form>

@@ -147,13 +147,8 @@ const moreLinks = [
 
       <ul class="fr-mb-7w">
         <li v-for="link in moreLinks" :key="link.title">
-          <a
-            class="fr-link"
-            :href="link.href"
-            :title="link.title + ' - nouvelle fenêtre'"
-            target="_blank"
-          >
-            {{ link.title }}
+          <a class="fr-link" :href="link.href" target="_blank">
+            {{ link.title }} <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
           : {{ link.description }}.
         </li>

@@ -60,7 +60,7 @@ model Audit {
   contactEmail        String?
   contactFormUrl      String?
   technologies        String[]
-  tools               Tool[]
+  tools               String[]
   environments        TestEnvironment[]
   notCompliantContent String?
   derogatedContent    String?
@@ -77,18 +77,6 @@ model Audit {
   auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
 
   @@unique([editUniqueId, consultUniqueId])
-}
-
-model Tool {
-  id       Int    @id @default(autoincrement())
-  name     String
-  function String
-  url      String
-
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
-  auditUniqueId String?
-
-  @@unique([name, function, url, auditUniqueId])
 }
 
 model TestEnvironment {
@@ -128,6 +116,7 @@ model CriterionResult {
   errorDescription String?
   userImpact       CriterionResultUserImpact?
   recommandation   String?
+  exampleImages    StoredFile[]
 
   notApplicableComment String?
 
@@ -160,4 +149,20 @@ model AuditTrace {
   auditEditUniqueId    String @unique
   auditConsultUniqueId String @unique
   Audit                Audit?
+}
+
+model StoredFile {
+  id               Int    @id @default(autoincrement())
+  originalFilename String
+  url              String
+  size             Int
+
+  // S3 storage key
+  key String
+
+  thumbnailUrl String
+  thumbnailKey String
+
+  criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  criterionResultId Int?
 }

@@ -196,6 +196,7 @@ function handleTabChange(tab: { title: string }) {
           :href="report.data.procedureUrl"
         >
           {{ report.data.procedureUrl }}
+          <span class="sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -207,10 +208,10 @@ function handleTabChange(tab: { title: string }) {
         critères)
       </p>
       <p class="fr-mb-0">
-        <strong>Référenciel</strong> : {{ report.data.context.referencial }}
+        <strong>Référentiel</strong> : {{ report.data.context.referencial }}
       </p>
       <p class="fr-mb-1v">
-        <strong>Auditeur</strong> : {{ report.data.context.auditorName }}
+        <strong>Auditeur</strong> ou <strong>auditrice</strong> : {{ report.data.context.auditorName }}
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">

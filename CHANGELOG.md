@@ -2,11 +2,72 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+
 ## 03/02/2023
 
 ### Autres changements ⚙️
 
 - Ajout d’une page _Données personnelles_ ([#291](https://github.com/DISIC/Ara/pull/291))
+
+## 02/02/2023
+
+### Corrections 🐛
+
+- Harmonise la navigation entre l’audit et le rapport (#[283](https://github.com/DISIC/Ara/pull/283))
+
+## 01/02/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’un statut d’enregistrement en haut de la page de remplissage de l’audit ([#281](https://github.com/DISIC/Ara/pull/281))
+
+## 25/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout de la possibilité d'ajouter des images d'exemples aux critères non-conformes ([#237](https://github.com/DISIC/Ara/pull/237/))
+
+### Autres changements ⚙️
+
+- Mise à jour des données des donuts dans l'en-tête de l’audit ([#276](https://github.com/DISIC/Ara/pull/276))
+
+## 20/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout des paramètres d'affichage pour changer manuellement de thème de couleur ([#279](https://github.com/DISIC/Ara/pull/279))
+
+### Corrections 🐛
+
+- Pertinence des titres ([#273](https://github.com/DISIC/Ara/pull/273))
+
+## 13/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ouverture des liens du rapport dans un nouvelle fenêtre ([#275](https://github.com/DISIC/Ara/pull/275))
+- Mise à jour des outils d’assistance proposés par défaut ([#274](https://github.com/DISIC/Ara/pull/274))
+
+### Corrections 🐛
+
+- Ajout de la vocalisation du nombre de résultats dans le rapport ([#254](https://github.com/DISIC/Ara/pull/254)) et des suppressions de pages ([#258](https://github.com/DISIC/Ara/pull/258))
+- Ajout d'une mention textuelle pour les liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
+
+## 11/01/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Nouvelle interface pour les technologies, outils d’assistance et environnements lors du remplissage de la déclaration d’accessibilité ([#233](https://github.com/DISIC/Ara/pull/233)).
+
+### Corrections 🐛
+
+- Corrections de rôles `main` et `search` ([#255](https://github.com/DISIC/Ara/pull/255))
+- Ajout du numéro de la thématique et du critère dans les labels des boutons radio de conformité ([#253](https://github.com/DISIC/Ara/pull/253))
+- Gère l’annonce des liens externes ([#272](https://github.com/DISIC/Ara/pull/272))
+
+### Autres changements ⚙️
+
+- Dans le rapport, déplace l'URL de la page sous son nom ([#257](https://github.com/DISIC/Ara/pull/257))
 
 ## 15/12/2022
 

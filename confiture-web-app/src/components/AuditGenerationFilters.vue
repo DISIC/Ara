@@ -50,7 +50,7 @@ function submit() {
     <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
       Rechercher par mots clés
     </label>
-    <div class="fr-search-bar" role="search">
+    <div class="fr-search-bar">
       <input
         id="filters-search"
         ref="searchInputRef"

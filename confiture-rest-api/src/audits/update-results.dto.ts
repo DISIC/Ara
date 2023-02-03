@@ -22,8 +22,11 @@ import {
 import { CRITERIA } from './criteria';
 
 /** Validates the criterium property to make sure the criterium exists in the RGAA. */
-function IsRgaaCriterium(validationOptions?: ValidationOptions) {
-  return function (object: UpdateResultsItem, propertyName: string) {
+export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
+  return function (
+    object: Pick<UpdateResultsItem, 'topic' | 'criterium'>,
+    propertyName: string,
+  ) {
     registerDecorator({
       name: 'isRgaaCriterium',
       target: object.constructor,

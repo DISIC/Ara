@@ -17,7 +17,9 @@ const store = useNotificationStore();
           role="alert"
         >
           <p class="fr-alert__title">{{ store.notification.title }}</p>
-          <p>{{ store.notification.description }}</p>
+          <p v-if="store.notification.description">
+            {{ store.notification.description }}
+          </p>
           <button
             class="fr-btn--close fr-btn"
             title="Masquer le message"

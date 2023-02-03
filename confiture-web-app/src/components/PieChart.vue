@@ -1,5 +1,11 @@
+<script lang="ts">
+import { Chart as ChartJS, PieController, ArcElement } from "chart.js";
+
+ChartJS.register(PieController, ArcElement);
+</script>
+
 <script lang="ts" setup>
-import Chart, { ChartConfiguration } from "chart.js/auto";
+import { Chart, ChartConfiguration } from "chart.js";
 import { onMounted, onUnmounted, ref } from "vue";
 
 import { getCssVarValue } from "../utils";

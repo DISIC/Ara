@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { groupBy, mapValues } from "lodash";
+import { chunk, groupBy, mapValues } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -80,27 +80,44 @@ const disabledResetFilters = computed(
 const minorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.MINOR
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.MINOR
     ).length
 );
 
 const majorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.MAJOR
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.MAJOR
     ).length
 );
 
 const blockingUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
-      (r) => r.userImpact === CriterionResultUserImpact.BLOCKING
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === CriterionResultUserImpact.BLOCKING
     ).length
 );
 
 const unknownUserImpactErrorCount = computed(
-  () => report.data?.results.filter((r) => r.userImpact === null).length
+  () =>
+    report.data?.results.filter(
+      (r) =>
+        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+        r.userImpact === null
+    ).length
 );
+
+const displayedErrorCount = computed(() => {
+  return errors.value
+    .map((page) => page.topics.map((topic) => topic.errors))
+    .flat(2).length;
+});
 
 function expandAll() {
   const collapses = Array.from(
@@ -307,7 +324,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 <label class="fr-label" for="user-impact-filter-major">
                   Majeur ({{ majorUserImpactErrorCount }})
                   <span class="fr-hint-text">
-                    Compléxifie grandement l’utilisation du site
+                    Complexifie grandement l’utilisation du site
                   </span>
                 </label>
               </div>
@@ -343,26 +360,32 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
       <div>
         <div class="fr-mb-6w header">
-          <span class="fr-mb-0 fr-text--xl fr-text--bold"
-            >{{ report.data.errorCount }} résultats</span
-          >
-          <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
+          <div role="alert" aria-live="polite">
+            <p class="fr-mb-0 fr-text--xl fr-text--bold">
+              {{ displayedErrorCount }} résultats
+            </p>
+          </div>
+          <!-- FIXME: make this work -->
+          <!-- <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
             Tout déplier
-          </button>
+          </button> -->
         </div>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <div class="fr-mb-4w page-title-container">
-            <h2
-              :id="`${getPageSlug(page.pageId)}`"
-              class="fr-h3 fr-mb-0 page-title"
-            >
-              {{ page.pageName }}
-            </h2>
-            <a :href="page.pageUrl" class="" target="_blank" rel="noopener">
-              {{ page.pageUrl }}
-              <span class="sr-only"> (ouvre dans un nouvel onglet) </span>
-            </a>
-          </div>
+          <h2
+            :id="`${getPageSlug(page.pageId)}`"
+            class="fr-h3 fr-mb-2w page-title"
+          >
+            {{ page.pageName }}
+          </h2>
+          <a
+            :href="page.pageUrl"
+            class="fr-mb-4w page-url"
+            target="_blank"
+            rel="noopener"
+          >
+            {{ page.pageUrl }}
+            <span class="sr-only">(nouvelle fenêtre)</span>
+          </a>
 
           <div
             v-for="(topic, i) in page.topics"
@@ -409,37 +432,39 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               </ul>
 
               <!-- Error -->
-              <!-- TODO: complete condition to include example images -->
               <LazyAccordion
-                v-if="error.errorDescription"
-                title="Description de l'erreur"
+                v-if="error.errorDescription || error.exampleImages.length > 0"
+                title="Description de l’erreur"
                 data-accordion
               >
                 <MarkdownRenderer
+                  v-if="error.errorDescription"
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <!-- <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
-                  <div class="fr-grid-row fr-grid-row--gutters">
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/123/300/200"
-                        alt=""
-                      />
-                    </div>
-                    <div class="fr-col-md-6 fr-col-12">
-                      <img
-                        style="width: 100%"
-                        src="https://picsum.photos/id/43/300/200"
-                        alt=""
-                      />
-                    </div>
+                  <div
+                    v-for="(line, k) in chunk(error.exampleImages, 2)"
+                    :key="k"
+                    class="fr-grid-row fr-grid-row--gutters"
+                  >
+                    <a
+                      v-for="example in line"
+                      :key="example.url"
+                      class="fr-col-md-6 fr-col-12 image-link"
+                      :href="example.url"
+                      target="_blank"
+                    >
+                      <span class="sr-only">
+                        Ouvrir l’image dans une nouvelle fenêtre
+                      </span>
+                      <img style="width: 100%" :src="example.url" alt="" />
+                    </a>
                   </div>
-                </div> -->
+                </div>
               </LazyAccordion>
 
               <!-- Recommendation -->
@@ -489,16 +514,12 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-.page-title-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .page-title {
   color: var(--text-active-blue-france);
+}
+
+.page-url {
+  display: inline-block;
 }
 
 .criterium-title {
@@ -511,6 +532,13 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
 .fr-sidemenu__inner {
   box-shadow: none !important;
+}
+
+.image-link {
+  background: none;
+}
+.image-link::after {
+  content: none;
 }
 
 @media (max-width: 768px) {
