@@ -186,10 +186,6 @@ const isDevMode = useDevMode();
     </div>
   </div>
 
-  <p v-if="!auditPublicationDate" class="fr-text--sm fr-mb-6w mandatory-notice">
-    Sauf mention contraire, tous les champs sont obligatoires.
-  </p>
-
   <DeleteModal
     v-if="isDeleteModalOpen"
     @confirm="confirmDelete"
@@ -245,7 +241,6 @@ const isDevMode = useDevMode();
   text-transform: none;
 }
 
-.mandatory-notice,
 .submit-notice {
   color: var(--text-mention-grey);
 }

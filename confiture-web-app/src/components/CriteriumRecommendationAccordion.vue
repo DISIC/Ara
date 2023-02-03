@@ -10,13 +10,13 @@ defineEmits<{
 
 <template>
   <LazyAccordion
-    title="Recommandation de correction (optionnel)"
+    title="Recommandation de correction"
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-4w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
-        Recommendation de correction (optionnel)
+        Recommendation de correction
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

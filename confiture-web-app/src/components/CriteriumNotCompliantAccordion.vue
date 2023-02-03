@@ -72,13 +72,13 @@ const selectedFiles = computed(() => {
 
 <template>
   <LazyAccordion
-    title="Description de l’erreur (optionnel)"
+    title="Description de l’erreur"
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-4w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
-        Description de l’erreur (optionnel)
+        Description de l’erreur
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
