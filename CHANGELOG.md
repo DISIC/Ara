@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 03/02/2023
+
+### Autres changements ⚙️
+
+- Ajout d’une page _Données personnelles_ ([#291](https://github.com/DISIC/Ara/pull/291))
+
 ## 15/12/2022
 
 ### Corrections 🐛
