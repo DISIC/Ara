@@ -127,14 +127,14 @@ import ThemeModal from "./ThemeModal.vue";
               Mentions légales
             </RouterLink>
           </li>
-          <!-- <li class="fr-footer__bottom-item">
+          <li class="fr-footer__bottom-item">
             <RouterLink
               class="fr-footer__bottom-link"
-              :to="{ name: 'personal-data' }"
+              :to="{ name: 'privacy' }"
             >
               Données personnelles
             </RouterLink>
-          </li> -->
+          </li>
           <li class="fr-footer__bottom-item">
             <RouterLink
               class="fr-footer__bottom-link"

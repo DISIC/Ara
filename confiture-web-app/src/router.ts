@@ -15,7 +15,7 @@ import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";
 import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
-// import PersonalDataPage from "./pages/misc/PersonalDataPage.vue";
+import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ContactPage from "./pages/misc/ContactPage.vue";
 import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
@@ -99,6 +99,18 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Accessibilité", name: "accessibility" },
+        ],
+      },
+    },
+    {
+      path: "/donnees-personnelles",
+      name: "privacy",
+      component: PrivacyPage,
+      meta: {
+        name: "Données personnelles",
+        breadcrumbLinks: () => [
+          getFirstBreadcrumbLink(),
+          { label: "Données personnelles", name: "privacy" },
         ],
       },
     },
