@@ -2,18 +2,18 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-
 ## 03/02/2023
 
 ### Autres changements ⚙️
 
 - Ajout d’une page _Données personnelles_ ([#291](https://github.com/DISIC/Ara/pull/291))
+- Suppression de la mention "optionnel" sur la description et la recommandation de correction des critères non conformes ([#292](https://github.com/DISIC/Ara/pull/292))
 
 ## 02/02/2023
 
 ### Corrections 🐛
 
-- Harmonise la navigation entre l’audit et le rapport (#[283](https://github.com/DISIC/Ara/pull/283))
+- Harmonise la navigation entre l’audit et le rapport ([#283](https://github.com/DISIC/Ara/pull/283))
 
 ## 01/02/2023
 
