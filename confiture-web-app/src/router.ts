@@ -109,7 +109,7 @@ const router = createRouter({
       meta: {
         name: "Données personnelles",
         breadcrumbLinks: () => [
-          getFirstBreadcrumbLink(),
+          getHomeBreadcrumbLink(),
           { label: "Données personnelles", name: "privacy" },
         ],
       },
