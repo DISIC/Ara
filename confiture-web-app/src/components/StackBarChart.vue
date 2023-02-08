@@ -54,7 +54,7 @@ const chartDatasets = [
   {
     label: "Non applicable",
     data: props.data.map((d) => d.notApplicable.percentage),
-    backgroundColor: getCssVarValue("--background-contrast-grey"),
+    backgroundColor: getCssVarValue("--grey-200-850"),
     barThickness: 16,
   },
 ];

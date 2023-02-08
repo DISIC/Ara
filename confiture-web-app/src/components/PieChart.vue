@@ -27,7 +27,7 @@ const chartConfig: ChartConfiguration<"pie", number[], string> = {
         backgroundColor: [
           getCssVarValue("--background-action-high-success"),
           getCssVarValue("--background-action-high-error"),
-          getCssVarValue("--background-contrast-grey"),
+          getCssVarValue("--border-plain-grey"),
         ],
         borderWidth: 0,
       },

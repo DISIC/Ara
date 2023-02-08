@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Ajoute une alternative aux graphiques du rapport sous forme de tableau ([#287](https://github.com/DISIC/Ara/pull/287))
 - Clarifie le statut de l’audit côté rapport ([#284](https://github.com/DISIC/Ara/pull/284))
 
 ## 03/02/2023
