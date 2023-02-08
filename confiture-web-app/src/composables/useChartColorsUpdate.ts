@@ -35,11 +35,22 @@ export function useChartColorsUpdate(
     chart?.update();
   }
 
+  // Update chart colors on `data-fr-theme` attribute change
+  const observer = new MutationObserver((mutationList) => {
+    if (!mutationList.some((m) => m.attributeName === "data-fr-theme")) {
+      return;
+    }
+
+    updateChartColors();
+  });
+
   onMounted(() => {
     mediaQueryList.addEventListener("change", updateChartColors);
+    observer.observe(document.documentElement, { attributes: true });
   });
 
   onUnmounted(() => {
     mediaQueryList.removeEventListener("change", updateChartColors);
+    observer.disconnect();
   });
 }
