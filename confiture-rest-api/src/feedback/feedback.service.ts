@@ -17,9 +17,9 @@ export class FeedbackService {
             'Remarques générales': feedback.feedback,
             Suggestions: feedback.suggestions,
             Nom: feedback.name,
-            Email: feedback.email,
+            Contact: feedback.email,
             Expertises: feedback.occupations,
-            Source: 'Ara'
+            Source: 'Formulaire de satisfaction'
           },
         },
       ],
