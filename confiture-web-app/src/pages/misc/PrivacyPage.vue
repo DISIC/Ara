@@ -20,23 +20,23 @@ import PageMeta from "../../components/PageMeta";
     <h2>Objet du traitement</h2>
     <p>Ara est un outil d’audit d’accessibilité numérique. Un audit est réalisé par une personne experte qui doit saisir les informations personnelles suivantes : prénom, nom et adresse électronique.</p>
     <p>Ces données personnelles sont utilisées :</p>
-    <ul><li>pour envoyer par courriel à l’auditeur ou l’auditrice l’URL de l’audit en cours de réalisation</li><li>pour que la personne qui reçoit l’audit puisse conacter facilement l’auditeur ou l’auditrice</li></ul>
+    <ul><li>pour envoyer par courriel à l’auditeur ou l’auditrice l’URL de l’audit en cours de réalisation</li><li>pour que la personne qui reçoit l’audit puisse contacter facilement l’auditeur ou l’auditrice</li></ul>
     <p>Lors de la suppression de l’audit, les données de l’audit, le rapport de l’audit et les données personnelles de l’auditeur ou l’auditrice sont supprimées.</p>
     <h2>Vos droits sur vos données</h2>
-    <p>Vous pouvez exercer vos droits ou obtenir des informations concernant le traitement de vos données personnelles par courriel à l'adresse suivante : <strong>contact@design.numerique.gouv.fr</strong>.</p>
+    <p>Vous pouvez exercer vos droits ou obtenir des informations concernant le traitement de vos données personnelles par courriel à l’adresse suivante : <strong>contact@design.numerique.gouv.fr</strong>.</p>
     <p>Si la réponse apportée ne vous convient pas, vous pouvez alors saisir le délégué à la protection des données des services du Premier ministre.</p>
     <ul>
-    <li>par courriel à l'adresse suivante : dpd@pm.gouv.fr ;</li>
-    <li>par courrier à l'adresse suivante :<br/>
+    <li>par courriel à l’adresse suivante : dpd@pm.gouv.fr ;</li>
+    <li>par courrier à l’adresse suivante :<br/>
     Service du Premier ministre<br/>
-    À l'attention du délégué à la protection des données (DPD)<br/>
-    56 rue de Varenne<br/>75700 Paris</li>
+    À l’attention du délégué à la protection des données (DPD)<br/>
+    56 rue de Varenne<br/>75007 Paris</li>
     </ul>
 
     <h2>À propos des <span lang="en">cookies</span> </h2>
     <p>Le site ara.numérique.gouv.fr utilise des <span lang="en">cookies</span> uniquement à des fins statistiques de mesure d’audience.</p>
     <h3>Qu’est-ce qu’un &laquo;<span lang="en">cookie</span>&raquo; ?</h3>
-    <p>Un &laquo;<span lang="en">cookie</span>&raquo; est une suite d'informations, généralement de petite taille et identifié par un nom, qui peut être transmis à votre navigateur par un site <span lang="en">web</span> sur lequel vous vous connectez. Votre navigateur <span lang="en">web</span> le conservera pendant une certaine durée, et le renverra au serveur web chaque fois que vous vous y re-connecterez. Les cookies ont de multiples usages : ils peuvent servir à mémoriser votre identifiant client auprès d'un site marchand, le contenu courant de votre panier d'achat, un identifiant permettant de tracer votre navigation pour des finalités statistiques ou publicitaires, etc. </p>
+    <p>Un &laquo;<span lang="en">cookie</span>&raquo; est une suite d’informations, généralement de petite taille et identifié par un nom, qui peut être transmis à votre navigateur par un site <span lang="en">web</span> sur lequel vous vous connectez. Votre navigateur <span lang="en">web</span> le conservera pendant une certaine durée, et le renverra au serveur web chaque fois que vous vous y re-connecterez. Les cookies ont de multiples usages : ils peuvent servir à mémoriser votre identifiant client auprès d’un site marchand, le contenu courant de votre panier d’achat, un identifiant permettant de tracer votre navigation pour des finalités statistiques ou publicitaires, etc. </p>
     
     <h4>Type de <span lang="en">cookie</span> déposé sur ara.numerique.gouv.fr</h4>
  
@@ -69,7 +69,7 @@ import PageMeta from "../../components/PageMeta";
       <tr>
         <td>Matomo</td>
         <td>piwik_ignore</td>
-        <td>Permet de mémoriser votre choix d'ignorer la mesure d'audience via Matomo</td>
+        <td>Permet de mémoriser votre choix d’ignorer la mesure d’audience via Matomo</td>
         <td>2 ans</td>
       </tr>  
     </tbody>
