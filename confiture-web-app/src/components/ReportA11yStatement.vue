@@ -4,7 +4,8 @@ import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { useReportStore } from "../store";
-import { formatDate } from "../utils";
+import { formatDate, getAuditStatus } from "../utils";
+import { AuditStatus } from "../types";
 import MarkdownRenderer from "./MarkdownRenderer.vue";
 
 const report = useReportStore();
@@ -85,12 +86,34 @@ function hideCopyAlert() {
 
 <template>
   <template v-if="report.data">
-    <div v-if="auditIsInProgress" class="fr-alert fr-alert--info">
-      <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
-      <p>
-        L’auditeur ou l’auditrice doit d’abord terminer l’audit avant de rédiger la déclaration d’accessibilité.
-      </p>
-    </div>
+    <template
+      v-if="
+        getAuditStatus(report.data) === AuditStatus.IN_PROGRESS ||
+        getAuditStatus(report.data) === AuditStatus.COMPLETED
+      "
+    >
+      <div
+        v-if="getAuditStatus(report.data) === AuditStatus.IN_PROGRESS"
+        class="fr-alert fr-alert--info"
+      >
+        <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
+        <p>
+          L’audit n'est pas terminé, l’auditeur ou l’auditrice ne peut pas
+          rédiger la déclaration d’accessibilité.
+        </p>
+      </div>
+
+      <div
+        v-if="getAuditStatus(report.data) === AuditStatus.COMPLETED"
+        class="fr-alert fr-alert--info"
+      >
+        <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
+        <p>
+          L’auditeur ou l’auditrice n’a pas encore rédigé la déclaration
+          d’accessibilité.
+        </p>
+      </div>
+    </template>
 
     <template v-else>
       <div class="info-container">

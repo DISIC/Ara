@@ -10,8 +10,13 @@ import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { AuditType } from "../../types";
-import { formatAuditType, formatDate, slugify } from "../../utils";
+import { AuditType, AuditStatus, CriteriumResultStatus } from "../../types";
+import {
+  formatAuditType,
+  getAuditStatus,
+  formatDate,
+  slugify,
+} from "../../utils";
 
 const report = useReportStore();
 
@@ -46,12 +51,6 @@ function hideReportAlert() {
   showCopyAlert.value = false;
 }
 
-const auditIsInProgress = computed(() => {
-  // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
-  // FIXME: add a flag on the audit
-  return report.data && !report.data.procedureInitiator;
-});
-
 const showOnboardingModal = ref(false);
 
 const showOnboardingAlert = ref(false);
@@ -61,11 +60,11 @@ watch(
   (report) => {
     if (report) {
       showOnboardingModal.value =
-        !auditIsInProgress.value &&
+        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
         localStorage.getItem("confiture:seen-onboarding") !== "true";
 
       showOnboardingAlert.value =
-        !auditIsInProgress.value &&
+        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
         localStorage.getItem("confiture:hide-onboarding-alert") !== "true";
     }
   }
@@ -125,11 +124,16 @@ function handleTabChange(tab: { title: string }) {
     </button>
   </div>
 
-  <div v-if="auditIsInProgress" class="fr-alert fr-alert--warning fr-mb-6w">
+  <div
+    v-if="
+      report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
+    "
+    class="fr-alert fr-alert--warning fr-mb-6w"
+  >
     <p class="fr-alert__title">Audit en cours</p>
     <p>
-      Tous les résultats de ce rapport sont provisoires tant que l’audit n’est
-      pas terminé.
+      L’audit n'est pas terminé, l'auditeur ne peut pas rédiger la déclaration
+      d’accessibilité.
     </p>
   </div>
 
@@ -171,7 +175,10 @@ function handleTabChange(tab: { title: string }) {
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
       <p
-        v-if="auditIsInProgress && report.data.creationDate"
+        v-if="
+          getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
+          report.data.creationDate
+        "
         class="fr-text--light fr-mb-4w dates"
       >
         Audit commencé le {{ formatDate(report.data.creationDate) }}
@@ -211,7 +218,8 @@ function handleTabChange(tab: { title: string }) {
         <strong>Référentiel</strong> : {{ report.data.context.referencial }}
       </p>
       <p class="fr-mb-1v">
-        <strong>Auditeur</strong> ou <strong>auditrice</strong> : {{ report.data.context.auditorName }}
+        <strong>Auditeur</strong> ou <strong>auditrice</strong> :
+        {{ report.data.context.auditorName }}
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">

@@ -27,6 +27,12 @@ export enum AuditType {
   FULL = "FULL",
 }
 
+export enum AuditStatus {
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  PUBLISHABLE = "PUBLISHABLE",
+}
+
 /** An audit object as returned by the API. */
 export interface Audit {
   id: number;
