@@ -1,30 +1,26 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 
 import uploadIllustration from "../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../assets/images/onboarding-hammer.svg";
 import magnifierIllustration from "../assets/images/onboarding-magnifier.svg";
 import handsIllustration from "../assets/images/onboarding-hands.svg";
 import StatDonut from "./StatDonut.vue";
+import DsfrModal from "./DsfrModal.vue";
 
 const props = defineProps<{
   accessibilityRate: number;
-  show: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "close", confirmed: boolean): void;
 }>();
 
-const modal = ref<HTMLDialogElement>();
+const modal = ref<InstanceType<typeof DsfrModal>>();
 
-// Make into composable to be reused with other modals ?
-onMounted(() => {
-  setTimeout(() => {
-    if (props.show) {
-      dsfr(modal.value).modal.disclose();
-    }
-  });
+defineExpose({
+  show: () => modal.value?.show(),
+  hide: () => modal.value?.hide(),
 });
 
 const steps = computed(() => [
@@ -84,9 +80,9 @@ watch(currentStep, () => {
 </script>
 
 <template>
-  <Teleport to="body">
-    <dialog
-      id="fr-modal-1"
+  <!-- <Teleport to="body"> -->
+  <!-- <dialog
+      id="onboarding-modal"
       ref="modal"
       aria-label="Bienvenue sur votre rapport d’audit"
       role="dialog"
@@ -94,94 +90,100 @@ watch(currentStep, () => {
       v-on="{
         'dsfr.conceal': () => $emit('close', false),
       }"
-    >
-      <div class="fr-container fr-container--fluid fr-container-md">
-        <div class="fr-grid-row fr-grid-row--center">
-          <div class="fr-col-12 fr-col-md-8">
-            <div class="fr-modal__body">
-              <div class="fr-modal__header">
-                <button
-                  class="fr-link--close fr-link"
-                  title="Fermer la fenêtre modale"
-                  aria-controls="fr-modal-1"
+    > -->
+  <DsfrModal
+    id="onboarding-modal"
+    ref="modal"
+    aria-label="Bienvenue sur votre rapport d’audit"
+  >
+    <div class="fr-container fr-container--fluid fr-container-md">
+      <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8">
+          <div class="fr-modal__body">
+            <div class="fr-modal__header">
+              <button
+                class="fr-link--close fr-link"
+                title="Fermer la fenêtre modale"
+                aria-controls="onboarding-modal"
+              >
+                Fermer
+              </button>
+            </div>
+
+            <div ref="contentEl" class="fr-modal__content" tabindex="-1">
+              <div class="content">
+                <h1 class="sr-only">{{ steps[0].title }}</h1>
+
+                <StatDonut
+                  v-if="currentStep === 0"
+                  class="stat-donut"
+                  :value="accessibilityRate"
+                  :total="100"
+                  unit="%"
+                />
+
+                <div
+                  v-else
+                  class="circle"
+                  :style="{
+                    '--illustration': steps[currentStep].illustration,
+                  }"
+                ></div>
+
+                <p class="fr-text--xs content-sub-title">
+                  {{ steps[currentStep].subTitle }}
+                </p>
+
+                <p
+                  class="fr-modal__title content-title"
+                  :aria-hidden="currentStep === 0"
                 >
-                  Fermer
-                </button>
-              </div>
-
-              <div ref="contentEl" class="fr-modal__content" tabindex="-1">
-                <div class="content">
-                  <h1 class="sr-only">{{ steps[0].title }}</h1>
-
-                  <StatDonut
-                    v-if="currentStep === 0"
-                    class="stat-donut"
-                    :value="accessibilityRate"
-                    :total="100"
-                    unit="%"
+                  {{ steps[currentStep].title }}
+                </p>
+                <p class="content-text" v-html="steps[currentStep].text"></p>
+                <div
+                  class="steps"
+                  :aria-label="`Étape ${currentStep + 1} sur ${steps.length}`"
+                >
+                  <div
+                    v-for="i in 5"
+                    :key="i"
+                    :class="{ 'active-step': i === currentStep + 1 }"
                   />
-
-                  <div
-                    v-else
-                    class="circle"
-                    :style="{
-                      '--illustration': steps[currentStep].illustration,
-                    }"
-                  ></div>
-
-                  <p class="fr-text--xs content-sub-title">
-                    {{ steps[currentStep].subTitle }}
-                  </p>
-
-                  <p
-                    class="fr-modal__title content-title"
-                    :aria-hidden="currentStep === 0"
-                  >
-                    {{ steps[currentStep].title }}
-                  </p>
-                  <p class="content-text" v-html="steps[currentStep].text"></p>
-                  <div
-                    class="steps"
-                    :aria-label="`Étape ${currentStep + 1} sur ${steps.length}`"
-                  >
-                    <div
-                      v-for="i in 5"
-                      :key="i"
-                      :class="{ 'active-step': i === currentStep + 1 }"
-                    />
-                  </div>
                 </div>
               </div>
+            </div>
 
-              <div class="fr-modal__footer">
-                <ul
-                  class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left"
-                >
-                  <li>
-                    <button
-                      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-s-line"
-                      :disabled="currentStep === 0"
-                      @click="previousStep"
-                    >
-                      Précedent
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
-                      @click="nextStep"
-                    >
-                      {{ currentStep === 4 ? "Accéder au rapport" : "Suivant" }}
-                    </button>
-                  </li>
-                </ul>
-              </div>
+            <div class="fr-modal__footer">
+              <ul
+                class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left"
+              >
+                <li>
+                  <button
+                    class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-s-line"
+                    :disabled="currentStep === 0"
+                    @click="previousStep"
+                  >
+                    Précedent
+                  </button>
+                </li>
+                <li>
+                  <button
+                    class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
+                    @click="nextStep"
+                  >
+                    {{ currentStep === 4 ? "Accéder au rapport" : "Suivant" }}
+                  </button>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-    </dialog>
-  </Teleport>
+    </div>
+  </DsfrModal>
+  <!-- </dialog>
+  </Teleport> -->
 </template>
 
 <style scoped>

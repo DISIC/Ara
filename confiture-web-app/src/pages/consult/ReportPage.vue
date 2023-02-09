@@ -10,7 +10,7 @@ import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { AuditType, AuditStatus, CriteriumResultStatus } from "../../types";
+import { AuditType, AuditStatus } from "../../types";
 import {
   formatAuditType,
   getAuditStatus,
@@ -51,17 +51,19 @@ function hideReportAlert() {
   showCopyAlert.value = false;
 }
 
-const showOnboardingModal = ref(false);
-
+const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
 const showOnboardingAlert = ref(false);
 
 watch(
   () => report.data,
   (report) => {
     if (report) {
-      showOnboardingModal.value =
+      if (
         getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:seen-onboarding") !== "true";
+        localStorage.getItem("confiture:seen-onboarding") !== "true"
+      ) {
+        onboardingModalRef.value?.show();
+      }
 
       showOnboardingAlert.value =
         getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
@@ -165,8 +167,9 @@ function handleTabChange(tab: { title: string }) {
       title="Rapport d’audit accessibilité"
       :description="`Découvrez la synthèse de l'audit de ${report.data?.procedureName}.`"
     />
+
     <OnboardingModal
-      :show="showOnboardingModal"
+      ref="onboardingModalRef"
       :accessibility-rate="report.data.accessibilityRate"
       @close="onOnboardingClose"
     />
