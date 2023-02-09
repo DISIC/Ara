@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import DsfrModal from "./DsfrModal.vue";
 
 defineProps<{
   title: string;
@@ -9,24 +10,27 @@ defineProps<{
   danger?: boolean;
 }>();
 
-defineEmits(["confirm", "cancel"]);
+const modal = ref<InstanceType<typeof DsfrModal>>();
+const isOpen = ref(false);
 
-defineExpose({ close });
+defineEmits(["confirm"]);
 
-const modalRef = ref();
-
-function close() {
-  dsfr(modalRef.value).modal.conceal();
-}
+defineExpose({
+  show: () => {
+    isOpen.value = true;
+    modal.value?.show();
+  },
+  hide: () => modal.value?.hide(),
+  isOpen,
+});
 </script>
 
 <template>
-  <dialog
+  <DsfrModal
     id="leave-modal"
-    ref="modalRef"
+    ref="modal"
     aria-labelledby="leave-modal-title"
-    class="fr-modal"
-    role="dialog"
+    @closed="isOpen = false"
   >
     <div class="fr-container fr-container--fluid fr-container-md">
       <div class="fr-grid-row fr-grid-row--center">
@@ -59,7 +63,7 @@ function close() {
                 <li>
                   <button
                     class="fr-btn fr-btn--secondary"
-                    @click="$emit('cancel')"
+                    @click="modal?.hide()"
                   >
                     {{ cancel }}
                   </button>
@@ -70,7 +74,7 @@ function close() {
         </div>
       </div>
     </div>
-  </dialog>
+  </DsfrModal>
 </template>
 
 <style scoped>

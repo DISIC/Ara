@@ -18,6 +18,7 @@ const emit = defineEmits<{
 
 const modal = ref<HTMLDialogElement>();
 
+// Make into composable to be reused with other modals ?
 onMounted(() => {
   setTimeout(() => {
     if (props.show) {
