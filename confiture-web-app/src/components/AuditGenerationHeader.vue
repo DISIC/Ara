@@ -39,6 +39,7 @@ function closeDeleteModal() {
 }
 
 const auditStore = useAuditStore();
+const resultStore = useResultsStore();
 const notify = useNotifications();
 
 /**
@@ -48,6 +49,10 @@ function confirmDelete() {
   auditStore
     .deleteAudit(uniqueId)
     .then(() => {
+      // Clear pinia stores
+      auditStore.$reset();
+      resultStore.$reset();
+
       router.push({
         name: "home",
         state: { deleteAudit: "true" },
