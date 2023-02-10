@@ -460,9 +460,15 @@ export class AuditService {
         await this.prisma.audit.delete({
           where: { editUniqueId: uniqueId },
         }),
-        this.fileStorageService.deleteMultipleFiles(
-          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat(),
-        ),
+        ...(storedFiles.length > 0
+          ? [
+              this.fileStorageService.deleteMultipleFiles(
+                ...storedFiles
+                  .map((file) => [file.key, file.thumbnailKey])
+                  .flat(),
+              ),
+            ]
+          : []),
       ]);
 
       return true;
