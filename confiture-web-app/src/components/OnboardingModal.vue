@@ -59,6 +59,7 @@ const steps = computed(() => [
 
 const currentStep = ref(0);
 const contentEl = ref<HTMLDivElement>();
+const confirmed = ref(false);
 
 const previousStep = () => {
   currentStep.value = Math.max(0, currentStep.value - 1);
@@ -66,8 +67,8 @@ const previousStep = () => {
 
 const nextStep = () => {
   if (currentStep.value === 4) {
-    dsfr(modal.value).modal.conceal();
-    emit("close", true);
+    confirmed.value = true;
+    modal.value?.hide();
   }
 
   currentStep.value = Math.min(4, currentStep.value + 1);
@@ -80,21 +81,11 @@ watch(currentStep, () => {
 </script>
 
 <template>
-  <!-- <Teleport to="body"> -->
-  <!-- <dialog
-      id="onboarding-modal"
-      ref="modal"
-      aria-label="Bienvenue sur votre rapport d’audit"
-      role="dialog"
-      class="fr-modal"
-      v-on="{
-        'dsfr.conceal': () => $emit('close', false),
-      }"
-    > -->
   <DsfrModal
     id="onboarding-modal"
     ref="modal"
     aria-label="Bienvenue sur votre rapport d’audit"
+    @closed="emit('close', confirmed)"
   >
     <div class="fr-container fr-container--fluid fr-container-md">
       <div class="fr-grid-row fr-grid-row--center">
