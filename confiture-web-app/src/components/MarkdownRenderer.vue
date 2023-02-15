@@ -8,7 +8,9 @@ const props = defineProps<{
 }>();
 
 const html = computed(() => {
-  const rawHtml = marked.parse(props.markdown);
+  const rawHtml = marked.parse(props.markdown, {
+    breaks: true,
+  });
   const sanitizedHtml = DOMPurify.sanitize(rawHtml);
   return sanitizedHtml;
 });
