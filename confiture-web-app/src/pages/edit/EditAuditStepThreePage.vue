@@ -170,7 +170,6 @@ function closeAutoSaveAlert() {
       :audit-publication-date="auditStore.data.publicationDate"
       :audit-edition-date="auditStore.data.editionDate"
       :edit-unique-id="uniqueId"
-      @validate="toStepFour"
     >
       <template #actions>
         <li class="fr-mr-2w">
