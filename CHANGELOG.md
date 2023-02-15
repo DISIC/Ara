@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Correction 🐛
 
 - Les retours à la lignes dans les commentaires et descriptions d'erreur sont rendu comme tel dans le rapport ([#301](https://github.com/DISIC/Ara/pull/301))
+- Le lien vers l'audit en cours est enlevé du menu de navigation lorsque l'audit est supprimé ([#299](https://github.com/DISIC/Ara/pull/299/files))
 
 ## 08/02/2023
 
