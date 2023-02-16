@@ -161,13 +161,16 @@ export const useResultsStore = defineStore("results", {
         auditStore.data.editionDate = new Date().toISOString();
       }
 
+      // update filter store to record evaluated criteria
       const filterStore = useFiltersStore();
       if (filterStore.hideEvaluatedCriteria) {
         filterStore.newEvaluatedCriteria = [
-          ...filterStore.newEvaluatedCriteria,
-          ...updates.map((u) => {
-            return `${u.topic}.${u.criterium}`;
-          }),
+          ...new Set([
+            ...filterStore.newEvaluatedCriteria,
+            ...updates.map((u) => {
+              return `${u.pageId}.${u.topic}.${u.criterium}`;
+            }),
+          ]),
         ];
       }
     },

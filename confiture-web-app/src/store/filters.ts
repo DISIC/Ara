@@ -34,6 +34,11 @@ export const useFiltersStore = defineStore("filters", {
         });
       }
 
+      /**
+       * Filter based on:
+       * - already evaluated criteria
+       * - which are not in newEvaluatedCriteria
+       */
       if (this.hideEvaluatedCriteria && resultStore.data) {
         filteredTopics = filteredTopics.map((t) => {
           return {
@@ -53,7 +58,7 @@ export const useFiltersStore = defineStore("filters", {
                 return (
                   c.status === CriteriumResultStatus.NOT_TESTED ||
                   this.newEvaluatedCriteria.includes(
-                    `${t.number}.${c.criterium.number}`
+                    `${auditStore.currentPageId}.${t.number}.${c.criterium.number}`
                   )
                 );
               }),
