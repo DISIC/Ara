@@ -520,6 +520,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 
 .page-url {
   display: inline-block;
+  word-break: break-all;
 }
 
 .criterium-title {
