@@ -437,7 +437,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               <!-- Error -->
               <LazyAccordion
                 v-if="error.errorDescription || error.exampleImages.length > 0"
-                title="Description de l’erreur"
+                title="Description de la ou des erreurs"
                 data-accordion
               >
                 <MarkdownRenderer
