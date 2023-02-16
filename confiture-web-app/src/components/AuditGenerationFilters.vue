@@ -45,7 +45,7 @@ watch(
 <template>
   <h2 class="fr-h4 fr-mb-2w">Filtres</h2>
   <button
-    v-if="store.search || store.topics.length"
+    v-if="store.search || store.topics.length || store.hideEvaluatedCriteria"
     class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
     @click="onGlobalReset"
   >
