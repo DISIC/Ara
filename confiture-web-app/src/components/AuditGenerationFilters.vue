@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { ref } from "vue";
-import { useFiltersStore } from "../store";
+import { useFiltersStore, useResultsStore } from "../store";
 
 defineProps<{
   topics: { title: string; number: number; value: number }[];
 }>();
 
-const store = useFiltersStore();
+const filterStore = useFiltersStore();
+const resultStore = useResultsStore();
 
 const resultsCount = computed(() =>
-  store.filteredTopics
+  filterStore.filteredTopics
     .map((t) => t.criteria.length)
     .reduce((total, length) => (total += length), 0)
 );
@@ -19,7 +20,7 @@ const search = ref("");
 const searchInputRef = ref<HTMLInputElement>();
 
 function onGlobalReset() {
-  store.$reset();
+  filterStore.$reset();
 
   search.value = "";
   searchInputRef.value?.focus();
@@ -27,25 +28,29 @@ function onGlobalReset() {
 
 function onSearchReset() {
   search.value = "";
-  store.search = "";
+  filterStore.search = "";
 
   searchInputRef.value?.focus();
 }
 
 function submit() {
-  store.search = search.value;
+  filterStore.search = search.value;
 }
 
 watch(
-  () => store.hideEvaluatedCriteria,
-  () => store.updateEvaluatedCriteria()
+  () => filterStore.hideEvaluatedCriteria,
+  () => filterStore.updateEvaluatedCriteria()
 );
 </script>
 
 <template>
   <h2 class="fr-h4 fr-mb-2w">Filtres</h2>
   <button
-    v-if="store.search || store.topics.length || store.hideEvaluatedCriteria"
+    v-if="
+      filterStore.search ||
+      filterStore.topics.length ||
+      filterStore.hideEvaluatedCriteria
+    "
     class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
     @click="onGlobalReset"
   >
@@ -71,37 +76,45 @@ watch(
   </form>
 
   <div role="alert" aria-live="polite">
-    <p v-if="store.search" class="fr-mt-2w fr-mb-1w">
+    <p v-if="filterStore.search" class="fr-mt-2w fr-mb-1w">
       {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
     </p>
     <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
   </div>
   <button
-    v-if="store.search"
+    v-if="filterStore.search"
     class="fr-tag fr-tag--dismiss"
-    :aria-label="`Retirer la recherche ${store.search}`"
+    :aria-label="`Retirer la recherche ${filterStore.search}`"
     @click="onSearchReset"
   >
-    {{ store.search }}
+    {{ filterStore.search }}
   </button>
 
   <div class="fr-my-4w fr-py-4w evaluated-criteria-filter">
     <div class="fr-checkbox-group">
       <input
         id="hide-evaluated-criteria"
-        v-model="store.hideEvaluatedCriteria"
+        v-model="filterStore.hideEvaluatedCriteria"
         type="checkbox"
       />
       <label class="fr-label" for="hide-evaluated-criteria">
-        Masquer critères évalués (X)
+        Masquer critères évalués
+        <template v-if="resultStore.testedCriteriumCount">
+          ({{ resultStore.testedCriteriumCount }})
+        </template>
       </label>
     </div>
     <button
-      v-if="store.hideEvaluatedCriteria && store.newEvaluatedCriteria.length"
+      v-if="
+        filterStore.hideEvaluatedCriteria &&
+        filterStore.newEvaluatedCriteria.length
+      "
       class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w"
-      @click="store.updateEvaluatedCriteria"
+      @click="filterStore.updateEvaluatedCriteria"
     >
-      Mettre à jour critères masqués ({{ store.newEvaluatedCriteria.length }})
+      Mettre à jour critères masqués ({{
+        filterStore.newEvaluatedCriteria.length
+      }})
     </button>
   </div>
 
@@ -120,7 +133,7 @@ watch(
           <div class="fr-checkbox-group topic-filter-checkbox">
             <input
               :id="`topic-filter-${i}`"
-              v-model="store.topics"
+              v-model="filterStore.topics"
               type="checkbox"
               :value="topic.number"
             />

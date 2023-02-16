@@ -102,6 +102,12 @@ export const useResultsStore = defineStore("results", {
       );
     },
 
+    testedCriteriumCount(): number | undefined {
+      return this.allResults?.filter(
+        (r) => r.status !== CriteriumResultStatus.NOT_TESTED
+      ).length;
+    },
+
     /**
      * @returns Number of pages in the audit
      */
