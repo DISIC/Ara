@@ -109,7 +109,7 @@ watch(
         filterStore.hideEvaluatedCriteria &&
         filterStore.newEvaluatedCriteria.length
       "
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mt-2w"
       @click="filterStore.updateEvaluatedCriteria"
     >
       Mettre à jour critères masqués ({{
