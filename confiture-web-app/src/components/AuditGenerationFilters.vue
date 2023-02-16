@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { ref } from "vue";
 import { useFiltersStore } from "../store";
 
@@ -35,6 +35,11 @@ function onSearchReset() {
 function submit() {
   store.search = search.value;
 }
+
+watch(
+  () => store.hideEvaluatedCriteria,
+  () => store.updateEvaluatedCriteria()
+);
 </script>
 
 <template>
@@ -80,7 +85,27 @@ function submit() {
     {{ store.search }}
   </button>
 
-  <div class="fr-form-group fr-mt-4w">
+  <div class="fr-my-4w fr-py-4w evaluated-criteria-filter">
+    <div class="fr-checkbox-group">
+      <input
+        id="hide-evaluated-criteria"
+        v-model="store.hideEvaluatedCriteria"
+        type="checkbox"
+      />
+      <label class="fr-label" for="hide-evaluated-criteria">
+        Masquer critères évalués (X)
+      </label>
+    </div>
+    <button
+      v-if="store.hideEvaluatedCriteria && store.newEvaluatedCriteria.length"
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w"
+      @click="store.updateEvaluatedCriteria"
+    >
+      Mettre à jour critères masqués ({{ store.newEvaluatedCriteria.length }})
+    </button>
+  </div>
+
+  <div class="fr-form-group">
     <fieldset class="fr-fieldset">
       <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
         Thématiques de critères
@@ -114,6 +139,10 @@ function submit() {
 </template>
 
 <style scoped>
+.evaluated-criteria-filter {
+  border-top: 1px solid var(--border-default-grey);
+  border-bottom: 1px solid var(--border-default-grey);
+}
 .topic-filter {
   --topic-filter-offset: 2rem;
 

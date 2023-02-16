@@ -91,6 +91,7 @@ const topics = computed(() => {
 const currentPageId = ref(0);
 
 function updateCurrentPageId(i: number) {
+  auditStore.updateCurrentPageId(i);
   currentPageId.value = i;
 }
 

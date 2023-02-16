@@ -9,6 +9,7 @@ import {
   ExampleImage,
 } from "../types";
 import { useAuditStore } from "./audit";
+import { useFiltersStore } from "./filters";
 
 type PageId = number;
 type TopicNumber = number;
@@ -152,6 +153,16 @@ export const useResultsStore = defineStore("results", {
       const auditStore = useAuditStore();
       if (auditStore.data) {
         auditStore.data.editionDate = new Date().toISOString();
+      }
+
+      const filterStore = useFiltersStore();
+      if (filterStore.hideEvaluatedCriteria) {
+        filterStore.newEvaluatedCriteria = [
+          ...filterStore.newEvaluatedCriteria,
+          ...updates.map((u) => {
+            return `${u.topic}.${u.criterium}`;
+          }),
+        ];
       }
     },
 
