@@ -198,7 +198,7 @@ const uniqueId = computed(() => {
     <!-- STATUS -->
     <RadioGroup
       v-model="result.status"
-      class="fr-ml-5w"
+      class="fr-ml-6w"
       :label="`Statut du critère ${topicNumber}.${criterium.number}`"
       hide-label
       :default-value="CriteriumResultStatus.NOT_TESTED"
@@ -259,6 +259,7 @@ const uniqueId = computed(() => {
 .criterium-main-section {
   display: grid;
   grid-template-columns: 2.5rem 1fr;
+  gap: 0.5rem;
 }
 
 .criterium-number,
