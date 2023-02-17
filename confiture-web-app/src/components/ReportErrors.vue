@@ -377,15 +377,18 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           >
             {{ page.pageName }}
           </h2>
-          <a
-            :href="page.pageUrl"
-            class="fr-mb-4w page-url"
-            target="_blank"
-            rel="noopener"
-          >
-            {{ page.pageUrl }}
-            <span class="sr-only">(nouvelle fenêtre)</span>
-          </a>
+          <!-- FIXME: remove this <div> with DSFR >= 1.8 -->
+          <div class="fr-mb-4w">
+            <a
+              :href="page.pageUrl"
+              class="page-url"
+              target="_blank"
+              rel="noopener"
+            >
+              {{ page.pageUrl }}
+              <span class="sr-only">(nouvelle fenêtre)</span>
+            </a>
+          </div>
 
           <div
             v-for="(topic, i) in page.topics"
@@ -519,7 +522,6 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
 }
 
 .page-url {
-  display: inline-block;
   word-break: break-all;
 }
 
