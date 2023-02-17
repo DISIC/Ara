@@ -374,7 +374,7 @@ function hideCopyAlert() {
         </h5>
         <ul class="fr-mb-9v fr-mb-md-6w">
           <li v-for="page in report.data.context.samples" :key="page.name">
-            {{ page.name }} <strong>{{ page.url }}</strong>
+            {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
           </li>
         </ul>
         <h4 class="fr-h2">Retour d’information et contact</h4>
@@ -432,5 +432,9 @@ function hideCopyAlert() {
 .statement-container {
   border: 1px solid var(--border-default-grey);
   max-width: 58rem;
+}
+
+.page-url {
+  word-break: break-all;
 }
 </style>
