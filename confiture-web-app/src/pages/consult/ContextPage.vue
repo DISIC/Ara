@@ -153,7 +153,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
             <td>{{ i + 1 }}</td>
             <td>{{ page.name }}</td>
             <td>
-              <a class="fr-link" target="_blank" :href="page.url">
+              <a class="fr-link page-url" target="_blank" :href="page.url">
                 {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
               </a>
             </td>
@@ -333,5 +333,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 <style scoped>
 .content > *:not(.fr-table) {
   max-width: 49.5rem;
+}
+
+.page-url {
+  word-break: break-all;
 }
 </style>
