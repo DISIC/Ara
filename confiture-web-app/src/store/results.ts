@@ -9,6 +9,7 @@ import {
   ExampleImage,
 } from "../types";
 import { useAuditStore } from "./audit";
+import { useFiltersStore } from "./filters";
 
 type PageId = number;
 type TopicNumber = number;
@@ -101,6 +102,12 @@ export const useResultsStore = defineStore("results", {
       );
     },
 
+    testedCriteriumCount(): number | undefined {
+      return this.allResults?.filter(
+        (r) => r.status !== CriteriumResultStatus.NOT_TESTED
+      ).length;
+    },
+
     /**
      * @returns Number of pages in the audit
      */
@@ -152,6 +159,19 @@ export const useResultsStore = defineStore("results", {
       const auditStore = useAuditStore();
       if (auditStore.data) {
         auditStore.data.editionDate = new Date().toISOString();
+      }
+
+      // update filter store to record evaluated criteria
+      const filterStore = useFiltersStore();
+      if (filterStore.hideEvaluatedCriteria) {
+        filterStore.newEvaluatedCriteria = [
+          ...new Set([
+            ...filterStore.newEvaluatedCriteria,
+            ...updates.map((u) => {
+              return `${u.pageId}.${u.topic}.${u.criterium}`;
+            }),
+          ]),
+        ];
       }
     },
 

@@ -9,12 +9,14 @@ import {
 interface AuditStoreState {
   data: Audit | null;
   lastVisitedStepLocation: string | null;
+  currentPageId: number | null;
 }
 
 export const useAuditStore = defineStore("audit", {
   state: (): AuditStoreState => ({
     data: null,
     lastVisitedStepLocation: null,
+    currentPageId: null,
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
@@ -63,6 +65,10 @@ export const useAuditStore = defineStore("audit", {
         .json()) as Audit;
       this.data = response;
       return response;
+    },
+
+    async updateCurrentPageId(id: number) {
+      this.currentPageId = id;
     },
   },
 });
