@@ -2,6 +2,7 @@ export function buildEmailHtmlTemplate(
   auditorName: string,
   procedureName: string,
   auditUrl: string,
+  reportUrl: string,
 ): string {
   return `
     <!DOCTYPE html>
@@ -76,7 +77,7 @@ export function buildEmailHtmlTemplate(
 
           <div style="background-color: #F5F5FE;padding: 24px; margin-bottom: 32px;">
             <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien public - À partager au client</p>
-            <a href="${auditUrl}" style="font-size: 16px;">${auditUrl}</a>
+            <a href="${reportUrl}" style="font-size: 16px;">${reportUrl}</a>
           </div>
 
           <p style="font-size: 18px; font-weight: 700; margin: 0;">Vous avez une question ?</p>
@@ -98,6 +99,7 @@ export function buildEmailTextTemplate(
   auditorName: string,
   procedureName: string,
   auditUrl: string,
+  reportUrl: string,
 ): string {
   return `
     Bonjour ${auditorName}, vous venez de créer l’audit "${procedureName}".
@@ -106,7 +108,7 @@ export function buildEmailTextTemplate(
     ${auditUrl}
 
     Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.
-    ${auditUrl}
+    ${reportUrl}
 
     Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail rgaa@design.numerique.gouv.fr.
   `;
