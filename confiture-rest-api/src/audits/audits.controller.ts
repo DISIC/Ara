@@ -49,8 +49,12 @@ export class AuditsController {
   })
   async createAudit(@Body() body: CreateAuditDto) {
     const audit = await this.auditService.createAudit(body);
-    // FIXME: the whole requests fails if the mail fails to send properly
-    // await this.mailer.sendAuditCreatedMail(audit);
+
+    this.mailer.sendAuditCreatedMail(audit).catch((err) => {
+      console.error(`Failed to send email for audit ${audit.editUniqueId}`);
+      console.error(err);
+    });
+
     return audit;
   }
 
