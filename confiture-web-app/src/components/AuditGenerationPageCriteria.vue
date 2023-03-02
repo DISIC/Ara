@@ -37,6 +37,12 @@ const store = useFiltersStore();
         :audit-unique-id="auditUniqueId"
       />
     </ol>
+
+    <div class="fr-grid-row fr-grid-row--right">
+      <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#main">
+        Haut de page
+      </a>
+    </div>
   </section>
 </template>
 
