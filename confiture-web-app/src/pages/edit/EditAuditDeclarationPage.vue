@@ -318,6 +318,12 @@ const isDevMode = useDevMode();
           Ces informations permettent aux usagers qui rencontrent des
           difficultés pour accéder à du contenu ou à un service d’être orienté
           vers une solution adaptée.
+          <strong
+            >Vous devez saisir au moins un des deux moyens de contact, une
+            adresse e-mail ou une
+            <abbr lang="en" title="Uniform Resource Locator">URL</abbr> vers un
+            formulaire de contact.</strong
+          >
         </p>
 
         <div class="fr-input-group">
@@ -331,12 +337,6 @@ const isDevMode = useDevMode();
           />
         </div>
 
-        <p>
-          Merci de renseigner une adresse e-mail et/ou une
-          <abbr lang="en" title="Uniform Resource Locator">URL</abbr> vers un
-          formulaire de contact.
-        </p>
-
         <div
           :class="[
             'fr-input-group',
@@ -346,7 +346,7 @@ const isDevMode = useDevMode();
           ]"
         >
           <label class="fr-label" for="contact-email">
-            Adresse e-mail (optionnel)
+            Adresse e-mail
             <span class="fr-hint-text">
               Exemple : contact@ministere.gouv.fr
             </span>
@@ -382,7 +382,7 @@ const isDevMode = useDevMode();
           ]"
         >
           <label class="fr-label" for="contact-form-url">
-            URL vers formulaire de contact (optionnel)
+            URL vers formulaire de contact
             <span class="fr-hint-text">
               Saisissez une URL valide, commençant par <code>http://</code> ou
               <code>https://</code>
@@ -494,7 +494,7 @@ const isDevMode = useDevMode();
           id="temp-tools"
           v-model="tempTools"
           class="fr-input"
-          :required="!validatedTools.length"
+          :required="!validatedTools.length && !defaultTools.length"
           @keydown.enter.prevent="validateTools"
         />
       </div>
