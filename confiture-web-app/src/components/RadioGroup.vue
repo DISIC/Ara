@@ -3,7 +3,9 @@ export type RadioColor = "red" | "green" | "yellow" | "grey";
 </script>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useUniqueId } from "../composables/useUniqueId";
+import { CriteriumResultStatus } from "../types";
 
 const props = defineProps<{
   label: string;
@@ -20,6 +22,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;
+  (e: "applyToAllPages"): void;
 }>();
 
 const uniqueId = useUniqueId();
@@ -31,33 +34,66 @@ function handleChange(value: string) {
     emit("update:modelValue", value);
   }
 }
+
+const applicableAllPages = ref(false);
 </script>
 
 <template>
-  <fieldset class="fr-mb-2w fr-mx-0 fr-p-0 fieldset">
-    <legend :class="hideLabel ? 'sr-only' : 'fr-text--bold fr-label fr-mb-3v'">
-      {{ label }}
-    </legend>
-    <div v-for="(item, i) in items" :key="i">
+  <div class="fr-mb-2w wrapper">
+    <!-- RADIOS -->
+    <fieldset class="fr-mx-0 fr-p-0 fieldset">
+      <legend
+        :class="hideLabel ? 'sr-only' : 'fr-text--bold fr-label fr-mb-3v'"
+      >
+        {{ label }}
+      </legend>
+      <div v-for="(item, i) in items" :key="i">
+        <input
+          :id="`checkbox-group-${uniqueId}--${i}`"
+          class="sr-only"
+          type="checkbox"
+          :checked="modelValue === item.value"
+          @input="handleChange(item.value)"
+        />
+        <label
+          class="fr-text--sm fr-mb-0 fr-py-1v fr-pr-1w fr-pl-4w label"
+          :class="item.color"
+          :for="`checkbox-group-${uniqueId}--${i}`"
+        >
+          {{ item.label }}
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- SWITCH -->
+    <div class="fr-toggle fr-toggle--label-left">
       <input
-        :id="`checkbox-group-${uniqueId}--${i}`"
-        class="sr-only"
+        :id="`applicable-all-pages-${uniqueId}`"
+        v-model="applicableAllPages"
         type="checkbox"
-        :checked="modelValue === item.value"
-        @input="handleChange(item.value)"
+        class="fr-toggle__input"
+        :disabled="modelValue === CriteriumResultStatus.NOT_TESTED"
+        @change="$emit('applyToAllPages')"
       />
       <label
-        class="fr-text--sm fr-mb-0 fr-py-1v fr-pr-1w fr-pl-4w label"
-        :class="item.color"
-        :for="`checkbox-group-${uniqueId}--${i}`"
+        class="fr-toggle__label fr-pr-2w"
+        :for="`applicable-all-pages-${uniqueId}`"
       >
-        {{ item.label }}
+        Sur toutes les pages
       </label>
     </div>
-  </fieldset>
+  </div>
 </template>
 
 <style scoped>
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+}
+
 .fieldset {
   border: none;
   display: flex;

@@ -177,6 +177,10 @@ function handleDeleteExample(image: ExampleImage) {
     });
 }
 
+function handleApplyToAllPages() {
+  console.log(result.status, "to all pages!");
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -203,6 +207,7 @@ const uniqueId = computed(() => {
       hide-label
       :default-value="CriteriumResultStatus.NOT_TESTED"
       :items="statuses"
+      @apply-to-all-pages="handleApplyToAllPages"
     />
 
     <!-- FIXME: left/right arrow bug -->
