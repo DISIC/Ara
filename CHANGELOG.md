@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajout d’un lien de retour en haut de page pendant l’audit ([#316](https://github.com/DISIC/Ara/pull/316))
 
+### Correction 🐛
+
+- Améliore la gestion du focus à la fermeture des modales ([#297](https://github.com/DISIC/Ara/pull/297))
+
 ## Autres changements ⚙️
 
 - Un seul des 2 moyens de contact est obligatoire : email ou URL vers un formulaire ([#313](https://github.com/DISIC/Ara/pull/313))
