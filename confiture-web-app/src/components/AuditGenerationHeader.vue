@@ -7,9 +7,9 @@ import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
 import { formatDate } from "../utils";
-import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import SummaryCard from "./SummaryCard.vue";
+import DeleteModal from "./DeleteModal.vue";
 
 defineProps<{
   auditName: string;
@@ -28,15 +28,8 @@ defineProps<{
 
 const router = useRouter();
 
-const isDeleteModalOpen = ref(false);
-
-function openDeleteModal() {
-  isDeleteModalOpen.value = true;
-}
-
-function closeDeleteModal() {
-  isDeleteModalOpen.value = false;
-}
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
@@ -67,7 +60,7 @@ function confirmDelete() {
       captureException(error);
     })
     .finally(() => {
-      closeDeleteModal();
+      deleteModal.value?.hide();
     });
 }
 
@@ -114,7 +107,7 @@ const isDevMode = useDevMode();
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="top-actions" role="list">
       <li class="fr-mr-2w">
-        <Dropdown title="Options">
+        <Dropdown ref="optionsDropdownRef" title="Options">
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
               <!-- FIXME: would this still be useful? -->
@@ -155,9 +148,7 @@ const isDevMode = useDevMode();
             <li>
               <button
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
-                aria-controls="delete-modal"
-                data-fr-opened="true"
-                @click="openDeleteModal"
+                @click="deleteModal?.show()"
               >
                 Supprimer l’audit
               </button>
@@ -192,10 +183,12 @@ const isDevMode = useDevMode();
   </div>
 
   <DeleteModal
-    v-if="isDeleteModalOpen"
+    ref="deleteModal"
     @confirm="confirmDelete"
-    @cancel="closeDeleteModal"
-    v-on="{ 'dsfr.conceal': closeDeleteModal }"
+    @closed="
+      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.closeOptions();
+    "
   />
 </template>
 

@@ -1,24 +1,23 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from "vue";
+import DsfrModal from "./DsfrModal.vue";
 
-defineEmits(["confirm", "cancel"]);
+const modal = ref<InstanceType<typeof DsfrModal>>();
 
-defineExpose({ close });
+defineEmits(["closed", "confirm"]);
 
-const modalRef = ref();
-
-function close() {
-  dsfr(modalRef.value).modal.conceal();
-}
+defineExpose({
+  show: () => modal.value?.show(),
+  hide: () => modal.value?.hide(),
+});
 </script>
 
 <template>
-  <dialog
+  <DsfrModal
     id="delete-modal"
-    ref="modalRef"
+    ref="modal"
     aria-labelledby="delete-modal-title"
-    class="fr-modal"
-    role="dialog"
+    @closed="$emit('closed')"
   >
     <div class="fr-container fr-container--fluid fr-container-md">
       <div class="fr-grid-row fr-grid-row--center">
@@ -58,7 +57,7 @@ function close() {
                 <li>
                   <button
                     class="fr-btn fr-btn--secondary"
-                    @click="$emit('cancel')"
+                    @click="modal?.hide()"
                   >
                     Non
                   </button>
@@ -69,19 +68,5 @@ function close() {
         </div>
       </div>
     </div>
-  </dialog>
+  </DsfrModal>
 </template>
-
-<style scoped>
-.danger-button {
-  background-color: var(--background-action-high-error);
-}
-
-.danger-button:hover {
-  background-color: var(--background-action-high-error-hover);
-}
-
-.danger-button:focus {
-  background-color: var(--background-action-high-error-active);
-}
-</style>

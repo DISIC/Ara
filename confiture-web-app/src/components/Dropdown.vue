@@ -36,6 +36,8 @@ watch(showContent, () => {
     window.removeEventListener("click", handleGoOutside);
   }
 });
+
+defineExpose({ buttonRef, closeOptions });
 </script>
 
 <template>

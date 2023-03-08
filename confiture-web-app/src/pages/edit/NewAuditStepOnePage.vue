@@ -11,24 +11,27 @@ import { useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
 import { captureException } from "@sentry/core";
 
-const isLeaveModalOpen = ref(false);
+const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
+const confirmedLeave = ref(false);
 
 function showLeaveModal() {
-  isLeaveModalOpen.value = true;
-}
-
-function closeLeaveModal() {
-  isLeaveModalOpen.value = false;
+  leaveModalRef.value?.show();
 }
 
 function confirmLeave() {
+  // Not closing the modal before route navigation would leave a dangling
+  // "trap focus" event handler on the document body, which would break further
+  // tab navigation
+  leaveModalRef.value?.hide();
+
+  confirmedLeave.value = true;
   router.push(leaveModalDestination.value);
 }
 
 // Display leave modal when navigating to another route
 onBeforeRouteLeave((to) => {
-  if (!isSubmitting.value && !isLeaveModalOpen.value) {
+  if (!isSubmitting.value && !confirmedLeave.value) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
@@ -88,25 +91,14 @@ function submitStepOne(data: CreateAuditRequestData) {
 
   <AuditGeneralInformationsForm @submit="submitStepOne" />
 
-  <!-- FIXME: find a proper solution to display the modal -->
-  <button
-    v-if="isLeaveModalOpen"
-    type="button"
-    aria-controls="leave-modal"
-    data-fr-opened="true"
-    class="sr-only"
-  />
-
   <LeaveModal
-    v-if="isLeaveModalOpen"
+    ref="leaveModalRef"
     title="Vous allez quitter l’audit"
     icon="fr-icon-warning-line"
     confirm="Oui, quitter l’audit"
     cancel="Non, poursuivre l’audit"
     danger
     @confirm="confirmLeave"
-    @cancel="closeLeaveModal"
-    v-on="{ 'dsfr.conceal': closeLeaveModal }"
   >
     <p>
       A ce stade aucune des informations saisies ne sera sauvegardée. C’est à
