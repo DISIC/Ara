@@ -163,7 +163,20 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
+const contactEmailRef = ref<HTMLInputElement>();
+const hasValidated = ref(false);
+const hasNoContactInfo = computed(() => {
+  return hasValidated.value && !contactEmail.value && !contactFormUrl.value;
+});
+
 function handleSubmit() {
+  hasValidated.value = true;
+
+  if (!contactEmail.value && !contactFormUrl.value) {
+    contactEmailRef.value?.focus();
+    return;
+  }
+
   const data: UpdateAuditRequestData = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ...auditStore.data!,
@@ -171,8 +184,8 @@ function handleSubmit() {
     initiator: auditInitiator.value,
     procedureUrl: procedureUrl.value,
 
-    contactEmail: contactEmail.value,
-    contactFormUrl: contactFormUrl.value,
+    contactEmail: contactEmail.value || null,
+    contactFormUrl: contactFormUrl.value || null,
     contactName: contactName.value,
 
     technologies: validatedTechnologies.value,
@@ -257,9 +270,7 @@ const isDevMode = useDevMode();
 
   <form v-if="auditStore.data" @submit.prevent="handleSubmit">
     <div class="narrow-content">
-      <h1 ref="stepTitleRef" class="fr-mb-3v">
-        📄 Déclaration d’accessibilité
-      </h1>
+      <h1 class="fr-mb-3v">📄 Déclaration d’accessibilité</h1>
       <p class="fr-text--sm mandatory-notice">
         Sauf mention contraire, tous les champs sont obligatoires.
       </p>
@@ -307,6 +318,12 @@ const isDevMode = useDevMode();
           Ces informations permettent aux usagers qui rencontrent des
           difficultés pour accéder à du contenu ou à un service d’être orienté
           vers une solution adaptée.
+          <strong
+            >Vous devez saisir au moins un des deux moyens de contact, une
+            adresse e-mail ou une
+            <abbr lang="en" title="Uniform Resource Locator">URL</abbr> vers un
+            formulaire de contact.</strong
+          >
         </p>
 
         <div class="fr-input-group">
@@ -320,24 +337,51 @@ const isDevMode = useDevMode();
           />
         </div>
 
-        <div class="fr-input-group">
-          <label class="fr-label" for="procedure-manager-email">
+        <div
+          :class="[
+            'fr-input-group',
+            {
+              'fr-input-group--error': hasNoContactInfo,
+            },
+          ]"
+        >
+          <label class="fr-label" for="contact-email">
             Adresse e-mail
             <span class="fr-hint-text">
               Exemple : contact@ministere.gouv.fr
             </span>
           </label>
           <input
-            id="procedure-manager-email"
+            id="contact-email"
+            ref="contactEmailRef"
             v-model="contactEmail"
-            class="fr-input"
+            :class="[
+              'fr-input',
+              {
+                'fr-input--error': hasNoContactInfo,
+              },
+            ]"
             type="email"
-            required
+            aria-describedby="contact-email-error"
           />
+          <p
+            v-if="hasNoContactInfo"
+            id="contact-email-error"
+            class="fr-error-text"
+          >
+            Vous devez renseigner au moins 1 moyen de contact
+          </p>
         </div>
 
-        <div class="fr-input-group">
-          <label class="fr-label" for="procedure-manager-form-url">
+        <div
+          :class="[
+            'fr-input-group',
+            {
+              'fr-input-group--error': hasNoContactInfo,
+            },
+          ]"
+        >
+          <label class="fr-label" for="contact-form-url">
             URL vers formulaire de contact
             <span class="fr-hint-text">
               Saisissez une URL valide, commençant par <code>http://</code> ou
@@ -345,13 +389,25 @@ const isDevMode = useDevMode();
             </span>
           </label>
           <input
-            id="procedure-manager-form-url"
+            id="contact-form-url"
             v-model="contactFormUrl"
-            class="fr-input"
+            :class="[
+              'fr-input',
+              {
+                'fr-input--error': hasNoContactInfo,
+              },
+            ]"
             type="url"
-            required
             placeholder="https://"
+            aria-describedby="contact-form-url-error"
           />
+          <p
+            v-if="hasNoContactInfo"
+            id="contact-form-url-error"
+            class="fr-error-text"
+          >
+            Vous devez renseigner au moins 1 moyen de contact
+          </p>
         </div>
       </fieldset>
 
@@ -438,7 +494,7 @@ const isDevMode = useDevMode();
           id="temp-tools"
           v-model="tempTools"
           class="fr-input"
-          :required="!validatedTools.length"
+          :required="!validatedTools.length && !defaultTools.length"
           @keydown.enter.prevent="validateTools"
         />
       </div>
@@ -472,7 +528,11 @@ const isDevMode = useDevMode();
     <div class="narrow-content">
       <h2 class="fr-h4">Dérogations</h2>
       <p>
-        Ces informations doivent faire l’objet d’une discussion entre l’auditeur ou l’auditrice et le responsable du site audité. C’est le responsable du site audité qui accepte de prendre le risque juridique de mentionner des contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux champs vides.
+        Ces informations doivent faire l’objet d’une discussion entre l’auditeur
+        ou l’auditrice et le responsable du site audité. C’est le responsable du
+        site audité qui accepte de prendre le risque juridique de mentionner des
+        contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux
+        champs vides.
       </p>
 
       <div class="fr-input-group">
