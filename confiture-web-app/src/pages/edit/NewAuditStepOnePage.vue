@@ -13,18 +13,25 @@ import { captureException } from "@sentry/core";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
+const confirmedLeave = ref(false);
 
 function showLeaveModal() {
   leaveModalRef.value?.show();
 }
 
 function confirmLeave() {
+  // Not closing the modal before route navigation would leave a dangling
+  // "trap focus" event handler on the document body, which would break further
+  // tab navigation
+  leaveModalRef.value?.hide();
+
+  confirmedLeave.value = true;
   router.push(leaveModalDestination.value);
 }
 
 // Display leave modal when navigating to another route
 onBeforeRouteLeave((to) => {
-  if (!isSubmitting.value && !leaveModalRef.value?.isOpen) {
+  if (!isSubmitting.value && !confirmedLeave.value) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
