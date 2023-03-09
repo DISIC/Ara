@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Audit } from '@prisma/client';
+import { Audit, EmailStatus, EmailType } from '@prisma/client';
 import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+
+import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
+import { EmailConfig } from './email-config.interface';
+
+const EMAILS: Record<EmailType, EmailConfig> = {
+  [EmailType.AUDIT_CREATION]: auditCreationEmail,
+};
 
 @Injectable()
 export class MailService {
   private readonly transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
     this.transporter = createTransport({
       host: config.get('MAILER_SMTP_HOST'),
       port: config.get('MAILER_SMTP_PORT'),
@@ -23,10 +33,15 @@ export class MailService {
 
   private async sendMail(
     to: string,
-    subject: string,
-    text: string,
-    html: string,
+    type: EmailType,
+    data: Record<string, any>,
   ) {
+    let emailStatus: EmailStatus = EmailStatus.SUCCESS;
+
+    const subject = EMAILS[type].subject(data);
+    const text = EMAILS[type].plain(data);
+    const html = EMAILS[type].html(data);
+
     await this.transporter
       .sendMail({
         from: this.config.get('MAILER_USER'),
@@ -35,12 +50,19 @@ export class MailService {
         text,
         html,
       })
-      .then((info) => {
-        console.log('Email sent', info);
-      })
       .catch((err) => {
         console.error('Failed to send email', err);
+        emailStatus = EmailStatus.FAILURE;
       });
+
+    // Log email
+    await this.prisma.emailLog.create({
+      data: {
+        status: emailStatus,
+        to,
+        type: EmailType.AUDIT_CREATION,
+      },
+    });
   }
 
   sendAuditCreatedMail(audit: Audit) {
@@ -59,12 +81,6 @@ export class MailService {
       reportUrl,
     };
 
-    // FIXME: what to do if the mail fails to send for some reason ?
-    return this.sendMail(
-      audit.auditorEmail,
-      `Création d’un nouvel audit : ${audit.procedureName}`,
-      auditCreationEmail.plainText(data),
-      auditCreationEmail.html(data),
-    );
+    return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
   }
 }

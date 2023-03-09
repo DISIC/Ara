@@ -5,6 +5,10 @@ export interface AuditCreationEmailData {
   reportUrl: string;
 }
 
+export function subject(data: AuditCreationEmailData): string {
+  return `Création d’un nouvel audit : ${data.procedureName}`;
+}
+
 export function html(data: AuditCreationEmailData): string {
   return `
     <!DOCTYPE html>
@@ -97,7 +101,7 @@ export function html(data: AuditCreationEmailData): string {
   `;
 }
 
-export function plainText(data: AuditCreationEmailData): string {
+export function plain(data: AuditCreationEmailData): string {
   return `
     Bonjour ${data.auditorName}, vous venez de créer l’audit "${data.procedureName}".
 
