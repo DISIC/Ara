@@ -4,6 +4,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { AuditsModule } from './audits/audits.module';
 import { HealthCheckController } from './health-check.controller';
 import { configValidationSchema } from './config-validation-schema';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { configValidationSchema } from './config-validation-schema';
     }),
     FeedbackModule,
     AuditsModule,
+    MailModule,
   ],
   controllers: [HealthCheckController],
 })

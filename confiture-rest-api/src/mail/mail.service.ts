@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit } from '@prisma/client';
-import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
-import {
-  buildEmailHtmlTemplate,
-  buildEmailTextTemplate,
-} from './build-email-template';
+import { createTransport, Transporter } from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import * as auditCreationEmail from './audit-creation-email';
 
 @Injectable()
-export class MailerService {
-  private readonly transporter: Transporter;
+export class MailService {
+  private readonly transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
   constructor(private readonly config: ConfigService) {
     this.transporter = createTransport({
@@ -23,8 +21,13 @@ export class MailerService {
     });
   }
 
-  private sendMail(to: string, subject: string, text: string, html: string) {
-    return this.transporter
+  private async sendMail(
+    to: string,
+    subject: string,
+    text: string,
+    html: string,
+  ) {
+    await this.transporter
       .sendMail({
         from: this.config.get('MAILER_USER'),
         to,
@@ -33,8 +36,10 @@ export class MailerService {
         html,
       })
       .then((info) => {
-        // TODO: check if the test url thing works with "real" email addresses
-        console.log('Preview URL: ' + getTestMessageUrl(info));
+        console.log('Email sent', info);
+      })
+      .catch((err) => {
+        console.error('Failed to send email', err);
       });
   }
 
@@ -47,22 +52,19 @@ export class MailerService {
       audit.consultUniqueId
     }/resultats`;
 
+    const data = {
+      auditorName: audit.auditorName,
+      procedureName: audit.procedureName,
+      auditUrl,
+      reportUrl,
+    };
+
     // FIXME: what to do if the mail fails to send for some reason ?
     return this.sendMail(
       audit.auditorEmail,
       `Création d’un nouvel audit : ${audit.procedureName}`,
-      buildEmailTextTemplate(
-        audit.auditorName,
-        audit.procedureName,
-        auditUrl,
-        reportUrl,
-      ),
-      buildEmailHtmlTemplate(
-        audit.auditorName,
-        audit.procedureName,
-        auditUrl,
-        reportUrl,
-      ),
+      auditCreationEmail.plainText(data),
+      auditCreationEmail.html(data),
     );
   }
 }

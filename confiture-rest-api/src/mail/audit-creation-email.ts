@@ -1,9 +1,11 @@
-export function buildEmailHtmlTemplate(
-  auditorName: string,
-  procedureName: string,
-  auditUrl: string,
-  reportUrl: string,
-): string {
+export interface AuditCreationEmailData {
+  auditorName: string;
+  procedureName: string;
+  auditUrl: string;
+  reportUrl: string;
+}
+
+export function html(data: AuditCreationEmailData): string {
   return `
     <!DOCTYPE html>
     <html lang="fr" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -15,7 +17,7 @@ export function buildEmailHtmlTemplate(
         <meta name="x-apple-disable-message-reformatting">
         <meta name="color-scheme" content="light dark">
         <meta name="supported-color-schemes" content="light dark">
-        <title>Création d'un nouvel audit - ${procedureName}</title>
+        <title>Création d'un nouvel audit - ${data.procedureName}</title>
         <!--[if mso]>
         <xml>
           <o:OfficeDocumentSettings>
@@ -55,7 +57,7 @@ export function buildEmailHtmlTemplate(
               République<br />Française
             </div> -->
             <div>
-              <p style="font-weight: 700; font-size: 18px; margin-bottom: 12px;">Confiture</p>
+              <p style="font-weight: 700; font-size: 18px; margin-bottom: 12px;">Ara</p>
               <p style="font-size: 14px; margin: 0;">
                 Outil de suivi de la conformité et des audits RGAA
               </p>
@@ -64,20 +66,20 @@ export function buildEmailHtmlTemplate(
 
           <hr style="margin-top: 24px; margin-bottom: 24px; border: none; border-top: 1px solid #E5E5E5;" />
 
-          <h1 style="margin-bottom: 24px;">Bonjour ${auditorName},</h1>
-          <p style="margin-bottom: 16px;">Vous venez de créer l'audit <strong>${procedureName}</strong>.</p>
+          <h1 style="margin-bottom: 24px;">Bonjour ${data.auditorName},</h1>
+          <p style="margin-bottom: 16px;">Vous venez de créer l'audit <strong>${data.procedureName}</strong>.</p>
           <p style="margin-bottom: 12px;">Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.</p>
 
           <div style="background-color: #F5F5FE;padding: 24px; margin-bottom: 24px;">
-            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien administrateur - Ne pas partager</p>
-            <a href="${auditUrl}" style="font-size: 16px;">${auditUrl}</a>
+            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien vers l'audit - Ne pas partager</p>
+            <a href="${data.auditUrl}" style="font-size: 16px;">${data.auditUrl}</a>
           </div>
 
           <p style="margin-bottom: 24px;">Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.</p>
 
           <div style="background-color: #F5F5FE;padding: 24px; margin-bottom: 32px;">
-            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien public - À partager au client</p>
-            <a href="${reportUrl}" style="font-size: 16px;">${reportUrl}</a>
+            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien vers le rapport - À partager au client</p>
+            <a href="${data.reportUrl}" style="font-size: 16px;">${data.reportUrl}</a>
           </div>
 
           <p style="font-size: 18px; font-weight: 700; margin: 0;">Vous avez une question ?</p>
@@ -95,20 +97,15 @@ export function buildEmailHtmlTemplate(
   `;
 }
 
-export function buildEmailTextTemplate(
-  auditorName: string,
-  procedureName: string,
-  auditUrl: string,
-  reportUrl: string,
-): string {
+export function plainText(data: AuditCreationEmailData): string {
   return `
-    Bonjour ${auditorName}, vous venez de créer l’audit "${procedureName}".
+    Bonjour ${data.auditorName}, vous venez de créer l’audit "${data.procedureName}".
 
     Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.
-    ${auditUrl}
+    ${data.auditUrl}
 
     Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.
-    ${reportUrl}
+    ${data.reportUrl}
 
     Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail rgaa@design.numerique.gouv.fr.
   `;

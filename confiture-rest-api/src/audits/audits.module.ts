@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 
-import { MailerService } from 'src/mailer.service';
+import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { AuditService } from './audit.service';
 import { AuditsController } from './audits.controller';
@@ -9,7 +9,7 @@ import { FileStorageService } from './file-storage.service';
 import { ReportsController } from './reports.controller';
 
 @Module({
-  providers: [AuditService, PrismaService, MailerService, FileStorageService],
+  providers: [AuditService, PrismaService, MailService, FileStorageService],
   controllers: [AuditsController, ReportsController],
   imports: [
     MulterModule.register({
