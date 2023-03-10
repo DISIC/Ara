@@ -220,7 +220,7 @@ const notify = useNotifications();
 
         <div class="fr-mt-2w fr-input-group">
           <label for="procedure-auditor-organisation" class="fr-label">
-            Nom de la structure 
+            Nom de la structure
           </label>
           <input
             id="procedure-auditor-organisation"

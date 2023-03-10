@@ -152,6 +152,33 @@ export const useResultsStore = defineStore("results", {
 
       updates.forEach((update) => {
         this.data![update.pageId][update.topic][update.criterium] = update;
+
+        // Apply `transverse` result update to every pages
+        if (update.transverse) {
+          Object.keys(this.data!)
+            .map(Number) // this.data requires a number index
+            .filter((pageId) => pageId !== update.pageId) // Ignore current page
+            .forEach((pageId) => {
+              const target = this.data![pageId][update.topic][update.criterium];
+
+              target.status = update.status;
+              target.transverse = true;
+
+              if (update.status === CriteriumResultStatus.COMPLIANT) {
+                target.compliantComment = update.compliantComment;
+              }
+
+              if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
+                target.errorDescription = update.errorDescription;
+                target.recommandation = update.recommandation;
+                target.userImpact = update.userImpact;
+              }
+
+              if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
+                target.notApplicableComment = update.notApplicableComment;
+              }
+            });
+        }
       });
 
       // update the edition date of the local audit. It will not be the same

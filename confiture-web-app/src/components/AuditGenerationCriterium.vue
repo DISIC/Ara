@@ -177,10 +177,6 @@ function handleDeleteExample(image: ExampleImage) {
     });
 }
 
-function handleApplyToAllPages() {
-  console.log(result.status, "to all pages!");
-}
-
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -200,15 +196,31 @@ const uniqueId = computed(() => {
     </div>
 
     <!-- STATUS -->
-    <RadioGroup
-      v-model="result.status"
-      class="fr-ml-6w"
-      :label="`Statut du critère ${topicNumber}.${criterium.number}`"
-      hide-label
-      :default-value="CriteriumResultStatus.NOT_TESTED"
-      :items="statuses"
-      @apply-to-all-pages="handleApplyToAllPages"
-    />
+    <div class="fr-mb-2w fr-ml-6w criterium-radios-container">
+      <RadioGroup
+        v-model="result.status"
+        :label="`Statut du critère ${topicNumber}.${criterium.number}`"
+        hide-label
+        :default-value="CriteriumResultStatus.NOT_TESTED"
+        :items="statuses"
+      />
+
+      <div class="fr-toggle fr-toggle--label-left">
+        <input
+          :id="`applicable-all-pages-${uniqueId}`"
+          v-model="result.transverse"
+          type="checkbox"
+          class="fr-toggle__input"
+          :disabled="result.status === CriteriumResultStatus.NOT_TESTED"
+        />
+        <label
+          class="fr-toggle__label fr-pr-2w"
+          :for="`applicable-all-pages-${uniqueId}`"
+        >
+          Sur toutes les pages
+        </label>
+      </div>
+    </div>
 
     <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
@@ -273,9 +285,10 @@ const uniqueId = computed(() => {
 }
 
 .criterium-radios-container {
-  border: none;
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 0 1rem;
 }
 </style>
