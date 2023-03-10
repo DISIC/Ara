@@ -109,7 +109,8 @@ model AuditedPage {
 model CriterionResult {
   id Int @id @default(autoincrement())
 
-  status CriterionResultStatus @default(NOT_TESTED)
+  status     CriterionResultStatus @default(NOT_TESTED)
+  transverse Boolean               @default(false)
 
   compliantComment String?
 

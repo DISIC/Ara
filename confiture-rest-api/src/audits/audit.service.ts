@@ -136,6 +136,7 @@ export class AuditService {
           recommandation: null,
           notApplicableComment: null,
           exampleImages: [],
+          transverse: false,
 
           topic: criterion.topic,
           criterium: criterion.criterium,
@@ -300,47 +301,109 @@ export class AuditService {
     }
   }
 
+  /**
+   * - Verify if transverse === true
+   * - Get the audit
+   * - For each of its pages:
+   *  - Apply N/NC/NA status to criteria
+   *  - Apply N/NC/NA comment to criteria
+   */
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const promises = body.data.map((item) => {
-      const data: Prisma.CriterionResultUpsertArgs['create'] = {
-        criterium: item.criterium,
-        topic: item.topic,
-        page: {
-          connect: {
-            // url_auditUniqueId: {
-            //   auditUniqueId: uniqueId,
-            //   url: item.pageUrl,
-            // },
-            id: item.pageId,
-          },
-        },
-
-        status: item.status,
-        compliantComment: item.compliantComment,
-        errorDescription: item.errorDescription,
-        notApplicableComment: item.notApplicableComment,
-        recommandation: item.recommandation,
-        userImpact: item.userImpact,
-      };
-
-      return this.prisma.criterionResult.upsert({
-        where: {
-          // auditUniqueId_pageUrl_topic_criterium: {
-          //   auditUniqueId: uniqueId,
-          //   criterium: item.criterium,
-          //   pageUrl: item.pageUrl,
-          //   topic: item.topic,
-          // },
-          pageId_topic_criterium: {
-            criterium: item.criterium,
-            topic: item.topic,
-            pageId: item.pageId,
-          },
-        },
-        create: data,
-        update: data,
-      });
+    const pages = await this.prisma.auditedPage.findMany({
+      where: { auditUniqueId: uniqueId },
     });
+
+    const promises = body.data
+      .map((item) => {
+        const data: Prisma.CriterionResultUpsertArgs['create'] = {
+          criterium: item.criterium,
+          topic: item.topic,
+          page: {
+            connect: {
+              id: item.pageId,
+            },
+          },
+
+          status: item.status,
+          compliantComment: item.compliantComment,
+          errorDescription: item.errorDescription,
+          notApplicableComment: item.notApplicableComment,
+          recommandation: item.recommandation,
+          userImpact: item.userImpact,
+          transverse: item.transverse,
+        };
+
+        const result = [
+          this.prisma.criterionResult.upsert({
+            where: {
+              // auditUniqueId_pageUrl_topic_criterium: {
+              //   auditUniqueId: uniqueId,
+              //   criterium: item.criterium,
+              //   pageUrl: item.pageUrl,
+              //   topic: item.topic,
+              // },
+              pageId_topic_criterium: {
+                criterium: item.criterium,
+                topic: item.topic,
+                pageId: item.pageId,
+              },
+            },
+            create: data,
+            update: data,
+          }),
+        ];
+
+        if (item.transverse) {
+          console.log('Cet item est transverse');
+          pages
+            .filter((page) => page.id !== item.pageId)
+            .forEach((page) => {
+              const data: Prisma.CriterionResultUpsertArgs['create'] = {
+                criterium: item.criterium,
+                topic: item.topic,
+                page: {
+                  connect: {
+                    id: page.id,
+                  },
+                },
+
+                status: item.status,
+                transverse: true,
+
+                ...(item.status === CriterionResultStatus.COMPLIANT && {
+                  compliantComment: item.compliantComment,
+                }),
+
+                ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
+                  errorDescription: item.errorDescription,
+                  recommandation: item.recommandation,
+                  userImpact: item.userImpact,
+                }),
+
+                ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
+                  notApplicableComment: item.notApplicableComment,
+                }),
+              };
+
+              result.push(
+                this.prisma.criterionResult.upsert({
+                  where: {
+                    pageId_topic_criterium: {
+                      criterium: item.criterium,
+                      topic: item.topic,
+                      pageId: page.id,
+                    },
+                  },
+                  create: data,
+                  update: data,
+                }),
+              );
+            });
+        }
+
+        return result;
+      })
+      .flat();
 
     // await Promise.all(promises);
     await this.prisma.$transaction([
