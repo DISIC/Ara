@@ -90,8 +90,6 @@ const transverseErrors = computed(() => {
   );
 });
 
-console.log(transverseErrors.value);
-
 const defaultUserImpactFillters = [
   CriterionResultUserImpact.MINOR,
   CriterionResultUserImpact.MAJOR,
