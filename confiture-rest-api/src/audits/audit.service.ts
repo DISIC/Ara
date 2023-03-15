@@ -853,6 +853,7 @@ export class AuditService {
         criterium: r.criterium,
 
         status: r.status,
+        transverse: r.transverse,
 
         compliantComment: r.compliantComment,
         errorDescription: r.errorDescription,
