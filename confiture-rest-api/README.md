@@ -70,6 +70,13 @@ yarn migrate:dev
 yarn start:dev
 ```
 
+## Deployment
+
+```sh
+# Deploy backend in dev environment
+git push heroku <branche>:main
+```
+
 ## API documentation
 
 The API routes are documented using Swagger. Go to http://localhost:4000/swagger
