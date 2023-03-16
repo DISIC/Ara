@@ -141,6 +141,12 @@ function closeAutoSaveAlert() {
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
 }
+
+const showFilters = ref(true);
+
+function toggleFilters(value: boolean) {
+  showFilters.value = value;
+}
 </script>
 
 <template>
@@ -199,12 +205,15 @@ function closeAutoSaveAlert() {
     </AuditGenerationHeader>
 
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-md-3">
+      <div :class="`fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`">
         <div class="filters-wrapper" role="search">
-          <AuditGenerationFilters :topics="topics" />
+          <AuditGenerationFilters
+            :topics="topics"
+            @toggle-filters="toggleFilters"
+          />
         </div>
       </div>
-      <div class="fr-col-12 fr-col-md-9">
+      <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
         <div class="fr-tabs">
           <ul
             class="fr-tabs__list"

@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
 import { useFiltersStore, useResultsStore } from "../store";
 
 defineProps<{
   topics: { title: string; number: number; value: number }[];
+}>();
+
+const emit = defineEmits<{
+  (e: "toggle-filters", payload: boolean): void;
 }>();
 
 const filterStore = useFiltersStore();
@@ -37,6 +41,24 @@ function submit() {
   filterStore.search = search.value;
 }
 
+const showFilters = ref(true);
+const hideFiltersRef = ref<HTMLButtonElement>();
+const displayFiltersRef = ref<HTMLButtonElement>();
+
+async function hideFilters() {
+  showFilters.value = false;
+  emit("toggle-filters", false);
+  await nextTick();
+  displayFiltersRef.value?.focus();
+}
+
+async function displayFilters() {
+  showFilters.value = true;
+  emit("toggle-filters", true);
+  await nextTick();
+  hideFiltersRef.value?.focus();
+}
+
 watch(
   () => filterStore.hideEvaluatedCriteria,
   () => filterStore.updateEvaluatedCriteria()
@@ -44,125 +66,153 @@ watch(
 </script>
 
 <template>
-  <h2 class="fr-h4 fr-mb-2w">Filtres</h2>
   <button
-    v-if="
-      filterStore.search ||
-      filterStore.topics.length ||
-      filterStore.hideEvaluatedCriteria
-    "
-    class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
-    @click="onGlobalReset"
+    v-if="!showFilters"
+    ref="displayFiltersRef"
+    type="button"
+    class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double"
+    @click="displayFilters"
   >
-    Réinitialiser
+    <span class="sr-only">Afficher la colonne des filtres</span>
   </button>
-  <form @submit.prevent="submit">
-    <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
-      Rechercher par mots clés
-    </label>
-    <div class="fr-search-bar">
-      <input
-        id="filters-search"
-        ref="searchInputRef"
-        v-model="search"
-        class="fr-input"
-        placeholder="Rechercher"
-        type="search"
-      />
-      <button type="submit" class="fr-btn" title="Rechercher">
-        Rechercher
+  <template v-else>
+    <div class="heading-wrapper">
+      <h2 class="fr-h4 fr-mb-0">Filtres</h2>
+      <button
+        ref="hideFiltersRef"
+        type="button"
+        class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-left-s-line-double"
+        @click="hideFilters"
+      >
+        <span class="sr-only">Cacher la colonne des filtres</span>
       </button>
-    </div>
-  </form>
-
-  <div role="alert" aria-live="polite">
-    <p v-if="filterStore.search" class="fr-mt-2w fr-mb-1w">
-      {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
-    </p>
-    <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
-  </div>
-  <button
-    v-if="filterStore.search"
-    class="fr-tag fr-tag--dismiss"
-    :aria-label="`Retirer la recherche ${filterStore.search}`"
-    @click="onSearchReset"
-  >
-    {{ filterStore.search }}
-  </button>
-
-  <div class="fr-my-4w fr-py-4w evaluated-criteria-filter">
-    <div class="fr-checkbox-group">
-      <input
-        id="hide-evaluated-criteria"
-        v-model="filterStore.hideEvaluatedCriteria"
-        type="checkbox"
-      />
-      <label class="fr-label" for="hide-evaluated-criteria">
-        Masquer critères évalués
-        <template v-if="resultStore.testedCriteriumCount">
-          ({{ resultStore.testedCriteriumCount }})
-        </template>
-      </label>
     </div>
     <button
       v-if="
-        filterStore.hideEvaluatedCriteria &&
-        filterStore.newEvaluatedCriteria.length
+        filterStore.search ||
+        filterStore.topics.length ||
+        filterStore.hideEvaluatedCriteria
       "
-      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mt-2w"
-      @click="filterStore.updateEvaluatedCriteria"
+      class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
+      @click="onGlobalReset"
     >
-      Mettre à jour critères masqués ({{
-        filterStore.newEvaluatedCriteria.length
-      }})
+      Réinitialiser
     </button>
 
-    <div class="fr-checkbox-group fr-mt-4w">
-      <input
-        id="hide-tests-and-references"
-        v-model="filterStore.hideTestsAndReferences"
-        type="checkbox"
-      />
-      <label class="fr-label" for="hide-tests-and-references">
-        Masquer les tests et références
+    <form @submit.prevent="submit">
+      <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
+        Rechercher par mots clés
       </label>
-    </div>
-  </div>
+      <div class="fr-search-bar">
+        <input
+          id="filters-search"
+          ref="searchInputRef"
+          v-model="search"
+          class="fr-input"
+          placeholder="Rechercher"
+          type="search"
+        />
+        <button type="submit" class="fr-btn" title="Rechercher">
+          Rechercher
+        </button>
+      </div>
+    </form>
 
-  <div class="fr-form-group">
-    <fieldset class="fr-fieldset">
-      <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
-        Thématiques de critères
-      </legend>
-      <ol class="fr-fieldset__content fr-pl-0">
-        <li
-          v-for="(topic, i) in topics"
-          :key="i"
-          class="fr-mb-3w topic-filter"
-          :style="{ '--topic-filter-value': topic.value + '%' }"
-        >
-          <div class="fr-checkbox-group topic-filter-checkbox">
-            <input
-              :id="`topic-filter-${i}`"
-              v-model="filterStore.topics"
-              type="checkbox"
-              :value="topic.number"
-            />
-            <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
-              {{ topic.number }}. {{ topic.title }}
-            </label>
-          </div>
-          <span class="fr-text--sm fr-m-0 fr-ml-1w topic-filter-value"
-            >{{ topic.value }}%</span
+    <div role="alert" aria-live="polite">
+      <p v-if="filterStore.search" class="fr-mt-2w fr-mb-1w">
+        {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
+      </p>
+      <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
+    </div>
+    <button
+      v-if="filterStore.search"
+      class="fr-tag fr-tag--dismiss"
+      :aria-label="`Retirer la recherche ${filterStore.search}`"
+      @click="onSearchReset"
+    >
+      {{ filterStore.search }}
+    </button>
+
+    <div class="fr-my-4w fr-py-4w evaluated-criteria-filter">
+      <div class="fr-checkbox-group">
+        <input
+          id="hide-evaluated-criteria"
+          v-model="filterStore.hideEvaluatedCriteria"
+          type="checkbox"
+        />
+        <label class="fr-label" for="hide-evaluated-criteria">
+          Masquer critères évalués
+          <template v-if="resultStore.testedCriteriumCount">
+            ({{ resultStore.testedCriteriumCount }})
+          </template>
+        </label>
+      </div>
+      <button
+        v-if="
+          filterStore.hideEvaluatedCriteria &&
+          filterStore.newEvaluatedCriteria.length
+        "
+        class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mt-2w"
+        @click="filterStore.updateEvaluatedCriteria"
+      >
+        Mettre à jour critères masqués ({{
+          filterStore.newEvaluatedCriteria.length
+        }})
+      </button>
+
+      <div class="fr-checkbox-group fr-mt-4w">
+        <input
+          id="hide-tests-and-references"
+          v-model="filterStore.hideTestsAndReferences"
+          type="checkbox"
+        />
+        <label class="fr-label" for="hide-tests-and-references">
+          Masquer les tests et références
+        </label>
+      </div>
+    </div>
+
+    <div class="fr-form-group">
+      <fieldset class="fr-fieldset">
+        <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
+          Thématiques de critères
+        </legend>
+        <ol class="fr-fieldset__content fr-pl-0">
+          <li
+            v-for="(topic, i) in topics"
+            :key="i"
+            class="fr-mb-3w topic-filter"
+            :style="{ '--topic-filter-value': topic.value + '%' }"
           >
-          <div class="topic-filter-progress" />
-        </li>
-      </ol>
-    </fieldset>
-  </div>
+            <div class="fr-checkbox-group topic-filter-checkbox">
+              <input
+                :id="`topic-filter-${i}`"
+                v-model="filterStore.topics"
+                type="checkbox"
+                :value="topic.number"
+              />
+              <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
+                {{ topic.number }}. {{ topic.title }}
+              </label>
+            </div>
+            <span class="fr-text--sm fr-m-0 fr-ml-1w topic-filter-value"
+              >{{ topic.value }}%</span
+            >
+            <div class="topic-filter-progress" />
+          </li>
+        </ol>
+      </fieldset>
+    </div>
+  </template>
 </template>
 
 <style scoped>
+.heading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
 .evaluated-criteria-filter {
   border-top: 1px solid var(--border-default-grey);
   border-bottom: 1px solid var(--border-default-grey);
