@@ -279,6 +279,17 @@ function toggleFilters(value: boolean) {
   transition: none !important;
 }
 
+/* Override DSFR columns width */
+.fr-col-md-1 {
+  flex: 0 0 2rem !important;
+}
+
+.fr-col-md-11 {
+  flex-grow: 1 !important;
+  max-width: none !important;
+  width: auto !important;
+}
+
 .filters-wrapper {
   position: sticky;
   top: 0;
