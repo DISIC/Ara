@@ -74,7 +74,13 @@ const transverseErrors = computed(() => {
     mapValues(
       groupBy(
         uniqWith(
-          report.data?.results.filter((r) => r.transverse),
+          report.data?.results.filter((r) => {
+            return (
+              r.transverse &&
+              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+              userImpactFilters.value.includes(r.userImpact)
+            );
+          }),
           (a, b) => a.criterium === b.criterium && a.topic === b.topic
         ),
         "topic"
