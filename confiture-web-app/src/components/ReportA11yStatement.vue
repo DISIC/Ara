@@ -228,9 +228,10 @@ function hideCopyAlert() {
         <h4 class="fr-h2">État de conformité</h4>
         <p class="fr-mb-9v fr-mb-md-6w">
           <strong
-            >{{ report.data.procedureName }} ({{
-              report.data.procedureUrl
-            }})</strong
+            >{{ report.data.procedureName }}
+            <a target="_blank" :href="report.data.procedureUrl">
+              {{ report.data.procedureUrl }}
+            </a></strong
           >
           est <strong>{{ getA11yLevel() }}</strong> conforme avec le référentiel
           général d’amélioration de l’accessibilité (RGAA), version 4 en raison
