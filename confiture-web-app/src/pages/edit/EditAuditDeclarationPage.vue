@@ -309,7 +309,9 @@ const isDevMode = useDevMode();
         />
       </div>
 
-      <fieldset class="fr-fieldset fr-mt-6w fr-mb-6w">
+      <fieldset
+        class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
+      >
         <legend>
           <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
         </legend>
@@ -456,13 +458,13 @@ const isDevMode = useDevMode();
 
       <!-- <div class="narrow-content"> -->
       <div class="fr-form-group">
-        <fieldset class="fr-fieldset">
+        <fieldset class="fr-fieldset fr-mb-4w">
           <legend class="fr-fieldset__legend fr-text--regular">
             <h2 class="fr-h4 fr-mb-0">
               Outils d’assistance utilisés pour vérifier l’accessibilité
             </h2>
           </legend>
-          <div class="fr-fieldset__content">
+          <div class="fr-fieldset__content fr-mt-2w">
             <div
               v-for="(tool, i) in availableTools"
               :key="i"
@@ -584,7 +586,7 @@ const isDevMode = useDevMode();
 
       <div v-if="isDevMode">
         <button
-          class="fr-btn fr-mt-6w fr-mb-1w fr-mr-2w"
+          class="fr-btn fr-mt-4w fr-mb-2w"
           type="button"
           @click="DEBUG_fillFields"
         >
@@ -592,7 +594,7 @@ const isDevMode = useDevMode();
         </button>
       </div>
 
-      <div class="fr-mt-6w">
+      <div class="fr-mt-4w">
         <button class="fr-btn" type="submit">Enregistrer</button>
       </div>
     </div>
@@ -600,6 +602,10 @@ const isDevMode = useDevMode();
 </template>
 
 <style scoped>
+.contact-fieldset {
+  display: block;
+}
+
 .narrow-content {
   max-width: 49.5rem;
 }

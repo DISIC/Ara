@@ -87,7 +87,6 @@ function onInput() {
 }
 .label::before {
   /* Align radio to label. This label size for radio does not exist in DSFR. */
-  margin-top: 1rem !important;
-  margin-right: 0.75rem !important;
+  margin-top: 0.25rem !important;
 }
 </style>

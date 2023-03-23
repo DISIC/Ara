@@ -242,7 +242,10 @@ function combineEnvironments(
     <h2 class="fr-h4">Les environnements de test</h2>
     <p>
       Nous vous proposons par défaut les combinaisons d’environnements de test
-      prévus au RGAA. Il appartient à l’auditeur ou l’auditrice, en concertation avec les responsables du site audité, de définir les environnements en adéquation avec le contexte d’usage du site. Vous pouvez ajouter vos propres environnements de test si vous le souhaitez.
+      prévus au RGAA. Il appartient à l’auditeur ou l’auditrice, en concertation
+      avec les responsables du site audité, de définir les environnements en
+      adéquation avec le contexte d’usage du site. Vous pouvez ajouter vos
+      propres environnements de test si vous le souhaitez.
     </p>
   </div>
 
@@ -274,7 +277,7 @@ function combineEnvironments(
     <fieldset
       v-for="(env, i) in customEnvironments"
       :key="i"
-      class="fr-fieldset fr-mt-4w fr-p-4w env-card"
+      class="fr-fieldset fr-m-0 fr-p-0 fr-mt-4w fr-p-4w env-card"
     >
       <div class="fr-mb-2w env-header">
         <legend>
@@ -427,7 +430,7 @@ function combineEnvironments(
       </div>
     </fieldset>
     <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-5w"
       type="button"
       @click="addEnvironment"
     >
@@ -449,6 +452,7 @@ function combineEnvironments(
 
 .env-card {
   border: 1px solid var(--border-default-grey);
+  display: block;
 }
 
 .env-header {
