@@ -34,7 +34,7 @@ function handleChange(value: string) {
 </script>
 
 <template>
-  <fieldset class="fr-mb-2w fr-mx-0 fr-p-0 fieldset">
+  <fieldset class="fr-mx-0 fr-p-0 fieldset">
     <legend :class="hideLabel ? 'sr-only' : 'fr-text--bold fr-label fr-mb-3v'">
       {{ label }}
     </legend>

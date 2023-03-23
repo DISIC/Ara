@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chunk, groupBy, mapValues } from "lodash-es";
+import { chunk, groupBy, mapValues, uniqWith } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -50,7 +50,7 @@ const errors = computed(() => {
               return {
                 topic: topicNumber,
                 name: getTopicName(Number(topicNumber)),
-                errors: results,
+                errors: results.filter((r) => !r.transverse),
               };
             })
           ),
@@ -60,6 +60,40 @@ const errors = computed(() => {
   );
 
   return data;
+});
+
+/**
+ [{
+    topic: 2,
+    name: "Cadres",
+    errors: [{ ... }]
+  }]
+ */
+const transverseErrors = computed(() => {
+  return Object.values(
+    mapValues(
+      groupBy(
+        uniqWith(
+          report.data?.results.filter((r) => {
+            return (
+              r.transverse &&
+              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+              userImpactFilters.value.includes(r.userImpact)
+            );
+          }),
+          (a, b) => a.criterium === b.criterium && a.topic === b.topic
+        ),
+        "topic"
+      ),
+      (results, topicNumber) => {
+        return {
+          topic: topicNumber,
+          name: getTopicName(Number(topicNumber)),
+          errors: results,
+        };
+      }
+    )
+  );
 });
 
 const defaultUserImpactFillters = [
@@ -119,25 +153,25 @@ const displayedErrorCount = computed(() => {
     .flat(2).length;
 });
 
-function expandAll() {
-  const collapses = Array.from(
-    document.querySelectorAll("[data-accordion] > [data-fr-js-collapse]")
-  );
+// function expandAll() {
+//   const collapses = Array.from(
+//     document.querySelectorAll("[data-accordion] > [data-fr-js-collapse]")
+//   );
 
-  const everyCollapseIsOpen = collapses.every((el) => {
-    return el.classList.contains("fr-collapse--expanded");
-  });
+//   const everyCollapseIsOpen = collapses.every((el) => {
+//     return el.classList.contains("fr-collapse--expanded");
+//   });
 
-  if (!everyCollapseIsOpen) {
-    collapses.forEach((el) => {
-      dsfr(el).collapse.disclose();
-    });
-  } else {
-    collapses.forEach((el) => {
-      dsfr(el).collapse.conceal();
-    });
-  }
-}
+//   if (!everyCollapseIsOpen) {
+//     collapses.forEach((el) => {
+//       dsfr(el).collapse.disclose();
+//     });
+//   } else {
+//     collapses.forEach((el) => {
+//       dsfr(el).collapse.conceal();
+//     });
+//   }
+// }
 
 function resetFilters() {
   userImpactFilters.value = defaultUserImpactFillters;
@@ -216,13 +250,44 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             <div id="fr-sidemenu-wrapper" class="fr-collapse">
               <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
               <ul class="fr-sidemenu__list">
-                <li class="fr-sidemenu__item fr-sidemenu__item--active">
+                <li
+                  v-if="transverseErrors.length"
+                  :class="[
+                    'fr-sidemenu__item',
+                    {
+                      'fr-sidemenu__item--active': Boolean(
+                        transverseErrors.length
+                      ),
+                    },
+                  ]"
+                >
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
+                  <a
+                    class="fr-sidemenu__link"
+                    href="#all-pages"
+                    target="_self"
+                    :aria-current="Boolean(transverseErrors.length)"
+                    @click="updateActiveAnchorLink('all-pages', $event)"
+                    >Toutes les pages</a
+                  >
+                </li>
+                <li
+                  :class="[
+                    'fr-sidemenu__item',
+                    {
+                      'fr-sidemenu__item--active': !Boolean(
+                        transverseErrors.length
+                      ),
+                    },
+                  ]"
+                >
                   <a
                     class="fr-sidemenu__link"
                     :href="`#${getPageSlug(report.data.context.samples[0].id)}`"
                     target="_self"
-                    aria-current="true"
+                    :aria-current="
+                      !transverseErrors.length ? 'true' : undefined
+                    "
                     @click="
                       updateActiveAnchorLink(
                         getPageSlug(report.data!.context.samples[0].id),
@@ -370,6 +435,111 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             Tout déplier
           </button> -->
         </div>
+        <section v-if="transverseErrors.length" class="fr-mb-8w">
+          <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
+            Toutes les pages
+          </h2>
+
+          <div
+            v-for="(topic, i) in transverseErrors"
+            :key="topic.topic"
+            :class="{ 'fr-mt-9v': i !== 0 }"
+          >
+            <p class="fr-tag fr-tag--sm fr-mb-3w">
+              {{ topic.name }}
+            </p>
+            <template v-for="(error, j) in topic.errors" :key="j">
+              <p
+                :class="[
+                  'fr-text--lg fr-text--bold criterium-title',
+                  { 'fr-mt-9v': j !== 0 },
+                ]"
+              >
+                {{ error.topic }}.{{ error.criterium }}&nbsp;
+                <span
+                  v-html="getCriteriumTitle(error.topic, error.criterium)"
+                />
+              </p>
+
+              <ul class="fr-badges-group fr-mb-2w">
+                <li>
+                  <p
+                    class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
+                  >
+                    {{ formatStatus(error.status) }}
+                  </p>
+                </li>
+                <li v-if="error.userImpact">
+                  <p
+                    class="fr-badge fr-badge--sm"
+                    :class="{
+                      'fr-badge--yellow-moutarde':
+                        error.userImpact === CriterionResultUserImpact.MAJOR,
+                      'fr-badge--error fr-badge--no-icon':
+                        error.userImpact === CriterionResultUserImpact.BLOCKING,
+                    }"
+                  >
+                    Impact {{ formatUserImpact(error.userImpact) }}
+                  </p>
+                </li>
+              </ul>
+
+              <!-- Error -->
+              <LazyAccordion
+                v-if="error.errorDescription || error.exampleImages.length > 0"
+                title="Description de la ou des erreurs"
+                data-accordion
+              >
+                <MarkdownRenderer
+                  v-if="error.errorDescription"
+                  class="fr-mb-3w"
+                  :markdown="error.errorDescription"
+                />
+                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                  Exemple(s) d’erreur(s)
+                </p>
+                <div class="fr-container--fluid">
+                  <div
+                    v-for="(line, k) in chunk(error.exampleImages, 2)"
+                    :key="k"
+                    class="fr-grid-row fr-grid-row--gutters"
+                  >
+                    <a
+                      v-for="example in line"
+                      :key="example.url"
+                      class="fr-col-md-6 fr-col-12 image-link"
+                      :href="example.url"
+                      target="_blank"
+                    >
+                      <span class="sr-only">
+                        Ouvrir l’image dans une nouvelle fenêtre
+                      </span>
+                      <img style="width: 100%" :src="example.url" alt="" />
+                    </a>
+                  </div>
+                </div>
+              </LazyAccordion>
+
+              <!-- Recommendation -->
+              <LazyAccordion
+                v-if="error.recommandation"
+                title="Recommandation de correction"
+                data-accordion
+              >
+                <MarkdownRenderer
+                  class="fr-mb-0"
+                  :markdown="error.recommandation"
+                />
+              </LazyAccordion>
+
+              <!-- Tests -->
+              <CriteriumTestsAccordion
+                :topic-number="error.topic"
+                :criterium="getCriterium(error.topic, error.criterium)"
+              />
+            </template>
+          </div>
+        </section>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
           <h2
             :id="`${getPageSlug(page.pageId)}`"

@@ -123,6 +123,7 @@ export interface CriteriumResult {
 
   // DATA
   status: CriteriumResultStatus;
+  transverse: boolean;
 
   compliantComment: string | null;
   errorDescription: string | null;
