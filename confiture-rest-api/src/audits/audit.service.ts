@@ -301,13 +301,6 @@ export class AuditService {
     }
   }
 
-  /**
-   * - Verify if transverse === true
-   * - Get the audit
-   * - For each of its pages:
-   *  - Apply N/NC/NA status to criteria
-   *  - Apply N/NC/NA comment to criteria
-   */
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const pages = await this.prisma.auditedPage.findMany({
       where: { auditUniqueId: uniqueId },
@@ -354,7 +347,6 @@ export class AuditService {
         ];
 
         if (item.transverse) {
-          console.log('Cet item est transverse');
           pages
             .filter((page) => page.id !== item.pageId)
             .forEach((page) => {
@@ -405,7 +397,6 @@ export class AuditService {
       })
       .flat();
 
-    // await Promise.all(promises);
     await this.prisma.$transaction([
       ...promises,
       this.updateAuditEditDate(uniqueId),
