@@ -12,7 +12,7 @@
     "generate:rgaa": "node scripts/build-rgaa-files.js"
   },
   "dependencies": {
-    "@gouvfr/dsfr": "1.7.2",
+    "@gouvfr/dsfr": "1.9.0",
     "@sentry/tracing": "^7.37.2",
     "@sentry/vue": "^7.37.2",
     "@vueuse/head": "^1.0.22",

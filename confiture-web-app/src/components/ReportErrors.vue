@@ -377,23 +377,20 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           >
             {{ page.pageName }}
           </h2>
-          <!-- FIXME: remove this <div> with DSFR >= 1.8 -->
-          <div class="fr-mb-4w">
-            <a
-              :href="page.pageUrl"
-              class="page-url"
-              target="_blank"
-              rel="noopener"
-            >
-              {{ page.pageUrl }}
-              <span class="sr-only">(nouvelle fenêtre)</span>
-            </a>
-          </div>
+          <a
+            :href="page.pageUrl"
+            class="page-url"
+            target="_blank"
+            rel="noopener"
+          >
+            {{ page.pageUrl }}
+            <span class="sr-only">(nouvelle fenêtre)</span>
+          </a>
 
           <div
             v-for="(topic, i) in page.topics"
             :key="topic.topic"
-            :class="{ 'fr-mt-9v': i !== 0 }"
+            :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
           >
             <p class="fr-tag fr-tag--sm fr-mb-3w">
               {{ topic.name }}
