@@ -15,4 +15,4 @@ Si vous souhaitez apporter des modifications au code, les étapes à suivre sont
 Pour rapporter des bugs ou proposer des améliorations, il existe 2 manières de contribuer :
 
 - Si vous avez un compte GitHub, vous pouvez [créer une issue sur le repository](https://github.com/DISIC/confiture/issues/new).
-- Si vous n'avez pas de compte GitHub, vous pouvez écrire à l'adresse email suivante : **rgaa@design.numerique.gouv.fr**.
+- Si vous n'avez pas de compte GitHub, vous pouvez écrire à l'adresse email suivante : **ara@design.numerique.gouv.fr**.
