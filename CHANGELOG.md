@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 23/03/2023
 
+## Nouvelles fonctionnalités 🚀
+
+- Ajout d’un interrupteur pour marquer le résultat d’un critère comme transverse sur toutes les pages ([#317](https://github.com/DISIC/Ara/pull/317))
+
 ## Autres changements ⚙️
 
 - Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
