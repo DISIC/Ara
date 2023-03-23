@@ -83,7 +83,6 @@ const previousPageName = route?.meta.name ?? "précédente";
         class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
         :to="previousPageUrl"
       >
-        <!-- TODO: set page name -->
         Retourner à la page {{ previousPageName }}
       </RouterLink>
     </template>
@@ -96,16 +95,16 @@ const previousPageName = route?.meta.name ?? "précédente";
     <section class="fr-form-group">
       <fieldset class="fr-fieldset fr-fieldset--inline">
         <legend class="fr-fieldset__legend fr-text--regular">
-          <h2 class="fr-text--md fr-text--bold fr-mb-1v">
+          <h2 class="fr-text--md fr-text--bold fr-mb-3w">
             Ce site est-il facile à utiliser ?
           </h2>
         </legend>
-        <div class="fr-fieldset__content">
-          <div
-            v-for="answer in availableRadioAnswers"
-            :key="answer.slug"
-            class="fr-radio-group fr-radio-rich"
-          >
+        <div
+          v-for="answer in availableRadioAnswers"
+          :key="answer.slug"
+          class="fr-fieldset__element fr-fieldset__element--inline"
+        >
+          <div class="fr-radio-group fr-radio-rich">
             <input
               :id="`easy-to-use-${answer.slug}`"
               v-model="easyToUse"
@@ -127,16 +126,16 @@ const previousPageName = route?.meta.name ?? "précédente";
     <section class="fr-form-group">
       <fieldset class="fr-fieldset fr-fieldset--inline">
         <legend class="fr-fieldset__legend fr-text--regular">
-          <h2 class="fr-text--md fr-text--bold fr-mb-1v">
+          <h2 class="fr-text--md fr-text--bold fr-mb-3w">
             Le langage employé est-il facile à comprendre ?
           </h2>
         </legend>
-        <div class="fr-fieldset__content">
-          <div
-            v-for="answer in availableRadioAnswers"
-            :key="answer.slug"
-            class="fr-radio-group fr-radio-rich"
-          >
+        <div
+          v-for="answer in availableRadioAnswers"
+          :key="answer.slug"
+          class="fr-fieldset__element fr-fieldset__element--inline"
+        >
+          <div class="fr-radio-group fr-radio-rich">
             <input
               :id="`easy-to-understand-${answer.slug}`"
               v-model="easyToUnderstand"
