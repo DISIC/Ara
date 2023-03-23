@@ -6,7 +6,7 @@ import * as morgan from 'morgan';
 import { AppModule } from './app.module';
 
 function configureSwagger(app: INestApplication) {
-  const config = new DocumentBuilder().setTitle('Confiture API').build();
+  const config = new DocumentBuilder().setTitle('Ara API').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/swagger', app, document);
 }
