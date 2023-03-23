@@ -122,7 +122,7 @@ const notify = useNotifications();
     <section class="fr-form-group">
       <fieldset class="fr-fieldset">
         <legend id="radio-rich-legend" class="fr-fieldset__legend">
-          <h2 class="fr-h4 fr-mb-0">Type d’audit</h2>
+          <h2 class="fr-h4 fr-mb-2w">Type d’audit</h2>
         </legend>
         <div class="fr-fieldset__content audit-types">
           <AuditTypeRadio
@@ -141,7 +141,7 @@ const notify = useNotifications();
     </section>
 
     <div class="narrow-content">
-      <div class="fr-input-group">
+      <div class="fr-input-group fr-my-6w">
         <label class="fr-label" for="procedure-name">
           Nom du site à auditer
         </label>
@@ -159,7 +159,7 @@ const notify = useNotifications();
       <fieldset
         v-for="(page, i) in pages"
         :key="i"
-        class="fr-fieldset fr-mt-4w fr-p-4w page-card"
+        class="fr-mt-4w fr-p-4w page-card"
       >
         <div class="fr-mb-2w page-header">
           <legend>
@@ -206,19 +206,19 @@ const notify = useNotifications();
         </div>
       </fieldset>
       <button
-        class="fr-btn fr-btn--tertiary-no-outline fr-mt-4w fr-mb-5w"
+        class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
         type="button"
         @click="addPage"
       >
         Ajouter une page
       </button>
 
-      <fieldset class="fr-fieldset fr-mt-6w fr-mb-4w">
+      <fieldset class="fr-p-0 auditor-fields">
         <legend>
-          <h2 class="fr-h4">Auditeur ou auditrice</h2>
+          <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
         </legend>
 
-        <div class="fr-mt-2w fr-input-group">
+        <div class="fr-input-group">
           <label for="procedure-auditor-organisation" class="fr-label">
             Nom de la structure
           </label>
@@ -260,17 +260,13 @@ const notify = useNotifications();
       </fieldset>
 
       <div v-if="isDevMode">
-        <button
-          class="fr-btn fr-mt-6w fr-mr-2w"
-          type="button"
-          @click="fillFields"
-        >
+        <button class="fr-btn fr-mt-4w" type="button" @click="fillFields">
           [DEV] Remplir les champs
         </button>
       </div>
 
       <div>
-        <button class="fr-btn fr-mt-6w" type="submit">Commencer l’audit</button>
+        <button class="fr-btn fr-mt-4w" type="submit">Commencer l’audit</button>
       </div>
     </div>
   </form>
@@ -305,5 +301,9 @@ const notify = useNotifications();
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.auditor-fields {
+  border: none;
 }
 </style>
