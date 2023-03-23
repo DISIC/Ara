@@ -279,7 +279,7 @@ const isDevMode = useDevMode();
 
       <div class="fr-input-group">
         <label class="fr-label" for="initiator">
-          Entité qui demande l’audit
+          Entité qui a demandé l’audit
           <span class="fr-hint-text">
             Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc
           </span>
@@ -294,7 +294,7 @@ const isDevMode = useDevMode();
 
       <div class="fr-input-group">
         <label class="fr-label" for="procedure-url">
-          URL de la page d’accueil du site à auditer
+          URL de la page d’accueil du site audité
           <span class="fr-hint-text">
             Saisissez une url valide, commençant par
             <code>https://</code>
