@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 23/03/2023
+
+## Autres changements ⚙️
+
+- Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
+
 ## 08/03/2023
 
 ## Nouvelles fonctionnalités 🚀
