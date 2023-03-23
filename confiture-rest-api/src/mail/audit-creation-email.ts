@@ -63,7 +63,7 @@ export function html(data: AuditCreationEmailData): string {
             <div>
               <p style="font-weight: 700; font-size: 18px; margin-bottom: 12px;">Ara</p>
               <p style="font-size: 14px; margin: 0;">
-                Outil de suivi de la conformité et des audits RGAA
+                Réalisez simplement vos audits d’accessibilité numérique
               </p>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function html(data: AuditCreationEmailData): string {
           </div>
 
           <p style="font-size: 18px; font-weight: 700; margin: 0;">Vous avez une question ?</p>
-          <p style="margin-top: 0; margin-bottom: 32px;">Vous pouvez nous contacter en utilisant l’adresse e-mail<br /><strong>rgaa@design.numerique.gouv.fr</strong>.</p>
+          <p style="margin-top: 0; margin-bottom: 32px;">Vous pouvez nous contacter en utilisant l’adresse e-mail<br /><strong>ara@design.numerique.gouv.fr</strong>.</p>
 
           <p style="font-size: 12px; margin-bottom: 0;">Propulsé avec ❤️ par l’équipe <a href="https://design.numerique.gouv.fr/" style="color: #000;">Design des services numériques</a></p>
           <p style="font-size: 10px; color: #666666; margin: 0;">Cet e-mail est envoyé automatiquement, merci de ne pas y répondre.</p>
@@ -111,6 +111,6 @@ export function plain(data: AuditCreationEmailData): string {
     Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.
     ${data.reportUrl}
 
-    Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail rgaa@design.numerique.gouv.fr.
+    Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
   `;
 }
