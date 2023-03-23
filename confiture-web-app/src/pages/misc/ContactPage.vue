@@ -31,7 +31,7 @@ const reportStore = useReportStore();
     </p>
     <p>
       Vous pouvez nous contacter par e-mail à l’adresse :
-      <strong>rgaa@design.numerique.gouv.fr</strong>.
+      <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
     <div v-if="reportStore.data" class="fr-callout">
@@ -40,7 +40,7 @@ const reportStore = useReportStore();
         l’auditeur ou l’auditrice qui a réalisé cet audit<template
           v-if="reportStore.data.context.auditorEmail"
         >
-          à l’adresse suivante : 
+          à l’adresse suivante :
           <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
         >.
       </p>
@@ -52,7 +52,7 @@ const reportStore = useReportStore();
     <ul>
       <li>
         En nous écrivant à :
-        <strong>rgaa@design.numerique.gouv.fr</strong>.
+        <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>
         En créant une issue sur le
