@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatAuditType, getCriteriaCount } from "../../utils";
+import { formatDate, formatAuditType, getCriteriaCount } from "../../utils";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 import { AuditType } from "../../types";
@@ -34,7 +34,12 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     <h1 class="fr-mb-3w fr-mb-md-9v">Contexte de l’audit</h1>
     <h2 class="fr-mb-2w fr-mb-md-3w">Introduction</h2>
     <p>
-      Cet audit est un audit
+      Cet audit
+      <template v-if="report.data.publishDate"
+        >réalisé le
+        <strong>{{ formatDate(report.data.publishDate) }}</strong></template
+      >
+      est un audit
       <strong>{{ formatAuditType(report.data.auditType).toLowerCase() }}</strong
       >,
       {{
@@ -92,10 +97,13 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     <h2 class="fr-mb-2w fr-mb-md-3w">Auditeur ou auditrice</h2>
 
     <p class="fr-mb-9v fr-mb-md-6w">
-      Cet audit a été réalisé par
-      <strong>{{ report.data.context.auditorName }}</strong
-      >. Pour toute question relative à cet audit, vous pouvez contacter
-      l’auditeur ou l’auditrice à l’adresse suivante :
+      <template v-if="report.data.context.auditorName"
+        >Cet audit a été réalisé par
+        <strong>{{ report.data.context.auditorName }}</strong
+        >.</template
+      >
+      Pour toute question relative à cet audit, vous pouvez contacter l’auditeur
+      ou l’auditrice à l’adresse suivante :
       <strong>{{ report.data.context.auditorEmail }}</strong
       >.
     </p>
