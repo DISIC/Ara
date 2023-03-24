@@ -9,6 +9,7 @@ interface FiltersStoreState {
   search: string;
   topics: number[];
   hideEvaluatedCriteria: boolean;
+  hideTestsAndReferences: boolean;
   newEvaluatedCriteria: string[];
 }
 
@@ -17,6 +18,7 @@ export const useFiltersStore = defineStore("filters", {
     search: "",
     topics: [],
     hideEvaluatedCriteria: false,
+    hideTestsAndReferences: false,
     newEvaluatedCriteria: [],
   }),
   getters: {
