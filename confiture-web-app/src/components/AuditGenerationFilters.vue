@@ -116,6 +116,17 @@ watch(
         filterStore.newEvaluatedCriteria.length
       }})
     </button>
+
+    <div class="fr-checkbox-group fr-mt-4w">
+      <input
+        id="hide-tests-and-references"
+        v-model="filterStore.hideTestsAndReferences"
+        type="checkbox"
+      />
+      <label class="fr-label" for="hide-tests-and-references">
+        Masquer les tests et références
+      </label>
+    </div>
   </div>
 
   <div class="fr-form-group">
