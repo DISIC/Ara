@@ -15,12 +15,13 @@ import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.v
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore } from "../store";
+import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
 import { captureException } from "@sentry/core";
 
 const store = useResultsStore();
+const filtersStore = useFiltersStore();
 
 const props = defineProps<{
   topicNumber: number;
@@ -196,7 +197,14 @@ const uniqueId = computed(() => {
     </div>
 
     <!-- STATUS -->
-    <div class="fr-mb-2w fr-ml-6w criterium-radios-container">
+    <div
+      :class="[
+        'fr-ml-6w criterium-radios-container',
+        {
+          'fr-mb-2w': result.status !== CriteriumResultStatus.NOT_TESTED,
+        },
+      ]"
+    >
       <RadioGroup
         v-model="result.status"
         :label="`Statut du critère ${topicNumber}.${criterium.number}`"
@@ -256,6 +264,10 @@ const uniqueId = computed(() => {
 
     <!-- TESTS + METHODO -->
     <CriteriumTestsAccordion
+      v-if="!filtersStore.hideTestsAndReferences"
+      :class="{
+        'fr-mt-2w': result.status === CriteriumResultStatus.NOT_TESTED,
+      }"
       :topic-number="topicNumber"
       :criterium="criterium"
     />
