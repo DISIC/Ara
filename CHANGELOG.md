@@ -2,7 +2,13 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 24/03/2023
+
 ## 23/03/2023
+
+## Autres changements ⚙️
+
+- Petits ajustements d’affichage du contenu de la page Contexte d’un audit ([#331](https://github.com/DISIC/Ara/pull/331))
 
 ## Nouvelles fonctionnalités 🚀
 
