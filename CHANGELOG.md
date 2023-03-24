@@ -9,6 +9,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ## Autres changements ⚙️
 
 - Petits ajustements d’affichage du contenu de la page Contexte d’un audit ([#331](https://github.com/DISIC/Ara/pull/331))
+- Mise à jour du wording pour la saisie d’un moyen de contact dans la déclaration ([#330](https://github.com/DISIC/Ara/pull/330))
 
 ## Nouvelles fonctionnalités 🚀
 
