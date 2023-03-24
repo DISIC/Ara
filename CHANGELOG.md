@@ -6,6 +6,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 23/03/2023
 
+## Nouvelles fonctionnalités 🚀
+
+- Ajout d’un filtre pour cacher les tests et références des critères ([#329](https://github.com/DISIC/Ara/pull/329))
+
 ## Autres changements ⚙️
 
 - Petits ajustements d’affichage du contenu de la page Contexte d’un audit ([#331](https://github.com/DISIC/Ara/pull/331))
