@@ -320,12 +320,6 @@ const isDevMode = useDevMode();
           Ces informations permettent aux usagers qui rencontrent des
           difficultés pour accéder à du contenu ou à un service d’être orienté
           vers une solution adaptée.
-          <strong
-            >Vous devez saisir au moins un des deux moyens de contact, une
-            adresse e-mail ou une
-            <abbr lang="en" title="Uniform Resource Locator">URL</abbr> vers un
-            formulaire de contact.</strong
-          >
         </p>
 
         <div class="fr-input-group">
@@ -338,6 +332,10 @@ const isDevMode = useDevMode();
             class="fr-input"
           />
         </div>
+
+        <p>
+          Vous devez renseigner au moins un des deux moyens de contact suivant :
+        </p>
 
         <div
           :class="[
@@ -384,7 +382,7 @@ const isDevMode = useDevMode();
           ]"
         >
           <label class="fr-label" for="contact-form-url">
-            URL vers formulaire de contact
+            Formulaire de contact en ligne
             <span class="fr-hint-text">
               Saisissez une URL valide, commençant par <code>http://</code> ou
               <code>https://</code>
