@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LazyAccordion from "./LazyAccordion.vue";
+import MarkdownIcon from "./icons/MarkdownIcon.vue";
 
 defineProps<{ id: string; comment: string | null }>();
 
@@ -14,7 +15,7 @@ defineEmits<{
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
-    <div class="fr-input-group fr-mb-4w">
+    <div class="fr-input-group fr-mb-1w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
         Commentaire (optionnel)
       </label>
@@ -23,11 +24,20 @@ defineEmits<{
         :value="comment ?? ''"
         class="fr-mt-0 fr-input"
         rows="5"
+        :aria-describedby="`markdown-notice-${id}`"
         @input="
           $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
         "
       ></textarea>
     </div>
+
+    <p
+      :id="`markdown-notice-${id}`"
+      class="fr-text--xs fr-mb-0 markdown-notice"
+    >
+      <MarkdownIcon />
+      Markdown pris en compte
+    </p>
 
     <!-- FILE -->
     <!-- <div class="fr-upload-group">
@@ -41,3 +51,11 @@ defineEmits<{
     </div> -->
   </LazyAccordion>
 </template>
+
+<style scoped>
+.markdown-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+</style>
