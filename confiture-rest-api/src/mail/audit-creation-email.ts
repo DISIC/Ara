@@ -19,8 +19,6 @@ export function html(data: AuditCreationEmailData): string {
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
         <meta name="x-apple-disable-message-reformatting">
-        <meta name="color-scheme" content="light dark">
-        <meta name="supported-color-schemes" content="light dark">
         <title>Création d'un nouvel audit - ${data.procedureName}</title>
         <!--[if mso]>
         <xml>
@@ -56,7 +54,7 @@ export function html(data: AuditCreationEmailData): string {
       <body class="body" style="max-width:600px; margin:0 auto;background:#ffffff;padding:24px;mso-padding-alt:0;" lang="fr">
         <div lang="fr">
           <div style="display: flex; align-items: center;">
-            <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502" style="width: 100px; margin-right: 48px;" alt="République Française">
+            <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502" style="width: 100px; object-fit: contain; margin-right: 48px;" alt="République Française">
             <!--<div style="margin-right: 48px;">
               République<br />Française
             </div> -->
@@ -72,10 +70,10 @@ export function html(data: AuditCreationEmailData): string {
 
           <h1 style="margin-bottom: 24px;">Bonjour ${data.auditorName},</h1>
           <p style="margin-bottom: 16px;">Vous venez de créer l'audit <strong>${data.procedureName}</strong>.</p>
-          <p style="margin-bottom: 12px;">Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.</p>
+          <p style="margin-bottom: 12px;">Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.</p>
 
           <div style="background-color: #F5F5FE;padding: 24px; margin-bottom: 24px;">
-            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien vers l'audit - Ne pas partager</p>
+            <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">Lien vers l'audit - ⚠️ Ne pas partager</p>
             <a href="${data.auditUrl}" style="font-size: 16px;">${data.auditUrl}</a>
           </div>
 
@@ -105,7 +103,7 @@ export function plain(data: AuditCreationEmailData): string {
   return `
     Bonjour ${data.auditorName}, vous venez de créer l’audit "${data.procedureName}".
 
-    Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.
+    Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.
     ${data.auditUrl}
 
     Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.
