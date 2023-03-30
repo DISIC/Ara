@@ -173,7 +173,7 @@ function toggleFilters(value: boolean) {
 
     <RouterLink
       v-if="auditStore.data.publicationDate && !auditStore.data.editionDate"
-      class="fr-text--sm fr-mb-2w back-summary-link"
+      class="fr-text--sm fr-mb-4w back-summary-link"
       :to="{
         name: 'edit-audit-step-four',
         params: { uniqueId },
