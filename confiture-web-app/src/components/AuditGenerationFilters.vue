@@ -70,7 +70,7 @@ watch(
     v-if="!showFilters"
     ref="displayFiltersRef"
     type="button"
-    class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double"
+    class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double toggle-column-button"
     @click="displayFilters"
   >
     <span class="sr-only">Afficher la colonne des filtres</span>
@@ -81,7 +81,7 @@ watch(
       <button
         ref="hideFiltersRef"
         type="button"
-        class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-left-s-line-double"
+        class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-left-s-line-double toggle-column-button"
         @click="hideFilters"
       >
         <span class="sr-only">Cacher la colonne des filtres</span>
@@ -213,6 +213,12 @@ watch(
   justify-content: space-between;
   margin-bottom: 2rem;
 }
+
+.toggle-column-button:focus {
+  outline: 2px solid #0a76f6;
+  outline-offset: -2px;
+}
+
 .evaluated-criteria-filter {
   border-top: 1px solid var(--border-default-grey);
   border-bottom: 1px solid var(--border-default-grey);
