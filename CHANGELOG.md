@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 30/03/2023
+
+## Nouvelles fonctionnalités 🚀
+
+- Ajout d’un bouton pour afficher ou cacher la barre latérale des filtres ([#322](https://github.com/DISIC/Ara/pull/322))
+
 ## 24/03/2023
 
 ## Nouvelles fonctionnalités 🚀
