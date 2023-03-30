@@ -171,6 +171,17 @@ function toggleFilters(value: boolean) {
       </button>
     </div>
 
+    <RouterLink
+      v-if="auditStore.data.publicationDate && !auditStore.data.editionDate"
+      class="fr-text--sm fr-mb-4w back-summary-link"
+      :to="{
+        name: 'edit-audit-step-four',
+        params: { uniqueId },
+      }"
+    >
+      Retour à la synthèse
+    </RouterLink>
+
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
       :key-infos="headerInfos"
@@ -192,13 +203,24 @@ function toggleFilters(value: boolean) {
             <span class="sr-only">(Nouvelle fenêtre)</span>
           </RouterLink>
         </li>
-        <li>
+        <li
+          v-if="
+            !auditStore.data.publicationDate ||
+            (auditStore.data.publicationDate && auditStore.data.editionDate)
+          "
+        >
           <button
             :disabled="!resultsStore.everyCriteriumAreTested"
             class="fr-btn"
             @click="toStepFour"
           >
-            Valider l’audit
+            {{
+              auditStore.data.publicationDate
+                ? auditStore.data.editionDate
+                  ? "Mettre à jour l’audit"
+                  : "Valider l’audit"
+                : "Valider l’audit"
+            }}
           </button>
         </li>
       </template>
@@ -288,6 +310,10 @@ function toggleFilters(value: boolean) {
   flex-grow: 1 !important;
   max-width: none !important;
   width: auto !important;
+}
+
+.back-summary-link {
+  display: inline-block;
 }
 
 .filters-wrapper {
