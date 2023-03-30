@@ -215,9 +215,11 @@ function toggleFilters(value: boolean) {
             @click="toStepFour"
           >
             {{
-              auditStore.data.editionDate && !auditStore.data.publicationDate
-                ? "Valider l’audit"
-                : "Mettre à jour l’audit"
+              auditStore.data.publicationDate
+                ? auditStore.data.editionDate
+                  ? "Mettre à jour l’audit"
+                  : "Valider l’audit"
+                : "Valider l’audit"
             }}
           </button>
         </li>
