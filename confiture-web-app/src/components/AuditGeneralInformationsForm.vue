@@ -7,6 +7,7 @@ import AuditTypeRadio from "./AuditTypeRadio.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
+  isSubmitting: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -96,6 +97,10 @@ function fillFields() {
 }
 
 function onSubmit() {
+  if (props.isSubmitting) {
+    return;
+  }
+
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,
@@ -266,7 +271,9 @@ const notify = useNotifications();
       </div>
 
       <div>
-        <button class="fr-btn fr-mt-4w" type="submit">Commencer l’audit</button>
+        <button class="fr-btn fr-mt-4w" type="submit" :disabled="isSubmitting">
+          {{ defaultValues ? "Mettre à jour" : "Commencer l’audit" }}
+        </button>
       </div>
     </div>
   </form>

@@ -89,7 +89,10 @@ function submitStepOne(data: CreateAuditRequestData) {
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 
-  <AuditGeneralInformationsForm @submit="submitStepOne" />
+  <AuditGeneralInformationsForm
+    :is-submitting="isSubmitting"
+    @submit="submitStepOne"
+  />
 
   <LeaveModal
     ref="leaveModalRef"

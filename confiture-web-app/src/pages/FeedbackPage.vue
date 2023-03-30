@@ -35,11 +35,18 @@ const email = ref("");
 const occupations = ref([]);
 
 const showSuccess = ref(false);
+const isSubmitting = ref(false);
 
 /**
  * Submit form and display success notice
  */
 function submitFeedback() {
+  if (isSubmitting.value) {
+    return;
+  }
+
+  isSubmitting.value = true;
+
   createFeedback({
     easyToUse: easyToUse.value,
     easyToUnderstand: easyToUnderstand.value,
@@ -50,9 +57,13 @@ function submitFeedback() {
       name: name.value,
       occupations: occupations.value,
     }),
-  }).then(() => {
-    showSuccess.value = true;
-  });
+  })
+    .then(() => {
+      showSuccess.value = true;
+    })
+    .finally(() => {
+      isSubmitting.value = false;
+    });
   // TODO: handle error
 }
 const router = useRouter();
@@ -294,7 +305,9 @@ const previousPageName = route?.meta.name ?? "précédente";
       écrivant par e-mail à l’adresse suivante :
       contact@design.numerique.gouv.fr.
     </p>
-    <button class="fr-btn fr-mb-5w" type="submit">Envoyer mon avis</button>
+    <button class="fr-btn fr-mb-5w" type="submit" :disabled="isSubmitting">
+      Envoyer mon avis
+    </button>
   </form>
 
   <a

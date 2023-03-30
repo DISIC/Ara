@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
@@ -18,7 +19,10 @@ useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
 
 const notify = useNotifications();
 
+const isSubmitting = ref(false);
+
 function submitStepOne(data: CreateAuditRequestData) {
+  isSubmitting.value = true;
   auditStore
     .updateAudit(auditUniqueId, {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -38,6 +42,9 @@ function submitStepOne(data: CreateAuditRequestData) {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
+    })
+    .finally(() => {
+      isSubmitting.value = false;
     });
 }
 </script>
@@ -51,6 +58,7 @@ function submitStepOne(data: CreateAuditRequestData) {
   <AuditGeneralInformationsForm
     v-if="auditStore.data"
     :default-values="auditStore.data"
+    :is-submitting="isSubmitting"
     @submit="submitStepOne"
   />
 </template>

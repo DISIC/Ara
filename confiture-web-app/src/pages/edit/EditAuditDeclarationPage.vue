@@ -169,7 +169,13 @@ const hasNoContactInfo = computed(() => {
   return hasValidated.value && !contactEmail.value && !contactFormUrl.value;
 });
 
+const isSubmitting = ref(false);
+
 function handleSubmit() {
+  if (isSubmitting.value) {
+    return;
+  }
+
   hasValidated.value = true;
 
   if (!contactEmail.value && !contactFormUrl.value) {
@@ -197,6 +203,9 @@ function handleSubmit() {
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value,
   };
+
+  isSubmitting.value = true;
+
   return auditStore
     .updateAudit(uniqueId, data)
     .then(() => {
@@ -212,6 +221,9 @@ function handleSubmit() {
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       throw err;
+    })
+    .finally(() => {
+      isSubmitting.value = false;
     });
 }
 
@@ -593,7 +605,9 @@ const isDevMode = useDevMode();
       </div>
 
       <div class="fr-mt-4w">
-        <button class="fr-btn" type="submit">Enregistrer</button>
+        <button class="fr-btn" type="submit" :disabled="isSubmitting">
+          Enregistrer
+        </button>
       </div>
     </div>
   </form>
