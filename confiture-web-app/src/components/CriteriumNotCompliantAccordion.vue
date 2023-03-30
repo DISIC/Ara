@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { CriterionResultUserImpact, ExampleImage } from "../types";
 import { formatBytes, formatUserImpact } from "../utils";
 import LazyAccordion from "./LazyAccordion.vue";
+import MarkdownIcon from "./icons/MarkdownIcon.vue";
 import { RadioColor } from "./Radio.vue";
 import RadioGroup from "./RadioGroup.vue";
 
@@ -76,7 +77,7 @@ const selectedFiles = computed(() => {
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
-    <div class="fr-input-group fr-mb-4w">
+    <div class="fr-input-group fr-mb-1w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
         Description de la ou des erreurs
       </label>
@@ -85,11 +86,20 @@ const selectedFiles = computed(() => {
         :value="comment ?? ''"
         class="fr-mt-0 fr-input"
         rows="5"
+        :aria-describedby="`markdown-notice-${id}`"
         @input="
           $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
         "
       ></textarea>
     </div>
+
+    <p
+      :id="`markdown-notice-${id}`"
+      class="fr-text--xs fr-mb-4w markdown-notice"
+    >
+      <MarkdownIcon />
+      Markdown pris en compte
+    </p>
 
     <!-- FILE -->
     <div class="fr-mb-4w upload-wrapper">
@@ -179,6 +189,12 @@ const selectedFiles = computed(() => {
 </template>
 
 <style scoped>
+.markdown-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .user-impact-container {
   border: none;
   display: flex;
