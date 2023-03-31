@@ -173,11 +173,13 @@ watch(
     </div>
 
     <div class="fr-form-group">
-      <fieldset class="fr-fieldset">
-        <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
+      <fieldset class="fr-fieldset fr-mx-0 fr-p-0">
+        <legend
+          class="fr-fieldset__legend fr-text--regular fr-text--bold fr-pl-0 fr-mx-0"
+        >
           Thématiques de critères
         </legend>
-        <ol class="fr-fieldset__content fr-pl-0">
+        <ol class="fr-fieldset__content fr-pl-0 fr-ml-0">
           <li
             v-for="(topic, i) in topics"
             :key="i"
