@@ -226,8 +226,16 @@ function toggleFilters(value: boolean) {
     </AuditGenerationHeader>
 
     <div class="fr-grid-row fr-grid-row--gutters columns">
-      <div :class="`fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`">
-        <div class="filters-wrapper" role="search">
+      <div
+        :class="[
+          `fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`,
+          { 'fr-px-0': showFilters },
+        ]"
+      >
+        <div
+          :class="['filters-wrapper', { 'fr-px-3v': showFilters }]"
+          role="search"
+        >
           <AuditGenerationFilters
             :topics="topics"
             @toggle-filters="toggleFilters"
