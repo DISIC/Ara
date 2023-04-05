@@ -226,7 +226,7 @@ function toggleFilters(value: boolean) {
       </template>
     </AuditGenerationHeader>
 
-    <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-grid-row fr-grid-row--gutters columns">
       <div :class="`fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`">
         <div class="filters-wrapper" role="search">
           <AuditGenerationFilters
@@ -302,13 +302,25 @@ function toggleFilters(value: boolean) {
 }
 
 /* Override DSFR columns width */
+.columns {
+  --gap: 1.5rem;
+  --filters-column-width: 2rem;
+}
+
+@media (max-width: 992px) {
+  .columns {
+    --gap: 1rem;
+  }
+}
 .fr-col-md-1 {
-  flex: 0 0 2rem !important;
+  flex: 0 0 var(--filters-column-width) !important;
 }
 
 .fr-col-md-11 {
   flex-grow: 1 !important;
-  max-width: none !important;
+  max-width: calc(
+    100% - calc(var(--filters-column-width) + var(--gap))
+  ) !important; /* Sidebar width + gap */
   width: auto !important;
 }
 
