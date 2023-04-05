@@ -11,6 +11,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ## Autres changements ⚙️
 
 - Mise à jour du titre de la page de génération d’audit ([#345](https://github.com/DISIC/Ara/pull/345))
+- Ajout du métier "Auditeur / Auditrice accessibilité" dans le formulaire de retour ([#346](https://github.com/DISIC/Ara/pull/346))
 
 ## 30/03/2023
 

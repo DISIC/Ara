@@ -21,7 +21,8 @@ const availableJobs = [
   "Développeur / Développeuse (ou lead)",
   "Chef / Cheffe de projet (product manager)",
   "Chef / Cheffe de produit (product owner)",
-  "Référent accessibilité",
+  "Auditeur / Auditrice accessibilité",
+  "Référent·es accessibilité",
   "Autre",
 ];
 
