@@ -150,13 +150,12 @@ function toggleFilters(value: boolean) {
 </script>
 
 <template>
-  <PageMeta
-    title="Réalisation de l'audit"
-    description="Réalisez simplement et validez votre audit d'accessibilité numérique."
-  />
-
   <!-- FIXME: handle loading states -->
   <template v-if="auditStore.data && resultsStore.data">
+    <PageMeta
+      :title="`Audit ${auditStore.data.procedureName}`"
+      description="Réalisez simplement et validez votre audit d'accessibilité numérique."
+    />
     <div
       v-if="showAutoSaveAlert"
       class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
