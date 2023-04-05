@@ -26,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { Audit } from 'src/generated/nestjs-dto/audit.entity';
 import { CriterionResult } from 'src/generated/nestjs-dto/criterionResult.entity';
-import { MailerService } from 'src/mailer.service';
+import { MailService } from '../mail/mail.service';
 import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
@@ -38,7 +38,7 @@ import { UploadImageDto } from './upload-image.dto';
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
-    private readonly mailer: MailerService,
+    private readonly mailer: MailService,
   ) {}
 
   /** Save a new audit into the database. */
@@ -49,8 +49,12 @@ export class AuditsController {
   })
   async createAudit(@Body() body: CreateAuditDto) {
     const audit = await this.auditService.createAudit(body);
-    // FIXME: the whole requests fails if the mail fails to send properly
-    // await this.mailer.sendAuditCreatedMail(audit);
+
+    this.mailer.sendAuditCreatedMail(audit).catch((err) => {
+      console.error(`Failed to send email for audit ${audit.editUniqueId}`);
+      console.error(err);
+    });
+
     return audit;
   }
 

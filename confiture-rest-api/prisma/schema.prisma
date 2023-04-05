@@ -167,3 +167,23 @@ model StoredFile {
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criterionResultId Int?
 }
+
+enum EmailStatus {
+  SUCCESS
+  FAILURE
+}
+
+enum EmailType {
+  AUDIT_CREATION
+}
+
+model EmailLog {
+  id Int @id @default(autoincrement())
+
+  to     String
+  type   EmailType
+  status EmailStatus
+
+  createdAt   DateTime @default(now())
+  lastAttempt DateTime @default(now())
+}

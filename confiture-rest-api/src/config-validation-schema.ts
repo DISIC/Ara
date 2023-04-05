@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import { join } from 'path';
 
 export const configValidationSchema = Joi.object({
   DATABASE_URL: Joi.string()
