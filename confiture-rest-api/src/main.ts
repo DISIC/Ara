@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import * as morgan from 'morgan';
 
 import { AppModule } from './app.module';
@@ -12,8 +13,9 @@ function configureSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.useBodyParser('json', { limit: '500kb' });
   app.use(morgan(process.env.NODE_ENV !== 'production' ? 'dev' : 'common'));
 
   app.setGlobalPrefix('/api');
