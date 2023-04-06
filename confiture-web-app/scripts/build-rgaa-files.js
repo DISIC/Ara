@@ -25,7 +25,7 @@ async function generateMethodologies() {
   const METHODOLOGIES_SOURCE = path.join(
     __dirname,
     "..",
-    "./accessibilite.numerique.gouv.fr/RGAA/4.1/methodologies.json"
+    "./accessibilite.numerique.gouv.fr/RGAA/methodologies.json"
   );
 
   const METHODOLOGIES_DESTINATION = path.join(
@@ -41,7 +41,7 @@ async function generateGlossary() {
   const GLOSSARY_SOURCE = path.join(
     __dirname,
     "..",
-    "./accessibilite.numerique.gouv.fr/RGAA/4.1/glossaire.json"
+    "./accessibilite.numerique.gouv.fr/RGAA/glossaire.json"
   );
 
   const GLOSSARY_DESTINATION = path.join(
@@ -57,7 +57,7 @@ async function generateCriteria() {
   const CRITERIA_SOURCE = path.join(
     __dirname,
     "..",
-    "./accessibilite.numerique.gouv.fr/RGAA/4.1/criteres.json"
+    "./accessibilite.numerique.gouv.fr/RGAA/criteres.json"
   );
 
   const CRITERIA_DESTINATION = path.join(
