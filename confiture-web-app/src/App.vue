@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useHead } from "@vueuse/head";
 
@@ -7,6 +7,7 @@ import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
 import ToastNotification from "./components/ToastNotification.vue";
 import SiteHeader from "./components/SiteHeader.vue";
 import SiteFooter from "./components/SiteFooter.vue";
+import MarkdownHelpModal from "./components/MarkdownHelpModal.vue";
 
 const route = useRoute();
 
@@ -43,6 +44,16 @@ useHead({
     { name: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ],
+});
+
+const markdownHelpModal = ref<InstanceType<typeof MarkdownHelpModal>>();
+
+provide("openMarkdownHelp", () => {
+  console.log(
+    "🚀 ~ file: App.vue:55 ~ provide ~ markdownHelpModal.value:",
+    markdownHelpModal.value
+  );
+  markdownHelpModal.value?.show();
 });
 </script>
 
@@ -87,6 +98,8 @@ useHead({
   </main>
 
   <SiteFooter />
+
+  <MarkdownHelpModal ref="markdownHelpModal" />
 
   <ToastNotification />
 </template>
