@@ -7,7 +7,6 @@ import MarkdownRenderer from "./MarkdownRenderer.vue";
 /*
 TODO:
 - Quote renders weird
-- Add style to code elements.
 */
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
@@ -249,3 +248,15 @@ const orderedListExample = `1. élément un
     </div>
   </DsfrModal>
 </template>
+
+<style scoped>
+code {
+  background-color: var(--grey-950-100);
+  padding: 0.25rem 0.75rem;
+}
+
+pre code {
+  display: block;
+  padding: 0.75rem;
+}
+</style>

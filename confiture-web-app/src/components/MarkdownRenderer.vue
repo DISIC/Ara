@@ -19,6 +19,20 @@ const html = computed(() => {
 </script>
 
 <template>
-  <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
+  <!-- eslint-disable vue/no-v-text-v-html-on-component -->
   <component :is="inline ? 'span' : 'div'" v-html="html"></component>
 </template>
+
+<style scoped>
+:deep(code) {
+  /* code { */
+  background-color: var(--grey-950-100);
+  padding: 0.25rem 0.75rem;
+}
+
+/* pre code { */
+:deep(pre code) {
+  display: block;
+  padding: 0.75rem;
+}
+</style>
