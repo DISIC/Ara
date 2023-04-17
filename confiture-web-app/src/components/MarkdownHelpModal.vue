@@ -6,7 +6,6 @@ import MarkdownRenderer from "./MarkdownRenderer.vue";
 
 /*
 TODO:
-- Hide rendered example from AT ? Only the titles example ?
 - Quote renders weird
 - Add style to code elements.
 */
@@ -136,9 +135,11 @@ const orderedListExample = `1. élément un
               </div>
               <p class="fr-mb-3v">Exemples :</p>
               <pre><code>{{titlesExample}}</code></pre>
-              <p class="fr-mb-3v">S’affichent ainsi :</p>
-              <!-- FIXME: the titles get added to the DOM and could f up assistive technologies -->
-              <MarkdownRenderer :markdown="titlesExample" />
+              <div aria-hidden="true">
+                <!-- Example results are aria-hidden to no polute AT heading list. -->
+                <p class="fr-mb-3v">S’affichent ainsi :</p>
+                <MarkdownRenderer :markdown="titlesExample" />
+              </div>
 
               <!-- Styles de texte -->
 
