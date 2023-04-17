@@ -4,11 +4,6 @@ import { ref } from "vue";
 import DsfrModal from "./DsfrModal.vue";
 import MarkdownRenderer from "./MarkdownRenderer.vue";
 
-/*
-TODO:
-- Quote renders weird
-*/
-
 const modal = ref<InstanceType<typeof DsfrModal>>();
 
 defineEmits(["confirm"]);

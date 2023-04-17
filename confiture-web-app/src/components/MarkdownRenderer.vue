@@ -35,4 +35,11 @@ const html = computed(() => {
   display: block;
   padding: 0.75rem;
 }
+
+:deep(blockquote) {
+  padding-left: 1rem;
+  margin: 0;
+  border-left: 1px solid var(--grey-425-625);
+  color: var(--grey-425-625);
+}
 </style>
