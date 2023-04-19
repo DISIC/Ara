@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownIcon from "./icons/MarkdownIcon.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 defineProps<{
   id: string;
@@ -34,13 +34,7 @@ defineEmits<{
       ></textarea>
     </div>
 
-    <p
-      :id="`markdown-notice-${id}`"
-      class="fr-text--xs fr-mb-0 markdown-notice"
-    >
-      <MarkdownIcon />
-      Markdown pris en compte
-    </p>
+    <MarkdownHelpButton :id="`markdown-notice-${id}`" />
 
     <!-- FILE -->
     <!-- <div class="fr-upload-group">
@@ -54,11 +48,3 @@ defineEmits<{
     </div> -->
   </LazyAccordion>
 </template>
-
-<style scoped>
-.markdown-notice {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-</style>

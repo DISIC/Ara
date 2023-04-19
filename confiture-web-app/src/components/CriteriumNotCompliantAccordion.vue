@@ -3,9 +3,9 @@ import { ref, computed } from "vue";
 import { CriterionResultUserImpact, ExampleImage } from "../types";
 import { formatBytes, formatUserImpact } from "../utils";
 import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownIcon from "./icons/MarkdownIcon.vue";
 import { RadioColor } from "./Radio.vue";
 import RadioGroup from "./RadioGroup.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 const props = defineProps<{
   id: string;
@@ -93,13 +93,7 @@ const selectedFiles = computed(() => {
       ></textarea>
     </div>
 
-    <p
-      :id="`markdown-notice-${id}`"
-      class="fr-text--xs fr-mb-4w markdown-notice"
-    >
-      <MarkdownIcon />
-      Markdown pris en compte
-    </p>
+    <MarkdownHelpButton :id="`markdown-notice-${id}`" class="fr-mb-4w" />
 
     <!-- FILE -->
     <div class="fr-mb-4w upload-wrapper">

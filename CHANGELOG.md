@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 19/04/2023
+
+## Nouvelles fonctionnalités 🚀
+
+- Ajout d'une aide à la saisie en Markdown accessible en cliquant sur le bouton "Markdown pris en compte" en dessous des champs texte concernés ([#350](https://github.com/DISIC/Ara/pull/350))
+
 ## 05/04/2023
 
 ## Nouvelles fonctionnalités 🚀
