@@ -25,12 +25,10 @@ const html = computed(() => {
 
 <style scoped>
 :deep(code) {
-  /* code { */
   background-color: var(--grey-950-100);
   padding: 0.25rem 0.75rem;
 }
 
-/* pre code { */
 :deep(pre code) {
   display: block;
   padding: 0.75rem;
