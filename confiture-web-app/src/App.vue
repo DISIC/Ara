@@ -49,10 +49,6 @@ useHead({
 const markdownHelpModal = ref<InstanceType<typeof MarkdownHelpModal>>();
 
 provide("openMarkdownHelp", () => {
-  console.log(
-    "🚀 ~ file: App.vue:55 ~ provide ~ markdownHelpModal.value:",
-    markdownHelpModal.value
-  );
   markdownHelpModal.value?.show();
 });
 </script>
