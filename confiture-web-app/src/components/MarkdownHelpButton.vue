@@ -16,10 +16,6 @@ function onClick() {
 </script>
 
 <template>
-  <!-- <p class="fr-text--xs fr-mb-0 markdown-notice">
-    <MarkdownIcon />
-    Markdown pris en compte
-  </p> -->
   <button
     class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm markdown-notice"
     @click="onClick"
