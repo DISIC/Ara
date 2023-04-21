@@ -9,10 +9,12 @@ import { CreateAccountDto } from './create-account.dto';
 import {
   AuthService,
   InvalidVerificationTokenError,
+  SigninError,
   UsernameAlreadyExistsError,
 } from './auth.service';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyAccountDto } from './verify-account.dto';
+import { SigninDto } from './signin.dto';
 
 /** Add swagger doc */
 
@@ -47,6 +49,19 @@ export class AuthController {
       if (e instanceof InvalidVerificationTokenError) {
         throw new UnauthorizedException('Invalid token');
       }
+      throw e;
+    }
+  }
+
+  @Post('signin')
+  async signin(@Body() body: SigninDto) {
+    try {
+      return await this.auth.signin(body.username, body.password);
+    } catch (e) {
+      if (e instanceof SigninError) {
+        throw new UnauthorizedException();
+      }
+      throw e;
     }
   }
 }
