@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
-import { hash } from 'bcrypt';
-import { JsonWebTokenError, verify } from 'jsonwebtoken';
+import { hash, compare } from 'bcrypt';
+import { JsonWebTokenError, verify, sign } from 'jsonwebtoken';
 
 import { PrismaService } from 'src/prisma.service';
 
@@ -20,6 +20,13 @@ export class InvalidVerificationTokenError extends Error {
   constructor() {
     super();
     this.name = 'InvalidVerificationTokenError';
+  }
+}
+
+export class SigninError extends Error {
+  constructor(reason) {
+    super(reason);
+    this.name = 'SigninError';
   }
 }
 
@@ -68,5 +75,32 @@ export class AuthService {
       }
       throw e;
     }
+  }
+
+  /**
+   * Verify user credentials and return an authentication token.
+   */
+  async signin(username: string, password: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+
+    if (!user) {
+      throw new SigninError('User not found');
+    }
+
+    if (!user.isVerified) {
+      throw new SigninError('User is not verified');
+    }
+
+    const match = await compare(password, user.password);
+
+    if (!match) {
+      throw new SigninError('Wrong password');
+    }
+
+    const secret = this.config.get<string>('AUTHENTICATION_SECRET');
+    const payload = { sub: user.username };
+    const token = sign(payload, secret, { expiresIn: '24h' });
+
+    return token;
   }
 }
