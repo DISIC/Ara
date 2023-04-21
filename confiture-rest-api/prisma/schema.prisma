@@ -183,6 +183,7 @@ enum EmailStatus {
 
 enum EmailType {
   AUDIT_CREATION
+  ACCOUNT_VERIFICATION
 }
 
 model EmailLog {
@@ -194,4 +195,13 @@ model EmailLog {
 
   createdAt   DateTime @default(now())
   lastAttempt DateTime @default(now())
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  username String @unique
+  password String
+
+  isVerified Boolean @default(false)
 }
