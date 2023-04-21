@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit, EmailStatus, EmailType } from '@prisma/client';
-import { createTransport, Transporter } from 'nodemailer';
+import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import * as jwt from 'jsonwebtoken';
 
 import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
+import * as accountVerificationEmail from './account-verification-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
+  [EmailType.ACCOUNT_VERIFICATION]: accountVerificationEmail,
 };
 
 @Injectable()
@@ -50,6 +53,9 @@ export class MailService {
         text,
         html,
       })
+      .then((info) => {
+        console.log(getTestMessageUrl(info));
+      })
       .catch((err) => {
         console.error('Failed to send email', err);
         emailStatus = EmailStatus.FAILURE;
@@ -82,5 +88,20 @@ export class MailService {
     };
 
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
+  }
+
+  sendAccountVerificationEmail(username: string) {
+    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+    const payload = { sub: username };
+    const verificationToken = jwt.sign(payload, secret, { expiresIn: '1h' });
+
+    const verificationLink = `${baseUrl}/account/verify?token=${encodeURIComponent(
+      verificationToken,
+    )}`;
+
+    return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
+      verificationLink,
+    });
   }
 }
