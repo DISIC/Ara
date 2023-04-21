@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit, EmailStatus, EmailType } from '@prisma/client';
-import { createTransport, Transporter } from 'nodemailer';
+import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { PrismaService } from '../prisma.service';
@@ -49,6 +49,9 @@ export class MailService {
         subject,
         text,
         html,
+      })
+      .then((info) => {
+        console.log(getTestMessageUrl(info));
       })
       .catch((err) => {
         console.error('Failed to send email', err);

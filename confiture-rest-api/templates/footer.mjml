@@ -1,0 +1,32 @@
+<mj-section>
+  <mj-column>
+    <mj-text>
+      <strong>Vous avez une question ?</strong>
+    </mj-text>
+    <mj-text>Vous pouvez nous contacter en utilisant l’adresse e-mail
+      <a href="mailto:rgaa@design.numerique.gouv.fr">rgaa@design.numerique.gouv.fr</a>.
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section>
+  <mj-column>
+    <mj-text>Propulsé avec ❤️ par l’équipe
+      <a href="#">Design des services numériques</a>
+    </mj-text>
+    <mj-text font-size="12px" color="gray">Cet e-mail est envoyé automatiquement, merci de ne pas y
+      répondre.</mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section padding="0">
+  <mj-column>
+    <mj-divider border-width="1px" border-style="solid" border-color="lightgrey" />
+  </mj-column>
+</mj-section>
+
+<mj-section>
+  <mj-column>
+    <mj-image src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502" width="100px"></mj-image>
+  </mj-column>
+</mj-section>

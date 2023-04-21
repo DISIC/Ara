@@ -1,0 +1,15 @@
+<mj-section>
+  <mj-column>
+    <mj-image src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502" width="100px"></mj-image>
+  </mj-column>
+  <mj-column>
+    <mj-text>Ara</mj-text>
+    <mj-text>Outil de suivi de la conformité et des audits RGAA</mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section padding="0">
+  <mj-column>
+    <mj-divider border-width="1px" border-style="solid" border-color="lightgrey" />
+  </mj-column>
+</mj-section>

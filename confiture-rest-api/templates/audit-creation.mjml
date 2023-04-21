@@ -1,0 +1,49 @@
+<mjml>
+  <mj-head>
+    <mj-title>Création d’un nouvel audit : {{ audit.name }}</mj-title>
+    <mj-attributes>
+      <mj-text padding="0" />
+      <mj-all font-family="Comic Sans MS" />
+      <mj-preview>Création d’un nouvel audit : {{ audit.name }}</mj-preview>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#FFF">
+    <mj-include path="./header.mjml" />
+
+    <mj-section>
+      <mj-column>
+        <mj-text>Bonjour {{ auditorName }}</mj-text>
+        <mj-text>Vous venez de créer l'audit
+          <strong>{{ procedureName }}</strong>.
+        </mj-text>
+        <mj-text>Vous trouverez ci-dessous le lien administrateur de l’audit.
+          Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition
+          de l’audit.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="lightblue" padding="12px">
+      <mj-column>
+        <mj-text>Lien vers l'audit - Ne pas partager</mj-text>
+        <mj-text>{{auditUrl}}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text>Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous
+          permet de consulter et vérifier le rapport d’audit. Vous devrez le
+          partager une fois que l’audit sera terminé.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="lightblue" padding="12px">
+      <mj-column>
+        <mj-text>Lien vers le rapport - À partager au client</mj-text>
+        <mj-text>{{reportUrl}}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>
