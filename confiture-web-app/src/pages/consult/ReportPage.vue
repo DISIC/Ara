@@ -134,8 +134,8 @@ function handleTabChange(tab: { title: string }) {
   >
     <p class="fr-alert__title">Audit en cours</p>
     <p>
-      L’audit n'est pas terminé, l'auditeur ne peut pas rédiger la déclaration
-      d’accessibilité.
+      Les résultats de ce rapports sont provisoires tant que l’audit n'est pas
+      terminé.
     </p>
   </div>
 
