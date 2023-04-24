@@ -50,9 +50,6 @@ export class MailService {
         text,
         html,
       })
-      .then((info) => {
-        console.log(getTestMessageUrl(info));
-      })
       .catch((err) => {
         console.error('Failed to send email', err);
         emailStatus = EmailStatus.FAILURE;
