@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit, EmailStatus, EmailType } from '@prisma/client';
-import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { PrismaService } from '../prisma.service';
