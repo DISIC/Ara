@@ -7,7 +7,6 @@ import { useResultsStore } from "./results";
 
 interface FiltersStoreState {
   search: string;
-  topics: number[];
   hideEvaluatedCriteria: boolean;
   hideTestsAndReferences: boolean;
   newEvaluatedCriteria: string[];
@@ -16,7 +15,6 @@ interface FiltersStoreState {
 export const useFiltersStore = defineStore("filters", {
   state: (): FiltersStoreState => ({
     search: "",
-    topics: [],
     hideEvaluatedCriteria: false,
     hideTestsAndReferences: false,
     newEvaluatedCriteria: [],
@@ -29,12 +27,6 @@ export const useFiltersStore = defineStore("filters", {
       const auditType = auditStore.data?.auditType ?? AuditType.FULL;
 
       let filteredTopics = rgaa.topics as any[];
-
-      if (this.topics.length) {
-        filteredTopics = rgaa.topics.filter((t) => {
-          return this.topics.includes(t.number);
-        });
-      }
 
       /**
        * Filter based on:

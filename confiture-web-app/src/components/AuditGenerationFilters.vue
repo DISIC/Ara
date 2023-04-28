@@ -88,11 +88,7 @@ watch(
       </button>
     </div>
     <button
-      v-if="
-        filterStore.search ||
-        filterStore.topics.length ||
-        filterStore.hideEvaluatedCriteria
-      "
+      v-if="filterStore.search || filterStore.hideEvaluatedCriteria"
       class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
       @click="onGlobalReset"
     >
