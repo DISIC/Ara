@@ -4,7 +4,6 @@ import { useRouter } from "vue-router";
 
 import { history } from "../router";
 import PageMeta from "../components/PageMeta";
-import AuditIllustationUrl from "../assets/images/audit-illustration.svg";
 
 const router = useRouter();
 
