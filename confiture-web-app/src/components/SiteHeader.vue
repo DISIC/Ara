@@ -110,7 +110,7 @@ const menuItems = computed<
                 >
               </p>
               <p class="fr-header__service-tagline">
-                Réalisez simplement vos audits d’accessibilité numérique
+                Réalisez vos audits d’accessibilité numérique
               </p>
             </div>
           </div>

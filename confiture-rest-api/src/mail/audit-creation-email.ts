@@ -61,7 +61,7 @@ export function html(data: AuditCreationEmailData): string {
             <div>
               <p style="font-weight: 700; font-size: 18px; margin-bottom: 12px;">Ara</p>
               <p style="font-size: 14px; margin: 0;">
-                Réalisez simplement vos audits d’accessibilité numérique
+                Réalisez vos audits d’accessibilité numérique
               </p>
             </div>
           </div>
