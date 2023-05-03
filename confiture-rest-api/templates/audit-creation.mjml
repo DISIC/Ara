@@ -1,0 +1,73 @@
+<mjml>
+  <mj-head>
+    <mj-title>Création d’un nouvel audit : {{ audit.name }}</mj-title>
+    <mj-attributes>
+      <mj-preview>Création d’un nouvel audit : {{ audit.name }}</mj-preview>
+      <mj-include path="./styles.mjml" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#fff">
+    <!-- HEADER -->
+    <mj-include path="./header.mjml" />
+
+    <!-- BODY -->
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="24px">Bonjour {{ auditorName }}</mj-text>
+        <mj-text padding-bottom="16px">Vous venez de créer l'audit
+          <strong>{{ procedureName }}</strong>.
+        </mj-text>
+        <mj-text padding-bottom="12px">Vous trouverez ci-dessous le lien administrateur de l’audit.
+          Pensez-bien à le conserver, c’est le seul moyen de reprendre l’édition
+          de l’audit.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="blue-section">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="10px">Lien vers l'audit - Ne pas partager</mj-text>
+        <mj-text mj-class="blue-link">
+          <a href="{{auditUrl}}" style="color: inherit;">{{auditUrl}}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-spacer height="24px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text>Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous
+          permet de consulter et vérifier le rapport d’audit. Vous devrez le
+          partager une fois que l’audit sera terminé.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-spacer height="12px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="blue-section">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="10px">Lien vers le rapport - À partager au client</mj-text>
+        <mj-text mj-class="blue-link">
+          <a href="{{reportUrl}}" style="color: inherit;">{{reportUrl}}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-spacer height="32px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+
+    <!-- FOOTER -->
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

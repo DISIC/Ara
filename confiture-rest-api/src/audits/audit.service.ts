@@ -10,7 +10,7 @@ import {
   TestEnvironment,
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
