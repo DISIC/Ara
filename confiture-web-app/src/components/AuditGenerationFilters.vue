@@ -169,26 +169,28 @@ watch(
     </div>
 
     <div class="fr-form-group">
-      <p class="fr-text--regular fr-text--bold fr-mb-1w">
+      <p id="anchor-nav-title" class="fr-text--regular fr-text--bold fr-mb-1w">
         Thématiques de critères
       </p>
-      <ol class="fr-pl-0 fr-ml-0">
-        <li
-          v-for="(topic, i) in topics"
-          :key="i"
-          class="topic-filter-item"
-          :style="{ '--topic-filter-value': topic.value + '%' }"
-        >
-          <a
-            :href="`#${topic.number}`"
-            class="fr-py-1w fr-mb-2v topic-filter-anchor"
+      <nav aria-labelledby="anchor-nav-title">
+        <ol class="fr-pl-0 fr-ml-0">
+          <li
+            v-for="(topic, i) in topics"
+            :key="i"
+            class="topic-filter-item"
+            :style="{ '--topic-filter-value': topic.value + '%' }"
           >
-            <span>{{ topic.number }}. {{ topic.title }}</span>
-            <span class="fr-text--sm fr-m-0">{{ topic.value }}%</span>
-            <div class="topic-filter-progress" />
-          </a>
-        </li>
-      </ol>
+            <a
+              :href="`#${topic.number}`"
+              class="fr-py-1w fr-mb-2v topic-filter-anchor"
+            >
+              <span>{{ topic.number }}. {{ topic.title }}</span>
+              <span class="fr-text--sm fr-m-0">{{ topic.value }}%</span>
+              <div class="topic-filter-progress" />
+            </a>
+          </li>
+        </ol>
+      </nav>
     </div>
   </template>
 </template>
