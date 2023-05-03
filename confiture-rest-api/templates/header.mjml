@@ -5,7 +5,7 @@
   <mj-column width="48px"></mj-column>
   <mj-column width="452px" vertical-align="middle">
     <mj-text font-weight="700" font-size="18px">Ara</mj-text>
-    <mj-text>Outil de suivi de la conformité et des audits RGAA</mj-text>
+    <mj-text>Réalisez vos audits d’accessibilité numérique</mj-text>
   </mj-column>
 </mj-section>
 
