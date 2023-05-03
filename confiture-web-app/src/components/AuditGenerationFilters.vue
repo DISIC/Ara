@@ -88,11 +88,7 @@ watch(
       </button>
     </div>
     <button
-      v-if="
-        filterStore.search ||
-        filterStore.topics.length ||
-        filterStore.hideEvaluatedCriteria
-      "
+      v-if="filterStore.search || filterStore.hideEvaluatedCriteria"
       class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
       @click="onGlobalReset"
     >
@@ -173,37 +169,28 @@ watch(
     </div>
 
     <div class="fr-form-group">
-      <fieldset class="fr-fieldset fr-mx-0 fr-p-0">
-        <legend
-          class="fr-fieldset__legend fr-text--regular fr-text--bold fr-pl-0 fr-mx-0"
-        >
-          Thématiques de critères
-        </legend>
-        <ol class="fr-fieldset__content fr-pl-0 fr-ml-0">
+      <p id="anchor-nav-title" class="fr-text--regular fr-text--bold fr-mb-1w">
+        Thématiques de critères
+      </p>
+      <nav aria-labelledby="anchor-nav-title">
+        <ol class="fr-pl-0 fr-ml-0">
           <li
             v-for="(topic, i) in topics"
             :key="i"
-            class="fr-mb-3w topic-filter"
+            class="topic-filter-item"
             :style="{ '--topic-filter-value': topic.value + '%' }"
           >
-            <div class="fr-checkbox-group topic-filter-checkbox">
-              <input
-                :id="`topic-filter-${i}`"
-                v-model="filterStore.topics"
-                type="checkbox"
-                :value="topic.number"
-              />
-              <label class="fr-label fr-pb-0" :for="`topic-filter-${i}`">
-                {{ topic.number }}. {{ topic.title }}
-              </label>
-            </div>
-            <span class="fr-text--sm fr-m-0 fr-ml-1w topic-filter-value"
-              >{{ topic.value }}%</span
+            <a
+              :href="`#${topic.number}`"
+              class="fr-py-1w fr-mb-2v topic-filter-anchor"
             >
-            <div class="topic-filter-progress" />
+              <span>{{ topic.number }}. {{ topic.title }}</span>
+              <span class="fr-text--sm fr-m-0">{{ topic.value }}%</span>
+              <div class="topic-filter-progress" />
+            </a>
           </li>
         </ol>
-      </fieldset>
+      </nav>
     </div>
   </template>
 </template>
@@ -225,32 +212,25 @@ watch(
   border-top: 1px solid var(--border-default-grey);
   border-bottom: 1px solid var(--border-default-grey);
 }
-.topic-filter {
-  --topic-filter-offset: 2rem;
 
-  display: grid;
-  gap: 0.5rem 0;
-  grid-template-columns: var(--topic-filter-offset) 1fr auto;
-  grid-template-rows: 1fr 0.25rem;
-  grid-template-areas:
-    "checkbox checkbox value"
-    "... progress progress";
+.topic-filter-item::marker {
+  content: none;
 }
 
-.topic-filter-checkbox {
-  grid-area: checkbox;
-}
-
-.topic-filter-value {
-  grid-area: value;
-  /* TODO: only FF supports this but degrades gracefully, is ok? */
-  align-self: last baseline;
+.topic-filter-anchor {
+  background: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
 }
 
 .topic-filter-progress {
-  grid-area: progress;
   background-color: var(--background-contrast-grey);
   position: relative;
+  height: 0.25rem;
+  flex-basis: 100%;
 }
 
 .topic-filter-progress::after {

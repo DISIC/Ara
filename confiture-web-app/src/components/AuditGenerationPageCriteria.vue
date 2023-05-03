@@ -21,7 +21,7 @@ const store = useFiltersStore();
     class="fr-mb-6w"
   >
     <div class="fr-mb-3w topic-header">
-      <h3 class="fr-m-0 topic-heading">
+      <h3 :id="topic.number" class="fr-m-0 topic-heading">
         {{ topic.number }}. {{ topic.topic }}
       </h3>
       <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
