@@ -72,9 +72,7 @@ const steps = [
   </div>
 
   <section class="fr-mt-9w">
-    <h1 ref="headingRef">
-      Faire un audit d'<abbr title="accessibilité">a11é</abbr> avec Ara
-    </h1>
+    <h1 ref="headingRef">Faire un audit d’accessibilité avec Ara</h1>
     <p class="fr-text--lg">
       Ara nécessite une bonne connaissance de la méthode technique du
       <abbr
