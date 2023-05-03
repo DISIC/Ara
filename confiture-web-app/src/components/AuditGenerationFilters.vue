@@ -169,17 +169,20 @@ watch(
     </div>
 
     <div class="fr-form-group">
-      <p class="fr-text--regular fr-text--bold fr-mb-2w">
+      <p class="fr-text--regular fr-text--bold fr-mb-1w">
         Thématiques de critères
       </p>
       <ol class="fr-pl-0 fr-ml-0">
         <li
           v-for="(topic, i) in topics"
           :key="i"
-          class="fr-mb-3w topic-filter-item"
+          class="topic-filter-item"
           :style="{ '--topic-filter-value': topic.value + '%' }"
         >
-          <a :href="`#${topic.number}`" class="fr-mb-2v topic-filter-anchor">
+          <a
+            :href="`#${topic.number}`"
+            class="fr-py-1w fr-mb-2v topic-filter-anchor"
+          >
             <span>{{ topic.number }}. {{ topic.title }}</span>
             <span class="fr-text--sm fr-m-0">{{ topic.value }}%</span>
             <div class="topic-filter-progress" />
@@ -213,6 +216,7 @@ watch(
 }
 
 .topic-filter-anchor {
+  background: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
