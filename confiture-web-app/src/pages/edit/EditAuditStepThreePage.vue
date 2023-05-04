@@ -137,6 +137,17 @@ const showAutoSaveAlert = ref(true);
 function closeAutoSaveAlert() {
   showAutoSaveAlert.value = false;
 
+  focusPageHeading();
+}
+
+const showAuditEmailAlert = ref(true);
+
+function closeAuditEmailAlert() {
+  showAuditEmailAlert.value = false;
+  focusPageHeading();
+}
+
+function focusPageHeading() {
   const pageHeading = document.querySelector("h1");
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
@@ -156,6 +167,23 @@ function toggleFilters(value: boolean) {
       :title="`Audit ${auditStore.data.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
+
+    <div v-if="showAuditEmailAlert" class="fr-alert fr-alert--info fr-mb-3w">
+      <p class="fr-alert__title">Retrouvez votre audit</p>
+      <p>
+        Des liens pour accéder à cet audit et de son rapport viennent de vous
+        être envoyés par e-mail à l’adresse
+        <strong>{{ auditStore.data.auditorEmail }}</strong>
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAuditEmailAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
     <div
       v-if="showAutoSaveAlert"
       class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
