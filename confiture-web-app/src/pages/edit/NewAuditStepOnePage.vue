@@ -63,6 +63,7 @@ function submitStepOne(data: CreateAuditRequestData) {
   auditStore
     .createAudit(data)
     .then((audit) => {
+      auditStore.showAuditEmailAlert = true;
       // TODO: replace current history entry with the edit page
       return router.push({
         name: "edit-audit-step-three",

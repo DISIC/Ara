@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
@@ -136,7 +136,19 @@ const showAutoSaveAlert = ref(true);
 
 function closeAutoSaveAlert() {
   showAutoSaveAlert.value = false;
+  focusPageHeading();
+}
 
+function closeAuditEmailAlert() {
+  auditStore.showAuditEmailAlert = false;
+  focusPageHeading();
+}
+
+onBeforeRouteLeave(() => {
+  auditStore.showAuditEmailAlert = false;
+});
+
+function focusPageHeading() {
   const pageHeading = document.querySelector("h1");
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
@@ -156,6 +168,26 @@ function toggleFilters(value: boolean) {
       :title="`Audit ${auditStore.data.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
+
+    <div
+      v-if="auditStore.showAuditEmailAlert"
+      class="fr-alert fr-alert--info fr-mb-3w"
+    >
+      <p class="fr-alert__title">Retrouvez votre audit</p>
+      <p>
+        Des liens pour accéder à cet audit et à son rapport viennent de vous
+        être envoyés par e-mail à l’adresse
+        <strong>{{ auditStore.data.auditorEmail }}</strong>
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAuditEmailAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
     <div
       v-if="showAutoSaveAlert"
       class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
