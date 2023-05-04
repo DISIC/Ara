@@ -10,6 +10,7 @@ interface AuditStoreState {
   data: Audit | null;
   lastVisitedStepLocation: string | null;
   currentPageId: number | null;
+  showAuditEmailAlert: boolean;
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -17,6 +18,7 @@ export const useAuditStore = defineStore("audit", {
     data: null,
     lastVisitedStepLocation: null,
     currentPageId: null,
+    showAuditEmailAlert: false,
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
