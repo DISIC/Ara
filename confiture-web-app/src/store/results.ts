@@ -164,6 +164,10 @@ export const useResultsStore = defineStore("results", {
             .map(Number) // this.data requires a number index
             .filter((pageId) => pageId !== update.pageId) // Ignore current page
             .forEach((pageId) => {
+              if (!this.data) {
+                return;
+              }
+
               const target = this.data[pageId][update.topic][update.criterium];
 
               target.status = update.status;
