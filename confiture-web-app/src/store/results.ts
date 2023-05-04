@@ -140,26 +140,35 @@ export const useResultsStore = defineStore("results", {
     },
 
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
-      await ky.patch(`/api/audits/${uniqueId}/results`, {
-        json: {
-          data: updates,
-        },
-      });
-
       if (!this.data) {
         return;
       }
 
+      const previousResults: CriteriumResult[] = [];
+
       updates.forEach((update) => {
-        this.data![update.pageId][update.topic][update.criterium] = update;
+        if (!this.data) {
+          return;
+        }
+
+        previousResults.push(
+          this.data[update.pageId][update.topic][update.criterium]
+        );
+
+        // Update UI immediately, rollbacks later if update fails.
+        this.data[update.pageId][update.topic][update.criterium] = update;
 
         // Apply `transverse` result update to every pages
         if (update.transverse) {
-          Object.keys(this.data!)
+          Object.keys(this.data)
             .map(Number) // this.data requires a number index
             .filter((pageId) => pageId !== update.pageId) // Ignore current page
             .forEach((pageId) => {
-              const target = this.data![pageId][update.topic][update.criterium];
+              if (!this.data) {
+                return;
+              }
+
+              const target = this.data[pageId][update.topic][update.criterium];
 
               target.status = update.status;
               target.transverse = true;
@@ -200,6 +209,27 @@ export const useResultsStore = defineStore("results", {
           ]),
         ];
       }
+
+      // Called when update fails, and UI must rollback to the previous result states
+      const rollbackResults = () => {
+        previousResults.forEach((result) => {
+          if (!this.data) {
+            return;
+          }
+          this.data[result.pageId][result.topic][result.criterium] = result;
+        });
+      };
+
+      await ky
+        .patch(`/api/audits/${uniqueId}/results`, {
+          json: {
+            data: updates,
+          },
+        })
+        .catch((err) => {
+          rollbackResults();
+          throw err;
+        });
     },
 
     /**

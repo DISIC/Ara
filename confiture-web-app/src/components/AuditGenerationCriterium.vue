@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { marked } from "marked";
-import { ref, computed, watch, reactive } from "vue";
+import { ref, computed } from "vue";
 import { debounce } from "lodash-es";
 import { HTTPError } from "ky";
 
 import {
   AuditPage,
+  CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
   ExampleImage,
@@ -53,51 +54,16 @@ const statuses: Array<{
   },
 ];
 
-const result = reactive<CriteriumResult>({
-  // This component should not be rendered before the audit results are fetched
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  ...store.getCriteriumResult(
-    props.page.id,
-    props.topicNumber,
-    props.criterium.number
-  )!,
-});
-
-/*
-the result status can be updated from an external source (the not applicable
-page switch and the autofill debug button)
-So we watch the store to make sure to update our local state if needed.
-*/
-watch(
+const result = computed(
   () =>
     store.getCriteriumResult(
       props.page.id,
       props.topicNumber,
       props.criterium.number
-    ),
-  (newValue) => {
-    result.status = newValue!.status;
-  }
+    )!
 );
 
 const notify = useNotifications();
-
-watch(
-  result,
-  // Wait 500ms since the last modification before sending the PATCH request
-  debounce(async () => {
-    try {
-      await store.updateResults(props.auditUniqueId, [result]);
-    } catch (error) {
-      console.log(error);
-      notify(
-        "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
-      );
-    }
-  }, 500)
-);
 
 const showFileSizeError = ref(false);
 const showFileFormatError = ref(false);
@@ -178,6 +144,41 @@ function handleDeleteExample(image: ExampleImage) {
     });
 }
 
+function handleUpdateResultError(err: any) {
+  console.log(err);
+  notify(
+    "error",
+    "Une erreur est survenue",
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+  );
+}
+
+function updateResultStatus(status: CriteriumResultStatus) {
+  store
+    .updateResults(props.auditUniqueId, [{ ...result.value, status }])
+    .catch(handleUpdateResultError);
+}
+
+// Wait 500ms since the last modification before sending the PATCH request
+const updateResultComment = debounce(
+  async (comment: string, key: keyof CriteriumResult) => {
+    try {
+      await store.updateResults(props.auditUniqueId, [
+        { ...result.value, [key]: comment },
+      ]);
+    } catch (error) {
+      handleUpdateResultError(error);
+    }
+  },
+  500
+);
+
+function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
+  store
+    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
+    .catch(handleUpdateResultError);
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -206,11 +207,12 @@ const uniqueId = computed(() => {
       ]"
     >
       <RadioGroup
-        v-model="result.status"
+        :model-value="result.status"
         :label="`Statut du critère ${topicNumber}.${criterium.number}`"
         hide-label
         :default-value="CriteriumResultStatus.NOT_TESTED"
         :items="statuses"
+        @update:model-value="updateResultStatus"
       />
 
       <div class="fr-toggle fr-toggle--label-left">
@@ -235,30 +237,35 @@ const uniqueId = computed(() => {
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
-      v-model:comment="result.compliantComment"
+      :comment="result.compliantComment"
+      @update:comment="updateResultComment($event, 'compliantComment')"
     />
 
     <CriteriumNotApplicableAccordion
       v-else-if="result.status === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
-      v-model:comment="result.notApplicableComment"
+      :comment="result.notApplicableComment"
+      @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
 
     <template v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT">
       <CriteriumNotCompliantAccordion
         :id="`not-compliant-accordion-${uniqueId}`"
-        v-model:comment="result.errorDescription"
-        v-model:user-impact="result.userImpact"
+        :comment="result.errorDescription"
+        :user-impact="result.userImpact"
         :example-images="result.exampleImages"
         :show-file-format-error="showFileFormatError"
         :show-file-size-error="showFileSizeError"
+        @update:comment="updateResultComment($event, 'errorDescription')"
+        @update:user-impact="updateResultImpact($event)"
         @upload-example="handleUploadExample"
         @delete-example="handleDeleteExample"
       />
       <!-- RECOMMENDATION -->
       <CriteriumRecommendationAccordion
         :id="`recommendation-${uniqueId}`"
-        v-model:comment="result.recommandation"
+        :comment="result.recommandation"
+        @update:comment="updateResultComment($event, 'recommandation')"
       />
     </template>
 
