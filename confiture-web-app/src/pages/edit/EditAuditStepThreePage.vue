@@ -131,6 +131,13 @@ const headerInfos = computed(() => [
   },
 ]);
 
+const showDuplicatedAuditAlert = ref(true);
+
+function closeDuplicatedAuditAlert() {
+  showDuplicatedAuditAlert.value = false;
+  focusPageHeading();
+}
+
 const showAutoSaveAlert = ref(true);
 
 function closeAutoSaveAlert() {
@@ -167,6 +174,25 @@ function toggleFilters(value: boolean) {
       :title="`Audit ${auditStore.data.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
+
+    <!-- TODO: conditionnally show alert -->
+    <div
+      v-if="showDuplicatedAuditAlert"
+      class="fr-alert fr-alert--success fr-mb-3w"
+    >
+      <p class="fr-alert__title">Audit copié avec succès</p>
+      <p>
+        Des liens pour accéder à cet audit et de son rapport viennent de vous
+        être envoyés par mail.
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeDuplicatedAuditAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
 
     <div
       v-if="auditStore.showAuditEmailAlert"
