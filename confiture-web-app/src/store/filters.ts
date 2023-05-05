@@ -41,11 +41,10 @@ export const useFiltersStore = defineStore("filters", {
               .map((c: any) => {
                 return {
                   ...c,
-                  status: resultStore.data
-                    ? resultStore.data[auditStore.currentPageId!][t.number][
-                        c.criterium.number
-                      ].status
-                    : null,
+                  status:
+                    resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
+                      c.criterium.number
+                    ]?.status,
                 };
               })
               .filter((c: any) => {
