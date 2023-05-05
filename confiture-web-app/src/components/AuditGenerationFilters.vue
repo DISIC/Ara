@@ -184,8 +184,11 @@ watch(
               :href="`#${topic.number}`"
               class="fr-py-1w fr-px-1w fr-mb-2v topic-filter-anchor"
             >
-              <span>{{ topic.number }}. {{ topic.title }}</span>
-              <span class="fr-text--sm fr-m-0">{{ topic.value }}%</span>
+              <span>{{ topic.number }}.</span>
+              <span>{{ topic.title }}</span>
+              <span class="fr-text--sm fr-m-0 topic-filter-value"
+                >{{ topic.value }}%</span
+              >
               <div class="topic-filter-progress" />
             </a>
           </li>
@@ -219,22 +222,24 @@ watch(
 
 .topic-filter-anchor {
   background: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.25rem 0;
+  grid-template-columns: 3ch 1fr auto;
+  grid-template-rows: auto 0.25rem;
 }
 
 .topic-filter-anchor:hover {
   background: var(--background-alt-grey);
 }
 
+.topic-filter-value {
+  align-self: last baseline;
+}
+
 .topic-filter-progress {
   background-color: var(--background-contrast-grey);
   position: relative;
-  height: 0.25rem;
-  flex-basis: 100%;
+  grid-column: 1 / -1;
 }
 
 .topic-filter-progress::after {
