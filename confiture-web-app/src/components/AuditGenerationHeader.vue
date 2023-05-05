@@ -7,6 +7,8 @@ import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
 import { captureWithPayloads, formatDate } from "../utils";
 import Dropdown from "./Dropdown.vue";
+import CopyIcon from "./icons/CopyIcon.vue";
+import GearIcon from "./icons/GearIcon.vue";
 import SummaryCard from "./SummaryCard.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import DeleteModal from "./DeleteModal.vue";
@@ -122,22 +124,14 @@ const isDevMode = useDevMode();
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="top-actions" role="list">
       <li class="fr-mr-2w">
-        <Dropdown ref="optionsDropdownRef" title="Options">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Options"
+          :align-left="route.name === 'edit-audit-step-three'"
+        >
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
-              <!-- FIXME: would this still be useful? -->
-              <!-- <li v-if="hasA11yStatement">
-                <RouterLink
-                  :to="{
-                    name: 'report',
-                    params: { uniqueId: auditStore.data?.consultUniqueId },
-                  }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-line fr-m-0"
-                >
-                  Consulter la déclaration d’accessibilité
-                </RouterLink>
-              </li> -->
-              <li>
+              <li class="dropdown-item">
                 <RouterLink
                   :to="{
                     name: 'edit-audit-step-three',
@@ -148,27 +142,32 @@ const isDevMode = useDevMode();
                   Modifier l’audit
                 </RouterLink>
               </li>
-              <li>
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
-                  @click="duplicateModal?.show()"
-                >
-                  Créer une copie
-                </button>
-              </li>
             </template>
-            <li>
+            <li class="dropdown-item">
               <RouterLink
                 :to="{
                   name: 'edit-audit-step-one',
                   params: { uniqueId: editUniqueId },
                 }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >
+                <GearIcon class="fr-mr-2v" />
                 Modifier les paramètres
               </RouterLink>
             </li>
-            <li>
+            <template v-if="!!auditPublicationDate">
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  @click="duplicateModal?.show()"
+                >
+                  <CopyIcon class="fr-mr-2v" />
+                  Créer une copie
+                </button>
+              </li>
+            </template>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
               <button
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
                 @click="deleteModal?.show()"
@@ -240,13 +239,6 @@ const isDevMode = useDevMode();
 
 .top-actions {
   display: flex;
-  list-style: none;
-}
-
-.dropdown-list {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
   list-style: none;
 }
 

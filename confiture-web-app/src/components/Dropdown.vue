@@ -5,6 +5,7 @@ import { useUniqueId } from "../composables/useUniqueId";
 defineProps<{
   title: string;
   buttonProps?: object;
+  alignLeft?: boolean;
 }>();
 
 const uniqueId = useUniqueId();
@@ -61,7 +62,10 @@ defineExpose({ buttonRef, closeOptions });
     <div
       v-if="showContent"
       :id="`dropdown-${uniqueId}`"
-      class="dropdown-content"
+      :class="[
+        'fr-p-2w dropdown-content',
+        { 'dropdown-content-left': alignLeft },
+      ]"
       role="menu"
     >
       <slot />
@@ -76,21 +80,33 @@ defineExpose({ buttonRef, closeOptions });
 }
 
 .dropdown-content {
-  --shadow-color: rgba(0, 0, 0, 0.18);
-
   background: var(--background-default-grey);
-  box-shadow: 0px 4px 12px var(--shadow-color);
+  filter: drop-shadow(var(--lifted-shadow));
   position: absolute;
   top: 100%;
-  right: 0.5rem;
-  padding: 1.5rem 2rem;
+  right: 0;
   width: max-content;
 }
 
-/* TODO: shadow color on dark mode? */
-@media (prefers-color-scheme: dark) {
-  .dropdown-content {
-    --shadow-color: rgba(255, 255, 255, 0.05);
-  }
+.dropdown-content-left {
+  left: 0;
+  right: initial;
+}
+
+.dropdown-content::v-deep .dropdown-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.dropdown-content::v-deep .dropdown-item {
+  padding-bottom: 0;
+}
+
+.dropdown-content::v-deep .dropdown-separator {
+  background-color: var(--border-default-grey);
+  height: 1px;
+  margin: 0.75rem 0;
+  padding: 0;
 }
 </style>
