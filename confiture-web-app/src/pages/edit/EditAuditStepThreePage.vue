@@ -333,13 +333,6 @@ function toggleFilters(value: boolean) {
 </template>
 
 <style scoped>
-.fr-tabs {
-  transition: none !important;
-}
-.fr-tabs__panel {
-  transition: none !important;
-}
-
 /* Override DSFR columns width */
 .columns {
   --gap: 1.5rem;

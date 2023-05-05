@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 05/05/2023
+
+### Correction 🐛
+
+- Corrige les onglets cassés lors de l'utilisation d'ancres ([#372](https://github.com/DISIC/Ara/pull/372))
+
 ## 04/05/2023
 
 ## Autres changements ⚙️

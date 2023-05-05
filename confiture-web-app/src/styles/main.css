@@ -19,3 +19,25 @@
 .fr-accordion textarea.fr-input {
   resize: vertical;
 }
+
+/* HACK: Prevents a weird displacement bug where the tab buttons would disapear behind the panels. */
+
+/* Disable tab transitions */
+.fr-tabs,
+.fr-tabs__panel {
+  transition: none !important;
+}
+
+/* This disable the original border hack */
+.fr-tabs::before {
+  content: none !important;
+}
+.fr-tabs {
+  box-shadow: none !important;
+}
+
+/* This fixes the weird panel positionning and add a "normal" border. */
+.fr-tabs__panel {
+  transform: translateY(2.4375rem);
+  border: 1px solid var(--border-default-grey);
+}
