@@ -8,6 +8,7 @@ import { useAuditStore, useResultsStore } from "../store";
 import { captureWithPayloads, formatDate } from "../utils";
 import Dropdown from "./Dropdown.vue";
 import SummaryCard from "./SummaryCard.vue";
+import DuplicateModal from "./DuplicateModal.vue";
 import DeleteModal from "./DeleteModal.vue";
 
 defineProps<{
@@ -27,12 +28,27 @@ defineProps<{
 
 const router = useRouter();
 
+const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
 const notify = useNotifications();
+
+/**
+ * Duplicate audit and redirect to new audit page
+ */
+function confirmDuplicate(name: string) {
+  /**
+   * TODO:
+   * - copy audit (+ new name)
+   * - redirect to new audit page
+   * - show alert (only on first visit?)
+   */
+  console.log("duplicate audit: ", name);
+  duplicateModal.value?.hide();
+}
 
 /**
  * Delete audit and redirect to home page
@@ -132,6 +148,14 @@ const isDevMode = useDevMode();
                   Modifier l’audit
                 </RouterLink>
               </li>
+              <li>
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                  @click="duplicateModal?.show()"
+                >
+                  Créer une copie
+                </button>
+              </li>
             </template>
             <li>
               <RouterLink
@@ -180,6 +204,15 @@ const isDevMode = useDevMode();
       />
     </div>
   </div>
+
+  <DuplicateModal
+    ref="duplicateModal"
+    @confirm="confirmDuplicate"
+    @closed="
+      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
 
   <DeleteModal
     ref="deleteModal"
