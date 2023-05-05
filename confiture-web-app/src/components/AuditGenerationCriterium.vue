@@ -19,7 +19,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
-import { captureException } from "@sentry/core";
+import { captureWithPayloads } from "../utils";
 
 const store = useResultsStore();
 const filtersStore = useFiltersStore();
@@ -109,7 +109,7 @@ function handleUploadExample(file: File) {
               "Le téléchargement de l'exemple a échoué",
               "Une erreur inconnue est survenue"
             );
-            captureException(error);
+            captureWithPayloads(error);
           }
         } else {
           notify(
@@ -117,7 +117,7 @@ function handleUploadExample(file: File) {
             "Téléchargement échoué",
             "Une erreur inconnue est survenue"
           );
-          captureException(error);
+          captureWithPayloads(error);
         }
       }
     });

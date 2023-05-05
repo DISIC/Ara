@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import {
   AuditReport,
   AuditType,
@@ -7,6 +8,7 @@ import {
 } from "./types";
 
 import baseSlugify from "slugify";
+import { Scope, captureException } from "@sentry/vue";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
@@ -116,4 +118,37 @@ export function formatBytes(bytes: number, decimals = 0) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+/**
+ * Report an error to Sentry. If the error originates from a network request,
+ * the request and response payloads are added to the error context.
+ *
+ * @param error Error to be captured
+ * @param logRequestPayload Should the request payload be added to the error
+ *   context. Set to `false` when capturing authentication requests.
+ */
+export async function captureWithPayloads(
+  error: unknown,
+  logRequestPayload = true
+) {
+  const scope = new Scope();
+
+  if (error instanceof HTTPError) {
+    const payloads: Record<string, string> = {};
+
+    if (logRequestPayload) {
+      await error.request.json().then((data) => {
+        payloads["Request JSON"] = JSON.stringify(data, null, 2);
+      });
+    }
+
+    await error.response.json().then((data) => {
+      payloads["Response JSON"] = JSON.stringify(data, null, 2);
+    });
+
+    scope.setContext("Network payloads", payloads);
+  }
+
+  captureException(error, scope);
 }

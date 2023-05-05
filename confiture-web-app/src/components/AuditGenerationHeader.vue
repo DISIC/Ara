@@ -2,11 +2,10 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { captureException } from "@sentry/vue";
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
-import { formatDate } from "../utils";
+import { captureWithPayloads, formatDate } from "../utils";
 import Dropdown from "./Dropdown.vue";
 import SummaryCard from "./SummaryCard.vue";
 import DeleteModal from "./DeleteModal.vue";
@@ -57,7 +56,7 @@ function confirmDelete() {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
-      captureException(error);
+      captureWithPayloads(error);
     })
     .finally(() => {
       deleteModal.value?.hide();
