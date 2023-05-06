@@ -9,7 +9,7 @@ import router from "../../router";
 import { CreateAuditRequestData } from "../../types";
 import { useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
-import { captureException } from "@sentry/core";
+import { captureWithPayloads } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -76,7 +76,7 @@ function submitStepOne(data: CreateAuditRequestData) {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
-      captureException(err);
+      captureWithPayloads(err);
     })
     .finally(() => {
       isSubmitting.value = false;

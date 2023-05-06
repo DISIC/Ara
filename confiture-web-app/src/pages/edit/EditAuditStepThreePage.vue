@@ -12,9 +12,8 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
-import { getCriteriaCount } from "../../utils";
+import { captureWithPayloads, getCriteriaCount } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { captureException } from "@sentry/core";
 
 const route = useRoute();
 const router = useRouter();
@@ -45,7 +44,7 @@ function toStepFour() {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
-      captureException(error);
+      captureWithPayloads(error);
     });
 }
 
