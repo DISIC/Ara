@@ -182,10 +182,10 @@ function handleSubmit() {
     ...auditStore.data!,
 
     initiator: auditInitiator.value,
-    procedureUrl: procedureUrl.value,
+    procedureUrl: procedureUrl.value.trim(),
 
     contactEmail: contactEmail.value || null,
-    contactFormUrl: contactFormUrl.value || null,
+    contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
     technologies: validatedTechnologies.value,

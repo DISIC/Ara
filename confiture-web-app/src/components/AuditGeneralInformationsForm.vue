@@ -99,7 +99,8 @@ function onSubmit() {
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,
-    pages: pages.value,
+    // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
+    pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
     auditorEmail: procedureAuditorEmail.value,
     auditorOrganisation: procedureAuditorOrganisation.value,
