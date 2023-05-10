@@ -14,7 +14,6 @@ import {
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
-import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
@@ -262,13 +261,6 @@ const uniqueId = computed(() => {
       @upload-example="handleUploadExample"
       @delete-example="handleDeleteExample"
       @update:recommandation="updateResultComment($event, 'recommandation')"
-    />
-
-    <CriteriumRecommendationAccordion
-      v-if="result.status !== CriteriumResultStatus.NOT_COMPLIANT"
-      :id="`recommendation-${uniqueId}`"
-      :comment="result.recommandation"
-      @update:comment="updateResultComment($event, 'recommandation')"
     />
 
     <!-- TESTS + METHODO -->
