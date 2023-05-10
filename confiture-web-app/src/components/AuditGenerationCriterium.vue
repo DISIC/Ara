@@ -14,7 +14,6 @@ import {
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
-import CriteriumRecommendationAccordion from "./CriteriumRecommendationAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
@@ -248,26 +247,21 @@ const uniqueId = computed(() => {
       @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
 
-    <template v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT">
-      <CriteriumNotCompliantAccordion
-        :id="`not-compliant-accordion-${uniqueId}`"
-        :comment="result.errorDescription"
-        :user-impact="result.userImpact"
-        :example-images="result.exampleImages"
-        :show-file-format-error="showFileFormatError"
-        :show-file-size-error="showFileSizeError"
-        @update:comment="updateResultComment($event, 'errorDescription')"
-        @update:user-impact="updateResultImpact($event)"
-        @upload-example="handleUploadExample"
-        @delete-example="handleDeleteExample"
-      />
-      <!-- RECOMMENDATION -->
-      <CriteriumRecommendationAccordion
-        :id="`recommendation-${uniqueId}`"
-        :comment="result.recommandation"
-        @update:comment="updateResultComment($event, 'recommandation')"
-      />
-    </template>
+    <CriteriumNotCompliantAccordion
+      v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
+      :id="`not-compliant-accordion-${uniqueId}`"
+      :comment="result.errorDescription"
+      :user-impact="result.userImpact"
+      :example-images="result.exampleImages"
+      :recommandation="result.recommandation"
+      :show-file-format-error="showFileFormatError"
+      :show-file-size-error="showFileSizeError"
+      @update:comment="updateResultComment($event, 'errorDescription')"
+      @update:user-impact="updateResultImpact($event)"
+      @upload-example="handleUploadExample"
+      @delete-example="handleDeleteExample"
+      @update:recommandation="updateResultComment($event, 'recommandation')"
+    />
 
     <!-- TESTS + METHODO -->
     <CriteriumTestsAccordion

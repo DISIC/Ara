@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrige une erreur qui survenait lorsqu'un champ de formulaire de type URL contenait un espace ([#386](https://github.com/DISIC/Ara/pull/386))
 
+## Autres changements ⚙️
+
+- Les accordéons "Description de la ou des erreurs" et "Recommandation de correction" sont remplacés par un unique accordéon "Description et recommandation" ([#390](https://github.com/DISIC/Ara/pull/390))
+
 ## 05/05/2023
 
 ### Correction 🐛
