@@ -192,7 +192,7 @@ const selectedFiles = computed(() => {
         class="fr-label fr-text--bold"
         :for="`criterum-comment-field-${id}`"
       >
-        Recommendation de correction
+        Recommandation de correction
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
