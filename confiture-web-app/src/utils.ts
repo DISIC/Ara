@@ -9,6 +9,7 @@ import {
 
 import baseSlugify from "slugify";
 import { Scope, captureException } from "@sentry/vue";
+import { noop } from "lodash-es";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
@@ -138,14 +139,34 @@ export async function captureWithPayloads(
     const payloads: Record<string, string> = {};
 
     if (logRequestPayload) {
-      await error.request.json().then((data) => {
-        payloads["Request JSON"] = JSON.stringify(data, null, 2);
-      });
+      await error.request
+        .text()
+        .then((data) => {
+          payloads["Request Raw"] = data;
+          try {
+            payloads["Request JSON"] = JSON.stringify(
+              JSON.parse(data),
+              null,
+              2
+            );
+          } catch (e) {
+            // noop, we dont do anything if it's not JSON
+          }
+        })
+        .catch(noop);
     }
 
-    await error.response.json().then((data) => {
-      payloads["Response JSON"] = JSON.stringify(data, null, 2);
-    });
+    await error.response
+      .text()
+      .then((data) => {
+        payloads["Response Raw"] = data;
+        try {
+          payloads["Response JSON"] = JSON.stringify(JSON.parse(data), null, 2);
+        } catch (e) {
+          // noop, we dont do anything if it's not JSON
+        }
+      })
+      .catch(noop);
 
     scope.setContext("Network payloads", payloads);
   }
