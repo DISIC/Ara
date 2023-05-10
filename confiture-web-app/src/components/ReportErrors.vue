@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chunk, groupBy, mapValues, uniqWith } from "lodash-es";
+import { chunk, groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -45,14 +45,20 @@ const errors = computed(() => {
           pageId: Number(pageId),
           pageName: getPage(Number(pageId)).name,
           pageUrl: getPage(Number(pageId)).url,
-          topics: Object.values(
-            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-              return {
-                topic: topicNumber,
-                name: getTopicName(Number(topicNumber)),
-                errors: results.filter((r) => !r.transverse),
-              };
-            })
+          topics: sortBy(
+            Object.values(
+              mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+                return {
+                  topic: topicNumber,
+                  name: getTopicName(Number(topicNumber)),
+                  errors: sortBy(
+                    results.filter((r) => !r.transverse),
+                    "criterium"
+                  ),
+                };
+              })
+            ),
+            "topic"
           ),
         };
       }
