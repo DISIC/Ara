@@ -248,26 +248,28 @@ const uniqueId = computed(() => {
       @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
 
-    <template v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT">
-      <CriteriumNotCompliantAccordion
-        :id="`not-compliant-accordion-${uniqueId}`"
-        :comment="result.errorDescription"
-        :user-impact="result.userImpact"
-        :example-images="result.exampleImages"
-        :show-file-format-error="showFileFormatError"
-        :show-file-size-error="showFileSizeError"
-        @update:comment="updateResultComment($event, 'errorDescription')"
-        @update:user-impact="updateResultImpact($event)"
-        @upload-example="handleUploadExample"
-        @delete-example="handleDeleteExample"
-      />
-      <!-- RECOMMENDATION -->
-      <CriteriumRecommendationAccordion
-        :id="`recommendation-${uniqueId}`"
-        :comment="result.recommandation"
-        @update:comment="updateResultComment($event, 'recommandation')"
-      />
-    </template>
+    <CriteriumNotCompliantAccordion
+      v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
+      :id="`not-compliant-accordion-${uniqueId}`"
+      :comment="result.errorDescription"
+      :user-impact="result.userImpact"
+      :example-images="result.exampleImages"
+      :recommandation="result.recommandation"
+      :show-file-format-error="showFileFormatError"
+      :show-file-size-error="showFileSizeError"
+      @update:comment="updateResultComment($event, 'errorDescription')"
+      @update:user-impact="updateResultImpact($event)"
+      @upload-example="handleUploadExample"
+      @delete-example="handleDeleteExample"
+      @update:recommandation="updateResultComment($event, 'recommandation')"
+    />
+
+    <CriteriumRecommendationAccordion
+      v-if="result.status !== CriteriumResultStatus.NOT_COMPLIANT"
+      :id="`recommendation-${uniqueId}`"
+      :comment="result.recommandation"
+      @update:comment="updateResultComment($event, 'recommandation')"
+    />
 
     <!-- TESTS + METHODO -->
     <CriteriumTestsAccordion

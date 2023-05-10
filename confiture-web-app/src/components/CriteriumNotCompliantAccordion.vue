@@ -12,6 +12,7 @@ const props = defineProps<{
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
   exampleImages: ExampleImage[];
+  recommandation: string | null;
 
   showFileFormatError: boolean;
   showFileSizeError: boolean;
@@ -22,6 +23,7 @@ const emit = defineEmits<{
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
   (e: "upload-example", payload: File): void;
   (e: "delete-example", payload: ExampleImage): void;
+  (e: "update:recommandation", payload: string): void;
 }>();
 
 const userImpacts: Array<{
@@ -73,18 +75,21 @@ const selectedFiles = computed(() => {
 
 <template>
   <LazyAccordion
-    title="Description de la ou des erreurs"
+    title="Description et recommandation"
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
-      <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
+      <label
+        class="fr-label fr-text--bold"
+        :for="`criterum-comment-field-${id}`"
+      >
         Description de la ou des erreurs
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
         :value="comment ?? ''"
-        class="fr-mt-0 fr-input"
+        class="fr-input"
         rows="5"
         :aria-describedby="`markdown-notice-${id}`"
         @input="
@@ -173,12 +178,38 @@ const selectedFiles = computed(() => {
 
     <!-- USER IMPACT -->
     <RadioGroup
+      class="fr-mb-4w"
       :model-value="userImpact"
       :items="userImpacts"
       label="Impact sur l’usager"
       :default-value="null"
       @update:model-value="$emit('update:userImpact', $event)"
     />
+
+    <!-- RECOMMANDATION -->
+    <div class="fr-input-group fr-mb-1w">
+      <label
+        class="fr-label fr-text--bold"
+        :for="`criterum-comment-field-${id}`"
+      >
+        Recommendation de correction
+      </label>
+      <textarea
+        :id="`criterum-comment-field-${id}`"
+        :value="recommandation ?? ''"
+        class="fr-input"
+        rows="5"
+        :aria-describedby="`markdown-notice-${id}`"
+        @input="
+          $emit(
+            'update:recommandation',
+            ($event.target as HTMLTextAreaElement).value
+          )
+        "
+      ></textarea>
+    </div>
+
+    <MarkdownHelpButton :id="`markdown-notice-${id}`" />
   </LazyAccordion>
 </template>
 
