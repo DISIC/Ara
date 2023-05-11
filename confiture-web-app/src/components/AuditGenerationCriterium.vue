@@ -178,6 +178,17 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
     .catch(handleUpdateResultError);
 }
 
+function updateTransverseStatus(e: Event) {
+  console.log(
+    "🚀 ~ file: AuditGenerationCriterium.vue:182 ~ updateTransverseStatus ~ transverse:",
+    e
+  );
+  const transverse = (e.target as HTMLInputElement).checked;
+  store
+    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
+    .catch(handleUpdateResultError);
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -217,7 +228,8 @@ const uniqueId = computed(() => {
       <div class="fr-toggle fr-toggle--label-left">
         <input
           :id="`applicable-all-pages-${uniqueId}`"
-          v-model="result.transverse"
+          :checked="result.transverse"
+          @input="updateTransverseStatus($event)"
           type="checkbox"
           class="fr-toggle__input"
           :disabled="result.status === CriteriumResultStatus.NOT_TESTED"
