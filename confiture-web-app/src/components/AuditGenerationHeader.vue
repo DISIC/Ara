@@ -42,14 +42,41 @@ const notify = useNotifications();
  * Duplicate audit and redirect to new audit page
  */
 function confirmDuplicate(name: string) {
+  console.log("Duplicating...", name);
   /**
    * TODO:
    * - copy audit (+ new name)
    * - redirect to new audit page
    * - show alert (only on first visit?)
    */
-  console.log("duplicate audit: ", name);
-  duplicateModal.value?.hide();
+  auditStore
+    .duplicateAudit(uniqueId, name)
+    .then((newAuditId) => {
+      console.log("Duplication success");
+      auditStore.$reset();
+      resultStore.$reset();
+      return router.push({
+        name: "edit-audit-step-three",
+        params: {
+          uniqueId: newAuditId,
+        },
+        state: {
+          showDuplicatedAlert: true,
+        },
+      });
+    })
+    .catch((error) => {
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      );
+      // captureException(error);
+      throw error;
+    })
+    .finally(() => {
+      duplicateModal.value?.hide();
+    });
 }
 
 /**
@@ -72,7 +99,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })

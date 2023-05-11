@@ -23,9 +23,9 @@ function handleSubmit() {
     showError.value = true;
     duplicateAuditNameRef.value?.focus();
   } else {
+    emit("confirm", duplicateAuditName.value);
     showError.value = false;
     duplicateAuditName.value = "";
-    emit("confirm", duplicateAuditName.value);
   }
 }
 
