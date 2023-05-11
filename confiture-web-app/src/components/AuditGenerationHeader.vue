@@ -45,14 +45,11 @@ function confirmDuplicate(name: string) {
   console.log("Duplicating...", name);
   /**
    * TODO:
-   * - copy audit (+ new name)
-   * - redirect to new audit page
    * - show alert (only on first visit?)
    */
   auditStore
     .duplicateAudit(uniqueId, name)
     .then((newAuditId) => {
-      console.log("Duplication success");
       auditStore.$reset();
       resultStore.$reset();
       return router.push({

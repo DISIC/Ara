@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -137,7 +137,7 @@ const headerInfos = computed(() => [
 ]);
 
 function closeDuplicatedAuditAlert() {
-  history.state.deleteAudit = null;
+  history.state.showDuplicatedAlert = null;
   focusPageHeading();
 }
 
@@ -180,7 +180,7 @@ function toggleFilters(value: boolean) {
 
     <!-- TODO: conditionnally show alert -->
     <div
-      v-if="history.state.deleteAudit"
+      v-if="history.state.showDuplicatedAlert"
       class="fr-alert fr-alert--success fr-mb-3w"
     >
       <p class="fr-alert__title">Audit copié avec succès</p>
