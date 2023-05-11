@@ -118,7 +118,7 @@ const isDevMode = useDevMode();
 </script>
 
 <template>
-  <div v-if="!auditPublicationDate && isDevMode" class="fr-mb-4w">
+  <div v-if="isDevMode" class="fr-mb-4w">
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>

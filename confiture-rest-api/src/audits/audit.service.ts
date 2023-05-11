@@ -11,6 +11,7 @@ import {
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import sharp from 'sharp';
+import { omit } from 'lodash';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
@@ -20,6 +21,7 @@ import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
 import { FileStorageService } from './file-storage.service';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import { writeFile } from 'fs/promises';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -888,5 +890,89 @@ export class AuditService {
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
 
     return testedCount === expectedCount;
+  }
+
+  async duplicateAudit(uniqueId: string, newAuditName: string) {
+    const o = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: {
+        environments: true,
+        pages: {
+          include: {
+            results: {
+              include: {
+                exampleImages: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!o) {
+      return;
+    }
+
+    // console.dir(originalAudit, { depth: null });
+
+    // await writeFile('audit.json', JSON.stringify(originalAudit, null, 2));
+
+    const editUniqueId = nanoid();
+    const consultUniqueId = nanoid();
+
+    const newAudit = await this.prisma.audit.create({
+      data: {
+        ...omit(o, ['id', 'auditTraceId']),
+
+        editUniqueId,
+        consultUniqueId,
+
+        procedureName: newAuditName,
+
+        creationDate: new Date(),
+        editionDate: undefined,
+        publicationDate: undefined,
+
+        environments: {
+          createMany: {
+            data: o.environments.map((e) => omit(e, ['id', 'auditUniqueId'])),
+          },
+        },
+
+        pages: {
+          create: o.pages.map((p) => ({
+            name: p.name,
+            url: p.url,
+            results: {
+              create: p.results.map((r) => ({
+                ...omit(r, ['id', 'pageId']),
+                exampleImages: {
+                  // TODO: duplicate images too
+                  create: [
+                    // {
+                    //   originalFilename: 'string',
+                    //   url: 'string',
+                    //   size: 123,
+                    //   key: 'string',
+                    //   thumbnailUrl: 'string',
+                    //   thumbnailKey: 'string',
+                    // },
+                  ],
+                },
+              })),
+            },
+          })),
+        },
+
+        auditTrace: {
+          create: {
+            auditConsultUniqueId: consultUniqueId,
+            auditEditUniqueId: editUniqueId,
+          },
+        },
+      },
+    });
+
+    return newAudit.editUniqueId;
   }
 }

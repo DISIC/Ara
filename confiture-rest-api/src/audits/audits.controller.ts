@@ -32,6 +32,7 @@ import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import { UploadImageDto } from './upload-image.dto';
+import { DuplicateAuditDto } from './duplicate-audit.dto';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -213,6 +214,21 @@ export class AuditsController {
     if (!deleted) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
+  }
+
+  @Post('/:uniqueId/duplicate')
+  async duplicateAudit(
+    @Param('uniqueId') uniqueId: string,
+    @Body() body: DuplicateAuditDto,
+  ) {
+    const newAuditId = await this.auditService.duplicateAudit(
+      uniqueId,
+      body.procedureName,
+    );
+
+    // TODO check if newAuditId is defined
+
+    return newAuditId;
   }
 
   /**
