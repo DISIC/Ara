@@ -216,7 +216,18 @@ export class AuditsController {
     }
   }
 
+  /** Fully duplicate an audit. This includes
+   * - the audit metadata (procedure name, auditor name, etc)
+   * - the audited pages
+   * - the RGAA results (status, comment, user impact)
+   *   - the example images
+   */
   @Post('/:uniqueId/duplicate')
+  @ApiCreatedResponse({
+    description: 'The audit has been successfully duplicated.',
+  })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
   async duplicateAudit(
     @Param('uniqueId') uniqueId: string,
     @Body() body: DuplicateAuditDto,
@@ -226,7 +237,9 @@ export class AuditsController {
       body.procedureName,
     );
 
-    // TODO check if newAuditId is defined
+    if (!newAuditId) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
 
     return newAuditId;
   }
