@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -136,11 +136,6 @@ const headerInfos = computed(() => [
   },
 ]);
 
-function closeDuplicatedAuditAlert() {
-  history.state.showDuplicatedAlert = null;
-  focusPageHeading();
-}
-
 const showAutoSaveAlert = ref(true);
 
 function closeAutoSaveAlert() {
@@ -168,6 +163,19 @@ const showFilters = ref(true);
 function toggleFilters(value: boolean) {
   showFilters.value = value;
 }
+
+const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
+
+watch(route, () => {
+  if (history.state.showDuplicatedAlert) {
+    showDuplicatedAlert.value = true;
+  }
+});
+
+function closeDuplicatedAuditAlert() {
+  showDuplicatedAlert.value = false;
+  focusPageHeading();
+}
 </script>
 
 <template>
@@ -178,11 +186,7 @@ function toggleFilters(value: boolean) {
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
-    <!-- TODO: conditionnally show alert -->
-    <div
-      v-if="history.state.showDuplicatedAlert"
-      class="fr-alert fr-alert--success fr-mb-3w"
-    >
+    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
       <p class="fr-alert__title">Audit copié avec succès</p>
       <p>
         Des liens pour accéder à cet audit et de son rapport viennent de vous
