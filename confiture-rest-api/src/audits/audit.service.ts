@@ -957,7 +957,7 @@ export class AuditService {
 
     originalAudit.pages.forEach((p) => {
       p.results.forEach((r) => {
-        r.exampleImages.forEach((e, i) => {
+        r.exampleImages.forEach((e) => {
           const randomPrefix = nanoid();
 
           const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
@@ -1051,6 +1051,6 @@ export class AuditService {
       },
     });
 
-    return newAudit.editUniqueId;
+    return newAudit;
   }
 }

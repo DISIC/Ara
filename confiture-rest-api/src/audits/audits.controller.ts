@@ -232,16 +232,21 @@ export class AuditsController {
     @Param('uniqueId') uniqueId: string,
     @Body() body: DuplicateAuditDto,
   ) {
-    const newAuditId = await this.auditService.duplicateAudit(
+    const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
       body.procedureName,
     );
 
-    if (!newAuditId) {
+    if (!newAudit) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    return newAuditId;
+    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
+      console.error(`Failed to send email for audit ${newAudit.editUniqueId}`);
+      console.error(err);
+    });
+
+    return newAudit.editUniqueId;
   }
 
   /**
