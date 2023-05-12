@@ -71,6 +71,16 @@ function handleUploadExample(file: File) {
   showFileSizeError.value = false;
   showFileFormatError.value = false;
 
+  if (file.size > 2000000) {
+    showFileSizeError.value = true;
+    notify(
+      "error",
+      "Le téléchargement de l'exemple a échoué",
+      "Poids du fichier trop lourd"
+    );
+    return;
+  }
+
   store
     .uploadExampleImage(
       props.auditUniqueId,
@@ -84,6 +94,15 @@ function handleUploadExample(file: File) {
     })
     .catch(async (error) => {
       if (error instanceof HTTPError) {
+        if (error.response.status === 413) {
+          showFileSizeError.value = true;
+          notify(
+            "error",
+            "Le téléchargement de l'exemple a échoué",
+            "Poids du fichier trop lourd"
+          );
+        }
+
         // Unprocessable Entity
         if (error.response.status === 422) {
           const body = await error.response.json();

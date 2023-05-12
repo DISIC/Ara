@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+# 12/05/2023
+
+### Correction 🐛
+
+- Vérifie le poids des images d'exemple avant de les envoyer au serveur ([#394](https://github.com/DISIC/Ara/pull/394))
+
 # 11/05/2023
 
 ### Correction 🐛
