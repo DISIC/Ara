@@ -75,6 +75,11 @@ model Audit {
   consultUniqueId String     @unique
   auditTraceId    Int        @unique
   auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
+  
+  // Audit duplication history
+  sourceAudit Audit? @relation("AuditDuplicationHistory", fields: [sourceAuditId], references: [id])
+  sourceAuditId Int?
+  auditCopies Audit[] @relation("AuditDuplicationHistory")
 
   @@unique([editUniqueId, consultUniqueId])
 }

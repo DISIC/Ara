@@ -26,6 +26,11 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
   environments: true,
   pages: true,
+  sourceAudit: {
+    select: {
+      procedureName: true,
+    },
+  },
 };
 
 @Injectable()
@@ -891,9 +896,9 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(uniqueId: string, newAuditName: string) {
+  async duplicateAudit(sourceUniqueId: string, newAuditName: string) {
     const originalAudit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
+      where: { editUniqueId: sourceUniqueId },
       include: {
         environments: true,
         pages: {
@@ -994,7 +999,14 @@ export class AuditService {
 
     const newAudit = await this.prisma.audit.create({
       data: {
-        ...omit(originalAudit, ['id', 'auditTraceId']),
+        ...omit(originalAudit, ['id', 'auditTraceId', 'sourceAuditId']),
+
+        // link new audit with the original
+        sourceAudit: {
+          connect: {
+            editUniqueId: sourceUniqueId,
+          },
+        },
 
         editUniqueId: duplicateEditUniqueId,
         consultUniqueId: duplicateConsultUniqueId,
