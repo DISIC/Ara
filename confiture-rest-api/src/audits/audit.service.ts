@@ -11,7 +11,7 @@ import {
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import sharp from 'sharp';
-import { omit } from 'lodash';
+import { omit, setWith } from 'lodash';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
@@ -21,7 +21,6 @@ import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
 import { FileStorageService } from './file-storage.service';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
-import { writeFile } from 'fs/promises';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -893,7 +892,7 @@ export class AuditService {
   }
 
   async duplicateAudit(uniqueId: string, newAuditName: string) {
-    const o = await this.prisma.audit.findUnique({
+    const originalAudit = await this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
       include: {
         environments: true,
@@ -909,23 +908,96 @@ export class AuditService {
       },
     });
 
-    if (!o) {
+    if (!originalAudit) {
       return;
     }
 
-    // console.dir(originalAudit, { depth: null });
+    const duplicateEditUniqueId = nanoid();
+    const duplicateConsultUniqueId = nanoid();
 
-    // await writeFile('audit.json', JSON.stringify(originalAudit, null, 2));
+    /** 
+    Object storing duplicate exampleImage creation data mapped by
+    - page id
+    - result id
+    - example id
 
-    const editUniqueId = nanoid();
-    const consultUniqueId = nanoid();
+    This object is used within the call to prisma.audit.create() to duplicate the example images.
+
+    Example content:
+    ```
+    {
+      'page-id': {
+        'result-id': {
+          'example-id': {
+            filename: 'foo',
+            ...
+          }
+        }
+      }
+    }
+    ```
+    */
+    const imagesCreateData: {
+      [pageId: string]: {
+        [resultId: string]: object;
+      };
+    } = {};
+
+    /**
+     * contains s3 file duplications which will be executed together by calling
+     * `fileStorageService.duplicateMultipleFiles()`
+     */
+    const imageDuplications: { originalKey: string; destinationKey: string }[] =
+      [];
+
+    originalAudit.pages.forEach((p) => {
+      p.results.forEach((r) => {
+        r.exampleImages.forEach((e, i) => {
+          const randomPrefix = nanoid();
+
+          const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
+          const thumbnailKey = `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`;
+
+          const publicUrl = this.fileStorageService.getPublicUrl(key);
+          const thumbnailUrl =
+            this.fileStorageService.getPublicUrl(thumbnailKey);
+
+          imageDuplications.push(
+            {
+              originalKey: e.key,
+              destinationKey: key,
+            },
+            {
+              originalKey: e.thumbnailKey,
+              destinationKey: thumbnailKey,
+            },
+          );
+
+          setWith(
+            imagesCreateData,
+            [p.id, r.id, e.id],
+            {
+              originalFilename: e.originalFilename,
+              url: publicUrl,
+              size: e.size,
+              key: key,
+              thumbnailUrl: thumbnailUrl,
+              thumbnailKey: thumbnailKey,
+            },
+            Object,
+          );
+        });
+      });
+    });
+
+    await this.fileStorageService.duplicateMultipleFiles(imageDuplications);
 
     const newAudit = await this.prisma.audit.create({
       data: {
-        ...omit(o, ['id', 'auditTraceId']),
+        ...omit(originalAudit, ['id', 'auditTraceId']),
 
-        editUniqueId,
-        consultUniqueId,
+        editUniqueId: duplicateEditUniqueId,
+        consultUniqueId: duplicateConsultUniqueId,
 
         procedureName: newAuditName,
 
@@ -935,29 +1007,23 @@ export class AuditService {
 
         environments: {
           createMany: {
-            data: o.environments.map((e) => omit(e, ['id', 'auditUniqueId'])),
+            data: originalAudit.environments.map((e) =>
+              omit(e, ['id', 'auditUniqueId']),
+            ),
           },
         },
 
         pages: {
-          create: o.pages.map((p) => ({
+          create: originalAudit.pages.map((p) => ({
             name: p.name,
             url: p.url,
             results: {
               create: p.results.map((r) => ({
                 ...omit(r, ['id', 'pageId']),
                 exampleImages: {
-                  // TODO: duplicate images too
-                  create: [
-                    // {
-                    //   originalFilename: 'string',
-                    //   url: 'string',
-                    //   size: 123,
-                    //   key: 'string',
-                    //   thumbnailUrl: 'string',
-                    //   thumbnailKey: 'string',
-                    // },
-                  ],
+                  create: r.exampleImages.map(
+                    (e) => imagesCreateData[p.id][r.id][e.id],
+                  ),
                 },
               })),
             },
@@ -966,8 +1032,8 @@ export class AuditService {
 
         auditTrace: {
           create: {
-            auditConsultUniqueId: consultUniqueId,
-            auditEditUniqueId: editUniqueId,
+            auditConsultUniqueId: duplicateConsultUniqueId,
+            auditEditUniqueId: duplicateEditUniqueId,
           },
         },
       },
