@@ -33,6 +33,13 @@ export class SigninError extends Error {
   }
 }
 
+export class TokenRegenerationError extends Error {
+  constructor(reason) {
+    super(reason);
+    this.name = 'TokenRegenerationError';
+  }
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -71,6 +78,31 @@ export class AuthService {
       }
       throw e;
     }
+  }
+
+  /**
+   * Generate a new verification token and invalidates the previous one.
+   */
+  async regenerateVerificationToken(username: string): Promise<string> {
+    {
+      const user = await this.prisma.user.findUnique({ where: { username } });
+      if (!user) {
+        throw new TokenRegenerationError('User not found');
+      }
+
+      if (user.isVerified) {
+        throw new TokenRegenerationError('User is already verified');
+      }
+    }
+
+    const newJti = nanoid();
+    await this.prisma.user.update({
+      where: { username },
+      data: { verificationJti: newJti },
+    });
+
+    const verificationToken = this.generateVerificationToken(username, newJti);
+    return verificationToken;
   }
 
   async verifyAccount(token: string) {
