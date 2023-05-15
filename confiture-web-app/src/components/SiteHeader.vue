@@ -120,6 +120,23 @@ function closeNewsSubMenu() {
               </p>
             </div>
           </div>
+          <div class="fr-header__tools">
+            <div class="fr-header__tools-links">
+              <ul class="fr-btns-group">
+                <li>
+                  <RouterLink class="fr-btn" to="#"> Se connecter </RouterLink>
+                </li>
+                <li>
+                  <RouterLink
+                    class="fr-btn fr-btn--secondary"
+                    :to="{ name: 'new-account' }"
+                  >
+                    Créer un compte
+                  </RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 

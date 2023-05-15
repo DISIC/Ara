@@ -31,6 +31,7 @@ import RoadmapPage from "./pages/RoadmapPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 
 import { useAuditStore } from "./store";
+import NewAccountPage from "./pages/account/NewAccountPage.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -141,19 +142,12 @@ const router = createRouter({
         ],
       },
     },
-    // TODO: nothing to put on that page for now
-    // {
-    //   path: "/donnees-personnelles",
-    //   name: "personal-data",
-    //   component: PersonalDataPage,
-    //   meta: {
-    //     name: "Données personnelles",
-    //     breadcrumbLinks: () => [
-    //       getHomeBreadcrumbLink(),
-    //       { label: "Données personnelles", name: "personal-data" },
-    //     ],
-    //   },
-    // },
+    // Account pages
+    {
+      path: "/compte/nouveau",
+      name: "new-account",
+      component: NewAccountPage,
+    },
     // Audit pages
     {
       path: "/audits/nouveau",
