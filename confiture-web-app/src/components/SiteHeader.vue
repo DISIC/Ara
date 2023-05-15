@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 import { useRoute, RouteLocationRaw } from "vue-router";
 
 import { useAuditStore, useReportStore } from "../store";
+import { useAccountStore } from "../store/account";
+import Dropdown from "./Dropdown.vue";
 
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
@@ -79,6 +81,7 @@ const newsSubMenu = ref<HTMLButtonElement>();
 function closeNewsSubMenu() {
   dsfr(newsSubMenu.value).collapse.conceal();
 }
+const accountStore = useAccountStore();
 </script>
 
 <template>
@@ -122,7 +125,7 @@ function closeNewsSubMenu() {
           </div>
           <div class="fr-header__tools">
             <div class="fr-header__tools-links">
-              <ul class="fr-btns-group">
+              <ul v-if="!accountStore.account" class="fr-btns-group">
                 <li>
                   <RouterLink class="fr-btn" :to="{ name: 'login' }">
                     Se connecter
@@ -137,6 +140,38 @@ function closeNewsSubMenu() {
                   </RouterLink>
                 </li>
               </ul>
+              <!-- FIXME: correct dropdown style when #377 is merged -->
+              <Dropdown
+                v-else
+                ref="optionsDropdownRef"
+                :title="accountStore.account.email"
+              >
+                <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+                  <li>
+                    <RouterLink
+                      to="#"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                    >
+                      Mon compte
+                    </RouterLink>
+                  </li>
+                  <li>
+                    <RouterLink
+                      to="#"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                    >
+                      Paramètres d’affichage
+                    </RouterLink>
+                  </li>
+                  <li>
+                    <button
+                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                    >
+                      Me déconnecter
+                    </button>
+                  </li>
+                </ul>
+              </Dropdown>
             </div>
           </div>
         </div>
