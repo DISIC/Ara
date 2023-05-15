@@ -84,6 +84,7 @@ export const useAccountStore = defineStore("account", {
         email: username,
       };
       this.authToken = authToken;
+<<<<<<< HEAD
 
       if (rememberMe) {
         localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
@@ -98,6 +99,8 @@ export const useAccountStore = defineStore("account", {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       this.$reset();
+=======
+>>>>>>> 2812f07 (add user dropdown)
     },
 
     async verifyAccountCreation(verificationToken: string) {
