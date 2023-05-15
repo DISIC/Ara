@@ -42,10 +42,10 @@ export const useAccountStore = defineStore("account", {
         })
         .text();
 
-      this.authToken = authToken;
       this.account = {
         email: username,
       };
+      this.authToken = authToken;
     },
 
     async verifyAccountCreation(verificationToken: string) {
