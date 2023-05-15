@@ -200,5 +200,6 @@ model User {
   username String @unique
   password String
 
-  isVerified Boolean @default(false)
+  isVerified      Boolean @default(false)
+  verificationJti String?
 }
