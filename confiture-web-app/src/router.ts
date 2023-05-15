@@ -32,6 +32,9 @@ import ChangelogPage from "./pages/ChangelogPage.vue";
 
 import { useAuditStore } from "./store";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
+import LoginPage from "./pages/account/LoginPage.vue";
+import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
+import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -143,10 +146,26 @@ const router = createRouter({
       },
     },
     // Account pages
+    // TODO: add meta
     {
       path: "/compte/nouveau",
       name: "new-account",
       component: NewAccountPage,
+    },
+    {
+      path: "/compte/validation",
+      name: "new-account-validation",
+      component: NewAccountValidationPage,
+    },
+    {
+      path: "/compte/connexion",
+      name: "login",
+      component: LoginPage,
+    },
+    {
+      path: "/compte",
+      name: "account-dashboard",
+      component: AccountDashboardPage,
     },
     // Audit pages
     {
