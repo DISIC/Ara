@@ -51,11 +51,15 @@ export class AuthController {
   })
   async createAccount(@Body() body: CreateAccountDto) {
     try {
-      const user = await this.auth.createUnverifiedUser(
+      const verificationToken = await this.auth.createUnverifiedUser(
         body.username,
         body.password,
       );
-      await this.email.sendAccountVerificationEmail(user.username);
+      console.log('verificationToken:', verificationToken);
+      await this.email.sendAccountVerificationEmail(
+        body.username,
+        verificationToken,
+      );
     } catch (e) {
       if (e instanceof UsernameAlreadyExistsError) {
         throw new ConflictException();
@@ -76,6 +80,7 @@ export class AuthController {
       await this.auth.verifyAccount(body.token);
     } catch (e) {
       if (e instanceof InvalidVerificationTokenError) {
+        console.log('Account verification failed:', e.message);
         throw new UnauthorizedException('Invalid token');
       }
       throw e;
