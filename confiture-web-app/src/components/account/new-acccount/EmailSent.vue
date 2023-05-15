@@ -9,18 +9,24 @@ defineEmits(["back"]);
 
 const authStore = useAccountStore();
 
+<<<<<<< HEAD
 const resendEmailButton = ref<HTMLButtonElement>();
+=======
+>>>>>>> c5b49c9 (add new account page)
 const showResendSuccessAlert = ref(false);
 
 async function resendEmail() {
   await authStore.resendVerificationEmail(props.userEmail);
   showResendSuccessAlert.value = true;
 }
+<<<<<<< HEAD
 
 async function closeResendSuccessAlert() {
   resendEmailButton.value?.focus();
   showResendSuccessAlert.value = false;
 }
+=======
+>>>>>>> c5b49c9 (add new account page)
 </script>
 
 <template>
@@ -52,7 +58,11 @@ async function closeResendSuccessAlert() {
       <button
         class="fr-btn--close fr-btn"
         title="Masquer le message"
+<<<<<<< HEAD
         @click="closeResendSuccessAlert"
+=======
+        @click="showResendSuccessAlert = false"
+>>>>>>> c5b49c9 (add new account page)
       >
         Masquer le message
       </button>
@@ -70,7 +80,11 @@ async function closeResendSuccessAlert() {
   </div>
 </template>
 
+<<<<<<< HEAD
 <style scoped>
+=======
+<style>
+>>>>>>> c5b49c9 (add new account page)
 .wrapper {
   max-width: 37.5rem;
   margin: 0 auto;
