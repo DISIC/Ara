@@ -31,5 +31,29 @@ export const useAccountStore = defineStore("account", {
         },
       });
     },
+
+    async login(username: string, password: string) {
+      const authToken = await ky
+        .post("/api/auth/signin", {
+          json: {
+            username,
+            password,
+          },
+        })
+        .text();
+
+      this.authToken = authToken;
+      this.account = {
+        email: username,
+      };
+    },
+
+    async verifyAccountCreation(verificationToken: string) {
+      await ky.post("/api/auth/verify", {
+        json: {
+          token: verificationToken,
+        },
+      });
+    },
   },
 });

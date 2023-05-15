@@ -93,7 +93,7 @@ export class MailService {
   sendAccountVerificationEmail(username: string, token: string) {
     const baseUrl = this.config.get<string>('FRONT_BASE_URL');
 
-    const verificationLink = `${baseUrl}/account/verify?token=${encodeURIComponent(
+    const verificationLink = `${baseUrl}/compte/validation?token=${encodeURIComponent(
       token,
     )}`;
 
