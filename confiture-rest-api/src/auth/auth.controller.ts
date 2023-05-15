@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -11,18 +12,21 @@ import {
   AuthService,
   InvalidVerificationTokenError,
   SigninError,
+  TokenRegenerationError,
   UsernameAlreadyExistsError,
 } from './auth.service';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyAccountDto } from './verify-account.dto';
 import { SigninDto } from './signin.dto';
 import {
+  ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { ResendVerificationEmailDto } from './resend-verification-email.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -63,6 +67,32 @@ export class AuthController {
     } catch (e) {
       if (e instanceof UsernameAlreadyExistsError) {
         throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  @Post('resend-verification-email')
+  @HttpCode(200)
+  @ApiOkResponse({ description: 'Verification email has been resent.' })
+  @ApiBadRequestResponse({
+    description:
+      'Either no such user exist or the account has already been verified.',
+  })
+  async resetVarificationEmail(@Body() body: ResendVerificationEmailDto) {
+    try {
+      const verificationToken = await this.auth.regenerateVerificationToken(
+        body.username,
+      );
+      console.log('verificationToken:', verificationToken);
+      await this.email.sendAccountVerificationEmail(
+        body.username,
+        verificationToken,
+      );
+    } catch (e) {
+      if (e instanceof TokenRegenerationError) {
+        console.log('Token regeneration failed:', e.message);
+        throw new BadRequestException();
       }
       throw e;
     }
