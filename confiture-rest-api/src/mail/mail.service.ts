@@ -90,14 +90,11 @@ export class MailService {
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
   }
 
-  sendAccountVerificationEmail(username: string) {
-    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
+  sendAccountVerificationEmail(username: string, token: string) {
     const baseUrl = this.config.get<string>('FRONT_BASE_URL');
-    const payload = { sub: username };
-    const verificationToken = jwt.sign(payload, secret, { expiresIn: '1h' });
 
     const verificationLink = `${baseUrl}/account/verify?token=${encodeURIComponent(
-      verificationToken,
+      token,
     )}`;
 
     return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
