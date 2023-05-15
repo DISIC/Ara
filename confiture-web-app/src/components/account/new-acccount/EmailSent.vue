@@ -64,7 +64,7 @@ async function resendEmail() {
   </div>
 </template>
 
-<style>
+<style scoped>
 .wrapper {
   max-width: 37.5rem;
   margin: 0 auto;

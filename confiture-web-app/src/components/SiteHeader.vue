@@ -118,7 +118,9 @@ const menuItems = computed<
             <div class="fr-header__tools-links">
               <ul class="fr-btns-group">
                 <li>
-                  <RouterLink class="fr-btn" to="#"> Se connecter </RouterLink>
+                  <RouterLink class="fr-btn" :to="{ name: 'login' }">
+                    Se connecter
+                  </RouterLink>
                 </li>
                 <li>
                   <RouterLink
