@@ -7,7 +7,10 @@ import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
 import { captureWithPayloads, formatDate } from "../utils";
 import Dropdown from "./Dropdown.vue";
+import CopyIcon from "./icons/CopyIcon.vue";
+import GearIcon from "./icons/GearIcon.vue";
 import SummaryCard from "./SummaryCard.vue";
+import DuplicateModal from "./DuplicateModal.vue";
 import DeleteModal from "./DeleteModal.vue";
 
 defineProps<{
@@ -27,12 +30,51 @@ defineProps<{
 
 const router = useRouter();
 
+const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
 const notify = useNotifications();
+
+/**
+ * Duplicate audit and redirect to new audit page
+ */
+function confirmDuplicate(name: string) {
+  console.log("Duplicating...", name);
+  /**
+   * TODO:
+   * - show alert (only on first visit?)
+   */
+  auditStore
+    .duplicateAudit(uniqueId, name)
+    .then((newAuditId) => {
+      auditStore.$reset();
+      resultStore.$reset();
+      return router.push({
+        name: "edit-audit-step-three",
+        params: {
+          uniqueId: newAuditId,
+        },
+        state: {
+          showDuplicatedAlert: true,
+        },
+      });
+    })
+    .catch((error) => {
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      );
+      // captureException(error);
+      throw error;
+    })
+    .finally(() => {
+      duplicateModal.value?.hide();
+    });
+}
 
 /**
  * Delete audit and redirect to home page
@@ -54,7 +96,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -73,7 +115,7 @@ const isDevMode = useDevMode();
 </script>
 
 <template>
-  <div v-if="!auditPublicationDate && isDevMode" class="fr-mb-4w">
+  <div v-if="isDevMode" class="fr-mb-4w">
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>
@@ -106,22 +148,14 @@ const isDevMode = useDevMode();
     <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="top-actions" role="list">
       <li class="fr-mr-2w">
-        <Dropdown ref="optionsDropdownRef" title="Options">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Options"
+          :align-left="route.name === 'edit-audit-step-three'"
+        >
           <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
             <template v-if="!!auditPublicationDate">
-              <!-- FIXME: would this still be useful? -->
-              <!-- <li v-if="hasA11yStatement">
-                <RouterLink
-                  :to="{
-                    name: 'report',
-                    params: { uniqueId: auditStore.data?.consultUniqueId },
-                  }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-line fr-m-0"
-                >
-                  Consulter la déclaration d’accessibilité
-                </RouterLink>
-              </li> -->
-              <li>
+              <li class="dropdown-item">
                 <RouterLink
                   :to="{
                     name: 'edit-audit-step-three',
@@ -133,18 +167,31 @@ const isDevMode = useDevMode();
                 </RouterLink>
               </li>
             </template>
-            <li>
+            <li class="dropdown-item">
               <RouterLink
                 :to="{
                   name: 'edit-audit-step-one',
                   params: { uniqueId: editUniqueId },
                 }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >
+                <GearIcon class="fr-mr-2v" />
                 Modifier les paramètres
               </RouterLink>
             </li>
-            <li>
+            <template v-if="!!auditPublicationDate">
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  @click="duplicateModal?.show()"
+                >
+                  <CopyIcon class="fr-mr-2v" />
+                  Créer une copie
+                </button>
+              </li>
+            </template>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
               <button
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
                 @click="deleteModal?.show()"
@@ -181,6 +228,16 @@ const isDevMode = useDevMode();
     </div>
   </div>
 
+  <DuplicateModal
+    ref="duplicateModal"
+    :original-audit-name="auditStore.data?.procedureName"
+    @confirm="confirmDuplicate"
+    @closed="
+      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
   <DeleteModal
     ref="deleteModal"
     @confirm="confirmDelete"
@@ -207,13 +264,6 @@ const isDevMode = useDevMode();
 
 .top-actions {
   display: flex;
-  list-style: none;
-}
-
-.dropdown-list {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
   list-style: none;
 }
 

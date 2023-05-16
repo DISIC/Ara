@@ -32,6 +32,7 @@ import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import { UploadImageDto } from './upload-image.dto';
+import { DuplicateAuditDto } from './duplicate-audit.dto';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -213,6 +214,39 @@ export class AuditsController {
     if (!deleted) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
+  }
+
+  /** Fully duplicate an audit. This includes
+   * - the audit metadata (procedure name, auditor name, etc)
+   * - the audited pages
+   * - the RGAA results (status, comment, user impact)
+   *   - the example images
+   */
+  @Post('/:uniqueId/duplicate')
+  @ApiCreatedResponse({
+    description: 'The audit has been successfully duplicated.',
+  })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  async duplicateAudit(
+    @Param('uniqueId') uniqueId: string,
+    @Body() body: DuplicateAuditDto,
+  ) {
+    const newAudit = await this.auditService.duplicateAudit(
+      uniqueId,
+      body.procedureName,
+    );
+
+    if (!newAudit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
+      console.error(`Failed to send email for audit ${newAudit.editUniqueId}`);
+      console.error(err);
+    });
+
+    return newAudit.editUniqueId;
   }
 
   /**

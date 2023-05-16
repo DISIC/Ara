@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -55,5 +56,25 @@ export class FileStorageService {
     });
 
     await this.s3Client.send(command);
+  }
+
+  async duplicateMultipleFiles(
+    duplications: { originalKey: string; destinationKey: string }[],
+  ) {
+    await Promise.all(
+      duplications
+        .map(
+          (d) =>
+            new CopyObjectCommand({
+              Bucket: this.config.get<string>('S3_BUCKET'),
+              CopySource: `/${this.config.get<string>('S3_BUCKET')}/${
+                d.originalKey
+              }`,
+              Key: d.destinationKey,
+              ACL: 'public-read',
+            }),
+        )
+        .map((command) => this.s3Client.send(command)),
+    );
   }
 }

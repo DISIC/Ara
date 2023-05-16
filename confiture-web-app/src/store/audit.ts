@@ -69,6 +69,21 @@ export const useAuditStore = defineStore("audit", {
       return response;
     },
 
+    /**
+     * @param uniqueId Id of the audit to duplicate
+     * @returns A promise to the unique id of the copy
+     */
+    async duplicateAudit(uniqueId: string, copyName: string): Promise<string> {
+      const newAuditId = (await ky
+        .post(`/api/audits/${uniqueId}/duplicate`, {
+          json: {
+            procedureName: copyName,
+          },
+        })
+        .text()) as string;
+      return newAuditId;
+    },
+
     async updateCurrentPageId(id: number) {
       this.currentPageId = id;
     },

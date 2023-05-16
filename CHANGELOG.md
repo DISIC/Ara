@@ -2,26 +2,32 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-# 12/05/2023
+## 16/05/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’un bouton pour dupliquer un audit terminé ([#377](https://github.com/DISIC/Ara/pull/377))
+
+## 12/05/2023
 
 ### Correction 🐛
 
 - Vérifie le poids des images d'exemple avant de les envoyer au serveur ([#394](https://github.com/DISIC/Ara/pull/394))
 
-# 11/05/2023
+## 11/05/2023
 
 ### Correction 🐛
 
 - Corrige l'application de l'état transverse d'un critère via le switch "Sur toutes les pages" qui était parfois ignoré.
 
-# 10/05/2023
+## 10/05/2023
 
 ### Correction 🐛
 
 - Corrige une erreur qui survenait lorsqu'un champ de formulaire de type URL contenait un espace ([#386](https://github.com/DISIC/Ara/pull/386))
 - Corrige l'ordre des erreurs dans l'onglet "Détail des résultats" du rapport d'audit ([#389](https://github.com/DISIC/Ara/pull/389))
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Les accordéons "Description de la ou des erreurs" et "Recommandation de correction" sont remplacés par un unique accordéon "Description et recommandation" ([#390](https://github.com/DISIC/Ara/pull/390))
 
@@ -34,70 +40,70 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 04/05/2023
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Ajout d’une notification pour signaler qu’un email avec les liens importants a été envoyé lors de la création d’un audit ([#368](https://github.com/DISIC/Ara/pull/368))
 
 ## 03/05/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Remplacement des filtres de thématique par des ancres lors de la réalisation d’un audit ([#362](https://github.com/DISIC/Ara/pull/362))
 
 ## 28/04/2023
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Modifications mineures de la page d’accueil ([#361](https://github.com/DISIC/Ara/pull/361))
 
 ## 19/04/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Ajout d'une aide à la saisie en Markdown accessible en cliquant sur le bouton "Markdown pris en compte" en dessous des champs texte concernés ([#350](https://github.com/DISIC/Ara/pull/350))
 
 ## 05/04/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Lors de la création d'un audit, envoie d'un email contenant les liens vers l'audit et le rapport ([#314](https://github.com/DISIC/Ara/pull/314))
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Mise à jour du titre de la page de génération d’audit ([#345](https://github.com/DISIC/Ara/pull/345))
 - Ajout du métier "Auditeur / Auditrice accessibilité" dans le formulaire de retour ([#346](https://github.com/DISIC/Ara/pull/346))
 
 ## 30/03/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Ajout d’un bouton pour afficher ou cacher la barre latérale des filtres ([#322](https://github.com/DISIC/Ara/pull/322))
 
 ## 24/03/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Ajout d’un filtre pour cacher les tests et références des critères ([#329](https://github.com/DISIC/Ara/pull/329))
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Petits ajustements d’affichage du contenu de la page Contexte d’un audit ([#331](https://github.com/DISIC/Ara/pull/331))
 - Mise à jour du wording pour la saisie d’un moyen de contact dans la déclaration ([#330](https://github.com/DISIC/Ara/pull/330))
 
 ## 23/03/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Ajout d’un interrupteur pour marquer le résultat d’un critère comme transverse sur toutes les pages ([#317](https://github.com/DISIC/Ara/pull/317))
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
 - Mise à jour de l’adresse email de contact : ara@design.numerique.gouv.fr ([#328](https://github.com/DISIC/Ara/pull/328))
 
 ## 08/03/2023
 
-## Nouvelles fonctionnalités 🚀
+### Nouvelles fonctionnalités 🚀
 
 - Ajout d’un lien de retour en haut de page pendant l’audit ([#316](https://github.com/DISIC/Ara/pull/316))
 
@@ -105,7 +111,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Améliore la gestion du focus à la fermeture des modales ([#297](https://github.com/DISIC/Ara/pull/297))
 
-## Autres changements ⚙️
+### Autres changements ⚙️
 
 - Un seul des 2 moyens de contact est obligatoire : email ou URL vers un formulaire ([#313](https://github.com/DISIC/Ara/pull/313))
 

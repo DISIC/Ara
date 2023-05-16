@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
@@ -10,6 +10,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
+import { history } from "../../router";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
 import { captureWithPayloads, getCriteriaCount } from "../../utils";
@@ -18,13 +19,14 @@ import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 const route = useRoute();
 const router = useRouter();
 
-const uniqueId = route.params.uniqueId as string;
+// const uniqueId = route.params.uniqueId as string;
+const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 
 useWrappedFetch(async () => {
-  await auditStore.fetchAuditIfNeeded(uniqueId);
-  await resultsStore.fetchResults(uniqueId);
-});
+  await auditStore.fetchAuditIfNeeded(uniqueId.value);
+  await resultsStore.fetchResults(uniqueId.value);
+}, true);
 
 const resultsStore = useResultsStore();
 const notify = useNotifications();
@@ -34,9 +36,12 @@ const notify = useNotifications();
  */
 function toStepFour() {
   auditStore
-    .publishAudit(uniqueId)
+    .publishAudit(uniqueId.value)
     .then(() => {
-      router.push({ name: "edit-audit-step-four", params: { uniqueId } });
+      router.push({
+        name: "edit-audit-step-four",
+        params: { uniqueId: uniqueId.value },
+      });
     })
     .catch((error) => {
       notify(
@@ -158,6 +163,19 @@ const showFilters = ref(true);
 function toggleFilters(value: boolean) {
   showFilters.value = value;
 }
+
+const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
+
+watch(route, () => {
+  if (history.state.showDuplicatedAlert) {
+    showDuplicatedAlert.value = true;
+  }
+});
+
+function closeDuplicatedAuditAlert() {
+  showDuplicatedAlert.value = false;
+  focusPageHeading();
+}
 </script>
 
 <template>
@@ -167,6 +185,21 @@ function toggleFilters(value: boolean) {
       :title="`Audit ${auditStore.data.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
+
+    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
+      <p class="fr-alert__title">Audit copié avec succès</p>
+      <p>
+        Des liens pour accéder à cet audit et de son rapport viennent de vous
+        être envoyés par mail.
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeDuplicatedAuditAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
 
     <div
       v-if="auditStore.showAuditEmailAlert"
