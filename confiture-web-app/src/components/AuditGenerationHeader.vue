@@ -230,6 +230,7 @@ const isDevMode = useDevMode();
 
   <DuplicateModal
     ref="duplicateModal"
+    :original-audit-name="auditStore.data?.procedureName"
     @confirm="confirmDuplicate"
     @closed="
       optionsDropdownRef?.buttonRef.focus();

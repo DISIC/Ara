@@ -4,6 +4,8 @@ import DsfrModal from "./DsfrModal.vue";
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 
+defineProps<{ originalAuditName?: string }>();
+
 const emit = defineEmits<{
   (e: "closed"): void;
   (e: "confirm", payload: string): void;
@@ -57,10 +59,14 @@ function handleClose() {
             <div class="fr-modal__content">
               <h1 id="duplicate-modal-title" class="fr-modal__title">
                 Créer une copie de l’audit
+                <template v-if="originalAuditName">
+                  {{ originalAuditName }}</template
+                >
               </h1>
               <p>
-                La copie de votre audit conservera toutes les données qui ont
-                été saisies durant l’audit.
+                La copie de votre audit reprend l’intégralité des éléments de
+                l’audit initial : échantillon, état de conformité, commentaires
+                et recommandations, etc.
               </p>
               <div class="fr-input-group">
                 <label
@@ -68,7 +74,8 @@ function handleClose() {
                   for="duplicate-audit-name"
                   >Nom de la copie
                   <span class="fr-hint-text">
-                    Exemple : contre audit site DesignGouv
+                    Exemple : contre audit
+                    {{ originalAuditName ?? "site DesignGouv" }}
                   </span>
                 </label>
                 <input
