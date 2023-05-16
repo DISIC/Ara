@@ -20,7 +20,7 @@ const isDevMode = useDevMode();
 function fillFields() {
   const randomNumber = Math.floor(Math.random() * 1_000_000);
   userEmail.value = `email-${randomNumber}@example.com`;
-  userPassword.value = "123blabla!!!Pouet";
+  userPassword.value = "123456789098";
 }
 </script>
 
