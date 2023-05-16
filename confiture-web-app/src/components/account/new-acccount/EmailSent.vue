@@ -9,11 +9,17 @@ defineEmits(["back"]);
 
 const authStore = useAccountStore();
 
+const resendEmailButton = ref<HTMLButtonElement>();
 const showResendSuccessAlert = ref(false);
 
 async function resendEmail() {
   await authStore.resendVerificationEmail(props.userEmail);
   showResendSuccessAlert.value = true;
+}
+
+async function closeResendSuccessAlert() {
+  resendEmailButton.value?.focus();
+  showResendSuccessAlert.value = false;
 }
 </script>
 
@@ -46,7 +52,7 @@ async function resendEmail() {
       <button
         class="fr-btn--close fr-btn"
         title="Masquer le message"
-        @click="showResendSuccessAlert = false"
+        @click="closeResendSuccessAlert"
       >
         Masquer le message
       </button>
