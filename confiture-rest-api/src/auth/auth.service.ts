@@ -56,28 +56,34 @@ export class AuthService {
   ): Promise<string> {
     const passwordHash = await hash(password, 10);
 
-    try {
-      const unverifiedUser = await this.prisma.user.create({
-        data: {
-          username,
-          password: passwordHash,
-          isVerified: false,
-          verificationJti: nanoid(),
-        },
-      });
-      const verificationToken = this.generateVerificationToken(
-        username,
-        unverifiedUser.verificationJti,
-      );
-      return verificationToken;
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new UsernameAlreadyExistsError(username);
-        }
+    // Check if an already verified user exists with this username
+    await this.prisma.user.findUnique({ where: { username } }).then((user) => {
+      if (user?.isVerified) {
+        throw new UsernameAlreadyExistsError(username);
       }
-      throw e;
-    }
+    });
+
+    // We use upsert because the user might already exist but is not verified yet.
+    const unverifiedUser = await this.prisma.user.upsert({
+      where: { username },
+      create: {
+        username,
+        password: passwordHash,
+        isVerified: false,
+        verificationJti: nanoid(),
+      },
+      update: {
+        password: passwordHash,
+        verificationJti: nanoid(),
+      },
+    });
+
+    const verificationToken = this.generateVerificationToken(
+      username,
+      unverifiedUser.verificationJti,
+    );
+
+    return verificationToken;
   }
 
   /**
