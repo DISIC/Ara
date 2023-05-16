@@ -2,17 +2,60 @@
 import { ref } from "vue";
 
 import { useDevMode } from "../../../composables/useDevMode";
+import { useAccountStore } from "../../../store/account";
+import { useNotifications } from "../../../composables/useNotifications";
+import { captureWithPayloads } from "../../../utils";
+import { HTTPError } from "ky";
 
 const emit = defineEmits<{
-  (e: "submit", payload: { username: string; password: string }): void;
+  (e: "submit", payload: { username: string }): void;
 }>();
 
 const userEmail = ref("");
 const userPassword = ref("");
+const userEmailInput = ref<HTMLInputElement>();
+const userEmailError = ref<string>();
 
-function handleSubmit() {
-  // TODO: validate fields
-  emit("submit", { username: userEmail.value, password: userPassword.value });
+const accountStore = useAccountStore();
+const notify = useNotifications();
+
+async function handleSubmit() {
+  userEmailError.value = undefined;
+
+  await accountStore
+    .createAccount(userEmail.value, userPassword.value)
+    .then(() => {
+      emit("submit", { username: userEmail.value });
+    })
+    .catch(async (err) => {
+      if (err instanceof HTTPError) {
+        const body = await err.response.json();
+
+        if (err.response.status === 409) {
+          // Email already used
+          userEmailError.value =
+            "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter.";
+          userEmailInput.value?.focus();
+        }
+        if (
+          err.response.status === 400 &&
+          body.message.includes("username must be an email")
+        ) {
+          // Invalid email format
+          userEmailError.value =
+            "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+          userEmailInput.value?.focus();
+        } else {
+          // Unkown error
+          notify(
+            "error",
+            "Echéc de la création de compte",
+            "Une erreur inconnue est survenue"
+          );
+          captureWithPayloads(err);
+        }
+      }
+    });
 }
 
 const isDevMode = useDevMode();
@@ -36,18 +79,34 @@ function fillFields() {
         Sauf mention contraire, tous les champs sont obligatoires.
       </p>
 
-      <div class="fr-input-group fr-mb-2w">
+      <div
+        :class="[
+          'fr-input-group fr-mb-2w',
+          { 'fr-input-group--error': userEmailError },
+        ]"
+      >
         <label class="fr-label" for="user-email">
           Adresse e-mail
           <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
         </label>
         <input
           id="user-email"
+          ref="userEmailInput"
           v-model="userEmail"
-          class="fr-input"
+          :class="['fr-input', { 'fr-input--error': userEmailError }]"
           type="email"
+          :aria-describedby="
+            userEmailError ? 'already-taken-email-error-message' : undefined
+          "
           required
         />
+        <p
+          v-if="userEmailError"
+          id="already-taken-email-error-message"
+          class="fr-error-text"
+        >
+          {{ userEmailError }}
+        </p>
       </div>
 
       <div class="fr-password fr-mb-3w">
@@ -62,6 +121,7 @@ function fillFields() {
             autocomplete="new-password"
             type="password"
             required
+            minlength="12"
           />
         </div>
 

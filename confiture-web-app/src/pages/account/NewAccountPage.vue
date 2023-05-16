@@ -22,15 +22,8 @@ const store = useAccountStore();
 
 const ac = new AbortController();
 
-async function handleSubmit({
-  username,
-  password,
-}: {
-  username: string;
-  password: string;
-}) {
+async function handleSubmit({ username }: { username: string }) {
   userEmail.value = username;
-  await store.createAccount(username, password);
   currentStep.value = 1;
 
   store
