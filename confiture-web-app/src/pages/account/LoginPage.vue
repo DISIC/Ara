@@ -14,7 +14,7 @@ const store = useAccountStore();
 const router = useRouter();
 
 async function handleSubmit() {
-  await store.login(userEmail.value, userPassword.value);
+  await store.login(userEmail.value, userPassword.value, rememberMe.value);
   router.push({ name: "account-dashboard" });
 }
 </script>
