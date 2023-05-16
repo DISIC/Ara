@@ -177,6 +177,14 @@ export class AuthService {
     return token;
   }
 
+  async isAccountVerified(username: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      return false;
+    }
+    return user.isVerified;
+  }
+
   private generateVerificationToken(username: string, jti: string): string {
     const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
     const payload: AccountVerificationJwtPayload = {
