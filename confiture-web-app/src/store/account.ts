@@ -14,7 +14,7 @@ interface AccountStoreState {
 
 export const useAccountStore = defineStore("account", {
   state: (): AccountStoreState => {
-    const authToken =
+    let authToken =
       sessionStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ??
       localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ??
       null;
@@ -22,8 +22,16 @@ export const useAccountStore = defineStore("account", {
     let email: string | null = null;
     if (authToken) {
       const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
-      // TODO: check token expiration
-      email = payload.sub;
+
+      const isTokenExpired = payload.exp * 1000 < Date.now();
+
+      if (isTokenExpired) {
+        authToken = null;
+        localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+        sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      } else {
+        email = payload.sub;
+      }
     }
 
     return {
