@@ -92,5 +92,36 @@ export const useAccountStore = defineStore("account", {
         },
       });
     },
+
+    waitForVerification(username: string, signal: AbortSignal) {
+      const CHECK_INTERVAL = 1000;
+      const url = `/api/auth/verified?username=${encodeURIComponent(username)}`;
+
+      return new Promise<void>((resolve, reject) => {
+        let isAborted = false;
+        let timerId: undefined | ReturnType<typeof setTimeout> = undefined;
+
+        const onAbort = () => {
+          isAborted = true;
+          clearTimeout(timerId);
+          reject();
+        };
+
+        signal.addEventListener("abort", onAbort, { once: true });
+
+        const checkIsVerified = async () => {
+          const isAccountVerified = await ky.get(url).json();
+
+          if (!isAccountVerified && !isAborted) {
+            timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
+          } else {
+            signal.removeEventListener("abort", onAbort);
+            resolve();
+          }
+        };
+
+        timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
+      });
+    },
   },
 });

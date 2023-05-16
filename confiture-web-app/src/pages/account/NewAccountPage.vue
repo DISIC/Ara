@@ -3,6 +3,8 @@ import { ref, watch } from "vue";
 import { useAccountStore } from "../../store/account";
 import NewAccountForm from "../../components/account/new-acccount/NewAccountForm.vue";
 import EmailSent from "../../components/account/new-acccount/EmailSent.vue";
+import Success from "../../components/account/new-acccount/Success.vue";
+import { onBeforeRouteLeave } from "vue-router";
 
 /*
 TODO:
@@ -18,6 +20,8 @@ const userEmail = ref<string>();
 
 const store = useAccountStore();
 
+const ac = new AbortController();
+
 async function handleSubmit({
   username,
   password,
@@ -27,11 +31,28 @@ async function handleSubmit({
 }) {
   userEmail.value = username;
   await store.createAccount(username, password);
-  currentStep.value += 1;
+  currentStep.value = 1;
+
+  store
+    .waitForVerification(userEmail.value, ac.signal)
+    .then(() => {
+      currentStep.value = 2;
+    })
+    .catch(() => {
+      // wait cancelled
+    });
 }
 
-watch(currentStep, () => {
+watch(currentStep, (currentStep) => {
   document.querySelector("h1")?.focus();
+
+  if (currentStep !== 1) {
+    ac.abort();
+  }
+});
+
+onBeforeRouteLeave(() => {
+  ac.abort();
 });
 </script>
 
@@ -42,6 +63,5 @@ watch(currentStep, () => {
     :user-email="userEmail!"
     @back="currentStep = 0"
   />
+  <Success v-else-if="currentStep === 2" :user-email="userEmail!" />
 </template>
-
-<style scoped></style>
