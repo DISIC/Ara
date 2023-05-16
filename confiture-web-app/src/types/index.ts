@@ -1,6 +1,15 @@
 export * from "./types";
 export * from "./report";
 
+export interface AuthenticationJwtPayload {
+  /** User email */
+  sub: string;
+  /** Issued at */
+  iat: number;
+  /** Expiration date */
+  exp: number;
+}
+
 export interface AccountVerificationJwtPayload {
   /** User email */
   sub: string;
