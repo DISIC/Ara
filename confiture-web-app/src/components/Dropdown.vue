@@ -93,17 +93,17 @@ defineExpose({ buttonRef, closeOptions });
   right: initial;
 }
 
-.dropdown-content::v-deep .dropdown-list {
+.dropdown-content :deep(.dropdown-list) {
   display: flex;
   flex-direction: column;
   list-style: none;
 }
 
-.dropdown-content::v-deep .dropdown-item {
+.dropdown-content :deep(.dropdown-item) {
   padding-bottom: 0;
 }
 
-.dropdown-content::v-deep .dropdown-separator {
+.dropdown-content :deep(.dropdown-separator) {
   background-color: var(--border-default-grey);
   height: 1px;
   margin: 0.75rem 0;
