@@ -5,6 +5,8 @@ import { useRoute, RouteLocationRaw } from "vue-router";
 import { useAuditStore, useReportStore } from "../store";
 import { useAccountStore } from "../store/account";
 import Dropdown from "./Dropdown.vue";
+import GearIcon from "./icons/GearIcon.vue";
+import LogoutIcon from "./icons/LogoutIcon.vue";
 
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
@@ -82,6 +84,11 @@ function closeNewsSubMenu() {
   dsfr(newsSubMenu.value).collapse.conceal();
 }
 const accountStore = useAccountStore();
+
+function handleDisconnectClick() {
+  accountStore.logout();
+  // TODO: announce successful disconnection with live zone
+}
 </script>
 
 <template>
@@ -146,11 +153,11 @@ const accountStore = useAccountStore();
                 ref="optionsDropdownRef"
                 :title="accountStore.account.email"
               >
-                <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+                <ul role="list" class="fr-p-0 fr-m-0 user-dropdown">
                   <li>
                     <RouterLink
                       to="#"
-                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
                     >
                       Mon compte
                     </RouterLink>
@@ -158,15 +165,19 @@ const accountStore = useAccountStore();
                   <li>
                     <RouterLink
                       to="#"
-                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
                     >
+                      <GearIcon class="fr-mr-2v" />
                       Paramètres d’affichage
                     </RouterLink>
                   </li>
+                  <li aria-hidden="true" class="dropdown-separator"></li>
                   <li>
                     <button
-                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                      @click="handleDisconnectClick"
                     >
+                      <LogoutIcon class="fr-mr-2v" />
                       Me déconnecter
                     </button>
                   </li>
@@ -253,5 +264,9 @@ const accountStore = useAccountStore();
 .fr-header__brand.fr-enlarge-link:hover,
 .fr-header__brand.fr-enlarge-link:active {
   background-color: transparent !important; /* Remove link on brand logo */
+}
+
+.user-dropdown {
+  text-align: initial !important;
 }
 </style>

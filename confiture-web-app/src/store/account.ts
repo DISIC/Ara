@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
 import { AuthenticationJwtPayload } from "../types";
 
-const AUTH_TOKEN_STORAGE_KEY = "poeutpouet";
+const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
 interface AccountStoreState {
   account: null | {
@@ -83,6 +83,12 @@ export const useAccountStore = defineStore("account", {
         sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
         localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       }
+    },
+
+    logout() {
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      this.$reset();
     },
 
     async verifyAccountCreation(verificationToken: string) {
