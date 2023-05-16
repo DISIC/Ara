@@ -50,7 +50,7 @@ export class AuthController {
    */
   @Post('signup')
   @ApiConflictResponse({
-    description: 'An account with this username already exist.',
+    description: 'A verified account with this username already exists.',
   })
   @ApiCreatedResponse({
     description: 'Account successfully created (pending verification).',
