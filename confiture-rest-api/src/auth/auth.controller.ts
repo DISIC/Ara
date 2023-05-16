@@ -3,8 +3,10 @@ import {
   Body,
   ConflictException,
   Controller,
+  Get,
   HttpCode,
   Post,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAccountDto } from './create-account.dto';
@@ -115,6 +117,12 @@ export class AuthController {
       }
       throw e;
     }
+  }
+
+  /** Check if account is verified. */
+  @Get('verified')
+  async isAccountVerified(@Query('username') username: string) {
+    return await this.auth.isAccountVerified(username);
   }
 
   /**
