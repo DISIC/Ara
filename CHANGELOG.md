@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 17/05/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’une option pour afficher ou non l’email de l’auditeur dans le rapport ([#393](https://github.com/DISIC/Ara/pull/393))
+
 ## 16/05/2023
 
 ### Nouvelles fonctionnalités 🚀
