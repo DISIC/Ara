@@ -224,8 +224,28 @@ const notify = useNotifications();
         </legend>
 
         <div class="fr-input-group">
+          <label class="fr-label" for="procedure-auditor-name">
+            Nom et prénom (optionnel)
+            <span class="fr-hint-text">
+              Sera affiché dans le rappport de l’audit pour aider le demandeur
+              de l’audit à vous identifier s’il a des questions ou besoin
+              d’aide.
+            </span>
+          </label>
+          <input
+            id="procedure-auditor-name"
+            v-model="procedureAuditorName"
+            class="fr-input"
+          />
+        </div>
+
+        <div class="fr-input-group">
           <label for="procedure-auditor-organisation" class="fr-label">
             Nom de la structure
+            <span class="fr-hint-text">
+              Sera affiché dans la déclaration d’accessibilité, cette mention
+              est une obligation.
+            </span>
           </label>
           <input
             id="procedure-auditor-organisation"
@@ -235,23 +255,11 @@ const notify = useNotifications();
           />
         </div>
 
-        <div class="fr-input-group">
-          <label class="fr-label" for="procedure-auditor-name">
-            Nom et prénom (optionnel)
-          </label>
-          <input
-            id="procedure-auditor-name"
-            v-model="procedureAuditorName"
-            class="fr-input"
-          />
-        </div>
-
         <div class="fr-input-group fr-mb-0">
           <label class="fr-label" for="procedure-auditor-email">
             Adresse électronique
             <span class="fr-hint-text">
               Permet de vous envoyer les liens de l’audit et du rapport d’audit.
-              <br />
             </span>
           </label>
           <input
