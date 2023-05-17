@@ -34,6 +34,8 @@ const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
+const isDuplicationLoading = ref(false);
+
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
 const notify = useNotifications();
@@ -43,15 +45,17 @@ const notify = useNotifications();
  */
 function confirmDuplicate(name: string) {
   console.log("Duplicating...", name);
-  /**
-   * TODO:
-   * - show alert (only on first visit?)
-   */
+  isDuplicationLoading.value = true;
   auditStore
     .duplicateAudit(uniqueId, name)
     .then((newAuditId) => {
       auditStore.$reset();
       resultStore.$reset();
+
+      isDuplicationLoading.value = false;
+
+      duplicateModal.value?.hide();
+
       return router.push({
         name: "edit-audit-step-three",
         params: {
@@ -68,11 +72,7 @@ function confirmDuplicate(name: string) {
         "Une erreur est survenue",
         "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
-      // captureException(error);
-      throw error;
-    })
-    .finally(() => {
-      duplicateModal.value?.hide();
+      captureWithPayloads(error);
     });
 }
 
@@ -231,6 +231,7 @@ const isDevMode = useDevMode();
   <DuplicateModal
     ref="duplicateModal"
     :original-audit-name="auditStore.data?.procedureName"
+    :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="
       optionsDropdownRef?.buttonRef.focus();
