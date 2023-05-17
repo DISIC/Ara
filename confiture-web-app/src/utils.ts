@@ -1,15 +1,15 @@
+import { Scope, captureException } from "@sentry/vue";
 import { HTTPError } from "ky";
+import { noop } from "lodash-es";
+import baseSlugify from "slugify";
+
 import {
   AuditReport,
-  AuditType,
   AuditStatus,
+  AuditType,
   CriterionResultUserImpact,
   CriteriumResultStatus,
 } from "./types";
-
-import baseSlugify from "slugify";
-import { Scope, captureException } from "@sentry/vue";
-import { noop } from "lodash-es";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",

@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import jwtDecode from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import jwt_decode from "jwt-decode";
 
-import { useAccountStore } from "../../store/account";
 import router from "../../router";
+import { useAccountStore } from "../../store/account";
 import { AccountVerificationJwtPayload } from "../../types";
 
 const route = useRoute();
@@ -22,20 +22,22 @@ onMounted(async () => {
   store
     .verifyAccountCreation(verificationToken)
     .then(() => {
-      const payload = jwt_decode(
+      const { email } = jwtDecode(
         verificationToken
       ) as AccountVerificationJwtPayload;
-
-      router.push({ name: "login", state: { email: payload.sub } });
+      router.push({ name: "login", state: { email } });
     })
     .catch((err) => {
+      // TODO: check status is 401
       tokenIsInvalid.value = true;
     });
 });
 </script>
 
 <template>
+  <!-- TODO: Loading -->
   <p>Validation en cours...</p>
 
+  <!-- TODO: Invalid token error message -->
   <p v-if="tokenIsInvalid">Gaaaaah ça marche pô :'(</p>
 </template>
