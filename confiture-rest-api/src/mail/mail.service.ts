@@ -8,11 +8,13 @@ import * as jwt from 'jsonwebtoken';
 import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
 import * as accountVerificationEmail from './account-verification-email';
+import * as accountConfirmationEmail from './account-confirmation-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
   [EmailType.ACCOUNT_VERIFICATION]: accountVerificationEmail,
+  [EmailType.ACCOUNT_CONFIRMATION]: accountConfirmationEmail,
 };
 
 @Injectable()
@@ -100,5 +102,9 @@ export class MailService {
     return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
       verificationLink,
     });
+  }
+
+  sendAccountConfirmationEmail(username: string) {
+    return this.sendMail(username, EmailType.ACCOUNT_CONFIRMATION, null);
   }
 }

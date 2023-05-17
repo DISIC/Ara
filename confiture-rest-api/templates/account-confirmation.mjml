@@ -1,0 +1,37 @@
+<mjml>
+  <mj-head>
+    <mj-title>Ara : compte créé avec succès</mj-title>
+    <mj-attributes>
+      <mj-preview>Ara : compte créé avec succès</mj-preview>
+      <mj-include path="./styles.mjml" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#fff">
+    <!-- HEADER -->
+    <mj-include path="./header.mjml" />
+
+    <!-- BODY -->
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="16px">
+          Votre compte a été créé avec succès
+        </mj-text>
+        <mj-text padding-bottom="24px">
+          Votre compte Ara a bien été créé.
+        </mj-text>
+        <mj-text>
+            Si vous n’avez pas demandé à créer un compte, veuillez contactez notre support par e-mail à l’adresse : <strong>ara@design.numerique.gouv.fr</strong>.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-spacer height="32px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+
+    <!-- FOOTER -->
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>
