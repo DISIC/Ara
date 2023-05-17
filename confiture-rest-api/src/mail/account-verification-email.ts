@@ -4,8 +4,8 @@ export interface AccountVerificationEmailData {
   verificationLink: string;
 }
 
-export function subject(data: AccountVerificationEmailData): string {
-  return `Ara: vérification du compte`;
+export function subject(): string {
+  return `Ara : vérification du compte`;
 }
 
 export function html(data: AccountVerificationEmailData): string {

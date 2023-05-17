@@ -9,6 +9,8 @@ import {
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
+import { verify } from 'jsonwebtoken';
+
 import { CreateAccountDto } from './create-account.dto';
 import {
   AuthService,
@@ -61,7 +63,6 @@ export class AuthController {
         body.username,
         body.password,
       );
-      console.log('verificationToken:', verificationToken);
       await this.email.sendAccountVerificationEmail(
         body.username,
         verificationToken,
@@ -109,7 +110,10 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Invalid verification token.' })
   async verifyAccount(@Body() body: VerifyAccountDto) {
     try {
+      const email = await this.auth.getEmailFromVerificationToken(body.token);
+
       await this.auth.verifyAccount(body.token);
+      await this.email.sendAccountConfirmationEmail(email);
     } catch (e) {
       if (e instanceof InvalidVerificationTokenError) {
         console.log('Account verification failed:', e.message);

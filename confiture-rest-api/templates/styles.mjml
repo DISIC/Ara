@@ -2,3 +2,4 @@
 <mj-class name="black-link" color="#000000" font-size="12px" />
 <mj-class name="blue-link" color="#000091" font-size="16px" />
 <mj-class name="blue-section" background-color="#F5F5FE" padding="24px" />
+<mj-class name="blue-button" font-size="16px" background-color="#000091" padding-bottom="8px" inner-padding="8px 16px" border-radius="0" />
