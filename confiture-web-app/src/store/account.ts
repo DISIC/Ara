@@ -100,7 +100,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     waitForVerification(username: string, signal: AbortSignal) {
-      const CHECK_INTERVAL = 1000;
+      const CHECK_INTERVAL = 5000;
       const url = `/api/auth/verified?username=${encodeURIComponent(username)}`;
 
       return new Promise<void>((resolve, reject) => {
