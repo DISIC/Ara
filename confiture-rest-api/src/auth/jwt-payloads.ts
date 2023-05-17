@@ -1,11 +1,18 @@
 export interface AuthenticationJwtPayload {
-  /** User email */
+  /** User uid */
   sub: string;
+
+  /** User email */
+  email: string;
 }
 
 export interface AccountVerificationJwtPayload {
-  /** User email */
+  /** User uid */
   sub: string;
+
+  /** User email */
+  email: string;
+
   /**
    * JWT ID
    *
