@@ -30,7 +30,7 @@ export const useAccountStore = defineStore("account", {
         localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
         sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       } else {
-        email = payload.sub;
+        email = payload.email;
       }
     }
 
