@@ -9,7 +9,6 @@ import {
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-import { verify } from 'jsonwebtoken';
 
 import { CreateAccountDto } from './create-account.dto';
 import {
