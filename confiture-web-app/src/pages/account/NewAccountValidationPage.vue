@@ -14,20 +14,18 @@ const tokenIsInvalid = ref(false);
 onMounted(async () => {
   const verificationToken = route.query.token;
 
-  console.log(verificationToken);
-
   if (typeof verificationToken !== "string") {
     tokenIsInvalid.value = true;
     return;
   }
 
-  store
-    .verifyAccountCreation(verificationToken)
-    .then(() => {
-      const payload = jwt_decode(
-        verificationToken
-      ) as AccountVerificationJwtPayload;
+  const payload = jwt_decode(
+    verificationToken
+  ) as AccountVerificationJwtPayload;
 
+  store
+    .verifyAccountCreation(verificationToken, payload.sub)
+    .then(() => {
       router.push({ name: "login", state: { email: payload.sub } });
     })
     .catch((err) => {

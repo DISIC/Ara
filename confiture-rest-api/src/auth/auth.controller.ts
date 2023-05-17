@@ -61,7 +61,6 @@ export class AuthController {
         body.username,
         body.password,
       );
-      console.log('verificationToken:', verificationToken);
       await this.email.sendAccountVerificationEmail(
         body.username,
         verificationToken,
@@ -110,6 +109,7 @@ export class AuthController {
   async verifyAccount(@Body() body: VerifyAccountDto) {
     try {
       await this.auth.verifyAccount(body.token);
+      await this.email.sendAccountConfirmationEmail(body.username);
     } catch (e) {
       if (e instanceof InvalidVerificationTokenError) {
         console.log('Account verification failed:', e.message);
