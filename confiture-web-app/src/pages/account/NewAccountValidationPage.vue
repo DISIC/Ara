@@ -6,10 +6,14 @@ import { useRoute } from "vue-router";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AccountVerificationJwtPayload } from "../../types";
+import { HTTPError } from "ky";
+import { useNotifications } from "../../composables/useNotifications";
 
 const route = useRoute();
 const store = useAccountStore();
 const tokenIsInvalid = ref(false);
+
+const notify = useNotifications();
 
 onMounted(async () => {
   const verificationToken = route.query.token;
@@ -28,16 +32,23 @@ onMounted(async () => {
       router.push({ name: "login", state: { email } });
     })
     .catch((err) => {
-      // TODO: check status is 401
-      tokenIsInvalid.value = true;
+      if (err instanceof HTTPError && err.response.status === 401) {
+        tokenIsInvalid.value = true;
+      } else {
+        notify(
+          "error",
+          "Echéc de la vérification du compte",
+          "Une erreur inconnue est survenue"
+        );
+      }
     });
 });
 </script>
 
 <template>
-  <!-- TODO: Loading -->
-  <p>Validation en cours...</p>
-
   <!-- TODO: Invalid token error message -->
   <p v-if="tokenIsInvalid">Gaaaaah ça marche pô :'(</p>
+
+  <!-- TODO: Loading -->
+  <p v-else>Validation en cours...</p>
 </template>
