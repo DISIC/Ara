@@ -71,7 +71,8 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 
     // When an error happen save a replay of what happened similar to birdeatsbug
     // See https://docs.sentry.io/platforms/javascript/guides/react/session-replay/#replay-captures-on-errors-only
-    replaysOnErrorSampleRate: 1,
+    replaysOnErrorSampleRate:
+      import.meta.env.VITE_SENTRY_ENVIRONMENT === "production" ? 1 : 0,
 
     /*
       Differentiate between the various environments of the app
