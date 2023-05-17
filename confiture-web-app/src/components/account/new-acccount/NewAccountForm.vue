@@ -36,8 +36,7 @@ async function handleSubmit() {
           userEmailError.value =
             "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter.";
           userEmailInput.value?.focus();
-        }
-        if (
+        } else if (
           err.response.status === 400 &&
           body.message.includes("username must be an email")
         ) {
