@@ -91,11 +91,10 @@ export const useAccountStore = defineStore("account", {
       this.$reset();
     },
 
-    async verifyAccountCreation(verificationToken: string, username: string) {
+    async verifyAccountCreation(verificationToken: string) {
       await ky.post("/api/auth/verify", {
         json: {
           token: verificationToken,
-          username,
         },
       });
     },

@@ -19,13 +19,13 @@ onMounted(async () => {
     return;
   }
 
-  const payload = jwt_decode(
-    verificationToken
-  ) as AccountVerificationJwtPayload;
-
   store
-    .verifyAccountCreation(verificationToken, payload.sub)
+    .verifyAccountCreation(verificationToken)
     .then(() => {
+      const payload = jwt_decode(
+        verificationToken
+      ) as AccountVerificationJwtPayload;
+
       router.push({ name: "login", state: { email: payload.sub } });
     })
     .catch((err) => {
