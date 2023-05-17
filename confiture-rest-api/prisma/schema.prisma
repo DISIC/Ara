@@ -183,6 +183,7 @@ enum EmailStatus {
 enum EmailType {
   AUDIT_CREATION
   ACCOUNT_VERIFICATION
+  ACCOUNT_CONFIRMATION
 }
 
 model EmailLog {

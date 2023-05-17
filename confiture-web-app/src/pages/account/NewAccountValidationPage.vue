@@ -14,8 +14,6 @@ const tokenIsInvalid = ref(false);
 onMounted(async () => {
   const verificationToken = route.query.token;
 
-  console.log(verificationToken);
-
   if (typeof verificationToken !== "string") {
     tokenIsInvalid.value = true;
     return;
