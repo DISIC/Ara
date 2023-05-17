@@ -197,7 +197,8 @@ model EmailLog {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id  Int    @id @default(autoincrement())
+  uid String @unique @default(uuid())
 
   username String @unique
   password String

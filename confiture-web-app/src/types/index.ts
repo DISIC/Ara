@@ -2,8 +2,10 @@ export * from "./types";
 export * from "./report";
 
 export interface AuthenticationJwtPayload {
-  /** User email */
+  /** User uid */
   sub: string;
+  /** User email */
+  email: string;
   /** Issued at */
   iat: number;
   /** Expiration date */
@@ -11,8 +13,12 @@ export interface AuthenticationJwtPayload {
 }
 
 export interface AccountVerificationJwtPayload {
-  /** User email */
+  /** User uid */
   sub: string;
+
+  /** User email */
+  email: string;
+
   /**
    * JWT ID
    *

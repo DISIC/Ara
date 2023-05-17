@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { Audit, EmailStatus, EmailType } from '@prisma/client';
 import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import * as jwt from 'jsonwebtoken';
 
 import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
