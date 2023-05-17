@@ -1,8 +1,8 @@
 <mjml>
   <mj-head>
-    <mj-title>Ara: vérification du compte</mj-title>
+    <mj-title>Ara : vérification du compte</mj-title>
     <mj-attributes>
-      <mj-preview>Ara: vérification du compte</mj-preview>
+      <mj-preview>Ara : vérification du compte</mj-preview>
       <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
@@ -13,12 +13,18 @@
     <!-- BODY -->
     <mj-section>
       <mj-column>
-        <mj-text font-size="20px" font-weight="700" padding-bottom="24px">
-          Bonjour
+        <mj-text font-size="20px" font-weight="700" padding-bottom="16px">
+          Finaliser la création de votre compte Ara
         </mj-text>
-        <!-- TODO: integrate proper design -->
-        <mj-text padding-bottom="16px">
-          <a href="{{verificationLink}}">Valider mon adresse e-mail</a>
+        <mj-text padding-bottom="24px">
+          Pour finalisez la création de votre compte, veuillez cliquer sur le bouton ci-dessous :
+        </mj-text>
+        <mj-button href="{{verificationLink}}" mj-class="blue-button">Valider mon adresse e-mail</mj-button>
+        <mj-text align="center" font-weight="700" padding-bottom="24px">
+          Ce lien est valable 1h
+        </mj-text>
+        <mj-text font-size="12px">
+          Si vous ne voulez pas créer de compte sur Ara ou si vous n’avez pas demandé à créer de compte, vous pouvez ignorer et supprimer cet e-mail.
         </mj-text>
       </mj-column>
     </mj-section>
