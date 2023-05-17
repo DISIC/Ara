@@ -191,6 +191,22 @@ export class AuthService {
     return user.isVerified;
   }
 
+  async getEmailFromVerificationToken(token: string) {
+    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
+    try {
+      const payload = verify(token, secret) as AccountVerificationJwtPayload;
+      const { sub: email } = payload;
+
+      return email
+    }
+    catch (e) {
+      if (e instanceof JsonWebTokenError) {
+        throw new InvalidVerificationTokenError('Invalid JWT');
+      }
+      throw e;
+    }
+  }
+
   private generateVerificationToken(username: string, jti: string): string {
     const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
     const payload: AccountVerificationJwtPayload = {
