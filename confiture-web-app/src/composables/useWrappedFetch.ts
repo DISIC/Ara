@@ -1,6 +1,7 @@
 import { onMounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { TimeoutError } from "ky";
+
 import { captureWithPayloads } from "../utils";
 
 /**
@@ -10,7 +11,8 @@ import { captureWithPayloads } from "../utils";
  * Use this hook when you want to fetch data and display an error page
  * if the request fails.
  *
- * @param watchParams If true, the given function will be called anytime the route params change
+ * @param watchParams If true, the given function will be called anytime the
+ * route is the same but params change
  *
  * @example useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
  */
@@ -47,11 +49,13 @@ export function useWrappedFetch(
   });
 
   if (watchParams) {
-    watch(
+    const watchStopHandle = watch(
       () => route.params,
       () => {
         func().catch(handleError);
       }
     );
+
+    onBeforeRouteLeave(watchStopHandle);
   }
 }
