@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import DsfrModal from "./DsfrModal.vue";
+import DsfrField from "./DsfrField.vue";
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 
@@ -69,24 +70,18 @@ function handleClose() {
                   l’audit initial : échantillon, état de conformité,
                   commentaires et recommandations, etc.
                 </p>
-                <div class="fr-input-group">
-                  <label class="fr-label" for="duplicate-audit-name">
-                    Nom de la copie
-                    <span class="fr-hint-text">
-                      Exemple : contre audit
-                      {{ originalAuditName ?? "site DesignGouv" }}
-                    </span>
-                  </label>
-                  <input
-                    id="duplicate-audit-name"
-                    ref="duplicateAuditNameRef"
-                    v-model="duplicateAuditName"
-                    class="fr-input"
-                    type="text"
-                    required
-                    :disabled="isLoading"
-                  />
-                </div>
+                <DsfrField
+                  id="duplicate-audit-name"
+                  ref="duplicateAuditNameRef"
+                  v-model="duplicateAuditName"
+                  label="Nom de la copie"
+                  :hint="`Exemple : contre audit ${
+                    originalAuditName ?? 'site DesignGouv'
+                  }`"
+                  type="text"
+                  required
+                  :disabled="isLoading"
+                />
               </div>
               <div class="fr-modal__footer">
                 <ul
