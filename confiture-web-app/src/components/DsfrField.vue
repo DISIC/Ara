@@ -2,7 +2,8 @@
 import { computed, ref } from "vue";
 
 const props = defineProps<{
-  modelValue: string;
+  // FIXME: is this okay?
+  modelValue: string | undefined;
   label: string;
   hint?: string;
   type?: "text" | "email" | "url";

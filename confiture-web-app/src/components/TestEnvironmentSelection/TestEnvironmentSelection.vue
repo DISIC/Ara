@@ -10,6 +10,7 @@ import {
 } from "../../enums";
 import { AuditEnvironment } from "../../types";
 import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
+import DsfrField from "../DsfrField.vue";
 import {
   desktopCombinations,
   getCustomEnvironments,
@@ -344,19 +345,13 @@ function combineEnvironments(
           </option>
         </select>
       </div>
-      <div
+      <DsfrField
         v-if="env.operatingSystem || forceShowEnvFields"
-        class="fr-input-group"
-      >
-        <label class="fr-label" :for="`env-os-version-${i}`">
-          Version du logiciel d’exploitation (optionnel)
-        </label>
-        <input
-          :id="`env-os-version-${i}`"
-          v-model="env.operatingSystemVersion"
-          class="fr-input"
-        />
-      </div>
+        :id="`env-os-version-${i}`"
+        v-model="env.operatingSystemVersion"
+        label="Version du logiciel d’exploitation (optionnel)"
+        type="text"
+      />
 
       <div
         v-if="env.operatingSystem || forceShowEnvFields"
@@ -382,19 +377,13 @@ function combineEnvironments(
           </option>
         </select>
       </div>
-      <div
+      <DsfrField
         v-if="env.assistiveTechnology || forceShowEnvFields"
-        class="fr-input-group"
-      >
-        <label class="fr-label" :for="`env-at-version-${i}`">
-          Version de la technologie d’assistance (optionnel)
-        </label>
-        <input
-          :id="`env-at-version-${i}`"
-          v-model="env.assistiveTechnologyVersion"
-          class="fr-input"
-        />
-      </div>
+        :id="`env-at-version-${i}`"
+        v-model="env.assistiveTechnologyVersion"
+        label="Version de la technologie d’assistance (optionnel)"
+        type="text"
+      />
 
       <div
         v-if="env.assistiveTechnology || forceShowEnvFields"
@@ -418,16 +407,13 @@ function combineEnvironments(
           </option>
         </select>
       </div>
-      <div v-if="env.browser || forceShowEnvFields" class="fr-input-group">
-        <label class="fr-label" :for="`env-browser-version-${i}`">
-          Version du navigateur (optionnel)
-        </label>
-        <input
-          :id="`env-browser-version-${i}`"
-          v-model="env.browserVersion"
-          class="fr-input"
-        />
-      </div>
+      <DsfrField
+        v-if="env.browser || forceShowEnvFields"
+        :id="`env-browser-version-${i}`"
+        v-model="env.browserVersion"
+        label="Version du navigateur (optionnel)"
+        type="text"
+      />
     </fieldset>
     <button
       class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-5w"
