@@ -7,6 +7,7 @@ import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue"
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
+import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -403,7 +404,7 @@ function handleUpdateResultError(err: any) {
             aria-labelledby="notes-panel"
             tabindex="0"
           >
-            <div class="fr-input-group">
+            <div class="fr-input-group fr-mb-1w">
               <label class="fr-label" for="audit-notes"
                 >Notes annexes
                 <span class="fr-hint-text">
@@ -414,12 +415,15 @@ function handleUpdateResultError(err: any) {
               <textarea
                 id="audit-notes"
                 :value="auditNotes"
+                rows="6"
                 class="fr-input"
                 @input="
                   updateAuditNotes(($event.target as HTMLTextAreaElement).value)
                 "
-              />
+              ></textarea>
             </div>
+
+            <MarkdownHelpButton id="markdown-notice-notes" />
           </div>
         </div>
       </div>
