@@ -9,6 +9,7 @@ import emojiNo from "../assets/images/emoji-no.svg";
 import greenCheck from "../assets/images/green-check.svg";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
 import PageMeta from "../components/PageMeta";
+import DsfrField from "../components/DsfrField.vue";
 
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
@@ -227,35 +228,25 @@ const previousPageName = route?.meta.name ?? "précédente";
       </div>
 
       <template v-if="contact === 'yes'">
-        <div class="fr-input-group narrow-content">
-          <label class="fr-label" for="name">
-            Je m’appelle
+        <DsfrField
+          id="name"
+          v-model="name"
+          class="narrow-content"
+          type="text"
+          label="Je m’appelle"
+          hint="Au format : Prénom Nom"
+          required
+        />
 
-            <span class="fr-hint-text">Au format : Prénom Nom</span>
-          </label>
-          <input
-            id="name"
-            v-model="name"
-            type="text"
-            class="fr-input"
-            required
-          />
-        </div>
-
-        <div class="fr-input-group narrow-content">
-          <label class="fr-label" for="email">
-            Mon adresse e-mail
-
-            <span class="fr-hint-text">Au format : prenom@domaine.fr</span>
-          </label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            class="fr-input"
-            required
-          />
-        </div>
+        <DsfrField
+          id="email"
+          v-model="email"
+          class="narrow-content"
+          type="email"
+          label="Mon adresse e-mail"
+          hint="Au format : prenom@domaine.fr"
+          required
+        />
 
         <div class="fr-form-group narrow-content">
           <fieldset class="fr-fieldset">

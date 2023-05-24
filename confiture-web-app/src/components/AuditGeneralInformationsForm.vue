@@ -4,6 +4,7 @@ import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
+import DsfrField from "./DsfrField.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -56,7 +57,7 @@ const showEmailInReport = ref(
 const procedureAuditorOrganisation = ref(
   props.defaultValues?.auditorOrganisation ?? ""
 );
-const pageNameRefs = ref<HTMLInputElement[]>([]);
+const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 /**
  * Create a new page and focus its name field.
@@ -64,8 +65,8 @@ const pageNameRefs = ref<HTMLInputElement[]>([]);
 async function addPage() {
   pages.value.push({ name: "", url: "" });
   await nextTick();
-  const lastInput = pageNameRefs.value[pageNameRefs.value.length - 1];
-  lastInput.focus();
+  const lastField = pageNameFieldRefs.value[pageNameFieldRefs.value.length - 1];
+  lastField.inputRef?.focus();
 }
 
 /**
@@ -76,10 +77,10 @@ async function deletePage(i: number) {
   const pageName = pages.value[i].name;
   pages.value.splice(i, 1);
   await nextTick();
-  const previousInput =
-    i === 0 ? pageNameRefs.value[0] : pageNameRefs.value[i - 1];
+  const previousField =
+    i === 0 ? pageNameFieldRefs.value[0] : pageNameFieldRefs.value[i - 1];
   notify("success", `La page ${pageName ? pageName : ""} a bien été supprimée`);
-  previousInput.focus();
+  previousField.inputRef?.focus();
 }
 
 /**
@@ -146,18 +147,13 @@ const notify = useNotifications();
     </section>
 
     <div class="narrow-content">
-      <div class="fr-input-group fr-my-6w">
-        <label class="fr-label" for="procedure-name">
-          Nom du site à auditer
-        </label>
-        <input
-          id="procedure-name"
-          v-model="procedureName"
-          class="fr-input"
-          type="text"
-          required
-        />
-      </div>
+      <DsfrField
+        id="procedure-name"
+        v-model="procedureName"
+        class="fr-my-6w"
+        label="Nom du site à auditer"
+        required
+      />
 
       <h2 class="fr-h4">Les pages et URL à auditer</h2>
 
@@ -182,33 +178,24 @@ const notify = useNotifications();
           </button>
         </div>
 
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`page-name-${i + 1}`">
-            Nom de la page
-          </label>
-          <input
-            :id="`page-name-${i + 1}`"
-            ref="pageNameRefs"
-            v-model="page.name"
-            class="fr-input"
-          />
-        </div>
+        <DsfrField
+          :id="`page-name-${i + 1}`"
+          ref="pageNameFieldRefs"
+          v-model="page.name"
+          label="Nom de la page"
+        />
 
-        <div class="fr-input-group">
-          <label class="fr-label" :for="`page-url-${i + 1}`">
-            URL de la page
-            <span class="fr-hint-text">
-              L’URL de la page doit commencer par <code>https://</code>
-            </span>
-          </label>
-          <input
-            :id="`page-url-${i + 1}`"
-            v-model="page.url"
-            class="fr-input"
-            type="url"
-            required
-          />
-        </div>
+        <DsfrField
+          :id="`page-url-${i + 1}`"
+          v-model="page.url"
+          label="URL de la page"
+          type="url"
+          required
+        >
+          <template #hint>
+            L’URL de la page doit commencer par <code>https://</code>
+          </template>
+        </DsfrField>
       </fieldset>
       <button
         class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
@@ -223,53 +210,30 @@ const notify = useNotifications();
           <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
         </legend>
 
-        <div class="fr-input-group">
-          <label class="fr-label" for="procedure-auditor-name">
-            Nom et prénom (optionnel)
-            <span class="fr-hint-text">
-              Sera affiché dans le rappport de l’audit pour aider le demandeur
-              de l’audit à vous identifier s’il a des questions ou besoin
-              d’aide.
-            </span>
-          </label>
-          <input
-            id="procedure-auditor-name"
-            v-model="procedureAuditorName"
-            class="fr-input"
-          />
-        </div>
+        <DsfrField
+          id="procedure-auditor-name"
+          v-model="procedureAuditorName"
+          label="Nom et prénom (optionnel)"
+          hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        />
 
-        <div class="fr-input-group">
-          <label for="procedure-auditor-organisation" class="fr-label">
-            Nom de la structure
-            <span class="fr-hint-text">
-              Sera affiché dans la déclaration d’accessibilité, cette mention
-              est une obligation.
-            </span>
-          </label>
-          <input
-            id="procedure-auditor-organisation"
-            v-model="procedureAuditorOrganisation"
-            class="fr-input"
-            required
-          />
-        </div>
+        <DsfrField
+          id="procedure-auditor-organisation"
+          v-model="procedureAuditorOrganisation"
+          label="Nom de la structure"
+          hint="Sera affiché dans la déclaration d’accessibilité, cette mention est une obligation. "
+          required
+        />
 
-        <div class="fr-input-group fr-mb-0">
-          <label class="fr-label" for="procedure-auditor-email">
-            Adresse électronique
-            <span class="fr-hint-text">
-              Permet de vous envoyer les liens de l’audit et du rapport d’audit.
-            </span>
-          </label>
-          <input
-            id="procedure-auditor-email"
-            v-model="procedureAuditorEmail"
-            class="fr-input"
-            type="email"
-            required
-          />
-        </div>
+        <DsfrField
+          id="procedure-auditor-email"
+          v-model="procedureAuditorEmail"
+          class="fr-mb-0"
+          label="Adresse électronique"
+          hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
+          type="email"
+          required
+        />
 
         <div class="fr-toggle fr-toggle--label-left">
           <input

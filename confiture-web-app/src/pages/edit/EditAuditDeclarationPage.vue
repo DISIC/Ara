@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
 import TestEnvironmentSelection from "../../components/TestEnvironmentSelection/TestEnvironmentSelection.vue";
+import DsfrField from "../../components/DsfrField.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -277,37 +278,27 @@ const isDevMode = useDevMode();
 
       <h2 class="fr-h4">Informations générales</h2>
 
-      <div class="fr-input-group">
-        <label class="fr-label" for="initiator">
-          Entité qui a demandé l’audit
-          <span class="fr-hint-text">
-            Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc
-          </span>
-        </label>
-        <input
-          id="initiator"
-          v-model="auditInitiator"
-          class="fr-input"
-          required
-        />
-      </div>
+      <DsfrField
+        id="initiator"
+        v-model="auditInitiator"
+        label="Entité qui a demandé l’audit"
+        hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
+        type="text"
+        required
+      />
 
-      <div class="fr-input-group">
-        <label class="fr-label" for="procedure-url">
-          URL de la page d’accueil du site audité
-          <span class="fr-hint-text">
-            Saisissez une url valide, commençant par
-            <code>https://</code>
-          </span>
-        </label>
-        <input
-          id="procedure-url"
-          v-model="procedureUrl"
-          class="fr-input"
-          type="url"
-          required
-        />
-      </div>
+      <DsfrField
+        id="procedure-url"
+        v-model="procedureUrl"
+        label="URL de la page d’accueil du site audité"
+        type="url"
+        required
+      >
+        <template #hint>
+          Saisissez une url valide, commençant par
+          <code>https://</code>
+        </template>
+      </DsfrField>
 
       <fieldset
         class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
@@ -322,114 +313,62 @@ const isDevMode = useDevMode();
           vers une solution adaptée.
         </p>
 
-        <div class="fr-input-group">
-          <label class="fr-label" for="procedure-manager-name">
-            Nom et prénom du contact (optionnel)
-          </label>
-          <input
-            id="procedure-manager-name"
-            v-model="contactName"
-            class="fr-input"
-          />
-        </div>
+        <DsfrField
+          id="procedure-manager-name"
+          v-model="contactName"
+          label="Nom et prénom du contact (optionnel)"
+          type="text"
+          required
+        />
 
         <p>
           Vous devez renseigner au moins un des deux moyens de contact suivant :
         </p>
 
-        <div
-          :class="[
-            'fr-input-group',
-            {
-              'fr-input-group--error': hasNoContactInfo,
-            },
-          ]"
-        >
-          <label class="fr-label" for="contact-email">
-            Adresse e-mail
-            <span class="fr-hint-text">
-              Exemple : contact@ministere.gouv.fr
-            </span>
-          </label>
-          <input
-            id="contact-email"
-            ref="contactEmailRef"
-            v-model="contactEmail"
-            :class="[
-              'fr-input',
-              {
-                'fr-input--error': hasNoContactInfo,
-              },
-            ]"
-            type="email"
-            aria-describedby="contact-email-error"
-          />
-          <p
-            v-if="hasNoContactInfo"
-            id="contact-email-error"
-            class="fr-error-text"
-          >
-            Vous devez renseigner au moins 1 moyen de contact
-          </p>
-        </div>
+        <DsfrField
+          id="contact-email"
+          v-model="contactEmail"
+          label="Adresse e-mail"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="email"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              : undefined
+          "
+        />
 
-        <div
-          :class="[
-            'fr-input-group',
-            {
-              'fr-input-group--error': hasNoContactInfo,
-            },
-          ]"
+        <DsfrField
+          id="contact-form-url"
+          v-model="contactFormUrl"
+          label="Formulaire de contact en ligne"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="url"
+          placeholder="https://"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              : undefined
+          "
         >
-          <label class="fr-label" for="contact-form-url">
-            Formulaire de contact en ligne
-            <span class="fr-hint-text">
-              Saisissez une URL valide, commençant par <code>http://</code> ou
-              <code>https://</code>
-            </span>
-          </label>
-          <input
-            id="contact-form-url"
-            v-model="contactFormUrl"
-            :class="[
-              'fr-input',
-              {
-                'fr-input--error': hasNoContactInfo,
-              },
-            ]"
-            type="url"
-            placeholder="https://"
-            aria-describedby="contact-form-url-error"
-          />
-          <p
-            v-if="hasNoContactInfo"
-            id="contact-form-url-error"
-            class="fr-error-text"
-          >
-            Vous devez renseigner au moins 1 moyen de contact
-          </p>
-        </div>
+          <template #hint>
+            Saisissez une URL valide, commençant par <code>http://</code> ou
+            <code>https://</code>
+          </template>
+        </DsfrField>
       </fieldset>
 
       <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-      <div class="fr-input-group fr-mb-2w">
-        <label class="fr-label" for="temp-technologies">
-          Ajouter des technologies
-          <span class="fr-hint-text">
-            Insérez une virgule pour séparer les technologies. Appuyez sur
-            ENTRÉE ou cliquez sur “Valider les technologies” pour les valider.
-            Exemple de technologies : HTML, CSS, Javascript, etc.
-          </span>
-        </label>
-        <input
-          id="temp-technologies"
-          v-model="tempTechnologies"
-          class="fr-input"
-          :required="!validatedTechnologies.length"
-          @keydown.enter.prevent="validateTechnologies"
-        />
-      </div>
+      <DsfrField
+        id="temp-technologies"
+        v-model="tempTechnologies"
+        label="Ajouter des technologies"
+        hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
+        type="text"
+        :required="!validatedTechnologies.length"
+        @keydown.enter.prevent="validateTechnologies"
+      />
 
       <ul class="fr-tags-group">
         <li v-for="(techno, i) in validatedTechnologies" :key="i">
@@ -482,22 +421,15 @@ const isDevMode = useDevMode();
         </fieldset>
       </div>
 
-      <div class="fr-input-group fr-mb-2w">
-        <label class="fr-label" for="temp-tools">
-          Ajouter des outils d’assistance
-          <span class="fr-hint-text">
-            Insérez une virgule pour séparer les outils d’assistance. Appuyez
-            sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider.
-          </span>
-        </label>
-        <input
-          id="temp-tools"
-          v-model="tempTools"
-          class="fr-input"
-          :required="!validatedTools.length && !defaultTools.length"
-          @keydown.enter.prevent="validateTools"
-        />
-      </div>
+      <DsfrField
+        id="temp-tools"
+        v-model="tempTools"
+        label="Ajouter des outils d’assistance"
+        hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
+        type="text"
+        :required="!validatedTools.length && !defaultTools.length"
+        @keydown.enter.prevent="validateTools"
+      />
 
       <ul class="fr-tags-group">
         <li v-for="(tool, i) in validatedTools" :key="i">
