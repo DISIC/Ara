@@ -79,6 +79,8 @@ export const useAuditStore = defineStore("audit", {
           json: {
             procedureName: copyName,
           },
+          // Duplicating an audit can be a pretty long process
+          timeout: false,
         })
         .text()) as string;
       return newAuditId;
