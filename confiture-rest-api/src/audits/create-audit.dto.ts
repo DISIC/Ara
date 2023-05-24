@@ -2,6 +2,7 @@ import { AuditType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsIn,
   IsNumber,
@@ -62,6 +63,12 @@ export class CreateAuditDto {
   @IsEmail()
   @IsOptional()
   auditorEmail?: string;
+
+  /**
+   * @example true
+   */
+  @IsBoolean()
+  showAuditorEmailInReport: boolean;
 
   /**
    * @example "WEB AUDIT SARL"

@@ -56,6 +56,7 @@ export class AuditService {
         auditType: data.auditType,
 
         auditorEmail: data.auditorEmail,
+        showAuditorEmailInReport: data.showAuditorEmailInReport,
         auditorName: data.auditorName,
         auditorOrganisation: data.auditorOrganisation,
 
@@ -170,6 +171,7 @@ export class AuditService {
             initiator: data.initiator,
 
             auditorEmail: data.auditorEmail,
+            showAuditorEmailInReport: data.showAuditorEmailInReport,
             auditorName: data.auditorName,
 
             contactName: data.contactName,
@@ -710,7 +712,9 @@ export class AuditService {
       // FIXME: some of the return data is never asked to the user
       context: {
         auditorName: audit.auditorName,
-        auditorEmail: audit.auditorEmail,
+        auditorEmail: audit.showAuditorEmailInReport
+          ? audit.auditorEmail
+          : null,
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({

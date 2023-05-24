@@ -110,7 +110,7 @@ class ReportContext {
   /**
    * @example "john-doe@example.com"
    */
-  auditorEmail: string;
+  auditorEmail: string | null;
 
   technologies: string[];
 

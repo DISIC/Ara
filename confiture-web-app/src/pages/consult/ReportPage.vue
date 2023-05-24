@@ -223,6 +223,9 @@ function handleTabChange(tab: { title: string }) {
       <p class="fr-mb-1v">
         <strong>Auditeur</strong> ou <strong>auditrice</strong> :
         {{ report.data.context.auditorName }}
+        <template v-if="report.data.context.auditorEmail"
+          >({{ report.data.context.auditorEmail }})</template
+        >
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">
