@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { HTTPError } from "ky";
 import { ref } from "vue";
 
 import { useDevMode } from "../../../composables/useDevMode";
-import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
+import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
-import { HTTPError } from "ky";
+import DsfrField from "../../DsfrField.vue";
 
 const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;
@@ -78,35 +79,16 @@ function fillFields() {
         Sauf mention contraire, tous les champs sont obligatoires.
       </p>
 
-      <div
-        :class="[
-          'fr-input-group fr-mb-2w',
-          { 'fr-input-group--error': userEmailError },
-        ]"
-      >
-        <label class="fr-label" for="user-email">
-          Adresse e-mail
-          <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-        </label>
-        <input
-          id="user-email"
-          ref="userEmailInput"
-          v-model="userEmail"
-          :class="['fr-input', { 'fr-input--error': userEmailError }]"
-          type="email"
-          :aria-describedby="
-            userEmailError ? 'already-taken-email-error-message' : undefined
-          "
-          required
-        />
-        <p
-          v-if="userEmailError"
-          id="already-taken-email-error-message"
-          class="fr-error-text"
-        >
-          {{ userEmailError }}
-        </p>
-      </div>
+      <DsfrField
+        id="user-email"
+        v-model="userEmail"
+        class="fr-mb-2w"
+        label="Adresse e-mail"
+        hint="Format attendu : nom@domaine.fr"
+        type="email"
+        required
+        :error="userEmailError"
+      />
 
       <div class="fr-password fr-mb-3w">
         <label class="fr-label" for="user-password-input">Mot de passe</label>
