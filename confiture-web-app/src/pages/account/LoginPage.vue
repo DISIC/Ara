@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
 import { history } from "../../router";
+import DsfrField from "../../components/DsfrField.vue";
 
 const userEmail = ref((history.state.email as string) ?? "");
 const userPassword = ref("");
@@ -15,6 +16,7 @@ const router = useRouter();
 
 async function handleSubmit() {
   await store.login(userEmail.value, userPassword.value, rememberMe.value);
+  // TODO: handle error 401
   router.push({ name: "account-dashboard" });
 }
 </script>
@@ -40,19 +42,14 @@ async function handleSubmit() {
     <form @submit.prevent="handleSubmit">
       <h1 class="fr-h3">Connexion à Ara</h1>
 
-      <div class="fr-input-group fr-mb-2w">
-        <label class="fr-label" for="user-email">
-          Adresse e-mail
-          <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-        </label>
-        <input
-          id="user-email"
-          v-model="userEmail"
-          class="fr-input"
-          type="email"
-          required
-        />
-      </div>
+      <DsfrField
+        id="user-email"
+        v-model="userEmail"
+        label="Adresse e-mail"
+        hint="Format attendu : nom@domaine.fr"
+        type="email"
+        required
+      />
 
       <div class="fr-password fr-mb-3w">
         <label class="fr-label" for="user-password-input">Mot de passe</label>
