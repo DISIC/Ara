@@ -16,6 +16,7 @@ export interface AuditReport {
   notCompliantContent?: string;
   derogatedContent?: string;
   notInScopeContent?: string;
+  notes?: string;
 
   auditType: AuditType;
 

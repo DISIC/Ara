@@ -693,6 +693,7 @@ export class AuditService {
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
       notInScopeContent: audit.notInScopeContent,
+      notes: audit.notes,
 
       errorCount: results.filter(
         (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,

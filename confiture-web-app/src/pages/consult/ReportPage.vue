@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import OnboardingModal from "../../components/OnboardingModal.vue";
 import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
+import ReportNotes from "../../components/ReportNotes.vue";
 import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
@@ -29,11 +30,16 @@ const hasA11yStatement = computed(() => {
   return report.data?.auditType === AuditType.FULL;
 });
 
+const hasNotes = computed(() => {
+  return !!report.data?.notes;
+});
+
 const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasA11yStatement.value
     ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
     : []),
+  ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
   { title: "Détail des résultats", component: ReportErrors },
 ]);
 
