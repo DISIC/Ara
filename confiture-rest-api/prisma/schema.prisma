@@ -66,6 +66,7 @@ model Audit {
   notCompliantContent String?
   derogatedContent    String?
   notInScopeContent   String?
+  notes               String?
 
   // Misc
   recipients      Recipent[] // unused for now
@@ -76,11 +77,11 @@ model Audit {
   consultUniqueId String     @unique
   auditTraceId    Int        @unique
   auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
-  
+
   // Audit duplication history
-  sourceAudit Audit? @relation("AuditDuplicationHistory", fields: [sourceAuditId], references: [id])
+  sourceAudit   Audit?  @relation("AuditDuplicationHistory", fields: [sourceAuditId], references: [id])
   sourceAuditId Int?
-  auditCopies Audit[] @relation("AuditDuplicationHistory")
+  auditCopies   Audit[] @relation("AuditDuplicationHistory")
 
   @@unique([editUniqueId, consultUniqueId])
 }

@@ -293,6 +293,7 @@ export class AuditService {
             notCompliantContent: data.notCompliantContent,
             derogatedContent: data.derogatedContent,
             notInScopeContent: data.notInScopeContent,
+            notes: data.notes
           },
           include: AUDIT_EDIT_INCLUDE,
         }),
@@ -924,7 +925,7 @@ export class AuditService {
     const duplicateEditUniqueId = nanoid();
     const duplicateConsultUniqueId = nanoid();
 
-    /** 
+    /**
     Object storing duplicate exampleImage creation data mapped by
     - page id
     - result id
