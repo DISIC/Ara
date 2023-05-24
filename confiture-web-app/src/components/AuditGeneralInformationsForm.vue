@@ -221,12 +221,14 @@ const notify = useNotifications();
           id="procedure-auditor-organisation"
           v-model="procedureAuditorOrganisation"
           label="Nom de la structure"
+          hint="Sera affiché dans la déclaration d’accessibilité, cette mention est une obligation. "
           required
         />
 
         <DsfrField
           id="procedure-auditor-email"
           v-model="procedureAuditorEmail"
+          class="fr-mb-0"
           label="Adresse électronique"
           hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
           type="email"
