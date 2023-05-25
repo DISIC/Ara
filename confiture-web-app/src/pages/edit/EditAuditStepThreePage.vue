@@ -415,7 +415,7 @@ function handleUpdateResultError(err: any) {
               <textarea
                 id="audit-notes"
                 :value="auditNotes"
-                rows="6"
+                rows="5"
                 class="fr-input"
                 @input="
                   updateAuditNotes(($event.target as HTMLTextAreaElement).value)
