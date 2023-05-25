@@ -8,7 +8,8 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 * Un indicateur d’enregistrement va être ajouté (juin)
 
 ## Création d’un compte
-* Lister tous ses audits (juin)
+* Créer un compte (juin)
+* Lister tous ses audits (juillet)
 * Personnaliser l’interface d’audit (juillet)
 
 ## Exporter les documents
@@ -19,6 +20,8 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 
 ## Nouvelles fonctionnalités
 * Ajouter une zone de notes (juin)
+* Duppliquer un audit même si il n'est pas terminé (juin)
+* Intégration des tests autmatiques (juillet)
 
 ## Correction de bugs
 * Afficher le taux d'avancement (juin)
