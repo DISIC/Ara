@@ -58,13 +58,23 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async updateAuditNotes(uniqueId: string, data: { notes?: string }) {
-      const response = (await ky
-        .patch(`/api/audits/${uniqueId}`, {
-          json: data,
-        })
-        .json()) as Audit;
-      this.data = response;
-      return response;
+      // TODO: handle revert to previous notes if api call fails
+      const previousNotes = this.data?.notes;
+
+      try {
+        const response = (await ky
+          .patch(`/api/audiats/${uniqueId}`, {
+            json: data,
+          })
+          .json()) as Audit;
+        this.data = response;
+        return response;
+      } catch (error) {
+        if (this.data && previousNotes) {
+          this.data.notes = previousNotes;
+        }
+        throw error;
+      }
     },
 
     async deleteAudit(uniqueId: string): Promise<void> {
