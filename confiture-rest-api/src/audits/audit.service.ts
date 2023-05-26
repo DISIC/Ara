@@ -87,7 +87,16 @@ export class AuditService {
   getAuditWithEditUniqueId(uniqueId: string) {
     return this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
-      include: AUDIT_EDIT_INCLUDE,
+      include: {
+        recipients: true,
+        environments: true,
+        pages: true,
+        sourceAudit: {
+          select: {
+            procedureName: true,
+          },
+        },
+      },
     });
   }
 

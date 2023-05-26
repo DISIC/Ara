@@ -7,9 +7,16 @@ import { AuditService } from './audit.service';
 import { AuditsController } from './audits.controller';
 import { FileStorageService } from './file-storage.service';
 import { ReportsController } from './reports.controller';
+import { AuditExportService } from './audit-export.service';
 
 @Module({
-  providers: [AuditService, PrismaService, MailService, FileStorageService],
+  providers: [
+    AuditService,
+    PrismaService,
+    MailService,
+    FileStorageService,
+    AuditExportService,
+  ],
   controllers: [AuditsController, ReportsController],
   imports: [
     MulterModule.register({

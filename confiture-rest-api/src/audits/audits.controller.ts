@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   GoneException,
+  Header,
   HttpStatus,
   NotFoundException,
   Param,
@@ -24,16 +25,18 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
 import { Audit } from 'src/generated/nestjs-dto/audit.entity';
 import { CriterionResult } from 'src/generated/nestjs-dto/criterionResult.entity';
 import { MailService } from '../mail/mail.service';
+import { AuditExportService } from './audit-export.service';
 import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
+import { DuplicateAuditDto } from './duplicate-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
 import { PatchAuditDto } from './patch-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import { UploadImageDto } from './upload-image.dto';
-import { DuplicateAuditDto } from './duplicate-audit.dto';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -41,6 +44,7 @@ export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
     private readonly mailer: MailService,
+    private readonly auditExportService: AuditExportService,
   ) {}
 
   /** Save a new audit into the database. */
@@ -266,6 +270,23 @@ export class AuditsController {
     });
 
     return newAudit.editUniqueId;
+  }
+
+  @Get('/:uniqueId/exports/csv')
+  @ApiOkResponse({
+    description: 'An export of the audit results using the CSV format.',
+  })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  @Header('Content-Disposition', 'attachment; filename="export.csv"')
+  async getCsvExport(@Param('uniqueId') uniqueId: string) {
+    const file = await this.auditExportService.getCsvExport(uniqueId);
+
+    if (!file) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    return file;
   }
 
   /**
