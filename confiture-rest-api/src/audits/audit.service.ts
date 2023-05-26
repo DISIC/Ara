@@ -21,6 +21,7 @@ import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
 import { FileStorageService } from './file-storage.service';
 import { UpdateAuditDto } from './update-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
+import { PatchAuditDto } from './patch-audit.dto';
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -300,6 +301,25 @@ export class AuditService {
         this.updateAuditEditDate(uniqueId),
       ]);
       return audit;
+    } catch (e) {
+      // Audit does not exist
+      // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
+      if (e?.code === 'P2025') {
+        return;
+      }
+      throw e;
+    }
+  }
+
+  async patchAudit(uniqueId: string, data: PatchAuditDto): Promise<Audit | undefined> {
+    try {
+      const audit = await this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { notes: data.notes },
+        include: AUDIT_EDIT_INCLUDE,
+      })
+
+      return audit
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025

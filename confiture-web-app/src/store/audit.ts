@@ -57,6 +57,16 @@ export const useAuditStore = defineStore("audit", {
       return response;
     },
 
+    async updateAuditNotes(uniqueId: string, data: { notes?: string }) {
+      const response = (await ky
+        .patch(`/api/audits/${uniqueId}`, {
+          json: data,
+        })
+        .json()) as Audit;
+      this.data = response;
+      return response;
+    },
+
     async deleteAudit(uniqueId: string): Promise<void> {
       await ky.delete(`/api/audits/${uniqueId}`);
     },

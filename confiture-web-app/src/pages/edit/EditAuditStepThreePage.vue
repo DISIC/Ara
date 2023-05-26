@@ -185,9 +185,7 @@ const auditNotes = computed(() => {
 
 const updateAuditNotes = debounce(async (notes: string) => {
   try {
-    await auditStore.updateAudit(uniqueId.value, {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ...auditStore.data!,
+    await auditStore.updateAuditNotes(uniqueId.value, {
       notes,
     });
   } catch (error) {
