@@ -143,9 +143,6 @@ const isDevMode = useDevMode();
     <p v-if="disableSubmission" class="fr-text--xs fr-m-0 submit-notice">
       Validation possible à la fin de l’audit
     </p>
-  </div>
-  <div class="fr-mb-3w heading">
-    <h1 class="fr-mb-0">{{ auditName }}</h1>
     <ul class="top-actions" role="list">
       <li class="fr-mr-2w">
         <Dropdown
@@ -207,6 +204,8 @@ const isDevMode = useDevMode();
     </ul>
   </div>
 
+  <h1 class="">{{ auditName }}</h1>
+
   <div
     :class="`fr-grid-row fr-grid-row--gutters ${
       auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
@@ -252,6 +251,7 @@ const isDevMode = useDevMode();
 <style scoped>
 .sub-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
