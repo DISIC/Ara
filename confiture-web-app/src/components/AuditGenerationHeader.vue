@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
-import { captureWithPayloads, formatDate } from "../utils";
+import { captureWithPayloads, formatDate, formatBytes } from "../utils";
 import Dropdown from "./Dropdown.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
@@ -47,7 +47,7 @@ function confirmDuplicate(name: string) {
   console.log("Duplicating...", name);
   isDuplicationLoading.value = true;
   auditStore
-    .duplicateAudit(uniqueId, name)
+    .duplicateAudit(uniqueId.value, name)
     .then((newAuditId) => {
       auditStore.$reset();
       resultStore.$reset();
@@ -81,7 +81,7 @@ function confirmDuplicate(name: string) {
  */
 function confirmDelete() {
   auditStore
-    .deleteAudit(uniqueId)
+    .deleteAudit(uniqueId.value)
     .then(() => {
       // Clear pinia stores
       auditStore.$reset();
@@ -106,9 +106,17 @@ function confirmDelete() {
 }
 
 const route = useRoute();
-const uniqueId = route.params.uniqueId as string;
+const uniqueId = computed(() => route.params.uniqueId as string);
 
 const resultsStore = useResultsStore();
+
+const csvExportUrl = computed(
+  () => `/api/audits/${uniqueId.value}/exports/csv`
+);
+
+const csvExportSizeEstimation = computed(() => {
+  return 502 + Object.keys(resultsStore.data ?? {}).length * 318;
+});
 
 const isDevMode = useDevMode();
 </script>
@@ -183,6 +191,18 @@ const isDevMode = useDevMode();
                   <CopyIcon class="fr-mr-2v" />
                   Créer une copie
                 </button>
+              </li>
+              <li class="dropdown-item">
+                <a
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                  :href="csvExportUrl"
+                  download="mon-export.csv"
+                >
+                  Exporter l’audit
+                  <span class="fr-text--xs fr-text--regular download-meta">
+                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                  </span>
+                </a>
               </li>
               <li aria-hidden="true" class="dropdown-separator"></li>
               <li class="dropdown-item">
@@ -264,6 +284,16 @@ const isDevMode = useDevMode();
 .top-actions {
   display: flex;
   list-style: none;
+}
+
+.download-link {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.download-meta {
+  flex-basis: 100%;
+  color: var(--text-mention-grey);
 }
 
 .delete-button {

@@ -31,10 +31,7 @@ export class AuditExportService {
     const data = [];
 
     // Column headers
-    data.push([
-      '',
-      ...audit.pages.map((p, i) => `P${String(i + 1).padStart(2, '0')}`),
-    ]);
+    data.push(['Critères', ...audit.pages.map((p) => p.name)]);
 
     const resultsByCriteria = groupBy(
       results,
