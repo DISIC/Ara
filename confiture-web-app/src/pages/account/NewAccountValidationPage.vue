@@ -49,9 +49,7 @@ onMounted(async () => {
   <template v-if="tokenIsInvalid">
     <div class="wrapper">
       <div class="fr-mb-3w title">
-        <h1 class="fr-h1 fr-m-0" tabindex="-1">
-          Désolé, votre lien n’est plus valide
-        </h1>
+        <h1 class="fr-h1 fr-m-0">Désolé, votre lien n’est plus valide</h1>
       </div>
 
       <p class="fr-text--xl">
@@ -62,7 +60,7 @@ onMounted(async () => {
       <p class="fr-text--sm fr-mb-6w">
         Si vous avez besoin d’une aide pour la création de votre compte, merci
         de nous contacter par e-mail à l’adresse suivante :
-        <span class="fr-text--bold">ara@design.numerique.gouv.fr</span>.
+        <strong>ara@design.numerique.gouv.fr</strong>.
       </p>
 
       <RouterLink
