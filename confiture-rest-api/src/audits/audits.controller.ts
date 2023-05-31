@@ -100,7 +100,6 @@ export class AuditsController {
   @Patch('/:uniqueId')
   @ApiOkResponse({
     description: 'The audit has been successfully patched',
-    type: Audit,
   })
   @ApiNotFoundResponse({ description: 'The audit does not exist.' })
   @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
@@ -113,8 +112,6 @@ export class AuditsController {
     if (!audit) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
-
-    return audit;
   }
 
   @Post('/:uniqueId/results/examples')

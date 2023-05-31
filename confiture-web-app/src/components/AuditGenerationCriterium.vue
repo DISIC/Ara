@@ -198,10 +198,6 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
 }
 
 function updateTransverseStatus(e: Event) {
-  console.log(
-    "🚀 ~ file: AuditGenerationCriterium.vue:182 ~ updateTransverseStatus ~ transverse:",
-    e
-  );
   const transverse = (e.target as HTMLInputElement).checked;
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])

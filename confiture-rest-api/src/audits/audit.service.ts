@@ -294,7 +294,7 @@ export class AuditService {
             notCompliantContent: data.notCompliantContent,
             derogatedContent: data.derogatedContent,
             notInScopeContent: data.notInScopeContent,
-            notes: data.notes
+            notes: data.notes,
           },
           include: AUDIT_EDIT_INCLUDE,
         }),
@@ -311,15 +311,17 @@ export class AuditService {
     }
   }
 
-  async patchAudit(uniqueId: string, data: PatchAuditDto): Promise<Audit | undefined> {
+  async patchAudit(
+    uniqueId: string,
+    data: PatchAuditDto,
+  ): Promise<Audit | undefined> {
     try {
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: { notes: data.notes },
-        include: AUDIT_EDIT_INCLUDE,
-      })
+      });
 
-      return audit
+      return audit;
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
