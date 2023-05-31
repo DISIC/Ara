@@ -1,5 +1,11 @@
 import { Injectable, StreamableFile } from '@nestjs/common';
-import { CriterionResultStatus } from '@prisma/client';
+import {
+  Audit,
+  AuditedPage,
+  CriterionResult,
+  CriterionResultStatus,
+  StoredFile,
+} from '@prisma/client';
 import { groupBy } from 'lodash';
 import { Readable } from 'stream';
 import * as XLSX from 'xlsx';
@@ -20,14 +26,15 @@ const CRITERIUM_STATUS: Record<CriterionResultStatus, string> = {
 export class AuditExportService {
   constructor(private readonly auditService: AuditService) {}
 
-  async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
-    const audit = await this.auditService.getAuditWithEditUniqueId(
-      editUniqueId,
-    );
-    const results = await this.auditService.getResultsWithEditUniqueId(
-      editUniqueId,
-    );
-
+  private generateCsvExport(
+    audit: Audit & {
+      pages: AuditedPage[];
+    },
+    results: Omit<
+      CriterionResult & { exampleImages: StoredFile[] },
+      'id' | 'auditUniqueId'
+    >[],
+  ) {
     const data = [];
 
     // Column headers
@@ -60,5 +67,29 @@ export class AuditExportService {
     const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'csv' });
 
     return new StreamableFile(buffer);
+  }
+
+  async getCsvExportWithConsultId(
+    consultUniqueId: string,
+  ): Promise<StreamableFile> {
+    const audit = await this.auditService.getAuditWithConsultUniqueId(
+      consultUniqueId,
+    );
+    const results = await this.auditService.getResultsWithEditUniqueId(
+      audit.editUniqueId,
+    );
+
+    return this.generateCsvExport(audit, results);
+  }
+
+  async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
+    const audit = await this.auditService.getAuditWithEditUniqueId(
+      editUniqueId,
+    );
+    const results = await this.auditService.getResultsWithEditUniqueId(
+      editUniqueId,
+    );
+
+    return this.generateCsvExport(audit, results);
   }
 }

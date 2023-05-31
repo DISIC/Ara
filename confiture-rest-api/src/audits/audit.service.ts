@@ -100,6 +100,22 @@ export class AuditService {
     });
   }
 
+  getAuditWithConsultUniqueId(uniqueId: string) {
+    return this.prisma.audit.findUnique({
+      where: { consultUniqueId: uniqueId },
+      include: {
+        recipients: true,
+        environments: true,
+        pages: true,
+        sourceAudit: {
+          select: {
+            procedureName: true,
+          },
+        },
+      },
+    });
+  }
+
   async getResultsWithEditUniqueId(
     uniqueId: string,
   ): Promise<
