@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
-import { captureWithPayloads, formatDate, formatBytes } from "../utils";
+import {
+  captureWithPayloads,
+  formatDate,
+  formatBytes,
+  slugify,
+} from "../utils";
 import Dropdown from "./Dropdown.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
@@ -113,6 +118,13 @@ const resultsStore = useResultsStore();
 const csvExportUrl = computed(
   () => `/api/audits/${uniqueId.value}/exports/csv`
 );
+
+const csvExportFilename = computed(() => {
+  if (!auditStore.data?.procedureName) {
+    return "audit.csv";
+  }
+  return `audit-${slugify(auditStore.data.procedureName)}.csv`;
+});
 
 const csvExportSizeEstimation = computed(() => {
   return 502 + Object.keys(resultsStore.data ?? {}).length * 318;

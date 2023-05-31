@@ -278,7 +278,6 @@ export class AuditsController {
   })
   @ApiNotFoundResponse({ description: 'The audit does not exist.' })
   @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  @Header('Content-Disposition', 'attachment; filename="export.csv"')
   async getCsvExport(@Param('uniqueId') uniqueId: string) {
     const file = await this.auditExportService.getCsvExport(uniqueId);
 
