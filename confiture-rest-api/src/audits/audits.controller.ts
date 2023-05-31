@@ -30,6 +30,7 @@ import { MailService } from '../mail/mail.service';
 import { AuditService } from './audit.service';
 import { CreateAuditDto } from './create-audit.dto';
 import { UpdateAuditDto } from './update-audit.dto';
+import { PatchAuditDto } from './patch-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import { UploadImageDto } from './upload-image.dto';
 import { DuplicateAuditDto } from './duplicate-audit.dto';
@@ -93,6 +94,24 @@ export class AuditsController {
     }
 
     return audit;
+  }
+
+  /** Update specific fields of an audit in the database. */
+  @Patch('/:uniqueId')
+  @ApiOkResponse({
+    description: 'The audit has been successfully patched',
+  })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  async patchAudit(
+    @Param('uniqueId') uniqueId: string,
+    @Body() body: PatchAuditDto,
+  ) {
+    const audit = await this.auditService.patchAudit(uniqueId, body);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
   }
 
   @Post('/:uniqueId/results/examples')

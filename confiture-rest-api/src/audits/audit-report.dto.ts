@@ -22,6 +22,7 @@ export class AuditReportDto {
   notCompliantContent?: string;
   derogatedContent?: string;
   notInScopeContent?: string;
+  notes?: string;
 
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;

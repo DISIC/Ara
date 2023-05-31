@@ -145,4 +145,8 @@ export class UpdateAuditDto extends CreateAuditDto {
   @IsString()
   @IsOptional()
   notInScopeContent?: string;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
 }

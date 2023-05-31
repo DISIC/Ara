@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 31/05/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’une section de notes libres ([#405](https://github.com/DISIC/Ara/pull/405))
+
 ## 26/05/2023
 
 ### Autres changements ⚙️

@@ -64,6 +64,7 @@ export interface Audit {
   notCompliantContent: string | null;
   derogatedContent: string | null;
   notInScopeContent: string | null;
+  notes: string | null;
 }
 
 /** Audit type but without the generated IDs and step 2 fields */

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { debounce } from "lodash-es";
 
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
+import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -176,6 +178,29 @@ function closeDuplicatedAuditAlert() {
   showDuplicatedAlert.value = false;
   focusPageHeading();
 }
+
+const auditNotes = computed(() => {
+  return auditStore.data?.notes || "";
+});
+
+const updateAuditNotes = debounce(async (notes: string) => {
+  try {
+    await auditStore.updateAuditNotes(uniqueId.value, {
+      notes,
+    });
+  } catch (error) {
+    handleUpdateResultError(error);
+  }
+}, 500);
+
+function handleUpdateResultError(err: any) {
+  console.log(err);
+  notify(
+    "error",
+    "Une erreur est survenue",
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+  );
+}
 </script>
 
 <template>
@@ -341,6 +366,18 @@ function closeDuplicatedAuditAlert() {
                 {{ page.name }}
               </button>
             </li>
+            <li role="presentation">
+              <button
+                id="notes-panel"
+                class="fr-tabs__tab fr-icon-draft-line fr-tabs__tab--icon-left"
+                tabindex="0"
+                role="tab"
+                aria-selected="false"
+                :aria-controls="`notes-panel-panel`"
+              >
+                Notes
+              </button>
+            </li>
           </ul>
           <div
             v-for="page in auditStore.data.pages"
@@ -357,6 +394,34 @@ function closeDuplicatedAuditAlert() {
               :page="page"
               :audit-unique-id="uniqueId"
             />
+          </div>
+          <div
+            :id="`notes-panel-panel`"
+            class="fr-tabs__panel fr-tabs__panel--selected"
+            role="tabpanel"
+            aria-labelledby="notes-panel"
+            tabindex="0"
+          >
+            <div class="fr-input-group fr-mb-1w">
+              <label class="fr-label" for="audit-notes"
+                >Notes annexes
+                <span class="fr-hint-text">
+                  Exemple : remarques et recommandations générales sur le site
+                  audité. Ces notes seront affichées dans le rapport d’audit.
+                </span>
+              </label>
+              <textarea
+                id="audit-notes"
+                :value="auditNotes"
+                rows="20"
+                class="fr-input"
+                @input="
+                  updateAuditNotes(($event.target as HTMLTextAreaElement).value)
+                "
+              ></textarea>
+            </div>
+
+            <MarkdownHelpButton id="markdown-notice-notes" />
           </div>
         </div>
       </div>
