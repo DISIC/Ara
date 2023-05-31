@@ -176,17 +176,15 @@ const isDevMode = useDevMode();
                 Modifier les paramètres
               </RouterLink>
             </li>
-            <template v-if="!!auditPublicationDate">
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                  @click="duplicateModal?.show()"
-                >
-                  <CopyIcon class="fr-mr-2v" />
-                  Créer une copie
-                </button>
-              </li>
-            </template>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                @click="duplicateModal?.show()"
+              >
+                <CopyIcon class="fr-mr-2v" />
+                Créer une copie
+              </button>
+            </li>
             <li aria-hidden="true" class="dropdown-separator"></li>
             <li class="dropdown-item">
               <button

@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 26/05/2023
+
+### Autres changements ⚙️
+
+- Rend la duplication d'un audit toujours faisable même si celui-ci n'est pas terminé ([#408](https://github.com/DISIC/Ara/pull/408))
+
 ## 24/05/2023
 
 ### Nouvelles fonctionnalités 🚀
