@@ -183,7 +183,7 @@ const csvExportSizeEstimation = computed(() => {
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
-              Exporter l’audit
+              Télécharger l'audit
               <span class="fr-text--xs fr-text--regular download-meta">
                 CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
               </span>
