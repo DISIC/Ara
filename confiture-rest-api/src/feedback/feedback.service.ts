@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import got from 'got';
+import got, { HTTPError } from 'got';
 import { NewFeedbackDto } from './new-feedback.dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class FeedbackService {
             Nom: feedback.name,
             Contact: feedback.email,
             Expertises: feedback.occupations,
-            Source: 'Formulaire de satisfaction'
+            Source: 'Formulaire de satisfaction',
           },
         },
       ],
@@ -37,7 +37,14 @@ export class FeedbackService {
           },
         },
       )
-      .json<{ records: { id: string }[] }>();
+      .json<{ records: { id: string }[] }>()
+      .catch((err) => {
+        if (err instanceof HTTPError) {
+          console.log('Failed to submit to airtable');
+          console.log(err.response.body);
+        }
+        throw err;
+      });
 
     console.log('Added feedback to Airtable : %s', response.records[0].id);
   }
