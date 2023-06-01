@@ -35,12 +35,21 @@ interface ResultsStoreState {
       };
     };
   };
+
+  /**
+   * Number of update requests actually loading.
+   *
+   * When 0, nothing is loading.
+   * When 1 or more, there's something loading.
+   */
+  currentRequestCount: number;
 }
 
 export const useResultsStore = defineStore("results", {
   state: (): ResultsStoreState => ({
     data: null,
     previousStatuses: {},
+    currentRequestCount: 0,
   }),
 
   getters: {
@@ -113,6 +122,10 @@ export const useResultsStore = defineStore("results", {
      */
     pagesCount(): number {
       return this.data ? Object.keys(this.data).length : 0;
+    },
+
+    isLoading(): boolean {
+      return this.currentRequestCount > 0;
     },
   },
 
@@ -220,6 +233,8 @@ export const useResultsStore = defineStore("results", {
         });
       };
 
+      this.currentRequestCount++;
+
       await ky
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
@@ -229,6 +244,9 @@ export const useResultsStore = defineStore("results", {
         .catch((err) => {
           rollbackResults();
           throw err;
+        })
+        .finally(() => {
+          this.currentRequestCount--;
         });
     },
 
@@ -313,11 +331,16 @@ export const useResultsStore = defineStore("results", {
       // To handle non-ascii characters, we encode the filename here and decode it on the back
       formData.set("image", file, encodeURI(file.name));
 
+      this.currentRequestCount++;
+
       const exampleImage = (await ky
         .post(`/api/audits/${uniqueId}/results/examples`, {
           body: formData,
         })
-        .json()) as ExampleImage;
+        .json()
+        .finally(() => {
+          this.currentRequestCount--;
+        })) as ExampleImage;
 
       const result = this.data![pageId][topic][criterium];
 
@@ -333,7 +356,13 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       exampleId: number
     ) {
-      await ky.delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`);
+      this.currentRequestCount++;
+
+      await ky
+        .delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`)
+        .finally(() => {
+          this.currentRequestCount--;
+        });
 
       const result = this.data![pageId][topic][criterium];
 

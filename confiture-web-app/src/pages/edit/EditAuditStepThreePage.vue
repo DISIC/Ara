@@ -138,13 +138,6 @@ const headerInfos = computed(() => [
   },
 ]);
 
-const showAutoSaveAlert = ref(true);
-
-function closeAutoSaveAlert() {
-  showAutoSaveAlert.value = false;
-  focusPageHeading();
-}
-
 function closeAuditEmailAlert() {
   auditStore.showAuditEmailAlert = false;
   focusPageHeading();
@@ -240,20 +233,6 @@ function handleUpdateResultError(err: any) {
         class="fr-btn--close fr-btn"
         title="Masquer le message"
         @click="closeAuditEmailAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
-
-    <div
-      v-if="showAutoSaveAlert"
-      class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w"
-    >
-      <p>😎 Ara enregistre automatiquement votre travail</p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeAutoSaveAlert"
       >
         Masquer le message
       </button>

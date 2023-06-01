@@ -17,6 +17,7 @@ import GearIcon from "./icons/GearIcon.vue";
 import SummaryCard from "./SummaryCard.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import DeleteModal from "./DeleteModal.vue";
+import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;
@@ -141,7 +142,7 @@ const isDevMode = useDevMode();
   </div>
 
   <div class="fr-mb-1v sub-header">
-    <div>
+    <!-- <div>
       <p
         :class="`fr-badge ${
           auditPublicationDate && !auditEditionDate
@@ -158,7 +159,8 @@ const isDevMode = useDevMode();
       <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
         Le {{ formatDate(auditPublicationDate) }}
       </span>
-    </div>
+    </div> -->
+    <SaveIndicator />
     <div>
       <slot name="actions-notice" />
 
@@ -280,6 +282,10 @@ const isDevMode = useDevMode();
 
 <style scoped>
 .sub-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-default-grey);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
