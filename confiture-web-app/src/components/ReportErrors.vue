@@ -49,7 +49,7 @@ const errors = computed(() => {
             Object.values(
               mapValues(groupBy(results, "topic"), (results, topicNumber) => {
                 return {
-                  topic: topicNumber,
+                  topic: Number(topicNumber),
                   name: getTopicName(Number(topicNumber)),
                   errors: sortBy(
                     results.filter((r) => !r.transverse),
