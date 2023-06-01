@@ -7,7 +7,7 @@ import { useRouter } from "vue-router";
 import rgaa from "../criteres.json";
 import { useReportStore } from "../store";
 import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
-import { formatStatus, formatUserImpact, slugify } from "../utils";
+import { formatStatus, formatUserImpact, slugify, pluralize } from "../utils";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownRenderer from "./MarkdownRenderer.vue";
@@ -35,6 +35,7 @@ const errors = computed(() => {
         report.data?.results.filter((r) => {
           return (
             r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+            !r.transverse &&
             userImpactFilters.value.includes(r.userImpact)
           );
         }),
@@ -154,9 +155,10 @@ const unknownUserImpactErrorCount = computed(
 );
 
 const displayedErrorCount = computed(() => {
-  return errors.value
-    .map((page) => page.topics.map((topic) => topic.errors))
-    .flat(2).length;
+  return (
+    errors.value.map((page) => page.topics.map((topic) => topic.errors)).flat(2)
+      .length + transverseErrors.value.length
+  );
 });
 
 // function expandAll() {
@@ -433,7 +435,8 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
         <div class="fr-mb-6w header">
           <div role="alert" aria-live="polite">
             <p class="fr-mb-0 fr-text--xl fr-text--bold">
-              {{ displayedErrorCount }} résultats
+              {{ displayedErrorCount }}
+              {{ pluralize("résultat", "résultats", displayedErrorCount) }}
             </p>
           </div>
           <!-- FIXME: make this work -->
