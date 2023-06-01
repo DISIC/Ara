@@ -208,7 +208,7 @@ const isDevMode = useDevMode();
                 <a
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
                   :href="csvExportUrl"
-                  download="mon-export.csv"
+                  :download="csvExportFilename"
                 >
                   Exporter l’audit
                   <span class="fr-text--xs fr-text--regular download-meta">
