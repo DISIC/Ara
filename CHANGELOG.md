@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Correction 🐛
 
 - Corrige l'ordre des erreurs dans le détail des résultats sur le rapport
+- Corrige le placement de la mention "Validation possible à la fin de l'audit"
 
 ## 31/05/2023
 

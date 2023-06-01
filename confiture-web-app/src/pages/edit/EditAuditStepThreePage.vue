@@ -300,6 +300,13 @@ function handleUpdateResultError(err: any) {
           <button
             :disabled="!resultsStore.everyCriteriumAreTested"
             class="fr-btn"
+            :aria-describedby="
+              auditStore.data.publicationDate
+                ? auditStore.data.editionDate
+                  ? undefined
+                  : 'validation-notice'
+                : 'validation-notice'
+            "
             @click="toStepFour"
           >
             {{
@@ -311,6 +318,11 @@ function handleUpdateResultError(err: any) {
             }}
           </button>
         </li>
+      </template>
+      <template v-if="!resultsStore.everyCriteriumAreTested" #actions-notice>
+        <p id="validation-notice" class="fr-text--xs fr-m-0 submit-notice">
+          Validation possible à la fin de l’audit
+        </p>
       </template>
     </AuditGenerationHeader>
 
@@ -462,5 +474,9 @@ function handleUpdateResultError(err: any) {
   top: 0;
   max-height: 100vh;
   overflow-y: auto;
+}
+
+.submit-notice {
+  text-align: right;
 }
 </style>
