@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { createFeedback } from "../api";
+import { useNotifications } from "../composables/useNotifications";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
@@ -10,6 +11,7 @@ import greenCheck from "../assets/images/green-check.svg";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
 import PageMeta from "../components/PageMeta";
 import DsfrField from "../components/DsfrField.vue";
+import { captureWithPayloads } from "../utils";
 
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
@@ -38,6 +40,8 @@ const occupations = ref([]);
 
 const showSuccess = ref(false);
 
+const notify = useNotifications();
+
 /**
  * Submit form and display success notice
  */
@@ -52,10 +56,18 @@ function submitFeedback() {
       name: name.value,
       occupations: occupations.value,
     }),
-  }).then(() => {
-    showSuccess.value = true;
-  });
-  // TODO: handle error
+  })
+    .then(() => {
+      showSuccess.value = true;
+    })
+    .catch((err) => {
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la soumission du formulaire. Contactez-nous à l’adresse ara@design.numerique.gouv.fr si le problème persiste"
+      );
+      captureWithPayloads(err);
+    });
 }
 const router = useRouter();
 
