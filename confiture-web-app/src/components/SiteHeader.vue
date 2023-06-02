@@ -147,12 +147,12 @@ const menuItems = computed<
               </li>
               <li class="fr-nav__item">
                 <RouterLink class="fr-nav__link" :to="{ name: 'changelog' }">
-                  Changelog
+                  Notes de versions
                 </RouterLink>
               </li>
               <li class="fr-nav__item">
                 <RouterLink class="fr-nav__link" :to="{ name: 'roadmap' }">
-                  <span lang="en">Roadmap</span>
+                  Feuille de route
                 </RouterLink>
               </li>
             </ul>
