@@ -388,14 +388,14 @@ function hideCopyAlert() {
         <ul class="fr-mb-9v fr-mb-md-6w">
           <li v-if="report.data.contactFormUrl">
             Envoyer un message
-            <strong>{{ report.data.contactFormUrl }}</strong> ;
+            <strong>{{ report.data.contactFormUrl }}</strong>
           </li>
           <li v-if="report.data.contactEmail">
             Contacter
             <strong
               >{{ report.data.procedureInitiator }} :
               {{ report.data.contactEmail }}</strong
-            >.
+            >
           </li>
         </ul>
 
