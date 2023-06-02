@@ -14,11 +14,15 @@ import {
 
 import { AuditReportDto } from './audit-report.dto';
 import { AuditService } from './audit.service';
+import { AuditExportService } from './audit-export.service';
 
 @Controller('reports')
 @ApiTags('Audits')
 export class ReportsController {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly auditExportService: AuditExportService,
+  ) {}
 
   /** Get final report data for a particular audit. */
   @Get('/:consultUniqueId')
@@ -33,6 +37,23 @@ export class ReportsController {
     }
 
     return report;
+  }
+
+  /** Get final report data for a particular audit. */
+  @Get('/:consultUniqueId/exports/csv')
+  @ApiOkResponse({ description: 'The audit was found.' })
+  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
+  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  async getCsvExport(@Param('consultUniqueId') consultUniqueId: string) {
+    const file = await this.auditExportService.getCsvExportWithConsultId(
+      consultUniqueId,
+    );
+
+    if (!file) {
+      return this.sendAuditNotFoundStatus(consultUniqueId);
+    }
+
+    return file;
   }
 
   /**

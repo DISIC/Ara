@@ -9,17 +9,20 @@ import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
+import Dropdown from "../../components/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useReportStore } from "../../store";
+import { useReportStore, useAuditStore } from "../../store";
 import { AuditType, AuditStatus } from "../../types";
 import {
   formatAuditType,
   getAuditStatus,
   formatDate,
   slugify,
+  formatBytes,
 } from "../../utils";
 
 const report = useReportStore();
+const audit = useAuditStore();
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -114,6 +117,19 @@ function handleTabChange(tab: { title: string }) {
     }).fullPath
   );
 }
+
+const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
+
+const csvExportFilename = computed(() => {
+  if (!report.data?.procedureName) {
+    return "audit.csv";
+  }
+  return `audit-${slugify(report.data.procedureName)}.csv`;
+});
+
+const csvExportSizeEstimation = computed(() => {
+  return 502 + (report.data?.pageDistributions.length || 0) * 318;
+});
 </script>
 
 <template>
@@ -147,15 +163,34 @@ function handleTabChange(tab: { title: string }) {
 
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
-    <div>
+    <div class="heading-actions">
       <button
-        class="fr-btn fr-btn--secondary fr-btn--icon-right fr-icon-links-fill"
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
         title="Copier le lien du rapport"
         @click="copyReportUrl"
         @blur="hideReportAlert"
       >
-        Copier le lien
+        Copier le lien du rapport
       </button>
+      <Dropdown
+        title="Télécharger"
+        :button-props="{ class: 'fr-btn--secondary' }"
+      >
+        <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+          <li class="dropdown-item">
+            <a
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+              :href="csvExportUrl"
+              :download="csvExportFilename"
+            >
+              Télécharger l'audit
+              <span class="fr-text--xs fr-text--regular download-meta">
+                CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+              </span>
+            </a>
+          </li>
+        </ul>
+      </Dropdown>
     </div>
   </div>
 
@@ -280,6 +315,21 @@ function handleTabChange(tab: { title: string }) {
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.heading-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.download-link {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.download-meta {
+  flex-basis: 100%;
+  color: var(--text-mention-grey);
 }
 
 .dates {
