@@ -27,6 +27,11 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajoute la possibilité de télécharger le statut des critères de l'audit sous forme de fichier .CSV ([#410](https://github.com/DISIC/Ara/pull/410))
 
+### Autres changements ⚙️
+
+- Ajoute une page "Feuille de route" ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page "Notes de versions" ([#426](https://github.com/DISIC/Ara/pull/426))
+
 ## 01/06/2023
 
 ### Correction 🐛
