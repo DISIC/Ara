@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 02/06/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute la possibilité de télécharger le statut des critères de l'audit sous forme de fichier .CSV ([#410](https://github.com/DISIC/Ara/pull/410))
+
 ## 01/06/2023
 
 ### Correction 🐛
