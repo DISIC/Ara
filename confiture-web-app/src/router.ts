@@ -28,6 +28,7 @@ import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
+import ChangelogPage from "./pages/ChangelogPage.vue";
 
 import { useAuditStore } from "./store";
 
@@ -263,6 +264,19 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Feuille de route", name: "roadmap" },
+        ],
+      },
+    },
+    // Changelog
+    {
+      path: "/changelog",
+      name: "changelog",
+      component: ChangelogPage,
+      meta: {
+        name: "Notes de versions",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Notes de versions", name: "changelog" },
         ],
       },
     },
