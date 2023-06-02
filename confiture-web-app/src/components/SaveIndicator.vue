@@ -1,12 +1,35 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch, computed } from "vue";
 import { debounce } from "lodash-es";
 
 import { useResultsStore } from "../store";
 import Dropdown from "./Dropdown.vue";
 
-const resultsStore = useResultsStore();
+const dropdownTitle = computed(() => {
+  if (isLoading.value) {
+    return "Enregistrement...";
+  }
+  if (isOffline.value) {
+    return "Enregistrement impossible";
+  }
 
+  return "Enregistré";
+});
+
+const dropdownIcon = computed(() => {
+  if (isLoading.value) {
+    return "fr-icon-refresh-line";
+  }
+  if (isOffline.value) {
+    return "fr-icon-warning-line";
+  }
+
+  return "fr-icon-success-line";
+});
+
+/* Change the saving status in a way that it wont "flicker" */
+
+const resultsStore = useResultsStore();
 const isLoading = ref(resultsStore.isLoading);
 
 const unsetIsLoadingDebounced = debounce(() => {
@@ -48,28 +71,65 @@ onMounted(() => {
     observer.observe(sentinelRef.value);
   }
 });
+
+/* Show an alert when the app is offline */
+
+const isOffline = ref(false);
+
+function onOnline() {
+  isOffline.value = false;
+}
+
+function onOffline() {
+  isOffline.value = true;
+}
+
+onMounted(() => {
+  window.addEventListener("online", onOnline);
+  window.addEventListener("offline", onOffline);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("online", onOnline);
+  window.removeEventListener("offline", onOffline);
+});
 </script>
 
 <template>
   <div>
     <div :class="{ 'is-scrolled': isScrolled }">
+      <!-- <div
+        v-if="isOffline"
+        class="fr-alert fr-alert--error fr-mb-3w"
+        :class="{ 'fr-mt-4w': isScrolled }"
+      >
+        <h3 class="fr-alert__title">Tentative de connexion...</h3>
+        <p>
+          Vous êtes actuellement hors connexion. Veuillez vérifier votre
+          connexion internet.
+        </p>
+      </div> -->
+
       <Dropdown
-        :title="isLoading ? 'Enregistrement...' : 'Enregistré'"
+        :title="dropdownTitle"
         align-left
         icon-left
         :button-props="{
-          class: `indicator fr-btn--tertiary-no-outline ${
-            isLoading ? 'fr-icon-refresh-line' : 'fr-icon-success-line'
-          }`,
+          class: `indicator fr-btn--tertiary-no-outline ${dropdownIcon}`,
           'aria-live': 'polite',
           role: 'alert',
+          style: isOffline ? 'color: var(--text-default-error);' : undefined,
         }"
       >
         <p class="fr-text--sm fr-mb-1v">
           <strong>Ara enregistre automatiquement votre travail </strong>
         </p>
         <p class="fr-text--sm fr-m-0">
-          Toutes les modifications ont été enregistrées avec succès.
+          {{
+            isOffline
+              ? "Les modifications n’ont pas pu être enregistrées."
+              : "Toutes les modifications ont été enregistrées avec succès."
+          }}
         </p>
       </Dropdown>
     </div>
