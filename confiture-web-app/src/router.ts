@@ -269,7 +269,7 @@ const router = createRouter({
     },
     // Changelog
     {
-      path: "/changelog",
+      path: "/notes-de-versions",
       name: "changelog",
       component: ChangelogPage,
       meta: {
