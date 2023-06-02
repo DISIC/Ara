@@ -381,20 +381,20 @@ function hideCopyAlert() {
         <h4 class="fr-h2">Retour d’information et contact</h4>
         <p>
           Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-          pouvez contacter le responsable de [nom du site] pour être orienté
-          vers une alternative accessible ou obtenir le contenu sous une autre
-          forme.
+          pouvez contacter le responsable de
+          {{ report.data.procedureName }} pour être orienté vers une alternative
+          accessible ou obtenir le contenu sous une autre forme.
         </p>
         <ul class="fr-mb-9v fr-mb-md-6w">
-          <li>
+          <li v-if="report.data.contactFormUrl">
             Envoyer un message
             <strong>{{ report.data.contactFormUrl }}</strong> ;
           </li>
-          <li>
+          <li v-if="report.data.contactEmail">
             Contacter
             <strong
               >{{ report.data.procedureInitiator }} :
-              {{ report.data.contactFormUrl }}</strong
+              {{ report.data.contactEmail }}</strong
             >.
           </li>
         </ul>

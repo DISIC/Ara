@@ -318,7 +318,6 @@ const isDevMode = useDevMode();
           v-model="contactName"
           label="Nom et prénom du contact (optionnel)"
           type="text"
-          required
         />
 
         <p>
