@@ -145,6 +145,11 @@ const menuItems = computed<
                   {{ item.label }}
                 </RouterLink>
               </li>
+              <li class="fr-nav__item">
+                <RouterLink class="fr-nav__link" :to="{ name: 'roadmap' }">
+                  Roadmap
+                </RouterLink>
+              </li>
             </ul>
           </nav>
         </div>

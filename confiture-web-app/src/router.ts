@@ -27,6 +27,7 @@ import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
+import RoadmapPage from "./pages/RoadmapPage.vue";
 
 import { useAuditStore } from "./store";
 
@@ -250,6 +251,19 @@ const router = createRouter({
       meta: {
         name: "Rapport d’audit",
         hideHomeLink: true,
+      },
+    },
+    // Roadmap
+    {
+      path: "/feuille-de-route",
+      name: "roadmap",
+      component: RoadmapPage,
+      meta: {
+        name: "Feuille de route",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Feuille de route", name: "roadmap" },
+        ],
       },
     },
     // Resources pages

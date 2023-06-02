@@ -9,3 +9,5 @@ declare module "*.vue" {
 
 // Allow importing DOCX files
 declare module "*.docx";
+
+declare module "*.md";
