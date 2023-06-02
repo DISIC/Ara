@@ -299,7 +299,7 @@ function handleUpdateResultError(err: any) {
         </li>
       </template>
       <template v-if="!resultsStore.everyCriteriumAreTested" #actions-notice>
-        <p id="validation-notice" class="fr-text--xs fr-m-0 submit-notice">
+        <p id="validation-notice" class="fr-text--xs fr-mb-1w submit-notice">
           Validation possible à la fin de l’audit
         </p>
       </template>
@@ -450,7 +450,7 @@ function handleUpdateResultError(err: any) {
 
 .filters-wrapper {
   position: sticky;
-  top: 0;
+  top: 55px;
   max-height: 100vh;
   overflow-y: auto;
 }

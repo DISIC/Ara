@@ -1,23 +1,18 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../store";
-import {
-  captureWithPayloads,
-  formatDate,
-  formatBytes,
-  slugify,
-} from "../utils";
+import { captureWithPayloads, formatBytes, slugify } from "../utils";
+import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
+import DuplicateModal from "./DuplicateModal.vue";
+import SaveIndicator from "./SaveIndicator.vue";
+import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
-import SummaryCard from "./SummaryCard.vue";
-import DuplicateModal from "./DuplicateModal.vue";
-import DeleteModal from "./DeleteModal.vue";
-import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;
@@ -142,29 +137,12 @@ const isDevMode = useDevMode();
   </div>
 
   <div class="fr-mb-1v sub-header">
-    <!-- <div>
-      <p
-        :class="`fr-badge ${
-          auditPublicationDate && !auditEditionDate
-            ? 'fr-badge--success fr-badge--no-icon'
-            : 'fr-badge--purple-glycine'
-        }`"
-      >
-        {{
-          auditPublicationDate && !auditEditionDate
-            ? "🎉 audit terminé"
-            : "🔍 Audit en cours"
-        }}
-      </p>
-      <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
-        Le {{ formatDate(auditPublicationDate) }}
-      </span>
-    </div> -->
     <SaveIndicator />
+
     <div>
       <slot name="actions-notice" />
 
-      <ul class="top-actions" role="list">
+      <ul class="top-actions fr-my-0" role="list">
         <li class="fr-mr-2w">
           <Dropdown
             ref="optionsDropdownRef"
@@ -282,12 +260,8 @@ const isDevMode = useDevMode();
 
 <style scoped>
 .sub-header {
-  position: sticky;
-  top: 0;
-  background-color: var(--background-default-grey);
-  z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
 }
 
@@ -312,6 +286,9 @@ const isDevMode = useDevMode();
 .download-meta {
   flex-basis: 100%;
   color: var(--text-mention-grey);
+}
+:deep(.top-actions > li) {
+  padding-bottom: 0;
 }
 
 .delete-button {
