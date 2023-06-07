@@ -57,8 +57,6 @@ interface ResultsStoreState {
 
 export const useResultsStore = defineStore("results", {
   state: (): ResultsStoreState => {
-    // const lastRequestSuccessEnd =
-    //   Number(localStorage.getItem(LAST_REQUEST_TIMESTAMP_STORAGE_KEY)) ?? null;
     return {
       auditId: null,
       data: null,
@@ -254,7 +252,6 @@ export const useResultsStore = defineStore("results", {
         });
       };
 
-      // this.currentRequestCount++;
       this.increaseCurrentRequestCount();
 
       await ky
@@ -268,7 +265,6 @@ export const useResultsStore = defineStore("results", {
           throw err;
         })
         .finally(() => {
-          // this.currentRequestCount--;
           this.decreaseCurrentRequestCount();
         });
     },
@@ -354,7 +350,6 @@ export const useResultsStore = defineStore("results", {
       // To handle non-ascii characters, we encode the filename here and decode it on the back
       formData.set("image", file, encodeURI(file.name));
 
-      // this.currentRequestCount++;
       this.increaseCurrentRequestCount();
 
       const exampleImage = (await ky
@@ -363,7 +358,6 @@ export const useResultsStore = defineStore("results", {
         })
         .json()
         .finally(() => {
-          // this.currentRequestCount--;
           this.decreaseCurrentRequestCount();
         })) as ExampleImage;
 
@@ -381,14 +375,11 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       exampleId: number
     ) {
-      // this.currentRequestCount++;
-
       this.increaseCurrentRequestCount();
 
       await ky
         .delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`)
         .finally(() => {
-          // this.currentRequestCount--;
           this.decreaseCurrentRequestCount();
         });
 
