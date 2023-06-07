@@ -9,6 +9,7 @@ export class AuditReportDto {
   /** Unique ID used to construct the report URL. */
   consultUniqueId: string;
 
+  contactEmail?: string;
   contactFormUrl?: string;
 
   procedureInitiator?: string;
