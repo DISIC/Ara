@@ -149,18 +149,6 @@ setInterval(() => {
         top: alertHeight + 'px',
       }"
     >
-      <!-- <div
-        v-if="!systemStore.isOnline"
-        class="fr-alert fr-alert--error fr-mb-3w"
-        :class="{ 'fr-mt-4w': isScrolled }"
-      >
-        <h3 class="fr-alert__title">Tentative de connexion...</h3>
-        <p>
-          Vous êtes actuellement hors connexion. Veuillez vérifier votre
-          connexion internet.
-        </p>
-      </div> -->
-
       <Dropdown
         :title="dropdownTitle"
         align-left

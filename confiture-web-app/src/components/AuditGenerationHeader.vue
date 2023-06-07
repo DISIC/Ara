@@ -141,7 +141,7 @@ const systemStore = useSystemStore();
   <div
     v-if="!systemStore.isOnline"
     id="offlineAlert"
-    class="fr-alert fr-alert--error fr-m-0 offline-alert"
+    class="fr-alert fr-alert--error fr-m-0 offline-alert fr-mb-2w"
   >
     <h3 class="fr-alert__title">Tentative de connexion...</h3>
     <p>

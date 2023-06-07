@@ -7,8 +7,7 @@ import { defineStore } from "pinia";
 
 export const useSystemStore = defineStore("system", {
   state() {
-    // const isOnline = ref(window.navigator.onLine);
-    const isOnline = ref(false);
+    const isOnline = ref(window.navigator.onLine);
 
     function onOnline() {
       isOnline.value = true;
