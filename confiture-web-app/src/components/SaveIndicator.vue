@@ -93,6 +93,36 @@ onBeforeUnmount(() => {
   window.removeEventListener("online", onOnline);
   window.removeEventListener("offline", onOffline);
 });
+
+/* Display the time since last successful save */
+const relativeLastSaveDate = ref<string>();
+
+/**
+ *
+ * @param seconds
+ */
+function formatInterval(seconds: number) {
+  if (seconds < 60) {
+    return `il y a ${seconds} secondes`;
+  } else if (seconds < 60 * 60) {
+    return `il y a ${Math.floor(seconds / 60)} min`;
+  } else {
+    const hours = Math.floor(seconds / (60 * 60));
+    const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
+    return `il y a ${hours} h ${minutes} m`;
+  }
+}
+
+setInterval(() => {
+  const timestamp = resultsStore.lastRequestSuccessEnd;
+
+  if (!timestamp) {
+    return;
+  }
+
+  var seconds = Math.round((Date.now() - timestamp) / 1000);
+  relativeLastSaveDate.value = formatInterval(seconds);
+}, 1000);
 </script>
 
 <template>
@@ -116,7 +146,7 @@ onBeforeUnmount(() => {
         icon-left
         :button-props="{
           class: `indicator fr-btn--tertiary-no-outline ${dropdownIcon}`,
-          'aria-live': 'polite',
+          'aria-live': isOffline ? 'assertive' : 'polite',
           role: 'alert',
           style: isOffline ? 'color: var(--text-default-error);' : undefined,
         }"
@@ -124,12 +154,13 @@ onBeforeUnmount(() => {
         <p class="fr-text--sm fr-mb-1v">
           <strong>Ara enregistre automatiquement votre travail </strong>
         </p>
-        <p class="fr-text--sm fr-m-0">
-          {{
-            isOffline
-              ? "Les modifications n’ont pas pu être enregistrées."
-              : "Toutes les modifications ont été enregistrées avec succès."
-          }}
+
+        <p v-if="isOffline" class="fr-text--sm fr-m-0">
+          Les modifications n’ont pas pu être enregistrées.
+        </p>
+
+        <p v-else-if="relativeLastSaveDate" class="fr-text--sm fr-m-0">
+          Les modifications ont été enregistrées {{ relativeLastSaveDate }}
         </p>
       </Dropdown>
     </div>
