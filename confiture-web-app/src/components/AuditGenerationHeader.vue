@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
-import { useAuditStore, useResultsStore } from "../store";
+import { useAuditStore, useResultsStore, useSystemStore } from "../store";
 import { captureWithPayloads, formatBytes, slugify } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
@@ -127,6 +127,8 @@ const csvExportSizeEstimation = computed(() => {
 });
 
 const isDevMode = useDevMode();
+
+const systemStore = useSystemStore();
 </script>
 
 <template>
@@ -134,6 +136,18 @@ const isDevMode = useDevMode();
     <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
       [DEV] Remplir l’audit
     </button>
+  </div>
+
+  <div
+    v-if="!systemStore.isOnline"
+    id="offlineAlert"
+    class="fr-alert fr-alert--error fr-m-0 offline-alert"
+  >
+    <h3 class="fr-alert__title">Tentative de connexion...</h3>
+    <p>
+      Vous êtes actuellement hors connexion. Veuillez vérifier votre connexion
+      internet.
+    </p>
   </div>
 
   <div class="fr-mb-1v sub-header">
@@ -310,5 +324,12 @@ const isDevMode = useDevMode();
 
 .info-sub-text {
   text-transform: none;
+}
+
+.offline-alert {
+  background: var(--background-default-grey);
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 </style>

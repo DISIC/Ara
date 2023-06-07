@@ -1,31 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch, computed } from "vue";
 import { debounce } from "lodash-es";
+import { computed, onMounted, ref, watch } from "vue";
 
-import { useResultsStore } from "../store";
+import { useResultsStore, useSystemStore } from "../store";
 import Dropdown from "./Dropdown.vue";
 
-const dropdownTitle = computed(() => {
-  if (isLoading.value) {
-    return "Enregistrement...";
-  }
-  if (isOffline.value) {
-    return "Enregistrement impossible";
-  }
-
-  return "Enregistré";
-});
-
-const dropdownIcon = computed(() => {
-  if (isLoading.value) {
-    return "fr-icon-refresh-line";
-  }
-  if (isOffline.value) {
-    return "fr-icon-warning-line";
-  }
-
-  return "fr-icon-success-line";
-});
+const systemStore = useSystemStore();
 
 /* Change the saving status in a way that it wont "flicker" */
 
@@ -49,52 +29,86 @@ watch(
 
 /*
 Make the indicator `fixed` whenever the user scrolls past the sentinel div.
+
+WARNING: this is extremely hacky
 */
 
 const isScrolled = ref(false);
 const sentinelRef = ref<HTMLDivElement>();
+
+// When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
+const alertHeight = ref(0);
+function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
+  alertHeight.value = entries[0].target.clientHeight;
+
+  // Re-initialize the intersection observer with new `rootMargin` value.
+  intersectionObserver.disconnect();
+  intersectionObserver = new IntersectionObserver(onObservation, {
+    rootMargin: `-${40 + alertHeight.value}px`,
+  });
+  intersectionObserver.observe(sentinelRef.value!);
+}
+const resizeObserver = new ResizeObserver(onOfflineAlertResize);
+
+watch(
+  () => systemStore.isOnline,
+  (isOnline) => {
+    resizeObserver.disconnect();
+
+    if (!isOnline) {
+      // The alert element should be displayed in the `AuditGenerationHeader` component.
+      const alertEl = document.getElementById("offlineAlert");
+      resizeObserver.observe(alertEl!);
+    } else {
+      alertHeight.value = 0;
+    }
+  }
+);
 
 function onObservation(entries: IntersectionObserverEntry[]) {
   const { isIntersecting, boundingClientRect } = entries[0];
   isScrolled.value =
     !isIntersecting &&
     // dont "fix" the indicator when scrolling upwards past the sentinel
-    boundingClientRect.top <= 40;
+    boundingClientRect.top <= 40 + alertHeight.value;
 }
 
-const observer = new IntersectionObserver(onObservation, {
-  rootMargin: "-40px",
+let intersectionObserver = new IntersectionObserver(onObservation, {
+  rootMargin: `-${40 + alertHeight.value}px`,
 });
 
 onMounted(() => {
   if (sentinelRef.value) {
-    observer.observe(sentinelRef.value);
+    intersectionObserver.observe(sentinelRef.value);
   }
 });
 
 /* Show an alert when the app is offline */
 
-const isOffline = ref(false);
+const dropdownTitle = computed(() => {
+  if (isLoading.value) {
+    return "Enregistrement...";
+  }
+  if (!systemStore.isOnline) {
+    return "Enregistrement impossible";
+  }
 
-function onOnline() {
-  isOffline.value = false;
-}
-
-function onOffline() {
-  isOffline.value = true;
-}
-
-onMounted(() => {
-  window.addEventListener("online", onOnline);
-  window.addEventListener("offline", onOffline);
+  return "Enregistré";
 });
 
-onBeforeUnmount(() => {
-  window.removeEventListener("online", onOnline);
-  window.removeEventListener("offline", onOffline);
+const dropdownIcon = computed(() => {
+  if (isLoading.value) {
+    return "fr-icon-refresh-line";
+  }
+  if (!systemStore.isOnline) {
+    return "fr-icon-warning-line";
+  }
+
+  return "fr-icon-success-line";
 });
 
 /* Display the time since last successful save */
+
 const relativeLastSaveDate = ref<string>();
 
 /**
@@ -127,9 +141,16 @@ setInterval(() => {
 
 <template>
   <div>
-    <div :class="{ 'is-scrolled': isScrolled }">
+    <div
+      :class="{
+        'is-scrolled': isScrolled,
+      }"
+      :style="{
+        top: alertHeight + 'px',
+      }"
+    >
       <!-- <div
-        v-if="isOffline"
+        v-if="!systemStore.isOnline"
         class="fr-alert fr-alert--error fr-mb-3w"
         :class="{ 'fr-mt-4w': isScrolled }"
       >
@@ -146,16 +167,18 @@ setInterval(() => {
         icon-left
         :button-props="{
           class: `indicator fr-btn--tertiary-no-outline ${dropdownIcon}`,
-          'aria-live': isOffline ? 'assertive' : 'polite',
+          'aria-live': !systemStore.isOnline ? 'assertive' : 'polite',
           role: 'alert',
-          style: isOffline ? 'color: var(--text-default-error);' : undefined,
+          style: !systemStore.isOnline
+            ? 'color: var(--text-default-error);'
+            : undefined,
         }"
       >
         <p class="fr-text--sm fr-mb-1v">
           <strong>Ara enregistre automatiquement votre travail </strong>
         </p>
 
-        <p v-if="isOffline" class="fr-text--sm fr-m-0">
+        <p v-if="!systemStore.isOnline" class="fr-text--sm fr-m-0">
           Les modifications n’ont pas pu être enregistrées.
         </p>
 
@@ -172,7 +195,7 @@ setInterval(() => {
 <style scoped>
 .is-scrolled {
   position: fixed;
-  top: 0;
+  /* top: 0; */
   background: var(--background-default-grey);
   z-index: 3;
   width: calc(
