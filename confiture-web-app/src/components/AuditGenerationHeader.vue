@@ -132,6 +132,8 @@ const csvExportSizeEstimation = computed(() => {
 const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
+
+const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 </script>
 
 <template>
@@ -244,12 +246,16 @@ const systemStore = useSystemStore();
     <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
       <SummaryCard
         :title="keyInfos[0].title"
-        :description="keyInfos[0].description"
-        :value="keyInfos[0].value"
+        :description="
+          unfinishedAudit
+            ? '(Disponible à la fin de l’audit)'
+            : keyInfos[0].description
+        "
+        :value="unfinishedAudit ? 0 : keyInfos[0].value"
         :total="keyInfos[0].total"
         :unit="keyInfos[0].unit"
         :theme="keyInfos[0].theme"
-        :disabled="resultsStore.auditProgress < 1"
+        :disabled="unfinishedAudit"
       />
     </div>
     <div

@@ -81,7 +81,7 @@ const uniqueId = useUniqueId();
   color: var(--text-mention-grey);
 }
 
-.card-disabled * {
+.card-disabled :deep(*) {
   color: var(--text-disabled-grey);
 }
 
