@@ -241,8 +241,19 @@ const systemStore = useSystemStore();
       auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
     }`"
   >
+    <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
+      <SummaryCard
+        :title="keyInfos[0].title"
+        :description="keyInfos[0].description"
+        :value="keyInfos[0].value"
+        :total="keyInfos[0].total"
+        :unit="keyInfos[0].unit"
+        :theme="keyInfos[0].theme"
+        :disabled="resultsStore.auditProgress < 1"
+      />
+    </div>
     <div
-      v-for="info in keyInfos"
+      v-for="info in keyInfos.slice(1)"
       :key="info.title"
       :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
     >

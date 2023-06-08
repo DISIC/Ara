@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick } from "vue";
 
-import { useSystemStore } from "../store";
+import { useSystemStore, useAuditStore } from "../store";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import SaveIndicator from "./SaveIndicator.vue";
+import { formatDate } from "../utils";
 
 const systemStore = useSystemStore();
+const auditStore = useAuditStore();
 
 /*
 Make the indicator `fixed` whenever the user scrolls past the sentinel div.
@@ -77,7 +79,38 @@ onMounted(() => {
         top: alertHeight + 'px',
       }"
     >
-      <AuditProgressBar />
+      <AuditProgressBar
+        v-if="
+          !auditStore.data?.publicationDate ||
+          (auditStore.data?.publicationDate &&
+            auditStore.data?.editionDate &&
+            auditStore.data?.editionDate > auditStore.data?.publicationDate)
+        "
+      />
+
+      <div v-else class="audit-status">
+        <span
+          class="fr-icon-success-line fr-icon--sm audit-status-icon"
+          aria-hidden="true"
+        ></span>
+        <strong
+          >Audit {{ auditStore.data?.editionDate ? "modifié" : "terminé" }} le
+          <time
+            :datetime="
+              auditStore.data?.editionDate
+                ? auditStore.data?.editionDate
+                : auditStore.data?.publicationDate
+            "
+            >{{
+              auditStore.data?.editionDate
+                ? formatDate(auditStore.data?.editionDate)
+                : formatDate(auditStore.data?.publicationDate)
+            }}</time
+          ></strong
+        >
+      </div>
+
+      <div class="fr-ml-2w separator" />
 
       <SaveIndicator />
     </div>
@@ -98,6 +131,23 @@ onMounted(() => {
 
 .sticky-thing {
   display: flex;
-  align-items: end;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.audit-status {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.audit-status-icon {
+  color: var(--text-default-success);
+}
+
+.separator {
+  width: 1px;
+  /* height: 100%; */
+  background-color: var(--border-default-grey);
 }
 </style>

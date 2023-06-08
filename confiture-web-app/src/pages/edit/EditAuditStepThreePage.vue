@@ -242,7 +242,7 @@ const isOffline = useIsOffline();
     </div>
 
     <RouterLink
-      v-if="auditStore.data.publicationDate && !auditStore.data.editionDate"
+      v-if="auditStore.data.publicationDate"
       class="fr-text--sm fr-mb-4w back-summary-link"
       :to="{
         name: 'edit-audit-step-four',
@@ -278,7 +278,8 @@ const isOffline = useIsOffline();
         <li
           v-if="
             !auditStore.data.publicationDate ||
-            (auditStore.data.publicationDate && auditStore.data.editionDate)
+            (auditStore.data.editionDate &&
+              auditStore.data.editionDate > auditStore.data.publicationDate)
           "
         >
           <button
