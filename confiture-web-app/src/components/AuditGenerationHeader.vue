@@ -9,7 +9,7 @@ import { captureWithPayloads, formatBytes, slugify } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import DuplicateModal from "./DuplicateModal.vue";
-import SaveIndicator from "./SaveIndicator.vue";
+import StickyIndicators from "./StickyIndicators.vue";
 import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
@@ -151,7 +151,7 @@ const systemStore = useSystemStore();
   </div>
 
   <div class="fr-mb-1v sub-header">
-    <SaveIndicator />
+    <StickyIndicators />
 
     <div>
       <slot name="actions-notice" />
