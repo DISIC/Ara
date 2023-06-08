@@ -24,7 +24,7 @@ function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
   // Re-initialize the intersection observer with new `rootMargin` value.
   intersectionObserver.disconnect();
   intersectionObserver = new IntersectionObserver(onObservation, {
-    rootMargin: `-${48 + alertHeight.value}px`,
+    rootMargin: `-${40 + alertHeight.value}px`,
   });
   intersectionObserver.observe(sentinelRef.value!);
 }
@@ -50,11 +50,11 @@ function onObservation(entries: IntersectionObserverEntry[]) {
   isScrolled.value =
     !isIntersecting &&
     // dont "fix" the indicator when scrolling upwards past the sentinel
-    boundingClientRect.top <= 48 + alertHeight.value;
+    boundingClientRect.top <= 40 + alertHeight.value;
 }
 
 let intersectionObserver = new IntersectionObserver(onObservation, {
-  rootMargin: `-${48 + alertHeight.value}px`,
+  rootMargin: `-${40 + alertHeight.value}px`,
 });
 
 onMounted(() => {
@@ -87,7 +87,6 @@ onMounted(() => {
 <style scoped>
 .is-scrolled {
   position: fixed;
-  /* top: 0; */
   background: var(--background-default-grey);
   z-index: 3;
   width: calc(

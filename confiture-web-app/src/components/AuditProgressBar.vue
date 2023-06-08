@@ -18,7 +18,7 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
 </script>
 
 <template>
-  <div class="fr-py-1w fr-px-1w audit-progress">
+  <div class="fr-py-1v fr-px-1w audit-progress">
     <span class="audit-progress-label">Progression de l’audit</span>
     <span
       class="fr-text--xs fr-text--action-high-grey fr-m-0 audit-progress-percentage"
@@ -53,7 +53,6 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
   top: 0;
   bottom: 0;
   transition: width 1s ease;
-  /* width: var(--topic-filter-value); */
   width: v-bind(progressBarValue);
 }
 
