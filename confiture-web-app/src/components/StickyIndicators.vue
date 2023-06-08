@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, nextTick } from "vue";
 
 import { useSystemStore } from "../store";
 import AuditProgressBar from "./AuditProgressBar.vue";
@@ -32,8 +32,10 @@ const resizeObserver = new ResizeObserver(onOfflineAlertResize);
 
 watch(
   () => systemStore.isOnline,
-  (isOnline) => {
+  async (isOnline) => {
     resizeObserver.disconnect();
+
+    await nextTick();
 
     if (!isOnline) {
       // The alert element should be displayed in the `AuditGenerationHeader` component.

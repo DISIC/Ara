@@ -7,6 +7,7 @@ defineProps<{
   buttonProps?: object;
   alignLeft?: boolean;
   iconLeft?: boolean;
+  disabled?: boolean;
 }>();
 
 const uniqueId = useUniqueId();
@@ -56,6 +57,7 @@ defineExpose({ buttonRef, closeOptions });
       aria-haspopup="true"
       :aria-expanded="showContent"
       :aria-controls="`dropdown-${uniqueId}`"
+      :disabled="disabled"
       v-bind="buttonProps"
       @click="toggleOptions"
     >

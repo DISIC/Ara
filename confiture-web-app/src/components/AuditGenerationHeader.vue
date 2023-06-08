@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
+import { useIsOffline } from "../composables/useIsOffline";
 import { useAuditStore, useResultsStore, useSystemStore } from "../store";
 import { captureWithPayloads, formatBytes, slugify } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
@@ -28,6 +29,8 @@ defineProps<{
   }[];
   editUniqueId?: string;
 }>();
+
+const isOffline = useIsOffline();
 
 const router = useRouter();
 
@@ -161,6 +164,7 @@ const systemStore = useSystemStore();
           <Dropdown
             ref="optionsDropdownRef"
             title="Options"
+            :disabled="isOffline"
             :align-left="route.name === 'edit-audit-step-three'"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">

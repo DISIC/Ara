@@ -11,6 +11,7 @@ import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { useIsOffline } from "../../composables/useIsOffline";
 import rgaa from "../../criteres.json";
 import { history } from "../../router";
 import { useAuditStore, useResultsStore } from "../../store";
@@ -194,6 +195,8 @@ function handleUpdateResultError(err: any) {
     "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
   );
 }
+
+const isOffline = useIsOffline();
 </script>
 
 <template>
@@ -258,17 +261,19 @@ function handleUpdateResultError(err: any) {
     >
       <template #actions>
         <li class="fr-mr-2w">
-          <RouterLink
+          <component
+            :is="isOffline ? 'button' : 'RouterLink'"
             class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
               params: { uniqueId: auditStore.data?.consultUniqueId },
             }"
             target="_blank"
+            :disabled="isOffline"
           >
             Consulter le rapport d'audit
             <span class="sr-only">(Nouvelle fenêtre)</span>
-          </RouterLink>
+          </component>
         </li>
         <li
           v-if="
@@ -277,7 +282,7 @@ function handleUpdateResultError(err: any) {
           "
         >
           <button
-            :disabled="!resultsStore.everyCriteriumAreTested"
+            :disabled="!resultsStore.everyCriteriumAreTested || isOffline"
             class="fr-btn"
             :aria-describedby="
               auditStore.data.publicationDate
@@ -406,6 +411,7 @@ function handleUpdateResultError(err: any) {
                 :value="auditNotes"
                 rows="20"
                 class="fr-input"
+                :disabled="isOffline"
                 @input="
                   updateAuditNotes(($event.target as HTMLTextAreaElement).value)
                 "
