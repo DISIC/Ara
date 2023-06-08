@@ -144,13 +144,15 @@ const systemStore = useSystemStore();
   <div
     v-if="!systemStore.isOnline"
     id="offlineAlert"
-    class="fr-alert fr-alert--error fr-m-0 offline-alert fr-mb-2w"
+    class="fr-pt-1w offline-alert fr-mb-2w"
   >
-    <h3 class="fr-alert__title">Tentative de connexion...</h3>
-    <p>
-      Vous êtes actuellement hors connexion. Veuillez vérifier votre connexion
-      internet.
-    </p>
+    <div class="fr-alert fr-alert--error">
+      <h3 class="fr-alert__title">Tentative de connexion...</h3>
+      <p>
+        Vous êtes actuellement hors connexion. Veuillez vérifier votre connexion
+        internet.
+      </p>
+    </div>
   </div>
 
   <div class="fr-mb-1v sub-header">
