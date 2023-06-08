@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from "vue";
 
 import { useResultsStore, useSystemStore } from "../store";
 import Dropdown from "./Dropdown.vue";
+import AuditProgressBar from "./AuditProgressBar.vue";
 
 const systemStore = useSystemStore();
 
@@ -44,7 +45,7 @@ function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
   // Re-initialize the intersection observer with new `rootMargin` value.
   intersectionObserver.disconnect();
   intersectionObserver = new IntersectionObserver(onObservation, {
-    rootMargin: `-${40 + alertHeight.value}px`,
+    rootMargin: `-${48 + alertHeight.value}px`,
   });
   intersectionObserver.observe(sentinelRef.value!);
 }
@@ -70,11 +71,11 @@ function onObservation(entries: IntersectionObserverEntry[]) {
   isScrolled.value =
     !isIntersecting &&
     // dont "fix" the indicator when scrolling upwards past the sentinel
-    boundingClientRect.top <= 40 + alertHeight.value;
+    boundingClientRect.top <= 48 + alertHeight.value;
 }
 
 let intersectionObserver = new IntersectionObserver(onObservation, {
-  rootMargin: `-${40 + alertHeight.value}px`,
+  rootMargin: `-${48 + alertHeight.value}px`,
 });
 
 onMounted(() => {
@@ -142,6 +143,7 @@ setInterval(() => {
 <template>
   <div>
     <div
+      class="sticky-thing"
       :class="{
         'is-scrolled': isScrolled,
       }"
@@ -149,6 +151,8 @@ setInterval(() => {
         top: alertHeight + 'px',
       }"
     >
+      <AuditProgressBar />
+
       <Dropdown
         :title="dropdownTitle"
         align-left
@@ -189,5 +193,10 @@ setInterval(() => {
   width: calc(
     78rem - calc(1.5rem * 2)
   ); /* main wrapper width - left and right padding */
+}
+
+.sticky-thing {
+  display: flex;
+  align-items: end;
 }
 </style>

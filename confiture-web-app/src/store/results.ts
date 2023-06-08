@@ -141,6 +141,28 @@ export const useResultsStore = defineStore("results", {
     isLoading(): boolean {
       return this.currentRequestCount > 0;
     },
+
+    /**
+     * Ratio of tested criteria over total number of criteria.
+     *
+     * `0.5` means half of the audit criteria have been tested.
+     */
+    auditProgress(): number {
+      if (!this.data) {
+        return 0;
+      }
+      const r = Object.values(this.data)
+        .flatMap(Object.values)
+        .flatMap(Object.values) as CriteriumResult[];
+
+      const total = r.length;
+
+      const testedCriteria = r.filter(
+        (t) => t.status !== CriteriumResultStatus.NOT_TESTED
+      ).length;
+
+      return testedCriteria / total;
+    },
   },
 
   actions: {
