@@ -14,7 +14,7 @@ const emit = defineEmits<{
 
 const userEmail = ref("");
 const userPassword = ref("");
-const userEmailInput = ref<HTMLInputElement>();
+const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
 
 const accountStore = useAccountStore();
@@ -36,7 +36,7 @@ async function handleSubmit() {
           // Email already used
           userEmailError.value =
             "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter.";
-          userEmailInput.value?.focus();
+          userEmailField.value?.inputRef?.focus();
         } else if (
           err.response.status === 400 &&
           body.message.includes("username must be an email")
@@ -44,7 +44,7 @@ async function handleSubmit() {
           // Invalid email format
           userEmailError.value =
             "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
-          userEmailInput.value?.focus();
+          userEmailField.value?.inputRef?.focus();
         } else {
           // Unkown error
           notify(
@@ -81,6 +81,7 @@ function fillFields() {
 
       <DsfrField
         id="user-email"
+        ref="userEmailField"
         v-model="userEmail"
         class="fr-mb-2w"
         label="Adresse e-mail"
