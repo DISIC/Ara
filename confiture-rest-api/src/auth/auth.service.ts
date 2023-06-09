@@ -163,17 +163,17 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { username } });
 
     if (!user) {
-      throw new SigninError('User not found');
+      throw new SigninError('unknown_user');
     }
 
     if (!user.isVerified) {
-      throw new SigninError('User is not verified');
+      throw new SigninError('unknown_user');
     }
 
     const match = await compare(password, user.password);
 
     if (!match) {
-      throw new SigninError('Wrong password');
+      throw new SigninError('wrong_password');
     }
 
     const secret = this.config.get<string>('AUTHENTICATION_SECRET');
