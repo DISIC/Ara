@@ -5,19 +5,59 @@ import { useRouter } from "vue-router";
 import { useAccountStore } from "../../store/account";
 import { history } from "../../router";
 import DsfrField from "../../components/DsfrField.vue";
+import { useNotifications } from "../../composables/useNotifications";
+import { HTTPError } from "ky";
+import { captureWithPayloads } from "../../utils";
 
 const userEmail = ref((history.state.email as string) ?? "");
+const userEmailError = ref<string>();
+const userEmailField = ref<InstanceType<typeof DsfrField>>();
+
 const userPassword = ref("");
+const userPasswordError = ref<string>();
+const userPasswordInput = ref<HTMLInputElement>();
+
 const rememberMe = ref(false);
+
 const showCreatedAccountAlert = ref(!!history.state.email);
 
 const store = useAccountStore();
 const router = useRouter();
+const notify = useNotifications();
 
 async function handleSubmit() {
-  await store.login(userEmail.value, userPassword.value, rememberMe.value);
-  // TODO: handle error 401
-  router.push({ name: "account-dashboard" });
+  store
+    .login(userEmail.value, userPassword.value, rememberMe.value)
+    .then(() => {
+      router.push({ name: "account-dashboard" });
+    })
+    .catch(async (err) => {
+      if (err instanceof HTTPError) {
+        const body = await err.response.json();
+
+        if (err.response.status === 401 && body.message === "unknown_user") {
+          // Unknown user
+          userEmailError.value =
+            "Cette adresse e-mail est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
+          userEmailField.value?.inputRef?.focus();
+        } else if (
+          err.response.status === 401 &&
+          body.message === "wrong_password"
+        ) {
+          // Wrong password
+          userPasswordError.value = "Le mot de passe saisi est incorrect.";
+          userPasswordInput.value?.focus();
+        } else {
+          // Unkown error
+          notify(
+            "error",
+            "Echéc de la connexion",
+            "Une erreur inconnue est survenue"
+          );
+          captureWithPayloads(err);
+        }
+      }
+    });
 }
 </script>
 
@@ -44,27 +84,43 @@ async function handleSubmit() {
 
       <DsfrField
         id="user-email"
+        ref="userEmailField"
         v-model="userEmail"
         label="Adresse e-mail"
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
+        :error="userEmailError"
       />
 
-      <div class="fr-password fr-mb-3w">
+      <div
+        class="fr-password fr-mb-3w"
+        :class="{ 'fr-input-group--error': !!userPasswordError }"
+      >
         <label class="fr-label" for="user-password-input">Mot de passe</label>
         <div class="fr-input-wrap">
           <input
             id="user-password-input"
+            ref="userPasswordInput"
             v-model="userPassword"
             class="fr-password__input fr-input"
-            aria-describedby="user-password-input-messages"
+            :aria-describedby="
+              userPasswordError ? 'user-password-error' : undefined
+            "
             aria-required="true"
             autocomplete="new-password"
             type="password"
             required
           />
         </div>
+
+        <p
+          v-if="userPasswordError"
+          id="user-password-error"
+          class="fr-error-text"
+        >
+          {{ userPasswordError }}
+        </p>
 
         <div
           class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
@@ -89,21 +145,12 @@ async function handleSubmit() {
         </div>
       </div>
 
+      <!-- TODO: Add forgotten password link -->
       <RouterLink to="#" class="fr-link">Mot de passe oublié ?</RouterLink>
 
       <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
-        <input
-          id="remember-me"
-          v-model="rememberMe"
-          type="checkbox"
-          aria-describedby="remember-me-messages"
-        />
+        <input id="remember-me" v-model="rememberMe" type="checkbox" />
         <label class="fr-label" for="remember-me">Se souvenir de moi</label>
-        <div
-          id="remember-me-messages"
-          class="fr-messages-group"
-          aria-live="assertive"
-        ></div>
       </div>
 
       <div class="fr-btns-group">
