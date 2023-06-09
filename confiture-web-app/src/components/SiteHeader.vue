@@ -151,7 +151,7 @@ function handleDisconnectClick() {
                 <ul role="list" class="fr-p-0 fr-m-0 user-dropdown">
                   <li>
                     <RouterLink
-                      to="#"
+                      :to="{ name: 'account-settings' }"
                       class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
                     >
                       Mon compte
