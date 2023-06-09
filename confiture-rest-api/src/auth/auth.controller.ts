@@ -140,13 +140,16 @@ export class AuthController {
     description: 'Successfully authenticated.',
     type: String,
   })
-  @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
+  @ApiUnauthorizedResponse({
+    description:
+      'Invalid credentials. The `message` property of the response body details the reason.',
+  })
   async signin(@Body() body: SigninDto) {
     try {
       return await this.auth.signin(body.username, body.password);
     } catch (e) {
       if (e instanceof SigninError) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(e.message);
       }
       throw e;
     }
