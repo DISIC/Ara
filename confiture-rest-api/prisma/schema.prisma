@@ -200,11 +200,15 @@ model EmailLog {
 
 model User {
   id  Int    @id @default(autoincrement())
+  /// @DtoEntityHidden
   uid String @unique @default(uuid())
 
   username String @unique
+  /// @DtoEntityHidden
   password String
 
+  /// @DtoEntityHidden
   isVerified      Boolean @default(false)
+  /// @DtoEntityHidden
   verificationJti String?
 }
