@@ -24,8 +24,8 @@ onMounted(() => {
         <h1 class="fr-h2">Mon compte</h1>
         <Profile />
         <hr class="fr-mt-3w" />
-        <hr />
-        <hr />
+        <!-- <hr />
+        <hr /> -->
         <h2 class="fr-h6">Données</h2>
         <p>
           Les données recueillies sont traitées par les équipes de la DINUM.
