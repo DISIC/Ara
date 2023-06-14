@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 
 import { CreateAccountDto } from './create-account.dto';
-import { PatchAccountDto } from './patch-account.dto';
 import {
   AuthService,
   InvalidVerificationTokenError,
@@ -27,8 +26,6 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiOkResponse,
-  ApiNotFoundResponse,
-  ApiGoneResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -155,28 +152,6 @@ export class AuthController {
         throw new UnauthorizedException(e.message);
       }
       throw e;
-    }
-  }
-
-  /**
-   * Patch a user account.
-   * TODO: use header to identify user account
-   */
-  @Post('patch-account')
-  @ApiOkResponse({
-    description: 'The account has been successfully patched',
-  })
-  @ApiNotFoundResponse({ description: 'The account does not exist.' })
-  @ApiGoneResponse({ description: 'The account has been previously deleted.' })
-  async updateAccount(@Body() body: PatchAccountDto) {
-    try {
-      await this.auth.patchAccount(body.username, body);
-    } catch (e) {
-      // TODO: proper error
-      // if (e instanceof UsernameAlreadyExistsError) {
-      //   throw new ConflictException();
-      // }
-      // throw e;
     }
   }
 }

@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class PatchAccountDto {
+export class PatchProfileDto {
   @IsString()
   @IsOptional()
   name?: string;
