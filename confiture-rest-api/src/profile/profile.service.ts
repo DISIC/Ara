@@ -10,7 +10,7 @@ export class ProfileService {
   async getUserProfile(userEmail: string) {
     return this.prisma.user.findUnique({
       where: { username: userEmail },
-      select: { id: true, username: true },
+      select: { id: true, username: true, name: true, orgName: true },
     });
   }
 

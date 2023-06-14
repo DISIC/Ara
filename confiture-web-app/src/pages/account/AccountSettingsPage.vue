@@ -1,7 +1,17 @@
 <script lang="ts" setup>
+import { onMounted } from "vue";
+
 import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
 import TopLink from "../../components/TopLink.vue";
+
+import { useAccountStore } from "../../store/account";
+
+const accountStore = useAccountStore();
+
+onMounted(() => {
+  accountStore.getProfile();
+});
 </script>
 
 <template>
@@ -13,7 +23,7 @@ import TopLink from "../../components/TopLink.vue";
       <div class="fr-col-12 fr-col-lg-7">
         <h1 class="fr-h2">Mon compte</h1>
         <Profile />
-        <hr />
+        <hr class="fr-mt-3w" />
         <hr />
         <hr />
         <h2 class="fr-h6">Données</h2>

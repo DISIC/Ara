@@ -4,14 +4,12 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 
 function isCurrentPage(routeName: string): boolean {
-  console.log(route.name);
-  console.log(routeName);
   return route.name === routeName;
 }
 
 const menuItems = [
   { name: "account-settings", label: "Mon compte" },
-  { name: "display-settings", label: "Paramètre d’affichage" },
+  // { name: "display-settings", label: "Paramètre d’affichage" },
 ];
 </script>
 

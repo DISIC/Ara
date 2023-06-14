@@ -2,12 +2,15 @@ import ky from "ky";
 import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
 import { AuthenticationJwtPayload } from "../types";
+import { Account, UpdateProfileRequestData } from "../types/account";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
 interface AccountStoreState {
   account: null | {
     email: string;
+    name?: string;
+    orgName?: string;
   };
   authToken: null | string;
 }
@@ -35,7 +38,7 @@ export const useAccountStore = defineStore("account", {
     }
 
     return {
-      account: email ? { email } : null,
+      account: email ? { email, name: "", orgName: "" } : null,
       authToken: authToken,
     };
   },
@@ -128,6 +131,36 @@ export const useAccountStore = defineStore("account", {
 
         timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
       });
+    },
+
+    async getProfile(): Promise<Account> {
+      const response = (await ky
+        .get("/api/profile", {
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .json()) as Account;
+
+      if (this.account) {
+        this.account.name = response.name;
+        this.account.orgName = response.orgName;
+      }
+      console.log(response);
+      return response;
+    },
+
+    // TODO: update this once API is ok
+    async updateProfile(data: UpdateProfileRequestData): Promise<Account> {
+      const response = (await ky
+        .patch(`/api/profile`, {
+          json: data,
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .json()) as Account;
+      if (this.account) {
+        this.account.name = response.name;
+        this.account.email = response.email;
+      }
+      return response;
     },
   },
 });
