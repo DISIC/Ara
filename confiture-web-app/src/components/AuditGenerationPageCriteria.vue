@@ -16,7 +16,9 @@ const store = useFiltersStore();
 <template>
   <!-- TODO: handle empty state -->
   <div class="fr-mb-2w page-url">
-    <a class="fr-link--sm" :href="page.url" target="_blank">{{ page.url }}</a>
+    <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
+      {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+    </a>
   </div>
 
   <section
