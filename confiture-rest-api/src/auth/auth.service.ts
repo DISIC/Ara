@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { nanoid } from 'nanoid';
 
@@ -7,7 +8,7 @@ import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
 } from './jwt-payloads';
-import { JwtService } from '@nestjs/jwt';
+import { PatchAccountDto } from './patch-account.dto';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
@@ -203,5 +204,24 @@ export class AuthService {
     };
     const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
     return verificationToken;
+  }
+
+  // TODO: use header to identify user account
+  async patchAccount(username: string, body: PatchAccountDto) {
+    try {
+      const user = await this.prisma.user.update({
+        where: { username },
+        data: { name: body.name, orgName: body.orgName },
+      });
+
+      return user
+    } catch (e) {
+      // User does not exist
+      // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
+      if (e?.code === 'P2025') {
+        return;
+      }
+      throw e;
+    }
   }
 }
