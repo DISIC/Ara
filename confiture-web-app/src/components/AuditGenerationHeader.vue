@@ -254,7 +254,7 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
         :value="unfinishedAudit ? 0 : keyInfos[0].value"
         :total="keyInfos[0].total"
         :unit="keyInfos[0].unit"
-        :theme="keyInfos[0].theme"
+        :theme="unfinishedAudit ? undefined : keyInfos[0].theme"
         :disabled="unfinishedAudit"
       />
     </div>
