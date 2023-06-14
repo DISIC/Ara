@@ -144,11 +144,10 @@ export const useAccountStore = defineStore("account", {
         this.account.name = response.name;
         this.account.orgName = response.orgName;
       }
-      console.log(response);
+
       return response;
     },
 
-    // TODO: update this once API is ok
     async updateProfile(data: UpdateProfileRequestData): Promise<Account> {
       const response = (await ky
         .patch(`/api/profile`, {
@@ -156,10 +155,12 @@ export const useAccountStore = defineStore("account", {
           headers: { Authorization: `Bearer ${this.$state.authToken}` },
         })
         .json()) as Account;
+
       if (this.account) {
         this.account.name = response.name;
-        this.account.email = response.email;
+        this.account.orgName = response.orgName;
       }
+
       return response;
     },
   },

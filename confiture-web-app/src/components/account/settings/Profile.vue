@@ -2,9 +2,11 @@
 import { ref, computed, watch } from "vue";
 
 import { useAccountStore } from "../../../store/account";
+import { useNotifications } from "../../../composables/useNotifications";
 import DsfrField from "../../DsfrField.vue";
 
 const accountStore = useAccountStore();
+const notify = useNotifications();
 
 const name = ref("");
 const orgName = ref("");
@@ -13,14 +15,13 @@ watch(accountStore, () => {
   if (!accountStore.account) {
     return;
   }
+
   name.value = accountStore.account?.name || "";
   orgName.value = accountStore.account?.orgName || "";
 });
 
 const nameField = ref<InstanceType<typeof DsfrField>>();
-/**
- * TODO: show action when content differs from store
- */
+
 const showActions = computed(() => {
   return (
     name.value !== accountStore.account?.name ||
@@ -31,8 +32,15 @@ const showActions = computed(() => {
 function updateProfile() {
   accountStore
     .updateProfile({ name: name.value, orgName: orgName.value })
-    .then((r) => {
-      console.log(r);
+    .then(() => {
+      notify("success", "Profil mis à jour avec succès");
+    })
+    .catch(() => {
+      notify(
+        "error",
+        "La mise a jour du profil a échoué",
+        "Une erreur inconnue est survenue"
+      );
     });
 }
 

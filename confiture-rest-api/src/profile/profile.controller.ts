@@ -32,21 +32,12 @@ export class ProfileController {
   @ApiOkResponse({
     description: 'The profile has been successfully patched',
   })
-  @ApiNotFoundResponse({ description: 'The profile does not exist.' })
-  @ApiGoneResponse({ description: 'The profile has been previously deleted.' })
+  @ApiNotFoundResponse({ description: 'The profile does not exist' })
+  @ApiGoneResponse({ description: 'The profile has been previously deleted' })
   async patchProfile(
     @User() user: AuthenticationJwtPayload,
     @Body() body: PatchProfileDto,
   ) {
-    try {
-      const profile = await this.profileService.patchProfile(user.email, body);
-      return profile;
-    } catch (e) {
-      // TODO: proper error
-      // if (e instanceof UsernameAlreadyExistsError) {
-      //   throw new ConflictException();
-      // }
-      // throw e;
-    }
+    return this.profileService.patchProfile(user.email, body);
   }
 }

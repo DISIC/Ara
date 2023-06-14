@@ -19,6 +19,7 @@ export class ProfileService {
       const user = await this.prisma.user.update({
         where: { username: userEmail },
         data: { name: body.name, orgName: body.orgName },
+        select: { id: true, username: true, name: true, orgName: true },
       });
 
       return user;
