@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick } from "vue";
+import { useRoute } from "vue-router";
 
 import { useSystemStore, useAuditStore } from "../store";
 import AuditProgressBar from "./AuditProgressBar.vue";
@@ -66,6 +67,8 @@ onMounted(() => {
     intersectionObserver.observe(sentinelRef.value);
   }
 });
+
+const route = useRoute();
 </script>
 
 <template>
@@ -110,9 +113,10 @@ onMounted(() => {
         >
       </div>
 
-      <div class="fr-ml-2w separator" />
-
-      <SaveIndicator />
+      <template v-if="route.name === 'edit-audit-step-three'">
+        <div class="fr-ml-2w separator" />
+        <SaveIndicator />
+      </template>
     </div>
 
     <div ref="sentinelRef" />

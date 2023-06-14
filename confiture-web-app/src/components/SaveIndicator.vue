@@ -40,6 +40,16 @@ const dropdownTitle = computed(() => {
   return "Enregistré";
 });
 
+const dropdownMainText = computed(() => {
+  if (isLoading.value) {
+    return "Modifications en cours d’enregistrement...";
+  }
+  if (!systemStore.isOnline) {
+    return "L’enregistrement de vos modifications est impossible hors connexion. Veuillez vérifier votre connexion internet.";
+  }
+  return "Ara enregistre automatiquement votre travail";
+});
+
 const dropdownIcon = computed(() => {
   if (isLoading.value) {
     return "fr-icon-refresh-line";
@@ -98,14 +108,14 @@ setInterval(() => {
     }"
   >
     <p class="fr-text--sm fr-mb-1v">
-      <strong>Ara enregistre automatiquement votre travail </strong>
+      {{ dropdownMainText }}
     </p>
 
-    <p v-if="!systemStore.isOnline" class="fr-text--sm fr-m-0">
+    <p v-if="!systemStore.isOnline" class="fr-text--xs fr-m-0">
       Les modifications n’ont pas pu être enregistrées.
     </p>
 
-    <p v-else-if="relativeLastSaveDate" class="fr-text--sm fr-m-0">
+    <p v-else-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
       Les modifications ont été enregistrées {{ relativeLastSaveDate }}
     </p>
   </Dropdown>
