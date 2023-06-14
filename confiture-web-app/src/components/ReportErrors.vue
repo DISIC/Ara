@@ -558,12 +558,11 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           </h2>
           <a
             :href="page.pageUrl"
-            class="page-url"
+            class="fr-link page-url"
             target="_blank"
             rel="noopener"
           >
-            {{ page.pageUrl }}
-            <span class="sr-only">(nouvelle fenêtre)</span>
+            {{ page.pageUrl }} <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
 
           <div

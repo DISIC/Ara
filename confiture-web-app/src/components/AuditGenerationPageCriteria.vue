@@ -15,6 +15,12 @@ const store = useFiltersStore();
 
 <template>
   <!-- TODO: handle empty state -->
+  <div class="fr-mb-2w page-url">
+    <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
+      {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+    </a>
+  </div>
+
   <section
     v-for="topic in store.filteredTopics"
     :key="topic.number"
@@ -47,6 +53,10 @@ const store = useFiltersStore();
 </template>
 
 <style scoped>
+.page-url {
+  text-align: right;
+}
+
 .topic-header {
   align-items: center;
   display: flex;
