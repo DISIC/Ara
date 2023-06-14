@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { compare, hash } from 'bcrypt';
-import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 
 import { PrismaService } from '../prisma.service';
@@ -9,6 +7,7 @@ import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
 } from './jwt-payloads';
+import { JwtService } from '@nestjs/jwt';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
@@ -45,7 +44,7 @@ export class TokenRegenerationError extends Error {
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
+    private readonly jwt: JwtService,
   ) {}
 
   /**
@@ -79,7 +78,7 @@ export class AuthService {
       },
     });
 
-    const verificationToken = this.generateVerificationToken(
+    const verificationToken = await this.generateVerificationToken(
       unverifiedUser.uid,
       username,
       unverifiedUser.verificationJti,
@@ -107,7 +106,7 @@ export class AuthService {
       data: { verificationJti: newJti },
     });
 
-    const verificationToken = this.generateVerificationToken(
+    const verificationToken = await this.generateVerificationToken(
       user.uid,
       user.username,
       newJti,
@@ -116,44 +115,37 @@ export class AuthService {
   }
 
   async verifyAccount(token: string) {
-    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
+    const payload = (await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    })) as AccountVerificationJwtPayload;
+    const { sub: uid, jti } = payload;
 
-    try {
-      const payload = verify(token, secret) as AccountVerificationJwtPayload;
-      const { sub: uid, jti } = payload;
+    // Addition checks : user exists, user needs verification, token is the last one
+    {
+      const user = await this.prisma.user.findUnique({ where: { uid } });
 
-      // Addition checks : user exists, user needs verification, token is the last one
-      {
-        const user = await this.prisma.user.findUnique({ where: { uid } });
-
-        if (!user) {
-          throw new InvalidVerificationTokenError('User not found');
-        }
-
-        if (user.isVerified) {
-          throw new InvalidVerificationTokenError('User is already verified');
-        }
-
-        if (user.verificationJti !== jti) {
-          throw new InvalidVerificationTokenError(
-            'Token is not the latest generated token',
-          );
-        }
+      if (!user) {
+        throw new InvalidVerificationTokenError('User not found');
       }
 
-      await this.prisma.user.update({
-        where: { uid },
-        data: {
-          isVerified: true,
-          verificationJti: null,
-        },
-      });
-    } catch (e) {
-      if (e instanceof JsonWebTokenError) {
-        throw new InvalidVerificationTokenError('Invalid JWT');
+      if (user.isVerified) {
+        throw new InvalidVerificationTokenError('User is already verified');
       }
-      throw e;
+
+      if (user.verificationJti !== jti) {
+        throw new InvalidVerificationTokenError(
+          'Token is not the latest generated token',
+        );
+      }
     }
+
+    await this.prisma.user.update({
+      where: { uid },
+      data: {
+        isVerified: true,
+        verificationJti: null,
+      },
+    });
   }
 
   /**
@@ -176,12 +168,11 @@ export class AuthService {
       throw new SigninError('wrong_password');
     }
 
-    const secret = this.config.get<string>('AUTHENTICATION_SECRET');
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
     };
-    const token = sign(payload, secret, { expiresIn: '24h' });
+    const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
 
     return token;
   }
@@ -192,32 +183,25 @@ export class AuthService {
   }
 
   async getEmailFromVerificationToken(token: string) {
-    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
-    try {
-      const payload = verify(token, secret) as AccountVerificationJwtPayload;
-      const { email } = payload;
+    const payload = await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    });
+    const { email } = payload;
 
-      return email;
-    } catch (e) {
-      if (e instanceof JsonWebTokenError) {
-        throw new InvalidVerificationTokenError('Invalid JWT');
-      }
-      throw e;
-    }
+    return email;
   }
 
   private generateVerificationToken(
     uid: string,
     email: string,
     jti: string,
-  ): string {
-    const secret = this.config.get<string>('ACCOUNT_VERIFICATION_SECRET');
+  ): Promise<string> {
     const payload: AccountVerificationJwtPayload = {
       sub: uid,
       email,
       jti,
     };
-    const verificationToken = sign(payload, secret, { expiresIn: '1h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
     return verificationToken;
   }
 }
