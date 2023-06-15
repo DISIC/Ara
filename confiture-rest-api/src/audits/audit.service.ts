@@ -170,6 +170,7 @@ export class AuditService {
           notApplicableComment: null,
           exampleImages: [],
           transverse: false,
+          quickWin: false,
 
           topic: criterion.topic,
           criterium: criterion.criterium,
@@ -427,7 +428,7 @@ export class AuditService {
                   errorDescription: item.errorDescription,
                   recommandation: item.recommandation,
                   userImpact: item.userImpact,
-                  quickWin: item.quickWin
+                  quickWin: item.quickWin,
                 }),
 
                 ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
