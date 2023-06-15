@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { nanoid } from 'nanoid';
 
@@ -7,7 +8,6 @@ import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
 } from './jwt-payloads';
-import { JwtService } from '@nestjs/jwt';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
