@@ -1,9 +1,16 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   ApiGoneResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthRequired } from '../auth/auth-required.decorator';
 import { AuthenticationJwtPayload } from '../auth/jwt-payloads';
@@ -32,12 +39,19 @@ export class ProfileController {
   @ApiOkResponse({
     description: 'The profile has been successfully patched',
   })
-  @ApiNotFoundResponse({ description: 'The profile does not exist' })
-  @ApiGoneResponse({ description: 'The profile has been previously deleted' })
   async patchProfile(
     @User() user: AuthenticationJwtPayload,
     @Body() body: PatchProfileDto,
   ) {
-    return this.profileService.patchProfile(user.email, body);
+    const userProfile = await this.profileService.patchProfile(
+      user.email,
+      body,
+    );
+
+    if (!userProfile) {
+      throw new UnauthorizedException();
+    }
+
+    return userProfile;
   }
 }

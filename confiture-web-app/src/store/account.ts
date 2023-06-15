@@ -136,7 +136,7 @@ export const useAccountStore = defineStore("account", {
     async getProfile(): Promise<Account> {
       const response = (await ky
         .get("/api/profile", {
-          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+          headers: { Authorization: `Bearer ${this.authToken}` },
         })
         .json()) as Account;
 
