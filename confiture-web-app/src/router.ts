@@ -32,6 +32,7 @@ import { useAuditStore } from "./store";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import LoginPage from "./pages/account/LoginPage.vue";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
+import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 
 declare module "vue-router" {
@@ -164,6 +165,18 @@ const router = createRouter({
       path: "/compte",
       name: "account-dashboard",
       component: AccountDashboardPage,
+    },
+    {
+      path: "/compte/parametres",
+      name: "account-settings",
+      component: AccountSettingsPage,
+      meta: {
+        name: "Mon compte",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Mon compte", name: "account-settings" },
+        ],
+      },
     },
     // Audit pages
     {

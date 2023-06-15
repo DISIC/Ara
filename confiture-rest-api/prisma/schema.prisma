@@ -210,4 +210,7 @@ model User {
   isVerified      Boolean @default(false)
   /// @DtoEntityHidden
   verificationJti String?
+
+  name    String?
+  orgName String?
 }
