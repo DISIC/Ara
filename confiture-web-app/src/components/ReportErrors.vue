@@ -32,13 +32,17 @@ const errors = computed(() => {
   const data = Object.values(
     mapValues(
       groupBy(
-        report.data?.results.filter((r) => {
-          return (
-            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
-            userImpactFilters.value.includes(r.userImpact)
-          );
-        }),
+        report.data?.results
+          .filter((r) => {
+            return (
+              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+              !r.transverse &&
+              userImpactFilters.value.includes(r.userImpact)
+            );
+          })
+          .filter((r) => {
+            return quickWinFilter.value ? r.quickWin : r;
+          }),
         "pageId"
       ),
       (results, pageId) => {
@@ -115,7 +119,9 @@ const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
 );
 
 const disabledResetFilters = computed(
-  () => userImpactFilters.value.length === defaultUserImpactFillters.length
+  () =>
+    userImpactFilters.value.length === defaultUserImpactFillters.length &&
+    !quickWinFilter.value
 );
 
 const minorUserImpactErrorCount = computed(
@@ -181,8 +187,11 @@ const displayedErrorCount = computed(() => {
 //   }
 // }
 
+const quickWinFilter = ref(false);
+
 function resetFilters() {
   userImpactFilters.value = defaultUserImpactFillters;
+  quickWinFilter.value = false;
 }
 
 function getTopicName(topicNumber: number) {
@@ -424,6 +433,25 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 />
                 <label class="fr-label" for="user-impact-filter-unknown">
                   Impact non renseigné ({{ unknownUserImpactErrorCount }})
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="fr-form-group">
+          <fieldset class="fr-fieldset">
+            <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
+              Correction de l’erreur
+            </legend>
+            <div class="fr-fieldset__content">
+              <div class="fr-checkbox-group">
+                <input
+                  id="quick-win-filter"
+                  v-model="quickWinFilter"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="quick-win-filter">
+                  Facile à corriger
                 </label>
               </div>
             </div>
