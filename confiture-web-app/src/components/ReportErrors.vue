@@ -519,6 +519,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     Impact {{ formatUserImpact(error.userImpact) }}
                   </p>
                 </li>
+                <li v-if="error.quickWin">
+                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
+                </li>
               </ul>
 
               <!-- Error -->
@@ -634,6 +637,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   >
                     Impact {{ formatUserImpact(error.userImpact) }}
                   </p>
+                </li>
+                <li v-if="error.quickWin">
+                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
                 </li>
               </ul>
 
