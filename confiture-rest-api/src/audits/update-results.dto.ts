@@ -121,6 +121,13 @@ class UpdateResultsItem {
   recommandation?: string;
 
   /**
+   * Whether the result is easy to fix
+   */
+  @IsBoolean()
+  @IsOptional()
+  quickWin?: boolean;
+
+  /**
    * @example "Officia aliquip aute ipsum in eiusmod ea et."
    */
   @IsString()

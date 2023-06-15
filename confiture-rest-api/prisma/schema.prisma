@@ -125,6 +125,7 @@ model CriterionResult {
   userImpact       CriterionResultUserImpact?
   recommandation   String?
   exampleImages    StoredFile[]
+  quickWin         Boolean                    @default(false)
 
   notApplicableComment String?
 
