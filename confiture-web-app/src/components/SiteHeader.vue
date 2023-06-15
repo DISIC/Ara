@@ -155,13 +155,13 @@ function handleDisconnectClick() {
                 <ul role="list" class="fr-p-0 fr-m-0 user-dropdown">
                   <li>
                     <RouterLink
-                      to="#"
+                      :to="{ name: 'account-settings' }"
                       class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
                     >
                       Mon compte
                     </RouterLink>
                   </li>
-                  <li>
+                  <!-- <li>
                     <RouterLink
                       to="#"
                       class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
@@ -169,7 +169,7 @@ function handleDisconnectClick() {
                       <GearIcon class="fr-mr-2v" />
                       Paramètres d’affichage
                     </RouterLink>
-                  </li>
+                  </li> -->
                   <li aria-hidden="true" class="dropdown-separator"></li>
                   <li>
                     <button
