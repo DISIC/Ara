@@ -253,7 +253,7 @@ const uniqueId = computed(() => {
           type="checkbox"
           class="fr-toggle__input"
           :disabled="result.status === CriteriumResultStatus.NOT_TESTED"
-          @input="updateTransverseStatus($event)"
+          @input="updateTransverseStatus"
         />
         <label
           class="fr-toggle__label fr-pr-2w"
