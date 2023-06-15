@@ -220,7 +220,12 @@ const selectedFiles = computed(() => {
           :id="`criterium-quick-win-${id}`"
           :checked="quickWin"
           type="checkbox"
-          @input="$emit('update:quickWin', $event.target.checked)"
+          @input="
+            $emit(
+              'update:quickWin',
+              ($event.target as HTMLInputElement).checked
+            )
+          "
         />
         <label class="fr-label" :for="`criterium-quick-win-${id}`">
           Facile à corriger
