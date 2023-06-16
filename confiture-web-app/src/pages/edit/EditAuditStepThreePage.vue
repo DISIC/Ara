@@ -474,5 +474,6 @@ const isOffline = useIsOffline();
 
 .page-wrapper > :deep(*) {
   flex-basis: 100%;
+  max-width: 100%;
 }
 </style>
