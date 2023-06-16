@@ -15,7 +15,12 @@ type PageId = number;
 type TopicNumber = number;
 type CriteriumNumber = number;
 
+const getLastRequestTimestampStorageKey = (auditId: string) =>
+  `confiture:lastRequestTimestamp:${auditId}`;
+
 interface ResultsStoreState {
+  auditId: string | null;
+
   data: {
     [key: PageId]: {
       [key: TopicNumber]: {
@@ -35,13 +40,31 @@ interface ResultsStoreState {
       };
     };
   };
+
+  /**
+   * Number of update requests actually loading.
+   *
+   * When 0, nothing is loading.
+   * When 1 or more, there's something loading.
+   */
+  currentRequestCount: number;
+
+  /**
+   * Timestamp of the last moment `currentRequestCount` changed from a non-zero value to zero.
+   */
+  lastRequestSuccessEnd: number | null;
 }
 
 export const useResultsStore = defineStore("results", {
-  state: (): ResultsStoreState => ({
-    data: null,
-    previousStatuses: {},
-  }),
+  state: (): ResultsStoreState => {
+    return {
+      auditId: null,
+      data: null,
+      previousStatuses: {},
+      currentRequestCount: 0,
+      lastRequestSuccessEnd: null,
+    };
+  },
 
   getters: {
     /**
@@ -114,6 +137,32 @@ export const useResultsStore = defineStore("results", {
     pagesCount(): number {
       return this.data ? Object.keys(this.data).length : 0;
     },
+
+    isLoading(): boolean {
+      return this.currentRequestCount > 0;
+    },
+
+    /**
+     * Ratio of tested criteria over total number of criteria.
+     *
+     * `0.5` means half of the audit criteria have been tested.
+     */
+    auditProgress(): number {
+      if (!this.data) {
+        return 0;
+      }
+      const r = Object.values(this.data)
+        .flatMap(Object.values)
+        .flatMap(Object.values) as CriteriumResult[];
+
+      const total = r.length;
+
+      const testedCriteria = r.filter(
+        (t) => t.status !== CriteriumResultStatus.NOT_TESTED
+      ).length;
+
+      return testedCriteria / total;
+    },
   },
 
   actions: {
@@ -136,6 +185,11 @@ export const useResultsStore = defineStore("results", {
         data[r.pageId][r.topic][r.criterium] = r;
       });
 
+      const storageKey = getLastRequestTimestampStorageKey(uniqueId);
+      this.lastRequestSuccessEnd =
+        Number(localStorage.getItem(storageKey)) || null;
+
+      this.auditId = uniqueId;
       this.data = data;
     },
 
@@ -220,6 +274,8 @@ export const useResultsStore = defineStore("results", {
         });
       };
 
+      this.increaseCurrentRequestCount();
+
       await ky
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
@@ -229,6 +285,9 @@ export const useResultsStore = defineStore("results", {
         .catch((err) => {
           rollbackResults();
           throw err;
+        })
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
         });
     },
 
@@ -313,11 +372,16 @@ export const useResultsStore = defineStore("results", {
       // To handle non-ascii characters, we encode the filename here and decode it on the back
       formData.set("image", file, encodeURI(file.name));
 
+      this.increaseCurrentRequestCount();
+
       const exampleImage = (await ky
         .post(`/api/audits/${uniqueId}/results/examples`, {
           body: formData,
         })
-        .json()) as ExampleImage;
+        .json()
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        })) as ExampleImage;
 
       const result = this.data![pageId][topic][criterium];
 
@@ -333,7 +397,13 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       exampleId: number
     ) {
-      await ky.delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`);
+      this.increaseCurrentRequestCount();
+
+      await ky
+        .delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`)
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        });
 
       const result = this.data![pageId][topic][criterium];
 
@@ -343,6 +413,23 @@ export const useResultsStore = defineStore("results", {
         );
 
         result.exampleImages.splice(exampleIndex, 1);
+      }
+    },
+
+    increaseCurrentRequestCount() {
+      this.currentRequestCount++;
+    },
+
+    /**
+     * When `currentRequestCount` changes from a non-zero value to zero, save a timestamp to the store and localstorage
+     */
+    decreaseCurrentRequestCount() {
+      this.currentRequestCount--;
+
+      if (this.currentRequestCount === 0) {
+        this.lastRequestSuccessEnd = Date.now();
+        const key = getLastRequestTimestampStorageKey(this.auditId!);
+        localStorage.setItem(key, this.lastRequestSuccessEnd.toString());
       }
     },
 

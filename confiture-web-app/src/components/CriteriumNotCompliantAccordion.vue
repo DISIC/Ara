@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
+import { useIsOffline } from "../composables/useIsOffline";
 import { CriterionResultUserImpact, ExampleImage } from "../types";
 import { formatBytes, formatUserImpact } from "../utils";
 import LazyAccordion from "./LazyAccordion.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { RadioColor } from "./Radio.vue";
 import RadioGroup from "./RadioGroup.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 const props = defineProps<{
   id: string;
@@ -71,6 +72,8 @@ const selectedFiles = computed(() => {
     return `${len} fichiers sélectionnés.`;
   }
 });
+
+const isOffline = useIsOffline();
 </script>
 
 <template>
@@ -91,6 +94,7 @@ const selectedFiles = computed(() => {
         :value="comment ?? ''"
         class="fr-input"
         rows="5"
+        :disabled="isOffline"
         :aria-describedby="`markdown-notice-${id}`"
         @input="
           $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
@@ -113,6 +117,7 @@ const selectedFiles = computed(() => {
       <div class="upload-line fr-mt-2w fr-mb-2w">
         <label
           class="fr-btn fr-btn--tertiary upload-label"
+          :class="{ 'upload-label--disabled': isOffline }"
           :for="`file-upload-${id}`"
         >
           Choisir un fichier
@@ -124,6 +129,7 @@ const selectedFiles = computed(() => {
           class="sr-only"
           type="file"
           accept="image/*"
+          :disabled="isOffline"
           :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
           @change="handleFileChange"
         />
@@ -168,6 +174,7 @@ const selectedFiles = computed(() => {
         </a>
         <button
           class="fr-btn fr-btn--tertiary-no-outline"
+          :disabled="isOffline"
           @click="deleteImage(image)"
         >
           Supprimer
@@ -183,6 +190,7 @@ const selectedFiles = computed(() => {
       :items="userImpacts"
       label="Impact sur l’usager"
       :default-value="null"
+      :disabled="isOffline"
       @update:model-value="$emit('update:userImpact', $event)"
     />
 
@@ -199,6 +207,7 @@ const selectedFiles = computed(() => {
         :value="recommandation ?? ''"
         class="fr-input"
         rows="5"
+        :disabled="isOffline"
         :aria-describedby="`markdown-notice-${id}`"
         @input="
           $emit(
@@ -235,6 +244,12 @@ const selectedFiles = computed(() => {
   outline-style: none;
 }
 
+.upload-label--disabled {
+  background: var(--background-disabled-grey);
+  color: var(--text-disabled-grey);
+  cursor: not-allowed;
+}
+
 @supports selector(:has(p)) {
   .upload-wrapper:has(:focus-visible):focus-within .upload-label {
     outline-style: solid;
@@ -247,11 +262,11 @@ const selectedFiles = computed(() => {
   }
 }
 
-.upload-label:not(:disabled):hover {
+.upload-label:not(.upload-label--disabled):hover {
   background-color: var(--hover-tint);
 }
 
-.upload-label:not(:disabled):active {
+.upload-label:not(.upload-label--disabled):active {
   background-color: var(--active-tint);
 }
 

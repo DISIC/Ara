@@ -10,6 +10,7 @@ defineProps<{
   total: number;
   unit?: string;
   theme?: string;
+  disabled?: boolean;
 }>();
 
 const slots = useSlots();
@@ -20,12 +21,20 @@ const uniqueId = useUniqueId();
 </script>
 
 <template>
-  <div class="card">
+  <div class="card" :class="{ 'card-disabled': disabled }">
     <div class="fr-p-3w card-main-content">
-      <StatDonut :value="value" :total="total" :unit="unit" :theme="theme" />
+      <StatDonut
+        :value="value"
+        :total="total"
+        :unit="unit"
+        :theme="theme"
+        class="card-donut"
+      />
 
       <div class="card-info">
-        <p class="fr-h6 fr-mb-1v card-title">{{ title }}</p>
+        <p class="fr-h6 fr-mb-1v card-title">
+          {{ title }}
+        </p>
         <p class="fr-text--xs fr-mb-0 card-description">
           {{ description }}
         </p>
@@ -60,7 +69,6 @@ const uniqueId = useUniqueId();
   gap: 1.5rem;
 }
 
-.card-value,
 .card-title {
   color: var(--text-title-grey);
 }
@@ -71,6 +79,10 @@ const uniqueId = useUniqueId();
 
 .card-description {
   color: var(--text-mention-grey);
+}
+
+.card-disabled :deep(*) {
+  color: var(--text-disabled-grey);
 }
 
 @media (max-width: 992px) {

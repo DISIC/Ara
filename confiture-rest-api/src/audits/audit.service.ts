@@ -630,7 +630,7 @@ export class AuditService {
         },
         data: {
           publicationDate: new Date(),
-          editionDate: null,
+          // editionDate: null,
         },
         include: AUDIT_EDIT_INCLUDE,
       });
