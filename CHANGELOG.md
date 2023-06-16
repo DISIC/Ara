@@ -2,6 +2,13 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 16/06/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute un indicateur de progression de l'audit ([#423](https://github.com/DISIC/Ara/pull/423))
+- AJoute un indicateur de d'enregistrement ([#423](https://github.com/DISIC/Ara/pull/423))
+
 ## 14/06/2023
 
 ### Nouvelles fonctionnalités 🚀
