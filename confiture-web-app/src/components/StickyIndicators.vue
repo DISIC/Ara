@@ -83,7 +83,7 @@ const route = useRoute();
   align-self: end;
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 4;
 
   display: flex;
   gap: 0.75rem;
@@ -105,6 +105,9 @@ const route = useRoute();
 }
 
 @media (min-width: 62em) {
+  .sticky-indicator {
+    z-index: 3;
+  }
   .sticky-indicator::before {
     width: calc(100vw - 3rem);
   }
