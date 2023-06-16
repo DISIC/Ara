@@ -1,79 +1,44 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import { useSystemStore, useAuditStore } from "../store";
+import { useAuditStore, useSystemStore } from "../store";
+import { formatDate } from "../utils";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import SaveIndicator from "./SaveIndicator.vue";
-import { formatDate } from "../utils";
 
 const systemStore = useSystemStore();
 const auditStore = useAuditStore();
 
-/*
-Make the indicator `fixed` whenever the user scrolls past the sentinel div.
+// When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
+const alertHeight = ref(0);
+function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
+  alertHeight.value = entries[0].target.clientHeight;
+}
+const resizeObserver = new ResizeObserver(onOfflineAlertResize);
 
-WARNING: this is extremely hacky
-*/
+watch(
+  () => systemStore.isOnline,
+  async (isOnline) => {
+    resizeObserver.disconnect();
 
-// const isScrolled = ref(false);
-// const sentinelRef = ref<HTMLDivElement>();
+    await nextTick();
 
-// // When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
-// const alertHeight = ref(0);
-// function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
-//   alertHeight.value = entries[0].target.clientHeight;
-
-//   // Re-initialize the intersection observer with new `rootMargin` value.
-//   intersectionObserver.disconnect();
-//   intersectionObserver = new IntersectionObserver(onObservation, {
-//     rootMargin: `-${40 + alertHeight.value}px`,
-//   });
-//   intersectionObserver.observe(sentinelRef.value!);
-// }
-// const resizeObserver = new ResizeObserver(onOfflineAlertResize);
-
-// watch(
-//   () => systemStore.isOnline,
-//   async (isOnline) => {
-//     resizeObserver.disconnect();
-
-//     await nextTick();
-
-//     if (!isOnline) {
-//       // The alert element should be displayed in the `AuditGenerationHeader` component.
-//       const alertEl = document.getElementById("offlineAlert");
-//       resizeObserver.observe(alertEl!);
-//     } else {
-//       alertHeight.value = 0;
-//     }
-//   }
-// );
-
-// function onObservation(entries: IntersectionObserverEntry[]) {
-//   const { isIntersecting, boundingClientRect } = entries[0];
-//   isScrolled.value =
-//     !isIntersecting &&
-//     // dont "fix" the indicator when scrolling upwards past the sentinel
-//     boundingClientRect.top <= 40 + alertHeight.value;
-// }
-
-// let intersectionObserver = new IntersectionObserver(onObservation, {
-//   rootMargin: `-${40 + alertHeight.value}px`,
-// });
-
-// onMounted(() => {
-//   if (sentinelRef.value) {
-//     intersectionObserver.observe(sentinelRef.value);
-//   }
-// });
+    if (!isOnline) {
+      // The alert element should be displayed in the `AuditGenerationHeader` component.
+      const alertEl = document.getElementById("offlineAlert");
+      resizeObserver.observe(alertEl!);
+    } else {
+      alertHeight.value = 0;
+    }
+  }
+);
 
 const route = useRoute();
 </script>
 
 <template>
-  <span id="sentsent"></span>
-  <div class="sticky-indicator fr-mb-1v">
+  <div class="sticky-indicator fr-mb-1v" :style="{ top: alertHeight + 'px' }">
     <AuditProgressBar
       v-if="
         !auditStore.data?.publicationDate ||

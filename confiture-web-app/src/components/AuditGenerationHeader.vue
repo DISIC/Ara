@@ -355,6 +355,6 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
   background: var(--background-default-grey);
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 4;
 }
 </style>
