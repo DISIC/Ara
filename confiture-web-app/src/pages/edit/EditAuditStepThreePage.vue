@@ -241,16 +241,17 @@ const isOffline = useIsOffline();
       </button>
     </div>
 
-    <RouterLink
-      v-if="auditStore.data.publicationDate"
-      class="fr-text--sm fr-mb-4w back-summary-link"
-      :to="{
-        name: 'edit-audit-step-four',
-        params: { uniqueId },
-      }"
-    >
-      Retour à la synthèse
-    </RouterLink>
+    <div v-if="auditStore.data.publicationDate">
+      <RouterLink
+        class="fr-text--sm fr-mb-4w back-summary-link"
+        :to="{
+          name: 'edit-audit-step-four',
+          params: { uniqueId },
+        }"
+      >
+        Retour à la synthèse
+      </RouterLink>
+    </div>
 
     <AuditGenerationHeader
       :audit-name="auditStore.data.procedureName"
