@@ -3,6 +3,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -30,6 +31,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ResendVerificationEmailDto } from './resend-verification-email.dto';
+import { User } from './user.decorator';
+import { AuthenticationJwtPayload } from './jwt-payloads';
+import { AuthRequired } from './auth-required.decorator';
+import { DeleteAccountDto } from './delete-account.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -153,5 +158,18 @@ export class AuthController {
       }
       throw e;
     }
+  }
+
+  @Delete('account')
+  @AuthRequired()
+  async deleteAccount(
+    @Body() body: DeleteAccountDto,
+    @User() user: AuthenticationJwtPayload,
+  ) {
+    if (!this.auth.checkCredentials(user.email, body.password)) {
+      throw new UnauthorizedException();
+    }
+
+    await this.auth.deleteAccount(user.email);
   }
 }
