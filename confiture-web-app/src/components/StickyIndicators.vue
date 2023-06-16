@@ -16,127 +16,139 @@ Make the indicator `fixed` whenever the user scrolls past the sentinel div.
 WARNING: this is extremely hacky
 */
 
-const isScrolled = ref(false);
-const sentinelRef = ref<HTMLDivElement>();
+// const isScrolled = ref(false);
+// const sentinelRef = ref<HTMLDivElement>();
 
-// When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
-const alertHeight = ref(0);
-function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
-  alertHeight.value = entries[0].target.clientHeight;
+// // When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
+// const alertHeight = ref(0);
+// function onOfflineAlertResize(entries: ResizeObserverEntry[]) {
+//   alertHeight.value = entries[0].target.clientHeight;
 
-  // Re-initialize the intersection observer with new `rootMargin` value.
-  intersectionObserver.disconnect();
-  intersectionObserver = new IntersectionObserver(onObservation, {
-    rootMargin: `-${40 + alertHeight.value}px`,
-  });
-  intersectionObserver.observe(sentinelRef.value!);
-}
-const resizeObserver = new ResizeObserver(onOfflineAlertResize);
+//   // Re-initialize the intersection observer with new `rootMargin` value.
+//   intersectionObserver.disconnect();
+//   intersectionObserver = new IntersectionObserver(onObservation, {
+//     rootMargin: `-${40 + alertHeight.value}px`,
+//   });
+//   intersectionObserver.observe(sentinelRef.value!);
+// }
+// const resizeObserver = new ResizeObserver(onOfflineAlertResize);
 
-watch(
-  () => systemStore.isOnline,
-  async (isOnline) => {
-    resizeObserver.disconnect();
+// watch(
+//   () => systemStore.isOnline,
+//   async (isOnline) => {
+//     resizeObserver.disconnect();
 
-    await nextTick();
+//     await nextTick();
 
-    if (!isOnline) {
-      // The alert element should be displayed in the `AuditGenerationHeader` component.
-      const alertEl = document.getElementById("offlineAlert");
-      resizeObserver.observe(alertEl!);
-    } else {
-      alertHeight.value = 0;
-    }
-  }
-);
+//     if (!isOnline) {
+//       // The alert element should be displayed in the `AuditGenerationHeader` component.
+//       const alertEl = document.getElementById("offlineAlert");
+//       resizeObserver.observe(alertEl!);
+//     } else {
+//       alertHeight.value = 0;
+//     }
+//   }
+// );
 
-function onObservation(entries: IntersectionObserverEntry[]) {
-  const { isIntersecting, boundingClientRect } = entries[0];
-  isScrolled.value =
-    !isIntersecting &&
-    // dont "fix" the indicator when scrolling upwards past the sentinel
-    boundingClientRect.top <= 40 + alertHeight.value;
-}
+// function onObservation(entries: IntersectionObserverEntry[]) {
+//   const { isIntersecting, boundingClientRect } = entries[0];
+//   isScrolled.value =
+//     !isIntersecting &&
+//     // dont "fix" the indicator when scrolling upwards past the sentinel
+//     boundingClientRect.top <= 40 + alertHeight.value;
+// }
 
-let intersectionObserver = new IntersectionObserver(onObservation, {
-  rootMargin: `-${40 + alertHeight.value}px`,
-});
+// let intersectionObserver = new IntersectionObserver(onObservation, {
+//   rootMargin: `-${40 + alertHeight.value}px`,
+// });
 
-onMounted(() => {
-  if (sentinelRef.value) {
-    intersectionObserver.observe(sentinelRef.value);
-  }
-});
+// onMounted(() => {
+//   if (sentinelRef.value) {
+//     intersectionObserver.observe(sentinelRef.value);
+//   }
+// });
 
 const route = useRoute();
 </script>
 
 <template>
-  <div>
-    <div
-      class="sticky-thing"
-      :class="{
-        'is-scrolled': isScrolled,
-      }"
-      :style="{
-        top: alertHeight + 'px',
-      }"
-    >
-      <AuditProgressBar
-        v-if="
-          !auditStore.data?.publicationDate ||
-          (auditStore.data?.publicationDate &&
-            auditStore.data?.editionDate &&
-            auditStore.data?.editionDate > auditStore.data?.publicationDate)
-        "
-      />
+  <span id="sentsent"></span>
+  <div class="sticky-indicator fr-mb-1v">
+    <AuditProgressBar
+      v-if="
+        !auditStore.data?.publicationDate ||
+        (auditStore.data?.publicationDate &&
+          auditStore.data?.editionDate &&
+          auditStore.data?.editionDate > auditStore.data?.publicationDate)
+      "
+    />
 
-      <div v-else class="audit-status">
-        <span
-          class="fr-icon-success-line fr-icon--sm audit-status-icon"
-          aria-hidden="true"
-        ></span>
-        <strong
-          >Audit {{ auditStore.data?.editionDate ? "modifié" : "terminé" }} le
-          <time
-            :datetime="
-              auditStore.data?.editionDate
-                ? auditStore.data?.editionDate
-                : auditStore.data?.publicationDate
-            "
-            >{{
-              auditStore.data?.editionDate
-                ? formatDate(auditStore.data?.editionDate)
-                : formatDate(auditStore.data?.publicationDate)
-            }}</time
-          ></strong
-        >
-      </div>
-
-      <template v-if="route.name === 'edit-audit-step-three'">
-        <div class="fr-ml-2w separator" />
-        <SaveIndicator />
-      </template>
+    <div v-else class="audit-status">
+      <span
+        class="fr-icon-success-line fr-icon--sm audit-status-icon"
+        aria-hidden="true"
+      ></span>
+      <strong
+        >Audit {{ auditStore.data?.editionDate ? "modifié" : "terminé" }} le
+        <time
+          :datetime="
+            auditStore.data?.editionDate
+              ? auditStore.data?.editionDate
+              : auditStore.data?.publicationDate
+          "
+          >{{
+            auditStore.data?.editionDate
+              ? formatDate(auditStore.data?.editionDate)
+              : formatDate(auditStore.data?.publicationDate)
+          }}</time
+        ></strong
+      >
     </div>
 
-    <div ref="sentinelRef" />
+    <template v-if="route.name === 'edit-audit-step-three'">
+      <div class="fr-ml-2w separator" />
+      <SaveIndicator />
+    </template>
   </div>
 </template>
 
 <style scoped>
-.is-scrolled {
-  position: fixed;
-  background: var(--background-default-grey);
+.sticky-indicator {
+  flex-basis: initial !important;
+  align-self: end;
+  position: sticky;
+  top: 0;
   z-index: 3;
-  width: calc(
-    78rem - calc(1.5rem * 2)
-  ); /* main wrapper width - left and right padding */
-}
 
-.sticky-thing {
   display: flex;
   gap: 0.75rem;
   align-items: stretch;
+  padding: 0;
+}
+
+.sticky-indicator::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  background: var(--background-default-grey);
+  left: 0;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+
+  width: calc(100vw - 2rem);
+}
+
+@media (min-width: 62em) {
+  .sticky-indicator::before {
+    width: calc(100vw - 3rem);
+  }
+}
+
+@media (min-width: 78em) {
+  .sticky-indicator::before {
+    width: calc(78rem - 3rem);
+  }
 }
 
 .audit-status {

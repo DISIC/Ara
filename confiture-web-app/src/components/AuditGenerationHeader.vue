@@ -157,83 +157,81 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     </div>
   </div>
 
+  <StickyIndicators />
+
   <div class="fr-mb-1v sub-header">
-    <StickyIndicators />
+    <slot name="actions-notice" />
 
-    <div>
-      <slot name="actions-notice" />
-
-      <ul class="top-actions fr-my-0" role="list">
-        <li class="fr-mr-2w">
-          <Dropdown
-            ref="optionsDropdownRef"
-            title="Options"
-            :disabled="isOffline"
-            :align-left="route.name === 'edit-audit-step-three'"
-          >
-            <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <template v-if="!!auditPublicationDate">
-                <li class="dropdown-item">
-                  <RouterLink
-                    :to="{
-                      name: 'edit-audit-step-three',
-                      params: { uniqueId: editUniqueId },
-                    }"
-                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
-                  >
-                    Modifier l’audit
-                  </RouterLink>
-                </li>
-              </template>
+    <ul class="top-actions fr-my-0" role="list">
+      <li class="fr-mr-2w">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Options"
+          :disabled="isOffline"
+          :align-left="route.name === 'edit-audit-step-three'"
+        >
+          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+            <template v-if="!!auditPublicationDate">
               <li class="dropdown-item">
                 <RouterLink
                   :to="{
-                    name: 'edit-audit-step-one',
+                    name: 'edit-audit-step-three',
                     params: { uniqueId: editUniqueId },
                   }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
                 >
-                  <GearIcon class="fr-mr-2v" />
-                  Modifier les paramètres
+                  Modifier l’audit
                 </RouterLink>
               </li>
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                  @click="duplicateModal?.show()"
-                >
-                  <CopyIcon class="fr-mr-2v" />
-                  Créer une copie
-                </button>
-              </li>
-              <li class="dropdown-item">
-                <a
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
-                  :href="csvExportUrl"
-                  :download="csvExportFilename"
-                >
-                  Exporter l’audit
-                  <span class="fr-text--xs fr-text--regular download-meta">
-                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
-                  </span>
-                </a>
-              </li>
-              <li aria-hidden="true" class="dropdown-separator"></li>
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
-                  @click="deleteModal?.show()"
-                >
-                  Supprimer l’audit
-                </button>
-              </li>
-            </ul>
-          </Dropdown>
-        </li>
+            </template>
+            <li class="dropdown-item">
+              <RouterLink
+                :to="{
+                  name: 'edit-audit-step-one',
+                  params: { uniqueId: editUniqueId },
+                }"
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              >
+                <GearIcon class="fr-mr-2v" />
+                Modifier les paramètres
+              </RouterLink>
+            </li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                @click="duplicateModal?.show()"
+              >
+                <CopyIcon class="fr-mr-2v" />
+                Créer une copie
+              </button>
+            </li>
+            <li class="dropdown-item">
+              <a
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                :href="csvExportUrl"
+                :download="csvExportFilename"
+              >
+                Exporter l’audit
+                <span class="fr-text--xs fr-text--regular download-meta">
+                  CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                </span>
+              </a>
+            </li>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+                @click="deleteModal?.show()"
+              >
+                Supprimer l’audit
+              </button>
+            </li>
+          </ul>
+        </Dropdown>
+      </li>
 
-        <slot name="actions" />
-      </ul>
-    </div>
+      <slot name="actions" />
+    </ul>
   </div>
 
   <h1 class="">{{ auditName }}</h1>
@@ -300,6 +298,10 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
   display: flex;
   align-items: end;
   justify-content: space-between;
+
+  flex-basis: initial !important;
+  flex-direction: column;
+  z-index: 3;
 }
 
 .heading {

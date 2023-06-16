@@ -201,7 +201,7 @@ const isOffline = useIsOffline();
 
 <template>
   <!-- FIXME: handle loading states -->
-  <template v-if="auditStore.data && resultsStore.data">
+  <div class="page-wrapper" v-if="auditStore.data && resultsStore.data">
     <PageMeta
       :title="`Audit ${auditStore.data.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
@@ -424,7 +424,7 @@ const isOffline = useIsOffline();
         </div>
       </div>
     </div>
-  </template>
+  </div>
 </template>
 
 <style scoped>
@@ -464,5 +464,15 @@ const isOffline = useIsOffline();
 
 .submit-notice {
   text-align: right;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.page-wrapper > :deep(*) {
+  flex-basis: 100%;
 }
 </style>
