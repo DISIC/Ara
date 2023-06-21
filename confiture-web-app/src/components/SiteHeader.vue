@@ -146,14 +146,34 @@ const menuItems = computed<
                 </RouterLink>
               </li>
               <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" :to="{ name: 'changelog' }">
-                  Notes de versions
-                </RouterLink>
-              </li>
-              <li class="fr-nav__item">
-                <RouterLink class="fr-nav__link" :to="{ name: 'roadmap' }">
-                  Feuille de route
-                </RouterLink>
+                <button
+                  class="fr-nav__btn"
+                  aria-expanded="false"
+                  :aria-current="['changelog', 'roadmap'].includes(currentRoute.name as string) ? 'true' : undefined"
+                  aria-controls="news-menu-item"
+                >
+                  Nouveautés
+                </button>
+                <div id="news-menu-item" class="fr-collapse fr-menu">
+                  <ul class="fr-menu__list">
+                    <li>
+                      <RouterLink
+                        class="fr-nav__link"
+                        :to="{ name: 'changelog' }"
+                      >
+                        Notes de versions
+                      </RouterLink>
+                    </li>
+                    <li>
+                      <RouterLink
+                        class="fr-nav__link"
+                        :to="{ name: 'roadmap' }"
+                      >
+                        Feuille de route
+                      </RouterLink>
+                    </li>
+                  </ul>
+                </div>
               </li>
             </ul>
           </nav>
