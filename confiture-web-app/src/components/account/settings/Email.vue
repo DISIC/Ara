@@ -5,19 +5,13 @@ import { useAccountStore } from "../../../store/account";
 
 const accountStore = useAccountStore();
 
-/**
- * TODO:
- * - handle errors (wrong password, same email?)
- * - plug store
- */
-
 // Form submission
 const passwordFieldRef = ref<HTMLInputElement>();
 const newEmailFieldRef = ref<HTMLInputElement>();
 const confirmAlert = ref<HTMLDivElement>();
 
-const showNewEmailError = ref(false);
-const showPasswordError = ref(false);
+const passwordError = ref("");
+const newEmailError = ref("");
 
 const password = ref("");
 const newEmail = ref("");
@@ -36,9 +30,38 @@ async function hideSuccess() {
   passwordFieldRef.value?.focus();
 }
 
-function updateEmail() {
+async function updateEmail() {
   console.log("updateEmail");
-  showSuccess();
+
+  passwordError.value = "";
+  newEmailError.value = "";
+
+  // TODO: verify password
+  const TEST_PASSWORD = "pouet";
+  if (password.value !== TEST_PASSWORD) {
+    passwordError.value = "Le mot de passe saisi est incorrect.";
+    await nextTick();
+    passwordFieldRef.value?.focus();
+  }
+
+  // TODO: verify email is not already associated with an account
+  if (
+    accountStore.account?.email &&
+    newEmail.value === accountStore.account?.email
+  ) {
+    // TODO: update error wording
+    newEmailError.value =
+      "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
+    await nextTick();
+    newEmailFieldRef.value?.focus();
+  }
+
+  if (
+    password.value === TEST_PASSWORD &&
+    newEmail.value !== accountStore.account?.email
+  ) {
+    showSuccess();
+  }
 }
 
 // Send new email
@@ -135,7 +158,7 @@ const showEmailInReport = ref(false);
   >
     <div
       class="fr-password"
-      :class="{ 'fr-input-group--error': showPasswordError }"
+      :class="{ 'fr-input-group--error': passwordError }"
     >
       <label class="fr-label" for="password">Mot de passe</label>
       <div class="fr-input-wrap">
@@ -144,14 +167,14 @@ const showEmailInReport = ref(false);
           ref="passwordFieldRef"
           v-model="password"
           class="fr-password__input fr-input"
-          :class="{ 'fr-input--error': showPasswordError }"
-          :aria-describedby="showPasswordError ? 'password-error' : undefined"
+          :class="{ 'fr-input--error': passwordError }"
+          :aria-describedby="passwordError ? 'password-error' : undefined"
           autocomplete="current-password"
           type="password"
           required
         />
       </div>
-      <p v-if="showPasswordError" id="password-error" class="fr-error-text">
+      <p v-if="passwordError" id="password-error" class="fr-error-text">
         Le mot de passe saisi est incorrect.
       </p>
 
@@ -176,7 +199,7 @@ const showEmailInReport = ref(false);
 
       <div
         class="fr-input-group fr-mt-3v"
-        :class="{ 'fr-input-group--error': showNewEmailError }"
+        :class="{ 'fr-input-group--error': newEmailError }"
       >
         <label class="fr-label" for="new-email"
           >Nouvelle adresse e-mail
@@ -187,13 +210,13 @@ const showEmailInReport = ref(false);
           ref="newEmailFieldRef"
           v-model="newEmail"
           class="fr-input"
-          :class="{ 'fr-input--error': showNewEmailError }"
-          :aria-describedby="showNewEmailError ? 'new-email-error' : undefined"
+          :class="{ 'fr-input--error': newEmailError }"
+          :aria-describedby="newEmailError ? 'new-email-error' : undefined"
           type="email"
           required
         />
-        <p v-if="showNewEmailError" id="new-email-error" class="fr-error-text">
-          La phrase saisie est incorrect. Veuillez vérifier votre saisie.
+        <p v-if="newEmailError" id="new-email-error" class="fr-error-text">
+          {{ newEmailError }}
         </p>
       </div>
     </div>
