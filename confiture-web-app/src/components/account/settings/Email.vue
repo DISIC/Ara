@@ -3,6 +3,8 @@ import { nextTick, ref } from "vue";
 
 import { useAccountStore } from "../../../store/account";
 
+// TODO: cancel email update (what if user clicks on verification email after?)
+
 const accountStore = useAccountStore();
 
 // Form submission
