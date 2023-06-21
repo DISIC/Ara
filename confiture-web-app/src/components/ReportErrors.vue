@@ -472,6 +472,14 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             Tout déplier
           </button> -->
         </div>
+
+        <section v-if="!userImpactFilters.length">
+          <h2 class="fr-h6 fr-mb-1w">
+            Aucun résultat ne correspond à votre recherche
+          </h2>
+          <p>Veuillez sélectionner au moins un filtre "impact de l'erreur".</p>
+        </section>
+
         <section v-if="transverseErrors.length" class="fr-mb-8w">
           <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
             Toutes les pages
