@@ -35,6 +35,7 @@ import { User } from './user.decorator';
 import { AuthenticationJwtPayload } from './jwt-payloads';
 import { AuthRequired } from './auth-required.decorator';
 import { DeleteAccountDto } from './delete-account.dto';
+import { DeleteAccountResponseDto } from './delete-account-response.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -161,6 +162,10 @@ export class AuthController {
   }
 
   @Delete('account')
+  @ApiOkResponse({
+    description: 'The account was succesfully deleted.',
+    type: DeleteAccountResponseDto,
+  })
   @AuthRequired()
   async deleteAccount(
     @Body() body: DeleteAccountDto,
@@ -170,6 +175,14 @@ export class AuthController {
       throw new UnauthorizedException();
     }
 
-    await this.auth.deleteAccount(user.email);
+    // TODO: anonymise reports
+
+    const feedbackToken = await this.auth.generateFeedbackToken();
+
+    // await this.auth.deleteAccount(user.email);
+
+    return {
+      feedbackToken,
+    };
   }
 }
