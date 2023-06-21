@@ -7,9 +7,8 @@ const accountStore = useAccountStore();
 
 /**
  * TODO:
- * - handle errors
+ * - handle errors (wrong password, same email?)
  * - plug store
- * - design email
  */
 
 // Form submission
