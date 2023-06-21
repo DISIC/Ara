@@ -111,12 +111,8 @@ setInterval(() => {
       {{ dropdownMainText }}
     </p>
 
-    <p v-if="!systemStore.isOnline" class="fr-text--xs fr-m-0">
-      Les modifications n’ont pas pu être enregistrées.
-    </p>
-
-    <p v-else-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
-      Les modifications ont été enregistrées {{ relativeLastSaveDate }}
+    <p v-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
+      Dernier enregistrement {{ relativeLastSaveDate }}
     </p>
   </Dropdown>
 </template>
