@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, RouteLocationRaw } from "vue-router";
 
 import { useAuditStore, useReportStore } from "../store";
@@ -73,6 +73,12 @@ const menuItems = computed<
 
   return [homeLocation, resourcesLocation, helpLocation];
 });
+
+const newsSubMenu = ref<HTMLButtonElement>();
+
+function closeNewsSubMenu() {
+  dsfr(newsSubMenu.value).collapse.conceal();
+}
 </script>
 
 <template>
@@ -154,12 +160,17 @@ const menuItems = computed<
                 >
                   Nouveautés
                 </button>
-                <div id="news-menu-item" class="fr-collapse fr-menu">
+                <div
+                  id="news-menu-item"
+                  ref="newsSubMenu"
+                  class="fr-collapse fr-menu"
+                >
                   <ul class="fr-menu__list">
                     <li>
                       <RouterLink
                         class="fr-nav__link"
                         :to="{ name: 'changelog' }"
+                        @click="closeNewsSubMenu"
                       >
                         Notes de versions
                       </RouterLink>
@@ -168,6 +179,7 @@ const menuItems = computed<
                       <RouterLink
                         class="fr-nav__link"
                         :to="{ name: 'roadmap' }"
+                        @click="closeNewsSubMenu"
                       >
                         Feuille de route
                       </RouterLink>
