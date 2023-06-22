@@ -2,6 +2,13 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 22/06/2023
+
+### Autres changements ⚙️
+
+- Ajoute une page "Feuille de route" ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page "Notes de versions" ([#426](https://github.com/DISIC/Ara/pull/426))
+
 ## 16/06/2023
 
 ### Nouvelles fonctionnalités 🚀
@@ -17,7 +24,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 07/06/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Affiche correctement l’email de contact dans la déclaration d’accessibilité ([#425](https://github.com/DISIC/Ara/pull/425))
 
@@ -29,7 +36,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 01/06/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Corrige l'ordre des erreurs dans le détail des résultats sur le rapport
 - Corrige le placement de la mention "Validation possible à la fin de l'audit"
@@ -55,7 +62,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 18/05/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Corrige la navigation depuis la page de génération d'audit ([#400](https://github.com/DISIC/Ara/pull/400))
 
@@ -67,19 +74,19 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 12/05/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Vérifie le poids des images d'exemple avant de les envoyer au serveur ([#394](https://github.com/DISIC/Ara/pull/394))
 
 ## 11/05/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Corrige l'application de l'état transverse d'un critère via le switch "Sur toutes les pages" qui était parfois ignoré.
 
 ## 10/05/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Corrige une erreur qui survenait lorsqu'un champ de formulaire de type URL contenait un espace ([#386](https://github.com/DISIC/Ara/pull/386))
 - Corrige l'ordre des erreurs dans l'onglet "Détail des résultats" du rapport d'audit ([#389](https://github.com/DISIC/Ara/pull/389))
@@ -90,7 +97,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 05/05/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Corrige les onglets cassés lors de l'utilisation d'ancres ([#372](https://github.com/DISIC/Ara/pull/372))
 - Corrige le filtre "Masquer les critères évalués" qui ne fonctionnait pas sur les audits rapides et complémentaires ([#373](https://github.com/DISIC/Ara/pull/373))
@@ -164,7 +171,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajout d’un lien de retour en haut de page pendant l’audit ([#316](https://github.com/DISIC/Ara/pull/316))
 
-### Correction 🐛
+### Corrections 🐛
 
 - Améliore la gestion du focus à la fermeture des modales ([#297](https://github.com/DISIC/Ara/pull/297))
 
@@ -174,14 +181,14 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 17/02/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Améliore la lisibilité du texte lorsque l'espacement des caractères est agrandi ([#305](https://github.com/DISIC/Ara/pull/305))
 - Corrige l’affichage des longues URL dans le rapport ([#306](https://github.com/DISIC/Ara/pull/306))
 
 ## 15/02/2023
 
-### Correction 🐛
+### Corrections 🐛
 
 - Les retours à la lignes dans les commentaires et descriptions d'erreur sont rendu comme tel dans le rapport ([#301](https://github.com/DISIC/Ara/pull/301))
 - Le lien vers l'audit en cours est enlevé du menu de navigation lorsque l'audit est supprimé ([#299](https://github.com/DISIC/Ara/pull/299/files))
