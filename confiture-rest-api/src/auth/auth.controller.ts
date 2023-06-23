@@ -173,7 +173,7 @@ export class AuthController {
     @Body() body: DeleteAccountDto,
     @User() user: AuthenticationJwtPayload,
   ) {
-    if (!this.auth.checkCredentials(user.email, body.password)) {
+    if (!(await this.auth.checkCredentials(user.email, body.password))) {
       throw new UnauthorizedException();
     }
 

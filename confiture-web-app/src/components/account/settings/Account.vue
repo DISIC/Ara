@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useAccountStore } from "../../../store/account";
+import { HTTPError } from "ky";
+import { useNotifications } from "../../../composables/useNotifications";
 
 const router = useRouter();
+const accountStore = useAccountStore();
+const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
 
-const validation = ref("");
+// const validation = ref("");
+const validation = ref(VALIDATION_STRING);
 const password = ref("");
 
 const displayAccountDeletionForm = ref(false);
@@ -21,28 +27,30 @@ async function deleteAccount() {
   showValidationError.value = false;
   showPasswordError.value = false;
 
-  // TODO: check for password
-  const TEST_PASSWORD = "pouet";
-  if (password.value !== TEST_PASSWORD) {
-    showPasswordError.value = true;
-    await nextTick();
-    passwordFieldRef.value?.focus();
-  }
-
   if (validation.value !== VALIDATION_STRING) {
     showValidationError.value = true;
     await nextTick();
     validationFieldRef.value?.focus();
   }
 
-  if (
-    password.value === TEST_PASSWORD &&
-    validation.value === VALIDATION_STRING
-  ) {
-    router.push({ name: "account-deletion-feedback" });
-  } else {
-    return;
-  }
+  accountStore
+    .deleteAccount(password.value)
+    .then(() => {
+      router.push({ name: "account-deletion-feedback" });
+    })
+    .catch(async (e) => {
+      if (e instanceof HTTPError && e.response.status === 401) {
+        showPasswordError.value = true;
+        await nextTick();
+        passwordFieldRef.value?.focus();
+      } else {
+        notify(
+          "error",
+          "Impossible de supprimer le compte",
+          "Une erreur inconnue empêche la suppression du compte. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        );
+      }
+    });
 }
 
 // Toggle display

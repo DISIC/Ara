@@ -2,7 +2,11 @@ import ky from "ky";
 import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
 import { AuthenticationJwtPayload } from "../types";
-import { Account, UpdateProfileRequestData } from "../types/account";
+import {
+  Account,
+  AccountDeletionResponse,
+  UpdateProfileRequestData,
+} from "../types/account";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -13,6 +17,7 @@ interface AccountStoreState {
     orgName?: string;
   };
   authToken: null | string;
+  accountDeletionFeedbackToken: null | string;
 }
 
 export const useAccountStore = defineStore("account", {
@@ -40,6 +45,7 @@ export const useAccountStore = defineStore("account", {
     return {
       account: email ? { email, name: "", orgName: "" } : null,
       authToken: authToken,
+      accountDeletionFeedbackToken: null,
     };
   },
 
@@ -162,6 +168,19 @@ export const useAccountStore = defineStore("account", {
       }
 
       return response;
+    },
+
+    async deleteAccount(password: string) {
+      const response = (await ky
+        .delete("/api/auth/account", {
+          json: {
+            password,
+          },
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .json()) as AccountDeletionResponse;
+
+      this.accountDeletionFeedbackToken = response.feedbackToken;
     },
   },
 });
