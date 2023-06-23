@@ -36,6 +36,7 @@ import { AuthenticationJwtPayload } from './jwt-payloads';
 import { AuthRequired } from './auth-required.decorator';
 import { DeleteAccountDto } from './delete-account.dto';
 import { DeleteAccountResponseDto } from './delete-account-response.dto';
+import { FeedbackService } from 'src/feedback/feedback.service';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -43,6 +44,7 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly email: MailService,
+    private readonly feedback: FeedbackService,
   ) {}
 
   /**
@@ -177,7 +179,7 @@ export class AuthController {
 
     // TODO: anonymise reports
 
-    const feedbackToken = await this.auth.generateFeedbackToken();
+    const feedbackToken = await this.feedback.generateFeedbackToken();
 
     // await this.auth.deleteAccount(user.email);
 

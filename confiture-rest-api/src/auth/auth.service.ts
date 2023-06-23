@@ -213,12 +213,4 @@ export class AuthService {
   async deleteAccount(username: string) {
     await this.prisma.user.delete({ where: { username } });
   }
-
-  async generateFeedbackToken() {
-    const payload = {
-      feedback: 'accountDeletion',
-      jti: nanoid(),
-    };
-    return await this.jwt.signAsync(payload);
-  }
 }

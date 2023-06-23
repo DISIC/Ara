@@ -21,6 +21,9 @@ export class FeedbackController {
 
   @Post('account-deleted')
   async sendAccountDeletionFeedback(@Body() body: AccountDeletionFeedbackDto) {
-    // TODO: send feedback to airtable
+    await this.feedbackService.saveAccountDeletionFeedback(
+      body.feedback,
+      body.feedbackToken,
+    );
   }
 }
