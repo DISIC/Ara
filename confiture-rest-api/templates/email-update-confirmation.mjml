@@ -1,8 +1,8 @@
 <mjml>
   <mj-head>
-    <mj-title>Ara : vérification du compte</mj-title>
+    <mj-title>Ara : vérification de la nouvelle adresse e-mail</mj-title>
     <mj-attributes>
-      <mj-preview>Ara : vérification du compte</mj-preview>
+      <mj-preview>Ara : vérification de la nouvelle adresse e-mail</mj-preview>
       <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
