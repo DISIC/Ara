@@ -204,4 +204,13 @@ export class AuthService {
     const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
     return verificationToken;
   }
+
+  async checkCredentials(username: string, password: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    return user && user.isVerified && (await compare(password, user.password));
+  }
+
+  async deleteAccount(username: string) {
+    await this.prisma.user.delete({ where: { username } });
+  }
 }
