@@ -2,13 +2,17 @@
 import { ref } from "vue";
 
 import greenCheck from "../../assets/images/green-check.svg";
+import { useAccountStore } from "../../store/account";
+
+const accountStore = useAccountStore();
 
 const feedback = ref("");
 const showSuccess = ref(false);
 
 function submitFeedback() {
-  console.log("submit feedback: ", feedback.value);
-  showSuccess.value = true;
+  accountStore.sendAccountDeletionFeedback(feedback.value).then(() => {
+    showSuccess.value = true;
+  });
 }
 </script>
 <template>

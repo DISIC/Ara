@@ -182,5 +182,15 @@ export const useAccountStore = defineStore("account", {
 
       this.accountDeletionFeedbackToken = response.feedbackToken;
     },
+
+    async sendAccountDeletionFeedback(feedback: string) {
+      await ky.post("/api/feedback/account-deleted", {
+        json: {
+          feedback,
+          feedbackToken: this.accountDeletionFeedbackToken,
+        },
+        headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      });
+    },
   },
 });
