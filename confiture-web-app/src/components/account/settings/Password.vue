@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
 
+const currentPasswordFieldRef = ref<HTMLInputElement>();
+const newPasswordFieldRef = ref<HTMLInputElement>();
+
 // Toggle display
 const showButtonRef = ref<HTMLButtonElement>();
-const currentPasswordFieldRef = ref<HTMLInputElement>();
 
 const displayUpdatePasswordForm = ref(false);
 
@@ -15,6 +17,10 @@ async function showUpdatePasswordForm() {
 
 async function hideUpdatePasswordForm() {
   displayUpdatePasswordForm.value = false;
+  currentPassword.value = "";
+  newPassword.value = "";
+  currentPasswordError.value = "";
+  newPasswordError.value = "";
   await nextTick();
   showButtonRef.value?.focus();
 }
@@ -24,11 +30,38 @@ const currentPassword = ref("");
 const newPassword = ref("");
 
 const displaySuccessAlert = ref(false);
+
 const successAlertRef = ref<HTMLDivElement>();
 
-function updatePassword() {
-  displayUpdatePasswordForm.value = false;
-  displaySuccessAlert.value = true;
+const currentPasswordError = ref("");
+const newPasswordError = ref("");
+
+async function updatePassword() {
+  currentPasswordError.value = "";
+  newPasswordError.value = "";
+
+  // TODO: verify passwords
+  const TEST_PASSWORD = "pouet";
+  if (newPassword.value === TEST_PASSWORD) {
+    newPasswordError.value =
+      "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
+    await nextTick();
+    newPasswordFieldRef.value?.focus();
+  }
+
+  if (currentPassword.value !== TEST_PASSWORD) {
+    currentPasswordError.value = "Le mot de passe saisi est incorrect.";
+    await nextTick();
+    currentPasswordFieldRef.value?.focus();
+  }
+
+  if (
+    currentPassword.value === TEST_PASSWORD &&
+    newPassword.value !== TEST_PASSWORD
+  ) {
+    displayUpdatePasswordForm.value = false;
+    displaySuccessAlert.value = true;
+  }
 }
 
 async function hideSuccessAlert() {
@@ -46,7 +79,10 @@ async function hideSuccessAlert() {
     @submit.prevent="updatePassword"
   >
     <!-- Current password -->
-    <div class="fr-password">
+    <div
+      class="fr-password"
+      :class="{ 'fr-input-group--error': currentPasswordError }"
+    >
       <label class="fr-label" for="current-password">Mot de passe actuel</label>
       <div class="fr-input-wrap">
         <input
@@ -54,11 +90,22 @@ async function hideSuccessAlert() {
           ref="currentPasswordFieldRef"
           v-model="currentPassword"
           class="fr-password__input fr-input"
+          :class="{ 'fr-input--error': currentPasswordError }"
+          :aria-describedby="
+            currentPasswordError ? 'current-password-error' : undefined
+          "
           autocomplete="current-password"
           type="password"
           required
         />
       </div>
+      <p
+        v-if="currentPasswordError"
+        id="current-password-error"
+        class="fr-error-text"
+      >
+        {{ currentPasswordError }}
+      </p>
       <div
         class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
       >
@@ -83,19 +130,30 @@ async function hideSuccessAlert() {
     </div>
 
     <!-- New password -->
-    <div class="fr-password fr-mt-3w">
+    <div
+      class="fr-password fr-mt-3w"
+      :class="{ 'fr-input-group--error': newPasswordError }"
+    >
       <label class="fr-label" for="new-password">Nouveau mot de passe</label>
       <div class="fr-input-wrap">
         <input
           id="new-password"
           v-model="newPassword"
           class="fr-password__input fr-input"
-          aria-describedby="new-password-requirements"
+          :class="{ 'fr-input--error': newPasswordError }"
+          :aria-describedby="
+            newPasswordError
+              ? 'new-password-requirements new-password-error'
+              : 'new-password-requirements'
+          "
           autocomplete="new-password"
           type="password"
           required
         />
       </div>
+      <p v-if="newPasswordError" id="new-password-error" class="fr-error-text">
+        {{ newPasswordError }}
+      </p>
       <div
         id="new-password-requirements"
         class="fr-messages-group"
