@@ -33,6 +33,7 @@ import ChangelogPage from "./pages/ChangelogPage.vue";
 import { useAuditStore } from "./store";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import LoginPage from "./pages/account/LoginPage.vue";
+import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
@@ -181,6 +182,11 @@ const router = createRouter({
       path: "/compte/connexion",
       name: "login",
       component: LoginPage,
+    },
+    {
+      path: "/compte/reinitialiser-mot-de-passe",
+      name: "password-reset",
+      component: ResetPasswordPage,
     },
     {
       path: "/compte",

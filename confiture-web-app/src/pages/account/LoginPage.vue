@@ -90,7 +90,7 @@ async function handleSubmit() {
       />
 
       <div
-        class="fr-password fr-mb-3w"
+        class="fr-password fr-mb-3v"
         :class="{ 'fr-input-group--error': !!userPasswordError }"
       >
         <label class="fr-label" for="user-password-input">Mot de passe</label>
@@ -141,8 +141,9 @@ async function handleSubmit() {
         </div>
       </div>
 
-      <!-- TODO: Add forgotten password link -->
-      <RouterLink to="#" class="fr-link">Mot de passe oublié ?</RouterLink>
+      <RouterLink :to="{ name: 'password-reset' }" class="fr-link">
+        Mot de passe oublié ?
+      </RouterLink>
 
       <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
         <input id="remember-me" v-model="rememberMe" type="checkbox" />
