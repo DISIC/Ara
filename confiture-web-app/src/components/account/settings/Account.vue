@@ -46,7 +46,7 @@ async function deleteAccount() {
         notify(
           "error",
           "Impossible de supprimer le compte",
-          "Une erreur inconnue empêche la suppression du compte. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+          "Une erreur inconnue empêche la suppression du compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
         );
       }
     });
