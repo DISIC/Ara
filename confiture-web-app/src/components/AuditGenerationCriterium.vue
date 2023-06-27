@@ -19,6 +19,7 @@ import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
 import { captureWithPayloads } from "../utils";
+import { useIsOffline } from "../composables/useIsOffline";
 
 const store = useResultsStore();
 const filtersStore = useFiltersStore();
@@ -214,6 +215,8 @@ function updateQuickWin(quickWin: boolean) {
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
 });
+
+const isOffline = useIsOffline();
 </script>
 
 <template>
@@ -238,6 +241,7 @@ const uniqueId = computed(() => {
       ]"
     >
       <RadioGroup
+        :disabled="isOffline"
         :model-value="result.status"
         :label="`Statut du critère ${topicNumber}.${criterium.number}`"
         hide-label
@@ -252,7 +256,9 @@ const uniqueId = computed(() => {
           :checked="result.transverse"
           type="checkbox"
           class="fr-toggle__input"
-          :disabled="result.status === CriteriumResultStatus.NOT_TESTED"
+          :disabled="
+            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
+          "
           @input="updateTransverseStatus"
         />
         <label

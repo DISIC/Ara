@@ -152,13 +152,15 @@ const csvExportSizeEstimation = computed(() => {
     v-if="
       report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
     "
-    class="fr-alert fr-alert--warning fr-mb-6w"
+    class="fr-pt-1w in-progress-alert"
   >
-    <p class="fr-alert__title">Audit en cours</p>
-    <p>
-      Les résultats de ce rapports sont provisoires tant que l’audit n'est pas
-      terminé.
-    </p>
+    <div class="fr-alert fr-alert--warning fr-mb-6w">
+      <p class="fr-alert__title">Audit en cours</p>
+      <p>
+        Les résultats de ce rapports sont provisoires tant que l’audit n'est pas
+        terminé.
+      </p>
+    </div>
   </div>
 
   <div class="fr-mb-4w heading">
@@ -334,5 +336,12 @@ const csvExportSizeEstimation = computed(() => {
 
 .dates {
   color: var(--text-mention-grey);
+}
+
+.in-progress-alert {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-default-grey);
+  z-index: 3;
 }
 </style>

@@ -3,11 +3,14 @@ import { watch, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useResultsStore } from "../store";
 import { CriteriumResultStatus } from "../types";
+import { useIsOffline } from "../composables/useIsOffline";
 
 const props = defineProps<{
   pageId: number;
   topicNumber: number;
 }>();
+
+const isOffline = useIsOffline();
 
 const resultsStore = useResultsStore();
 
@@ -51,6 +54,7 @@ watch(switchValue, (switchValue) => {
       v-model="switchValue"
       type="checkbox"
       class="fr-toggle__input"
+      :disabled="isOffline"
     />
     <label
       class="fr-toggle__label fr-pr-2w"

@@ -13,7 +13,7 @@ export default defineConfig({
   build: {
     sourcemap: true, // Source map generation must be turned on
   },
-  assetsInclude: ["**/*.docx"],
+  assetsInclude: ["**/*.docx", "**/*.md"],
   plugins: [
     vue(),
     ...(uploadSourceMapsToSentry

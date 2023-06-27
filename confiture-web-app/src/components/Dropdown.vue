@@ -6,6 +6,8 @@ defineProps<{
   title: string;
   buttonProps?: object;
   alignLeft?: boolean;
+  iconLeft?: boolean;
+  disabled?: boolean;
 }>();
 
 const uniqueId = useUniqueId();
@@ -50,10 +52,12 @@ defineExpose({ buttonRef, closeOptions });
     <slot name="button" />
     <button
       ref="buttonRef"
-      class="fr-btn fr-btn--tertiary-no-outline fr-icon-arrow-down-s-line fr-btn--icon-right"
+      class="fr-btn fr-btn--tertiary-no-outline fr-icon-arrow-down-s-line"
+      :class="[iconLeft ? 'fr-btn--icon-left' : 'fr-btn--icon-right']"
       aria-haspopup="true"
       :aria-expanded="showContent"
       :aria-controls="`dropdown-${uniqueId}`"
+      :disabled="disabled"
       v-bind="buttonProps"
       @click="toggleOptions"
     >

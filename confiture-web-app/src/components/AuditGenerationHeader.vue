@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
-import { useAuditStore, useResultsStore } from "../store";
-import {
-  captureWithPayloads,
-  formatDate,
-  formatBytes,
-  slugify,
-} from "../utils";
+import { useIsOffline } from "../composables/useIsOffline";
+import { useAuditStore, useResultsStore, useSystemStore } from "../store";
+import { captureWithPayloads, formatBytes, slugify } from "../utils";
+import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
+import DuplicateModal from "./DuplicateModal.vue";
+import StickyIndicators from "./StickyIndicators.vue";
+import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
-import SummaryCard from "./SummaryCard.vue";
-import DuplicateModal from "./DuplicateModal.vue";
-import DeleteModal from "./DeleteModal.vue";
 
 defineProps<{
   auditName: string;
@@ -32,6 +29,8 @@ defineProps<{
   }[];
   editUniqueId?: string;
 }>();
+
+const isOffline = useIsOffline();
 
 const router = useRouter();
 
@@ -131,6 +130,10 @@ const csvExportSizeEstimation = computed(() => {
 });
 
 const isDevMode = useDevMode();
+
+const systemStore = useSystemStore();
+
+const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 </script>
 
 <template>
@@ -140,98 +143,95 @@ const isDevMode = useDevMode();
     </button>
   </div>
 
-  <div class="fr-mb-1v sub-header">
-    <div>
-      <p
-        :class="`fr-badge ${
-          auditPublicationDate && !auditEditionDate
-            ? 'fr-badge--success fr-badge--no-icon'
-            : 'fr-badge--purple-glycine'
-        }`"
-      >
-        {{
-          auditPublicationDate && !auditEditionDate
-            ? "🎉 audit terminé"
-            : "🔍 Audit en cours"
-        }}
+  <div
+    v-if="!systemStore.isOnline"
+    id="offlineAlert"
+    class="fr-pt-1w offline-alert fr-mb-2w"
+  >
+    <div class="fr-alert fr-alert--error">
+      <h3 class="fr-alert__title">Tentative de connexion...</h3>
+      <p>
+        Vous êtes actuellement hors connexion. Veuillez vérifier votre connexion
+        internet.
       </p>
-      <span v-if="auditPublicationDate" class="fr-text--xs fr-ml-3v">
-        Le {{ formatDate(auditPublicationDate) }}
-      </span>
     </div>
-    <div>
-      <slot name="actions-notice" />
+  </div>
 
-      <ul class="top-actions" role="list">
-        <li class="fr-mr-2w">
-          <Dropdown
-            ref="optionsDropdownRef"
-            title="Options"
-            :align-left="route.name === 'edit-audit-step-three'"
-          >
-            <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <template v-if="!!auditPublicationDate">
-                <li class="dropdown-item">
-                  <RouterLink
-                    :to="{
-                      name: 'edit-audit-step-three',
-                      params: { uniqueId: editUniqueId },
-                    }"
-                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
-                  >
-                    Modifier l’audit
-                  </RouterLink>
-                </li>
-              </template>
+  <StickyIndicators />
+
+  <div class="fr-mb-1v sub-header">
+    <slot name="actions-notice" />
+
+    <ul class="top-actions fr-my-0" role="list">
+      <li class="fr-mr-2w">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Options"
+          :disabled="isOffline"
+          :align-left="route.name === 'edit-audit-step-three'"
+        >
+          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+            <template v-if="!!auditPublicationDate">
               <li class="dropdown-item">
                 <RouterLink
                   :to="{
-                    name: 'edit-audit-step-one',
+                    name: 'edit-audit-step-three',
                     params: { uniqueId: editUniqueId },
                   }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
                 >
-                  <GearIcon class="fr-mr-2v" />
-                  Modifier les paramètres
+                  Modifier l’audit
                 </RouterLink>
               </li>
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                  @click="duplicateModal?.show()"
-                >
-                  <CopyIcon class="fr-mr-2v" />
-                  Créer une copie
-                </button>
-              </li>
-              <li class="dropdown-item">
-                <a
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
-                  :href="csvExportUrl"
-                  :download="csvExportFilename"
-                >
-                  Exporter l’audit
-                  <span class="fr-text--xs fr-text--regular download-meta">
-                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
-                  </span>
-                </a>
-              </li>
-              <li aria-hidden="true" class="dropdown-separator"></li>
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
-                  @click="deleteModal?.show()"
-                >
-                  Supprimer l’audit
-                </button>
-              </li>
-            </ul>
-          </Dropdown>
-        </li>
+            </template>
+            <li class="dropdown-item">
+              <RouterLink
+                :to="{
+                  name: 'edit-audit-step-one',
+                  params: { uniqueId: editUniqueId },
+                }"
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              >
+                <GearIcon class="fr-mr-2v" />
+                Modifier les paramètres
+              </RouterLink>
+            </li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                @click="duplicateModal?.show()"
+              >
+                <CopyIcon class="fr-mr-2v" />
+                Créer une copie
+              </button>
+            </li>
+            <li class="dropdown-item">
+              <a
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                :href="csvExportUrl"
+                :download="csvExportFilename"
+              >
+                Exporter l’audit
+                <span class="fr-text--xs fr-text--regular download-meta">
+                  CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                </span>
+              </a>
+            </li>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+                @click="deleteModal?.show()"
+              >
+                Supprimer l’audit
+              </button>
+            </li>
+          </ul>
+        </Dropdown>
+      </li>
 
-        <slot name="actions" />
-      </ul>
-    </div>
+      <slot name="actions" />
+    </ul>
   </div>
 
   <h1 class="">{{ auditName }}</h1>
@@ -241,8 +241,23 @@ const isDevMode = useDevMode();
       auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
     }`"
   >
+    <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
+      <SummaryCard
+        :title="keyInfos[0].title"
+        :description="
+          unfinishedAudit
+            ? '(Disponible à la fin de l’audit)'
+            : keyInfos[0].description
+        "
+        :value="unfinishedAudit ? 0 : keyInfos[0].value"
+        :total="keyInfos[0].total"
+        :unit="keyInfos[0].unit"
+        :theme="unfinishedAudit ? undefined : keyInfos[0].theme"
+        :disabled="unfinishedAudit"
+      />
+    </div>
     <div
-      v-for="info in keyInfos"
+      v-for="info in keyInfos.slice(1)"
       :key="info.title"
       :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
     >
@@ -281,8 +296,12 @@ const isDevMode = useDevMode();
 <style scoped>
 .sub-header {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
+
+  flex-basis: initial !important;
+  flex-direction: column;
+  z-index: 3;
 }
 
 .heading {
@@ -307,6 +326,9 @@ const isDevMode = useDevMode();
   flex-basis: 100%;
   color: var(--text-mention-grey);
 }
+:deep(.top-actions > li) {
+  padding-bottom: 0;
+}
 
 .delete-button {
   color: var(--error-425-625);
@@ -327,5 +349,12 @@ const isDevMode = useDevMode();
 
 .info-sub-text {
   text-transform: none;
+}
+
+.offline-alert {
+  background: var(--background-default-grey);
+  position: sticky;
+  top: 0;
+  z-index: 4;
 }
 </style>

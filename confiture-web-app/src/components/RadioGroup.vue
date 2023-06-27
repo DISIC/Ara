@@ -13,6 +13,7 @@ const props = defineProps<{
     label: string;
     color?: RadioColor;
   }[];
+  disabled?: boolean;
   defaultValue: any;
 
   modelValue: any;
@@ -43,6 +44,7 @@ function handleChange(value: string) {
         :id="`checkbox-group-${uniqueId}--${i}`"
         class="sr-only"
         type="checkbox"
+        :disabled="disabled"
         :checked="modelValue === item.value"
         @input="handleChange(item.value)"
       />
