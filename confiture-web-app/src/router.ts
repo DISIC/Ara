@@ -36,6 +36,8 @@ import LoginPage from "./pages/account/LoginPage.vue";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
+import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
+import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -178,6 +180,25 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           { label: "Mon compte", name: "account-settings" },
         ],
+      },
+    },
+    {
+      path: "/compte/avis-suppression-compte",
+      name: "account-deletion-feedback",
+      component: AccountDeletionFeedback,
+      meta: {
+        name: "Suppression compte",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Suppression compte", name: "account-deletion-feedback" },
+        ],
+      },
+      beforeEnter() {
+        // Check that a feedback token is present in the store, otherwise redirect to homepage.
+        const accountStore = useAccountStore();
+        if (!accountStore.accountDeletionFeedbackToken) {
+          return { name: "home" };
+        }
       },
     },
     // Audit pages

@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 
 import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
+import Account from "../../components/account/settings/Account.vue";
 import TopLink from "../../components/TopLink.vue";
 
 import { useAccountStore } from "../../store/account";
@@ -24,6 +25,7 @@ onMounted(() => {
         <h1 class="fr-h2">Mon compte</h1>
         <Profile />
         <hr class="fr-mt-3w" />
+
         <!-- <hr />
         <hr /> -->
         <h2 class="fr-h6">Données</h2>
@@ -38,6 +40,10 @@ onMounted(() => {
           suivante : <strong>ara@design.numerique.gouv.fr</strong>
         </p>
         <hr />
+
+        <h2 class="fr-h6">Compte</h2>
+        <Account />
+
         <div class="top-link-container">
           <TopLink />
         </div>

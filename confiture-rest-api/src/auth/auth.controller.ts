@@ -3,6 +3,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -30,6 +31,13 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ResendVerificationEmailDto } from './resend-verification-email.dto';
+import { User } from './user.decorator';
+import { AuthenticationJwtPayload } from './jwt-payloads';
+import { AuthRequired } from './auth-required.decorator';
+import { DeleteAccountDto } from './delete-account.dto';
+import { DeleteAccountResponseDto } from './delete-account-response.dto';
+import { FeedbackService } from 'src/feedback/feedback.service';
+import { AuditService } from 'src/audits/audit.service';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -37,6 +45,8 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly email: MailService,
+    private readonly feedback: FeedbackService,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -153,5 +163,30 @@ export class AuthController {
       }
       throw e;
     }
+  }
+
+  @Delete('account')
+  @ApiOkResponse({
+    description: 'The account was succesfully deleted.',
+    type: DeleteAccountResponseDto,
+  })
+  @AuthRequired()
+  async deleteAccount(
+    @Body() body: DeleteAccountDto,
+    @User() user: AuthenticationJwtPayload,
+  ) {
+    if (!(await this.auth.checkCredentials(user.email, body.password))) {
+      throw new UnauthorizedException();
+    }
+
+    await this.audit.anonymiseAudits(user.email);
+
+    const feedbackToken = await this.feedback.generateFeedbackToken();
+
+    await this.auth.deleteAccount(user.email);
+
+    return {
+      feedbackToken,
+    };
   }
 }

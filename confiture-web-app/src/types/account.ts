@@ -11,3 +11,7 @@ export interface UpdateProfileRequestData {
   /** ACME */
   orgName?: string;
 }
+
+export interface AccountDeletionResponse {
+  feedbackToken: string;
+}
