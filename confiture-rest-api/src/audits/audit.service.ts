@@ -1112,4 +1112,17 @@ export class AuditService {
 
     return newAudit;
   }
+
+  async anonymiseAudits(userEmail: string) {
+    await this.prisma.audit.updateMany({
+      where: {
+        auditorEmail: userEmail,
+      },
+      data: {
+        auditorEmail: null,
+        auditorName: null,
+        showAuditorEmailInReport: false,
+      },
+    });
+  }
 }
