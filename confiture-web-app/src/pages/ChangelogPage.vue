@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MarkdownRenderer from "../components/MarkdownRenderer.vue";
-import changelogMarkdown from "../../../CHANGELOG.md?raw";
+import changelogMarkdown from "../assets/CHANGELOG.md?raw";
 </script>
 
 <template>
