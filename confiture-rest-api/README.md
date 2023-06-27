@@ -77,6 +77,13 @@ yarn start:dev
 git push heroku <branche>:main
 ```
 
+Before deploying on production environment, make sure your IP address is whitelisted on OVH. Then:
+
+```sh
+# Deploy backend in prod environment
+DATABASE_URL="<database_url>" yarn prisma migrate deploy
+```
+
 ## API documentation
 
 The API routes are documented using Swagger. Go to http://localhost:4000/swagger
