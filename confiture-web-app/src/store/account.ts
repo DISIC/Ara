@@ -180,6 +180,7 @@ export const useAccountStore = defineStore("account", {
         })
         .json()) as AccountDeletionResponse;
 
+      this.logout();
       this.accountDeletionFeedbackToken = response.feedbackToken;
     },
 

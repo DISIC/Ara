@@ -50,7 +50,7 @@ model Audit {
   /// @DtoEntityHidden
   pages                    AuditedPage[]
   auditorName              String?
-  auditorEmail             String
+  auditorEmail             String?
   showAuditorEmailInReport Boolean       @default(false)
   auditorOrganisation      String
 

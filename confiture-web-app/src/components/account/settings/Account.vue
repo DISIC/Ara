@@ -11,8 +11,7 @@ const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
 
-// const validation = ref("");
-const validation = ref(VALIDATION_STRING);
+const validation = ref("");
 const password = ref("");
 
 const displayAccountDeletionForm = ref(false);
@@ -169,6 +168,7 @@ async function hideAccountDeletionForm() {
         <li>
           <button
             class="fr-btn fr-btn--secondary fr-mb-0"
+            type="button"
             @click="hideAccountDeletionForm"
           >
             Annuler

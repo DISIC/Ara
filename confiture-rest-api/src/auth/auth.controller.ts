@@ -37,6 +37,7 @@ import { AuthRequired } from './auth-required.decorator';
 import { DeleteAccountDto } from './delete-account.dto';
 import { DeleteAccountResponseDto } from './delete-account-response.dto';
 import { FeedbackService } from 'src/feedback/feedback.service';
+import { AuditService } from 'src/audits/audit.service';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -45,6 +46,7 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly email: MailService,
     private readonly feedback: FeedbackService,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -177,11 +179,11 @@ export class AuthController {
       throw new UnauthorizedException();
     }
 
-    // TODO: anonymise reports
+    await this.audit.anonymiseAudits(user.email);
 
     const feedbackToken = await this.feedback.generateFeedbackToken();
 
-    // await this.auth.deleteAccount(user.email);
+    await this.auth.deleteAccount(user.email);
 
     return {
       feedbackToken,

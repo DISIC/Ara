@@ -6,6 +6,7 @@ import { MailModule } from 'src/mail/mail.module';
 import { PrismaService } from 'src/prisma.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuditsModule } from 'src/audits/audits.module';
 
 @Module({
   providers: [AuthService, PrismaService],
@@ -20,6 +21,7 @@ import { AuthService } from './auth.service';
       }),
     }),
     FeedbackModule,
+    AuditsModule,
   ],
 })
 export class AuthModule {}

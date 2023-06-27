@@ -27,5 +27,6 @@ import { AuditExportService } from './audit-export.service';
       },
     }),
   ],
+  exports: [AuditService],
 })
 export class AuditsModule {}
