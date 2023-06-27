@@ -9,19 +9,20 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 
 ## Création d’un compte
 
-- Créer un compte **En coursr**
+- Créer un compte **En cours**
 - Lister tous ses audits **En cours**
 - Personnaliser l’interface d’audit **À venir**
 
 ## Exporter les documents
 
 - Exporter au format odt le rapport d’audit **À venir**
-- Exporter au fomat ods les résultats d’audit **À venir**
-- Exporter au fomat odp la restitution d’audit **À venir**
+- Exporter au fomat ods les résultats d’audit **Plus tard**
+- Exporter au fomat odp la restitution d’audit **Plus tard**
 
 ## Nouvelles fonctionnalités
 
-- Possibilité de n‘afficher que les non-conformités **En cours**
+- Noter les quick-wins **En cours**
+- Possibilité de filtrer les critères C, NC ou NA **En cours**
 - Intégration des tests automatiques **Plus tard**
 
 ## Correction de bugs
