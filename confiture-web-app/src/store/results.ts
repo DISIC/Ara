@@ -235,6 +235,7 @@ export const useResultsStore = defineStore("results", {
                 target.errorDescription = update.errorDescription;
                 target.recommandation = update.recommandation;
                 target.userImpact = update.userImpact;
+                target.quickWin = update.quickWin;
               }
 
               if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {

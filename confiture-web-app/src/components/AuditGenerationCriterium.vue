@@ -205,6 +205,12 @@ function updateTransverseStatus(e: Event) {
     .catch(handleUpdateResultError);
 }
 
+function updateQuickWin(quickWin: boolean) {
+  store
+    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
+    .catch(handleUpdateResultError);
+}
+
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -253,7 +259,7 @@ const isOffline = useIsOffline();
           :disabled="
             result.status === CriteriumResultStatus.NOT_TESTED || isOffline
           "
-          @input="updateTransverseStatus($event)"
+          @input="updateTransverseStatus"
         />
         <label
           class="fr-toggle__label fr-pr-2w"
@@ -287,6 +293,7 @@ const isOffline = useIsOffline();
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :recommandation="result.recommandation"
+      :quick-win="result.quickWin"
       :show-file-format-error="showFileFormatError"
       :show-file-size-error="showFileSizeError"
       @update:comment="updateResultComment($event, 'errorDescription')"
@@ -294,6 +301,7 @@ const isOffline = useIsOffline();
       @upload-example="handleUploadExample"
       @delete-example="handleDeleteExample"
       @update:recommandation="updateResultComment($event, 'recommandation')"
+      @update:quick-win="updateQuickWin"
     />
 
     <!-- TESTS + METHODO -->

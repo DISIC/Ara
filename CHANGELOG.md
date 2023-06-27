@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 27/06/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajout d’un paramètre "Facile à corriger" sur les non-conformités ([#436](https://github.com/DISIC/Ara/pull/436))
+
 ## 22/06/2023
 
 ### Autres changements ⚙️

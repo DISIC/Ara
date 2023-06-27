@@ -14,6 +14,7 @@ const props = defineProps<{
   userImpact: CriterionResultUserImpact | null;
   exampleImages: ExampleImage[];
   recommandation: string | null;
+  quickWin?: boolean;
 
   showFileFormatError: boolean;
   showFileSizeError: boolean;
@@ -25,6 +26,7 @@ const emit = defineEmits<{
   (e: "upload-example", payload: File): void;
   (e: "delete-example", payload: ExampleImage): void;
   (e: "update:recommandation", payload: string): void;
+  (e: "update:quickWin", payload: boolean): void;
 }>();
 
 const userImpacts: Array<{
@@ -218,7 +220,27 @@ const isOffline = useIsOffline();
       ></textarea>
     </div>
 
-    <MarkdownHelpButton :id="`markdown-notice-${id}`" />
+    <MarkdownHelpButton :id="`markdown-notice-${id}`" class="fr-mb-3w" />
+
+    <!-- QUICK WIN -->
+    <div class="fr-fieldset__element fr-fieldset__element--inline">
+      <div class="fr-checkbox-group">
+        <input
+          :id="`criterium-quick-win-${id}`"
+          :checked="quickWin"
+          type="checkbox"
+          @input="
+            $emit(
+              'update:quickWin',
+              ($event.target as HTMLInputElement).checked
+            )
+          "
+        />
+        <label class="fr-label" :for="`criterium-quick-win-${id}`">
+          Facile à corriger
+        </label>
+      </div>
+    </div>
   </LazyAccordion>
 </template>
 

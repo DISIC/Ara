@@ -170,6 +170,7 @@ export class AuditService {
           notApplicableComment: null,
           exampleImages: [],
           transverse: false,
+          quickWin: false,
 
           topic: criterion.topic,
           criterium: criterion.criterium,
@@ -379,6 +380,7 @@ export class AuditService {
           notApplicableComment: item.notApplicableComment,
           recommandation: item.recommandation,
           userImpact: item.userImpact,
+          quickWin: item.quickWin,
           transverse: item.transverse,
         };
 
@@ -426,6 +428,7 @@ export class AuditService {
                   errorDescription: item.errorDescription,
                   recommandation: item.recommandation,
                   userImpact: item.userImpact,
+                  quickWin: item.quickWin,
                 }),
 
                 ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
@@ -911,6 +914,7 @@ export class AuditService {
         notApplicableComment: r.notApplicableComment,
         recommandation: r.recommandation,
         userImpact: r.userImpact,
+        quickWin: r.quickWin,
         exampleImages: r.exampleImages.map((img) => ({
           url: img.url,
           filename: img.originalFilename,

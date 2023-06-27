@@ -134,4 +134,5 @@ export interface CriteriumResult {
   recommandation: string | null;
   notApplicableComment: string | null;
   exampleImages: ExampleImage[];
+  quickWin: boolean;
 }

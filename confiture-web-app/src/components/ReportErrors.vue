@@ -32,13 +32,17 @@ const errors = computed(() => {
   const data = Object.values(
     mapValues(
       groupBy(
-        report.data?.results.filter((r) => {
-          return (
-            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
-            userImpactFilters.value.includes(r.userImpact)
-          );
-        }),
+        report.data?.results
+          .filter((r) => {
+            return (
+              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+              !r.transverse &&
+              userImpactFilters.value.includes(r.userImpact)
+            );
+          })
+          .filter((r) => {
+            return quickWinFilter.value ? r.quickWin : r;
+          }),
         "pageId"
       ),
       (results, pageId) => {
@@ -115,7 +119,9 @@ const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
 );
 
 const disabledResetFilters = computed(
-  () => userImpactFilters.value.length === defaultUserImpactFillters.length
+  () =>
+    userImpactFilters.value.length === defaultUserImpactFillters.length &&
+    !quickWinFilter.value
 );
 
 const minorUserImpactErrorCount = computed(
@@ -181,8 +187,11 @@ const displayedErrorCount = computed(() => {
 //   }
 // }
 
+const quickWinFilter = ref(false);
+
 function resetFilters() {
   userImpactFilters.value = defaultUserImpactFillters;
+  quickWinFilter.value = false;
 }
 
 function getTopicName(topicNumber: number) {
@@ -429,6 +438,25 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             </div>
           </fieldset>
         </div>
+        <div class="fr-form-group">
+          <fieldset class="fr-fieldset">
+            <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
+              Correction de l’erreur
+            </legend>
+            <div class="fr-fieldset__content">
+              <div class="fr-checkbox-group">
+                <input
+                  id="quick-win-filter"
+                  v-model="quickWinFilter"
+                  type="checkbox"
+                />
+                <label class="fr-label" for="quick-win-filter">
+                  Facile à corriger
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
       </div>
 
       <div>
@@ -444,6 +472,14 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
             Tout déplier
           </button> -->
         </div>
+
+        <section v-if="!userImpactFilters.length">
+          <h2 class="fr-h6 fr-mb-1w">
+            Aucun résultat ne correspond à votre recherche
+          </h2>
+          <p>Veuillez sélectionner au moins un filtre "impact de l'erreur".</p>
+        </section>
+
         <section v-if="transverseErrors.length" class="fr-mb-8w">
           <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
             Toutes les pages
@@ -490,6 +526,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   >
                     Impact {{ formatUserImpact(error.userImpact) }}
                   </p>
+                </li>
+                <li v-if="error.quickWin">
+                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
                 </li>
               </ul>
 
@@ -606,6 +645,9 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   >
                     Impact {{ formatUserImpact(error.userImpact) }}
                   </p>
+                </li>
+                <li v-if="error.quickWin">
+                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
                 </li>
               </ul>
 
