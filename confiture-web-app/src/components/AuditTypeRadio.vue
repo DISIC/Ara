@@ -40,9 +40,10 @@ defineEmits(["update:modelValue"]);
         :for="`audit-type-${value}`"
       >
         {{ label }}
-        <span class="fr-text fr-text--md fr-text--regular fr-mb-0 fr-mt-3v">
-          {{ description }}
-        </span>
+        <span
+          class="fr-text fr-text--md fr-text--regular fr-mb-0 fr-mt-3v"
+          v-html="description"
+        />
       </label>
     </div>
   </div>
