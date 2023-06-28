@@ -25,11 +25,8 @@ function submitStepOne(data: CreateAuditRequestData) {
       ...auditStore.data!,
       ...data,
     })
-    .then((audit) => {
-      router.push({
-        name: "edit-audit-step-three",
-        params: { uniqueId: audit.editUniqueId },
-      });
+    .then(() => {
+      router.back();
     })
     .catch((err) => {
       console.error(err);
