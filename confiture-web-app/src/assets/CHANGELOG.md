@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Cache le bloc de déclaration d’accessibilité sur la synthèse dans le cas d’un audit rapide ou complémentaire ([#459](https://github.com/DISIC/Ara/pull/459))
 - Applique correctement la mise à jour du nom de la structure ([#454](https://github.com/DISIC/Ara/pull/454))
 
 ## 27/06/2023
