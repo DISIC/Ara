@@ -176,7 +176,7 @@ export const useAccountStore = defineStore("account", {
           json: {
             password,
           },
-          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+          headers: { Authorization: `Bearer ${this.authToken}` },
         })
         .json()) as AccountDeletionResponse;
 
@@ -190,7 +190,25 @@ export const useAccountStore = defineStore("account", {
           feedback,
           feedbackToken: this.accountDeletionFeedbackToken,
         },
-        headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        headers: { Authorization: `Bearer ${this.authToken}` },
+      });
+    },
+
+    async updateEmail(email: string, password: string) {
+      await ky.put("/api/auth/account/email", {
+        json: {
+          email,
+          password,
+        },
+        headers: { Authorization: `Bearer ${this.authToken}` },
+      });
+    },
+
+    async verifyEmailUpdate(verificationToken: string) {
+      await ky.post("/api/auth/verify-email-update", {
+        json: {
+          token: verificationToken,
+        },
       });
     },
 

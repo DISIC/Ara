@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
+import { captureWithPayloads } from "../../../utils";
 
 const router = useRouter();
 const accountStore = useAccountStore();
@@ -48,6 +49,8 @@ async function deleteAccount() {
           "Impossible de supprimer le compte",
           "Une erreur inconnue empêche la suppression du compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
         );
+        // TODO: censor password in sentry payload
+        captureWithPayloads(e);
       }
     });
 }

@@ -2,19 +2,25 @@
 import { nextTick, ref } from "vue";
 
 import { useAccountStore } from "../../../store/account";
+import { HTTPError } from "ky";
+import { useNotifications } from "../../../composables/useNotifications";
+import { captureWithPayloads } from "../../../utils";
 
 // TODO: cancel email update (what if user clicks on verification email after?)
 
 const accountStore = useAccountStore();
+const notify = useNotifications();
 
 // Form submission
 const passwordFieldRef = ref<HTMLInputElement>();
 const newEmailFieldRef = ref<HTMLInputElement>();
 const confirmAlert = ref<HTMLDivElement>();
 
+// Field errors
 const passwordError = ref("");
 const newEmailError = ref("");
 
+// Field values
 const password = ref("");
 const newEmail = ref("");
 
@@ -38,32 +44,56 @@ async function updateEmail() {
   passwordError.value = "";
   newEmailError.value = "";
 
-  // TODO: verify password
-  const TEST_PASSWORD = "pouet";
-  if (password.value !== TEST_PASSWORD) {
-    passwordError.value = "Le mot de passe saisi est incorrect.";
-    await nextTick();
-    passwordFieldRef.value?.focus();
-  }
+  accountStore
+    .updateEmail(newEmail.value, password.value)
+    .then(showSuccess)
+    .catch(async (e) => {
+      if (e instanceof HTTPError && e.response.status === 401) {
+        passwordError.value = "Le mot de passe saisi est incorrect.";
+        await nextTick();
+        passwordFieldRef.value?.focus();
+      } else if (e instanceof HTTPError && e.response.status === 409) {
+        newEmailError.value =
+          "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
+        await nextTick();
+        newEmailFieldRef.value?.focus();
+      } else {
+        notify(
+          "error",
+          "Impossible de mettre à jour l'adresse mail.",
+          "Une erreur inconnue empêche la mise à jour de votre compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        );
+        // TODO: censor password in sentry payload
+        captureWithPayloads(e, false);
+      }
+    });
 
-  // TODO: verify email is not already associated with an account
-  if (
-    accountStore.account?.email &&
-    newEmail.value === accountStore.account?.email
-  ) {
-    // TODO: update error wording
-    newEmailError.value =
-      "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
-    await nextTick();
-    newEmailFieldRef.value?.focus();
-  }
+  // // TODO: verify password
+  // const TEST_PASSWORD = "pouet";
+  // if (password.value !== TEST_PASSWORD) {
+  //   passwordError.value = "Le mot de passe saisi est incorrect.";
+  //   await nextTick();
+  //   passwordFieldRef.value?.focus();
+  // }
 
-  if (
-    password.value === TEST_PASSWORD &&
-    newEmail.value !== accountStore.account?.email
-  ) {
-    showSuccess();
-  }
+  // // TODO: verify email is not already associated with an account
+  // if (
+  //   accountStore.account?.email &&
+  //   newEmail.value === accountStore.account?.email
+  // ) {
+  //   // TODO: update error wording
+  //   newEmailError.value =
+  //     "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
+  //   await nextTick();
+  //   newEmailFieldRef.value?.focus();
+  // }
+
+  // if (
+  //   password.value === TEST_PASSWORD &&
+  //   newEmail.value !== accountStore.account?.email
+  // ) {
+  //   showSuccess();
+  // }
 }
 
 // Send new email
