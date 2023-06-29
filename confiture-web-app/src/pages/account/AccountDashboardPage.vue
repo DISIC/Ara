@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
 
+import { AuditStatus } from "../../types";
 import { useAccountStore } from "../../store/account";
+import TopLink from "../../components/TopLink.vue";
+import AuditsList from "../../components/account/dashboard/AuditsList.vue";
 
 // Account alert
 const accountStore = useAccountStore();
@@ -21,6 +24,7 @@ async function hideAuditsAlert() {
 </script>
 
 <template>
+  <!-- Alert -->
   <div v-if="showAuditsAlert" class="fr-alert fr-alert--info fr-mb-4w">
     <h3 class="fr-alert__title">Bienvenue dans votre espace 👋</h3>
     <p class="fr-mb-3v">
@@ -41,5 +45,42 @@ async function hideAuditsAlert() {
     </button>
   </div>
 
-  <h1 ref="mainHeadingRef" tabindex="-1">Mes audits</h1>
+  <!-- Header -->
+  <div class="fr-mb-6w header">
+    <h1 ref="mainHeadingRef" tabindex="-1" class="fr-mb-0">Mes audits</h1>
+    <RouterLink :to="{ name: 'new-audit-step-one' }" class="fr-btn">
+      Démarrer un nouvel audit
+    </RouterLink>
+  </div>
+
+  <!-- In progress -->
+  <AuditsList
+    :audits="[]"
+    :status="AuditStatus.IN_PROGRESS"
+    no-audit-label="Aucun audit en cours"
+    class="fr-mb-8w"
+  />
+
+  <!-- Completed -->
+  <AuditsList
+    :audits="[]"
+    :status="AuditStatus.COMPLETED"
+    no-audit-label="Aucun audit terminé"
+  />
+
+  <div class="top-link-wrapper">
+    <TopLink />
+  </div>
 </template>
+
+<style scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-link-wrapper {
+  text-align: right;
+}
+</style>
