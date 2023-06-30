@@ -200,6 +200,7 @@ export class AuditService {
             auditorEmail: data.auditorEmail,
             showAuditorEmailInReport: data.showAuditorEmailInReport,
             auditorName: data.auditorName,
+            auditorOrganisation: data.auditorOrganisation,
 
             contactName: data.contactName,
             contactEmail: data.contactEmail,
