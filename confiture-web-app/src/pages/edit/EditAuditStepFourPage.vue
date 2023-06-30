@@ -94,128 +94,129 @@ const successAlertContent = computed(() => {
       :title="`Audit ${auditStore.data.procedureName} terminé`"
       description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
     />
+    <div class="page-wrapper">
+      <div class="fr-alert fr-alert--success fr-mb-4w">
+        <p>
+          {{ successAlertContent }}
+        </p>
+      </div>
 
-    <div class="fr-alert fr-alert--success fr-mb-4w">
-      <p>
-        {{ successAlertContent }}
-      </p>
-    </div>
-
-    <AuditGenerationHeader
-      :audit-name="`L’audit ${auditStore.data.procedureName} est terminé`"
-      :key-infos="headerInfos"
-      :edit-unique-id="auditStore.data.editUniqueId"
-      :audit-publication-date="auditStore.data.publicationDate"
-      :audit-edition-date="auditStore.data.editionDate"
-    />
-
-    <section class="content fr-mb-6w">
-      <h2 class="fr-h4">
-        <span
-          class="fr-icon-checkbox-circle-fill fr-icon--lg ready-icon"
-          aria-hidden="true"
-        ></span>
-        Votre audit est prêt à être envoyé
-      </h2>
-      <p class="fr-mb-4w">
-        Pensez à vérifier le rapport d’audit avant de le livrer. Pour le livrer
-        vous pouvez copier le lien ci-dessous et l’envoyer par e-mail au
-        responsable du site audité.
-      </p>
-
-      <RouterLink
-        class="fr-btn fr-btn--secondary fr-mb-5w"
-        :to="{
-          name: 'report',
-          params: { uniqueId: auditStore.data.consultUniqueId },
-        }"
-        target="_blank"
-      >
-        Consulter le rapport d'audit
-        <span class="sr-only">(Nouvelle fenêtre)</span>
-      </RouterLink>
-
-      <CopyBlock
-        class="fr-mb-4w"
-        :to="reportRouteLocation"
-        description="Rapport d’audit"
-        success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
+      <AuditGenerationHeader
+        :audit-name="`L’audit ${auditStore.data.procedureName} est terminé`"
+        :key-infos="headerInfos"
+        :edit-unique-id="auditStore.data.editUniqueId"
+        :audit-publication-date="auditStore.data.publicationDate"
+        :audit-edition-date="auditStore.data.editionDate"
       />
 
-      <template v-if="!isStatementFilled">
+      <section class="content fr-mb-6w">
         <h2 class="fr-h4">
           <span
-            class="fr-icon-error-warning-fill fr-icon--lg not-ready-icon"
+            class="fr-icon-checkbox-circle-fill fr-icon--lg ready-icon"
             aria-hidden="true"
           ></span>
-          Déclaration d’accessibilité à remplir
+          Votre audit est prêt à être envoyé
         </h2>
         <p class="fr-mb-4w">
-          Vous pouvez rédiger dès maintenant la déclaration d’accessibilité
+          Pensez à vérifier le rapport d’audit avant de le livrer. Pour le
+          livrer vous pouvez copier le lien ci-dessous et l’envoyer par e-mail
+          au responsable du site audité.
         </p>
 
         <RouterLink
-          class="fr-btn fr-btn--icon-left fr-icon-edit-line"
-          :to="{
-            name: 'edit-audit-declaration',
-            params: { uniqueId: auditStore.data.editUniqueId },
-          }"
-        >
-          Remplir la déclaration d'accessibilité
-        </RouterLink>
-      </template>
-
-      <template v-else>
-        <h2 class="fr-h4">
-          <span
-            class="fr-icon-error-warning-fill fr-icon--lg ready-icon"
-            aria-hidden="true"
-          ></span>
-          Déclaration d’accessibilité prête à être livrée
-        </h2>
-        <p class="fr-mb-4w">
-          Pensez à vérifier la déclaration d’accessibilité avant de la livrer.
-          Pour la livrer vous pouvez copier le lien ci-dessous et l’envoyer par
-          e-mail au responsable du site audité.
-        </p>
-
-        <RouterLink
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mr-5w"
+          class="fr-btn fr-btn--secondary fr-mb-5w"
           :to="{
             name: 'report',
-            params: {
-              uniqueId: auditStore.data.consultUniqueId,
-              tab: 'declaration-daccessibilite',
-            },
+            params: { uniqueId: auditStore.data.consultUniqueId },
           }"
+          target="_blank"
         >
-          Consulter la déclaration d'accessibilité
-        </RouterLink>
-
-        <RouterLink
-          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
-          :to="{
-            name: 'edit-audit-declaration',
-            params: { uniqueId: auditStore.data.editUniqueId },
-          }"
-        >
-          Modifier la déclaration d’accessilbilité
+          Consulter le rapport d'audit
+          <span class="sr-only">(Nouvelle fenêtre)</span>
         </RouterLink>
 
         <CopyBlock
           class="fr-mb-4w"
-          :to="{
-            name: 'report',
-            params: {
-              uniqueId: auditStore.data.consultUniqueId,
-              tab: 'declaration-daccessibilite',
-            },
-          }"
-          description="Déclaration d’accessibilité"
-          success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
+          :to="reportRouteLocation"
+          description="Rapport d’audit"
+          success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
         />
-      </template>
-    </section>
+
+        <template v-if="!isStatementFilled">
+          <h2 class="fr-h4">
+            <span
+              class="fr-icon-error-warning-fill fr-icon--lg not-ready-icon"
+              aria-hidden="true"
+            ></span>
+            Déclaration d’accessibilité à remplir
+          </h2>
+          <p class="fr-mb-4w">
+            Vous pouvez rédiger dès maintenant la déclaration d’accessibilité
+          </p>
+
+          <RouterLink
+            class="fr-btn fr-btn--icon-left fr-icon-edit-line"
+            :to="{
+              name: 'edit-audit-declaration',
+              params: { uniqueId: auditStore.data.editUniqueId },
+            }"
+          >
+            Remplir la déclaration d'accessibilité
+          </RouterLink>
+        </template>
+
+        <template v-else>
+          <h2 class="fr-h4">
+            <span
+              class="fr-icon-error-warning-fill fr-icon--lg ready-icon"
+              aria-hidden="true"
+            ></span>
+            Déclaration d’accessibilité prête à être livrée
+          </h2>
+          <p class="fr-mb-4w">
+            Pensez à vérifier la déclaration d’accessibilité avant de la livrer.
+            Pour la livrer vous pouvez copier le lien ci-dessous et l’envoyer
+            par e-mail au responsable du site audité.
+          </p>
+
+          <RouterLink
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mr-5w"
+            :to="{
+              name: 'report',
+              params: {
+                uniqueId: auditStore.data.consultUniqueId,
+                tab: 'declaration-daccessibilite',
+              },
+            }"
+          >
+            Consulter la déclaration d'accessibilité
+          </RouterLink>
+
+          <RouterLink
+            class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
+            :to="{
+              name: 'edit-audit-declaration',
+              params: { uniqueId: auditStore.data.editUniqueId },
+            }"
+          >
+            Modifier la déclaration d’accessilbilité
+          </RouterLink>
+
+          <CopyBlock
+            class="fr-mb-4w"
+            :to="{
+              name: 'report',
+              params: {
+                uniqueId: auditStore.data.consultUniqueId,
+                tab: 'declaration-daccessibilite',
+              },
+            }"
+            description="Déclaration d’accessibilité"
+            success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
+          />
+        </template>
+      </section>
+    </div>
   </template>
 
   <section class="content">
@@ -234,6 +235,21 @@ const successAlertContent = computed(() => {
 </template>
 
 <style scoped>
+.page-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.page-wrapper > :deep(*) {
+  flex-basis: 100%;
+  max-width: 100%;
+}
+
+.page-wrapper > :deep(.sticky-indicator) {
+  align-self: center;
+}
+
 .content {
   max-width: 49.5rem;
 }
