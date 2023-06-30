@@ -3,6 +3,8 @@ import { computed } from "vue";
 
 import { AuditStatus } from "../../../types";
 import { formatDate } from "../../../utils";
+import Dropdown from "../../Dropdown.vue";
+import CopyIcon from "../../icons/CopyIcon.vue";
 
 // TODO: plug everything
 const props = defineProps<{
@@ -12,6 +14,19 @@ const props = defineProps<{
 const complianceLevel = Math.round(Math.random() * 100);
 
 const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
+
+function duplicateAudit() {
+  console.log("duplicateAudit");
+}
+function copyAuditLink() {
+  console.log("copyAuditLink");
+}
+function copyReportLink() {
+  console.log("copyReportLink");
+}
+function deleteAudit() {
+  console.log("deleteAudit");
+}
 </script>
 
 <template>
@@ -61,12 +76,87 @@ const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
     </div>
     <RouterLink
       :to="{ name: isInProgress ? '' : '' }"
-      class="fr-btn fr-btn--secondary fr-btn--icon-left"
+      class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
     >
       {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
     </RouterLink>
-    <div></div>
+    <div class="fr-pr-2w">
+      <Dropdown
+        ref="optionsDropdownRef"
+        title="Options"
+        :button-props="{ class: 'fr-btn--tertiary' }"
+      >
+        <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+          <template v-if="!isInProgress">
+            <li class="dropdown-item">
+              <RouterLink
+                to="#"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+              >
+                Modifier l’audit
+              </RouterLink>
+            </li>
+          </template>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              @click="duplicateAudit"
+            >
+              <CopyIcon class="fr-mr-2v" />
+              Créer une copie
+            </button>
+          </li>
+
+          <li aria-hidden="true" class="dropdown-separator"></li>
+
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0 download-link"
+              @click="copyAuditLink"
+            >
+              Copier le lien de l’audit
+              <span class="fr-text--xs fr-text--regular download-meta">
+                Ce lien permet de modifier l’audit
+              </span>
+            </button>
+          </li>
+
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              @click="copyReportLink"
+            >
+              Copier le lien du rapport
+            </button>
+          </li>
+
+          <li aria-hidden="true" class="dropdown-separator"></li>
+
+          <li class="dropdown-item">
+            <a
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+              href="#"
+              download="file"
+            >
+              Télécharger l’audit
+              <span class="fr-text--xs fr-text--regular download-meta">
+                CSV – 61,88 Ko
+              </span>
+            </a>
+          </li>
+          <li aria-hidden="true" class="dropdown-separator"></li>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+              @click="deleteAudit"
+            >
+              Supprimer l’audit
+            </button>
+          </li>
+        </ul>
+      </Dropdown>
+    </div>
   </div>
 </template>
 
@@ -109,5 +199,24 @@ const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
 .audit-compliance-level {
   pointer-events: none;
   z-index: 1;
+}
+
+.audit-main-action {
+  justify-self: end;
+}
+
+.download-link {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.download-meta {
+  flex-basis: 100%;
+  color: var(--text-mention-grey);
+  text-align: initial;
+}
+
+.delete-button {
+  color: var(--error-425-625);
 }
 </style>
