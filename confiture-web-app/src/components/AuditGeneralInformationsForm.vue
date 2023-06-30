@@ -31,7 +31,7 @@ const availableAuditTypes = [
     label: "Complet, de conformité",
     value: AuditType.FULL,
     description:
-      "L’audit complet dit de conformité est le seul audit ayant une valeur légale et permettant de générer une déclaration d’accessibilité.",
+      "L’audit complet dit de conformité est le seul audit ayant une valeur légale et permettant de générer une <strong>déclaration d’accessibilité</strong>.",
     highlighted: true,
   },
 ];

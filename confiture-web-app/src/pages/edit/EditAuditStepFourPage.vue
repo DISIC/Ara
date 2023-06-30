@@ -142,78 +142,80 @@ const successAlertContent = computed(() => {
           success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
         />
 
-        <template v-if="!isStatementFilled">
-          <h2 class="fr-h4">
-            <span
-              class="fr-icon-error-warning-fill fr-icon--lg not-ready-icon"
-              aria-hidden="true"
-            ></span>
-            Déclaration d’accessibilité à remplir
-          </h2>
-          <p class="fr-mb-4w">
-            Vous pouvez rédiger dès maintenant la déclaration d’accessibilité
-          </p>
+        <template v-if="auditStore.data.auditType === AuditType.FULL">
+          <template v-if="!isStatementFilled">
+            <h2 class="fr-h4">
+              <span
+                class="fr-icon-error-warning-fill fr-icon--lg not-ready-icon"
+                aria-hidden="true"
+              ></span>
+              Déclaration d’accessibilité à remplir
+            </h2>
+            <p class="fr-mb-4w">
+              Vous pouvez rédiger dès maintenant la déclaration d’accessibilité
+            </p>
 
-          <RouterLink
-            class="fr-btn fr-btn--icon-left fr-icon-edit-line"
-            :to="{
-              name: 'edit-audit-declaration',
-              params: { uniqueId: auditStore.data.editUniqueId },
-            }"
-          >
-            Remplir la déclaration d'accessibilité
-          </RouterLink>
-        </template>
+            <RouterLink
+              class="fr-btn fr-btn--icon-left fr-icon-edit-line"
+              :to="{
+                name: 'edit-audit-declaration',
+                params: { uniqueId: auditStore.data.editUniqueId },
+              }"
+            >
+              Remplir la déclaration d'accessibilité
+            </RouterLink>
+          </template>
 
-        <template v-else>
-          <h2 class="fr-h4">
-            <span
-              class="fr-icon-error-warning-fill fr-icon--lg ready-icon"
-              aria-hidden="true"
-            ></span>
-            Déclaration d’accessibilité prête à être livrée
-          </h2>
-          <p class="fr-mb-4w">
-            Pensez à vérifier la déclaration d’accessibilité avant de la livrer.
-            Pour la livrer vous pouvez copier le lien ci-dessous et l’envoyer
-            par e-mail au responsable du site audité.
-          </p>
+          <template v-else>
+            <h2 class="fr-h4">
+              <span
+                class="fr-icon-error-warning-fill fr-icon--lg ready-icon"
+                aria-hidden="true"
+              ></span>
+              Déclaration d’accessibilité prête à être livrée
+            </h2>
+            <p class="fr-mb-4w">
+              Pensez à vérifier la déclaration d’accessibilité avant de la
+              livrer. Pour la livrer vous pouvez copier le lien ci-dessous et
+              l’envoyer par e-mail au responsable du site audité.
+            </p>
 
-          <RouterLink
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mr-5w"
-            :to="{
-              name: 'report',
-              params: {
-                uniqueId: auditStore.data.consultUniqueId,
-                tab: 'declaration-daccessibilite',
-              },
-            }"
-          >
-            Consulter la déclaration d'accessibilité
-          </RouterLink>
+            <RouterLink
+              class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mr-5w"
+              :to="{
+                name: 'report',
+                params: {
+                  uniqueId: auditStore.data.consultUniqueId,
+                  tab: 'declaration-daccessibilite',
+                },
+              }"
+            >
+              Consulter la déclaration d'accessibilité
+            </RouterLink>
 
-          <RouterLink
-            class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
-            :to="{
-              name: 'edit-audit-declaration',
-              params: { uniqueId: auditStore.data.editUniqueId },
-            }"
-          >
-            Modifier la déclaration d’accessilbilité
-          </RouterLink>
+            <RouterLink
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
+              :to="{
+                name: 'edit-audit-declaration',
+                params: { uniqueId: auditStore.data.editUniqueId },
+              }"
+            >
+              Modifier la déclaration d’accessilbilité
+            </RouterLink>
 
-          <CopyBlock
-            class="fr-mb-4w"
-            :to="{
-              name: 'report',
-              params: {
-                uniqueId: auditStore.data.consultUniqueId,
-                tab: 'declaration-daccessibilite',
-              },
-            }"
-            description="Déclaration d’accessibilité"
-            success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
-          />
+            <CopyBlock
+              class="fr-mb-4w"
+              :to="{
+                name: 'report',
+                params: {
+                  uniqueId: auditStore.data.consultUniqueId,
+                  tab: 'declaration-daccessibilite',
+                },
+              }"
+              description="Déclaration d’accessibilité"
+              success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
+            />
+          </template>
         </template>
       </section>
     </div>
