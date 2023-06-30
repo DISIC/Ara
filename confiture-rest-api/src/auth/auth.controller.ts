@@ -124,7 +124,10 @@ export class AuthController {
       const email = await this.auth.getEmailFromVerificationToken(body.token);
 
       await this.auth.verifyAccount(body.token);
-      await this.email.sendAccountConfirmationEmail(email);
+      this.email.sendAccountConfirmationEmail(email).catch((err) => {
+        console.error(`Failed to send email for account creation ${email}`);
+        console.error(err);
+      });
     } catch (e) {
       if (e instanceof InvalidVerificationTokenError) {
         console.log('Account verification failed:', e.message);
@@ -221,6 +224,11 @@ export class AuthController {
     }
 
     await this.auth.updatePassword(user.email, body.newPassword);
+
+    this.email.sendPasswordUpdateConfirmation(user.email).catch((err) => {
+      console.error(`Failed to send email for password update ${user.email}`);
+      console.error(err);
+    });
 
     return;
   }
