@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
+import { useAccountStore } from "../../../store/account";
+import { HTTPError } from "ky";
+import { useNotifications } from "../../../composables/useNotifications";
+import { captureWithPayloads } from "../../../utils";
 
 const currentPasswordFieldRef = ref<HTMLInputElement>();
 const newPasswordFieldRef = ref<HTMLInputElement>();
@@ -36,32 +40,41 @@ const successAlertRef = ref<HTMLDivElement>();
 const currentPasswordError = ref("");
 const newPasswordError = ref("");
 
+const accountStore = useAccountStore();
+const notify = useNotifications();
+
 async function updatePassword() {
   currentPasswordError.value = "";
   newPasswordError.value = "";
 
-  // TODO: verify passwords
-  const TEST_PASSWORD = "pouet";
-  if (newPassword.value === TEST_PASSWORD) {
-    newPasswordError.value =
-      "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
-    await nextTick();
-    newPasswordFieldRef.value?.focus();
-  }
-
-  if (currentPassword.value !== TEST_PASSWORD) {
-    currentPasswordError.value = "Le mot de passe saisi est incorrect.";
-    await nextTick();
-    currentPasswordFieldRef.value?.focus();
-  }
-
-  if (
-    currentPassword.value === TEST_PASSWORD &&
-    newPassword.value !== TEST_PASSWORD
-  ) {
-    displayUpdatePasswordForm.value = false;
-    displaySuccessAlert.value = true;
-  }
+  accountStore
+    .updatePassword(currentPassword.value, newPassword.value)
+    .then(() => {
+      displayUpdatePasswordForm.value = false;
+      displaySuccessAlert.value = true;
+    })
+    .catch(async (err) => {
+      if (err instanceof HTTPError && err.response.status === 401) {
+        // Wrong password
+        currentPasswordError.value = "Le mot de passe saisi est incorrect.";
+        await nextTick();
+        currentPasswordFieldRef.value?.focus();
+      } else if (err instanceof HTTPError && err.response.status === 400) {
+        // Same password
+        newPasswordError.value =
+          "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
+        await nextTick();
+        newPasswordFieldRef.value?.focus();
+      } else {
+        // Unexpected network error
+        notify(
+          "error",
+          "Echéc de la mise à jour du mot de passe",
+          "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        );
+        captureWithPayloads(err);
+      }
+    });
 }
 
 async function hideSuccessAlert() {
@@ -149,6 +162,7 @@ async function hideSuccessAlert() {
           autocomplete="new-password"
           type="password"
           required
+          minlength="12"
         />
       </div>
       <p v-if="newPasswordError" id="new-password-error" class="fr-error-text">
@@ -183,6 +197,7 @@ async function hideSuccessAlert() {
       <li>
         <button
           class="fr-btn fr-btn--secondary fr-mb-0"
+          type="button"
           @click="hideUpdatePasswordForm"
         >
           Annuler

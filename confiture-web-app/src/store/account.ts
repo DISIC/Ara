@@ -1,6 +1,5 @@
 import ky from "ky";
 import { defineStore } from "pinia";
-<<<<<<< HEAD
 import jwtDecode from "jwt-decode";
 import { AuthenticationJwtPayload } from "../types";
 import {
@@ -10,13 +9,10 @@ import {
 } from "../types/account";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
-=======
->>>>>>> c5b49c9 (add new account page)
 
 interface AccountStoreState {
   account: null | {
     email: string;
-<<<<<<< HEAD
     name?: string;
     orgName?: string;
   };
@@ -52,17 +48,6 @@ export const useAccountStore = defineStore("account", {
       accountDeletionFeedbackToken: null,
     };
   },
-=======
-  };
-  authToken: null | string;
-}
-
-export const useAccountStore = defineStore("account", {
-  state: (): AccountStoreState => ({
-    account: null,
-    authToken: null,
-  }),
->>>>>>> c5b49c9 (add new account page)
 
   actions: {
     async createAccount(username: string, password: string) {
@@ -81,7 +66,6 @@ export const useAccountStore = defineStore("account", {
         },
       });
     },
-<<<<<<< HEAD
 
     /**
      * @param rememberMe If true, the authentication token is stored in the localstorage instead of the sessionstorage
@@ -209,7 +193,12 @@ export const useAccountStore = defineStore("account", {
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
       });
     },
-=======
->>>>>>> c5b49c9 (add new account page)
+
+    async updatePassword(oldPassword: string, newPassword: string) {
+      await ky.put("/api/auth/update-password", {
+        json: { oldPassword, newPassword },
+        headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      });
+    },
   },
 });
