@@ -44,11 +44,17 @@ defineProps<{
       </div>
 
       <div>
+        <!-- TODO: fix this zIndex thing -->
         <AuditRow
           v-for="(audit, i) in audits"
           :key="i"
           class="audit-row"
           :status="status"
+          :z-index="
+            status === AuditStatus.IN_PROGRESS
+              ? (audits.length - i) * 15
+              : (audits.length - i) * 2
+          "
         />
       </div>
     </template>

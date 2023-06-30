@@ -55,7 +55,7 @@ async function hideAuditsAlert() {
 
   <!-- In progress -->
   <AuditsList
-    :audits="['a']"
+    :audits="['a', 'b', 'c']"
     :status="AuditStatus.IN_PROGRESS"
     no-audit-label="Aucun audit en cours"
     class="fr-mb-8w"
@@ -63,7 +63,7 @@ async function hideAuditsAlert() {
 
   <!-- Completed -->
   <AuditsList
-    :audits="['a', 'b']"
+    :audits="['a', 'b', 'c', 'd', 'e']"
     :status="AuditStatus.COMPLETED"
     no-audit-label="Aucun audit terminé"
   />

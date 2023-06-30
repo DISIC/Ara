@@ -9,6 +9,7 @@ import CopyIcon from "../../icons/CopyIcon.vue";
 // TODO: plug everything
 const props = defineProps<{
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
+  zIndex?: number;
 }>();
 
 const complianceLevel = Math.round(Math.random() * 100);
@@ -81,7 +82,7 @@ function deleteAudit() {
     >
       {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
     </RouterLink>
-    <div class="fr-pr-2w">
+    <div class="fr-pr-2w" :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
         title="Options"
@@ -170,6 +171,10 @@ function deleteAudit() {
   position: relative;
 }
 
+.grid:hover {
+  background: var(--background-raised-grey-hover);
+}
+
 .audit-name {
   background-image: none;
   z-index: 1;
@@ -182,15 +187,10 @@ function deleteAudit() {
   outline: 2px solid #0a76f6;
 }
 
-.audit-name:hover::before {
-  background-color: var(--background-raised-grey-hover);
-}
-
 .audit-name::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
 }
 
 .audit-status,
