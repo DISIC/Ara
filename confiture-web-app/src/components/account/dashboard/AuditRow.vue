@@ -62,9 +62,9 @@ function deleteAudit() {
             : null
         "
       >
-        {{ isInProgress ? "-" : `${complianceLevel}%` }}
+        {{ isInProgress ? "–" : `${complianceLevel}%` }}
       </p>
-      <p class="fr-text--xs fr-mb-0 fr-mt-1v">
+      <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
         {{
           complianceLevel === 100
             ? "Totalement conforme"
@@ -110,13 +110,13 @@ function deleteAudit() {
 
           <li aria-hidden="true" class="dropdown-separator"></li>
 
-          <li class="dropdown-item">
+          <li class="dropdown-item dropdown-item--with-meta">
             <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0 download-link"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyAuditLink"
             >
               Copier le lien de l’audit
-              <span class="fr-text--xs fr-text--regular download-meta">
+              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 Ce lien permet de modifier l’audit
               </span>
             </button>
@@ -133,14 +133,14 @@ function deleteAudit() {
 
           <li aria-hidden="true" class="dropdown-separator"></li>
 
-          <li class="dropdown-item">
+          <li class="dropdown-item dropdown-item--with-meta">
             <a
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
               href="#"
               download="file"
             >
               Télécharger l’audit
-              <span class="fr-text--xs fr-text--regular download-meta">
+              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – 61,88 Ko
               </span>
             </a>
@@ -203,17 +203,6 @@ function deleteAudit() {
 
 .audit-main-action {
   justify-self: end;
-}
-
-.download-link {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.download-meta {
-  flex-basis: 100%;
-  color: var(--text-mention-grey);
-  text-align: initial;
 }
 
 .delete-button {

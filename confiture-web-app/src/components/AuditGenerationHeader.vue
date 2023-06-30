@@ -204,14 +204,14 @@ const isDevMode = useDevMode();
                   Créer une copie
                 </button>
               </li>
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <a
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
                   Exporter l’audit
-                  <span class="fr-text--xs fr-text--regular download-meta">
+                  <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                     CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
                 </a>
@@ -296,16 +296,6 @@ const isDevMode = useDevMode();
 .top-actions {
   display: flex;
   list-style: none;
-}
-
-.download-link {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.download-meta {
-  flex-basis: 100%;
-  color: var(--text-mention-grey);
 }
 
 .delete-button {

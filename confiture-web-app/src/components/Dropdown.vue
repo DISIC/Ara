@@ -99,14 +99,32 @@ defineExpose({ buttonRef, closeOptions });
   list-style: none;
 }
 
-.dropdown-content :deep(.dropdown-item) {
-  padding-bottom: 0;
-}
-
 .dropdown-content :deep(.dropdown-separator) {
   background-color: var(--border-default-grey);
   height: 1px;
   margin: 0.75rem 0;
   padding: 0;
+}
+
+.dropdown-content :deep(.dropdown-item) {
+  padding-bottom: 0;
+}
+
+/* Make actions hover full width */
+.dropdown-content :deep(.dropdown-item > a),
+.dropdown-content :deep(.dropdown-item > button) {
+  width: 100%;
+}
+
+/* Custom `.fr-btn` with sub text */
+.dropdown-content :deep(.dropdown-item--with-meta > a),
+.dropdown-content :deep(.dropdown-item--with-meta > button) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.dropdown-content :deep(.dropdown-item-meta) {
+  grid-column: 1 / -1;
+  color: var(--text-mention-grey);
 }
 </style>

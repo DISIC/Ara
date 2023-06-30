@@ -177,14 +177,14 @@ const csvExportSizeEstimation = computed(() => {
         :button-props="{ class: 'fr-btn--secondary' }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-          <li class="dropdown-item">
+          <li class="dropdown-item dropdown-item--with-meta">
             <a
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
               Télécharger l'audit
-              <span class="fr-text--xs fr-text--regular download-meta">
+              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
               </span>
             </a>
@@ -320,16 +320,6 @@ const csvExportSizeEstimation = computed(() => {
 .heading-actions {
   display: flex;
   gap: 1rem;
-}
-
-.download-link {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.download-meta {
-  flex-basis: 100%;
-  color: var(--text-mention-grey);
 }
 
 .dates {
