@@ -10,7 +10,7 @@ export function html(): string {
 
 export function plain(): string {
   return `
-    Bonjour,".
+    Bonjour,
 
     Votre compte Ara a été créé avec succès.
 
