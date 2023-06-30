@@ -7,21 +7,10 @@ import {
   Get,
   HttpCode,
   Post,
+  Put,
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-
-import { CreateAccountDto } from './create-account.dto';
-import {
-  AuthService,
-  InvalidVerificationTokenError,
-  SigninError,
-  TokenRegenerationError,
-  UsernameAlreadyExistsError,
-} from './auth.service';
-import { MailService } from 'src/mail/mail.service';
-import { VerifyAccountDto } from './verify-account.dto';
-import { SigninDto } from './signin.dto';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -30,14 +19,27 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { ResendVerificationEmailDto } from './resend-verification-email.dto';
-import { User } from './user.decorator';
-import { AuthenticationJwtPayload } from './jwt-payloads';
+
+import { AuditService } from '../audits/audit.service';
+import { FeedbackService } from '../feedback/feedback.service';
+import { MailService } from '../mail/mail.service';
 import { AuthRequired } from './auth-required.decorator';
-import { DeleteAccountDto } from './delete-account.dto';
-import { DeleteAccountResponseDto } from './delete-account-response.dto';
-import { FeedbackService } from 'src/feedback/feedback.service';
-import { AuditService } from 'src/audits/audit.service';
+import {
+  AuthService,
+  InvalidVerificationTokenError,
+  SigninError,
+  TokenRegenerationError,
+  UsernameAlreadyExistsError,
+} from './auth.service';
+import { CreateAccountDto } from './dto/create-account.dto';
+import { DeleteAccountResponseDto } from './dto/delete-account-response.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
+import { ResendVerificationEmailDto } from './dto/resend-verification-email.dto';
+import { SigninDto } from './dto/signin.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { VerifyAccountDto } from './dto/verify-account.dto';
+import { AuthenticationJwtPayload } from './jwt-payloads';
+import { User } from './user.decorator';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -188,5 +190,38 @@ export class AuthController {
     return {
       feedbackToken,
     };
+  }
+
+  @Put('update-password')
+  @ApiOkResponse({
+    description: 'The password was succesfully updated.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The new password is identical to the old password.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Wrong old password or invalid bearer token.',
+  })
+  @AuthRequired()
+  async updatePassword(
+    @Body() body: UpdatePasswordDto,
+    @User() user: AuthenticationJwtPayload,
+  ) {
+    const passwordCheck = await this.auth.checkCredentials(
+      user.email,
+      body.oldPassword,
+    );
+
+    if (!passwordCheck) {
+      throw new UnauthorizedException();
+    }
+
+    if (body.newPassword === body.oldPassword) {
+      throw new BadRequestException();
+    }
+
+    await this.auth.updatePassword(user.email, body.newPassword);
+
+    return;
   }
 }
