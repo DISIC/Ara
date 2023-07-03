@@ -21,7 +21,6 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 
 ## Nouvelles fonctionnalités
 
-- Noter les quick-wins **En cours**
 - Possibilité de filtrer les critères C, NC ou NA **En cours**
 - Intégration des tests automatiques **Plus tard**
 
