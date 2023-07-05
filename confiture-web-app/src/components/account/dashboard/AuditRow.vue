@@ -2,7 +2,13 @@
 import { ref, computed } from "vue";
 
 import { AuditStatus } from "../../../types";
-import { formatDate, captureWithPayloads } from "../../../utils";
+import { AccountAudit } from "../../../types/account";
+import {
+  formatDate,
+  formatAuditType,
+  captureWithPayloads,
+  slugify,
+} from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
 import DuplicateModal from "../../DuplicateModal.vue";
@@ -11,9 +17,8 @@ import { useNotifications } from "../../../composables/useNotifications";
 import { useRouter } from "vue-router";
 import { useAuditStore, useResultsStore } from "../../../store";
 
-// TODO: plug everything
 const props = defineProps<{
-  status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
+  audit: AccountAudit;
   zIndex?: number;
 }>();
 
@@ -22,20 +27,29 @@ const router = useRouter();
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
 
-const complianceLevel = Math.round(Math.random() * 100);
+const isInProgress = computed(
+  () => props.audit.status === AuditStatus.IN_PROGRESS
+);
 
-const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
+const rowUrl = isInProgress.value
+  ? {
+      name: "edit-audit-step-three",
+      params: { uniqueId: props.audit.editId },
+    }
+  : {
+      name: "report",
+      params: { uniqueId: props.audit.consultId },
+    };
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const isDuplicationLoading = ref(false);
 
-// TODO: get audit id
 function duplicateAudit(name: string) {
   isDuplicationLoading.value = true;
   auditStore
-    .duplicateAudit("uniqueId.value", name)
+    .duplicateAudit(props.audit.editId, name)
     .then((newAuditId) => {
       auditStore.$reset();
       resultStore.$reset();
@@ -66,18 +80,16 @@ function duplicateAudit(name: string) {
     });
 }
 
-// TODO: update auditUrl
 function copyAuditLink() {
-  const auditUrl = "auditUrl";
+  const auditUrl = `${window.location.origin}/audits/${props.audit.editId}/generation`;
 
   navigator.clipboard.writeText(auditUrl).then(() => {
     notify("success", "", "Le lien vers l’audit a été copié avec succès");
   });
 }
 
-// TODO: update reportUrl
 function copyReportLink() {
-  const reportUrl = "reportUrl";
+  const reportUrl = `${window.location.origin}/rapports/${props.audit.consultId}`;
 
   navigator.clipboard.writeText(reportUrl).then(() => {
     notify("success", "", "Le lien vers le rapport a été copié avec succès");
@@ -90,7 +102,7 @@ const isDeletionLoading = ref(false);
 function deleteAudit() {
   isDeletionLoading.value = true;
   auditStore
-    .deleteAudit("uniqueId.value")
+    .deleteAudit(props.audit.editId)
     .then(() => {
       auditStore.$reset();
       resultStore.$reset();
@@ -117,8 +129,8 @@ function deleteAudit() {
 
 <template>
   <div class="fr-py-2w grid">
-    <RouterLink to="#" class="fr-pl-2w audit-name">
-      <strong>Audit Système de Design de l’État</strong>
+    <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
+      <strong>{{ audit.name }}</strong>
     </RouterLink>
 
     <p
@@ -130,38 +142,38 @@ function deleteAudit() {
       {{ isInProgress ? "En cours" : "Terminé" }}
     </p>
     <p class="fr-mb-0 audit-date">
-      <time :datetime="new Date().toString()">
-        {{ formatDate(new Date().toString()) }}
+      <time :datetime="audit.creationDate.toString()">
+        {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
     </p>
-    <p class="fr-mb-0 audit-type">Complémentaire</p>
+    <p class="fr-mb-0 audit-type">{{ formatAuditType(audit.type) }}</p>
     <div class="audit-compliance-level">
       <p
         class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
         :class="
           !isInProgress
             ? {
-                'fr-badge--green-emeraude': complianceLevel === 100,
-                'fr-badge--new': complianceLevel < 100,
-                'fr-badge--error': complianceLevel < 50,
+                'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                'fr-badge--new': audit.complianceLevel >= 50,
+                'fr-badge--error': audit.complianceLevel < 50,
               }
             : null
         "
       >
-        {{ isInProgress ? "–" : `${complianceLevel}%` }}
+        {{ isInProgress ? "–" : `${audit.complianceLevel}%` }}
       </p>
       <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
         {{
-          complianceLevel === 100
+          audit.complianceLevel === 100
             ? "Totalement conforme"
-            : complianceLevel >= 50
+            : audit.complianceLevel >= 50
             ? "Partiellement conforme"
             : "Non conforme"
         }}
       </p>
     </div>
     <RouterLink
-      :to="{ name: isInProgress ? '' : '' }"
+      :to="rowUrl"
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
     >
@@ -177,7 +189,10 @@ function deleteAudit() {
           <template v-if="!isInProgress">
             <li class="dropdown-item">
               <RouterLink
-                to="#"
+                :to="{
+                  name: 'edit-audit-step-three',
+                  params: { uniqueId: audit.editId },
+                }"
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
               >
                 Modifier l’audit
@@ -226,6 +241,7 @@ function deleteAudit() {
               download="file"
             >
               Télécharger l’audit
+              <!-- TODO: refactor (3 same methods in 3 ≠ files) -->
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – 61,88 Ko
               </span>
@@ -245,10 +261,9 @@ function deleteAudit() {
     </div>
   </div>
 
-  <!-- TODO: get audit name -->
   <DuplicateModal
     ref="duplicateModal"
-    original-audit-name="pouet"
+    :original-audit-name="audit.name"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
     @closed="

@@ -1,11 +1,12 @@
 import ky from "ky";
 import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
-import { AuthenticationJwtPayload } from "../types";
+import { AuditStatus, AuditType, AuthenticationJwtPayload } from "../types";
 import {
   Account,
   AccountDeletionResponse,
   UpdateProfileRequestData,
+  AccountAudit,
 } from "../types/account";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
@@ -18,7 +19,7 @@ interface AccountStoreState {
   };
   authToken: null | string;
   accountDeletionFeedbackToken: null | string;
-  audits: { status: string }[];
+  audits: AccountAudit[];
 }
 
 export const useAccountStore = defineStore("account", {
@@ -203,13 +204,46 @@ export const useAccountStore = defineStore("account", {
       // });
 
       // this.audits = audits;
-      this.audits = [
-        { status: "in-progress" },
-        { status: "completed" },
-        { status: "in-progress" },
-        { status: "in-progress" },
-        { status: "completed" },
-      ];
+      setTimeout(() => {
+        this.audits = [
+          {
+            name: "Audit Système de Design de l’État",
+            status: AuditStatus.IN_PROGRESS,
+            type: AuditType.COMPLEMENTARY,
+            complianceLevel: 34,
+            consultId: "report-url-1",
+            editId: "audit-url-1",
+            creationDate: new Date("06/19/2023").toString(),
+          },
+          {
+            name: "Audit du site Beta.gouv",
+            status: AuditStatus.COMPLETED,
+            type: AuditType.COMPLEMENTARY,
+            complianceLevel: 43,
+            consultId: "report-url-2",
+            editId: "audit-url-2",
+            creationDate: new Date("05/02/2023").toString(),
+          },
+          {
+            name: "Contre audit Parcoursup 2",
+            status: AuditStatus.COMPLETED,
+            type: AuditType.FAST,
+            complianceLevel: 67,
+            consultId: "report-url-3",
+            editId: "audit-url-3",
+            creationDate: new Date("02/28/2023").toString(),
+          },
+          {
+            name: "Site /tmp",
+            status: AuditStatus.COMPLETED,
+            type: AuditType.FULL,
+            complianceLevel: 100,
+            consultId: "report-url-4",
+            editId: "audit-url-4",
+            creationDate: new Date().toString(),
+          },
+        ];
+      }, 1000);
     },
   },
 });

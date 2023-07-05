@@ -24,11 +24,13 @@ async function hideAuditsAlert() {
 
 // TODO: filter audits
 const inProgressAudits = computed(() => {
-  return accountStore.audits.filter((a) => a.status === "in-progress");
+  return accountStore.audits.filter(
+    (a) => a.status === AuditStatus.IN_PROGRESS
+  );
 });
 
 const completedAudits = computed(() => {
-  return accountStore.audits.filter((a) => a.status === "completed");
+  return accountStore.audits.filter((a) => a.status === AuditStatus.COMPLETED);
 });
 
 onMounted(() => {

@@ -3,10 +3,11 @@ import { AuditStatus } from "../../../types";
 import { pluralize } from "../../../utils";
 import NoAudit from "./NoAudit.vue";
 import AuditRow from "./AuditRow.vue";
+import { AccountAudit } from "../../../types/account";
 
 // FIXME: "audits" type
 defineProps<{
-  audits: object[];
+  audits: AccountAudit[];
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   noAuditLabel: string;
 }>();
@@ -49,7 +50,7 @@ defineProps<{
         <AuditRow
           v-for="(audit, i) in audits"
           :key="i"
-          :status="status"
+          :audit="audit"
           :z-index="
             status === AuditStatus.IN_PROGRESS
               ? (audits.length - i) * 15
