@@ -18,6 +18,7 @@ interface AccountStoreState {
   };
   authToken: null | string;
   accountDeletionFeedbackToken: null | string;
+  audits: { status: string }[];
 }
 
 export const useAccountStore = defineStore("account", {
@@ -46,6 +47,7 @@ export const useAccountStore = defineStore("account", {
       account: email ? { email, name: "", orgName: "" } : null,
       authToken: authToken,
       accountDeletionFeedbackToken: null,
+      audits: [],
     };
   },
 
@@ -192,6 +194,22 @@ export const useAccountStore = defineStore("account", {
         },
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
       });
+    },
+
+    // TODO: set correct url + type in state
+    async fetchAudits() {
+      // const audits = await ky.get("/api/audits", {
+      //   headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      // });
+
+      // this.audits = audits;
+      this.audits = [
+        { status: "in-progress" },
+        { status: "completed" },
+        { status: "in-progress" },
+        { status: "in-progress" },
+        { status: "completed" },
+      ];
     },
   },
 });

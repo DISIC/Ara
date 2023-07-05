@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, nextTick } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 
 import { AuditStatus } from "../../types";
 import { useAccountStore } from "../../store/account";
@@ -21,6 +21,19 @@ async function hideAuditsAlert() {
   await nextTick();
   mainHeadingRef.value?.focus();
 }
+
+// TODO: filter audits
+const inProgressAudits = computed(() => {
+  return accountStore.audits.filter((a) => a.status === "in-progress");
+});
+
+const completedAudits = computed(() => {
+  return accountStore.audits.filter((a) => a.status === "completed");
+});
+
+onMounted(() => {
+  accountStore.fetchAudits();
+});
 </script>
 
 <template>
@@ -55,7 +68,7 @@ async function hideAuditsAlert() {
 
   <!-- In progress -->
   <AuditsList
-    :audits="['a', 'b', 'c']"
+    :audits="inProgressAudits"
     :status="AuditStatus.IN_PROGRESS"
     no-audit-label="Aucun audit en cours"
     class="fr-mb-8w"
@@ -63,7 +76,7 @@ async function hideAuditsAlert() {
 
   <!-- Completed -->
   <AuditsList
-    :audits="['a', 'b', 'c', 'd', 'e']"
+    :audits="completedAudits"
     :status="AuditStatus.COMPLETED"
     no-audit-label="Aucun audit terminé"
   />

@@ -4,8 +4,9 @@ import { pluralize } from "../../../utils";
 import NoAudit from "./NoAudit.vue";
 import AuditRow from "./AuditRow.vue";
 
+// FIXME: "audits" type
 defineProps<{
-  audits: string[];
+  audits: object[];
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   noAuditLabel: string;
 }>();
