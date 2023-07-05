@@ -31,17 +31,17 @@ const isInProgress = computed(
 );
 
 const showComplianceLevel = computed(() => {
-  return !isInProgress.value && props.audit.type === AuditType.FULL;
+  return !isInProgress.value && props.audit.auditType === AuditType.FULL;
 });
 
 const rowUrl = isInProgress.value
   ? {
       name: "edit-audit-step-three",
-      params: { uniqueId: props.audit.editId },
+      params: { uniqueId: props.audit.editUniqueId },
     }
   : {
       name: "report",
-      params: { uniqueId: props.audit.consultId },
+      params: { uniqueId: props.audit.consultUniqueId },
     };
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
@@ -52,7 +52,7 @@ const isDuplicationLoading = ref(false);
 function duplicateAudit(name: string) {
   isDuplicationLoading.value = true;
   auditStore
-    .duplicateAudit(props.audit.editId, name)
+    .duplicateAudit(props.audit.editUniqueId, name)
     .then((newAuditId) => {
       auditStore.$reset();
       resultStore.$reset();
@@ -84,7 +84,7 @@ function duplicateAudit(name: string) {
 }
 
 function copyAuditLink() {
-  const auditUrl = `${window.location.origin}/audits/${props.audit.editId}/generation`;
+  const auditUrl = `${window.location.origin}/audits/${props.audit.editUniqueId}/generation`;
 
   navigator.clipboard.writeText(auditUrl).then(() => {
     notify("success", "", "Le lien vers l’audit a été copié avec succès");
@@ -92,7 +92,7 @@ function copyAuditLink() {
 }
 
 function copyReportLink() {
-  const reportUrl = `${window.location.origin}/rapports/${props.audit.consultId}`;
+  const reportUrl = `${window.location.origin}/rapports/${props.audit.consultUniqueId}`;
 
   navigator.clipboard.writeText(reportUrl).then(() => {
     notify("success", "", "Le lien vers le rapport a été copié avec succès");
@@ -105,7 +105,7 @@ const isDeletionLoading = ref(false);
 function deleteAudit() {
   isDeletionLoading.value = true;
   auditStore
-    .deleteAudit(props.audit.editId)
+    .deleteAudit(props.audit.editUniqueId)
     .then(() => {
       auditStore.$reset();
       resultStore.$reset();
@@ -135,7 +135,7 @@ function deleteAudit() {
     <!-- Name -->
     <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
       <span class="sr-only">Nom de l’audit </span>
-      <strong>{{ audit.name }}</strong>
+      <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
     <!-- Status -->
@@ -160,7 +160,7 @@ function deleteAudit() {
     <!-- Type -->
     <p class="fr-mb-0 audit-type">
       <span class="sr-only">Type </span>
-      {{ formatAuditType(audit.type) }}
+      {{ formatAuditType(audit.auditType) }}
     </p>
 
     <!-- Compliance level -->
@@ -214,7 +214,7 @@ function deleteAudit() {
               <RouterLink
                 :to="{
                   name: 'edit-audit-step-three',
-                  params: { uniqueId: audit.editId },
+                  params: { uniqueId: audit.editUniqueId },
                 }"
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
               >
@@ -286,7 +286,7 @@ function deleteAudit() {
 
   <DuplicateModal
     ref="duplicateModal"
-    :original-audit-name="audit.name"
+    :original-audit-name="audit.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
     @closed="

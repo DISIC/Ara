@@ -1148,7 +1148,7 @@ export class AuditService {
           .length /
         (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
 
-      let accessibilityRate = null;
+      let complianceLevel = null;
 
       if (progress >= 1) {
         const resultsGroupedById = results.reduce<
@@ -1183,8 +1183,9 @@ export class AuditService {
           ),
         );
 
-        accessibilityRate =
-          compliantCriteria.length / applicableCriteria.length;
+        complianceLevel = Math.round(
+          (compliantCriteria.length / applicableCriteria.length) * 100,
+        );
       }
 
       return {
@@ -1194,9 +1195,10 @@ export class AuditService {
           'editUniqueId',
           'consultUniqueId',
           'creationDate',
+          'auditType',
         ),
-        accessibilityRate,
-        progress,
+        complianceLevel,
+        status: progress < 1 ? 'IN_PROGRESS' : 'COMPLETED',
       };
     });
   }

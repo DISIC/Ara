@@ -19,11 +19,11 @@ export interface AccountDeletionResponse {
 }
 
 export interface AccountAudit {
-  name: string;
+  procedureName: string;
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   creationDate: string;
-  type: AuditType;
+  auditType: AuditType;
   complianceLevel: number;
-  editId: string;
-  consultId: string;
+  editUniqueId: string;
+  consultUniqueId: string;
 }

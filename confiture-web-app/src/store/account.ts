@@ -197,71 +197,14 @@ export const useAccountStore = defineStore("account", {
       });
     },
 
-    // TODO: set correct url + type in state
     async fetchAudits() {
-      // const audits = await ky.get("/api/audits", {
-      //   headers: { Authorization: `Bearer ${this.$state.authToken}` },
-      // });
+      const audits = (await ky
+        .get("/api/audits", {
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .json()) as AccountAudit[];
 
-      // this.audits = audits;
-      setTimeout(() => {
-        this.audits = [
-          {
-            name: "Audit Système de Design de l’État",
-            status: AuditStatus.IN_PROGRESS,
-            type: AuditType.COMPLEMENTARY,
-            complianceLevel: 34,
-            consultId: "report-url-1",
-            editId: "audit-url-1",
-            creationDate: new Date("06/19/2023").toString(),
-          },
-          {
-            name: "Site du gouvernement",
-            status: AuditStatus.COMPLETED,
-            type: AuditType.FULL,
-            complianceLevel: 23,
-            consultId: "report-url-2",
-            editId: "audit-url-2",
-            creationDate: new Date().toString(),
-          },
-          {
-            name: "Audit du site Beta.gouv",
-            status: AuditStatus.COMPLETED,
-            type: AuditType.COMPLEMENTARY,
-            complianceLevel: 43,
-            consultId: "report-url-3",
-            editId: "audit-url-3",
-            creationDate: new Date("05/02/2023").toString(),
-          },
-          {
-            name: "Contre audit Parcoursup 2",
-            status: AuditStatus.COMPLETED,
-            type: AuditType.FAST,
-            complianceLevel: 67,
-            consultId: "report-url-4",
-            editId: "audit-url-4",
-            creationDate: new Date("02/28/2023").toString(),
-          },
-          {
-            name: "Site /tmp",
-            status: AuditStatus.COMPLETED,
-            type: AuditType.FULL,
-            complianceLevel: 100,
-            consultId: "report-url-5",
-            editId: "audit-url-5",
-            creationDate: new Date().toString(),
-          },
-          {
-            name: "Ara",
-            status: AuditStatus.COMPLETED,
-            type: AuditType.FULL,
-            complianceLevel: 65,
-            consultId: "report-url-6",
-            editId: "audit-url-6",
-            creationDate: new Date().toString(),
-          },
-        ];
-      }, 1000);
+      this.audits = audits;
     },
   },
 });

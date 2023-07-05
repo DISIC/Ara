@@ -51,7 +51,7 @@ defineProps<{
         -->
         <AuditRow
           v-for="(audit, i) in audits"
-          :key="i"
+          :key="audit.editUniqueId"
           :audit="audit"
           :z-index="
             status === AuditStatus.IN_PROGRESS
