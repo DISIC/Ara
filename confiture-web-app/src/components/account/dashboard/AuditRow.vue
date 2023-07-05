@@ -7,7 +7,6 @@ import {
   formatDate,
   formatAuditType,
   captureWithPayloads,
-  slugify,
 } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
@@ -129,24 +128,38 @@ function deleteAudit() {
 
 <template>
   <div class="fr-py-2w grid">
+    <!-- Name -->
     <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
+      <span class="sr-only">Nom de l’audit </span>
       <strong>{{ audit.name }}</strong>
     </RouterLink>
 
+    <!-- Status -->
     <p
       class="fr-badge fr-badge--sm audit-status"
       :class="{
         'fr-badge--purple-glycine': isInProgress,
       }"
     >
+      <span class="sr-only">Statut </span>
       {{ isInProgress ? "En cours" : "Terminé" }}
     </p>
+
+    <!-- Creation date -->
     <p class="fr-mb-0 audit-date">
+      <span class="sr-only">Date de création </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
     </p>
-    <p class="fr-mb-0 audit-type">{{ formatAuditType(audit.type) }}</p>
+
+    <!-- Type -->
+    <p class="fr-mb-0 audit-type">
+      <span class="sr-only">Type </span>
+      {{ formatAuditType(audit.type) }}
+    </p>
+
+    <!-- Compliance level -->
     <div class="audit-compliance-level">
       <p
         class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
@@ -160,6 +173,7 @@ function deleteAudit() {
             : null
         "
       >
+        <span class="sr-only">Taux de conformité </span>
         {{ isInProgress ? "–" : `${audit.complianceLevel}%` }}
       </p>
       <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
@@ -172,6 +186,8 @@ function deleteAudit() {
         }}
       </p>
     </div>
+
+    <!-- Main action -->
     <RouterLink
       :to="rowUrl"
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
@@ -179,6 +195,8 @@ function deleteAudit() {
     >
       {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
     </RouterLink>
+
+    <!-- Sub actions -->
     <div class="fr-pr-2w" :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"

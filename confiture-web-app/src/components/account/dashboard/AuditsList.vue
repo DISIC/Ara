@@ -27,7 +27,6 @@ defineProps<{
 
     <template v-if="audits.length">
       <div class="fr-mb-1w headers">
-        <!-- TODO: a11y announce column in row elements ("Nom de l’audit : <auditName>")? -->
         <p aria-hidden="true" class="fr-text--sm fr-text--bold fr-mb-0">
           Nom de l’audit
         </p>
@@ -46,7 +45,10 @@ defineProps<{
       </div>
 
       <div class="audits-list">
-        <!-- TODO: fix this zIndex thing (dropdown, toast, modal) -->
+        <!--
+          TODO: fix this zIndex thing (dropdown, toast, modal)
+          do something like a zIndex map? https://getbootstrap.com/docs/5.0/layout/z-index/
+        -->
         <AuditRow
           v-for="(audit, i) in audits"
           :key="i"
