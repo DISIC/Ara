@@ -5,12 +5,15 @@ import { AuditStatus } from "../../../types";
 import { formatDate } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
+import { useNotifications } from "../../../composables/useNotifications";
 
 // TODO: plug everything
 const props = defineProps<{
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   zIndex?: number;
 }>();
+
+const notify = useNotifications();
 
 const complianceLevel = Math.round(Math.random() * 100);
 
@@ -19,12 +22,25 @@ const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
 function duplicateAudit() {
   console.log("duplicateAudit");
 }
+
+// TODO: update auditUrl
 function copyAuditLink() {
-  console.log("copyAuditLink");
+  const auditUrl = "auditUrl";
+
+  navigator.clipboard.writeText(auditUrl).then(() => {
+    notify("success", "", "Le lien vers l’audit a été copié avec succès");
+  });
 }
+
+// TODO: update reportUrl
 function copyReportLink() {
-  console.log("copyReportLink");
+  const reportUrl = "reportUrl";
+
+  navigator.clipboard.writeText(reportUrl).then(() => {
+    notify("success", "", "Le lien vers le rapport a été copié avec succès");
+  });
 }
+
 function deleteAudit() {
   console.log("deleteAudit");
 }
@@ -164,7 +180,7 @@ function deleteAudit() {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.25fr 1.5fr 1fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
