@@ -70,3 +70,18 @@ defineExpose({
     </div>
   </DsfrModal>
 </template>
+
+<style scoped>
+/* FIXME: create utility class (`fr-btn__danger` and `fr-btn__danger-outline`) */
+.danger-button {
+  background-color: var(--background-action-high-error);
+}
+
+.danger-button:hover {
+  background-color: var(--background-action-high-error-hover);
+}
+
+.danger-button:focus {
+  background-color: var(--background-action-high-error-active);
+}
+</style>

@@ -6,6 +6,7 @@ import { formatDate, captureWithPayloads } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
 import DuplicateModal from "../../DuplicateModal.vue";
+import DeleteModal from "../../DeleteModal.vue";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useRouter } from "vue-router";
 import { useAuditStore, useResultsStore } from "../../../store";
@@ -25,8 +26,9 @@ const complianceLevel = Math.round(Math.random() * 100);
 
 const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
 
-const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
+
+const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
 const isDuplicationLoading = ref(false);
 
 // TODO: get audit id
@@ -58,7 +60,10 @@ function duplicateAudit(name: string) {
       );
       captureWithPayloads(error);
     })
-    .finally(() => (isDuplicationLoading.value = false));
+    .finally(() => {
+      isDuplicationLoading.value = false;
+      duplicateModal.value?.hide();
+    });
 }
 
 // TODO: update auditUrl
@@ -79,8 +84,34 @@ function copyReportLink() {
   });
 }
 
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+const isDeletionLoading = ref(false);
+
 function deleteAudit() {
-  console.log("deleteAudit");
+  isDeletionLoading.value = true;
+  auditStore
+    .deleteAudit("uniqueId.value")
+    .then(() => {
+      auditStore.$reset();
+      resultStore.$reset();
+
+      router.push({
+        name: "home",
+        state: { deleteAudit: "true" },
+      });
+    })
+    .catch((error) => {
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      );
+      captureWithPayloads(error);
+    })
+    .finally(() => {
+      isDeletionLoading.value = false;
+      deleteModal.value?.hide();
+    });
 }
 </script>
 
@@ -204,7 +235,7 @@ function deleteAudit() {
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
-              @click="deleteAudit"
+              @click="deleteModal?.show()"
             >
               Supprimer l’audit
             </button>
@@ -220,6 +251,15 @@ function deleteAudit() {
     original-audit-name="pouet"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
+    @closed="
+      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <DeleteModal
+    ref="deleteModal"
+    @confirm="deleteAudit"
     @closed="
       optionsDropdownRef?.buttonRef.focus();
       optionsDropdownRef?.closeOptions();

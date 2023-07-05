@@ -48,7 +48,6 @@ defineProps<{
         <AuditRow
           v-for="(audit, i) in audits"
           :key="i"
-          class="audit-row"
           :status="status"
           :z-index="
             status === AuditStatus.IN_PROGRESS
