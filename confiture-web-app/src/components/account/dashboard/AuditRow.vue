@@ -313,9 +313,11 @@ function deleteAudit() {
   align-items: center;
   border: 1px solid var(--border-default-grey);
   position: relative;
+  transition: background 0.25s ease;
 }
 
-.grid:hover {
+.grid:hover,
+.grid:focus-within {
   background: var(--background-raised-grey-hover);
 }
 

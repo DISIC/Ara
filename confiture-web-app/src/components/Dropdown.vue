@@ -59,17 +59,19 @@ defineExpose({ buttonRef, closeOptions });
     >
       {{ title }}
     </button>
-    <div
-      v-if="showContent"
-      :id="`dropdown-${uniqueId}`"
-      :class="[
-        'fr-p-2w dropdown-content',
-        { 'dropdown-content-left': alignLeft },
-      ]"
-      role="menu"
-    >
-      <slot />
-    </div>
+    <Transition>
+      <div
+        v-if="showContent"
+        :id="`dropdown-${uniqueId}`"
+        :class="[
+          'fr-p-2w dropdown-content',
+          { 'dropdown-content-left': alignLeft },
+        ]"
+        role="menu"
+      >
+        <slot />
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -108,6 +110,18 @@ defineExpose({ buttonRef, closeOptions });
 
 .dropdown-content :deep(.dropdown-item) {
   padding-bottom: 0;
+}
+
+/* Transition */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  transform: translateY(-0.5rem);
 }
 
 /* Make actions hover full width */
