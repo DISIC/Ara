@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 
-import { AuditStatus } from "../../../types";
+import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import {
   formatDate,
@@ -29,6 +29,10 @@ const resultStore = useResultsStore();
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
+
+const showComplianceLevel = computed(() => {
+  return !isInProgress.value && props.audit.type === AuditType.FULL;
+});
 
 const rowUrl = isInProgress.value
   ? {
@@ -162,9 +166,10 @@ function deleteAudit() {
     <!-- Compliance level -->
     <div class="audit-compliance-level">
       <p
+        :aria-hidden="showComplianceLevel ? undefined : 'true'"
         class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
         :class="
-          !isInProgress
+          showComplianceLevel
             ? {
                 'fr-badge--green-emeraude': audit.complianceLevel === 100,
                 'fr-badge--new': audit.complianceLevel >= 50,
@@ -174,9 +179,9 @@ function deleteAudit() {
         "
       >
         <span class="sr-only">Taux de conformité </span>
-        {{ isInProgress ? "–" : `${audit.complianceLevel}%` }}
+        {{ showComplianceLevel ? `${audit.complianceLevel}%` : "–" }}
       </p>
-      <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
+      <p v-if="showComplianceLevel" class="fr-text--xs fr-mb-0 fr-mt-1v">
         {{
           audit.complianceLevel === 100
             ? "Totalement conforme"
