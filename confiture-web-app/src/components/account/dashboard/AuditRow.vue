@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 
 import { AuditStatus } from "../../../types";
-import { formatDate } from "../../../utils";
+import { formatDate, captureWithPayloads } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
+import DuplicateModal from "../../DuplicateModal.vue";
 import { useNotifications } from "../../../composables/useNotifications";
+import { useRouter } from "vue-router";
+import { useAuditStore, useResultsStore } from "../../../store";
 
 // TODO: plug everything
 const props = defineProps<{
@@ -14,13 +17,48 @@ const props = defineProps<{
 }>();
 
 const notify = useNotifications();
+const router = useRouter();
+const auditStore = useAuditStore();
+const resultStore = useResultsStore();
 
 const complianceLevel = Math.round(Math.random() * 100);
 
 const isInProgress = computed(() => props.status === AuditStatus.IN_PROGRESS);
 
-function duplicateAudit() {
-  console.log("duplicateAudit");
+const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
+const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
+const isDuplicationLoading = ref(false);
+
+// TODO: get audit id
+function duplicateAudit(name: string) {
+  isDuplicationLoading.value = true;
+  auditStore
+    .duplicateAudit("uniqueId.value", name)
+    .then((newAuditId) => {
+      auditStore.$reset();
+      resultStore.$reset();
+
+      duplicateModal.value?.hide();
+
+      return router.push({
+        name: "edit-audit-step-three",
+        params: {
+          uniqueId: newAuditId,
+        },
+        state: {
+          showDuplicatedAlert: true,
+        },
+      });
+    })
+    .catch((error) => {
+      notify(
+        "error",
+        "Une erreur est survenue",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      );
+      captureWithPayloads(error);
+    })
+    .finally(() => (isDuplicationLoading.value = false));
 }
 
 // TODO: update auditUrl
@@ -73,7 +111,7 @@ function deleteAudit() {
           !isInProgress
             ? {
                 'fr-badge--green-emeraude': complianceLevel === 100,
-                'fr-badge--new': complianceLevel >= 50,
+                'fr-badge--new': complianceLevel < 100,
                 'fr-badge--error': complianceLevel < 50,
               }
             : null
@@ -118,7 +156,7 @@ function deleteAudit() {
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              @click="duplicateAudit"
+              @click="duplicateModal?.show()"
             >
               <CopyIcon class="fr-mr-2v" />
               Créer une copie
@@ -175,6 +213,18 @@ function deleteAudit() {
       </Dropdown>
     </div>
   </div>
+
+  <!-- TODO: get audit name -->
+  <DuplicateModal
+    ref="duplicateModal"
+    original-audit-name="pouet"
+    :is-loading="isDuplicationLoading"
+    @confirm="duplicateAudit"
+    @closed="
+      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
 </template>
 
 <style scoped>

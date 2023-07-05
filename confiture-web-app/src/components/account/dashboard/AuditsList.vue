@@ -43,7 +43,7 @@ defineProps<{
         </p>
       </div>
 
-      <div>
+      <div class="audits-list">
         <!-- TODO: fix this zIndex thing (dropdown, toast, modal) -->
         <AuditRow
           v-for="(audit, i) in audits"
@@ -74,7 +74,9 @@ defineProps<{
   grid-gap: 1rem;
 }
 
-.audit-row + .audit-row {
-  margin-top: 1.5rem;
+.audits-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 </style>
