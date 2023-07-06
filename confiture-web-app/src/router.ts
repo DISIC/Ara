@@ -37,6 +37,7 @@ import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
+import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
 import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
@@ -57,7 +58,7 @@ export const history = createWebHistory();
  */
 function getProcedureName() {
   const auditStore = useAuditStore();
-  return auditStore.data?.procedureName ?? "Mon audit";
+  return auditStore.currentAudit?.procedureName ?? "Mon audit";
 }
 
 /**
@@ -199,6 +200,18 @@ const router = createRouter({
         if (!accountStore.accountDeletionFeedbackToken) {
           return { name: "home" };
         }
+      },
+    },
+    {
+      path: "/audit-manquant",
+      name: "missing-audit",
+      component: MissingAuditPage,
+      meta: {
+        name: "Je ne retrouve pas mon audit",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Je ne retrouve pas mon audit", name: "missing-audit" },
+        ],
       },
     },
     // Audit pages

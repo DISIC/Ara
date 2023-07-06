@@ -119,10 +119,10 @@ const csvExportUrl = computed(
 );
 
 const csvExportFilename = computed(() => {
-  if (!auditStore.data?.procedureName) {
+  if (!auditStore.currentAudit?.procedureName) {
     return "audit.csv";
   }
-  return `audit-${slugify(auditStore.data.procedureName)}.csv`;
+  return `audit-${slugify(auditStore.currentAudit.procedureName)}.csv`;
 });
 
 const csvExportSizeEstimation = computed(() => {
@@ -205,14 +205,14 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
                 Créer une copie
               </button>
             </li>
-            <li class="dropdown-item">
+            <li class="dropdown-item dropdown-item--with-meta">
               <a
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
                 :href="csvExportUrl"
                 :download="csvExportFilename"
               >
                 Exporter l’audit
-                <span class="fr-text--xs fr-text--regular download-meta">
+                <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                   CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                 </span>
               </a>
@@ -274,7 +274,7 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 
   <DuplicateModal
     ref="duplicateModal"
-    :original-audit-name="auditStore.data?.procedureName"
+    :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="

@@ -1,3 +1,5 @@
+import { AuditStatus, AuditType } from "./types";
+
 export interface Account {
   id: string;
   email: string;
@@ -14,4 +16,14 @@ export interface UpdateProfileRequestData {
 
 export interface AccountDeletionResponse {
   feedbackToken: string;
+}
+
+export interface AccountAudit {
+  procedureName: string;
+  status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
+  creationDate: string;
+  auditType: AuditType;
+  complianceLevel: number;
+  editUniqueId: string;
+  consultUniqueId: string;
 }
