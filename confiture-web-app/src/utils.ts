@@ -17,11 +17,20 @@ const formatter = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",
 });
 
+const abridgedFormatter = new Intl.DateTimeFormat("fr-FR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 /**
  * Format a string intro a readable date ("17 août 2022")
+ * @param {boolean} short - abridged version: "17/08/2022"
  */
-export function formatDate(dateString: string): string {
-  return formatter.format(new Date(dateString));
+export function formatDate(dateString: string, short?: boolean): string {
+  return short
+    ? abridgedFormatter.format(new Date(dateString))
+    : formatter.format(new Date(dateString));
 }
 
 const FORMATTED_TYPES = {
