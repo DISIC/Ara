@@ -6,7 +6,6 @@ import {
   Account,
   AccountDeletionResponse,
   UpdateProfileRequestData,
-  AccountAudit,
 } from "../types/account";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
@@ -19,7 +18,6 @@ interface AccountStoreState {
   };
   authToken: null | string;
   accountDeletionFeedbackToken: null | string;
-  audits: AccountAudit[];
 }
 
 export const useAccountStore = defineStore("account", {
@@ -48,7 +46,6 @@ export const useAccountStore = defineStore("account", {
       account: email ? { email, name: "", orgName: "" } : null,
       authToken: authToken,
       accountDeletionFeedbackToken: null,
-      audits: [],
     };
   },
 
@@ -195,16 +192,6 @@ export const useAccountStore = defineStore("account", {
         },
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
       });
-    },
-
-    async fetchAudits() {
-      const audits = (await ky
-        .get("/api/audits", {
-          headers: { Authorization: `Bearer ${this.$state.authToken}` },
-        })
-        .json()) as AccountAudit[];
-
-      this.audits = audits;
     },
   },
 });

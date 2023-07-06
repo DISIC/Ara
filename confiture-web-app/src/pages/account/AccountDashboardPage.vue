@@ -3,11 +3,14 @@ import { ref, computed, nextTick, onMounted } from "vue";
 
 import { AuditStatus } from "../../types";
 import { useAccountStore } from "../../store/account";
+import { useAuditStore } from "../../store/audit";
 import TopLink from "../../components/TopLink.vue";
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
 
-// Account alert
 const accountStore = useAccountStore();
+const auditStore = useAuditStore();
+
+// Account alert
 const mainHeadingRef = ref<HTMLHeadingElement>();
 
 const showAuditsAlert = ref(
@@ -24,17 +27,17 @@ async function hideAuditsAlert() {
 
 // TODO: filter audits
 const inProgressAudits = computed(() => {
-  return accountStore.audits.filter(
+  return auditStore.listing?.filter(
     (a) => a.status === AuditStatus.IN_PROGRESS
   );
 });
 
 const completedAudits = computed(() => {
-  return accountStore.audits.filter((a) => a.status === AuditStatus.COMPLETED);
+  return auditStore.listing?.filter((a) => a.status === AuditStatus.COMPLETED);
 });
 
 onMounted(() => {
-  accountStore.fetchAudits();
+  auditStore.fetchAudits();
 });
 </script>
 

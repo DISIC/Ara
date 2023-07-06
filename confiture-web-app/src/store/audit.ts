@@ -6,6 +6,7 @@ import {
   UpdateAuditRequestData,
 } from "../types";
 import { AccountAudit } from "../types/account";
+import { useAccountStore } from "./account";
 
 interface AuditStoreState {
   lastVisitedStepLocation: string | null;
@@ -14,7 +15,7 @@ interface AuditStoreState {
 
   currentAuditId: string | null;
   entities: Record<string, Audit>;
-  listing: AccountAudit[] | null;
+  listing: AccountAudit[];
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -25,7 +26,7 @@ export const useAuditStore = defineStore("audit", {
 
     currentAuditId: null,
     entities: {},
-    listing: null,
+    listing: [],
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
@@ -121,6 +122,17 @@ export const useAuditStore = defineStore("audit", {
     // FIXME: move this to filter store?
     async updateCurrentPageId(id: number) {
       this.currentPageId = id;
+    },
+
+    async fetchAudits() {
+      const accountStore = useAccountStore();
+      const audits = (await ky
+        .get("/api/audits", {
+          headers: { Authorization: `Bearer ${accountStore.authToken}` },
+        })
+        .json()) as AccountAudit[];
+
+      this.listing = audits;
     },
   },
   getters: {
