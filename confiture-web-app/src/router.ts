@@ -56,7 +56,7 @@ export const history = createWebHistory();
  */
 function getProcedureName() {
   const auditStore = useAuditStore();
-  return auditStore.data?.procedureName ?? "Mon audit";
+  return auditStore.currentAudit?.procedureName ?? "Mon audit";
 }
 
 /**

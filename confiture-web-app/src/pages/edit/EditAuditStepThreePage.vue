@@ -21,11 +21,11 @@ import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 const route = useRoute();
 const router = useRouter();
 
-// const uniqueId = route.params.uniqueId as string;
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 
 useWrappedFetch(async () => {
+  resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(uniqueId.value);
   await resultsStore.fetchResults(uniqueId.value);
 }, true);
@@ -57,7 +57,7 @@ function toStepFour() {
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
-  if (!auditStore.data?.auditType) {
+  if (!auditStore.currentAudit?.auditType) {
     return [];
   }
 
@@ -65,7 +65,7 @@ const topics = computed(() => {
     rgaa.topics
       // hide topics not present in audit type
       .filter((topic) => {
-        return CRITERIA_BY_AUDIT_TYPE[auditStore.data!.auditType!].find(
+        return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
           (criterium) => criterium.topic === topic.number
         );
       })
@@ -109,7 +109,7 @@ const {
 } = useAuditStats();
 
 const headerInfos = computed(() => [
-  ...(auditStore.data?.auditType === AuditType.FULL
+  ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
         {
           title: "Taux global de conformité",
@@ -125,16 +125,16 @@ const headerInfos = computed(() => [
     title: "Critères non conformes",
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
     theme: "marianne",
   },
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.data?.auditType as AuditType
+      auditStore.currentAudit?.auditType as AuditType
     )} critères`,
     value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
   },
 ]);
 
@@ -180,7 +180,7 @@ function closeDuplicatedAuditAlert() {
 }
 
 const auditNotes = computed(() => {
-  return auditStore.data?.notes || "";
+  return auditStore.currentAudit?.notes || "";
 });
 
 const updateAuditNotes = debounce(async (notes: string) => {
@@ -204,10 +204,12 @@ function handleUpdateResultError(err: any) {
 </script>
 
 <template>
+  <!-- {{ auditStore.getCurrentAudit }} -->
+
   <!-- FIXME: handle loading states -->
-  <template v-if="auditStore.data && resultsStore.data">
+  <template v-if="auditStore.currentAudit && resultsStore.data">
     <PageMeta
-      :title="`Audit ${auditStore.data.procedureName}`"
+      :title="`Audit ${auditStore.currentAudit.procedureName}`"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
@@ -234,7 +236,7 @@ function handleUpdateResultError(err: any) {
       <p>
         Des liens pour accéder à cet audit et à son rapport viennent de vous
         être envoyés par e-mail à l’adresse
-        <strong>{{ auditStore.data.auditorEmail }}</strong>
+        <strong>{{ auditStore.currentAudit.auditorEmail }}</strong>
       </p>
       <button
         class="fr-btn--close fr-btn"
@@ -260,7 +262,10 @@ function handleUpdateResultError(err: any) {
     </div>
 
     <RouterLink
-      v-if="auditStore.data.publicationDate && !auditStore.data.editionDate"
+      v-if="
+        auditStore.currentAudit.publicationDate &&
+        !auditStore.currentAudit.editionDate
+      "
       class="fr-text--sm fr-mb-4w back-summary-link"
       :to="{
         name: 'edit-audit-step-four',
@@ -271,10 +276,10 @@ function handleUpdateResultError(err: any) {
     </RouterLink>
 
     <AuditGenerationHeader
-      :audit-name="auditStore.data.procedureName"
+      :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
-      :audit-publication-date="auditStore.data.publicationDate"
-      :audit-edition-date="auditStore.data.editionDate"
+      :audit-publication-date="auditStore.currentAudit.publicationDate"
+      :audit-edition-date="auditStore.currentAudit.editionDate"
       :edit-unique-id="uniqueId"
     >
       <template #actions>
@@ -283,7 +288,7 @@ function handleUpdateResultError(err: any) {
             class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
-              params: { uniqueId: auditStore.data?.consultUniqueId },
+              params: { uniqueId: auditStore.currentAudit?.consultUniqueId },
             }"
             target="_blank"
           >
@@ -293,16 +298,17 @@ function handleUpdateResultError(err: any) {
         </li>
         <li
           v-if="
-            !auditStore.data.publicationDate ||
-            (auditStore.data.publicationDate && auditStore.data.editionDate)
+            !auditStore.currentAudit.publicationDate ||
+            (auditStore.currentAudit.publicationDate &&
+              auditStore.currentAudit.editionDate)
           "
         >
           <button
             :disabled="!resultsStore.everyCriteriumAreTested"
             class="fr-btn"
             :aria-describedby="
-              auditStore.data.publicationDate
-                ? auditStore.data.editionDate
+              auditStore.currentAudit.publicationDate
+                ? auditStore.currentAudit.editionDate
                   ? undefined
                   : 'validation-notice'
                 : 'validation-notice'
@@ -310,8 +316,8 @@ function handleUpdateResultError(err: any) {
             @click="toStepFour"
           >
             {{
-              auditStore.data.publicationDate
-                ? auditStore.data.editionDate
+              auditStore.currentAudit.publicationDate
+                ? auditStore.currentAudit.editionDate
                   ? "Mettre à jour l’audit"
                   : "Valider l’audit"
                 : "Valider l’audit"
@@ -352,18 +358,18 @@ function handleUpdateResultError(err: any) {
           >
             <li role="presentation">
               <button
-                :id="`page-panel-${auditStore.data.pages[0].id}`"
+                :id="`page-panel-${auditStore.currentAudit.pages[0].id}`"
                 class="fr-tabs__tab"
                 tabindex="0"
                 role="tab"
                 aria-selected="true"
-                :aria-controls="`page-panel-${auditStore.data.pages[0].id}-panel`"
+                :aria-controls="`page-panel-${auditStore.currentAudit.pages[0].id}-panel`"
               >
-                {{ auditStore.data.pages[0].name }}
+                {{ auditStore.currentAudit.pages[0].name }}
               </button>
             </li>
             <li
-              v-for="page in auditStore.data.pages.slice(1)"
+              v-for="page in auditStore.currentAudit.pages.slice(1)"
               :key="page.id"
               role="presentation"
             >
@@ -392,7 +398,7 @@ function handleUpdateResultError(err: any) {
             </li>
           </ul>
           <div
-            v-for="page in auditStore.data.pages"
+            v-for="page in auditStore.currentAudit.pages"
             :id="`page-panel-${page.id}-panel`"
             :key="page.id"
             class="fr-tabs__panel fr-tabs__panel--selected"

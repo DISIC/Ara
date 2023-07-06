@@ -1,7 +1,7 @@
 import ky from "ky";
 import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
-import { AuditStatus, AuditType, AuthenticationJwtPayload } from "../types";
+import { AuthenticationJwtPayload } from "../types";
 import {
   Account,
   AccountDeletionResponse,

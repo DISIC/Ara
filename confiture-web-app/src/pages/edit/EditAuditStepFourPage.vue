@@ -21,7 +21,7 @@ useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 const reportRouteLocation = computed(() => ({
   name: "report",
-  params: { uniqueId: auditStore.data?.consultUniqueId },
+  params: { uniqueId: auditStore.currentAudit?.consultUniqueId },
 }));
 
 const resultsStore = useResultsStore();
@@ -38,7 +38,7 @@ const {
 } = useAuditStats();
 
 const headerInfos = computed(() => [
-  ...(auditStore.data?.auditType === AuditType.FULL
+  ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
         {
           title: "Taux global de conformité",
@@ -54,26 +54,26 @@ const headerInfos = computed(() => [
     title: "Critères non conformes",
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
     theme: "marianne",
   },
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.data?.auditType as AuditType
+      auditStore.currentAudit?.auditType as AuditType
     )} critères`,
     value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
   },
 ]);
 
 const hasA11yStatement = computed(() => {
-  return auditStore.data?.auditType === AuditType.FULL;
+  return auditStore.currentAudit?.auditType === AuditType.FULL;
 });
 
 const isStatementFilled = computed(() => {
   // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
-  return !!auditStore.data?.initiator;
+  return !!auditStore.currentAudit?.initiator;
 });
 
 const successAlertContent = computed(() => {
@@ -89,9 +89,9 @@ const successAlertContent = computed(() => {
 
 <template>
   <!-- TODO: plug audit status -->
-  <template v-if="auditStore.data && resultsStore.data">
+  <template v-if="auditStore.currentAudit && resultsStore.data">
     <PageMeta
-      :title="`Audit ${auditStore.data.procedureName} terminé`"
+      :title="`Audit ${auditStore.currentAudit.procedureName} terminé`"
       description="Votre audit est maintenant terminé. Vous pouvez le vérifier et partager le lien du rapport d'audit à l'entité qui a fait la demande d'audit."
     />
 
@@ -102,11 +102,11 @@ const successAlertContent = computed(() => {
     </div>
 
     <AuditGenerationHeader
-      :audit-name="`L’audit ${auditStore.data.procedureName} est terminé`"
+      :audit-name="`L’audit ${auditStore.currentAudit.procedureName} est terminé`"
       :key-infos="headerInfos"
-      :edit-unique-id="auditStore.data.editUniqueId"
-      :audit-publication-date="auditStore.data.publicationDate"
-      :audit-edition-date="auditStore.data.editionDate"
+      :edit-unique-id="auditStore.currentAudit.editUniqueId"
+      :audit-publication-date="auditStore.currentAudit.publicationDate"
+      :audit-edition-date="auditStore.currentAudit.editionDate"
     />
 
     <section class="content fr-mb-6w">
@@ -127,7 +127,7 @@ const successAlertContent = computed(() => {
         class="fr-btn fr-btn--secondary fr-mb-5w"
         :to="{
           name: 'report',
-          params: { uniqueId: auditStore.data.consultUniqueId },
+          params: { uniqueId: auditStore.currentAudit.consultUniqueId },
         }"
         target="_blank"
       >
@@ -158,7 +158,7 @@ const successAlertContent = computed(() => {
           class="fr-btn fr-btn--icon-left fr-icon-edit-line"
           :to="{
             name: 'edit-audit-declaration',
-            params: { uniqueId: auditStore.data.editUniqueId },
+            params: { uniqueId: auditStore.currentAudit.editUniqueId },
           }"
         >
           Remplir la déclaration d'accessibilité
@@ -184,7 +184,7 @@ const successAlertContent = computed(() => {
           :to="{
             name: 'report',
             params: {
-              uniqueId: auditStore.data.consultUniqueId,
+              uniqueId: auditStore.currentAudit.consultUniqueId,
               tab: 'declaration-daccessibilite',
             },
           }"
@@ -196,7 +196,7 @@ const successAlertContent = computed(() => {
           class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-5w"
           :to="{
             name: 'edit-audit-declaration',
-            params: { uniqueId: auditStore.data.editUniqueId },
+            params: { uniqueId: auditStore.currentAudit.editUniqueId },
           }"
         >
           Modifier la déclaration d’accessilbilité
@@ -207,7 +207,7 @@ const successAlertContent = computed(() => {
           :to="{
             name: 'report',
             params: {
-              uniqueId: auditStore.data.consultUniqueId,
+              uniqueId: auditStore.currentAudit.consultUniqueId,
               tab: 'declaration-daccessibilite',
             },
           }"

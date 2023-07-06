@@ -127,7 +127,7 @@ const derogatedContent = ref("");
 const notInScopeContent = ref("");
 
 watch(
-  () => auditStore.data,
+  () => auditStore.currentAudit,
   (audit) => {
     if (!audit) {
       return;
@@ -180,7 +180,7 @@ function handleSubmit() {
 
   const data: UpdateAuditRequestData = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ...auditStore.data!,
+    ...auditStore.currentAudit!,
 
     initiator: auditInitiator.value,
     procedureUrl: procedureUrl.value.trim(),
@@ -269,7 +269,7 @@ const isDevMode = useDevMode();
     description="Saisissez le type d'audit que vous souhaitez réaliser et l'ensemble des paramètres de votre futur audit."
   />
 
-  <form v-if="auditStore.data" @submit.prevent="handleSubmit">
+  <form v-if="auditStore.currentAudit" @submit.prevent="handleSubmit">
     <div class="narrow-content">
       <h1 class="fr-mb-3v">📄 Déclaration d’accessibilité</h1>
       <p class="fr-text--sm mandatory-notice">

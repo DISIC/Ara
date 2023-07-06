@@ -120,10 +120,10 @@ const csvExportUrl = computed(
 );
 
 const csvExportFilename = computed(() => {
-  if (!auditStore.data?.procedureName) {
+  if (!auditStore.currentAudit?.procedureName) {
     return "audit.csv";
   }
-  return `audit-${slugify(auditStore.data.procedureName)}.csv`;
+  return `audit-${slugify(auditStore.currentAudit.procedureName)}.csv`;
 });
 
 const csvExportSizeEstimation = computed(() => {
@@ -259,7 +259,7 @@ const isDevMode = useDevMode();
 
   <DuplicateModal
     ref="duplicateModal"
-    :original-audit-name="auditStore.data?.procedureName"
+    :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="
