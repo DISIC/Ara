@@ -50,12 +50,12 @@ const resourcesLocation = {
 const menuItems = computed<
   Array<{ to: RouteLocationRaw; label: string; match?: string }>
 >(() => {
-  if (auditStore.data) {
+  if (auditStore.currentAudit) {
     const auditLocation = {
-      label: `Audit ${auditStore.data.procedureName}`,
+      label: `Audit ${auditStore.currentAudit.procedureName}`,
       to: auditStore.lastVisitedStepLocation ?? {
         name: "edit-audit-step-one",
-        params: { uniqueId: auditStore.data.editUniqueId },
+        params: { uniqueId: auditStore.currentAudit.editUniqueId },
       },
       match: "/audits",
     };

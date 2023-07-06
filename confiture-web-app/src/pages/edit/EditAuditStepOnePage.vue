@@ -22,7 +22,7 @@ function submitStepOne(data: CreateAuditRequestData) {
   auditStore
     .updateAudit(auditUniqueId, {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ...auditStore.data!,
+      ...auditStore.currentAudit!,
       ...data,
     })
     .then(() => {
@@ -54,8 +54,8 @@ function submitStepOne(data: CreateAuditRequestData) {
   />
 
   <AuditGeneralInformationsForm
-    v-if="auditStore.data"
-    :default-values="auditStore.data"
+    v-if="auditStore.currentAudit"
+    :default-values="auditStore.currentAudit"
     @submit="submitStepOne"
   />
 </template>
