@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import AfterReport from "../../components/FaqAccordionsContent/AfterReport.vue";
+import Prioritize from "../../components/FaqAccordionsContent/Prioritize.vue";
+import Test from "../../components/FaqAccordionsContent/Test.vue";
+import AfterCorrection from "../../components/FaqAccordionsContent/AfterCorrection.vue";
+import QuickWin from "../../components/FaqAccordionsContent/QuickWin.vue";
+import FullyAccessible from "../../components/FaqAccordionsContent/FullyAccessible.vue";
+import SelfAuditing from "../../components/FaqAccordionsContent/SelfAuditing.vue";
+import LegalRequirements from "../../components/FaqAccordionsContent/LegalRequirements.vue";
+import TeamTraining from "../../components/FaqAccordionsContent/TeamTraining.vue";
 import PageMeta from "../../components/PageMeta";
 
 const tileLinks = [
@@ -49,6 +58,46 @@ const moreLinks = [
     href: "https://design.numerique.gouv.fr/accessibilite-numerique/jeu-de-oaa/",
   },
 ];
+
+const accordions = [
+  {
+    title: "Que faire après avoir reçu mon rapport ?",
+    component: AfterReport,
+  },
+  {
+    title: "Comment prioriser les correctifs ?",
+    component: Prioritize,
+  },
+  {
+    title: "Comment tester mes correctifs ?",
+    component: Test,
+  },
+  {
+    title:
+      "Que faire après avoir corrigé les anomalies et testé les corrections ?",
+    component: AfterCorrection,
+  },
+  {
+    title: "Comment faire remonter rapidement le taux d’accessibilité ? ",
+    component: QuickWin,
+  },
+  {
+    title: "Comment être conforme à 100% ?",
+    component: FullyAccessible,
+  },
+  {
+    title: "Comment réaliser soi-même un audit accessibilité ? ",
+    component: SelfAuditing,
+  },
+  {
+    title: "Quelles sont les obligations légales ?",
+    component: LegalRequirements,
+  },
+  {
+    title: "Comment me former ou former mon équipe ?",
+    component: TeamTraining,
+  },
+];
 </script>
 
 <template>
@@ -57,8 +106,35 @@ const moreLinks = [
     description="Retrouvez les formations de l'équipe Design des services numériques, les outils et le glossaire vous permettant de réaliser sereinement votre audit d'accessibilité numérique."
   />
 
+  <h1 class="fr-mt-6w">Ressources</h1>
+
   <section class="fr-my-0 content">
-    <h1 class="fr-mt-6w">Ressources</h1>
+    <h2>Questions fréquentes</h2>
+    <div class="fr-accordions-group fr-mb-6w">
+      <section
+        v-for="(accordion, i) in accordions"
+        :key="accordion.title"
+        class="fr-accordion"
+      >
+        <h3 class="fr-accordion__title">
+          <button
+            class="fr-accordion__btn"
+            aria-expanded="false"
+            :aria-controls="`accordion-${i}`"
+          >
+            {{ accordion.title }}
+          </button>
+        </h3>
+        <div :id="`accordion-${i}`" class="fr-collapse">
+          <component :is="accordion.component" />
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="fr-my-0 content">
+    <h2 class="fr-mt-6w">Ressources</h2>
+
     <p>
       Retrouvez une sélection de ressources et d’outils pour vous aider à vous
       préparer et à mener votre chantier accessibilité&nbsp;:

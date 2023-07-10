@@ -31,12 +31,6 @@ const links: SiteMapLink[] = [
       { label: "Outils", name: "tools" },
       { label: "Glossaire RGAA", name: "glossary" },
       { label: "Réaliser un audit accessibilité", name: "make-a11y-audit" },
-    ],
-  },
-  {
-    label: "Aide",
-    name: "help",
-    children: [
       { label: "Obligations légales", name: "legal-requirements" },
       { label: "RGAA", name: "rgaa" },
       {
@@ -49,7 +43,7 @@ const links: SiteMapLink[] = [
   { label: "Donner mon avis", name: "feedback" },
   { label: "Accessibilité", name: "accessibility" },
   { label: "Mentions légales", name: "legal" },
-  // { label: "Données personnelles", name: "personal-data" },
+  { label: "Données personnelles", name: "privacy" },
 ];
 </script>
 
