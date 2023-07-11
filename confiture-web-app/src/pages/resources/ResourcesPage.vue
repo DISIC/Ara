@@ -37,18 +37,18 @@ const moreLinks = [
   {
     title: "DesignGouv",
     description:
-      "notre site officiel dédié au design et à l’accessibilité des services numériques",
+      "les ressources de DesignGouv, le pôle design des services numériques de la Dinum.",
     href: "https://design.numerique.gouv.fr/",
   },
   {
     title: "RGAA",
     description:
-      "enjeux, tests, obligations légales, méthodes, tout le RGAA en plus clair",
+      "les obligations légales, la méthode technique et tout ce qu’il faut savoir sur le RGAA.",
     href: "https://accessibilite.numerique.gouv.fr/",
   },
   {
     title: "DSFR",
-    description: "le site officiel du Système de Design de l’État",
+    description: "le site officiel du Système de Design de l’État développé par le SIG",
     href: "https://www.systeme-de-design.gouv.fr/",
   },
   {
@@ -78,24 +78,8 @@ const accordions = [
     component: AfterCorrection,
   },
   {
-    title: "Comment faire remonter rapidement le taux d’accessibilité ? ",
-    component: QuickWin,
-  },
-  {
     title: "Comment être conforme à 100% ?",
     component: FullyAccessible,
-  },
-  {
-    title: "Comment réaliser soi-même un audit accessibilité ? ",
-    component: SelfAuditing,
-  },
-  {
-    title: "Quelles sont les obligations légales ?",
-    component: LegalRequirements,
-  },
-  {
-    title: "Comment me former ou former mon équipe ?",
-    component: TeamTraining,
   },
 ];
 </script>

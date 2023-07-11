@@ -4,13 +4,13 @@
     votre produit, mais cela ne veut pas dire que c’est impossible.</p>    
   <p>Pour parvenir à cet objectif il vous faut impérativement&nbsp;:</p>
   <ul class="fr-mb-0">
-    <li>Former vos équipes.</li>
+    <li>former vos équipes ;</li>
     <li>
-      Intégrer l’accessibilité dès la phase de conception et tout au long de la
-      vie du projet.
+      intégrer l’accessibilité dès la phase de conception et tout au long de la
+      vie du projet ;
     </li>
     <li>
-      Avoir une volonté forte de rendre vos services accessibles à tous les
+      avoir une volonté forte de rendre vos services accessibles à tous les
       usagers, partagée à tous les niveaux de la hiérarchie.
     </li>
   </ul>
