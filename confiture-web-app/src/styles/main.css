@@ -41,3 +41,7 @@
   transform: translateY(2.4375rem);
   border: 1px solid var(--border-default-grey);
 }
+
+pre {
+  white-space: pre-wrap;
+}
