@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 06/09/2023
 
+### Corrections 🐛
+
+- Corrige la mise à jour des dates de publication et d’édition d’un audit pour que la date de publication ne puisse plus être postérieure à la date d’édition ([#461](https://github.com/DISIC/Ara/pull/461))
+
 ### Autres changements ⚙️
 
 - Réorganise les pages d'aides et de ressources ([#466](https://github.com/DISIC/Ara/pull/466))
