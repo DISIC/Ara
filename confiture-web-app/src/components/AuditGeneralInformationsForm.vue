@@ -164,27 +164,26 @@ const route = useRoute();
         :key="i"
         class="fr-mt-4w fr-p-4w page-card"
       >
-        <div class="fr-mb-2w page-header">
-          <legend>
-            <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
-          </legend>
+        <legend class="page-legend">
+          <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+        </legend>
 
-          <button
-            class="fr-btn fr-btn--tertiary-no-outline"
-            type="button"
-            :disabled="pages.length === 1"
-            @click="deletePage(i)"
-          >
-            Supprimer
-            <span class="sr-only">la page {{ i + 1 }}</span>
-          </button>
-        </div>
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
+          type="button"
+          :disabled="pages.length === 1"
+          @click="deletePage(i)"
+        >
+          Supprimer
+          <span class="sr-only">la page {{ i + 1 }}</span>
+        </button>
 
         <DsfrField
           :id="`page-name-${i + 1}`"
           ref="pageNameFieldRefs"
           v-model="page.name"
           label="Nom de la page"
+          class="fr-mt-2w page-field"
         />
 
         <DsfrField
@@ -193,6 +192,7 @@ const route = useRoute();
           label="URL de la page"
           type="url"
           required
+          class="page-field"
         >
           <template #hint>
             L’URL de la page doit commencer par <code>https://</code>
@@ -304,14 +304,21 @@ const route = useRoute();
 
 .page-card {
   border: 1px solid var(--border-default-grey);
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.page-legend {
+  float: left;
+}
+
+.page-delete-button {
+  justify-self: end;
+}
+
+.page-field {
+  grid-column: 1 / -1;
 }
 
 .auditor-fields {
