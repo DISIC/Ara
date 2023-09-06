@@ -4,6 +4,7 @@ import { onMounted } from "vue";
 import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
 import Account from "../../components/account/settings/Account.vue";
+import Password from "../../components/account/settings/Password.vue";
 import TopLink from "../../components/TopLink.vue";
 
 import { useAccountStore } from "../../store/account";
@@ -25,9 +26,8 @@ onMounted(() => {
         <h1 class="fr-h2">Mon compte</h1>
         <Profile />
         <hr class="fr-mt-3w" />
-
-        <!-- <hr />
-        <hr /> -->
+        <Password />
+        <hr class="fr-mt-3w" />
         <h2 class="fr-h6">Données</h2>
         <p>
           Les données recueillies sont traitées par les équipes de la DINUM.

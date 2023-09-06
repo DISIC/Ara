@@ -32,30 +32,26 @@ async function handleSubmit() {
       router.push({ name: "account-dashboard" });
     })
     .catch(async (err) => {
-      if (err instanceof HTTPError) {
+      if (err instanceof HTTPError && err.response.status === 401) {
         const body = await err.response.json();
-
-        if (err.response.status === 401 && body.message === "unknown_user") {
+        if (body.message === "unknown_user") {
           // Unknown user
           userEmailError.value =
             "Cette adresse e-mail est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
           userEmailField.value?.inputRef?.focus();
-        } else if (
-          err.response.status === 401 &&
-          body.message === "wrong_password"
-        ) {
+        } else {
           // Wrong password
           userPasswordError.value = "Le mot de passe saisi est incorrect.";
           userPasswordInput.value?.focus();
-        } else {
-          // Unkown error
-          notify(
-            "error",
-            "Echéc de la connexion",
-            "Une erreur inconnue est survenue"
-          );
-          captureWithPayloads(err);
         }
+      } else {
+        // Unknown error
+        notify(
+          "error",
+          "Echéc de la connexion",
+          "Une erreur inconnue est survenue"
+        );
+        captureWithPayloads(err, false);
       }
     });
 }

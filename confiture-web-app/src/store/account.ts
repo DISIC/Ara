@@ -193,5 +193,12 @@ export const useAccountStore = defineStore("account", {
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
       });
     },
+
+    async updatePassword(oldPassword: string, newPassword: string) {
+      await ky.put("/api/auth/update-password", {
+        json: { oldPassword, newPassword },
+        headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      });
+    },
   },
 });
