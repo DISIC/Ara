@@ -35,25 +35,32 @@ const resultsStore = useResultsStore();
 const notify = useNotifications();
 
 /**
- * Publish audit and move to final step
+ * Publish audit and/or move to final step
  */
 function toStepFour() {
-  auditStore
-    .publishAudit(uniqueId.value)
-    .then(() => {
-      router.push({
-        name: "edit-audit-step-four",
-        params: { uniqueId: uniqueId.value },
-      });
-    })
-    .catch((error) => {
-      notify(
-        "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
-      );
-      captureWithPayloads(error);
+  if (auditStore.data?.publicationDate) {
+    router.push({
+      name: "edit-audit-step-four",
+      params: { uniqueId: uniqueId.value },
     });
+  } else {
+    auditStore
+      .publishAudit(uniqueId.value)
+      .then(() => {
+        router.push({
+          name: "edit-audit-step-four",
+          params: { uniqueId: uniqueId.value },
+        });
+      })
+      .catch((error) => {
+        notify(
+          "error",
+          "Une erreur est survenue",
+          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        );
+        captureWithPayloads(error);
+      });
+  }
 }
 
 /** Available topic filters and their global progression. */

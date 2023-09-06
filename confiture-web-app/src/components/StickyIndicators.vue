@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 
-import { useAuditStore, useSystemStore } from "../store";
+import { useAuditStore, useSystemStore, useResultsStore } from "../store";
 import { formatDate } from "../utils";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
 const systemStore = useSystemStore();
 const auditStore = useAuditStore();
+const resultsStore = useResultsStore();
 
 // When the `isOnline` state becomes `false`, an alert is displayed which should displace the save indicator fixed position.
 const alertHeight = ref(0);
@@ -35,20 +36,20 @@ watch(
 );
 
 const route = useRoute();
+
+const showAuditProgressBar = computed(() => {
+  return (
+    !auditStore.data?.publicationDate ||
+    (auditStore.data?.publicationDate && resultsStore.auditProgress !== 1)
+  );
+});
 </script>
 
 <template>
   <div class="sticky-indicator fr-mb-1v" :style="{ top: alertHeight + 'px' }">
-    <AuditProgressBar
-      v-if="
-        !auditStore.data?.publicationDate ||
-        (auditStore.data?.publicationDate &&
-          auditStore.data?.editionDate &&
-          auditStore.data?.editionDate > auditStore.data?.publicationDate)
-      "
-    />
+    <AuditProgressBar v-if="showAuditProgressBar" />
 
-    <div v-else class="audit-status">
+    <div v-else-if="auditStore.data?.publicationDate" class="audit-status">
       <span
         class="fr-icon-success-line fr-icon--sm audit-status-icon"
         aria-hidden="true"
