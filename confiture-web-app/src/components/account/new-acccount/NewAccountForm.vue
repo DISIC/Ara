@@ -1,5 +1,4 @@
 <script setup lang="ts">
-<<<<<<< HEAD
 import { HTTPError } from "ky";
 import { ref } from "vue";
 
@@ -11,19 +10,10 @@ import DsfrField from "../../DsfrField.vue";
 
 const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;
-=======
-import { ref } from "vue";
-
-import { useDevMode } from "../../../composables/useDevMode";
-
-const emit = defineEmits<{
-  (e: "submit", payload: { username: string; password: string }): void;
->>>>>>> c5b49c9 (add new account page)
 }>();
 
 const userEmail = ref("");
 const userPassword = ref("");
-<<<<<<< HEAD
 const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
 
@@ -66,12 +56,6 @@ async function handleSubmit() {
         }
       }
     });
-=======
-
-function handleSubmit() {
-  // TODO: validate fields
-  emit("submit", { username: userEmail.value, password: userPassword.value });
->>>>>>> c5b49c9 (add new account page)
 }
 
 const isDevMode = useDevMode();
@@ -79,11 +63,7 @@ const isDevMode = useDevMode();
 function fillFields() {
   const randomNumber = Math.floor(Math.random() * 1_000_000);
   userEmail.value = `email-${randomNumber}@example.com`;
-<<<<<<< HEAD
-  userPassword.value = "123456789098";
-=======
   userPassword.value = "123blabla!!!Pouet";
->>>>>>> c5b49c9 (add new account page)
 }
 </script>
 
@@ -99,7 +79,6 @@ function fillFields() {
         Sauf mention contraire, tous les champs sont obligatoires.
       </p>
 
-<<<<<<< HEAD
       <DsfrField
         id="user-email"
         ref="userEmailField"
@@ -111,21 +90,6 @@ function fillFields() {
         required
         :error="userEmailError"
       />
-=======
-      <div class="fr-input-group fr-mb-2w">
-        <label class="fr-label" for="user-email">
-          Adresse e-mail
-          <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-        </label>
-        <input
-          id="user-email"
-          v-model="userEmail"
-          class="fr-input"
-          type="email"
-          required
-        />
-      </div>
->>>>>>> c5b49c9 (add new account page)
 
       <div class="fr-password fr-mb-3w">
         <label class="fr-label" for="user-password-input">Mot de passe</label>
@@ -139,10 +103,7 @@ function fillFields() {
             autocomplete="new-password"
             type="password"
             required
-<<<<<<< HEAD
             minlength="12"
-=======
->>>>>>> c5b49c9 (add new account page)
           />
         </div>
 

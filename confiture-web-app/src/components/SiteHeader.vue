@@ -5,7 +5,7 @@ import { useRoute, RouteLocationRaw } from "vue-router";
 import { useAuditStore, useReportStore } from "../store";
 import { useAccountStore } from "../store/account";
 import Dropdown from "./Dropdown.vue";
-import GearIcon from "./icons/GearIcon.vue";
+// import GearIcon from "./icons/GearIcon.vue";
 import LogoutIcon from "./icons/LogoutIcon.vue";
 
 const reportStore = useReportStore();
@@ -132,17 +132,11 @@ function handleDisconnectClick() {
           </div>
           <div class="fr-header__tools">
             <div class="fr-header__tools-links">
-<<<<<<< HEAD
               <ul v-if="!accountStore.account" class="fr-btns-group">
                 <li>
                   <RouterLink class="fr-btn" :to="{ name: 'login' }">
                     Se connecter
                   </RouterLink>
-=======
-              <ul class="fr-btns-group">
-                <li>
-                  <RouterLink class="fr-btn" to="#"> Se connecter </RouterLink>
->>>>>>> c5b49c9 (add new account page)
                 </li>
                 <li>
                   <RouterLink
@@ -153,7 +147,6 @@ function handleDisconnectClick() {
                   </RouterLink>
                 </li>
               </ul>
-<<<<<<< HEAD
               <!-- FIXME: correct dropdown style when #377 is merged -->
               <Dropdown
                 v-else
@@ -190,8 +183,6 @@ function handleDisconnectClick() {
                   </li>
                 </ul>
               </Dropdown>
-=======
->>>>>>> c5b49c9 (add new account page)
             </div>
           </div>
         </div>
