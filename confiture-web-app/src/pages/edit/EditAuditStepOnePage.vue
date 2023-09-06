@@ -26,7 +26,15 @@ function submitStepOne(data: CreateAuditRequestData) {
       ...data,
     })
     .then(() => {
-      router.back();
+      notify(
+        "success",
+        "Les paramètres de votre audit ont été mis à jour avec succès"
+      );
+
+      router.push({
+        name: "edit-audit-step-three",
+        params: { uniqueId: auditUniqueId },
+      });
     })
     .catch((err) => {
       console.error(err);
