@@ -8,12 +8,14 @@ import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
 import * as accountVerificationEmail from './account-verification-email';
 import * as accountConfirmationEmail from './account-confirmation-email';
+import * as passwordUpdateConfirmationEmail from './password-update-confirmation-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
   [EmailType.ACCOUNT_VERIFICATION]: accountVerificationEmail,
   [EmailType.ACCOUNT_CONFIRMATION]: accountConfirmationEmail,
+  [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
 };
 
 @Injectable()
@@ -105,5 +107,9 @@ export class MailService {
 
   sendAccountConfirmationEmail(username: string) {
     return this.sendMail(username, EmailType.ACCOUNT_CONFIRMATION, null);
+  }
+
+  sendPasswordUpdateConfirmation(email: string) {
+    return this.sendMail(email, EmailType.PASSWORD_UPDATE_CONFIRMATION, null);
   }
 }
