@@ -14,9 +14,9 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useIsOffline } from "../../composables/useIsOffline";
 import rgaa from "../../criteres.json";
 import { history } from "../../router";
-import { useAuditStore, useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore, useFiltersStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
-import { captureWithPayloads, getCriteriaCount } from "../../utils";
+import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 
 const route = useRoute();
@@ -204,13 +204,41 @@ function handleUpdateResultError(err: any) {
 }
 
 const isOffline = useIsOffline();
+
+const filterStore = useFiltersStore();
+const filterResultsCount = computed(() =>
+  filterStore.filteredTopics
+    .map((t) => t.criteria.length)
+    .reduce((total, length) => (total += length), 0)
+);
+
+const pageTitle = computed(() => {
+  if (auditStore.data) {
+    // Audit XXX - X résultats pour « XXX »
+    if (filterStore.search) {
+      const r = `Audit ${auditStore.data.procedureName} - ${
+        filterResultsCount.value
+      } ${pluralize(
+        "résultat",
+        "résultats",
+        filterResultsCount.value
+      )} pour « ${filterStore.search} »`;
+      console.log({ r });
+      return r;
+    }
+
+    return `Audit ${auditStore.data.procedureName}`;
+  }
+
+  return "";
+});
 </script>
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div class="page-wrapper" v-if="auditStore.data && resultsStore.data">
+  <div v-if="auditStore.data && resultsStore.data" class="page-wrapper">
     <PageMeta
-      :title="`Audit ${auditStore.data.procedureName}`"
+      :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 

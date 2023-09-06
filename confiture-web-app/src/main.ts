@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { marked } from "marked";
-import { createHead } from "@vueuse/head";
+import { createHead } from "@unhead/vue";
 // @ts-expect-error vue-matomo does not have any sort of typescript support :'(
 import Matomo from "vue-matomo";
 
