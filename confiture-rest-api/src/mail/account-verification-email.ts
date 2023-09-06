@@ -14,9 +14,11 @@ export function html(data: AccountVerificationEmailData): string {
 
 export function plain(data: AccountVerificationEmailData): string {
   return `
-    Bonjour,".
+    Bonjour,
 
-    Lien de vérification : ${data.verificationLink}
+    Pour finalisez la création de votre compte, veuillez cliquer sur le lien suivant : : ${data.verificationLink}. Ce lien est valable 1h.
+
+    Si vous ne voulez pas créer de compte sur Ara ou si vous n’avez pas demandé à créer de compte, vous pouvez ignorer et supprimer cet e-mail.
 
     Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
   `;

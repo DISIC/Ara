@@ -5,7 +5,7 @@ import { useRoute, RouteLocationRaw } from "vue-router";
 import { useAuditStore, useReportStore } from "../store";
 import { useAccountStore } from "../store/account";
 import Dropdown from "./Dropdown.vue";
-import GearIcon from "./icons/GearIcon.vue";
+// import GearIcon from "./icons/GearIcon.vue";
 import LogoutIcon from "./icons/LogoutIcon.vue";
 
 const reportStore = useReportStore();

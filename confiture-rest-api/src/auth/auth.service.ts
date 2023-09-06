@@ -54,7 +54,7 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<string> {
-    const passwordHash = await hash(password, 10);
+    const passwordHash = await this.hashPassword(password);
 
     // Check if an already verified user exists with this username
     await this.prisma.user.findUnique({ where: { username } }).then((user) => {
@@ -212,5 +212,17 @@ export class AuthService {
 
   async deleteAccount(username: string) {
     await this.prisma.user.delete({ where: { username } });
+  }
+
+  async updatePassword(username: string, newPassword: string) {
+    const hash = await this.hashPassword(newPassword);
+    await this.prisma.user.update({
+      where: { username },
+      data: { password: hash },
+    });
+  }
+
+  private hashPassword(password: string) {
+    return hash(password, 10);
   }
 }
