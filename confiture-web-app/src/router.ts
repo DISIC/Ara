@@ -141,19 +141,6 @@ const router = createRouter({
         ],
       },
     },
-    // TODO: nothing to put on that page for now
-    // {
-    //   path: "/donnees-personnelles",
-    //   name: "personal-data",
-    //   component: PersonalDataPage,
-    //   meta: {
-    //     name: "Données personnelles",
-    //     breadcrumbLinks: () => [
-    //       getHomeBreadcrumbLink(),
-    //       { label: "Données personnelles", name: "personal-data" },
-    //     ],
-    //   },
-    // },
     // Audit pages
     {
       path: "/audits/nouveau",
@@ -382,28 +369,16 @@ const router = createRouter({
         ],
       },
     },
-    // Help pages
+
     {
-      path: "/aide",
-      name: "help",
-      component: HelpPage,
-      meta: {
-        name: "Formations accessibilité",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Aide", name: "help" },
-        ],
-      },
-    },
-    {
-      path: "/aide/obligations-legales",
+      path: "/ressources/obligations-legales",
       name: "legal-requirements",
       component: LegalRequirementsPage,
       meta: {
         name: "Obligations légales et sanctions",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Aide", name: "help" },
+          { label: "Ressources", name: "resources" },
           {
             label: "Obligations légales et sanctions",
             name: "legal-requirements",
@@ -412,27 +387,27 @@ const router = createRouter({
       },
     },
     {
-      path: "/aide/rgaa",
+      path: "/ressources/rgaa",
       name: "rgaa",
       component: RGAAPage,
       meta: {
         name: "RGAA",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Aide", name: "help" },
+          { label: "Ressources", name: "resources" },
           { label: "RGAA", name: "rgaa" },
         ],
       },
     },
     {
-      path: "/aide/declaration-accessibilite",
+      path: "/ressources/declaration-accessibilite",
       name: "accessibility-statement",
       component: AccessibilityStatementPage,
       meta: {
         name: "Déclaration d’accessibilité",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Aide", name: "help" },
+          { label: "Ressources", name: "resources" },
           {
             label: "Déclaration d’accessibilité",
             name: "accessibility-statement",
@@ -441,14 +416,14 @@ const router = createRouter({
       },
     },
     {
-      path: "/aide/schema-pluriannuel",
+      path: "/ressources/schema-pluriannuel",
       name: "accessibility-plan",
       component: AccessibilityPlanPage,
       meta: {
         name: "Schéma pluriannuel",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Aide", name: "help" },
+          { label: "Ressources", name: "resources" },
           { label: "Schéma pluriannuel", name: "accessibility-plan" },
         ],
       },

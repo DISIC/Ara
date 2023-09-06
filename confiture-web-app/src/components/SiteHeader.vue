@@ -37,7 +37,6 @@ function getAriaCurrentValue(to: RouteLocationRaw, match?: string) {
 }
 
 const homeLocation = { label: "Accueil", to: { name: "home" }, match: "/" };
-const helpLocation = { label: "Aide", to: { name: "help" }, match: "/aide" };
 const resourcesLocation = {
   label: "Ressources",
   to: { name: "resources" },
@@ -68,10 +67,10 @@ const menuItems = computed<
       label: "Rapport d’audit",
       match: "/rapports",
     };
-    return [homeLocation, reportLocation, resourcesLocation, helpLocation];
+    return [homeLocation, reportLocation, resourcesLocation];
   }
 
-  return [homeLocation, resourcesLocation, helpLocation];
+  return [homeLocation, resourcesLocation];
 });
 
 const newsSubMenu = ref<HTMLButtonElement>();

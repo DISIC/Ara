@@ -2,7 +2,7 @@
   <p>La priorisation des correctifs est à effectuer en fonction :</p>
   <ul class="fr-mb-7v">
     <li>
-      De l’impact des erreurs sur l’usager :
+      de l’impact des erreurs sur l’usager :
       <ul>
         <li>
           <strong>Bloquant</strong>
@@ -19,30 +19,24 @@
       </ul>
     </li>
     <li>
-      De la difficulté de correction des erreurs :
-      <ul>
-        <li>
-          À vous de déterminer la complexité des corrections et d’identifier les
-          erreurs facilement corrigeables
-        </li>
-      </ul>
+      de la difficulté de correction des erreurs.
     </li>
   </ul>
   <p>Nous recommandons de prioriser les corrections de la manière suivante :</p>
   <ol class="fr-mb-0">
     <li>
-      Les erreurs facilement corrigeables avec un impact bloquant et majeur pour
-      l’usager
+      les erreurs facilement corrigeables avec un impact bloquant et majeur pour
+      l’usager ;
     </li>
     <li>
-      Les erreurs plus complexes à corriger avec un impact bloquant et majeur pour
-      l’usager
+      les erreurs plus complexes à corriger avec un impact bloquant et majeur pour
+      l’usager ;
     </li>
     <li>
-      Les erreurs facilement corrigeables avec un impact mineur pour l’usager
+      les erreurs facilement corrigeables avec un impact mineur pour l’usager ;
     </li>
      <li>
-      Les erreurs plus complexes à corriger avec un impact mineur pour l’usager
+      les erreurs plus complexes à corriger avec un impact mineur pour l’usager.
     </li>
   </ol>
 </template>
