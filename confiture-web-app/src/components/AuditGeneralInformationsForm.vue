@@ -2,6 +2,7 @@
 import { nextTick, ref } from "vue";
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
+import { useRoute } from "vue-router";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import DsfrField from "./DsfrField.vue";
@@ -114,6 +115,7 @@ function onSubmit() {
 
 const isDevMode = useDevMode();
 const notify = useNotifications();
+const route = useRoute();
 </script>
 
 <template>
@@ -260,7 +262,22 @@ const notify = useNotifications();
       </div>
 
       <div>
-        <button class="fr-btn fr-mt-4w" type="submit">Commencer l’audit</button>
+        <button
+          v-if="route.name !== 'new-audit-step-one'"
+          class="fr-btn fr-btn--tertiary-no-outline fr-mr-2w"
+          type="button"
+          @click="$router.back()"
+        >
+          Annuler
+        </button>
+
+        <button class="fr-btn fr-mt-4w" type="submit">
+          {{
+            route.name === "new-audit-step-one"
+              ? "Commencer l’audit"
+              : "Mettre à jour les paramètres"
+          }}
+        </button>
       </div>
     </div>
   </form>

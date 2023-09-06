@@ -25,10 +25,15 @@ function submitStepOne(data: CreateAuditRequestData) {
       ...auditStore.data!,
       ...data,
     })
-    .then((audit) => {
+    .then(() => {
+      notify(
+        "success",
+        "Les paramètres de votre audit ont été mis à jour avec succès"
+      );
+
       router.push({
         name: "edit-audit-step-three",
-        params: { uniqueId: audit.editUniqueId },
+        params: { uniqueId: auditUniqueId },
       });
     })
     .catch((err) => {

@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Corrige la mise à jour des dates de publication et d’édition d’un audit pour que la date de publication ne puisse plus être postérieure à la date d’édition ([#461](https://github.com/DISIC/Ara/pull/461))
+- Corrige le libellé du bouton de soumission sur la page d’édition des paramètres d’un audit ([#458](https://github.com/DISIC/Ara/pull/458))
 
 ### Autres changements ⚙️
 
