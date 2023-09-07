@@ -107,7 +107,7 @@ export const useAuditStore = defineStore("audit", {
       return newAuditId;
     },
 
-    async updateCurrentPageId(id: number) {
+    async updateCurrentPageId(id: number | null) {
       this.currentPageId = id;
     },
   },

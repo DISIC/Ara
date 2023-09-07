@@ -104,9 +104,12 @@ const topics = computed(() => {
 
 const currentPageId = ref(0);
 
-function updateCurrentPageId(i: number) {
+function updateCurrentPageId(i: number | null) {
   auditStore.updateCurrentPageId(i);
-  currentPageId.value = i;
+
+  if (i) {
+    currentPageId.value = i;
+  }
 }
 
 const {
@@ -213,21 +216,30 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
+  // Audit XXX - [Page en cours « XXX » | Notes] - X résultats pour « XXX »
   if (auditStore.data) {
-    // Audit XXX - X résultats pour « XXX »
+    let title = `Audit ${auditStore.data.procedureName}`;
+
+    const tabName = auditStore.currentPageId
+      ? ` - Page en cours « ${
+          auditStore.data.pages.find((p) => p.id === auditStore.currentPageId)
+            ?.name
+        } »`
+      : " - Notes";
+
+    title += tabName;
+
     if (filterStore.search) {
-      const r = `Audit ${auditStore.data.procedureName} - ${
-        filterResultsCount.value
-      } ${pluralize(
+      const results = ` - ${filterResultsCount.value} ${pluralize(
         "résultat",
         "résultats",
         filterResultsCount.value
       )} pour « ${filterStore.search} »`;
-      console.log({ r });
-      return r;
+
+      title += results;
     }
 
-    return `Audit ${auditStore.data.procedureName}`;
+    return title;
   }
 
   return "";
@@ -434,6 +446,7 @@ const pageTitle = computed(() => {
             role="tabpanel"
             aria-labelledby="notes-panel"
             tabindex="0"
+            v-on="{ 'dsfr.disclose': () => updateCurrentPageId(null) }"
           >
             <div class="fr-input-group fr-mb-1w">
               <label class="fr-label" for="audit-notes"
