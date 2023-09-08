@@ -94,7 +94,7 @@ function onOnboardingAlertClose() {
   localStorage.setItem("confiture:hide-onboarding-alert", "true");
 }
 
-const targetTab = ref(route.params.tab) as Ref<string | undefined>;
+const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
   let index = tabs.value.findIndex(
     (t) => slugify(t.title).toLowerCase() === targetTab?.value?.toLowerCase()
