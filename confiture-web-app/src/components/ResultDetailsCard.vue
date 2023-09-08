@@ -35,6 +35,9 @@ function updateCurrentDisplay(display: string) {
             :aria-controls="`tabpanel-chart-${slugify(title)}-panel`"
           >
             Graphique
+            <span v-if="currentDisplay === 'chart'" class="sr-only"
+              >&nbsp;Actif</span
+            >
           </button>
         </li>
         <li role="presentation">
@@ -47,6 +50,9 @@ function updateCurrentDisplay(display: string) {
             :aria-controls="`tabpanel-table-${slugify(title)}-panel`"
           >
             Tableau
+            <span v-if="currentDisplay === 'table'" class="sr-only"
+              >&nbsp;Actif</span
+            >
           </button>
         </li>
       </ul>

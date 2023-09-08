@@ -102,14 +102,12 @@ const topics = computed(() => {
   );
 });
 
-const currentPageId = ref(0);
+const currentPageId = ref<number | null>(0);
 
 function updateCurrentPageId(i: number | null) {
   auditStore.updateCurrentPageId(i);
 
-  if (i) {
-    currentPageId.value = i;
-  }
+  currentPageId.value = i;
 }
 
 const {
@@ -393,6 +391,11 @@ const pageTitle = computed(() => {
                 :aria-controls="`page-panel-${auditStore.data.pages[0].id}-panel`"
               >
                 {{ auditStore.data.pages[0].name }}
+                <span
+                  v-if="currentPageId === auditStore.data.pages[0].id"
+                  class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
             <li
@@ -409,6 +412,9 @@ const pageTitle = computed(() => {
                 :aria-controls="`page-panel-${page.id}-panel`"
               >
                 {{ page.name }}
+                <span v-if="currentPageId === page.id" class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
             <li role="presentation">
@@ -421,6 +427,9 @@ const pageTitle = computed(() => {
                 :aria-controls="`notes-panel-panel`"
               >
                 Notes
+                <span v-if="currentPageId === null" class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
           </ul>
