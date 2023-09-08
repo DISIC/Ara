@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 08/09/2023
+
+### Corrections 🐛
+
+- Corrige les problèmes d’accessibilité suite au contre-audit ([#478](https://github.com/DISIC/Ara/pull/478))
+
 ## 06/09/2023
 
 ### Corrections 🐛
