@@ -210,10 +210,12 @@ function getTopicName(topicNumber: number) {
 }
 
 function getCriterium(topicNumber: number, criteriumNumber: number) {
-  const criterium = rgaa.topics
-    .find((t) => t.number === topicNumber)
-    // @ts-expect-error The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
-    ?.criteria.find((c) => c.criterium.number === criteriumNumber).criterium;
+  // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
+  const criterium = (rgaa.topics as any)
+    .find((t: any) => t.number === topicNumber)
+    ?.criteria.find(
+      (c: any) => c.criterium.number === criteriumNumber
+    ).criterium;
 
   return criterium;
 }
