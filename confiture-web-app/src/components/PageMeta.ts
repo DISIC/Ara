@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 
 const PageMeta = defineComponent({
   name: "PageMeta",
@@ -21,7 +21,7 @@ const PageMeta = defineComponent({
      * If no props are provided, defaults are used.
      */
     useHead({
-      title: props.title,
+      title: () => props.title ?? "",
       meta: [
         { name: "description", content: props.description },
         { name: "og:title", content: props.title },

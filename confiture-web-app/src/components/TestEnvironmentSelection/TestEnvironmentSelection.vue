@@ -280,22 +280,22 @@ function combineEnvironments(
       :key="i"
       class="fr-fieldset fr-m-0 fr-p-0 fr-mt-4w fr-p-4w env-card"
     >
-      <div class="fr-mb-2w env-header">
-        <legend>
-          <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
-        </legend>
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline"
-          type="button"
-          :disabled="customEnvironments.length === 1"
-          @click="deleteEnvironment(i)"
-        >
-          Supprimer
-        </button>
-      </div>
-      <div class="fr-form-group">
+      <legend class="env-legend">
+        <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
+      </legend>
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline env-delete-button"
+        type="button"
+        :disabled="customEnvironments.length === 1"
+        @click="deleteEnvironment(i)"
+      >
+        Supprimer
+      </button>
+      <div class="fr-form-group env-form">
         <fieldset class="fr-fieldset fr-fieldset--inline">
-          <legend class="fr-fieldset__legend fr-text--regular">Support</legend>
+          <legend class="fr-fieldset__legend fr-text--regular fr-mt-2w">
+            Support
+          </legend>
           <div class="fr-fieldset__content">
             <div class="fr-radio-group">
               <input
@@ -438,15 +438,21 @@ function combineEnvironments(
 
 .env-card {
   border: 1px solid var(--border-default-grey);
-  display: block;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
 }
 
-.env-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.env-legend {
+  float: left;
+}
+
+.env-delete-button {
+  justify-self: end;
+}
+
+.env-card > *:not(.env-legend, .env-delete-button) {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 992px) {

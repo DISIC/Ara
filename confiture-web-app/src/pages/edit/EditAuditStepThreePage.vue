@@ -14,9 +14,9 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useIsOffline } from "../../composables/useIsOffline";
 import rgaa from "../../criteres.json";
 import { history } from "../../router";
-import { useAuditStore, useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore, useFiltersStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
-import { captureWithPayloads, getCriteriaCount } from "../../utils";
+import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 
 const route = useRoute();
@@ -102,10 +102,11 @@ const topics = computed(() => {
   );
 });
 
-const currentPageId = ref(0);
+const currentPageId = ref<number | null>(0);
 
-function updateCurrentPageId(i: number) {
+function updateCurrentPageId(i: number | null) {
   auditStore.updateCurrentPageId(i);
+
   currentPageId.value = i;
 }
 
@@ -204,13 +205,50 @@ function handleUpdateResultError(err: any) {
 }
 
 const isOffline = useIsOffline();
+
+const filterStore = useFiltersStore();
+const filterResultsCount = computed(() =>
+  filterStore.filteredTopics
+    .map((t) => t.criteria.length)
+    .reduce((total, length) => (total += length), 0)
+);
+
+const pageTitle = computed(() => {
+  // Audit XXX - [Page en cours « XXX » | Notes] - X résultats pour « XXX »
+  if (auditStore.data) {
+    let title = `Audit ${auditStore.data.procedureName}`;
+
+    const tabName = auditStore.currentPageId
+      ? ` - Page en cours « ${
+          auditStore.data.pages.find((p) => p.id === auditStore.currentPageId)
+            ?.name
+        } »`
+      : " - Notes";
+
+    title += tabName;
+
+    if (filterStore.search) {
+      const results = ` - ${filterResultsCount.value} ${pluralize(
+        "résultat",
+        "résultats",
+        filterResultsCount.value
+      )} pour « ${filterStore.search} »`;
+
+      title += results;
+    }
+
+    return title;
+  }
+
+  return "";
+});
 </script>
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div class="page-wrapper" v-if="auditStore.data && resultsStore.data">
+  <div v-if="auditStore.data && resultsStore.data" class="page-wrapper">
     <PageMeta
-      :title="`Audit ${auditStore.data.procedureName}`"
+      :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
@@ -353,6 +391,11 @@ const isOffline = useIsOffline();
                 :aria-controls="`page-panel-${auditStore.data.pages[0].id}-panel`"
               >
                 {{ auditStore.data.pages[0].name }}
+                <span
+                  v-if="currentPageId === auditStore.data.pages[0].id"
+                  class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
             <li
@@ -369,6 +412,9 @@ const isOffline = useIsOffline();
                 :aria-controls="`page-panel-${page.id}-panel`"
               >
                 {{ page.name }}
+                <span v-if="currentPageId === page.id" class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
             <li role="presentation">
@@ -381,6 +427,9 @@ const isOffline = useIsOffline();
                 :aria-controls="`notes-panel-panel`"
               >
                 Notes
+                <span v-if="currentPageId === null" class="sr-only"
+                  >&nbsp;Actif</span
+                >
               </button>
             </li>
           </ul>
@@ -388,7 +437,8 @@ const isOffline = useIsOffline();
             v-for="page in auditStore.data.pages"
             :id="`page-panel-${page.id}-panel`"
             :key="page.id"
-            class="fr-tabs__panel fr-tabs__panel--selected"
+            class="fr-tabs__panel"
+            :class="{ 'fr-tabs__panel--selected': currentPageId === page.id }"
             role="tabpanel"
             :aria-labelledby="`page-panel-${page.id}`"
             tabindex="0"
@@ -402,10 +452,12 @@ const isOffline = useIsOffline();
           </div>
           <div
             :id="`notes-panel-panel`"
-            class="fr-tabs__panel fr-tabs__panel--selected"
+            class="fr-tabs__panel"
+            :class="{ 'fr-tabs__panel--selected': currentPageId === null }"
             role="tabpanel"
             aria-labelledby="notes-panel"
             tabindex="0"
+            v-on="{ 'dsfr.disclose': () => updateCurrentPageId(null) }"
           >
             <div class="fr-input-group fr-mb-1w">
               <label class="fr-label" for="audit-notes"

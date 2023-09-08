@@ -18,7 +18,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
-import { captureWithPayloads } from "../utils";
+import { captureWithPayloads, formatStatus } from "../utils";
 import { useIsOffline } from "../composables/useIsOffline";
 
 const store = useResultsStore();
@@ -265,7 +265,11 @@ const isOffline = useIsOffline();
           class="fr-toggle__label fr-pr-2w"
           :for="`applicable-all-pages-${uniqueId}`"
         >
-          Sur toutes les pages
+          <span class="sr-only">
+            Appliquer le statut {{ formatStatus(result.status) }} pour le
+            critère {{ topicNumber }}.{{ criterium.number }}
+          </span>
+          &nbsp;Sur toutes les pages
         </label>
       </div>
     </div>

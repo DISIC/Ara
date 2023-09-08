@@ -94,10 +94,10 @@ function onOnboardingAlertClose() {
   localStorage.setItem("confiture:hide-onboarding-alert", "true");
 }
 
-const targetTab = route.params.tab as string | undefined;
+const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
   let index = tabs.value.findIndex(
-    (t) => slugify(t.title).toLowerCase() === targetTab?.toLowerCase()
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
   );
   return index === -1 ? 0 : index;
 });
@@ -116,6 +116,8 @@ function handleTabChange(tab: { title: string }) {
       },
     }).fullPath
   );
+
+  targetTab.value = slugify(tab.title);
 }
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
@@ -288,6 +290,7 @@ const csvExportSizeEstimation = computed(() => {
             :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
           >
             {{ tab.title }}
+            <span v-if="i === targetTabIndex" class="sr-only">&nbsp;Actif</span>
           </button>
         </li>
       </ul>
@@ -295,7 +298,7 @@ const csvExportSizeEstimation = computed(() => {
         v-for="(tab, i) in tabs"
         :id="`tabpanel-${slugify(tab.title)}-panel`"
         :key="tab.title"
-        class="fr-tabs__panel fr-tabs__panel--selected"
+        class="fr-tabs__panel"
         :class="{ 'fr-tabs__panel--selected': i === targetTabIndex }"
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"

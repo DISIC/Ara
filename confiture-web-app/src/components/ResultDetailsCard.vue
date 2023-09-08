@@ -1,10 +1,18 @@
 <script lang="ts" setup>
+import { ref } from "vue";
+
 import { slugify } from "../utils";
 
 defineProps<{
   title: string;
   tableData: string[][];
 }>();
+
+const currentDisplay = ref("chart");
+
+function updateCurrentDisplay(display: string) {
+  currentDisplay.value = display;
+}
 </script>
 
 <template>
@@ -19,44 +27,54 @@ defineProps<{
       >
         <li role="presentation">
           <button
-            :id="`tabpanel-table-${slugify(title)}`"
+            :id="`tabpanel-chart-${slugify(title)}`"
             class="fr-tabs__tab"
             tabindex="0"
             role="tab"
             aria-selected="true"
-            :aria-controls="`tabpanel-table-${slugify(title)}-panel`"
+            :aria-controls="`tabpanel-chart-${slugify(title)}-panel`"
           >
             Graphique
+            <span v-if="currentDisplay === 'chart'" class="sr-only"
+              >&nbsp;Actif</span
+            >
           </button>
         </li>
         <li role="presentation">
           <button
-            :id="`tabpanel-chart-${slugify(title)}`"
+            :id="`tabpanel-table-${slugify(title)}`"
             class="fr-tabs__tab"
             tabindex="-1"
             role="tab"
             aria-selected="false"
-            :aria-controls="`tabpanel-chart-${slugify(title)}-panel`"
+            :aria-controls="`tabpanel-table-${slugify(title)}-panel`"
           >
             Tableau
+            <span v-if="currentDisplay === 'table'" class="sr-only"
+              >&nbsp;Actif</span
+            >
           </button>
         </li>
       </ul>
       <div
-        :id="`tabpanel-table-${slugify(title)}-panel`"
-        class="fr-tabs__panel fr-tabs__panel--selected"
+        :id="`tabpanel-chart-${slugify(title)}-panel`"
+        class="fr-tabs__panel"
+        :class="{ 'fr-tabs__panel--selected': currentDisplay === 'chart' }"
         role="tabpanel"
-        :aria-labelledby="`tabpanel-table-${slugify(title)}`"
+        :aria-labelledby="`tabpanel-chart-${slugify(title)}`"
         tabindex="0"
+        v-on="{ 'dsfr.disclose': () => updateCurrentDisplay('chart') }"
       >
         <slot />
       </div>
       <div
-        :id="`tabpanel-chart-${slugify(title)}-panel`"
+        :id="`tabpanel-table-${slugify(title)}-panel`"
         class="fr-tabs__panel"
+        :class="{ 'fr-tabs__panel--selected': currentDisplay === 'table' }"
         role="tabpanel"
-        :aria-labelledby="`tabpanel-chart-${slugify(title)}`"
+        :aria-labelledby="`tabpanel-table-${slugify(title)}`"
         tabindex="0"
+        v-on="{ 'dsfr.disclose': () => updateCurrentDisplay('table') }"
       >
         <div class="fr-table fr-table--no-caption fr-mb-0">
           <table>

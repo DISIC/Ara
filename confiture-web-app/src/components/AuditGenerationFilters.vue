@@ -2,6 +2,7 @@
 import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
 import { useFiltersStore, useResultsStore } from "../store";
+import { pluralize } from "../utils";
 
 defineProps<{
   topics: { title: string; number: number; value: number }[];
@@ -116,7 +117,8 @@ watch(
 
     <div role="alert" aria-live="polite">
       <p v-if="filterStore.search" class="fr-mt-2w fr-mb-1w">
-        {{ resultsCount }} {{ resultsCount !== 1 ? "résultats" : "résultat" }}
+        {{ resultsCount }}
+        {{ pluralize("résultat", "résultats", resultsCount) }}
       </p>
       <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
     </div>

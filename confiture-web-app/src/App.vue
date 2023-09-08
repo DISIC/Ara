@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useHead } from "@vueuse/head";
+import { useHead } from "@unhead/vue";
 
 import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
 import ToastNotification from "./components/ToastNotification.vue";
