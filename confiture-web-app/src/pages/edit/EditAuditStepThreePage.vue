@@ -428,7 +428,8 @@ const pageTitle = computed(() => {
             v-for="page in auditStore.data.pages"
             :id="`page-panel-${page.id}-panel`"
             :key="page.id"
-            class="fr-tabs__panel fr-tabs__panel--selected"
+            class="fr-tabs__panel"
+            :class="{ 'fr-tabs__panel--selected': currentPageId === page.id }"
             role="tabpanel"
             :aria-labelledby="`page-panel-${page.id}`"
             tabindex="0"
@@ -442,7 +443,8 @@ const pageTitle = computed(() => {
           </div>
           <div
             :id="`notes-panel-panel`"
-            class="fr-tabs__panel fr-tabs__panel--selected"
+            class="fr-tabs__panel"
+            :class="{ 'fr-tabs__panel--selected': currentPageId === null }"
             role="tabpanel"
             aria-labelledby="notes-panel"
             tabindex="0"
