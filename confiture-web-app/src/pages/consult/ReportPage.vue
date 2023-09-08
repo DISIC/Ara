@@ -97,7 +97,7 @@ function onOnboardingAlertClose() {
 const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
   let index = tabs.value.findIndex(
-    (t) => slugify(t.title).toLowerCase() === targetTab?.value?.toLowerCase()
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
   );
   return index === -1 ? 0 : index;
 });
