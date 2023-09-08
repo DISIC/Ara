@@ -21,35 +21,49 @@ const store = useFiltersStore();
     </a>
   </div>
 
-  <section
-    v-for="topic in store.filteredTopics"
-    :key="topic.number"
-    class="fr-mb-6w"
-  >
-    <div class="fr-mb-3w topic-header">
-      <h3 :id="topic.number" class="fr-m-0 topic-heading">
-        {{ topic.number }}. {{ topic.topic }}
-      </h3>
-      <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
-    </div>
-    <ol class="fr-p-0 fr-m-0">
-      <AuditGenerationCriterium
-        v-for="criterium in topic.criteria"
-        :key="criterium.criterium.number"
-        :page="page"
-        class="fr-mb-3w"
-        :criterium="criterium.criterium"
-        :topic-number="topic.number"
-        :audit-unique-id="auditUniqueId"
-      />
-    </ol>
+  <template v-if="store.filteredTopics.length">
+    <section
+      v-for="topic in store.filteredTopics"
+      :key="topic.number"
+      class="fr-mb-6w"
+    >
+      <div class="fr-mb-3w topic-header">
+        <h3 :id="topic.number" class="fr-m-0 topic-heading">
+          {{ topic.number }}. {{ topic.topic }}
+        </h3>
+        <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
+      </div>
+      <ol class="fr-p-0 fr-m-0">
+        <AuditGenerationCriterium
+          v-for="criterium in topic.criteria"
+          :key="criterium.criterium.number"
+          :page="page"
+          class="fr-mb-3w"
+          :criterium="criterium.criterium"
+          :topic-number="topic.number"
+          :audit-unique-id="auditUniqueId"
+        />
+      </ol>
 
-    <div class="fr-grid-row fr-grid-row--right">
-      <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#main">
-        Haut de page
-      </a>
-    </div>
-  </section>
+      <div class="fr-grid-row fr-grid-row--right">
+        <a
+          class="fr-link fr-icon-arrow-up-fill fr-link--icon-left"
+          href="#main"
+        >
+          Haut de page
+        </a>
+      </div>
+    </section>
+  </template>
+
+  <div aria-live="polite" role="alert">
+    <section v-if="!store.filteredTopics.length">
+      <h2 class="fr-h6 fr-mb-1w">
+        Aucun résultat ne correspond à votre recherche
+      </h2>
+      <p>Veuillez modifier les filtres actifs.</p>
+    </section>
+  </div>
 </template>
 
 <style scoped>
