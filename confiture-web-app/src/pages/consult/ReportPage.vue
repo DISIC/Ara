@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, Ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import OnboardingModal from "../../components/OnboardingModal.vue";
