@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrige les problèmes d’accessibilité suite au contre-audit ([#478](https://github.com/DISIC/Ara/pull/478))
 
+### Autres changements ⚙️
+
+- Affiche un message clair et explicite sur le rapport quand aucune erreur n'a été relevée sur une page ([#465](https://github.com/DISIC/Ara/pull/465))
+
 ## 06/09/2023
 
 ### Corrections 🐛

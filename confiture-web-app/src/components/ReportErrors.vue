@@ -6,7 +6,11 @@ import { useRouter } from "vue-router";
 
 import rgaa from "../criteres.json";
 import { useReportStore } from "../store";
-import { CriterionResultUserImpact, CriteriumResultStatus } from "../types";
+import {
+  AuditReport,
+  CriterionResultUserImpact,
+  CriteriumResultStatus,
+} from "../types";
 import { formatStatus, formatUserImpact, slugify, pluralize } from "../utils";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import LazyAccordion from "./LazyAccordion.vue";
@@ -28,46 +32,53 @@ const router = useRouter();
 */
 
 const errors = computed(() => {
+  const resultsGroupedByPage = {
+    // include pages with no errors
+    ...report.data?.context.samples.reduce<Record<string, []>>((acc, val) => {
+      acc[val.id] = [];
+      return acc;
+    }, {}),
+
+    ...groupBy(
+      report.data?.results
+        .filter((r) => {
+          return (
+            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+            !r.transverse &&
+            userImpactFilters.value.includes(r.userImpact)
+          );
+        })
+        .filter((r) => {
+          return quickWinFilter.value ? r.quickWin : r;
+        }),
+      "pageId"
+    ),
+  } as Record<number, AuditReport["results"]>;
+
   // TODO: make more legible
   const data = Object.values(
-    mapValues(
-      groupBy(
-        report.data?.results
-          .filter((r) => {
-            return (
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              !r.transverse &&
-              userImpactFilters.value.includes(r.userImpact)
-            );
-          })
-          .filter((r) => {
-            return quickWinFilter.value ? r.quickWin : r;
-          }),
-        "pageId"
-      ),
-      (results, pageId) => {
-        return {
-          pageId: Number(pageId),
-          pageName: getPage(Number(pageId)).name,
-          pageUrl: getPage(Number(pageId)).url,
-          topics: sortBy(
-            Object.values(
-              mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-                return {
-                  topic: Number(topicNumber),
-                  name: getTopicName(Number(topicNumber)),
-                  errors: sortBy(
-                    results.filter((r) => !r.transverse),
-                    "criterium"
-                  ),
-                };
-              })
-            ),
-            "topic"
+    mapValues(resultsGroupedByPage, (results, pageId) => {
+      return {
+        pageId: Number(pageId),
+        pageName: getPage(Number(pageId)).name,
+        pageUrl: getPage(Number(pageId)).url,
+        topics: sortBy(
+          Object.values(
+            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+              return {
+                topic: Number(topicNumber),
+                name: getTopicName(Number(topicNumber)),
+                errors: sortBy(
+                  results.filter((r) => !r.transverse),
+                  "criterium"
+                ),
+              };
+            })
           ),
-        };
-      }
-    )
+          "topic"
+        ),
+      };
+    })
   );
 
   return data;
@@ -199,10 +210,12 @@ function getTopicName(topicNumber: number) {
 }
 
 function getCriterium(topicNumber: number, criteriumNumber: number) {
-  const criterium = rgaa.topics
-    .find((t) => t.number === topicNumber)
-    // @ts-expect-error The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
-    ?.criteria.find((c) => c.criterium.number === criteriumNumber).criterium;
+  // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
+  const criterium = (rgaa.topics as any)
+    .find((t: any) => t.number === topicNumber)
+    ?.criteria.find(
+      (c: any) => c.criterium.number === criteriumNumber
+    ).criterium;
 
   return criterium;
 }
@@ -603,6 +616,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           >
             {{ page.pageUrl }} <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
+
+          <p v-if="page.topics.length === 0" class="fr-mt-4w">
+            Aucune erreur d'accessibilité relevée sur cette page.
+          </p>
 
           <div
             v-for="(topic, i) in page.topics"
