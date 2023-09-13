@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
-import { useFiltersStore, useResultsStore } from "../store";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../store";
 import { pluralize } from "../utils";
 
 defineProps<{
@@ -14,6 +14,7 @@ const emit = defineEmits<{
 
 const filterStore = useFiltersStore();
 const resultStore = useResultsStore();
+const auditStore = useAuditStore();
 
 const resultsCount = computed(() =>
   filterStore.filteredTopics
@@ -183,8 +184,10 @@ watch(
             :style="{ '--topic-filter-value': topic.value + '%' }"
           >
             <a
-              :href="`#${topic.number}`"
+              :href="auditStore.currentPageId ? `#${topic.number}` : undefined"
               class="fr-py-1w fr-px-1w fr-mb-2v topic-filter-anchor"
+              :aria-disabled="auditStore.currentPageId ? undefined : 'true'"
+              :role="auditStore.currentPageId ? undefined : 'link'"
             >
               <span>{{ topic.number }}.</span>
               <span>{{ topic.title }}</span>
