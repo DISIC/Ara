@@ -1,18 +1,23 @@
+<script lang="ts" setup>
+import { formatStatus } from "../utils";
+import { CriteriumResultStatus } from "../types";
+</script>
+
 <template>
   <div class="fr-py-5v" aria-hidden="true">
     <div class="fr-mb-2w fr-text--xs legend-title">Légende</div>
 
     <div class="fr-text--sm fr-text--bold fr-mb-1v legend-item">
       <div class="fr-mr-1w legend-color compliant" />
-      Conforme
+      {{ formatStatus(CriteriumResultStatus.COMPLIANT) }}
     </div>
     <div class="fr-text--sm fr-text--bold fr-mb-1v legend-item">
       <div class="fr-mr-1w legend-color not-compliant" />
-      Non conforme
+      {{ formatStatus(CriteriumResultStatus.NOT_COMPLIANT) }}
     </div>
     <div class="fr-text--sm fr-text--bold legend-item">
       <div class="fr-mr-1w legend-color not-applicable" />
-      Non applicable
+      {{ formatStatus(CriteriumResultStatus.NOT_APPLICABLE) }}
     </div>
   </div>
 </template>

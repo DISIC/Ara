@@ -8,7 +8,8 @@ ChartJS.register(PieController, ArcElement);
 import { Chart, ChartConfiguration } from "chart.js";
 import { onMounted, onUnmounted, ref } from "vue";
 
-import { getCssVarValue } from "../utils";
+import { getCssVarValue, formatStatus } from "../utils";
+import { CriteriumResultStatus } from "../types";
 import { useChartColorsUpdate } from "../composables/useChartColorsUpdate";
 
 const props = defineProps<{
@@ -20,7 +21,11 @@ const props = defineProps<{
 const chartConfig: ChartConfiguration<"pie", number[], string> = {
   type: "pie",
   data: {
-    labels: ["Conforme", "Non conforme", "Non applicable"],
+    labels: [
+      formatStatus(CriteriumResultStatus.COMPLIANT),
+      formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
+      formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
+    ],
     datasets: [
       {
         data: [props.compliant, props.notCompliant, props.notApplicable],
