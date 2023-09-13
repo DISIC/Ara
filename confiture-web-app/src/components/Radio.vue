@@ -3,7 +3,6 @@ export type RadioColor = "red" | "green" | "yellow" | "grey";
 </script>
 
 <script setup lang="ts">
-// TODO: checkboxes or radios?
 defineProps<{
   label: string;
   id: string;

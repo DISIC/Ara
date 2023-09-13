@@ -76,7 +76,6 @@ const route = useRoute();
         v-html="marked.parse(errorInstruction, { gfm: false })"
       ></div>
       <div>
-        <!-- TODO: make the button full width on mobile. DSFR helper? -->
         <RouterLink
           v-if="[404, 410].includes(statusCode)"
           class="fr-btn fr-mr-2w"

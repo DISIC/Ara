@@ -85,7 +85,6 @@ async function deletePage(i: number) {
 }
 
 /**
- * TODO: remove this
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {

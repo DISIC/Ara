@@ -88,7 +88,6 @@ const successAlertContent = computed(() => {
 </script>
 
 <template>
-  <!-- TODO: plug audit status -->
   <template v-if="auditStore.data && resultsStore.data">
     <PageMeta
       :title="`Audit ${auditStore.data.procedureName} terminé`"

@@ -193,7 +193,6 @@ function handleSubmit() {
     environments: environments.value,
     tools: tools.value,
 
-    // TODO: plug not accessible content
     notCompliantContent: notCompliantContent.value,
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value,
