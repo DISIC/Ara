@@ -56,6 +56,21 @@ import PageMeta from "../../components/PageMeta";
       et utilise le système de design de l’État.
     </p>
 
+    <h2>Hébergement du site</h2>
+
+    <p>
+      Ce site est hébergé sur une plateforme labellisée SecNumCloud par OVH :
+    </p>
+
+    <ul>
+      <li>RCS Roubaix – Tourcoing 424 761 419 00045</li>
+      <li>Code APE 6202A</li>
+      <li>N° TVA : FR 22 424 761 419</li>
+      <li>Siège social : 2 rue Kellermann</li>
+      <li>59100 Roubaix</li>
+      <li>France</li>
+    </ul>
+
     <h2>Code source du site</h2>
     <p>
       Le code source du site est disponible sur
