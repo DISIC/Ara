@@ -263,10 +263,9 @@ const isDevMode = useDevMode();
 </script>
 
 <template>
-  <!-- TODO: update meta -->
   <PageMeta
-    title="Paramètres de l’audit"
-    description="Saisissez le type d'audit que vous souhaitez réaliser et l'ensemble des paramètres de votre futur audit."
+    title="Déclaration d’accessibilité"
+    description="Saisissez les informations requises pour établir la déclaration d’accessibilité."
   />
 
   <form v-if="auditStore.data" @submit.prevent="handleSubmit">
