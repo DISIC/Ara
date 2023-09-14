@@ -132,6 +132,17 @@ const csvExportFilename = computed(() => {
 const csvExportSizeEstimation = computed(() => {
   return 502 + (report.data?.pageDistributions.length || 0) * 318;
 });
+
+const siteUrl = computed(() => {
+  if (report.data) {
+    return (
+      report.data.procedureUrl ||
+      new URL(report.data.context.samples[0].url).origin
+    );
+  }
+
+  return null;
+});
 </script>
 
 <template>
@@ -244,13 +255,8 @@ const csvExportSizeEstimation = computed(() => {
 
       <p class="fr-mb-0">
         <strong>URL du site</strong> :
-        <a
-          v-if="report.data.procedureUrl || report.data.context.samples[0].url"
-          class="fr-link"
-          target="_blank"
-          :href="report.data.procedureUrl || report.data.context.samples[0].url"
-        >
-          {{ report.data.procedureUrl || report.data.context.samples[0].url }}
+        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
+          {{ siteUrl }}
           <span class="sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
