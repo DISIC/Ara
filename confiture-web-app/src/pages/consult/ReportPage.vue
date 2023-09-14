@@ -245,12 +245,12 @@ const csvExportSizeEstimation = computed(() => {
       <p class="fr-mb-0">
         <strong>URL du site</strong> :
         <a
-          v-if="report.data.procedureUrl"
+          v-if="report.data.procedureUrl || report.data.context.samples[0].url"
           class="fr-link"
           target="_blank"
-          :href="report.data.procedureUrl"
+          :href="report.data.procedureUrl || report.data.context.samples[0].url"
         >
-          {{ report.data.procedureUrl }}
+          {{ report.data.procedureUrl || report.data.context.samples[0].url }}
           <span class="sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
