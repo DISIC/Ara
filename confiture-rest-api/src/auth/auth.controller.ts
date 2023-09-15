@@ -40,6 +40,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { AuthenticationJwtPayload } from './jwt-payloads';
 import { User } from './user.decorator';
+import { UpdateEmailDto } from './update-email.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -231,5 +232,43 @@ export class AuthController {
     });
 
     return;
+  }
+  @Put('account/email')
+  @AuthRequired()
+  async updateEmail(
+    @Body() body: UpdateEmailDto,
+    @User() user: AuthenticationJwtPayload,
+  ) {
+    if (!(await this.auth.checkCredentials(user.email, body.password))) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const verificationToken = await this.auth.addNewEmail(
+        user.email,
+        body.newEmail,
+      );
+
+      await this.email.sendNewEmailVerificationEmail(
+        body.newEmail,
+        verificationToken,
+      );
+    } catch (e) {
+      if (e instanceof UsernameAlreadyExistsError) {
+        throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  async resendNewEmailVerificationEmail() {
+    // TODO
+  }
+
+  async verifyNewEmail() {
+    // TODO
+  }
+
+  async isNewEmailVerified() {
+    // TODO
   }
 }

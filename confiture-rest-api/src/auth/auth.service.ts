@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma.service';
 import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
+  NewEmailVerificationJwtPayload,
 } from './jwt-payloads';
 
 export class UsernameAlreadyExistsError extends Error {
@@ -224,5 +225,46 @@ export class AuthService {
 
   private hashPassword(password: string) {
     return hash(password, 10);
+  }
+
+  async addNewEmail(oldEmail: string, newEmail: string) {
+    // Check if an user already exists with this username
+    await this.prisma.user
+      .findUnique({ where: { username: newEmail } })
+      .then((user) => {
+        if (user) {
+          throw new UsernameAlreadyExistsError(newEmail);
+        }
+      });
+
+    const user = await this.prisma.user.update({
+      where: { username: oldEmail },
+      data: {
+        newEmail,
+        newEmailVerificationJti: nanoid(),
+      },
+    });
+
+    const verificationToken = await this.generateNewEmailVerificationToken(
+      user.uid,
+      newEmail,
+      user.newEmailVerificationJti,
+    );
+
+    return verificationToken;
+  }
+
+  private generateNewEmailVerificationToken(
+    uid: string,
+    email: string,
+    jti: string,
+  ): Promise<string> {
+    const payload: NewEmailVerificationJwtPayload = {
+      sub: uid,
+      email,
+      jti,
+    };
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    return verificationToken;
   }
 }

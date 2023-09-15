@@ -194,10 +194,10 @@ export const useAccountStore = defineStore("account", {
       });
     },
 
-    async updateEmail(email: string, password: string) {
+    async updateEmail(newEmail: string, password: string) {
       await ky.put("/api/auth/account/email", {
         json: {
-          email,
+          newEmail,
           password,
         },
         headers: { Authorization: `Bearer ${this.authToken}` },
