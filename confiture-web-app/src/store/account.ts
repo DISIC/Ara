@@ -205,7 +205,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     async verifyEmailUpdate(verificationToken: string) {
-      await ky.post("/api/auth/verify-email-update", {
+      await ky.post("/api/auth/account/verify-email-update", {
         json: {
           token: verificationToken,
         },

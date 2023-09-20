@@ -41,6 +41,7 @@ import { VerifyAccountDto } from './dto/verify-account.dto';
 import { AuthenticationJwtPayload } from './jwt-payloads';
 import { User } from './user.decorator';
 import { UpdateEmailDto } from './update-email.dto';
+import { VerifyEmailUpdateDto } from './verify-email-update.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -196,6 +197,7 @@ export class AuthController {
     };
   }
 
+<<<<<<< HEAD
   @Put('update-password')
   @ApiOkResponse({
     description: 'The password was succesfully updated.',
@@ -233,6 +235,10 @@ export class AuthController {
 
     return;
   }
+=======
+  // TODO: document email update methods
+
+>>>>>>> f21d78a (send token to API to verify new email)
   @Put('account/email')
   @AuthRequired()
   async updateEmail(
@@ -264,8 +270,20 @@ export class AuthController {
     // TODO
   }
 
-  async verifyNewEmail() {
-    // TODO
+  @Post('account/verify-email-update')
+  async verifyEmailUpdate(@Body() body: VerifyEmailUpdateDto) {
+    try {
+      const email = await this.auth.getEmailFromVerificationToken(body.token);
+
+      await this.auth.verifyEmailUpdate(body.token);
+      // await this.email.sendEmailUpdateConfirmationEmail(email);
+    } catch (e) {
+      if (e instanceof InvalidVerificationTokenError) {
+        console.log('Email update verification failed:', e.message);
+        throw new UnauthorizedException('Invalid token');
+      }
+      throw e;
+    }
   }
 
   async isNewEmailVerified() {

@@ -120,11 +120,9 @@ export class MailService {
   sendNewEmailVerificationEmail(email: string, token: string) {
     const baseUrl = this.config.get<string>('FRONT_BASE_URL');
 
-    const verificationLink = `${baseUrl}/compte/validation?token=${encodeURIComponent(
+    const verificationLink = `${baseUrl}/compte/email-update-validation?token=${encodeURIComponent(
       token,
     )}`;
-
-    console.log(verificationLink);
 
     return this.sendMail(email, EmailType.EMAIL_UPDATE_VERIFICATION, {
       verificationLink,

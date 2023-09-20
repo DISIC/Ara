@@ -37,7 +37,11 @@ import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
+<<<<<<< HEAD
 import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
+=======
+import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
+>>>>>>> f21d78a (send token to API to verify new email)
 import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
@@ -160,6 +164,11 @@ const router = createRouter({
       path: "/compte/validation",
       name: "new-account-validation",
       component: NewAccountValidationPage,
+    },
+    {
+      path: "/compte/email-update-validation",
+      name: "email-update-validation",
+      component: UpdateEmailValidationPage,
     },
     {
       path: "/compte/connexion",

@@ -198,6 +198,7 @@ export class AuthService {
     jti: string,
   ): Promise<string> {
     const payload: AccountVerificationJwtPayload = {
+      verification: 'new-account',
       sub: uid,
       email,
       jti,
@@ -260,11 +261,47 @@ export class AuthService {
     jti: string,
   ): Promise<string> {
     const payload: NewEmailVerificationJwtPayload = {
+      verification: 'update-email',
       sub: uid,
       email,
       jti,
     };
     const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
     return verificationToken;
+  }
+
+  async verifyEmailUpdate(token: string) {
+    const payload = (await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    })) as NewEmailVerificationJwtPayload;
+    const { sub: uid, jti, email } = payload;
+
+    // Addition checks : user exists, user needs email update verification, token is the last one
+    {
+      const user = await this.prisma.user.findUnique({ where: { uid } });
+
+      if (!user) {
+        throw new InvalidVerificationTokenError('User not found');
+      }
+
+      if (!user.newEmail) {
+        throw new InvalidVerificationTokenError('No pending email update');
+      }
+
+      if (user.newEmailVerificationJti !== jti) {
+        throw new InvalidVerificationTokenError(
+          'Token is not the latest generated token',
+        );
+      }
+    }
+
+    await this.prisma.user.update({
+      where: { uid },
+      data: {
+        username: email,
+        newEmail: null,
+        newEmailVerificationJti: null,
+      },
+    });
   }
 }
