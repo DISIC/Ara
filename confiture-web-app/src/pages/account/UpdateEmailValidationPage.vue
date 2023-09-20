@@ -25,15 +25,24 @@ onMounted(async () => {
 
   store
     .verifyEmailUpdate(verificationToken)
-    .then(() => {
-      // TODO: update auth token
-      // TODO: what do we do on success ?
-      console.log("Token validé. TODO: la suite ??");
+    .then(async () => {
+      if (store.account) {
+        await store.refreshToken();
+
+        router.push({
+          name: "account-settings",
+          state: { updatedEmail: true },
+        });
+      } else {
+        // TODO: when user is not connected
+        // router.push({ name: "email-update-successful" })
+      }
     })
     .catch((err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
         tokenIsInvalid.value = true;
       } else {
+        console.log(err);
         notify(
           "error",
           "Echéc de la validation de l'adresse mail.",

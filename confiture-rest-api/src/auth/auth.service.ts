@@ -178,6 +178,23 @@ export class AuthService {
     return token;
   }
 
+  /** Generate a new auth token. */
+  async refreshToken(uid: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
+    if (!user) {
+      throw new SigninError('unknown_user');
+    }
+    if (!user.isVerified) {
+      throw new SigninError('unknown_user');
+    }
+    const payload: AuthenticationJwtPayload = {
+      sub: user.uid,
+      email: user.username,
+    };
+    const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
+    return token;
+  }
+
   async isAccountVerified(username: string): Promise<boolean> {
     const user = await this.prisma.user.findUnique({ where: { username } });
     return !!user && user.isVerified;
@@ -212,6 +229,14 @@ export class AuthService {
     return user && user.isVerified && (await compare(password, user.password));
   }
 
+  async checkCredentialsWithUid(
+    uid: string,
+    password: string,
+  ): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
+    return user && user.isVerified && (await compare(password, user.password));
+  }
+
   async deleteAccount(username: string) {
     await this.prisma.user.delete({ where: { username } });
   }
@@ -228,7 +253,7 @@ export class AuthService {
     return hash(password, 10);
   }
 
-  async addNewEmail(oldEmail: string, newEmail: string) {
+  async addNewEmail(uid: string, newEmail: string) {
     // Check if an user already exists with this username
     await this.prisma.user
       .findUnique({ where: { username: newEmail } })
@@ -239,7 +264,7 @@ export class AuthService {
       });
 
     const user = await this.prisma.user.update({
-      where: { username: oldEmail },
+      where: { uid },
       data: {
         newEmail,
         newEmailVerificationJti: nanoid(),

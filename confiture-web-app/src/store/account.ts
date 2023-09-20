@@ -94,6 +94,19 @@ export const useAccountStore = defineStore("account", {
       }
     },
 
+    async refreshToken() {
+      const authToken = await ky
+        .post("/api/auth/refresh", {
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .text();
+      this.authToken = authToken;
+      const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
+      if (this.account) {
+        this.account.email = payload.email;
+      }
+    },
+
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);

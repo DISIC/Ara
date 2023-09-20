@@ -5,6 +5,7 @@ import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
+import { history } from "../../../router";
 
 // TODO: cancel email update (what if user clicks on verification email after?)
 
@@ -24,16 +25,17 @@ const newEmailError = ref("");
 const password = ref("");
 const newEmail = ref("");
 
-const displaySuccess = ref(false);
+const displayEmailVerification = ref(false);
+const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
 
 async function showSuccess() {
-  displaySuccess.value = true;
+  displayEmailVerification.value = true;
   await nextTick();
   confirmAlert.value?.focus();
 }
 
 async function hideSuccess() {
-  displaySuccess.value = false;
+  displayEmailVerification.value = false;
   await nextTick();
   passwordFieldRef.value?.focus();
 }
@@ -137,7 +139,14 @@ const showEmailInReport = ref(false);
     Votre adresse email : <strong>{{ accountStore.account?.email }}</strong>
   </p>
 
-  <div v-if="displaySuccess">
+  <div
+    v-if="displayEmailUpdateSuccess"
+    class="fr-alert fr-alert--success fr-mb-3v"
+  >
+    <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+  </div>
+
+  <div v-if="displayEmailVerification">
     <div
       ref="confirmAlert"
       tabindex="-1"
@@ -184,7 +193,7 @@ const showEmailInReport = ref(false);
   </div>
 
   <form
-    v-if="displayUpdateEmailForm && !displaySuccess"
+    v-if="displayUpdateEmailForm && !displayEmailVerification"
     class="wrapper"
     @submit.prevent="updateEmail"
   >
@@ -272,7 +281,7 @@ const showEmailInReport = ref(false);
   </form>
 
   <button
-    v-else-if="!displaySuccess"
+    v-else-if="!displayEmailVerification"
     ref="showButtonRef"
     class="fr-btn fr-btn--tertiary-no-outline fr-mb-2w"
     @click="showUpdateEmailForm"

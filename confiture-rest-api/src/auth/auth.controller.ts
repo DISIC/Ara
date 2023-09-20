@@ -172,6 +172,19 @@ export class AuthController {
     }
   }
 
+  @Post('refresh')
+  @AuthRequired()
+  async refreshToken(@User() user: AuthenticationJwtPayload) {
+    try {
+      return await this.auth.refreshToken(user.sub);
+    } catch (e) {
+      if (e instanceof SigninError) {
+        throw new UnauthorizedException(e.message);
+      }
+      throw e;
+    }
+  }
+
   @Delete('account')
   @ApiOkResponse({
     description: 'The account was succesfully deleted.',
@@ -245,12 +258,12 @@ export class AuthController {
     @Body() body: UpdateEmailDto,
     @User() user: AuthenticationJwtPayload,
   ) {
-    if (!(await this.auth.checkCredentials(user.email, body.password))) {
+    if (!(await this.auth.checkCredentialsWithUid(user.sub, body.password))) {
       throw new UnauthorizedException();
     }
     try {
       const verificationToken = await this.auth.addNewEmail(
-        user.email,
+        user.sub,
         body.newEmail,
       );
 
