@@ -217,6 +217,13 @@ export const useAccountStore = defineStore("account", {
       });
     },
 
+    async resendEmailUpdateVerificationEmail() {
+      await ky.post(
+        "/api/auth/account/resend-email-update-verification-email",
+        { headers: { Authorization: `Bearer ${this.authToken}` } }
+      );
+    },
+
     async verifyEmailUpdate(verificationToken: string) {
       await ky.post("/api/auth/account/verify-email-update", {
         json: {

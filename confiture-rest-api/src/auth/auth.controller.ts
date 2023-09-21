@@ -279,8 +279,23 @@ export class AuthController {
     }
   }
 
-  async resendNewEmailVerificationEmail() {
-    // TODO
+  @Post('account/resend-email-update-verification-email')
+  @HttpCode(200)
+  @AuthRequired()
+  async resendNewEmailVerificationEmail(
+    @User() user: AuthenticationJwtPayload,
+  ) {
+    try {
+      const { token, email } =
+        await this.auth.regenerateEmailUpdateVerificationToken(user.sub);
+      await this.email.sendNewEmailVerificationEmail(email, token);
+    } catch (e) {
+      if (e instanceof TokenRegenerationError) {
+        console.log('Token regeneration failed:', e.message);
+        throw new BadRequestException();
+      }
+      throw e;
+    }
   }
 
   @Post('account/verify-email-update')

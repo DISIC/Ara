@@ -295,6 +295,35 @@ export class AuthService {
     return verificationToken;
   }
 
+  /** Generate a new *email update* verification token and update the stored jti for given user. */
+  async regenerateEmailUpdateVerificationToken(
+    uid: string,
+  ): Promise<{ email: string; token: string }> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
+    if (!user) {
+      throw new TokenRegenerationError('User not found');
+    }
+
+    if (!user.newEmail) {
+      throw new TokenRegenerationError(
+        'User is not in the process of updating email',
+      );
+    }
+
+    const newJti = nanoid();
+    await this.prisma.user.update({
+      where: { uid },
+      data: { newEmailVerificationJti: newJti },
+    });
+    const token = await this.generateNewEmailVerificationToken(
+      user.uid,
+      user.newEmail,
+      newJti,
+    );
+
+    return { token, email: user.newEmail };
+  }
+
   async verifyEmailUpdate(token: string) {
     const payload = (await this.jwt.verifyAsync(token).catch(() => {
       throw new InvalidVerificationTokenError('Invalid JWT');

@@ -108,8 +108,8 @@ async function hideResendAlert() {
   resendButtonRef.value?.focus();
 }
 
-function sendNewEmail() {
-  console.log("sendNewEmail");
+async function sendNewEmail() {
+  await accountStore.resendEmailUpdateVerificationEmail();
   displayResendAlert.value = true;
 }
 
