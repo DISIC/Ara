@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import jwtDecode from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
-import { AccountVerificationJwtPayload } from "../../types";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../composables/useNotifications";
 
 const route = useRoute();
 const store = useAccountStore();
 const tokenIsInvalid = ref(false);
+const showSuccess = ref(false);
 
 const notify = useNotifications();
 
@@ -34,8 +33,7 @@ onMounted(async () => {
           state: { updatedEmail: true },
         });
       } else {
-        // TODO: when user is not connected
-        // router.push({ name: "email-update-successful" })
+        showSuccess.value = true;
       }
     })
     .catch((err) => {
@@ -54,6 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Failure page -->
   <template v-if="tokenIsInvalid">
     <div class="wrapper">
       <div class="fr-mb-3w title">
@@ -78,6 +77,34 @@ onMounted(async () => {
       </RouterLink>
     </div>
   </template>
+
+  <!-- Sucess page shown when user is not connected -->
+  <template v-if="showSuccess">
+    <div class="wrapper">
+      <div class="fr-mb-3w title">
+        <h1 class="fr-h3 fr-m-0">
+          <span
+            class="success-icon fr-icon-checkbox-circle-fill"
+            aria-hidden="true"
+          ></span>
+          Votre adresse e-mail a été mise à jour avec succès
+        </h1>
+      </div>
+
+      <p class="fr-mb-6w">
+        La prochaine fois que vous vous connectez à votre compte, assurez-vous
+        que vous utilisez l’adresse e-mail :
+        <strong>nouvelleadresse@gmail.com</strong>.
+      </p>
+
+      <RouterLink
+        :to="{ name: 'login' }"
+        class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+      >
+        Aller à la page de connexion
+      </RouterLink>
+    </div>
+  </template>
 </template>
 
 <style scoped>
@@ -89,5 +116,9 @@ onMounted(async () => {
 .title {
   display: flex;
   align-items: center;
+}
+
+.success-icon {
+  color: var(--text-default-success);
 }
 </style>

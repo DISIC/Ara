@@ -166,6 +166,16 @@ const router = createRouter({
       path: "/compte/email-update-validation",
       name: "email-update-validation",
       component: UpdateEmailValidationPage,
+      meta: {
+        name: "Changement d'adresse e-mail",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Changement d'adresse e-mail",
+            name: "email-update-validation",
+          },
+        ],
+      },
     },
     {
       path: "/compte/connexion",
