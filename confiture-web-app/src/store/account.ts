@@ -105,7 +105,12 @@ export const useAccountStore = defineStore("account", {
       if (this.account) {
         this.account.email = payload.email;
       }
-      // TODO: save token to localstorage/session storage
+
+      if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
+        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
+      } else {
+        sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
+      }
     },
 
     logout() {
