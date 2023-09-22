@@ -314,7 +314,12 @@ export class AuthController {
     }
   }
 
-  async isNewEmailVerified() {
-    // TODO
+  @Get('account/verified-email-update')
+  @AuthRequired()
+  async isNewEmailVerified(
+    @User() user: AuthenticationJwtPayload,
+    @Query('email') email: string,
+  ) {
+    return await this.auth.userHasEmail(user.sub, email);
   }
 }

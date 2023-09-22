@@ -358,4 +358,15 @@ export class AuthService {
       },
     });
   }
+
+  async userHasEmail(uid: string, email: string) {
+    try {
+      await this.prisma.user.findFirstOrThrow({
+        where: { uid, username: email, newEmail: null },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }

@@ -105,6 +105,7 @@ export const useAccountStore = defineStore("account", {
       if (this.account) {
         this.account.email = payload.email;
       }
+      // TODO: save token to localstorage/session storage
     },
 
     logout() {
@@ -236,6 +237,43 @@ export const useAccountStore = defineStore("account", {
       await ky.put("/api/auth/update-password", {
         json: { oldPassword, newPassword },
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      });
+    },
+
+    waitForEmailUpdateVerification(newEmail: string, signal: AbortSignal) {
+      const CHECK_INTERVAL = 5000;
+      const url = `/api/auth/account/verified-email-update?email=${encodeURIComponent(
+        newEmail
+      )}`;
+
+      return new Promise<void>((resolve, reject) => {
+        let isAborted = false;
+        let timerId: undefined | ReturnType<typeof setTimeout> = undefined;
+
+        const onAbort = () => {
+          isAborted = true;
+          clearTimeout(timerId);
+          reject();
+        };
+
+        signal.addEventListener("abort", onAbort, { once: true });
+
+        const checkIsVerified = async () => {
+          const isAccountVerified = await ky
+            .get(url, {
+              headers: { Authorization: `Bearer ${this.authToken}` },
+            })
+            .json();
+
+          if (!isAccountVerified && !isAborted) {
+            timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
+          } else {
+            signal.removeEventListener("abort", onAbort);
+            resolve();
+          }
+        };
+
+        timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
       });
     },
   },

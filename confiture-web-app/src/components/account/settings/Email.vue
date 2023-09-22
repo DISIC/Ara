@@ -25,20 +25,22 @@ const newEmailError = ref("");
 const password = ref("");
 const newEmail = ref("");
 
-const displayEmailVerification = ref(false);
+const displayPendingEmailVerification = ref(false);
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
 
-async function showSuccess() {
-  displayEmailVerification.value = true;
+async function showPending() {
+  displayPendingEmailVerification.value = true;
   await nextTick();
   confirmAlert.value?.focus();
 }
 
-async function hideSuccess() {
-  displayEmailVerification.value = false;
+async function hidePending() {
+  displayPendingEmailVerification.value = false;
   await nextTick();
   passwordFieldRef.value?.focus();
 }
+
+const ac = new AbortController();
 
 async function updateEmail() {
   console.log("updateEmail");
@@ -48,7 +50,19 @@ async function updateEmail() {
 
   accountStore
     .updateEmail(newEmail.value, password.value)
-    .then(showSuccess)
+    .then(showPending)
+    .then(() =>
+      accountStore
+        .waitForEmailUpdateVerification(newEmail.value, ac.signal)
+        .then(() => {
+          displayPendingEmailVerification.value = false;
+          displayEmailUpdateSuccess.value = true;
+          accountStore.refreshToken();
+        })
+        .catch(() => {
+          /* Cancelled */
+        })
+    )
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
         passwordError.value = "Le mot de passe saisi est incorrect.";
@@ -69,33 +83,6 @@ async function updateEmail() {
         captureWithPayloads(e, false);
       }
     });
-
-  // // TODO: verify password
-  // const TEST_PASSWORD = "pouet";
-  // if (password.value !== TEST_PASSWORD) {
-  //   passwordError.value = "Le mot de passe saisi est incorrect.";
-  //   await nextTick();
-  //   passwordFieldRef.value?.focus();
-  // }
-
-  // // TODO: verify email is not already associated with an account
-  // if (
-  //   accountStore.account?.email &&
-  //   newEmail.value === accountStore.account?.email
-  // ) {
-  //   // TODO: update error wording
-  //   newEmailError.value =
-  //     "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
-  //   await nextTick();
-  //   newEmailFieldRef.value?.focus();
-  // }
-
-  // if (
-  //   password.value === TEST_PASSWORD &&
-  //   newEmail.value !== accountStore.account?.email
-  // ) {
-  //   showSuccess();
-  // }
 }
 
 // Send new email
@@ -146,7 +133,7 @@ const showEmailInReport = ref(false);
     <p>Votre adresse e-mail a été mise à jour avec succès.</p>
   </div>
 
-  <div v-if="displayEmailVerification">
+  <div v-if="displayPendingEmailVerification">
     <div
       ref="confirmAlert"
       tabindex="-1"
@@ -187,13 +174,13 @@ const showEmailInReport = ref(false);
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
       L’adresse e-mail saisie est erronée ?
     </h3>
-    <button class="fr-btn fr-btn--tertiary-no-outline" @click="hideSuccess">
+    <button class="fr-btn fr-btn--tertiary-no-outline" @click="hidePending">
       Modifier mon adresse e-mail
     </button>
   </div>
 
   <form
-    v-if="displayUpdateEmailForm && !displayEmailVerification"
+    v-if="displayUpdateEmailForm && !displayPendingEmailVerification"
     class="wrapper"
     @submit.prevent="updateEmail"
   >
@@ -281,7 +268,7 @@ const showEmailInReport = ref(false);
   </form>
 
   <button
-    v-else-if="!displayEmailVerification"
+    v-else-if="!displayPendingEmailVerification"
     ref="showButtonRef"
     class="fr-btn fr-btn--tertiary-no-outline fr-mb-2w"
     @click="showUpdateEmailForm"
