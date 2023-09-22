@@ -211,6 +211,7 @@ export class AuthController {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   @Put('update-password')
   @ApiOkResponse({
     description: 'The password was succesfully updated.',
@@ -252,7 +253,16 @@ export class AuthController {
   // TODO: document email update methods
 
 >>>>>>> f21d78a (send token to API to verify new email)
+=======
+  /** Update the user's email adress. The change is not effective immediately.
+   * The new email adress must first be verified using the
+   * `account/verify-email-update` route. */
+>>>>>>> e0916ff (document new api methods)
   @Put('account/email')
+  @ApiOkResponse({
+    description:
+      'Email update successfully requested. The new email must be confirmed by using the `account/verify-email-update` route.',
+  })
   @AuthRequired()
   async updateEmail(
     @Body() body: UpdateEmailDto,
@@ -279,6 +289,7 @@ export class AuthController {
     }
   }
 
+  /** Trigger a new verification email for the email update. */
   @Post('account/resend-email-update-verification-email')
   @HttpCode(200)
   @AuthRequired()
@@ -298,6 +309,7 @@ export class AuthController {
     }
   }
 
+  /** Verify an email adress by receiving the verification token sent the wanted email adress. */
   @Post('account/verify-email-update')
   async verifyEmailUpdate(@Body() body: VerifyEmailUpdateDto) {
     try {
@@ -314,7 +326,11 @@ export class AuthController {
     }
   }
 
+  /** Checks if given email is verified for the authenticated user. */
   @Get('account/verified-email-update')
+  @ApiOkResponse({
+    type: Boolean,
+  })
   @AuthRequired()
   async isNewEmailVerified(
     @User() user: AuthenticationJwtPayload,
