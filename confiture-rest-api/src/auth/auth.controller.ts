@@ -316,7 +316,7 @@ export class AuthController {
       const email = await this.auth.getEmailFromVerificationToken(body.token);
 
       await this.auth.verifyEmailUpdate(body.token);
-      // await this.email.sendEmailUpdateConfirmationEmail(email);
+      this.email.sendEmailUpdateConfirmationEmail(email);
     } catch (e) {
       if (e instanceof InvalidVerificationTokenError) {
         console.log('Email update verification failed:', e.message);
