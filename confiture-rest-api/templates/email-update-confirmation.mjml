@@ -19,7 +19,7 @@
         <mj-text padding-bottom="24px">
           L’adresse e-mail de votre compte Ara a bien été modifiée. La prochaine
           fois que vous vous connectez à votre compte, assurez-vous que vous
-          utilisez l’adresse e-mail : nouvelleadresse@gmail.com.
+          utilisez l’adresse e-mail : {{ newEmail }}.
         </mj-text>
       </mj-column>
     </mj-section>

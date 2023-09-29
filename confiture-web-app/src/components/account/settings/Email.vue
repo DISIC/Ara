@@ -44,8 +44,6 @@ async function hidePending() {
 const ac = new AbortController();
 
 async function updateEmail() {
-  console.log("updateEmail");
-
   passwordError.value = "";
   newEmailError.value = "";
 
@@ -58,6 +56,7 @@ async function updateEmail() {
         .then(() => {
           displayPendingEmailVerification.value = false;
           displayEmailUpdateSuccess.value = true;
+          displayUpdateEmailForm.value = false;
           accountStore.refreshToken();
         })
         .catch(() => {

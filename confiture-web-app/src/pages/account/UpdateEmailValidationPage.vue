@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import jwtDecode from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -6,11 +7,13 @@ import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../composables/useNotifications";
+import { NewEmailVerificationJwtPayload } from "../../types";
 
 const route = useRoute();
 const store = useAccountStore();
 const tokenIsInvalid = ref(false);
 const showSuccess = ref(false);
+const newEmail = ref<string>();
 
 const notify = useNotifications();
 
@@ -21,6 +24,10 @@ onMounted(async () => {
     tokenIsInvalid.value = true;
     return;
   }
+
+  newEmail.value = (
+    jwtDecode(verificationToken) as NewEmailVerificationJwtPayload
+  ).email;
 
   store
     .verifyEmailUpdate(verificationToken)
@@ -60,7 +67,8 @@ onMounted(async () => {
       </div>
 
       <p class="fr-text--xl">
-        Votre lien de vérification a expiré. POUET POUET
+        Votre lien de vérification a expiré. Veuillez recommencer la procédure
+        de changement d'adresse email.
       </p>
 
       <p class="fr-text--sm fr-mb-6w">
@@ -70,10 +78,10 @@ onMounted(async () => {
       </p>
 
       <RouterLink
-        :to="{ name: 'new-account' }"
+        :to="{ name: 'account-settings' }"
         class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
       >
-        Créer un compte sur Ara
+        Accéder aux paramètres de mon compte
       </RouterLink>
     </div>
   </template>
@@ -94,7 +102,8 @@ onMounted(async () => {
       <p class="fr-mb-6w">
         La prochaine fois que vous vous connectez à votre compte, assurez-vous
         que vous utilisez l’adresse e-mail :
-        <strong>nouvelleadresse@gmail.com</strong>.
+        <strong>{{ newEmail }}</strong
+        >.
       </p>
 
       <RouterLink
