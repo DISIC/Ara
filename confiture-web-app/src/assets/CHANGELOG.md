@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Si l’URL du site n’est pas renseignée, utilise l’URL de la première page auditée ([#487](https://github.com/DISIC/Ara/pull/487))
+- Corrige le problème de disparition d’onglet lorsqu’on utilise les ancres depuis l’onglet "Notes" lors de la génération ([#483](https://github.com/DISIC/Ara/pull/483))
 
 ## 08/09/2023
 
