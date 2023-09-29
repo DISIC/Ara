@@ -6,6 +6,7 @@ import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
 import { history } from "../../../router";
+import DsfrField from "../../DsfrField.vue";
 
 // TODO: cancel email update (what if user clicks on verification email after?)
 
@@ -225,28 +226,15 @@ const showEmailInReport = ref(false);
         >
       </p> -->
 
-      <div
-        class="fr-input-group fr-mt-3v"
-        :class="{ 'fr-input-group--error': newEmailError }"
-      >
-        <label class="fr-label" for="new-email"
-          >Nouvelle adresse e-mail
-          <span class="fr-hint-text">Format attendu : nom@domaine.fr </span>
-        </label>
-        <input
-          id="new-email"
-          ref="newEmailFieldRef"
-          v-model="newEmail"
-          class="fr-input"
-          :class="{ 'fr-input--error': newEmailError }"
-          :aria-describedby="newEmailError ? 'new-email-error' : undefined"
-          type="email"
-          required
-        />
-        <p v-if="newEmailError" id="new-email-error" class="fr-error-text">
-          {{ newEmailError }}
-        </p>
-      </div>
+      <DsfrField
+        id="new-email"
+        v-model="newEmail"
+        class="fr-mt-3v"
+        label="Nouvelle adresse e-mail"
+        hint="Format attendu : nom@domaine.fr"
+        type="email"
+        required
+      />
     </div>
     <ul
       class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
