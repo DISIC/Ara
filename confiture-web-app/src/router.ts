@@ -38,6 +38,7 @@ import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
 import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
+import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
 import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
@@ -160,6 +161,21 @@ const router = createRouter({
       path: "/compte/validation",
       name: "new-account-validation",
       component: NewAccountValidationPage,
+    },
+    {
+      path: "/compte/email-update-validation",
+      name: "email-update-validation",
+      component: UpdateEmailValidationPage,
+      meta: {
+        name: "Changement d'adresse e-mail",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Changement d'adresse e-mail",
+            name: "email-update-validation",
+          },
+        ],
+      },
     },
     {
       path: "/compte/connexion",
