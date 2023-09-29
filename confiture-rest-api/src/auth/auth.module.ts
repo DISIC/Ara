@@ -7,10 +7,11 @@ import { PrismaService } from 'src/prisma.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuditsModule } from 'src/audits/audits.module';
+import { PasswordResetController } from './password-reset.controller';
 
 @Module({
   providers: [AuthService, PrismaService],
-  controllers: [AuthController],
+  controllers: [AuthController, PasswordResetController],
   imports: [
     MailModule,
     JwtModule.registerAsync({

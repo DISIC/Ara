@@ -8,7 +8,9 @@ import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
   NewEmailVerificationJwtPayload,
+  RequestPasswordResetJwtPayload,
 } from './jwt-payloads';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
@@ -368,5 +370,13 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+
+  generatePasswordResetVerificationToken(email: string) {
+    const payload: RequestPasswordResetJwtPayload = {
+      email,
+    };
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    return verificationToken;
   }
 }

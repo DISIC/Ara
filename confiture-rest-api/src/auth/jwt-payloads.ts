@@ -43,3 +43,8 @@ export interface NewEmailVerificationJwtPayload {
    */
   jti: string;
 }
+
+export interface RequestPasswordResetJwtPayload {
+  /** Email address of the requested password to be reset. */
+  email: string;
+}
