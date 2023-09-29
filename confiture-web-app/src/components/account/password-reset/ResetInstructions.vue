@@ -1,24 +1,28 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
 
-// Send reset email password
-const email = ref("");
-const instructionsHeadingRef = ref<HTMLHeadingElement>();
-const showInstructions = ref(false);
+defineProps<{ email: string }>();
 
-async function resetPassword() {
-  // TODO: resend email
-  showInstructions.value = true;
-  await nextTick();
-  instructionsHeadingRef.value?.focus();
-}
+const emit = defineEmits<{
+  (e: "resend-email"): void;
+  (e: "update-email"): void;
+}>();
+
+// Send reset email password
+const instructionsHeadingRef = ref<HTMLHeadingElement>();
+
+defineExpose({
+  focusHeading: () => {
+    instructionsHeadingRef.value?.focus();
+  },
+});
 
 // Resend email
 const resendEmailButtonRef = ref<HTMLButtonElement>();
 const showResendAlert = ref(false);
 
 async function resendEmail() {
-  // TODO: resend email
+  emit("resend-email");
   showResendAlert.value = true;
 }
 
@@ -27,19 +31,10 @@ async function hideResendAlert() {
   await nextTick();
   resendEmailButtonRef.value?.focus();
 }
-
-// Update email
-const emailFieldRef = ref<HTMLInputElement>();
-
-async function updateEmail() {
-  showInstructions.value = false;
-  await nextTick();
-  emailFieldRef.value?.focus();
-}
 </script>
 
 <template>
-  <div v-if="showInstructions" class="instructions-wrapper">
+  <div class="wrapper">
     <h1 ref="instructionsHeadingRef" class="fr-h3" tabindex="-1">
       Consulter votre boite de réception
     </h1>
@@ -68,62 +63,23 @@ async function updateEmail() {
         class="fr-alert fr-alert--success fr-alert--sm fr-mb-3v"
       >
         <p>Un nouvel e-mail vient de vous être envoyé</p>
-        <button
-          class="fr-link--close fr-link"
-          @click="hideResendAlert"
-        ></button>
+        <button class="fr-link--close fr-link" @click="hideResendAlert">
+          Masquer le message
+        </button>
       </div>
     </div>
     <h2 class="fr-text--sm fr-mb-1w">L’adresse e-mail saisie est erronée ?</h2>
-    <button class="fr-btn fr-btn--tertiary-no-outline" @click="updateEmail">
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline"
+      @click="$emit('update-email')"
+    >
       Modifier mon adresse e-mail
     </button>
   </div>
-
-  <form v-else class="wrapper" @submit.prevent="resetPassword">
-    <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
-    <p class="fr-mb-2w">
-      Veuillez saisir l’adresse e-mail associée à votre compte. Vous recevrez un
-      e-mail pour réinitialiser votre mot de passe.
-    </p>
-
-    <div class="fr-input-group">
-      <label class="fr-label" for="reset-password-email">
-        Adresse e-mail
-        <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-      </label>
-      <input
-        id="reset-password-email"
-        ref="emailFieldRef"
-        v-model="email"
-        class="fr-input"
-        type="email"
-        required
-      />
-    </div>
-
-    <ul
-      class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left"
-    >
-      <li>
-        <RouterLink class="fr-btn fr-btn--secondary" :to="{ name: 'login' }">
-          Annuler
-        </RouterLink>
-      </li>
-      <li>
-        <button type="submit" class="fr-btn">Valider</button>
-      </li>
-    </ul>
-  </form>
 </template>
 
 <style scoped>
 .wrapper {
-  max-width: 25rem;
-  margin: 0 auto;
-}
-
-.instructions-wrapper {
   max-width: 37rem;
   margin: 0 auto;
 }
