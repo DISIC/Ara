@@ -52,7 +52,6 @@ export function formatUserImpact(
   return FORMATTED_USER_IMPACT[userImpact];
 }
 
-// TODO: replace everywhere in the app
 const FORMATTED_STATUS = {
   [CriteriumResultStatus.NOT_TESTED]: "Non testé",
   [CriteriumResultStatus.COMPLIANT]: "Conforme",

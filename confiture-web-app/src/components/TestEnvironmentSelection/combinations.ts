@@ -6,7 +6,7 @@ import {
 } from "../../enums";
 import { AuditEnvironment } from "../../types";
 
-// TODO: there's probably a super cool and simple way to rewrite the content of this file
+// FIXME: there's probably a super cool and simple way to rewrite the content of this file
 
 /** Default desktop environment combinations. */
 export const desktopCombinations = [

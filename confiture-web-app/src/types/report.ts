@@ -85,9 +85,6 @@ interface AuditReportContext {
 
   samples: PageSample[];
 
-  // TODO: derogated content
-  // derogatedContent: any
-
   tools: string[];
 
   desktopEnvironments: Environment[];

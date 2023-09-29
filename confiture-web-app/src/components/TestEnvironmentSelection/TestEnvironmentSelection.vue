@@ -191,7 +191,7 @@ function combineEnvironments(
         .map((combination) => {
           return combination.environments.map((c) => {
             return {
-              // TODO: set platform directly in desktopCombinations
+              // FIXME: set platform directly in desktopCombinations
               platform: Platform.DESKTOP,
               ...c,
             };

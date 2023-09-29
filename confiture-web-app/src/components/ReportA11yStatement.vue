@@ -322,7 +322,6 @@ function hideCopyAlert() {
           les versions suivantes :
         </p>
         <ul class="fr-mb-2w fr-mb-md-3w">
-          <!-- TODO: format browser + AT (PR #53) -->
           <template v-if="report.data.context.desktopEnvironments.length">
             <li
               v-for="(env, i) in report.data.context.desktopEnvironments"

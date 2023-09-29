@@ -14,7 +14,8 @@ ChartJS.register(LinearScale, CategoryScale, BarController, BarElement);
 import { Chart, ChartConfiguration } from "chart.js";
 import { ref, onMounted, onUnmounted } from "vue";
 
-import { getCssVarValue } from "../utils";
+import { getCssVarValue, formatStatus } from "../utils";
+import { CriteriumResultStatus } from "../types";
 import { useChartColorsUpdate } from "../composables/useChartColorsUpdate";
 
 interface DataItem {
@@ -40,19 +41,19 @@ const props = defineProps<{
 const chartLabels = props.data.map((item) => item.name);
 const chartDatasets = [
   {
-    label: "Conforme",
+    label: formatStatus(CriteriumResultStatus.COMPLIANT),
     data: props.data.map((d) => d.compliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-success"),
     barThickness: 16,
   },
   {
-    label: "Non conforme",
+    label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     data: props.data.map((d) => d.notCompliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-error"),
     barThickness: 16,
   },
   {
-    label: "Non applicable",
+    label: formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
     data: props.data.map((d) => d.notApplicable.percentage),
     backgroundColor: getCssVarValue("--grey-200-850"),
     barThickness: 16,
