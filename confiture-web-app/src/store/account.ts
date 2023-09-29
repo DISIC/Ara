@@ -287,5 +287,11 @@ export const useAccountStore = defineStore("account", {
         json: { email },
       });
     },
+
+    async resetPassword(newPassword: string, verificationToken: string) {
+      await ky.post("/api/auth/account/reset-password", {
+        json: { newPassword, token: verificationToken },
+      });
+    },
   },
 });

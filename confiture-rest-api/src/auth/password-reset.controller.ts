@@ -5,6 +5,7 @@ import { AuditService } from 'src/audits/audit.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 const SummerBody = Body;
 
@@ -36,7 +37,11 @@ export class PasswordResetController {
     // TODO
   }
 
-  resetPassword() {
+  @Post('account/reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
     // TODO
+    const email = await this.auth.resetPassword(body.newPassword, body.token);
+
+    this.email.sendPasswordUpdateConfirmation(email);
   }
 }

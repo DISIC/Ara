@@ -6,9 +6,12 @@ import { useAccountStore } from "../../store/account";
 import { useAuditStore } from "../../store/audit";
 import TopLink from "../../components/TopLink.vue";
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
+import { history } from "../../router";
 
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();
+
+const showResetPasswordAlert = ref<boolean>(!!history.state.passwordReset);
 
 // Account alert
 const mainHeadingRef = ref<HTMLHeadingElement>();
@@ -42,7 +45,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Alert -->
+  <!-- Reset password alert -->
+  <div
+    v-if="showResetPasswordAlert"
+    class="fr-alert fr-alert--success fr-mb-4w"
+  >
+    <h3 class="fr-alert__title">
+      Votre mot de passe a été mis à jour avec succès
+    </h3>
+  </div>
+
+  <!-- Welcome alert -->
   <div v-if="showAuditsAlert" class="fr-alert fr-alert--info fr-mb-4w">
     <h3 class="fr-alert__title">Bienvenue dans votre espace 👋</h3>
     <p class="fr-mb-3v">

@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-import ResetPasswordForm from "../../components/account/password-reset/ResetPasswordForm.vue";
+import NewPasswordForm from "../../components/account/password-reset/NewPasswordForm.vue";
 import ResetInstructions from "../../components/account/password-reset/ResetInstructions.vue";
 import RequestPasswordReset from "../../components/account/password-reset/RequestPasswordReset.vue";
 
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads } from "../../utils";
 import { useNotifications } from "../../composables/useNotifications";
+import jwtDecode from "jwt-decode";
+import { PasswordResetVerificationJwtPayload } from "../../types";
 
-// TODO: condition to show form? param in reset email link?
-const currentStep = ref(0);
+const route = useRoute();
+const router = useRouter();
+const verificationToken = computed(() => route.query.token);
+const currentStep = ref(verificationToken.value ? 2 : 0);
 const store = useAccountStore();
 const notify = useNotifications();
 
@@ -46,6 +51,32 @@ async function updateEmail() {
   await nextTick();
   requestPasswordResetRef.value?.focusEmailField();
 }
+
+async function resetPassword(newPassword: string) {
+  try {
+    const { email } = jwtDecode(
+      verificationToken.value as string
+    ) as PasswordResetVerificationJwtPayload;
+    await store.resetPassword(newPassword, verificationToken.value as string);
+
+    if (store.account) {
+      // User is logged in
+      router.push({
+        name: "account-dashboard",
+        state: { passwordReset: true },
+      });
+    } else {
+      router.push({ name: "login", state: { email, passwordReset: true } });
+    }
+  } catch (e) {
+    notify(
+      "error",
+      "Impossible de procéder à la mise à jour du mot de passe",
+      "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+    captureWithPayloads(e, false);
+  }
+}
 </script>
 
 <template>
@@ -61,5 +92,5 @@ async function updateEmail() {
     @resend-email="resendEmail"
     @update-email="updateEmail"
   />
-  <!-- <ResetPasswordForm v-if="showPasswordResetForm" /> -->
+  <NewPasswordForm v-if="currentStep === 2" @submit="resetPassword" />
 </template>

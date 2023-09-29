@@ -379,4 +379,34 @@ export class AuthService {
     const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
     return verificationToken;
   }
+
+  async resetPassword(newPassword: string, token: string) {
+    const { email } = (await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    })) as NewEmailVerificationJwtPayload;
+    console.log(
+      '🚀 ~ file: auth.service.ts:387 ~ AuthService ~ resetPassword ~ email:',
+      email,
+    );
+
+    const hash = await this.hashPassword(newPassword);
+
+    const user = await this.prisma.user
+      .update({
+        where: { username: email },
+        data: {
+          password: hash,
+        },
+      })
+      .catch((err) => {
+        // User not found
+        // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
+        if (err?.code === 'P2025') {
+          throw new InvalidVerificationTokenError('User not found');
+        }
+        throw err;
+      });
+
+    return email;
+  }
 }

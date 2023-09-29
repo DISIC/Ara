@@ -1,24 +1,15 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
+defineEmits<{
+  (e: "submit", newPassword: string): void;
+}>();
 
 const password = ref("");
-
-async function resetPassword() {
-  // TODO: reset password
-  console.log("resetPassword");
-  router.push({
-    name: "login",
-    // TODO: prefill email with account store
-    state: { email: "email", passwordReset: true },
-  });
-}
 </script>
 
 <template>
-  <form class="wrapper" @submit.prevent="resetPassword">
+  <form class="wrapper" @submit.prevent="$emit('submit', password)">
     <h1 class="fr-h3">Changer de mot de passe</h1>
 
     <div class="fr-password fr-mb-3w">
