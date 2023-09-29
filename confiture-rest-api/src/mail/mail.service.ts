@@ -9,6 +9,8 @@ import * as auditCreationEmail from './audit-creation-email';
 import * as accountVerificationEmail from './account-verification-email';
 import * as accountConfirmationEmail from './account-confirmation-email';
 import * as passwordUpdateConfirmationEmail from './password-update-confirmation-email';
+import * as updateEmailVerificationEmail from './update-email-verification-email';
+import * as updateEmailConfirmationEmail from './update-email-confirmation-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
@@ -16,6 +18,8 @@ const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.ACCOUNT_VERIFICATION]: accountVerificationEmail,
   [EmailType.ACCOUNT_CONFIRMATION]: accountConfirmationEmail,
   [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
+  [EmailType.EMAIL_UPDATE_VERIFICATION]: updateEmailVerificationEmail,
+  [EmailType.EMAIL_UPDATE_CONFIRMATION]: updateEmailConfirmationEmail,
 };
 
 @Injectable()
@@ -111,5 +115,23 @@ export class MailService {
 
   sendPasswordUpdateConfirmation(email: string) {
     return this.sendMail(email, EmailType.PASSWORD_UPDATE_CONFIRMATION, null);
+  }
+
+  sendNewEmailVerificationEmail(email: string, token: string) {
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+
+    const verificationLink = `${baseUrl}/compte/email-update-validation?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    return this.sendMail(email, EmailType.EMAIL_UPDATE_VERIFICATION, {
+      verificationLink,
+    });
+  }
+
+  sendEmailUpdateConfirmationEmail(email: string) {
+    return this.sendMail(email, EmailType.EMAIL_UPDATE_CONFIRMATION, {
+      newEmail: email,
+    });
   }
 }

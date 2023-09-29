@@ -186,6 +186,8 @@ enum EmailType {
   ACCOUNT_VERIFICATION
   ACCOUNT_CONFIRMATION
   PASSWORD_UPDATE_CONFIRMATION
+  EMAIL_UPDATE_VERIFICATION
+  EMAIL_UPDATE_CONFIRMATION
 }
 
 model EmailLog {
@@ -215,6 +217,11 @@ model User {
 
   name    String?
   orgName String?
+
+  /// @DtoEntityHidden
+  newEmail String?
+  /// @DtoEntityHidden
+  newEmailVerificationJti String?
 }
 
 model ActiveFeedbackToken {

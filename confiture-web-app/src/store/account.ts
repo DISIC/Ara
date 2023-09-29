@@ -94,6 +94,25 @@ export const useAccountStore = defineStore("account", {
       }
     },
 
+    async refreshToken() {
+      const authToken = await ky
+        .post("/api/auth/refresh", {
+          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        })
+        .text();
+      this.authToken = authToken;
+      const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
+      if (this.account) {
+        this.account.email = payload.email;
+      }
+
+      if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
+        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
+      } else {
+        sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
+      }
+    },
+
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
@@ -176,7 +195,7 @@ export const useAccountStore = defineStore("account", {
           json: {
             password,
           },
-          headers: { Authorization: `Bearer ${this.$state.authToken}` },
+          headers: { Authorization: `Bearer ${this.authToken}` },
         })
         .json()) as AccountDeletionResponse;
 
@@ -190,7 +209,32 @@ export const useAccountStore = defineStore("account", {
           feedback,
           feedbackToken: this.accountDeletionFeedbackToken,
         },
-        headers: { Authorization: `Bearer ${this.$state.authToken}` },
+        headers: { Authorization: `Bearer ${this.authToken}` },
+      });
+    },
+
+    async updateEmail(newEmail: string, password: string) {
+      await ky.put("/api/auth/account/email", {
+        json: {
+          newEmail,
+          password,
+        },
+        headers: { Authorization: `Bearer ${this.authToken}` },
+      });
+    },
+
+    async resendEmailUpdateVerificationEmail() {
+      await ky.post(
+        "/api/auth/account/resend-email-update-verification-email",
+        { headers: { Authorization: `Bearer ${this.authToken}` } }
+      );
+    },
+
+    async verifyEmailUpdate(verificationToken: string) {
+      await ky.post("/api/auth/account/verify-email-update", {
+        json: {
+          token: verificationToken,
+        },
       });
     },
 
@@ -198,6 +242,43 @@ export const useAccountStore = defineStore("account", {
       await ky.put("/api/auth/update-password", {
         json: { oldPassword, newPassword },
         headers: { Authorization: `Bearer ${this.$state.authToken}` },
+      });
+    },
+
+    waitForEmailUpdateVerification(newEmail: string, signal: AbortSignal) {
+      const CHECK_INTERVAL = 5000;
+      const url = `/api/auth/account/verified-email-update?email=${encodeURIComponent(
+        newEmail
+      )}`;
+
+      return new Promise<void>((resolve, reject) => {
+        let isAborted = false;
+        let timerId: undefined | ReturnType<typeof setTimeout> = undefined;
+
+        const onAbort = () => {
+          isAborted = true;
+          clearTimeout(timerId);
+          reject();
+        };
+
+        signal.addEventListener("abort", onAbort, { once: true });
+
+        const checkIsVerified = async () => {
+          const isAccountVerified = await ky
+            .get(url, {
+              headers: { Authorization: `Bearer ${this.authToken}` },
+            })
+            .json();
+
+          if (!isAccountVerified && !isAborted) {
+            timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
+          } else {
+            signal.removeEventListener("abort", onAbort);
+            resolve();
+          }
+        };
+
+        timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
       });
     },
   },

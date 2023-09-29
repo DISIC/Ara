@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma.service';
 import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
+  NewEmailVerificationJwtPayload,
 } from './jwt-payloads';
 
 export class UsernameAlreadyExistsError extends Error {
@@ -177,6 +178,23 @@ export class AuthService {
     return token;
   }
 
+  /** Generate a new auth token. */
+  async refreshToken(uid: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
+    if (!user) {
+      throw new SigninError('unknown_user');
+    }
+    if (!user.isVerified) {
+      throw new SigninError('unknown_user');
+    }
+    const payload: AuthenticationJwtPayload = {
+      sub: user.uid,
+      email: user.username,
+    };
+    const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
+    return token;
+  }
+
   async isAccountVerified(username: string): Promise<boolean> {
     const user = await this.prisma.user.findUnique({ where: { username } });
     return !!user && user.isVerified;
@@ -197,6 +215,7 @@ export class AuthService {
     jti: string,
   ): Promise<string> {
     const payload: AccountVerificationJwtPayload = {
+      verification: 'new-account',
       sub: uid,
       email,
       jti,
@@ -207,6 +226,14 @@ export class AuthService {
 
   async checkCredentials(username: string, password: string): Promise<boolean> {
     const user = await this.prisma.user.findUnique({ where: { username } });
+    return user && user.isVerified && (await compare(password, user.password));
+  }
+
+  async checkCredentialsWithUid(
+    uid: string,
+    password: string,
+  ): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
     return user && user.isVerified && (await compare(password, user.password));
   }
 
@@ -224,5 +251,122 @@ export class AuthService {
 
   private hashPassword(password: string) {
     return hash(password, 10);
+  }
+
+  async addNewEmail(uid: string, newEmail: string) {
+    // Check if an user already exists with this username
+    await this.prisma.user
+      .findUnique({ where: { username: newEmail } })
+      .then((user) => {
+        if (user) {
+          throw new UsernameAlreadyExistsError(newEmail);
+        }
+      });
+
+    const user = await this.prisma.user.update({
+      where: { uid },
+      data: {
+        newEmail,
+        newEmailVerificationJti: nanoid(),
+      },
+    });
+
+    const verificationToken = await this.generateNewEmailVerificationToken(
+      user.uid,
+      newEmail,
+      user.newEmailVerificationJti,
+    );
+
+    return verificationToken;
+  }
+
+  private generateNewEmailVerificationToken(
+    uid: string,
+    email: string,
+    jti: string,
+  ): Promise<string> {
+    const payload: NewEmailVerificationJwtPayload = {
+      verification: 'update-email',
+      sub: uid,
+      email,
+      jti,
+    };
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    return verificationToken;
+  }
+
+  /** Generate a new *email update* verification token and update the stored jti for given user. */
+  async regenerateEmailUpdateVerificationToken(
+    uid: string,
+  ): Promise<{ email: string; token: string }> {
+    const user = await this.prisma.user.findUnique({ where: { uid } });
+    if (!user) {
+      throw new TokenRegenerationError('User not found');
+    }
+
+    if (!user.newEmail) {
+      throw new TokenRegenerationError(
+        'User is not in the process of updating email',
+      );
+    }
+
+    const newJti = nanoid();
+    await this.prisma.user.update({
+      where: { uid },
+      data: { newEmailVerificationJti: newJti },
+    });
+    const token = await this.generateNewEmailVerificationToken(
+      user.uid,
+      user.newEmail,
+      newJti,
+    );
+
+    return { token, email: user.newEmail };
+  }
+
+  async verifyEmailUpdate(token: string) {
+    const payload = (await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    })) as NewEmailVerificationJwtPayload;
+    const { sub: uid, jti, email } = payload;
+
+    // Addition checks : user exists, user needs email update verification, token is the last one
+    {
+      const user = await this.prisma.user.findUnique({ where: { uid } });
+
+      if (!user) {
+        throw new InvalidVerificationTokenError('User not found');
+      }
+
+      if (!user.newEmail) {
+        throw new InvalidVerificationTokenError('No pending email update');
+      }
+
+      if (user.newEmailVerificationJti !== jti) {
+        throw new InvalidVerificationTokenError(
+          'Token is not the latest generated token',
+        );
+      }
+    }
+
+    await this.prisma.user.update({
+      where: { uid },
+      data: {
+        username: email,
+        newEmail: null,
+        newEmailVerificationJti: null,
+      },
+    });
+  }
+
+  async userHasEmail(uid: string, email: string) {
+    try {
+      await this.prisma.user.findFirstOrThrow({
+        where: { uid, username: email, newEmail: null },
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
