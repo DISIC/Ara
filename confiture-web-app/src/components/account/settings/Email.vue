@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
-
-import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
+import { nextTick, ref } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
+
 import { useNotifications } from "../../../composables/useNotifications";
-import { captureWithPayloads } from "../../../utils";
 import { history } from "../../../router";
+import { useAccountStore } from "../../../store/account";
+import { captureWithPayloads } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
 // TODO: cancel email update (what if user clicks on verification email after?)
@@ -37,11 +38,12 @@ async function showPending() {
 
 async function hidePending() {
   displayPendingEmailVerification.value = false;
+  ac.value?.abort();
   await nextTick();
   passwordFieldRef.value?.focus();
 }
 
-const ac = new AbortController();
+const ac = ref<AbortController>();
 
 async function updateEmail() {
   passwordError.value = "";
@@ -50,9 +52,10 @@ async function updateEmail() {
   accountStore
     .updateEmail(newEmail.value, password.value)
     .then(showPending)
-    .then(() =>
-      accountStore
-        .waitForEmailUpdateVerification(newEmail.value, ac.signal)
+    .then(() => {
+      ac.value = new AbortController();
+      return accountStore
+        .waitForEmailUpdateVerification(newEmail.value, ac.value.signal)
         .then(() => {
           displayPendingEmailVerification.value = false;
           displayEmailUpdateSuccess.value = true;
@@ -61,8 +64,8 @@ async function updateEmail() {
         })
         .catch(() => {
           /* Cancelled */
-        })
-    )
+        });
+    })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
         passwordError.value = "Le mot de passe saisi est incorrect.";
@@ -84,6 +87,10 @@ async function updateEmail() {
       }
     });
 }
+
+onBeforeRouteLeave(() => {
+  ac.value?.abort();
+});
 
 // Send new email
 const resendButtonRef = ref<HTMLButtonElement>();

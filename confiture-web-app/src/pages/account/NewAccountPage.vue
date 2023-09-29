@@ -6,15 +6,6 @@ import EmailSent from "../../components/account/new-acccount/EmailSent.vue";
 import Success from "../../components/account/new-acccount/Success.vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-/*
-TODO:
-- validation côté client
-- affichage des erreurs (validation côté client et erreurs serveur)
-- gestion du focus
-- email
-- last step ("Votre compte a été créé avec succès")
-*/
-
 const currentStep = ref(0);
 const userEmail = ref<string>();
 
