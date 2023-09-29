@@ -144,10 +144,10 @@ function fillFields() {
         <li>
           <button class="fr-btn" type="submit">Valider</button>
         </li>
-        <li>
-          <!-- TODO: what does this do ?? -->
+        <!-- TODO: what does this do ?? -->
+        <!-- <li>
           <button class="fr-btn fr-btn--secondary">Annuler</button>
-        </li>
+        </li> -->
       </ul>
     </form>
   </div>
