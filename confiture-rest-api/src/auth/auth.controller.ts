@@ -210,8 +210,6 @@ export class AuthController {
     };
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   @Put('update-password')
   @ApiOkResponse({
     description: 'The password was succesfully updated.',
@@ -249,15 +247,9 @@ export class AuthController {
 
     return;
   }
-=======
-  // TODO: document email update methods
-
->>>>>>> f21d78a (send token to API to verify new email)
-=======
   /** Update the user's email adress. The change is not effective immediately.
    * The new email adress must first be verified using the
    * `account/verify-email-update` route. */
->>>>>>> e0916ff (document new api methods)
   @Put('account/email')
   @ApiOkResponse({
     description:
