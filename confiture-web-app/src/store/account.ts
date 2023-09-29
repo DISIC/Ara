@@ -281,5 +281,11 @@ export const useAccountStore = defineStore("account", {
         timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
       });
     },
+
+    async requestPasswordReset(email: string) {
+      await ky.post("/api/auth/account/request-password-reset", {
+        json: { email },
+      });
+    },
   },
 });
