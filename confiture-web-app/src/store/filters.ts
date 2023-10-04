@@ -81,23 +81,24 @@ export const useFiltersStore = defineStore("filters", {
                   ]?.status,
               };
             })
-            .filter((c: any) =>
-              // audit type filter
-              !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
-                (fc) =>
-                  fc.criterium === c.criterium.number && fc.topic === t.number
-              ) &&
-              // search filter
-              (c.criterium.title
-                .toLowerCase()
-                .includes(this.search.toLowerCase()) ||
-                t.topic
+            .filter(
+              (c: any) =>
+                // audit type filter
+                !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
+                  (fc) =>
+                    fc.criterium === c.criterium.number && fc.topic === t.number
+                ) &&
+                // status
+                (this.complianceLevels.length
+                  ? this.complianceLevels.includes(c.status)
+                  : !this.complianceLevels.includes(c.status)) &&
+                // search filter
+                (c.criterium.title
                   .toLowerCase()
-                  .includes(this.search.toLocaleLowerCase())) &&
-              // status
-              this.complianceLevels.length
-                ? this.complianceLevels.includes(c.status)
-                : !this.complianceLevels.includes(c.status)
+                  .includes(this.search.toLowerCase()) ||
+                  t.topic
+                    .toLowerCase()
+                    .includes(this.search.toLocaleLowerCase()))
             ),
         };
       });

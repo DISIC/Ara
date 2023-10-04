@@ -114,7 +114,7 @@ const notApplicableCount = computed(
       v-if="
         filterStore.search ||
         filterStore.hideEvaluatedCriteria ||
-        filterStore.complianceLevels.length !== 3
+        filterStore.complianceLevels.length
       "
       class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
       @click="onGlobalReset"
