@@ -391,14 +391,10 @@ export class AuthService {
     const { email } = (await this.jwt.verifyAsync(token).catch(() => {
       throw new InvalidVerificationTokenError('Invalid JWT');
     })) as NewEmailVerificationJwtPayload;
-    console.log(
-      '🚀 ~ file: auth.service.ts:387 ~ AuthService ~ resetPassword ~ email:',
-      email,
-    );
 
     const hash = await this.hashPassword(newPassword);
 
-    const user = await this.prisma.user
+    await this.prisma.user
       .update({
         where: { username: email },
         data: {
