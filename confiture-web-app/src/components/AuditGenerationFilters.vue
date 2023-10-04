@@ -67,15 +67,24 @@ watch(
   () => filterStore.updateEvaluatedCriteria()
 );
 
-const compliantCount = resultStore.allResults?.filter(
-  (r) => r.status === CriteriumResultStatus.COMPLIANT
-).length;
-const notCompliantCount = resultStore.allResults?.filter(
-  (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
-).length;
-const notApplicableCount = resultStore.allResults?.filter(
-  (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
-).length;
+const compliantCount = computed(
+  () =>
+    resultStore.allResults?.filter(
+      (r) => r.status === CriteriumResultStatus.COMPLIANT
+    ).length
+);
+const notCompliantCount = computed(
+  () =>
+    resultStore.allResults?.filter(
+      (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
+    ).length
+);
+const notApplicableCount = computed(
+  () =>
+    resultStore.allResults?.filter(
+      (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
+    ).length
+);
 </script>
 
 <template>
