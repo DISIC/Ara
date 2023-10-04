@@ -19,11 +19,7 @@ export const useFiltersStore = defineStore("filters", {
     hideEvaluatedCriteria: false,
     hideTestsAndReferences: false,
     newEvaluatedCriteria: [],
-    complianceLevels: [
-      CriteriumResultStatus.COMPLIANT,
-      CriteriumResultStatus.NOT_COMPLIANT,
-      CriteriumResultStatus.NOT_APPLICABLE,
-    ],
+    complianceLevels: [],
   }),
   getters: {
     /** Filter topics by topic name and by search. */
@@ -85,22 +81,23 @@ export const useFiltersStore = defineStore("filters", {
                   ]?.status,
               };
             })
-            .filter(
-              (c: any) =>
-                // audit type filter
-                !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
-                  (fc) =>
-                    fc.criterium === c.criterium.number && fc.topic === t.number
-                ) &&
-                // search filter
-                (c.criterium.title
+            .filter((c: any) =>
+              // audit type filter
+              !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
+                (fc) =>
+                  fc.criterium === c.criterium.number && fc.topic === t.number
+              ) &&
+              // search filter
+              (c.criterium.title
+                .toLowerCase()
+                .includes(this.search.toLowerCase()) ||
+                t.topic
                   .toLowerCase()
-                  .includes(this.search.toLowerCase()) ||
-                  t.topic
-                    .toLowerCase()
-                    .includes(this.search.toLocaleLowerCase())) &&
-                // status
-                this.complianceLevels.includes(c.status)
+                  .includes(this.search.toLocaleLowerCase())) &&
+              // status
+              this.complianceLevels.length
+                ? this.complianceLevels.includes(c.status)
+                : !this.complianceLevels.includes(c.status)
             ),
         };
       });
