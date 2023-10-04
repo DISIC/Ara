@@ -50,6 +50,6 @@ export interface NewEmailVerificationJwtPayload {
   jti: string;
 }
 
-export type AnyVerificationJwtPayload =
-  | AccountVerificationJwtPayload
-  | NewEmailVerificationJwtPayload;
+export interface PasswordResetVerificationJwtPayload {
+  email: string;
+}
