@@ -372,7 +372,14 @@ export class AuthService {
     }
   }
 
-  generatePasswordResetVerificationToken(email: string) {
+  async generatePasswordResetVerificationToken(email: string) {
+    // verify user exists
+    await this.prisma.user
+      .findUniqueOrThrow({ where: { username: email } })
+      .catch(() => {
+        throw new TokenRegenerationError('User not found');
+      });
+
     const payload: RequestPasswordResetJwtPayload = {
       email,
     };

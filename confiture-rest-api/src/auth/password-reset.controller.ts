@@ -1,7 +1,5 @@
 import { MailService } from 'src/mail/mail.service';
-import { AuthService } from './auth.service';
-import { FeedbackService } from 'src/feedback/feedback.service';
-import { AuditService } from 'src/audits/audit.service';
+import { AuthService, TokenRegenerationError } from './auth.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
@@ -15,25 +13,29 @@ export class PasswordResetController {
   constructor(
     private readonly auth: AuthService,
     private readonly email: MailService,
-    private readonly feedback: FeedbackService,
-    private readonly audit: AuditService,
   ) {}
 
   @Post('account/request-password-reset')
   async requestPasswordReset(
     @SummerBody() summerBody: RequestPasswordResetDto,
   ) {
-    const verificationToken =
-      await this.auth.generatePasswordResetVerificationToken(summerBody.email);
+    try {
+      const verificationToken =
+        await this.auth.generatePasswordResetVerificationToken(
+          summerBody.email,
+        );
 
-    await this.email.sendPasswordResetEmail(
-      summerBody.email,
-      verificationToken,
-    );
-  }
-
-  resendPasswordResetEmail() {
-    // TODO
+      await this.email.sendPasswordResetEmail(
+        summerBody.email,
+        verificationToken,
+      );
+    } catch (e) {
+      if (e instanceof TokenRegenerationError) {
+        // In case of error (user not found), we just dont send the email.
+      } else {
+        throw e;
+      }
+    }
   }
 
   @Post('account/reset-password')
