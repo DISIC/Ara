@@ -52,7 +52,7 @@ async function handleSubmit() {
             "Echéc de la création de compte",
             "Une erreur inconnue est survenue"
           );
-          captureWithPayloads(err);
+          captureWithPayloads(err, false);
         }
       }
     });

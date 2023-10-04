@@ -84,6 +84,10 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
 
     release: import.meta.env.VITE_SENTRY_RELEASE,
+
+    beforeSend(event) {
+      console.log("beforeSend", event);
+    },
   });
 }
 
