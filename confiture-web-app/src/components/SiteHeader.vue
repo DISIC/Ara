@@ -2,11 +2,13 @@
 import { ref, computed } from "vue";
 import { useRoute, RouteLocationRaw } from "vue-router";
 
-import { useAuditStore, useReportStore } from "../store";
+import { useAuditStore, useNotificationStore, useReportStore } from "../store";
 import { useAccountStore } from "../store/account";
 import Dropdown from "./Dropdown.vue";
 // import GearIcon from "./icons/GearIcon.vue";
 import LogoutIcon from "./icons/LogoutIcon.vue";
+import { useRouter } from "vue-router";
+import { useNotifications } from "../composables/useNotifications";
 
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
@@ -84,9 +86,15 @@ function closeNewsSubMenu() {
 }
 const accountStore = useAccountStore();
 
+const router = useRouter();
+const notify = useNotifications();
+
 function handleDisconnectClick() {
   accountStore.logout();
-  // TODO: announce successful disconnection with live zone
+  if (currentRoute.meta.authRequired) {
+    router.push({ name: "login" });
+  }
+  notify("success", "Vous avez été deconnecté avec succès.");
 }
 </script>
 

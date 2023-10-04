@@ -50,6 +50,7 @@ declare module "vue-router" {
       | Array<{ label: string; name: string }>
       | (() => Array<{ label: string; name: string }>);
     hideHomeLink?: boolean;
+    authRequired?: boolean;
   }
 }
 
@@ -192,12 +193,17 @@ const router = createRouter({
       path: "/compte",
       name: "account-dashboard",
       component: AccountDashboardPage,
+      meta: {
+        name: "Mes audits",
+        authRequired: true,
+      },
     },
     {
       path: "/compte/parametres",
       name: "account-settings",
       component: AccountSettingsPage,
       meta: {
+        authRequired: true,
         name: "Mon compte",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
@@ -561,6 +567,13 @@ router.beforeEach((to, from) => {
         dev: from.query.dev,
       },
     };
+  }
+});
+
+router.beforeEach((to) => {
+  const accountStore = useAccountStore();
+  if (to.meta.authRequired && !accountStore.account) {
+    return { name: "login" };
   }
 });
 
