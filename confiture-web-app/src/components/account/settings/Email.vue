@@ -225,12 +225,11 @@ const showEmailInReport = ref(false);
           Afficher
         </label>
       </div>
-      <!-- TODO: uncomment this once the forgot password page is done. -->
-      <!-- <p>
-        <a href="[À MODIFIER - url de la page de récupération]" class="fr-link"
-          >Mot de passe oublié ?</a
+      <p>
+        <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
+          >Mot de passe oublié ?</RouterLink
         >
-      </p> -->
+      </p>
 
       <DsfrField
         id="new-email"

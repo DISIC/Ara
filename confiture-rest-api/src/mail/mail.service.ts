@@ -11,6 +11,7 @@ import * as accountConfirmationEmail from './account-confirmation-email';
 import * as passwordUpdateConfirmationEmail from './password-update-confirmation-email';
 import * as updateEmailVerificationEmail from './update-email-verification-email';
 import * as updateEmailConfirmationEmail from './update-email-confirmation-email';
+import * as requestPasswordResetEmail from './request-password-reset-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
@@ -20,6 +21,7 @@ const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
   [EmailType.EMAIL_UPDATE_VERIFICATION]: updateEmailVerificationEmail,
   [EmailType.EMAIL_UPDATE_CONFIRMATION]: updateEmailConfirmationEmail,
+  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail,
 };
 
 @Injectable()
@@ -132,6 +134,18 @@ export class MailService {
   sendEmailUpdateConfirmationEmail(email: string) {
     return this.sendMail(email, EmailType.EMAIL_UPDATE_CONFIRMATION, {
       newEmail: email,
+    });
+  }
+
+  sendPasswordResetEmail(email: string, token: string) {
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+
+    const verificationLink = `${baseUrl}/compte/reinitialiser-mot-de-passe?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    return this.sendMail(email, EmailType.PASSWORD_RESET_REQUEST, {
+      verificationLink,
     });
   }
 }

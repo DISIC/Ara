@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
@@ -20,6 +20,14 @@ const userPasswordInput = ref<HTMLInputElement>();
 const rememberMe = ref(false);
 
 const showCreatedAccountAlert = ref(!!history.state.email);
+const showPasswordResetAlert = ref(history.state.passwordReset);
+
+async function closeAlert() {
+  showCreatedAccountAlert.value = false;
+  showPasswordResetAlert.value = false;
+  await nextTick();
+  userEmailField.value?.inputRef?.focus();
+}
 
 const store = useAccountStore();
 const router = useRouter();
@@ -60,15 +68,21 @@ async function handleSubmit() {
 <template>
   <!-- TODO: fix top spacing -->
   <div
-    v-if="showCreatedAccountAlert"
+    v-if="showPasswordResetAlert || showCreatedAccountAlert"
     class="fr-alert fr-alert--success fr-mb-4w"
   >
-    <h3 class="fr-alert__title">Votre compte a été créé avec succès</h3>
+    <h3 class="fr-alert__title">
+      {{
+        showPasswordResetAlert
+          ? "Votre mot de passe a été mis à jour avec succès"
+          : "Votre compte a été créé avec succès"
+      }}
+    </h3>
     <p>Connectez-vous pour accédez à votre espace.</p>
     <button
       class="fr-btn--close fr-btn"
       title="Masquer le message"
-      @click="showCreatedAccountAlert = false"
+      @click="closeAlert"
     >
       Masquer le message
     </button>
@@ -90,7 +104,7 @@ async function handleSubmit() {
       />
 
       <div
-        class="fr-password fr-mb-3w"
+        class="fr-password fr-mb-3v"
         :class="{ 'fr-input-group--error': !!userPasswordError }"
       >
         <label class="fr-label" for="user-password-input">Mot de passe</label>
@@ -141,8 +155,9 @@ async function handleSubmit() {
         </div>
       </div>
 
-      <!-- TODO: Add forgotten password link -->
-      <RouterLink to="#" class="fr-link">Mot de passe oublié ?</RouterLink>
+      <RouterLink :to="{ name: 'password-reset' }" class="fr-link">
+        Mot de passe oublié ?
+      </RouterLink>
 
       <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
         <input id="remember-me" v-model="rememberMe" type="checkbox" />

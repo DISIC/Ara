@@ -8,7 +8,9 @@ import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
   NewEmailVerificationJwtPayload,
+  RequestPasswordResetJwtPayload,
 } from './jwt-payloads';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
@@ -368,5 +370,50 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+
+  async generatePasswordResetVerificationToken(email: string) {
+    // verify user exists
+    await this.prisma.user
+      .findUniqueOrThrow({ where: { username: email } })
+      .catch(() => {
+        throw new TokenRegenerationError('User not found');
+      });
+
+    const payload: RequestPasswordResetJwtPayload = {
+      email,
+    };
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    return verificationToken;
+  }
+
+  async resetPassword(newPassword: string, token: string) {
+    const { email } = (await this.jwt.verifyAsync(token).catch(() => {
+      throw new InvalidVerificationTokenError('Invalid JWT');
+    })) as NewEmailVerificationJwtPayload;
+    console.log(
+      '🚀 ~ file: auth.service.ts:387 ~ AuthService ~ resetPassword ~ email:',
+      email,
+    );
+
+    const hash = await this.hashPassword(newPassword);
+
+    const user = await this.prisma.user
+      .update({
+        where: { username: email },
+        data: {
+          password: hash,
+        },
+      })
+      .catch((err) => {
+        // User not found
+        // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
+        if (err?.code === 'P2025') {
+          throw new InvalidVerificationTokenError('User not found');
+        }
+        throw err;
+      });
+
+    return email;
   }
 }
