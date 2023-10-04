@@ -23,7 +23,6 @@ export class PasswordResetController {
   async requestPasswordReset(
     @SummerBody() summerBody: RequestPasswordResetDto,
   ) {
-    console.log('Password reset request for', summerBody.email);
     const verificationToken =
       await this.auth.generatePasswordResetVerificationToken(summerBody.email);
 
@@ -39,9 +38,7 @@ export class PasswordResetController {
 
   @Post('account/reset-password')
   async resetPassword(@Body() body: ResetPasswordDto) {
-    // TODO
     const email = await this.auth.resetPassword(body.newPassword, body.token);
-
     this.email.sendPasswordUpdateConfirmation(email);
   }
 }

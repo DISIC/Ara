@@ -11,19 +11,12 @@ const emit = defineEmits<{
 // Send reset email password
 const instructionsHeadingRef = ref<HTMLHeadingElement>();
 
-defineExpose({
-  focusHeading: () => {
-    instructionsHeadingRef.value?.focus();
-  },
-});
-
 // Resend email
 const resendEmailButtonRef = ref<HTMLButtonElement>();
 const showResendAlert = ref(false);
 
 async function resendEmail() {
   emit("resend-email");
-  showResendAlert.value = true;
 }
 
 async function hideResendAlert() {
@@ -31,6 +24,15 @@ async function hideResendAlert() {
   await nextTick();
   resendEmailButtonRef.value?.focus();
 }
+
+defineExpose({
+  focusHeading: () => {
+    instructionsHeadingRef.value?.focus();
+  },
+  displayResendAlert: () => {
+    showResendAlert.value = true;
+  },
+});
 </script>
 
 <template>

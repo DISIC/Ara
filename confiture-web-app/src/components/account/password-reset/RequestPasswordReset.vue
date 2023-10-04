@@ -5,7 +5,7 @@ defineEmits<{
   (e: "submit", email: string): void;
 }>();
 
-const email = ref("pouet3@pouet.com");
+const email = ref("");
 const emailFieldRef = ref<HTMLInputElement>();
 
 defineExpose({

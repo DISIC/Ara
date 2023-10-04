@@ -42,8 +42,19 @@ async function onRequestSubmit(email: string) {
   }
 }
 
-function resendEmail() {
-  console.log("resend email");
+async function resendEmail() {
+  try {
+    // the resend button only appears when the email is already known
+    await store.requestPasswordReset(accountEmail.value!);
+    resetInstructionsRef.value?.displayResendAlert();
+  } catch (e) {
+    notify(
+      "error",
+      "Impossible de demander la réinitialisation du mot de passe",
+      "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+    captureWithPayloads(e, false);
+  }
 }
 
 async function updateEmail() {
