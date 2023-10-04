@@ -38,7 +38,7 @@ async function onRequestSubmit(email: string) {
       "Impossible de demander la réinitialisation du mot de passe",
       "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
     );
-    captureWithPayloads(e, false);
+    captureWithPayloads(e);
   }
 }
 
@@ -53,7 +53,7 @@ async function resendEmail() {
       "Impossible de demander la réinitialisation du mot de passe",
       "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
     );
-    captureWithPayloads(e, false);
+    captureWithPayloads(e);
   }
 }
 

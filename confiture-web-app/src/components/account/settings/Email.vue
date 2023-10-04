@@ -82,7 +82,6 @@ async function updateEmail() {
           "Impossible de mettre à jour l'adresse mail.",
           "Une erreur inconnue empêche la mise à jour de votre compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
         );
-        // TODO: censor password in sentry payload
         captureWithPayloads(e, false);
       }
     });

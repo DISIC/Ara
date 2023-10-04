@@ -56,7 +56,7 @@ async function handleSubmit() {
         // Unknown error
         notify(
           "error",
-          "Echéc de la connexion",
+          "Échec de la connexion",
           "Une erreur inconnue est survenue"
         );
         captureWithPayloads(err, false);
