@@ -106,6 +106,8 @@ export class MailService {
       token,
     )}`;
 
+    console.log(verificationLink)
+
     return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
       verificationLink,
     });

@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 import greenCheck from "../../assets/images/green-check.svg";
+import PageMeta from "../../components/PageMeta";
 import { useAccountStore } from "../../store/account";
 
 const accountStore = useAccountStore();
@@ -16,6 +17,7 @@ function submitFeedback() {
 }
 </script>
 <template>
+  <PageMeta title="Compte supprimé avec succès" />
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">
       <p class="fr-h3 success-title">

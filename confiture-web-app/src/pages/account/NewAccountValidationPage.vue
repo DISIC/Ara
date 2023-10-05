@@ -8,6 +8,7 @@ import { useAccountStore } from "../../store/account";
 import { AccountVerificationJwtPayload } from "../../types";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../composables/useNotifications";
+import PageMeta from "../../components/PageMeta";
 
 const route = useRoute();
 const store = useAccountStore();
@@ -46,6 +47,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <PageMeta title="Valider votre compte Ara" />
   <template v-if="tokenIsInvalid">
     <div class="wrapper">
       <div class="fr-mb-3w title">
