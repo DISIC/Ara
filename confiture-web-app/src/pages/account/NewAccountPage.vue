@@ -4,6 +4,7 @@ import { useAccountStore } from "../../store/account";
 import NewAccountForm from "../../components/account/new-acccount/NewAccountForm.vue";
 import EmailSent from "../../components/account/new-acccount/EmailSent.vue";
 import Success from "../../components/account/new-acccount/Success.vue";
+import PageMeta from "../../components/PageMeta";
 import { onBeforeRouteLeave } from "vue-router";
 
 const currentStep = ref(0);
@@ -41,6 +42,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
+  <PageMeta title="Créer votre compte Ara" />
   <NewAccountForm v-if="currentStep === 0" @submit="handleSubmit" />
   <EmailSent
     v-else-if="currentStep === 1"

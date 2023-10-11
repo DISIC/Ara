@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { useAccountStore } from "../../store/account";
 import { history } from "../../router";
 import DsfrField from "../../components/DsfrField.vue";
+import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { HTTPError } from "ky";
 import { captureWithPayloads } from "../../utils";
@@ -66,6 +67,7 @@ async function handleSubmit() {
 </script>
 
 <template>
+  <PageMeta title="Connexion" />
   <!-- TODO: fix top spacing -->
   <div
     v-if="showPasswordResetAlert || showCreatedAccountAlert"

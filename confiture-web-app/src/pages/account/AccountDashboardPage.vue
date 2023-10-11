@@ -6,6 +6,7 @@ import { useAccountStore } from "../../store/account";
 import { useAuditStore } from "../../store/audit";
 import TopLink from "../../components/TopLink.vue";
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
+import PageMeta from "../../components/PageMeta";
 import { history } from "../../router";
 
 const accountStore = useAccountStore();
@@ -45,6 +46,8 @@ onMounted(() => {
 </script>
 
 <template>
+  <PageMeta title="Mes audits" />
+
   <!-- Reset password alert -->
   <div
     v-if="showResetPasswordAlert"

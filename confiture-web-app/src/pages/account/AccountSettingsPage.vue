@@ -7,6 +7,7 @@ import Account from "../../components/account/settings/Account.vue";
 import Password from "../../components/account/settings/Password.vue";
 import Email from "../../components/account/settings/Email.vue";
 import TopLink from "../../components/TopLink.vue";
+import PageMeta from "../../components/PageMeta";
 
 import { useAccountStore } from "../../store/account";
 
@@ -18,6 +19,8 @@ onMounted(() => {
 </script>
 
 <template>
+  <PageMeta title="Mon compte" />
+
   <div class="fr-container">
     <div class="fr-grid-row">
       <div class="fr-col-12 fr-col-lg-3">
