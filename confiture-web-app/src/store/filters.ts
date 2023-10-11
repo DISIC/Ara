@@ -107,6 +107,54 @@ export const useFiltersStore = defineStore("filters", {
 
       return filteredTopics;
     },
+    hasNoResultsFromSearch(): boolean {
+      const filteredTopics = rgaa.topics as any[];
+
+      return !filteredTopics.some((t) => {
+        return (
+          t.topic.toLowerCase().includes(this.search.toLocaleLowerCase()) ||
+          t.criteria.some((c: any) => {
+            return c.criterium.title
+              .toLowerCase()
+              .includes(this.search.toLowerCase());
+          })
+        );
+      });
+    },
+    hasNoResultsFromComplianceLevel(): boolean {
+      if (!this.complianceLevels.length) {
+        return false;
+      }
+
+      const auditStore = useAuditStore();
+      const resultStore = useResultsStore();
+
+      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+
+      return Object.values(pageResults!)
+        .map((topic) => {
+          return Object.values(topic).map((c) => c.status);
+        })
+        .flat(2)
+        .every((status) => {
+          return !this.complianceLevels.includes(status);
+        });
+    },
+    hasNoResultsFromEvaluated(): boolean {
+      const auditStore = useAuditStore();
+      const resultStore = useResultsStore();
+
+      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+
+      return Object.values(pageResults!)
+        .map((topic) => {
+          return Object.values(topic).map((c) => c.status);
+        })
+        .flat(2)
+        .every((status) => {
+          return status !== CriteriumResultStatus.NOT_TESTED;
+        });
+    },
   },
   actions: {
     updateEvaluatedCriteria() {

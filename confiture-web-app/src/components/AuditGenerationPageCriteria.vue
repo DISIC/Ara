@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { AuditPage } from "../types";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 
@@ -11,6 +13,32 @@ defineProps<{
 }>();
 
 const store = useFiltersStore();
+
+const noResults = computed(() => {
+  if (store.hasNoResultsFromSearch) {
+    return {
+      title: "Aucun résultat ne correspond à votre recherche",
+      description: "Veuillez modifier les termes de recherche.",
+    };
+  } else if (store.hasNoResultsFromComplianceLevel) {
+    return {
+      title: "Aucun résultat ne correspond à votre recherche",
+      description:
+        'Veuillez sélectionner un filtre "Conformité" comportant au moins un critère.',
+    };
+  } else if (store.hasNoResultsFromEvaluated) {
+    return {
+      title: "Tous les critères évalués ont été masqués",
+      description:
+        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.',
+    };
+  } else {
+    return {
+      title: "Aucun résultat ne correspond à votre recherche",
+      description: "Veuillez modifier les filtres actifs.",
+    };
+  }
+});
 </script>
 
 <template>
@@ -59,9 +87,9 @@ const store = useFiltersStore();
   <div aria-live="polite" role="alert">
     <section v-if="!store.filteredTopics.length">
       <h2 class="fr-h6 fr-mb-1w">
-        Aucun résultat ne correspond à votre recherche
+        {{ noResults.title }}
       </h2>
-      <p>Veuillez modifier les filtres actifs.</p>
+      <p>{{ noResults.description }}</p>
     </section>
   </div>
 </template>
