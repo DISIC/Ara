@@ -205,7 +205,7 @@ const notApplicableCount = computed(
         id="complianceLevel"
         class="fr-fieldset__legend--regular fr-fieldset__legend fr-text--bold"
       >
-        Conformité
+        Critères
       </legend>
       <div class="fr-fieldset__element">
         <div class="fr-checkbox-group">
