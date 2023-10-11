@@ -108,9 +108,7 @@ export const useFiltersStore = defineStore("filters", {
       return filteredTopics;
     },
     hasNoResultsFromSearch(): boolean {
-      const filteredTopics = rgaa.topics as any[];
-
-      return !filteredTopics.some((t) => {
+      return !this.filteredTopics.some((t) => {
         return (
           t.topic.toLowerCase().includes(this.search.toLocaleLowerCase()) ||
           t.criteria.some((c: any) => {
