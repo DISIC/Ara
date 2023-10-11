@@ -8,6 +8,7 @@ import { useAccountStore } from "../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../composables/useNotifications";
 import { NewEmailVerificationJwtPayload } from "../../types";
+import PageMeta from "../../components/PageMeta";
 
 const route = useRoute();
 const store = useAccountStore();
@@ -59,6 +60,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <PageMeta title="Mettre à jour l’adresse e-mail" />
   <!-- Failure page -->
   <template v-if="tokenIsInvalid">
     <div class="wrapper">

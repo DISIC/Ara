@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { useAccountStore } from "../../store/account";
+import PageMeta from "../../components/PageMeta";
 
 const accountStore = useAccountStore();
 </script>
 
 <template>
+  <PageMeta title="Audit manquant ?" />
   <div class="fr-mb-4w">
     <RouterLink
       :to="{ name: 'account-dashboard' }"

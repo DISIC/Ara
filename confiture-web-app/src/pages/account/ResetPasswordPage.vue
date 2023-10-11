@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import NewPasswordForm from "../../components/account/password-reset/NewPasswordForm.vue";
 import ResetInstructions from "../../components/account/password-reset/ResetInstructions.vue";
 import RequestPasswordReset from "../../components/account/password-reset/RequestPasswordReset.vue";
+import PageMeta from "../../components/PageMeta";
 
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads } from "../../utils";
@@ -91,6 +92,7 @@ async function resetPassword(newPassword: string) {
 </script>
 
 <template>
+  <PageMeta title="Réinitialiser le mot de passe" />
   <RequestPasswordReset
     v-if="currentStep === 0"
     ref="requestPasswordResetRef"

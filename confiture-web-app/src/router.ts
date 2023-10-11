@@ -153,16 +153,32 @@ const router = createRouter({
       },
     },
     // Account pages
-    // TODO: add meta
     {
       path: "/compte/nouveau",
       name: "new-account",
       component: NewAccountPage,
+      meta: {
+        name: "Créer votre compte Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Créer votre compte Ara", name: "new-account" },
+        ],
+      },
     },
     {
       path: "/compte/validation",
       name: "new-account-validation",
       component: NewAccountValidationPage,
+      meta: {
+        name: "Valider votre compte Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Valider votre compte Ara",
+            name: "new-account-validation",
+          },
+        ],
+      },
     },
     {
       path: "/compte/email-update-validation",
@@ -183,11 +199,24 @@ const router = createRouter({
       path: "/compte/connexion",
       name: "login",
       component: LoginPage,
+      meta: {
+        name: "Connexion à Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Connexion à Ara",
+            name: "login",
+          },
+        ],
+      },
     },
     {
       path: "/compte/reinitialiser-mot-de-passe",
       name: "password-reset",
       component: ResetPasswordPage,
+      meta: {
+        name: "Réinitialiser votre mot de passe",
+      },
     },
     {
       path: "/compte",
@@ -196,6 +225,13 @@ const router = createRouter({
       meta: {
         name: "Mes audits",
         authRequired: true,
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Mes audits",
+            name: "account-dashboard",
+          },
+        ],
       },
     },
     {
