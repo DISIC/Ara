@@ -44,6 +44,14 @@ const auditStore = useAuditStore();
 const resultStore = useResultsStore();
 const notify = useNotifications();
 
+function copyReportLink() {
+  const reportUrl = `${window.location.origin}/rapports/${auditStore.currentAudit?.consultUniqueId}`;
+
+  navigator.clipboard.writeText(reportUrl).then(() => {
+    notify("success", "", "Le lien vers le rapport a été copié avec succès");
+  });
+}
+
 /**
  * Duplicate audit and redirect to new audit page
  */
@@ -195,6 +203,14 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
                 <GearIcon class="fr-mr-2v" />
                 Modifier les paramètres
               </RouterLink>
+            </li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+                @click="copyReportLink"
+              >
+                Copier le lien du rapport
+              </button>
             </li>
             <li class="dropdown-item">
               <button
