@@ -77,6 +77,11 @@ yarn start:dev
 git push heroku <branche>:main
 ```
 
+```sh
+# Reset database in dev environment
+DATABASE_URL="<database_url>" yarn prisma migrate reset
+```
+
 Before deploying on production environment, make sure your IP address is whitelisted on OVH. Then:
 
 ```sh
