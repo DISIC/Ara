@@ -200,12 +200,12 @@ const isOffline = useIsOffline();
     <div class="fr-input-group fr-mb-1w">
       <label
         class="fr-label fr-text--bold"
-        :for="`criterum-comment-field-${id}`"
+        :for="`criterum-comment-field-recommendation-${id}`"
       >
         Recommandation de correction
       </label>
       <textarea
-        :id="`criterum-comment-field-${id}`"
+        :id="`criterum-comment-field-recommendation-${id}`"
         :value="recommandation ?? ''"
         class="fr-input"
         rows="5"
