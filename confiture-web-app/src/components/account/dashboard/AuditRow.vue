@@ -83,14 +83,6 @@ function duplicateAudit(name: string) {
     });
 }
 
-function copyAuditLink() {
-  const auditUrl = `${window.location.origin}/audits/${props.audit.editUniqueId}/generation`;
-
-  navigator.clipboard.writeText(auditUrl).then(() => {
-    notify("success", "", "Le lien vers l’audit a été copié avec succès");
-  });
-}
-
 function copyReportLink() {
   const reportUrl = `${window.location.origin}/rapports/${props.audit.consultUniqueId}`;
 
@@ -233,18 +225,6 @@ function deleteAudit() {
           </li>
 
           <li aria-hidden="true" class="dropdown-separator"></li>
-
-          <li class="dropdown-item dropdown-item--with-meta">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyAuditLink"
-            >
-              Copier le lien de l’audit
-              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                Ce lien permet de modifier l’audit
-              </span>
-            </button>
-          </li>
 
           <li class="dropdown-item">
             <button
