@@ -152,14 +152,14 @@ const showEmailInReport = ref(false);
     </div>
 
     <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h3>
-    <p class="fr-mb-1w">
+    <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
       du bouton ci-dessous.
     </p>
     <button
       ref="resendButtonRef"
-      class="fr-btn fr-btn--tertiary-no-outline"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       :class="{ 'fr-mb-1w': displayResendAlert }"
       @click="sendNewEmail"
     >
@@ -180,7 +180,10 @@ const showEmailInReport = ref(false);
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
       L’adresse e-mail saisie est erronée ?
     </h3>
-    <button class="fr-btn fr-btn--tertiary-no-outline" @click="hidePending">
+    <button
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+      @click="hidePending"
+    >
       Modifier mon adresse e-mail
     </button>
   </div>
