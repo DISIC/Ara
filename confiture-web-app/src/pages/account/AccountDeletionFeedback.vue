@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-import greenCheck from "../../assets/images/green-check.svg";
 import PageMeta from "../../components/PageMeta";
 import { useAccountStore } from "../../store/account";
 
@@ -21,7 +20,10 @@ function submitFeedback() {
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">
       <p class="fr-h3 success-title">
-        <img class="fr-mr-2w" :src="greenCheck" alt="" />
+        <span
+          class="success-icon fr-icon--lg fr-icon-checkbox-circle-fill fr-mr-1w"
+          aria-hidden="true"
+        ></span>
         Votre avis a bien été envoyé
       </p>
       <p>
@@ -89,5 +91,9 @@ function submitFeedback() {
 .success-title {
   display: flex;
   align-items: center;
+}
+
+.success-icon {
+  color: var(--text-default-success);
 }
 </style>
