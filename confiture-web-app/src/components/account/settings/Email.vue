@@ -28,7 +28,14 @@ const password = ref("");
 const newEmail = ref("");
 
 const displayPendingEmailVerification = ref(false);
+
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
+
+async function closeEmailUpdateSuccess() {
+  displayEmailUpdateSuccess.value = false;
+  await nextTick();
+  showButtonRef.value?.focus();
+}
 
 async function showPending() {
   displayPendingEmailVerification.value = true;
@@ -137,6 +144,9 @@ const showEmailInReport = ref(false);
     class="fr-alert fr-alert--success fr-mb-3v"
   >
     <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+    <button class="fr-link--close fr-link" @click="closeEmailUpdateSuccess">
+      Masquer le message
+    </button>
   </div>
 
   <div v-if="displayPendingEmailVerification">
