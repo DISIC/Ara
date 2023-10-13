@@ -85,7 +85,7 @@ async function hideSuccessAlert() {
 </script>
 
 <template>
-  <h2 class="fr-h6">Password</h2>
+  <h2 class="fr-h6">Mot de passe</h2>
   <form
     v-if="displayUpdatePasswordForm"
     class="wrapper"
