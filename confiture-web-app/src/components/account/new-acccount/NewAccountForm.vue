@@ -69,7 +69,7 @@ function validatePasswordField() {
 
 async function handleSubmit() {
   if (![validateEmailField(), validatePasswordField()].every((i) => i)) {
-    console.log("Invalid");
+    // Invalid form
     return;
   }
 
