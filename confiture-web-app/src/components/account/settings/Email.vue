@@ -290,7 +290,7 @@ const showEmailInReport = ref(false);
       aria-describedby="show-email-in-report-desc"
     />
     <label class="fr-toggle__label" for="show-email-in-report"
-      >Afficher l’adresse e-mail dans le rapport d’audit</label
+      >Afficher mon adresse e-mail dans le rapport d'audit</label
     >
     <p id="show-email-in-report-desc" class="fr-hint-text">
       Permet d’aider le demandeur de l’audit à vous contacter s’il a des
