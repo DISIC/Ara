@@ -31,8 +31,8 @@ async function closeResendSuccessAlert() {
       envoyé à l’adresse : <strong>{{ userEmail }}</strong>
     </p>
 
-    <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
-    <p>
+    <p class="fr-mb-1w fr-text--sm"><strong>Aucun e-mail reçu ?</strong></p>
+    <p class="fr-text--sm">
       Pensez à vérifier que vous n’avez pas reçu le mail dans vos courriers
       indésirable. Sinon veuillez demander l’envoi d’un nouveau mail à l’aide du
       bouton ci-dessous.
@@ -58,7 +58,7 @@ async function closeResendSuccessAlert() {
       </button>
     </div>
 
-    <p class="fr-mb-1w">
+    <p class="fr-mb-1w fr-text--sm">
       <strong>L’adresse e-mail saisie est erronée ?</strong>
     </p>
     <button

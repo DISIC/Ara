@@ -45,7 +45,7 @@ defineExpose({
       suivante : <strong>{{ email }}</strong>
     </p>
     <h2 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h2>
-    <p class="fr-mb-1w">
+    <p class="fr-mb-1w fr-text--sm">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
       du bouton ci-dessous.
