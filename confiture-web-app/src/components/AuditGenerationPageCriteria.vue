@@ -18,7 +18,8 @@ const noResults = computed(() => {
   if (store.hasNoResultsFromSearch) {
     return {
       title: "Aucun résultat ne correspond à votre recherche",
-      description: "Veuillez modifier les termes de recherche.",
+      description:
+        "Le système de recherche par mots clés s'applique uniquement à l’intitulé des critères.",
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
@@ -90,6 +91,14 @@ const noResults = computed(() => {
         {{ noResults.title }}
       </h2>
       <p>{{ noResults.description }}</p>
+
+      <template v-if="store.hasNoResultsFromSearch">
+        <p><strong>Suggestions :</strong></p>
+        <ul>
+          <li>Vérifiez l’orthographe des termes de recherche</li>
+          <li>Essayez un autre mot</li>
+        </ul>
+      </template>
     </section>
   </div>
 </template>

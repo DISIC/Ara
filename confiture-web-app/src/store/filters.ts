@@ -108,6 +108,10 @@ export const useFiltersStore = defineStore("filters", {
       return filteredTopics;
     },
     hasNoResultsFromSearch(): boolean {
+      if (!this.search) {
+        return false;
+      }
+
       return !this.filteredTopics.some((t) => {
         return (
           t.topic.toLowerCase().includes(this.search.toLocaleLowerCase()) ||
@@ -139,6 +143,10 @@ export const useFiltersStore = defineStore("filters", {
         });
     },
     hasNoResultsFromEvaluated(): boolean {
+      if (!this.hideEvaluatedCriteria) {
+        return false;
+      }
+
       const auditStore = useAuditStore();
       const resultStore = useResultsStore();
 
