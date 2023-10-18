@@ -14,6 +14,7 @@ const showButtonRef = ref<HTMLButtonElement>();
 const displayUpdatePasswordForm = ref(false);
 
 async function showUpdatePasswordForm() {
+  displaySuccessAlert.value = false;
   displayUpdatePasswordForm.value = true;
   await nextTick();
   currentPasswordFieldRef.value?.focus();
@@ -52,6 +53,8 @@ async function updatePassword() {
     .then(() => {
       displayUpdatePasswordForm.value = false;
       displaySuccessAlert.value = true;
+      currentPassword.value = "";
+      newPassword.value = "";
     })
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
