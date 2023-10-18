@@ -31,6 +31,7 @@ async function deleteAccount() {
     showValidationError.value = true;
     await nextTick();
     validationFieldRef.value?.focus();
+    return;
   }
 
   accountStore
@@ -88,8 +89,8 @@ async function hideAccountDeletionForm() {
         :class="{ 'fr-input-group--error': showValidationError }"
       >
         <label class="fr-label" for="confirm-sentence"
-          >Pour confirmer la suppression de votre compte veuillez saisir : je
-          confirme vouloir supprimer mon compte
+          >Pour confirmer la suppression de votre compte veuillez saisir :
+          {{ VALIDATION_STRING }}
           <span class="fr-hint-text"
             >Attention à ne pas utiliser de majuscule ou ajouter d’espace au
             début ou à la fin de votre saisie.
