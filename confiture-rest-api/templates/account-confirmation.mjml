@@ -16,11 +16,8 @@
         <mj-text font-size="20px" font-weight="700" padding-bottom="8px">
           Votre compte a été créé avec succès
         </mj-text>
-        <mj-text padding-bottom="24px">
-          Votre compte Ara a bien été créé.
-        </mj-text>
         <mj-text>
-            Si vous n’avez pas demandé à créer un compte, veuillez contactez notre support par e-mail à l’adresse : <a style="color: inherit" href="ara@design.numerique.gouv.fr"><strong>ara@design.numerique.gouv.fr</strong></a>.
+          Votre compte Ara a bien été créé.
         </mj-text>
       </mj-column>
     </mj-section>
