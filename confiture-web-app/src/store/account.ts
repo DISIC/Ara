@@ -166,8 +166,8 @@ export const useAccountStore = defineStore("account", {
         .json()) as Account;
 
       if (this.account) {
-        this.account.name = response.name;
-        this.account.orgName = response.orgName;
+        this.account.name = response.name || "";
+        this.account.orgName = response.orgName || "";
       }
 
       return response;
