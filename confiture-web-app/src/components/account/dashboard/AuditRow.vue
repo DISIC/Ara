@@ -83,14 +83,6 @@ function duplicateAudit(name: string) {
     });
 }
 
-function copyReportLink() {
-  const reportUrl = `${window.location.origin}/rapports/${props.audit.consultUniqueId}`;
-
-  navigator.clipboard.writeText(reportUrl).then(() => {
-    notify("success", "", "Le lien vers le rapport a été copié avec succès");
-  });
-}
-
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const isDeletionLoading = ref(false);
 
@@ -226,17 +218,6 @@ function deleteAudit() {
 
           <li aria-hidden="true" class="dropdown-separator"></li>
 
-          <li class="dropdown-item">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyReportLink"
-            >
-              Copier le lien du rapport
-            </button>
-          </li>
-
-          <li aria-hidden="true" class="dropdown-separator"></li>
-
           <li class="dropdown-item dropdown-item--with-meta">
             <a
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
@@ -270,7 +251,7 @@ function deleteAudit() {
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />
@@ -279,7 +260,7 @@ function deleteAudit() {
     ref="deleteModal"
     @confirm="deleteAudit"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />

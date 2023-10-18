@@ -13,8 +13,8 @@ defineProps<{
 const uniqueId = useUniqueId();
 
 const showContent = ref(false);
-const buttonRef = ref();
-const containerRef = ref();
+const buttonRef = ref<HTMLButtonElement>();
+const containerRef = ref<HTMLDivElement>();
 
 function toggleOptions() {
   showContent.value = !showContent.value;
@@ -25,18 +25,29 @@ function closeOptions() {
   buttonRef.value?.focus();
 }
 
-// Handle clicks outside of container
-function handleGoOutside(e: Event) {
+// Close the dropdown if click is outside the dropdown container or if the clicked element is a button or link.
+function handleWindowClick(e: MouseEvent) {
   if (!(e.target as HTMLElement).closest(".dropdown-container")) {
+    // Click outside of container
     showContent.value = false;
+  } else {
+    // Click inside container, check if clicked element is an interactive element other than the trigger button
+    const { nodeName } = e.target as HTMLElement;
+    if (
+      e.target !== buttonRef.value &&
+      (nodeName === "BUTTON" || nodeName === "A")
+    ) {
+      showContent.value = false;
+      buttonRef.value?.focus();
+    }
   }
 }
 
 watch(showContent, () => {
   if (showContent.value) {
-    window.addEventListener("click", handleGoOutside);
+    window.addEventListener("click", handleWindowClick);
   } else {
-    window.removeEventListener("click", handleGoOutside);
+    window.removeEventListener("click", handleWindowClick);
   }
 });
 
