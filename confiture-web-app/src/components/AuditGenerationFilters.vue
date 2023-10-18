@@ -3,6 +3,7 @@ import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../store";
 import { pluralize } from "../utils";
+import { CriteriumResultStatus } from "../types";
 
 defineProps<{
   topics: { title: string; number: number; value: number }[];
@@ -65,6 +66,16 @@ watch(
   () => filterStore.hideEvaluatedCriteria,
   () => filterStore.updateEvaluatedCriteria()
 );
+
+const compliantCount = resultStore.allResults?.filter(
+  (r) => r.status === CriteriumResultStatus.COMPLIANT
+).length;
+const notCompliantCount = resultStore.allResults?.filter(
+  (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
+).length;
+const notApplicableCount = resultStore.allResults?.filter(
+  (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
+).length;
 </script>
 
 <template>
@@ -90,7 +101,11 @@ watch(
       </button>
     </div>
     <button
-      v-if="filterStore.search || filterStore.hideEvaluatedCriteria"
+      v-if="
+        filterStore.search ||
+        filterStore.hideEvaluatedCriteria ||
+        filterStore.complianceLevels.length !== 3
+      "
       class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
       @click="onGlobalReset"
     >
@@ -170,6 +185,60 @@ watch(
         </label>
       </div>
     </div>
+
+    <fieldset
+      id="checkboxes"
+      class="fr-fieldset"
+      aria-labelledby="complianceLevel"
+    >
+      <legend
+        id="complianceLevel"
+        class="fr-fieldset__legend--regular fr-fieldset__legend fr-text--bold"
+      >
+        Conformité
+      </legend>
+      <div class="fr-fieldset__element">
+        <div class="fr-checkbox-group">
+          <input
+            id="compliance-level-compliant"
+            v-model="filterStore.complianceLevels"
+            :value="CriteriumResultStatus.COMPLIANT"
+            type="checkbox"
+          />
+          <label class="fr-label" for="compliance-level-compliant">
+            Conforme ({{ compliantCount }})
+          </label>
+        </div>
+      </div>
+      <div class="fr-fieldset__element">
+        <div class="fr-checkbox-group">
+          <input
+            id="compliance-level-not-compliant"
+            v-model="filterStore.complianceLevels"
+            :value="CriteriumResultStatus.NOT_COMPLIANT"
+            type="checkbox"
+          />
+          <label class="fr-label" for="compliance-level-not-compliant">
+            Non conforme ({{ notCompliantCount }})
+          </label>
+        </div>
+      </div>
+      <div class="fr-fieldset__element">
+        <div class="fr-checkbox-group">
+          <input
+            id="compliance-level-not-applicable"
+            v-model="filterStore.complianceLevels"
+            :value="CriteriumResultStatus.NOT_APPLICABLE"
+            type="checkbox"
+          />
+          <label class="fr-label" for="compliance-level-not-applicable">
+            Non applicable ({{ notApplicableCount }})
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <hr />
 
     <div class="fr-form-group">
       <p id="anchor-nav-title" class="fr-text--regular fr-text--bold fr-mb-1w">

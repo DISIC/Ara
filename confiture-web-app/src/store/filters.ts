@@ -10,6 +10,7 @@ interface FiltersStoreState {
   hideEvaluatedCriteria: boolean;
   hideTestsAndReferences: boolean;
   newEvaluatedCriteria: string[];
+  complianceLevels: CriteriumResultStatus[];
 }
 
 export const useFiltersStore = defineStore("filters", {
@@ -18,6 +19,11 @@ export const useFiltersStore = defineStore("filters", {
     hideEvaluatedCriteria: false,
     hideTestsAndReferences: false,
     newEvaluatedCriteria: [],
+    complianceLevels: [
+      CriteriumResultStatus.COMPLIANT,
+      CriteriumResultStatus.NOT_COMPLIANT,
+      CriteriumResultStatus.NOT_APPLICABLE,
+    ],
   }),
   getters: {
     /** Filter topics by topic name and by search. */
@@ -64,23 +70,38 @@ export const useFiltersStore = defineStore("filters", {
        * - topic title ("Images")
        * - criteria title ("Dans chaque page web, l’ouverture...")
        * - audit type (fast, complementary, full)
+       * - result (compliant, not compliant, not applicable)
        */
       filteredTopics = filteredTopics.map((t) => {
         return {
           ...t,
-          criteria: t.criteria.filter(
-            (c: any) =>
-              // audit type filter
-              !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
-                (fc) =>
-                  fc.criterium === c.criterium.number && fc.topic === t.number
-              ) &&
-              // search filter
-              (c.criterium.title
-                .toLowerCase()
-                .includes(this.search.toLowerCase()) ||
-                t.topic.toLowerCase().includes(this.search.toLocaleLowerCase()))
-          ),
+          criteria: t.criteria
+            .map((c: any) => {
+              return {
+                ...c,
+                status:
+                  resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
+                    c.criterium.number
+                  ]?.status,
+              };
+            })
+            .filter(
+              (c: any) =>
+                // audit type filter
+                !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
+                  (fc) =>
+                    fc.criterium === c.criterium.number && fc.topic === t.number
+                ) &&
+                // search filter
+                (c.criterium.title
+                  .toLowerCase()
+                  .includes(this.search.toLowerCase()) ||
+                  t.topic
+                    .toLowerCase()
+                    .includes(this.search.toLocaleLowerCase())) &&
+                // status
+                this.complianceLevels.includes(c.status)
+            ),
         };
       });
 
