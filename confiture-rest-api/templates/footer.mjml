@@ -1,6 +1,6 @@
 <mj-section padding-bottom="32px">
   <mj-column>
-    <mj-text font-size="18px">
+    <mj-text font-size="18px" padding-bottom="8px">
       <strong>Vous avez une question ?</strong>
     </mj-text>
     <mj-text font-size="14px">Vous pouvez nous contacter en utilisant l’adresse e-mail <a style="color: inherit" href="ara@design.numerique.gouv.fr"><strong>ara@design.numerique.gouv.fr</strong></a>.

@@ -13,7 +13,7 @@
     <!-- BODY -->
     <mj-section>
       <mj-column>
-        <mj-text font-size="20px" font-weight="700" padding-bottom="24px">Bonjour {{ auditorName }}</mj-text>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="8px">Bonjour {{ auditorName }}</mj-text>
         <mj-text padding-bottom="16px">Vous venez de créer l'audit
           <strong>{{ procedureName }}</strong>.
         </mj-text>
