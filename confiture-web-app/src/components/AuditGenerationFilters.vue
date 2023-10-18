@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
+
 import { useAuditStore, useFiltersStore, useResultsStore } from "../store";
 import { pluralize } from "../utils";
 import { CriteriumResultStatus } from "../types";
