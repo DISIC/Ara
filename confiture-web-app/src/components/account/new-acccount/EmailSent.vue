@@ -32,7 +32,7 @@ async function closeResendSuccessAlert() {
     </p>
 
     <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
-    <p>
+    <p class="fr-text--sm">
       Pensez à vérifier que vous n’avez pas reçu le mail dans vos courriers
       indésirable. Sinon veuillez demander l’envoi d’un nouveau mail à l’aide du
       bouton ci-dessous.

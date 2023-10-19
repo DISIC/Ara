@@ -31,6 +31,7 @@ async function deleteAccount() {
     showValidationError.value = true;
     await nextTick();
     validationFieldRef.value?.focus();
+    return;
   }
 
   accountStore
@@ -73,29 +74,23 @@ async function hideAccountDeletionForm() {
 
 <template>
   <template v-if="displayAccountDeletionForm">
-    <div class="wrapper">
-      <div
-        ref="alertRef"
-        class="fr-alert fr-alert--error fr-mb-3w"
-        tabindex="-1"
-      >
-        <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
-        <p>
-          Toutes les données associées à votre compte seront définitivement
-          supprimées. Les audits et rapports que vous avez créés ne seront pas
-          supprimés, cependant, votre nom, prénom et adresse e-mail ne seront
-          plus mentionnés dans ces audits et rapports.
-        </p>
-      </div>
+    <div ref="alertRef" class="fr-alert fr-alert--error fr-mb-3w" tabindex="-1">
+      <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
+      <p>
+        Toutes les données associées à votre compte seront définitivement
+        supprimées. Les audits et rapports que vous avez créés ne seront pas
+        supprimés, cependant, votre nom, prénom et adresse e-mail ne seront plus
+        mentionnés dans ces audits et rapports.
+      </p>
     </div>
-    <form class="wrapper-sm" @submit.prevent="deleteAccount">
+    <form class="wrapper" @submit.prevent="deleteAccount">
       <div
         class="fr-input-group"
         :class="{ 'fr-input-group--error': showValidationError }"
       >
         <label class="fr-label" for="confirm-sentence"
-          >Pour confirmer la suppression de votre compte veuillez saisir : je
-          confirme vouloir supprimer mon compte
+          >Pour confirmer la suppression de votre compte veuillez saisir :
+          {{ VALIDATION_STRING }}
           <span class="fr-hint-text"
             >Attention à ne pas utiliser de majuscule ou ajouter d’espace au
             début ou à la fin de votre saisie.
@@ -193,10 +188,6 @@ async function hideAccountDeletionForm() {
 
 <style scoped>
 .wrapper {
-  max-width: 36.25rem;
-}
-
-.wrapper-sm {
   max-width: 24rem;
 }
 

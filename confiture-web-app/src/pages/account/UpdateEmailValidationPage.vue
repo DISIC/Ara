@@ -94,7 +94,7 @@ onMounted(async () => {
       <div class="fr-mb-3w title">
         <h1 class="fr-h3 fr-m-0">
           <span
-            class="success-icon fr-icon-checkbox-circle-fill"
+            class="success-icon fr-icon--lg fr-icon-checkbox-circle-fill"
             aria-hidden="true"
           ></span>
           Votre adresse e-mail a été mise à jour avec succès
