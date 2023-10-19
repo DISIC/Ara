@@ -13,7 +13,7 @@
     <!-- BODY -->
     <mj-section>
       <mj-column>
-        <mj-text font-size="20px" font-weight="700" padding-bottom="16px">
+        <mj-text font-size="20px" font-weight="700" padding-bottom="8px">
           Adresse e-mail mise à jour avec succès
         </mj-text>
         <mj-text padding-bottom="24px">
