@@ -13,14 +13,13 @@ const emit = defineEmits<{
 }>();
 
 const userEmail = ref("");
-const userPassword = ref("");
-const togglePasswordRef = ref<HTMLInputElement>();
 const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
 
 const userPassword = ref("");
 const userPasswordField = ref<HTMLInputElement>();
 const userPasswordError = ref<string>();
+const togglePasswordRef = ref<HTMLInputElement>();
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
