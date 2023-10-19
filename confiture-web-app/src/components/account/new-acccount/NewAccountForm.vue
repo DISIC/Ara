@@ -13,6 +13,8 @@ const emit = defineEmits<{
 }>();
 
 const userEmail = ref("");
+const userPassword = ref("");
+const togglePasswordRef = ref<HTMLInputElement>();
 const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
 
@@ -77,6 +79,10 @@ async function handleSubmit() {
     .createAccount(userEmail.value, userPassword.value)
     .then(() => {
       emit("submit", { username: userEmail.value });
+
+      if (togglePasswordRef.value) {
+        togglePasswordRef.value.value = "false";
+      }
     })
     .catch(async (err) => {
       if (err instanceof HTTPError) {
@@ -185,6 +191,7 @@ function fillFields() {
         >
           <input
             id="user-password-show"
+            ref="togglePasswordRef"
             aria-label="Afficher le mot de passe"
             type="checkbox"
             aria-describedby="user-password-show-messages"
