@@ -79,7 +79,7 @@ export class FeedbackService {
         {
           fields: {
             'Remarques générales': feedback,
-            Source: 'Suppression de compte',
+            Source: 'Avis suppression de compte',
           },
         },
       ],

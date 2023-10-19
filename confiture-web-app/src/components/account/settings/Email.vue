@@ -28,7 +28,14 @@ const password = ref("");
 const newEmail = ref("");
 
 const displayPendingEmailVerification = ref(false);
+
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
+
+async function closeEmailUpdateSuccess() {
+  displayEmailUpdateSuccess.value = false;
+  await nextTick();
+  showButtonRef.value?.focus();
+}
 
 async function showPending() {
   displayPendingEmailVerification.value = true;
@@ -137,6 +144,9 @@ const showEmailInReport = ref(false);
     class="fr-alert fr-alert--success fr-mb-3v"
   >
     <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+    <button class="fr-link--close fr-link" @click="closeEmailUpdateSuccess">
+      Masquer le message
+    </button>
   </div>
 
   <div v-if="displayPendingEmailVerification">
@@ -152,14 +162,14 @@ const showEmailInReport = ref(false);
     </div>
 
     <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h3>
-    <p class="fr-mb-1w">
+    <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
       du bouton ci-dessous.
     </p>
     <button
       ref="resendButtonRef"
-      class="fr-btn fr-btn--tertiary-no-outline"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       :class="{ 'fr-mb-1w': displayResendAlert }"
       @click="sendNewEmail"
     >
@@ -180,7 +190,10 @@ const showEmailInReport = ref(false);
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
       L’adresse e-mail saisie est erronée ?
     </h3>
-    <button class="fr-btn fr-btn--tertiary-no-outline" @click="hidePending">
+    <button
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+      @click="hidePending"
+    >
       Modifier mon adresse e-mail
     </button>
   </div>
@@ -277,7 +290,7 @@ const showEmailInReport = ref(false);
       aria-describedby="show-email-in-report-desc"
     />
     <label class="fr-toggle__label" for="show-email-in-report"
-      >Afficher l’adresse e-mail dans le rapport d’audit</label
+      >Afficher mon adresse e-mail dans le rapport d'audit</label
     >
     <p id="show-email-in-report-desc" class="fr-hint-text">
       Permet d’aider le demandeur de l’audit à vous contacter s’il a des

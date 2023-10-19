@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useUniqueId } from "../composables/useUniqueId";
 
 defineProps<{
@@ -37,6 +38,15 @@ watch(showContent, () => {
     window.addEventListener("click", handleGoOutside);
   } else {
     window.removeEventListener("click", handleGoOutside);
+  }
+});
+
+const route = useRoute();
+
+// Close dropdown when changing route
+watch(route, () => {
+  if (showContent.value) {
+    showContent.value = false;
   }
 });
 

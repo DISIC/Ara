@@ -45,14 +45,14 @@ defineExpose({
       suivante : <strong>{{ email }}</strong>
     </p>
     <h2 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h2>
-    <p class="fr-mb-1w">
+    <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
       du bouton ci-dessous.
     </p>
     <button
       ref="resendEmailButtonRef"
-      class="fr-btn fr-btn--tertiary-no-outline fr-mb-2w"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mb-2w"
       @click="resendEmail"
     >
       Demander l’envoi d’un nouvel e-mail
@@ -72,7 +72,7 @@ defineExpose({
     </div>
     <h2 class="fr-text--sm fr-mb-1w">L’adresse e-mail saisie est erronée ?</h2>
     <button
-      class="fr-btn fr-btn--tertiary-no-outline"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       @click="$emit('update-email')"
     >
       Modifier mon adresse e-mail
