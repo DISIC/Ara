@@ -54,18 +54,27 @@ function duplicateAudit(name: string) {
   auditStore
     .duplicateAudit(props.audit.editUniqueId, name)
     .then((newAuditId) => {
-      auditStore.$reset();
-      resultStore.$reset();
-
       duplicateModal.value?.hide();
 
-      return router.push({
-        name: "edit-audit-step-three",
-        params: {
-          uniqueId: newAuditId,
-        },
-        state: {
-          showDuplicatedAlert: true,
+      notify("success", undefined, `Audit ${name} copié avec succès`, {
+        action: {
+          label: "Annuler",
+          cb() {
+            console.log("Cancelled" + newAuditId);
+            auditStore
+              .deleteAudit(newAuditId)
+              .then(() => {
+                notify("success", undefined, "Copie annulée.");
+              })
+              .catch((error) => {
+                notify(
+                  "error",
+                  "Une erreur est survenue",
+                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+                );
+                captureWithPayloads(error);
+              });
+          },
         },
       });
     })

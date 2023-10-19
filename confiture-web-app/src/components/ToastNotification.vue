@@ -20,6 +20,14 @@ const store = useNotificationStore();
           <p v-if="store.notification.description">
             {{ store.notification.description }}
           </p>
+
+          <button
+            v-if="store.notification.action"
+            @click="store.notification.action.cb"
+          >
+            {{ store.notification.action.label }}
+          </button>
+
           <button
             class="fr-btn--close fr-btn"
             title="Masquer le message"
@@ -41,7 +49,7 @@ const store = useNotificationStore();
   bottom: 1rem;
   background-color: var(--background-default-grey);
   max-width: min(50rem, calc(100vw - 2rem));
-  z-index: 2;
+  z-index: 1000;
 }
 
 .v-enter-active,

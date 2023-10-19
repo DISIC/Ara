@@ -281,7 +281,7 @@ export class AuditsController {
       console.error(err);
     });
 
-    return newAudit.editUniqueId;
+    return newAudit;
   }
 
   @Get('/:uniqueId/exports/csv')
