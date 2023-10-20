@@ -15,28 +15,29 @@ defineProps<{
 const store = useFiltersStore();
 
 const noResults = computed(() => {
-  if (store.hasNoResultsFromSearch) {
-    return {
-      title: "Aucun résultat ne correspond à votre recherche",
-      description:
-        "Le système de recherche par mots clés s'applique uniquement à l’intitulé des critères.",
-    };
-  } else if (store.hasNoResultsFromComplianceLevel) {
-    return {
-      title: "Aucun résultat ne correspond à votre recherche",
-      description:
-        'Veuillez sélectionner un filtre "Conformité" comportant au moins un critère.',
-    };
-  } else if (store.hasNoResultsFromEvaluated) {
+  if (store.hasNoResultsFromEvaluated) {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
         'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.',
     };
-  } else {
+  } else if (store.hasNoResultsFromComplianceLevel) {
     return {
       title: "Aucun résultat ne correspond à votre recherche",
-      description: "Veuillez modifier les filtres actifs.",
+      description:
+        'Veuillez sélectionner un filtre "Critères" comportant au moins un critère.',
+    };
+  } else if (store.hasNoResultsFromSearch && !store.hideEvaluatedCriteria) {
+    return {
+      title: "Aucun résultat ne correspond à votre recherche",
+      description:
+        "Le système de recherche par mots clés s'applique uniquement à l’intitulé des critères.",
+    };
+  } else {
+    return {
+      title: "Tous les critères évalués ont été masqués",
+      description:
+        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.',
     };
   }
 });
@@ -92,7 +93,14 @@ const noResults = computed(() => {
       </h2>
       <p>{{ noResults.description }}</p>
 
-      <template v-if="store.hasNoResultsFromSearch">
+      <template
+        v-if="
+          store.hasNoResultsFromSearch &&
+          !store.hideEvaluatedCriteria &&
+          !store.hasNoResultsFromEvaluated &&
+          !store.hasNoResultsFromComplianceLevel
+        "
+      >
         <p><strong>Suggestions :</strong></p>
         <ul>
           <li>Vérifiez l’orthographe des termes de recherche</li>
