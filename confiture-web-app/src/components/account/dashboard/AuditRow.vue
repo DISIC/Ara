@@ -13,8 +13,7 @@ import CopyIcon from "../../icons/CopyIcon.vue";
 import DuplicateModal from "../../DuplicateModal.vue";
 import DeleteModal from "../../DeleteModal.vue";
 import { useNotifications } from "../../../composables/useNotifications";
-import { useRouter } from "vue-router";
-import { useAuditStore, useResultsStore } from "../../../store";
+import { useAuditStore } from "../../../store";
 
 const props = defineProps<{
   audit: AccountAudit;
@@ -22,9 +21,7 @@ const props = defineProps<{
 }>();
 
 const notify = useNotifications();
-const router = useRouter();
 const auditStore = useAuditStore();
-const resultStore = useResultsStore();
 
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
