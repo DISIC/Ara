@@ -97,16 +97,13 @@ const isDeletionLoading = ref(false);
 
 function deleteAudit() {
   isDeletionLoading.value = true;
+
+  const auditName = props.audit.procedureName;
+
   auditStore
     .deleteAudit(props.audit.editUniqueId)
     .then(() => {
-      auditStore.$reset();
-      resultStore.$reset();
-
-      router.push({
-        name: "home",
-        state: { deleteAudit: "true" },
-      });
+      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
     })
     .catch((error) => {
       notify(

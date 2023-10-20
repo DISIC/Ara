@@ -95,6 +95,9 @@ export const useAuditStore = defineStore("audit", {
       this.listing = this.listing.filter(
         (audit) => audit.editUniqueId !== uniqueId
       );
+      if (this.currentAuditId === uniqueId) {
+        this.currentAuditId = null;
+      }
     },
 
     async publishAudit(uniqueId: string): Promise<Audit> {
