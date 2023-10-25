@@ -16,7 +16,7 @@ const notify = useNotifications();
 
 // Form submission
 const passwordFieldRef = ref<HTMLInputElement>();
-const newEmailFieldRef = ref<HTMLInputElement>();
+const newEmailFieldRef = ref<InstanceType<typeof DsfrField>>();
 const confirmAlert = ref<HTMLDivElement>();
 
 // Field errors
@@ -27,7 +27,7 @@ const newEmailError = ref("");
 const password = ref("");
 const newEmail = ref("");
 
-const displayPendingEmailVerification = ref(true);
+const displayPendingEmailVerification = ref(false);
 
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
 
@@ -82,7 +82,7 @@ async function updateEmail() {
         newEmailError.value =
           "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
         await nextTick();
-        newEmailFieldRef.value?.focus();
+        newEmailFieldRef.value?.inputRef?.focus();
       } else {
         notify(
           "error",
@@ -262,6 +262,7 @@ const showEmailInReport = ref(false);
     </div>
     <DsfrField
       id="new-email"
+      ref="newEmailFieldRef"
       v-model="newEmail"
       class="fr-mt-3v"
       label="Nouvelle adresse e-mail"
