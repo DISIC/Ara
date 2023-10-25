@@ -67,7 +67,7 @@ onMounted(() => {
     </p>
     <p>
       <RouterLink class="fr-link" :to="{ name: 'missing-audit' }">
-        Un de vos audit manque dans votre espace ?
+        Un de vos audits manque dans votre espace ?
       </RouterLink>
     </p>
     <button
