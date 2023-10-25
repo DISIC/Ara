@@ -6,7 +6,7 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads } from "../../../utils";
+import { captureWithPayloads, validateEmail } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
 // TODO: cancel email update (what if user clicks on verification email after?)
@@ -20,8 +20,8 @@ const newEmailFieldRef = ref<InstanceType<typeof DsfrField>>();
 const confirmAlert = ref<HTMLDivElement>();
 
 // Field errors
-const passwordError = ref("");
-const newEmailError = ref("");
+const passwordError = ref<string>();
+const newEmailError = ref<string>();
 
 // Field values
 const password = ref("");
@@ -52,9 +52,47 @@ async function hidePending() {
 
 const ac = ref<AbortController>();
 
+function validateNewEmailField() {
+  newEmailError.value = undefined;
+
+  // Empty email
+  if (newEmail.value.trim().length === 0) {
+    newEmailError.value =
+      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
+    newEmailFieldRef.value?.inputRef?.focus();
+    return false;
+  }
+
+  // Invalid email format
+  if (!validateEmail(newEmail.value)) {
+    newEmailError.value =
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+    newEmailFieldRef.value?.inputRef?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordField() {
+  passwordError.value = undefined;
+
+  // Empty password
+  if (password.value.length === 0) {
+    passwordError.value =
+      "Champ obligatoire. Veuillez saisir votre mot de passe";
+    passwordFieldRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
 async function updateEmail() {
-  passwordError.value = "";
-  newEmailError.value = "";
+  if (![validateNewEmailField(), validatePasswordField()].every((i) => i)) {
+    // Invalid form
+    return;
+  }
 
   accountStore
     .updateEmail(newEmail.value, password.value)
@@ -218,6 +256,7 @@ const showEmailInReport = ref(false);
   <form
     v-if="displayUpdateEmailForm && !displayPendingEmailVerification"
     class="wrapper"
+    novalidate
     @submit.prevent="updateEmail"
   >
     <div
@@ -239,7 +278,7 @@ const showEmailInReport = ref(false);
         />
       </div>
       <p v-if="passwordError" id="password-error" class="fr-error-text">
-        Le mot de passe saisi est incorrect.
+        {{ passwordError }}
       </p>
 
       <div
@@ -254,7 +293,7 @@ const showEmailInReport = ref(false);
           Afficher
         </label>
       </div>
-      <p>
+      <p class="fr-mt-3v">
         <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
           >Mot de passe oublié ?</RouterLink
         >
