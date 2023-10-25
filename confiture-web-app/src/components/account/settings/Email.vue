@@ -27,7 +27,7 @@ const newEmailError = ref("");
 const password = ref("");
 const newEmail = ref("");
 
-const displayPendingEmailVerification = ref(false);
+const displayPendingEmailVerification = ref(true);
 
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
 
@@ -129,6 +129,14 @@ async function hideUpdateEmailForm() {
   showButtonRef.value?.focus();
 }
 
+// Abort email update
+// TODO: invalidate token
+async function abortEmailUpdate() {
+  displayPendingEmailVerification.value = false;
+  await nextTick();
+  showButtonRef.value?.focus();
+}
+
 // Show email in report
 const showEmailInReport = ref(false);
 </script>
@@ -139,6 +147,7 @@ const showEmailInReport = ref(false);
     Votre adresse email : <strong>{{ accountStore.account?.email }}</strong>
   </p>
 
+  <!-- Success alert -->
   <div
     v-if="displayEmailUpdateSuccess"
     class="fr-alert fr-alert--success fr-mb-3v"
@@ -149,7 +158,8 @@ const showEmailInReport = ref(false);
     </button>
   </div>
 
-  <div v-if="displayPendingEmailVerification">
+  <!-- Instructions -->
+  <div v-if="displayPendingEmailVerification" class="fr-mb-2w">
     <div
       ref="confirmAlert"
       tabindex="-1"
@@ -196,8 +206,15 @@ const showEmailInReport = ref(false);
     >
       Modifier mon adresse e-mail
     </button>
+
+    <div class="fr-mt-3w">
+      <button class="fr-btn fr-btn--secondary" @click="abortEmailUpdate">
+        Annuler le changement d’adresse e-mail
+      </button>
+    </div>
   </div>
 
+  <!-- Update email form -->
   <form
     v-if="displayUpdateEmailForm && !displayPendingEmailVerification"
     class="wrapper"
@@ -281,6 +298,7 @@ const showEmailInReport = ref(false);
     Changer d’adresse e-mail
   </button>
 
+  <!-- Show email toggle -->
   <div class="fr-toggle fr-toggle--label-left">
     <input
       id="show-email-in-report"
