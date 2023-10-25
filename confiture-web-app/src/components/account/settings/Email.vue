@@ -80,7 +80,7 @@ async function updateEmail() {
         passwordFieldRef.value?.focus();
       } else if (e instanceof HTTPError && e.response.status === 409) {
         newEmailError.value =
-          "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
+          "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
         await nextTick();
         newEmailFieldRef.value?.focus();
       } else {
@@ -242,17 +242,17 @@ const showEmailInReport = ref(false);
           >Mot de passe oublié ?</RouterLink
         >
       </p>
-
-      <DsfrField
-        id="new-email"
-        v-model="newEmail"
-        class="fr-mt-3v"
-        label="Nouvelle adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
-        type="email"
-        required
-      />
     </div>
+    <DsfrField
+      id="new-email"
+      v-model="newEmail"
+      class="fr-mt-3v"
+      label="Nouvelle adresse e-mail"
+      hint="Format attendu : nom@domaine.fr"
+      type="email"
+      :error="newEmailError"
+      required
+    />
     <ul
       class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
     >
