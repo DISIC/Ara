@@ -146,14 +146,20 @@ function fillFields() {
         :error="userEmailError"
       />
 
-      <div class="fr-password fr-mb-3w">
+      <div
+        class="fr-password fr-mb-3w"
+        :class="{ 'fr-input-group--error': !!userPasswordError }"
+      >
         <label class="fr-label" for="user-password-input">Mot de passe</label>
         <div class="fr-input-wrap">
           <input
             id="user-password-input"
             ref="userPasswordField"
             v-model="userPassword"
-            class="fr-password__input fr-input"
+            :class="[
+              'fr-password__input fr-input',
+              { 'fr-input--error': !!userPasswordError },
+            ]"
             :aria-describedby="
               userPasswordError
                 ? 'user-password-error'
