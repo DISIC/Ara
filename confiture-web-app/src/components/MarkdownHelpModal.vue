@@ -21,16 +21,25 @@ const italicExample = `_italique_`;
 const boldExample = `**gras**`;
 const boldItalicExample = `**_gras-italique_**`;
 const strikedExample = `~~barré~~`;
-const codeExample = "`code mis en forme` dans une phrase.";
+const codeExample =
+  "Utiliser la balise `<main>` pour indiquer la zone de contenu principal.";
 const codeBlockExample = `\`\`\`
 Bloc de code
 \`\`\`
 `;
 const quoteExample = `> Citation mise en forme`;
+const specialCharExample = `\`\`\`
+\\> Élément ignoré par le Markdown
+\\> \\_Élément ignoré par le Markdown\\_
+\`\`\`
+`;
+const specialCharExampleResult =
+  "> Élément ignoré par le Markdown <br />> _Élément ignoré par le Markdown_";
 const unorderedListExample = `* un élément
   * un sous élément`;
 const orderedListExample = `1. élément un
 2. élément deux`;
+const linkExample = `L’outil Ara est réalisé par [DesignGouv](https://design.numerique.gouv.fr/).`;
 </script>
 
 <template>
@@ -99,6 +108,14 @@ const orderedListExample = `1. élément un
                     </a>
                   </li>
                   <li>
+                    <a
+                      class="fr-summary__link"
+                      href="#markdown-caracteres-speciaux"
+                    >
+                      Caractères spéciaux
+                    </a>
+                  </li>
+                  <li>
                     <a class="fr-summary__link" href="#markdown-listes">
                       Listes
                     </a>
@@ -106,6 +123,11 @@ const orderedListExample = `1. élément un
                   <li>
                     <a class="fr-summary__link" href="#markdown-paragraphes">
                       Paragraphe et saut de ligne
+                    </a>
+                  </li>
+                  <li>
+                    <a class="fr-summary__link" href="#markdown-liens">
+                      Liens
                     </a>
                   </li>
                 </ol>
@@ -170,13 +192,17 @@ const orderedListExample = `1. élément un
                 Citation de code
               </h2>
               <p>
-                Vous pouvez citer du code ou une commande dans une phrase avec
-                des accents graves <code>`</code> uniques. Le texte entre les
-                accents graves sera mis en forme.
+                Pour afficher du code HTML, vous devez utiliser la syntaxe
+                suivante :
+              </p>
+              <h3 class="fr-text--md fr-text--bold">Code dans une phrase</h3>
+              <p>
+                Utilisez des accents graves <code>`</code> autour des balises
+                HTML.
               </p>
               <p class="fr-mb-3v">Exemple :</p>
               <pre><code>{{codeExample}}</code></pre>
-              <p class="fr-mb-3v">S’affichent ainsi :</p>
+              <p class="fr-mb-3v">S’affiche ainsi :</p>
               <MarkdownRenderer :markdown="codeExample" />
 
               <h3 class="fr-text--md fr-text--bold">Bloc de code</h3>
@@ -203,6 +229,20 @@ const orderedListExample = `1. élément un
               <pre><code>{{ quoteExample }}</code></pre>
               <p class="fr-mb-3v">S’affiche ainsi :</p>
               <MarkdownRenderer :markdown="quoteExample" />
+
+              <!-- Caractères spéciaux -->
+              <h2 id="markdown-caracteres-speciaux" class="fr-h6 fr-mt-6w">
+                Caractères spéciaux
+              </h2>
+              <p>
+                Pour supprimer le formatage en Markdown des caractères spéciaux,
+                utilisez une barre oblique inversée <code>\</code> avant chaque
+                caractère spécial.
+              </p>
+              <p class="fr-mb-3v">Exemple :</p>
+              <pre><code>{{ specialCharExample }}</code></pre>
+              <p class="fr-mb-3v">S’affiche ainsi :</p>
+              <p v-html="specialCharExampleResult" />
 
               <!-- Listes -->
 
@@ -236,6 +276,19 @@ const orderedListExample = `1. élément un
                 ligne. Deux espaces en fin de ligne suivi d’un retour à la ligne
                 permettent d'ajouter un saut de ligne.
               </p>
+
+              <!-- Liens -->
+
+              <h2 id="markdown-liens" class="fr-h6 fr-mt-6w">Liens</h2>
+              <p>
+                Vous pouvez créer un lien en plaçant le texte du lien entre
+                crochets <code>[]</code> suivis de l'URL entre parenthèses
+                <code>()</code>.
+              </p>
+              <p class="fr-mb-3v">Exemple :</p>
+              <pre><code>{{ linkExample }}</code></pre>
+              <p class="fr-mb-3v">S’affiche ainsi :</p>
+              <MarkdownRenderer :markdown="linkExample" />
             </div>
           </div>
         </div>
