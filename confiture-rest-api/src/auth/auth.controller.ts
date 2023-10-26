@@ -42,6 +42,7 @@ import { AuthenticationJwtPayload } from './jwt-payloads';
 import { User } from './user.decorator';
 import { UpdateEmailDto } from './update-email.dto';
 import { VerifyEmailUpdateDto } from './verify-email-update.dto';
+import { CancelEmailUpdateDto } from './dto/cancel-email-update.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -314,6 +315,20 @@ export class AuthController {
         console.log('Email update verification failed:', e.message);
         throw new UnauthorizedException('Invalid token');
       }
+      throw e;
+    }
+  }
+
+  @Post('account/cancel-email-update')
+  async cancelEmailUpdate(@Body() body: CancelEmailUpdateDto) {
+    try {
+      await this.auth.cancelEmailUpdate(body.email);
+    } catch (e) {
+      // FIXME: custom exception?
+      // if (e instanceof InvalidVerificationTokenError) {
+      //   console.log('Cancel email update verification failed:', e.message);
+      //   throw new UnauthorizedException('Invalid token');
+      // }
       throw e;
     }
   }

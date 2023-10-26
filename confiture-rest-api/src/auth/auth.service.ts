@@ -326,6 +326,21 @@ export class AuthService {
     return { token, email: user.newEmail };
   }
 
+  /** Cancel email update by invalidating the verification token. */
+  async cancelEmailUpdate(email: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: email },
+    });
+    if (!user) {
+      throw new TokenRegenerationError('User not found');
+    }
+
+    await this.prisma.user.update({
+      where: { username: email },
+      data: { newEmailVerificationJti: null },
+    });
+  }
+
   async verifyEmailUpdate(token: string) {
     const payload = (await this.jwt.verifyAsync(token).catch(() => {
       throw new InvalidVerificationTokenError('Invalid JWT');

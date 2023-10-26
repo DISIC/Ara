@@ -167,12 +167,27 @@ async function hideUpdateEmailForm() {
   showButtonRef.value?.focus();
 }
 
-// Abort email update
-// TODO: invalidate token
-async function abortEmailUpdate() {
-  displayPendingEmailVerification.value = false;
-  await nextTick();
-  showButtonRef.value?.focus();
+// Cancel email update
+async function cancelEmailUpdate() {
+  try {
+    if (accountStore.account) {
+      await accountStore.cancelEmailUpdate(accountStore.account?.email);
+    }
+  } catch (e) {
+    notify(
+      "error",
+      "Impossible d’annuler le changement d’adresse e-mail.",
+      "Une erreur inconnue empêche l’annulation du changement d’adresse e-mail. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+    captureWithPayloads(e, false);
+  } finally {
+    displayPendingEmailVerification.value = false;
+    displayUpdateEmailForm.value = false;
+    password.value = "";
+    newEmail.value = "";
+    await nextTick();
+    showButtonRef.value?.focus();
+  }
 }
 
 // Show email in report
@@ -246,7 +261,7 @@ const showEmailInReport = ref(false);
     </button>
 
     <div class="fr-mt-3w">
-      <button class="fr-btn fr-btn--secondary" @click="abortEmailUpdate">
+      <button class="fr-btn fr-btn--secondary" @click="cancelEmailUpdate">
         Annuler le changement d’adresse e-mail
       </button>
     </div>
