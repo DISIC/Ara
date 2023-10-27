@@ -8,7 +8,7 @@ import DsfrField from "../../components/DsfrField.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { HTTPError } from "ky";
-import { captureWithPayloads } from "../../utils";
+import { captureWithPayloads, validateEmail } from "../../utils";
 
 const userEmail = ref((history.state.email as string) ?? "");
 const userEmailError = ref<string>();
@@ -16,7 +16,7 @@ const userEmailField = ref<InstanceType<typeof DsfrField>>();
 
 const userPassword = ref("");
 const userPasswordError = ref<string>();
-const userPasswordInput = ref<HTMLInputElement>();
+const userPasswordRef = ref<HTMLInputElement>();
 
 const rememberMe = ref(false);
 
@@ -34,7 +34,48 @@ const store = useAccountStore();
 const router = useRouter();
 const notify = useNotifications();
 
+function validateEmailField() {
+  userEmailError.value = undefined;
+
+  // Empty email
+  if (!userEmail.value.trim()) {
+    userEmailError.value =
+      "Champ obligatoire. Veuillez saisir l'adresse e-mail associée à votre compte";
+    userEmailField.value?.inputRef?.focus();
+    return false;
+  }
+
+  // Invalid email format
+  if (!validateEmail(userEmail.value)) {
+    userEmailError.value =
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+    userEmailField.value?.inputRef?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordField() {
+  userPasswordError.value = undefined;
+
+  // Empty password
+  if (!userPassword.value.length) {
+    userPasswordError.value =
+      "Champ obligatoire. Veuillez saisir votre mot de passe";
+    userPasswordRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
 async function handleSubmit() {
+  if (![validatePasswordField(), validateEmailField()].every((i) => i)) {
+    // Invalid form
+    return;
+  }
+
   store
     .login(userEmail.value, userPassword.value, rememberMe.value)
     .then(() => {
@@ -46,12 +87,12 @@ async function handleSubmit() {
         if (body.message === "unknown_user") {
           // Unknown user
           userEmailError.value =
-            "Cette adresse e-mail est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
+            "Cette adresse e-mail n’est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
           userEmailField.value?.inputRef?.focus();
         } else {
           // Wrong password
           userPasswordError.value = "Le mot de passe saisi est incorrect.";
-          userPasswordInput.value?.focus();
+          userPasswordRef.value?.focus();
         }
       } else {
         // Unknown error
@@ -91,7 +132,7 @@ async function handleSubmit() {
   </div>
 
   <div class="wrapper">
-    <form @submit.prevent="handleSubmit">
+    <form novalidate @submit.prevent="handleSubmit">
       <h1 class="fr-h3">Connexion à Ara</h1>
 
       <DsfrField
@@ -113,9 +154,12 @@ async function handleSubmit() {
         <div class="fr-input-wrap">
           <input
             id="user-password-input"
-            ref="userPasswordInput"
+            ref="userPasswordRef"
             v-model="userPassword"
-            class="fr-password__input fr-input"
+            :class="[
+              'fr-password__input fr-input',
+              { 'fr-input--error': !!userPasswordError },
+            ]"
             :aria-describedby="
               userPasswordError ? 'user-password-error' : undefined
             "
