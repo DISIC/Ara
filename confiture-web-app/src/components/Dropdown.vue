@@ -15,7 +15,7 @@ const uniqueId = useUniqueId();
 
 const showContent = ref(false);
 const buttonRef = ref();
-const containerRef = ref();
+const containerRef = ref<HTMLDivElement>();
 
 function toggleOptions() {
   showContent.value = !showContent.value;
@@ -28,7 +28,7 @@ function closeOptions() {
 
 // Handle clicks outside of container
 function handleGoOutside(e: Event) {
-  if (!(e.target as HTMLElement).closest(".dropdown-container")) {
+  if (!containerRef.value?.contains(e.target as HTMLElement)) {
     showContent.value = false;
   }
 }
