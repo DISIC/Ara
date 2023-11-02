@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   GoneException,
-  Header,
   HttpStatus,
   NotFoundException,
   Param,

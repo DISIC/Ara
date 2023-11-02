@@ -54,9 +54,6 @@ const pages = ref(
 );
 const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
 const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
-const showEmailInReport = ref(
-  props.defaultValues?.showAuditorEmailInReport ?? false
-);
 const procedureAuditorOrganisation = ref(
   props.defaultValues?.auditorOrganisation ?? ""
 );
@@ -110,7 +107,6 @@ function onSubmit() {
     auditorName: procedureAuditorName.value,
     auditorEmail: formatEmail(procedureAuditorEmail.value),
     auditorOrganisation: procedureAuditorOrganisation.value,
-    showAuditorEmailInReport: showEmailInReport.value,
   });
 }
 
@@ -237,23 +233,6 @@ const route = useRoute();
           type="email"
           required
         />
-
-        <div class="fr-toggle fr-toggle--label-left">
-          <input
-            id="procedure-display-email"
-            v-model="showEmailInReport"
-            aria-describedby="procedure-display-email-description"
-            type="checkbox"
-            class="fr-toggle__input"
-          />
-          <label class="fr-toggle__label" for="procedure-display-email">
-            Afficher l’adresse e-mail dans le rapport d’audit
-          </label>
-          <p id="procedure-display-email-description" class="fr-hint-text">
-            Permet d’aider le demandeur de l’audit à vous contacter s'il a des
-            questions ou besoin d’aide.
-          </p>
-        </div>
       </fieldset>
 
       <div v-if="isDevMode">
