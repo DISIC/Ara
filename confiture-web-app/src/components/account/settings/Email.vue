@@ -9,8 +9,6 @@ import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads, validateEmail } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
-// TODO: cancel email update (what if user clicks on verification email after?)
-
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
@@ -170,9 +168,7 @@ async function hideUpdateEmailForm() {
 // Cancel email update
 async function cancelEmailUpdate() {
   try {
-    if (accountStore.account) {
-      await accountStore.cancelEmailUpdate(accountStore.account?.email);
-    }
+    await accountStore.cancelEmailUpdate();
   } catch (e) {
     notify(
       "error",

@@ -320,17 +320,9 @@ export class AuthController {
   }
 
   @Post('account/cancel-email-update')
-  async cancelEmailUpdate(@Body() body: CancelEmailUpdateDto) {
-    try {
-      await this.auth.cancelEmailUpdate(body.email);
-    } catch (e) {
-      // FIXME: custom exception?
-      // if (e instanceof InvalidVerificationTokenError) {
-      //   console.log('Cancel email update verification failed:', e.message);
-      //   throw new UnauthorizedException('Invalid token');
-      // }
-      throw e;
-    }
+  @AuthRequired()
+  async cancelEmailUpdate(@User() user: AuthenticationJwtPayload) {
+    await this.auth.cancelEmailUpdate(user.email);
   }
 
   /** Checks if given email is verified for the authenticated user. */
