@@ -230,6 +230,12 @@ export const useAccountStore = defineStore("account", {
       );
     },
 
+    async cancelEmailUpdate() {
+      await ky.post("/api/auth/account/cancel-email-update", {
+        headers: { Authorization: `Bearer ${this.authToken}` },
+      });
+    },
+
     async verifyEmailUpdate(verificationToken: string) {
       await ky.post("/api/auth/account/verify-email-update", {
         json: {
