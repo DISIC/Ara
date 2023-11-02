@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { ref, nextTick } from "vue";
-import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
+
+import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
+import DsfrPassword from "../../DsfrPassword.vue";
 
-const currentPasswordFieldRef = ref<HTMLInputElement>();
-const newPasswordFieldRef = ref<HTMLInputElement>();
+const currentPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
+const newPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
 
 // Toggle display
 const showButtonRef = ref<HTMLButtonElement>();
@@ -17,7 +19,7 @@ async function showUpdatePasswordForm() {
   displaySuccessAlert.value = false;
   displayUpdatePasswordForm.value = true;
   await nextTick();
-  currentPasswordFieldRef.value?.focus();
+  currentPasswordFieldRef.value?.inputRef?.focus();
 }
 
 async function hideUpdatePasswordForm() {
@@ -61,13 +63,13 @@ async function updatePassword() {
         // Wrong password
         currentPasswordError.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        currentPasswordFieldRef.value?.focus();
+        currentPasswordFieldRef.value?.inputRef?.focus();
       } else if (err instanceof HTTPError && err.response.status === 400) {
         // Same password
         newPasswordError.value =
           "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
         await nextTick();
-        newPasswordFieldRef.value?.focus();
+        newPasswordFieldRef.value?.inputRef?.focus();
       } else {
         // Unexpected network error
         notify(
@@ -95,102 +97,34 @@ async function hideSuccessAlert() {
     @submit.prevent="updatePassword"
   >
     <!-- Current password -->
-    <div
-      class="fr-password"
-      :class="{ 'fr-input-group--error': currentPasswordError }"
-    >
-      <label class="fr-label" for="current-password">Mot de passe actuel</label>
-      <div class="fr-input-wrap">
-        <input
-          id="current-password"
-          ref="currentPasswordFieldRef"
-          v-model="currentPassword"
-          class="fr-password__input fr-input"
-          :class="{ 'fr-input--error': currentPasswordError }"
-          :aria-describedby="
-            currentPasswordError ? 'current-password-error' : undefined
-          "
-          autocomplete="current-password"
-          type="password"
-          required
-        />
-      </div>
-      <p
-        v-if="currentPasswordError"
-        id="current-password-error"
-        class="fr-error-text"
+    <DsfrPassword
+      id="current-password"
+      ref="currentPasswordFieldRef"
+      v-model="currentPassword"
+      :error="currentPasswordError"
+      label="Mot de passe actuel"
+      required
+      autocomplete="current-password"
+    />
+
+    <p>
+      <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
+        >Mot de passe oublié ?</RouterLink
       >
-        {{ currentPasswordError }}
-      </p>
-      <div
-        class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-      >
-        <input
-          id="toggle-current-password"
-          aria-label="Afficher le mot de passe actuel"
-          type="checkbox"
-        />
-        <label
-          class="fr-password__checkbox fr-label"
-          for="toggle-current-password"
-        >
-          Afficher
-        </label>
-      </div>
-      <p>
-        <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
-          >Mot de passe oublié ?</RouterLink
-        >
-      </p>
-    </div>
+    </p>
 
     <!-- New password -->
-    <div
-      class="fr-password fr-mt-3w"
-      :class="{ 'fr-input-group--error': newPasswordError }"
-    >
-      <label class="fr-label" for="new-password">Nouveau mot de passe</label>
-      <div class="fr-input-wrap">
-        <input
-          id="new-password"
-          v-model="newPassword"
-          class="fr-password__input fr-input"
-          :class="{ 'fr-input--error': newPasswordError }"
-          :aria-describedby="
-            newPasswordError
-              ? 'new-password-requirements new-password-error'
-              : 'new-password-requirements'
-          "
-          autocomplete="new-password"
-          type="password"
-          required
-          minlength="12"
-        />
-      </div>
-      <p v-if="newPasswordError" id="new-password-error" class="fr-error-text">
-        {{ newPasswordError }}
-      </p>
-      <div
-        id="new-password-requirements"
-        class="fr-messages-group"
-        aria-live="assertive"
-      >
-        <p class="fr-message">Votre mot de passe doit contenir :</p>
-        <p class="fr-message fr-message--info">12 caractères minimum</p>
-      </div>
-      <div
-        class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-      >
-        <input
-          id="toggle-new-password"
-          aria-label="Afficher le nouveau mot de passe"
-          type="checkbox"
-        />
-        <label class="fr-password__checkbox fr-label" for="toggle-new-password">
-          Afficher
-        </label>
-      </div>
-    </div>
+    <DsfrPassword
+      id="new-password"
+      ref="newPasswordFieldRef"
+      v-model="newPassword"
+      :error="newPasswordError"
+      label="Nouveau mot de passe"
+      required
+      autocomplete="new-password"
+      :min-length="12"
+      :requirements="['12 caractères minimum']"
+    />
 
     <!-- Actions -->
     <ul

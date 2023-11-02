@@ -12,12 +12,13 @@ import {
   validateEmail,
 } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
+import DsfrPassword from "../../DsfrPassword.vue";
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
 // Form submission
-const passwordFieldRef = ref<HTMLInputElement>();
+const passwordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
 const newEmailFieldRef = ref<InstanceType<typeof DsfrField>>();
 const confirmAlert = ref<HTMLDivElement>();
 
@@ -49,7 +50,7 @@ async function hidePending() {
   displayPendingEmailVerification.value = false;
   ac.value?.abort();
   await nextTick();
-  passwordFieldRef.value?.focus();
+  passwordFieldRef.value?.inputRef?.focus();
 }
 
 const ac = ref<AbortController>();
@@ -83,7 +84,7 @@ function validatePasswordField() {
   if (password.value.length === 0) {
     passwordError.value =
       "Champ obligatoire. Veuillez saisir votre mot de passe";
-    passwordFieldRef.value?.focus();
+    passwordFieldRef.value?.inputRef?.focus();
     return false;
   }
 
@@ -117,7 +118,7 @@ async function updateEmail() {
       if (e instanceof HTTPError && e.response.status === 401) {
         passwordError.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        passwordFieldRef.value?.focus();
+        passwordFieldRef.value?.inputRef?.focus();
       } else if (e instanceof HTTPError && e.response.status === 409) {
         newEmailError.value =
           "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
@@ -160,7 +161,7 @@ const displayUpdateEmailForm = ref(false);
 async function showUpdateEmailForm() {
   displayUpdateEmailForm.value = true;
   await nextTick();
-  passwordFieldRef.value?.focus();
+  passwordFieldRef.value?.inputRef?.focus();
 }
 
 async function hideUpdateEmailForm() {
@@ -274,46 +275,16 @@ const showEmailInReport = ref(false);
     novalidate
     @submit.prevent="updateEmail"
   >
-    <div
-      class="fr-password"
-      :class="{ 'fr-input-group--error': passwordError }"
-    >
-      <label class="fr-label" for="password">Mot de passe</label>
-      <div class="fr-input-wrap">
-        <input
-          id="password"
-          ref="passwordFieldRef"
-          v-model="password"
-          class="fr-password__input fr-input"
-          :class="{ 'fr-input--error': passwordError }"
-          :aria-describedby="passwordError ? 'password-error' : undefined"
-          autocomplete="current-password"
-          type="password"
-          required
-        />
-      </div>
-      <p v-if="passwordError" id="password-error" class="fr-error-text">
-        {{ passwordError }}
-      </p>
+    <DsfrPassword
+      id="email-password"
+      ref="passwordFieldRef"
+      v-model="password"
+      :error="passwordError"
+      label="Mot de passe"
+      required
+      autocomplete="current-password"
+    />
 
-      <div
-        class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-      >
-        <input
-          id="toggle-password"
-          aria-label="Afficher le mot de passe"
-          type="checkbox"
-        />
-        <label class="fr-password__checkbox fr-label" for="toggle-password">
-          Afficher
-        </label>
-      </div>
-      <p class="fr-mt-3v">
-        <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
-          >Mot de passe oublié ?</RouterLink
-        >
-      </p>
-    </div>
     <DsfrField
       id="new-email"
       ref="newEmailFieldRef"
@@ -325,6 +296,7 @@ const showEmailInReport = ref(false);
       :error="newEmailError"
       required
     />
+
     <ul
       class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
     >
