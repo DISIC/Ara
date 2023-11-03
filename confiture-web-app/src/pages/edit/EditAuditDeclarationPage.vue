@@ -16,6 +16,7 @@ import {
 } from "../../enums";
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
+import { formatEmail } from "../../utils";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -185,7 +186,7 @@ function handleSubmit() {
     initiator: auditInitiator.value,
     procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: contactEmail.value || null,
+    contactEmail: formatEmail(contactEmail.value) || null,
     contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 

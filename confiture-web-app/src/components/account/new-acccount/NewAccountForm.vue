@@ -5,7 +5,11 @@ import { ref } from "vue";
 import { useDevMode } from "../../../composables/useDevMode";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads, validateEmail } from "../../../utils";
+import {
+  captureWithPayloads,
+  formatEmail,
+  validateEmail,
+} from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
 const emit = defineEmits<{
@@ -75,7 +79,7 @@ async function handleSubmit() {
   }
 
   await accountStore
-    .createAccount(userEmail.value, userPassword.value)
+    .createAccount(formatEmail(userEmail.value), userPassword.value)
     .then(() => {
       emit("submit", { username: userEmail.value });
 
