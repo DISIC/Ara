@@ -11,13 +11,6 @@ import { ProfileService } from './profile.service';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  // @Get()
-  // @AuthRequired()
-  // @ApiOkResponse({ type: UserDto })
-  // getProfile(@User() user: AuthenticationJwtPayload) {
-  //   return this.profileService.getUserProfile(user.email);
-  // }
-
   /**
    * Patch a user profile.
    */
