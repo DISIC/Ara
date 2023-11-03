@@ -10,7 +10,6 @@ import {
   NewEmailVerificationJwtPayload,
   RequestPasswordResetJwtPayload,
 } from './jwt-payloads';
-import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
@@ -174,6 +173,8 @@ export class AuthService {
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
+      name: user.name,
+      org: user.orgName,
     };
     const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
 
@@ -192,6 +193,8 @@ export class AuthService {
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
+      name: user.name,
+      org: user.orgName,
     };
     const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
     return token;
