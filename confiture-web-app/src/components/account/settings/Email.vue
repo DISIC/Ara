@@ -6,7 +6,11 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads, validateEmail } from "../../../utils";
+import {
+  captureWithPayloads,
+  formatEmail,
+  validateEmail,
+} from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
 const accountStore = useAccountStore();
@@ -93,7 +97,7 @@ async function updateEmail() {
   }
 
   accountStore
-    .updateEmail(newEmail.value, password.value)
+    .updateEmail(formatEmail(newEmail.value), password.value)
     .then(showPending)
     .then(() => {
       ac.value = new AbortController();
