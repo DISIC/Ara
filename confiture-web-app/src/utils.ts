@@ -194,3 +194,8 @@ const EMAIL_REGEX =
 export function validateEmail(s: string): boolean {
   return !!s.match(EMAIL_REGEX);
 }
+
+// Trim + lowercase email
+export function formatEmail(s: string): string {
+  return s.trim().toLocaleLowerCase();
+}

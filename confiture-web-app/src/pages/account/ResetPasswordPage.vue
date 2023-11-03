@@ -8,7 +8,7 @@ import RequestPasswordReset from "../../components/account/password-reset/Reques
 import PageMeta from "../../components/PageMeta";
 
 import { useAccountStore } from "../../store/account";
-import { captureWithPayloads } from "../../utils";
+import { captureWithPayloads, formatEmail } from "../../utils";
 import { useNotifications } from "../../composables/useNotifications";
 import jwtDecode from "jwt-decode";
 import { PasswordResetVerificationJwtPayload } from "../../types";
@@ -28,7 +28,7 @@ const accountEmail = ref<string>();
 
 async function onRequestSubmit(email: string) {
   try {
-    await store.requestPasswordReset(email);
+    await store.requestPasswordReset(formatEmail(email));
     accountEmail.value = email;
     currentStep.value = 1;
     await nextTick();
@@ -46,7 +46,7 @@ async function onRequestSubmit(email: string) {
 async function resendEmail() {
   try {
     // the resend button only appears when the email is already known
-    await store.requestPasswordReset(accountEmail.value!);
+    await store.requestPasswordReset(formatEmail(accountEmail.value!));
     resetInstructionsRef.value?.displayResendAlert();
   } catch (e) {
     notify(
