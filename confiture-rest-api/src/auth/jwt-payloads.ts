@@ -4,6 +4,12 @@ export interface AuthenticationJwtPayload {
 
   /** User email */
   email: string;
+
+  /** User full name */
+  name: string | null;
+
+  /** User organization. */
+  org: string | null;
 }
 
 export interface AccountVerificationJwtPayload {

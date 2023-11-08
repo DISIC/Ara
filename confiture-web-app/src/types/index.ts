@@ -6,6 +6,11 @@ export interface AuthenticationJwtPayload {
   sub: string;
   /** User email */
   email: string;
+  /** User full name */
+  name: string | null;
+  /** User organization. */
+  org: string | null;
+
   /** Issued at */
   iat: number;
   /** Expiration date */
