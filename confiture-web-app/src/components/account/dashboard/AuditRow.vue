@@ -13,8 +13,7 @@ import CopyIcon from "../../icons/CopyIcon.vue";
 import DuplicateModal from "../../DuplicateModal.vue";
 import DeleteModal from "../../DeleteModal.vue";
 import { useNotifications } from "../../../composables/useNotifications";
-import { useRouter } from "vue-router";
-import { useAuditStore, useResultsStore } from "../../../store";
+import { useAuditStore } from "../../../store";
 
 const props = defineProps<{
   audit: AccountAudit;
@@ -22,9 +21,7 @@ const props = defineProps<{
 }>();
 
 const notify = useNotifications();
-const router = useRouter();
 const auditStore = useAuditStore();
-const resultStore = useResultsStore();
 
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
@@ -54,18 +51,27 @@ function duplicateAudit(name: string) {
   auditStore
     .duplicateAudit(props.audit.editUniqueId, name)
     .then((newAuditId) => {
-      auditStore.$reset();
-      resultStore.$reset();
-
       duplicateModal.value?.hide();
 
-      return router.push({
-        name: "edit-audit-step-three",
-        params: {
-          uniqueId: newAuditId,
-        },
-        state: {
-          showDuplicatedAlert: true,
+      notify("success", undefined, `Audit ${name} copié avec succès`, {
+        action: {
+          label: "Annuler",
+          cb() {
+            console.log("Cancelled" + newAuditId);
+            auditStore
+              .deleteAudit(newAuditId)
+              .then(() => {
+                notify("success", undefined, "Copie annulée.");
+              })
+              .catch((error) => {
+                notify(
+                  "error",
+                  "Une erreur est survenue",
+                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+                );
+                captureWithPayloads(error);
+              });
+          },
         },
       });
     })
@@ -83,29 +89,18 @@ function duplicateAudit(name: string) {
     });
 }
 
-function copyReportLink() {
-  const reportUrl = `${window.location.origin}/rapports/${props.audit.consultUniqueId}`;
-
-  navigator.clipboard.writeText(reportUrl).then(() => {
-    notify("success", "", "Le lien vers le rapport a été copié avec succès");
-  });
-}
-
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const isDeletionLoading = ref(false);
 
 function deleteAudit() {
   isDeletionLoading.value = true;
+
+  const auditName = props.audit.procedureName;
+
   auditStore
     .deleteAudit(props.audit.editUniqueId)
     .then(() => {
-      auditStore.$reset();
-      resultStore.$reset();
-
-      router.push({
-        name: "home",
-        state: { deleteAudit: "true" },
-      });
+      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
     })
     .catch((error) => {
       notify(
@@ -226,17 +221,6 @@ function deleteAudit() {
 
           <li aria-hidden="true" class="dropdown-separator"></li>
 
-          <li class="dropdown-item">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyReportLink"
-            >
-              Copier le lien du rapport
-            </button>
-          </li>
-
-          <li aria-hidden="true" class="dropdown-separator"></li>
-
           <li class="dropdown-item dropdown-item--with-meta">
             <a
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
@@ -270,7 +254,7 @@ function deleteAudit() {
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />
@@ -279,7 +263,7 @@ function deleteAudit() {
     ref="deleteModal"
     @confirm="deleteAudit"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />

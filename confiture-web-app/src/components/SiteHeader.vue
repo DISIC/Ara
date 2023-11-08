@@ -12,6 +12,7 @@ import { useNotifications } from "../composables/useNotifications";
 
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
+const accountStore = useAccountStore();
 
 const currentRoute = useRoute();
 const matchedRoutesNames = computed(() => {
@@ -42,7 +43,20 @@ function getAriaCurrentValue(to: RouteLocationRaw, match?: string) {
   }
 }
 
-const homeLocation = { label: "Accueil", to: { name: "home" }, match: "/" };
+const homeLocation = computed(() =>
+  accountStore.account
+    ? {
+        label: "Accueil",
+        to: { name: "account-dashboard" },
+        match: "/compte",
+      }
+    : {
+        label: "Accueil",
+        to: { name: "home" },
+        match: "/",
+      }
+);
+
 const resourcesLocation = {
   label: "Ressources",
   to: { name: "resources" },
@@ -61,7 +75,7 @@ const menuItems = computed<
       },
       match: "/audits",
     };
-    return [homeLocation, auditLocation, resourcesLocation];
+    return [homeLocation.value, auditLocation, resourcesLocation];
   }
 
   if (reportStore.data) {
@@ -73,10 +87,10 @@ const menuItems = computed<
       label: "Rapport d’audit",
       match: "/rapports",
     };
-    return [homeLocation, reportLocation, resourcesLocation];
+    return [homeLocation.value, reportLocation, resourcesLocation];
   }
 
-  return [homeLocation, resourcesLocation];
+  return [homeLocation.value, resourcesLocation];
 });
 
 const newsSubMenu = ref<HTMLButtonElement>();
@@ -84,7 +98,6 @@ const newsSubMenu = ref<HTMLButtonElement>();
 function closeNewsSubMenu() {
   dsfr(newsSubMenu.value).collapse.conceal();
 }
-const accountStore = useAccountStore();
 
 const router = useRouter();
 const notify = useNotifications();

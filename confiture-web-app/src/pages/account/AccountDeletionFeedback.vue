@@ -28,7 +28,7 @@ async function closeSuccessAlert() {
 
   <!-- Alert -->
   <div v-if="showSuccessAlert" class="fr-alert fr-alert--success fr-mb-4w">
-    <h3 class="fr-alert__title">Votre compte a été supprimé avec succès</h3>
+    <h3 class="fr-alert__title">Vous avez été déconnecté et votre compte a été supprimé avec succès</h3>
     <p>
       Toutes les données liées à votre compte ont été supprimées. Votre nom et
       prénom ainsi que votre adresse e-mail n’apparaissent plus sur les audits
