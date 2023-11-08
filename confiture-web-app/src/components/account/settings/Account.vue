@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
+
 import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
+import DsfrPassword from "../../DsfrPassword.vue";
 
 const router = useRouter();
 const accountStore = useAccountStore();
@@ -19,7 +21,7 @@ const displayAccountDeletionForm = ref(false);
 
 // Form submission
 const validationFieldRef = ref<HTMLInputElement>();
-const passwordFieldRef = ref<HTMLInputElement>();
+const passwordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
 const validationError = ref<string>();
 const passwordError = ref<string>();
 
@@ -52,7 +54,7 @@ function validatePasswordField() {
   if (!password.value.length) {
     passwordError.value =
       "Champ obligatoire. Veuillez saisir votre mot de passe";
-    passwordFieldRef.value?.focus();
+    passwordFieldRef.value?.inputRef?.focus();
     return false;
   }
 
@@ -74,7 +76,7 @@ async function deleteAccount() {
       if (e instanceof HTTPError && e.response.status === 401) {
         passwordError.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        passwordFieldRef.value?.focus();
+        passwordFieldRef.value?.inputRef?.focus();
       } else {
         notify(
           "error",
@@ -141,46 +143,17 @@ async function hideAccountDeletionForm() {
           {{ validationError }}
         </p>
       </div>
-      <div
-        class="fr-password"
-        :class="{ 'fr-input-group--error': passwordError }"
-      >
-        <label class="fr-label" for="password">Mot de passe</label>
-        <div class="fr-input-wrap">
-          <input
-            id="password"
-            ref="passwordFieldRef"
-            v-model="password"
-            class="fr-password__input fr-input"
-            :class="{ 'fr-input--error': passwordError }"
-            :aria-describedby="passwordError ? 'password-error' : undefined"
-            autocomplete="current-password"
-            type="password"
-            required
-          />
-        </div>
-        <p v-if="passwordError" id="password-error" class="fr-error-text">
-          {{ passwordError }}
-        </p>
 
-        <div
-          class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-        >
-          <input
-            id="toggle-password"
-            aria-label="Afficher le mot de passe"
-            type="checkbox"
-          />
-          <label class="fr-password__checkbox fr-label" for="toggle-password">
-            Afficher
-          </label>
-        </div>
-        <p class="fr-mt-3v">
-          <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
-            >Mot de passe oublié ?</RouterLink
-          >
-        </p>
-      </div>
+      <DsfrPassword
+        id="account-password"
+        ref="passwordFieldRef"
+        v-model="password"
+        :error="passwordError"
+        label="Mot de passe"
+        required
+        autocomplete="current-password"
+      />
+
       <ul
         class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
       >

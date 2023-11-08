@@ -11,6 +11,7 @@ import {
   validateEmail,
 } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
+import DsfrPassword from "../../DsfrPassword.vue";
 
 const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;
@@ -21,7 +22,7 @@ const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
 
 const userPassword = ref("");
-const userPasswordField = ref<HTMLInputElement>();
+const userPasswordField = ref<InstanceType<typeof DsfrPassword>>();
 const userPasswordError = ref<string>();
 const togglePasswordRef = ref<HTMLInputElement>();
 
@@ -57,7 +58,7 @@ function validatePasswordField() {
   if (userPassword.value.length === 0) {
     userPasswordError.value =
       "Champ obligatoire. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    userPasswordField.value?.focus();
+    userPasswordField.value?.inputRef?.focus();
     return false;
   }
 
@@ -65,7 +66,7 @@ function validatePasswordField() {
   if (userPassword.value.length < 12) {
     userPasswordError.value =
       "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    userPasswordField.value?.focus();
+    userPasswordField.value?.inputRef?.focus();
     return false;
   }
 
@@ -150,74 +151,19 @@ function fillFields() {
         :error="userEmailError"
       />
 
-      <div
-        class="fr-password fr-mb-3w"
-        :class="{ 'fr-input-group--error': !!userPasswordError }"
-      >
-        <label class="fr-label" for="user-password-input">Mot de passe</label>
-        <div class="fr-input-wrap">
-          <input
-            id="user-password-input"
-            ref="userPasswordField"
-            v-model="userPassword"
-            :class="[
-              'fr-password__input fr-input',
-              { 'fr-input--error': !!userPasswordError },
-            ]"
-            :aria-describedby="
-              userPasswordError
-                ? 'user-password-error'
-                : 'user-password-input-messages'
-            "
-            aria-required="true"
-            autocomplete="new-password"
-            type="password"
-            required
-            minlength="12"
-          />
-        </div>
+      <DsfrPassword
+        id="user-password"
+        ref="userPasswordField"
+        v-model="userPassword"
+        class="fr-mb-3w"
+        label="Mot de passe"
+        :error="userPasswordError"
+        autocomplete="new-password"
+        minlength="12"
+        required
+        :requirements="['12 caractères minimum']"
+      />
 
-        <p
-          v-if="userPasswordError"
-          id="user-password-error"
-          class="fr-error-text"
-        >
-          {{ userPasswordError }}
-        </p>
-
-        <div
-          v-else
-          id="user-password-input-messages"
-          class="fr-messages-group"
-          aria-live="assertive"
-        >
-          <p class="fr-message">Votre mot de passe doit contenir :</p>
-          <p class="fr-message fr-message--info">12 caractères minimum</p>
-        </div>
-
-        <div
-          class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-        >
-          <input
-            id="user-password-show"
-            ref="togglePasswordRef"
-            aria-label="Afficher le mot de passe"
-            type="checkbox"
-            aria-describedby="user-password-show-messages"
-          />
-          <label
-            class="fr-password__checkbox fr-label"
-            for="user-password-show"
-          >
-            Afficher
-          </label>
-          <div
-            id="user-password-show-messages"
-            class="fr-messages-group"
-            aria-live="assertive"
-          ></div>
-        </div>
-      </div>
       <ul
         class="fr-btns-group fr-btns-group--right fr-btns-group--inline-sm fr-btns-group--inline-reverse"
       >
