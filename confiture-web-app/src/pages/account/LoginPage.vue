@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { useAccountStore } from "../../store/account";
 import { history } from "../../router";
 import DsfrField from "../../components/DsfrField.vue";
+import DsfrPassword from "../../components/DsfrPassword.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { HTTPError } from "ky";
@@ -16,7 +17,7 @@ const userEmailField = ref<InstanceType<typeof DsfrField>>();
 
 const userPassword = ref("");
 const userPasswordError = ref<string>();
-const userPasswordRef = ref<HTMLInputElement>();
+const userPasswordRef = ref<InstanceType<typeof DsfrPassword>>();
 
 const rememberMe = ref(false);
 
@@ -63,7 +64,7 @@ function validatePasswordField() {
   if (!userPassword.value.length) {
     userPasswordError.value =
       "Champ obligatoire. Veuillez saisir votre mot de passe";
-    userPasswordRef.value?.focus();
+    userPasswordRef.value?.inputRef?.focus();
     return false;
   }
 
@@ -92,7 +93,7 @@ async function handleSubmit() {
         } else {
           // Wrong password
           userPasswordError.value = "Le mot de passe saisi est incorrect.";
-          userPasswordRef.value?.focus();
+          userPasswordRef.value?.inputRef?.focus();
         }
       } else {
         // Unknown error
@@ -146,64 +147,16 @@ async function handleSubmit() {
         :error="userEmailError"
       />
 
-      <div
-        class="fr-password fr-mb-3v"
-        :class="{ 'fr-input-group--error': !!userPasswordError }"
-      >
-        <label class="fr-label" for="user-password-input">Mot de passe</label>
-        <div class="fr-input-wrap">
-          <input
-            id="user-password-input"
-            ref="userPasswordRef"
-            v-model="userPassword"
-            :class="[
-              'fr-password__input fr-input',
-              { 'fr-input--error': !!userPasswordError },
-            ]"
-            :aria-describedby="
-              userPasswordError ? 'user-password-error' : undefined
-            "
-            aria-required="true"
-            autocomplete="new-password"
-            type="password"
-            required
-          />
-        </div>
-
-        <p
-          v-if="userPasswordError"
-          id="user-password-error"
-          class="fr-error-text"
-        >
-          {{ userPasswordError }}
-        </p>
-
-        <div
-          class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm"
-        >
-          <input
-            id="user-password-show"
-            aria-label="Afficher le mot de passe"
-            type="checkbox"
-            aria-describedby="user-password-show-messages"
-          />
-          <label
-            class="fr-password__checkbox fr-label"
-            for="user-password-show"
-          >
-            Afficher
-          </label>
-          <div
-            id="user-password-show-messages"
-            class="fr-messages-group"
-            aria-live="assertive"
-          ></div>
-        </div>
-      </div>
-
-      <RouterLink :to="{ name: 'password-reset' }" class="fr-link">
-        Mot de passe oublié ?
-      </RouterLink>
+      <DsfrPassword
+        id="user-password"
+        ref="userPasswordRef"
+        v-model="userPassword"
+        :error="userPasswordError"
+        label="Mot de passe"
+        required
+        autocomplete="current-password"
+        show-forgotten-password-link
+      />
 
       <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
         <input id="remember-me" v-model="rememberMe" type="checkbox" />
