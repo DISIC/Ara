@@ -155,11 +155,8 @@ async function handleSubmit() {
         label="Mot de passe"
         required
         autocomplete="current-password"
+        show-forgotten-password-link
       />
-
-      <RouterLink :to="{ name: 'password-reset' }" class="fr-link">
-        Mot de passe oublié ?
-      </RouterLink>
 
       <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
         <input id="remember-me" v-model="rememberMe" type="checkbox" />

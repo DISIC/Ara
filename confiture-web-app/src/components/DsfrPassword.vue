@@ -11,6 +11,7 @@ const props = defineProps<{
   id: string;
   autocomplete: "new-password" | "current-password";
   requirements?: string[];
+  showForgottenPasswordLink?: boolean;
 }>();
 
 defineEmits<{
@@ -30,7 +31,7 @@ defineExpose({ inputRef, toggleRef });
 </script>
 
 <template>
-  <div :class="['fr-password fr-mb-3w', { 'fr-input-group--error': isError }]">
+  <div :class="['fr-password', { 'fr-input-group--error': isError }]">
     <label class="fr-label" :for="inputId">
       {{ label }}
       <span v-if="hint || $slots.hint" class="fr-hint-text">
@@ -85,5 +86,11 @@ defineExpose({ inputRef, toggleRef });
         Afficher
       </label>
     </div>
+
+    <p v-if="showForgottenPasswordLink" class="fr-m-0">
+      <RouterLink :to="{ name: 'password-reset' }" class="fr-link">
+        Mot de passe oublié ?
+      </RouterLink>
+    </p>
   </div>
 </template>

@@ -101,17 +101,13 @@ async function hideSuccessAlert() {
       id="current-password"
       ref="currentPasswordFieldRef"
       v-model="currentPassword"
+      class="fr-mb-3w"
       :error="currentPasswordError"
       label="Mot de passe actuel"
       required
       autocomplete="current-password"
+      show-forgotten-password-link
     />
-
-    <p>
-      <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
-        >Mot de passe oublié ?</RouterLink
-      >
-    </p>
 
     <!-- New password -->
     <DsfrPassword
