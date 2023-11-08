@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import jwtDecode from "jwt-decode";
 import { AuthenticationJwtPayload } from "../types";
 import {
-  Account,
   AccountDeletionResponse,
   UpdateProfileRequestData,
 } from "../types/account";
@@ -11,11 +10,6 @@ import {
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
 interface AccountStoreState {
-  account: null | {
-    email: string;
-    name?: string;
-    orgName?: string;
-  };
   authToken: null | string;
   accountDeletionFeedbackToken: null | string;
 }
@@ -27,7 +21,6 @@ export const useAccountStore = defineStore("account", {
       localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ??
       null;
 
-    let email: string | null = null;
     if (authToken) {
       const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
 
@@ -37,16 +30,28 @@ export const useAccountStore = defineStore("account", {
         authToken = null;
         localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
         sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      } else {
-        email = payload.email;
       }
     }
 
     return {
-      account: email ? { email, name: "", orgName: "" } : null,
       authToken: authToken,
       accountDeletionFeedbackToken: null,
     };
+  },
+
+  getters: {
+    account: (state) => {
+      if (!state.authToken) {
+        return null;
+      }
+      const payload = jwtDecode(state.authToken) as AuthenticationJwtPayload;
+      console.log(payload);
+      return {
+        email: payload.email,
+        name: payload.name,
+        orgName: payload.org,
+      };
+    },
   },
 
   actions: {
@@ -80,9 +85,6 @@ export const useAccountStore = defineStore("account", {
         })
         .text();
 
-      this.account = {
-        email: username,
-      };
       this.authToken = authToken;
 
       if (rememberMe) {
@@ -100,11 +102,8 @@ export const useAccountStore = defineStore("account", {
           headers: { Authorization: `Bearer ${this.$state.authToken}` },
         })
         .text();
+
       this.authToken = authToken;
-      const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
-      if (this.account) {
-        this.account.email = payload.email;
-      }
 
       if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
         localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
@@ -158,35 +157,15 @@ export const useAccountStore = defineStore("account", {
       });
     },
 
-    async getProfile(): Promise<Account> {
-      const response = (await ky
-        .get("/api/profile", {
-          headers: { Authorization: `Bearer ${this.authToken}` },
-        })
-        .json()) as Account;
-
-      if (this.account) {
-        this.account.name = response.name || "";
-        this.account.orgName = response.orgName || "";
-      }
-
-      return response;
-    },
-
-    async updateProfile(data: UpdateProfileRequestData): Promise<Account> {
-      const response = (await ky
+    async updateProfile(data: UpdateProfileRequestData) {
+      await ky
         .patch(`/api/profile`, {
           json: data,
           headers: { Authorization: `Bearer ${this.$state.authToken}` },
         })
-        .json()) as Account;
+        .json();
 
-      if (this.account) {
-        this.account.name = response.name;
-        this.account.orgName = response.orgName;
-      }
-
-      return response;
+      await this.refreshToken();
     },
 
     async deleteAccount(password: string) {
