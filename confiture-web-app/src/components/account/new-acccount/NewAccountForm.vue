@@ -5,7 +5,11 @@ import { ref } from "vue";
 import { useDevMode } from "../../../composables/useDevMode";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads } from "../../../utils";
+import {
+  captureWithPayloads,
+  formatEmail,
+  validateEmail,
+} from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 
 const emit = defineEmits<{
@@ -13,20 +17,75 @@ const emit = defineEmits<{
 }>();
 
 const userEmail = ref("");
-const userPassword = ref("");
 const userEmailField = ref<InstanceType<typeof DsfrField>>();
 const userEmailError = ref<string>();
+
+const userPassword = ref("");
+const userPasswordField = ref<HTMLInputElement>();
+const userPasswordError = ref<string>();
+const togglePasswordRef = ref<HTMLInputElement>();
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-async function handleSubmit() {
+function validateEmailField() {
   userEmailError.value = undefined;
 
+  // Empty email
+  if (userEmail.value.trim().length === 0) {
+    userEmailError.value =
+      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
+    userEmailField.value?.inputRef?.focus();
+    return false;
+  }
+
+  // Invalid email format
+  if (!validateEmail(userEmail.value)) {
+    userEmailError.value =
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+    userEmailField.value?.inputRef?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordField() {
+  userPasswordError.value = undefined;
+
+  // Empty password
+  if (userPassword.value.length === 0) {
+    userPasswordError.value =
+      "Champ obligatoire. Veuillez choisir un mot de passe de 12 caractères minimum.";
+    userPasswordField.value?.focus();
+    return false;
+  }
+
+  // Invalid password requirement
+  if (userPassword.value.length < 12) {
+    userPasswordError.value =
+      "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.";
+    userPasswordField.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+async function handleSubmit() {
+  if (![validateEmailField(), validatePasswordField()].every((i) => i)) {
+    // Invalid form
+    return;
+  }
+
   await accountStore
-    .createAccount(userEmail.value, userPassword.value)
+    .createAccount(formatEmail(userEmail.value), userPassword.value)
     .then(() => {
       emit("submit", { username: userEmail.value });
+
+      if (togglePasswordRef.value) {
+        togglePasswordRef.value.value = "false";
+      }
     })
     .catch(async (err) => {
       if (err instanceof HTTPError) {
@@ -72,7 +131,7 @@ function fillFields() {
     [DEV] Remplir les champs
   </button>
   <div class="wrapper">
-    <form @submit.prevent="handleSubmit">
+    <form novalidate @submit.prevent="handleSubmit">
       <h1 tabindex="-1" class="fr-mb-3w fr-h3">Créer votre compte Ara</h1>
 
       <p class="fr-text--sm fr-mb-2w mandatory-notice">
@@ -91,14 +150,25 @@ function fillFields() {
         :error="userEmailError"
       />
 
-      <div class="fr-password fr-mb-3w">
+      <div
+        class="fr-password fr-mb-3w"
+        :class="{ 'fr-input-group--error': !!userPasswordError }"
+      >
         <label class="fr-label" for="user-password-input">Mot de passe</label>
         <div class="fr-input-wrap">
           <input
             id="user-password-input"
+            ref="userPasswordField"
             v-model="userPassword"
-            class="fr-password__input fr-input"
-            aria-describedby="user-password-input-messages"
+            :class="[
+              'fr-password__input fr-input',
+              { 'fr-input--error': !!userPasswordError },
+            ]"
+            :aria-describedby="
+              userPasswordError
+                ? 'user-password-error'
+                : 'user-password-input-messages'
+            "
             aria-required="true"
             autocomplete="new-password"
             type="password"
@@ -107,7 +177,16 @@ function fillFields() {
           />
         </div>
 
+        <p
+          v-if="userPasswordError"
+          id="user-password-error"
+          class="fr-error-text"
+        >
+          {{ userPasswordError }}
+        </p>
+
         <div
+          v-else
           id="user-password-input-messages"
           class="fr-messages-group"
           aria-live="assertive"
@@ -121,6 +200,7 @@ function fillFields() {
         >
           <input
             id="user-password-show"
+            ref="togglePasswordRef"
             aria-label="Afficher le mot de passe"
             type="checkbox"
             aria-describedby="user-password-show-messages"

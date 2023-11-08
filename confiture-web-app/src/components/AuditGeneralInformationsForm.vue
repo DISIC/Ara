@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
+
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useRoute } from "vue-router";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import DsfrField from "./DsfrField.vue";
+import { formatEmail } from "../utils";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -106,7 +108,7 @@ function onSubmit() {
     // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
-    auditorEmail: procedureAuditorEmail.value,
+    auditorEmail: formatEmail(procedureAuditorEmail.value),
     auditorOrganisation: procedureAuditorOrganisation.value,
     showAuditorEmailInReport: showEmailInReport.value,
   });

@@ -9,9 +9,9 @@ export interface Account {
 
 export interface UpdateProfileRequestData {
   /** John Doe */
-  name?: string;
+  name: string | null;
   /** ACME */
-  orgName?: string;
+  orgName: string | null;
 }
 
 export interface AccountDeletionResponse {

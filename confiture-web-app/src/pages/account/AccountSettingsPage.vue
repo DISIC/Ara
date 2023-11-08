@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
-
 import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
 import Account from "../../components/account/settings/Account.vue";
@@ -8,14 +6,6 @@ import Password from "../../components/account/settings/Password.vue";
 import Email from "../../components/account/settings/Email.vue";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
-
-import { useAccountStore } from "../../store/account";
-
-const accountStore = useAccountStore();
-
-onMounted(() => {
-  accountStore.getProfile();
-});
 </script>
 
 <template>

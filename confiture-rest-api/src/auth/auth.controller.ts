@@ -42,6 +42,7 @@ import { AuthenticationJwtPayload } from './jwt-payloads';
 import { User } from './user.decorator';
 import { UpdateEmailDto } from './update-email.dto';
 import { VerifyEmailUpdateDto } from './verify-email-update.dto';
+import { CancelEmailUpdateDto } from './dto/cancel-email-update.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -316,6 +317,12 @@ export class AuthController {
       }
       throw e;
     }
+  }
+
+  @Post('account/cancel-email-update')
+  @AuthRequired()
+  async cancelEmailUpdate(@User() user: AuthenticationJwtPayload) {
+    await this.auth.cancelEmailUpdate(user.email);
   }
 
   /** Checks if given email is verified for the authenticated user. */

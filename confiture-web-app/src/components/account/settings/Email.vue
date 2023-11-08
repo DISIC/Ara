@@ -6,29 +6,38 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads } from "../../../utils";
+import {
+  captureWithPayloads,
+  formatEmail,
+  validateEmail,
+} from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
-
-// TODO: cancel email update (what if user clicks on verification email after?)
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
 // Form submission
 const passwordFieldRef = ref<HTMLInputElement>();
-const newEmailFieldRef = ref<HTMLInputElement>();
+const newEmailFieldRef = ref<InstanceType<typeof DsfrField>>();
 const confirmAlert = ref<HTMLDivElement>();
 
 // Field errors
-const passwordError = ref("");
-const newEmailError = ref("");
+const passwordError = ref<string>();
+const newEmailError = ref<string>();
 
 // Field values
 const password = ref("");
 const newEmail = ref("");
 
 const displayPendingEmailVerification = ref(false);
+
 const displayEmailUpdateSuccess = ref(!!history.state.updatedEmail);
+
+async function closeEmailUpdateSuccess() {
+  displayEmailUpdateSuccess.value = false;
+  await nextTick();
+  showButtonRef.value?.focus();
+}
 
 async function showPending() {
   displayPendingEmailVerification.value = true;
@@ -45,12 +54,50 @@ async function hidePending() {
 
 const ac = ref<AbortController>();
 
+function validateNewEmailField() {
+  newEmailError.value = undefined;
+
+  // Empty email
+  if (newEmail.value.trim().length === 0) {
+    newEmailError.value =
+      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
+    newEmailFieldRef.value?.inputRef?.focus();
+    return false;
+  }
+
+  // Invalid email format
+  if (!validateEmail(newEmail.value)) {
+    newEmailError.value =
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+    newEmailFieldRef.value?.inputRef?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordField() {
+  passwordError.value = undefined;
+
+  // Empty password
+  if (password.value.length === 0) {
+    passwordError.value =
+      "Champ obligatoire. Veuillez saisir votre mot de passe";
+    passwordFieldRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
 async function updateEmail() {
-  passwordError.value = "";
-  newEmailError.value = "";
+  if (![validateNewEmailField(), validatePasswordField()].every((i) => i)) {
+    // Invalid form
+    return;
+  }
 
   accountStore
-    .updateEmail(newEmail.value, password.value)
+    .updateEmail(formatEmail(newEmail.value), password.value)
     .then(showPending)
     .then(() => {
       ac.value = new AbortController();
@@ -73,9 +120,9 @@ async function updateEmail() {
         passwordFieldRef.value?.focus();
       } else if (e instanceof HTTPError && e.response.status === 409) {
         newEmailError.value =
-          "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail.";
+          "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
         await nextTick();
-        newEmailFieldRef.value?.focus();
+        newEmailFieldRef.value?.inputRef?.focus();
       } else {
         notify(
           "error",
@@ -122,6 +169,27 @@ async function hideUpdateEmailForm() {
   showButtonRef.value?.focus();
 }
 
+// Cancel email update
+async function cancelEmailUpdate() {
+  try {
+    await accountStore.cancelEmailUpdate();
+  } catch (e) {
+    notify(
+      "error",
+      "Impossible d’annuler le changement d’adresse e-mail.",
+      "Une erreur inconnue empêche l’annulation du changement d’adresse e-mail. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+    captureWithPayloads(e, false);
+  } finally {
+    displayPendingEmailVerification.value = false;
+    displayUpdateEmailForm.value = false;
+    password.value = "";
+    newEmail.value = "";
+    await nextTick();
+    showButtonRef.value?.focus();
+  }
+}
+
 // Show email in report
 const showEmailInReport = ref(false);
 </script>
@@ -132,14 +200,19 @@ const showEmailInReport = ref(false);
     Votre adresse email : <strong>{{ accountStore.account?.email }}</strong>
   </p>
 
+  <!-- Success alert -->
   <div
     v-if="displayEmailUpdateSuccess"
     class="fr-alert fr-alert--success fr-mb-3v"
   >
     <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+    <button class="fr-link--close fr-link" @click="closeEmailUpdateSuccess">
+      Masquer le message
+    </button>
   </div>
 
-  <div v-if="displayPendingEmailVerification">
+  <!-- Instructions -->
+  <div v-if="displayPendingEmailVerification" class="fr-mb-2w">
     <div
       ref="confirmAlert"
       tabindex="-1"
@@ -152,14 +225,14 @@ const showEmailInReport = ref(false);
     </div>
 
     <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h3>
-    <p class="fr-mb-1w">
+    <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
       du bouton ci-dessous.
     </p>
     <button
       ref="resendButtonRef"
-      class="fr-btn fr-btn--tertiary-no-outline"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       :class="{ 'fr-mb-1w': displayResendAlert }"
       @click="sendNewEmail"
     >
@@ -180,14 +253,25 @@ const showEmailInReport = ref(false);
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
       L’adresse e-mail saisie est erronée ?
     </h3>
-    <button class="fr-btn fr-btn--tertiary-no-outline" @click="hidePending">
+    <button
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+      @click="hidePending"
+    >
       Modifier mon adresse e-mail
     </button>
+
+    <div class="fr-mt-3w">
+      <button class="fr-btn fr-btn--secondary" @click="cancelEmailUpdate">
+        Annuler le changement d’adresse e-mail
+      </button>
+    </div>
   </div>
 
+  <!-- Update email form -->
   <form
     v-if="displayUpdateEmailForm && !displayPendingEmailVerification"
     class="wrapper"
+    novalidate
     @submit.prevent="updateEmail"
   >
     <div
@@ -209,7 +293,7 @@ const showEmailInReport = ref(false);
         />
       </div>
       <p v-if="passwordError" id="password-error" class="fr-error-text">
-        Le mot de passe saisi est incorrect.
+        {{ passwordError }}
       </p>
 
       <div
@@ -224,22 +308,23 @@ const showEmailInReport = ref(false);
           Afficher
         </label>
       </div>
-      <p>
+      <p class="fr-mt-3v">
         <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
           >Mot de passe oublié ?</RouterLink
         >
       </p>
-
-      <DsfrField
-        id="new-email"
-        v-model="newEmail"
-        class="fr-mt-3v"
-        label="Nouvelle adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
-        type="email"
-        required
-      />
     </div>
+    <DsfrField
+      id="new-email"
+      ref="newEmailFieldRef"
+      v-model="newEmail"
+      class="fr-mt-3v"
+      label="Nouvelle adresse e-mail"
+      hint="Format attendu : nom@domaine.fr"
+      type="email"
+      :error="newEmailError"
+      required
+    />
     <ul
       class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
     >
@@ -268,6 +353,7 @@ const showEmailInReport = ref(false);
     Changer d’adresse e-mail
   </button>
 
+  <!-- Show email toggle -->
   <div class="fr-toggle fr-toggle--label-left">
     <input
       id="show-email-in-report"
@@ -277,7 +363,7 @@ const showEmailInReport = ref(false);
       aria-describedby="show-email-in-report-desc"
     />
     <label class="fr-toggle__label" for="show-email-in-report"
-      >Afficher l’adresse e-mail dans le rapport d’audit</label
+      >Afficher mon adresse e-mail dans le rapport d'audit</label
     >
     <p id="show-email-in-report-desc" class="fr-hint-text">
       Permet d’aider le demandeur de l’audit à vous contacter s’il a des

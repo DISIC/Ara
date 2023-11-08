@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useUniqueId } from "../composables/useUniqueId";
 
 defineProps<{
@@ -27,7 +28,7 @@ function closeOptions() {
 
 // Close the dropdown if click is outside the dropdown container or if the clicked element is a button or link.
 function handleWindowClick(e: MouseEvent) {
-  if (!(e.target as HTMLElement).closest(".dropdown-container")) {
+  if (!containerRef.value?.contains(e.target as HTMLElement)) {
     // Click outside of container
     showContent.value = false;
   } else {
@@ -48,6 +49,15 @@ watch(showContent, () => {
     window.addEventListener("click", handleWindowClick);
   } else {
     window.removeEventListener("click", handleWindowClick);
+  }
+});
+
+const route = useRoute();
+
+// Close dropdown when changing route
+watch(route, () => {
+  if (showContent.value) {
+    showContent.value = false;
   }
 });
 

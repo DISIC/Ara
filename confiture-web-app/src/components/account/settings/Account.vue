@@ -20,17 +20,49 @@ const displayAccountDeletionForm = ref(false);
 // Form submission
 const validationFieldRef = ref<HTMLInputElement>();
 const passwordFieldRef = ref<HTMLInputElement>();
-const showValidationError = ref(false);
-const showPasswordError = ref(false);
+const validationError = ref<string>();
+const passwordError = ref<string>();
+
+function validateValidationField() {
+  validationError.value = undefined;
+
+  // Empty validation sentence
+  if (!validation.value.length) {
+    validationError.value =
+      "Champ obligatoire. Veuillez saisir la phrase de confirmation";
+    validationFieldRef.value?.focus();
+    return false;
+  }
+
+  // Wrong validation sentence
+  if (validation.value !== VALIDATION_STRING) {
+    validationError.value =
+      "La phrase saisie est incorrect. Veuillez vérifier votre saisie.";
+    validationFieldRef.value?.focus();
+    return;
+  }
+
+  return true;
+}
+
+function validatePasswordField() {
+  passwordError.value = undefined;
+
+  // Empty password
+  if (!password.value.length) {
+    passwordError.value =
+      "Champ obligatoire. Veuillez saisir votre mot de passe";
+    passwordFieldRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
 
 async function deleteAccount() {
-  showValidationError.value = false;
-  showPasswordError.value = false;
-
-  if (validation.value !== VALIDATION_STRING) {
-    showValidationError.value = true;
-    await nextTick();
-    validationFieldRef.value?.focus();
+  if (![validatePasswordField(), validateValidationField()].every((i) => i)) {
+    // Invalid form
+    return;
   }
 
   accountStore
@@ -40,7 +72,7 @@ async function deleteAccount() {
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        showPasswordError.value = true;
+        passwordError.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
         passwordFieldRef.value?.focus();
       } else {
@@ -73,29 +105,23 @@ async function hideAccountDeletionForm() {
 
 <template>
   <template v-if="displayAccountDeletionForm">
-    <div class="wrapper">
-      <div
-        ref="alertRef"
-        class="fr-alert fr-alert--error fr-mb-3w"
-        tabindex="-1"
-      >
-        <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
-        <p>
-          Toutes les données associées à votre compte seront définitivement
-          supprimées. Les audits et rapports que vous avez créés ne seront pas
-          supprimés, cependant, votre nom, prénom et adresse e-mail ne seront
-          plus mentionnés dans ces audits et rapports.
-        </p>
-      </div>
+    <div ref="alertRef" class="fr-alert fr-alert--error fr-mb-3w" tabindex="-1">
+      <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
+      <p>
+        Toutes les données associées à votre compte seront définitivement
+        supprimées. Les audits et rapports que vous avez créés ne seront pas
+        supprimés, cependant, votre nom, prénom et adresse e-mail ne seront plus
+        mentionnés dans ces audits et rapports.
+      </p>
     </div>
-    <form class="wrapper-sm" @submit.prevent="deleteAccount">
+    <form class="wrapper" novalidate @submit.prevent="deleteAccount">
       <div
         class="fr-input-group"
-        :class="{ 'fr-input-group--error': showValidationError }"
+        :class="{ 'fr-input-group--error': validationError }"
       >
         <label class="fr-label" for="confirm-sentence"
-          >Pour confirmer la suppression de votre compte veuillez saisir : je
-          confirme vouloir supprimer mon compte
+          >Pour confirmer la suppression de votre compte veuillez saisir :
+          {{ VALIDATION_STRING }}
           <span class="fr-hint-text"
             >Attention à ne pas utiliser de majuscule ou ajouter d’espace au
             début ou à la fin de votre saisie.
@@ -106,24 +132,18 @@ async function hideAccountDeletionForm() {
           ref="validationFieldRef"
           v-model="validation"
           class="fr-input"
-          :class="{ 'fr-input--error': showValidationError }"
-          :aria-describedby="
-            showValidationError ? 'validation-error' : undefined
-          "
+          :class="{ 'fr-input--error': validationError }"
+          :aria-describedby="validationError ? 'validation-error' : undefined"
           type="text"
           required
         />
-        <p
-          v-if="showValidationError"
-          id="validation-error"
-          class="fr-error-text"
-        >
-          La phrase saisie est incorrect. Veuillez vérifier votre saisie.
+        <p v-if="validationError" id="validation-error" class="fr-error-text">
+          {{ validationError }}
         </p>
       </div>
       <div
         class="fr-password"
-        :class="{ 'fr-input-group--error': showPasswordError }"
+        :class="{ 'fr-input-group--error': passwordError }"
       >
         <label class="fr-label" for="password">Mot de passe</label>
         <div class="fr-input-wrap">
@@ -132,15 +152,15 @@ async function hideAccountDeletionForm() {
             ref="passwordFieldRef"
             v-model="password"
             class="fr-password__input fr-input"
-            :class="{ 'fr-input--error': showPasswordError }"
-            :aria-describedby="showPasswordError ? 'password-error' : undefined"
+            :class="{ 'fr-input--error': passwordError }"
+            :aria-describedby="passwordError ? 'password-error' : undefined"
             autocomplete="current-password"
             type="password"
             required
           />
         </div>
-        <p v-if="showPasswordError" id="password-error" class="fr-error-text">
-          Le mot de passe saisi est incorrect.
+        <p v-if="passwordError" id="password-error" class="fr-error-text">
+          {{ passwordError }}
         </p>
 
         <div
@@ -155,7 +175,7 @@ async function hideAccountDeletionForm() {
             Afficher
           </label>
         </div>
-        <p>
+        <p class="fr-mt-3v">
           <RouterLink :to="{ name: 'password-reset' }" class="fr-link"
             >Mot de passe oublié ?</RouterLink
           >
@@ -193,10 +213,6 @@ async function hideAccountDeletionForm() {
 
 <style scoped>
 .wrapper {
-  max-width: 36.25rem;
-}
-
-.wrapper-sm {
   max-width: 24rem;
 }
 

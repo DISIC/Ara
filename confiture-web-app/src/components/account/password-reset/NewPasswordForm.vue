@@ -1,25 +1,65 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "submit", newPassword: string): void;
 }>();
 
 const password = ref("");
+const passwordFieldRef = ref<HTMLInputElement>();
+const passwordError = ref<string>();
+
+function validatePasswordField() {
+  passwordError.value = undefined;
+
+  // Empty password
+  if (password.value.length === 0) {
+    passwordError.value =
+      "Champ obligatoire. Veuillez choisir un mot de passe de 12 caractères minimum.";
+    passwordFieldRef.value?.focus();
+    return false;
+  }
+
+  // Invalid password requirement
+  if (password.value.length < 12) {
+    passwordError.value =
+      "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.";
+    passwordFieldRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function submitPassword() {
+  if (validatePasswordField()) {
+    emit("submit", password.value);
+  }
+}
 </script>
 
 <template>
-  <form class="wrapper" @submit.prevent="$emit('submit', password)">
+  <form class="wrapper" novalidate @submit.prevent="submitPassword">
     <h1 class="fr-h3">Changer de mot de passe</h1>
 
-    <div class="fr-password fr-mb-3w">
+    <div
+      class="fr-password fr-mb-3w"
+      :class="{ 'fr-input-group--error': !!passwordError }"
+    >
       <label class="fr-label" for="user-password-input">Mot de passe</label>
       <div class="fr-input-wrap">
         <input
           id="user-password-input"
           v-model="password"
-          class="fr-password__input fr-input"
-          aria-describedby="user-password-input-messages"
+          :class="[
+            'fr-password__input fr-input',
+            { 'fr-input--error': !!passwordError },
+          ]"
+          :aria-describedby="
+            passwordError
+              ? 'user-password-error'
+              : 'user-password-input-messages'
+          "
           aria-required="true"
           autocomplete="new-password"
           type="password"
@@ -28,7 +68,12 @@ const password = ref("");
         />
       </div>
 
+      <p v-if="passwordError" id="user-password-error" class="fr-error-text">
+        {{ passwordError }}
+      </p>
+
       <div
+        v-else
         id="user-password-input-messages"
         class="fr-messages-group"
         aria-live="assertive"
@@ -42,6 +87,7 @@ const password = ref("");
       >
         <input
           id="user-password-show"
+          ref="passwordFieldRef"
           aria-label="Afficher le mot de passe"
           type="checkbox"
           aria-describedby="user-password-show-messages"
