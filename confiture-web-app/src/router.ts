@@ -9,7 +9,6 @@ import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import HelpPage from "./pages/help/HelpPage.vue";
 import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";
@@ -610,6 +609,20 @@ router.beforeEach((to) => {
   const accountStore = useAccountStore();
   if (to.meta.authRequired && !accountStore.account) {
     return { name: "login" };
+  }
+});
+
+// Reset focus on <body> + announce new page title
+router.afterEach(async (to, from) => {
+  if (from.path !== to.path) {
+    const pageTitleAlert = document.querySelector("#page-title-alert");
+    if (pageTitleAlert) {
+      pageTitleAlert.innerHTML = `<p>${to.meta.name}</p>`;
+    }
+
+    document.body.setAttribute("tabindex", "-1");
+    document.body.focus();
+    document.body.removeAttribute("tabindex");
   }
 });
 
