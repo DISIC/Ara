@@ -48,6 +48,7 @@ function submitPassword() {
       id="user-password-input"
       ref="passwordFieldRef"
       v-model="password"
+      class="fr-mb-3w"
       :error="passwordError"
       label="Mot de passe"
       required

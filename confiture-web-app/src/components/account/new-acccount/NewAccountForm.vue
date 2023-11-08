@@ -155,6 +155,7 @@ function fillFields() {
         id="user-password"
         ref="userPasswordField"
         v-model="userPassword"
+        class="fr-mb-3w"
         label="Mot de passe"
         :error="userPasswordError"
         autocomplete="new-password"

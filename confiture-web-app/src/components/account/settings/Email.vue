@@ -279,6 +279,7 @@ const showEmailInReport = ref(false);
       id="email-password"
       ref="passwordFieldRef"
       v-model="password"
+      class="fr-mb-3w"
       :error="passwordError"
       label="Mot de passe"
       required
