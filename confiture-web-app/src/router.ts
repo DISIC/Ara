@@ -618,6 +618,10 @@ router.afterEach(async (to, from) => {
     const pageTitleAlert = document.querySelector("#page-title-alert");
     if (pageTitleAlert) {
       pageTitleAlert.innerHTML = `<p>${to.meta.name}</p>`;
+
+      setTimeout(() => {
+        pageTitleAlert.innerHTML = "";
+      }, 2000);
     }
 
     document.body.setAttribute("tabindex", "-1");
