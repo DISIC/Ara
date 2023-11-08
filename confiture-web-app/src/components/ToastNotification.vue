@@ -12,14 +12,34 @@ const store = useNotificationStore();
           v-if="store.notification"
           :key="store.notification.id"
           class="toast-notification fr-alert"
-          :class="`fr-alert--${store.notification.status}`"
+          :class="[
+            `fr-alert--${store.notification.status}`,
+            {
+              'fr-alert--sm':
+                !store.notification.title && store.notification.description,
+            },
+          ]"
           aria-atomic="true"
           role="alert"
         >
-          <p class="fr-alert__title">{{ store.notification.title }}</p>
-          <p v-if="store.notification.description">
-            {{ store.notification.description }}
-          </p>
+          <div class="text-content">
+            <p v-if="store.notification.title" class="fr-alert__title">
+              {{ store.notification.title }}
+            </p>
+            <p v-if="store.notification.description" class="">
+              {{ store.notification.description }}
+            </p>
+          </div>
+
+          <!-- FIXME: this button is not accessible with keyboard -->
+          <button
+            v-if="store.notification.action"
+            class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-mb-1v"
+            @click="store.notification.action.cb"
+          >
+            {{ store.notification.action.label }}
+          </button>
+
           <button
             class="fr-btn--close fr-btn"
             title="Masquer le message"
@@ -41,7 +61,17 @@ const store = useNotificationStore();
   bottom: 1rem;
   background-color: var(--background-default-grey);
   max-width: min(50rem, calc(100vw - 2rem));
-  z-index: 2;
+  z-index: 1000;
+
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .v-enter-active,

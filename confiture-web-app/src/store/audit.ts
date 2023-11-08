@@ -92,6 +92,12 @@ export const useAuditStore = defineStore("audit", {
     async deleteAudit(uniqueId: string): Promise<void> {
       await ky.delete(`/api/audits/${uniqueId}`);
       delete this.entities[uniqueId];
+      this.listing = this.listing.filter(
+        (audit) => audit.editUniqueId !== uniqueId
+      );
+      if (this.currentAuditId === uniqueId) {
+        this.currentAuditId = null;
+      }
     },
 
     async publishAudit(uniqueId: string): Promise<Audit> {
@@ -107,7 +113,12 @@ export const useAuditStore = defineStore("audit", {
      * @returns A promise to the unique id of the copy
      */
     async duplicateAudit(uniqueId: string, copyName: string): Promise<string> {
-      const newAuditId = (await ky
+      // non-null because the original audit has to exist to have the "Copy" button clicked
+      const originalAuditListingItem = this.listing.find(
+        (audit) => audit.editUniqueId === uniqueId
+      )!;
+
+      const newAudit = (await ky
         .post(`/api/audits/${uniqueId}/duplicate`, {
           json: {
             procedureName: copyName,
@@ -115,8 +126,21 @@ export const useAuditStore = defineStore("audit", {
           // Duplicating an audit can be a pretty long process
           timeout: false,
         })
-        .text()) as string;
-      return newAuditId;
+        .json()) as Audit;
+
+      const newAuditListItem: AccountAudit = {
+        auditType: newAudit.auditType,
+        complianceLevel: originalAuditListingItem.complianceLevel,
+        consultUniqueId: newAudit.consultUniqueId,
+        creationDate: newAudit.creationDate!,
+        editUniqueId: newAudit.editUniqueId,
+        procedureName: newAudit.procedureName,
+        status: originalAuditListingItem.status,
+      };
+
+      this.listing.push(newAuditListItem);
+
+      return newAudit.editUniqueId;
     },
 
     // FIXME: move this to filter store?

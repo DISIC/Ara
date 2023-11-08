@@ -5,7 +5,12 @@ import { useRoute, useRouter } from "vue-router";
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useIsOffline } from "../composables/useIsOffline";
-import { useAuditStore, useResultsStore, useSystemStore } from "../store";
+import {
+  useAuditStore,
+  useResultsStore,
+  useSystemStore,
+  useAccountStore,
+} from "../store";
 import { captureWithPayloads, formatBytes, slugify } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
@@ -42,6 +47,7 @@ const isDuplicationLoading = ref(false);
 
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
+const accountStore = useAccountStore();
 const notify = useNotifications();
 
 function copyReportLink() {
@@ -68,7 +74,7 @@ function confirmDuplicate(name: string) {
 
       duplicateModal.value?.hide();
 
-      return router.push({
+      router.push({
         name: "edit-audit-step-three",
         params: {
           uniqueId: newAuditId,
@@ -92,17 +98,25 @@ function confirmDuplicate(name: string) {
  * Delete audit and redirect to home page
  */
 function confirmDelete() {
+  const auditName = auditStore.currentAudit?.procedureName;
+
   auditStore
     .deleteAudit(uniqueId.value)
     .then(() => {
-      // Clear pinia stores
-      auditStore.$reset();
       resultStore.$reset();
 
-      router.push({
-        name: "home",
-        state: { deleteAudit: "true" },
-      });
+      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
+
+      if (accountStore.account) {
+        router.push({
+          name: "account-dashboard",
+        });
+      } else {
+        router.push({
+          name: "home",
+          state: { deleteAudit: "true" },
+        });
+      }
     })
     .catch((error) => {
       notify(
@@ -294,7 +308,7 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />
@@ -303,7 +317,7 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     ref="deleteModal"
     @confirm="confirmDelete"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />

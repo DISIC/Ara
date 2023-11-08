@@ -16,7 +16,7 @@ const accountStore = useAccountStore();
     </RouterLink>
   </div>
 
-  <div class="wrapper">
+  <div class="wrapper fr-mb-6w">
     <h1>Un audit manque dans votre espace ?</h1>
     <p>
       Vérifiez que l'adresse e-mail associée à votre audit est identique à celle
@@ -65,6 +65,7 @@ const accountStore = useAccountStore();
   background: var(--background-alt-blue-france);
   width: 100vw;
   margin-left: calc(50% - 50vw);
+  margin-bottom: -6rem;
 }
 
 .banner > * {
