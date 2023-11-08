@@ -35,7 +35,7 @@ const store = useNotificationStore();
           <button
             v-if="store.notification.action"
             class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-mb-1v"
-            @click="store.notification.action.cb"
+            @click="store.notification?.action?.cb"
           >
             {{ store.notification.action.label }}
           </button>
