@@ -19,8 +19,6 @@ const userPassword = ref("");
 const userPasswordError = ref<string>();
 const userPasswordRef = ref<InstanceType<typeof DsfrPassword>>();
 
-const rememberMe = ref(false);
-
 const showCreatedAccountAlert = ref(!!history.state.email);
 const showPasswordResetAlert = ref(history.state.passwordReset);
 
@@ -78,7 +76,7 @@ async function handleSubmit() {
   }
 
   store
-    .login(userEmail.value, userPassword.value, rememberMe.value)
+    .login(userEmail.value, userPassword.value)
     .then(() => {
       router.push({ name: "account-dashboard" });
     })
@@ -151,17 +149,13 @@ async function handleSubmit() {
         id="user-password"
         ref="userPasswordRef"
         v-model="userPassword"
+        class="fr-my-3w"
         :error="userPasswordError"
         label="Mot de passe"
         required
         autocomplete="current-password"
         show-forgotten-password-link
       />
-
-      <div class="fr-checkbox-group fr-checkbox-group--sm fr-my-3w">
-        <input id="remember-me" v-model="rememberMe" type="checkbox" />
-        <label class="fr-label" for="remember-me">Se souvenir de moi</label>
-      </div>
 
       <div class="fr-btns-group">
         <button class="fr-btn fr-mb-0">Se connecter</button>
