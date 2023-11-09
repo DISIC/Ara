@@ -9,7 +9,6 @@ import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import HelpPage from "./pages/help/HelpPage.vue";
 import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";

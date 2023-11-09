@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRoute, RouteLocationRaw } from "vue-router";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import { useAuditStore, useReportStore } from "../store";
 import { useAccountStore } from "../store/account";
 import Dropdown from "./Dropdown.vue";
-// import GearIcon from "./icons/GearIcon.vue";
 import LogoutIcon from "./icons/LogoutIcon.vue";
-import { useRouter } from "vue-router";
 import { useNotifications } from "../composables/useNotifications";
 
 const reportStore = useReportStore();
@@ -15,83 +13,6 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 
 const currentRoute = useRoute();
-// const matchedRoutesNames = computed(() => {
-//   return currentRoute.matched.map((r) => r.name);
-// });
-
-// /**
-//  * Determine if the navigation link should has the `aria-current` attribute.
-//  */
-// function getAriaCurrentValue(to: RouteLocationRaw, match?: string) {
-//   if (typeof to === "string") {
-//     if (match && to.startsWith(match)) {
-//       return "true";
-//     }
-//     return null;
-//   }
-
-//   if ("name" in to && matchedRoutesNames.value.includes(to.name)) {
-//     return "true";
-//   }
-
-//   if (match && currentRoute.path.startsWith(match)) {
-//     // Exclude home link to be matched for other routes
-//     if (match === "/" && currentRoute.fullPath !== "/") {
-//       return null;
-//     }
-//     return "true";
-//   }
-// }
-
-// const homeLocation = computed(() =>
-//   accountStore.account
-//     ? {
-//         label: "Accueil",
-//         to: { name: "account-dashboard" },
-//         match: "/compte",
-//       }
-//     : {
-//         label: "Accueil",
-//         to: { name: "home" },
-//         match: "/",
-//       }
-// );
-
-// const resourcesLocation = {
-//   label: "Ressources",
-//   to: { name: "resources" },
-//   match: "/ressources",
-// };
-
-// const menuItems = computed<
-//   Array<{ to: RouteLocationRaw; label: string; match?: string }>
-// >(() => {
-//   if (auditStore.currentAudit) {
-//     const auditLocation = {
-//       label: `Audit ${auditStore.currentAudit.procedureName}`,
-//       to: auditStore.lastVisitedStepLocation ?? {
-//         name: "edit-audit-step-one",
-//         params: { uniqueId: auditStore.currentAudit.editUniqueId },
-//       },
-//       match: "/audits",
-//     };
-//     return [homeLocation.value, auditLocation, resourcesLocation];
-//   }
-
-//   if (reportStore.data) {
-//     const reportLocation = {
-//       to: {
-//         name: "report",
-//         params: { uniqueId: reportStore.data.consultUniqueId },
-//       },
-//       label: "Rapport d’audit",
-//       match: "/rapports",
-//     };
-//     return [homeLocation.value, reportLocation, resourcesLocation];
-//   }
-
-//   return [homeLocation.value, resourcesLocation];
-// });
 
 const newsSubMenu = ref<HTMLButtonElement>();
 
@@ -167,7 +88,6 @@ function handleDisconnectClick() {
                   </RouterLink>
                 </li>
               </ul>
-              <!-- FIXME: correct dropdown style when #377 is merged -->
               <Dropdown
                 v-else
                 ref="optionsDropdownRef"
@@ -257,7 +177,7 @@ function handleDisconnectClick() {
                     }
                   "
                   :aria-current="
-                    ['new-audit-step-one', 'edit-audit-step-one', 'edit-audit-step-three', 'edit-audit-step-four', 'edit-audit-declaration'].includes(currentRoute.name as string) ? 'true' : null
+                    currentRoute.path.startsWith('/audits') ? 'true' : null
                   "
                 >
                   {{ `Audit ${auditStore.currentAudit.procedureName}` }}

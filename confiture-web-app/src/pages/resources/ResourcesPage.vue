@@ -3,11 +3,7 @@ import AfterReport from "../../components/FaqAccordionsContent/AfterReport.vue";
 import Prioritize from "../../components/FaqAccordionsContent/Prioritize.vue";
 import Test from "../../components/FaqAccordionsContent/Test.vue";
 import AfterCorrection from "../../components/FaqAccordionsContent/AfterCorrection.vue";
-import QuickWin from "../../components/FaqAccordionsContent/QuickWin.vue";
 import FullyAccessible from "../../components/FaqAccordionsContent/FullyAccessible.vue";
-import SelfAuditing from "../../components/FaqAccordionsContent/SelfAuditing.vue";
-import LegalRequirements from "../../components/FaqAccordionsContent/LegalRequirements.vue";
-import TeamTraining from "../../components/FaqAccordionsContent/TeamTraining.vue";
 import PageMeta from "../../components/PageMeta";
 
 const tileLinks = [
@@ -48,7 +44,8 @@ const moreLinks = [
   },
   {
     title: "DSFR",
-    description: "le site officiel du Système de Design de l’État développé par le SIG",
+    description:
+      "le site officiel du Système de Design de l’État développé par le SIG",
     href: "https://www.systeme-de-design.gouv.fr/",
   },
   {
