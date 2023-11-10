@@ -10,6 +10,7 @@ import { CreateAuditRequestData } from "../../types";
 import { useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
 import { captureWithPayloads } from "../../utils";
+import { useAccountStore } from "../../store/account";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -58,8 +59,26 @@ const auditStore = useAuditStore();
 
 const notify = useNotifications();
 
-function submitStepOne(data: CreateAuditRequestData) {
+const accountStore = useAccountStore();
+
+async function submitStepOne(data: CreateAuditRequestData) {
   isSubmitting.value = true;
+
+  // Update user profile when their name/org is not known.
+  if (
+    accountStore.account &&
+    ((data.auditorName && !accountStore.account?.name) ||
+      (data.auditorOrganisation && !accountStore.account?.orgName))
+  ) {
+    // Since this update is not necessary for the audit to be created, we ignore eventual errors.
+    accountStore
+      .updateProfile({
+        name: data.auditorName,
+        orgName: data.auditorOrganisation,
+      })
+      .catch(captureWithPayloads);
+  }
+
   auditStore
     .createAudit(data)
     .then((audit) => {

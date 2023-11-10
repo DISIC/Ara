@@ -190,9 +190,6 @@ async function cancelEmailUpdate() {
     showButtonRef.value?.focus();
   }
 }
-
-// Show email in report
-const showEmailInReport = ref(false);
 </script>
 
 <template>
@@ -325,24 +322,6 @@ const showEmailInReport = ref(false);
   >
     Changer d’adresse e-mail
   </button>
-
-  <!-- Show email toggle -->
-  <div class="fr-toggle fr-toggle--label-left">
-    <input
-      id="show-email-in-report"
-      v-model="showEmailInReport"
-      type="checkbox"
-      class="fr-toggle__input"
-      aria-describedby="show-email-in-report-desc"
-    />
-    <label class="fr-toggle__label" for="show-email-in-report"
-      >Afficher mon adresse e-mail dans le rapport d'audit</label
-    >
-    <p id="show-email-in-report-desc" class="fr-hint-text">
-      Permet d’aider le demandeur de l’audit à vous contacter s’il a des
-      questions ou besoin d’aide.
-    </p>
-  </div>
 </template>
 
 <style scoped>

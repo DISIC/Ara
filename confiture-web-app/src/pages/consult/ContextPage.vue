@@ -94,21 +94,13 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       </p>
     </div>
 
-    <template
-      v-if="report.data.context.auditorName || report.data.context.auditorEmail"
-    >
+    <template v-if="report.data.context.auditorName">
       <h2 class="fr-mb-2w fr-mb-md-3w">Auditeur ou auditrice</h2>
 
       <p class="fr-mb-9v fr-mb-md-6w">
         <template v-if="report.data.context.auditorName">
           Cet audit a été réalisé par
           <strong>{{ report.data.context.auditorName }}</strong
-          >.
-        </template>
-        <template v-if="report.data.context.auditorEmail">
-          Pour toute question relative à cet audit, vous pouvez contacter
-          l’auditeur ou l’auditrice à l’adresse suivante :
-          <strong>{{ report.data.context.auditorEmail }}</strong
           >.
         </template>
       </p>
