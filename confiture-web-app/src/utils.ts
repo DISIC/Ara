@@ -57,7 +57,7 @@ const FORMATTED_USER_IMPACT = {
  * Format a criterion result user impact type string into French.
  */
 export function formatUserImpact(
-  userImpact: CriterionResultUserImpact
+  userImpact: CriterionResultUserImpact,
 ): string {
   return FORMATTED_USER_IMPACT[userImpact];
 }
@@ -140,7 +140,7 @@ export function formatBytes(bytes: number, decimals = 0) {
  */
 export async function captureWithPayloads(
   error: unknown,
-  logRequestPayload = true
+  logRequestPayload = true,
 ) {
   const scope = new Scope();
 
@@ -156,7 +156,7 @@ export async function captureWithPayloads(
             payloads["Request JSON"] = JSON.stringify(
               JSON.parse(data),
               null,
-              2
+              2,
             );
           } catch (e) {
             // noop, we dont do anything if it's not JSON
@@ -209,4 +209,31 @@ export function isJwtExpired(jwt: string) {
   }
 
   return Date.now() > payload.exp * 1000;
+}
+
+/**
+ * Wait for an element matching the given selector to appear in the DOM and
+ * return a promise resolving to the element.
+ */
+export function waitForElement(selector: string): Promise<Element> {
+  return new Promise((resolve) => {
+    const el = document.querySelector(selector);
+
+    if (el) {
+      return resolve(el);
+    }
+
+    const observer = new MutationObserver(() => {
+      const el = document.querySelector(selector);
+      if (el) {
+        observer.disconnect();
+        resolve(el);
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  });
 }

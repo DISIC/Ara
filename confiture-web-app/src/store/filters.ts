@@ -53,7 +53,7 @@ export const useFiltersStore = defineStore("filters", {
                 return (
                   c.status === CriteriumResultStatus.NOT_TESTED ||
                   this.newEvaluatedCriteria.includes(
-                    `${auditStore.currentPageId}.${t.number}.${c.criterium.number}`
+                    `${auditStore.currentPageId}.${t.number}.${c.criterium.number}`,
                   )
                 );
               }),
@@ -86,7 +86,8 @@ export const useFiltersStore = defineStore("filters", {
                 // audit type filter
                 !!CRITERIA_BY_AUDIT_TYPE[auditType].find(
                   (fc) =>
-                    fc.criterium === c.criterium.number && fc.topic === t.number
+                    fc.criterium === c.criterium.number &&
+                    fc.topic === t.number,
                 ) &&
                 // status
                 (this.complianceLevels.length
@@ -98,7 +99,7 @@ export const useFiltersStore = defineStore("filters", {
                   .includes(this.search.toLowerCase()) ||
                   t.topic
                     .toLowerCase()
-                    .includes(this.search.toLocaleLowerCase()))
+                    .includes(this.search.toLocaleLowerCase())),
             ),
         };
       });

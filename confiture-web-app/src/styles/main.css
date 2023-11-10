@@ -1,3 +1,7 @@
+:root {
+  --dsfr-outline: #0a76f6;
+}
+
 .sr-only {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);

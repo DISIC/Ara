@@ -21,7 +21,7 @@ const auditStore = useAuditStore();
 const resultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0)
+    .reduce((total, length) => (total += length), 0),
 );
 
 const search = ref("");
@@ -65,26 +65,26 @@ async function displayFilters() {
 
 watch(
   () => filterStore.hideEvaluatedCriteria,
-  () => filterStore.updateEvaluatedCriteria()
+  () => filterStore.updateEvaluatedCriteria(),
 );
 
 const compliantCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.COMPLIANT
-    ).length
+      (r) => r.status === CriteriumResultStatus.COMPLIANT,
+    ).length,
 );
 const notCompliantCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
-    ).length
+      (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT,
+    ).length,
 );
 const notApplicableCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
-    ).length
+      (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE,
+    ).length,
 );
 </script>
 
@@ -93,7 +93,7 @@ const notApplicableCount = computed(
     v-if="!showFilters"
     ref="displayFiltersRef"
     type="button"
-    class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double toggle-column-button"
+    class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double toggle-column-button fr-mr-3v"
     @click="displayFilters"
   >
     <span class="sr-only">Afficher la colonne des filtres</span>
