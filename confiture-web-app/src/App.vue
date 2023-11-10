@@ -62,6 +62,9 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- Page title container, filled on page change -->
+  <div id="page-title-alert" class="sr-only" role="alert" aria-live="polite" />
+
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">
       <ul class="fr-skiplinks__list">
