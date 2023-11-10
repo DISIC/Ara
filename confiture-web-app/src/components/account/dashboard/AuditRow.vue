@@ -27,10 +27,6 @@ const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
 
-const showComplianceLevel = computed(() => {
-  return !isInProgress.value && props.audit.auditType === AuditType.FULL;
-});
-
 const rowUrl = isInProgress.value
   ? {
       name: "edit-audit-step-three",
@@ -152,31 +148,33 @@ function deleteAudit() {
 
     <!-- Compliance level -->
     <div class="audit-compliance-level">
-      <p
-        :aria-hidden="showComplianceLevel ? undefined : 'true'"
-        class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
-        :class="
-          showComplianceLevel
-            ? {
-                'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                'fr-badge--new': audit.complianceLevel >= 50,
-                'fr-badge--error': audit.complianceLevel < 50,
-              }
-            : null
-        "
-      >
-        <span class="sr-only">Taux de conformité </span>
-        {{ showComplianceLevel ? `${audit.complianceLevel}%` : "–" }}
-      </p>
-      <p v-if="showComplianceLevel" class="fr-text--xs fr-mb-0 fr-mt-1v">
-        {{
-          audit.complianceLevel === 100
-            ? "Totalement conforme"
-            : audit.complianceLevel >= 50
-            ? "Partiellement conforme"
-            : "Non conforme"
-        }}
-      </p>
+      <template v-if="audit.auditType === AuditType.FULL">
+        <p
+          class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
+          :class="
+            isInProgress
+              ? null
+              : {
+                  'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                  'fr-badge--new': audit.complianceLevel >= 50,
+                  'fr-badge--error': audit.complianceLevel < 50,
+                }
+          "
+        >
+          <span v-if="!isInProgress" class="sr-only">Taux de conformité </span>
+          {{ isInProgress ? "Audit en cours" : `${audit.complianceLevel}%` }}
+        </p>
+        <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
+          {{
+            audit.complianceLevel === 100
+              ? "Totalement conforme"
+              : audit.complianceLevel >= 50
+              ? "Partiellement conforme"
+              : "Non conforme"
+          }}
+        </p>
+      </template>
+      <p v-else class="fr-m-0">Non-applicable</p>
     </div>
 
     <!-- Main action -->
