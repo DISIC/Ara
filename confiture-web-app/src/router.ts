@@ -612,4 +612,22 @@ router.beforeEach((to) => {
   }
 });
 
+// Reset focus on <body> + announce new page title
+router.afterEach(async (to, from) => {
+  if (from.path !== to.path) {
+    const pageTitleAlert = document.querySelector("#page-title-alert");
+    if (pageTitleAlert) {
+      pageTitleAlert.innerHTML = `<p>${to.meta.name}</p>`;
+
+      setTimeout(() => {
+        pageTitleAlert.innerHTML = "";
+      }, 2000);
+    }
+
+    document.body.setAttribute("tabindex", "-1");
+    document.body.focus();
+    document.body.removeAttribute("tabindex");
+  }
+});
+
 export default router;
