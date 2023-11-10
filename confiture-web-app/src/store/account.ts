@@ -43,6 +43,7 @@ export const useAccountStore = defineStore("account", {
       const payload = jwtDecode(state.authToken) as AuthenticationJwtPayload;
       console.log(payload);
       return {
+        uid: payload.sub,
         email: payload.email,
         name: payload.name,
         orgName: payload.org,

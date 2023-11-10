@@ -136,6 +136,7 @@ export const useAuditStore = defineStore("audit", {
         editUniqueId: newAudit.editUniqueId,
         procedureName: newAudit.procedureName,
         status: originalAuditListingItem.status,
+        estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
       };
 
       this.listing.push(newAuditListItem);
