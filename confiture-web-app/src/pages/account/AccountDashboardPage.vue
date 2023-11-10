@@ -19,11 +19,16 @@ const mainHeadingRef = ref<HTMLHeadingElement>();
 
 const showAuditsAlert = ref(
   // TODO: rename "confiture" into "ara" for all localStorage things
-  !localStorage.getItem("confiture:hide-account-audits-alert")
+  !localStorage.getItem(
+    "confiture:hide-account-audits-alert:" + accountStore.account?.uid
+  )
 );
 
 async function hideAuditsAlert() {
-  localStorage.setItem("confiture:hide-account-audits-alert", "true");
+  localStorage.setItem(
+    "confiture:hide-account-audits-alert:" + accountStore.account?.uid,
+    "true"
+  );
   showAuditsAlert.value = false;
   await nextTick();
   mainHeadingRef.value?.focus();
@@ -67,7 +72,7 @@ onMounted(() => {
     </p>
     <p>
       <RouterLink class="fr-link" :to="{ name: 'missing-audit' }">
-        Un de vos audit manque dans votre espace ?
+        Un de vos audits manque dans votre espace ?
       </RouterLink>
     </p>
     <button

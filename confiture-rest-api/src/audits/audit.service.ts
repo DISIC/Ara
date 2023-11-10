@@ -1204,6 +1204,7 @@ export class AuditService {
         ),
         complianceLevel,
         status: progress < 1 ? 'IN_PROGRESS' : 'COMPLETED',
+        estimatedCsvSize: 502 + a.pages.length * 318,
       };
     });
   }

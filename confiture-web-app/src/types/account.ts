@@ -26,4 +26,5 @@ export interface AccountAudit {
   complianceLevel: number;
   editUniqueId: string;
   consultUniqueId: string;
+  estimatedCsvSize: number;
 }

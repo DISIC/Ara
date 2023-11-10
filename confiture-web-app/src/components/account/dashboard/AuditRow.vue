@@ -7,6 +7,8 @@ import {
   formatDate,
   formatAuditType,
   captureWithPayloads,
+  slugify,
+  formatBytes,
 } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
@@ -111,6 +113,17 @@ function deleteAudit() {
       deleteModal.value?.hide();
     });
 }
+
+const csvExportUrl = computed(
+  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
+);
+
+const csvExportFilename = computed(() => {
+  if (!props.audit.procedureName) {
+    return "audit.csv";
+  }
+  return `audit-${slugify(props.audit.procedureName)}.csv`;
+});
 </script>
 
 <template>
@@ -222,13 +235,12 @@ function deleteAudit() {
           <li class="dropdown-item dropdown-item--with-meta">
             <a
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
-              href="#"
-              download="file"
+              :href="csvExportUrl"
+              :download="csvExportFilename"
             >
               Télécharger l’audit
-              <!-- TODO: refactor (3 same methods in 3 ≠ files) -->
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                CSV – 61,88 Ko
+                CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
             </a>
           </li>
