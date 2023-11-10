@@ -16,10 +16,7 @@ interface AccountStoreState {
 
 export const useAccountStore = defineStore("account", {
   state: (): AccountStoreState => {
-    let authToken =
-      sessionStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ??
-      localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ??
-      null;
+    let authToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ?? null;
 
     if (authToken) {
       const payload = jwtDecode(authToken) as AuthenticationJwtPayload;
@@ -29,7 +26,6 @@ export const useAccountStore = defineStore("account", {
       if (isTokenExpired) {
         authToken = null;
         localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-        sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       }
     }
 
@@ -72,10 +68,7 @@ export const useAccountStore = defineStore("account", {
       });
     },
 
-    /**
-     * @param rememberMe If true, the authentication token is stored in the localstorage instead of the sessionstorage
-     */
-    async login(username: string, password: string, rememberMe: boolean) {
+    async login(username: string, password: string) {
       const authToken = await ky
         .post("/api/auth/signin", {
           json: {
@@ -86,14 +79,7 @@ export const useAccountStore = defineStore("account", {
         .text();
 
       this.authToken = authToken;
-
-      if (rememberMe) {
-        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
-        sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      } else {
-        sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
-        localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      }
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
     },
 
     async refreshToken() {
@@ -104,17 +90,11 @@ export const useAccountStore = defineStore("account", {
         .text();
 
       this.authToken = authToken;
-
-      if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
-        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
-      } else {
-        sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
-      }
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, authToken);
     },
 
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       this.$reset();
     },
 
