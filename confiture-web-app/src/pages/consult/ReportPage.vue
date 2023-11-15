@@ -170,7 +170,7 @@ const siteUrl = computed(() => {
     <div class="fr-alert fr-alert--warning fr-mb-6w">
       <p class="fr-alert__title">Audit en cours</p>
       <p>
-        Les résultats de ce rapports sont provisoires tant que l’audit n'est pas
+        Les résultats de ce rapport sont provisoires tant que l’audit n'est pas
         terminé.
       </p>
     </div>
