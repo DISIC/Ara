@@ -365,7 +365,7 @@ const pageTitle = computed(() => {
         ]"
       >
         <div
-          :class="['filters-wrapper', { 'fr-px-3v': showFilters }]"
+          :class="['filters-wrapper', 'fr-pb-6w', { 'fr-px-3v': showFilters }]"
           role="search"
         >
           <AuditGenerationFilters
