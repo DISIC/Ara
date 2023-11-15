@@ -261,21 +261,21 @@ const route = useRoute();
       </div>
 
       <div>
-        <button
-          v-if="route.name !== 'new-audit-step-one'"
-          class="fr-btn fr-btn--tertiary-no-outline fr-mr-2w"
-          type="button"
-          @click="$router.back()"
-        >
-          Annuler
-        </button>
-
         <button class="fr-btn fr-mt-4w" type="submit">
           {{
             route.name === "new-audit-step-one"
               ? "Commencer l’audit"
               : "Mettre à jour les paramètres"
           }}
+        </button>
+
+        <button
+          v-if="route.name !== 'new-audit-step-one'"
+          class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
+          type="button"
+          @click="$router.back()"
+        >
+          Annuler
         </button>
       </div>
     </div>
