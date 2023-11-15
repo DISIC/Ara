@@ -14,13 +14,13 @@ const isOffline = useIsOffline();
 
 <template>
   <LazyAccordion
-    title="Commentaire (optionnel)"
+    title="Commentaire"
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
-        Commentaire (optionnel)
+        Commentaire
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
