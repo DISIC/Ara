@@ -130,7 +130,6 @@ const csvExportFilename = computed(() => {
   <div class="fr-py-2w grid">
     <!-- Name -->
     <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
-      <span class="sr-only">Nom de l’audit </span>
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
@@ -197,6 +196,10 @@ const csvExportFilename = computed(() => {
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
     >
       {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
+      <span v-if="isInProgress" class="sr-only">
+        {{ audit.procedureName }}</span
+      >
+      <span v-else class="sr-only">pour l’audit {{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Sub actions -->
@@ -204,7 +207,10 @@ const csvExportFilename = computed(() => {
       <Dropdown
         ref="optionsDropdownRef"
         title="Options"
-        :button-props="{ class: 'fr-btn--tertiary' }"
+        :button-props="{
+          class: 'fr-btn--tertiary',
+          ariaLabel: `Options de l’audit ${audit.procedureName}`,
+        }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
           <template v-if="!isInProgress">
@@ -217,6 +223,7 @@ const csvExportFilename = computed(() => {
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
               >
                 Modifier l’audit
+                <span class="sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>
           </template>
@@ -227,6 +234,7 @@ const csvExportFilename = computed(() => {
             >
               <CopyIcon class="fr-mr-2v" />
               Créer une copie
+              <span class="sr-only">de l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
 
@@ -239,6 +247,7 @@ const csvExportFilename = computed(() => {
               :download="csvExportFilename"
             >
               Télécharger l’audit
+              <span class="sr-only"> {{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -251,6 +260,7 @@ const csvExportFilename = computed(() => {
               @click="deleteModal?.show()"
             >
               Supprimer l’audit
+              <span class="sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
