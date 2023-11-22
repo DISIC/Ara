@@ -450,10 +450,9 @@ const router = createRouter({
   ],
   history,
   scrollBehavior(to) {
-    if (to.hash) {
-      return { el: to.hash };
+    if (!to.hash) {
+      return { top: 0 };
     }
-    return { top: 0 };
   },
 });
 
