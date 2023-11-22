@@ -117,23 +117,22 @@ async function resetPassword(newPassword: string) {
       </div>
 
       <p class="fr-text--xl">
-        <!-- TODO: update wording -->
-        Votre lien de vérification a expiré. Veuillez créer de nouveau un compte
-        pour recevoir un lien valide.
+        Votre lien de vérification a expiré. Veuillez changer de nouveau votre
+        mot de passe pour recevoir un lien valide.
       </p>
 
       <p class="fr-text--sm fr-mb-6w">
-        <!-- TODO: update wording -->
-        Si vous avez besoin d’une aide pour la création de votre compte, merci
-        de nous contacter par e-mail à l’adresse suivante :
+        Si vous avez besoin d’aide pour changer de mot de passe, merci de nous
+        contacter par e-mail à l’adresse suivante :
         <strong>ara@design.numerique.gouv.fr</strong>.
       </p>
 
       <RouterLink
-        :to="{ name: 'new-account' }"
+        :to="{ name: 'password-reset' }"
         class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+        @click="currentStep = 0"
       >
-        Créer un compte sur Ara
+        Changer de mot de passe
       </RouterLink>
     </div>
     <NewPasswordForm v-else @submit="resetPassword" />
