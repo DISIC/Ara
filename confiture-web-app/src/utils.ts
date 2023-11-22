@@ -2,6 +2,7 @@ import { Scope, captureException } from "@sentry/vue";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
+import jwtDecode from "jwt-decode";
 
 import {
   AuditReport,
@@ -198,4 +199,14 @@ export function validateEmail(s: string): boolean {
 // Trim + lowercase email
 export function formatEmail(s: string): string {
   return s.trim().toLocaleLowerCase();
+}
+
+export function isJwtExpired(jwt: string) {
+  const payload = jwtDecode<{ exp?: number }>(jwt);
+
+  if (!payload.exp) {
+    return false;
+  }
+
+  return Date.now() > payload.exp * 1000;
 }

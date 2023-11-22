@@ -8,7 +8,7 @@ import RequestPasswordReset from "../../components/account/password-reset/Reques
 import PageMeta from "../../components/PageMeta";
 
 import { useAccountStore } from "../../store/account";
-import { captureWithPayloads, formatEmail } from "../../utils";
+import { captureWithPayloads, formatEmail, isJwtExpired } from "../../utils";
 import { useNotifications } from "../../composables/useNotifications";
 import jwtDecode from "jwt-decode";
 import { PasswordResetVerificationJwtPayload } from "../../types";
@@ -16,6 +16,11 @@ import { PasswordResetVerificationJwtPayload } from "../../types";
 const route = useRoute();
 const router = useRouter();
 const verificationToken = computed(() => route.query.token);
+const verificationTokenIsExpired = computed(
+  () =>
+    typeof verificationToken.value === "string" &&
+    isJwtExpired(verificationToken.value as string)
+);
 const currentStep = ref(verificationToken.value ? 2 : 0);
 const store = useAccountStore();
 const notify = useNotifications();
@@ -105,5 +110,38 @@ async function resetPassword(newPassword: string) {
     @resend-email="resendEmail"
     @update-email="updateEmail"
   />
-  <NewPasswordForm v-if="currentStep === 2" @submit="resetPassword" />
+  <template v-if="currentStep === 2">
+    <div v-if="verificationTokenIsExpired" class="wrapper">
+      <div class="fr-mb-3w title">
+        <h1 class="fr-h1 fr-m-0">Désolé, votre lien n’est plus valide</h1>
+      </div>
+
+      <p class="fr-text--xl">
+        Votre lien de vérification a expiré. Veuillez changer de nouveau votre
+        mot de passe pour recevoir un lien valide.
+      </p>
+
+      <p class="fr-text--sm fr-mb-6w">
+        Si vous avez besoin d’aide pour changer de mot de passe, merci de nous
+        contacter par e-mail à l’adresse suivante :
+        <strong>ara@design.numerique.gouv.fr</strong>.
+      </p>
+
+      <RouterLink
+        :to="{ name: 'password-reset' }"
+        class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+        @click="currentStep = 0"
+      >
+        Changer de mot de passe
+      </RouterLink>
+    </div>
+    <NewPasswordForm v-else @submit="resetPassword" />
+  </template>
 </template>
+
+<style scoped>
+.wrapper {
+  max-width: 49.5rem;
+  margin: 0 auto;
+}
+</style>
