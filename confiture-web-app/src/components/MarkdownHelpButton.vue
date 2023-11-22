@@ -16,16 +16,25 @@ function onClick() {
 </script>
 
 <template>
-  <button
-    class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm markdown-notice"
-    @click="onClick"
-  >
-    <MarkdownIcon />
-    Markdown pris en compte
-  </button>
+  <div class="markdown-wrapper">
+    <p class="fr-text--sm fr-m-0">Markdown pris en compte</p>
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm markdown-notice"
+      @click="onClick"
+    >
+      <MarkdownIcon />
+      Voir la syntaxe <span class="sr-only">Markdown</span>
+    </button>
+  </div>
 </template>
 
 <style scoped>
+.markdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .markdown-notice {
   display: flex;
   align-items: center;
