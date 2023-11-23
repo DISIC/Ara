@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 23/11/2023
+
+### Corrections 🐛
+
+- Corrige le problème de scroll qui cachait le titre de la thématique lors de l’utilisation des ancres de la barre latérale ([#562](https://github.com/DISIC/Ara/pull/562))
+
 ## 16/11/2023
 
 ### Corrections 🐛
