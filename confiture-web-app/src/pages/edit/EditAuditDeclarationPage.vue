@@ -119,6 +119,7 @@ const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 // Other data
 
 const auditInitiator = ref("");
+const auditorOrganisation = ref("");
 const procedureUrl = ref("");
 const contactName = ref("");
 const contactEmail = ref("");
@@ -134,6 +135,7 @@ watch(
       return;
     }
     auditInitiator.value = audit.initiator ?? "";
+    auditorOrganisation.value = audit.auditorOrganisation ?? "";
     procedureUrl.value = audit.procedureUrl ?? "";
     contactName.value = audit.contactName ?? "";
     contactEmail.value = audit.contactEmail ?? "";
@@ -159,7 +161,7 @@ watch(
   },
   {
     immediate: true,
-  }
+  },
 );
 
 const notify = useNotifications();
@@ -184,6 +186,7 @@ function handleSubmit() {
     ...auditStore.currentAudit!,
 
     initiator: auditInitiator.value,
+    auditorOrganisation: auditorOrganisation.value,
     procedureUrl: procedureUrl.value.trim(),
 
     contactEmail: formatEmail(contactEmail.value) || null,
@@ -210,7 +213,7 @@ function handleSubmit() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
       );
       throw err;
     });
@@ -221,6 +224,7 @@ function handleSubmit() {
  */
 function DEBUG_fillFields() {
   auditInitiator.value = "Mairie de Tours";
+  auditorOrganisation.value = "Web Audit Services Corp.";
   procedureUrl.value = "https://example.com";
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
@@ -282,6 +286,15 @@ const isDevMode = useDevMode();
         v-model="auditInitiator"
         label="Entité qui a demandé l’audit"
         hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
+        type="text"
+        required
+      />
+
+      <DsfrField
+        id="auditorOrganisation"
+        v-model="auditorOrganisation"
+        label="Entité qui a réalisé l’audit"
+        hint="L’entité qui a demandé et réalisé l’audit peut être identique dans le cas d’un audit réalisé en interne."
         type="text"
         required
       />
