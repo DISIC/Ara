@@ -764,6 +764,7 @@ export class AuditService {
       context: {
         auditorName: audit.auditorName,
         auditorEmail: null,
+        auditorOrganisation: audit.auditorOrganisation,
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({
