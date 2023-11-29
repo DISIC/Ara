@@ -58,7 +58,6 @@ export class AuditService {
 
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
-        auditorOrganisation: data.auditorOrganisation,
 
         pages: {
           createMany: {

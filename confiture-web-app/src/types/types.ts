@@ -49,12 +49,12 @@ export interface Audit {
   pages: AuditPage[];
   auditorEmail: string;
   auditorName: string | null;
-  auditorOrganisation: string;
 
   // A11y declaration edition
   technologies: string[];
   procedureUrl: string | null;
   initiator: string | null;
+  auditorOrganisation: string;
   tools: string[];
   environments: AuditEnvironment[];
   contactName: string | null;
@@ -69,11 +69,7 @@ export interface Audit {
 /** Audit type but without the generated IDs and step 2 fields */
 export type CreateAuditRequestData = Pick<
   Audit,
-  | "auditType"
-  | "procedureName"
-  | "auditorEmail"
-  | "auditorName"
-  | "auditorOrganisation"
+  "auditType" | "procedureName" | "auditorEmail" | "auditorName"
 > & { pages: Omit<AuditPage, "id">[] };
 
 /** Creation data type plus step 2 fields. */
