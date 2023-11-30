@@ -14,7 +14,7 @@ defineEmits(["update:modelValue"]);
 </script>
 
 <template>
-  <div :class="['fr-p-3w fr-tile container', { checked: checked }]">
+  <div :class="['fr-p-3w wrapper', { checked: checked }]">
     <p
       class="fr-badge fr-badge--sm fr-mb-1w"
       :class="{ 'fr-badge--green-bourgeon': highlighted }"
@@ -50,12 +50,13 @@ defineEmits(["update:modelValue"]);
 </template>
 
 <style scoped>
-.container {
+.wrapper {
   flex-direction: column;
-  text-align: initial;
+  border: 1px solid var(--border-default-grey);
+  border-bottom: 0.25rem solid var(--border-plain-blue-france);
 }
 
-.container.checked {
+.wrapper.checked {
   --border-default-grey: var(--border-plain-blue-france);
 }
 
