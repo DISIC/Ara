@@ -13,32 +13,31 @@ import PageMeta from "../../components/PageMeta";
     <p>
       La Direction interministérielle du numérique s’engage à ce que le
       traitement des données personnelles effectué sur ara.numerique.gouv.fr
-      soient conformes au règlement général sur la protection des données (RGPD)
+      soit conforme au règlement général sur la protection des données (RGPD)
       et à la loi Informatique et Libertés.
     </p>
 
     <h2>Objet du traitement</h2>
     <p>
       Ara est un outil d’audit d’accessibilité numérique. Un audit est réalisé
-      par une personne experte qui doit saisir les informations personnelles
-      suivantes : prénom, nom et adresse électronique.
-    </p>
-    <p>Ces données personnelles sont utilisées :</p>
+      par une personne qui doit ou peut saisir les informations personnelles
+      suivantes :</p>
     <ul>
-      <li>
-        pour envoyer par courriel à l’auditeur ou l’auditrice l’URL de l’audit
-        en cours de réalisation
+      <li>L’<strong>adresse électronique</strong> est obligatoire au bon fonctionnement d’Ara :
+        <ul>
+        <li>pour que l’auditeur ou auditrice reçoive par courriel les URL liées à l’audit en cours de réalisation ;</li>
+        <li>comme identifiant lors de la création d’un compte.</li>
+        </ul>
       </li>
-      <li>
-        pour que la personne qui reçoit l’audit puisse contacter facilement
-        l’auditeur ou l’auditrice
+      <li>Les <strong>prénom</strong> et <strong>nom</strong> de l’auditeur ou auditrice peuvent être saisis lors de la création du compte et sont ajoutés comme <em>signature</em> du rapport d’accessibilité. Ils peuvent également être saisis lors du paramétrage d’un audit (en mode non connecté) ou depuis son profil (en mode connecté).
       </li>
     </ul>
     <p>
       Lors de la suppression de l’audit, les données de l’audit, le rapport de
-      l’audit et les données personnelles de l’auditeur ou l’auditrice sont
+      l’audit et les données personnelles de l’auditeur ou auditrice sont
       supprimées.
     </p>
+    <p>La suppression du compte est possible depuis son compte. Elle permet de supprimer toutes les données personnelles de l'auditeur ou auditrice. </p>
     <h2>Vos droits sur vos données</h2>
     <p>
       Vous pouvez exercer vos droits ou obtenir des informations concernant le
