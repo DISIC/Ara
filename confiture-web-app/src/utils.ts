@@ -1,15 +1,16 @@
+import { Scope, captureException } from "@sentry/vue";
 import { HTTPError } from "ky";
+import { noop } from "lodash-es";
+import baseSlugify from "slugify";
+import jwtDecode from "jwt-decode";
+
 import {
   AuditReport,
-  AuditType,
   AuditStatus,
+  AuditType,
   CriterionResultUserImpact,
   CriteriumResultStatus,
 } from "./types";
-
-import baseSlugify from "slugify";
-import { Scope, captureException } from "@sentry/vue";
-import { noop } from "lodash-es";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
@@ -17,11 +18,20 @@ const formatter = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",
 });
 
+const abridgedFormatter = new Intl.DateTimeFormat("fr-FR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 /**
  * Format a string intro a readable date ("17 août 2022")
+ * @param {boolean} short - abridged version: "17/08/2022"
  */
-export function formatDate(dateString: string): string {
-  return formatter.format(new Date(dateString));
+export function formatDate(dateString: string, short?: boolean): string {
+  return short
+    ? abridgedFormatter.format(new Date(dateString))
+    : formatter.format(new Date(dateString));
 }
 
 const FORMATTED_TYPES = {
@@ -176,3 +186,27 @@ export async function captureWithPayloads(
 // TODO: use everywhere
 export const pluralize = (singular: string, plural: string, count: number) =>
   count === 1 ? singular : plural;
+
+// From https://emailregex.com/
+// regexr.com/7lkj4
+const EMAIL_REGEX =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export function validateEmail(s: string): boolean {
+  return !!s.match(EMAIL_REGEX);
+}
+
+// Trim + lowercase email
+export function formatEmail(s: string): string {
+  return s.trim().toLocaleLowerCase();
+}
+
+export function isJwtExpired(jwt: string) {
+  const payload = jwtDecode<{ exp?: number }>(jwt);
+
+  if (!payload.exp) {
+    return false;
+  }
+
+  return Date.now() > payload.exp * 1000;
+}

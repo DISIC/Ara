@@ -39,8 +39,9 @@ const route = useRoute();
 
 const showAuditProgressBar = computed(() => {
   return (
-    !auditStore.data?.publicationDate ||
-    (auditStore.data?.publicationDate && resultsStore.auditProgress !== 1)
+    !auditStore.currentAudit?.publicationDate ||
+    (auditStore.currentAudit?.publicationDate &&
+      resultsStore.auditProgress !== 1)
   );
 });
 </script>
@@ -49,23 +50,27 @@ const showAuditProgressBar = computed(() => {
   <div class="sticky-indicator fr-mb-1v" :style="{ top: alertHeight + 'px' }">
     <AuditProgressBar v-if="showAuditProgressBar" />
 
-    <div v-else-if="auditStore.data?.publicationDate" class="audit-status">
+    <div
+      v-else-if="auditStore.currentAudit?.publicationDate"
+      class="audit-status"
+    >
       <span
         class="fr-icon-success-line fr-icon--sm audit-status-icon"
         aria-hidden="true"
       ></span>
       <strong
-        >Audit {{ auditStore.data?.editionDate ? "modifié" : "terminé" }} le
+        >Audit
+        {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }} le
         <time
           :datetime="
-            auditStore.data?.editionDate
-              ? auditStore.data?.editionDate
-              : auditStore.data?.publicationDate
+            auditStore.currentAudit?.editionDate
+              ? auditStore.currentAudit?.editionDate
+              : auditStore.currentAudit?.publicationDate
           "
           >{{
-            auditStore.data?.editionDate
-              ? formatDate(auditStore.data?.editionDate)
-              : formatDate(auditStore.data?.publicationDate)
+            auditStore.currentAudit?.editionDate
+              ? formatDate(auditStore.currentAudit?.editionDate)
+              : formatDate(auditStore.currentAudit?.publicationDate)
           }}</time
         ></strong
       >

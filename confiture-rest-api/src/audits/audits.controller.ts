@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   GoneException,
-  Header,
   HttpStatus,
   NotFoundException,
   Param,
@@ -37,6 +36,9 @@ import { UpdateAuditDto } from './update-audit.dto';
 import { PatchAuditDto } from './patch-audit.dto';
 import { UpdateResultsDto } from './update-results.dto';
 import { UploadImageDto } from './upload-image.dto';
+import { AuthRequired } from 'src/auth/auth-required.decorator';
+import { User } from 'src/auth/user.decorator';
+import { AuthenticationJwtPayload } from 'src/auth/jwt-payloads';
 
 @Controller('audits')
 @ApiTags('Audits')
@@ -62,6 +64,15 @@ export class AuditsController {
     });
 
     return audit;
+  }
+
+  /**
+   * Retrieve list of audits to be displayed on user's dashboard.
+   */
+  @Get()
+  @AuthRequired()
+  async getAuditList(@User() user: AuthenticationJwtPayload) {
+    return this.auditService.getAuditsByAuditorEmail(user.email);
   }
 
   /** Retrieve an audit from the database. */
@@ -269,7 +280,7 @@ export class AuditsController {
       console.error(err);
     });
 
-    return newAudit.editUniqueId;
+    return newAudit;
   }
 
   @Get('/:uniqueId/exports/csv')

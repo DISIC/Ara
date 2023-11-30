@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
+
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useRoute } from "vue-router";
 import { AuditType, CreateAuditRequestData } from "../types";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import DsfrField from "./DsfrField.vue";
+import { formatEmail } from "../utils";
+import { useAccountStore } from "../store/account";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -37,6 +40,8 @@ const availableAuditTypes = [
   },
 ];
 
+const accountStore = useAccountStore();
+
 const auditType = ref(props.defaultValues?.auditType ?? null);
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
 const pages = ref(
@@ -50,13 +55,16 @@ const pages = ref(
     { name: "Authentification", url: "" },
   ]
 );
-const procedureAuditorName = ref(props.defaultValues?.auditorName ?? "");
-const procedureAuditorEmail = ref(props.defaultValues?.auditorEmail ?? "");
-const showEmailInReport = ref(
-  props.defaultValues?.showAuditorEmailInReport ?? false
+const procedureAuditorName = ref(
+  props.defaultValues?.auditorName ?? accountStore.account?.name ?? ""
+);
+const procedureAuditorEmail = ref(
+  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? ""
 );
 const procedureAuditorOrganisation = ref(
-  props.defaultValues?.auditorOrganisation ?? ""
+  props.defaultValues?.auditorOrganisation ??
+    accountStore.account?.orgName ??
+    ""
 );
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
@@ -94,9 +102,9 @@ function fillFields() {
     { name: "Accueil", url: "https://example.com" },
     { name: "Contact", url: "https://example.com/contact" },
   ];
-  procedureAuditorName.value = "Etienne Dupont";
-  procedureAuditorEmail.value = "etienne-dupont@example.com";
-  procedureAuditorOrganisation.value = "Example Organisation";
+  procedureAuditorName.value ||= "Etienne Dupont";
+  procedureAuditorEmail.value ||= "etienne-dupont@example.com";
+  procedureAuditorOrganisation.value ||= "Example Organisation";
 }
 
 function onSubmit() {
@@ -106,9 +114,8 @@ function onSubmit() {
     // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
-    auditorEmail: procedureAuditorEmail.value,
+    auditorEmail: formatEmail(procedureAuditorEmail.value),
     auditorOrganisation: procedureAuditorOrganisation.value,
-    showAuditorEmailInReport: showEmailInReport.value,
   });
 }
 
@@ -206,19 +213,28 @@ const route = useRoute();
         Ajouter une page
       </button>
 
-      <fieldset class="fr-p-0 auditor-fields">
+      <fieldset
+        v-if="
+          !accountStore.account ||
+          !accountStore.account?.name ||
+          !accountStore.account?.orgName
+        "
+        class="fr-p-0 auditor-fields"
+      >
         <legend>
           <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
         </legend>
 
         <DsfrField
+          v-if="!accountStore.account?.name"
           id="procedure-auditor-name"
           v-model="procedureAuditorName"
-          label="Nom et prénom (optionnel)"
+          label="Prénom et nom (optionnel)"
           hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
         />
 
         <DsfrField
+          v-if="!accountStore.account?.orgName"
           id="procedure-auditor-organisation"
           v-model="procedureAuditorOrganisation"
           label="Nom de la structure"
@@ -227,31 +243,15 @@ const route = useRoute();
         />
 
         <DsfrField
+          v-if="!accountStore.account"
           id="procedure-auditor-email"
           v-model="procedureAuditorEmail"
           class="fr-mb-0"
-          label="Adresse électronique"
+          label="Adresse e-mail"
           hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
           type="email"
           required
         />
-
-        <div class="fr-toggle fr-toggle--label-left">
-          <input
-            id="procedure-display-email"
-            v-model="showEmailInReport"
-            aria-describedby="procedure-display-email-description"
-            type="checkbox"
-            class="fr-toggle__input"
-          />
-          <label class="fr-toggle__label" for="procedure-display-email">
-            Afficher l’adresse e-mail dans le rapport d’audit
-          </label>
-          <p id="procedure-display-email-description" class="fr-hint-text">
-            Permet d’aider le demandeur de l’audit à vous contacter s'il a des
-            questions ou besoin d’aide.
-          </p>
-        </div>
       </fieldset>
 
       <div v-if="isDevMode">

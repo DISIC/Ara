@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref, watch } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useHead } from "@unhead/vue";
 
@@ -8,6 +8,7 @@ import ToastNotification from "./components/ToastNotification.vue";
 import SiteHeader from "./components/SiteHeader.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import MarkdownHelpModal from "./components/MarkdownHelpModal.vue";
+import { useAccountStore } from "./store/account";
 
 const route = useRoute();
 
@@ -51,9 +52,19 @@ const markdownHelpModal = ref<InstanceType<typeof MarkdownHelpModal>>();
 provide("openMarkdownHelp", () => {
   markdownHelpModal.value?.show();
 });
+
+const accountStore = useAccountStore();
+onMounted(() => {
+  if (accountStore.authToken) {
+    accountStore.refreshToken();
+  }
+});
 </script>
 
 <template>
+  <!-- Page title container, filled on page change -->
+  <div id="page-title-alert" class="sr-only" role="alert" aria-live="polite" />
+
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">
       <ul class="fr-skiplinks__list">

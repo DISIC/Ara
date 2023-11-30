@@ -5,6 +5,8 @@ import { AuditsModule } from './audits/audits.module';
 import { HealthCheckController } from './health-check.controller';
 import { configValidationSchema } from './config-validation-schema';
 import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { MailModule } from './mail/mail.module';
     FeedbackModule,
     AuditsModule,
     MailModule,
+    AuthModule,
+    ProfileModule,
   ],
   controllers: [HealthCheckController],
 })

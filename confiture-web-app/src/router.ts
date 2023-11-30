@@ -9,7 +9,6 @@ import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
 import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import HelpPage from "./pages/help/HelpPage.vue";
 import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
 import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";
@@ -31,6 +30,16 @@ import RoadmapPage from "./pages/RoadmapPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 
 import { useAuditStore } from "./store";
+import NewAccountPage from "./pages/account/NewAccountPage.vue";
+import LoginPage from "./pages/account/LoginPage.vue";
+import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
+import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
+import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
+import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
+import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
+import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
+import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
+import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -40,6 +49,7 @@ declare module "vue-router" {
       | Array<{ label: string; name: string }>
       | (() => Array<{ label: string; name: string }>);
     hideHomeLink?: boolean;
+    authRequired?: boolean;
   }
 }
 
@@ -50,7 +60,7 @@ export const history = createWebHistory();
  */
 function getProcedureName() {
   const auditStore = useAuditStore();
-  return auditStore.data?.procedureName ?? "Mon audit";
+  return auditStore.currentAudit?.procedureName ?? "Mon audit";
 }
 
 /**
@@ -138,6 +148,132 @@ const router = createRouter({
         breadcrumbLinks: [
           { label: "Accueil", name: "home" },
           { label: "Contactez-nous ou contribuez", name: "contact" },
+        ],
+      },
+    },
+    // Account pages
+    {
+      path: "/compte/nouveau",
+      name: "new-account",
+      component: NewAccountPage,
+      meta: {
+        name: "Créer votre compte Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Créer votre compte Ara", name: "new-account" },
+        ],
+      },
+    },
+    {
+      path: "/compte/validation",
+      name: "new-account-validation",
+      component: NewAccountValidationPage,
+      meta: {
+        name: "Valider votre compte Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Valider votre compte Ara",
+            name: "new-account-validation",
+          },
+        ],
+      },
+    },
+    {
+      path: "/compte/email-update-validation",
+      name: "email-update-validation",
+      component: UpdateEmailValidationPage,
+      meta: {
+        name: "Changement d'adresse e-mail",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Changement d'adresse e-mail",
+            name: "email-update-validation",
+          },
+        ],
+      },
+    },
+    {
+      path: "/compte/connexion",
+      name: "login",
+      component: LoginPage,
+      meta: {
+        name: "Connexion à Ara",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Connexion à Ara",
+            name: "login",
+          },
+        ],
+      },
+    },
+    {
+      path: "/compte/reinitialiser-mot-de-passe",
+      name: "password-reset",
+      component: ResetPasswordPage,
+      meta: {
+        name: "Réinitialiser votre mot de passe",
+      },
+    },
+    {
+      path: "/compte",
+      name: "account-dashboard",
+      component: AccountDashboardPage,
+      meta: {
+        name: "Mes audits",
+        authRequired: true,
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Mes audits",
+            name: "account-dashboard",
+          },
+        ],
+      },
+    },
+    {
+      path: "/compte/parametres",
+      name: "account-settings",
+      component: AccountSettingsPage,
+      meta: {
+        authRequired: true,
+        name: "Mon compte",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Mon compte", name: "account-settings" },
+        ],
+      },
+    },
+    {
+      path: "/compte/avis-suppression-compte",
+      name: "account-deletion-feedback",
+      component: AccountDeletionFeedback,
+      meta: {
+        name: "Suppression compte",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Suppression compte", name: "account-deletion-feedback" },
+        ],
+      },
+      beforeEnter() {
+        // Check that a feedback token is present in the store, otherwise redirect to homepage.
+        const accountStore = useAccountStore();
+        if (!accountStore.accountDeletionFeedbackToken) {
+          return { name: "home" };
+        }
+      },
+    },
+    {
+      path: "/audit-manquant",
+      name: "missing-audit",
+      component: MissingAuditPage,
+      meta: {
+        name: "Je ne retrouve pas mon audit",
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: "Je ne retrouve pas mon audit", name: "missing-audit" },
         ],
       },
     },
@@ -465,6 +601,31 @@ router.beforeEach((to, from) => {
         dev: from.query.dev,
       },
     };
+  }
+});
+
+router.beforeEach((to) => {
+  const accountStore = useAccountStore();
+  if (to.meta.authRequired && !accountStore.account) {
+    return { name: "login" };
+  }
+});
+
+// Reset focus on <body> + announce new page title
+router.afterEach(async (to, from) => {
+  if (from.path !== to.path) {
+    const pageTitleAlert = document.querySelector("#page-title-alert");
+    if (pageTitleAlert) {
+      pageTitleAlert.innerHTML = `<p>${to.meta.name}</p>`;
+
+      setTimeout(() => {
+        pageTitleAlert.innerHTML = "";
+      }, 2000);
+    }
+
+    document.body.setAttribute("tabindex", "-1");
+    document.body.focus();
+    document.body.removeAttribute("tabindex");
   }
 });
 

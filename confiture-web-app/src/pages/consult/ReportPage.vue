@@ -192,14 +192,14 @@ const siteUrl = computed(() => {
         :button-props="{ class: 'fr-btn--secondary' }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-          <li class="dropdown-item">
+          <li class="dropdown-item dropdown-item--with-meta">
             <a
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
               Télécharger l'audit
-              <span class="fr-text--xs fr-text--regular download-meta">
+              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
               </span>
             </a>
@@ -274,9 +274,6 @@ const siteUrl = computed(() => {
       <p class="fr-mb-1v">
         <strong>Auditeur</strong> ou <strong>auditrice</strong> :
         {{ report.data.context.auditorName }}
-        <template v-if="report.data.context.auditorEmail"
-          >({{ report.data.context.auditorEmail }})</template
-        >
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">
@@ -331,16 +328,6 @@ const siteUrl = computed(() => {
 .heading-actions {
   display: flex;
   gap: 1rem;
-}
-
-.download-link {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.download-meta {
-  flex-basis: 100%;
-  color: var(--text-mention-grey);
 }
 
 .dates {

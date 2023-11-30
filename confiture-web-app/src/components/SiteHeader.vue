@@ -1,82 +1,34 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRoute, RouteLocationRaw } from "vue-router";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import { useAuditStore, useReportStore } from "../store";
+import { useAccountStore } from "../store/account";
+import Dropdown from "./Dropdown.vue";
+import LogoutIcon from "./icons/LogoutIcon.vue";
+import { useNotifications } from "../composables/useNotifications";
 
 const reportStore = useReportStore();
 const auditStore = useAuditStore();
+const accountStore = useAccountStore();
 
 const currentRoute = useRoute();
-const matchedRoutesNames = computed(() => {
-  return currentRoute.matched.map((r) => r.name);
-});
-
-/**
- * Determine if the navigation link should has the `aria-current` attribute.
- */
-function getAriaCurrentValue(to: RouteLocationRaw, match?: string) {
-  if (typeof to === "string") {
-    if (match && to.startsWith(match)) {
-      return "true";
-    }
-    return null;
-  }
-
-  if ("name" in to && matchedRoutesNames.value.includes(to.name)) {
-    return "true";
-  }
-
-  if (match && currentRoute.path.startsWith(match)) {
-    // Exclude home link to be matched for other routes
-    if (match === "/" && currentRoute.fullPath !== "/") {
-      return null;
-    }
-    return "true";
-  }
-}
-
-const homeLocation = { label: "Accueil", to: { name: "home" }, match: "/" };
-const resourcesLocation = {
-  label: "Ressources",
-  to: { name: "resources" },
-  match: "/ressources",
-};
-
-const menuItems = computed<
-  Array<{ to: RouteLocationRaw; label: string; match?: string }>
->(() => {
-  if (auditStore.data) {
-    const auditLocation = {
-      label: `Audit ${auditStore.data.procedureName}`,
-      to: auditStore.lastVisitedStepLocation ?? {
-        name: "edit-audit-step-one",
-        params: { uniqueId: auditStore.data.editUniqueId },
-      },
-      match: "/audits",
-    };
-    return [homeLocation, auditLocation, resourcesLocation];
-  }
-
-  if (reportStore.data) {
-    const reportLocation = {
-      to: {
-        name: "report",
-        params: { uniqueId: reportStore.data.consultUniqueId },
-      },
-      label: "Rapport d’audit",
-      match: "/rapports",
-    };
-    return [homeLocation, reportLocation, resourcesLocation];
-  }
-
-  return [homeLocation, resourcesLocation];
-});
 
 const newsSubMenu = ref<HTMLButtonElement>();
 
 function closeNewsSubMenu() {
   dsfr(newsSubMenu.value).collapse.conceal();
+}
+
+const router = useRouter();
+const notify = useNotifications();
+
+function handleDisconnectClick() {
+  accountStore.logout();
+  if (currentRoute.meta.authRequired) {
+    router.push({ name: "login" });
+  }
+  notify("success", "Vous avez été deconnecté avec succès.");
 }
 </script>
 
@@ -119,6 +71,60 @@ function closeNewsSubMenu() {
               </p>
             </div>
           </div>
+          <div class="fr-header__tools">
+            <div class="fr-header__tools-links">
+              <ul v-if="!accountStore.account" class="fr-btns-group">
+                <li>
+                  <RouterLink class="fr-btn" :to="{ name: 'login' }">
+                    Se connecter
+                  </RouterLink>
+                </li>
+                <li>
+                  <RouterLink
+                    class="fr-btn fr-btn--secondary"
+                    :to="{ name: 'new-account' }"
+                  >
+                    Créer un compte
+                  </RouterLink>
+                </li>
+              </ul>
+              <Dropdown
+                v-else
+                ref="optionsDropdownRef"
+                :title="accountStore.account.email"
+              >
+                <ul role="list" class="fr-p-0 fr-m-0 user-dropdown">
+                  <li>
+                    <RouterLink
+                      :to="{ name: 'account-settings' }"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
+                    >
+                      Mon compte
+                    </RouterLink>
+                  </li>
+                  <!-- <li>
+                    <RouterLink
+                      to="#"
+                      class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                    >
+                      <GearIcon class="fr-mr-2v" />
+                      Paramètres d’affichage
+                    </RouterLink>
+                  </li> -->
+                  <li aria-hidden="true" class="dropdown-separator"></li>
+                  <li>
+                    <button
+                      class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                      @click="handleDisconnectClick"
+                    >
+                      <LogoutIcon class="fr-mr-2v" />
+                      Me déconnecter
+                    </button>
+                  </li>
+                </ul>
+              </Dropdown>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -137,19 +143,75 @@ function closeNewsSubMenu() {
           <div class="fr-header__menu-links"></div>
           <nav class="fr-nav" role="navigation" aria-label="Menu principal">
             <ul class="fr-nav__list">
+              <!-- Home -->
+              <li class="fr-nav__item">
+                <RouterLink
+                  class="fr-nav__link"
+                  :to="
+                    accountStore.account
+                      ? { name: 'account-dashboard' }
+                      : { name: 'home' }
+                  "
+                  :aria-current="
+                    ['home', 'account-dashboard'].includes(currentRoute.name as string) ? 'true' : null
+                  "
+                >
+                  Accueil
+                </RouterLink>
+              </li>
+
+              <!-- Current audit -->
               <li
-                v-for="item in menuItems"
-                :key="item.label"
+                v-if="auditStore.currentAudit || reportStore.data"
                 class="fr-nav__item"
               >
                 <RouterLink
+                  v-if="auditStore.currentAudit"
                   class="fr-nav__link"
-                  :to="item.to"
-                  :aria-current="getAriaCurrentValue(item.to, item.match)"
+                  :to="
+                    auditStore.lastVisitedStepLocation ?? {
+                      name: 'edit-audit-step-one',
+                      params: {
+                        uniqueId: auditStore.currentAudit.editUniqueId,
+                      },
+                    }
+                  "
+                  :aria-current="
+                    currentRoute.path.startsWith('/audits') ? 'true' : null
+                  "
                 >
-                  {{ item.label }}
+                  {{ `Audit ${auditStore.currentAudit.procedureName}` }}
+                </RouterLink>
+
+                <RouterLink
+                  v-else-if="reportStore.data"
+                  class="fr-nav__link"
+                  :to="{
+                    name: 'report',
+                    params: { uniqueId: reportStore.data.consultUniqueId },
+                  }"
+                  :aria-current="
+                    ['context', 'report'].includes(currentRoute.name as string) ? 'true' : null
+                  "
+                >
+                  Rapport d’audit
                 </RouterLink>
               </li>
+
+              <!-- Ressources -->
+              <li class="fr-nav__item">
+                <RouterLink
+                  class="fr-nav__link"
+                  :to="{ name: 'resources' }"
+                  :aria-current="
+                    currentRoute.path.startsWith('/ressources') ? 'true' : null
+                  "
+                >
+                  Ressources
+                </RouterLink>
+              </li>
+
+              <!-- Nouveautés -->
               <li class="fr-nav__item">
                 <button
                   class="fr-nav__btn"
@@ -198,5 +260,9 @@ function closeNewsSubMenu() {
 .fr-header__brand.fr-enlarge-link:hover,
 .fr-header__brand.fr-enlarge-link:active {
   background-color: transparent !important; /* Remove link on brand logo */
+}
+
+.user-dropdown {
+  text-align: initial !important;
 }
 </style>

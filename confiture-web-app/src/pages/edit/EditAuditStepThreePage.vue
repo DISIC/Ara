@@ -22,11 +22,11 @@ import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 const route = useRoute();
 const router = useRouter();
 
-// const uniqueId = route.params.uniqueId as string;
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 
 useWrappedFetch(async () => {
+  resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(uniqueId.value);
   await resultsStore.fetchResults(uniqueId.value);
 }, true);
@@ -38,7 +38,7 @@ const notify = useNotifications();
  * Publish audit and/or move to final step
  */
 function toStepFour() {
-  if (auditStore.data?.publicationDate) {
+  if (auditStore.currentAudit?.publicationDate) {
     router.push({
       name: "edit-audit-step-four",
       params: { uniqueId: uniqueId.value },
@@ -65,7 +65,7 @@ function toStepFour() {
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
-  if (!auditStore.data?.auditType) {
+  if (!auditStore.currentAudit?.auditType) {
     return [];
   }
 
@@ -73,7 +73,7 @@ const topics = computed(() => {
     rgaa.topics
       // hide topics not present in audit type
       .filter((topic) => {
-        return CRITERIA_BY_AUDIT_TYPE[auditStore.data!.auditType!].find(
+        return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
           (criterium) => criterium.topic === topic.number
         );
       })
@@ -118,7 +118,7 @@ const {
 } = useAuditStats();
 
 const headerInfos = computed(() => [
-  ...(auditStore.data?.auditType === AuditType.FULL
+  ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
         {
           title: "Taux global de conformité",
@@ -134,16 +134,16 @@ const headerInfos = computed(() => [
     title: "Critères non conformes",
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
     theme: "marianne",
   },
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.data?.auditType as AuditType
+      auditStore.currentAudit?.auditType as AuditType
     )} critères`,
     value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.data?.auditType as AuditType),
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
   },
 ]);
 
@@ -182,7 +182,7 @@ function closeDuplicatedAuditAlert() {
 }
 
 const auditNotes = computed(() => {
-  return auditStore.data?.notes || "";
+  return auditStore.currentAudit?.notes || "";
 });
 
 const updateAuditNotes = debounce(async (notes: string) => {
@@ -215,13 +215,14 @@ const filterResultsCount = computed(() =>
 
 const pageTitle = computed(() => {
   // Audit XXX - [Page en cours « XXX » | Notes] - X résultats pour « XXX »
-  if (auditStore.data) {
-    let title = `Audit ${auditStore.data.procedureName}`;
+  if (auditStore.currentAudit) {
+    let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
     const tabName = auditStore.currentPageId
       ? ` - Page en cours « ${
-          auditStore.data.pages.find((p) => p.id === auditStore.currentPageId)
-            ?.name
+          auditStore.currentAudit.pages.find(
+            (p) => p.id === auditStore.currentPageId
+          )?.name
         } »`
       : " - Notes";
 
@@ -246,7 +247,7 @@ const pageTitle = computed(() => {
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div v-if="auditStore.data && resultsStore.data" class="page-wrapper">
+  <div v-if="auditStore.currentAudit && resultsStore.data" class="page-wrapper">
     <PageMeta
       :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
@@ -275,7 +276,7 @@ const pageTitle = computed(() => {
       <p>
         Des liens pour accéder à cet audit et à son rapport viennent de vous
         être envoyés par e-mail à l’adresse
-        <strong>{{ auditStore.data.auditorEmail }}</strong>
+        <strong>{{ auditStore.currentAudit.auditorEmail }}</strong>
       </p>
       <button
         class="fr-btn--close fr-btn"
@@ -286,7 +287,12 @@ const pageTitle = computed(() => {
       </button>
     </div>
 
-    <div v-if="auditStore.data.publicationDate">
+    <div
+      v-if="
+        auditStore.currentAudit.publicationDate &&
+        !auditStore.currentAudit.editionDate
+      "
+    >
       <RouterLink
         class="fr-text--sm fr-mb-4w back-summary-link"
         :to="{
@@ -299,10 +305,10 @@ const pageTitle = computed(() => {
     </div>
 
     <AuditGenerationHeader
-      :audit-name="auditStore.data.procedureName"
+      :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
-      :audit-publication-date="auditStore.data.publicationDate"
-      :audit-edition-date="auditStore.data.editionDate"
+      :audit-publication-date="auditStore.currentAudit.publicationDate"
+      :audit-edition-date="auditStore.currentAudit.editionDate"
       :edit-unique-id="uniqueId"
     >
       <template #actions>
@@ -312,7 +318,7 @@ const pageTitle = computed(() => {
             class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
-              params: { uniqueId: auditStore.data?.consultUniqueId },
+              params: { uniqueId: auditStore.currentAudit?.consultUniqueId },
             }"
             target="_blank"
             :disabled="isOffline"
@@ -323,17 +329,18 @@ const pageTitle = computed(() => {
         </li>
         <li
           v-if="
-            !auditStore.data.publicationDate ||
-            (auditStore.data.editionDate &&
-              auditStore.data.editionDate > auditStore.data.publicationDate)
+            !auditStore.currentAudit.publicationDate ||
+            (auditStore.currentAudit.editionDate &&
+              auditStore.currentAudit.editionDate >
+                auditStore.currentAudit.publicationDate)
           "
         >
           <button
             :disabled="!resultsStore.everyCriteriumAreTested || isOffline"
             class="fr-btn"
             :aria-describedby="
-              auditStore.data.publicationDate
-                ? auditStore.data.editionDate
+              auditStore.currentAudit.publicationDate
+                ? auditStore.currentAudit.editionDate
                   ? undefined
                   : 'validation-notice'
                 : 'validation-notice'
@@ -341,8 +348,8 @@ const pageTitle = computed(() => {
             @click="toStepFour"
           >
             {{
-              auditStore.data.publicationDate
-                ? auditStore.data.editionDate
+              auditStore.currentAudit.publicationDate
+                ? auditStore.currentAudit.editionDate
                   ? "Mettre à jour l’audit"
                   : "Valider l’audit"
                 : "Valider l’audit"
@@ -383,23 +390,23 @@ const pageTitle = computed(() => {
           >
             <li role="presentation">
               <button
-                :id="`page-panel-${auditStore.data.pages[0].id}`"
+                :id="`page-panel-${auditStore.currentAudit.pages[0].id}`"
                 class="fr-tabs__tab"
                 tabindex="0"
                 role="tab"
                 aria-selected="true"
-                :aria-controls="`page-panel-${auditStore.data.pages[0].id}-panel`"
+                :aria-controls="`page-panel-${auditStore.currentAudit.pages[0].id}-panel`"
               >
-                {{ auditStore.data.pages[0].name }}
+                {{ auditStore.currentAudit.pages[0].name }}
                 <span
-                  v-if="currentPageId === auditStore.data.pages[0].id"
+                  v-if="currentPageId === auditStore.currentAudit.pages[0].id"
                   class="sr-only"
                   >&nbsp;Actif</span
                 >
               </button>
             </li>
             <li
-              v-for="page in auditStore.data.pages.slice(1)"
+              v-for="page in auditStore.currentAudit.pages.slice(1)"
               :key="page.id"
               role="presentation"
             >
@@ -434,7 +441,7 @@ const pageTitle = computed(() => {
             </li>
           </ul>
           <div
-            v-for="page in auditStore.data.pages"
+            v-for="page in auditStore.currentAudit.pages"
             :id="`page-panel-${page.id}-panel`"
             :key="page.id"
             class="fr-tabs__panel"

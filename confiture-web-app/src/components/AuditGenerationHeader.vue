@@ -5,7 +5,12 @@ import { useRoute, useRouter } from "vue-router";
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
 import { useIsOffline } from "../composables/useIsOffline";
-import { useAuditStore, useResultsStore, useSystemStore } from "../store";
+import {
+  useAuditStore,
+  useResultsStore,
+  useSystemStore,
+  useAccountStore,
+} from "../store";
 import { captureWithPayloads, formatBytes, slugify } from "../utils";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
@@ -42,7 +47,16 @@ const isDuplicationLoading = ref(false);
 
 const auditStore = useAuditStore();
 const resultStore = useResultsStore();
+const accountStore = useAccountStore();
 const notify = useNotifications();
+
+function copyReportLink() {
+  const reportUrl = `${window.location.origin}/rapports/${auditStore.currentAudit?.consultUniqueId}`;
+
+  navigator.clipboard.writeText(reportUrl).then(() => {
+    notify("success", "", "Le lien vers le rapport a été copié avec succès");
+  });
+}
 
 /**
  * Duplicate audit and redirect to new audit page
@@ -60,7 +74,7 @@ function confirmDuplicate(name: string) {
 
       duplicateModal.value?.hide();
 
-      return router.push({
+      router.push({
         name: "edit-audit-step-three",
         params: {
           uniqueId: newAuditId,
@@ -84,17 +98,25 @@ function confirmDuplicate(name: string) {
  * Delete audit and redirect to home page
  */
 function confirmDelete() {
+  const auditName = auditStore.currentAudit?.procedureName;
+
   auditStore
     .deleteAudit(uniqueId.value)
     .then(() => {
-      // Clear pinia stores
-      auditStore.$reset();
       resultStore.$reset();
 
-      router.push({
-        name: "home",
-        state: { deleteAudit: "true" },
-      });
+      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
+
+      if (accountStore.account) {
+        router.push({
+          name: "account-dashboard",
+        });
+      } else {
+        router.push({
+          name: "home",
+          state: { deleteAudit: "true" },
+        });
+      }
     })
     .catch((error) => {
       notify(
@@ -119,10 +141,10 @@ const csvExportUrl = computed(
 );
 
 const csvExportFilename = computed(() => {
-  if (!auditStore.data?.procedureName) {
+  if (!auditStore.currentAudit?.procedureName) {
     return "audit.csv";
   }
-  return `audit-${slugify(auditStore.data.procedureName)}.csv`;
+  return `audit-${slugify(auditStore.currentAudit.procedureName)}.csv`;
 });
 
 const csvExportSizeEstimation = computed(() => {
@@ -198,6 +220,14 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
             </li>
             <li class="dropdown-item">
               <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+                @click="copyReportLink"
+              >
+                Copier le lien du rapport
+              </button>
+            </li>
+            <li class="dropdown-item">
+              <button
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
                 @click="duplicateModal?.show()"
               >
@@ -205,14 +235,14 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
                 Créer une copie
               </button>
             </li>
-            <li class="dropdown-item">
+            <li class="dropdown-item dropdown-item--with-meta">
               <a
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
                 :href="csvExportUrl"
                 :download="csvExportFilename"
               >
                 Exporter l’audit
-                <span class="fr-text--xs fr-text--regular download-meta">
+                <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                   CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                 </span>
               </a>
@@ -274,11 +304,11 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 
   <DuplicateModal
     ref="duplicateModal"
-    :original-audit-name="auditStore.data?.procedureName"
+    :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />
@@ -287,7 +317,7 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     ref="deleteModal"
     @confirm="confirmDelete"
     @closed="
-      optionsDropdownRef?.buttonRef.focus();
+      optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
   />

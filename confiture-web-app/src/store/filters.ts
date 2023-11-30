@@ -26,7 +26,7 @@ export const useFiltersStore = defineStore("filters", {
     filteredTopics() {
       const resultStore = useResultsStore();
       const auditStore = useAuditStore();
-      const auditType = auditStore.data?.auditType ?? AuditType.FULL;
+      const auditType = auditStore.currentAudit?.auditType ?? AuditType.FULL;
 
       let filteredTopics = rgaa.topics as any[];
 

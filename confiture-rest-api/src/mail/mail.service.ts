@@ -1,15 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Audit, EmailStatus, EmailType } from '@prisma/client';
-import { createTransport, Transporter } from 'nodemailer';
+import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { PrismaService } from '../prisma.service';
 import * as auditCreationEmail from './audit-creation-email';
+import * as accountVerificationEmail from './account-verification-email';
+import * as accountConfirmationEmail from './account-confirmation-email';
+import * as passwordUpdateConfirmationEmail from './password-update-confirmation-email';
+import * as updateEmailVerificationEmail from './update-email-verification-email';
+import * as updateEmailConfirmationEmail from './update-email-confirmation-email';
+import * as requestPasswordResetEmail from './request-password-reset-email';
 import { EmailConfig } from './email-config.interface';
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
+  [EmailType.ACCOUNT_VERIFICATION]: accountVerificationEmail,
+  [EmailType.ACCOUNT_CONFIRMATION]: accountConfirmationEmail,
+  [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
+  [EmailType.EMAIL_UPDATE_VERIFICATION]: updateEmailVerificationEmail,
+  [EmailType.EMAIL_UPDATE_CONFIRMATION]: updateEmailConfirmationEmail,
+  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail,
 };
 
 @Injectable()
@@ -50,6 +62,9 @@ export class MailService {
         text,
         html,
       })
+      .then((info) => {
+        console.log(getTestMessageUrl(info));
+      })
       .catch((err) => {
         console.error('Failed to send email', err);
         emailStatus = EmailStatus.FAILURE;
@@ -82,5 +97,55 @@ export class MailService {
     };
 
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
+  }
+
+  sendAccountVerificationEmail(username: string, token: string) {
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+
+    const verificationLink = `${baseUrl}/compte/validation?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
+      verificationLink,
+    });
+  }
+
+  sendAccountConfirmationEmail(username: string) {
+    return this.sendMail(username, EmailType.ACCOUNT_CONFIRMATION, null);
+  }
+
+  sendPasswordUpdateConfirmation(email: string) {
+    return this.sendMail(email, EmailType.PASSWORD_UPDATE_CONFIRMATION, null);
+  }
+
+  sendNewEmailVerificationEmail(email: string, token: string) {
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+
+    const verificationLink = `${baseUrl}/compte/email-update-validation?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    return this.sendMail(email, EmailType.EMAIL_UPDATE_VERIFICATION, {
+      verificationLink,
+    });
+  }
+
+  sendEmailUpdateConfirmationEmail(email: string) {
+    return this.sendMail(email, EmailType.EMAIL_UPDATE_CONFIRMATION, {
+      newEmail: email,
+    });
+  }
+
+  sendPasswordResetEmail(email: string, token: string) {
+    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+
+    const verificationLink = `${baseUrl}/compte/reinitialiser-mot-de-passe?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    return this.sendMail(email, EmailType.PASSWORD_RESET_REQUEST, {
+      verificationLink,
+    });
   }
 }

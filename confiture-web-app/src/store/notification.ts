@@ -7,9 +7,14 @@ interface NotificationStoreState {
   notification: {
     id: number;
     status: NotificationStatus;
-    title: string;
+    title?: string;
     description?: string;
+    action?: { label: string; cb: () => void };
   } | null;
+}
+
+interface NotificationOptions {
+  action?: { label: string; cb: () => void };
 }
 
 export const useNotificationStore = defineStore("notification", {
@@ -22,14 +27,16 @@ export const useNotificationStore = defineStore("notification", {
   actions: {
     showNotification(
       status: NotificationStatus,
-      title: string,
-      description?: string
+      title?: string,
+      description?: string,
+      options?: NotificationOptions
     ) {
       this.notification = {
         id: this.nextId++,
         description,
         title,
         status,
+        ...(options?.action && { action: options.action }),
       };
     },
 

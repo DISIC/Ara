@@ -48,7 +48,6 @@ export interface Audit {
   procedureName: string;
   pages: AuditPage[];
   auditorEmail: string;
-  showAuditorEmailInReport: boolean;
   auditorName: string | null;
   auditorOrganisation: string;
 
@@ -74,7 +73,6 @@ export type CreateAuditRequestData = Pick<
   | "procedureName"
   | "auditorEmail"
   | "auditorName"
-  | "showAuditorEmailInReport"
   | "auditorOrganisation"
 > & { pages: Omit<AuditPage, "id">[] };
 

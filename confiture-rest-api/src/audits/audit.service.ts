@@ -11,7 +11,7 @@ import {
 } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import sharp from 'sharp';
-import { omit, setWith } from 'lodash';
+import { omit, pick, setWith } from 'lodash';
 
 import { PrismaService } from '../prisma.service';
 import * as RGAA from '../rgaa.json';
@@ -57,7 +57,6 @@ export class AuditService {
         auditType: data.auditType,
 
         auditorEmail: data.auditorEmail,
-        showAuditorEmailInReport: data.showAuditorEmailInReport,
         auditorName: data.auditorName,
         auditorOrganisation: data.auditorOrganisation,
 
@@ -198,7 +197,6 @@ export class AuditService {
             initiator: data.initiator,
 
             auditorEmail: data.auditorEmail,
-            showAuditorEmailInReport: data.showAuditorEmailInReport,
             auditorName: data.auditorName,
             auditorOrganisation: data.auditorOrganisation,
 
@@ -766,9 +764,7 @@ export class AuditService {
       // FIXME: some of the return data is never asked to the user
       context: {
         auditorName: audit.auditorName,
-        auditorEmail: audit.showAuditorEmailInReport
-          ? audit.auditorEmail
-          : null,
+        auditorEmail: null,
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({
@@ -1111,5 +1107,101 @@ export class AuditService {
     });
 
     return newAudit;
+  }
+
+  async anonymiseAudits(userEmail: string) {
+    await this.prisma.audit.updateMany({
+      where: {
+        auditorEmail: userEmail,
+      },
+      data: {
+        auditorEmail: null,
+        auditorName: null,
+        showAuditorEmailInReport: false,
+      },
+    });
+  }
+
+  async getAuditsByAuditorEmail(email: string) {
+    const audits = await this.prisma.audit.findMany({
+      where: {
+        auditorEmail: email,
+      },
+      select: {
+        procedureName: true,
+        creationDate: true,
+        auditType: true,
+        editUniqueId: true,
+        consultUniqueId: true,
+        pages: {
+          select: {
+            results: true,
+          },
+        },
+      },
+    });
+
+    return audits.map((a) => {
+      const results = a.pages.flatMap((p) => p.results);
+
+      const progress =
+        results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
+          .length /
+        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
+
+      let complianceLevel = null;
+
+      if (progress >= 1) {
+        const resultsGroupedById = results.reduce<
+          Record<string, CriterionResult[]>
+        >((acc, c) => {
+          const key = `${c.topic}.${c.criterium}`;
+          if (acc[key]) {
+            acc[key].push(c);
+          } else {
+            acc[key] = [c];
+          }
+          return acc;
+        }, {});
+
+        const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
+          (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null,
+        );
+
+        const applicableCriteria = results2.filter(
+          (criteria) =>
+            criteria &&
+            criteria.some(
+              (c) => c.status !== CriterionResultStatus.NOT_APPLICABLE,
+            ),
+        );
+
+        const compliantCriteria = applicableCriteria.filter((criteria) =>
+          criteria.every(
+            (c) =>
+              c.status === CriterionResultStatus.COMPLIANT ||
+              c.status === CriterionResultStatus.NOT_APPLICABLE,
+          ),
+        );
+
+        complianceLevel = Math.round(
+          (compliantCriteria.length / applicableCriteria.length) * 100,
+        );
+      }
+
+      return {
+        ...pick(
+          a,
+          'procedureName',
+          'editUniqueId',
+          'consultUniqueId',
+          'creationDate',
+          'auditType',
+        ),
+        complianceLevel,
+        status: progress < 1 ? 'IN_PROGRESS' : 'COMPLETED',
+        estimatedCsvSize: 502 + a.pages.length * 318,
+      };
+    });
   }
 }

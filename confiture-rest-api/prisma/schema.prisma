@@ -50,7 +50,7 @@ model Audit {
   /// @DtoEntityHidden
   pages                    AuditedPage[]
   auditorName              String?
-  auditorEmail             String
+  auditorEmail             String?
   showAuditorEmailInReport Boolean       @default(false)
   auditorOrganisation      String
 
@@ -183,6 +183,12 @@ enum EmailStatus {
 
 enum EmailType {
   AUDIT_CREATION
+  ACCOUNT_VERIFICATION
+  ACCOUNT_CONFIRMATION
+  PASSWORD_UPDATE_CONFIRMATION
+  EMAIL_UPDATE_VERIFICATION
+  EMAIL_UPDATE_CONFIRMATION
+  PASSWORD_RESET_REQUEST
 }
 
 model EmailLog {
@@ -194,4 +200,31 @@ model EmailLog {
 
   createdAt   DateTime @default(now())
   lastAttempt DateTime @default(now())
+}
+
+model User {
+  id  Int    @id @default(autoincrement())
+  /// @DtoEntityHidden
+  uid String @unique @default(uuid())
+
+  username String @unique
+  /// @DtoEntityHidden
+  password String
+
+  /// @DtoEntityHidden
+  isVerified      Boolean @default(false)
+  /// @DtoEntityHidden
+  verificationJti String?
+
+  name    String?
+  orgName String?
+
+  /// @DtoEntityHidden
+  newEmail String?
+  /// @DtoEntityHidden
+  newEmailVerificationJti String?
+}
+
+model ActiveFeedbackToken {
+  uid String @id
 }

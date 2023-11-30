@@ -37,12 +37,7 @@ const reportStore = useReportStore();
     <div v-if="reportStore.data" class="fr-callout">
       <p class="fr-callout__text">
         Pour toute question relative au rapport d’audit, veuillez contacter
-        l’auditeur ou l’auditrice qui a réalisé cet audit<template
-          v-if="reportStore.data.context.auditorEmail"
-        >
-          à l’adresse suivante :
-          <strong>{{ reportStore.data.context.auditorEmail }}</strong></template
-        >.
+        l’auditeur ou l’auditrice qui a réalisé cet audit.
       </p>
     </div>
 
