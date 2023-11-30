@@ -6,12 +6,17 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 * **À venir** : fonctionnalité prochainement en conception ou en développement.
 * **Plus tard** : fonctionnalité identifiée et intégrée à la feuille de route.
 
+## Améliorations
 
-## Création d’un compte
+- Les onglets des pages de l’échantillon sont sticky **En cours**
+- Refonte du parcours entre l’audit, le rapport et la déclaration **En cours**
+- L’accès aux notes est facilité **En cours**
+- Refonte de la rubrique Ressources **À venir**
+- Critères transverses **À venir**
+  
+## Nouvelles fonctionnalités
 
-- Créer un compte **En cours**
-- Lister tous ses audits **En cours**
-- Personnaliser l’interface d’audit **À venir**
+- Intégration des tests automatiques **Plus tard**
 
 ## Exporter les documents
 
@@ -19,13 +24,7 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 - Exporter au fomat ods les résultats d’audit **Plus tard**
 - Exporter au fomat odp la restitution d’audit **Plus tard**
 
-## Nouvelles fonctionnalités
-
-- Possibilité de filtrer les critères C, NC ou NA **En cours**
-- Intégration des tests automatiques **Plus tard**
-
 ## Correction de bugs
 
-- Mise à jour DSFR **À venir**
-- Supprimer la page d‘aide **À venir**
+- Mise à jour DSFR **En cours**
 - Refonte des graphiques de la page résultat **Plus tard**
