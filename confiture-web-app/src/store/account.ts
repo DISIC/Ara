@@ -41,7 +41,6 @@ export const useAccountStore = defineStore("account", {
         return null;
       }
       const payload = jwtDecode(state.authToken) as AuthenticationJwtPayload;
-      console.log(payload);
       return {
         uid: payload.sub,
         email: payload.email,
@@ -186,7 +185,7 @@ export const useAccountStore = defineStore("account", {
     async resendEmailUpdateVerificationEmail() {
       await ky.post(
         "/api/auth/account/resend-email-update-verification-email",
-        { headers: { Authorization: `Bearer ${this.authToken}` } }
+        { headers: { Authorization: `Bearer ${this.authToken}` } },
       );
     },
 
@@ -214,7 +213,7 @@ export const useAccountStore = defineStore("account", {
     waitForEmailUpdateVerification(newEmail: string, signal: AbortSignal) {
       const CHECK_INTERVAL = 5000;
       const url = `/api/auth/account/verified-email-update?email=${encodeURIComponent(
-        newEmail
+        newEmail,
       )}`;
 
       return new Promise<void>((resolve, reject) => {
