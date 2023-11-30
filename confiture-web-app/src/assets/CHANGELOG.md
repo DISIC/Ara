@@ -2,6 +2,16 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 30/11/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Comptes utilisateurs 👤 ([#396](https://github.com/DISIC/Ara/pull/396))
+  - Création de compte sur l'application
+  - Ajout d'une page permettant de retrouver tous ses audits
+  - Gestion de son compte (email, mot-de-passe, suppression de compte, informations de profil)
+  - Possibilité de pré-remplir les futurs audits avec les informations du profil
+
 ## 23/11/2023
 
 ### Corrections 🐛
