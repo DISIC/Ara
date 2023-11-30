@@ -132,10 +132,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@gouvfr/dsfr@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.9.0.tgz#5d6b97328b8c239d0d4383708a5fa59fd5290e4c"
-  integrity sha512-CWckBrvCL28QV2K1+GK/AjW40aGHmd1oXnCSFRD4iRhsIgXkE/+t6pH24L+6BKVBCSYfp2RTGAgRwVN06PqGMw==
+"@gouvfr/dsfr@1.10.2":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.10.2.tgz#364916777d6e2a54e991c9883d63516918759e20"
+  integrity sha512-twPj+VFMTOKUfI9vbBnK8fH1iDpXuDVWeMJzgmmQ5LKjRtZdUsvSbHNlp7HWcDvhWxDGNHxSboErC7UB3oskYQ==
 
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.8"
