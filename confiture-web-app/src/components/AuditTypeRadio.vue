@@ -52,6 +52,7 @@ defineEmits(["update:modelValue"]);
 <style scoped>
 .container {
   flex-direction: column;
+  text-align: initial;
 }
 
 .container.checked {
@@ -61,11 +62,5 @@ defineEmits(["update:modelValue"]);
 .radio-input {
   /* When the browser scrolls to the required input from the bottom of the form, show the entire "radio block" */
   scroll-margin-top: 6rem;
-}
-
-.label::before {
-  /* Align radio to label. This label size for radio does not exist in DSFR. */
-  margin-top: 1rem !important;
-  margin-right: 0.75rem !important;
 }
 </style>
