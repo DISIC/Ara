@@ -107,13 +107,13 @@ const steps = [
     <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div v-for="step in steps" :key="step.title" class="fr-col">
-        <div class="fr-tile fr-tile--horizontal step-wrapper">
-          <div class="fr-tile__body step-content">
+        <div class="fr-p-4w step-wrapper">
+          <div class="step-content">
             <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
-            <h3 class="fr-tile__title fr-text--md step-title">
+            <h3 class="fr-text--md step-title">
               {{ step.title }}
             </h3>
-            <p class="fr-tile__desc fr-pb-0">{{ step.description }}</p>
+            <p class="fr-mb-0">{{ step.description }}</p>
           </div>
         </div>
       </div>
@@ -129,13 +129,8 @@ const steps = [
 }
 
 .step-wrapper {
-  background-image: none !important;
   border: 1px solid var(--border-default-grey);
-  border-bottom: 0.25rem solid var(--border-plain-blue-france);
-}
-
-.step-title::before {
-  background-image: none;
+  height: 100%;
 }
 
 .step-content {

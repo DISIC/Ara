@@ -53,7 +53,6 @@ defineEmits(["update:modelValue"]);
 .wrapper {
   flex-direction: column;
   border: 1px solid var(--border-default-grey);
-  border-bottom: 0.25rem solid var(--border-plain-blue-france);
 }
 
 .wrapper.checked {
