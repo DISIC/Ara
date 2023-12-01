@@ -90,7 +90,8 @@ export class UpdateAuditDto extends CreateAuditDto {
    * @example "WEB AUDIT SARL"
    */
   @IsString()
-  auditorOrganisation: string;
+  @IsOptional()
+  auditorOrganisation?: string;
 
   /**
    * @example "John Referent"

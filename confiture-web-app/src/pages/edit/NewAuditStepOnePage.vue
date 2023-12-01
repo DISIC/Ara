@@ -68,10 +68,7 @@ async function submitStepOne(data: CreateAuditRequestData) {
   if (accountStore.account && data.auditorName && !accountStore.account?.name) {
     // Since this update is not necessary for the audit to be created, we ignore eventual errors.
     accountStore
-      .updateProfile({
-        name: data.auditorName,
-        orgName: null,
-      })
+      .updateProfile({ name: data.auditorName })
       .catch(captureWithPayloads);
   }
 

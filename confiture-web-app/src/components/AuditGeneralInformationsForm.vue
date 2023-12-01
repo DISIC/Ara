@@ -109,7 +109,7 @@ function onSubmit() {
     // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
-    auditorEmail: procedureAuditorEmail.value,
+    auditorEmail: formatEmail(procedureAuditorEmail.value),
   });
 }
 
