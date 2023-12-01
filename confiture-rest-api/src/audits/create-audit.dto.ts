@@ -62,10 +62,4 @@ export class CreateAuditDto {
   @IsEmail()
   @IsOptional()
   auditorEmail?: string;
-
-  /**
-   * @example "WEB AUDIT SARL"
-   */
-  @IsString()
-  auditorOrganisation: string;
 }
