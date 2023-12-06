@@ -104,7 +104,7 @@ const topics = computed(() => {
 });
 
 function updateCurrentPageId(i: number) {
-  const pageIdOrNull = auditStore.data?.pages.at(i)?.id ?? null;
+  const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
   auditStore.updateCurrentPageId(pageIdOrNull);
 }
 
@@ -212,10 +212,10 @@ const filterResultsCount = computed(() =>
 );
 
 watch(
-  () => auditStore.data?.pages,
+  () => auditStore.currentAudit?.pages,
   (curr, prev) => {
     if (curr && !prev) {
-      auditStore.currentPageId = auditStore.data!.pages[0].id;
+      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
     }
   },
 );
@@ -254,7 +254,7 @@ type TabData = { label: string; data: AuditPage | NotesData };
 
 const tabsData = computed(() => {
   return [
-    ...(auditStore.data?.pages.map((p) => ({
+    ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
       data: p,
     })) ?? []),

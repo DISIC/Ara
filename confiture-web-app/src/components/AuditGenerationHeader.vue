@@ -56,14 +56,6 @@ const resultStore = useResultsStore();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-function copyReportLink() {
-  const reportUrl = `${window.location.origin}/rapports/${auditStore.currentAudit?.consultUniqueId}`;
-
-  navigator.clipboard.writeText(reportUrl).then(() => {
-    notify("success", "", "Le lien vers le rapport a été copié avec succès");
-  });
-}
-
 /**
  * Duplicate audit and redirect to new audit page
  */
@@ -165,8 +157,9 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 
 const showAuditProgressBar = computed(() => {
   return (
-    !auditStore.data?.publicationDate ||
-    (auditStore.data?.publicationDate && resultsStore.auditProgress !== 1)
+    !auditStore.currentAudit?.publicationDate ||
+    (auditStore.currentAudit?.publicationDate &&
+      resultsStore.auditProgress !== 1)
   );
 });
 
@@ -209,43 +202,43 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- <div class="fr-grid-row sticky-grid"> -->
     <div
       class="indicator-left-side fr-col-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
       <AuditProgressBar v-if="showAuditProgressBar" class="fr-col-3" />
 
-      <div v-else-if="auditStore.data?.publicationDate" class="audit-status">
+      <div
+        v-else-if="auditStore.currentAudit?.publicationDate"
+        class="audit-status"
+      >
         <span
           class="fr-icon-success-line fr-icon--sm audit-status-icon"
           aria-hidden="true"
         ></span>
         <strong
-          >Audit {{ auditStore.data?.editionDate ? "modifié" : "terminé" }} le
+          >Audit
+          {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }} le
           <time
             :datetime="
-              auditStore.data?.editionDate
-                ? auditStore.data?.editionDate
-                : auditStore.data?.publicationDate
+              auditStore.currentAudit?.editionDate
+                ? auditStore.currentAudit?.editionDate
+                : auditStore.currentAudit?.publicationDate
             "
             >{{
-              auditStore.data?.editionDate
-                ? formatDate(auditStore.data?.editionDate, true)
-                : formatDate(auditStore.data?.publicationDate, true)
+              auditStore.currentAudit?.editionDate
+                ? formatDate(auditStore.currentAudit?.editionDate, true)
+                : formatDate(auditStore.currentAudit?.publicationDate, true)
             }}</time
           ></strong
         >
       </div>
     </div>
 
-    <!-- <template > -->
-    <!-- <div class="fr-ml-2w separator" /> -->
     <SaveIndicator
       v-if="route.name === 'edit-audit-step-three'"
       class="fr-pl-1w"
     />
-    <!-- </template> -->
 
     <div class="sub-header">
       <ul class="top-actions fr-my-0" role="list">
@@ -331,7 +324,6 @@ onMounted(() => {
         <slot name="actions" />
       </ul>
     </div>
-    <!-- </div> -->
   </div>
 
   <h1 class="">{{ auditName }}</h1>
