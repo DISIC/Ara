@@ -4,7 +4,7 @@ defineProps<{
   total: number;
   unit?: string;
   // "france" for blue | "marianne" for red
-  theme?: "france" | "marianne";
+  theme?: string;
   size?: "sm";
 }>();
 </script>
