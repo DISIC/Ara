@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 
+import OverviewPage from "./pages/OverviewPage.vue";
 import ContextPage from "./pages/consult/ContextPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
@@ -351,6 +352,19 @@ const router = createRouter({
             label: getProcedureName(),
             name: "edit-audit-declaration",
           },
+        ],
+      },
+    },
+    // Overview
+    {
+      path: "/audits/:uniqueId/synthese",
+      name: "overview",
+      component: OverviewPage,
+      meta: {
+        name: `Synthèse ${getProcedureName}`,
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: `Synthèse ${getProcedureName()}`, name: "overview" },
         ],
       },
     },

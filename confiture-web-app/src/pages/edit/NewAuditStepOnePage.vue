@@ -78,7 +78,7 @@ async function submitStepOne(data: CreateAuditRequestData) {
       auditStore.showAuditEmailAlert = true;
       // TODO: replace current history entry with the edit page
       return router.push({
-        name: "edit-audit-step-three",
+        name: "overview",
         params: { uniqueId: audit.editUniqueId },
       });
     })

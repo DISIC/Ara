@@ -247,11 +247,7 @@ const route = useRoute();
 
       <div>
         <button class="fr-btn fr-mt-4w" type="submit">
-          {{
-            route.name === "new-audit-step-one"
-              ? "Commencer l’audit"
-              : "Mettre à jour les paramètres"
-          }}
+          Valider les paramètres
         </button>
 
         <button
