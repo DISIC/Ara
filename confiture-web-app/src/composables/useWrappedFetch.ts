@@ -1,6 +1,7 @@
 import { onMounted, watch } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { TimeoutError } from "ky";
+import { isEqual } from "lodash-es";
 
 import { captureWithPayloads } from "../utils";
 
@@ -51,8 +52,12 @@ export function useWrappedFetch(
   if (watchParams) {
     const watchStopHandle = watch(
       () => route.params,
-      () => {
-        func().catch(handleError);
+      (newParams, oldParams) => {
+        // Make sure the params actually changed because if only the hash of the route
+        // changed, the `params` objects will be equal but different references, which will trigger the watcher
+        if (!isEqual(newParams, oldParams)) {
+          func().catch(handleError);
+        }
       }
     );
 

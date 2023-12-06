@@ -26,7 +26,7 @@
     "slugify": "^1.6.5",
     "vue": "^3.2.45",
     "vue-matomo": "^4.2.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "^0.3.0",
