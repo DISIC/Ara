@@ -1,0 +1,227 @@
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+
+import { useAuditStats } from "../../composables/useAuditStats";
+import { useResultsStore } from "../../store";
+import { Audit } from "../../types";
+import { formatDate, getCriteriaCount, pluralize } from "../../utils";
+import StepCard from "./StepCard.vue";
+import AuditProgressBar from "../AuditProgressBar.vue";
+import StatDonut from "../StatDonut.vue";
+
+defineProps<{
+  audit: Audit;
+}>();
+
+const route = useRoute();
+const uniqueId = computed(() => route.params.uniqueId as string);
+const resultsStore = useResultsStore();
+
+const auditStats = useAuditStats();
+
+const auditIsReady = computed(() => {
+  return resultsStore.auditProgress === 1;
+});
+</script>
+
+<template>
+  <StepCard :checked="auditIsReady">
+    <h2 class="fr-h3 fr-mb-1w audit-step-title">
+      Audit
+      <p v-if="audit.auditType" class="fr-badge">
+        {{ getCriteriaCount(audit.auditType) }}
+        critères
+      </p>
+    </h2>
+
+    <p class="fr-text--sm fr-mb-2w audit-step-date">
+      <template v-if="auditIsReady && audit.publicationDate">
+        Terminé le
+        <time datetime="30/12/2023">{{
+          formatDate(audit.publicationDate)
+        }}</time>
+        <template v-if="audit.editionDate">
+          - Mis à jour le
+          <time datetime="30/12/2023">{{
+            formatDate(audit.editionDate)
+          }}</time></template
+        >
+      </template>
+      <template v-else-if="audit.creationDate">
+        Créé le
+        <time :datetime="audit.creationDate.toString()">{{
+          formatDate(audit.creationDate)
+        }}</time>
+      </template>
+    </p>
+
+    <AuditProgressBar
+      v-if="!auditIsReady"
+      class="fr-mb-3w audit-step-progress-bar"
+    />
+
+    <div v-else class="fr-mb-3w audit-step-charts">
+      <div class="audit-step-chart">
+        <StatDonut
+          :value="auditStats.complianceLevel.value"
+          :total="100"
+          unit="%"
+          theme="france"
+          size="sm"
+        />
+
+        <div class="card-info">
+          <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
+          <p class="fr-text--xs fr-mb-0">RGAA version 4.1</p>
+        </div>
+      </div>
+      <span aria-hidden="true" class="audit-step-chart-separator" />
+      <div class="audit-step-chart">
+        <StatDonut
+          :value="auditStats.errorsCount.value.total"
+          :total="100"
+          theme="marianne"
+          size="sm"
+        />
+
+        <div class="card-info">
+          <p class="fr-text--bold fr-mb-1v">
+            {{
+              `${pluralize(
+                "Critère",
+                "Critères",
+                auditStats.errorsCount.value.total
+              )} non ${pluralize(
+                "conforme",
+                "conformes",
+                auditStats.errorsCount.value.total
+              )}`
+            }}
+          </p>
+          <p class="fr-text--xs fr-mb-0">
+            {{
+              `${auditStats.errorsCount.value.blocking} ${pluralize(
+                "bloquant",
+                "bloquants",
+                auditStats.errorsCount.value.blocking
+              )}`
+            }}
+          </p>
+        </div>
+      </div>
+      <span aria-hidden="true" class="audit-step-chart-separator" />
+      <div class="audit-step-chart">
+        <StatDonut
+          :value="auditStats.notApplicableCriteriaCount.value"
+          :total="getCriteriaCount(audit.auditType)"
+          size="sm"
+        />
+
+        <div class="card-info">
+          <p class="fr-text--bold fr-mb-1v">
+            {{
+              pluralize(
+                "Critère",
+                "Critères",
+                auditStats.notApplicableCriteriaCount.value
+              )
+            }}
+            non
+            {{
+              pluralize(
+                "applicable",
+                "applicables",
+                auditStats.notApplicableCriteriaCount.value
+              )
+            }}
+          </p>
+          <p class="fr-text--xs fr-mb-0">
+            Sur {{ getCriteriaCount(audit.auditType) }} critères
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <ul
+      :class="[
+        'fr-btns-group fr-btns-group--icon-left audit-step-card-actions',
+        { 'audit-step-card-actions--half': auditIsReady },
+      ]"
+    >
+      <li>
+        <RouterLink
+          :to="{
+            name: 'edit-audit-step-three',
+            params: { uniqueId: uniqueId },
+          }"
+          class="fr-btn fr-btn--icon-left fr-mb-0"
+          :class="
+            auditIsReady
+              ? 'fr-btn--secondary  fr-icon-file-line'
+              : 'fr-icon-edit-fill'
+          "
+        >
+          {{ auditIsReady ? "Accéder" : "Commencer" }}
+        </RouterLink>
+      </li>
+    </ul>
+  </StepCard>
+</template>
+
+<style scoped>
+.audit-step-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.audit-step-date {
+  color: var(--text-mention-grey);
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.audit-step-progress-bar {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+
+.audit-step-charts {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+}
+
+.audit-step-chart {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.audit-step-chart-separator {
+  width: 1px;
+  background: var(--border-default-grey);
+  height: 100%;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
+}
+
+.audit-step-card-actions {
+  grid-column: 1 / -1;
+}
+
+.audit-step-card-actions--half {
+  grid-column: 1;
+}
+
+@media (max-width: 48rem) {
+  .audit-step-charts {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .audit-step-chart-separator {
+    display: none;
+  }
+}
+</style>
