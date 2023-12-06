@@ -225,7 +225,7 @@ export class AuthService {
       email,
       jti,
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
     return verificationToken;
   }
 
@@ -296,7 +296,7 @@ export class AuthService {
       email,
       jti,
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
     return verificationToken;
   }
 
@@ -401,7 +401,7 @@ export class AuthService {
     const payload: RequestPasswordResetJwtPayload = {
       email,
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '1h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
     return verificationToken;
   }
 
