@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 06/12/2023
 
+### Corrections 🐛
+
+- Mise à jour du DSFR qui corrige notamment l’utiliisation des flèches directionnelles dans les champs de texte situés dans les onglets ([#576](https://github.com/DISIC/Ara/pull/576))
+
 ### Autres changements ⚙️
 
 - Déplace le champ du nom de la structure qui audite le site dans la page de déclaration ([#574](https://github.com/DISIC/Ara/pull/574))
