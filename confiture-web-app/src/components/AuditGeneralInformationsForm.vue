@@ -61,11 +61,7 @@ const procedureAuditorName = ref(
 const procedureAuditorEmail = ref(
   props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? ""
 );
-const procedureAuditorOrganisation = ref(
-  props.defaultValues?.auditorOrganisation ??
-    accountStore.account?.orgName ??
-    ""
-);
+
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 /**
@@ -102,9 +98,8 @@ function fillFields() {
     { name: "Accueil", url: "https://example.com" },
     { name: "Contact", url: "https://example.com/contact" },
   ];
-  procedureAuditorName.value ||= "Etienne Dupont";
-  procedureAuditorEmail.value ||= "etienne-dupont@example.com";
-  procedureAuditorOrganisation.value ||= "Example Organisation";
+  procedureAuditorName.value = "Etienne Dupont";
+  procedureAuditorEmail.value = "etienne-dupont@example.com";
 }
 
 function onSubmit() {
@@ -115,7 +110,6 @@ function onSubmit() {
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
     auditorEmail: formatEmail(procedureAuditorEmail.value),
-    auditorOrganisation: procedureAuditorOrganisation.value,
   });
 }
 
@@ -231,15 +225,6 @@ const route = useRoute();
           v-model="procedureAuditorName"
           label="Prénom et nom (optionnel)"
           hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
-        />
-
-        <DsfrField
-          v-if="!accountStore.account?.orgName"
-          id="procedure-auditor-organisation"
-          v-model="procedureAuditorOrganisation"
-          label="Nom de la structure"
-          hint="Sera affiché dans la déclaration d’accessibilité, cette mention est une obligation. "
-          required
         />
 
         <DsfrField

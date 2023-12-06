@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../composables/useWrappedFetch";
@@ -27,11 +27,6 @@ function getA11yLevel() {
 
 const statementRef = ref<HTMLDivElement>();
 const showCopyAlert = ref(false);
-
-const auditIsInProgress = computed(() => {
-  // The `initiator` field is requied on the a11y declaration form so we can check that it's not null
-  return !report.data?.procedureInitiator;
-});
 
 async function copyA11yStatementHTML() {
   const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g; // "<XX  >"
@@ -241,9 +236,9 @@ function hideCopyAlert() {
         <h4 class="fr-h2">Résultats des tests</h4>
         <p class="fr-mb-9v fr-mb-md-6w">
           L’audit de conformité réalisé par
-          <strong>{{ report.data.procedureInitiator }}</strong> révèle que
-          <strong>{{ report.data.accessibilityRate }}%</strong> des critères du
-          RGAA version 4 sont respectés.
+          <strong>{{ report.data.context.auditorOrganisation }}</strong> révèle
+          que <strong>{{ report.data.accessibilityRate }}%</strong> des critères
+          du RGAA version 4 sont respectés.
         </p>
         <!--ul class="fr-mb-9v fr-mb-md-6w">
         <li>

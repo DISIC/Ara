@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
@@ -10,6 +10,11 @@ const notify = useNotifications();
 
 const name = ref("");
 const orgName = ref("");
+
+onMounted(() => {
+  name.value = accountStore.account?.name || "";
+  orgName.value = accountStore.account?.orgName || "";
+});
 
 watch(accountStore, () => {
   if (!accountStore.account) {

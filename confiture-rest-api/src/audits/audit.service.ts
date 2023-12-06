@@ -58,7 +58,6 @@ export class AuditService {
 
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
-        auditorOrganisation: data.auditorOrganisation,
 
         pages: {
           createMany: {
@@ -765,6 +764,7 @@ export class AuditService {
       context: {
         auditorName: audit.auditorName,
         auditorEmail: null,
+        auditorOrganisation: audit.auditorOrganisation,
         desktopEnvironments: audit.environments
           .filter((e) => e.platform === 'desktop')
           .map((e) => ({

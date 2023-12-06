@@ -113,6 +113,10 @@ class ReportContext {
    * @example "john-doe@example.com"
    */
   auditorEmail: string | null;
+  /**
+   * @example "Web Audit Services Corp."
+   */
+  auditorOrganisation: string;
 
   technologies: string[];
 

@@ -80,6 +80,7 @@ interface AuditReportContext {
 
   auditorName: string;
   auditorEmail: string | null;
+  auditorOrganisation: string;
 
   technologies: string[];
 

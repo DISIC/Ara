@@ -52,10 +52,10 @@ model Audit {
   auditorName              String?
   auditorEmail             String?
   showAuditorEmailInReport Boolean       @default(false)
-  auditorOrganisation      String
 
   // A11y declaration edition step
   initiator           String?
+  auditorOrganisation String?
   procedureUrl        String?
   contactName         String?
   contactEmail        String?

@@ -11,7 +11,7 @@ export interface UpdateProfileRequestData {
   /** John Doe */
   name: string | null;
   /** ACME */
-  orgName: string | null;
+  orgName?: string | null;
 }
 
 export interface AccountDeletionResponse {
