@@ -21,14 +21,13 @@ import transcriptionUrl from "../../assets/Transcription-Bienfairedunumerique-19
       ></iframe>
     </div>
 
-    <div class="fr-download fr-mb-6w">
-      <p>
-        <a :href="transcriptionUrl" download class="fr-download__link"
-          >Télécharger la transcription
-          <span class="fr-download__detail">DOCX (Word) – 51 Ko</span>
-        </a>
-      </p>
+    <div class="fr-mb-6w">
+      <a class="fr-link fr-link--download" download :href="transcriptionUrl">
+        Télécharger la transcription
+        <span class="fr-link__detail">DOCX (Word) – 51 Ko</span>
+      </a>
     </div>
+
     <h2>Informations</h2>
     <p>
       Lors de ce webinaire, nous vous présenterons les enseignements et les
