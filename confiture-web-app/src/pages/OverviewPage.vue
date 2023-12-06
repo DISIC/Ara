@@ -4,15 +4,19 @@ import { useRoute } from "vue-router";
 
 import AuditProgressBar from "../components/AuditProgressBar.vue";
 import CopyBlock from "../components/CopyBlock.vue";
+import StatDonut from "../components/StatDonut.vue";
 import { useAuditStore, useResultsStore } from "../store";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
-import { formatDate, getCriteriaCount } from "../utils";
+import { useAuditStats } from "../composables/useAuditStats";
+import { formatDate, getCriteriaCount, pluralize } from "../utils";
 import { AuditType } from "../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
+
+const auditStats = useAuditStats();
 
 useWrappedFetch(async () => {
   resultsStore.$reset();
@@ -82,7 +86,87 @@ const auditIsPublishable = computed(() => {
             class="fr-mb-3w card-progress-bar"
           />
 
-          <p v-else class="card-charts">TODO: Graphiques</p>
+          <div v-else class="fr-mb-3w card-charts">
+            <div class="card-chart">
+              <StatDonut
+                :value="auditStats.complianceLevel.value"
+                :total="100"
+                unit="%"
+                theme="france"
+                size="sm"
+              />
+
+              <div class="card-info">
+                <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
+                <p class="fr-text--xs fr-mb-0">RGAA version 4.1</p>
+              </div>
+            </div>
+            <span aria-hidden="true" class="card-chart-separator" />
+            <div class="card-chart">
+              <StatDonut
+                :value="auditStats.errorsCount.value.total"
+                :total="100"
+                theme="marianne"
+                size="sm"
+              />
+
+              <div class="card-info">
+                <p class="fr-text--bold fr-mb-1v">
+                  {{
+                    `${pluralize(
+                      "Critère",
+                      "Critères",
+                      auditStats.errorsCount.value.total
+                    )} non ${pluralize(
+                      "conforme",
+                      "conformes",
+                      auditStats.errorsCount.value.total
+                    )}`
+                  }}
+                </p>
+                <p class="fr-text--xs fr-mb-0">
+                  {{
+                    `${auditStats.errorsCount.value.blocking} ${pluralize(
+                      "bloquant",
+                      "bloquants",
+                      auditStats.errorsCount.value.blocking
+                    )}`
+                  }}
+                </p>
+              </div>
+            </div>
+            <span aria-hidden="true" class="card-chart-separator" />
+            <div class="card-chart">
+              <StatDonut
+                :value="auditStats.notApplicableCriteriaCount.value"
+                :total="getCriteriaCount(audit.auditType)"
+                size="sm"
+              />
+
+              <div class="card-info">
+                <p class="fr-text--bold fr-mb-1v">
+                  {{
+                    pluralize(
+                      "Critère",
+                      "Critères",
+                      auditStats.notApplicableCriteriaCount.value
+                    )
+                  }}
+                  non
+                  {{
+                    pluralize(
+                      "applicable",
+                      "applicables",
+                      auditStats.notApplicableCriteriaCount.value
+                    )
+                  }}
+                </p>
+                <p class="fr-text--xs fr-mb-0">
+                  Sur {{ getCriteriaCount(audit.auditType) }} critères
+                </p>
+              </div>
+            </div>
+          </div>
 
           <ul
             :class="[
@@ -285,6 +369,21 @@ const auditIsPublishable = computed(() => {
 .card-charts {
   grid-column: 1 / -1;
   grid-row: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+}
+
+.card-chart {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.card-chart-separator {
+  width: 1px;
+  background: var(--border-default-grey);
+  height: 100%;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
 }
 
 .audit-card-actions {
@@ -322,6 +421,15 @@ const auditIsPublishable = computed(() => {
 
   .statement-card-actions > li:first-child {
     width: 100%;
+  }
+
+  .card-charts {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card-chart-separator {
+    display: none;
   }
 }
 </style>

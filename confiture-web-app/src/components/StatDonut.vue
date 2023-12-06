@@ -4,16 +4,23 @@ defineProps<{
   total: number;
   unit?: string;
   // "france" for blue | "marianne" for red
-  theme?: string;
+  theme?: "france" | "marianne";
+  size?: "sm";
 }>();
 </script>
 
 <template>
-  <div class="card-donut" :class="theme ? `theme-${theme}` : null">
+  <div
+    class="card-donut"
+    :class="[
+      theme ? `theme-${theme}` : null,
+      { 'card-donut--sm': size === 'sm' },
+    ]"
+  >
     <div class="fr-m-0 card-hole">
       <p class="fr-m-0 card-hole-content">
         {{ value }}
-        <span v-if="unit" class="fr-h5 fr-mb-0">{{ unit }}</span>
+        <span v-if="unit" class="fr-mb-0 card-unit">{{ unit }}</span>
       </p>
     </div>
   </div>
@@ -68,5 +75,22 @@ defineProps<{
   font-size: 2.25em;
   line-height: 1.5;
   font-weight: bold;
+}
+
+.card-unit {
+  font-size: 1.375rem;
+}
+
+.card-donut--sm {
+  width: 4.125rem;
+  height: 4.125rem;
+}
+
+.card-donut--sm .card-hole-content {
+  font-size: 1.375rem;
+}
+
+.card-donut--sm .card-unit {
+  font-size: 0.75rem;
 }
 </style>
