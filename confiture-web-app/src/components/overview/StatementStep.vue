@@ -2,6 +2,7 @@
 import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
+import { useAccountStore } from "../../store";
 import { Audit } from "../../types";
 import StepCard from "./StepCard.vue";
 import CopyBlock from "../CopyBlock.vue";
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>();
 
 const resultsStore = useResultsStore();
+const accountStore = useAccountStore();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
@@ -57,6 +59,7 @@ const auditIsPublishable = computed(() => {
                   params: { uniqueId: audit.editUniqueId },
                 }
           "
+          :target="accountStore.account ? null : '_blank'"
           class="fr-btn fr-btn--icon-left fr-icon-edit-fill fr-mb-md-0"
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,

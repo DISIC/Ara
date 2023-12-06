@@ -2,6 +2,7 @@
 import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
+import { useAccountStore } from "../../store";
 import { Audit } from "../../types";
 import CopyBlock from "../CopyBlock.vue";
 import StepCard from "./StepCard.vue";
@@ -11,6 +12,7 @@ defineProps<{
 }>();
 
 const resultsStore = useResultsStore();
+const accountStore = useAccountStore();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
@@ -37,6 +39,7 @@ const auditIsReady = computed(() => {
             name: 'report',
             params: { uniqueId: audit.consultUniqueId },
           }"
+          :target="accountStore.account ? null : '_blank'"
           class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0"
         >
           Consulter

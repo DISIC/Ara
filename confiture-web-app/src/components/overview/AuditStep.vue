@@ -18,10 +18,19 @@ const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
 
-const auditStats = useAuditStats();
+const {
+  complianceLevel,
+  notApplicableCriteriaCount,
+  notCompliantCriteriaCount,
+  errorsCount,
+} = useAuditStats();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
+});
+
+const auditIsInProgress = computed(() => {
+  return resultsStore.auditProgress > 0 && resultsStore.auditProgress < 1;
 });
 </script>
 
@@ -36,14 +45,19 @@ const auditIsReady = computed(() => {
     </h2>
 
     <p class="fr-text--sm fr-mb-2w audit-step-date">
-      <template v-if="auditIsReady && audit.publicationDate">
+      <template v-if="auditIsInProgress && audit.creationDate">
+        Commencé le
+        <time :datetime="audit.creationDate.toString()">{{
+          formatDate(audit.creationDate)
+        }}</time></template
+      >
+      <!-- FIXME: publicationDate -->
+      <template v-else-if="auditIsReady">
         Terminé le
-        <time datetime="30/12/2023">{{
-          formatDate(audit.publicationDate)
-        }}</time>
+        <time datetime="XX/XX/XXX">{{ "XX/XX/XXX" }}</time>
         <template v-if="audit.editionDate">
           - Mis à jour le
-          <time datetime="30/12/2023">{{
+          <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
           }}</time></template
         >
@@ -56,15 +70,10 @@ const auditIsReady = computed(() => {
       </template>
     </p>
 
-    <AuditProgressBar
-      v-if="!auditIsReady"
-      class="fr-mb-3w audit-step-progress-bar"
-    />
-
-    <div v-else class="fr-mb-3w audit-step-charts">
+    <div v-if="auditIsReady" class="fr-mb-3w audit-step-charts">
       <div class="audit-step-chart">
         <StatDonut
-          :value="auditStats.complianceLevel.value"
+          :value="complianceLevel"
           :total="100"
           unit="%"
           theme="france"
@@ -79,8 +88,8 @@ const auditIsReady = computed(() => {
       <span aria-hidden="true" class="audit-step-chart-separator" />
       <div class="audit-step-chart">
         <StatDonut
-          :value="auditStats.errorsCount.value.total"
-          :total="100"
+          :value="notCompliantCriteriaCount"
+          :total="getCriteriaCount(audit.auditType)"
           theme="marianne"
           size="sm"
         />
@@ -91,20 +100,16 @@ const auditIsReady = computed(() => {
               `${pluralize(
                 "Critère",
                 "Critères",
-                auditStats.errorsCount.value.total
-              )} non ${pluralize(
-                "conforme",
-                "conformes",
-                auditStats.errorsCount.value.total
-              )}`
+                errorsCount.total
+              )} non ${pluralize("conforme", "conformes", errorsCount.total)}`
             }}
           </p>
           <p class="fr-text--xs fr-mb-0">
             {{
-              `${auditStats.errorsCount.value.blocking} ${pluralize(
+              `${errorsCount.blocking} ${pluralize(
                 "bloquant",
                 "bloquants",
-                auditStats.errorsCount.value.blocking
+                errorsCount.blocking
               )}`
             }}
           </p>
@@ -113,27 +118,17 @@ const auditIsReady = computed(() => {
       <span aria-hidden="true" class="audit-step-chart-separator" />
       <div class="audit-step-chart">
         <StatDonut
-          :value="auditStats.notApplicableCriteriaCount.value"
+          :value="notApplicableCriteriaCount"
           :total="getCriteriaCount(audit.auditType)"
           size="sm"
         />
 
         <div class="card-info">
           <p class="fr-text--bold fr-mb-1v">
-            {{
-              pluralize(
-                "Critère",
-                "Critères",
-                auditStats.notApplicableCriteriaCount.value
-              )
-            }}
+            {{ pluralize("Critère", "Critères", notApplicableCriteriaCount) }}
             non
             {{
-              pluralize(
-                "applicable",
-                "applicables",
-                auditStats.notApplicableCriteriaCount.value
-              )
+              pluralize("applicable", "applicables", notApplicableCriteriaCount)
             }}
           </p>
           <p class="fr-text--xs fr-mb-0">
@@ -142,6 +137,8 @@ const auditIsReady = computed(() => {
         </div>
       </div>
     </div>
+
+    <AuditProgressBar v-else class="fr-mb-3w audit-step-progress-bar" />
 
     <ul
       :class="[
