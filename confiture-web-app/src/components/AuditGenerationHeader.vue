@@ -167,9 +167,12 @@ const scrollSentinelRef = ref<HTMLDivElement>();
 const showLeftSideBorders = ref(false);
 
 onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    showLeftSideBorders.value = !entries.at(0)?.isIntersecting;
-  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      showLeftSideBorders.value = !entries.at(0)?.isIntersecting;
+    },
+    { rootMargin: "-64px" },
+  );
 
   observer.observe(scrollSentinelRef.value!);
 });
@@ -184,8 +187,6 @@ onMounted(() => {
 
   <!-- TODO: Link to actions somehow -->
   <slot name="actions-notice" />
-
-  <div ref="scrollSentinelRef" />
 
   <div id="sticky-indicator" class="sticky-indicator fr-p-0">
     <div
@@ -364,6 +365,9 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- ICI -->
+  <div ref="scrollSentinelRef" />
+
   <DuplicateModal
     ref="duplicateModal"
     :original-audit-name="auditStore.currentAudit?.procedureName"
@@ -497,7 +501,7 @@ onMounted(() => {
   align-items: center;
   align-self: stretch;
   border-bottom: 1px solid transparent;
-  border-right: 1px solid transparent;
+  border-right: 1px solid var(--border-default-grey);
   transition: border-color 0.2s ease;
 }
 
