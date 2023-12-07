@@ -57,7 +57,7 @@ function toStepFour() {
         notify(
           "error",
           "Une erreur est survenue",
-          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
+          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
         );
         captureWithPayloads(error);
       });
@@ -75,14 +75,14 @@ const topics = computed(() => {
       // hide topics not present in audit type
       .filter((topic) => {
         return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
-          (criterium) => criterium.topic === topic.number,
+          (criterium) => criterium.topic === topic.number
         );
       })
       .map((topic) => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number,
+            (result) => result.topic === topic.number
           ) ?? [];
 
         // number of criteria for the topic accross all pages
@@ -91,7 +91,7 @@ const topics = computed(() => {
         // number of tested criteria for the topic accross all pages
         const testedCount =
           relevantResults.filter(
-            (result) => result.status !== CriteriumResultStatus.NOT_TESTED,
+            (result) => result.status !== CriteriumResultStatus.NOT_TESTED
           ).length ?? 0;
 
         return {
@@ -138,7 +138,7 @@ const headerInfos = computed(() => [
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType,
+      auditStore.currentAudit?.auditType as AuditType
     )} critères`,
     value: notApplicableCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
@@ -198,7 +198,7 @@ function handleUpdateResultError(err: unknown) {
   notify(
     "error",
     "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
   );
 }
 
@@ -208,7 +208,7 @@ const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0),
+    .reduce((total, length) => (total += length), 0)
 );
 
 watch(
@@ -217,7 +217,7 @@ watch(
     if (curr && !prev) {
       auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
     }
-  },
+  }
 );
 
 const pageTitle = computed(() => {
@@ -226,9 +226,11 @@ const pageTitle = computed(() => {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
     const tabName = auditStore.currentPageId
-      ? ` - Page en cours « ${auditStore.currentAudit.pages.find(
-          (p) => p.id === auditStore.currentPageId,
-        )?.name} »`
+      ? ` - Page en cours « ${
+          auditStore.currentAudit.pages.find(
+            (p) => p.id === auditStore.currentPageId
+          )?.name
+        } »`
       : " - Notes";
 
     title += tabName;
@@ -237,7 +239,7 @@ const pageTitle = computed(() => {
       const results = ` - ${filterResultsCount.value} ${pluralize(
         "résultat",
         "résultats",
-        filterResultsCount.value,
+        filterResultsCount.value
       )} pour « ${filterStore.search} »`;
 
       title += results;
@@ -274,6 +276,15 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
+
+    <div class="fr-mb-4w">
+      <RouterLink
+        class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
+        :to="{ name: 'overview', params: { uniqueId } }"
+      >
+        Retourner à la synthèse
+      </RouterLink>
+    </div>
 
     <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
       <p class="fr-alert__title">Audit copié avec succès</p>
@@ -423,7 +434,7 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
                   :disabled="isOffline"
                   @input="
                     updateAuditNotes(
-                      ($event.target as HTMLTextAreaElement).value,
+                      ($event.target as HTMLTextAreaElement).value
                     )
                   "
                 ></textarea>

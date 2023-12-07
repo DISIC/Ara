@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
+import PageMeta from "../components/PageMeta";
 import AuditStep from "../components/overview/AuditStep.vue";
 import ReportStep from "../components/overview/ReportStep.vue";
 import StatementStep from "../components/overview/StatementStep.vue";
@@ -27,6 +28,9 @@ const audit = computed(() => {
 
 <template>
   <template v-if="audit">
+    <!-- TODO: fill meta description -->
+    <PageMeta :title="`Synthèse ${audit.procedureName}`" description="TODO" />
+
     <h1>{{ audit.procedureName }}</h1>
 
     <ul class="fr-p-0 fr-m-0 overview-steps">

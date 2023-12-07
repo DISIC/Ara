@@ -317,6 +317,10 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           {
+            label: `Synthèse ${getProcedureName()}`,
+            name: "overview",
+          },
+          {
             label: getProcedureName(),
             name: "edit-audit-step-three",
           },
