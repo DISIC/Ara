@@ -187,7 +187,7 @@ onMounted(() => {
 
   <div ref="scrollSentinelRef" />
 
-  <div id="sticky-indicator" class="sticky-indicator">
+  <div id="sticky-indicator" class="sticky-indicator fr-p-0">
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
@@ -461,7 +461,6 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
-  padding: 0;
   flex: 1;
 
   background: var(--background-default-grey);
@@ -486,7 +485,6 @@ onMounted(() => {
 
 .separator {
   width: 1px;
-  /* height: 100%; */
   background-color: var(--border-default-grey);
 }
 
@@ -498,7 +496,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   align-self: stretch;
-  /* border: 1px solid gold; */
   border-bottom: 1px solid transparent;
   border-right: 1px solid transparent;
   transition: border-color 0.2s ease;

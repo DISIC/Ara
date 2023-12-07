@@ -473,7 +473,7 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
 
 .filters-wrapper {
   position: sticky;
-  top: 55px;
+  top: 5rem;
   max-height: 100vh;
   overflow-y: auto;
 }

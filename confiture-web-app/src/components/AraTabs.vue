@@ -111,7 +111,7 @@ onMounted(async () => {
         role="tabpanel"
         tabindex="0"
       >
-        <slot name="panel" :data="tab.data" :i="i" />
+        <slot v-if="i === currentTab" name="panel" :data="tab.data" :i="i" />
       </div>
     </template>
   </div>
