@@ -28,8 +28,10 @@ const audit = computed(() => {
 
 <template>
   <template v-if="audit">
-    <!-- TODO: fill meta description -->
-    <PageMeta :title="`Synthèse ${audit.procedureName}`" description="TODO" />
+    <PageMeta
+      :title="`Synthèse ${audit.procedureName}`"
+      description="Suivez l'avancement de votre travail et accédez à votre audit et vos livrables. Commencez par réaliser votre audit avant compléter la déclaration d'accessibilité. Livrez ensuite le rapport d'audit et la déclaration d'accessibilité. Le rapport d'audit est généré automatiquement à partir de l'audit. La déclaration d'accessibilité est pré-complétée automatiquement à partir de l'audit."
+    />
 
     <h1>{{ audit.procedureName }}</h1>
 
