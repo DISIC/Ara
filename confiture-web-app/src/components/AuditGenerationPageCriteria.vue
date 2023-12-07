@@ -125,6 +125,6 @@ const noResults = computed(() => {
 
 .topic-heading {
   color: var(--text-action-high-blue-france);
-  scroll-margin: 5rem;
+  scroll-margin: 7.5rem;
 }
 </style>
