@@ -98,8 +98,11 @@ function fillFields() {
     { name: "Accueil", url: "https://example.com" },
     { name: "Contact", url: "https://example.com/contact" },
   ];
-  procedureAuditorName.value = "Etienne Dupont";
-  procedureAuditorEmail.value = "etienne-dupont@example.com";
+
+  if (!accountStore.account) {
+    procedureAuditorName.value = "Etienne Dupont";
+    procedureAuditorEmail.value = "etienne-dupont@example.com";
+  }
 }
 
 function onSubmit() {

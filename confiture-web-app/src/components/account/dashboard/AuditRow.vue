@@ -29,16 +29,6 @@ const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
 
-const rowUrl = isInProgress.value
-  ? {
-      name: "edit-audit-step-three",
-      params: { uniqueId: props.audit.editUniqueId },
-    }
-  : {
-      name: "report",
-      params: { uniqueId: props.audit.consultUniqueId },
-    };
-
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
@@ -129,7 +119,10 @@ const csvExportFilename = computed(() => {
 <template>
   <div class="fr-py-2w grid">
     <!-- Name -->
-    <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
+    <RouterLink
+      :to="{ name: 'overview', params: { uniqueId: audit.editUniqueId } }"
+      class="fr-pl-2w audit-name"
+    >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
@@ -191,11 +184,11 @@ const csvExportFilename = computed(() => {
 
     <!-- Main action -->
     <RouterLink
-      :to="rowUrl"
+      :to="{ name: 'overview', params: { uniqueId: audit.editUniqueId } }"
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
     >
-      {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
+      {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
       <span v-if="isInProgress" class="sr-only">
         {{ audit.procedureName }}</span
       >
@@ -220,9 +213,11 @@ const csvExportFilename = computed(() => {
                   name: 'edit-audit-step-three',
                   params: { uniqueId: audit.editUniqueId },
                 }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
+                  isInProgress ? 'fr-icon-edit-line' : 'fr-icon-file-line'
+                } fr-m-0`"
               >
-                Modifier l’audit
+                {{ isInProgress ? "Modifier l’audit" : "Accéder à l’audit" }}
                 <span class="sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>
