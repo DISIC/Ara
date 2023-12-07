@@ -49,7 +49,7 @@ function toStepFour() {
       .publishAudit(uniqueId.value)
       .then(() => {
         router.push({
-          name: "edit-audit-step-four",
+          name: "overview",
           params: { uniqueId: uniqueId.value },
         });
       })
@@ -318,23 +318,6 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       >
         Masquer le message
       </button>
-    </div>
-
-    <div
-      v-if="
-        auditStore.currentAudit.publicationDate &&
-        !auditStore.currentAudit.editionDate
-      "
-    >
-      <RouterLink
-        class="fr-text--sm fr-mb-4w back-summary-link"
-        :to="{
-          name: 'edit-audit-step-four',
-          params: { uniqueId },
-        }"
-      >
-        Retour à la synthèse
-      </RouterLink>
     </div>
 
     <AuditGenerationHeader

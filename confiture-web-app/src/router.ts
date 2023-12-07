@@ -5,7 +5,6 @@ import ContextPage from "./pages/consult/ContextPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
 import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
-import EditAuditStepFourPage from "./pages/edit/EditAuditStepFourPage.vue";
 import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
@@ -316,22 +315,6 @@ const router = createRouter({
           {
             label: getProcedureName(),
             name: "edit-audit-step-three",
-          },
-        ],
-      },
-    },
-    {
-      path: "/audits/:uniqueId/partage",
-      name: "edit-audit-step-four",
-      component: EditAuditStepFourPage,
-      beforeEnter: saveCurrentEditionStep,
-      meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: getProcedureName(),
-            name: "edit-audit-step-four",
           },
         ],
       },
