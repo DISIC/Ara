@@ -156,13 +156,16 @@ function handleDisconnectClick() {
                     ['home', 'account-dashboard'].includes(currentRoute.name as string) ? 'true' : null
                   "
                 >
-                  Accueil
+                  {{ accountStore.account ? "Mes audits" : "Accueil" }}
                 </RouterLink>
               </li>
 
               <!-- Current audit -->
               <li
-                v-if="auditStore.currentAudit || reportStore.data"
+                v-if="
+                  !accountStore.account &&
+                  (auditStore.currentAudit || reportStore.data)
+                "
                 class="fr-nav__item"
               >
                 <RouterLink

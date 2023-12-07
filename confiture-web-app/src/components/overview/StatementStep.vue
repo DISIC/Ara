@@ -91,7 +91,7 @@ const auditIsPublishable = computed(() => {
             tab: 'declaration-daccessibilite',
           },
         }"
-        description="Lien de partage"
+        label="Lien de partage"
         success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
       />
     </template>

@@ -54,7 +54,7 @@ const auditIsReady = computed(() => {
           name: 'report',
           params: { uniqueId: audit.consultUniqueId },
         }"
-        description="Lien de partage"
+        label="Lien de partage"
         success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
       />
     </template>
