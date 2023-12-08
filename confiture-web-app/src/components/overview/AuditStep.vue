@@ -51,10 +51,12 @@ const auditIsInProgress = computed(() => {
           formatDate(audit.creationDate)
         }}</time></template
       >
-      <!-- FIXME: publicationDate -->
-      <template v-else-if="auditIsReady">
+
+      <template v-else-if="auditIsReady && audit.publicationDate">
         Terminé le
-        <time datetime="XX/XX/XXX">{{ "XX/XX/XXX" }}</time>
+        <time :datetime="audit.publicationDate.toString()">{{
+          formatDate(audit.publicationDate)
+        }}</time>
         <template v-if="audit.editionDate">
           - Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
@@ -164,7 +166,13 @@ const auditIsInProgress = computed(() => {
               : 'fr-icon-edit-fill'
           "
         >
-          {{ auditIsReady ? "Accéder" : "Commencer" }}
+          {{
+            auditIsReady
+              ? "Accéder"
+              : auditIsInProgress
+              ? "Continuer"
+              : "Commencer"
+          }}
         </RouterLink>
       </li>
     </ul>

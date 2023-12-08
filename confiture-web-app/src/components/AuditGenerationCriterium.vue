@@ -15,13 +15,14 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore, useFiltersStore } from "../store";
+import { useResultsStore, useFiltersStore, useAuditStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
 import { captureWithPayloads, formatStatus } from "../utils";
 import { useIsOffline } from "../composables/useIsOffline";
 
 const store = useResultsStore();
+const auditStore = useAuditStore();
 const filtersStore = useFiltersStore();
 
 const props = defineProps<{
@@ -175,6 +176,20 @@ function handleUpdateResultError(err: any) {
 function updateResultStatus(status: CriteriumResultStatus) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
+    .then(() => {
+      if (
+        store.everyCriteriumAreTested &&
+        !auditStore.currentAudit?.publicationDate
+      ) {
+        auditStore.publishAudit(props.auditUniqueId).then(() => {
+          notify(
+            "info",
+            "Bravo ! Il semblerait que vous ayez terminé votre audit 💪",
+            "Il ne vous reste qu’à livrer votre rapport."
+          );
+        });
+      }
+    })
     .catch(handleUpdateResultError);
 }
 
