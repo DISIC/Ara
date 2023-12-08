@@ -326,8 +326,10 @@ const csvExportFilename = computed(() => {
   z-index: 1;
 }
 
+/* Make button take full column width */
 .audit-main-action {
-  justify-self: end;
+  justify-content: center;
+  width: initial;
 }
 
 .delete-button {
