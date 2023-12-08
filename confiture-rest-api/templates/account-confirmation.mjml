@@ -22,12 +22,6 @@
       </mj-column>
     </mj-section>
 
-    <mj-section>
-      <mj-column>
-        <mj-spacer height="32px"></mj-spacer>
-      </mj-column>
-    </mj-section>
-
     <!-- FOOTER -->
     <mj-include path="./footer.mjml" />
   </mj-body>
