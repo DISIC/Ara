@@ -138,7 +138,12 @@ const auditIsInProgress = computed(() => {
       </div>
     </div>
 
-    <AuditProgressBar v-else class="fr-mb-3w audit-step-progress-bar" />
+    <AuditProgressBar
+      v-else
+      label="Progression"
+      is-large
+      class="fr-mb-3w audit-step-progress-bar"
+    />
 
     <ul
       :class="[

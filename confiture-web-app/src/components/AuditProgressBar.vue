@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useResultsStore } from "../store";
+
+defineProps<{
+  label: string;
+  isLarge?: boolean;
+}>();
+
 const results = useResultsStore();
 
 const progressPercentage = computed(() => {
@@ -18,10 +24,13 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
 </script>
 
 <template>
-  <div class="fr-py-1v audit-progress">
-    <span class="audit-progress-label">Progression de l’audit</span>
+  <div :class="['audit-progress', { 'audit-progress--thick': isLarge }]">
+    <span class="audit-progress-label">{{ label }}</span>
     <span
-      class="fr-text--xs fr-text--action-high-grey fr-m-0 audit-progress-percentage"
+      :class="[
+        'fr-text--xs fr-text--action-high-grey fr-m-0 audit-progress-percentage',
+        { 'fr-text--sm': isLarge },
+      ]"
     >
       {{ progressPercentage }}%
     </span>
@@ -45,6 +54,11 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
   min-width: 18rem;
 }
 
+.audit-progress--thick {
+  gap: 0.75rem 0;
+  grid-template-rows: auto 0.75rem;
+}
+
 .audit-progress-bar::after {
   background-color: var(--background-flat-success);
   content: "";
@@ -62,5 +76,6 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
 
 .audit-progress-percentage {
   color: var(--text-mention-grey);
+  align-self: end;
 }
 </style>

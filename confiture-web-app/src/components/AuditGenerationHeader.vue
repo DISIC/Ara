@@ -85,7 +85,7 @@ function confirmDuplicate(name: string) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     });
@@ -119,7 +119,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -134,7 +134,7 @@ const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
 
 const csvExportUrl = computed(
-  () => `/api/audits/${uniqueId.value}/exports/csv`,
+  () => `/api/audits/${uniqueId.value}/exports/csv`
 );
 
 const csvExportFilename = computed(() => {
@@ -175,7 +175,7 @@ onMounted(() => {
         // verify that the sentinel is at the top of the screen
         el.getBoundingClientRect().top <= 64;
     },
-    { rootMargin: "-64px" },
+    { rootMargin: "-64px" }
   );
 
   observer.observe(scrollSentinelRef.value!);
@@ -211,7 +211,11 @@ onMounted(() => {
       class="indicator-left-side fr-col-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
-      <AuditProgressBar v-if="showAuditProgressBar" class="fr-col-3" />
+      <AuditProgressBar
+        v-if="showAuditProgressBar"
+        label="Progression de l’audit"
+        class="fr-col-3"
+      />
 
       <div
         v-else-if="auditStore.currentAudit?.publicationDate"
