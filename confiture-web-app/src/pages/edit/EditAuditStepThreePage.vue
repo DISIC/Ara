@@ -343,40 +343,6 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
             <span class="sr-only">(Nouvelle fenêtre)</span>
           </component>
         </li>
-        <li
-          v-if="
-            !auditStore.currentAudit.publicationDate ||
-            (auditStore.currentAudit.editionDate &&
-              auditStore.currentAudit.editionDate >
-                auditStore.currentAudit.publicationDate)
-          "
-        >
-          <button
-            :disabled="!resultsStore.everyCriteriumAreTested || isOffline"
-            class="fr-btn"
-            :aria-describedby="
-              auditStore.currentAudit.publicationDate
-                ? auditStore.currentAudit.editionDate
-                  ? undefined
-                  : 'validation-notice'
-                : 'validation-notice'
-            "
-            @click="toStepFour"
-          >
-            {{
-              auditStore.currentAudit.publicationDate
-                ? auditStore.currentAudit.editionDate
-                  ? "Mettre à jour l’audit"
-                  : "Valider l’audit"
-                : "Valider l’audit"
-            }}
-          </button>
-        </li>
-      </template>
-      <template v-if="!resultsStore.everyCriteriumAreTested" #actions-notice>
-        <p id="validation-notice" class="fr-text--xs fr-mb-1w submit-notice">
-          Validation possible à la fin de l’audit
-        </p>
       </template>
     </AuditGenerationHeader>
 
@@ -470,10 +436,6 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
   top: 5rem;
   max-height: 100vh;
   overflow-y: auto;
-}
-
-.submit-notice {
-  text-align: right;
 }
 
 .page-wrapper {

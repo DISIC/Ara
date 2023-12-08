@@ -189,10 +189,11 @@ onMounted(() => {
     </button>
   </div>
 
-  <!-- TODO: Link to actions somehow -->
-  <slot name="actions-notice" />
+  <h1>{{ auditName }}</h1>
 
-  <div id="sticky-indicator" class="sticky-indicator fr-p-0">
+  <!-- TODO: Link to actions somehow -->
+
+  <div id="sticky-indicator" class="sticky-indicator fr-p-0 fr-mb-3w">
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
@@ -334,8 +335,6 @@ onMounted(() => {
       </ul>
     </div>
   </div>
-
-  <h1 class="">{{ auditName }}</h1>
 
   <div
     :class="`fr-grid-row fr-grid-row--gutters ${
