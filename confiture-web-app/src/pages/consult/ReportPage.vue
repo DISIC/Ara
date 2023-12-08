@@ -9,6 +9,7 @@ import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/BackLink.vue";
 import Dropdown from "../../components/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore, useAuditStore } from "../../store";
@@ -20,11 +21,12 @@ import {
   slugify,
   formatBytes,
 } from "../../utils";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 
 const report = useReportStore();
-const audit = useAuditStore();
 
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
@@ -78,7 +80,7 @@ watch(
         getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
         localStorage.getItem("confiture:hide-onboarding-alert") !== "true";
     }
-  }
+  },
 );
 
 function onOnboardingClose(confirmed: boolean) {
@@ -97,7 +99,7 @@ function onOnboardingAlertClose() {
 const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
   let index = tabs.value.findIndex(
-    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase(),
   );
   return index === -1 ? 0 : index;
 });
@@ -114,7 +116,7 @@ function handleTabChange(tab: { title: string }) {
         uniqueId,
         tab: slugify(tab.title),
       },
-    }).fullPath
+    }).fullPath,
   );
 
   targetTab.value = slugify(tab.title);
@@ -175,6 +177,16 @@ const siteUrl = computed(() => {
       </p>
     </div>
   </div>
+
+  <!-- TODO: get editUniqueId from here -->
+  <!-- <BackLink
+    :label="
+      previousRoute.route?.name === 'account-dashboard'
+        ? 'Accéder à la synthèse'
+        : 'Retourner à la synthèse'
+    "
+    :to="{ name: 'overview', params: { uniqueId: 'xxx' } }"
+  /> -->
 
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>

@@ -224,6 +224,13 @@ const router = createRouter({
       meta: {
         name: "Mes audits",
         authRequired: true,
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          {
+            label: "Mes audits",
+            name: "account-dashboard",
+          },
+        ],
       },
     },
     {

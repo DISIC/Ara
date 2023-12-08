@@ -26,7 +26,7 @@ const notify = useNotifications();
 const auditStore = useAuditStore();
 
 const isInProgress = computed(
-  () => props.audit.status === AuditStatus.IN_PROGRESS
+  () => props.audit.status === AuditStatus.IN_PROGRESS,
 );
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
@@ -55,7 +55,7 @@ function duplicateAudit(name: string) {
                 notify(
                   "error",
                   "Une erreur est survenue",
-                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
                 );
                 captureWithPayloads(error);
               });
@@ -67,7 +67,7 @@ function duplicateAudit(name: string) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     })
@@ -94,7 +94,7 @@ function deleteAudit() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     })
@@ -105,7 +105,7 @@ function deleteAudit() {
 }
 
 const csvExportUrl = computed(
-  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
+  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`,
 );
 
 const csvExportFilename = computed(() => {
@@ -184,7 +184,14 @@ const csvExportFilename = computed(() => {
 
     <!-- Main action -->
     <RouterLink
-      :to="{ name: 'overview', params: { uniqueId: audit.editUniqueId } }"
+      :to="
+        isInProgress
+          ? {
+              name: 'edit-audit-step-three',
+              params: { uniqueId: audit.editUniqueId },
+            }
+          : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
+      "
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
     >
@@ -330,6 +337,7 @@ const csvExportFilename = computed(() => {
 .audit-main-action {
   justify-content: center;
   width: initial;
+  z-index: 1;
 }
 
 .delete-button {

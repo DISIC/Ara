@@ -31,6 +31,7 @@ function confirmLeave() {
 }
 
 // Display leave modal when navigating to another route
+// FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
   if (!isSubmitting.value && !confirmedLeave.value) {
     leaveModalDestination.value = to.fullPath;
@@ -86,7 +87,7 @@ async function submitStepOne(data: CreateAuditRequestData) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(err);
     })

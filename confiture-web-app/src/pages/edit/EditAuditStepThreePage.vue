@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/AraTabs.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -15,13 +16,19 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { history } from "../../router";
-import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import {
+  useAuditStore,
+  useFiltersStore,
+  useResultsStore,
+  useAccountStore,
+} from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
+import { getCriteriaCount, pluralize } from "../../utils";
 import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 
 const route = useRoute();
-const router = useRouter();
+const previousRoute = usePreviousRoute();
 
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
@@ -35,35 +42,6 @@ useWrappedFetch(async () => {
 const resultsStore = useResultsStore();
 const notify = useNotifications();
 
-/**
- * Publish audit and/or move to final step
- */
-function toStepFour() {
-  if (auditStore.currentAudit?.publicationDate) {
-    router.push({
-      name: "edit-audit-step-four",
-      params: { uniqueId: uniqueId.value },
-    });
-  } else {
-    auditStore
-      .publishAudit(uniqueId.value)
-      .then(() => {
-        router.push({
-          name: "overview",
-          params: { uniqueId: uniqueId.value },
-        });
-      })
-      .catch((error) => {
-        notify(
-          "error",
-          "Une erreur est survenue",
-          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
-        );
-        captureWithPayloads(error);
-      });
-  }
-}
-
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
   if (!auditStore.currentAudit?.auditType) {
@@ -75,14 +53,14 @@ const topics = computed(() => {
       // hide topics not present in audit type
       .filter((topic) => {
         return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
-          (criterium) => criterium.topic === topic.number
+          (criterium) => criterium.topic === topic.number,
         );
       })
       .map((topic) => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number
+            (result) => result.topic === topic.number,
           ) ?? [];
 
         // number of criteria for the topic accross all pages
@@ -91,7 +69,7 @@ const topics = computed(() => {
         // number of tested criteria for the topic accross all pages
         const testedCount =
           relevantResults.filter(
-            (result) => result.status !== CriteriumResultStatus.NOT_TESTED
+            (result) => result.status !== CriteriumResultStatus.NOT_TESTED,
           ).length ?? 0;
 
         return {
@@ -138,7 +116,7 @@ const headerInfos = computed(() => [
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType
+      auditStore.currentAudit?.auditType as AuditType,
     )} critères`,
     value: notApplicableCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
@@ -198,7 +176,7 @@ function handleUpdateResultError(err: unknown) {
   notify(
     "error",
     "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
   );
 }
 
@@ -208,7 +186,7 @@ const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0)
+    .reduce((total, length) => (total += length), 0),
 );
 
 watch(
@@ -217,7 +195,7 @@ watch(
     if (curr && !prev) {
       auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
     }
-  }
+  },
 );
 
 const pageTitle = computed(() => {
@@ -226,11 +204,9 @@ const pageTitle = computed(() => {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
     const tabName = auditStore.currentPageId
-      ? ` - Page en cours « ${
-          auditStore.currentAudit.pages.find(
-            (p) => p.id === auditStore.currentPageId
-          )?.name
-        } »`
+      ? ` - Page en cours « ${auditStore.currentAudit.pages.find(
+          (p) => p.id === auditStore.currentPageId,
+        )?.name} »`
       : " - Notes";
 
     title += tabName;
@@ -239,7 +215,7 @@ const pageTitle = computed(() => {
       const results = ` - ${filterResultsCount.value} ${pluralize(
         "résultat",
         "résultats",
-        filterResultsCount.value
+        filterResultsCount.value,
       )} pour « ${filterStore.search} »`;
 
       title += results;
@@ -267,6 +243,8 @@ const tabsData = computed(() => {
 function isNotesData(data: AuditPage | NotesData): data is NotesData {
   return (data as NotesData)._notes !== undefined;
 }
+
+const accountStore = useAccountStore();
 </script>
 
 <template>
@@ -277,14 +255,19 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
-    <div class="fr-mb-4w">
-      <RouterLink
-        class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
+    <template v-if="accountStore.account">
+      <BackLink
+        v-if="previousRoute.route?.name === 'account-dashboard'"
+        label="Accéder à la synthèse"
+        :to="{ name: 'account-dashboard' }"
+      />
+
+      <BackLink
+        v-if="previousRoute.route?.name === 'overview'"
+        label="Retourner à la synthèse"
         :to="{ name: 'overview', params: { uniqueId } }"
-      >
-        Retourner à la synthèse
-      </RouterLink>
-    </div>
+      />
+    </template>
 
     <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
       <p class="fr-alert__title">Audit copié avec succès</p>
@@ -383,7 +366,7 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
                   :disabled="isOffline"
                   @input="
                     updateAuditNotes(
-                      ($event.target as HTMLTextAreaElement).value
+                      ($event.target as HTMLTextAreaElement).value,
                     )
                   "
                 ></textarea>

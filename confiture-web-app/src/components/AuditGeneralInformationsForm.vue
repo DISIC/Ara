@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
+import { useRoute } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
-import { useRoute } from "vue-router";
-import { AuditType, CreateAuditRequestData } from "../types";
-import AuditTypeRadio from "./AuditTypeRadio.vue";
-import DsfrField from "./DsfrField.vue";
-import { formatEmail } from "../utils";
+import { usePreviousRoute } from "../composables/usePreviousRoute";
 import { useAccountStore } from "../store/account";
+import { AuditType, CreateAuditRequestData } from "../types";
+import { formatEmail } from "../utils";
+import AuditTypeRadio from "./AuditTypeRadio.vue";
+import BackLink from "./BackLink.vue";
+import DsfrField from "./DsfrField.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -119,9 +121,26 @@ function onSubmit() {
 const isDevMode = useDevMode();
 const notify = useNotifications();
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 </script>
 
 <template>
+  <template v-if="accountStore.account">
+    <BackLink
+      v-if="previousRoute.route?.name === 'account-dashboard'"
+      label="Retourner à mes audits"
+      :to="{ name: 'account-dashboard' }"
+    />
+    <BackLink
+      v-if="previousRoute.route?.name === 'edit-audit-step-three'"
+      label="Retourner à mon audit"
+      :to="{
+        name: 'edit-audit-step-three',
+        params: { uniqueId: route.params.uniqueId },
+      }"
+    />
+  </template>
+
   <form @submit.prevent="onSubmit">
     <h1 class="fr-mb-3v">
       <span aria-hidden="true">⚙️</span> Paramètres de l’audit
