@@ -55,13 +55,16 @@ export class AuditsController {
     description: 'The audit has been successfully created.',
     type: Audit,
   })
-  async createAudit(@Body() body: CreateAuditDto) {
+  async createAudit(@Body() body: CreateAuditDto, @User() user: AuthenticationJwtPayload) {
     const audit = await this.auditService.createAudit(body);
 
-    this.mailer.sendAuditCreatedMail(audit).catch((err) => {
-      console.error(`Failed to send email for audit ${audit.editUniqueId}`);
-      console.error(err);
-    });
+
+    if (!user) {
+      this.mailer.sendAuditCreatedMail(audit).catch((err) => {
+        console.error(`Failed to send email for audit ${audit.editUniqueId}`);
+        console.error(err);
+      });
+    }
 
     return audit;
   }

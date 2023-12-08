@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AuditsModule } from './audits/audits.module';
@@ -7,6 +7,7 @@ import { configValidationSchema } from './config-validation-schema';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
+import { UserMiddleware } from './auth/user.middleware';
 
 @Module({
   imports: [
@@ -22,4 +23,8 @@ import { ProfileModule } from './profile/profile.module';
   ],
   controllers: [HealthCheckController],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+    configure(consumer: MiddlewareConsumer) {
+      consumer.apply(UserMiddleware).forRoutes('*')
+    }
+}
