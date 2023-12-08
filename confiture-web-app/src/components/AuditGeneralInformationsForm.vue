@@ -211,11 +211,7 @@ const route = useRoute();
       </button>
 
       <fieldset
-        v-if="
-          !accountStore.account ||
-          !accountStore.account?.name ||
-          !accountStore.account?.orgName
-        "
+        v-if="!accountStore.account?.name || !accountStore.account?.email"
         class="fr-p-0 auditor-fields"
       >
         <legend>
@@ -231,7 +227,7 @@ const route = useRoute();
         />
 
         <DsfrField
-          v-if="!accountStore.account"
+          v-if="!accountStore.account?.email"
           id="procedure-auditor-email"
           v-model="procedureAuditorEmail"
           class="fr-mb-0"
