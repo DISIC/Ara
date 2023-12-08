@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { debounce } from "lodash-es";
+import { computed, ref, watch } from "vue";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
+import AraTabs from "../../components/AraTabs.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
-import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
+import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useIsOffline } from "../../composables/useIsOffline";
 import rgaa from "../../criteres.json";
-import { history } from "../../router";
-import { useAuditStore, useResultsStore, useFiltersStore } from "../../store";
-import { AuditType, CriteriumResultStatus } from "../../types";
-import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
+import { history } from "../../router";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
+import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
+import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -56,7 +57,7 @@ function toStepFour() {
         notify(
           "error",
           "Une erreur est survenue",
-          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
         );
         captureWithPayloads(error);
       });
@@ -74,14 +75,14 @@ const topics = computed(() => {
       // hide topics not present in audit type
       .filter((topic) => {
         return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
-          (criterium) => criterium.topic === topic.number
+          (criterium) => criterium.topic === topic.number,
         );
       })
       .map((topic) => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number
+            (result) => result.topic === topic.number,
           ) ?? [];
 
         // number of criteria for the topic accross all pages
@@ -90,7 +91,7 @@ const topics = computed(() => {
         // number of tested criteria for the topic accross all pages
         const testedCount =
           relevantResults.filter(
-            (result) => result.status !== CriteriumResultStatus.NOT_TESTED
+            (result) => result.status !== CriteriumResultStatus.NOT_TESTED,
           ).length ?? 0;
 
         return {
@@ -102,12 +103,9 @@ const topics = computed(() => {
   );
 });
 
-const currentPageId = ref<number | null>(0);
-
-function updateCurrentPageId(i: number | null) {
-  auditStore.updateCurrentPageId(i);
-
-  currentPageId.value = i;
+function updateCurrentPageId(i: number) {
+  const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
+  auditStore.updateCurrentPageId(pageIdOrNull);
 }
 
 const {
@@ -140,7 +138,7 @@ const headerInfos = computed(() => [
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType
+      auditStore.currentAudit?.auditType as AuditType,
     )} critères`,
     value: notApplicableCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
@@ -195,12 +193,12 @@ const updateAuditNotes = debounce(async (notes: string) => {
   }
 }, 500);
 
-function handleUpdateResultError(err: any) {
+function handleUpdateResultError(err: unknown) {
   console.log(err);
   notify(
     "error",
     "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
   );
 }
 
@@ -210,7 +208,16 @@ const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0)
+    .reduce((total, length) => (total += length), 0),
+);
+
+watch(
+  () => auditStore.currentAudit?.pages,
+  (curr, prev) => {
+    if (curr && !prev) {
+      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
+    }
+  },
 );
 
 const pageTitle = computed(() => {
@@ -219,11 +226,9 @@ const pageTitle = computed(() => {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
     const tabName = auditStore.currentPageId
-      ? ` - Page en cours « ${
-          auditStore.currentAudit.pages.find(
-            (p) => p.id === auditStore.currentPageId
-          )?.name
-        } »`
+      ? ` - Page en cours « ${auditStore.currentAudit.pages.find(
+          (p) => p.id === auditStore.currentPageId,
+        )?.name} »`
       : " - Notes";
 
     title += tabName;
@@ -232,7 +237,7 @@ const pageTitle = computed(() => {
       const results = ` - ${filterResultsCount.value} ${pluralize(
         "résultat",
         "résultats",
-        filterResultsCount.value
+        filterResultsCount.value,
       )} pour « ${filterStore.search} »`;
 
       title += results;
@@ -243,6 +248,23 @@ const pageTitle = computed(() => {
 
   return "";
 });
+
+type NotesData = { _notes: true };
+type TabData = { label: string; data: AuditPage | NotesData };
+
+const tabsData = computed(() => {
+  return [
+    ...(auditStore.currentAudit?.pages.map((p) => ({
+      label: p.name,
+      data: p,
+    })) ?? []),
+    { data: { _notes: true }, label: "Notes", icon: "draft-line" },
+  ] as TabData[];
+});
+
+function isNotesData(data: AuditPage | NotesData): data is NotesData {
+  return (data as NotesData)._notes !== undefined;
+}
 </script>
 
 <template>
@@ -323,7 +345,7 @@ const pageTitle = computed(() => {
             target="_blank"
             :disabled="isOffline"
           >
-            Consulter le rapport d'audit
+            Consulter le rapport
             <span class="sr-only">(Nouvelle fenêtre)</span>
           </component>
         </li>
@@ -364,7 +386,7 @@ const pageTitle = computed(() => {
       </template>
     </AuditGenerationHeader>
 
-    <div class="fr-grid-row fr-grid-row--gutters columns">
+    <div class="fr-grid-row columns">
       <div
         :class="[
           `fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`,
@@ -372,7 +394,7 @@ const pageTitle = computed(() => {
         ]"
       >
         <div
-          :class="['filters-wrapper', 'fr-pb-6w', { 'fr-px-3v': showFilters }]"
+          :class="['filters-wrapper', 'fr-pb-6w', { 'fr-pr-3v': showFilters }]"
           role="search"
         >
           <AuditGenerationFilters
@@ -382,113 +404,40 @@ const pageTitle = computed(() => {
         </div>
       </div>
       <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
-        <div class="fr-tabs">
-          <ul
-            class="fr-tabs__list"
-            role="tablist"
-            aria-label="Pages de l’audit"
-          >
-            <li role="presentation">
-              <button
-                :id="`page-panel-${auditStore.currentAudit.pages[0].id}`"
-                class="fr-tabs__tab"
-                tabindex="0"
-                role="tab"
-                aria-selected="true"
-                :aria-controls="`page-panel-${auditStore.currentAudit.pages[0].id}-panel`"
-              >
-                {{ auditStore.currentAudit.pages[0].name }}
-                <span
-                  v-if="currentPageId === auditStore.currentAudit.pages[0].id"
-                  class="sr-only"
-                  >&nbsp;Actif</span
-                >
-              </button>
-            </li>
-            <li
-              v-for="page in auditStore.currentAudit.pages.slice(1)"
-              :key="page.id"
-              role="presentation"
-            >
-              <button
-                :id="`page-panel-${page.id}`"
-                class="fr-tabs__tab"
-                tabindex="0"
-                role="tab"
-                aria-selected="false"
-                :aria-controls="`page-panel-${page.id}-panel`"
-              >
-                {{ page.name }}
-                <span v-if="currentPageId === page.id" class="sr-only"
-                  >&nbsp;Actif</span
-                >
-              </button>
-            </li>
-            <li role="presentation">
-              <button
-                id="notes-panel"
-                class="fr-tabs__tab fr-icon-draft-line fr-tabs__tab--icon-left"
-                tabindex="0"
-                role="tab"
-                aria-selected="false"
-                :aria-controls="`notes-panel-panel`"
-              >
-                Notes
-                <span v-if="currentPageId === null" class="sr-only"
-                  >&nbsp;Actif</span
-                >
-              </button>
-            </li>
-          </ul>
-          <div
-            v-for="page in auditStore.currentAudit.pages"
-            :id="`page-panel-${page.id}-panel`"
-            :key="page.id"
-            class="fr-tabs__panel"
-            :class="{ 'fr-tabs__panel--selected': currentPageId === page.id }"
-            role="tabpanel"
-            :aria-labelledby="`page-panel-${page.id}`"
-            tabindex="0"
-            v-on="{ 'dsfr.disclose': () => updateCurrentPageId(page.id) }"
-          >
+        <AraTabs :tabs="tabsData" @change="updateCurrentPageId">
+          <template #panel="{ data }">
+            <template v-if="isNotesData(data)">
+              <div class="fr-input-group fr-mb-1w">
+                <label class="fr-label" for="audit-notes"
+                  >Notes annexes
+                  <span class="fr-hint-text">
+                    Exemple : remarques et recommandations générales sur le site
+                    audité. Ces notes seront affichées dans le rapport d’audit.
+                  </span>
+                </label>
+                <textarea
+                  id="audit-notes"
+                  :value="auditNotes"
+                  rows="20"
+                  class="fr-input"
+                  :disabled="isOffline"
+                  @input="
+                    updateAuditNotes(
+                      ($event.target as HTMLTextAreaElement).value,
+                    )
+                  "
+                ></textarea>
+              </div>
+
+              <MarkdownHelpButton id="markdown-notice-notes" />
+            </template>
             <AuditGenerationPageCriteria
-              v-if="currentPageId === page.id"
-              :page="page"
+              v-else
+              :page="data"
               :audit-unique-id="uniqueId"
             />
-          </div>
-          <div
-            :id="`notes-panel-panel`"
-            class="fr-tabs__panel"
-            :class="{ 'fr-tabs__panel--selected': currentPageId === null }"
-            role="tabpanel"
-            aria-labelledby="notes-panel"
-            tabindex="0"
-            v-on="{ 'dsfr.disclose': () => updateCurrentPageId(null) }"
-          >
-            <div class="fr-input-group fr-mb-1w">
-              <label class="fr-label" for="audit-notes"
-                >Notes annexes
-                <span class="fr-hint-text">
-                  Exemple : remarques et recommandations générales sur le site
-                  audité. Ces notes seront affichées dans le rapport d’audit.
-                </span>
-              </label>
-              <textarea
-                id="audit-notes"
-                :value="auditNotes"
-                rows="20"
-                class="fr-input"
-                :disabled="isOffline"
-                @input="
-                  updateAuditNotes(($event.target as HTMLTextAreaElement).value)
-                "
-              ></textarea>
-            </div>
-
-            <MarkdownHelpButton id="markdown-notice-notes" />
-          </div>
-        </div>
+          </template>
+        </AraTabs>
       </div>
     </div>
   </div>
@@ -524,7 +473,7 @@ const pageTitle = computed(() => {
 
 .filters-wrapper {
   position: sticky;
-  top: 55px;
+  top: 5rem;
   max-height: 100vh;
   overflow-y: auto;
 }

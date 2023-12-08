@@ -53,13 +53,13 @@ const pages = ref(
     { name: "Plan du site", url: "" },
     { name: "Aide", url: "" },
     { name: "Authentification", url: "" },
-  ]
+  ],
 );
 const procedureAuditorName = ref(
-  props.defaultValues?.auditorName ?? accountStore.account?.name ?? ""
+  props.defaultValues?.auditorName ?? accountStore.account?.name ?? "",
 );
 const procedureAuditorEmail = ref(
-  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? ""
+  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? "",
 );
 
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);

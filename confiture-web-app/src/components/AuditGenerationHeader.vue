@@ -1,21 +1,27 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
-import { useNotifications } from "../composables/useNotifications";
 import { useIsOffline } from "../composables/useIsOffline";
+import { useNotifications } from "../composables/useNotifications";
 import {
   useAuditStore,
   useResultsStore,
   useSystemStore,
   useAccountStore,
 } from "../store";
-import { captureWithPayloads, formatBytes, slugify } from "../utils";
+import {
+  captureWithPayloads,
+  formatDate,
+  slugify,
+  formatBytes,
+} from "../utils";
+import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "./Dropdown.vue";
 import DuplicateModal from "./DuplicateModal.vue";
-import StickyIndicators from "./StickyIndicators.vue";
+import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
 import GearIcon from "./icons/GearIcon.vue";
@@ -50,14 +56,6 @@ const resultStore = useResultsStore();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-function copyReportLink() {
-  const reportUrl = `${window.location.origin}/rapports/${auditStore.currentAudit?.consultUniqueId}`;
-
-  navigator.clipboard.writeText(reportUrl).then(() => {
-    notify("success", "", "Le lien vers le rapport a été copié avec succès");
-  });
-}
-
 /**
  * Duplicate audit and redirect to new audit page
  */
@@ -88,7 +86,7 @@ function confirmDuplicate(name: string) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     });
@@ -122,7 +120,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     })
@@ -137,7 +135,7 @@ const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
 
 const csvExportUrl = computed(
-  () => `/api/audits/${uniqueId.value}/exports/csv`
+  () => `/api/audits/${uniqueId.value}/exports/csv`,
 );
 
 const csvExportFilename = computed(() => {
@@ -156,6 +154,33 @@ const isDevMode = useDevMode();
 const systemStore = useSystemStore();
 
 const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
+
+const showAuditProgressBar = computed(() => {
+  return (
+    !auditStore.currentAudit?.publicationDate ||
+    (auditStore.currentAudit?.publicationDate &&
+      resultsStore.auditProgress !== 1)
+  );
+});
+
+const scrollSentinelRef = ref<HTMLDivElement>();
+const showLeftSideBorders = ref(false);
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const el = entries.at(0)?.target;
+      showLeftSideBorders.value =
+        !entries.at(0)?.isIntersecting &&
+        !!el &&
+        // verify that the sentinel is at the top of the screen
+        el.getBoundingClientRect().top <= 64;
+    },
+    { rootMargin: "-64px" },
+  );
+
+  observer.observe(scrollSentinelRef.value!);
+});
 </script>
 
 <template>
@@ -165,103 +190,146 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     </button>
   </div>
 
-  <div
-    v-if="!systemStore.isOnline"
-    id="offlineAlert"
-    class="fr-pt-1w offline-alert fr-mb-2w"
-  >
-    <div class="fr-alert fr-alert--error">
-      <h3 class="fr-alert__title">Tentative de connexion...</h3>
-      <p>
-        Vous êtes actuellement hors connexion. Veuillez vérifier votre connexion
-        internet.
-      </p>
+  <!-- TODO: Link to actions somehow -->
+  <slot name="actions-notice" />
+
+  <div id="sticky-indicator" class="sticky-indicator fr-p-0">
+    <div
+      v-if="!systemStore.isOnline"
+      id="offlineAlert"
+      class="fr-pt-1w offline-alert"
+    >
+      <div class="fr-alert fr-alert--error">
+        <h3 class="fr-alert__title">Tentative de connexion...</h3>
+        <p>
+          Vous êtes actuellement hors connexion. Veuillez vérifier votre
+          connexion internet.
+        </p>
+      </div>
     </div>
-  </div>
 
-  <StickyIndicators />
+    <div
+      class="indicator-left-side fr-col-3"
+      :class="{ 'with-border': showLeftSideBorders }"
+    >
+      <AuditProgressBar v-if="showAuditProgressBar" class="fr-col-3" />
 
-  <div class="fr-mb-1v sub-header">
-    <slot name="actions-notice" />
-
-    <ul class="top-actions fr-my-0" role="list">
-      <li class="fr-mr-2w">
-        <Dropdown
-          ref="optionsDropdownRef"
-          title="Options"
-          :disabled="isOffline"
-          :align-left="route.name === 'edit-audit-step-three'"
+      <div
+        v-else-if="auditStore.currentAudit?.publicationDate"
+        class="audit-status"
+      >
+        <span
+          class="fr-icon-success-line fr-icon--sm audit-status-icon"
+          aria-hidden="true"
+        ></span>
+        <strong
+          >Audit
+          {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }} le
+          <time
+            :datetime="
+              auditStore.currentAudit?.editionDate
+                ? auditStore.currentAudit?.editionDate
+                : auditStore.currentAudit?.publicationDate
+            "
+            >{{
+              auditStore.currentAudit?.editionDate
+                ? formatDate(auditStore.currentAudit?.editionDate, true)
+                : formatDate(auditStore.currentAudit?.publicationDate, true)
+            }}</time
+          ></strong
         >
-          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-            <template v-if="!!auditPublicationDate">
+      </div>
+    </div>
+
+    <SaveIndicator
+      v-if="route.name === 'edit-audit-step-three'"
+      class="fr-pl-1w"
+    />
+
+    <div class="sub-header">
+      <ul class="top-actions fr-my-0" role="list">
+        <li class="fr-mr-2w">
+          <RouterLink
+            class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+            :to="{
+              name: 'edit-audit-step-one',
+              params: { uniqueId: editUniqueId },
+            }"
+          >
+            Paramètres
+          </RouterLink>
+        </li>
+
+        <li class="fr-mr-2w">
+          <Dropdown
+            ref="optionsDropdownRef"
+            title="Actions"
+            :disabled="isOffline"
+            :align-left="route.name === 'edit-audit-step-three'"
+          >
+            <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+              <template v-if="!!auditPublicationDate">
+                <li class="dropdown-item">
+                  <RouterLink
+                    :to="{
+                      name: 'edit-audit-step-three',
+                      params: { uniqueId: editUniqueId },
+                    }"
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                  >
+                    Modifier l’audit
+                  </RouterLink>
+                </li>
+              </template>
               <li class="dropdown-item">
                 <RouterLink
                   :to="{
-                    name: 'edit-audit-step-three',
+                    name: 'edit-audit-step-one',
                     params: { uniqueId: editUniqueId },
                   }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
                 >
-                  Modifier l’audit
+                  <GearIcon class="fr-mr-2v" />
+                  Modifier les paramètres
                 </RouterLink>
               </li>
-            </template>
-            <li class="dropdown-item">
-              <RouterLink
-                :to="{
-                  name: 'edit-audit-step-one',
-                  params: { uniqueId: editUniqueId },
-                }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              >
-                <GearIcon class="fr-mr-2v" />
-                Modifier les paramètres
-              </RouterLink>
-            </li>
-            <li class="dropdown-item">
-              <button
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-                @click="copyReportLink"
-              >
-                Copier le lien du rapport
-              </button>
-            </li>
-            <li class="dropdown-item">
-              <button
-                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                @click="duplicateModal?.show()"
-              >
-                <CopyIcon class="fr-mr-2v" />
-                Créer une copie
-              </button>
-            </li>
-            <li class="dropdown-item dropdown-item--with-meta">
-              <a
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0"
-                :href="csvExportUrl"
-                :download="csvExportFilename"
-              >
-                Exporter l’audit
-                <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                  CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
-                </span>
-              </a>
-            </li>
-            <li aria-hidden="true" class="dropdown-separator"></li>
-            <li class="dropdown-item">
-              <button
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
-                @click="deleteModal?.show()"
-              >
-                Supprimer l’audit
-              </button>
-            </li>
-          </ul>
-        </Dropdown>
-      </li>
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  @click="duplicateModal?.show()"
+                >
+                  <CopyIcon class="fr-mr-2v" />
+                  Créer une copie
+                </button>
+              </li>
+              <li class="dropdown-item">
+                <a
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                  :href="csvExportUrl"
+                  :download="csvExportFilename"
+                >
+                  Exporter l’audit
+                  <span class="fr-text--xs fr-text--regular download-meta">
+                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                  </span>
+                </a>
+              </li>
+              <li aria-hidden="true" class="dropdown-separator"></li>
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+                  @click="deleteModal?.show()"
+                >
+                  Supprimer l’audit
+                </button>
+              </li>
+            </ul>
+          </Dropdown>
+        </li>
 
-      <slot name="actions" />
-    </ul>
+        <slot name="actions" />
+      </ul>
+    </div>
   </div>
 
   <h1 class="">{{ auditName }}</h1>
@@ -302,6 +370,9 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
     </div>
   </div>
 
+  <!-- ICI -->
+  <div ref="scrollSentinelRef" />
+
   <DuplicateModal
     ref="duplicateModal"
     :original-audit-name="auditStore.currentAudit?.procedureName"
@@ -332,6 +403,8 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
   flex-basis: initial !important;
   flex-direction: column;
   z-index: 3;
+
+  margin-left: auto;
 }
 
 .heading {
@@ -382,9 +455,62 @@ const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 }
 
 .offline-alert {
-  background: var(--background-default-grey);
+  z-index: 4;
+  width: 100%;
+}
+
+.sticky-indicator {
+  flex-basis: initial !important;
+  align-self: end;
   position: sticky;
   top: 0;
   z-index: 4;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  flex: 1;
+
+  background: var(--background-default-grey);
+  min-height: 4rem;
+}
+
+@media (min-width: 62em) {
+  .sticky-indicator {
+    z-index: 3;
+  }
+}
+
+.audit-status {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.audit-status-icon {
+  color: var(--text-default-success);
+}
+
+.separator {
+  width: 1px;
+  background-color: var(--border-default-grey);
+}
+
+.sticky-grid {
+  flex: 1;
+}
+
+.indicator-left-side {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  border-bottom: 1px solid transparent;
+  border-right: 1px solid var(--border-default-grey);
+  transition: border-color 0.2s ease;
+}
+
+.indicator-left-side.with-border {
+  border-color: var(--border-default-grey);
 }
 </style>

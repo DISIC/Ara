@@ -57,7 +57,7 @@ export const useAuditStore = defineStore("audit", {
 
     async updateAudit(
       uniqueId: string,
-      data: UpdateAuditRequestData
+      data: UpdateAuditRequestData,
     ): Promise<Audit> {
       const response = (await ky
         .put(`/api/audits/${uniqueId}`, {

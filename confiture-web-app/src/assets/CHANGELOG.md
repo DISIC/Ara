@@ -2,6 +2,16 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 08/12/2023
+
+### Nouvelles fonctionnalités 🚀
+
+- Les onglets de page sur la page d'audit sont maintenant collés au haut de l'écran ([#541](https://github.com/DISIC/Ara/pull/541))
+
+### Autres changements ⚙️
+
+- Ajuste le layout de la barre d'actions sur la page d'audit ([#541](https://github.com/DISIC/Ara/pull/541))
+
 ## 06/12/2023
 
 ### Corrections 🐛

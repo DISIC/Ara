@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { nextTick, ref, watch, computed } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import { useAuditStore, useSystemStore, useResultsStore } from "../store";
+import { useAuditStore, useResultsStore, useSystemStore } from "../store";
 import { formatDate } from "../utils";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import SaveIndicator from "./SaveIndicator.vue";
@@ -32,7 +32,7 @@ watch(
     } else {
       alertHeight.value = 0;
     }
-  }
+  },
 );
 
 const route = useRoute();
@@ -69,8 +69,8 @@ const showAuditProgressBar = computed(() => {
           "
           >{{
             auditStore.currentAudit?.editionDate
-              ? formatDate(auditStore.currentAudit?.editionDate)
-              : formatDate(auditStore.currentAudit?.publicationDate)
+              ? formatDate(auditStore.currentAudit?.editionDate, true)
+              : formatDate(auditStore.currentAudit?.publicationDate, true)
           }}</time
         ></strong
       >
