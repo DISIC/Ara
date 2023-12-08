@@ -335,6 +335,14 @@ const router = createRouter({
         ],
       },
     },
+    // TODO: remove this redirect in few months?
+    {
+      path: "/audits/:uniqueId/partage",
+      name: "edit-audit-step-four",
+      redirect: () => {
+        return { name: "overview" };
+      },
+    },
     // Overview
     {
       path: "/audits/:uniqueId/synthese",
