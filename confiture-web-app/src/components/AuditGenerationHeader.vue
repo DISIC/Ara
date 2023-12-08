@@ -169,7 +169,12 @@ const showLeftSideBorders = ref(false);
 onMounted(() => {
   const observer = new IntersectionObserver(
     (entries) => {
-      showLeftSideBorders.value = !entries.at(0)?.isIntersecting;
+      const el = entries.at(0)?.target;
+      showLeftSideBorders.value =
+        !entries.at(0)?.isIntersecting &&
+        !!el &&
+        // verify that the sentinel is at the top of the screen
+        el.getBoundingClientRect().top <= 64;
     },
     { rootMargin: "-64px" },
   );
