@@ -51,7 +51,6 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
   gap: 0.25rem 0;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 0.25rem;
-  min-width: 18rem;
 }
 
 .audit-progress--thick {

@@ -311,7 +311,7 @@ const accountStore = useAccountStore();
       :edit-unique-id="uniqueId"
     >
       <template #actions>
-        <li class="fr-mr-2w">
+        <li>
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
             class="fr-btn fr-btn--secondary"
