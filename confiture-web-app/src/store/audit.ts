@@ -93,7 +93,7 @@ export const useAuditStore = defineStore("audit", {
       await ky.delete(`/api/audits/${uniqueId}`);
       delete this.entities[uniqueId];
       this.listing = this.listing.filter(
-        (audit) => audit.editUniqueId !== uniqueId
+        (audit) => audit.editUniqueId !== uniqueId,
       );
       if (this.currentAuditId === uniqueId) {
         this.currentAuditId = null;
@@ -113,11 +113,6 @@ export const useAuditStore = defineStore("audit", {
      * @returns A promise to the unique id of the copy
      */
     async duplicateAudit(uniqueId: string, copyName: string): Promise<string> {
-      // non-null because the original audit has to exist to have the "Copy" button clicked
-      const originalAuditListingItem = this.listing.find(
-        (audit) => audit.editUniqueId === uniqueId
-      )!;
-
       const newAudit = (await ky
         .post(`/api/audits/${uniqueId}/duplicate`, {
           json: {
@@ -128,18 +123,24 @@ export const useAuditStore = defineStore("audit", {
         })
         .json()) as Audit;
 
-      const newAuditListItem: AccountAudit = {
-        auditType: newAudit.auditType,
-        complianceLevel: originalAuditListingItem.complianceLevel,
-        consultUniqueId: newAudit.consultUniqueId,
-        creationDate: newAudit.creationDate!,
-        editUniqueId: newAudit.editUniqueId,
-        procedureName: newAudit.procedureName,
-        status: originalAuditListingItem.status,
-        estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
-      };
+      const originalAuditListingItem = this.listing.find(
+        (audit) => audit.editUniqueId === uniqueId,
+      );
 
-      this.listing.push(newAuditListItem);
+      // If audit is duplicated from the audit list, add a new item to the list
+      if (originalAuditListingItem) {
+        const newAuditListItem: AccountAudit = {
+          auditType: newAudit.auditType,
+          complianceLevel: originalAuditListingItem.complianceLevel,
+          consultUniqueId: newAudit.consultUniqueId,
+          creationDate: newAudit.creationDate!,
+          editUniqueId: newAudit.editUniqueId,
+          procedureName: newAudit.procedureName,
+          status: originalAuditListingItem.status,
+          estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
+        };
+        this.listing.push(newAuditListItem);
+      }
 
       return newAudit.editUniqueId;
     },

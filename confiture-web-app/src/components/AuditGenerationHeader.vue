@@ -60,7 +60,6 @@ const notify = useNotifications();
  * Duplicate audit and redirect to new audit page
  */
 function confirmDuplicate(name: string) {
-  console.log("Duplicating...", name);
   isDuplicationLoading.value = true;
   auditStore
     .duplicateAudit(uniqueId.value, name)
