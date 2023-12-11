@@ -12,7 +12,7 @@ import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/BackLink.vue";
 import Dropdown from "../../components/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useReportStore, useAuditStore } from "../../store";
+import { useReportStore } from "../../store";
 import { AuditType, AuditStatus } from "../../types";
 import {
   formatAuditType,
@@ -178,15 +178,14 @@ const siteUrl = computed(() => {
     </div>
   </div>
 
-  <!-- TODO: get editUniqueId from here -->
-  <!-- <BackLink
+  <BackLink
     :label="
       previousRoute.route?.name === 'account-dashboard'
         ? 'Accéder à la synthèse'
         : 'Retourner à la synthèse'
     "
-    :to="{ name: 'overview', params: { uniqueId: 'xxx' } }"
-  /> -->
+    :to="{ name: 'overview', params: { uniqueId: report.data?.editUniqueId } }"
+  />
 
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>

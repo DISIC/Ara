@@ -727,6 +727,7 @@ export class AuditService {
 
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
+      editUniqueId: audit.editUniqueId,
 
       contactEmail: audit.contactEmail,
       contactFormUrl: audit.contactFormUrl,

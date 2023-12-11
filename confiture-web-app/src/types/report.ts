@@ -2,6 +2,7 @@ import { AuditType, CriteriumResult } from "../types";
 
 export interface AuditReport {
   consultUniqueId: string;
+  editUniqueId: string;
 
   contactEmail?: string;
   contactFormUrl?: string;
