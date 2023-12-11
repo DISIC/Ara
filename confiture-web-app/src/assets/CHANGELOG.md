@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 11/12/2023
+
+### Corrections 🐛
+
+- Corrige un bug qui empêchait l'ouverture des modales ([#583](https://github.com/DISIC/Ara/pull/583))
+
 ## 08/12/2023
 
 ### Nouvelles fonctionnalités 🚀
