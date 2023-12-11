@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Corrige un bug qui empêchait l'ouverture des modales ([#583](https://github.com/DISIC/Ara/pull/583))
+-  Corrige le message d'erreur lors de la duplication d'un audit depuis la page de l'audit ([#584](https://github.com/DISIC/Ara/pull/584))
 
 ## 08/12/2023
 
