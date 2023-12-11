@@ -20,13 +20,9 @@ const modal = ref<HTMLDialogElement>();
 const triggerElement = ref<HTMLElement>();
 
 function show() {
-  console.log("DSFR MODAL");
-
   if (document.activeElement) {
     triggerElement.value = document.activeElement as HTMLElement;
   }
-
-  console.log(dsfr(modal.value).modal);
 
   dsfr(modal.value).modal.disclose();
 }
