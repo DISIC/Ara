@@ -56,10 +56,7 @@ watch(switchValue, (switchValue) => {
       class="fr-toggle__input"
       :disabled="isOffline"
     />
-    <label
-      class="fr-toggle__label fr-pr-2w"
-      :for="`topic-switch-${topicNumber}`"
-    >
+    <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
       Non applicable sur la page
     </label>
   </div>

@@ -262,7 +262,7 @@ const isOffline = useIsOffline();
           @input="updateTransverseStatus"
         />
         <label
-          class="fr-toggle__label fr-pr-2w"
+          class="fr-toggle__label"
           :for="`applicable-all-pages-${uniqueId}`"
         >
           <span class="sr-only">
