@@ -9,7 +9,6 @@ import ReportErrors from "../../components/ReportErrors.vue";
 import ReportResults from "../../components/ReportResults.vue";
 import TopLink from "../../components/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
-import BackLink from "../../components/BackLink.vue";
 import Dropdown from "../../components/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
@@ -21,12 +20,10 @@ import {
   slugify,
   formatBytes,
 } from "../../utils";
-import { usePreviousRoute } from "../../composables/usePreviousRoute";
 
 const report = useReportStore();
 
 const route = useRoute();
-const previousRoute = usePreviousRoute();
 const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
@@ -177,15 +174,6 @@ const siteUrl = computed(() => {
       </p>
     </div>
   </div>
-
-  <BackLink
-    :label="
-      previousRoute.route?.name === 'account-dashboard'
-        ? 'Accéder à la synthèse'
-        : 'Retourner à la synthèse'
-    "
-    :to="{ name: 'overview', params: { uniqueId: report.data?.editUniqueId } }"
-  />
 
   <div class="fr-mb-4w heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>

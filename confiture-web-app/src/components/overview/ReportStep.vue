@@ -39,7 +39,7 @@ const auditIsReady = computed(() => {
             name: 'report',
             params: { uniqueId: audit.consultUniqueId },
           }"
-          :target="accountStore.account ? null : '_blank'"
+          target="_blank"
           class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0"
         >
           Consulter

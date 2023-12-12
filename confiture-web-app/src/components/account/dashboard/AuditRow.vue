@@ -194,6 +194,7 @@ const csvExportFilename = computed(() => {
       "
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
+      :target="isInProgress ? null : '_blank'"
     >
       {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
       <span v-if="isInProgress" class="sr-only">

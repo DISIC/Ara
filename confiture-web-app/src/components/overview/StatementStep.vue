@@ -59,7 +59,9 @@ const auditIsPublishable = computed(() => {
                   params: { uniqueId: audit.editUniqueId },
                 }
           "
-          :target="accountStore.account ? null : '_blank'"
+          :target="
+            auditIsPublishable || !accountStore.account ? '_blank' : null
+          "
           class="fr-btn fr-btn--icon-left fr-icon-edit-fill fr-mb-md-0"
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,

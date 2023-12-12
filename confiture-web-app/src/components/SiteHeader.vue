@@ -153,7 +153,11 @@ function handleDisconnectClick() {
                       : { name: 'home' }
                   "
                   :aria-current="
-                    ['home', 'account-dashboard'].includes(currentRoute.name as string) ? 'true' : null
+                    ['home', 'account-dashboard'].includes(
+                      currentRoute.name as string,
+                    )
+                      ? 'true'
+                      : null
                   "
                 >
                   {{ accountStore.account ? "Mes audits" : "Accueil" }}
@@ -193,8 +197,11 @@ function handleDisconnectClick() {
                     name: 'report',
                     params: { uniqueId: reportStore.data.consultUniqueId },
                   }"
+                  target="_blank"
                   :aria-current="
-                    ['context', 'report'].includes(currentRoute.name as string) ? 'true' : null
+                    ['context', 'report'].includes(currentRoute.name as string)
+                      ? 'true'
+                      : null
                   "
                 >
                   Rapport d’audit
@@ -219,7 +226,13 @@ function handleDisconnectClick() {
                 <button
                   class="fr-nav__btn"
                   aria-expanded="false"
-                  :aria-current="['changelog', 'roadmap'].includes(currentRoute.name as string) ? 'true' : undefined"
+                  :aria-current="
+                    ['changelog', 'roadmap'].includes(
+                      currentRoute.name as string,
+                    )
+                      ? 'true'
+                      : undefined
+                  "
                   aria-controls="news-menu-item"
                 >
                   Nouveautés
