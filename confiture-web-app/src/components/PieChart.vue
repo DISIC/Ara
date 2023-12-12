@@ -24,7 +24,7 @@ const chartConfig: ChartConfiguration<"pie", number[], string> = {
     labels: [
       formatStatus(CriteriumResultStatus.COMPLIANT),
       formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
-      formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
+      formatStatus(CriteriumResultStatus.NOT_APPLICABLE)
     ],
     datasets: [
       {
@@ -32,20 +32,20 @@ const chartConfig: ChartConfiguration<"pie", number[], string> = {
         backgroundColor: [
           getCssVarValue("--background-action-high-success"),
           getCssVarValue("--background-action-high-error"),
-          getCssVarValue("--border-plain-grey"),
+          getCssVarValue("--border-plain-grey")
         ],
-        borderWidth: 0,
-      },
-    ],
+        borderWidth: 0
+      }
+    ]
   },
   options: {
     animation: false,
     plugins: {
       legend: {
-        display: false,
-      },
-    },
-  },
+        display: false
+      }
+    }
+  }
 };
 
 const canvas = ref<HTMLCanvasElement>();
