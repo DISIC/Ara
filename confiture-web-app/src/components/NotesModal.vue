@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 
 import DsfrModal from "./DsfrModal.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../composables/useIsOffline";
 import { useAuditStore } from "../store/audit";
 
@@ -64,7 +65,7 @@ watch(auditStore, () => {
                 <h1 id="notes-modal-title" class="fr-modal__title sr-only">
                   Annoter l’audit
                 </h1>
-                <div class="fr-input-group">
+                <div class="fr-input-group fr-mb-1v">
                   <label class="fr-label" for="audit-notes">
                     Commentaire sur votre audit
                     <span class="fr-hint-text">
@@ -77,10 +78,11 @@ watch(auditStore, () => {
                     id="audit-notes"
                     v-model="notes"
                     class="fr-input"
-                    rows="15"
+                    rows="10"
                     :disabled="isOffline"
                   ></textarea>
                 </div>
+                <MarkdownHelpButton id="markdown-notice-notes" />
               </div>
               <div class="fr-modal__footer">
                 <ul
