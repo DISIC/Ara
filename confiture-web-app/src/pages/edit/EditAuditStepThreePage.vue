@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/AraTabs.vue";
+import NotesModal from "../../components/NotesModal.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
@@ -157,28 +157,37 @@ function closeDuplicatedAuditAlert() {
   focusPageHeading();
 }
 
+// Notes
 const auditNotes = computed(() => {
   return auditStore.currentAudit?.notes || "";
 });
 
-const updateAuditNotes = debounce(async (notes: string) => {
+const notesModal = ref<InstanceType<typeof NotesModal>>();
+const isNotesLoading = ref(false);
+
+function openNotesModal() {
+  notesModal.value?.show();
+}
+
+const updateAuditNotes = async (notes: string) => {
+  isNotesLoading.value = true;
   try {
     await auditStore.updateAuditNotes(uniqueId.value, {
       notes,
     });
+    notify("success", "Pouet", "Pouet !");
   } catch (error) {
-    handleUpdateResultError(error);
+    console.error(error);
+    notify(
+      "error",
+      "Une erreur est survenue",
+      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+    );
+  } finally {
+    isNotesLoading.value = false;
+    notesModal.value?.hide();
   }
-}, 500);
-
-function handleUpdateResultError(err: unknown) {
-  console.log(err);
-  notify(
-    "error",
-    "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
-  );
-}
+};
 
 const isOffline = useIsOffline();
 
@@ -203,11 +212,9 @@ const pageTitle = computed(() => {
   if (auditStore.currentAudit) {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
-    const tabName = auditStore.currentPageId
-      ? ` - Page en cours « ${auditStore.currentAudit.pages.find(
-          (p) => p.id === auditStore.currentPageId,
-        )?.name} »`
-      : " - Notes";
+    const tabName = ` - Page en cours « ${auditStore.currentAudit.pages.find(
+      (p) => p.id === auditStore.currentPageId,
+    )?.name} »`;
 
     title += tabName;
 
@@ -312,6 +319,15 @@ const accountStore = useAccountStore();
     >
       <template #actions>
         <li>
+          <button
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+            :disabled="isOffline"
+            @click="openNotesModal"
+          >
+            Annoter l’audit
+          </button>
+        </li>
+        <li>
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
             class="fr-btn fr-btn--secondary"
@@ -384,6 +400,12 @@ const accountStore = useAccountStore();
       </div>
     </div>
   </div>
+
+  <NotesModal
+    ref="notesModal"
+    :is-loading="isNotesLoading"
+    @confirm="updateAuditNotes"
+  />
 </template>
 
 <style scoped>

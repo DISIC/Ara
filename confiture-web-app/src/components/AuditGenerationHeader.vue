@@ -403,6 +403,7 @@ onMounted(() => {
 <style scoped>
 .sub-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   z-index: 3;
 }
@@ -417,6 +418,7 @@ onMounted(() => {
 
 .top-actions {
   display: flex;
+  align-items: center;
   gap: 1rem;
   list-style: none;
 }
