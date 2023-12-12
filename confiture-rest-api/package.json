@@ -1,10 +1,7 @@
 {
   "name": "confiture-rest-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
   "private": true,
-  "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -99,6 +96,6 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "^16.0.0"
+    "node": "^18.0.0"
   }
 }
