@@ -24,7 +24,6 @@ import {
 } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
-import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 
 const route = useRoute();
@@ -158,10 +157,6 @@ function closeDuplicatedAuditAlert() {
 }
 
 // Notes
-const auditNotes = computed(() => {
-  return auditStore.currentAudit?.notes || "";
-});
-
 const notesModal = ref<InstanceType<typeof NotesModal>>();
 const isNotesLoading = ref(false);
 
@@ -208,7 +203,7 @@ watch(
 );
 
 const pageTitle = computed(() => {
-  // Audit XXX - [Page en cours « XXX » | Notes] - X résultats pour « XXX »
+  // Audit XXX - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
@@ -234,22 +229,16 @@ const pageTitle = computed(() => {
   return "";
 });
 
-type NotesData = { _notes: true };
-type TabData = { label: string; data: AuditPage | NotesData };
+type TabData = { label: string; data: AuditPage };
 
-const tabsData = computed(() => {
-  return [
-    ...(auditStore.currentAudit?.pages.map((p) => ({
+const tabsData = computed((): TabData[] => {
+  return (
+    auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
       data: p,
-    })) ?? []),
-    { data: { _notes: true }, label: "Notes", icon: "draft-line" },
-  ] as TabData[];
+    })) ?? []
+  );
 });
-
-function isNotesData(data: AuditPage | NotesData): data is NotesData {
-  return (data as NotesData)._notes !== undefined;
-}
 
 const accountStore = useAccountStore();
 </script>
@@ -365,33 +354,7 @@ const accountStore = useAccountStore();
       <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
         <AraTabs :tabs="tabsData" @change="updateCurrentPageId">
           <template #panel="{ data }">
-            <template v-if="isNotesData(data)">
-              <div class="fr-input-group fr-mb-1w">
-                <label class="fr-label" for="audit-notes"
-                  >Notes annexes
-                  <span class="fr-hint-text">
-                    Exemple : remarques et recommandations générales sur le site
-                    audité. Ces notes seront affichées dans le rapport d’audit.
-                  </span>
-                </label>
-                <textarea
-                  id="audit-notes"
-                  :value="auditNotes"
-                  rows="20"
-                  class="fr-input"
-                  :disabled="isOffline"
-                  @input="
-                    updateAuditNotes(
-                      ($event.target as HTMLTextAreaElement).value,
-                    )
-                  "
-                ></textarea>
-              </div>
-
-              <MarkdownHelpButton id="markdown-notice-notes" />
-            </template>
             <AuditGenerationPageCriteria
-              v-else
               :page="data"
               :audit-unique-id="uniqueId"
             />
