@@ -29,7 +29,7 @@ import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue"
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 
-import { useAuditStore } from "./store";
+import { useAuditStore, useAccountStore } from "./store";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import LoginPage from "./pages/account/LoginPage.vue";
 import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
@@ -39,7 +39,6 @@ import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.v
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
 import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
 import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
-import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -67,7 +66,11 @@ function getProcedureName() {
  * Get the home link as first one
  */
 function getHomeBreadcrumbLink() {
-  return { label: "Accueil", name: "home" };
+  const accountStore = useAccountStore();
+
+  return accountStore.account
+    ? { label: "Mes audits", name: "account-dashboard" }
+    : { label: "Accueil", name: "home" };
 }
 
 /**
@@ -224,13 +227,6 @@ const router = createRouter({
       meta: {
         name: "Mes audits",
         authRequired: true,
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: "Mes audits",
-            name: "account-dashboard",
-          },
-        ],
       },
     },
     {
