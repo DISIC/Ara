@@ -20,8 +20,8 @@ const auditIsReady = computed(() => {
 </script>
 
 <template>
-  <StepCard :checked="auditIsReady">
-    <h2 class="fr-h3 fr-mb-1w report-step-title">
+  <StepCard id="report-step" :checked="auditIsReady">
+    <h2 class="fr-h3 fr-mb-1w report-step-title" aria-describedby="report-step">
       Rapport d’audit
       <p class="fr-badge fr-badge--info">Généré automatiquement</p>
     </h2>
@@ -41,8 +41,10 @@ const auditIsReady = computed(() => {
           }"
           target="_blank"
           class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0"
+          title="Consulter le rapport - nouvelle fenêtre"
         >
           Consulter
+          <span class="sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </li>
     </ul>
@@ -55,6 +57,7 @@ const auditIsReady = computed(() => {
           params: { uniqueId: audit.consultUniqueId },
         }"
         label="Lien de partage"
+        title="Lien de partage du rapport d’audit"
         success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
       />
     </template>

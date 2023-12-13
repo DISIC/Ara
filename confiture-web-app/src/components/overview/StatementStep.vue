@@ -23,8 +23,11 @@ const auditIsPublishable = computed(() => {
 </script>
 
 <template>
-  <StepCard :checked="auditIsPublishable">
-    <h2 class="fr-h3 fr-mb-1w statement-step-title">
+  <StepCard id="statement-step" :checked="auditIsPublishable">
+    <h2
+      class="fr-h3 fr-mb-1w statement-step-title"
+      aria-describedby="statement-step"
+    >
       Déclaration d’accessibilité
     </h2>
     <p class="statement-step-description">
@@ -66,8 +69,18 @@ const auditIsPublishable = computed(() => {
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
           }"
+          :title="
+            auditIsPublishable
+              ? 'Consulter la déclaration - nouvelle fenêtre'
+              : null
+          "
         >
           {{ auditIsPublishable ? "Consulter" : "Compléter" }}
+          <span
+            v-if="auditIsPublishable || !accountStore.account"
+            class="sr-only"
+            >(nouvelle fenêtre)</span
+          >
         </RouterLink>
       </li>
       <li v-if="auditIsPublishable">
@@ -94,6 +107,7 @@ const auditIsPublishable = computed(() => {
           },
         }"
         label="Lien de partage"
+        title="Lien de partage de la déclaration d’accessibilité"
         success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
       />
     </template>

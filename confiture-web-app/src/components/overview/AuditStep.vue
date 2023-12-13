@@ -35,8 +35,8 @@ const auditIsInProgress = computed(() => {
 </script>
 
 <template>
-  <StepCard :checked="auditIsReady">
-    <h2 class="fr-h3 fr-mb-1w audit-step-title">
+  <StepCard id="audit-step" :checked="auditIsReady">
+    <h2 class="fr-h3 fr-mb-1w audit-step-title" aria-describedby="audit-step">
       Audit
       <p v-if="audit.auditType" class="fr-badge">
         {{ getCriteriaCount(audit.auditType) }}
@@ -102,7 +102,7 @@ const auditIsInProgress = computed(() => {
               `${pluralize(
                 "Critère",
                 "Critères",
-                errorsCount.total
+                errorsCount.total,
               )} non ${pluralize("conforme", "conformes", errorsCount.total)}`
             }}
           </p>
@@ -111,7 +111,7 @@ const auditIsInProgress = computed(() => {
               `${errorsCount.blocking} ${pluralize(
                 "bloquant",
                 "bloquants",
-                errorsCount.blocking
+                errorsCount.blocking,
               )}`
             }}
           </p>

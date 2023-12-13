@@ -5,6 +5,7 @@ import router from "../router";
 
 const props = defineProps<{
   label: string;
+  title: string;
   to: RouteLocationRaw;
   successMessage: string;
 }>();
@@ -12,7 +13,7 @@ const props = defineProps<{
 const showCopyAlert = ref(false);
 
 const fullReportUrl = computed(
-  () => window.location.origin + router.resolve(props.to).fullPath
+  () => window.location.origin + router.resolve(props.to).fullPath,
 );
 
 async function copyLink() {
@@ -31,7 +32,7 @@ async function copyLink() {
         <RouterLink
           class="fr-link copy-block-link"
           :to="to"
-          :title="label"
+          :title="title"
           target="_blank"
         >
           {{ fullReportUrl }}
@@ -40,6 +41,7 @@ async function copyLink() {
       </p>
       <button
         class="fr-btn fr-icon-file-line fr-btn--icon-left fr-m-0 copy-block-action"
+        :title="`Copier le ${title}`"
         @click="copyLink"
         @blur="showCopyAlert = false"
       >

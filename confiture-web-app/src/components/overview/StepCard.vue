@@ -1,18 +1,24 @@
 <script setup lang="ts">
 defineProps<{
   checked?: boolean;
+  id: string;
 }>();
 </script>
 
 <template>
   <li class="step-card-wrapper">
     <span
+      :id="id"
       :class="[
         'fr-icon--lg fr-icon-checkbox-circle-fill step-card-check',
         { 'step-card-check--success': checked },
       ]"
       aria-hidden="true"
-    />
+    >
+      <span class="sr-only">{{
+        checked ? "Étape terminée" : "Étape à réaliser"
+      }}</span>
+    </span>
 
     <div class="fr-px-4w fr-py-3w step-card">
       <slot />
