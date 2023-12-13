@@ -230,19 +230,20 @@ const accountStore = useAccountStore();
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
-    <template v-if="accountStore.account">
-      <BackLink
-        v-if="previousRoute.route?.name === 'account-dashboard'"
-        label="Accéder à la synthèse"
-        :to="{ name: 'account-dashboard' }"
-      />
-
-      <BackLink
-        v-if="previousRoute.route?.name === 'overview'"
-        label="Retourner à la synthèse"
-        :to="{ name: 'overview', params: { uniqueId } }"
-      />
-    </template>
+    <BackLink
+      :label="
+        accountStore.account &&
+        previousRoute.route?.name === 'account-dashboard'
+          ? 'Accéder à la synthèse'
+          : 'Retourner à la synthèse'
+      "
+      :to="
+        accountStore.account &&
+        previousRoute.route?.name === 'account-dashboard'
+          ? { name: 'account-dashboard' }
+          : { name: 'overview', params: { uniqueId } }
+      "
+    />
 
     <AuditGenerationHeader
       :audit-name="auditStore.currentAudit.procedureName"
