@@ -40,7 +40,7 @@ const auditIsReady = computed(() => {
             params: { uniqueId: audit.consultUniqueId },
           }"
           target="_blank"
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0"
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0 no-external-icon"
           title="Consulter le rapport - nouvelle fenêtre"
         >
           Consulter

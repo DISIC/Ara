@@ -65,9 +65,11 @@ const auditIsPublishable = computed(() => {
           :target="
             auditIsPublishable || !accountStore.account ? '_blank' : null
           "
-          class="fr-btn fr-btn--icon-left fr-icon-edit-fill fr-mb-md-0"
+          class="fr-btn fr-btn--icon-left fr-mb-md-0 no-external-icon"
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
+            'fr-icon-edit-line': !auditIsPublishable,
+            'fr-icon-eye-line': auditIsPublishable,
           }"
           :title="
             auditIsPublishable
@@ -89,7 +91,7 @@ const auditIsPublishable = computed(() => {
             name: 'edit-audit-declaration',
             params: { uniqueId: audit.editUniqueId },
           }"
-          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-fill fr-mb-md-0"
+          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-md-0"
         >
           Modifier
         </RouterLink>

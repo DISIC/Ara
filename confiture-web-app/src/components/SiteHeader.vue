@@ -192,7 +192,7 @@ function handleDisconnectClick() {
 
                 <RouterLink
                   v-else-if="reportStore.data"
-                  class="fr-nav__link"
+                  class="fr-nav__link no-external-icon"
                   :to="{
                     name: 'report',
                     params: { uniqueId: reportStore.data.consultUniqueId },
