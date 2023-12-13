@@ -21,6 +21,13 @@ async function copyLink() {
     showCopyAlert.value = true;
   });
 }
+
+const copyButtonRef = ref<HTMLButtonElement>();
+
+function onClose() {
+  copyButtonRef.value?.focus();
+  showCopyAlert.value = false;
+}
 </script>
 
 <template>
@@ -40,10 +47,10 @@ async function copyLink() {
         </RouterLink>
       </p>
       <button
+        ref="copyButtonRef"
         class="fr-btn fr-icon-file-line fr-btn--icon-left fr-m-0 copy-block-action"
         :title="`Copier le ${title}`"
         @click="copyLink"
-        @blur="showCopyAlert = false"
       >
         Copier le lien
       </button>
@@ -57,6 +64,9 @@ async function copyLink() {
         <p>
           {{ successMessage }}
         </p>
+        <button class="fr-link--close fr-link" @click="onClose">
+          Masquer le message
+        </button>
       </div>
     </div>
   </div>

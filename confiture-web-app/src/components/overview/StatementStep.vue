@@ -110,7 +110,7 @@ const auditIsPublishable = computed(() => {
         }"
         label="Lien de partage"
         title="Lien de partage de la déclaration d’accessibilité"
-        success-message="Le lien de la déclaration d’accessibilité a bien été copié dans le presse-papier."
+        success-message="Lien de partage copié avec succès dans le presse-papier."
       />
     </template>
   </StepCard>

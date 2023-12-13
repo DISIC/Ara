@@ -58,7 +58,7 @@ const auditIsReady = computed(() => {
         }"
         label="Lien de partage"
         title="Lien de partage du rapport d’audit"
-        success-message="Le lien du rapport d’audit a bien été copié dans le presse-papier."
+        success-message="Lien de partage copié avec succès dans le presse-papier."
       />
     </template>
   </StepCard>
