@@ -15,10 +15,17 @@
       <mj-column>
         <mj-text font-size="20px" font-weight="700" padding-bottom="16px">Audit créé avec succès</mj-text>
         <mj-text>Vous trouverez ci-dessous le lien permettant d’accéder aux documents suivants :</mj-text>
-        <mj-text>- Audit <strong>{{ procedureName }}</strong></mj-text>
+        <mj-text>- Audit {{ procedureName }}</mj-text>
         <mj-text>- Rapport d’audit (généré automatiquement)</mj-text>
         <mj-text padding-bottom="12px">- Déclaration d’accessibilité (dans le cas d’un audit 106 critères).</mj-text>
-        <mj-text padding-bottom="12px" font-weight="700">Pensez-bien à conserver ce lien, c’est le seul moyen d’accéder à vos documents.</mj-text>
+        <mj-text padding-bottom="32px" font-weight="700">Pensez-bien à conserver ces liens, c’est le seul moyen d’accéder à vos documents.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="8px">Lien de la synthèse d’audit (privé)</mj-text>
+        <mj-text padding-bottom="12px">⚠️ Ne pas partagez pas ce lien, il permet de modifier ou supprimer votre audit.</mj-text>
       </mj-column>
     </mj-section>
 
@@ -26,6 +33,21 @@
       <mj-column>
         <mj-text mj-class="blue-link">
           <a href="{{ overviewUrl }}" style="color: inherit;">{{ overviewUrl }}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-top="24px" padding-bottom="8px">Lien du rapport d’audit (public)</mj-text>
+        <mj-text padding-bottom="12px">Vous pouvez partager ce lien à tout moment.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="blue-section">
+      <mj-column>
+        <mj-text mj-class="blue-link">
+          <a href="{{ reportUrl }}" style="color: inherit;">{{ reportUrl }}</a>
         </mj-text>
       </mj-column>
     </mj-section>

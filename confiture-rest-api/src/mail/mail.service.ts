@@ -86,9 +86,14 @@ export class MailService {
       audit.editUniqueId
     }/synthese`;
 
+    const reportUrl = `${this.config.get('FRONT_BASE_URL')}/rapports/${
+      audit.consultUniqueId
+    }`;
+
     const data: AuditCreationEmailData = {
       procedureName: audit.procedureName,
-      overviewUrl
+      overviewUrl,
+      reportUrl
     };
 
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
