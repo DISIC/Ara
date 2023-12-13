@@ -170,7 +170,11 @@ const updateAuditNotes = async (notes: string) => {
     await auditStore.updateAuditNotes(uniqueId.value, {
       notes,
     });
-    notify("success", "Pouet", "Pouet !");
+    notify(
+      "success",
+      undefined,
+      "Annotation de l’audit mise à jour avec succès",
+    );
   } catch (error) {
     console.error(error);
     notify(
