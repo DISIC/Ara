@@ -15,7 +15,6 @@ import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { history } from "../../router";
 import {
   useAuditStore,
   useFiltersStore,
@@ -122,38 +121,14 @@ const headerInfos = computed(() => [
   },
 ]);
 
-function closeAuditEmailAlert() {
-  auditStore.showAuditEmailAlert = false;
-  focusPageHeading();
-}
-
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
 });
-
-function focusPageHeading() {
-  const pageHeading = document.querySelector("h1");
-  pageHeading?.setAttribute("tabindex", "-1");
-  pageHeading?.focus();
-}
 
 const showFilters = ref(true);
 
 function toggleFilters(value: boolean) {
   showFilters.value = value;
-}
-
-const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
-
-watch(route, () => {
-  if (history.state.showDuplicatedAlert) {
-    showDuplicatedAlert.value = true;
-  }
-});
-
-function closeDuplicatedAuditAlert() {
-  showDuplicatedAlert.value = false;
-  focusPageHeading();
 }
 
 // Notes
@@ -268,40 +243,6 @@ const accountStore = useAccountStore();
         :to="{ name: 'overview', params: { uniqueId } }"
       />
     </template>
-
-    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
-      <p class="fr-alert__title">Audit copié avec succès</p>
-      <p>
-        Des liens pour accéder à cet audit et de son rapport viennent de vous
-        être envoyés par mail.
-      </p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeDuplicatedAuditAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
-
-    <div
-      v-if="auditStore.showAuditEmailAlert"
-      class="fr-alert fr-alert--info fr-mb-3w"
-    >
-      <p class="fr-alert__title">Retrouvez votre audit</p>
-      <p>
-        Des liens pour accéder à cet audit et à son rapport viennent de vous
-        être envoyés par e-mail à l’adresse
-        <strong>{{ auditStore.currentAudit.auditorEmail }}</strong>
-      </p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeAuditEmailAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
 
     <AuditGenerationHeader
       :audit-name="auditStore.currentAudit.procedureName"

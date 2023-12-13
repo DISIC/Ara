@@ -71,7 +71,7 @@ function confirmDuplicate(name: string) {
       duplicateModal.value?.hide();
 
       router.push({
-        name: "edit-audit-step-three",
+        name: "overview",
         params: {
           uniqueId: newAuditId,
         },

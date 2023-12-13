@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
@@ -26,6 +26,31 @@ useWrappedFetch(async () => {
 const audit = computed(() => {
   return auditStore.currentAudit;
 });
+
+// Banners management
+const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
+
+watch(route, () => {
+  if (history.state.showDuplicatedAlert) {
+    showDuplicatedAlert.value = true;
+  }
+});
+
+function closeDuplicatedAuditAlert() {
+  showDuplicatedAlert.value = false;
+  focusPageHeading();
+}
+
+function closeAuditEmailAlert() {
+  auditStore.showAuditEmailAlert = false;
+  focusPageHeading();
+}
+
+function focusPageHeading() {
+  const pageHeading = document.querySelector("h1");
+  pageHeading?.setAttribute("tabindex", "-1");
+  pageHeading?.focus();
+}
 </script>
 
 <template>
@@ -41,6 +66,41 @@ const audit = computed(() => {
         :to="{ name: 'account-dashboard' }"
       />
     </template>
+
+    <!-- Email alert -->
+    <div
+      v-if="auditStore.showAuditEmailAlert"
+      class="fr-alert fr-alert--info fr-mb-3w"
+    >
+      <p class="fr-alert__title">Retrouvez vos documents</p>
+      <p>
+        Un lien pour accéder à cette page vient de vous être envoyé par e-mail à
+        l’adresse
+        <strong>{{ audit.auditorEmail }}</strong>
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeAuditEmailAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
+
+    <!-- Duplicated audit alert -->
+    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
+      <p class="fr-alert__title">Audit copié avec succès</p>
+      <p>
+        Un lien pour accéder à cette page vient de vous être envoyé par mail.
+      </p>
+      <button
+        class="fr-btn--close fr-btn"
+        title="Masquer le message"
+        @click="closeDuplicatedAuditAlert"
+      >
+        Masquer le message
+      </button>
+    </div>
 
     <h1>{{ audit.procedureName }}</h1>
 
