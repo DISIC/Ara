@@ -183,6 +183,11 @@ const auditIsInProgress = computed(() => {
 .audit-step-title {
   grid-column: 1 / -1;
   grid-row: 1;
+
+  /* FIXME: DSFR default badges dont align. Those with icons does. */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .audit-step-date {
