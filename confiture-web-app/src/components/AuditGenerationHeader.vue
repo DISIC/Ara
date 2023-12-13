@@ -24,7 +24,6 @@ import DuplicateModal from "./DuplicateModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
-import GearIcon from "./icons/GearIcon.vue";
 
 defineProps<{
   auditName: string;
@@ -288,18 +287,6 @@ onMounted(() => {
                   </RouterLink>
                 </li>
               </template>
-              <li class="dropdown-item">
-                <RouterLink
-                  :to="{
-                    name: 'edit-audit-step-one',
-                    params: { uniqueId: editUniqueId },
-                  }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                >
-                  <GearIcon class="fr-mr-2v" />
-                  Modifier les paramètres
-                </RouterLink>
-              </li>
               <li class="dropdown-item">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
