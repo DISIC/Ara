@@ -2,7 +2,6 @@
 import { ref, watch } from "vue";
 
 import DsfrModal from "./DsfrModal.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../composables/useIsOffline";
 import { useAuditStore } from "../store/audit";
 
@@ -80,9 +79,12 @@ watch(auditStore, () => {
                     class="fr-input"
                     rows="10"
                     :disabled="isOffline"
+                    aria-describedby="notes-markdown"
                   ></textarea>
                 </div>
-                <MarkdownHelpButton id="markdown-notice-notes" />
+                <p id="notes-markdown" class="fr-text--sm fr-m-0">
+                  Markdown pris en compte
+                </p>
               </div>
               <div class="fr-modal__footer">
                 <ul
