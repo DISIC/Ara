@@ -2,8 +2,8 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
-import LeaveModal from "../../components/LeaveModal.vue";
+import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
+import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
 import router from "../../router";
 import { CreateAuditRequestData } from "../../types";

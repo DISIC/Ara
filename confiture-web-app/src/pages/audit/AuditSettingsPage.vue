@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
 
-import AuditGeneralInformationsForm from "../../components/AuditGeneralInformationsForm.vue";
+import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";

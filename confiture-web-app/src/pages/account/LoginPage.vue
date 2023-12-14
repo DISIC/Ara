@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, nextTick } from "vue";
+import { HTTPError } from "ky";
+import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { useAccountStore } from "../../store/account";
-import { history } from "../../router";
-import DsfrField from "../../components/DsfrField.vue";
-import DsfrPassword from "../../components/DsfrPassword.vue";
 import PageMeta from "../../components/PageMeta";
+import DsfrField from "../../components/ui/DsfrField.vue";
+import DsfrPassword from "../../components/ui/DsfrPassword.vue";
 import { useNotifications } from "../../composables/useNotifications";
-import { HTTPError } from "ky";
+import { history } from "../../router";
+import { useAccountStore } from "../../store/account";
 import { captureWithPayloads, validateEmail } from "../../utils";
 
 const userEmail = ref((history.state.email as string) ?? "");

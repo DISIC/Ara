@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AfterReport from "../../components/FaqAccordionsContent/AfterReport.vue";
-import Prioritize from "../../components/FaqAccordionsContent/Prioritize.vue";
-import Test from "../../components/FaqAccordionsContent/Test.vue";
-import AfterCorrection from "../../components/FaqAccordionsContent/AfterCorrection.vue";
-import FullyAccessible from "../../components/FaqAccordionsContent/FullyAccessible.vue";
+import AfterReport from "../../components/resources/FaqAccordionsContent/AfterReport.vue";
+import Prioritize from "../../components/resources/FaqAccordionsContent/Prioritize.vue";
+import Test from "../../components/resources/FaqAccordionsContent/Test.vue";
+import AfterCorrection from "../../components/resources/FaqAccordionsContent/AfterCorrection.vue";
+import FullyAccessible from "../../components/resources/FaqAccordionsContent/FullyAccessible.vue";
 import PageMeta from "../../components/PageMeta";
 
 const tileLinks = [

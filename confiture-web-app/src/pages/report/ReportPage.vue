@@ -2,14 +2,14 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import OnboardingModal from "../../components/OnboardingModal.vue";
-import ReportA11yStatement from "../../components/ReportA11yStatement.vue";
-import ReportNotes from "../../components/ReportNotes.vue";
-import ReportErrors from "../../components/ReportErrors.vue";
-import ReportResults from "../../components/ReportResults.vue";
-import TopLink from "../../components/TopLink.vue";
+import OnboardingModal from "../../components/report/OnboardingModal.vue";
+import ReportA11yStatement from "../../components/report/ReportA11yStatement.vue";
+import ReportNotes from "../../components/report/ReportNotes.vue";
+import ReportErrors from "../../components/report/ReportErrors.vue";
+import ReportResults from "../../components/report/ReportResults.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
-import Dropdown from "../../components/Dropdown.vue";
+import Dropdown from "../../components/ui/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { AuditType, AuditStatus } from "../../types";

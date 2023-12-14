@@ -2,13 +2,13 @@
 import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
-import AraTabs from "../../components/AraTabs.vue";
-import NotesModal from "../../components/NotesModal.vue";
-import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
-import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
-import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
+import AraTabs from "../../components/audit/AraTabs.vue";
+import NotesModal from "../../components/audit/NotesModal.vue";
+import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
+import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
+import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
-import BackLink from "../../components/BackLink.vue";
+import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import MarkdownRenderer from "../components/MarkdownRenderer.vue";
 import roadmapMarkdown from "../assets/ROADMAP.md?raw";
+import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 </script>
 
 <template>

@@ -3,9 +3,9 @@ import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
-import BackLink from "../../components/BackLink.vue";
-import TestEnvironmentSelection from "../../components/TestEnvironmentSelection/TestEnvironmentSelection.vue";
-import DsfrField from "../../components/DsfrField.vue";
+import BackLink from "../../components/ui/BackLink.vue";
+import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSelection.vue";
+import DsfrField from "../../components/ui/DsfrField.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";

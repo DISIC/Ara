@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TopLink from "../../components/TopLink.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 </script>
 

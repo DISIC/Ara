@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatDate, formatAuditType, getCriteriaCount } from "../../utils";
-import TopLink from "../../components/TopLink.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 import { AuditType } from "../../types";
 

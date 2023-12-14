@@ -2,8 +2,8 @@
 import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { history } from "../router";
 import PageMeta from "../components/PageMeta";
+import { history } from "../router";
 
 const router = useRouter();
 

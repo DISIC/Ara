@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import BackLink from "../../components/BackLink.vue";
+import BackLink from "../../components/ui/BackLink.vue";
 import PageMeta from "../../components/PageMeta";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
