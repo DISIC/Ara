@@ -7,16 +7,18 @@ ARG VITE_SENTRY_ENVIRONMENT
 ARG VITE_SENTRY_RELEASE
 WORKDIR /app
 COPY package.json yarn.lock .
+COPY confiture-web-app/package.json confiture-web-app/
 RUN yarn install --frozen-lockfile --non-interactive --production=false
-COPY . .
+WORKDIR /app/confiture-web-app
+COPY confiture-web-app/ .
 RUN VITE_MATOMO_ENABLE=1 SENTRY_ORG=${SENTRY_ORG} SENTRY_PROJECT=${SENTRY_PROJECT} SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} VITE_SENTRY_DSN=${VITE_SENTRY_DSN} VITE_SENTRY_ENVIRONMENT=${VITE_SENTRY_ENVIRONMENT} VITE_SENTRY_RELEASE=${VITE_SENTRY_RELEASE} yarn build
 
 FROM ghcr.io/disic/designgouv-confiture/nginx:1.22.1-r0 AS production
 ARG VERSION=1.0
 # nginx config
-COPY config /tmp/config
+COPY confiture-web-app/config /tmp/config
 # Web app files
-COPY --from=builder /app/dist /data/confiture
+COPY --from=builder /app/confiture-web-app/dist /data/confiture
 RUN \
   \
   # version to avoid cache \
