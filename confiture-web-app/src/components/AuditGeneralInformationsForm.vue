@@ -25,21 +25,21 @@ const availableAuditTypes = [
     label: "Rapide",
     value: AuditType.FAST,
     description:
-      "25 critères du RGAA absolument essentiels. L’évaluation de ces critères nécessite malgré tout une bonne connaissance du RGAA.",
+      "25 critères du RGAA absolument essentiels. L’évaluation de ces critères nécessite malgré tout une bonne connaissance du RGAA."
   },
   {
     label: "Complémentaire",
     value: AuditType.COMPLEMENTARY,
     description:
-      "50 critères dont les 25 critères de l’audit rapide. Permet de donner une idée plus précise de l’accessibilité numérique de votre service.",
+      "50 critères dont les 25 critères de l’audit rapide. Permet de donner une idée plus précise de l’accessibilité numérique de votre service."
   },
   {
     label: "Complet, de conformité",
     value: AuditType.FULL,
     description:
       "L’audit complet dit de conformité est le seul audit ayant une valeur légale et permettant de générer une <strong>déclaration d’accessibilité</strong>.",
-    highlighted: true,
-  },
+    highlighted: true
+  }
 ];
 
 const accountStore = useAccountStore();
@@ -54,14 +54,14 @@ const pages = ref(
     { name: "Accessibilité", url: "" },
     { name: "Plan du site", url: "" },
     { name: "Aide", url: "" },
-    { name: "Authentification", url: "" },
-  ],
+    { name: "Authentification", url: "" }
+  ]
 );
 const procedureAuditorName = ref(
-  props.defaultValues?.auditorName ?? accountStore.account?.name ?? "",
+  props.defaultValues?.auditorName ?? accountStore.account?.name ?? ""
 );
 const procedureAuditorEmail = ref(
-  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? "",
+  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? ""
 );
 
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
@@ -98,7 +98,7 @@ function fillFields() {
   procedureName.value = "Ma procédure";
   pages.value = [
     { name: "Accueil", url: "https://example.com" },
-    { name: "Contact", url: "https://example.com/contact" },
+    { name: "Contact", url: "https://example.com/contact" }
   ];
 
   if (!accountStore.account) {
@@ -114,7 +114,7 @@ function onSubmit() {
     // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
-    auditorEmail: formatEmail(procedureAuditorEmail.value),
+    auditorEmail: formatEmail(procedureAuditorEmail.value)
   });
 }
 
@@ -136,7 +136,7 @@ const previousRoute = usePreviousRoute();
       label="Retourner à mon audit"
       :to="{
         name: 'edit-audit-step-three',
-        params: { uniqueId: route.params.uniqueId },
+        params: { uniqueId: route.params.uniqueId }
       }"
     />
   </template>

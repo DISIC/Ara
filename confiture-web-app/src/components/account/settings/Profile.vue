@@ -38,7 +38,7 @@ function updateProfile() {
   accountStore
     .updateProfile({
       name: name.value || null,
-      orgName: orgName.value || null,
+      orgName: orgName.value || null
     })
     .then(() => {
       notify("success", "Profil mis à jour avec succès");

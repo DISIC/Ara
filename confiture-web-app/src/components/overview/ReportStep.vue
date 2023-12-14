@@ -2,7 +2,6 @@
 import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
-import { useAccountStore } from "../../store";
 import { Audit } from "../../types";
 import CopyBlock from "../CopyBlock.vue";
 import StepCard from "./StepCard.vue";
@@ -12,7 +11,6 @@ defineProps<{
 }>();
 
 const resultsStore = useResultsStore();
-const accountStore = useAccountStore();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
@@ -37,7 +35,7 @@ const auditIsReady = computed(() => {
         <RouterLink
           :to="{
             name: 'report',
-            params: { uniqueId: audit.consultUniqueId },
+            params: { uniqueId: audit.consultUniqueId }
           }"
           target="_blank"
           class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-fill fr-mb-0 no-external-icon"
@@ -54,7 +52,7 @@ const auditIsReady = computed(() => {
         class="fr-m-0 report-step-copy-block"
         :to="{
           name: 'report',
-          params: { uniqueId: audit.consultUniqueId },
+          params: { uniqueId: audit.consultUniqueId }
         }"
         label="Lien de partage"
         title="Lien de partage du rapport d’audit"

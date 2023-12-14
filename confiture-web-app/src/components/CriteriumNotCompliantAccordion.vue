@@ -37,18 +37,18 @@ const userImpacts: Array<{
   {
     value: CriterionResultUserImpact.MINOR,
     label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: "grey",
+    color: "grey"
   },
   {
     value: CriterionResultUserImpact.MAJOR,
     label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: "yellow",
+    color: "yellow"
   },
   {
     value: CriterionResultUserImpact.BLOCKING,
     label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: "red",
-  },
+    color: "red"
+  }
 ];
 
 const fileInputRef = ref<HTMLInputElement>();

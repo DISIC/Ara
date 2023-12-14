@@ -10,7 +10,7 @@ defineEmits(["confirm"]);
 
 defineExpose({
   show: () => modal.value?.show(),
-  hide: () => modal.value?.hide(),
+  hide: () => modal.value?.hide()
 });
 
 const titlesExample = `### Titre h3 (commencer à partir de ce niveau)

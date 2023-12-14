@@ -6,7 +6,7 @@ import {
   AssistiveTechnology,
   Browsers,
   OperatingSystem,
-  Platform,
+  Platform
 } from "../../enums";
 import { AuditEnvironment } from "../../types";
 import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
@@ -16,7 +16,7 @@ import {
   getCustomEnvironments,
   getDesktopCombinations,
   getMobileCombinations,
-  mobileCombinations,
+  mobileCombinations
 } from "./combinations";
 
 const props = defineProps<{
@@ -49,10 +49,10 @@ const customEnvironments = ref([
           assistiveTechnology: "",
           assistiveTechnologyVersion: "",
           browser: "",
-          browserVersion: "",
-        },
+          browserVersion: ""
+        }
       ]
-    : []),
+    : [])
 ]);
 
 watch(
@@ -60,7 +60,7 @@ watch(
   ([
     customEnvironments,
     selectedDesktopEnvironments,
-    selectedMobileEnvironments,
+    selectedMobileEnvironments
   ]) => {
     const result = combineEnvironments(
       customEnvironments,
@@ -70,7 +70,7 @@ watch(
     emit("update:modelValue", result);
   },
   {
-    deep: true,
+    deep: true
   }
 );
 
@@ -106,7 +106,7 @@ function availableBrowsers(os: string) {
         Browsers.FIREFOX,
         Browsers.CHROME,
         Browsers.EDGE,
-        Browsers.SAFARI,
+        Browsers.SAFARI
       ];
     case OperatingSystem.I_OS:
       return [Browsers.SAFARI, Browsers.CHROME];
@@ -117,7 +117,7 @@ function availableBrowsers(os: string) {
         Browsers.FIREFOX,
         Browsers.CHROME,
         Browsers.EDGE,
-        Browsers.SAFARI,
+        Browsers.SAFARI
       ];
   }
 }
@@ -135,7 +135,7 @@ async function addEnvironment() {
     assistiveTechnology: "",
     assistiveTechnologyVersion: "",
     browser: "",
-    browserVersion: "",
+    browserVersion: ""
   });
   await nextTick();
   const lastInput = envSupportRefs.value[envSupportRefs.value.length - 1];
@@ -193,7 +193,7 @@ function combineEnvironments(
             return {
               // FIXME: set platform directly in desktopCombinations
               platform: Platform.DESKTOP,
-              ...c,
+              ...c
             };
           });
         })
@@ -209,7 +209,7 @@ function combineEnvironments(
           return combination.environments.map((c) => {
             return {
               platform: Platform.MOBILE,
-              ...c,
+              ...c
             };
           });
         })

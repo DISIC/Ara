@@ -29,7 +29,7 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
     <span
       :class="[
         'fr-text--xs fr-text--action-high-grey fr-m-0 audit-progress-percentage',
-        { 'fr-text--sm': isLarge },
+        { 'fr-text--sm': isLarge }
       ]"
     >
       {{ progressPercentage }}%

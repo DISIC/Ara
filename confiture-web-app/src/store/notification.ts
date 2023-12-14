@@ -21,7 +21,7 @@ export const useNotificationStore = defineStore("notification", {
   state(): NotificationStoreState {
     return {
       nextId: 1,
-      notification: null,
+      notification: null
     };
   },
   actions: {
@@ -36,12 +36,12 @@ export const useNotificationStore = defineStore("notification", {
         description,
         title,
         status,
-        ...(options?.action && { action: options.action }),
+        ...(options?.action && { action: options.action })
       };
     },
 
     hideNotification() {
       this.notification = null;
-    },
-  },
+    }
+  }
 });

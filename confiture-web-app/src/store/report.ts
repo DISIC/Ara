@@ -9,7 +9,7 @@ interface ReportStoreState {
 
 export const useReportStore = defineStore("report", {
   state: (): ReportStoreState => ({
-    data: null,
+    data: null
   }),
   actions: {
     async fetchReport(consultUniqueId: string) {
@@ -18,6 +18,6 @@ export const useReportStore = defineStore("report", {
         .get(`/api/reports/${consultUniqueId}`)
         .json()) as AuditReport;
       this.data = data;
-    },
-  },
+    }
+  }
 });

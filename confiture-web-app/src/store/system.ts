@@ -21,7 +21,7 @@ export const useSystemStore = defineStore("system", {
     window.addEventListener("offline", onOffline);
 
     return {
-      isOnline,
+      isOnline
     };
-  },
+  }
 });

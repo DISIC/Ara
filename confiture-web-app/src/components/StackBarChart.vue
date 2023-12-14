@@ -4,7 +4,7 @@ import {
   LinearScale,
   BarController,
   BarElement,
-  CategoryScale,
+  CategoryScale
 } from "chart.js";
 
 ChartJS.register(LinearScale, CategoryScale, BarController, BarElement);
@@ -44,34 +44,34 @@ const chartDatasets = [
     label: formatStatus(CriteriumResultStatus.COMPLIANT),
     data: props.data.map((d) => d.compliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-success"),
-    barThickness: 16,
+    barThickness: 16
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     data: props.data.map((d) => d.notCompliant.percentage),
     backgroundColor: getCssVarValue("--background-action-high-error"),
-    barThickness: 16,
+    barThickness: 16
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
     data: props.data.map((d) => d.notApplicable.percentage),
     backgroundColor: getCssVarValue("--grey-200-850"),
-    barThickness: 16,
-  },
+    barThickness: 16
+  }
 ];
 
 const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
   type: "bar",
   data: {
     labels: chartLabels,
-    datasets: chartDatasets,
+    datasets: chartDatasets
   },
 
   options: {
     animation: false,
     plugins: {
       legend: {
-        display: false,
+        display: false
       },
       tooltip: {
         callbacks: {
@@ -85,9 +85,9 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
             return `${context.dataset.label} : ${
               (data![key] as { raw: number; percentage: number }).raw
             }`;
-          },
-        },
-      },
+          }
+        }
+      }
     },
     indexAxis: "y",
     responsive: true,
@@ -96,35 +96,35 @@ const chartConfiguration: ChartConfiguration<"bar", number[], string> = {
       x: {
         display: false,
         border: {
-          display: false,
+          display: false
         },
         grid: {
-          display: false,
+          display: false
         },
         stacked: true,
         ticks: {
           color: getCssVarValue("--text-mention-grey"),
           font: {
             weight: "bold",
-            family: "Marianne",
-          },
-        },
+            family: "Marianne"
+          }
+        }
       },
       y: {
         stacked: true,
         grid: {
-          display: false,
+          display: false
         },
         ticks: {
           color: getCssVarValue("--text-mention-grey"),
           font: {
             weight: "500",
-            family: "Marianne",
-          },
-        },
-      },
-    },
-  },
+            family: "Marianne"
+          }
+        }
+      }
+    }
+  }
 };
 
 const canvas = ref<HTMLCanvasElement>();
@@ -153,7 +153,7 @@ useChartColorsUpdate(
     :style="{
       height: data.length * 40 + 24 + 'px',
       position: 'relative',
-      width: '100%',
+      width: '100%'
     }"
   >
     <canvas ref="canvas" aria-hidden="true" />

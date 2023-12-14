@@ -11,7 +11,7 @@ const emailFieldRef = ref<HTMLInputElement>();
 defineExpose({
   focusEmailField: () => {
     emailFieldRef.value?.focus();
-  },
+  }
 });
 </script>
 

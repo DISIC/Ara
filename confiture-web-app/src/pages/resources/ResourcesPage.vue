@@ -10,23 +10,23 @@ const tileLinks = [
   {
     title: "Formations accessibilité",
     description: "Me former ou former mon équipe",
-    routeName: "accessibility-training",
+    routeName: "accessibility-training"
   },
   {
     title: "Outils",
     description: "Aide à la mise en œuvre des tests",
-    routeName: "tools",
+    routeName: "tools"
   },
   {
     title: "Glossaire",
     description: "Définitions de tous les termes du RGAA",
-    routeName: "glossary",
+    routeName: "glossary"
   },
   {
     title: "Réaliser un audit accessibilité",
     description: "Tout savoir pour réaliser un audit",
-    routeName: "make-a11y-audit",
-  },
+    routeName: "make-a11y-audit"
+  }
 ];
 
 const moreLinks = [
@@ -34,50 +34,50 @@ const moreLinks = [
     title: "DesignGouv",
     description:
       "les ressources de DesignGouv, le pôle design des services numériques de la Dinum.",
-    href: "https://design.numerique.gouv.fr/",
+    href: "https://design.numerique.gouv.fr/"
   },
   {
     title: "RGAA",
     description:
       "les obligations légales, la méthode technique et tout ce qu’il faut savoir sur le RGAA.",
-    href: "https://accessibilite.numerique.gouv.fr/",
+    href: "https://accessibilite.numerique.gouv.fr/"
   },
   {
     title: "DSFR",
     description:
       "le site officiel du Système de Design de l’État développé par le SIG",
-    href: "https://www.systeme-de-design.gouv.fr/",
+    href: "https://www.systeme-de-design.gouv.fr/"
   },
   {
     title: "Jeu de l’OAA",
     description:
       "le jeu qui vous guidera dans la mise en accessibilité de votre service numérique",
-    href: "https://design.numerique.gouv.fr/accessibilite-numerique/jeu-de-oaa/",
-  },
+    href: "https://design.numerique.gouv.fr/accessibilite-numerique/jeu-de-oaa/"
+  }
 ];
 
 const accordions = [
   {
     title: "Que faire après avoir reçu mon rapport ?",
-    component: AfterReport,
+    component: AfterReport
   },
   {
     title: "Comment prioriser les correctifs ?",
-    component: Prioritize,
+    component: Prioritize
   },
   {
     title: "Comment tester mes correctifs ?",
-    component: Test,
+    component: Test
   },
   {
     title:
       "Que faire après avoir corrigé les anomalies et testé les corrections ?",
-    component: AfterCorrection,
+    component: AfterCorrection
   },
   {
     title: "Comment être conforme à 100% ?",
-    component: FullyAccessible,
-  },
+    component: FullyAccessible
+  }
 ];
 </script>
 

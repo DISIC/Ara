@@ -54,12 +54,12 @@ const auditIsPublishable = computed(() => {
                   name: 'report',
                   params: {
                     uniqueId: audit.consultUniqueId,
-                    tab: 'declaration-daccessibilite',
-                  },
+                    tab: 'declaration-daccessibilite'
+                  }
                 }
               : {
                   name: 'edit-audit-declaration',
-                  params: { uniqueId: audit.editUniqueId },
+                  params: { uniqueId: audit.editUniqueId }
                 }
           "
           :target="
@@ -69,7 +69,7 @@ const auditIsPublishable = computed(() => {
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-fill': auditIsPublishable,
+            'fr-icon-eye-fill': auditIsPublishable
           }"
           :title="
             auditIsPublishable
@@ -89,7 +89,7 @@ const auditIsPublishable = computed(() => {
         <RouterLink
           :to="{
             name: 'edit-audit-declaration',
-            params: { uniqueId: audit.editUniqueId },
+            params: { uniqueId: audit.editUniqueId }
           }"
           class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-md-0"
         >
@@ -105,8 +105,8 @@ const auditIsPublishable = computed(() => {
           name: 'report',
           params: {
             uniqueId: audit.consultUniqueId,
-            tab: 'declaration-daccessibilite',
-          },
+            tab: 'declaration-daccessibilite'
+          }
         }"
         label="Lien de partage"
         title="Lien de partage de la déclaration d’accessibilité"

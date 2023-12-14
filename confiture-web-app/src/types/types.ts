@@ -24,13 +24,13 @@ export interface AuditPage {
 export enum AuditType {
   FAST = "FAST",
   COMPLEMENTARY = "COMPLEMENTARY",
-  FULL = "FULL",
+  FULL = "FULL"
 }
 
 export enum AuditStatus {
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
-  PUBLISHABLE = "PUBLISHABLE",
+  PUBLISHABLE = "PUBLISHABLE"
 }
 
 /** An audit object as returned by the API. */
@@ -94,13 +94,13 @@ export enum CriteriumResultStatus {
   NOT_TESTED = "NOT_TESTED",
   COMPLIANT = "COMPLIANT",
   NOT_COMPLIANT = "NOT_COMPLIANT",
-  NOT_APPLICABLE = "NOT_APPLICABLE",
+  NOT_APPLICABLE = "NOT_APPLICABLE"
 }
 
 export enum CriterionResultUserImpact {
   MINOR = "MINOR",
   MAJOR = "MAJOR",
-  BLOCKING = "BLOCKING",
+  BLOCKING = "BLOCKING"
 }
 
 export interface ExampleImage {

@@ -9,7 +9,7 @@ import { useReportStore } from "../store";
 import {
   AuditReport,
   CriterionResultUserImpact,
-  CriteriumResultStatus,
+  CriteriumResultStatus
 } from "../types";
 import { formatStatus, formatUserImpact, slugify, pluralize } from "../utils";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
@@ -52,7 +52,7 @@ const errors = computed(() => {
           return quickWinFilter.value ? r.quickWin : r;
         }),
       "pageId"
-    ),
+    )
   } as Record<number, AuditReport["results"]>;
 
   // TODO: make more legible
@@ -71,12 +71,12 @@ const errors = computed(() => {
                 errors: sortBy(
                   results.filter((r) => !r.transverse),
                   "criterium"
-                ),
+                )
               };
             })
           ),
           "topic"
-        ),
+        )
       };
     })
   );
@@ -111,7 +111,7 @@ const transverseErrors = computed(() => {
         return {
           topic: topicNumber,
           name: getTopicName(Number(topicNumber)),
-          errors: results,
+          errors: results
         };
       }
     )
@@ -122,7 +122,7 @@ const defaultUserImpactFillters = [
   CriterionResultUserImpact.MINOR,
   CriterionResultUserImpact.MAJOR,
   CriterionResultUserImpact.BLOCKING,
-  null,
+  null
 ];
 
 const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
@@ -213,9 +213,8 @@ function getCriterium(topicNumber: number, criteriumNumber: number) {
   // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
   const criterium = (rgaa.topics as any)
     .find((t: any) => t.number === topicNumber)
-    ?.criteria.find(
-      (c: any) => c.criterium.number === criteriumNumber
-    ).criterium;
+    ?.criteria.find((c: any) => c.criterium.number === criteriumNumber)
+    .criterium;
 
   return criterium;
 }
@@ -287,8 +286,8 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     {
                       'fr-sidemenu__item--active': Boolean(
                         transverseErrors.length
-                      ),
-                    },
+                      )
+                    }
                   ]"
                 >
                   <!-- FIXME: seems there is an issue with anchor links inside tabs -->
@@ -307,8 +306,8 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     {
                       'fr-sidemenu__item--active': !Boolean(
                         transverseErrors.length
-                      ),
-                    },
+                      )
+                    }
                   ]"
                 >
                   <a
@@ -510,7 +509,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               <p
                 :class="[
                   'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 },
+                  { 'fr-mt-9v': j !== 0 }
                 ]"
               >
                 {{ error.topic }}.{{ error.criterium }}&nbsp;
@@ -534,7 +533,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                       'fr-badge--yellow-moutarde':
                         error.userImpact === CriterionResultUserImpact.MAJOR,
                       'fr-badge--error fr-badge--no-icon':
-                        error.userImpact === CriterionResultUserImpact.BLOCKING,
+                        error.userImpact === CriterionResultUserImpact.BLOCKING
                     }"
                   >
                     Impact {{ formatUserImpact(error.userImpact) }}
@@ -633,7 +632,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
               <p
                 :class="[
                   'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 },
+                  { 'fr-mt-9v': j !== 0 }
                 ]"
               >
                 {{ error.topic }}.{{ error.criterium }}&nbsp;
@@ -657,7 +656,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                       'fr-badge--yellow-moutarde':
                         error.userImpact === CriterionResultUserImpact.MAJOR,
                       'fr-badge--error fr-badge--no-icon':
-                        error.userImpact === CriterionResultUserImpact.BLOCKING,
+                        error.userImpact === CriterionResultUserImpact.BLOCKING
                     }"
                   >
                     Impact {{ formatUserImpact(error.userImpact) }}

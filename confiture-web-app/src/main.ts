@@ -27,7 +27,7 @@ import router from "./router";
       } else {
         return `<a href="${href}">${text}</a>`;
       }
-    },
+    }
   };
 
   marked.use({ renderer });
@@ -43,7 +43,7 @@ if (import.meta.env.VITE_MATOMO_ENABLE) {
   app.use(Matomo, {
     host: "https://stats.data.gouv.fr",
     siteId: 269,
-    router,
+    router
   });
 }
 
@@ -55,14 +55,14 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     integrations: [
       new BrowserTracing({
         routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-        tracePropagationTargets: [window.location.hostname, /^\//],
+        tracePropagationTargets: [window.location.hostname, /^\//]
       }),
       new Sentry.Replay({
         // anonymization settings
         maskAllText: true,
         maskAllInputs: true,
-        blockAllMedia: true,
-      }),
+        blockAllMedia: true
+      })
     ],
 
     // Set to a value between 0 and 1.0 to enable performance monitoring
@@ -83,7 +83,7 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     */
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
 
-    release: import.meta.env.VITE_SENTRY_RELEASE,
+    release: import.meta.env.VITE_SENTRY_RELEASE
   });
 }
 

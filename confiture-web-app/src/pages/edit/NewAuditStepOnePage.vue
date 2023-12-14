@@ -82,14 +82,14 @@ async function submitStepOne(data: CreateAuditRequestData) {
       // TODO: replace current history entry with the edit page
       return router.push({
         name: "overview",
-        params: { uniqueId: audit.editUniqueId },
+        params: { uniqueId: audit.editUniqueId }
       });
     })
     .catch((err) => {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(err);
     })

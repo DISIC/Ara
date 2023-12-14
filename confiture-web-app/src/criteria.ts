@@ -9,7 +9,7 @@ interface CriteriumId {
 export const CRITERIA = rgaa.topics.flatMap((topic) =>
   topic.criteria.map((c) => ({
     topic: topic.number,
-    criterium: c.criterium.number,
+    criterium: c.criterium.number
   }))
 );
 
@@ -42,7 +42,7 @@ export const FAST_CRITERIA = [
   { topic: 11, criterium: 9 },
   { topic: 11, criterium: 10 },
   { topic: 12, criterium: 8 },
-  { topic: 12, criterium: 9 },
+  { topic: 12, criterium: 9 }
 ];
 
 /**
@@ -77,11 +77,11 @@ export const COMPLEMENTARY_CRITERIA = [
   { topic: 13, criterium: 5 },
   { topic: 13, criterium: 6 },
   { topic: 13, criterium: 7 },
-  { topic: 13, criterium: 8 },
+  { topic: 13, criterium: 8 }
 ];
 
 export const CRITERIA_BY_AUDIT_TYPE: Record<AuditType, CriteriumId[]> = {
   [AuditType.FULL]: CRITERIA,
   [AuditType.FAST]: FAST_CRITERIA,
-  [AuditType.COMPLEMENTARY]: COMPLEMENTARY_CRITERIA,
+  [AuditType.COMPLEMENTARY]: COMPLEMENTARY_CRITERIA
 };

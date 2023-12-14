@@ -14,7 +14,7 @@ defineProps<{
     class="card-donut"
     :class="[
       theme ? `theme-${theme}` : null,
-      { 'card-donut--sm': size === 'sm' },
+      { 'card-donut--sm': size === 'sm' }
     ]"
   >
     <div class="fr-m-0 card-hole">

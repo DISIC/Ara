@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import {
   Audit,
   CreateAuditRequestData,
-  UpdateAuditRequestData,
+  UpdateAuditRequestData
 } from "../types";
 import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
@@ -26,7 +26,7 @@ export const useAuditStore = defineStore("audit", {
 
     currentAuditId: null,
     entities: {},
-    listing: [],
+    listing: []
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
@@ -36,7 +36,7 @@ export const useAuditStore = defineStore("audit", {
           json: data,
           headers: accountStore.authToken
             ? { Authorization: `Bearer ${accountStore.authToken}` }
-            : undefined,
+            : undefined
         })
         .json()) as Audit;
       return response;
@@ -61,11 +61,11 @@ export const useAuditStore = defineStore("audit", {
 
     async updateAudit(
       uniqueId: string,
-      data: UpdateAuditRequestData,
+      data: UpdateAuditRequestData
     ): Promise<Audit> {
       const response = (await ky
         .put(`/api/audits/${uniqueId}`, {
-          json: data,
+          json: data
         })
         .json()) as Audit;
       this.entities[uniqueId] = response;
@@ -82,7 +82,7 @@ export const useAuditStore = defineStore("audit", {
       try {
         await ky
           .patch(`/api/audits/${uniqueId}`, {
-            json: data,
+            json: data
           })
           .json();
       } catch (error) {
@@ -97,7 +97,7 @@ export const useAuditStore = defineStore("audit", {
       await ky.delete(`/api/audits/${uniqueId}`);
       delete this.entities[uniqueId];
       this.listing = this.listing.filter(
-        (audit) => audit.editUniqueId !== uniqueId,
+        (audit) => audit.editUniqueId !== uniqueId
       );
       if (this.currentAuditId === uniqueId) {
         this.currentAuditId = null;
@@ -120,15 +120,15 @@ export const useAuditStore = defineStore("audit", {
       const newAudit = (await ky
         .post(`/api/audits/${uniqueId}/duplicate`, {
           json: {
-            procedureName: copyName,
+            procedureName: copyName
           },
           // Duplicating an audit can be a pretty long process
-          timeout: false,
+          timeout: false
         })
         .json()) as Audit;
 
       const originalAuditListingItem = this.listing.find(
-        (audit) => audit.editUniqueId === uniqueId,
+        (audit) => audit.editUniqueId === uniqueId
       );
 
       // If audit is duplicated from the audit list, add a new item to the list
@@ -141,7 +141,7 @@ export const useAuditStore = defineStore("audit", {
           editUniqueId: newAudit.editUniqueId,
           procedureName: newAudit.procedureName,
           status: originalAuditListingItem.status,
-          estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
+          estimatedCsvSize: originalAuditListingItem.estimatedCsvSize
         };
         this.listing.push(newAuditListItem);
       }
@@ -158,12 +158,12 @@ export const useAuditStore = defineStore("audit", {
       const accountStore = useAccountStore();
       const audits = (await ky
         .get("/api/audits", {
-          headers: { Authorization: `Bearer ${accountStore.authToken}` },
+          headers: { Authorization: `Bearer ${accountStore.authToken}` }
         })
         .json()) as AccountAudit[];
 
       this.listing = audits;
-    },
+    }
   },
   getters: {
     currentAudit(state) {
@@ -171,6 +171,6 @@ export const useAuditStore = defineStore("audit", {
         return null;
       }
       return state.entities[state.currentAuditId];
-    },
-  },
+    }
+  }
 });

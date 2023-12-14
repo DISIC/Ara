@@ -22,7 +22,7 @@ const {
   complianceLevel,
   notApplicableCriteriaCount,
   notCompliantCriteriaCount,
-  errorsCount,
+  errorsCount
 } = useAuditStats();
 
 const auditIsReady = computed(() => {
@@ -102,7 +102,7 @@ const auditIsInProgress = computed(() => {
               `${pluralize(
                 "Critère",
                 "Critères",
-                errorsCount.total,
+                errorsCount.total
               )} non ${pluralize("conforme", "conformes", errorsCount.total)}`
             }}
           </p>
@@ -111,7 +111,7 @@ const auditIsInProgress = computed(() => {
               `${errorsCount.blocking} ${pluralize(
                 "bloquant",
                 "bloquants",
-                errorsCount.blocking,
+                errorsCount.blocking
               )}`
             }}
           </p>
@@ -150,14 +150,14 @@ const auditIsInProgress = computed(() => {
     <ul
       :class="[
         'fr-btns-group fr-btns-group--icon-left audit-step-card-actions',
-        { 'audit-step-card-actions--half': auditIsReady },
+        { 'audit-step-card-actions--half': auditIsReady }
       ]"
     >
       <li>
         <RouterLink
           :to="{
             name: 'edit-audit-step-three',
-            params: { uniqueId: uniqueId },
+            params: { uniqueId: uniqueId }
           }"
           class="fr-btn fr-btn--icon-left fr-mb-0"
           :class="
@@ -170,8 +170,8 @@ const auditIsInProgress = computed(() => {
             auditIsReady
               ? "Accéder"
               : auditIsInProgress
-              ? "Continuer"
-              : "Commencer"
+                ? "Continuer"
+                : "Commencer"
           }}
         </RouterLink>
       </li>

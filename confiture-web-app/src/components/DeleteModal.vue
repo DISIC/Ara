@@ -8,7 +8,7 @@ defineEmits(["closed", "confirm"]);
 
 defineExpose({
   show: () => modal.value?.show(),
-  hide: () => modal.value?.hide(),
+  hide: () => modal.value?.hide()
 });
 </script>
 

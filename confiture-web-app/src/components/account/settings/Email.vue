@@ -9,7 +9,7 @@ import { useAccountStore } from "../../../store/account";
 import {
   captureWithPayloads,
   formatEmail,
-  validateEmail,
+  validateEmail
 } from "../../../utils";
 import DsfrField from "../../DsfrField.vue";
 import DsfrPassword from "../../DsfrPassword.vue";

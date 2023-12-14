@@ -23,8 +23,8 @@ const stats = computed(() => {
             total: 100,
             unit: "%",
             hasDetails: true,
-            theme: "france",
-          },
+            theme: "france"
+          }
         ]
       : []),
 
@@ -38,7 +38,7 @@ const stats = computed(() => {
       total:
         report.data!.totalCriteriaCount * report.data!.context.samples.length,
       danger: true,
-      theme: "marianne",
+      theme: "marianne"
     },
     {
       title: "Critères applicables",
@@ -46,15 +46,15 @@ const stats = computed(() => {
         report.data!.totalCriteriaCount
       } critères`,
       value: report.data!.applicableCriteriaCount,
-      total: report.data!.totalCriteriaCount,
-    },
+      total: report.data!.totalCriteriaCount
+    }
   ];
 });
 
 const chartsName = {
   resultDistribution: "Répartition des critères par résultats",
   pageDistribution: "Répartition des critères par pages",
-  topicDistribution: "Répartition des critères par thématiques",
+  topicDistribution: "Répartition des critères par thématiques"
 };
 
 const auditInProgress = computed(
@@ -128,20 +128,20 @@ const auditInProgress = computed(
         ['Critères', 'Résultat'],
         [
           'Conformes',
-          `${Math.round(report.data.resultDistribution.compliant.percentage)}%`,
+          `${Math.round(report.data.resultDistribution.compliant.percentage)}%`
         ],
         [
           'Non conformes',
           `${Math.round(
             report.data.resultDistribution.notCompliant.percentage
-          )}%`,
+          )}%`
         ],
         [
           'Non applicables',
           `${Math.round(
             report.data.resultDistribution.notApplicable.percentage
-          )}%`,
-        ],
+          )}%`
+        ]
       ]"
     >
       <div class="card-content">
@@ -175,16 +175,16 @@ const auditInProgress = computed(
           'Page',
           'Critères conformes',
           'Critères non conformes',
-          'Critères non applicables',
+          'Critères non applicables'
         ],
         ...report.data.pageDistributions.map((p) => {
           return [
             p.name,
             `${Math.round(p.compliant.percentage)}%`,
             `${Math.round(p.notCompliant.percentage)}%`,
-            `${Math.round(p.notApplicable.percentage)}%`,
+            `${Math.round(p.notApplicable.percentage)}%`
           ];
-        }),
+        })
       ]"
     >
       <div class="card-content">
@@ -220,16 +220,16 @@ const auditInProgress = computed(
           'Thématique du RGAA',
           'Critères conformes',
           'Critères non conformes',
-          'Critères non applicables',
+          'Critères non applicables'
         ],
         ...report.data.topicDistributions.map((t, i) => {
           return [
             `${i + 1}. ${t.name}`,
             `${Math.round(t.compliant.percentage)}%`,
             `${Math.round(t.notCompliant.percentage)}%`,
-            `${Math.round(t.notApplicable.percentage)}%`,
+            `${Math.round(t.notApplicable.percentage)}%`
           ];
-        }),
+        })
       ]"
     >
       <div class="card-content">

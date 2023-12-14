@@ -2,7 +2,7 @@ import {
   AssistiveTechnology,
   Browsers,
   OperatingSystem,
-  Platform,
+  Platform
 } from "../../enums";
 import { AuditEnvironment } from "../../types";
 
@@ -19,7 +19,7 @@ export const desktopCombinations = [
         browser: Browsers.FIREFOX,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
@@ -27,7 +27,7 @@ export const desktopCombinations = [
         browser: Browsers.FIREFOX,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
@@ -35,9 +35,9 @@ export const desktopCombinations = [
         browser: Browsers.SAFARI,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
+        assistiveTechnologyVersion: ""
+      }
+    ]
   },
   {
     title: "Combinaison 2",
@@ -48,7 +48,7 @@ export const desktopCombinations = [
         browser: Browsers.FIREFOX,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
@@ -56,7 +56,7 @@ export const desktopCombinations = [
         browser: Browsers.EDGE,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
@@ -64,9 +64,9 @@ export const desktopCombinations = [
         browser: Browsers.SAFARI,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
+        assistiveTechnologyVersion: ""
+      }
+    ]
   },
   {
     title: "Combinaison 3",
@@ -77,7 +77,7 @@ export const desktopCombinations = [
         browser: Browsers.EDGE,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
@@ -85,7 +85,7 @@ export const desktopCombinations = [
         browser: Browsers.FIREFOX,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: "",
+        assistiveTechnologyVersion: ""
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
@@ -93,10 +93,10 @@ export const desktopCombinations = [
         browser: Browsers.SAFARI,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
+        assistiveTechnologyVersion: ""
+      }
+    ]
+  }
 ];
 
 /** Default mobile environment combinations. */
@@ -110,9 +110,9 @@ export const mobileCombinations = [
         browser: Browsers.SAFARI,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: "",
-      },
-    ],
+        assistiveTechnologyVersion: ""
+      }
+    ]
   },
   {
     title: "Combinaison 2",
@@ -123,10 +123,10 @@ export const mobileCombinations = [
         browser: Browsers.CHROME,
         browserVersion: "",
         assistiveTechnology: AssistiveTechnology.TALKBACK,
-        assistiveTechnologyVersion: "",
-      },
-    ],
-  },
+        assistiveTechnologyVersion: ""
+      }
+    ]
+  }
 ];
 
 /**

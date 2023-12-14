@@ -38,8 +38,8 @@ export function useWrappedFetch(
       query: route.query,
       hash: route.hash,
       state: {
-        errorStatus,
-      },
+        errorStatus
+      }
     });
 
     captureWithPayloads(error);

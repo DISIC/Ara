@@ -23,7 +23,7 @@ function submitStepOne(data: CreateAuditRequestData) {
     .updateAudit(auditUniqueId, {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ...auditStore.currentAudit!,
-      ...data,
+      ...data
     })
     .then(() => {
       notify(
@@ -33,7 +33,7 @@ function submitStepOne(data: CreateAuditRequestData) {
 
       router.push({
         name: "overview",
-        params: { uniqueId: auditUniqueId },
+        params: { uniqueId: auditUniqueId }
       });
     })
     .catch((err) => {

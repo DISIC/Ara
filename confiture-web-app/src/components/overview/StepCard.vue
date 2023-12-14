@@ -11,7 +11,7 @@ defineProps<{
       :id="id"
       :class="[
         'fr-icon--lg fr-icon-checkbox-circle-fill step-card-check',
-        { 'step-card-check--success': checked },
+        { 'step-card-check--success': checked }
       ]"
       aria-hidden="true"
     >

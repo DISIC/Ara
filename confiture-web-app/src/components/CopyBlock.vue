@@ -13,7 +13,7 @@ const props = defineProps<{
 const showCopyAlert = ref(false);
 
 const fullReportUrl = computed(
-  () => window.location.origin + router.resolve(props.to).fullPath,
+  () => window.location.origin + router.resolve(props.to).fullPath
 );
 
 async function copyLink() {
