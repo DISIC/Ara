@@ -30,9 +30,13 @@ export const useAuditStore = defineStore("audit", {
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
+      const accountStore = useAccountStore();
       const response = (await ky
         .post("/api/audits", {
           json: data,
+          headers: accountStore.authToken
+            ? { Authorization: `Bearer ${accountStore.authToken}` }
+            : undefined,
         })
         .json()) as Audit;
       return response;

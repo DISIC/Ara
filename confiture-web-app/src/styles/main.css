@@ -49,3 +49,9 @@
 pre {
   white-space: pre-wrap;
 }
+
+/* Utility class to remove external icon
+from DSFR links with `target="_blank"` */
+[target="_blank"].no-external-icon::after {
+  content: none !important;
+}

@@ -153,16 +153,31 @@ function handleDisconnectClick() {
                       : { name: 'home' }
                   "
                   :aria-current="
-                    ['home', 'account-dashboard'].includes(currentRoute.name as string) ? 'true' : null
+                    accountStore.account
+                      ? [
+                          'overview',
+                          'edit-audit-step-three',
+                          'report',
+                        ].includes(currentRoute.name as string)
+                        ? 'true'
+                        : null
+                      : ['home', 'account-dashboard'].includes(
+                          currentRoute.name as string,
+                        )
+                      ? 'true'
+                      : null
                   "
                 >
-                  Accueil
+                  {{ accountStore.account ? "Mes audits" : "Accueil" }}
                 </RouterLink>
               </li>
 
               <!-- Current audit -->
               <li
-                v-if="auditStore.currentAudit || reportStore.data"
+                v-if="
+                  !accountStore.account &&
+                  (auditStore.currentAudit || reportStore.data)
+                "
                 class="fr-nav__item"
               >
                 <RouterLink
@@ -185,13 +200,16 @@ function handleDisconnectClick() {
 
                 <RouterLink
                   v-else-if="reportStore.data"
-                  class="fr-nav__link"
+                  class="fr-nav__link no-external-icon"
                   :to="{
                     name: 'report',
                     params: { uniqueId: reportStore.data.consultUniqueId },
                   }"
+                  target="_blank"
                   :aria-current="
-                    ['context', 'report'].includes(currentRoute.name as string) ? 'true' : null
+                    ['context', 'report'].includes(currentRoute.name as string)
+                      ? 'true'
+                      : null
                   "
                 >
                   Rapport d’audit
@@ -216,7 +234,13 @@ function handleDisconnectClick() {
                 <button
                   class="fr-nav__btn"
                   aria-expanded="false"
-                  :aria-current="['changelog', 'roadmap'].includes(currentRoute.name as string) ? 'true' : undefined"
+                  :aria-current="
+                    ['changelog', 'roadmap'].includes(
+                      currentRoute.name as string,
+                    )
+                      ? 'true'
+                      : undefined
+                  "
                   aria-controls="news-menu-item"
                 >
                   Nouveautés

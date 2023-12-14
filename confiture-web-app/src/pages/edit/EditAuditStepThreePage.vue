@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/AraTabs.vue";
+import NotesModal from "../../components/NotesModal.vue";
 import AuditGenerationFilters from "../../components/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { history } from "../../router";
-import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import {
+  useAuditStore,
+  useFiltersStore,
+  useResultsStore,
+  useAccountStore,
+} from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { captureWithPayloads, getCriteriaCount, pluralize } from "../../utils";
-import MarkdownHelpButton from "../../components/MarkdownHelpButton.vue";
+import { getCriteriaCount, pluralize } from "../../utils";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 
 const route = useRoute();
-const router = useRouter();
+const previousRoute = usePreviousRoute();
 
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
@@ -34,35 +39,6 @@ useWrappedFetch(async () => {
 
 const resultsStore = useResultsStore();
 const notify = useNotifications();
-
-/**
- * Publish audit and/or move to final step
- */
-function toStepFour() {
-  if (auditStore.currentAudit?.publicationDate) {
-    router.push({
-      name: "edit-audit-step-four",
-      params: { uniqueId: uniqueId.value },
-    });
-  } else {
-    auditStore
-      .publishAudit(uniqueId.value)
-      .then(() => {
-        router.push({
-          name: "edit-audit-step-four",
-          params: { uniqueId: uniqueId.value },
-        });
-      })
-      .catch((error) => {
-        notify(
-          "error",
-          "Une erreur est survenue",
-          "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
-        );
-        captureWithPayloads(error);
-      });
-  }
-}
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
@@ -145,20 +121,9 @@ const headerInfos = computed(() => [
   },
 ]);
 
-function closeAuditEmailAlert() {
-  auditStore.showAuditEmailAlert = false;
-  focusPageHeading();
-}
-
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
 });
-
-function focusPageHeading() {
-  const pageHeading = document.querySelector("h1");
-  pageHeading?.setAttribute("tabindex", "-1");
-  pageHeading?.focus();
-}
 
 const showFilters = ref(true);
 
@@ -166,41 +131,37 @@ function toggleFilters(value: boolean) {
   showFilters.value = value;
 }
 
-const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
+// Notes
+const notesModal = ref<InstanceType<typeof NotesModal>>();
+const isNotesLoading = ref(false);
 
-watch(route, () => {
-  if (history.state.showDuplicatedAlert) {
-    showDuplicatedAlert.value = true;
-  }
-});
-
-function closeDuplicatedAuditAlert() {
-  showDuplicatedAlert.value = false;
-  focusPageHeading();
+function openNotesModal() {
+  notesModal.value?.show();
 }
 
-const auditNotes = computed(() => {
-  return auditStore.currentAudit?.notes || "";
-});
-
-const updateAuditNotes = debounce(async (notes: string) => {
+const updateAuditNotes = async (notes: string) => {
+  isNotesLoading.value = true;
   try {
     await auditStore.updateAuditNotes(uniqueId.value, {
       notes,
     });
+    notify(
+      "success",
+      undefined,
+      "Annotation de l’audit mise à jour avec succès",
+    );
   } catch (error) {
-    handleUpdateResultError(error);
+    console.error(error);
+    notify(
+      "error",
+      "Une erreur est survenue",
+      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+    );
+  } finally {
+    isNotesLoading.value = false;
+    notesModal.value?.hide();
   }
-}, 500);
-
-function handleUpdateResultError(err: unknown) {
-  console.log(err);
-  notify(
-    "error",
-    "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
-  );
-}
+};
 
 const isOffline = useIsOffline();
 
@@ -221,15 +182,13 @@ watch(
 );
 
 const pageTitle = computed(() => {
-  // Audit XXX - [Page en cours « XXX » | Notes] - X résultats pour « XXX »
+  // Audit XXX - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
-    const tabName = auditStore.currentPageId
-      ? ` - Page en cours « ${auditStore.currentAudit.pages.find(
-          (p) => p.id === auditStore.currentPageId,
-        )?.name} »`
-      : " - Notes";
+    const tabName = ` - Page en cours « ${auditStore.currentAudit.pages.find(
+      (p) => p.id === auditStore.currentPageId,
+    )?.name} »`;
 
     title += tabName;
 
@@ -249,22 +208,18 @@ const pageTitle = computed(() => {
   return "";
 });
 
-type NotesData = { _notes: true };
-type TabData = { label: string; data: AuditPage | NotesData };
+type TabData = { label: string; data: AuditPage };
 
-const tabsData = computed(() => {
-  return [
-    ...(auditStore.currentAudit?.pages.map((p) => ({
+const tabsData = computed((): TabData[] => {
+  return (
+    auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
       data: p,
-    })) ?? []),
-    { data: { _notes: true }, label: "Notes", icon: "draft-line" },
-  ] as TabData[];
+    })) ?? []
+  );
 });
 
-function isNotesData(data: AuditPage | NotesData): data is NotesData {
-  return (data as NotesData)._notes !== undefined;
-}
+const accountStore = useAccountStore();
 </script>
 
 <template>
@@ -275,56 +230,20 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
     />
 
-    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
-      <p class="fr-alert__title">Audit copié avec succès</p>
-      <p>
-        Des liens pour accéder à cet audit et de son rapport viennent de vous
-        être envoyés par mail.
-      </p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeDuplicatedAuditAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
-
-    <div
-      v-if="auditStore.showAuditEmailAlert"
-      class="fr-alert fr-alert--info fr-mb-3w"
-    >
-      <p class="fr-alert__title">Retrouvez votre audit</p>
-      <p>
-        Des liens pour accéder à cet audit et à son rapport viennent de vous
-        être envoyés par e-mail à l’adresse
-        <strong>{{ auditStore.currentAudit.auditorEmail }}</strong>
-      </p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeAuditEmailAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
-
-    <div
-      v-if="
-        auditStore.currentAudit.publicationDate &&
-        !auditStore.currentAudit.editionDate
+    <BackLink
+      :label="
+        accountStore.account &&
+        previousRoute.route?.name === 'account-dashboard'
+          ? 'Accéder à la synthèse'
+          : 'Retourner à la synthèse'
       "
-    >
-      <RouterLink
-        class="fr-text--sm fr-mb-4w back-summary-link"
-        :to="{
-          name: 'edit-audit-step-four',
-          params: { uniqueId },
-        }"
-      >
-        Retour à la synthèse
-      </RouterLink>
-    </div>
+      :to="
+        accountStore.account &&
+        previousRoute.route?.name === 'account-dashboard'
+          ? { name: 'account-dashboard' }
+          : { name: 'overview', params: { uniqueId } }
+      "
+    />
 
     <AuditGenerationHeader
       :audit-name="auditStore.currentAudit.procedureName"
@@ -334,7 +253,16 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       :edit-unique-id="uniqueId"
     >
       <template #actions>
-        <li class="fr-mr-2w">
+        <li>
+          <button
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+            :disabled="isOffline"
+            @click="openNotesModal"
+          >
+            Annoter l’audit
+          </button>
+        </li>
+        <li>
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
             class="fr-btn fr-btn--secondary"
@@ -349,40 +277,6 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
             <span class="sr-only">(Nouvelle fenêtre)</span>
           </component>
         </li>
-        <li
-          v-if="
-            !auditStore.currentAudit.publicationDate ||
-            (auditStore.currentAudit.editionDate &&
-              auditStore.currentAudit.editionDate >
-                auditStore.currentAudit.publicationDate)
-          "
-        >
-          <button
-            :disabled="!resultsStore.everyCriteriumAreTested || isOffline"
-            class="fr-btn"
-            :aria-describedby="
-              auditStore.currentAudit.publicationDate
-                ? auditStore.currentAudit.editionDate
-                  ? undefined
-                  : 'validation-notice'
-                : 'validation-notice'
-            "
-            @click="toStepFour"
-          >
-            {{
-              auditStore.currentAudit.publicationDate
-                ? auditStore.currentAudit.editionDate
-                  ? "Mettre à jour l’audit"
-                  : "Valider l’audit"
-                : "Valider l’audit"
-            }}
-          </button>
-        </li>
-      </template>
-      <template v-if="!resultsStore.everyCriteriumAreTested" #actions-notice>
-        <p id="validation-notice" class="fr-text--xs fr-mb-1w submit-notice">
-          Validation possible à la fin de l’audit
-        </p>
       </template>
     </AuditGenerationHeader>
 
@@ -406,33 +300,7 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
         <AraTabs :tabs="tabsData" @change="updateCurrentPageId">
           <template #panel="{ data }">
-            <template v-if="isNotesData(data)">
-              <div class="fr-input-group fr-mb-1w">
-                <label class="fr-label" for="audit-notes"
-                  >Notes annexes
-                  <span class="fr-hint-text">
-                    Exemple : remarques et recommandations générales sur le site
-                    audité. Ces notes seront affichées dans le rapport d’audit.
-                  </span>
-                </label>
-                <textarea
-                  id="audit-notes"
-                  :value="auditNotes"
-                  rows="20"
-                  class="fr-input"
-                  :disabled="isOffline"
-                  @input="
-                    updateAuditNotes(
-                      ($event.target as HTMLTextAreaElement).value,
-                    )
-                  "
-                ></textarea>
-              </div>
-
-              <MarkdownHelpButton id="markdown-notice-notes" />
-            </template>
             <AuditGenerationPageCriteria
-              v-else
               :page="data"
               :audit-unique-id="uniqueId"
             />
@@ -441,6 +309,12 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
       </div>
     </div>
   </div>
+
+  <NotesModal
+    ref="notesModal"
+    :is-loading="isNotesLoading"
+    @confirm="updateAuditNotes"
+  />
 </template>
 
 <style scoped>
@@ -476,10 +350,6 @@ function isNotesData(data: AuditPage | NotesData): data is NotesData {
   top: 5rem;
   max-height: 100vh;
   overflow-y: auto;
-}
-
-.submit-notice {
-  text-align: right;
 }
 
 .page-wrapper {

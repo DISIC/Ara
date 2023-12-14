@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
+import { useRoute } from "vue-router";
 
 import { useDevMode } from "../composables/useDevMode";
 import { useNotifications } from "../composables/useNotifications";
-import { useRoute } from "vue-router";
-import { AuditType, CreateAuditRequestData } from "../types";
-import AuditTypeRadio from "./AuditTypeRadio.vue";
-import DsfrField from "./DsfrField.vue";
-import { formatEmail } from "../utils";
+import { usePreviousRoute } from "../composables/usePreviousRoute";
 import { useAccountStore } from "../store/account";
+import { AuditType, CreateAuditRequestData } from "../types";
+import { formatEmail } from "../utils";
+import AuditTypeRadio from "./AuditTypeRadio.vue";
+import BackLink from "./BackLink.vue";
+import DsfrField from "./DsfrField.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;
@@ -98,8 +100,11 @@ function fillFields() {
     { name: "Accueil", url: "https://example.com" },
     { name: "Contact", url: "https://example.com/contact" },
   ];
-  procedureAuditorName.value = "Etienne Dupont";
-  procedureAuditorEmail.value = "etienne-dupont@example.com";
+
+  if (!accountStore.account) {
+    procedureAuditorName.value = "Etienne Dupont";
+    procedureAuditorEmail.value = "etienne-dupont@example.com";
+  }
 }
 
 function onSubmit() {
@@ -116,9 +121,26 @@ function onSubmit() {
 const isDevMode = useDevMode();
 const notify = useNotifications();
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 </script>
 
 <template>
+  <template v-if="accountStore.account">
+    <BackLink
+      v-if="previousRoute.route?.name === 'account-dashboard'"
+      label="Retourner à mes audits"
+      :to="{ name: 'account-dashboard' }"
+    />
+    <BackLink
+      v-if="previousRoute.route?.name === 'edit-audit-step-three'"
+      label="Retourner à mon audit"
+      :to="{
+        name: 'edit-audit-step-three',
+        params: { uniqueId: route.params.uniqueId },
+      }"
+    />
+  </template>
+
   <form @submit.prevent="onSubmit">
     <h1 class="fr-mb-3v">
       <span aria-hidden="true">⚙️</span> Paramètres de l’audit
@@ -208,11 +230,7 @@ const route = useRoute();
       </button>
 
       <fieldset
-        v-if="
-          !accountStore.account ||
-          !accountStore.account?.name ||
-          !accountStore.account?.orgName
-        "
+        v-if="!accountStore.account?.name || !accountStore.account?.email"
         class="fr-p-0 auditor-fields"
       >
         <legend>
@@ -228,7 +246,7 @@ const route = useRoute();
         />
 
         <DsfrField
-          v-if="!accountStore.account"
+          v-if="!accountStore.account?.email"
           id="procedure-auditor-email"
           v-model="procedureAuditorEmail"
           class="fr-mb-0"
@@ -247,11 +265,7 @@ const route = useRoute();
 
       <div>
         <button class="fr-btn fr-mt-4w" type="submit">
-          {{
-            route.name === "new-audit-step-one"
-              ? "Commencer l’audit"
-              : "Mettre à jour les paramètres"
-          }}
+          Valider les paramètres
         </button>
 
         <button

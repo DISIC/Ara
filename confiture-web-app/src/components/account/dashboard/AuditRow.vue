@@ -26,18 +26,8 @@ const notify = useNotifications();
 const auditStore = useAuditStore();
 
 const isInProgress = computed(
-  () => props.audit.status === AuditStatus.IN_PROGRESS
+  () => props.audit.status === AuditStatus.IN_PROGRESS,
 );
-
-const rowUrl = isInProgress.value
-  ? {
-      name: "edit-audit-step-three",
-      params: { uniqueId: props.audit.editUniqueId },
-    }
-  : {
-      name: "report",
-      params: { uniqueId: props.audit.consultUniqueId },
-    };
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
@@ -65,7 +55,7 @@ function duplicateAudit(name: string) {
                 notify(
                   "error",
                   "Une erreur est survenue",
-                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
                 );
                 captureWithPayloads(error);
               });
@@ -77,7 +67,7 @@ function duplicateAudit(name: string) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     })
@@ -104,7 +94,7 @@ function deleteAudit() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(error);
     })
@@ -115,7 +105,7 @@ function deleteAudit() {
 }
 
 const csvExportUrl = computed(
-  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
+  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`,
 );
 
 const csvExportFilename = computed(() => {
@@ -129,7 +119,10 @@ const csvExportFilename = computed(() => {
 <template>
   <div class="fr-py-2w grid">
     <!-- Name -->
-    <RouterLink :to="rowUrl" class="fr-pl-2w audit-name">
+    <RouterLink
+      :to="{ name: 'overview', params: { uniqueId: audit.editUniqueId } }"
+      class="fr-pl-2w audit-name"
+    >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
@@ -191,11 +184,19 @@ const csvExportFilename = computed(() => {
 
     <!-- Main action -->
     <RouterLink
-      :to="rowUrl"
+      :to="
+        isInProgress
+          ? {
+              name: 'edit-audit-step-three',
+              params: { uniqueId: audit.editUniqueId },
+            }
+          : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
+      "
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
+      :target="isInProgress ? null : '_blank'"
     >
-      {{ isInProgress ? "Finaliser l’audit" : "Voir le rapport" }}
+      {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
       <span v-if="isInProgress" class="sr-only">
         {{ audit.procedureName }}</span
       >
@@ -220,9 +221,11 @@ const csvExportFilename = computed(() => {
                   name: 'edit-audit-step-three',
                   params: { uniqueId: audit.editUniqueId },
                 }"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
+                :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
+                  isInProgress ? 'fr-icon-edit-line' : 'fr-icon-file-line'
+                } fr-m-0`"
               >
-                Modifier l’audit
+                {{ isInProgress ? "Modifier l’audit" : "Accéder à l’audit" }}
                 <span class="sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>
@@ -331,8 +334,11 @@ const csvExportFilename = computed(() => {
   z-index: 1;
 }
 
+/* Make button take full column width */
 .audit-main-action {
-  justify-self: end;
+  justify-content: center;
+  width: initial;
+  z-index: 1;
 }
 
 .delete-button {

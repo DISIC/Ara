@@ -438,6 +438,7 @@ export const useResultsStore = defineStore("results", {
      * Fill the entire audit with random values for debugging purpose.
      */
     async DEV_fillResults(uniqueId: string) {
+      const auditStore = useAuditStore();
       const updates =
         this.allResults?.map((r) => ({
           ...r,
@@ -456,6 +457,7 @@ export const useResultsStore = defineStore("results", {
         })) ?? [];
 
       await this.updateResults(uniqueId, updates);
+      await auditStore.publishAudit(uniqueId);
     },
   },
 });

@@ -3,6 +3,7 @@ import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/BackLink.vue";
 import TestEnvironmentSelection from "../../components/TestEnvironmentSelection/TestEnvironmentSelection.vue";
 import DsfrField from "../../components/DsfrField.vue";
 import { useDevMode } from "../../composables/useDevMode";
@@ -205,7 +206,7 @@ function handleSubmit() {
     .updateAudit(uniqueId, data)
     .then(() => {
       router.push({
-        name: "edit-audit-step-four",
+        name: "overview",
         params: { uniqueId },
       });
     })
@@ -270,6 +271,11 @@ const isDevMode = useDevMode();
   <PageMeta
     title="Déclaration d’accessibilité"
     description="Saisissez les informations requises pour établir la déclaration d’accessibilité."
+  />
+
+  <BackLink
+    label="Retourner à la synthèse"
+    :to="{ name: 'overview', params: { uniqueId } }"
   />
 
   <form v-if="auditStore.currentAudit" @submit.prevent="handleSubmit">

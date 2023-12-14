@@ -20,6 +20,7 @@ function onClick() {
     <p class="fr-text--sm fr-m-0">Markdown pris en compte</p>
     <button
       class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm markdown-notice"
+      type="button"
       @click="onClick"
     >
       <MarkdownIcon />

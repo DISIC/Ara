@@ -4,7 +4,8 @@ import { RouteLocationRaw } from "vue-router";
 import router from "../router";
 
 const props = defineProps<{
-  description: string;
+  label: string;
+  title: string;
   to: RouteLocationRaw;
   successMessage: string;
 }>();
@@ -12,7 +13,7 @@ const props = defineProps<{
 const showCopyAlert = ref(false);
 
 const fullReportUrl = computed(
-  () => window.location.origin + router.resolve(props.to).fullPath
+  () => window.location.origin + router.resolve(props.to).fullPath,
 );
 
 async function copyLink() {
@@ -20,27 +21,40 @@ async function copyLink() {
     showCopyAlert.value = true;
   });
 }
+
+const copyButtonRef = ref<HTMLButtonElement>();
+
+function onClose() {
+  copyButtonRef.value?.focus();
+  showCopyAlert.value = false;
+}
 </script>
 
 <template>
-  <div class="fr-callout">
-    <p class="fr-callout__title fr-text--xl fr-mb-2w">
-      {{ description }}
-    </p>
-    <p class="fr-callout__text fr-text--md copy-block">
-      <RouterLink class="fr-link" :to="to" :title="description" target="_blank">
-        {{ fullReportUrl }}
-        <span class="sr-only">(Nouvelle fenêtre)</span>
-      </RouterLink>
-      <!-- FIXME: icon "copy" does not seem to exist -->
+  <div class="copy-block-wrapper">
+    <p class="fr-text fr-text--bold fr-mb-3v">{{ label }}</p>
+
+    <div class="fr-px-4w fr-py-3w copy-block">
+      <p class="fr-m-0">
+        <RouterLink
+          class="fr-link copy-block-link"
+          :to="to"
+          :title="title"
+          target="_blank"
+        >
+          {{ fullReportUrl }}
+          <span class="sr-only">(Nouvelle fenêtre)</span>
+        </RouterLink>
+      </p>
       <button
-        class="fr-btn fr-btn--primary fr-icon-file-line fr-btn--icon-left fr-m-0"
+        ref="copyButtonRef"
+        class="fr-btn fr-icon-file-line fr-btn--icon-left fr-m-0 copy-block-action"
+        :title="`Copier le ${title}`"
         @click="copyLink"
-        @blur="showCopyAlert = false"
       >
         Copier le lien
       </button>
-    </p>
+    </div>
 
     <div role="alert" aria-live="polite">
       <div
@@ -50,17 +64,40 @@ async function copyLink() {
         <p>
           {{ successMessage }}
         </p>
+        <button class="fr-link--close fr-link" @click="onClose">
+          Masquer le message
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.copy-block {
+.copy-block-wrapper {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.copy-block {
+  background-color: var(--background-contrast-grey);
+  display: flex;
+  gap: 1.25rem;
   align-items: center;
   justify-content: space-between;
+}
+
+.copy-block-link {
+  word-break: break-all;
+}
+
+.copy-block-action {
+  flex-shrink: 0;
+}
+
+@media (max-width: 37.5rem) {
+  .copy-block {
+    align-items: start;
+    flex-direction: column;
+  }
 }
 </style>

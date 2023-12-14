@@ -24,7 +24,6 @@ import DuplicateModal from "./DuplicateModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "./SummaryCard.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
-import GearIcon from "./icons/GearIcon.vue";
 
 defineProps<{
   auditName: string;
@@ -72,7 +71,7 @@ function confirmDuplicate(name: string) {
       duplicateModal.value?.hide();
 
       router.push({
-        name: "edit-audit-step-three",
+        name: "overview",
         params: {
           uniqueId: newAuditId,
         },
@@ -189,10 +188,14 @@ onMounted(() => {
     </button>
   </div>
 
-  <!-- TODO: Link to actions somehow -->
-  <slot name="actions-notice" />
+  <h1>{{ auditName }}</h1>
 
-  <div id="sticky-indicator" class="sticky-indicator fr-p-0">
+  <!-- TODO: Link to actions somehow -->
+
+  <div
+    id="sticky-indicator"
+    class="sticky-indicator fr-grid-row fr-p-0 fr-mb-3w"
+  >
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
@@ -208,10 +211,14 @@ onMounted(() => {
     </div>
 
     <div
-      class="indicator-left-side fr-col-3"
+      class="indicator-left-side fr-col-12 fr-col-md-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
-      <AuditProgressBar v-if="showAuditProgressBar" class="fr-col-3" />
+      <AuditProgressBar
+        v-if="showAuditProgressBar"
+        label="Progression de l’audit"
+        class="fr-pr-2w progress-bar"
+      />
 
       <div
         v-else-if="auditStore.currentAudit?.publicationDate"
@@ -223,7 +230,8 @@ onMounted(() => {
         ></span>
         <strong
           >Audit
-          {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }} le
+          {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }}
+          le
           <time
             :datetime="
               auditStore.currentAudit?.editionDate
@@ -240,14 +248,13 @@ onMounted(() => {
       </div>
     </div>
 
-    <SaveIndicator
-      v-if="route.name === 'edit-audit-step-three'"
-      class="fr-pl-1w"
-    />
-
-    <div class="sub-header">
-      <ul class="top-actions fr-my-0" role="list">
-        <li class="fr-mr-2w">
+    <div class="fr-col-12 fr-col-md-9 sub-header">
+      <SaveIndicator
+        v-if="route.name === 'edit-audit-step-three'"
+        class="fr-ml-2w"
+      />
+      <ul class="top-actions fr-my-0 fr-p-0" role="list">
+        <li>
           <RouterLink
             class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
             :to="{
@@ -259,7 +266,7 @@ onMounted(() => {
           </RouterLink>
         </li>
 
-        <li class="fr-mr-2w">
+        <li>
           <Dropdown
             ref="optionsDropdownRef"
             title="Actions"
@@ -280,18 +287,6 @@ onMounted(() => {
                   </RouterLink>
                 </li>
               </template>
-              <li class="dropdown-item">
-                <RouterLink
-                  :to="{
-                    name: 'edit-audit-step-one',
-                    params: { uniqueId: editUniqueId },
-                  }"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                >
-                  <GearIcon class="fr-mr-2v" />
-                  Modifier les paramètres
-                </RouterLink>
-              </li>
               <li class="dropdown-item">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
@@ -331,45 +326,44 @@ onMounted(() => {
     </div>
   </div>
 
-  <h1 class="">{{ auditName }}</h1>
-
   <div
-    :class="`fr-grid-row fr-grid-row--gutters ${
-      auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3v'
+    :class="`fr-container--fluid ${
+      auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3w'
     }`"
   >
-    <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
-      <SummaryCard
-        :title="keyInfos[0].title"
-        :description="
-          unfinishedAudit
-            ? '(Disponible à la fin de l’audit)'
-            : keyInfos[0].description
-        "
-        :value="unfinishedAudit ? 0 : keyInfos[0].value"
-        :total="keyInfos[0].total"
-        :unit="keyInfos[0].unit"
-        :theme="unfinishedAudit ? undefined : keyInfos[0].theme"
-        :disabled="unfinishedAudit"
-      />
-    </div>
-    <div
-      v-for="info in keyInfos.slice(1)"
-      :key="info.title"
-      :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
-    >
-      <SummaryCard
-        :title="info.title"
-        :description="info.description"
-        :value="info.value"
-        :total="info.total"
-        :unit="info.unit"
-        :theme="info.theme"
-      />
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
+        <SummaryCard
+          :title="keyInfos[0].title"
+          :description="
+            unfinishedAudit
+              ? '(Disponible à la fin de l’audit)'
+              : keyInfos[0].description
+          "
+          :value="unfinishedAudit ? 0 : keyInfos[0].value"
+          :total="keyInfos[0].total"
+          :unit="keyInfos[0].unit"
+          :theme="unfinishedAudit ? undefined : keyInfos[0].theme"
+          :disabled="unfinishedAudit"
+        />
+      </div>
+      <div
+        v-for="info in keyInfos.slice(1)"
+        :key="info.title"
+        :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
+      >
+        <SummaryCard
+          :title="info.title"
+          :description="info.description"
+          :value="info.value"
+          :total="info.total"
+          :unit="info.unit"
+          :theme="info.theme"
+        />
+      </div>
     </div>
   </div>
 
-  <!-- ICI -->
   <div ref="scrollSentinelRef" />
 
   <DuplicateModal
@@ -396,14 +390,9 @@ onMounted(() => {
 <style scoped>
 .sub-header {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
-
-  flex-basis: initial !important;
-  flex-direction: column;
   z-index: 3;
-
-  margin-left: auto;
 }
 
 .heading {
@@ -416,6 +405,8 @@ onMounted(() => {
 
 .top-actions {
   display: flex;
+  align-items: center;
+  gap: 1rem;
   list-style: none;
 }
 
@@ -459,18 +450,11 @@ onMounted(() => {
 }
 
 .sticky-indicator {
-  flex-basis: initial !important;
-  align-self: end;
   position: sticky;
   top: 0;
   z-index: 4;
-
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.5rem 0;
   align-items: center;
-  flex: 1;
-
   background: var(--background-default-grey);
   min-height: 4rem;
 }
@@ -511,5 +495,9 @@ onMounted(() => {
 
 .indicator-left-side.with-border {
   border-color: var(--border-default-grey);
+}
+
+.progress-bar {
+  flex-grow: 1;
 }
 </style>

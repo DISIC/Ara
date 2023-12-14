@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 
+import OverviewPage from "./pages/OverviewPage.vue";
 import ContextPage from "./pages/consult/ContextPage.vue";
 import ReportPage from "./pages/consult/ReportPage.vue";
 import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
 import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
-import EditAuditStepFourPage from "./pages/edit/EditAuditStepFourPage.vue";
 import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
@@ -29,7 +29,7 @@ import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue"
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 
-import { useAuditStore } from "./store";
+import { useAuditStore, useAccountStore } from "./store";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import LoginPage from "./pages/account/LoginPage.vue";
 import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
@@ -39,7 +39,6 @@ import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.v
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
 import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
 import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
-import { useAccountStore } from "./store/account";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -67,7 +66,11 @@ function getProcedureName() {
  * Get the home link as first one
  */
 function getHomeBreadcrumbLink() {
-  return { label: "Accueil", name: "home" };
+  const accountStore = useAccountStore();
+
+  return accountStore.account
+    ? { label: "Mes audits", name: "account-dashboard" }
+    : { label: "Accueil", name: "home" };
 }
 
 /**
@@ -224,13 +227,6 @@ const router = createRouter({
       meta: {
         name: "Mes audits",
         authRequired: true,
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: "Mes audits",
-            name: "account-dashboard",
-          },
-        ],
       },
     },
     {
@@ -316,24 +312,12 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           {
-            label: getProcedureName(),
-            name: "edit-audit-step-three",
+            label: `Synthèse ${getProcedureName()}`,
+            name: "overview",
           },
-        ],
-      },
-    },
-    {
-      path: "/audits/:uniqueId/partage",
-      name: "edit-audit-step-four",
-      component: EditAuditStepFourPage,
-      beforeEnter: saveCurrentEditionStep,
-      meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
           {
             label: getProcedureName(),
-            name: "edit-audit-step-four",
+            name: "edit-audit-step-three",
           },
         ],
       },
@@ -351,6 +335,27 @@ const router = createRouter({
             label: getProcedureName(),
             name: "edit-audit-declaration",
           },
+        ],
+      },
+    },
+    // TODO: remove this redirect in few months?
+    {
+      path: "/audits/:uniqueId/partage",
+      name: "edit-audit-step-four",
+      redirect: () => {
+        return { name: "overview" };
+      },
+    },
+    // Overview
+    {
+      path: "/audits/:uniqueId/synthese",
+      name: "overview",
+      component: OverviewPage,
+      meta: {
+        name: `Synthèse ${getProcedureName}`,
+        breadcrumbLinks: () => [
+          getHomeBreadcrumbLink(),
+          { label: `Synthèse ${getProcedureName()}`, name: "overview" },
         ],
       },
     },

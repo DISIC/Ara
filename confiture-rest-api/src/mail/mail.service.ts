@@ -13,6 +13,7 @@ import * as updateEmailVerificationEmail from './update-email-verification-email
 import * as updateEmailConfirmationEmail from './update-email-confirmation-email';
 import * as requestPasswordResetEmail from './request-password-reset-email';
 import { EmailConfig } from './email-config.interface';
+import  { AuditCreationEmailData } from './audit-creation-email'
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
@@ -81,19 +82,18 @@ export class MailService {
   }
 
   sendAuditCreatedMail(audit: Audit) {
-    const auditUrl = `${this.config.get('FRONT_BASE_URL')}/audits/${
+    const overviewUrl = `${this.config.get('FRONT_BASE_URL')}/audits/${
       audit.editUniqueId
-    }/generation`;
+    }/synthese`;
 
     const reportUrl = `${this.config.get('FRONT_BASE_URL')}/rapports/${
       audit.consultUniqueId
-    }/resultats`;
+    }`;
 
-    const data = {
-      auditorName: audit.auditorName,
+    const data: AuditCreationEmailData = {
       procedureName: audit.procedureName,
-      auditUrl,
-      reportUrl,
+      overviewUrl,
+      reportUrl
     };
 
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);

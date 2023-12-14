@@ -6,6 +6,7 @@ import { HTTPError } from "ky";
 
 import {
   AuditPage,
+  AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
@@ -15,13 +16,14 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore, useFiltersStore } from "../store";
+import { useResultsStore, useFiltersStore, useAuditStore } from "../store";
 import { useNotifications } from "../composables/useNotifications";
 import RadioGroup, { RadioColor } from "./RadioGroup.vue";
 import { captureWithPayloads, formatStatus } from "../utils";
 import { useIsOffline } from "../composables/useIsOffline";
 
 const store = useResultsStore();
+const auditStore = useAuditStore();
 const filtersStore = useFiltersStore();
 
 const props = defineProps<{
@@ -59,8 +61,8 @@ const result = computed(
     store.getCriteriumResult(
       props.page.id,
       props.topicNumber,
-      props.criterium.number
-    )!
+      props.criterium.number,
+    )!,
 );
 
 const notify = useNotifications();
@@ -77,7 +79,7 @@ function handleUploadExample(file: File) {
     notify(
       "error",
       "Le téléchargement de l'exemple a échoué",
-      "Poids du fichier trop lourd"
+      "Poids du fichier trop lourd",
     );
     return;
   }
@@ -88,7 +90,7 @@ function handleUploadExample(file: File) {
       props.page.id,
       props.topicNumber,
       props.criterium.number,
-      file
+      file,
     )
     .then(() => {
       notify("success", "Exemple téléchargé avec succès.");
@@ -100,7 +102,7 @@ function handleUploadExample(file: File) {
           notify(
             "error",
             "Le téléchargement de l'exemple a échoué",
-            "Poids du fichier trop lourd"
+            "Poids du fichier trop lourd",
           );
         }
 
@@ -113,20 +115,20 @@ function handleUploadExample(file: File) {
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
-              "Format de fichier non supporté"
+              "Format de fichier non supporté",
             );
           } else if (body.message.includes("expected size")) {
             showFileSizeError.value = true;
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
-              "Poids du fichier trop lourd"
+              "Poids du fichier trop lourd",
             );
           } else {
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
-              "Une erreur inconnue est survenue"
+              "Une erreur inconnue est survenue",
             );
             captureWithPayloads(error);
           }
@@ -134,7 +136,7 @@ function handleUploadExample(file: File) {
           notify(
             "error",
             "Téléchargement échoué",
-            "Une erreur inconnue est survenue"
+            "Une erreur inconnue est survenue",
           );
           captureWithPayloads(error);
         }
@@ -149,7 +151,7 @@ function handleDeleteExample(image: ExampleImage) {
       props.page.id,
       props.topicNumber,
       props.criterium.number,
-      image.id
+      image.id,
     )
     .then(() => {
       notify("success", "Exemple supprimé avec succès");
@@ -158,7 +160,7 @@ function handleDeleteExample(image: ExampleImage) {
       notify(
         "error",
         "Echec de la suppression de l'exemple",
-        "Une erreur inconnue empêche la suppression de l'exemple."
+        "Une erreur inconnue empêche la suppression de l'exemple.",
       );
     });
 }
@@ -168,13 +170,29 @@ function handleUpdateResultError(err: any) {
   notify(
     "error",
     "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
   );
 }
 
 function updateResultStatus(status: CriteriumResultStatus) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
+    .then(() => {
+      if (
+        store.everyCriteriumAreTested &&
+        !auditStore.currentAudit?.publicationDate
+      ) {
+        auditStore.publishAudit(props.auditUniqueId).then(() => {
+          notify(
+            "info",
+            "Bravo ! Il semblerait que vous ayez terminé votre audit 💪",
+            auditStore.currentAudit?.auditType === AuditType.FULL
+              ? "Il ne vous reste qu’à compléter la déclaration d’accessibilité avant de la livrer avec votre rapport."
+              : "Il ne vous reste qu’à livrer votre rapport.",
+          );
+        });
+      }
+    })
     .catch(handleUpdateResultError);
 }
 
@@ -189,7 +207,7 @@ const updateResultComment = debounce(
       handleUpdateResultError(error);
     }
   },
-  500
+  500,
 );
 
 function updateResultImpact(userImpact: CriterionResultUserImpact | null) {

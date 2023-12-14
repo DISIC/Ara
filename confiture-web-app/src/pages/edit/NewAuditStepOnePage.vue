@@ -31,6 +31,7 @@ function confirmLeave() {
 }
 
 // Display leave modal when navigating to another route
+// FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
   if (!isSubmitting.value && !confirmedLeave.value) {
     leaveModalDestination.value = to.fullPath;
@@ -75,10 +76,12 @@ async function submitStepOne(data: CreateAuditRequestData) {
   auditStore
     .createAudit(data)
     .then((audit) => {
-      auditStore.showAuditEmailAlert = true;
+      if (!accountStore.account) {
+        auditStore.showAuditEmailAlert = true;
+      }
       // TODO: replace current history entry with the edit page
       return router.push({
-        name: "edit-audit-step-three",
+        name: "overview",
         params: { uniqueId: audit.editUniqueId },
       });
     })
@@ -86,7 +89,7 @@ async function submitStepOne(data: CreateAuditRequestData) {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
       );
       captureWithPayloads(err);
     })

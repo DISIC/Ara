@@ -1,9 +1,8 @@
 import { renderMailTemplate } from './render-mjml-template';
 
 export interface AuditCreationEmailData {
-  auditorName: string;
   procedureName: string;
-  auditUrl: string;
+  overviewUrl: string;
   reportUrl: string;
 }
 
@@ -17,13 +16,12 @@ export function html(data: AuditCreationEmailData): string {
 
 export function plain(data: AuditCreationEmailData): string {
   return `
-    Bonjour ${data.auditorName}, vous venez de créer l’audit "${data.procedureName}".
+    Bonjour, vous venez de créer l’audit "${data.procedureName}".
 
-    Vous trouverez ci-dessous le lien administrateur de l’audit. Pensez bien à le conserver, c’est le seul moyen de reprendre l’édition de l’audit.
-    ${data.auditUrl}
+    Voici le lien de la synthèse d’audit (privé) permettant d’accéder aux documents suivants : l’audit, le rapport d’audit et la déclaration d’accessibilité (dans le cas d’un audit 106 critères). Pensez-bien à conserver ce lien, c’est le seul moyen d’accéder à vos documents.
+    ${data.overviewUrl}
 
-    Vous trouverez ci-dessous le lien public du rapport d’audit. Il vous permet de consulter et vérifier le rapport d’audit. Vous devrez le partager une fois que l’audit sera terminé.
-    ${data.reportUrl}
+    Voici le lien du rapport d’audit (public) : ${data.reportUrl}
 
     Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
   `;

@@ -2,7 +2,7 @@
 import { computed, watch, nextTick } from "vue";
 import { ref } from "vue";
 
-import { useAuditStore, useFiltersStore, useResultsStore } from "../store";
+import { useFiltersStore, useResultsStore } from "../store";
 import { pluralize } from "../utils";
 import { CriteriumResultStatus } from "../types";
 
@@ -16,7 +16,6 @@ const emit = defineEmits<{
 
 const filterStore = useFiltersStore();
 const resultStore = useResultsStore();
-const auditStore = useAuditStore();
 
 const resultsCount = computed(() =>
   filterStore.filteredTopics
@@ -263,10 +262,8 @@ const notApplicableCount = computed(
             :style="{ '--topic-filter-value': topic.value + '%' }"
           >
             <a
-              :href="auditStore.currentPageId ? `#${topic.number}` : undefined"
+              :href="`#${topic.number}`"
               class="fr-py-1w fr-px-1w fr-mb-2v topic-filter-anchor"
-              :aria-disabled="auditStore.currentPageId ? undefined : 'true'"
-              :role="auditStore.currentPageId ? undefined : 'link'"
             >
               <span>{{ topic.number }}.</span>
               <span>{{ topic.title }}</span>
