@@ -18,7 +18,7 @@ import {
   getAuditStatus,
   formatDate,
   slugify,
-  formatBytes,
+  formatBytes
 } from "../../utils";
 
 const report = useReportStore();
@@ -42,7 +42,7 @@ const tabs = computed(() => [
     ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
     : []),
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
-  { title: "Détail des résultats", component: ReportErrors },
+  { title: "Détail des résultats", component: ReportErrors }
 ]);
 
 const showCopyAlert = ref(false);
@@ -77,7 +77,7 @@ watch(
         getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
         localStorage.getItem("confiture:hide-onboarding-alert") !== "true";
     }
-  },
+  }
 );
 
 function onOnboardingClose(confirmed: boolean) {
@@ -96,7 +96,7 @@ function onOnboardingAlertClose() {
 const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
   let index = tabs.value.findIndex(
-    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase(),
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
   );
   return index === -1 ? 0 : index;
 });
@@ -111,9 +111,9 @@ function handleTabChange(tab: { title: string }) {
       name: "report",
       params: {
         uniqueId,
-        tab: slugify(tab.title),
-      },
-    }).fullPath,
+        tab: slugify(tab.title)
+      }
+    }).fullPath
   );
 
   targetTab.value = slugify(tab.title);

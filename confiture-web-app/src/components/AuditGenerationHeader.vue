@@ -9,13 +9,13 @@ import {
   useAuditStore,
   useResultsStore,
   useSystemStore,
-  useAccountStore,
+  useAccountStore
 } from "../store";
 import {
   captureWithPayloads,
   formatDate,
   slugify,
-  formatBytes,
+  formatBytes
 } from "../utils";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
@@ -73,18 +73,18 @@ function confirmDuplicate(name: string) {
       router.push({
         name: "overview",
         params: {
-          uniqueId: newAuditId,
+          uniqueId: newAuditId
         },
         state: {
-          showDuplicatedAlert: true,
-        },
+          showDuplicatedAlert: true
+        }
       });
     })
     .catch((error) => {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     });
@@ -105,12 +105,12 @@ function confirmDelete() {
 
       if (accountStore.account) {
         router.push({
-          name: "account-dashboard",
+          name: "account-dashboard"
         });
       } else {
         router.push({
           name: "home",
-          state: { deleteAudit: "true" },
+          state: { deleteAudit: "true" }
         });
       }
     })
@@ -118,7 +118,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -133,7 +133,7 @@ const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
 
 const csvExportUrl = computed(
-  () => `/api/audits/${uniqueId.value}/exports/csv`,
+  () => `/api/audits/${uniqueId.value}/exports/csv`
 );
 
 const csvExportFilename = computed(() => {
@@ -174,7 +174,7 @@ onMounted(() => {
         // verify that the sentinel is at the top of the screen
         el.getBoundingClientRect().top <= 64;
     },
-    { rootMargin: "-64px" },
+    { rootMargin: "-64px" }
   );
 
   observer.observe(scrollSentinelRef.value!);
@@ -259,7 +259,7 @@ onMounted(() => {
             class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
             :to="{
               name: 'edit-audit-step-one',
-              params: { uniqueId: editUniqueId },
+              params: { uniqueId: editUniqueId }
             }"
           >
             Paramètres
@@ -279,7 +279,7 @@ onMounted(() => {
                   <RouterLink
                     :to="{
                       name: 'edit-audit-step-three',
-                      params: { uniqueId: editUniqueId },
+                      params: { uniqueId: editUniqueId }
                     }"
                     class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
                   >

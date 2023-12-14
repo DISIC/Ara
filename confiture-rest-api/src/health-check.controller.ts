@@ -1,9 +1,9 @@
 import { Controller, Get } from "@nestjs/common";
 
-@Controller('/')
+@Controller("/")
 export class HealthCheckController {
-  @Get('/healthcheck')
+  @Get("/healthcheck")
   checkHealth() {
-    return "Ara REST api is live !"
+    return "Ara REST api is live !";
   }
 }

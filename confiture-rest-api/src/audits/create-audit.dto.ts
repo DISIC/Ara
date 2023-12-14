@@ -1,5 +1,5 @@
-import { AuditType } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { AuditType } from "@prisma/client";
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsEmail,
@@ -8,8 +8,8 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  ValidateNested,
-} from 'class-validator';
+  ValidateNested
+} from "class-validator";
 
 export class CreateAuditPage {
   /**

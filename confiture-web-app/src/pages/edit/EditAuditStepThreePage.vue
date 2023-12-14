@@ -19,7 +19,7 @@ import {
   useAuditStore,
   useFiltersStore,
   useResultsStore,
-  useAccountStore,
+  useAccountStore
 } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
@@ -51,14 +51,14 @@ const topics = computed(() => {
       // hide topics not present in audit type
       .filter((topic) => {
         return CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit!.auditType!].find(
-          (criterium) => criterium.topic === topic.number,
+          (criterium) => criterium.topic === topic.number
         );
       })
       .map((topic) => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number,
+            (result) => result.topic === topic.number
           ) ?? [];
 
         // number of criteria for the topic accross all pages
@@ -67,13 +67,13 @@ const topics = computed(() => {
         // number of tested criteria for the topic accross all pages
         const testedCount =
           relevantResults.filter(
-            (result) => result.status !== CriteriumResultStatus.NOT_TESTED,
+            (result) => result.status !== CriteriumResultStatus.NOT_TESTED
           ).length ?? 0;
 
         return {
           title: topic.topic,
           number: topic.number,
-          value: Math.round((testedCount / relevantCount) * 100),
+          value: Math.round((testedCount / relevantCount) * 100)
         };
       })
   );
@@ -88,7 +88,7 @@ const {
   complianceLevel,
   notApplicableCriteriaCount,
   notCompliantCriteriaCount,
-  blockingCriteriaCount,
+  blockingCriteriaCount
 } = useAuditStats();
 
 const headerInfos = computed(() => [
@@ -100,8 +100,8 @@ const headerInfos = computed(() => [
           value: complianceLevel.value,
           total: 100,
           unit: "%",
-          theme: "france",
-        },
+          theme: "france"
+        }
       ]
     : []),
   {
@@ -109,16 +109,16 @@ const headerInfos = computed(() => [
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "marianne",
+    theme: "marianne"
   },
   {
     title: "Critères non applicables",
     description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType,
+      auditStore.currentAudit?.auditType as AuditType
     )} critères`,
     value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-  },
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType)
+  }
 ]);
 
 onBeforeRouteLeave(() => {
@@ -143,19 +143,19 @@ const updateAuditNotes = async (notes: string) => {
   isNotesLoading.value = true;
   try {
     await auditStore.updateAuditNotes(uniqueId.value, {
-      notes,
+      notes
     });
     notify(
       "success",
       undefined,
-      "Annotation de l’audit mise à jour avec succès",
+      "Annotation de l’audit mise à jour avec succès"
     );
   } catch (error) {
     console.error(error);
     notify(
       "error",
       "Une erreur est survenue",
-      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
     );
   } finally {
     isNotesLoading.value = false;
@@ -169,7 +169,7 @@ const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0),
+    .reduce((total, length) => (total += length), 0)
 );
 
 watch(
@@ -178,7 +178,7 @@ watch(
     if (curr && !prev) {
       auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
     }
-  },
+  }
 );
 
 const pageTitle = computed(() => {
@@ -187,7 +187,7 @@ const pageTitle = computed(() => {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
     const tabName = ` - Page en cours « ${auditStore.currentAudit.pages.find(
-      (p) => p.id === auditStore.currentPageId,
+      (p) => p.id === auditStore.currentPageId
     )?.name} »`;
 
     title += tabName;
@@ -196,7 +196,7 @@ const pageTitle = computed(() => {
       const results = ` - ${filterResultsCount.value} ${pluralize(
         "résultat",
         "résultats",
-        filterResultsCount.value,
+        filterResultsCount.value
       )} pour « ${filterStore.search} »`;
 
       title += results;
@@ -214,7 +214,7 @@ const tabsData = computed((): TabData[] => {
   return (
     auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      data: p,
+      data: p
     })) ?? []
   );
 });
@@ -268,7 +268,7 @@ const accountStore = useAccountStore();
             class="fr-btn fr-btn--secondary"
             :to="{
               name: 'report',
-              params: { uniqueId: auditStore.currentAudit?.consultUniqueId },
+              params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
             }"
             target="_blank"
             :disabled="isOffline"
@@ -284,7 +284,7 @@ const accountStore = useAccountStore();
       <div
         :class="[
           `fr-col-12 fr-col-md-${showFilters ? '3' : '1'}`,
-          { 'fr-px-0': showFilters },
+          { 'fr-px-0': showFilters }
         ]"
       >
         <div

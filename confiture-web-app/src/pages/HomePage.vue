@@ -33,20 +33,20 @@ const steps = [
     title: "1. Paramétrer l’audit",
     description:
       "Vous saisissez le type d’audit, l’échantillon des pages à auditer et une adresse électronique.",
-    icon: "⚙️",
+    icon: "⚙️"
   },
   {
     title: "2. Auditer le service",
     description:
       "Vous évaluez la conformité des critères sur l’ensemble des pages de l’échantillon et validez l’audit.",
-    icon: "🔎",
+    icon: "🔎"
   },
   {
     title: "3. Rédiger la déclaration d’accessibilité",
     description:
       "Une fois l’audit complet terminé, le rapport est prêt. Il reste à générer la déclaration.",
-    icon: "📃",
-  },
+    icon: "📃"
+  }
 ];
 </script>
 

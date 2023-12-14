@@ -3,10 +3,10 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
-  CopyObjectCommand,
-} from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+  CopyObjectCommand
+} from "@aws-sdk/client-s3";
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class FileStorageService {
@@ -14,34 +14,34 @@ export class FileStorageService {
 
   constructor(private readonly config: ConfigService) {
     this.s3Client = new S3Client({
-      region: config.get('S3_REGION'),
-      endpoint: config.get('S3_ENDPOINT'),
+      region: config.get("S3_REGION"),
+      endpoint: config.get("S3_ENDPOINT"),
       credentials: {
-        accessKeyId: config.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: config.get('AWS_SECRET_ACCESS_KEY'),
-      },
+        accessKeyId: config.get("AWS_ACCESS_KEY_ID"),
+        secretAccessKey: config.get("AWS_SECRET_ACCESS_KEY")
+      }
     });
   }
 
   async uploadFile(buffer: Buffer, contentType: string, key: string) {
     const command = new PutObjectCommand({
-      Bucket: this.config.get<string>('S3_BUCKET'),
+      Bucket: this.config.get<string>("S3_BUCKET"),
       Key: key,
-      ACL: 'public-read',
+      ACL: "public-read",
       Body: buffer,
-      ContentType: contentType,
+      ContentType: contentType
     });
     await this.s3Client.send(command);
   }
 
   getPublicUrl(key: string): string {
-    return `${this.config.get('S3_VIRTUAL_HOST')}${key}`;
+    return `${this.config.get("S3_VIRTUAL_HOST")}${key}`;
   }
 
   async deleteStoredFile(key: string) {
     const command = new DeleteObjectCommand({
-      Bucket: this.config.get<string>('S3_BUCKET'),
-      Key: key,
+      Bucket: this.config.get<string>("S3_BUCKET"),
+      Key: key
     });
 
     await this.s3Client.send(command);
@@ -49,32 +49,32 @@ export class FileStorageService {
 
   async deleteMultipleFiles(...keys: string[]) {
     const command = new DeleteObjectsCommand({
-      Bucket: this.config.get<string>('S3_BUCKET'),
+      Bucket: this.config.get<string>("S3_BUCKET"),
       Delete: {
-        Objects: keys.map((Key) => ({ Key })),
-      },
+        Objects: keys.map((Key) => ({ Key }))
+      }
     });
 
     await this.s3Client.send(command);
   }
 
   async duplicateMultipleFiles(
-    duplications: { originalKey: string; destinationKey: string }[],
+    duplications: { originalKey: string; destinationKey: string }[]
   ) {
     await Promise.all(
       duplications
         .map(
           (d) =>
             new CopyObjectCommand({
-              Bucket: this.config.get<string>('S3_BUCKET'),
-              CopySource: `/${this.config.get<string>('S3_BUCKET')}/${
+              Bucket: this.config.get<string>("S3_BUCKET"),
+              CopySource: `/${this.config.get<string>("S3_BUCKET")}/${
                 d.originalKey
               }`,
               Key: d.destinationKey,
-              ACL: 'public-read',
-            }),
+              ACL: "public-read"
+            })
         )
-        .map((command) => this.s3Client.send(command)),
+        .map((command) => this.s3Client.send(command))
     );
   }
 }

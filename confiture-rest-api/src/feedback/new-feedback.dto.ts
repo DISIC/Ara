@@ -1,16 +1,16 @@
-import { IsArray, IsEmail, IsIn, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsIn, IsOptional, IsString } from "class-validator";
 
 const OCCUPATIONS = [
-  'Designer (ou lead)',
-  'Développeur / Développeuse (ou lead)',
-  'Chef / Cheffe de projet (product manager)',
-  'Chef / Cheffe de produit (product owner)',
-  'Auditeur / Auditrice accessibilité',
-  'Référent / Référente accessibilité',
-  'Autre',
+  "Designer (ou lead)",
+  "Développeur / Développeuse (ou lead)",
+  "Chef / Cheffe de projet (product manager)",
+  "Chef / Cheffe de produit (product owner)",
+  "Auditeur / Auditrice accessibilité",
+  "Référent / Référente accessibilité",
+  "Autre"
 ];
 
-const EASE_OF_USE = ['Oui', 'Moyen', 'Non'];
+const EASE_OF_USE = ["Oui", "Moyen", "Non"];
 
 export class NewFeedbackDto {
   /**

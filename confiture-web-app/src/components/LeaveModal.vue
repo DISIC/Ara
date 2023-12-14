@@ -21,7 +21,7 @@ defineExpose({
     modal.value?.show();
   },
   hide: () => modal.value?.hide(),
-  isOpen,
+  isOpen
 });
 </script>
 

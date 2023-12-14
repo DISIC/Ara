@@ -104,7 +104,7 @@ setInterval(() => {
       role: 'alert',
       style: !systemStore.isOnline
         ? 'color: var(--text-default-error);'
-        : undefined,
+        : undefined
     }"
   >
     <p class="fr-text--sm fr-mb-1v">

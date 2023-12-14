@@ -1,25 +1,24 @@
 <template>
   <p>
-    Il est maintenant temps de réaliser un contre-audit. Ce contre-audit :
+    Il est maintenant temps de réaliser un contre-audit. Ce contre-audit&nbsp;:
   </p>
   <ul class="fr-mb-4w">
     <li>
-      validera ou non la conformité des critères suite à vos corrections ;</li>
-    <li>
-      établira un nouveau taux de conformité RGAA de votre site ;</li>
-    <li>
-      vous permettra de mettre à jour la déclaration d’accessibilité.
+      validera ou non la conformité des critères suite à vos corrections&nbsp;;
     </li>
+    <li>établira un nouveau taux de conformité RGAA de votre site&nbsp;;</li>
+    <li>vous permettra de mettre à jour la déclaration d’accessibilité.</li>
   </ul>
   <p>N'oubliez pas sur le long terme :</p>
   <ul class="fr-mb-0">
     <li>
-      de former et sensibiliser vos équipes, notamment les nouveaux arrivants ;
+      de former et sensibiliser vos équipes, notamment les nouveaux
+      arrivants&nbsp;;
     </li>
     <li>
       d’intégrer l’accessibilité dans votre processus, parce qu’il est bien
-      moins coûteux et bien plus efficace quand le sujet est
-      intégré au cycle de vie d’un produit ;
+      moins coûteux et bien plus efficace quand le sujet est intégré au cycle de
+      vie d’un produit&nbsp;;
     </li>
     <li>
       de refaire des audits si de nouvelles fonctionnalités, des refontes

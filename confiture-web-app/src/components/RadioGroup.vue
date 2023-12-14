@@ -79,7 +79,9 @@ function handleChange(value: string) {
   display: inline-flex;
   gap: 0.5rem;
   text-transform: capitalize;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 input:checked + .label {

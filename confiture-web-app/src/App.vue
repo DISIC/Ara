@@ -32,19 +32,19 @@ useHead({
     {
       name: "description",
       content:
-        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
     },
     { name: "og:title", content: "Audit d’accessibilité numérique" },
     {
       name: "og:description",
       content:
-        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique.",
+        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
     },
     { name: "og:url", content: "URL" },
     { name: "og:image", content: "image" },
     { name: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary_large_image" },
-  ],
+    { name: "twitter:card", content: "summary_large_image" }
+  ]
 });
 
 const markdownHelpModal = ref<InstanceType<typeof MarkdownHelpModal>>();

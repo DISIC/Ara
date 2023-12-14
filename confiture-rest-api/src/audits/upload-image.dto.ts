@@ -1,6 +1,6 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsPositive, Max, Min } from 'class-validator';
-import { IsRgaaCriterium } from './update-results.dto';
+import { Type } from "class-transformer";
+import { IsInt, IsNumber, IsPositive, Max, Min } from "class-validator";
+import { IsRgaaCriterium } from "./update-results.dto";
 
 /*
 The `@Type(() => Number)` decorator is required to correctly parse strings into numbers
@@ -31,7 +31,7 @@ export class UploadImageDto {
   @IsPositive()
   @IsRgaaCriterium({
     message:
-      'topic and criterium numbers must be a valid RGAA criterium combination',
+      "topic and criterium numbers must be a valid RGAA criterium combination"
   })
   criterium: number;
 }

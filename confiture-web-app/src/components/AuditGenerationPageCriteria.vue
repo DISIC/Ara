@@ -19,25 +19,25 @@ const noResults = computed(() => {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.',
+        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.'
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
       title: "Aucun résultat ne correspond à votre recherche",
       description:
-        'Veuillez sélectionner un filtre "Critères" comportant au moins un critère.',
+        'Veuillez sélectionner un filtre "Critères" comportant au moins un critère.'
     };
   } else if (store.hasNoResultsFromSearch && !store.hideEvaluatedCriteria) {
     return {
       title: "Aucun résultat ne correspond à votre recherche",
       description:
-        "Le système de recherche par mots clés s'applique uniquement à l’intitulé des critères.",
+        "Le système de recherche par mots clés s'applique uniquement à l’intitulé des critères."
     };
   } else {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.',
+        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.'
     };
   }
 });

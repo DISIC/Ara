@@ -13,7 +13,7 @@ const errorTitle =
     408: "La connexion a expiré",
     410: "Audit supprimé",
     500: "Erreur inattendue",
-    503: "Service indisponible",
+    503: "Service indisponible"
     // TODO: get default content
   }[statusCode] ?? "Erreur inconnue";
 
@@ -23,7 +23,7 @@ const errorDescription =
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
     410: "Désolé, l’audit que vous cherchez a été supprimé.",
     500: "Désolé, le service rencontre un problème. Nous travaillons pour le résoudre le plus rapidement possible.",
-    503: "Désolé, le service est temporairement inaccessible, la page demandée ne peut être affichée.",
+    503: "Désolé, le service est temporairement inaccessible, la page demandée ne peut être affichée."
   }[statusCode] ??
   "Une erreur est survenue. Excusez-nous pour la gêne occasionnée.";
 
@@ -51,7 +51,7 @@ Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adress
 Merci de réessayer plus tard, vous serez bientôt en mesure de réutiliser le service.
 
 Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
-    `,
+    `
   }[statusCode] ??
   // TODO: get real wording
   `

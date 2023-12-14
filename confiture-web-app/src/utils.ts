@@ -9,19 +9,19 @@ import {
   AuditStatus,
   AuditType,
   CriterionResultUserImpact,
-  CriteriumResultStatus,
+  CriteriumResultStatus
 } from "./types";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
   month: "long",
-  day: "numeric",
+  day: "numeric"
 });
 
 const abridgedFormatter = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
   month: "2-digit",
-  day: "2-digit",
+  day: "2-digit"
 });
 
 /**
@@ -37,7 +37,7 @@ export function formatDate(dateString: string, short?: boolean): string {
 const FORMATTED_TYPES = {
   [AuditType.COMPLEMENTARY]: "Complémentaire",
   [AuditType.FAST]: "Rapide",
-  [AuditType.FULL]: "Complet",
+  [AuditType.FULL]: "Complet"
 };
 
 /**
@@ -50,14 +50,14 @@ export function formatAuditType(auditType: AuditType): string {
 const FORMATTED_USER_IMPACT = {
   [CriterionResultUserImpact.MINOR]: "mineur",
   [CriterionResultUserImpact.MAJOR]: "majeur",
-  [CriterionResultUserImpact.BLOCKING]: "bloquant",
+  [CriterionResultUserImpact.BLOCKING]: "bloquant"
 };
 
 /**
  * Format a criterion result user impact type string into French.
  */
 export function formatUserImpact(
-  userImpact: CriterionResultUserImpact,
+  userImpact: CriterionResultUserImpact
 ): string {
   return FORMATTED_USER_IMPACT[userImpact];
 }
@@ -66,7 +66,7 @@ const FORMATTED_STATUS = {
   [CriteriumResultStatus.NOT_TESTED]: "Non testé",
   [CriteriumResultStatus.COMPLIANT]: "Conforme",
   [CriteriumResultStatus.NOT_COMPLIANT]: "Non conforme",
-  [CriteriumResultStatus.NOT_APPLICABLE]: "Non applicable",
+  [CriteriumResultStatus.NOT_APPLICABLE]: "Non applicable"
 };
 
 /**
@@ -79,7 +79,7 @@ export function formatStatus(status: CriteriumResultStatus): string {
 const CRITERIA_COUNT = {
   [AuditType.FAST]: 25,
   [AuditType.COMPLEMENTARY]: 50,
-  [AuditType.FULL]: 106,
+  [AuditType.FULL]: 106
 };
 
 /**
@@ -140,7 +140,7 @@ export function formatBytes(bytes: number, decimals = 0) {
  */
 export async function captureWithPayloads(
   error: unknown,
-  logRequestPayload = true,
+  logRequestPayload = true
 ) {
   const scope = new Scope();
 
@@ -156,7 +156,7 @@ export async function captureWithPayloads(
             payloads["Request JSON"] = JSON.stringify(
               JSON.parse(data),
               null,
-              2,
+              2
             );
           } catch (e) {
             // noop, we dont do anything if it's not JSON
@@ -233,7 +233,7 @@ export function waitForElement(selector: string): Promise<Element> {
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: true
     });
   });
 }

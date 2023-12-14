@@ -31,7 +31,7 @@ defineExpose({
   },
   displayResendAlert: () => {
     showResendAlert.value = true;
-  },
+  }
 });
 </script>
 

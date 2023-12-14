@@ -86,8 +86,8 @@ onMounted(async () => {
           :class="{
             'fr-tabs__tab--icon-left': !!tab.icon,
             ...(!!tab.icon && {
-              [`fr-icon-${tab.icon}`]: !!tab.icon,
-            }),
+              [`fr-icon-${tab.icon}`]: !!tab.icon
+            })
           }"
           @keydown.right.prevent="selectNextTab"
           @click="currentTab = i"

@@ -20,13 +20,13 @@ const links: SiteMapLink[] = [
         children: [
           {
             label: "Introduction à l’accessibilité numérique",
-            name: "a11y-intro-training",
+            name: "a11y-intro-training"
           },
           {
             label: "Bien faire du numérique public",
-            name: "public-digital",
-          },
-        ],
+            name: "public-digital"
+          }
+        ]
       },
       { label: "Outils", name: "tools" },
       { label: "Glossaire RGAA", name: "glossary" },
@@ -35,15 +35,15 @@ const links: SiteMapLink[] = [
       { label: "RGAA", name: "rgaa" },
       {
         label: "Déclaration d’accessibilité",
-        name: "accessibility-statement",
+        name: "accessibility-statement"
       },
-      { label: "Schéma pluriannuel", name: "accessibility-plan" },
-    ],
+      { label: "Schéma pluriannuel", name: "accessibility-plan" }
+    ]
   },
   { label: "Donner mon avis", name: "feedback" },
   { label: "Accessibilité", name: "accessibility" },
   { label: "Mentions légales", name: "legal" },
-  { label: "Données personnelles", name: "privacy" },
+  { label: "Données personnelles", name: "privacy" }
 ];
 </script>
 

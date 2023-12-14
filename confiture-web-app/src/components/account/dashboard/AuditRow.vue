@@ -8,7 +8,7 @@ import {
   formatAuditType,
   captureWithPayloads,
   slugify,
-  formatBytes,
+  formatBytes
 } from "../../../utils";
 import Dropdown from "../../Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
@@ -26,7 +26,7 @@ const notify = useNotifications();
 const auditStore = useAuditStore();
 
 const isInProgress = computed(
-  () => props.audit.status === AuditStatus.IN_PROGRESS,
+  () => props.audit.status === AuditStatus.IN_PROGRESS
 );
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
@@ -55,19 +55,19 @@ function duplicateAudit(name: string) {
                 notify(
                   "error",
                   "Une erreur est survenue",
-                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
                 );
                 captureWithPayloads(error);
               });
-          },
-        },
+          }
+        }
       });
     })
     .catch((error) => {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -94,7 +94,7 @@ function deleteAudit() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -105,7 +105,7 @@ function deleteAudit() {
 }
 
 const csvExportUrl = computed(
-  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`,
+  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
 );
 
 const csvExportFilename = computed(() => {
@@ -130,7 +130,7 @@ const csvExportFilename = computed(() => {
     <p
       class="fr-badge fr-badge--sm audit-status"
       :class="{
-        'fr-badge--purple-glycine': isInProgress,
+        'fr-badge--purple-glycine': isInProgress
       }"
     >
       <span class="sr-only">Statut </span>
@@ -162,7 +162,7 @@ const csvExportFilename = computed(() => {
               : {
                   'fr-badge--green-emeraude': audit.complianceLevel === 100,
                   'fr-badge--new': audit.complianceLevel >= 50,
-                  'fr-badge--error': audit.complianceLevel < 50,
+                  'fr-badge--error': audit.complianceLevel < 50
                 }
           "
         >
@@ -174,8 +174,8 @@ const csvExportFilename = computed(() => {
             audit.complianceLevel === 100
               ? "Totalement conforme"
               : audit.complianceLevel >= 50
-              ? "Partiellement conforme"
-              : "Non conforme"
+                ? "Partiellement conforme"
+                : "Non conforme"
           }}
         </p>
       </template>
@@ -188,7 +188,7 @@ const csvExportFilename = computed(() => {
         isInProgress
           ? {
               name: 'edit-audit-step-three',
-              params: { uniqueId: audit.editUniqueId },
+              params: { uniqueId: audit.editUniqueId }
             }
           : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
       "
@@ -210,7 +210,7 @@ const csvExportFilename = computed(() => {
         title="Options"
         :button-props="{
           class: 'fr-btn--tertiary',
-          ariaLabel: `Options de l’audit ${audit.procedureName}`,
+          ariaLabel: `Options de l’audit ${audit.procedureName}`
         }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
@@ -219,7 +219,7 @@ const csvExportFilename = computed(() => {
               <RouterLink
                 :to="{
                   name: 'edit-audit-step-three',
-                  params: { uniqueId: audit.editUniqueId },
+                  params: { uniqueId: audit.editUniqueId }
                 }"
                 :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
                   isInProgress ? 'fr-icon-edit-line' : 'fr-icon-file-line'

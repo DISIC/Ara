@@ -1,14 +1,14 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsEmail,
   IsOptional,
   IsString,
   IsUrl,
-  ValidateNested,
-} from 'class-validator';
+  ValidateNested
+} from "class-validator";
 
-import { CreateAuditDto } from './create-audit.dto';
+import { CreateAuditDto } from "./create-audit.dto";
 
 class UpdateAuditEnvironment {
   /**

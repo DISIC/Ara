@@ -90,8 +90,8 @@ const router = createRouter({
       name: "home",
       component: HomePage,
       meta: {
-        name: "Accueil",
-      },
+        name: "Accueil"
+      }
     },
     {
       path: "/plan-du-site",
@@ -101,9 +101,9 @@ const router = createRouter({
         name: "Plan du site",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Plan du site", name: "site-map" },
-        ],
-      },
+          { label: "Plan du site", name: "site-map" }
+        ]
+      }
     },
     {
       path: "/accessibilite",
@@ -113,9 +113,9 @@ const router = createRouter({
         name: "Accessibilité",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Accessibilité", name: "accessibility" },
-        ],
-      },
+          { label: "Accessibilité", name: "accessibility" }
+        ]
+      }
     },
     {
       path: "/donnees-personnelles",
@@ -125,9 +125,9 @@ const router = createRouter({
         name: "Données personnelles",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Données personnelles", name: "privacy" },
-        ],
-      },
+          { label: "Données personnelles", name: "privacy" }
+        ]
+      }
     },
     {
       path: "/mentions-legales",
@@ -137,9 +137,9 @@ const router = createRouter({
         name: "Mentions légales",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Mentions légales", name: "legal" },
-        ],
-      },
+          { label: "Mentions légales", name: "legal" }
+        ]
+      }
     },
     // Contact page
     {
@@ -150,9 +150,9 @@ const router = createRouter({
         name: "Contact",
         breadcrumbLinks: [
           { label: "Accueil", name: "home" },
-          { label: "Contactez-nous ou contribuez", name: "contact" },
-        ],
-      },
+          { label: "Contactez-nous ou contribuez", name: "contact" }
+        ]
+      }
     },
     // Account pages
     {
@@ -163,9 +163,9 @@ const router = createRouter({
         name: "Créer votre compte Ara",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Créer votre compte Ara", name: "new-account" },
-        ],
-      },
+          { label: "Créer votre compte Ara", name: "new-account" }
+        ]
+      }
     },
     {
       path: "/compte/validation",
@@ -177,10 +177,10 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: "Valider votre compte Ara",
-            name: "new-account-validation",
-          },
-        ],
-      },
+            name: "new-account-validation"
+          }
+        ]
+      }
     },
     {
       path: "/compte/email-update-validation",
@@ -192,10 +192,10 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: "Changement d'adresse e-mail",
-            name: "email-update-validation",
-          },
-        ],
-      },
+            name: "email-update-validation"
+          }
+        ]
+      }
     },
     {
       path: "/compte/connexion",
@@ -207,18 +207,18 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: "Connexion à Ara",
-            name: "login",
-          },
-        ],
-      },
+            name: "login"
+          }
+        ]
+      }
     },
     {
       path: "/compte/reinitialiser-mot-de-passe",
       name: "password-reset",
       component: ResetPasswordPage,
       meta: {
-        name: "Réinitialiser votre mot de passe",
-      },
+        name: "Réinitialiser votre mot de passe"
+      }
     },
     {
       path: "/compte",
@@ -226,8 +226,8 @@ const router = createRouter({
       component: AccountDashboardPage,
       meta: {
         name: "Mes audits",
-        authRequired: true,
-      },
+        authRequired: true
+      }
     },
     {
       path: "/compte/parametres",
@@ -238,9 +238,9 @@ const router = createRouter({
         name: "Mon compte",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Mon compte", name: "account-settings" },
-        ],
-      },
+          { label: "Mon compte", name: "account-settings" }
+        ]
+      }
     },
     {
       path: "/compte/avis-suppression-compte",
@@ -250,8 +250,8 @@ const router = createRouter({
         name: "Suppression compte",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Suppression compte", name: "account-deletion-feedback" },
-        ],
+          { label: "Suppression compte", name: "account-deletion-feedback" }
+        ]
       },
       beforeEnter() {
         // Check that a feedback token is present in the store, otherwise redirect to homepage.
@@ -259,7 +259,7 @@ const router = createRouter({
         if (!accountStore.accountDeletionFeedbackToken) {
           return { name: "home" };
         }
-      },
+      }
     },
     {
       path: "/audit-manquant",
@@ -269,9 +269,9 @@ const router = createRouter({
         name: "Je ne retrouve pas mon audit",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Je ne retrouve pas mon audit", name: "missing-audit" },
-        ],
-      },
+          { label: "Je ne retrouve pas mon audit", name: "missing-audit" }
+        ]
+      }
     },
     // Audit pages
     {
@@ -282,9 +282,9 @@ const router = createRouter({
         name: "Nouvel audit",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Nouvel audit", name: "new-audit-step-one" },
-        ],
-      },
+          { label: "Nouvel audit", name: "new-audit-step-one" }
+        ]
+      }
     },
     {
       path: "/audits/:uniqueId/informations-generales",
@@ -297,10 +297,10 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: getProcedureName(),
-            name: "edit-audit-step-one",
-          },
-        ],
-      },
+            name: "edit-audit-step-one"
+          }
+        ]
+      }
     },
     {
       path: "/audits/:uniqueId/generation",
@@ -313,14 +313,14 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: `Synthèse ${getProcedureName()}`,
-            name: "overview",
+            name: "overview"
           },
           {
             label: getProcedureName(),
-            name: "edit-audit-step-three",
-          },
-        ],
-      },
+            name: "edit-audit-step-three"
+          }
+        ]
+      }
     },
     {
       path: "/audits/:uniqueId/declaration",
@@ -333,10 +333,10 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: getProcedureName(),
-            name: "edit-audit-declaration",
-          },
-        ],
-      },
+            name: "edit-audit-declaration"
+          }
+        ]
+      }
     },
     // TODO: remove this redirect in few months?
     {
@@ -344,7 +344,7 @@ const router = createRouter({
       name: "edit-audit-step-four",
       redirect: () => {
         return { name: "overview" };
-      },
+      }
     },
     // Overview
     {
@@ -355,9 +355,9 @@ const router = createRouter({
         name: `Synthèse ${getProcedureName}`,
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: `Synthèse ${getProcedureName()}`, name: "overview" },
-        ],
-      },
+          { label: `Synthèse ${getProcedureName()}`, name: "overview" }
+        ]
+      }
     },
     // Report pages
     {
@@ -369,9 +369,9 @@ const router = createRouter({
         hideHomeLink: true,
         breadcrumbLinks: () => [
           { label: "Rapport d’audit", name: "report" },
-          { label: "Contexte", name: "context" },
-        ],
-      },
+          { label: "Contexte", name: "context" }
+        ]
+      }
     },
     {
       path: "/rapports/:uniqueId/:tab?",
@@ -379,8 +379,8 @@ const router = createRouter({
       component: ReportPage,
       meta: {
         name: "Rapport d’audit",
-        hideHomeLink: true,
-      },
+        hideHomeLink: true
+      }
     },
     // Roadmap
     {
@@ -391,9 +391,9 @@ const router = createRouter({
         name: "Feuille de route",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Feuille de route", name: "roadmap" },
-        ],
-      },
+          { label: "Feuille de route", name: "roadmap" }
+        ]
+      }
     },
     // Changelog
     {
@@ -404,9 +404,9 @@ const router = createRouter({
         name: "Notes de versions",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Notes de versions", name: "changelog" },
-        ],
-      },
+          { label: "Notes de versions", name: "changelog" }
+        ]
+      }
     },
     // Resources pages
     {
@@ -417,9 +417,9 @@ const router = createRouter({
         name: "Ressources",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Ressources", name: "resources" },
-        ],
-      },
+          { label: "Ressources", name: "resources" }
+        ]
+      }
     },
     {
       path: "/ressources/formations-accessibilite",
@@ -430,9 +430,9 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
-          { label: "Formations accessibilité", name: "accessibility-training" },
-        ],
-      },
+          { label: "Formations accessibilité", name: "accessibility-training" }
+        ]
+      }
     },
     {
       path: "/ressources/formations-accessibilite/introduction-accessibilite-numerique",
@@ -446,10 +446,10 @@ const router = createRouter({
           { label: "Formations accessibilité", name: "accessibility-training" },
           {
             label: "Introduction à l’accessibilité numérique",
-            name: "a11y-intro-training",
-          },
-        ],
-      },
+            name: "a11y-intro-training"
+          }
+        ]
+      }
     },
     {
       path: "/ressources/formations-accessibilite/numerique-public",
@@ -463,10 +463,10 @@ const router = createRouter({
           { label: "Formations accessibilité", name: "accessibility-training" },
           {
             label: "Bien faire du numérique public",
-            name: "public-digital",
-          },
-        ],
-      },
+            name: "public-digital"
+          }
+        ]
+      }
     },
     {
       path: "/ressources/outils",
@@ -477,9 +477,9 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
-          { label: "Outils", name: "tools" },
-        ],
-      },
+          { label: "Outils", name: "tools" }
+        ]
+      }
     },
     {
       path: "/ressources/glossaire",
@@ -490,9 +490,9 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
-          { label: "Glossaire", name: "glossary" },
-        ],
-      },
+          { label: "Glossaire", name: "glossary" }
+        ]
+      }
     },
     {
       path: "/ressources/realiser-audit-accessibilite",
@@ -505,10 +505,10 @@ const router = createRouter({
           { label: "Ressources", name: "resources" },
           {
             label: "Réaliser soi-même un audit accessibilité",
-            name: "make-a11y-audit",
-          },
-        ],
-      },
+            name: "make-a11y-audit"
+          }
+        ]
+      }
     },
 
     {
@@ -522,10 +522,10 @@ const router = createRouter({
           { label: "Ressources", name: "resources" },
           {
             label: "Obligations légales et sanctions",
-            name: "legal-requirements",
-          },
-        ],
-      },
+            name: "legal-requirements"
+          }
+        ]
+      }
     },
     {
       path: "/ressources/rgaa",
@@ -536,9 +536,9 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
-          { label: "RGAA", name: "rgaa" },
-        ],
-      },
+          { label: "RGAA", name: "rgaa" }
+        ]
+      }
     },
     {
       path: "/ressources/declaration-accessibilite",
@@ -551,10 +551,10 @@ const router = createRouter({
           { label: "Ressources", name: "resources" },
           {
             label: "Déclaration d’accessibilité",
-            name: "accessibility-statement",
-          },
-        ],
-      },
+            name: "accessibility-statement"
+          }
+        ]
+      }
     },
     {
       path: "/ressources/schema-pluriannuel",
@@ -565,9 +565,9 @@ const router = createRouter({
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
           { label: "Ressources", name: "resources" },
-          { label: "Schéma pluriannuel", name: "accessibility-plan" },
-        ],
-      },
+          { label: "Schéma pluriannuel", name: "accessibility-plan" }
+        ]
+      }
     },
     // Feedback page
     {
@@ -578,23 +578,23 @@ const router = createRouter({
         name: "Donner mon avis",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Donner mon avis", name: "feedback" },
-        ],
-      },
+          { label: "Donner mon avis", name: "feedback" }
+        ]
+      }
     },
     // Error pages
     {
       path: "/:pathMatch(.*)*",
       name: "Error",
-      component: ErrorPage,
-    },
+      component: ErrorPage
+    }
   ],
   history,
   scrollBehavior(to) {
     if (!to.hash) {
       return { top: 0 };
     }
-  },
+  }
 });
 
 router.beforeEach((to, from) => {
@@ -603,8 +603,8 @@ router.beforeEach((to, from) => {
       ...to,
       query: {
         ...to.query,
-        dev: from.query.dev,
-      },
+        dev: from.query.dev
+      }
     };
   }
 });

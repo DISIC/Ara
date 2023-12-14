@@ -7,13 +7,13 @@ const PageMeta = defineComponent({
     title: {
       type: String,
       required: false,
-      default: undefined,
+      default: undefined
     },
     description: {
       type: String,
       required: false,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   setup(props) {
     /**
@@ -25,12 +25,12 @@ const PageMeta = defineComponent({
       meta: [
         { name: "description", content: props.description },
         { name: "og:title", content: props.title },
-        { name: "og:description", content: props.description },
-      ],
+        { name: "og:description", content: props.description }
+      ]
     });
 
     return () => null;
-  },
+  }
 });
 
 export default PageMeta;

@@ -3,33 +3,33 @@ import {
   Get,
   GoneException,
   NotFoundException,
-  Param,
-} from '@nestjs/common';
+  Param
+} from "@nestjs/common";
 import {
   ApiGoneResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+  ApiTags
+} from "@nestjs/swagger";
 
-import { AuditReportDto } from './audit-report.dto';
-import { AuditService } from './audit.service';
-import { AuditExportService } from './audit-export.service';
+import { AuditReportDto } from "./audit-report.dto";
+import { AuditService } from "./audit.service";
+import { AuditExportService } from "./audit-export.service";
 
-@Controller('reports')
-@ApiTags('Audits')
+@Controller("reports")
+@ApiTags("Audits")
 export class ReportsController {
   constructor(
     private readonly auditService: AuditService,
-    private readonly auditExportService: AuditExportService,
+    private readonly auditExportService: AuditExportService
   ) {}
 
   /** Get final report data for a particular audit. */
-  @Get('/:consultUniqueId')
-  @ApiOkResponse({ description: 'The audit was found.', type: AuditReportDto })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async getAuditReport(@Param('consultUniqueId') consultUniqueId: string) {
+  @Get("/:consultUniqueId")
+  @ApiOkResponse({ description: "The audit was found.", type: AuditReportDto })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getAuditReport(@Param("consultUniqueId") consultUniqueId: string) {
     const report = await this.auditService.getAuditReportData(consultUniqueId);
 
     if (!report) {
@@ -40,14 +40,13 @@ export class ReportsController {
   }
 
   /** Get final report data for a particular audit. */
-  @Get('/:consultUniqueId/exports/csv')
-  @ApiOkResponse({ description: 'The audit was found.' })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async getCsvExport(@Param('consultUniqueId') consultUniqueId: string) {
-    const file = await this.auditExportService.getCsvExportWithConsultId(
-      consultUniqueId,
-    );
+  @Get("/:consultUniqueId/exports/csv")
+  @ApiOkResponse({ description: "The audit was found." })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getCsvExport(@Param("consultUniqueId") consultUniqueId: string) {
+    const file =
+      await this.auditExportService.getCsvExportWithConsultId(consultUniqueId);
 
     if (!file) {
       return this.sendAuditNotFoundStatus(consultUniqueId);
@@ -63,7 +62,7 @@ export class ReportsController {
   private async sendAuditNotFoundStatus(consultUniqueId: string) {
     if (
       await this.auditService.checkIfAuditWasDeletedWithConsultId(
-        consultUniqueId,
+        consultUniqueId
       )
     ) {
       throw new GoneException();

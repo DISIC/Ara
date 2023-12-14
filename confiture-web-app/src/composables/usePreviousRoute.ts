@@ -20,6 +20,6 @@ export function usePreviousRoute(): UsePreviousRouteResult {
 
   return {
     route,
-    url: history.state.back as string,
+    url: history.state.back as string
   };
 }

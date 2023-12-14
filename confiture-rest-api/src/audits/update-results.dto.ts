@@ -1,8 +1,8 @@
 import {
   CriterionResultStatus,
-  CriterionResultUserImpact,
-} from '@prisma/client';
-import { Type } from 'class-transformer';
+  CriterionResultUserImpact
+} from "@prisma/client";
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -17,19 +17,19 @@ import {
   registerDecorator,
   ValidateNested,
   ValidationArguments,
-  ValidationOptions,
-} from 'class-validator';
+  ValidationOptions
+} from "class-validator";
 
-import { CRITERIA } from './criteria';
+import { CRITERIA } from "./criteria";
 
 /** Validates the criterium property to make sure the criterium exists in the RGAA. */
 export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
   return function (
-    object: Pick<UpdateResultsItem, 'topic' | 'criterium'>,
-    propertyName: string,
+    object: Pick<UpdateResultsItem, "topic" | "criterium">,
+    propertyName: string
   ) {
     registerDecorator({
-      name: 'isRgaaCriterium',
+      name: "isRgaaCriterium",
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],
@@ -39,10 +39,10 @@ export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
           const { topic } = args.object as UpdateResultsItem;
           return !!CRITERIA.find(
             (criterium) =>
-              criterium.criterium === value && criterium.topic === topic,
+              criterium.criterium === value && criterium.topic === topic
           );
-        },
-      },
+        }
+      }
     });
   };
 }
@@ -71,7 +71,7 @@ class UpdateResultsItem {
   @IsPositive()
   @IsRgaaCriterium({
     message:
-      'topic and criterium numbers must be a valid RGAA criterium combination',
+      "topic and criterium numbers must be a valid RGAA criterium combination"
   })
   criterium: number;
 

@@ -20,7 +20,7 @@ const resultStore = useResultsStore();
 const resultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
-    .reduce((total, length) => (total += length), 0),
+    .reduce((total, length) => (total += length), 0)
 );
 
 const search = ref("");
@@ -64,26 +64,26 @@ async function displayFilters() {
 
 watch(
   () => filterStore.hideEvaluatedCriteria,
-  () => filterStore.updateEvaluatedCriteria(),
+  () => filterStore.updateEvaluatedCriteria()
 );
 
 const compliantCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.COMPLIANT,
-    ).length,
+      (r) => r.status === CriteriumResultStatus.COMPLIANT
+    ).length
 );
 const notCompliantCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT,
-    ).length,
+      (r) => r.status === CriteriumResultStatus.NOT_COMPLIANT
+    ).length
 );
 const notApplicableCount = computed(
   () =>
     resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE,
-    ).length,
+      (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
+    ).length
 );
 </script>
 

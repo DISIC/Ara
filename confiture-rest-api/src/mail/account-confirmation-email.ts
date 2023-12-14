@@ -1,11 +1,11 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export function subject(): string {
   return `Ara : compte créé avec succès`;
 }
 
 export function html(): string {
-  return renderMailTemplate('account-confirmation', null);
+  return renderMailTemplate("account-confirmation", null);
 }
 
 export function plain(): string {

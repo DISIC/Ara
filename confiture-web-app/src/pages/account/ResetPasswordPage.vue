@@ -80,7 +80,7 @@ async function resetPassword(newPassword: string) {
       // User is logged in
       router.push({
         name: "account-dashboard",
-        state: { passwordReset: true },
+        state: { passwordReset: true }
       });
     } else {
       router.push({ name: "login", state: { email, passwordReset: true } });

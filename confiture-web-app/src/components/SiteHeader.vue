@@ -157,15 +157,15 @@ function handleDisconnectClick() {
                       ? [
                           'overview',
                           'edit-audit-step-three',
-                          'report',
+                          'report'
                         ].includes(currentRoute.name as string)
                         ? 'true'
                         : null
                       : ['home', 'account-dashboard'].includes(
-                          currentRoute.name as string,
-                        )
-                      ? 'true'
-                      : null
+                            currentRoute.name as string
+                          )
+                        ? 'true'
+                        : null
                   "
                 >
                   {{ accountStore.account ? "Mes audits" : "Accueil" }}
@@ -187,8 +187,8 @@ function handleDisconnectClick() {
                     auditStore.lastVisitedStepLocation ?? {
                       name: 'edit-audit-step-one',
                       params: {
-                        uniqueId: auditStore.currentAudit.editUniqueId,
-                      },
+                        uniqueId: auditStore.currentAudit.editUniqueId
+                      }
                     }
                   "
                   :aria-current="
@@ -203,7 +203,7 @@ function handleDisconnectClick() {
                   class="fr-nav__link no-external-icon"
                   :to="{
                     name: 'report',
-                    params: { uniqueId: reportStore.data.consultUniqueId },
+                    params: { uniqueId: reportStore.data.consultUniqueId }
                   }"
                   target="_blank"
                   :aria-current="
@@ -236,7 +236,7 @@ function handleDisconnectClick() {
                   aria-expanded="false"
                   :aria-current="
                     ['changelog', 'roadmap'].includes(
-                      currentRoute.name as string,
+                      currentRoute.name as string
                     )
                       ? 'true'
                       : undefined

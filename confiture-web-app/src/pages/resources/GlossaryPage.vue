@@ -44,7 +44,7 @@ function getTermSlug(title: string) {
   return slugify(title, {
     lower: true,
     strict: false,
-    remove: /[(),«»]/g,
+    remove: /[(),«»]/g
   }).replace(/[/']/g, "-");
 }
 </script>

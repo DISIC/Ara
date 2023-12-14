@@ -8,7 +8,7 @@ function isCurrentPage(routeName: string): boolean {
 }
 
 const menuItems = [
-  { name: "account-settings", label: "Mon compte" },
+  { name: "account-settings", label: "Mon compte" }
   // { name: "display-settings", label: "Paramètre d’affichage" },
 ];
 </script>

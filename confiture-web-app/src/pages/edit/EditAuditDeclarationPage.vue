@@ -13,7 +13,7 @@ import {
   AssistiveTechnology,
   Browsers,
   OperatingSystem,
-  Platform,
+  Platform
 } from "../../enums";
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
@@ -82,7 +82,7 @@ const availableTools = [
   "WCAG Contrast checker",
   "Inspecteur de composants",
   "Assistant RGAA",
-  "Validateur HTML du W3C",
+  "Validateur HTML du W3C"
 ];
 
 /**
@@ -161,8 +161,8 @@ watch(
     notInScopeContent.value = audit.notInScopeContent ?? "";
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 );
 
 const notify = useNotifications();
@@ -200,21 +200,21 @@ function handleSubmit() {
 
     notCompliantContent: notCompliantContent.value,
     derogatedContent: derogatedContent.value,
-    notInScopeContent: notInScopeContent.value,
+    notInScopeContent: notInScopeContent.value
   };
   return auditStore
     .updateAudit(uniqueId, data)
     .then(() => {
       router.push({
         name: "overview",
-        params: { uniqueId },
+        params: { uniqueId }
       });
     })
     .catch((err) => {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste.",
+        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       throw err;
     });
@@ -243,7 +243,7 @@ function DEBUG_fillFields() {
       assistiveTechnology: AssistiveTechnology.NVDA,
       assistiveTechnologyVersion: "",
       browser: Browsers.FIREFOX,
-      browserVersion: "104",
+      browserVersion: "104"
     },
     {
       platform: Platform.DESKTOP,
@@ -252,8 +252,8 @@ function DEBUG_fillFields() {
       assistiveTechnology: AssistiveTechnology.VOICE_OVER,
       assistiveTechnologyVersion: "",
       browser: Browsers.SAFARI,
-      browserVersion: "15.6",
-    },
+      browserVersion: "15.6"
+    }
   ];
 
   notCompliantContent.value =

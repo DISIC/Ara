@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { compare, hash } from 'bcrypt';
-import { nanoid } from 'nanoid';
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { compare, hash } from "bcrypt";
+import { nanoid } from "nanoid";
 
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from "../prisma.service";
 import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
   NewEmailVerificationJwtPayload,
-  RequestPasswordResetJwtPayload,
-} from './jwt-payloads';
+  RequestPasswordResetJwtPayload
+} from "./jwt-payloads";
 
 export class UsernameAlreadyExistsError extends Error {
   readonly username: string;
 
   constructor(username: string) {
     super(`Username ${username} alredy exists.`);
-    this.name = 'UsernameAlreadyExistsError';
+    this.name = "UsernameAlreadyExistsError";
     this.username = username;
   }
 }
@@ -24,21 +24,21 @@ export class UsernameAlreadyExistsError extends Error {
 export class InvalidVerificationTokenError extends Error {
   constructor(reason) {
     super(reason);
-    this.name = 'InvalidVerificationTokenError';
+    this.name = "InvalidVerificationTokenError";
   }
 }
 
 export class SigninError extends Error {
   constructor(reason) {
     super(reason);
-    this.name = 'SigninError';
+    this.name = "SigninError";
   }
 }
 
 export class TokenRegenerationError extends Error {
   constructor(reason) {
     super(reason);
-    this.name = 'TokenRegenerationError';
+    this.name = "TokenRegenerationError";
   }
 }
 
@@ -46,7 +46,7 @@ export class TokenRegenerationError extends Error {
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtService,
+    private readonly jwt: JwtService
   ) {}
 
   /**
@@ -54,7 +54,7 @@ export class AuthService {
    */
   async createUnverifiedUser(
     username: string,
-    password: string,
+    password: string
   ): Promise<string> {
     const passwordHash = await this.hashPassword(password);
 
@@ -72,18 +72,18 @@ export class AuthService {
         username,
         password: passwordHash,
         isVerified: false,
-        verificationJti: nanoid(),
+        verificationJti: nanoid()
       },
       update: {
         password: passwordHash,
-        verificationJti: nanoid(),
-      },
+        verificationJti: nanoid()
+      }
     });
 
     const verificationToken = await this.generateVerificationToken(
       unverifiedUser.uid,
       username,
-      unverifiedUser.verificationJti,
+      unverifiedUser.verificationJti
     );
 
     return verificationToken;
@@ -95,30 +95,30 @@ export class AuthService {
   async regenerateVerificationToken(username: string): Promise<string> {
     const user = await this.prisma.user.findUnique({ where: { username } });
     if (!user) {
-      throw new TokenRegenerationError('User not found');
+      throw new TokenRegenerationError("User not found");
     }
 
     if (user.isVerified) {
-      throw new TokenRegenerationError('User is already verified');
+      throw new TokenRegenerationError("User is already verified");
     }
 
     const newJti = nanoid();
     await this.prisma.user.update({
       where: { username },
-      data: { verificationJti: newJti },
+      data: { verificationJti: newJti }
     });
 
     const verificationToken = await this.generateVerificationToken(
       user.uid,
       user.username,
-      newJti,
+      newJti
     );
     return verificationToken;
   }
 
   async verifyAccount(token: string) {
     const payload = (await this.jwt.verifyAsync(token).catch(() => {
-      throw new InvalidVerificationTokenError('Invalid JWT');
+      throw new InvalidVerificationTokenError("Invalid JWT");
     })) as AccountVerificationJwtPayload;
     const { sub: uid, jti } = payload;
 
@@ -127,16 +127,16 @@ export class AuthService {
       const user = await this.prisma.user.findUnique({ where: { uid } });
 
       if (!user) {
-        throw new InvalidVerificationTokenError('User not found');
+        throw new InvalidVerificationTokenError("User not found");
       }
 
       if (user.isVerified) {
-        throw new InvalidVerificationTokenError('User is already verified');
+        throw new InvalidVerificationTokenError("User is already verified");
       }
 
       if (user.verificationJti !== jti) {
         throw new InvalidVerificationTokenError(
-          'Token is not the latest generated token',
+          "Token is not the latest generated token"
         );
       }
     }
@@ -145,8 +145,8 @@ export class AuthService {
       where: { uid },
       data: {
         isVerified: true,
-        verificationJti: null,
-      },
+        verificationJti: null
+      }
     });
   }
 
@@ -157,26 +157,26 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { username } });
 
     if (!user) {
-      throw new SigninError('unknown_user');
+      throw new SigninError("unknown_user");
     }
 
     if (!user.isVerified) {
-      throw new SigninError('unknown_user');
+      throw new SigninError("unknown_user");
     }
 
     const match = await compare(password, user.password);
 
     if (!match) {
-      throw new SigninError('wrong_password');
+      throw new SigninError("wrong_password");
     }
 
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
       name: user.name,
-      org: user.orgName,
+      org: user.orgName
     };
-    const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
+    const token = await this.jwt.signAsync(payload, { expiresIn: "24h" });
 
     return token;
   }
@@ -185,18 +185,18 @@ export class AuthService {
   async refreshToken(uid: string): Promise<string> {
     const user = await this.prisma.user.findUnique({ where: { uid } });
     if (!user) {
-      throw new SigninError('unknown_user');
+      throw new SigninError("unknown_user");
     }
     if (!user.isVerified) {
-      throw new SigninError('unknown_user');
+      throw new SigninError("unknown_user");
     }
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
       name: user.name,
-      org: user.orgName,
+      org: user.orgName
     };
-    const token = await this.jwt.signAsync(payload, { expiresIn: '24h' });
+    const token = await this.jwt.signAsync(payload, { expiresIn: "24h" });
     return token;
   }
 
@@ -207,7 +207,7 @@ export class AuthService {
 
   async getEmailFromVerificationToken(token: string) {
     const payload = await this.jwt.verifyAsync(token).catch(() => {
-      throw new InvalidVerificationTokenError('Invalid JWT');
+      throw new InvalidVerificationTokenError("Invalid JWT");
     });
     const { email } = payload;
 
@@ -217,15 +217,15 @@ export class AuthService {
   private generateVerificationToken(
     uid: string,
     email: string,
-    jti: string,
+    jti: string
   ): Promise<string> {
     const payload: AccountVerificationJwtPayload = {
-      verification: 'new-account',
+      verification: "new-account",
       sub: uid,
       email,
-      jti,
+      jti
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: "24h" });
     return verificationToken;
   }
 
@@ -236,7 +236,7 @@ export class AuthService {
 
   async checkCredentialsWithUid(
     uid: string,
-    password: string,
+    password: string
   ): Promise<boolean> {
     const user = await this.prisma.user.findUnique({ where: { uid } });
     return user && user.isVerified && (await compare(password, user.password));
@@ -250,7 +250,7 @@ export class AuthService {
     const hash = await this.hashPassword(newPassword);
     await this.prisma.user.update({
       where: { username },
-      data: { password: hash },
+      data: { password: hash }
     });
   }
 
@@ -272,14 +272,14 @@ export class AuthService {
       where: { uid },
       data: {
         newEmail,
-        newEmailVerificationJti: nanoid(),
-      },
+        newEmailVerificationJti: nanoid()
+      }
     });
 
     const verificationToken = await this.generateNewEmailVerificationToken(
       user.uid,
       newEmail,
-      user.newEmailVerificationJti,
+      user.newEmailVerificationJti
     );
 
     return verificationToken;
@@ -288,42 +288,42 @@ export class AuthService {
   private generateNewEmailVerificationToken(
     uid: string,
     email: string,
-    jti: string,
+    jti: string
   ): Promise<string> {
     const payload: NewEmailVerificationJwtPayload = {
-      verification: 'update-email',
+      verification: "update-email",
       sub: uid,
       email,
-      jti,
+      jti
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: "24h" });
     return verificationToken;
   }
 
   /** Generate a new *email update* verification token and update the stored jti for given user. */
   async regenerateEmailUpdateVerificationToken(
-    uid: string,
+    uid: string
   ): Promise<{ email: string; token: string }> {
     const user = await this.prisma.user.findUnique({ where: { uid } });
     if (!user) {
-      throw new TokenRegenerationError('User not found');
+      throw new TokenRegenerationError("User not found");
     }
 
     if (!user.newEmail) {
       throw new TokenRegenerationError(
-        'User is not in the process of updating email',
+        "User is not in the process of updating email"
       );
     }
 
     const newJti = nanoid();
     await this.prisma.user.update({
       where: { uid },
-      data: { newEmailVerificationJti: newJti },
+      data: { newEmailVerificationJti: newJti }
     });
     const token = await this.generateNewEmailVerificationToken(
       user.uid,
       user.newEmail,
-      newJti,
+      newJti
     );
 
     return { token, email: user.newEmail };
@@ -332,21 +332,21 @@ export class AuthService {
   /** Cancel email update by invalidating the verification token. */
   async cancelEmailUpdate(email: string): Promise<void> {
     const user = await this.prisma.user.findUnique({
-      where: { username: email },
+      where: { username: email }
     });
     if (!user) {
-      throw new TokenRegenerationError('User not found');
+      throw new TokenRegenerationError("User not found");
     }
 
     await this.prisma.user.update({
       where: { username: email },
-      data: { newEmailVerificationJti: null },
+      data: { newEmailVerificationJti: null }
     });
   }
 
   async verifyEmailUpdate(token: string) {
     const payload = (await this.jwt.verifyAsync(token).catch(() => {
-      throw new InvalidVerificationTokenError('Invalid JWT');
+      throw new InvalidVerificationTokenError("Invalid JWT");
     })) as NewEmailVerificationJwtPayload;
     const { sub: uid, jti, email } = payload;
 
@@ -355,16 +355,16 @@ export class AuthService {
       const user = await this.prisma.user.findUnique({ where: { uid } });
 
       if (!user) {
-        throw new InvalidVerificationTokenError('User not found');
+        throw new InvalidVerificationTokenError("User not found");
       }
 
       if (!user.newEmail) {
-        throw new InvalidVerificationTokenError('No pending email update');
+        throw new InvalidVerificationTokenError("No pending email update");
       }
 
       if (user.newEmailVerificationJti !== jti) {
         throw new InvalidVerificationTokenError(
-          'Token is not the latest generated token',
+          "Token is not the latest generated token"
         );
       }
     }
@@ -374,15 +374,15 @@ export class AuthService {
       data: {
         username: email,
         newEmail: null,
-        newEmailVerificationJti: null,
-      },
+        newEmailVerificationJti: null
+      }
     });
   }
 
   async userHasEmail(uid: string, email: string) {
     try {
       await this.prisma.user.findFirstOrThrow({
-        where: { uid, username: email, newEmail: null },
+        where: { uid, username: email, newEmail: null }
       });
       return true;
     } catch {
@@ -395,19 +395,19 @@ export class AuthService {
     await this.prisma.user
       .findUniqueOrThrow({ where: { username: email } })
       .catch(() => {
-        throw new TokenRegenerationError('User not found');
+        throw new TokenRegenerationError("User not found");
       });
 
     const payload: RequestPasswordResetJwtPayload = {
-      email,
+      email
     };
-    const verificationToken = this.jwt.signAsync(payload, { expiresIn: '24h' });
+    const verificationToken = this.jwt.signAsync(payload, { expiresIn: "24h" });
     return verificationToken;
   }
 
   async resetPassword(newPassword: string, token: string) {
     const { email } = (await this.jwt.verifyAsync(token).catch(() => {
-      throw new InvalidVerificationTokenError('Invalid JWT');
+      throw new InvalidVerificationTokenError("Invalid JWT");
     })) as NewEmailVerificationJwtPayload;
 
     const hash = await this.hashPassword(newPassword);
@@ -416,14 +416,14 @@ export class AuthService {
       .update({
         where: { username: email },
         data: {
-          password: hash,
-        },
+          password: hash
+        }
       })
       .catch((err) => {
         // User not found
         // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-        if (err?.code === 'P2025') {
-          throw new InvalidVerificationTokenError('User not found');
+        if (err?.code === "P2025") {
+          throw new InvalidVerificationTokenError("User not found");
         }
         throw err;
       });

@@ -38,7 +38,7 @@ onMounted(async () => {
 
         router.push({
           name: "account-settings",
-          state: { updatedEmail: true },
+          state: { updatedEmail: true }
         });
       } else {
         showSuccess.value = true;

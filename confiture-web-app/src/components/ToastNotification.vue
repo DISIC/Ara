@@ -16,8 +16,8 @@ const store = useNotificationStore();
             `fr-alert--${store.notification.status}`,
             {
               'fr-alert--sm':
-                !store.notification.title && store.notification.description,
-            },
+                !store.notification.title && store.notification.description
+            }
           ]"
           aria-atomic="true"
           role="alert"
@@ -76,7 +76,9 @@ const store = useNotificationStore();
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease, transform 0.25s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.25s ease;
 }
 
 .v-enter-from,

@@ -1,24 +1,24 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import morgan from 'morgan';
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import type { NestExpressApplication } from "@nestjs/platform-express";
+import morgan from "morgan";
 
-import { AppModule } from './app.module';
+import { AppModule } from "./app.module";
 
 function configureSwagger(app: INestApplication) {
-  const config = new DocumentBuilder().setTitle('Ara API').build();
+  const config = new DocumentBuilder().setTitle("Ara API").build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/swagger', app, document);
+  SwaggerModule.setup("/swagger", app, document);
 }
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useBodyParser('json', { limit: '500kb' });
-  app.use(morgan(process.env.NODE_ENV !== 'production' ? 'dev' : 'common'));
+  app.useBodyParser("json", { limit: "500kb" });
+  app.use(morgan(process.env.NODE_ENV !== "production" ? "dev" : "common"));
 
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix("/api");
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   configureSwagger(app);

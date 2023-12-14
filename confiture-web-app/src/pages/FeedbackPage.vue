@@ -16,7 +16,7 @@ import { captureWithPayloads } from "../utils";
 const availableRadioAnswers = [
   { label: "Oui", slug: "yes", emoji: emojiYes },
   { label: "Moyen", slug: "medium", emoji: emojiMedium },
-  { label: "Non", slug: "no", emoji: emojiNo },
+  { label: "Non", slug: "no", emoji: emojiNo }
 ];
 
 const availableJobs = [
@@ -26,7 +26,7 @@ const availableJobs = [
   "Chef / Cheffe de produit (product owner)",
   "Auditeur / Auditrice accessibilité",
   "Référent / Référente accessibilité",
-  "Autre",
+  "Autre"
 ];
 
 const easyToUse = ref("");
@@ -54,8 +54,8 @@ function submitFeedback() {
     ...(contact.value === "yes" && {
       email: email.value,
       name: name.value,
-      occupations: occupations.value,
-    }),
+      occupations: occupations.value
+    })
   })
     .then(() => {
       showSuccess.value = true;

@@ -6,7 +6,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  ExampleImage,
+  ExampleImage
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -62,7 +62,7 @@ export const useResultsStore = defineStore("results", {
       data: null,
       previousStatuses: {},
       currentRequestCount: 0,
-      lastRequestSuccessEnd: null,
+      lastRequestSuccessEnd: null
     };
   },
 
@@ -162,7 +162,7 @@ export const useResultsStore = defineStore("results", {
       ).length;
 
       return testedCriteria / total;
-    },
+    }
   },
 
   actions: {
@@ -260,8 +260,8 @@ export const useResultsStore = defineStore("results", {
             ...filterStore.newEvaluatedCriteria,
             ...updates.map((u) => {
               return `${u.pageId}.${u.topic}.${u.criterium}`;
-            }),
-          ]),
+            })
+          ])
         ];
       }
 
@@ -280,8 +280,8 @@ export const useResultsStore = defineStore("results", {
       await ky
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
-            data: updates,
-          },
+            data: updates
+          }
         })
         .catch((err) => {
           rollbackResults();
@@ -320,7 +320,7 @@ export const useResultsStore = defineStore("results", {
 
       const updates = results.map((r) => ({
         ...r,
-        status,
+        status
       }));
 
       await this.updateResults(uniqueId, updates);
@@ -344,7 +344,7 @@ export const useResultsStore = defineStore("results", {
         ).map(([criterium, status]) => {
           return {
             ...this.getCriteriumResult(pageId, topicNumber, Number(criterium))!,
-            status,
+            status
           };
         });
         await this.updateResults(uniqueId, updates);
@@ -377,7 +377,7 @@ export const useResultsStore = defineStore("results", {
 
       const exampleImage = (await ky
         .post(`/api/audits/${uniqueId}/results/examples`, {
-          body: formData,
+          body: formData
         })
         .json()
         .finally(() => {
@@ -446,18 +446,18 @@ export const useResultsStore = defineStore("results", {
           status: sample([
             CriteriumResultStatus.COMPLIANT,
             CriteriumResultStatus.NOT_COMPLIANT,
-            CriteriumResultStatus.NOT_APPLICABLE,
+            CriteriumResultStatus.NOT_APPLICABLE
           ])!,
           compliantComment: sample(["Commentaire conforme", "Rien"])!,
           errorDescription: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
           recommandation: sample(["Recommandation", "Rien"])!,
-          userImpact: sample(CriterionResultUserImpact)!,
+          userImpact: sample(CriterionResultUserImpact)!
           /* eslint-enable @typescript-eslint/no-non-null-assertion */
         })) ?? [];
 
       await this.updateResults(uniqueId, updates);
       await auditStore.publishAudit(uniqueId);
-    },
-  },
+    }
+  }
 });

@@ -90,7 +90,7 @@ defineExpose({ buttonRef, closeOptions });
         :id="`dropdown-${uniqueId}`"
         :class="[
           'fr-p-2w dropdown-content',
-          { 'dropdown-content-left': alignLeft },
+          { 'dropdown-content-left': alignLeft }
         ]"
         role="menu"
       >
@@ -140,7 +140,9 @@ defineExpose({ buttonRef, closeOptions });
 /* Transition */
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .v-enter-from,

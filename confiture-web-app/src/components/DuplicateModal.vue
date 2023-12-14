@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 defineExpose({
   show: () => modal.value?.show(),
-  hide: () => modal.value?.hide(),
+  hide: () => modal.value?.hide()
 });
 
 const duplicateAuditNameRef = ref<HTMLInputElement>();

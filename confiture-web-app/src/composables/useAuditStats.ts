@@ -4,7 +4,7 @@ import { countBy, uniqWith } from "lodash-es";
 import {
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  CriteriumResult,
+  CriteriumResult
 } from "../types";
 import { useResultsStore } from "../store";
 
@@ -123,6 +123,6 @@ export function useAuditStats() {
     notCompliantCriteriaCount,
     blockingCriteriaCount,
     complianceLevel,
-    errorsCount,
+    errorsCount
   };
 }

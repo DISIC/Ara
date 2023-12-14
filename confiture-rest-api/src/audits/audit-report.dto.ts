@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   AuditType,
   CriterionResultStatus,
-  CriterionResultUserImpact,
-} from '@prisma/client';
+  CriterionResultUserImpact
+} from "@prisma/client";
 
 export class AuditReportDto {
   /** Unique ID used to construct the report URL. */

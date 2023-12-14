@@ -18,24 +18,23 @@
         </li>
       </ul>
     </li>
-    <li>
-      de la difficulté de correction des erreurs.
-    </li>
+    <li>de la difficulté de correction des erreurs.</li>
   </ul>
   <p>Nous recommandons de prioriser les corrections de la manière suivante :</p>
   <ol class="fr-mb-0">
     <li>
       les erreurs facilement corrigeables avec un impact bloquant et majeur pour
-      l’usager ;
+      l’usager&nbsp;;
     </li>
     <li>
-      les erreurs plus complexes à corriger avec un impact bloquant et majeur pour
-      l’usager ;
+      les erreurs plus complexes à corriger avec un impact bloquant et majeur
+      pour l’usager&nbsp;;
     </li>
     <li>
-      les erreurs facilement corrigeables avec un impact mineur pour l’usager ;
+      les erreurs facilement corrigeables avec un impact mineur pour
+      l’usager&nbsp;;
     </li>
-     <li>
+    <li>
       les erreurs plus complexes à corriger avec un impact mineur pour l’usager.
     </li>
   </ol>
