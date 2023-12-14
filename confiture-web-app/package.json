@@ -9,7 +9,8 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "eslint '{src,scripts}/**/*.{ts,vue}'",
-    "generate:rgaa": "node scripts/build-rgaa-files.js"
+    "generate:rgaa": "node scripts/build-rgaa-files.js",
+    "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
   "dependencies": {
     "@gouvfr/dsfr": "1.10.2",
