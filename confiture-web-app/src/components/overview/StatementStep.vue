@@ -69,7 +69,7 @@ const auditIsPublishable = computed(() => {
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-line': auditIsPublishable,
+            'fr-icon-eye-fill': auditIsPublishable,
           }"
           :title="
             auditIsPublishable
@@ -110,7 +110,7 @@ const auditIsPublishable = computed(() => {
         }"
         label="Lien de partage"
         title="Lien de partage de la déclaration d’accessibilité"
-        success-message="Lien de partage copié avec succès dans le presse-papier."
+        success-message="Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier."
       />
     </template>
   </StepCard>

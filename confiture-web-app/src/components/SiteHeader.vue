@@ -153,9 +153,17 @@ function handleDisconnectClick() {
                       : { name: 'home' }
                   "
                   :aria-current="
-                    ['home', 'account-dashboard'].includes(
-                      currentRoute.name as string,
-                    )
+                    accountStore.account
+                      ? [
+                          'overview',
+                          'edit-audit-step-three',
+                          'report',
+                        ].includes(currentRoute.name as string)
+                        ? 'true'
+                        : null
+                      : ['home', 'account-dashboard'].includes(
+                          currentRoute.name as string,
+                        )
                       ? 'true'
                       : null
                   "
