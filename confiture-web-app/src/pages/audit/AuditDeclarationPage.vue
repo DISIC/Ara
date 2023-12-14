@@ -206,7 +206,7 @@ function handleSubmit() {
     .updateAudit(uniqueId, data)
     .then(() => {
       router.push({
-        name: "overview",
+        name: "audit-overview",
         params: { uniqueId }
       });
     })
@@ -275,7 +275,7 @@ const isDevMode = useDevMode();
 
   <BackLink
     label="Retourner à la synthèse"
-    :to="{ name: 'overview', params: { uniqueId } }"
+    :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
   <form v-if="auditStore.currentAudit" @submit.prevent="handleSubmit">

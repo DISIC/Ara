@@ -120,7 +120,7 @@ const csvExportFilename = computed(() => {
   <div class="fr-py-2w grid">
     <!-- Name -->
     <RouterLink
-      :to="{ name: 'overview', params: { uniqueId: audit.editUniqueId } }"
+      :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
       class="fr-pl-2w audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
@@ -187,7 +187,7 @@ const csvExportFilename = computed(() => {
       :to="
         isInProgress
           ? {
-              name: 'edit-audit-step-three',
+              name: 'audit-generation',
               params: { uniqueId: audit.editUniqueId }
             }
           : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
@@ -218,7 +218,7 @@ const csvExportFilename = computed(() => {
             <li class="dropdown-item">
               <RouterLink
                 :to="{
-                  name: 'edit-audit-step-three',
+                  name: 'audit-generation',
                   params: { uniqueId: audit.editUniqueId }
                 }"
                 :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${

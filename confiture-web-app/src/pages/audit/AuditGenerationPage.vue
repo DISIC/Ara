@@ -241,7 +241,7 @@ const accountStore = useAccountStore();
         accountStore.account &&
         previousRoute.route?.name === 'account-dashboard'
           ? { name: 'account-dashboard' }
-          : { name: 'overview', params: { uniqueId } }
+          : { name: 'audit-overview', params: { uniqueId } }
       "
     />
 

@@ -132,10 +132,10 @@ const previousRoute = usePreviousRoute();
       :to="{ name: 'account-dashboard' }"
     />
     <BackLink
-      v-if="previousRoute.route?.name === 'edit-audit-step-three'"
+      v-if="previousRoute.route?.name === 'audit-generation'"
       label="Retourner à mon audit"
       :to="{
-        name: 'edit-audit-step-three',
+        name: 'audit-generation',
         params: { uniqueId: route.params.uniqueId }
       }"
     />
@@ -269,7 +269,7 @@ const previousRoute = usePreviousRoute();
         </button>
 
         <button
-          v-if="route.name !== 'new-audit-step-one'"
+          v-if="route.name !== 'create-audit'"
           class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
           type="button"
           @click="$router.back()"

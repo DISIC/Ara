@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import PageMeta from "../components/PageMeta";
-import BackLink from "../components/BackLink.vue";
-import AuditStep from "../components/overview/AuditStep.vue";
-import ReportStep from "../components/overview/ReportStep.vue";
-import StatementStep from "../components/overview/StatementStep.vue";
-import { useWrappedFetch } from "../composables/useWrappedFetch";
-import { useAuditStore, useResultsStore, useAccountStore } from "../store";
-import { AuditType } from "../types";
+import BackLink from "../../components/BackLink.vue";
+import PageMeta from "../../components/PageMeta";
+import AuditStep from "../../components/overview/AuditStep.vue";
+import ReportStep from "../../components/overview/ReportStep.vue";
+import StatementStep from "../../components/overview/StatementStep.vue";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
+import { AuditType } from "../../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);

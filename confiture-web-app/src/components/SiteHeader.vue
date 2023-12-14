@@ -155,8 +155,8 @@ function handleDisconnectClick() {
                   :aria-current="
                     accountStore.account
                       ? [
-                          'overview',
-                          'edit-audit-step-three',
+                          'audit-overview',
+                          'audit-generation',
                           'report'
                         ].includes(currentRoute.name as string)
                         ? 'true'
@@ -185,7 +185,7 @@ function handleDisconnectClick() {
                   class="fr-nav__link"
                   :to="
                     auditStore.lastVisitedStepLocation ?? {
-                      name: 'edit-audit-step-one',
+                      name: 'audit-settings',
                       params: {
                         uniqueId: auditStore.currentAudit.editUniqueId
                       }

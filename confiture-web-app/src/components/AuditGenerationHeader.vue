@@ -71,7 +71,7 @@ function confirmDuplicate(name: string) {
       duplicateModal.value?.hide();
 
       router.push({
-        name: "overview",
+        name: "audit-overview",
         params: {
           uniqueId: newAuditId
         },
@@ -250,7 +250,7 @@ onMounted(() => {
 
     <div class="fr-col-12 fr-col-md-9 sub-header">
       <SaveIndicator
-        v-if="route.name === 'edit-audit-step-three'"
+        v-if="route.name === 'audit-generation'"
         class="fr-ml-2w"
       />
       <ul class="top-actions fr-my-0 fr-p-0" role="list">
@@ -258,7 +258,7 @@ onMounted(() => {
           <RouterLink
             class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
             :to="{
-              name: 'edit-audit-step-one',
+              name: 'audit-settings',
               params: { uniqueId: editUniqueId }
             }"
           >
@@ -271,14 +271,14 @@ onMounted(() => {
             ref="optionsDropdownRef"
             title="Actions"
             :disabled="isOffline"
-            :align-left="route.name === 'edit-audit-step-three'"
+            :align-left="route.name === 'audit-generation'"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
               <template v-if="!!auditPublicationDate">
                 <li class="dropdown-item">
                   <RouterLink
                     :to="{
-                      name: 'edit-audit-step-three',
+                      name: 'audit-generation',
                       params: { uniqueId: editUniqueId }
                     }"
                     class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"

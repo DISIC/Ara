@@ -32,7 +32,7 @@ function submitStepOne(data: CreateAuditRequestData) {
       );
 
       router.push({
-        name: "overview",
+        name: "audit-overview",
         params: { uniqueId: auditUniqueId }
       });
     })

@@ -156,7 +156,7 @@ const auditIsInProgress = computed(() => {
       <li>
         <RouterLink
           :to="{
-            name: 'edit-audit-step-three',
+            name: 'audit-generation',
             params: { uniqueId: uniqueId }
           }"
           class="fr-btn fr-btn--icon-left fr-mb-0"

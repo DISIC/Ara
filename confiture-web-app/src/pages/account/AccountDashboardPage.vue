@@ -87,7 +87,7 @@ onMounted(() => {
   <!-- Header -->
   <div class="fr-mb-6w header">
     <h1 ref="mainHeadingRef" tabindex="-1" class="fr-mb-0">Mes audits</h1>
-    <RouterLink :to="{ name: 'new-audit-step-one' }" class="fr-btn">
+    <RouterLink :to="{ name: 'create-audit' }" class="fr-btn">
       Démarrer un nouvel audit
     </RouterLink>
   </div>

@@ -81,7 +81,7 @@ async function submitStepOne(data: CreateAuditRequestData) {
       }
       // TODO: replace current history entry with the edit page
       return router.push({
-        name: "overview",
+        name: "audit-overview",
         params: { uniqueId: audit.editUniqueId }
       });
     })

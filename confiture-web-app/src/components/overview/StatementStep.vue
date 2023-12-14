@@ -58,7 +58,7 @@ const auditIsPublishable = computed(() => {
                   }
                 }
               : {
-                  name: 'edit-audit-declaration',
+                  name: 'audit-declaration',
                   params: { uniqueId: audit.editUniqueId }
                 }
           "
@@ -88,7 +88,7 @@ const auditIsPublishable = computed(() => {
       <li v-if="auditIsPublishable">
         <RouterLink
           :to="{
-            name: 'edit-audit-declaration',
+            name: 'audit-declaration',
             params: { uniqueId: audit.editUniqueId }
           }"
           class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-md-0"
