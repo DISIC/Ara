@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import ky from "ky";
 
-import { createFeedback } from "../api";
 import { useNotifications } from "../composables/useNotifications";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
@@ -46,16 +46,18 @@ const notify = useNotifications();
  * Submit form and display success notice
  */
 function submitFeedback() {
-  createFeedback({
-    easyToUse: easyToUse.value,
-    easyToUnderstand: easyToUnderstand.value,
-    feedback: feedback.value,
-    suggestions: suggestions.value,
-    ...(contact.value === "yes" && {
-      email: email.value,
-      name: name.value,
-      occupations: occupations.value
-    })
+  ky.post("/api/feedback", {
+    json: {
+      easyToUse: easyToUse.value,
+      easyToUnderstand: easyToUnderstand.value,
+      feedback: feedback.value,
+      suggestions: suggestions.value,
+      ...(contact.value === "yes" && {
+        email: email.value,
+        name: name.value,
+        occupations: occupations.value
+      })
+    }
   })
     .then(() => {
       showSuccess.value = true;
