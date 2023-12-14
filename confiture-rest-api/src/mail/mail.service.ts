@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Audit, EmailStatus, EmailType } from '@prisma/client';
-import { createTransport, getTestMessageUrl, Transporter } from 'nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Audit, EmailStatus, EmailType } from "@prisma/client";
+import { createTransport, getTestMessageUrl, Transporter } from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-import { PrismaService } from '../prisma.service';
-import * as auditCreationEmail from './audit-creation-email';
-import * as accountVerificationEmail from './account-verification-email';
-import * as accountConfirmationEmail from './account-confirmation-email';
-import * as passwordUpdateConfirmationEmail from './password-update-confirmation-email';
-import * as updateEmailVerificationEmail from './update-email-verification-email';
-import * as updateEmailConfirmationEmail from './update-email-confirmation-email';
-import * as requestPasswordResetEmail from './request-password-reset-email';
-import { EmailConfig } from './email-config.interface';
-import  { AuditCreationEmailData } from './audit-creation-email'
+import { PrismaService } from "../prisma.service";
+import * as auditCreationEmail from "./audit-creation-email";
+import * as accountVerificationEmail from "./account-verification-email";
+import * as accountConfirmationEmail from "./account-confirmation-email";
+import * as passwordUpdateConfirmationEmail from "./password-update-confirmation-email";
+import * as updateEmailVerificationEmail from "./update-email-verification-email";
+import * as updateEmailConfirmationEmail from "./update-email-confirmation-email";
+import * as requestPasswordResetEmail from "./request-password-reset-email";
+import { EmailConfig } from "./email-config.interface";
+import { AuditCreationEmailData } from "./audit-creation-email";
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,
@@ -22,7 +22,7 @@ const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
   [EmailType.EMAIL_UPDATE_VERIFICATION]: updateEmailVerificationEmail,
   [EmailType.EMAIL_UPDATE_CONFIRMATION]: updateEmailConfirmationEmail,
-  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail,
+  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail
 };
 
 @Injectable()
@@ -31,23 +31,23 @@ export class MailService {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {
     this.transporter = createTransport({
-      host: config.get('MAILER_SMTP_HOST'),
-      port: config.get('MAILER_SMTP_PORT'),
-      secure: config.get<boolean>('MAILER_SMTP_SECURE'),
+      host: config.get("MAILER_SMTP_HOST"),
+      port: config.get("MAILER_SMTP_PORT"),
+      secure: config.get<boolean>("MAILER_SMTP_SECURE"),
       auth: {
-        user: config.get('MAILER_USER'),
-        pass: config.get('MAILER_PASSWORD'),
-      },
+        user: config.get("MAILER_USER"),
+        pass: config.get("MAILER_PASSWORD")
+      }
     });
   }
 
   private async sendMail(
     to: string,
     type: EmailType,
-    data: Record<string, any>,
+    data: Record<string, any>
   ) {
     let emailStatus: EmailStatus = EmailStatus.SUCCESS;
 
@@ -57,17 +57,17 @@ export class MailService {
 
     await this.transporter
       .sendMail({
-        from: this.config.get('MAILER_USER'),
+        from: this.config.get("MAILER_USER"),
         to,
         subject,
         text,
-        html,
+        html
       })
       .then((info) => {
         console.log(getTestMessageUrl(info));
       })
       .catch((err) => {
-        console.error('Failed to send email', err);
+        console.error("Failed to send email", err);
         emailStatus = EmailStatus.FAILURE;
       });
 
@@ -76,17 +76,17 @@ export class MailService {
       data: {
         status: emailStatus,
         to,
-        type: EmailType.AUDIT_CREATION,
-      },
+        type: EmailType.AUDIT_CREATION
+      }
     });
   }
 
   sendAuditCreatedMail(audit: Audit) {
-    const overviewUrl = `${this.config.get('FRONT_BASE_URL')}/audits/${
+    const overviewUrl = `${this.config.get("FRONT_BASE_URL")}/audits/${
       audit.editUniqueId
     }/synthese`;
 
-    const reportUrl = `${this.config.get('FRONT_BASE_URL')}/rapports/${
+    const reportUrl = `${this.config.get("FRONT_BASE_URL")}/rapports/${
       audit.consultUniqueId
     }`;
 
@@ -100,14 +100,14 @@ export class MailService {
   }
 
   sendAccountVerificationEmail(username: string, token: string) {
-    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
 
     const verificationLink = `${baseUrl}/compte/validation?token=${encodeURIComponent(
-      token,
+      token
     )}`;
 
     return this.sendMail(username, EmailType.ACCOUNT_VERIFICATION, {
-      verificationLink,
+      verificationLink
     });
   }
 
@@ -120,32 +120,32 @@ export class MailService {
   }
 
   sendNewEmailVerificationEmail(email: string, token: string) {
-    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
 
     const verificationLink = `${baseUrl}/compte/email-update-validation?token=${encodeURIComponent(
-      token,
+      token
     )}`;
 
     return this.sendMail(email, EmailType.EMAIL_UPDATE_VERIFICATION, {
-      verificationLink,
+      verificationLink
     });
   }
 
   sendEmailUpdateConfirmationEmail(email: string) {
     return this.sendMail(email, EmailType.EMAIL_UPDATE_CONFIRMATION, {
-      newEmail: email,
+      newEmail: email
     });
   }
 
   sendPasswordResetEmail(email: string, token: string) {
-    const baseUrl = this.config.get<string>('FRONT_BASE_URL');
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
 
     const verificationLink = `${baseUrl}/compte/reinitialiser-mot-de-passe?token=${encodeURIComponent(
-      token,
+      token
     )}`;
 
     return this.sendMail(email, EmailType.PASSWORD_RESET_REQUEST, {
-      verificationLink,
+      verificationLink
     });
   }
 }

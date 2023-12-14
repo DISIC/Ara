@@ -14,50 +14,52 @@ import {
   Post,
   Put,
   UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+  UseInterceptors
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiCreatedResponse,
   ApiGoneResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+  ApiTags
+} from "@nestjs/swagger";
 
-import { Audit } from 'src/generated/nestjs-dto/audit.entity';
-import { CriterionResult } from 'src/generated/nestjs-dto/criterionResult.entity';
-import { MailService } from '../mail/mail.service';
-import { AuditExportService } from './audit-export.service';
-import { AuditService } from './audit.service';
-import { CreateAuditDto } from './create-audit.dto';
-import { DuplicateAuditDto } from './duplicate-audit.dto';
-import { UpdateAuditDto } from './update-audit.dto';
-import { PatchAuditDto } from './patch-audit.dto';
-import { UpdateResultsDto } from './update-results.dto';
-import { UploadImageDto } from './upload-image.dto';
-import { AuthRequired } from 'src/auth/auth-required.decorator';
-import { User } from 'src/auth/user.decorator';
-import { AuthenticationJwtPayload } from 'src/auth/jwt-payloads';
+import { Audit } from "src/generated/nestjs-dto/audit.entity";
+import { CriterionResult } from "src/generated/nestjs-dto/criterionResult.entity";
+import { MailService } from "../mail/mail.service";
+import { AuditExportService } from "./audit-export.service";
+import { AuditService } from "./audit.service";
+import { CreateAuditDto } from "./create-audit.dto";
+import { DuplicateAuditDto } from "./duplicate-audit.dto";
+import { UpdateAuditDto } from "./update-audit.dto";
+import { PatchAuditDto } from "./patch-audit.dto";
+import { UpdateResultsDto } from "./update-results.dto";
+import { UploadImageDto } from "./upload-image.dto";
+import { AuthRequired } from "src/auth/auth-required.decorator";
+import { User } from "src/auth/user.decorator";
+import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 
-@Controller('audits')
-@ApiTags('Audits')
+@Controller("audits")
+@ApiTags("Audits")
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
     private readonly mailer: MailService,
-    private readonly auditExportService: AuditExportService,
+    private readonly auditExportService: AuditExportService
   ) {}
 
   /** Save a new audit into the database. */
   @Post()
   @ApiCreatedResponse({
-    description: 'The audit has been successfully created.',
-    type: Audit,
+    description: "The audit has been successfully created.",
+    type: Audit
   })
-  async createAudit(@Body() body: CreateAuditDto, @User() user: AuthenticationJwtPayload) {
+  async createAudit(
+    @Body() body: CreateAuditDto,
+    @User() user: AuthenticationJwtPayload
+  ) {
     const audit = await this.auditService.createAudit(body);
-
 
     if (!user) {
       this.mailer.sendAuditCreatedMail(audit).catch((err) => {
@@ -79,11 +81,11 @@ export class AuditsController {
   }
 
   /** Retrieve an audit from the database. */
-  @Get('/:uniqueId')
-  @ApiOkResponse({ description: 'The audit was found.', type: Audit })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async getAudit(@Param('uniqueId') uniqueId: string) {
+  @Get("/:uniqueId")
+  @ApiOkResponse({ description: "The audit was found.", type: Audit })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getAudit(@Param("uniqueId") uniqueId: string) {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
@@ -94,16 +96,16 @@ export class AuditsController {
   }
 
   /** Update an audit data in the database. */
-  @Put('/:uniqueId')
+  @Put("/:uniqueId")
   @ApiOkResponse({
-    description: 'The audit has been successfully updated',
-    type: Audit,
+    description: "The audit has been successfully updated",
+    type: Audit
   })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async updateAudit(
-    @Param('uniqueId') uniqueId: string,
-    @Body() body: UpdateAuditDto,
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: UpdateAuditDto
   ) {
     const audit = await this.auditService.updateAudit(uniqueId, body);
 
@@ -115,15 +117,15 @@ export class AuditsController {
   }
 
   /** Update specific fields of an audit in the database. */
-  @Patch('/:uniqueId')
+  @Patch("/:uniqueId")
   @ApiOkResponse({
-    description: 'The audit has been successfully patched',
+    description: "The audit has been successfully patched"
   })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async patchAudit(
-    @Param('uniqueId') uniqueId: string,
-    @Body() body: PatchAuditDto,
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: PatchAuditDto
   ) {
     const audit = await this.auditService.patchAudit(uniqueId, body);
 
@@ -132,24 +134,24 @@ export class AuditsController {
     }
   }
 
-  @Post('/:uniqueId/results/examples')
-  @UseInterceptors(FileInterceptor('image'))
+  @Post("/:uniqueId/results/examples")
+  @UseInterceptors(FileInterceptor("image"))
   async uploadExampleImage(
-    @Param('uniqueId') uniqueId: string,
+    @Param("uniqueId") uniqueId: string,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: 'image',
+          fileType: "image"
         })
         .addMaxSizeValidator({
-          maxSize: 2000000,
+          maxSize: 2000000
         })
         .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+        })
     )
     file: Express.Multer.File,
-    @Body() body: UploadImageDto,
+    @Body() body: UploadImageDto
   ) {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
@@ -162,18 +164,18 @@ export class AuditsController {
       body.pageId,
       body.topic,
       body.criterium,
-      file,
+      file
     );
   }
 
-  @Delete('/:uniqueId/results/examples/:exampleId')
+  @Delete("/:uniqueId/results/examples/:exampleId")
   async deleteExampleImage(
-    @Param('uniqueId') uniqueId: string,
-    @Param('exampleId', new ParseIntPipe()) exampleId: number,
+    @Param("uniqueId") uniqueId: string,
+    @Param("exampleId", new ParseIntPipe()) exampleId: number
   ) {
     const deleted = await this.auditService.deleteExampleImage(
       uniqueId,
-      Number(exampleId),
+      Number(exampleId)
     );
 
     if (!deleted) {
@@ -182,14 +184,13 @@ export class AuditsController {
   }
 
   /** Retrieve the results of an audit (compliance data) from the database. */
-  @Get('/:uniqueId/results')
+  @Get("/:uniqueId/results")
   @ApiOkResponse({ type: [CriterionResult] })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async getAuditResults(@Param('uniqueId') uniqueId: string) {
-    const results = await this.auditService.getResultsWithEditUniqueId(
-      uniqueId,
-    );
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getAuditResults(@Param("uniqueId") uniqueId: string) {
+    const results =
+      await this.auditService.getResultsWithEditUniqueId(uniqueId);
 
     if (!results) {
       return this.sendAuditNotFoundStatus(uniqueId);
@@ -199,15 +200,15 @@ export class AuditsController {
   }
 
   /** Update the compliance data of an audit. */
-  @Patch('/:uniqueId/results')
+  @Patch("/:uniqueId/results")
   @ApiOkResponse({
-    description: 'The audit results have been successfully updated.',
+    description: "The audit results have been successfully updated."
   })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async updateAuditResults(
-    @Param('uniqueId') uniqueId: string,
-    @Body() body: UpdateResultsDto,
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: UpdateResultsDto
   ) {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
@@ -219,15 +220,15 @@ export class AuditsController {
   }
 
   /** Flag an audit as "published", completed. */
-  @Put('/:uniqueId/publish')
+  @Put("/:uniqueId/publish")
   @ApiOkResponse({ type: Audit })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async publishAudit(@Param('uniqueId') uniqueId: string) {
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async publishAudit(@Param("uniqueId") uniqueId: string) {
     const auditIsComplete = await this.auditService.isAuditComplete(uniqueId);
     if (!auditIsComplete) {
       throw new ConflictException(
-        'Cannot publish audit if it is not complete.',
+        "Cannot publish audit if it is not complete."
       );
     }
 
@@ -241,11 +242,11 @@ export class AuditsController {
   }
 
   /** Delete an audit from the database. */
-  @Delete('/:uniqueId')
-  @ApiOkResponse({ description: 'The audit has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async deleteAudit(@Param('uniqueId') uniqueId: string) {
+  @Delete("/:uniqueId")
+  @ApiOkResponse({ description: "The audit has been successfully deleted." })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async deleteAudit(@Param("uniqueId") uniqueId: string) {
     const deleted = await this.auditService.deleteAudit(uniqueId);
 
     if (!deleted) {
@@ -259,19 +260,19 @@ export class AuditsController {
    * - the RGAA results (status, comment, user impact)
    *   - the example images
    */
-  @Post('/:uniqueId/duplicate')
+  @Post("/:uniqueId/duplicate")
   @ApiCreatedResponse({
-    description: 'The audit has been successfully duplicated.',
+    description: "The audit has been successfully duplicated."
   })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async duplicateAudit(
-    @Param('uniqueId') uniqueId: string,
-    @Body() body: DuplicateAuditDto,
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: DuplicateAuditDto
   ) {
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
-      body.procedureName,
+      body.procedureName
     );
 
     if (!newAudit) {
@@ -286,13 +287,13 @@ export class AuditsController {
     return newAudit;
   }
 
-  @Get('/:uniqueId/exports/csv')
+  @Get("/:uniqueId/exports/csv")
   @ApiOkResponse({
-    description: 'An export of the audit results using the CSV format.',
+    description: "An export of the audit results using the CSV format."
   })
-  @ApiNotFoundResponse({ description: 'The audit does not exist.' })
-  @ApiGoneResponse({ description: 'The audit has been previously deleted.' })
-  async getCsvExport(@Param('uniqueId') uniqueId: string) {
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getCsvExport(@Param("uniqueId") uniqueId: string) {
     const file = await this.auditExportService.getCsvExport(uniqueId);
 
     if (!file) {

@@ -13,7 +13,7 @@ export interface AuthenticationJwtPayload {
 }
 
 export interface AccountVerificationJwtPayload {
-  verification: 'new-account';
+  verification: "new-account";
 
   /** User uid */
   sub: string;
@@ -32,7 +32,7 @@ export interface AccountVerificationJwtPayload {
 }
 
 export interface NewEmailVerificationJwtPayload {
-  verification: 'update-email';
+  verification: "update-email";
 
   /** User uid */
   sub: string;

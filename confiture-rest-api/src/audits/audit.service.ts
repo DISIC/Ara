@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   Audit,
   AuditedPage,
@@ -7,21 +7,21 @@ import {
   CriterionResultUserImpact,
   Prisma,
   StoredFile,
-  TestEnvironment,
-} from '@prisma/client';
-import { nanoid } from 'nanoid';
-import sharp from 'sharp';
-import { omit, pick, setWith } from 'lodash';
+  TestEnvironment
+} from "@prisma/client";
+import { nanoid } from "nanoid";
+import sharp from "sharp";
+import { omit, pick, setWith } from "lodash";
 
-import { PrismaService } from '../prisma.service';
-import * as RGAA from '../rgaa.json';
-import { AuditReportDto } from './audit-report.dto';
-import { CreateAuditDto } from './create-audit.dto';
-import { CRITERIA_BY_AUDIT_TYPE } from './criteria';
-import { FileStorageService } from './file-storage.service';
-import { UpdateAuditDto } from './update-audit.dto';
-import { UpdateResultsDto } from './update-results.dto';
-import { PatchAuditDto } from './patch-audit.dto';
+import { PrismaService } from "../prisma.service";
+import * as RGAA from "../rgaa.json";
+import { AuditReportDto } from "./audit-report.dto";
+import { CreateAuditDto } from "./create-audit.dto";
+import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
+import { FileStorageService } from "./file-storage.service";
+import { UpdateAuditDto } from "./update-audit.dto";
+import { UpdateResultsDto } from "./update-results.dto";
+import { PatchAuditDto } from "./patch-audit.dto";
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,
@@ -29,16 +29,16 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   pages: true,
   sourceAudit: {
     select: {
-      procedureName: true,
-    },
-  },
+      procedureName: true
+    }
+  }
 };
 
 @Injectable()
 export class AuditService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly fileStorageService: FileStorageService,
+    private readonly fileStorageService: FileStorageService
   ) {}
 
   createAudit(data: CreateAuditDto) {
@@ -61,18 +61,18 @@ export class AuditService {
 
         pages: {
           createMany: {
-            data: data.pages,
-          },
+            data: data.pages
+          }
         },
 
         auditTrace: {
           create: {
             auditConsultUniqueId: consultUniqueId,
-            auditEditUniqueId: editUniqueId,
-          },
-        },
+            auditEditUniqueId: editUniqueId
+          }
+        }
       },
-      include: AUDIT_EDIT_INCLUDE,
+      include: AUDIT_EDIT_INCLUDE
     });
   }
 
@@ -91,10 +91,10 @@ export class AuditService {
         pages: true,
         sourceAudit: {
           select: {
-            procedureName: true,
-          },
-        },
-      },
+            procedureName: true
+          }
+        }
+      }
     });
   }
 
@@ -107,42 +107,42 @@ export class AuditService {
         pages: true,
         sourceAudit: {
           select: {
-            procedureName: true,
-          },
-        },
-      },
+            procedureName: true
+          }
+        }
+      }
     });
   }
 
   async getResultsWithEditUniqueId(
-    uniqueId: string,
+    uniqueId: string
   ): Promise<
     Omit<
       CriterionResult & { exampleImages: StoredFile[] },
-      'id' | 'auditUniqueId'
+      "id" | "auditUniqueId"
     >[]
   > {
     const [audit, pages, existingResults] = await Promise.all([
       this.prisma.audit.findUnique({
         where: {
-          editUniqueId: uniqueId,
-        },
+          editUniqueId: uniqueId
+        }
       }),
       this.prisma.auditedPage.findMany({
-        where: { auditUniqueId: uniqueId },
+        where: { auditUniqueId: uniqueId }
       }),
       this.prisma.criterionResult.findMany({
         where: {
           page: {
             audit: {
-              editUniqueId: uniqueId,
-            },
-          },
+              editUniqueId: uniqueId
+            }
+          }
         },
         include: {
-          exampleImages: true,
-        },
-      }),
+          exampleImages: true
+        }
+      })
     ]);
 
     // We do not create every empty criterion result rows in the db when creating pages.
@@ -153,7 +153,7 @@ export class AuditService {
           (result) =>
             result.pageId === page.id &&
             result.topic === criterion.topic &&
-            result.criterium == criterion.criterium,
+            result.criterium == criterion.criterium
         );
 
         if (existingResult) return existingResult;
@@ -172,15 +172,15 @@ export class AuditService {
 
           topic: criterion.topic,
           criterium: criterion.criterium,
-          pageId: page.id,
+          pageId: page.id
         };
-      }),
+      })
     );
   }
 
   async updateAudit(
     uniqueId: string,
-    data: UpdateAuditDto,
+    data: UpdateAuditDto
   ): Promise<Audit | undefined> {
     try {
       const updatedPages = data.pages.filter((p) => p.id);
@@ -234,46 +234,44 @@ export class AuditService {
                 OR: [
                   {
                     platform: {
-                      notIn: data.environments.map((e) => e.platform),
-                    },
+                      notIn: data.environments.map((e) => e.platform)
+                    }
                   },
                   {
                     operatingSystem: {
-                      notIn: data.environments.map((e) => e.operatingSystem),
-                    },
+                      notIn: data.environments.map((e) => e.operatingSystem)
+                    }
                   },
                   {
                     operatingSystemVersion: {
                       notIn: data.environments.map(
-                        (e) => e.operatingSystemVersion,
-                      ),
-                    },
+                        (e) => e.operatingSystemVersion
+                      )
+                    }
                   },
                   {
                     assistiveTechnology: {
-                      notIn: data.environments.map(
-                        (e) => e.assistiveTechnology,
-                      ),
-                    },
+                      notIn: data.environments.map((e) => e.assistiveTechnology)
+                    }
                   },
                   {
                     assistiveTechnologyVersion: {
                       notIn: data.environments.map(
-                        (e) => e.assistiveTechnologyVersion,
-                      ),
-                    },
+                        (e) => e.assistiveTechnologyVersion
+                      )
+                    }
                   },
                   {
                     browser: {
-                      notIn: data.environments.map((e) => e.browser),
-                    },
+                      notIn: data.environments.map((e) => e.browser)
+                    }
                   },
                   {
                     browserVersion: {
-                      notIn: data.environments.map((e) => e.browserVersion),
-                    },
-                  },
-                ],
+                      notIn: data.environments.map((e) => e.browserVersion)
+                    }
+                  }
+                ]
               },
               upsert: data.environments.map((environment) => ({
                 where: {
@@ -288,47 +286,47 @@ export class AuditService {
                       assistiveTechnologyVersion:
                         environment.assistiveTechnologyVersion,
                       browser: environment.browser,
-                      browserVersion: environment.browserVersion,
-                    },
+                      browserVersion: environment.browserVersion
+                    }
                 },
                 create: environment,
-                update: environment,
-              })),
+                update: environment
+              }))
             },
             pages: {
               deleteMany: {
                 id: {
-                  notIn: updatedPages.map((p) => p.id),
-                },
+                  notIn: updatedPages.map((p) => p.id)
+                }
               },
               update: updatedPages.map((p) => ({
                 where: { id: p.id },
                 data: {
                   name: p.name,
-                  url: p.url,
-                },
+                  url: p.url
+                }
               })),
               createMany: {
                 data: newPages.map((p) => ({
                   name: p.name,
-                  url: p.url,
-                })),
-              },
+                  url: p.url
+                }))
+              }
             },
             notCompliantContent: data.notCompliantContent,
             derogatedContent: data.derogatedContent,
             notInScopeContent: data.notInScopeContent,
-            notes: data.notes,
+            notes: data.notes
           },
-          include: AUDIT_EDIT_INCLUDE,
+          include: AUDIT_EDIT_INCLUDE
         }),
-        this.updateAuditEditDate(uniqueId),
+        this.updateAuditEditDate(uniqueId)
       ]);
       return audit;
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === 'P2025') {
+      if (e?.code === "P2025") {
         return;
       }
       throw e;
@@ -337,19 +335,19 @@ export class AuditService {
 
   async patchAudit(
     uniqueId: string,
-    data: PatchAuditDto,
+    data: PatchAuditDto
   ): Promise<Audit | undefined> {
     try {
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
-        data: { notes: data.notes },
+        data: { notes: data.notes }
       });
 
       return audit;
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === 'P2025') {
+      if (e?.code === "P2025") {
         return;
       }
       throw e;
@@ -358,18 +356,18 @@ export class AuditService {
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId },
+      where: { auditUniqueId: uniqueId }
     });
 
     const promises = body.data
       .map((item) => {
-        const data: Prisma.CriterionResultUpsertArgs['create'] = {
+        const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
           topic: item.topic,
           page: {
             connect: {
-              id: item.pageId,
-            },
+              id: item.pageId
+            }
           },
 
           status: item.status,
@@ -379,7 +377,7 @@ export class AuditService {
           recommandation: item.recommandation,
           userImpact: item.userImpact,
           quickWin: item.quickWin,
-          transverse: item.transverse,
+          transverse: item.transverse
         };
 
         const result = [
@@ -394,44 +392,44 @@ export class AuditService {
               pageId_topic_criterium: {
                 criterium: item.criterium,
                 topic: item.topic,
-                pageId: item.pageId,
-              },
+                pageId: item.pageId
+              }
             },
             create: data,
-            update: data,
-          }),
+            update: data
+          })
         ];
 
         if (item.transverse) {
           pages
             .filter((page) => page.id !== item.pageId)
             .forEach((page) => {
-              const data: Prisma.CriterionResultUpsertArgs['create'] = {
+              const data: Prisma.CriterionResultUpsertArgs["create"] = {
                 criterium: item.criterium,
                 topic: item.topic,
                 page: {
                   connect: {
-                    id: page.id,
-                  },
+                    id: page.id
+                  }
                 },
 
                 status: item.status,
                 transverse: true,
 
                 ...(item.status === CriterionResultStatus.COMPLIANT && {
-                  compliantComment: item.compliantComment,
+                  compliantComment: item.compliantComment
                 }),
 
                 ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
                   errorDescription: item.errorDescription,
                   recommandation: item.recommandation,
                   userImpact: item.userImpact,
-                  quickWin: item.quickWin,
+                  quickWin: item.quickWin
                 }),
 
                 ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
-                  notApplicableComment: item.notApplicableComment,
-                }),
+                  notApplicableComment: item.notApplicableComment
+                })
               };
 
               result.push(
@@ -440,12 +438,12 @@ export class AuditService {
                     pageId_topic_criterium: {
                       criterium: item.criterium,
                       topic: item.topic,
-                      pageId: page.id,
-                    },
+                      pageId: page.id
+                    }
                   },
                   create: data,
-                  update: data,
-                }),
+                  update: data
+                })
               );
             });
         }
@@ -456,7 +454,7 @@ export class AuditService {
 
     await this.prisma.$transaction([
       ...promises,
-      this.updateAuditEditDate(uniqueId),
+      this.updateAuditEditDate(uniqueId)
     ]);
   }
 
@@ -465,7 +463,7 @@ export class AuditService {
     pageId: number,
     topic: number,
     criterium: number,
-    file: Express.Multer.File,
+    file: Express.Multer.File
   ) {
     const randomPrefix = nanoid();
 
@@ -474,9 +472,9 @@ export class AuditService {
     const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
 
     const thumbnailBuffer = await sharp(file.buffer)
-      .resize(200, 200, { fit: 'cover' })
+      .resize(200, 200, { fit: "cover" })
       .jpeg({
-        mozjpeg: true,
+        mozjpeg: true
       })
       .toBuffer();
 
@@ -484,9 +482,9 @@ export class AuditService {
       this.fileStorageService.uploadFile(file.buffer, file.mimetype, key),
       this.fileStorageService.uploadFile(
         thumbnailBuffer,
-        'image/jpeg',
-        thumbnailKey,
-      ),
+        "image/jpeg",
+        thumbnailKey
+      )
     ]);
 
     const publicUrl = this.fileStorageService.getPublicUrl(key);
@@ -499,9 +497,9 @@ export class AuditService {
             pageId_topic_criterium: {
               pageId,
               topic,
-              criterium,
-            },
-          },
+              criterium
+            }
+          }
         },
 
         key,
@@ -510,8 +508,8 @@ export class AuditService {
         url: publicUrl,
 
         thumbnailKey,
-        thumbnailUrl,
-      },
+        thumbnailUrl
+      }
     });
 
     return storedFile;
@@ -522,12 +520,12 @@ export class AuditService {
    */
   async deleteExampleImage(
     editUniqueId: string,
-    exampleId: number,
+    exampleId: number
   ): Promise<boolean> {
     const storedFilePromise = this.prisma.storedFile.findUnique({
       where: {
-        id: exampleId,
-      },
+        id: exampleId
+      }
     });
 
     const storedFile = await storedFilePromise;
@@ -539,13 +537,13 @@ export class AuditService {
 
     await this.fileStorageService.deleteMultipleFiles(
       storedFile.key,
-      storedFile.thumbnailKey,
+      storedFile.thumbnailKey
     );
 
     await this.prisma.storedFile.delete({
       where: {
-        id: exampleId,
-      },
+        id: exampleId
+      }
     });
 
     return true;
@@ -561,30 +559,30 @@ export class AuditService {
         where: {
           criterionResult: {
             page: {
-              auditUniqueId: uniqueId,
-            },
-          },
-        },
+              auditUniqueId: uniqueId
+            }
+          }
+        }
       });
 
       await Promise.all([
         await this.prisma.audit.delete({
-          where: { editUniqueId: uniqueId },
+          where: { editUniqueId: uniqueId }
         }),
         ...(storedFiles.length > 0
           ? [
               this.fileStorageService.deleteMultipleFiles(
                 ...storedFiles
                   .map((file) => [file.key, file.thumbnailKey])
-                  .flat(),
-              ),
+                  .flat()
+              )
             ]
-          : []),
+          : [])
       ]);
 
       return true;
     } catch (e) {
-      if (e?.code === 'P2025') {
+      if (e?.code === "P2025") {
         return false;
       }
       throw e;
@@ -598,7 +596,7 @@ export class AuditService {
   async checkIfAuditWasDeleted(uniqueId: string): Promise<boolean> {
     try {
       await this.prisma.auditTrace.findUniqueOrThrow({
-        where: { auditEditUniqueId: uniqueId },
+        where: { auditEditUniqueId: uniqueId }
       });
       return true;
     } catch {
@@ -611,11 +609,11 @@ export class AuditService {
    * @param consultUniqueId consult unique id of the checked audit
    */
   async checkIfAuditWasDeletedWithConsultId(
-    consultUniqueId: string,
+    consultUniqueId: string
   ): Promise<boolean> {
     try {
       await this.prisma.auditTrace.findUniqueOrThrow({
-        where: { auditConsultUniqueId: consultUniqueId },
+        where: { auditConsultUniqueId: consultUniqueId }
       });
       return true;
     } catch {
@@ -627,16 +625,16 @@ export class AuditService {
     try {
       return await this.prisma.audit.update({
         where: {
-          editUniqueId: uniqueId,
+          editUniqueId: uniqueId
         },
         data: {
-          publicationDate: new Date(),
+          publicationDate: new Date()
           // editionDate: null,
         },
-        include: AUDIT_EDIT_INCLUDE,
+        include: AUDIT_EDIT_INCLUDE
       });
     } catch (e) {
-      if (e?.code === 'P2025') {
+      if (e?.code === "P2025") {
         return;
       }
       throw e;
@@ -646,16 +644,16 @@ export class AuditService {
   private updateAuditEditDate(uniqueId: string) {
     return this.prisma.audit.updateMany({
       where: { editUniqueId: uniqueId, publicationDate: { not: null } },
-      data: { editionDate: new Date() },
+      data: { editionDate: new Date() }
     });
   }
 
   async getAuditReportData(
-    consultUniqueId: string,
+    consultUniqueId: string
   ): Promise<AuditReportDto | undefined> {
     const audit = (await this.prisma.audit.findUnique({
       where: { consultUniqueId },
-      include: AUDIT_EDIT_INCLUDE,
+      include: AUDIT_EDIT_INCLUDE
     })) as Audit & {
       environments: TestEnvironment[];
       pages: AuditedPage[];
@@ -668,18 +666,18 @@ export class AuditService {
     const results = await this.prisma.criterionResult.findMany({
       where: {
         page: {
-          auditUniqueId: audit.editUniqueId,
+          auditUniqueId: audit.editUniqueId
         },
         criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
         },
         topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
-        },
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
+        }
       },
       include: {
-        exampleImages: true,
-      },
+        exampleImages: true
+      }
     });
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
@@ -692,35 +690,33 @@ export class AuditService {
         }
         return acc;
       },
-      {},
+      {}
     );
 
     const applicableCriteria = Object.values(groupedCriteria).filter(
       (criteria) =>
-        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE),
+        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE)
     );
 
     const notApplicableCriteria = Object.values(groupedCriteria).filter(
       (criteria) =>
-        criteria.every(
-          (c) => c.status === CriterionResultStatus.NOT_APPLICABLE,
-        ),
+        criteria.every((c) => c.status === CriterionResultStatus.NOT_APPLICABLE)
     );
 
     const compliantCriteria = applicableCriteria.filter((criteria) =>
       criteria.every(
         (c) =>
           c.status === CriterionResultStatus.COMPLIANT ||
-          c.status === CriterionResultStatus.NOT_APPLICABLE,
-      ),
+          c.status === CriterionResultStatus.NOT_APPLICABLE
+      )
     );
 
     const notCompliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT),
+      criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)
     );
 
     const accessibilityRate = Math.round(
-      (compliantCriteria.length / applicableCriteria.length) * 100,
+      (compliantCriteria.length / applicableCriteria.length) * 100
     );
 
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
@@ -745,13 +741,13 @@ export class AuditService {
       notes: audit.notes,
 
       errorCount: results.filter(
-        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT,
+        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT
       ).length,
 
       blockingErrorCount: results.filter(
         (r) =>
           r.status === CriterionResultStatus.NOT_COMPLIANT &&
-          r.userImpact === CriterionResultUserImpact.BLOCKING,
+          r.userImpact === CriterionResultUserImpact.BLOCKING
       ).length,
 
       totalCriteriaCount,
@@ -766,34 +762,34 @@ export class AuditService {
         auditorEmail: null,
         auditorOrganisation: audit.auditorOrganisation,
         desktopEnvironments: audit.environments
-          .filter((e) => e.platform === 'desktop')
+          .filter((e) => e.platform === "desktop")
           .map((e) => ({
             operatingSystem: e.operatingSystem,
             operatingSystemVersion: e.operatingSystemVersion,
             assistiveTechnology: e.assistiveTechnology,
             assistiveTechnologyVersion: e.assistiveTechnologyVersion,
             browser: e.browser,
-            browserVersion: e.browserVersion,
+            browserVersion: e.browserVersion
           })),
         mobileEnvironments: audit.environments
-          .filter((e) => e.platform === 'mobile')
+          .filter((e) => e.platform === "mobile")
           .map((e) => ({
             operatingSystem: e.operatingSystem,
             operatingSystemVersion: e.operatingSystemVersion,
             assistiveTechnology: e.assistiveTechnology,
             assistiveTechnologyVersion: e.assistiveTechnologyVersion,
             browser: e.browser,
-            browserVersion: e.browserVersion,
+            browserVersion: e.browserVersion
           })),
-        referencial: 'RGAA Version 4.1',
+        referencial: "RGAA Version 4.1",
         samples: audit.pages.map((p, i) => ({
           name: p.name,
           number: i + 1,
           url: p.url,
-          id: p.id,
+          id: p.id
         })),
         tools: audit.tools,
-        technologies: audit.technologies,
+        technologies: audit.technologies
       },
 
       pageDistributions: audit.pages.map((p) => ({
@@ -801,101 +797,101 @@ export class AuditService {
         compliant: {
           raw: results.filter(
             (r) =>
-              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT,
+              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT
           ).length,
           percentage:
             (results.filter(
               (r) =>
                 r.pageId === p.id &&
-                r.status === CriterionResultStatus.COMPLIANT,
+                r.status === CriterionResultStatus.COMPLIANT
             ).length /
               totalCriteriaCount) *
-            100,
+            100
         },
         notApplicable: {
           raw: results.filter(
             (r) =>
               r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_APPLICABLE,
+              r.status === CriterionResultStatus.NOT_APPLICABLE
           ).length,
           percentage:
             (results.filter(
               (r) =>
                 r.pageId === p.id &&
-                r.status === CriterionResultStatus.NOT_APPLICABLE,
+                r.status === CriterionResultStatus.NOT_APPLICABLE
             ).length /
               totalCriteriaCount) *
-            100,
+            100
         },
         notCompliant: {
           raw: results.filter(
             (r) =>
               r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_COMPLIANT,
+              r.status === CriterionResultStatus.NOT_COMPLIANT
           ).length,
           percentage:
             (results.filter(
               (r) =>
                 r.pageId === p.id &&
-                r.status === CriterionResultStatus.NOT_COMPLIANT,
+                r.status === CriterionResultStatus.NOT_COMPLIANT
             ).length /
               totalCriteriaCount) *
-            100,
-        },
+            100
+        }
       })),
 
       resultDistribution: {
         compliant: {
           raw: compliantCriteria.length,
-          percentage: (compliantCriteria.length / totalCriteriaCount) * 100,
+          percentage: (compliantCriteria.length / totalCriteriaCount) * 100
         },
         notApplicable: {
           raw: notApplicableCriteria.length,
-          percentage: (notApplicableCriteria.length / totalCriteriaCount) * 100,
+          percentage: (notApplicableCriteria.length / totalCriteriaCount) * 100
         },
         notCompliant: {
           raw: notCompliantCriteria.length,
-          percentage: (notCompliantCriteria.length / totalCriteriaCount) * 100,
-        },
+          percentage: (notCompliantCriteria.length / totalCriteriaCount) * 100
+        }
       },
 
       topicDistributions: RGAA.topics
         .map((t) => {
           const total = CRITERIA_BY_AUDIT_TYPE[audit.auditType].filter(
-            (c) => c.topic === t.number,
+            (c) => c.topic === t.number
           ).length;
 
           const compliantRaw = compliantCriteria.filter(
-            (c) => c[0].topic === t.number,
+            (c) => c[0].topic === t.number
           ).length;
 
           const notApplicableRaw = notApplicableCriteria.filter(
-            (c) => c[0].topic === t.number,
+            (c) => c[0].topic === t.number
           ).length;
 
           const notCompliantRaw = notCompliantCriteria.filter(
-            (c) => c[0].topic === t.number,
+            (c) => c[0].topic === t.number
           ).length;
 
           return {
             name: t.topic,
             compliant: {
               raw: compliantRaw,
-              percentage: (compliantRaw / total) * 100,
+              percentage: (compliantRaw / total) * 100
             },
             notApplicable: {
               raw: notApplicableRaw,
-              percentage: (notApplicableRaw / total) * 100,
+              percentage: (notApplicableRaw / total) * 100
             },
             notCompliant: {
               raw: notCompliantRaw,
-              percentage: (notCompliantRaw / total) * 100,
-            },
+              percentage: (notCompliantRaw / total) * 100
+            }
           };
         })
         // remove empty topics (for fast and complementary audits)
         .filter(
-          (t) => t.compliant.raw + t.notApplicable.raw + t.notCompliant.raw > 0,
+          (t) => t.compliant.raw + t.notApplicable.raw + t.notCompliant.raw > 0
         ),
 
       results: results.map((r) => ({
@@ -914,9 +910,9 @@ export class AuditService {
         quickWin: r.quickWin,
         exampleImages: r.exampleImages.map((img) => ({
           url: img.url,
-          filename: img.originalFilename,
-        })),
-      })),
+          filename: img.originalFilename
+        }))
+      }))
     };
 
     return report;
@@ -925,24 +921,24 @@ export class AuditService {
   async isAuditComplete(uniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
-      include: { pages: true },
+      include: { pages: true }
     });
 
     const testedCount = await this.prisma.criterionResult.count({
       where: {
         page: {
-          auditUniqueId: uniqueId,
+          auditUniqueId: uniqueId
         },
         criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium),
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
         },
         topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic),
+          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
         },
         status: {
-          not: CriterionResultStatus.NOT_TESTED,
-        },
-      },
+          not: CriterionResultStatus.NOT_TESTED
+        }
+      }
     });
 
     const expectedCount =
@@ -960,12 +956,12 @@ export class AuditService {
           include: {
             results: {
               include: {
-                exampleImages: true,
-              },
-            },
-          },
-        },
-      },
+                exampleImages: true
+              }
+            }
+          }
+        }
+      }
     });
 
     if (!originalAudit) {
@@ -1025,12 +1021,12 @@ export class AuditService {
           imageDuplications.push(
             {
               originalKey: e.key,
-              destinationKey: key,
+              destinationKey: key
             },
             {
               originalKey: e.thumbnailKey,
-              destinationKey: thumbnailKey,
-            },
+              destinationKey: thumbnailKey
+            }
           );
 
           setWith(
@@ -1042,9 +1038,9 @@ export class AuditService {
               size: e.size,
               key: key,
               thumbnailUrl: thumbnailUrl,
-              thumbnailKey: thumbnailKey,
+              thumbnailKey: thumbnailKey
             },
-            Object,
+            Object
           );
         });
       });
@@ -1054,13 +1050,13 @@ export class AuditService {
 
     const newAudit = await this.prisma.audit.create({
       data: {
-        ...omit(originalAudit, ['id', 'auditTraceId', 'sourceAuditId']),
+        ...omit(originalAudit, ["id", "auditTraceId", "sourceAuditId"]),
 
         // link new audit with the original
         sourceAudit: {
           connect: {
-            editUniqueId: sourceUniqueId,
-          },
+            editUniqueId: sourceUniqueId
+          }
         },
 
         editUniqueId: duplicateEditUniqueId,
@@ -1075,9 +1071,9 @@ export class AuditService {
         environments: {
           createMany: {
             data: originalAudit.environments.map((e) =>
-              omit(e, ['id', 'auditUniqueId']),
-            ),
-          },
+              omit(e, ["id", "auditUniqueId"])
+            )
+          }
         },
 
         pages: {
@@ -1086,24 +1082,24 @@ export class AuditService {
             url: p.url,
             results: {
               create: p.results.map((r) => ({
-                ...omit(r, ['id', 'pageId']),
+                ...omit(r, ["id", "pageId"]),
                 exampleImages: {
                   create: r.exampleImages.map(
-                    (e) => imagesCreateData[p.id][r.id][e.id],
-                  ),
-                },
-              })),
-            },
-          })),
+                    (e) => imagesCreateData[p.id][r.id][e.id]
+                  )
+                }
+              }))
+            }
+          }))
         },
 
         auditTrace: {
           create: {
             auditConsultUniqueId: duplicateConsultUniqueId,
-            auditEditUniqueId: duplicateEditUniqueId,
-          },
-        },
-      },
+            auditEditUniqueId: duplicateEditUniqueId
+          }
+        }
+      }
     });
 
     return newAudit;
@@ -1112,20 +1108,20 @@ export class AuditService {
   async anonymiseAudits(userEmail: string) {
     await this.prisma.audit.updateMany({
       where: {
-        auditorEmail: userEmail,
+        auditorEmail: userEmail
       },
       data: {
         auditorEmail: null,
         auditorName: null,
-        showAuditorEmailInReport: false,
-      },
+        showAuditorEmailInReport: false
+      }
     });
   }
 
   async getAuditsByAuditorEmail(email: string) {
     const audits = await this.prisma.audit.findMany({
       where: {
-        auditorEmail: email,
+        auditorEmail: email
       },
       select: {
         procedureName: true,
@@ -1135,10 +1131,10 @@ export class AuditService {
         consultUniqueId: true,
         pages: {
           select: {
-            results: true,
-          },
-        },
-      },
+            results: true
+          }
+        }
+      }
     });
 
     return audits.map((a) => {
@@ -1165,42 +1161,42 @@ export class AuditService {
         }, {});
 
         const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
-          (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null,
+          (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
         );
 
         const applicableCriteria = results2.filter(
           (criteria) =>
             criteria &&
             criteria.some(
-              (c) => c.status !== CriterionResultStatus.NOT_APPLICABLE,
-            ),
+              (c) => c.status !== CriterionResultStatus.NOT_APPLICABLE
+            )
         );
 
         const compliantCriteria = applicableCriteria.filter((criteria) =>
           criteria.every(
             (c) =>
               c.status === CriterionResultStatus.COMPLIANT ||
-              c.status === CriterionResultStatus.NOT_APPLICABLE,
-          ),
+              c.status === CriterionResultStatus.NOT_APPLICABLE
+          )
         );
 
         complianceLevel = Math.round(
-          (compliantCriteria.length / applicableCriteria.length) * 100,
+          (compliantCriteria.length / applicableCriteria.length) * 100
         );
       }
 
       return {
         ...pick(
           a,
-          'procedureName',
-          'editUniqueId',
-          'consultUniqueId',
-          'creationDate',
-          'auditType',
+          "procedureName",
+          "editUniqueId",
+          "consultUniqueId",
+          "creationDate",
+          "auditType"
         ),
         complianceLevel,
-        status: progress < 1 ? 'IN_PROGRESS' : 'COMPLETED',
-        estimatedCsvSize: 502 + a.pages.length * 318,
+        status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
+        estimatedCsvSize: 502 + a.pages.length * 318
       };
     });
   }

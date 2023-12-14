@@ -1,11 +1,11 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export function subject(): string {
   return `Ara : mot de passe mis à jour avec succès `;
 }
 
 export function html(): string {
-  return renderMailTemplate('password-update-confirmation', {});
+  return renderMailTemplate("password-update-confirmation", {});
 }
 
 export function plain(): string {

@@ -1,7 +1,6 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import type { Request } from 'express';
-import { AuthenticationJwtPayload } from "./jwt-payloads";
+import type { Request } from "express";
 
 /**
  * Extract the authentication token and verifies it.
@@ -16,21 +15,21 @@ export class UserMiddleware implements NestMiddleware {
     const token = this.extractTokenFromHeader(req);
 
     if (!token) {
-      next()
-      return
+      next();
+      return;
     }
 
-    this.jwt.verifyAsync(token)
-      .then(payload => {
-        req['user'] = payload;
-        next()
+    this.jwt
+      .verifyAsync(token)
+      .then((payload) => {
+        req["user"] = payload;
+        next();
       })
-      .catch(next)
+      .catch(next);
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
-
 }

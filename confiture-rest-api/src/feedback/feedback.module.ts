@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { FeedbackService } from './feedback.service';
-import { FeedbackController } from './feedback.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/prisma.service';
+import { Module } from "@nestjs/common";
+import { FeedbackService } from "./feedback.service";
+import { FeedbackController } from "./feedback.controller";
+import { JwtModule } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "src/prisma.service";
 
 @Module({
   // FIXME: put PrismaService into a global module so the service is not instanciated multiple times
@@ -16,10 +16,10 @@ import { PrismaService } from 'src/prisma.service';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        secret: config.get('JWT_SECRET'),
-      }),
-    }),
+        secret: config.get("JWT_SECRET")
+      })
+    })
   ],
-  exports: [FeedbackService],
+  exports: [FeedbackService]
 })
 export class FeedbackModule {}

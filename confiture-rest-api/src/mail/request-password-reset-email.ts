@@ -1,4 +1,4 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export interface RequestPasswordResetEmailData {
   verificationLink: string;
@@ -9,7 +9,7 @@ export function subject(): string {
 }
 
 export function html(data: RequestPasswordResetEmailData): string {
-  return renderMailTemplate('request-password-reset', data);
+  return renderMailTemplate("request-password-reset", data);
 }
 
 export function plain(data: RequestPasswordResetEmailData): string {

@@ -1,4 +1,4 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export interface AccountVerificationEmailData {
   verificationLink: string;
@@ -9,7 +9,7 @@ export function subject(): string {
 }
 
 export function html(data: AccountVerificationEmailData): string {
-  return renderMailTemplate('account-verification', data);
+  return renderMailTemplate("account-verification", data);
 }
 
 export function plain(data: AccountVerificationEmailData): string {

@@ -1,4 +1,4 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export interface AuditCreationEmailData {
   procedureName: string;
@@ -11,7 +11,7 @@ export function subject(data: AuditCreationEmailData): string {
 }
 
 export function html(data: AuditCreationEmailData): string {
-  return renderMailTemplate('audit-creation', data);
+  return renderMailTemplate("audit-creation", data);
 }
 
 export function plain(data: AuditCreationEmailData): string {

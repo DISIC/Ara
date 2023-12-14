@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { PrismaService } from '../prisma.service';
-import { MailService } from './mail.service';
+import { PrismaService } from "../prisma.service";
+import { MailService } from "./mail.service";
 
 @Module({
   providers: [MailService, PrismaService],
-  exports: [MailService],
+  exports: [MailService]
 })
 export class MailModule {}

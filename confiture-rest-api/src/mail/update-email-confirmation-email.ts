@@ -1,4 +1,4 @@
-import { renderMailTemplate } from './render-mjml-template';
+import { renderMailTemplate } from "./render-mjml-template";
 
 export interface UpdateEmailConfirmationData {
   newEmail: string;
@@ -9,7 +9,7 @@ export function subject(): string {
 }
 
 export function html(data: UpdateEmailConfirmationData): string {
-  return renderMailTemplate('email-update-confirmation', data);
+  return renderMailTemplate("email-update-confirmation", data);
 }
 
 export function plain(data: UpdateEmailConfirmationData): string {

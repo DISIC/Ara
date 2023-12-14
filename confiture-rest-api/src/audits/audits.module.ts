@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { MulterModule } from '@nestjs/platform-express';
+import { Module } from "@nestjs/common";
+import { MulterModule } from "@nestjs/platform-express";
 
-import { MailService } from 'src/mail/mail.service';
-import { PrismaService } from 'src/prisma.service';
-import { AuditService } from './audit.service';
-import { AuditsController } from './audits.controller';
-import { FileStorageService } from './file-storage.service';
-import { ReportsController } from './reports.controller';
-import { AuditExportService } from './audit-export.service';
+import { MailService } from "src/mail/mail.service";
+import { PrismaService } from "src/prisma.service";
+import { AuditService } from "./audit.service";
+import { AuditsController } from "./audits.controller";
+import { FileStorageService } from "./file-storage.service";
+import { ReportsController } from "./reports.controller";
+import { AuditExportService } from "./audit-export.service";
 
 @Module({
   providers: [
@@ -15,7 +15,7 @@ import { AuditExportService } from './audit-export.service';
     PrismaService,
     MailService,
     FileStorageService,
-    AuditExportService,
+    AuditExportService
   ],
   controllers: [AuditsController, ReportsController],
   imports: [
@@ -24,9 +24,9 @@ import { AuditExportService } from './audit-export.service';
         // To support non-ascii characters, the front should encode the filename
         file.originalname = decodeURI(file.originalname);
         callback(null, true);
-      },
-    }),
+      }
+    })
   ],
-  exports: [AuditService],
+  exports: [AuditService]
 })
 export class AuditsModule {}

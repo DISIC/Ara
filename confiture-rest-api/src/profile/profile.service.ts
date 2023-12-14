@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
 
-import { PatchProfileDto } from './patch-profile.dto';
+import { PatchProfileDto } from "./patch-profile.dto";
 
 @Injectable()
 export class ProfileService {
@@ -10,7 +10,7 @@ export class ProfileService {
   async getUserProfile(userEmail: string) {
     return this.prisma.user.findUnique({
       where: { username: userEmail },
-      select: { id: true, username: true, name: true, orgName: true },
+      select: { id: true, username: true, name: true, orgName: true }
     });
   }
 
@@ -19,14 +19,14 @@ export class ProfileService {
       const user = await this.prisma.user.update({
         where: { username: userEmail },
         data: { name: body.name, orgName: body.orgName },
-        select: { id: true, username: true, name: true, orgName: true },
+        select: { id: true, username: true, name: true, orgName: true }
       });
 
       return user;
     } catch (e) {
       // User does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === 'P2025') {
+      if (e?.code === "P2025") {
         return;
       }
       throw e;
