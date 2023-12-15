@@ -7,7 +7,7 @@ import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
 import { formatDate, getCriteriaCount, pluralize } from "../../utils";
 import StepCard from "./StepCard.vue";
-import AuditProgressBar from "../AuditProgressBar.vue";
+import AuditProgressBar from "../audit/AuditProgressBar.vue";
 import StatDonut from "../StatDonut.vue";
 
 defineProps<{
@@ -156,7 +156,7 @@ const auditIsInProgress = computed(() => {
       <li>
         <RouterLink
           :to="{
-            name: 'edit-audit-step-three',
+            name: 'audit-generation',
             params: { uniqueId: uniqueId }
           }"
           class="fr-btn fr-btn--icon-left fr-mb-0"

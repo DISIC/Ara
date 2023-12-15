@@ -6,7 +6,7 @@ import { useAccountStore } from "../../../store/account";
 import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
-import DsfrPassword from "../../DsfrPassword.vue";
+import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const router = useRouter();
 const accountStore = useAccountStore();

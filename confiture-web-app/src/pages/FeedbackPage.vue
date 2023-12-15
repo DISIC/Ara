@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import ky from "ky";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { createFeedback } from "../api";
-import { useNotifications } from "../composables/useNotifications";
-import emojiYes from "../assets/images/emoji-yes.svg";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
+import emojiYes from "../assets/images/emoji-yes.svg";
 import greenCheck from "../assets/images/green-check.svg";
-import { usePreviousRoute } from "../composables/usePreviousRoute";
 import PageMeta from "../components/PageMeta";
-import DsfrField from "../components/DsfrField.vue";
+import DsfrField from "../components/ui/DsfrField.vue";
+import { useNotifications } from "../composables/useNotifications";
+import { usePreviousRoute } from "../composables/usePreviousRoute";
 import { captureWithPayloads } from "../utils";
 
 const availableRadioAnswers = [
@@ -46,16 +46,18 @@ const notify = useNotifications();
  * Submit form and display success notice
  */
 function submitFeedback() {
-  createFeedback({
-    easyToUse: easyToUse.value,
-    easyToUnderstand: easyToUnderstand.value,
-    feedback: feedback.value,
-    suggestions: suggestions.value,
-    ...(contact.value === "yes" && {
-      email: email.value,
-      name: name.value,
-      occupations: occupations.value
-    })
+  ky.post("/api/feedback", {
+    json: {
+      easyToUse: easyToUse.value,
+      easyToUnderstand: easyToUnderstand.value,
+      feedback: feedback.value,
+      suggestions: suggestions.value,
+      ...(contact.value === "yes" && {
+        email: email.value,
+        name: name.value,
+        occupations: occupations.value
+      })
+    }
   })
     .then(() => {
       showSuccess.value = true;

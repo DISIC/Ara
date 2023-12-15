@@ -6,7 +6,8 @@ ARG VITE_SENTRY_DSN
 ARG VITE_SENTRY_ENVIRONMENT
 ARG VITE_SENTRY_RELEASE
 WORKDIR /app
-COPY package.json yarn.lock .
+RUN mkdir -p confiture-web-app/src/assets
+COPY package.json yarn.lock CHANGELOG.md ROADMAP.md .
 COPY confiture-web-app/package.json confiture-web-app/
 RUN yarn install --frozen-lockfile --non-interactive --production=false
 WORKDIR /app/confiture-web-app

@@ -1,44 +1,43 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 
-import OverviewPage from "./pages/OverviewPage.vue";
-import ContextPage from "./pages/consult/ContextPage.vue";
-import ReportPage from "./pages/consult/ReportPage.vue";
-import EditAuditStepOnePage from "./pages/edit/EditAuditStepOnePage.vue";
-import EditAuditStepThreePage from "./pages/edit/EditAuditStepThreePage.vue";
-import NewAuditStepOnePage from "./pages/edit/NewAuditStepOnePage.vue";
+import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
+import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
+import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
+import LoginPage from "./pages/account/LoginPage.vue";
+import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
+import NewAccountPage from "./pages/account/NewAccountPage.vue";
+import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
+import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
+import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
+import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
+import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
+import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
+import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
+import CreateAuditPage from "./pages/audit/CreateAuditPage.vue";
+import ChangelogPage from "./pages/ChangelogPage.vue";
+import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
-import AccessibilityPlanPage from "./pages/help/AccessibilityPlanPage.vue";
-import AccessibilityStatementPage from "./pages/help/AccessibilityStatementPage.vue";
-import LegalRequirementsPage from "./pages/help/LegalRequirementsPage.vue";
-import RGAAPage from "./pages/help/RGAAPage.vue";
 import HomePage from "./pages/HomePage.vue";
 import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
+import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
 import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
-import ContactPage from "./pages/misc/ContactPage.vue";
-import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
+import ContextPage from "./pages/report/ContextPage.vue";
+import ReportPage from "./pages/report/ReportPage.vue";
 import A11yIntroTrainingPage from "./pages/resources/A11yIntroTrainingPage.vue";
-import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
+import AccessibilityPlanPage from "./pages/resources/AccessibilityPlanPage.vue";
+import AccessibilityStatementPage from "./pages/resources/AccessibilityStatementPage.vue";
+import AccessibilityTrainingPage from "./pages/resources/AccessibilityTrainingPage.vue";
 import GlossaryPage from "./pages/resources/GlossaryPage.vue";
-import ResourcesPage from "./pages/resources/ResourcesPage.vue";
+import LegalRequirementsPage from "./pages/resources/LegalRequirementsPage.vue";
 import MakeA11yAuditPage from "./pages/resources/MakeA11yAuditPage.vue";
+import PublicDigitalTrainingPage from "./pages/resources/PublicDigitalTrainingPage.vue";
+import ResourcesPage from "./pages/resources/ResourcesPage.vue";
+import RGAAPage from "./pages/resources/RGAAPage.vue";
 import ToolsPage from "./pages/resources/ToolsPage.vue";
-import ErrorPage from "./pages/error/ErrorPage.vue";
-import EditAuditDeclarationPage from "./pages/edit/EditAuditDeclarationPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
-import ChangelogPage from "./pages/ChangelogPage.vue";
-
-import { useAuditStore, useAccountStore } from "./store";
-import NewAccountPage from "./pages/account/NewAccountPage.vue";
-import LoginPage from "./pages/account/LoginPage.vue";
-import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
-import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
-import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
-import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
-import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
-import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
-import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
+import { useAccountStore, useAuditStore } from "./store";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -276,20 +275,20 @@ const router = createRouter({
     // Audit pages
     {
       path: "/audits/nouveau",
-      name: "new-audit-step-one",
-      component: NewAuditStepOnePage,
+      name: "create-audit",
+      component: CreateAuditPage,
       meta: {
         name: "Nouvel audit",
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: "Nouvel audit", name: "new-audit-step-one" }
+          { label: "Nouvel audit", name: "create-audit" }
         ]
       }
     },
     {
       path: "/audits/:uniqueId/informations-generales",
-      name: "edit-audit-step-one",
-      component: EditAuditStepOnePage,
+      name: "audit-settings",
+      component: AuditSettingsPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
@@ -297,15 +296,15 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: getProcedureName(),
-            name: "edit-audit-step-one"
+            name: "audit-settings"
           }
         ]
       }
     },
     {
       path: "/audits/:uniqueId/generation",
-      name: "edit-audit-step-three",
-      component: EditAuditStepThreePage,
+      name: "audit-generation",
+      component: AuditGenerationPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
@@ -313,19 +312,19 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: `Synthèse ${getProcedureName()}`,
-            name: "overview"
+            name: "audit-overview"
           },
           {
             label: getProcedureName(),
-            name: "edit-audit-step-three"
+            name: "audit-generation"
           }
         ]
       }
     },
     {
       path: "/audits/:uniqueId/declaration",
-      name: "edit-audit-declaration",
-      component: EditAuditDeclarationPage,
+      name: "audit-declaration",
+      component: AuditDeclarationPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit",
@@ -333,7 +332,7 @@ const router = createRouter({
           getHomeBreadcrumbLink(),
           {
             label: getProcedureName(),
-            name: "edit-audit-declaration"
+            name: "audit-declaration"
           }
         ]
       }
@@ -343,19 +342,19 @@ const router = createRouter({
       path: "/audits/:uniqueId/partage",
       name: "edit-audit-step-four",
       redirect: () => {
-        return { name: "overview" };
+        return { name: "audit-overview" };
       }
     },
     // Overview
     {
       path: "/audits/:uniqueId/synthese",
-      name: "overview",
-      component: OverviewPage,
+      name: "audit-overview",
+      component: AuditOverviewPage,
       meta: {
         name: `Synthèse ${getProcedureName}`,
         breadcrumbLinks: () => [
           getHomeBreadcrumbLink(),
-          { label: `Synthèse ${getProcedureName()}`, name: "overview" }
+          { label: `Synthèse ${getProcedureName()}`, name: "audit-overview" }
         ]
       }
     },

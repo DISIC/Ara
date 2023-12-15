@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TopLink from "../../components/TopLink.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import ErwanPicture from "../../assets/images/erwan-legall.png";
 import BenoitPicture from "../../assets/images/benoit-dequick.png";
 import transcriptionUrl from "../../assets/Transcription-Accessibilite-18novembre2021.docx";

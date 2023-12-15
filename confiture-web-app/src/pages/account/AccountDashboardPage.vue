@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ref, computed, nextTick, onMounted } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 
-import { AuditStatus } from "../../types";
+import PageMeta from "../../components/PageMeta";
+import AuditsList from "../../components/account/dashboard/AuditsList.vue";
+import TopLink from "../../components/ui/TopLink.vue";
+import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { useAuditStore } from "../../store/audit";
-import TopLink from "../../components/TopLink.vue";
-import AuditsList from "../../components/account/dashboard/AuditsList.vue";
-import PageMeta from "../../components/PageMeta";
-import { history } from "../../router";
+import { AuditStatus } from "../../types";
 
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();
@@ -87,7 +87,7 @@ onMounted(() => {
   <!-- Header -->
   <div class="fr-mb-6w header">
     <h1 ref="mainHeadingRef" tabindex="-1" class="fr-mb-0">Mes audits</h1>
-    <RouterLink :to="{ name: 'new-audit-step-one' }" class="fr-btn">
+    <RouterLink :to="{ name: 'create-audit' }" class="fr-btn">
       Démarrer un nouvel audit
     </RouterLink>
   </div>

@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import CopyBlock from "../CopyBlock.vue";
+import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
 
 defineProps<{

@@ -2,8 +2,8 @@
 import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { history } from "../router";
 import PageMeta from "../components/PageMeta";
+import { history } from "../router";
 
 const router = useRouter();
 
@@ -97,10 +97,7 @@ const steps = [
       </li>
     </ul>
 
-    <RouterLink
-      :to="{ name: 'new-audit-step-one' }"
-      class="fr-btn fr-mt-5w fr-mb-7w"
-    >
+    <RouterLink :to="{ name: 'create-audit' }" class="fr-btn fr-mt-5w fr-mb-7w">
       Je démarre un audit
     </RouterLink>
 

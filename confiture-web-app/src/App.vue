@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { useHead } from "@unhead/vue";
 import { onMounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useHead } from "@unhead/vue";
 
-import Breadcrumb, { BreadcrumbLink } from "./components/Breadcrumb.vue";
-import ToastNotification from "./components/ToastNotification.vue";
-import SiteHeader from "./components/SiteHeader.vue";
-import SiteFooter from "./components/SiteFooter.vue";
-import MarkdownHelpModal from "./components/MarkdownHelpModal.vue";
+import Breadcrumb, { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
+import SiteFooter from "./components/layout/SiteFooter.vue";
+import SiteHeader from "./components/layout/SiteHeader.vue";
+import MarkdownHelpModal from "./components/audit/MarkdownHelpModal.vue";
+import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
 
 const route = useRoute();

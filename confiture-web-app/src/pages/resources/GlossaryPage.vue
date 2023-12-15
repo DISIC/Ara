@@ -2,7 +2,7 @@
 import slugify from "slugify";
 import { onMounted, ref } from "vue";
 
-import TopLink from "../../components/TopLink.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 
 // TODO: fetch glossary from GitHub: https://github.com/DISIC/accessibilite.numerique.gouv.fr/blob/main/RGAA/4.1/glossaire.json
