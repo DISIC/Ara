@@ -17,9 +17,9 @@ import {
   slugify,
   pluralize
 } from "../../utils";
-import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownRenderer from "./MarkdownRenderer.vue";
+import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
+import LazyAccordion from "../audit/LazyAccordion.vue";
+import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 const report = useReportStore();
 const router = useRouter();

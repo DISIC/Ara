@@ -10,10 +10,10 @@ import {
   slugify,
   formatBytes
 } from "../../../utils";
-import Dropdown from "../../Dropdown.vue";
+import Dropdown from "../../ui/Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
-import DuplicateModal from "../../DuplicateModal.vue";
-import DeleteModal from "../../DeleteModal.vue";
+import DuplicateModal from "../../audit/DuplicateModal.vue";
+import DeleteModal from "../../audit/DeleteModal.vue";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAuditStore } from "../../../store";
 

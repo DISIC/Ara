@@ -18,7 +18,7 @@ import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore, useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
-import RadioGroup, { RadioColor } from "./RadioGroup.vue";
+import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
 import { captureWithPayloads, formatStatus } from "../../utils";
 import { useIsOffline } from "../../composables/useIsOffline";
 

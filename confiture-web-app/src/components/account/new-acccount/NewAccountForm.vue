@@ -10,8 +10,8 @@ import {
   formatEmail,
   validateEmail
 } from "../../../utils";
-import DsfrField from "../../DsfrField.vue";
-import DsfrPassword from "../../DsfrPassword.vue";
+import DsfrField from "../../ui/DsfrField.vue";
+import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;

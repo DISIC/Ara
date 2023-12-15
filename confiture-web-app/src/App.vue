@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import Breadcrumb, { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
-import MarkdownHelpModal from "./components/ui/MarkdownHelpModal.vue";
+import MarkdownHelpModal from "./components/audit/MarkdownHelpModal.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
 

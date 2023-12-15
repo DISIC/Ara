@@ -5,7 +5,7 @@ import { useResultsStore } from "../../store";
 import { useAccountStore } from "../../store";
 import { Audit } from "../../types";
 import StepCard from "./StepCard.vue";
-import CopyBlock from "../CopyBlock.vue";
+import CopyBlock from "../ui/CopyBlock.vue";
 
 const props = defineProps<{
   audit: Audit;

@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted } from "vue";
 
 import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
-import DsfrField from "../../DsfrField.vue";
+import DsfrField from "../../ui/DsfrField.vue";
 
 const accountStore = useAccountStore();
 const notify = useNotifications();

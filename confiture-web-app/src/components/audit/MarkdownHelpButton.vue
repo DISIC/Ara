@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject } from "vue";
-import MarkdownIcon from "./icons/MarkdownIcon.vue";
+import MarkdownIcon from "../icons/MarkdownIcon.vue";
 
 // Provided in App.vue
 const openMarkdownHelp = inject<() => void>("openMarkdownHelp");

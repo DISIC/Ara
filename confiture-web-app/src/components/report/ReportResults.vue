@@ -8,7 +8,7 @@ import ChartLegend from "./ChartLegend.vue";
 import PieChart from "./PieChart.vue";
 import ResultDetailsCard from "./ResultDetailsCard.vue";
 import StackBarChart from "./StackBarChart.vue";
-import SummaryCard from "./SummaryCard.vue";
+import SummaryCard from "../SummaryCard.vue";
 
 const report = useReportStore();
 

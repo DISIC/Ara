@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
-import DsfrModal from "./DsfrModal.vue";
+import DsfrModal from "../ui/DsfrModal.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useAuditStore } from "../../store/audit";
 

@@ -6,7 +6,7 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { formatDate, getAuditStatus } from "../../utils";
 import { AuditStatus } from "../../types";
-import MarkdownRenderer from "./MarkdownRenderer.vue";
+import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 const report = useReportStore();
 

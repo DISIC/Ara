@@ -4,8 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useAuditStore, useReportStore } from "../../store";
 import { useAccountStore } from "../../store/account";
-import Dropdown from "./Dropdown.vue";
-import LogoutIcon from "./icons/LogoutIcon.vue";
+import Dropdown from "../ui/Dropdown.vue";
+import LogoutIcon from "../icons/LogoutIcon.vue";
 import { useNotifications } from "../../composables/useNotifications";
 
 const reportStore = useReportStore();

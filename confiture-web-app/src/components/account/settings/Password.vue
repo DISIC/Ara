@@ -5,7 +5,7 @@ import { HTTPError } from "ky";
 import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
 import { captureWithPayloads } from "../../../utils";
-import DsfrPassword from "../../DsfrPassword.vue";
+import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const currentPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
 const newPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();

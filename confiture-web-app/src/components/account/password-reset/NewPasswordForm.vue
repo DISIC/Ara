@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-import DsfrPassword from "../../DsfrPassword.vue";
+import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const emit = defineEmits<{
   (e: "submit", newPassword: string): void;

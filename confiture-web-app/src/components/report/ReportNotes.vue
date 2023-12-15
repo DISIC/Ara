@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MarkdownRenderer from "./MarkdownRenderer.vue";
+import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 import { useReportStore } from "../../store";
 
 const report = useReportStore();

@@ -9,8 +9,8 @@ import { useAccountStore } from "../../store/account";
 import { AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
-import BackLink from "./BackLink.vue";
-import DsfrField from "./DsfrField.vue";
+import BackLink from "../ui/BackLink.vue";
+import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
   defaultValues?: CreateAuditRequestData;

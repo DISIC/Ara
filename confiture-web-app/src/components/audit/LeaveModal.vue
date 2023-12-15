@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import DsfrModal from "./DsfrModal.vue";
+import DsfrModal from "../ui/DsfrModal.vue";
 
 defineProps<{
   title: string;

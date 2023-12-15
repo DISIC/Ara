@@ -19,11 +19,11 @@ import {
 } from "../../utils";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
-import Dropdown from "./Dropdown.vue";
+import Dropdown from "../ui/Dropdown.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
-import SummaryCard from "./SummaryCard.vue";
-import CopyIcon from "./icons/CopyIcon.vue";
+import SummaryCard from "../SummaryCard.vue";
+import CopyIcon from "../icons/CopyIcon.vue";
 
 defineProps<{
   auditName: string;

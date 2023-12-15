@@ -2,7 +2,7 @@
 import { marked } from "marked";
 
 import methodologies from "../../methodologies.json";
-import LazyAccordion from "../LazyAccordion.vue";
+import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   topicNumber: number;

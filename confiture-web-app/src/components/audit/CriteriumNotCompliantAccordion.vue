@@ -5,8 +5,8 @@ import { CriterionResultUserImpact, ExampleImage } from "../../types";
 import { formatBytes, formatUserImpact } from "../../utils";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
-import { RadioColor } from "./Radio.vue";
-import RadioGroup from "./RadioGroup.vue";
+import { RadioColor } from "../ui/Radio.vue";
+import RadioGroup from "../ui/RadioGroup.vue";
 
 const props = defineProps<{
   id: string;

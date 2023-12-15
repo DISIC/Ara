@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import fiphfpLogo from "../assets/images/fiphfp.png";
+import fiphfpLogo from "../../assets/images/fiphfp.png";
 import ThemeModal from "./ThemeModal.vue";
 </script>
 
