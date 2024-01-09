@@ -8,7 +8,7 @@
 
 ## Configuration
 
-The applicatoin requires the following environement variables.
+The application requires the following environment variables.
 
 **`DATABASE_URL`** : Connection URL for the postgre database.
 
@@ -18,7 +18,7 @@ The applicatoin requires the following environement variables.
 **`MAILER_SMTP_PORT`** and
 **`MAILER_SMTP_SECURE`** : Email server configuration. For development purpose, you can create a debug email address at https://ethereal.email/.
 
-**`FONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
+**`FRONT_BASE_URL`** : Base url of the client app. Used in mails. Defaults to `http://localhost:3000`.
 
 **`AIRTABLE_ACCESS_TOKEN`** : API token used to add feeback rows on Airtable.
 
