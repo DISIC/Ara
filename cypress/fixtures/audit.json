@@ -1,0 +1,10 @@
+{
+  "auditType": "FULL",
+  "procedureName": "Ma procédure test",
+  "pages": [
+    { "name": "Accueil", "url": "https://example.com" },
+    { "name": "Contact", "url": "https://example.com/contact" }
+  ],
+  "procedureAuditorName": "Odette Smith",
+  "procedureAuditorEmail": "odette.smith@splootify.com"
+}
