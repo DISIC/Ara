@@ -1,4 +1,4 @@
-describe.skip("Report", () => {
-  it("User can filter errors", () => {});
-  it("User can download results", () => {});
+describe("Report", () => {
+  //   it.skip("User can filter errors", () => {});
+  //   it.skip("User can download results", () => {});
 });

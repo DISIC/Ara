@@ -194,6 +194,7 @@ const previousRoute = usePreviousRoute();
           class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
           type="button"
           :disabled="pages.length === 1"
+          data-cy="delete"
           @click="deletePage(i)"
         >
           Supprimer
