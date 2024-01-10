@@ -15,13 +15,13 @@ import { omit, pick, setWith } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
-import { AuditReportDto } from "./audit-report.dto";
-import { CreateAuditDto } from "./create-audit.dto";
+import { AuditReportDto } from "./dto/audit-report.dto";
+import { CreateAuditDto } from "./dto/create-audit.dto";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { FileStorageService } from "./file-storage.service";
-import { UpdateAuditDto } from "./update-audit.dto";
-import { UpdateResultsDto } from "./update-results.dto";
-import { PatchAuditDto } from "./patch-audit.dto";
+import { UpdateAuditDto } from "./dto/update-audit.dto";
+import { UpdateResultsDto } from "./dto/update-results.dto";
+import { PatchAuditDto } from "./dto/patch-audit.dto";
 
 const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
   recipients: true,

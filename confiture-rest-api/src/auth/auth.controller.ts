@@ -40,8 +40,8 @@ import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { VerifyAccountDto } from "./dto/verify-account.dto";
 import { AuthenticationJwtPayload } from "./jwt-payloads";
 import { User } from "./user.decorator";
-import { UpdateEmailDto } from "./update-email.dto";
-import { VerifyEmailUpdateDto } from "./verify-email-update.dto";
+import { UpdateEmailDto } from "./dto/update-email.dto";
+import { VerifyEmailUpdateDto } from "./dto/verify-email-update.dto";
 
 @Controller("auth")
 @ApiTags("Authentication")
