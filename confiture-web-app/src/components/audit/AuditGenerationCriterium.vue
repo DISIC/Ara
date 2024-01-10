@@ -12,6 +12,7 @@ import {
   CriteriumResultStatus,
   ExampleImage
 } from "../../types";
+import CriteriumTransverseNotCompliantAccordion from "./CriteriumTransverseNotCompliantAccordion.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -292,8 +293,49 @@ const isOffline = useIsOffline();
       </div>
     </div>
 
-    <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
+    <CriteriumTransverseNotCompliantAccordion
+      v-if="result.transverse"
+      :id="`transverse-not-compliant-accordion-${uniqueId}`"
+      :comment="''"
+      :user-impact="null"
+      :example-images="[]"
+      :recommandation="''"
+      :quick-win="false"
+      :show-file-format-error="false"
+      :show-file-size-error="false"
+      @update:comment="
+        () => {
+          console.log('TODO');
+        }
+      "
+      @update:user-impact="
+        () => {
+          console.log('TODO');
+        }
+      "
+      @upload-example="
+        () => {
+          console.log('TODO');
+        }
+      "
+      @delete-example="
+        () => {
+          console.log('TODO');
+        }
+      "
+      @update:recommandation="
+        () => {
+          console.log('TODO');
+        }
+      "
+      @update:quick-win="
+        () => {
+          console.log('TODO');
+        }
+      "
+    />
+
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
