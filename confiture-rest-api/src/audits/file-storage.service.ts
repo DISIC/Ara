@@ -67,9 +67,9 @@ export class FileStorageService {
           (d) =>
             new CopyObjectCommand({
               Bucket: this.config.get<string>("S3_BUCKET"),
-              CopySource: `/${this.config.get<string>("S3_BUCKET")}/${
-                d.originalKey
-              }`,
+              CopySource: encodeURIComponent(
+                `/${this.config.get<string>("S3_BUCKET")}/${d.originalKey}`
+              ),
               Key: d.destinationKey,
               ACL: "public-read"
             })
