@@ -13,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "close", confirmed: boolean): void;
+  (e: "close"): void;
 }>();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
@@ -59,7 +59,6 @@ const steps = computed(() => [
 
 const currentStep = ref(0);
 const contentEl = ref<HTMLDivElement>();
-const confirmed = ref(false);
 
 const previousStep = () => {
   currentStep.value = Math.max(0, currentStep.value - 1);
@@ -67,7 +66,6 @@ const previousStep = () => {
 
 const nextStep = () => {
   if (currentStep.value === 4) {
-    confirmed.value = true;
     modal.value?.hide();
   }
 
@@ -85,7 +83,7 @@ watch(currentStep, () => {
     id="onboarding-modal"
     ref="modal"
     aria-label="Bienvenue sur votre rapport d’audit"
-    @closed="emit('close', confirmed)"
+    @closed="emit('close')"
   >
     <div class="fr-container fr-container--fluid fr-container-md">
       <div class="fr-grid-row fr-grid-row--center">

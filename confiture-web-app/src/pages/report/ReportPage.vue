@@ -60,7 +60,6 @@ function hideReportAlert() {
 }
 
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
-const showOnboardingAlert = ref(false);
 
 watch(
   () => report.data,
@@ -72,25 +71,12 @@ watch(
       ) {
         onboardingModalRef.value?.show();
       }
-
-      showOnboardingAlert.value =
-        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:hide-onboarding-alert") !== "true";
     }
   }
 );
 
-function onOnboardingClose(confirmed: boolean) {
+function onOnboardingClose() {
   localStorage.setItem("confiture:seen-onboarding", "true");
-  showOnboardingAlert.value = !confirmed;
-  if (confirmed) {
-    localStorage.setItem("confiture:hide-onboarding-alert", "true");
-  }
-}
-
-function onOnboardingAlertClose() {
-  showOnboardingAlert.value = false;
-  localStorage.setItem("confiture:hide-onboarding-alert", "true");
 }
 
 const targetTab = ref(route.params.tab as string | undefined);
@@ -145,21 +131,6 @@ const siteUrl = computed(() => {
 </script>
 
 <template>
-  <div v-if="showOnboardingAlert" class="fr-alert fr-alert--info fr-mb-6w">
-    <p class="fr-alert__title">Vous ne savez pas par quel bout commencer ?</p>
-    <p>
-      Retrouvez tous nos conseils dans la page
-      <RouterLink to="/aide">Aide</RouterLink>
-    </p>
-    <button
-      class="fr-btn--close fr-btn"
-      title="Masquer le message"
-      @click="onOnboardingAlertClose"
-    >
-      Masquer le message
-    </button>
-  </div>
-
   <div
     v-if="
       report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
