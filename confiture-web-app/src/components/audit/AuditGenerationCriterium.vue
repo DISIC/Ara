@@ -294,6 +294,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
+    <!-- TODO: use same not compliant accordion component?-->
     <CriteriumTransverseNotCompliantAccordion
       v-if="result.transverse"
       :id="`transverse-not-compliant-accordion-${uniqueId}`"
@@ -304,36 +305,12 @@ const isOffline = useIsOffline();
       :quick-win="false"
       :show-file-format-error="false"
       :show-file-size-error="false"
-      @update:comment="
-        () => {
-          console.log('TODO');
-        }
-      "
-      @update:user-impact="
-        () => {
-          console.log('TODO');
-        }
-      "
-      @upload-example="
-        () => {
-          console.log('TODO');
-        }
-      "
-      @delete-example="
-        () => {
-          console.log('TODO');
-        }
-      "
-      @update:recommandation="
-        () => {
-          console.log('TODO');
-        }
-      "
-      @update:quick-win="
-        () => {
-          console.log('TODO');
-        }
-      "
+      @update:comment="() => console.log('TODO')"
+      @update:user-impact="() => console.log('TODO')"
+      @upload-example="() => console.log('TODO')"
+      @delete-example="() => console.log('TODO')"
+      @update:recommandation="() => console.log('TODO')"
+      @update:quick-win="() => console.log('TODO')"
     />
 
     <CriteriumCompliantAccordion
