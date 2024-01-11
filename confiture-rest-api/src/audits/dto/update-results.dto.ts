@@ -20,7 +20,7 @@ import {
   ValidationOptions
 } from "class-validator";
 
-import { CRITERIA } from "./criteria";
+import { CRITERIA } from "../criteria";
 
 /** Validates the criterium property to make sure the criterium exists in the RGAA. */
 export function IsRgaaCriterium(validationOptions?: ValidationOptions) {

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got, { HTTPError } from "got";
-import { NewFeedbackDto } from "./new-feedback.dto";
+import { NewFeedbackDto } from "./dto/new-feedback.dto";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma.service";
 import { nanoid } from "nanoid";
