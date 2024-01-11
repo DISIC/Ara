@@ -141,6 +141,7 @@ async function deletePage(i: number) {
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {
+  pagesArePristine.value = false;
   auditType.value = AuditType.FULL;
   procedureName.value = "Ma procédure";
   pages.value = [
