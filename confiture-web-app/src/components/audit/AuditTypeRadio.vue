@@ -1,27 +1,40 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 import { AuditType } from "../../types";
-import { getCriteriaCount } from "../../utils";
+import { getCriteriaCount, pluralize } from "../../utils";
 
 /**
  * TODO:
  * - align input with label
  */
 
-defineProps<{
+const props = defineProps<{
   value: AuditType;
   checked: boolean;
   modelValue: string | null;
   goals: { emoji: string; label: string }[];
 }>();
-defineEmits(["update:modelValue"]);
+
+const emit = defineEmits(["update:modelValue"]);
+
+const inputRef = ref<HTMLInputElement>();
+
+function handleLayerClick() {
+  emit("update:modelValue", props.value);
+  inputRef.value?.focus();
+}
 </script>
 
 <template>
   <div :class="['fr-p-3w wrapper', { checked: checked }]">
-    <div class="pouet" @click="$emit('update:modelValue', value)" />
+    <!-- Allow click on the whole radio square -->
+    <div class="radio-layer" @click="handleLayerClick" />
+
     <div class="fr-radio-group fr-radio-group--sm">
       <input
         :id="`audit-type-${value}`"
+        ref="inputRef"
         class="radio-input"
         type="radio"
         name="audit-type"
@@ -40,7 +53,9 @@ defineEmits(["update:modelValue"]);
       </label>
     </div>
     <div class="fr-pl-3w">
-      <p class="fr-text--sm fr-mb-1w list-heading">Objectifs</p>
+      <p class="fr-text--sm fr-mb-1w list-heading">
+        {{ pluralize("Objectif", "Objectifs", goals.length) }}
+      </p>
       <ul class="fr-m-0 fr-p-0">
         <li v-for="goal in goals" :key="goal.label" class="fr-mb-1w list-item">
           <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
@@ -52,9 +67,10 @@ defineEmits(["update:modelValue"]);
       <p class="fr-text--sm fr-mb-1w list-heading">Prérequis</p>
       <ul class="fr-m-0 fr-p-0">
         <li class="fr-mb-1w list-item">
-          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true"
-            >🧑</span
-          >Très bonnes connaissances techniques et du RGAA
+          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
+            🧑
+          </span>
+          Très bonnes connaissances techniques et du RGAA
         </li>
       </ul>
     </div>
@@ -72,11 +88,10 @@ defineEmits(["update:modelValue"]);
   --border-default-grey: var(--border-plain-blue-france);
 }
 
-.pouet {
-  /* background-color: red; */
-  opacity: 0.3;
+.radio-layer {
   position: absolute;
   inset: 0;
+  cursor: pointer;
 }
 
 .radio-input {
