@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useDevMode } from "../../composables/useDevMode";
@@ -42,21 +42,28 @@ const availableAuditTypes = [
   }
 ];
 
+const fullDefaultPages = [
+  { name: "Accueil", url: "" },
+  { name: "Contact", url: "" },
+  { name: "Mentions légales", url: "" },
+  { name: "Accessibilité", url: "" },
+  { name: "Plan du site", url: "" },
+  { name: "Aide", url: "" },
+  { name: "Authentification", url: "" }
+];
+
+const fastAndComplementaryDefaultPages = [
+  { name: "Accueil", url: "" },
+  { name: "Contact", url: "" }
+];
+
+const pagesArePristine = ref(!props.defaultValues?.pages);
+
 const accountStore = useAccountStore();
 
 const auditType = ref(props.defaultValues?.auditType ?? null);
 const procedureName = ref(props.defaultValues?.procedureName ?? "");
-const pages = ref(
-  props.defaultValues?.pages ?? [
-    { name: "Accueil", url: "" },
-    { name: "Contact", url: "" },
-    { name: "Mentions légales", url: "" },
-    { name: "Accessibilité", url: "" },
-    { name: "Plan du site", url: "" },
-    { name: "Aide", url: "" },
-    { name: "Authentification", url: "" }
-  ]
-);
+const pages = ref(props.defaultValues?.pages ?? fullDefaultPages);
 const procedureAuditorName = ref(
   props.defaultValues?.auditorName ?? accountStore.account?.name ?? ""
 );
@@ -65,6 +72,20 @@ const procedureAuditorEmail = ref(
 );
 
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+
+// Update default pages except if pages has been changed by user
+watch(auditType, (newValue) => {
+  if (
+    (newValue === AuditType.FAST || newValue === AuditType.COMPLEMENTARY) &&
+    pagesArePristine.value
+  ) {
+    pages.value = [...fastAndComplementaryDefaultPages];
+  }
+
+  if (newValue === AuditType.FULL && pagesArePristine.value) {
+    pages.value = [...fullDefaultPages];
+  }
+});
 
 /**
  * Create a new page and focus its name field.
@@ -88,6 +109,10 @@ async function deletePage(i: number) {
     i === 0 ? pageNameFieldRefs.value[0] : pageNameFieldRefs.value[i - 1];
   notify("success", `La page ${pageName ? pageName : ""} a bien été supprimée`);
   previousField.inputRef?.focus();
+
+  if (pagesArePristine.value) {
+    pagesArePristine.value = false;
+  }
 }
 
 /**
@@ -179,13 +204,14 @@ const previousRoute = usePreviousRoute();
         required
       />
 
-      <h2 class="fr-h4">Les pages et URL à auditer</h2>
+      <h2 class="fr-h4">Échantillon des pages à auditer</h2>
 
-      <fieldset
-        v-for="(page, i) in pages"
-        :key="i"
-        class="fr-mt-4w fr-p-4w page-card"
-      >
+      <p v-if="!auditType || auditType === AuditType.FULL" class="fr-mb-2w">
+        Par défaut nous vous proposons les pages obligatoires prévues par le
+        RGAA.
+      </p>
+
+      <fieldset v-for="(page, i) in pages" :key="i" class="fr-p-4w page-card">
         <legend class="page-legend">
           <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
         </legend>
@@ -207,6 +233,7 @@ const previousRoute = usePreviousRoute();
           v-model="page.name"
           label="Nom de la page"
           class="fr-mt-2w page-field"
+          @change="pagesArePristine = false"
         />
 
         <DsfrField
@@ -216,6 +243,7 @@ const previousRoute = usePreviousRoute();
           type="url"
           required
           class="page-field"
+          @change="pagesArePristine = false"
         >
           <template #hint>
             L’URL de la page doit commencer par <code>https://</code>
