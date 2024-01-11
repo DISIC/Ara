@@ -35,7 +35,9 @@ const fullAudit = {
       emoji: "📄",
       label: "Générer une déclaration d’accessibilité"
     }
-  ]
+  ],
+  documentation:
+    "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
 };
 const partialAudits = [
   {
@@ -45,7 +47,8 @@ const partialAudits = [
         emoji: "🔎",
         label: "Identifier les principales erreurs d’accessibilité"
       }
-    ]
+    ],
+    documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
   },
   {
     value: AuditType.COMPLEMENTARY,
@@ -55,7 +58,9 @@ const partialAudits = [
         label:
           "Approfondir l’audit 25 critères avec 25 critères supplémentaires"
       }
-    ]
+    ],
+    documentation:
+      "https://design.numerique.gouv.fr/outils/audit-complementaire/"
   }
 ];
 
@@ -204,6 +209,7 @@ const previousRoute = usePreviousRoute();
       :value="fullAudit.value"
       :checked="auditType === fullAudit.value"
       :goals="fullAudit.goals"
+      :documentation-link="fullAudit.documentation"
     />
     <h3 class="fr-text--lg fr-mb-1v">Audit partiels</h3>
     <p class="fr-mb-2w">
@@ -220,6 +226,7 @@ const previousRoute = usePreviousRoute();
         :value="type.value"
         :checked="auditType === type.value"
         :goals="type.goals"
+        :documentation-link="type.documentation"
       />
     </div>
 

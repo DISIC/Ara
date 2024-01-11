@@ -9,6 +9,7 @@ const props = defineProps<{
   checked: boolean;
   modelValue: string | null;
   goals: { emoji: string; label: string }[];
+  documentationLink: string;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
@@ -60,7 +61,7 @@ function handleLayerClick() {
         </li>
       </ul>
       <p class="fr-text--sm fr-mb-1w list-heading">Prérequis</p>
-      <ul class="fr-m-0 fr-p-0">
+      <ul class="fr-mt-0 fr-mb-2w fr-p-0">
         <li class="fr-mb-1w list-item">
           <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
             🧑
@@ -68,6 +69,13 @@ function handleLayerClick() {
           Très bonnes connaissances techniques et du RGAA
         </li>
       </ul>
+      <p class="fr-text--sm fr-mb-0 radio-link">
+        <a :href="documentationLink" class="fr-link" target="_blank">
+          Liste des
+          <span class="sr-only">{{ getCriteriaCount(value) }}</span>
+          critères
+        </a>
+      </p>
     </div>
   </div>
 </template>
@@ -77,6 +85,10 @@ function handleLayerClick() {
   flex-direction: column;
   border: 1px solid var(--border-default-grey);
   position: relative;
+}
+
+.wrapper:hover {
+  background-color: var(--background-default-grey-hover);
 }
 
 .wrapper.checked {
@@ -115,10 +127,18 @@ function handleLayerClick() {
   flex-shrink: 0;
 }
 
+.radio-link {
+  position: relative;
+}
+
 /* Override DSFR radio input position to align with a larger label */
-fr-radio-group--sm input[type="radio"] + label {
+.fr-radio-group--sm input[type="radio"] + label {
   background-position:
     calc(-0.125rem + 1px) calc(0.5rem - 1px),
-    calc(-0.125rem + 1px) calc(0.5rem - 1px);
+    calc(-0.125rem + 1px) calc(0.5rem - 1px) !important;
+}
+
+.fr-radio-group--sm input[type="radio"] + label::before {
+  top: 0.5rem;
 }
 </style>
