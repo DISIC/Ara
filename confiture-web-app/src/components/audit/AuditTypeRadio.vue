@@ -4,11 +4,6 @@ import { ref } from "vue";
 import { AuditType } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 
-/**
- * TODO:
- * - align input with label
- */
-
 const props = defineProps<{
   value: AuditType;
   checked: boolean;
@@ -118,5 +113,12 @@ function handleLayerClick() {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+/* Override DSFR radio input position to align with a larger label */
+fr-radio-group--sm input[type="radio"] + label {
+  background-position:
+    calc(-0.125rem + 1px) calc(0.5rem - 1px),
+    calc(-0.125rem + 1px) calc(0.5rem - 1px);
 }
 </style>
