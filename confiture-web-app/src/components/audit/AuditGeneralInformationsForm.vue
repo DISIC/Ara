@@ -20,25 +20,42 @@ const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
 }>();
 
-const availableAuditTypes = [
+const fullAudit = {
+  value: AuditType.FULL,
+  goals: [
+    {
+      emoji: "🔎",
+      label: "Identifier toutes les erreurs d’accessibilité"
+    },
+    {
+      emoji: "📊",
+      label: "Obtenir un taux global de conformité au RGAA "
+    },
+    {
+      emoji: "📄",
+      label: "Générer une déclaration d’accessibilité"
+    }
+  ]
+};
+const partialAudits = [
   {
-    label: "Rapide",
     value: AuditType.FAST,
-    description:
-      "25 critères du RGAA absolument essentiels. L’évaluation de ces critères nécessite malgré tout une bonne connaissance du RGAA."
+    goals: [
+      {
+        emoji: "🔎",
+        label: "Identifier les principales erreurs d’accessibilité"
+      }
+    ]
   },
   {
-    label: "Complémentaire",
     value: AuditType.COMPLEMENTARY,
-    description:
-      "50 critères dont les 25 critères de l’audit rapide. Permet de donner une idée plus précise de l’accessibilité numérique de votre service."
-  },
-  {
-    label: "Complet, de conformité",
-    value: AuditType.FULL,
-    description:
-      "L’audit complet dit de conformité est le seul audit ayant une valeur légale et permettant de générer une <strong>déclaration d’accessibilité</strong>.",
-    highlighted: true
+    goals: [
+      {
+        emoji: "🔎",
+        label:
+          "Approfondir l’audit 25 critères avec 25 critères supplémentaires"
+      }
+    ]
   }
 ];
 
@@ -166,7 +183,7 @@ const previousRoute = usePreviousRoute();
     />
   </template>
 
-  <form @submit.prevent="onSubmit">
+  <form class="narrow-content" @submit.prevent="onSubmit">
     <h1 class="fr-mb-3v">
       <span aria-hidden="true">⚙️</span> Paramètres de l’audit
     </h1>
@@ -174,138 +191,146 @@ const previousRoute = usePreviousRoute();
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
-    <section class="fr-form-group">
-      <fieldset class="fr-fieldset">
-        <legend id="radio-rich-legend" class="fr-fieldset__legend">
-          <h2 class="fr-h4 fr-mb-2w">Type d’audit</h2>
-        </legend>
-        <div class="fr-fieldset__content audit-types">
-          <AuditTypeRadio
-            v-for="type in availableAuditTypes"
-            :key="type.value"
-            v-model="auditType"
-            class="audit-type"
-            :value="type.value"
-            :label="type.label"
-            :checked="auditType === type.value"
-            :description="type.description"
-            :highlighted="type.highlighted"
-          />
-        </div>
-      </fieldset>
-    </section>
+    <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
+    <h3 class="fr-text--lg fr-mb-1v">Audit complet</h3>
+    <p class="fr-mb-2w">
+      Cet audit permet de mesurer la conformité au RGAA d’un site internet, il a
+      une <strong>valeur légale</strong>.
+    </p>
+    <AuditTypeRadio
+      :key="fullAudit.value"
+      v-model="auditType"
+      class="fr-mb-3w audit-type"
+      :value="fullAudit.value"
+      :checked="auditType === fullAudit.value"
+      :goals="fullAudit.goals"
+    />
+    <h3 class="fr-text--lg fr-mb-1v">Audit partiels</h3>
+    <p class="fr-mb-2w">
+      Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
+      n’ont <strong>pas de valeur légale</strong>.
+    </p>
 
-    <div class="narrow-content">
-      <DsfrField
-        id="procedure-name"
-        v-model="procedureName"
-        class="fr-my-6w"
-        label="Nom du site à auditer"
-        required
+    <div class="partial-audit-radios">
+      <AuditTypeRadio
+        v-for="type in partialAudits"
+        :key="type.value"
+        v-model="auditType"
+        class="audit-type"
+        :value="type.value"
+        :checked="auditType === type.value"
+        :goals="type.goals"
       />
+    </div>
 
-      <h2 class="fr-h4">Échantillon des pages à auditer</h2>
+    <DsfrField
+      id="procedure-name"
+      v-model="procedureName"
+      class="fr-my-6w"
+      label="Nom du site à auditer"
+      required
+    />
 
-      <p v-if="!auditType || auditType === AuditType.FULL" class="fr-mb-2w">
-        Par défaut nous vous proposons les pages obligatoires prévues par le
-        RGAA.
-      </p>
+    <h2 class="fr-h4">Échantillon des pages à auditer</h2>
 
-      <fieldset v-for="(page, i) in pages" :key="i" class="fr-p-4w page-card">
-        <legend class="page-legend">
-          <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
-        </legend>
+    <p v-if="!auditType || auditType === AuditType.FULL" class="fr-mb-2w">
+      Par défaut nous vous proposons les pages obligatoires prévues par le RGAA.
+    </p>
 
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
-          type="button"
-          :disabled="pages.length === 1"
-          data-cy="delete"
-          @click="deletePage(i)"
-        >
-          Supprimer
-          <span class="sr-only">la page {{ i + 1 }}</span>
-        </button>
+    <fieldset v-for="(page, i) in pages" :key="i" class="fr-p-4w page-card">
+      <legend class="page-legend">
+        <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+      </legend>
 
-        <DsfrField
-          :id="`page-name-${i + 1}`"
-          ref="pageNameFieldRefs"
-          v-model="page.name"
-          label="Nom de la page"
-          class="fr-mt-2w page-field"
-          @change="pagesArePristine = false"
-        />
-
-        <DsfrField
-          :id="`page-url-${i + 1}`"
-          v-model="page.url"
-          label="URL de la page"
-          type="url"
-          required
-          class="page-field"
-          @change="pagesArePristine = false"
-        >
-          <template #hint>
-            L’URL de la page doit commencer par <code>https://</code>
-          </template>
-        </DsfrField>
-      </fieldset>
       <button
-        class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
+        class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
         type="button"
-        @click="addPage"
+        :disabled="pages.length === 1"
+        data-cy="delete"
+        @click="deletePage(i)"
       >
-        Ajouter une page
+        Supprimer
+        <span class="sr-only">la page {{ i + 1 }}</span>
       </button>
 
-      <fieldset
-        v-if="!accountStore.account?.name || !accountStore.account?.email"
-        class="fr-p-0 auditor-fields"
+      <DsfrField
+        :id="`page-name-${i + 1}`"
+        ref="pageNameFieldRefs"
+        v-model="page.name"
+        label="Nom de la page"
+        class="fr-mt-2w page-field"
+        @change="pagesArePristine = false"
+      />
+
+      <DsfrField
+        :id="`page-url-${i + 1}`"
+        v-model="page.url"
+        label="URL de la page"
+        type="url"
+        required
+        class="page-field"
+        @change="pagesArePristine = false"
       >
-        <legend>
-          <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
-        </legend>
+        <template #hint>
+          L’URL de la page doit commencer par <code>https://</code>
+        </template>
+      </DsfrField>
+    </fieldset>
+    <button
+      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
+      type="button"
+      @click="addPage"
+    >
+      Ajouter une page
+    </button>
 
-        <DsfrField
-          v-if="!accountStore.account?.name"
-          id="procedure-auditor-name"
-          v-model="procedureAuditorName"
-          label="Prénom et nom (optionnel)"
-          hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
-        />
+    <fieldset
+      v-if="!accountStore.account?.name || !accountStore.account?.email"
+      class="fr-p-0 auditor-fields"
+    >
+      <legend>
+        <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
+      </legend>
 
-        <DsfrField
-          v-if="!accountStore.account?.email"
-          id="procedure-auditor-email"
-          v-model="procedureAuditorEmail"
-          class="fr-mb-0"
-          label="Adresse e-mail"
-          hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
-          type="email"
-          required
-        />
-      </fieldset>
+      <DsfrField
+        v-if="!accountStore.account?.name"
+        id="procedure-auditor-name"
+        v-model="procedureAuditorName"
+        label="Prénom et nom (optionnel)"
+        hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+      />
 
-      <div v-if="isDevMode">
-        <button class="fr-btn fr-mt-4w" type="button" @click="fillFields">
-          [DEV] Remplir les champs
-        </button>
-      </div>
+      <DsfrField
+        v-if="!accountStore.account?.email"
+        id="procedure-auditor-email"
+        v-model="procedureAuditorEmail"
+        class="fr-mb-0"
+        label="Adresse e-mail"
+        hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
+        type="email"
+        required
+      />
+    </fieldset>
 
-      <div>
-        <button class="fr-btn fr-mt-4w" type="submit">
-          Valider les paramètres
-        </button>
+    <div v-if="isDevMode">
+      <button class="fr-btn fr-mt-4w" type="button" @click="fillFields">
+        [DEV] Remplir les champs
+      </button>
+    </div>
 
-        <button
-          v-if="route.name !== 'create-audit'"
-          class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
-          type="button"
-          @click="$router.back()"
-        >
-          Annuler
-        </button>
-      </div>
+    <div>
+      <button class="fr-btn fr-mt-4w" type="submit">
+        Valider les paramètres
+      </button>
+
+      <button
+        v-if="route.name !== 'create-audit'"
+        class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
+        type="button"
+        @click="$router.back()"
+      >
+        Annuler
+      </button>
     </div>
   </form>
 </template>
@@ -323,6 +348,12 @@ const previousRoute = usePreviousRoute();
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.partial-audit-radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .audit-type {

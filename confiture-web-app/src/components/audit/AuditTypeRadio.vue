@@ -2,26 +2,24 @@
 import { AuditType } from "../../types";
 import { getCriteriaCount } from "../../utils";
 
+/**
+ * TODO:
+ * - align input with label
+ */
+
 defineProps<{
-  label: string;
   value: AuditType;
   checked: boolean;
   modelValue: string | null;
-  description: string;
-  highlighted?: boolean;
+  goals: { emoji: string; label: string }[];
 }>();
 defineEmits(["update:modelValue"]);
 </script>
 
 <template>
   <div :class="['fr-p-3w wrapper', { checked: checked }]">
-    <p
-      class="fr-badge fr-badge--sm fr-mb-1w"
-      :class="{ 'fr-badge--green-bourgeon': highlighted }"
-    >
-      {{ getCriteriaCount(value) }} critères
-    </p>
-    <div class="fr-radio-group">
+    <div class="pouet" @click="$emit('update:modelValue', value)" />
+    <div class="fr-radio-group fr-radio-group--sm">
       <input
         :id="`audit-type-${value}`"
         class="radio-input"
@@ -34,17 +32,31 @@ defineEmits(["update:modelValue"]);
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
         "
       />
-      <!-- TODO: make the whole square clickable -->
       <label
-        class="fr-label fr-text--xl fr-text--bold label"
+        class="fr-label fr-text--xl fr-text--bold radio-label fr-mb-3v"
         :for="`audit-type-${value}`"
       >
-        {{ label }}
-        <span
-          class="fr-text fr-text--md fr-text--regular fr-mb-0 fr-mt-3v"
-          v-html="description"
-        />
+        {{ getCriteriaCount(value) }} critères
       </label>
+    </div>
+    <div class="fr-pl-3w">
+      <p class="fr-text--sm fr-mb-1w list-heading">Objectifs</p>
+      <ul class="fr-m-0 fr-p-0">
+        <li v-for="goal in goals" :key="goal.label" class="fr-mb-1w list-item">
+          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
+            {{ goal.emoji }}
+          </span>
+          {{ goal.label }}
+        </li>
+      </ul>
+      <p class="fr-text--sm fr-mb-1w list-heading">Prérequis</p>
+      <ul class="fr-m-0 fr-p-0">
+        <li class="fr-mb-1w list-item">
+          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true"
+            >🧑</span
+          >Très bonnes connaissances techniques et du RGAA
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -53,14 +65,43 @@ defineEmits(["update:modelValue"]);
 .wrapper {
   flex-direction: column;
   border: 1px solid var(--border-default-grey);
+  position: relative;
 }
 
 .wrapper.checked {
   --border-default-grey: var(--border-plain-blue-france);
 }
 
+.pouet {
+  /* background-color: red; */
+  opacity: 0.3;
+  position: absolute;
+  inset: 0;
+}
+
 .radio-input {
   /* When the browser scrolls to the required input from the bottom of the form, show the entire "radio block" */
   scroll-margin-top: 6rem;
+}
+
+.list-heading {
+  color: var(--text-mention-grey);
+}
+.list-item {
+  display: flex;
+  align-items: first baseline;
+  gap: 0.5rem;
+  /* position: relative; */
+}
+
+.list-item-icon {
+  background-color: var(--background-alt-grey);
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 </style>
