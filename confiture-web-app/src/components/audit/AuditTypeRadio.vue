@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import { AuditType } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
@@ -20,6 +20,15 @@ function handleLayerClick() {
   emit("update:modelValue", props.value);
   inputRef.value?.focus();
 }
+
+// String used to describe input with goals and requirements
+const descriptionId = computed(() => {
+  return (
+    `goal-${props.value}` +
+    `${props.goals.map((g, i) => ` goal-${i}-${props.value}`).join(" ")}` +
+    ` requirements-${props.value} requirement-${props.value}`
+  );
+});
 </script>
 
 <template>
@@ -37,6 +46,7 @@ function handleLayerClick() {
         :value="value"
         :checked="value === modelValue"
         required
+        :aria-describedby="descriptionId"
         @change="
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
         "
@@ -49,20 +59,30 @@ function handleLayerClick() {
       </label>
     </div>
     <div class="fr-pl-3w">
-      <p class="fr-text--sm fr-mb-1w list-heading">
+      <p :id="`goal-${value}`" class="fr-text--sm fr-mb-1w list-heading">
         {{ pluralize("Objectif", "Objectifs", goals.length) }}
       </p>
       <ul class="fr-m-0 fr-p-0">
-        <li v-for="goal in goals" :key="goal.label" class="fr-mb-1w list-item">
+        <li
+          v-for="(goal, i) in goals"
+          :id="`goal-${i}-${value}`"
+          :key="goal.label"
+          class="fr-mb-1w list-item"
+        >
           <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
             {{ goal.emoji }}
           </span>
           {{ goal.label }}
         </li>
       </ul>
-      <p class="fr-text--sm fr-mb-1w list-heading">Prérequis</p>
+      <p
+        :id="`requirements-${value}`"
+        class="fr-text--sm fr-mb-1w list-heading"
+      >
+        Prérequis
+      </p>
       <ul class="fr-mt-0 fr-mb-2w fr-p-0">
-        <li class="fr-mb-1w list-item">
+        <li :id="`requirement-${value}`" class="fr-mb-1w list-item">
           <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
             🧑
           </span>
