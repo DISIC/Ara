@@ -212,7 +212,7 @@ const previousRoute = usePreviousRoute();
       :goals="fullAudit.goals"
       :documentation-link="fullAudit.documentation"
     />
-    <h3 class="fr-text--lg fr-mb-1v">Audit partiels</h3>
+    <h3 class="fr-text--lg fr-mb-1v">Audits partiels</h3>
     <p class="fr-mb-2w">
       Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
       n’ont <strong>pas de valeur légale</strong>.
@@ -245,7 +245,12 @@ const previousRoute = usePreviousRoute();
       Par défaut nous vous proposons les pages obligatoires prévues par le RGAA.
     </p>
 
-    <fieldset v-for="(page, i) in pages" :key="i" class="fr-p-4w page-card">
+    <fieldset
+      v-for="(page, i) in pages"
+      :key="i"
+      class="fr-p-4w page-card"
+      :class="{ 'fr-mb-4w': i !== pages.length - 1 }"
+    >
       <legend class="page-legend">
         <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
       </legend>

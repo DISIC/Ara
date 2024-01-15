@@ -12,14 +12,9 @@ const props = defineProps<{
   documentationLink: string;
 }>();
 
-const emit = defineEmits(["update:modelValue"]);
+defineEmits(["update:modelValue"]);
 
 const inputRef = ref<HTMLInputElement>();
-
-function handleLayerClick() {
-  emit("update:modelValue", props.value);
-  inputRef.value?.focus();
-}
 
 // String used to describe input with goals and requirements
 const descriptionId = computed(() => {
@@ -34,7 +29,7 @@ const descriptionId = computed(() => {
 <template>
   <div :class="['fr-p-3w wrapper', { checked: checked }]">
     <!-- Allow click on the whole radio square -->
-    <div class="radio-layer" @click="handleLayerClick" />
+    <div class="radio-layer" @click="$emit('update:modelValue', value)" />
 
     <div class="fr-radio-group fr-radio-group--sm">
       <input
