@@ -156,9 +156,7 @@ const auditInProgress = computed(
     </h3>
 
     <div class="fr-p-4w fr-mb-6w table-wrapper">
-      <div
-        class="fr-table fr-table--no-caption fr-table--bordered fr-table--layout-fixed fr-mb-0"
-      >
+      <div class="fr-table fr-table--no-caption fr-table--bordered fr-mb-0">
         <table>
           <caption>
             {{
@@ -206,9 +204,7 @@ const auditInProgress = computed(
     </h3>
 
     <div class="fr-p-4w table-wrapper">
-      <div
-        class="fr-table fr-table--no-caption fr-table--bordered fr-table--layout-fixed fr-mb-0"
-      >
+      <div class="fr-table fr-table--no-caption fr-table--bordered fr-mb-0">
         <table>
           <caption>
             {{
@@ -256,5 +252,13 @@ const auditInProgress = computed(
 .table-wrapper {
   border: 1px solid var(--border-default-grey);
   max-width: 49.5rem;
+}
+
+/* To avoid JS based MQ, we replicate `fr-table--layout-fixed` */
+@media (min-width: 37.5rem) {
+  .fr-table table {
+    display: table;
+    table-layout: fixed;
+  }
 }
 </style>
