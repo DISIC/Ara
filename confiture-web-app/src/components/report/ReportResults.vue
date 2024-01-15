@@ -4,10 +4,6 @@ import { computed } from "vue";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { slugify, getAuditStatus } from "../../utils";
-import ChartLegend from "./ChartLegend.vue";
-import PieChart from "./PieChart.vue";
-import ResultDetailsCard from "./ResultDetailsCard.vue";
-import StackBarChart from "./StackBarChart.vue";
 import SummaryCard from "../SummaryCard.vue";
 
 const report = useReportStore();
@@ -51,10 +47,42 @@ const stats = computed(() => {
   ];
 });
 
-const chartsName = {
-  resultDistribution: "Répartition des critères par résultats",
-  pageDistribution: "Répartition des critères par pages",
-  topicDistribution: "Répartition des critères par thématiques"
+const pageDistributionTableData = {
+  title: "Répartition des critères par pages",
+  data: [
+    ["Page", "Critères conformes", "Critères non conformes"],
+    ...(report.data
+      ? report.data.pageDistributions.map((p) => {
+          return [
+            p.name,
+            `${Math.round(p.compliant.raw)}`,
+            `${Math.round(p.notCompliant.raw)}`
+          ];
+        })
+      : [])
+  ]
+};
+
+const topicDistributionTableData = {
+  title: "Répartition des critères par thématiques du RGAA",
+  data: [
+    [
+      "Thématique du RGAA",
+      "Critères conformes",
+      "Critères non conformes",
+      "Critères non applicables"
+    ],
+    ...(report.data
+      ? report.data.topicDistributions.map((t, i) => {
+          return [
+            `${i + 1}. ${t.name}`,
+            `${Math.round(t.compliant.raw)}`,
+            `${Math.round(t.notCompliant.raw)}`,
+            `${Math.round(t.notApplicable.raw)}`
+          ];
+        })
+      : [])
+  ]
 };
 
 const auditInProgress = computed(
@@ -121,166 +149,111 @@ const auditInProgress = computed(
 
     <h2 class="fr-mt-8w">Détails des résultats</h2>
 
-    <ResultDetailsCard
-      class="fr-mb-6w result-card"
-      :title="chartsName.resultDistribution"
-      :table-data="[
-        ['Critères', 'Résultat'],
-        [
-          'Conformes',
-          `${Math.round(report.data.resultDistribution.compliant.percentage)}%`
-        ],
-        [
-          'Non conformes',
-          `${Math.round(
-            report.data.resultDistribution.notCompliant.percentage
-          )}%`
-        ],
-        [
-          'Non applicables',
-          `${Math.round(
-            report.data.resultDistribution.notApplicable.percentage
-          )}%`
-        ]
-      ]"
-    >
-      <div class="card-content">
-        <ChartLegend class="card-legend" />
-        <PieChart
-          :compliant="report.data.resultDistribution.compliant.raw"
-          :not-compliant="report.data.resultDistribution.notCompliant.raw"
-          :not-applicable="report.data.resultDistribution.notApplicable.raw"
-          :aria-labelledby="slugify(chartsName.resultDistribution)"
-          aria-describedby="result-distribution-description"
-          role="img"
-        />
-        <span id="result-distribution-description" class="sr-only">
-          {{ Math.round(report.data.resultDistribution.compliant.percentage) }}%
-          de critères conformes,
-          {{
-            Math.round(report.data.resultDistribution.notCompliant.percentage)
-          }}% de critères non conformes,
-          {{
-            Math.round(report.data.resultDistribution.notApplicable.percentage)
-          }}% de critères non applicables
-        </span>
-      </div>
-    </ResultDetailsCard>
+    <!-- Per page -->
+    <h3 :id="slugify(pageDistributionTableData.title)" class="fr-h4 fr-mb-3w">
+      {{ pageDistributionTableData.title }}
+    </h3>
 
-    <ResultDetailsCard
-      class="fr-mb-6w result-card"
-      :title="chartsName.pageDistribution"
-      :table-data="[
-        [
-          'Page',
-          'Critères conformes',
-          'Critères non conformes',
-          'Critères non applicables'
-        ],
-        ...report.data.pageDistributions.map((p) => {
-          return [
-            p.name,
-            `${Math.round(p.compliant.percentage)}%`,
-            `${Math.round(p.notCompliant.percentage)}%`,
-            `${Math.round(p.notApplicable.percentage)}%`
-          ];
-        })
-      ]"
-    >
-      <div class="card-content">
-        <ChartLegend class="card-legend" />
-        <div class="card-main">
-          <StackBarChart
-            :data="report.data.pageDistributions"
-            :aria-labelledby="slugify(chartsName.pageDistribution)"
-            aria-describedby="page-distribution-description"
-            role="img"
-          />
-        </div>
-        <span id="page-distribution-description" class="sr-only">
-          <template
-            v-for="page in report.data.pageDistributions"
-            :key="page.name"
-          >
-            "{{ page.name }}" : {{ Math.round(page.compliant.percentage) }}% de
-            critères conformes, {{ Math.round(page.notCompliant.percentage) }}%
-            de critères non conformes et
-            {{ Math.round(page.notApplicable.percentage) }}% de critères non
-            applicables.
-          </template>
-        </span>
+    <div class="fr-p-4w fr-mb-6w table-wrapper">
+      <div
+        class="fr-table fr-table--no-caption fr-table--bordered fr-table--layout-fixed fr-mb-0"
+      >
+        <table>
+          <caption>
+            {{
+              pageDistributionTableData.title
+            }}
+          </caption>
+          <thead>
+            <tr>
+              <th
+                v-for="header in pageDistributionTableData.data[0]"
+                :key="header"
+                scope="col"
+              >
+                {{ header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(row, i) in pageDistributionTableData.data.slice(1)"
+              :key="i"
+            >
+              <td>
+                <a
+                  :href="
+                    report.data.context.samples.find((s) => s.name === row[0])
+                      ?.url
+                  "
+                  target="_blank"
+                  class="fr-text--bold"
+                >
+                  {{ row[0] }}
+                </a>
+              </td>
+              <td v-for="data in row.slice(1)" :key="data">{{ data }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </ResultDetailsCard>
+    </div>
 
-    <ResultDetailsCard
-      class="result-card"
-      :title="chartsName.topicDistribution"
-      :table-data="[
-        [
-          'Thématique du RGAA',
-          'Critères conformes',
-          'Critères non conformes',
-          'Critères non applicables'
-        ],
-        ...report.data.topicDistributions.map((t, i) => {
-          return [
-            `${i + 1}. ${t.name}`,
-            `${Math.round(t.compliant.percentage)}%`,
-            `${Math.round(t.notCompliant.percentage)}%`,
-            `${Math.round(t.notApplicable.percentage)}%`
-          ];
-        })
-      ]"
-    >
-      <div class="card-content">
-        <ChartLegend class="card-legend" />
-        <div class="card-main">
-          <StackBarChart
-            :data="report.data.topicDistributions"
-            :aria-labelledby="slugify(chartsName.topicDistribution)"
-            aria-describedby="topic-distribution-description"
-            role="img"
-          />
-        </div>
-        <span id="topic-distribution-description" class="sr-only">
-          <template
-            v-for="topic in report.data.topicDistributions"
-            :key="topic.name"
-          >
-            "{{ topic.name }}" : {{ Math.round(topic.compliant.percentage) }}%
-            de critères conformes,
-            {{ Math.round(topic.notCompliant.percentage) }}% de critères non
-            conformes et {{ Math.round(topic.notApplicable.percentage) }}% de
-            critères non applicables.
-          </template>
-        </span>
+    <!-- Per topic -->
+    <h3 :id="slugify(topicDistributionTableData.title)" class="fr-h4 fr-mb-3w">
+      {{ topicDistributionTableData.title }}
+    </h3>
+
+    <div class="fr-p-4w table-wrapper">
+      <div
+        class="fr-table fr-table--no-caption fr-table--bordered fr-table--layout-fixed fr-mb-0"
+      >
+        <table>
+          <caption>
+            {{
+              topicDistributionTableData.title
+            }}
+          </caption>
+          <thead>
+            <tr>
+              <th
+                v-for="header in [
+                  'Thématique du RGAA',
+                  'Critères conformes',
+                  'Critères non conformes',
+                  'Critères non applicables'
+                ]"
+                :key="header"
+                scope="col"
+              >
+                {{ header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(row, i) in report.data.topicDistributions.map((t, i) => {
+                return [
+                  `${i + 1}. ${t.name}`,
+                  `${Math.round(t.compliant.raw)}`,
+                  `${Math.round(t.notCompliant.raw)}`,
+                  `${Math.round(t.notApplicable.raw)}`
+                ];
+              })"
+              :key="i"
+            >
+              <td v-for="data in row" :key="data">{{ data }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </ResultDetailsCard>
+    </div>
   </template>
 </template>
 
 <style scoped>
-.result-card {
+.table-wrapper {
+  border: 1px solid var(--border-default-grey);
   max-width: 49.5rem;
-}
-.card-content {
-  display: flex;
-  gap: 3rem;
-}
-
-.card-legend {
-  flex-shrink: 0;
-}
-
-.card-main {
-  flex: 1;
-  overflow: hidden;
-}
-
-@media (max-width: 992px) {
-  .card-content {
-    flex-direction: column;
-    gap: 0;
-  }
 }
 </style>
