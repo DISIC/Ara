@@ -78,7 +78,7 @@ const auditIsInProgress = computed(() => {
           :value="complianceLevel"
           :total="100"
           unit="%"
-          theme="france"
+          theme="blue"
           size="sm"
         />
 
@@ -92,7 +92,7 @@ const auditIsInProgress = computed(() => {
         <StatDonut
           :value="notCompliantCriteriaCount"
           :total="getCriteriaCount(audit.auditType)"
-          theme="marianne"
+          theme="red"
           size="sm"
         />
 

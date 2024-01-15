@@ -3,8 +3,9 @@ import { computed } from "vue";
 
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
-import { slugify, getAuditStatus } from "../../utils";
+import { slugify, getAuditStatus, pluralize } from "../../utils";
 import SummaryCard from "../SummaryCard.vue";
+import { StatDonutTheme } from "../StatDonut.vue";
 
 const report = useReportStore();
 
@@ -13,36 +14,36 @@ const stats = computed(() => {
     ...(report.data?.auditType === AuditType.FULL
       ? [
           {
-            title: "Conformité RGAA",
-            description: "Taux global de conformité au RGAA",
+            title: "Conformité au RGAA",
+            description: "RGAA version 4.1",
             value: report.data!.accessibilityRate,
             total: 100,
             unit: "%",
             hasDetails: true,
-            theme: "france"
+            theme: "blue" as StatDonutTheme
           }
         ]
       : []),
 
     {
-      title: "Erreurs d’accessibilité",
-      description: `Dont ${
+      title: "Critères non conformes",
+      description: `Dont ${report.data!.blockingErrorCount} ${pluralize(
+        "bloquant",
+        "bloquants",
         report.data!.blockingErrorCount
-      } bloquantes pour l’usager`,
+      )} pour l’usager`,
       value: report.data!.errorCount,
       // FIXME: to confirm : error count is out of every criteria or only applicable criteria
       total:
         report.data!.totalCriteriaCount * report.data!.context.samples.length,
       danger: true,
-      theme: "marianne"
+      theme: "red" as StatDonutTheme
     },
     {
-      title: "Critères applicables",
-      description: `Sur un total de ${
-        report.data!.totalCriteriaCount
-      } critères`,
+      title: "Critères conformes",
       value: report.data!.applicableCriteriaCount,
-      total: report.data!.totalCriteriaCount
+      total: report.data!.totalCriteriaCount,
+      theme: "green" as StatDonutTheme
     }
   ];
 });
