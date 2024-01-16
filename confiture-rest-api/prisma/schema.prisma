@@ -83,6 +83,8 @@ model Audit {
   sourceAuditId Int?
   auditCopies   Audit[] @relation("AuditDuplicationHistory")
 
+  transverseCriterionResults TransverseCriterionResult[]
+
   @@unique([editUniqueId, consultUniqueId])
 }
 
@@ -117,6 +119,7 @@ model CriterionResult {
   id Int @id @default(autoincrement())
 
   status     CriterionResultStatus @default(NOT_TESTED)
+  // TODO: remove this property, but migrate existing transverse results to TransverseCriterionResult
   transverse Boolean               @default(false)
 
   compliantComment String?
@@ -138,6 +141,30 @@ model CriterionResult {
   page   AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([pageId, topic, criterium])
+}
+
+model TransverseCriterionResult {
+  id Int @id @default(autoincrement())
+
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade, onUpdate: Cascade)
+  auditUniqueId String?
+  topic         Int
+  criterium     Int
+
+  status     CriterionResultStatus @default(NOT_TESTED)
+  transverse Boolean               @default(false)
+
+  compliantComment String?
+
+  errorDescription String?
+  userImpact       CriterionResultUserImpact?
+  recommandation   String?
+  exampleImages    StoredFile[]
+  quickWin         Boolean                    @default(false)
+
+  notApplicableComment String?
+
+  @@unique([auditUniqueId, topic, criterium])
 }
 
 enum CriterionResultStatus {
@@ -174,6 +201,9 @@ model StoredFile {
 
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criterionResultId Int?
+
+  transverseCriterionResult   TransverseCriterionResult? @relation(fields: [transverseCriterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transverseCriterionResultId Int?
 }
 
 enum EmailStatus {
@@ -220,7 +250,7 @@ model User {
   orgName String?
 
   /// @DtoEntityHidden
-  newEmail String?
+  newEmail                String?
   /// @DtoEntityHidden
   newEmailVerificationJti String?
 }
