@@ -179,7 +179,23 @@ const csvExportFilename = computed(() => {
           }}
         </p>
       </template>
-      <p v-else class="fr-m-0">Non-applicable</p>
+      <p v-else class="fr-m-0">
+        Non-applicable
+        <button
+          class="fr-btn--tooltip fr-btn audit-compliance-level-tooltip"
+          aria-describedby="compliance-tooltip"
+        >
+          Information contextuelle
+        </button>
+        <span
+          id="compliance-tooltip"
+          class="fr-tooltip fr-placement"
+          role="tooltip"
+          aria-hidden="true"
+        >
+          Seul l'audit 106 critères permet d'obtenir un taux de conformité
+        </span>
+      </p>
     </div>
 
     <!-- Main action -->
@@ -328,9 +344,13 @@ const csvExportFilename = computed(() => {
 
 .audit-status,
 .audit-date,
-.audit-type,
-.audit-compliance-level {
+.audit-type {
   pointer-events: none;
+  z-index: 1;
+}
+
+.audit-compliance-level-tooltip {
+  position: relative;
   z-index: 1;
 }
 
