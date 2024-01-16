@@ -11,7 +11,7 @@ import {
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, pick, setWith } from "lodash";
+import { omit, pick, setWith, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -740,19 +740,21 @@ export class AuditService {
       notInScopeContent: audit.notInScopeContent,
       notes: audit.notes,
 
-      errorCount: results.filter(
-        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT
-      ).length,
-
-      blockingErrorCount: results.filter(
-        (r) =>
-          r.status === CriterionResultStatus.NOT_COMPLIANT &&
-          r.userImpact === CriterionResultUserImpact.BLOCKING
-      ).length,
-
-      totalCriteriaCount,
-
-      applicableCriteriaCount: applicableCriteria.length,
+      criteriaCount: {
+        total: totalCriteriaCount,
+        compliant: compliantCriteria.length,
+        notCompliant: notCompliantCriteria.length,
+        blocking: uniqBy(
+          results.filter(
+            (r) =>
+              r.status === CriterionResultStatus.NOT_COMPLIANT &&
+              r.userImpact === CriterionResultUserImpact.BLOCKING
+          ),
+          (r) => `${r.topic}.${r.criterium}`
+        ).length,
+        applicable: applicableCriteria.length,
+        notApplicable: notApplicableCriteria.length
+      },
 
       accessibilityRate,
 

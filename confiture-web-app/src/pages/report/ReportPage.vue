@@ -234,7 +234,7 @@ const siteUrl = computed(() => {
       <p class="fr-mb-0">
         <strong>Type d’audit</strong> :
         {{ formatAuditType(report.data.auditType) }} ({{
-          report.data.totalCriteriaCount
+          report.data.criteriaCount.total
         }}
         critères)
       </p>

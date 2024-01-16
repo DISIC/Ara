@@ -27,22 +27,20 @@ const stats = computed(() => {
 
     {
       title: "Critères non conformes",
-      description: `Dont ${report.data!.blockingErrorCount} ${pluralize(
+      description: `Dont ${report.data?.criteriaCount.blocking} ${pluralize(
         "bloquant",
         "bloquants",
-        report.data!.blockingErrorCount
+        report.data!.criteriaCount.blocking
       )} pour l’usager`,
-      value: report.data!.errorCount,
-      // FIXME: to confirm : error count is out of every criteria or only applicable criteria
-      total:
-        report.data!.totalCriteriaCount * report.data!.context.samples.length,
+      value: report.data?.criteriaCount.notCompliant,
+      total: report.data?.criteriaCount.applicable,
       danger: true,
       theme: "red" as StatDonutTheme
     },
     {
       title: "Critères conformes",
-      value: report.data!.applicableCriteriaCount,
-      total: report.data!.totalCriteriaCount,
+      value: report.data?.criteriaCount.compliant,
+      total: report.data?.criteriaCount.applicable,
       theme: "green" as StatDonutTheme
     }
   ];
@@ -103,10 +101,9 @@ const auditInProgress = computed(
               ? '(Disponible à la fin de l’audit)'
               : stats[0].description
           "
-          :value="auditInProgress ? 0 : stats[0].value"
-          :total="stats[0].total"
+          :value="auditInProgress ? 0 : stats[0].value!"
+          :total="stats[0].total!"
           :unit="stats[0].unit"
-          :danger="stats[0].danger"
           :theme="stats[0].theme"
           :disabled="auditInProgress"
         >
@@ -139,10 +136,9 @@ const auditInProgress = computed(
         <SummaryCard
           :title="stat.title"
           :description="stat.description"
-          :value="stat.value"
-          :total="stat.total"
+          :value="stat.value!"
+          :total="stat.total!"
           :unit="stat.unit"
-          :danger="stat.danger"
           :theme="stat.theme"
         />
       </div>
