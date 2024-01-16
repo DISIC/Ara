@@ -29,7 +29,7 @@ export interface AuditReport {
     total: number;
     compliant: number;
     notCompliant: number;
-    blocking: any;
+    blocking: number;
     applicable: number;
     notApplicable: number;
   };
