@@ -138,14 +138,55 @@ async function deletePage(i: number) {
 }
 
 /**
- * TODO:
- * Si les pages sont adjacentes : D échange avec A.
-    Si D < A, D prend la place de A et toutes le pages entre D et A (A comprise) remontent d'une place.
-    Si D > A, D prend la place de A et toutes le pages entre D et A (A comprise) descendent d'une place.
+ * Change the order of pages. Swap pages if it is adjacent.
+ * Otherwise, insert `startIndex` page at `endIndex` position.
+ * @param {number} startIndex
+ * @param {number} endIndex
+ * @example
+ * Given [1, 2, 3, 4] and if updatePageOrder(1, 3), new order will be [1, 4, 2, 3].
  */
 function updatePageOrder(startIndex: number, endIndex: number) {
-  console.log(startIndex);
-  console.log(endIndex);
+  pagesArePristine.value = false;
+
+  const defaultState = [...pages.value];
+  const startEl = defaultState[startIndex];
+  const endEl = defaultState[endIndex];
+
+  if (startIndex === endIndex + 1 || startIndex === endIndex - 1) {
+    // Swap 2 adjacent pages
+    pages.value =
+      startIndex < endIndex
+        ? [
+            ...defaultState.slice(0, startIndex),
+            endEl,
+            ...defaultState.slice(startIndex + 1, endIndex),
+            startEl,
+            ...defaultState.slice(endIndex + 1)
+          ]
+        : [
+            ...defaultState.slice(0, endIndex),
+            startEl,
+            ...defaultState.slice(endIndex + 1, startIndex),
+            endEl,
+            ...defaultState.slice(startIndex + 1)
+          ];
+  } else {
+    // Insert startIndex and endIndex
+    pages.value =
+      startIndex < endIndex
+        ? [
+            ...defaultState.slice(0, startIndex),
+            ...defaultState.slice(startIndex + 1, endIndex + 1),
+            startEl,
+            ...defaultState.slice(endIndex + 1)
+          ]
+        : [
+            ...defaultState.slice(0, endIndex),
+            startEl,
+            ...defaultState.slice(endIndex, startIndex),
+            ...defaultState.slice(startIndex + 1)
+          ];
+  }
 }
 
 /**
