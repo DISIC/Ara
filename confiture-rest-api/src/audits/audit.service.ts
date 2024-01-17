@@ -7,7 +7,8 @@ import {
   CriterionResultUserImpact,
   Prisma,
   StoredFile,
-  TestEnvironment
+  TestEnvironment,
+  TransverseCriterionResult
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
@@ -114,40 +115,49 @@ export class AuditService {
     });
   }
 
-  async getResultsWithEditUniqueId(
-    uniqueId: string
-  ): Promise<
-    Omit<
+  async getResultsWithEditUniqueId(uniqueId: string): Promise<{
+    results: Omit<
       CriterionResult & { exampleImages: StoredFile[] },
       "id" | "auditUniqueId"
-    >[]
-  > {
-    const [audit, pages, existingResults] = await Promise.all([
-      this.prisma.audit.findUnique({
-        where: {
-          editUniqueId: uniqueId
-        }
-      }),
-      this.prisma.auditedPage.findMany({
-        where: { auditUniqueId: uniqueId }
-      }),
-      this.prisma.criterionResult.findMany({
-        where: {
-          page: {
-            audit: {
-              editUniqueId: uniqueId
-            }
+    >[];
+    transverseResults: Omit<
+      TransverseCriterionResult & { exampleImages: StoredFile[] },
+      "id" | "auditUniqueId"
+    >[];
+  }> {
+    const [audit, pages, existingResults, existingTransverseResults] =
+      await Promise.all([
+        this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
           }
-        },
-        include: {
-          exampleImages: true
-        }
-      })
-    ]);
+        }),
+        this.prisma.auditedPage.findMany({
+          where: { auditUniqueId: uniqueId }
+        }),
+        this.prisma.criterionResult.findMany({
+          where: {
+            page: {
+              audit: {
+                editUniqueId: uniqueId
+              }
+            }
+          },
+          include: {
+            exampleImages: true
+          }
+        }),
+        this.prisma.transverseCriterionResult.findMany({
+          where: { auditUniqueId: uniqueId },
+          include: {
+            exampleImages: true
+          }
+        })
+      ]);
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
-    return pages.flatMap((page) =>
+    const results = pages.flatMap((page) =>
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
@@ -176,6 +186,35 @@ export class AuditService {
         };
       })
     );
+
+    const transverseResults = CRITERIA_BY_AUDIT_TYPE[audit.auditType].map(
+      (criterion) => {
+        const existingResult = existingTransverseResults.find(
+          (result) =>
+            result.topic === criterion.topic &&
+            result.criterium == criterion.criterium
+        );
+
+        if (existingResult) return existingResult;
+
+        return {
+          status: CriterionResultStatus.NOT_TESTED,
+          compliantComment: null,
+          errorDescription: null,
+          userImpact: null,
+          recommandation: null,
+          notApplicableComment: null,
+          exampleImages: [],
+          transverse: false,
+          quickWin: false,
+
+          topic: criterion.topic,
+          criterium: criterion.criterium
+        };
+      }
+    );
+
+    return { results, transverseResults };
   }
 
   async updateAudit(

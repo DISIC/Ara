@@ -169,11 +169,12 @@ export const useResultsStore = defineStore("results", {
     async fetchResults(uniqueId: string) {
       const response = (await ky
         .get(`/api/audits/${uniqueId}/results`)
-        .json()) as CriteriumResult[];
+        .json()) as { results: CriteriumResult[] };
 
       const data: ResultsStoreState["data"] = {};
 
-      response.forEach((r) => {
+      // TODO: store transverse results
+      response.results.forEach((r) => {
         if (!(r.pageId in data)) {
           data[r.pageId] = {};
         }
