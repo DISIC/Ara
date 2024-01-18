@@ -271,7 +271,7 @@ const previousRoute = usePreviousRoute();
         ref="pageNameFieldRefs"
         v-model="page.name"
         label="Nom de la page"
-        class="fr-mt-2w page-field"
+        class="fr-mt-7w"
         @change="pagesArePristine = false"
       />
 
@@ -281,7 +281,6 @@ const previousRoute = usePreviousRoute();
         label="URL de la page"
         type="url"
         required
-        class="page-field"
         @change="pagesArePristine = false"
       >
         <template #hint>
@@ -375,21 +374,16 @@ const previousRoute = usePreviousRoute();
 
 .page-card {
   border: 1px solid var(--border-default-grey);
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
 }
 
 .page-legend {
   float: left;
+  /* FIXME: hack to align */
+  margin-top: 0.375rem;
 }
 
 .page-delete-button {
-  justify-self: end;
-}
-
-.page-field {
-  grid-column: 1 / -1;
+  float: right;
 }
 
 .auditor-fields {
