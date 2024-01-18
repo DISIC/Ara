@@ -5,10 +5,10 @@ import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import {
   formatDate,
-  formatAuditType,
   captureWithPayloads,
   slugify,
-  formatBytes
+  formatBytes,
+  getCriteriaCount
 } from "../../../utils";
 import Dropdown from "../../ui/Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
@@ -148,7 +148,7 @@ const csvExportFilename = computed(() => {
     <!-- Type -->
     <p class="fr-mb-0 audit-type">
       <span class="sr-only">Type </span>
-      {{ formatAuditType(audit.auditType) }}
+      {{ getCriteriaCount(audit.auditType) }} critères
     </p>
 
     <!-- Compliance level -->
@@ -311,7 +311,7 @@ const csvExportFilename = computed(() => {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
