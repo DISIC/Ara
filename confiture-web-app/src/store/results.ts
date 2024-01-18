@@ -6,7 +6,8 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  ExampleImage
+  ExampleImage,
+  TransverseCriteriumResult
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -18,15 +19,26 @@ type CriteriumNumber = number;
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastRequestTimestamp:${auditId}`;
 
+type TransverseData = {
+  [key: TopicNumber]: {
+    [key: CriteriumNumber]: TransverseCriteriumResult;
+  };
+};
+
+type PerPagedata = {
+  [key: PageId]: {
+    [key: TopicNumber]: {
+      [key: CriteriumNumber]: CriteriumResult;
+    };
+  };
+};
+
 interface ResultsStoreState {
   auditId: string | null;
 
   data: {
-    [key: PageId]: {
-      [key: TopicNumber]: {
-        [key: CriteriumNumber]: CriteriumResult;
-      };
-    };
+    transverse: TransverseData;
+    perPage: PerPagedata;
   } | null;
 
   /**
@@ -74,31 +86,32 @@ export const useResultsStore = defineStore("results", {
       return (pageId: number, topicNumber: number, criteriumNumber: number) => {
         if (
           !this.data ||
-          !this.data[pageId] ||
-          !this.data[pageId][topicNumber] ||
-          !this.data[pageId][topicNumber][criteriumNumber]
+          !this.data.perPage[pageId] ||
+          !this.data.perPage[pageId][topicNumber] ||
+          !this.data.perPage[pageId][topicNumber][criteriumNumber]
         ) {
           return;
         }
 
-        return this.data[pageId][topicNumber][criteriumNumber];
+        return this.data.perPage[pageId][topicNumber][criteriumNumber];
       };
     },
 
     /**
      * @returns A getter returning all the results concerning a particular topic on a particular audited page.
      */
+    // TODO: take transverse results into account
     getTopicResults() {
       return (pageId: number, topicNumber: number) => {
         if (
           !this.data ||
-          !this.data[pageId] ||
-          !this.data[pageId][topicNumber]
+          !this.data.perPage[pageId] ||
+          !this.data.perPage[pageId][topicNumber]
         ) {
           return [];
         }
 
-        return Object.values(this.data[pageId][topicNumber]);
+        return Object.values(this.data.perPage[pageId][topicNumber]);
       };
     },
 
@@ -109,7 +122,7 @@ export const useResultsStore = defineStore("results", {
       if (!this.data) {
         return;
       }
-      return Object.values(this.data)
+      return Object.values(this.data.perPage)
         .map((page) => Object.values(page).map((topic) => Object.values(topic)))
         .flat(2);
     },
@@ -117,6 +130,7 @@ export const useResultsStore = defineStore("results", {
     /**
      * @returns True when every criterium in the audit have been tested (status is different from NOT_TESTED)
      */
+    // TODO: take transverse results into account
     everyCriteriumAreTested(): boolean {
       return (
         !this.allResults?.some(
@@ -125,6 +139,7 @@ export const useResultsStore = defineStore("results", {
       );
     },
 
+    // TODO: take transverse results into account
     testedCriteriumCount(): number | undefined {
       return this.allResults?.filter(
         (r) => r.status !== CriteriumResultStatus.NOT_TESTED
@@ -135,7 +150,7 @@ export const useResultsStore = defineStore("results", {
      * @returns Number of pages in the audit
      */
     pagesCount(): number {
-      return this.data ? Object.keys(this.data).length : 0;
+      return this.data ? Object.keys(this.data.perPage).length : 0;
     },
 
     isLoading(): boolean {
@@ -151,7 +166,9 @@ export const useResultsStore = defineStore("results", {
       if (!this.data) {
         return 0;
       }
-      const r = Object.values(this.data)
+
+      // TODO: take transverse results into account
+      const r = Object.values(this.data.perPage)
         .flatMap(Object.values)
         .flatMap(Object.values) as CriteriumResult[];
 
@@ -169,21 +186,34 @@ export const useResultsStore = defineStore("results", {
     async fetchResults(uniqueId: string) {
       const response = (await ky
         .get(`/api/audits/${uniqueId}/results`)
-        .json()) as { results: CriteriumResult[] };
+        .json()) as {
+        results: CriteriumResult[];
+        transverseResults: TransverseCriteriumResult[];
+      };
 
-      const data: ResultsStoreState["data"] = {};
+      const perPageData: PerPagedata = {};
 
-      // TODO: store transverse results
+      // Store standard results
       response.results.forEach((r) => {
-        if (!(r.pageId in data)) {
-          data[r.pageId] = {};
+        if (!(r.pageId in perPageData)) {
+          perPageData[r.pageId] = {};
         }
 
-        if (!(r.topic in data[r.pageId])) {
-          data[r.pageId][r.topic] = {};
+        if (!(r.topic in perPageData[r.pageId])) {
+          perPageData[r.pageId][r.topic] = {};
         }
 
-        data[r.pageId][r.topic][r.criterium] = r;
+        perPageData[r.pageId][r.topic][r.criterium] = r;
+      });
+
+      // Store transverse results
+      const transverseData: TransverseData = {};
+      response.transverseResults.forEach((r) => {
+        if (!(r.topic in transverseData)) {
+          transverseData[r.topic] = {};
+        }
+
+        transverseData[r.topic][r.criterium] = r;
       });
 
       const storageKey = getLastRequestTimestampStorageKey(uniqueId);
@@ -191,7 +221,10 @@ export const useResultsStore = defineStore("results", {
         Number(localStorage.getItem(storageKey)) || null;
 
       this.auditId = uniqueId;
-      this.data = data;
+      this.data = {
+        perPage: perPageData,
+        transverse: transverseData
+      };
     },
 
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
@@ -207,11 +240,12 @@ export const useResultsStore = defineStore("results", {
         }
 
         previousResults.push(
-          this.data[update.pageId][update.topic][update.criterium]
+          this.data.perPage[update.pageId][update.topic][update.criterium]
         );
 
         // Update UI immediately, rollbacks later if update fails.
-        this.data[update.pageId][update.topic][update.criterium] = update;
+        this.data.perPage[update.pageId][update.topic][update.criterium] =
+          update;
 
         // // Apply `transverse` result update to every pages
         // if (update.transverse) {
@@ -272,7 +306,8 @@ export const useResultsStore = defineStore("results", {
           if (!this.data) {
             return;
           }
-          this.data[result.pageId][result.topic][result.criterium] = result;
+          this.data.perPage[result.pageId][result.topic][result.criterium] =
+            result;
         });
       };
 
@@ -386,7 +421,7 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         })) as ExampleImage;
 
-      const result = this.data![pageId][topic][criterium];
+      const result = this.data!.perPage[pageId][topic][criterium];
 
       if (result) {
         result.exampleImages.push(exampleImage);
@@ -408,7 +443,7 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         });
 
-      const result = this.data![pageId][topic][criterium];
+      const result = this.data!.perPage[pageId][topic][criterium];
 
       if (result) {
         const exampleIndex = result.exampleImages.findIndex(
