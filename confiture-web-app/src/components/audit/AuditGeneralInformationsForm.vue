@@ -314,7 +314,7 @@ const previousRoute = usePreviousRoute();
 
       <div class="page-right-actions">
         <button
-          class="fr-btn fr-btn--icon-left fr-icon-delete-line fr-btn--tertiary-no-outline page-delete-button"
+          class="fr-btn fr-btn--icon-left fr-icon-delete-line fr-btn--tertiary-no-outline"
           type="button"
           :disabled="pages.length === 1"
           data-cy="delete"
