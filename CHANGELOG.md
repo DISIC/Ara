@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 18/01/2023
 
+### Autres changements ⚙️
+
+- Améliorer l’accessibilité et la compréhension de l’onglet du détail des résultats ([#606](https://github.com/DISIC/Ara/pull/606))
+
 ### Corrections 🐛
 
 - Corrige l’affichage des blocs de page de la page de paramètres sur Safari ([#608](https://github.com/DISIC/Ara/pull/608))

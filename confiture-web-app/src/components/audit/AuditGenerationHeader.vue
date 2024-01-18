@@ -24,6 +24,7 @@ import DuplicateModal from "./DuplicateModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "../SummaryCard.vue";
 import CopyIcon from "../icons/CopyIcon.vue";
+import { StatDonutTheme } from "../StatDonut.vue";
 
 defineProps<{
   auditName: string;
@@ -35,7 +36,7 @@ defineProps<{
     value: number;
     total: number;
     unit?: string;
-    theme?: string;
+    theme?: StatDonutTheme;
   }[];
   editUniqueId?: string;
 }>();

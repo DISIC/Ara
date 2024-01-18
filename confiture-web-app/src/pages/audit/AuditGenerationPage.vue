@@ -9,6 +9,7 @@ import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
+import { StatDonutTheme } from "../../components/StatDonut.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -100,7 +101,7 @@ const headerInfos = computed(() => [
           value: complianceLevel.value,
           total: 100,
           unit: "%",
-          theme: "france"
+          theme: "blue" as StatDonutTheme
         }
       ]
     : []),
@@ -109,7 +110,7 @@ const headerInfos = computed(() => [
     description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "marianne"
+    theme: "red" as StatDonutTheme
   },
   {
     title: "Critères non applicables",

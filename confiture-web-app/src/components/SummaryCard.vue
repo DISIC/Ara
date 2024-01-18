@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useSlots, computed } from "vue";
 import { useUniqueId } from "../composables/useUniqueId";
-import StatDonut from "./StatDonut.vue";
+import StatDonut, { StatDonutTheme } from "./StatDonut.vue";
 
 defineProps<{
   title: string;
-  description: string;
+  description?: string;
   value: number;
   total: number;
   unit?: string;
-  theme?: string;
+  theme?: StatDonutTheme;
   disabled?: boolean;
 }>();
 
@@ -35,7 +35,7 @@ const uniqueId = useUniqueId();
         <p class="fr-h6 fr-mb-1v card-title">
           {{ title }}
         </p>
-        <p class="fr-text--xs fr-mb-0 card-description">
+        <p v-if="description" class="fr-text--xs fr-mb-0 card-description">
           {{ description }}
         </p>
       </div>

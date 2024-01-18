@@ -37,24 +37,23 @@ export class AuditReportDto {
   accessibilityRate: number;
 
   /**
-   * @example 8
+   * @example {
+   *  total: 106;
+   *  compliant: 30;
+   *  notCompliant: 46;
+   *  blocking: 12;
+   *  applicable: 76;
+   *  notApplicable: 30;
+   * }
    */
-  errorCount: number;
-
-  /**
-   * @example 6
-   */
-  blockingErrorCount: number;
-
-  /**
-   * @example 54
-   */
-  applicableCriteriaCount: number;
-
-  /**
-   * @example 106
-   */
-  totalCriteriaCount: number;
+  criteriaCount: {
+    total: number;
+    compliant: number;
+    notCompliant: number;
+    blocking: number;
+    applicable: number;
+    notApplicable: number;
+  };
 
   /** Global distribution of criteria by result */
   resultDistribution: ResultDistribution;

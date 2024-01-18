@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+export type StatDonutTheme = "blue" | "red" | "green";
+
 defineProps<{
   value: number;
   total: number;
   unit?: string;
-  // "france" for blue | "marianne" for red
-  theme?: string;
+  theme?: StatDonutTheme;
   size?: "sm";
 }>();
 </script>
@@ -43,17 +44,24 @@ defineProps<{
   );
 }
 
-.theme-france {
+.theme-blue {
   background: conic-gradient(
     var(--background-active-blue-france) 0deg var(--pie-deg),
     var(--background-contrast-info) var(--pie-deg) 360deg
   );
 }
 
-.theme-marianne {
+.theme-red {
   background: conic-gradient(
     var(--red-marianne-main-472) 0deg var(--pie-deg),
     var(--background-action-low-pink-macaron) var(--pie-deg) 360deg
+  );
+}
+
+.theme-green {
+  background: conic-gradient(
+    var(--border-plain-success) 0deg var(--pie-deg),
+    var(--background-contrast-green-emeraude) var(--pie-deg) 360deg
   );
 }
 
