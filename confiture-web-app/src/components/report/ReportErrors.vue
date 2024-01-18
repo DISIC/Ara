@@ -61,29 +61,40 @@ const errors = computed(() => {
   } as Record<number, AuditReport["results"]>;
 
   // TODO: make more legible
-  const data = Object.values(
-    mapValues(resultsGroupedByPage, (results, pageId) => {
-      return {
-        pageId: Number(pageId),
-        pageName: getPage(Number(pageId)).name,
-        pageUrl: getPage(Number(pageId)).url,
-        topics: sortBy(
-          Object.values(
-            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-              return {
-                topic: Number(topicNumber),
-                name: getTopicName(Number(topicNumber)),
-                errors: sortBy(
-                  results.filter((r) => !r.transverse),
-                  "criterium"
-                )
-              };
-            })
-          ),
-          "topic"
-        )
-      };
-    })
+  const data = sortBy(
+    Object.values(
+      mapValues(resultsGroupedByPage, (results, pageId) => {
+        return {
+          pageId: Number(pageId),
+          pageName: getPage(Number(pageId)).name,
+          pageUrl: getPage(Number(pageId)).url,
+          topics: sortBy(
+            Object.values(
+              mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+                return {
+                  topic: Number(topicNumber),
+                  name: getTopicName(Number(topicNumber)),
+                  errors: sortBy(
+                    results.filter((r) => !r.transverse),
+                    "criterium"
+                  )
+                };
+              })
+            ),
+            "topic"
+          )
+        };
+      })
+    ),
+    (el) => {
+      return report.data?.context.samples.indexOf(
+        // TODO: TS error
+        // @ts-expect-error #sendHelp
+        report.data?.context.samples.find((s) => {
+          return s.name === el.pageName;
+        })
+      );
+    }
   );
 
   return data;
