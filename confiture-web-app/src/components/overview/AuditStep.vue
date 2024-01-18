@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
-import { Audit } from "../../types";
+import { Audit, AuditType } from "../../types";
 import { formatDate, getCriteriaCount, pluralize } from "../../utils";
 import StepCard from "./StepCard.vue";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
@@ -72,22 +72,28 @@ const auditIsInProgress = computed(() => {
       </template>
     </p>
 
-    <div v-if="auditIsReady" class="fr-mb-3w audit-step-charts">
-      <div class="audit-step-chart">
-        <StatDonut
-          :value="complianceLevel"
-          :total="100"
-          unit="%"
-          theme="blue"
-          size="sm"
-        />
+    <div
+      v-if="auditIsReady"
+      class="fr-mb-3w audit-step-charts"
+      :class="{ 'audit-step-charts--full': audit.auditType === AuditType.FULL }"
+    >
+      <template v-if="audit.auditType === AuditType.FULL">
+        <div class="audit-step-chart">
+          <StatDonut
+            :value="complianceLevel"
+            :total="100"
+            unit="%"
+            theme="blue"
+            size="sm"
+          />
 
-        <div class="card-info">
-          <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
-          <p class="fr-text--xs fr-mb-0">RGAA version 4.1</p>
+          <div class="card-info">
+            <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
+            <p class="fr-text--xs fr-mb-0">RGAA version 4.1</p>
+          </div>
         </div>
-      </div>
-      <span aria-hidden="true" class="audit-step-chart-separator" />
+        <span aria-hidden="true" class="audit-step-chart-separator" />
+      </template>
       <div class="audit-step-chart">
         <StatDonut
           :value="notCompliantCriteriaCount"
@@ -205,11 +211,16 @@ const auditIsInProgress = computed(() => {
   grid-column: 1 / -1;
   grid-row: 3;
   display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.audit-step-charts--full {
   grid-template-columns: 1fr auto 1fr auto 1fr;
 }
 
 .audit-step-chart {
   display: flex;
+  align-items: center;
   gap: 0.75rem;
 }
 
