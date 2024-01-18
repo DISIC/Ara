@@ -49,7 +49,7 @@ const stats = computed(() => {
 const pageDistributionTableData = {
   title: "Répartition des critères par pages",
   data: [
-    ["Page", "Critères conformes", "Critères non conformes"],
+    ["Pages", "Critères conformes", "Critères non conformes"],
     ...(report.data
       ? report.data.pageDistributions.map((p) => {
           return [
@@ -66,7 +66,7 @@ const topicDistributionTableData = {
   title: "Répartition des critères par thématiques du RGAA",
   data: [
     [
-      "Thématique du RGAA",
+      "Thématiques du RGAA",
       "Critères conformes",
       "Critères non conformes",
       "Critères non applicables"
