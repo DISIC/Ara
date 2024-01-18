@@ -332,6 +332,7 @@ const previousRoute = usePreviousRoute();
             :id="`page-order-${i}`"
             ref="pageOrderSelectRefs"
             class="fr-select fr-mt-0"
+            :value="i"
             @change="
               updatePageOrder(
                 i,
@@ -339,12 +340,7 @@ const previousRoute = usePreviousRoute();
               )
             "
           >
-            <option
-              v-for="(_, j) in pages"
-              :key="j"
-              :value="j"
-              :selected="i === j"
-            >
+            <option v-for="(_, j) in pages" :key="j" :value="j">
               Position {{ j + 1 }} sur {{ pages.length }}
             </option>
           </select>
