@@ -394,9 +394,9 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId }
-    });
+    // const pages = await this.prisma.auditedPage.findMany({
+    //   where: { auditUniqueId: uniqueId }
+    // });
 
     const promises = body.data
       .map((item) => {
@@ -415,19 +415,13 @@ export class AuditService {
           notApplicableComment: item.notApplicableComment,
           recommandation: item.recommandation,
           userImpact: item.userImpact,
-          quickWin: item.quickWin,
-          transverse: item.transverse
+          quickWin: item.quickWin
+          // transverse: item.transverse
         };
 
         const result = [
           this.prisma.criterionResult.upsert({
             where: {
-              // auditUniqueId_pageUrl_topic_criterium: {
-              //   auditUniqueId: uniqueId,
-              //   criterium: item.criterium,
-              //   pageUrl: item.pageUrl,
-              //   topic: item.topic,
-              // },
               pageId_topic_criterium: {
                 criterium: item.criterium,
                 topic: item.topic,
@@ -439,60 +433,92 @@ export class AuditService {
           })
         ];
 
-        if (item.transverse) {
-          pages
-            .filter((page) => page.id !== item.pageId)
-            .forEach((page) => {
-              const data: Prisma.CriterionResultUpsertArgs["create"] = {
-                criterium: item.criterium,
-                topic: item.topic,
-                page: {
-                  connect: {
-                    id: page.id
-                  }
-                },
+        // if (item.transverse) {
+        //   pages
+        //     .filter((page) => page.id !== item.pageId)
+        //     .forEach((page) => {
+        //       const data: Prisma.CriterionResultUpsertArgs["create"] = {
+        //         criterium: item.criterium,
+        //         topic: item.topic,
+        //         page: {
+        //           connect: {
+        //             id: page.id
+        //           }
+        //         },
 
-                status: item.status,
-                transverse: true,
+        //         status: item.status,
+        //         transverse: true,
 
-                ...(item.status === CriterionResultStatus.COMPLIANT && {
-                  compliantComment: item.compliantComment
-                }),
+        //         ...(item.status === CriterionResultStatus.COMPLIANT && {
+        //           compliantComment: item.compliantComment
+        //         }),
 
-                ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
-                  errorDescription: item.errorDescription,
-                  recommandation: item.recommandation,
-                  userImpact: item.userImpact,
-                  quickWin: item.quickWin
-                }),
+        //         ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
+        //           errorDescription: item.errorDescription,
+        //           recommandation: item.recommandation,
+        //           userImpact: item.userImpact,
+        //           quickWin: item.quickWin
+        //         }),
 
-                ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
-                  notApplicableComment: item.notApplicableComment
-                })
-              };
+        //         ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
+        //           notApplicableComment: item.notApplicableComment
+        //         })
+        //       };
 
-              result.push(
-                this.prisma.criterionResult.upsert({
-                  where: {
-                    pageId_topic_criterium: {
-                      criterium: item.criterium,
-                      topic: item.topic,
-                      pageId: page.id
-                    }
-                  },
-                  create: data,
-                  update: data
-                })
-              );
-            });
-        }
+        //       result.push(
+        //         this.prisma.criterionResult.upsert({
+        //           where: {
+        //             pageId_topic_criterium: {
+        //               criterium: item.criterium,
+        //               topic: item.topic,
+        //               pageId: page.id
+        //             }
+        //           },
+        //           create: data,
+        //           update: data
+        //         })
+        //       );
+        //     });
+        // }
 
         return result;
       })
       .flat();
 
+    const transversePromises = body.transverseData.map((item) => {
+      const data: Prisma.TransverseCriterionResultUpsertArgs["create"] = {
+        criterium: item.criterium,
+        topic: item.topic,
+        auditUniqueId: uniqueId,
+
+        status: item.status,
+        compliantComment: item.compliantComment,
+        errorDescription: item.errorDescription,
+        notApplicableComment: item.notApplicableComment,
+        recommandation: item.recommandation,
+        userImpact: item.userImpact,
+        quickWin: item.quickWin,
+        transverse: item.transverse
+      };
+
+      const result = this.prisma.transverseCriterionResult.upsert({
+        where: {
+          auditUniqueId_topic_criterium: {
+            auditUniqueId: uniqueId,
+            topic: item.topic,
+            criterium: item.criterium
+          }
+        },
+        create: data,
+        update: data
+      });
+
+      return result;
+    });
+
     await this.prisma.$transaction([
       ...promises,
+      ...transversePromises,
       this.updateAuditEditDate(uniqueId)
     ]);
   }

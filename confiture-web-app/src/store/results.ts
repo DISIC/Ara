@@ -213,37 +213,37 @@ export const useResultsStore = defineStore("results", {
         // Update UI immediately, rollbacks later if update fails.
         this.data[update.pageId][update.topic][update.criterium] = update;
 
-        // Apply `transverse` result update to every pages
-        if (update.transverse) {
-          Object.keys(this.data)
-            .map(Number) // this.data requires a number index
-            .filter((pageId) => pageId !== update.pageId) // Ignore current page
-            .forEach((pageId) => {
-              if (!this.data) {
-                return;
-              }
+        // // Apply `transverse` result update to every pages
+        // if (update.transverse) {
+        //   Object.keys(this.data)
+        //     .map(Number) // this.data requires a number index
+        //     .filter((pageId) => pageId !== update.pageId) // Ignore current page
+        //     .forEach((pageId) => {
+        //       if (!this.data) {
+        //         return;
+        //       }
 
-              const target = this.data[pageId][update.topic][update.criterium];
+        //       const target = this.data[pageId][update.topic][update.criterium];
 
-              target.status = update.status;
-              target.transverse = true;
+        //       target.status = update.status;
+        //       target.transverse = true;
 
-              if (update.status === CriteriumResultStatus.COMPLIANT) {
-                target.compliantComment = update.compliantComment;
-              }
+        //       if (update.status === CriteriumResultStatus.COMPLIANT) {
+        //         target.compliantComment = update.compliantComment;
+        //       }
 
-              if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
-                target.errorDescription = update.errorDescription;
-                target.recommandation = update.recommandation;
-                target.userImpact = update.userImpact;
-                target.quickWin = update.quickWin;
-              }
+        //       if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
+        //         target.errorDescription = update.errorDescription;
+        //         target.recommandation = update.recommandation;
+        //         target.userImpact = update.userImpact;
+        //         target.quickWin = update.quickWin;
+        //       }
 
-              if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
-                target.notApplicableComment = update.notApplicableComment;
-              }
-            });
-        }
+        //       if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
+        //         target.notApplicableComment = update.notApplicableComment;
+        //       }
+        //     });
+        // }
       });
 
       // update the edition date of the local audit. It will not be the same
@@ -281,7 +281,8 @@ export const useResultsStore = defineStore("results", {
       await ky
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
-            data: updates
+            data: updates,
+            transverseData: []
           }
         })
         .catch((err) => {
