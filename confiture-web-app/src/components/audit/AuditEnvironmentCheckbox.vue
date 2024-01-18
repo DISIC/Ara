@@ -90,8 +90,6 @@ function onInput() {
 }
 
 .container-layer {
-  background: red;
-  opacity: 0.2;
   position: absolute;
   inset: 0;
   cursor: pointer;
