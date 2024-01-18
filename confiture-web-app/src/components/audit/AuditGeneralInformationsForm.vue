@@ -138,6 +138,17 @@ async function deletePage(i: number) {
 }
 
 /**
+ * TODO:
+ * Si les pages sont adjacentes : D échange avec A.
+    Si D < A, D prend la place de A et toutes le pages entre D et A (A comprise) remontent d'une place.
+    Si D > A, D prend la place de A et toutes le pages entre D et A (A comprise) descendent d'une place.
+ */
+function updatePageOrder(startIndex: number, endIndex: number) {
+  console.log(startIndex);
+  console.log(endIndex);
+}
+
+/**
  * Dev function to avoid filling all fields manually
  */
 function fillFields() {
@@ -255,16 +266,44 @@ const previousRoute = usePreviousRoute();
         <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
       </legend>
 
-      <button
-        class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
-        type="button"
-        :disabled="pages.length === 1"
-        data-cy="delete"
-        @click="deletePage(i)"
-      >
-        Supprimer
-        <span class="sr-only">la page {{ i + 1 }}</span>
-      </button>
+      <div class="page-right-actions">
+        <button
+          class="fr-btn fr-btn--icon-left fr-icon-delete-line fr-btn--tertiary-no-outline page-delete-button"
+          type="button"
+          :disabled="pages.length === 1"
+          data-cy="delete"
+          @click="deletePage(i)"
+        >
+          Supprimer
+          <span class="sr-only">la page {{ i + 1 }}</span>
+        </button>
+
+        <div class="fr-select-group fr-mb-0">
+          <label class="fr-label sr-only" for="select">
+            Position de la page
+          </label>
+          <select
+            id="select"
+            class="fr-select fr-mt-0"
+            name="select"
+            @change="
+              updatePageOrder(
+                i,
+                Number(($event.target as HTMLSelectElement).value) - 1
+              )
+            "
+          >
+            <option
+              v-for="(_, j) in pages"
+              :key="j"
+              :value="j + 1"
+              :selected="i === j"
+            >
+              Position {{ j + 1 }} sur {{ pages.length }}
+            </option>
+          </select>
+        </div>
+      </div>
 
       <DsfrField
         :id="`page-name-${i + 1}`"
@@ -289,7 +328,7 @@ const previousRoute = usePreviousRoute();
       </DsfrField>
     </fieldset>
     <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
+      class="fr-btn fr-btn--icon-left fr-icon-add-line fr-btn--secondary fr-mt-4w fr-mb-6w"
       type="button"
       @click="addPage"
     >
@@ -356,12 +395,6 @@ const previousRoute = usePreviousRoute();
   color: var(--text-mention-grey);
 }
 
-.audit-types {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .partial-audit-radios {
   display: flex;
   flex-wrap: wrap;
@@ -382,7 +415,10 @@ const previousRoute = usePreviousRoute();
   margin-top: 0.375rem;
 }
 
-.page-delete-button {
+.page-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   float: right;
 }
 
