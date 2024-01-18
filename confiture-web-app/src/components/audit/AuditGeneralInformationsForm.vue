@@ -137,6 +137,8 @@ async function deletePage(i: number) {
   }
 }
 
+const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
+
 /**
  * Change the order of pages. Swap pages if it is adjacent.
  * Otherwise, insert `startIndex` page at `endIndex` position.
@@ -187,6 +189,9 @@ function updatePageOrder(startIndex: number, endIndex: number) {
             ...defaultState.slice(startIndex + 1)
           ];
   }
+
+  // Focus `endIndex` select
+  pageOrderSelectRefs.value?.at(endIndex)?.focus();
 }
 
 /**
@@ -320,24 +325,24 @@ const previousRoute = usePreviousRoute();
         </button>
 
         <div class="fr-select-group fr-mb-0">
-          <label class="fr-label sr-only" for="select">
-            Position de la page
+          <label class="fr-label sr-only" :for="`page-order-${i}`">
+            Position de la page {{ i + 1 }}
           </label>
           <select
-            id="select"
+            :id="`page-order-${i}`"
+            ref="pageOrderSelectRefs"
             class="fr-select fr-mt-0"
-            name="select"
             @change="
               updatePageOrder(
                 i,
-                Number(($event.target as HTMLSelectElement).value) - 1
+                Number(($event.target as HTMLSelectElement).value)
               )
             "
           >
             <option
               v-for="(_, j) in pages"
               :key="j"
-              :value="j + 1"
+              :value="j"
               :selected="i === j"
             >
               Position {{ j + 1 }} sur {{ pages.length }}
