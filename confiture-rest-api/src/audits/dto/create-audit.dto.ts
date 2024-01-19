@@ -18,6 +18,14 @@ export class CreateAuditPage {
   @IsNumber()
   @IsOptional()
   id?: number;
+
+  /**
+   * @example 2
+   */
+  @IsNumber()
+  @IsOptional()
+  order: number;
+
   /**
    * @example "Page de contact"
    */
