@@ -788,13 +788,15 @@ export class AuditService {
             browserVersion: e.browserVersion
           })),
         referencial: "RGAA Version 4.1",
-        samples: audit.pages.map((p, i) => ({
-          name: p.name,
-          order: p.order,
-          number: i + 1,
-          url: p.url,
-          id: p.id
-        })),
+        samples: audit.pages
+          .map((p, i) => ({
+            name: p.name,
+            order: p.order,
+            number: i + 1,
+            url: p.url,
+            id: p.id
+          }))
+          .sort((p) => p.order),
         tools: audit.tools,
         technologies: audit.technologies
       },

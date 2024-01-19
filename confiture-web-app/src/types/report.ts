@@ -96,6 +96,7 @@ interface AuditReportContext {
 interface PageSample {
   // number: number;
   id: number;
+  order: number;
   name: string;
   url: string;
 }

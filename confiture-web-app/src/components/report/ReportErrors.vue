@@ -66,6 +66,7 @@ const errors = computed(() => {
       mapValues(resultsGroupedByPage, (results, pageId) => {
         return {
           pageId: Number(pageId),
+          pageOrder: getPage(Number(pageId)).order,
           pageName: getPage(Number(pageId)).name,
           pageUrl: getPage(Number(pageId)).url,
           topics: sortBy(
@@ -86,15 +87,7 @@ const errors = computed(() => {
         };
       })
     ),
-    (el) => {
-      return report.data?.context.samples.indexOf(
-        // TODO: TS error
-        // @ts-expect-error #sendHelp
-        report.data?.context.samples.find((s) => {
-          return s.name === el.pageName;
-        })
-      );
-    }
+    (el) => el.pageOrder
   );
 
   return data;
