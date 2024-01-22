@@ -17,6 +17,7 @@ export interface AuditEnvironment {
 
 export interface AuditPage {
   id: number;
+  order: number;
   name: string;
   url: string;
 }
