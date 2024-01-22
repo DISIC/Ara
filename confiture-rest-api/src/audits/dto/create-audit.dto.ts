@@ -20,13 +20,6 @@ export class CreateAuditPage {
   id?: number;
 
   /**
-   * @example 2
-   */
-  @IsNumber()
-  @IsOptional()
-  order: number;
-
-  /**
    * @example "Page de contact"
    */
   @IsString()
