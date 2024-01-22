@@ -302,10 +302,10 @@ export class AuditService {
                   notIn: updatedPages.map((p) => p.id)
                 }
               },
-              update: updatedPages.map((p, i) => ({
+              update: updatedPages.map((p) => ({
                 where: { id: p.id },
                 data: {
-                  order: i,
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }
