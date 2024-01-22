@@ -185,8 +185,9 @@ export class AuditService {
     data: UpdateAuditDto
   ): Promise<Audit | undefined> {
     try {
-      const updatedPages = data.pages.sort((p) => p.order).filter((p) => p.id);
-      const newPages = data.pages.sort((p) => p.order).filter((p) => !p.id);
+      const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
+      const updatedPages = orderedPages.filter((p) => p.id);
+      const newPages = orderedPages.filter((p) => !p.id);
 
       const [audit] = await this.prisma.$transaction([
         this.prisma.audit.update({
