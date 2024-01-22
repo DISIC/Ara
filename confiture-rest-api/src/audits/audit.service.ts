@@ -311,8 +311,8 @@ export class AuditService {
                 }
               })),
               createMany: {
-                data: newPages.map((p, i) => ({
-                  order: i,
+                data: newPages.map((p) => ({
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }))
