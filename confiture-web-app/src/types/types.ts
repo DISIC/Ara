@@ -76,7 +76,7 @@ export type CreateAuditRequestData = Pick<
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   environments: Omit<AuditEnvironment, "id">[];
-  pages: Omit<AuditPage, "id">[];
+  pages: Omit<AuditPage, "id" | "order">[];
 };
 
 export interface CreateFeedbackRequestData {
