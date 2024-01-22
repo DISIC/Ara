@@ -139,6 +139,8 @@ async function deletePage(i: number) {
 
 const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
 
+const positionSuccessMessage = ref("");
+
 /**
  * Change the order of pages. Swap pages if it is adjacent.
  * Otherwise, insert `startIndex` page at `endIndex` position.
@@ -148,6 +150,7 @@ const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
  * Given [1, 2, 3, 4] and if updatePageOrder(1, 3), new order will be [1, 4, 2, 3].
  */
 function updatePageOrder(startIndex: number, endIndex: number) {
+  positionSuccessMessage.value = "";
   pagesArePristine.value = false;
 
   const defaultState = [...pages.value];
@@ -192,6 +195,10 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 
   // Focus `endIndex` select
   pageOrderSelectRefs.value?.at(endIndex)?.focus();
+
+  positionSuccessMessage.value = `Page déplacée en  position ${
+    endIndex + 1
+  } sur ${pages.value.length}`;
 }
 
 /**
@@ -344,6 +351,10 @@ const previousRoute = usePreviousRoute();
               Position {{ j + 1 }} sur {{ pages.length }}
             </option>
           </select>
+
+          <div class="sr-only" aria-live="polite" role="alert">
+            <p v-if="positionSuccessMessage">{{ positionSuccessMessage }}</p>
+          </div>
         </div>
       </div>
 
