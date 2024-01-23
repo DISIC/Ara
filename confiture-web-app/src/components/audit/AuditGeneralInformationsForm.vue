@@ -155,26 +155,12 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 
   const defaultState = [...pages.value];
   const startEl = defaultState[startIndex];
-  const endEl = defaultState[endIndex];
 
   if (startIndex === endIndex + 1 || startIndex === endIndex - 1) {
     // Swap 2 adjacent pages
-    pages.value =
-      startIndex < endIndex
-        ? [
-            ...defaultState.slice(0, startIndex),
-            endEl,
-            ...defaultState.slice(startIndex + 1, endIndex),
-            startEl,
-            ...defaultState.slice(endIndex + 1)
-          ]
-        : [
-            ...defaultState.slice(0, endIndex),
-            startEl,
-            ...defaultState.slice(endIndex + 1, startIndex),
-            endEl,
-            ...defaultState.slice(startIndex + 1)
-          ];
+    const temp = pages.value[startIndex];
+    pages.value[startIndex] = pages.value[endIndex];
+    pages.value[endIndex] = temp;
   } else {
     // Insert startIndex and endIndex
     pages.value =
