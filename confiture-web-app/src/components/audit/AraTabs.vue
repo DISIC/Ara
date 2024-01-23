@@ -67,8 +67,8 @@ onMounted(async () => {
 });
 </script>
 
-<!-- 
-  TODO: 
+<!--
+  TODO:
   - ajouter une shadow quand les onglets sont scrollables
 -->
 
@@ -89,11 +89,9 @@ onMounted(async () => {
               [`fr-icon-${tab.icon}`]: !!tab.icon
             })
           }"
-          @keydown.right.prevent="selectNextTab"
           @click="currentTab = i"
-          @keydown.down.prevent="selectNextTab"
-          @keydown.left.prevent="selectPreviousTab"
-          @keydown.up.prevent="selectPreviousTab"
+          @keydown.right.down.prevent="selectNextTab"
+          @keydown.left.up.prevent="selectPreviousTab"
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
