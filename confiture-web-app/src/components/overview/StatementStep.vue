@@ -23,13 +23,24 @@ const auditIsPublishable = computed(() => {
 </script>
 
 <template>
-  <StepCard id="statement-step" :checked="auditIsPublishable">
-    <h2
-      class="fr-h3 fr-mb-1w statement-step-title"
-      aria-describedby="statement-step"
-    >
-      Déclaration d’accessibilité
-    </h2>
+  <StepCard>
+    <div class="fr-mb-1w statement-step-heading">
+      <span
+        v-if="auditIsPublishable"
+        id="statement-step-status"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill statement-step-check"
+        aria-hidden="true"
+      >
+        <span class="sr-only">Étape terminée</span>
+      </span>
+      <h2
+        class="fr-h3 fr-mb-0 statement-step-title"
+        aria-describedby="statement-step-status"
+      >
+        Déclaration d’accessibilité
+      </h2>
+    </div>
+
     <p class="statement-step-description">
       <template v-if="auditIsPublishable">
         Vous pouvez livrer la déclaration d’accessibilité.
@@ -117,9 +128,20 @@ const auditIsPublishable = computed(() => {
 </template>
 
 <style scoped>
+.statement-step-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  grid-column: 1 / -1;
+}
+
 .statement-step-title {
   grid-column: 1 / -1;
   grid-row: 1;
+}
+
+.statement-step-check {
+  color: var(--text-default-success);
 }
 
 .statement-step-description {
