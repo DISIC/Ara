@@ -28,7 +28,10 @@ function onInput() {
 </script>
 
 <template>
-  <div class="fr-p-3w container">
+  <div
+    class="fr-p-3w container"
+    :class="{ 'container-checked': modelValue.includes(value) }"
+  >
     <!-- Allow click on the whole radio square -->
     <div class="container-layer" @click="onInput" />
     <p
@@ -87,6 +90,14 @@ function onInput() {
 .container {
   border: 1px solid var(--border-default-grey);
   position: relative;
+}
+
+.container:hover {
+  background-color: var(--background-default-grey-hover);
+}
+
+.container-checked {
+  border-color: var(--border-plain-blue-france);
 }
 
 .container-layer {
