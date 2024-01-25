@@ -2,7 +2,13 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 18/01/2023
+## 25/01/2024
+
+### Corrections 🐛
+
+- Corrige la navigation au clavier des onglets des pages de l’audit ([#625](https://github.com/DISIC/Ara/pull/625))
+
+## 18/01/2024
 
 ### Autres changements ⚙️
 
@@ -12,7 +18,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrige l’affichage des blocs de page de la page de paramètres sur Safari ([#608](https://github.com/DISIC/Ara/pull/608))
 
-## 16/01/2023
+## 16/01/2024
 
 ### Autres changements ⚙️
 
