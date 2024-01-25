@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 25/01/2024
 
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute la possibilité de changer l’ordre des pages de l’échantilloon depuis les paramètres de l’audit ([#613](https://github.com/DISIC/Ara/pull/613))
+
 ### Corrections 🐛
 
 - Corrige la navigation au clavier des onglets des pages de l’audit ([#625](https://github.com/DISIC/Ara/pull/625))
