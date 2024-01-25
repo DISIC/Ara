@@ -62,7 +62,7 @@ export class AuditService {
         pages: {
           createMany: {
             data: data.pages.map((p, i) => {
-              return { ...p, order: i };
+              return { ...p, url: decodeURI(p.url), order: i };
             })
           }
         },
