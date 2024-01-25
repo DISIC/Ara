@@ -133,6 +133,7 @@ class ReportContext {
 class PageSample {
   id: number;
   number: number;
+  order: number;
   name: string;
   url: string;
 }

@@ -137,6 +137,56 @@ async function deletePage(i: number) {
   }
 }
 
+const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
+
+const positionSuccessMessage = ref("");
+
+/**
+ * Change the order of pages. Swap pages if it is adjacent.
+ * Otherwise, insert `startIndex` page at `endIndex` position.
+ * @param {number} startIndex
+ * @param {number} endIndex
+ * @example
+ * Given [1, 2, 3, 4] and if updatePageOrder(1, 3), new order will be [1, 4, 2, 3].
+ */
+function updatePageOrder(startIndex: number, endIndex: number) {
+  positionSuccessMessage.value = "";
+  pagesArePristine.value = false;
+
+  const defaultState = [...pages.value];
+  const startEl = defaultState[startIndex];
+
+  if (startIndex === endIndex + 1 || startIndex === endIndex - 1) {
+    // Swap 2 adjacent pages
+    const temp = pages.value[startIndex];
+    pages.value[startIndex] = pages.value[endIndex];
+    pages.value[endIndex] = temp;
+  } else {
+    // Insert startIndex and endIndex
+    pages.value =
+      startIndex < endIndex
+        ? [
+            ...defaultState.slice(0, startIndex),
+            ...defaultState.slice(startIndex + 1, endIndex + 1),
+            startEl,
+            ...defaultState.slice(endIndex + 1)
+          ]
+        : [
+            ...defaultState.slice(0, endIndex),
+            startEl,
+            ...defaultState.slice(endIndex, startIndex),
+            ...defaultState.slice(startIndex + 1)
+          ];
+  }
+
+  // Focus `endIndex` select
+  pageOrderSelectRefs.value?.at(endIndex)?.focus();
+
+  positionSuccessMessage.value = `Page déplacée en  position ${
+    endIndex + 1
+  } sur ${pages.value.length}`;
+}
+
 /**
  * Dev function to avoid filling all fields manually
  */
@@ -159,7 +209,7 @@ function onSubmit() {
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,
-    // remove leading/trailing whitespaces from urls, the browser valifation might accept those our backend won't !
+    // remove leading/trailing whitespaces from urls, the browser validation might accept those our backend won't!
     pages: pages.value.map((p) => ({ ...p, url: p.url.trim() })),
     auditorName: procedureAuditorName.value,
     auditorEmail: formatEmail(procedureAuditorEmail.value)
@@ -255,16 +305,44 @@ const previousRoute = usePreviousRoute();
         <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
       </legend>
 
-      <button
-        class="fr-btn fr-btn--tertiary-no-outline page-delete-button"
-        type="button"
-        :disabled="pages.length === 1"
-        data-cy="delete"
-        @click="deletePage(i)"
-      >
-        Supprimer
-        <span class="sr-only">la page {{ i + 1 }}</span>
-      </button>
+      <div class="page-right-actions">
+        <button
+          class="fr-btn fr-btn--icon-left fr-icon-delete-line fr-btn--tertiary-no-outline"
+          type="button"
+          :disabled="pages.length === 1"
+          data-cy="delete"
+          @click="deletePage(i)"
+        >
+          Supprimer
+          <span class="sr-only">la page {{ i + 1 }}</span>
+        </button>
+
+        <div class="fr-select-group fr-mb-0">
+          <label class="fr-label sr-only" :for="`page-order-${i}`">
+            Position de la page {{ i + 1 }}
+          </label>
+          <select
+            :id="`page-order-${i}`"
+            ref="pageOrderSelectRefs"
+            class="fr-select fr-mt-0"
+            :value="i"
+            @change="
+              updatePageOrder(
+                i,
+                Number(($event.target as HTMLSelectElement).value)
+              )
+            "
+          >
+            <option v-for="(_, j) in pages" :key="j" :value="j">
+              Position {{ j + 1 }} sur {{ pages.length }}
+            </option>
+          </select>
+
+          <div class="sr-only" aria-live="polite" role="alert">
+            <p v-if="positionSuccessMessage">{{ positionSuccessMessage }}</p>
+          </div>
+        </div>
+      </div>
 
       <DsfrField
         :id="`page-name-${i + 1}`"
@@ -289,7 +367,7 @@ const previousRoute = usePreviousRoute();
       </DsfrField>
     </fieldset>
     <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-6w"
+      class="fr-btn fr-btn--icon-left fr-icon-add-line fr-btn--secondary fr-mt-4w fr-mb-6w"
       type="button"
       @click="addPage"
     >
@@ -356,12 +434,6 @@ const previousRoute = usePreviousRoute();
   color: var(--text-mention-grey);
 }
 
-.audit-types {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .partial-audit-radios {
   display: flex;
   flex-wrap: wrap;
@@ -382,7 +454,10 @@ const previousRoute = usePreviousRoute();
   margin-top: 0.375rem;
 }
 
-.page-delete-button {
+.page-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   float: right;
 }
 

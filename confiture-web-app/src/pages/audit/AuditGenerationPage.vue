@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sortBy } from "lodash-es";
 import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
@@ -212,11 +213,12 @@ const pageTitle = computed(() => {
 type TabData = { label: string; data: AuditPage };
 
 const tabsData = computed((): TabData[] => {
-  return (
+  return sortBy(
     auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
       data: p
-    })) ?? []
+    })) ?? [],
+    (p) => p.data.order
   );
 });
 

@@ -61,7 +61,9 @@ export class AuditService {
 
         pages: {
           createMany: {
-            data: data.pages
+            data: data.pages.map((p, i) => {
+              return { ...p, order: i };
+            })
           }
         },
 
@@ -183,8 +185,9 @@ export class AuditService {
     data: UpdateAuditDto
   ): Promise<Audit | undefined> {
     try {
-      const updatedPages = data.pages.filter((p) => p.id);
-      const newPages = data.pages.filter((p) => !p.id);
+      const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
+      const updatedPages = orderedPages.filter((p) => p.id);
+      const newPages = orderedPages.filter((p) => !p.id);
 
       const [audit] = await this.prisma.$transaction([
         this.prisma.audit.update({
@@ -302,12 +305,14 @@ export class AuditService {
               update: updatedPages.map((p) => ({
                 where: { id: p.id },
                 data: {
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }
               })),
               createMany: {
                 data: newPages.map((p) => ({
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }))
@@ -784,12 +789,15 @@ export class AuditService {
             browserVersion: e.browserVersion
           })),
         referencial: "RGAA Version 4.1",
-        samples: audit.pages.map((p, i) => ({
-          name: p.name,
-          number: i + 1,
-          url: p.url,
-          id: p.id
-        })),
+        samples: audit.pages
+          .map((p, i) => ({
+            name: p.name,
+            order: p.order,
+            number: i + 1,
+            url: p.url,
+            id: p.id
+          }))
+          .sort((p) => p.order),
         tools: audit.tools,
         technologies: audit.technologies
       },
