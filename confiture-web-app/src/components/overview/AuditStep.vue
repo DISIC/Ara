@@ -41,7 +41,6 @@ const auditIsInProgress = computed(() => {
         v-if="auditIsReady"
         id="audit-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill audit-step-check"
-        aria-hidden="true"
       >
         <span class="sr-only">Étape terminée</span>
       </span>

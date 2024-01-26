@@ -24,7 +24,6 @@ const auditIsReady = computed(() => {
         v-if="auditIsReady"
         id="report-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill report-step-check"
-        aria-hidden="true"
       >
         <span class="sr-only">Étape terminée</span>
       </span>

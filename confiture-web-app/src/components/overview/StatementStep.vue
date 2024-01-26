@@ -29,7 +29,6 @@ const auditIsPublishable = computed(() => {
         v-if="auditIsPublishable"
         id="statement-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill statement-step-check"
-        aria-hidden="true"
       >
         <span class="sr-only">Étape terminée</span>
       </span>
