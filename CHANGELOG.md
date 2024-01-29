@@ -6,7 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Nouvelles fonctionnalités 🚀
 
-- Ajoute la possibilité de changer l’ordre des pages de l’échantilloon depuis les paramètres de l’audit ([#613](https://github.com/DISIC/Ara/pull/613))
+- Ajoute la possibilité de changer l’ordre des pages de l’échantillon depuis les paramètres de l’audit ([#613](https://github.com/DISIC/Ara/pull/613))
 
 ### Corrections 🐛
 
