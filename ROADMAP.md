@@ -11,16 +11,14 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 
 ## Améliorations
 
-- Critères transverses **À venir**
-- Refonte du parcours entre l’audit, le rapport et la déclaration **À venir**
+- Critères transverses **En cours**
+- Refonte du parcours entre l’audit, le rapport et la déclaration **En cours**
 - Refonte de la rubrique Ressources **À venir**
 - Refonte de la page d’accueil **À venir**
-- Refonte des graphiques de la page résultat **Plus tard**
   
 ## Nouvelles fonctionnalités
 
-- Changer l’ordre des pages de l’échantillon **À venir**
-- Intégration des tests automatiques **Plus tard**
+- Intégration des tests automatiques **À venir**
 
 ## Exporter les documents
 
