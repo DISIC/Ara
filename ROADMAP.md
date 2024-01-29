@@ -1,8 +1,5 @@
 # Feuille de route de Ara
 
-L’équipe Ara est actuellement en pause hivernale. 
-Les développements reprendront le 10 janvier 2024. 
-
 Cette feuille de route liste les prochaines évolutions et fonctionnalités d’Ara. Elle est mise à jour régulièrement afin de vous offrir une vision précise des statuts et priorisations des travaux menés par l’équipe.
 
 * **En cours** : fonctionnalité en cours de conception ou de développement. Bientôt en production.
