@@ -18,11 +18,25 @@ const auditIsReady = computed(() => {
 </script>
 
 <template>
-  <StepCard id="report-step" :checked="auditIsReady">
-    <h2 class="fr-h3 fr-mb-1w report-step-title" aria-describedby="report-step">
-      Rapport d’audit
-      <p class="fr-badge fr-badge--info">Généré automatiquement</p>
-    </h2>
+  <StepCard>
+    <div class="fr-mb-1w report-step-heading">
+      <span
+        v-if="auditIsReady"
+        id="report-step-status"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill report-step-check"
+      >
+        <span class="sr-only">Étape terminée</span>
+      </span>
+      <h2
+        class="fr-h3 fr-mb-0 report-step-title"
+        aria-describedby="report-step-status"
+      >
+        Rapport d’audit
+        <p class="fr-badge fr-badge--info fr-badge--no-icon">
+          Généré automatiquement
+        </p>
+      </h2>
+    </div>
     <p class="report-step-description">
       {{
         auditIsReady
@@ -63,6 +77,13 @@ const auditIsReady = computed(() => {
 </template>
 
 <style scoped>
+.report-step-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  grid-column: 1 / -1;
+}
+
 .report-step-title {
   grid-column: 1 / -1;
   grid-row: 1;
@@ -71,6 +92,10 @@ const auditIsReady = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.report-step-check {
+  color: var(--text-default-success);
 }
 
 .report-step-description {

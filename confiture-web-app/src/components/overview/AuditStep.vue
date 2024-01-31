@@ -35,14 +35,30 @@ const auditIsInProgress = computed(() => {
 </script>
 
 <template>
-  <StepCard id="audit-step" :checked="auditIsReady">
-    <h2 class="fr-h3 fr-mb-1w audit-step-title" aria-describedby="audit-step">
-      Audit
-      <p v-if="audit.auditType" class="fr-badge">
-        {{ getCriteriaCount(audit.auditType) }}
-        critères
-      </p>
-    </h2>
+  <StepCard>
+    <div class="fr-mb-1w audit-step-heading">
+      <span
+        v-if="auditIsReady"
+        id="audit-step-status"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill audit-step-check"
+      >
+        <span class="sr-only">Étape terminée</span>
+      </span>
+
+      <h2
+        class="fr-h3 fr-mb-0 audit-step-title"
+        aria-describedby="audit-step-status"
+      >
+        Audit
+        <p
+          v-if="audit.auditType"
+          class="fr-badge fr-badge--info fr-badge--no-icon"
+        >
+          {{ getCriteriaCount(audit.auditType) }}
+          critères
+        </p>
+      </h2>
+    </div>
 
     <p class="fr-text--sm fr-mb-2w audit-step-date">
       <template v-if="auditIsInProgress && audit.creationDate">
@@ -186,6 +202,12 @@ const auditIsInProgress = computed(() => {
 </template>
 
 <style scoped>
+.audit-step-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
 .audit-step-title {
   grid-column: 1 / -1;
   grid-row: 1;
@@ -194,6 +216,10 @@ const auditIsInProgress = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.audit-step-check {
+  color: var(--text-default-success);
 }
 
 .audit-step-date {
