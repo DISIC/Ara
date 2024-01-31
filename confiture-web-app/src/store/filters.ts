@@ -43,10 +43,11 @@ export const useFiltersStore = defineStore("filters", {
               .map((c: any) => {
                 return {
                   ...c,
+                  // TODO: take transverse results into account
                   status:
-                    resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
-                      c.criterium.number
-                    ]?.status
+                    resultStore.data?.perPage[auditStore.currentPageId!]?.[
+                      t.number
+                    ]?.[c.criterium.number]?.status
                 };
               })
               .filter((c: any) => {
@@ -75,10 +76,11 @@ export const useFiltersStore = defineStore("filters", {
             .map((c: any) => {
               return {
                 ...c,
+                // TODO: take transverse results into account
                 status:
-                  resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
-                    c.criterium.number
-                  ]?.status
+                  resultStore.data?.perPage[auditStore.currentPageId!]?.[
+                    t.number
+                  ]?.[c.criterium.number]?.status
               };
             })
             .filter(
@@ -89,6 +91,7 @@ export const useFiltersStore = defineStore("filters", {
                     fc.criterium === c.criterium.number && fc.topic === t.number
                 ) &&
                 // status
+                // TODO: take transverse results into account
                 (this.complianceLevels.length
                   ? this.complianceLevels.includes(c.status)
                   : !this.complianceLevels.includes(c.status)) &&
@@ -131,7 +134,8 @@ export const useFiltersStore = defineStore("filters", {
       const auditStore = useAuditStore();
       const resultStore = useResultsStore();
 
-      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+      // TODO: take transverse results into account
+      const pageResults = resultStore.data?.perPage[auditStore.currentPageId!];
 
       return Object.values(pageResults!)
         .map((topic) => {
@@ -150,7 +154,8 @@ export const useFiltersStore = defineStore("filters", {
       const auditStore = useAuditStore();
       const resultStore = useResultsStore();
 
-      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+      // TODO: take transverse results into account
+      const pageResults = resultStore.data?.perPage[auditStore.currentPageId!];
 
       return Object.values(pageResults!)
         .map((topic) => {
