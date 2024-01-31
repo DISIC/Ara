@@ -65,6 +65,10 @@ const result = computed(
     )!
 );
 
+const isResultTransverse = computed(() =>
+  store.isCriteriumTransverse(result.value.topic, result.value.criterium)
+);
+
 const notify = useNotifications();
 
 const showFileSizeError = ref(false);
@@ -217,9 +221,14 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
 }
 
 function updateTransverseStatus(e: Event) {
-  const transverse = (e.target as HTMLInputElement).checked;
+  const isTransverse = (e.target as HTMLInputElement).checked;
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
+    .setResultIsTransverse(
+      props.auditUniqueId,
+      result.value.topic,
+      result.value.criterium,
+      isTransverse
+    )
     .catch(handleUpdateResultError);
 }
 
@@ -271,7 +280,7 @@ const isOffline = useIsOffline();
       <div class="fr-toggle fr-toggle--label-left">
         <input
           :id="`applicable-all-pages-${uniqueId}`"
-          :checked="result.transverse"
+          :checked="isResultTransverse"
           type="checkbox"
           class="fr-toggle__input"
           :disabled="
@@ -294,7 +303,7 @@ const isOffline = useIsOffline();
 
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumNotCompliantAccordion
-      v-if="result.transverse"
+      v-if="isResultTransverse"
       :id="`transverse-not-compliant-accordion-${uniqueId}`"
       :comment="''"
       :user-impact="null"

@@ -179,6 +179,14 @@ export const useResultsStore = defineStore("results", {
       ).length;
 
       return testedCriteria / total;
+    },
+
+    isCriteriumTransverse() {
+      return (topicNumber: number, criteriumNumber: number) => {
+        const transverseResult =
+          this.data?.transverse[topicNumber][criteriumNumber];
+        return transverseResult?.transverse ?? false;
+      };
     }
   },
 
@@ -227,57 +235,35 @@ export const useResultsStore = defineStore("results", {
       };
     },
 
-    async updateResults(uniqueId: string, updates: CriteriumResult[]) {
+    async updateResults(
+      uniqueId: string,
+      updates: CriteriumResult[],
+      transverseUpdates: TransverseCriteriumResult[] = []
+    ) {
       if (!this.data) {
         return;
       }
 
       const previousResults: CriteriumResult[] = [];
+      const previousTransverseResults: TransverseCriteriumResult[] = [];
 
       updates.forEach((update) => {
-        if (!this.data) {
-          return;
-        }
-
         previousResults.push(
-          this.data.perPage[update.pageId][update.topic][update.criterium]
+          this.data!.perPage[update.pageId][update.topic][update.criterium]
         );
 
         // Update UI immediately, rollbacks later if update fails.
-        this.data.perPage[update.pageId][update.topic][update.criterium] =
+        this.data!.perPage[update.pageId][update.topic][update.criterium] =
           update;
+      });
 
-        // // Apply `transverse` result update to every pages
-        // if (update.transverse) {
-        //   Object.keys(this.data)
-        //     .map(Number) // this.data requires a number index
-        //     .filter((pageId) => pageId !== update.pageId) // Ignore current page
-        //     .forEach((pageId) => {
-        //       if (!this.data) {
-        //         return;
-        //       }
+      transverseUpdates.forEach((update) => {
+        previousTransverseResults.push(
+          this.data!.transverse[update.topic][update.criterium]
+        );
 
-        //       const target = this.data[pageId][update.topic][update.criterium];
-
-        //       target.status = update.status;
-        //       target.transverse = true;
-
-        //       if (update.status === CriteriumResultStatus.COMPLIANT) {
-        //         target.compliantComment = update.compliantComment;
-        //       }
-
-        //       if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
-        //         target.errorDescription = update.errorDescription;
-        //         target.recommandation = update.recommandation;
-        //         target.userImpact = update.userImpact;
-        //         target.quickWin = update.quickWin;
-        //       }
-
-        //       if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
-        //         target.notApplicableComment = update.notApplicableComment;
-        //       }
-        //     });
-        // }
+        // Update UI immediately, rollbacks later if update fails.
+        this.data!.transverse[update.topic][update.criterium] = update;
       });
 
       // update the edition date of the local audit. It will not be the same
@@ -309,6 +295,13 @@ export const useResultsStore = defineStore("results", {
           this.data.perPage[result.pageId][result.topic][result.criterium] =
             result;
         });
+
+        previousTransverseResults.forEach((result) => {
+          if (!this.data) {
+            return;
+          }
+          this.data.transverse[result.topic][result.criterium] = result;
+        });
       };
 
       this.increaseCurrentRequestCount();
@@ -317,7 +310,7 @@ export const useResultsStore = defineStore("results", {
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
             data: updates,
-            transverseData: []
+            transverseData: transverseUpdates
           }
         })
         .catch((err) => {
@@ -394,6 +387,25 @@ export const useResultsStore = defineStore("results", {
           CriteriumResultStatus.NOT_TESTED
         );
       }
+    },
+
+    setResultIsTransverse(
+      uniqueId: string,
+      topic: number,
+      criterium: number,
+      isTransverse: boolean
+    ) {
+      const transverseResult = this.data?.transverse[topic][criterium];
+
+      if (!transverseResult) {
+        throw new Error("Cannot update unfetched result");
+      }
+
+      const updatedTransverseResult: TransverseCriteriumResult = {
+        ...transverseResult,
+        transverse: isTransverse
+      };
+      return this.updateResults(uniqueId, [], [updatedTransverseResult]);
     },
 
     async uploadExampleImage(
