@@ -24,7 +24,7 @@ const auditIsPublishable = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-1w statement-step-heading">
+    <div class="fr-mb-3w statement-step-heading">
       <span
         v-if="auditIsPublishable"
         id="statement-step-status"

@@ -19,7 +19,7 @@ const auditIsReady = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-1w report-step-heading">
+    <div class="fr-mb-3w report-step-heading">
       <span
         v-if="auditIsReady"
         id="report-step-status"
