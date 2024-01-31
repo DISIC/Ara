@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 31/01/2024
 
+### Corrections 🐛
+
+- Empêche la création de pages avec des espaces dans l’URL ([#623](https://github.com/DISIC/Ara/pull/623))
+
 ### Autres changements ⚙️
 
 - Corrige l’accessibilité de l’indicateur d’étape terminée sur la synthèse d’un audit ([#630](https://github.com/DISIC/Ara/pull/630))
