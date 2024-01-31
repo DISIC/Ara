@@ -174,8 +174,10 @@ const filterResultsCount = computed(() =>
 
 watch(
   () => auditStore.currentAudit,
-  () => {
-    auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
+  (currentAudit) => {
+    if (currentAudit) {
+      auditStore.currentPageId = currentAudit.pages[0].id;
+    }
   },
   { immediate: true }
 );
