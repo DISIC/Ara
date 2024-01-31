@@ -69,6 +69,14 @@ const isResultTransverse = computed(() =>
   store.isCriteriumTransverse(result.value.topic, result.value.criterium)
 );
 
+const criteriumStatus = computed(() =>
+  store.getCriteriumStatus(
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number
+  )
+);
+
 const notify = useNotifications();
 
 const showFileSizeError = ref(false);
@@ -180,7 +188,13 @@ function handleUpdateResultError(err: any) {
 
 function updateResultStatus(status: CriteriumResultStatus) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, status }])
+    .updateCriteriumStatus(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      status
+    )
     .then(() => {
       if (
         store.everyCriteriumAreTested &&
@@ -223,8 +237,9 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
 function updateTransverseStatus(e: Event) {
   const isTransverse = (e.target as HTMLInputElement).checked;
   store
-    .setResultIsTransverse(
+    .updateResultIsTransverse(
       props.auditUniqueId,
+      props.page.id,
       result.value.topic,
       result.value.criterium,
       isTransverse
@@ -263,13 +278,13 @@ const isOffline = useIsOffline();
       :class="[
         'fr-ml-6w criterium-radios-container',
         {
-          'fr-mb-2w': result.status !== CriteriumResultStatus.NOT_TESTED
+          'fr-mb-2w': criteriumStatus !== CriteriumResultStatus.NOT_TESTED
         }
       ]"
     >
       <RadioGroup
         :disabled="isOffline"
-        :model-value="result.status"
+        :model-value="criteriumStatus"
         :label="`Statut du critère ${topicNumber}.${criterium.number}`"
         hide-label
         :default-value="CriteriumResultStatus.NOT_TESTED"
@@ -284,7 +299,7 @@ const isOffline = useIsOffline();
           type="checkbox"
           class="fr-toggle__input"
           :disabled="
-            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
+            criteriumStatus === CriteriumResultStatus.NOT_TESTED || isOffline
           "
           @input="updateTransverseStatus"
         />
@@ -293,7 +308,7 @@ const isOffline = useIsOffline();
           :for="`applicable-all-pages-${uniqueId}`"
         >
           <span class="sr-only">
-            Appliquer le statut {{ formatStatus(result.status) }} pour le
+            Appliquer le statut {{ formatStatus(criteriumStatus) }} pour le
             critère {{ topicNumber }}.{{ criterium.number }}
           </span>
           &nbsp;Sur toutes les pages
@@ -327,21 +342,21 @@ const isOffline = useIsOffline();
     </CriteriumNotCompliantAccordion>
 
     <CriteriumCompliantAccordion
-      v-if="result.status === CriteriumResultStatus.COMPLIANT"
+      v-if="criteriumStatus === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
       :comment="result.compliantComment"
       @update:comment="updateResultComment($event, 'compliantComment')"
     />
 
     <CriteriumNotApplicableAccordion
-      v-else-if="result.status === CriteriumResultStatus.NOT_APPLICABLE"
+      v-else-if="criteriumStatus === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
       :comment="result.notApplicableComment"
       @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
 
     <CriteriumNotCompliantAccordion
-      v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
+      v-else-if="criteriumStatus === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       :comment="result.errorDescription"
       :user-impact="result.userImpact"
@@ -362,7 +377,7 @@ const isOffline = useIsOffline();
     <CriteriumTestsAccordion
       v-if="!filtersStore.hideTestsAndReferences"
       :class="{
-        'fr-mt-2w': result.status === CriteriumResultStatus.NOT_TESTED
+        'fr-mt-2w': criteriumStatus === CriteriumResultStatus.NOT_TESTED
       }"
       :topic-number="topicNumber"
       :criterium="criterium"

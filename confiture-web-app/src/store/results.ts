@@ -181,6 +181,23 @@ export const useResultsStore = defineStore("results", {
       return testedCriteria / total;
     },
 
+    getCriteriumStatus() {
+      return (pageId: number, topicNumber: number, criteriumNumber: number) => {
+        if (!this.data) {
+          throw new Error("Cant get status of unfetched result");
+        }
+        const isTransverse = this.isCriteriumTransverse(
+          topicNumber,
+          criteriumNumber
+        );
+        if (isTransverse) {
+          return this.data.transverse[topicNumber][criteriumNumber].status;
+        } else {
+          return this.data.perPage[pageId][topicNumber][criteriumNumber].status;
+        }
+      };
+    },
+
     isCriteriumTransverse() {
       return (topicNumber: number, criteriumNumber: number) => {
         const transverseResult =
@@ -389,23 +406,52 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
-    setResultIsTransverse(
+    /** Mark a criterium as transverse, the status of the page result is applied to the transverse result. */
+    updateResultIsTransverse(
       uniqueId: string,
+      pageId: number,
       topic: number,
       criterium: number,
       isTransverse: boolean
     ) {
       const transverseResult = this.data?.transverse[topic][criterium];
+      const pageResult = this.data?.perPage[pageId][topic][criterium];
 
-      if (!transverseResult) {
+      if (!transverseResult || !pageResult) {
         throw new Error("Cannot update unfetched result");
       }
 
       const updatedTransverseResult: TransverseCriteriumResult = {
         ...transverseResult,
-        transverse: isTransverse
+        transverse: isTransverse,
+        // Apply the current status of the perPage result to the transverse one.
+        status: isTransverse ? pageResult.status : transverseResult.status
       };
       return this.updateResults(uniqueId, [], [updatedTransverseResult]);
+    },
+
+    updateCriteriumStatus(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      status: CriteriumResultStatus
+    ) {
+      if (this.isCriteriumTransverse(topic, criterium)) {
+        // Update transverse result
+        const result = this.data?.transverse[topic][criterium];
+        if (!result) {
+          throw new Error("Cannot update unfetched result");
+        }
+        return this.updateResults(uniqueId, [], [{ ...result, status }]);
+      } else {
+        // Update per page result
+        const result = this.data?.perPage[pageId][topic][criterium];
+        if (!result) {
+          throw new Error("Cannot update unfetched result");
+        }
+        return this.updateResults(uniqueId, [{ ...result, status }], []);
+      }
     },
 
     async uploadExampleImage(
