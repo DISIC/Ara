@@ -81,7 +81,7 @@ const isOffline = useIsOffline();
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)">
     <template #title>
-      Erreur(s) et recommandation(s) de&nbsp;<strong>cette page</strong>
+      Erreur(s) et recommandation(s) sur&nbsp;<strong>toutes les pages</strong>
     </template>
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
