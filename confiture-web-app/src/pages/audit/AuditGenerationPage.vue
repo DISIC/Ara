@@ -173,12 +173,11 @@ const filterResultsCount = computed(() =>
 );
 
 watch(
-  () => auditStore.currentAudit?.pages,
-  (curr, prev) => {
-    if (curr && !prev) {
-      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
-    }
-  }
+  () => auditStore.currentAudit,
+  () => {
+    auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
+  },
+  { immediate: true }
 );
 
 const pageTitle = computed(() => {
