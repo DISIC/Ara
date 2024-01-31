@@ -12,7 +12,6 @@ import {
   CriteriumResultStatus,
   ExampleImage
 } from "../../types";
-import CriteriumTransverseNotCompliantAccordion from "./CriteriumTransverseNotCompliantAccordion.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -294,8 +293,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
-    <!-- TODO: use same not compliant accordion component?-->
-    <CriteriumTransverseNotCompliantAccordion
+    <CriteriumNotCompliantAccordion
       v-if="result.transverse"
       :id="`transverse-not-compliant-accordion-${uniqueId}`"
       :comment="''"
@@ -311,7 +309,13 @@ const isOffline = useIsOffline();
       @delete-example="() => console.log('TODO')"
       @update:recommandation="() => console.log('TODO')"
       @update:quick-win="() => console.log('TODO')"
-    />
+    >
+      <template #title>
+        Erreur(s) et recommandation(s) sur&nbsp;<strong
+          >toutes les pages</strong
+        >
+      </template>
+    </CriteriumNotCompliantAccordion>
 
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
