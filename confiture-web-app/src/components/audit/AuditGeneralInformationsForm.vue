@@ -7,7 +7,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAccountStore } from "../../store/account";
 import { AuditType, CreateAuditRequestData } from "../../types";
-import { formatEmail } from "../../utils";
+import { formatEmail, URL_REGEX } from "../../utils";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import BackLink from "../ui/BackLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
@@ -209,8 +209,7 @@ function onSubmit() {
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,
-    // remove whitespaces from urls, the browser validation might accept those our backend won't !
-    pages: pages.value.map((p) => ({ ...p, url: encodeURI(p.url).trim() })),
+    pages: pages.value.map((p) => ({ ...p, url: p.url })),
     auditorName: procedureAuditorName.value,
     auditorEmail: formatEmail(procedureAuditorEmail.value)
   });
@@ -359,6 +358,8 @@ const previousRoute = usePreviousRoute();
         label="URL de la page"
         type="url"
         required
+        :pattern="URL_REGEX"
+        title="https://domaine.fr et sans espaces"
         @change="pagesArePristine = false"
       >
         <template #hint>

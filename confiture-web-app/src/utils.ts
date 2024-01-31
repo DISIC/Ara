@@ -183,7 +183,6 @@ export async function captureWithPayloads(
   captureException(error, scope);
 }
 
-// TODO: use everywhere
 export const pluralize = (singular: string, plural: string, count: number) =>
   count === 1 ? singular : plural;
 
@@ -200,6 +199,10 @@ export function validateEmail(s: string): boolean {
 export function formatEmail(s: string): string {
   return s.trim().toLocaleLowerCase();
 }
+
+// https://regexr.com/7fjmt
+export const URL_REGEX =
+  /^(https?:\/\/)((?!-)(?!.*--)[a-zA-Z\-0-9]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}(\/[^\s]*)?$/;
 
 export function isJwtExpired(jwt: string) {
   const payload = jwtDecode<{ exp?: number }>(jwt);
