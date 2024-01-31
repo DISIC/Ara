@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 31/01/2024
+
+### Autres changements ⚙️
+
+- Corrige l’accessibilité de l’indicateur d’étape terminée sur la synthèse d’un audit ([#630](https://github.com/DISIC/Ara/pull/630))
+
 ## 25/01/2024
 
 ### Nouvelles fonctionnalités 🚀
