@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, provide, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -24,6 +24,7 @@ import {
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
+import TransverseWarningModal from "../../components/audit/TransverseWarningModal.vue";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -221,6 +222,24 @@ const tabsData = computed((): TabData[] => {
 });
 
 const accountStore = useAccountStore();
+
+const transverseWarningModalRef =
+  ref<InstanceType<typeof TransverseWarningModal>>();
+
+const transverseWarningResolve = ref<() => void>();
+
+function onTransverseWarningConfirm() {
+  transverseWarningResolve.value?.();
+}
+
+provide("openTransverseWarning", () => {
+  transverseWarningModalRef.value?.show();
+
+  return new Promise<void>((resolve) => {
+    // Store the resolve callback to be called when the modal is "accepted"
+    transverseWarningResolve.value = resolve;
+  });
+});
 </script>
 
 <template>
@@ -315,6 +334,11 @@ const accountStore = useAccountStore();
     ref="notesModal"
     :is-loading="isNotesLoading"
     @confirm="updateAuditNotes"
+  />
+
+  <TransverseWarningModal
+    ref="transverseWarningModalRef"
+    @confirm="onTransverseWarningConfirm"
   />
 </template>
 

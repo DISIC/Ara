@@ -4,7 +4,7 @@ import DsfrModal from "../ui/DsfrModal.vue";
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "closed"): void;
   (e: "confirm"): void;
 }>();
@@ -19,7 +19,8 @@ function handleClose() {
 }
 
 function handleConfirm() {
-  console.log("handleConfirm");
+  modal.value?.hide();
+  emit("confirm");
 }
 </script>
 

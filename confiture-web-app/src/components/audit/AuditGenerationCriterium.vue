@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { marked } from "marked";
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import { debounce } from "lodash-es";
 import { HTTPError } from "ky";
 
@@ -234,8 +234,24 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
     .catch(handleUpdateResultError);
 }
 
-function updateTransverseStatus(e: Event) {
+const openTransverseWarning = inject<() => Promise<void>>(
+  "openTransverseWarning"
+);
+
+async function updateTransverseStatus(e: Event) {
   const isTransverse = (e.target as HTMLInputElement).checked;
+
+  if (
+    isTransverse &&
+    store.isCriteriumEvaluatedAtLeastOnce(
+      props.topicNumber,
+      props.criterium.number,
+      props.page.id
+    )
+  ) {
+    // Show modal if
+    openTransverseWarning && (await openTransverseWarning?.());
+  }
   store
     .updateResultIsTransverse(
       props.auditUniqueId,

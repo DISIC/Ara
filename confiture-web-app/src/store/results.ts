@@ -204,6 +204,30 @@ export const useResultsStore = defineStore("results", {
           this.data?.transverse[topicNumber][criteriumNumber];
         return transverseResult?.transverse ?? false;
       };
+    },
+
+    /**
+     * Returns true if a criterium is evaluated (status other than NT) on any
+     * page other than `exceptPage`.
+     */
+    isCriteriumEvaluatedAtLeastOnce() {
+      return (
+        topicNumber: number,
+        criteriumNumber: number,
+        exceptPageId: number
+      ) => {
+        if (!this.data) {
+          throw new Error("Cant check unfetched results");
+        }
+        const perPageResults = Object.values(this.data.perPage).map(
+          (o) => o[topicNumber][criteriumNumber]
+        );
+        return perPageResults.some(
+          (result) =>
+            result.pageId !== exceptPageId &&
+            result.status !== CriteriumResultStatus.NOT_TESTED
+        );
+      };
     }
   },
 
@@ -414,6 +438,7 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       isTransverse: boolean
     ) {
+      console.log("updateResultIsTransverse", isTransverse);
       const transverseResult = this.data?.transverse[topic][criterium];
       const pageResult = this.data?.perPage[pageId][topic][criterium];
 
