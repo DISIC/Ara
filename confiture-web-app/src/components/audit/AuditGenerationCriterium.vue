@@ -89,13 +89,21 @@ const notify = useNotifications();
 
 const showFileSizeError = ref(false);
 const showFileFormatError = ref(false);
+const showTransverseFileSizeError = ref(false);
+const showTransverseFileFormatError = ref(false);
 
-function handleUploadExample(file: File) {
-  showFileSizeError.value = false;
-  showFileFormatError.value = false;
+function handleUploadExample(file: File, transverse = false) {
+  if (transverse) {
+    showTransverseFileFormatError.value = false;
+    showTransverseFileSizeError.value = false;
+  } else {
+    showFileSizeError.value = false;
+    showFileFormatError.value = false;
+  }
 
   if (file.size > 2000000) {
-    showFileSizeError.value = true;
+    if (transverse) showTransverseFileSizeError.value = true;
+    else showFileSizeError.value = true;
     notify(
       "error",
       "Le téléchargement de l'exemple a échoué",
@@ -107,7 +115,7 @@ function handleUploadExample(file: File) {
   store
     .uploadExampleImage(
       props.auditUniqueId,
-      props.page.id,
+      transverse ? null : props.page.id,
       props.topicNumber,
       props.criterium.number,
       file
@@ -131,14 +139,22 @@ function handleUploadExample(file: File) {
           const body = await error.response.json();
 
           if (body.message.includes("expected type")) {
-            showFileFormatError.value = true;
+            if (transverse) {
+              showTransverseFileFormatError.value = true;
+            } else {
+              showFileFormatError.value = true;
+            }
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
               "Format de fichier non supporté"
             );
           } else if (body.message.includes("expected size")) {
-            showFileSizeError.value = true;
+            if (transverse) {
+              showTransverseFileSizeError.value = true;
+            } else {
+              showFileSizeError.value = true;
+            }
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
@@ -164,11 +180,11 @@ function handleUploadExample(file: File) {
     });
 }
 
-function handleDeleteExample(image: ExampleImage) {
+function handleDeleteExample(image: ExampleImage, transverse = false) {
   store
     .deleteExampleImage(
       props.auditUniqueId,
-      props.page.id,
+      transverse ? null : props.page.id,
       props.topicNumber,
       props.criterium.number,
       image.id
@@ -364,12 +380,12 @@ const isOffline = useIsOffline();
       :example-images="transverseResult.exampleImages"
       :recommandation="transverseResult.recommandation"
       :quick-win="transverseResult.quickWin"
-      :show-file-format-error="false"
-      :show-file-size-error="false"
+      :show-file-format-error="showTransverseFileFormatError"
+      :show-file-size-error="showTransverseFileSizeError"
       @update:comment="updateResultComment($event, 'errorDescription', true)"
       @update:user-impact="updateResultImpact($event, true)"
-      @upload-example="() => console.log('TODO')"
-      @delete-example="() => console.log('TODO')"
+      @upload-example="handleUploadExample($event, true)"
+      @delete-example="handleDeleteExample($event, true)"
       @update:recommandation="
         updateResultComment($event, 'recommandation', true)
       "

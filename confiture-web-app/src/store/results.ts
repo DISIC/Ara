@@ -485,15 +485,18 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
+    /**
+     * @param pageId Id of the criterium page. If null, the image is associated with the transverse criterium
+     */
     async uploadExampleImage(
       uniqueId: string,
-      pageId: number,
+      pageId: number | null,
       topic: number,
       criterium: number,
       file: File
     ) {
       const formData = new FormData();
-      formData.set("pageId", pageId.toString());
+      pageId !== null && formData.set("pageId", pageId.toString());
       formData.set("topic", topic.toString());
       formData.set("criterium", criterium.toString());
       // To handle non-ascii characters, we encode the filename here and decode it on the back
@@ -510,16 +513,22 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         })) as ExampleImage;
 
-      const result = this.data!.perPage[pageId][topic][criterium];
-
-      if (result) {
-        result.exampleImages.push(exampleImage);
+      if (pageId !== null) {
+        const result = this.data!.perPage[pageId][topic][criterium];
+        if (result) {
+          result.exampleImages.push(exampleImage);
+        }
+      } else {
+        const transverseResult = this.data?.transverse[topic][criterium];
+        if (transverseResult) {
+          transverseResult.exampleImages.push(exampleImage);
+        }
       }
     },
 
     async deleteExampleImage(
       uniqueId: string,
-      pageId: number,
+      pageId: number | null,
       topic: number,
       criterium: number,
       exampleId: number
@@ -532,7 +541,10 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         });
 
-      const result = this.data!.perPage[pageId][topic][criterium];
+      const result =
+        pageId !== null
+          ? this.data?.perPage[pageId][topic][criterium]
+          : this.data?.transverse[topic][criterium];
 
       if (result) {
         const exampleIndex = result.exampleImages.findIndex(

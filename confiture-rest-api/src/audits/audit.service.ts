@@ -523,9 +523,12 @@ export class AuditService {
     ]);
   }
 
+  /**
+   * @param pageId Id of the criterium page. If null, the image is associated with the transverse criterium
+   */
   async saveExampleImage(
     editUniqueId: string,
-    pageId: number,
+    pageId: number | undefined,
     topic: number,
     criterium: number,
     file: Express.Multer.File
@@ -555,18 +558,34 @@ export class AuditService {
     const publicUrl = this.fileStorageService.getPublicUrl(key);
     const thumbnailUrl = this.fileStorageService.getPublicUrl(thumbnailKey);
 
-    const storedFile = await this.prisma.storedFile.create({
-      data: {
-        criterionResult: {
-          connect: {
-            pageId_topic_criterium: {
-              pageId,
-              topic,
-              criterium
+    const isTransverse = pageId !== undefined;
+    const criterionData = isTransverse
+      ? {
+          criterionResult: {
+            connect: {
+              pageId_topic_criterium: {
+                pageId,
+                topic,
+                criterium
+              }
             }
           }
-        },
+        }
+      : {
+          transverseCriterionResult: {
+            connect: {
+              auditUniqueId_topic_criterium: {
+                auditUniqueId: editUniqueId,
+                criterium,
+                topic
+              }
+            }
+          }
+        };
 
+    const storedFile = await this.prisma.storedFile.create({
+      data: {
+        ...criterionData,
         key,
         originalFilename: file.originalname,
         size: file.size,
@@ -594,7 +613,9 @@ export class AuditService {
     });
 
     const storedFile = await storedFilePromise;
-    const audit = await storedFilePromise.criterionResult().page().audit();
+    const audit = storedFile.criterionResultId
+      ? await storedFilePromise.criterionResult().page().audit()
+      : await storedFilePromise.transverseCriterionResult().audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
@@ -629,17 +650,24 @@ export class AuditService {
           }
         }
       });
+      const transverseFiles = await this.prisma.storedFile.findMany({
+        where: {
+          transverseCriterionResult: {
+            auditUniqueId: uniqueId
+          }
+        }
+      });
+
+      const allFiles = [...storedFiles, ...transverseFiles];
 
       await Promise.all([
         await this.prisma.audit.delete({
           where: { editUniqueId: uniqueId }
         }),
-        ...(storedFiles.length > 0
+        ...(allFiles.length > 0
           ? [
               this.fileStorageService.deleteMultipleFiles(
-                ...storedFiles
-                  .map((file) => [file.key, file.thumbnailKey])
-                  .flat()
+                ...allFiles.map((file) => [file.key, file.thumbnailKey]).flat()
               )
             ]
           : [])
