@@ -97,6 +97,12 @@ export const useResultsStore = defineStore("results", {
       };
     },
 
+    getTransverseCriteriumResult() {
+      return (topicNumber: number, criteriumNumber: number) => {
+        return this.data?.transverse[topicNumber][criteriumNumber];
+      };
+    },
+
     /**
      * @returns A getter returning all the results concerning a particular topic on a particular audited page.
      */

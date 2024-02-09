@@ -65,6 +65,14 @@ const result = computed(
     )!
 );
 
+const transverseResult = computed(
+  () =>
+    store.getTransverseCriteriumResult(
+      props.topicNumber,
+      props.criterium.number
+    )!
+);
+
 const isResultTransverse = computed(() =>
   store.isCriteriumTransverse(result.value.topic, result.value.criterium)
 );
@@ -216,11 +224,15 @@ function updateResultStatus(status: CriteriumResultStatus) {
 
 // Wait 500ms since the last modification before sending the PATCH request
 const updateResultComment = debounce(
-  async (comment: string, key: keyof CriteriumResult) => {
+  async (comment: string, key: keyof CriteriumResult, transverse = false) => {
     try {
-      await store.updateResults(props.auditUniqueId, [
-        { ...result.value, [key]: comment }
-      ]);
+      if (transverse) {
+        const update = { ...transverseResult.value, [key]: comment };
+        await store.updateResults(props.auditUniqueId, [], [update]);
+      } else {
+        const update = { ...result.value, [key]: comment };
+        await store.updateResults(props.auditUniqueId, [update], []);
+      }
     } catch (error) {
       handleUpdateResultError(error);
     }
@@ -228,9 +240,16 @@ const updateResultComment = debounce(
   500
 );
 
-function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
+function updateResultImpact(
+  userImpact: CriterionResultUserImpact | null,
+  transverse = false
+) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
+    .updateResults(
+      props.auditUniqueId,
+      transverse ? [] : [{ ...result.value, userImpact }],
+      transverse ? [{ ...transverseResult.value, userImpact }] : []
+    )
     .catch(handleUpdateResultError);
 }
 
@@ -263,9 +282,13 @@ async function updateTransverseStatus(e: Event) {
     .catch(handleUpdateResultError);
 }
 
-function updateQuickWin(quickWin: boolean) {
+function updateQuickWin(quickWin: boolean, transverse = false) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
+    .updateResults(
+      props.auditUniqueId,
+      transverse ? [] : [{ ...result.value, quickWin }],
+      transverse ? [{ ...transverseResult.value, quickWin }] : []
+    )
     .catch(handleUpdateResultError);
 }
 
@@ -336,19 +359,21 @@ const isOffline = useIsOffline();
     <CriteriumNotCompliantAccordion
       v-if="isResultTransverse"
       :id="`transverse-not-compliant-accordion-${uniqueId}`"
-      :comment="''"
-      :user-impact="null"
-      :example-images="[]"
-      :recommandation="''"
-      :quick-win="false"
+      :comment="transverseResult.errorDescription"
+      :user-impact="transverseResult.userImpact"
+      :example-images="transverseResult.exampleImages"
+      :recommandation="transverseResult.recommandation"
+      :quick-win="transverseResult.quickWin"
       :show-file-format-error="false"
       :show-file-size-error="false"
-      @update:comment="() => console.log('TODO')"
-      @update:user-impact="() => console.log('TODO')"
+      @update:comment="updateResultComment($event, 'errorDescription', true)"
+      @update:user-impact="updateResultImpact($event, true)"
       @upload-example="() => console.log('TODO')"
       @delete-example="() => console.log('TODO')"
-      @update:recommandation="() => console.log('TODO')"
-      @update:quick-win="() => console.log('TODO')"
+      @update:recommandation="
+        updateResultComment($event, 'recommandation', true)
+      "
+      @update:quick-win="updateQuickWin($event, true)"
     >
       <template #title>
         Erreur(s) et recommandation(s) sur&nbsp;<strong
