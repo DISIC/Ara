@@ -334,8 +334,8 @@ const csvExportFilename = computed(() => {
 .audit-name:focus {
   outline: none;
 }
-.audit-name:focus::before {
-  outline: 2px solid #0a76f6;
+.audit-name:focus-visible::before {
+  outline: 2px solid var(--dsfr-outline);
 }
 
 .audit-name::before {
