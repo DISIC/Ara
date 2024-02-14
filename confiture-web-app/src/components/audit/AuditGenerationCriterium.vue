@@ -366,7 +366,7 @@ const isOffline = useIsOffline();
           :disabled="
             criteriumStatus === CriteriumResultStatus.NOT_TESTED || isOffline
           "
-          @input="updateTransverseStatus"
+          @click.prevent="updateTransverseStatus"
         />
         <label
           class="fr-toggle__label"
