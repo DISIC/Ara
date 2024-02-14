@@ -14,8 +14,10 @@ const stats = computed(() => {
     ...(report.data?.auditType === AuditType.FULL
       ? [
           {
-            title: "Conformité au RGAA",
-            description: "RGAA version 4.1",
+            title: "Taux global de conformité",
+            description: auditInProgress.value
+              ? "(Disponible à la fin de l’audit)"
+              : "RGAA version 4.1",
             value: report.data!.accessibilityRate,
             total: 100,
             unit: "%",
@@ -38,10 +40,10 @@ const stats = computed(() => {
       theme: "red" as StatDonutTheme
     },
     {
-      title: "Critères conformes",
-      value: report.data?.criteriaCount.compliant,
-      total: report.data?.criteriaCount.applicable,
-      theme: "green" as StatDonutTheme
+      title: "Critères non applicables",
+      description: `Sur un total de ${report.data?.criteriaCount.total} critères`,
+      value: report.data?.criteriaCount.notApplicable,
+      total: report.data?.criteriaCount.total
     }
   ];
 });
@@ -96,11 +98,7 @@ const auditInProgress = computed(
       <div :class="`fr-col-12 fr-col-lg-${12 / stats.length}`">
         <SummaryCard
           :title="stats[0].title"
-          :description="
-            auditInProgress
-              ? '(Disponible à la fin de l’audit)'
-              : stats[0].description
-          "
+          :description="stats[0].description"
           :value="auditInProgress ? 0 : stats[0].value!"
           :total="stats[0].total!"
           :unit="stats[0].unit"

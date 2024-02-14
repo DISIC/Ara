@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-export type StatDonutTheme = "blue" | "red" | "green";
+export type StatDonutTheme = "blue" | "red";
 
 defineProps<{
   value: number;
@@ -55,13 +55,6 @@ defineProps<{
   background: conic-gradient(
     var(--red-marianne-main-472) 0deg var(--pie-deg),
     var(--background-action-low-pink-macaron) var(--pie-deg) 360deg
-  );
-}
-
-.theme-green {
-  background: conic-gradient(
-    var(--border-plain-success) 0deg var(--pie-deg),
-    var(--background-contrast-green-emeraude) var(--pie-deg) 360deg
   );
 }
 

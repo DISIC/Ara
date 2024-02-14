@@ -81,6 +81,8 @@ const topics = computed(() => {
   );
 });
 
+const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
+
 function updateCurrentPageId(i: number) {
   const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
   auditStore.updateCurrentPageId(pageIdOrNull);
@@ -98,7 +100,9 @@ const headerInfos = computed(() => [
     ? [
         {
           title: "Taux global de conformité",
-          description: "RGAA version 4.1",
+          description: auditIsInProgress.value
+            ? "(Disponible à la fin de l’audit)"
+            : "RGAA version 4.1",
           value: complianceLevel.value,
           total: 100,
           unit: "%",
@@ -108,7 +112,11 @@ const headerInfos = computed(() => [
     : []),
   {
     title: "Critères non conformes",
-    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    description: `Dont ${blockingCriteriaCount.value} ${pluralize(
+      "bloquant",
+      "bloquants",
+      blockingCriteriaCount.value
+    )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
     theme: "red" as StatDonutTheme
