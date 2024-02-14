@@ -167,5 +167,6 @@ defineExpose({ buttonRef, closeOptions });
 .dropdown-content :deep(.dropdown-item-meta) {
   grid-column: 1 / -1;
   color: var(--text-mention-grey);
+  text-align: initial;
 }
 </style>
