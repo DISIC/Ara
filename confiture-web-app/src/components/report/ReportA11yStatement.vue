@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatDate, getAuditStatus } from "../../utils";
-import { AuditStatus } from "../../types";
+import { formatDate } from "../../utils";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 const report = useReportStore();
@@ -72,43 +71,20 @@ function hideCopyAlert() {
   showCopyAlert.value = false;
 }
 
-/**
- * Missing a lot of data:
- * - schéma pluriannuel + plan d'action url
- * - RGAA grid url
- */
+const statementIsPublished = computed(() => {
+  return !!report.data?.procedureInitiator;
+});
 </script>
 
 <template>
   <template v-if="report.data">
-    <template
-      v-if="
-        getAuditStatus(report.data) === AuditStatus.IN_PROGRESS ||
-        getAuditStatus(report.data) === AuditStatus.COMPLETED
-      "
-    >
-      <div
-        v-if="getAuditStatus(report.data) === AuditStatus.IN_PROGRESS"
-        class="fr-alert fr-alert--info"
-      >
-        <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
-        <p>
-          L’audit n'est pas terminé, l’auditeur ou l’auditrice ne peut pas
-          rédiger la déclaration d’accessibilité.
-        </p>
-      </div>
-
-      <div
-        v-if="getAuditStatus(report.data) === AuditStatus.COMPLETED"
-        class="fr-alert fr-alert--info"
-      >
-        <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
-        <p>
-          L’auditeur ou l’auditrice n’a pas encore rédigé la déclaration
-          d’accessibilité.
-        </p>
-      </div>
-    </template>
+    <div v-if="!statementIsPublished" class="fr-alert fr-alert--info">
+      <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
+      <p>
+        L’auditeur ou l’auditrice n’a pas encore rédigé la déclaration
+        d’accessibilité.
+      </p>
+    </div>
 
     <template v-else>
       <div class="info-container">
@@ -170,7 +146,6 @@ function hideCopyAlert() {
           </RouterLink>
         </div>
 
-        <!-- FIXME: icon "copy" does not seem to exist -->
         <button
           class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
           @click="copyA11yStatementHTML"
@@ -202,18 +177,7 @@ function hideCopyAlert() {
           accessibles (et ses applications mobiles et mobilier urbain numérique)
           conformément à l’article 47 de la loi n°2005-102 du 11 février 2005.
         </p>
-        <!-- <p>
-        À cette fin, <strong>{{ report.data.procedureInitiator }}</strong> met
-        en œuvre la stratégie et les actions suivantes :
-      </p>
-      <ul>
-        <li>
-          Schéma pluriannuel de mise en accessibilité 2022-2024
-          <strong>[url]</strong> ;
-        </li>
-        <li>Actions réalisées en 2020-2021 <strong>[url]</strong> ;</li>
-        <li>Plan d’actions 2022-2024 <strong>[url]</strong>.</li>
-      </ul> -->
+
         <p class="fr-mb-9v fr-mb-md-6w">
           Cette déclaration d’accessibilité s’applique à
           <strong>{{ report.data.procedureUrl }}</strong
@@ -240,16 +204,6 @@ function hideCopyAlert() {
           que <strong>{{ report.data.accessibilityRate }}%</strong> des critères
           du RGAA version 4 sont respectés.
         </p>
-        <!--ul class="fr-mb-9v fr-mb-md-6w">
-        <li>
-          <strong>{{ report.data.accessibilityRate }}</strong
-          >% des critères du RGAA version 4 sont respectés ;
-        </li>
-        < <li>
-          (Facultatif) Accès à la grille d’audit RGAA
-          <strong>[url]</strong> pour télécharger la grille d’audit.
-        </li>
-      </ul-->
 
         <template
           v-if="
