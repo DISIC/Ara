@@ -55,3 +55,22 @@ from DSFR links with `target="_blank"` */
 [target="_blank"].no-external-icon::after {
   content: none !important;
 }
+
+/* DSFR-style primary button with "danger" variant */
+.danger-button {
+  background-color: var(--background-action-high-error) !important;
+  color: var(--grey-950-125) !important;
+}
+
+.danger-button:hover {
+  background-color: var(--background-action-high-error-hover) !important;
+}
+
+.danger-button:focus {
+  background-color: var(--background-action-high-error-active) !important;
+}
+
+/* DSFR-style outline button with "danger" variant */
+.danger-button-outline {
+  color: var(--background-action-high-error) !important;
+}
