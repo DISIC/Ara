@@ -188,20 +188,4 @@ async function hideAccountDeletionForm() {
 .wrapper {
   max-width: 24rem;
 }
-
-.danger-button-outline {
-  color: var(--background-action-high-error);
-}
-
-.danger-button {
-  background-color: var(--background-action-high-error);
-}
-
-.danger-button:hover {
-  background-color: var(--background-action-high-error-hover);
-}
-
-.danger-button:focus {
-  background-color: var(--background-action-high-error-active);
-}
 </style>

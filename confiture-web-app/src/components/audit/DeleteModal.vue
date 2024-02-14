@@ -34,12 +34,13 @@ defineExpose({
                   class="fr-icon-warning-line fr-fi--lg"
                   aria-hidden="true"
                 />
-                Vous allez supprimer l’audit
+                Vous allez supprimer cet audit
               </h1>
               <p>
-                Toutes les informations saisies seront effacées (cela comprend
-                l’audit, le rapport et toute donnée personnelle associée). Cette
-                action est irréversible. Souhaitez-vous supprimer l’audit ?
+                Cet audit sera définitivement supprimé. Le rapport de cet audit
+                restera accessible mais toutes vos informations personnelles
+                seront supprimées : prénom, nom, nom de la structure et adresse
+                e-mail.
               </p>
             </div>
             <div class="fr-modal__footer">
@@ -51,7 +52,7 @@ defineExpose({
                     class="fr-btn danger-button"
                     @click="$emit('confirm')"
                   >
-                    Oui, supprimer
+                    Supprimer l’audit
                   </button>
                 </li>
                 <li>
@@ -59,7 +60,7 @@ defineExpose({
                     class="fr-btn fr-btn--secondary"
                     @click="modal?.hide()"
                   >
-                    Non
+                    Annuler
                   </button>
                 </li>
               </ul>
@@ -70,18 +71,3 @@ defineExpose({
     </div>
   </DsfrModal>
 </template>
-
-<style scoped>
-/* FIXME: create utility class (`fr-btn__danger` and `fr-btn__danger-outline`) */
-.danger-button {
-  background-color: var(--background-action-high-error);
-}
-
-.danger-button:hover {
-  background-color: var(--background-action-high-error-hover);
-}
-
-.danger-button:focus {
-  background-color: var(--background-action-high-error-active);
-}
-</style>
