@@ -90,11 +90,15 @@ export function getCriteriaCount(auditType: AuditType): number {
 }
 
 /**
- * Return the audit status based on the completion of criteria and a11y statement.
+ * Return the audit status based on:
+ * - the number of results (criteria count * number of pages)
+ * - the status of each criteria
+ * - the completion of a11y statement
  */
 export function getAuditStatus(report: AuditReport): string {
   if (
-    !report?.results.length ||
+    report.results.length !==
+      getCriteriaCount(report.auditType) * report.pageDistributions.length ||
     report?.results.some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
   ) {
     return AuditStatus.IN_PROGRESS;
