@@ -284,7 +284,7 @@ async function updateTransverseStatus(e: Event) {
       props.page.id
     )
   ) {
-    // Show modal if
+    // Show modal if the same criterion is already evaluated on another page
     openTransverseWarning && (await openTransverseWarning?.());
   }
   store
@@ -295,6 +295,16 @@ async function updateTransverseStatus(e: Event) {
       result.value.criterium,
       isTransverse
     )
+    .then(() => {
+      if (isTransverse) {
+        const status = formatStatus(result.value.status);
+        notify(
+          "success",
+          undefined,
+          `Critère défini comme **${status}** sur toutes les pages`
+        );
+      }
+    })
     .catch(handleUpdateResultError);
 }
 

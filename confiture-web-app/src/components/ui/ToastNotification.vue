@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { marked } from "marked";
 import { useNotificationStore } from "../../store";
 
 const store = useNotificationStore();
@@ -26,9 +27,10 @@ const store = useNotificationStore();
             <p v-if="store.notification.title" class="fr-alert__title">
               {{ store.notification.title }}
             </p>
-            <p v-if="store.notification.description" class="">
-              {{ store.notification.description }}
-            </p>
+            <p
+              v-if="store.notification.description"
+              v-html="marked.parseInline(store.notification.description)"
+            />
           </div>
 
           <!-- FIXME: this button is not accessible with keyboard -->
