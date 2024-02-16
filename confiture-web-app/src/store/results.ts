@@ -485,6 +485,28 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
+    /*
+    TODO: implement this function
+
+    Si l'usager clique sur "Appliquer sur cette page"
+
+    Le toggle est décoché sur toutes les pages
+    Le statut reste inchangé sur les toutes les pages
+    Les saisies des autres pages sont déplacées dans l'accordéon "propre à la page"
+    L'accordéon "Transverse disparait"
+    Le message de succès suivant s'affiche
+*/
+    async TODOrenameMe(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      status: CriteriumResultStatus
+    ) {
+      console.log(uniqueId, pageId, topic, criterium, status);
+      throw new Error("Not implemented");
+    },
+
     /**
      * @param pageId Id of the criterium page. If null, the image is associated with the transverse criterium
      */

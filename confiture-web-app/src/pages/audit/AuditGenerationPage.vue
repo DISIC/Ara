@@ -25,6 +25,7 @@ import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import TransverseWarningModal from "../../components/audit/TransverseWarningModal.vue";
+import TransverseNoticeModal from "../../components/audit/TransverseNoticeModal.vue";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -240,6 +241,32 @@ provide("openTransverseWarning", () => {
     transverseWarningResolve.value = resolve;
   });
 });
+
+const transverseNoticeModalRef =
+  ref<InstanceType<typeof TransverseNoticeModal>>();
+
+type TransverseNoticeResult = "thisPage" | "allPages";
+
+const transverseNoticeResolve = ref<(result: TransverseNoticeResult) => void>();
+
+function onTransverseNoticeConfirm(result: TransverseNoticeResult) {
+  transverseNoticeResolve.value?.(result);
+}
+
+provide("openTransverseNotice", () => {
+  transverseNoticeModalRef.value?.show();
+
+  return new Promise<TransverseNoticeResult>((resolve) => {
+    transverseNoticeResolve.value = resolve;
+  });
+});
+
+const currentPageName = computed(
+  () =>
+    auditStore.currentAudit?.pages.find(
+      (p) => p.id === auditStore.currentPageId
+    )?.name ?? ""
+);
 </script>
 
 <template>
@@ -339,6 +366,13 @@ provide("openTransverseWarning", () => {
   <TransverseWarningModal
     ref="transverseWarningModalRef"
     @confirm="onTransverseWarningConfirm"
+  />
+
+  <TransverseNoticeModal
+    ref="transverseNoticeModalRef"
+    :page-name="currentPageName"
+    @confirm-on-all-pages="onTransverseNoticeConfirm('allPages')"
+    @confirm-on-page="onTransverseNoticeConfirm('thisPage')"
   />
 </template>
 

@@ -210,16 +210,36 @@ function handleUpdateResultError(err: any) {
   );
 }
 
-function updateResultStatus(status: CriteriumResultStatus) {
-  store
-    .updateCriteriumStatus(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      status
-    )
+const openTransverseNotice = inject<() => Promise<"thisPage" | "allPages">>(
+  "openTransverseNotice"
+);
+
+async function updateResultStatus(status: CriteriumResultStatus) {
+  let transverseNoticeChoice: "thisPage" | "allPages" | undefined;
+  if (isResultTransverse.value) {
+    transverseNoticeChoice = await openTransverseNotice?.();
+  }
+
+  const updatePromise =
+    transverseNoticeChoice === "thisPage"
+      ? store.TODOrenameMe(
+          props.auditUniqueId,
+          props.page.id,
+          props.topicNumber,
+          props.criterium.number,
+          status
+        )
+      : store.updateCriteriumStatus(
+          props.auditUniqueId,
+          props.page.id,
+          props.topicNumber,
+          props.criterium.number,
+          status
+        );
+
+  updatePromise
     .then(() => {
+      const formattedStatus = formatStatus(status);
       if (
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
@@ -233,6 +253,18 @@ function updateResultStatus(status: CriteriumResultStatus) {
               : "Il ne vous reste qu’à livrer votre rapport."
           );
         });
+      } else if (transverseNoticeChoice === "allPages") {
+        notify(
+          "success",
+          undefined,
+          `Critère défini comme **${formattedStatus}** sur toutes les pages`
+        );
+      } else if (transverseNoticeChoice === "thisPage") {
+        notify(
+          "success",
+          undefined,
+          `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
+        );
       }
     })
     .catch(handleUpdateResultError);
@@ -285,8 +317,9 @@ async function updateTransverseStatus(e: Event) {
     )
   ) {
     // Show modal if the same criterion is already evaluated on another page
-    openTransverseWarning && (await openTransverseWarning?.());
+    await openTransverseWarning?.();
   }
+
   store
     .updateResultIsTransverse(
       props.auditUniqueId,
@@ -358,6 +391,10 @@ const isOffline = useIsOffline();
       />
 
       <div class="fr-toggle fr-toggle--label-left">
+        <!-- 
+          FIXME: the checkbox desync from the `:checked="isResultTransverse` binding.
+          Seems to be a Vue issue...
+        -->
         <input
           :id="`applicable-all-pages-${uniqueId}`"
           :checked="isResultTransverse"
