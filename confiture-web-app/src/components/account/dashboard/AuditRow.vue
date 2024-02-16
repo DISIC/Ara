@@ -119,7 +119,11 @@ function copyAuditLink(uniqueId: string) {
   const url = `${window.location.origin}/audits/${uniqueId}/generation`;
 
   navigator.clipboard.writeText(url).then(() => {
-    console.log("bien copié");
+    notify(
+      "success",
+      undefined,
+      `Le lien vers l’audit a bien été copié dans le presse-papier.`
+    );
   });
 }
 
@@ -127,7 +131,11 @@ function copyReportLink(uniqueId: string) {
   const url = `${window.location.origin}/rapports/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
-    console.log("bien copié");
+    notify(
+      "success",
+      undefined,
+      `Le lien vers le rapport a bien été copié dans le presse-papier.`
+    );
   });
 }
 </script>
