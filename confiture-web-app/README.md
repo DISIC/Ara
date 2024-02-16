@@ -1,26 +1,29 @@
-# Ara Web App
-
-Partie front-end de l'application Ara.
+# Front-end Ara
 
 Le projet a été créé avec [Vite.js](https://vitejs.dev/). Le framework front-end est [Vue.js (en version 3)](https://vuejs.org/) avec [TypeScript](https://www.typescriptlang.org/).
 
 La partie style utilise le [DSFR (Système de Design de l'État)](https://www.systeme-de-design.gouv.fr/) et du CSS sans pré-processeur.
 
-## Développement
+## Prérequis
 
-Depuis le répertoire `confiture-web-app`
+- [Node.js](https://nodejs.org)
+- [Yarn](https://yarnpkg.com)
+
+## Installation
 
 Installer les dépendances :
 
 ```sh
-yarn
+yarn install
 ```
 
-Générer le fichier de méthodologies de test :
+Générer les fichiers requis du RGAA (critères et tests, glossaire et méthodologie) :
 
 ```sh
 yarn generate:rgaa
 ```
+
+## Développement
 
 Lancer le [serveur local sur le port 3000](http://localhost:3000) :
 
@@ -28,6 +31,20 @@ Lancer le [serveur local sur le port 3000](http://localhost:3000) :
 yarn dev
 ```
 
-## Déploiement
+## Tests
 
-Le site est automatiquement déployé sur Netlify à chaque push. La branche principale `main` est déployée sur [https://confiture.netlify.app/](https://confiture.netlify.app/) et chaque branche comporte le lien du déploiement dans la PR associée.
+[Cypress](https://www.cypress.io/) est utilisé pour lancer des tests end-to-end (e2e) dans un navigateur pour reproduire le comportement des utilisateurs.
+
+Les tests peuvent être lancés de 2 manières :
+
+- Via l’application Cypress avec :
+
+  ```sh
+  yarn cypress open
+  ```
+
+- Via le terminal avec :
+
+  ```sh
+  yarn cypress run
+  ```
