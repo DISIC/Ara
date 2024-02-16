@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 16/02/2024
+
+### Corrections 🐛
+
+- Corrige l’affichage du bandeau "Audit en cours" qui parfois n’était pas visible ([#659](https://github.com/DISIC/Ara/pull/659))
+
 ## 31/01/2024
 
 ### Corrections 🐛
