@@ -35,9 +35,7 @@ const uniqueId = useUniqueId();
       />
 
       <div class="card-info">
-        <p class="fr-h6 fr-mb-1v card-title">
-          {{ title }}
-        </p>
+        <p class="fr-h6 fr-mb-1v card-title" v-html="title" />
         <p v-if="description" class="fr-text--xs fr-mb-0 card-description">
           {{ description }}
         </p>

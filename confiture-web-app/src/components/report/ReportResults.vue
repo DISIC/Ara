@@ -28,7 +28,7 @@ const stats = computed(() => {
       : []),
 
     {
-      title: "Critères non conformes",
+      title: "Critères<br/> non conformes",
       description: `Dont ${report.data?.criteriaCount.blocking} ${pluralize(
         "bloquant",
         "bloquants",
@@ -40,10 +40,10 @@ const stats = computed(() => {
       theme: "red" as StatDonutTheme
     },
     {
-      title: "Critères non applicables",
-      description: `Sur un total de ${report.data?.criteriaCount.total} critères`,
-      value: report.data?.criteriaCount.notApplicable,
-      total: report.data?.criteriaCount.total
+      title: "Critères<br/> conformes",
+      value: report.data?.criteriaCount.compliant,
+      total: report.data?.criteriaCount.total,
+      theme: "green" as StatDonutTheme
     }
   ];
 });

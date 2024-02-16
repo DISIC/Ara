@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -90,7 +90,7 @@ function updateCurrentPageId(i: number) {
 
 const {
   complianceLevel,
-  notApplicableCriteriaCount,
+  compliantCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
@@ -111,7 +111,7 @@ const headerInfos = computed(() => [
       ]
     : []),
   {
-    title: "Critères non conformes",
+    title: "Critères<br/> non conformes",
     description: `Dont ${blockingCriteriaCount.value} ${pluralize(
       "bloquant",
       "bloquants",
@@ -122,12 +122,10 @@ const headerInfos = computed(() => [
     theme: "red" as StatDonutTheme
   },
   {
-    title: "Critères non applicables",
-    description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType
-    )} critères`,
-    value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType)
+    title: "Critères<br/> conformes",
+    value: compliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    theme: "green" as StatDonutTheme
   }
 ]);
 

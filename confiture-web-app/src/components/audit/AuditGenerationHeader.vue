@@ -32,7 +32,7 @@ defineProps<{
   auditEditionDate: string | null;
   keyInfos: {
     title: string;
-    description: string;
+    description?: string;
     value: number;
     total: number;
     unit?: string;
