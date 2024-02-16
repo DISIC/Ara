@@ -18,7 +18,7 @@ const stats = computed(() => {
             description: auditInProgress.value
               ? "(Disponible à la fin de l’audit)"
               : "RGAA version 4.1",
-            value: report.data!.accessibilityRate,
+            value: report.data?.accessibilityRate,
             total: 100,
             unit: "%",
             hasDetails: true,

@@ -77,8 +77,10 @@ export function useAuditStats() {
       )
     );
 
-    return Math.round(
-      (compliantCriteria.length / applicableCriteria.length) * 100
+    return (
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0
     );
   });
 

@@ -720,9 +720,10 @@ export class AuditService {
       criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)
     );
 
-    const accessibilityRate = Math.round(
-      (compliantCriteria.length / applicableCriteria.length) * 100
-    );
+    const accessibilityRate =
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0;
 
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
 
