@@ -388,7 +388,7 @@ const previousRoute = usePreviousRoute();
         id="procedure-auditor-name"
         v-model="procedureAuditorName"
         label="Prénom et nom (optionnel)"
-        hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        hint="Sera affiché dans le rapport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
       />
 
       <DsfrField
