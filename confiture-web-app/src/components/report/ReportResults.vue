@@ -22,7 +22,8 @@ const stats = computed(() => {
             total: 100,
             unit: "%",
             hasDetails: true,
-            theme: "blue" as StatDonutTheme
+            theme: "blue" as StatDonutTheme,
+            disabled: auditInProgress.value
           }
         ]
       : []),
@@ -95,20 +96,24 @@ const auditInProgress = computed(
   <template v-if="report.data">
     <h2>Synthèse des résultats</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div :class="`fr-col-12 fr-col-lg-${12 / stats.length}`">
+      <div
+        v-for="stat in stats"
+        :key="stat.title"
+        :class="`fr-col-12 fr-col-lg-${12 / stats.length}`"
+      >
         <SummaryCard
-          :title="stats[0].title"
-          :description="stats[0].description"
-          :value="auditInProgress ? 0 : stats[0].value!"
-          :total="stats[0].total!"
-          :unit="stats[0].unit"
-          :theme="stats[0].theme"
-          :disabled="auditInProgress"
+          :title="stat.title"
+          :description="stat.description"
+          :value="stat.value!"
+          :total="stat.total!"
+          :unit="stat.unit"
+          :theme="stat.theme"
+          :disabled="stat.disabled"
         >
-          <template #accordion-title>
+          <template v-if="stat.hasDetails" #accordion-title>
             En savoir plus sur le calcul du taux
           </template>
-          <template #accordion-content>
+          <template v-if="stat.hasDetails" #accordion-content>
             <p>
               Le taux global de conformité au RGAA est calculé de la manière
               suivante :
@@ -124,21 +129,6 @@ const auditInProgress = computed(
             </p>
           </template>
         </SummaryCard>
-      </div>
-
-      <div
-        v-for="stat in stats.slice(1)"
-        :key="stat.title"
-        :class="`fr-col-12 fr-col-lg-${12 / stats.length}`"
-      >
-        <SummaryCard
-          :title="stat.title"
-          :description="stat.description"
-          :value="stat.value!"
-          :total="stat.total!"
-          :unit="stat.unit"
-          :theme="stat.theme"
-        />
       </div>
     </div>
 
