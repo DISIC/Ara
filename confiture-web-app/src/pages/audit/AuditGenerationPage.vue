@@ -268,7 +268,7 @@ const accountStore = useAccountStore();
         <li>
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
-            class="fr-btn fr-btn--secondary"
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line no-external-icon"
             :to="{
               name: 'report',
               params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
