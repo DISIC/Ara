@@ -179,7 +179,7 @@ li {
   background-color: var(--active-tint);
 }
 
-.tabs button:focus {
+.tabs button:focus-visible {
   outline: 2px solid var(--dsfr-outline);
   outline-offset: -2px;
 }

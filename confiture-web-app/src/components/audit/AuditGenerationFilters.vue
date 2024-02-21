@@ -287,8 +287,8 @@ const notApplicableCount = computed(
   margin-bottom: 2rem;
 }
 
-.toggle-column-button:focus {
-  outline: 2px solid #0a76f6;
+.toggle-column-button:focus-visible {
+  outline: 2px solid var(--dsfr-outline);
   outline-offset: -2px;
 }
 
