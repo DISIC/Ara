@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajoute des liens d’accès dans le menu déroulant d’un audit sur la page "Mes audits" ([#658](https://github.com/DISIC/Ara/pull/658))
 
+### Corrections 🐛
+
+- Corrige l’affichage du taux de conformité dans les cartes des donuts et harmonise les cartes entre l’audit et le rapport ([#661](https://github.com/DISIC/Ara/pull/661))
+
 ## 16/02/2024
 
 ### Corrections 🐛
