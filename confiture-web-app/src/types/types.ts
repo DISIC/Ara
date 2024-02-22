@@ -148,3 +148,15 @@ export interface TransverseCriteriumResult {
   exampleImages: ExampleImage[];
   quickWin: boolean;
 }
+
+export function isPerPageResult(
+  r: CriteriumResult | TransverseCriteriumResult
+): r is CriteriumResult {
+  return (r as CriteriumResult).pageId !== undefined;
+}
+
+export function isTransverseResult(
+  r: CriteriumResult | TransverseCriteriumResult
+): r is TransverseCriteriumResult {
+  return !isPerPageResult(r);
+}

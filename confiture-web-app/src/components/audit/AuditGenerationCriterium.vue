@@ -222,7 +222,7 @@ async function updateResultStatus(status: CriteriumResultStatus) {
 
   const updatePromise =
     transverseNoticeChoice === "thisPage"
-      ? store.TODOrenameMe(
+      ? store.untransversifyCriterium(
           props.auditUniqueId,
           props.page.id,
           props.topicNumber,

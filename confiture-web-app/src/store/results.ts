@@ -7,10 +7,13 @@ import {
   CriteriumResultStatus,
   CriterionResultUserImpact,
   ExampleImage,
-  TransverseCriteriumResult
+  TransverseCriteriumResult,
+  isPerPageResult,
+  isTransverseResult
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
+import { CRITERIA_BY_AUDIT_TYPE } from "../criteria";
 
 type PageId = number;
 type TopicNumber = number;
@@ -105,10 +108,13 @@ export const useResultsStore = defineStore("results", {
 
     /**
      * @returns A getter returning all the results concerning a particular topic on a particular audited page.
+     *   If a result if "transverse", the transverse version of the result is returned, the "perPage" version otherwise
      */
-    // TODO: take transverse results into account
     getTopicResults() {
-      return (pageId: number, topicNumber: number) => {
+      return (
+        pageId: number,
+        topicNumber: number
+      ): (CriteriumResult | TransverseCriteriumResult)[] => {
         if (
           !this.data ||
           !this.data.perPage[pageId] ||
@@ -117,26 +123,42 @@ export const useResultsStore = defineStore("results", {
           return [];
         }
 
-        return Object.values(this.data.perPage[pageId][topicNumber]);
+        const perPageResults = { ...this.data.perPage[pageId][topicNumber] };
+
+        const transverseResults = {
+          ...this.data.transverse[topicNumber]
+        };
+
+        return Object.values(perPageResults).map((r) =>
+          transverseResults[r.criterium].transverse
+            ? transverseResults[r.criterium]
+            : r
+        );
       };
     },
 
     /**
      * @returns Every results in a list. Or undefined if the data is not fetched yet.
      */
-    allResults(): CriteriumResult[] | undefined {
+    allResults(): (CriteriumResult | TransverseCriteriumResult)[] | undefined {
       if (!this.data) {
         return;
       }
-      return Object.values(this.data.perPage)
+      const perPageResults = Object.values(this.data.perPage)
         .map((page) => Object.values(page).map((topic) => Object.values(topic)))
         .flat(2);
+
+      // FIXME: are some transverse criteria duplicated here ?
+      return perPageResults.map((r) =>
+        this.data?.transverse[r.topic][r.criterium].transverse
+          ? this.data?.transverse[r.topic][r.criterium]
+          : r
+      );
     },
 
     /**
      * @returns True when every criterium in the audit have been tested (status is different from NOT_TESTED)
      */
-    // TODO: take transverse results into account
     everyCriteriumAreTested(): boolean {
       return (
         !this.allResults?.some(
@@ -145,7 +167,6 @@ export const useResultsStore = defineStore("results", {
       );
     },
 
-    // TODO: take transverse results into account
     testedCriteriumCount(): number | undefined {
       return this.allResults?.filter(
         (r) => r.status !== CriteriumResultStatus.NOT_TESTED
@@ -169,22 +190,33 @@ export const useResultsStore = defineStore("results", {
      * `0.5` means half of the audit criteria have been tested.
      */
     auditProgress(): number {
-      if (!this.data) {
+      const auditStore = useAuditStore();
+
+      if (!this.data || !auditStore.currentAudit) {
         return 0;
       }
 
-      // TODO: take transverse results into account
-      const r = Object.values(this.data.perPage)
-        .flatMap(Object.values)
-        .flatMap(Object.values) as CriteriumResult[];
+      const criteriaNumbers =
+        CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit?.auditType];
 
-      const total = r.length;
+      const pagesIds = Object.keys(this.data.perPage).map(Number);
 
-      const testedCriteria = r.filter(
-        (t) => t.status !== CriteriumResultStatus.NOT_TESTED
+      const everyResultIds = pagesIds.flatMap((pageId) =>
+        criteriaNumbers.map(({ criterium, topic }) => ({
+          pageId,
+          criterium,
+          topic
+        }))
+      );
+
+      const totalResultsCount = everyResultIds.length;
+      const testedResultsCount = everyResultIds.filter(
+        ({ criterium, pageId, topic }) =>
+          this.getCriteriumStatus(pageId, topic, criterium) !==
+          CriteriumResultStatus.NOT_TESTED
       ).length;
 
-      return testedCriteria / total;
+      return testedResultsCount / totalResultsCount;
     },
 
     getCriteriumStatus() {
@@ -388,7 +420,7 @@ export const useResultsStore = defineStore("results", {
         results.forEach((r) => {
           setWith(
             this.previousStatuses,
-            [r.pageId, r.topic, r.criterium],
+            [pageId, r.topic, r.criterium],
             r.status,
             Object
           );
@@ -400,7 +432,10 @@ export const useResultsStore = defineStore("results", {
         status
       }));
 
-      await this.updateResults(uniqueId, updates);
+      const perPageUpdates = updates.filter(isPerPageResult);
+      const transverseUpdates = updates.filter(isTransverseResult);
+
+      await this.updateResults(uniqueId, perPageUpdates, transverseUpdates);
     },
 
     /**
@@ -496,7 +531,7 @@ export const useResultsStore = defineStore("results", {
     L'accordéon "Transverse disparait"
     Le message de succès suivant s'affiche
 */
-    async TODOrenameMe(
+    async untransversifyCriterium(
       uniqueId: string,
       pageId: number,
       topic: number,
