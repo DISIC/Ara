@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -81,6 +81,8 @@ const topics = computed(() => {
   );
 });
 
+const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
+
 function updateCurrentPageId(i: number) {
   const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
   auditStore.updateCurrentPageId(pageIdOrNull);
@@ -88,7 +90,7 @@ function updateCurrentPageId(i: number) {
 
 const {
   complianceLevel,
-  notApplicableCriteriaCount,
+  compliantCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
@@ -98,7 +100,9 @@ const headerInfos = computed(() => [
     ? [
         {
           title: "Taux global de conformité",
-          description: "RGAA version 4.1",
+          description: auditIsInProgress.value
+            ? "(Disponible à la fin de l’audit)"
+            : "RGAA version 4.1",
           value: complianceLevel.value,
           total: 100,
           unit: "%",
@@ -107,19 +111,21 @@ const headerInfos = computed(() => [
       ]
     : []),
   {
-    title: "Critères non conformes",
-    description: `Dont ${blockingCriteriaCount.value} bloquants pour l’usager`,
+    title: "Critères<br/> non conformes",
+    description: `Dont ${blockingCriteriaCount.value} ${pluralize(
+      "bloquant",
+      "bloquants",
+      blockingCriteriaCount.value
+    )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
     theme: "red" as StatDonutTheme
   },
   {
-    title: "Critères non applicables",
-    description: `Sur un total de ${getCriteriaCount(
-      auditStore.currentAudit?.auditType as AuditType
-    )} critères`,
-    value: notApplicableCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType)
+    title: "Critères<br/> conformes",
+    value: compliantCriteriaCount.value,
+    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    theme: "green" as StatDonutTheme
   }
 ]);
 

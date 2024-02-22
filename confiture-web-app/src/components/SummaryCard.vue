@@ -21,8 +21,11 @@ const uniqueId = useUniqueId();
 </script>
 
 <template>
-  <div class="card" :class="{ 'card-disabled': disabled }">
-    <div class="fr-p-3w card-main-content">
+  <div class="card">
+    <div
+      class="fr-p-3w card-main-content"
+      :class="{ 'card-main-content-disabled': disabled }"
+    >
       <StatDonut
         :value="value"
         :total="total"
@@ -32,16 +35,14 @@ const uniqueId = useUniqueId();
       />
 
       <div class="card-info">
-        <p class="fr-h6 fr-mb-1v card-title">
-          {{ title }}
-        </p>
+        <p class="fr-h6 fr-mb-1v card-title" v-html="title" />
         <p v-if="description" class="fr-text--xs fr-mb-0 card-description">
           {{ description }}
         </p>
       </div>
     </div>
 
-    <section v-if="showDetails" class="fr-accordion">
+    <section v-if="showDetails" class="fr-accordion card-accordion">
       <h3 class="fr-accordion__title">
         <button
           class="fr-accordion__btn"
@@ -69,6 +70,10 @@ const uniqueId = useUniqueId();
   gap: 1.5rem;
 }
 
+.card-main-content-disabled :deep(*:not(.card-accordion)) {
+  color: var(--text-disabled-grey);
+}
+
 .card-title {
   color: var(--text-title-grey);
 }
@@ -79,10 +84,6 @@ const uniqueId = useUniqueId();
 
 .card-description {
   color: var(--text-mention-grey);
-}
-
-.card-disabled :deep(*) {
-  color: var(--text-disabled-grey);
 }
 
 @media (max-width: 992px) {
