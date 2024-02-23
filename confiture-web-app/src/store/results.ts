@@ -520,17 +520,10 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
-    /*
-    TODO: implement this function
-
-    Si l'usager clique sur "Appliquer sur cette page"
-
-    Le toggle est décoché sur toutes les pages
-    Le statut reste inchangé sur les toutes les pages
-    Les saisies des autres pages sont déplacées dans l'accordéon "propre à la page"
-    L'accordéon "Transverse disparait"
-    Le message de succès suivant s'affiche
-*/
+    /**
+    Set a transverse criterium as not-transverse and update its status for the given page.
+    On the other pages, we "transfer" the props from the transverse criterium to the per page criteria.
+    */
     async untransversifyCriterium(
       uniqueId: string,
       pageId: number,
@@ -538,8 +531,44 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       status: CriteriumResultStatus
     ) {
-      console.log(uniqueId, pageId, topic, criterium, status);
-      throw new Error("Not implemented");
+      if (!this.data) {
+        throw new Error("Cannot update unfetched results");
+      }
+
+      const perPageResults = Object.values(this.data.perPage).map(
+        (p) => p[topic][criterium]
+      );
+      const transverseResult = this.data.transverse[topic][criterium];
+
+      const transverseUpdate: TransverseCriteriumResult = {
+        ...transverseResult,
+        transverse: false
+      };
+
+      const perPageUpdates: CriteriumResult[] = perPageResults.map((r) => ({
+        ...r,
+        status: r.pageId === pageId ? status : transverseResult.status,
+        errorDescription: (
+          (r.errorDescription ?? "") +
+          "\n\n" +
+          (transverseResult.errorDescription ?? "")
+        ).trim(),
+        compliantComment:
+          (r.compliantComment ?? "") +
+          "\n\n" +
+          (transverseResult.compliantComment ?? ""),
+        notApplicableComment:
+          (r.notApplicableComment ?? "") +
+          "\n\n" +
+          (transverseResult.notApplicableComment ?? ""),
+        recommandation:
+          (r.recommandation ?? "") +
+          "\n\n" +
+          (transverseResult.recommandation ?? "")
+        // TODO: what to do with quickwin, userImpact
+      }));
+
+      return this.updateResults(uniqueId, perPageUpdates, [transverseUpdate]);
     },
 
     /**
@@ -635,7 +664,7 @@ export const useResultsStore = defineStore("results", {
     async DEV_fillResults(uniqueId: string) {
       const auditStore = useAuditStore();
       const updates =
-        this.allResults?.map((r) => ({
+        (this.allResults?.map((r) => ({
           ...r,
           /* eslint-disable @typescript-eslint/no-non-null-assertion */
           status: sample([
@@ -649,9 +678,12 @@ export const useResultsStore = defineStore("results", {
           recommandation: sample(["Recommandation", "Rien"])!,
           userImpact: sample(CriterionResultUserImpact)!
           /* eslint-enable @typescript-eslint/no-non-null-assertion */
-        })) ?? [];
+        })) as (CriteriumResult | TransverseCriteriumResult)[]) ?? [];
 
-      await this.updateResults(uniqueId, updates);
+      const perPageUpdates = updates.filter(isPerPageResult);
+      const transverseUpdates = updates.filter(isTransverseResult);
+
+      await this.updateResults(uniqueId, perPageUpdates, transverseUpdates);
       await auditStore.publishAudit(uniqueId);
     }
   }

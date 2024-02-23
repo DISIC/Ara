@@ -24,13 +24,13 @@ function handleClose() {
 }
 
 function handleApplyOnAllPages() {
-  console.log("handleApplyOnAllPages");
   emit("confirmOnAllPages");
+  modal.value?.hide();
 }
 
 function handleApplyOnPage() {
-  console.log("handleApplyOnPage");
   emit("confirmOnPage");
+  modal.value?.hide();
 }
 </script>
 
