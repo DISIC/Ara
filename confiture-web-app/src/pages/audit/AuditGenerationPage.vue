@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
-import NotesModal from "../../components/audit/NotesModal.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
@@ -12,8 +11,6 @@ import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useIsOffline } from "../../composables/useIsOffline";
-import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
@@ -40,7 +37,6 @@ useWrappedFetch(async () => {
 }, true);
 
 const resultsStore = useResultsStore();
-const notify = useNotifications();
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
@@ -139,40 +135,6 @@ function toggleFilters(value: boolean) {
   showFilters.value = value;
 }
 
-// Notes
-const notesModal = ref<InstanceType<typeof NotesModal>>();
-const isNotesLoading = ref(false);
-
-function openNotesModal() {
-  notesModal.value?.show();
-}
-
-const updateAuditNotes = async (notes: string) => {
-  isNotesLoading.value = true;
-  try {
-    await auditStore.updateAuditNotes(uniqueId.value, {
-      notes
-    });
-    notify(
-      "success",
-      undefined,
-      "Annotation de l’audit mise à jour avec succès"
-    );
-  } catch (error) {
-    console.error(error);
-    notify(
-      "error",
-      "Une erreur est survenue",
-      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
-    );
-  } finally {
-    isNotesLoading.value = false;
-    notesModal.value?.hide();
-  }
-};
-
-const isOffline = useIsOffline();
-
 const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
@@ -260,34 +222,7 @@ const accountStore = useAccountStore();
       :audit-publication-date="auditStore.currentAudit.publicationDate"
       :audit-edition-date="auditStore.currentAudit.editionDate"
       :edit-unique-id="uniqueId"
-    >
-      <template #actions>
-        <li>
-          <button
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
-            :disabled="isOffline"
-            @click="openNotesModal"
-          >
-            Annoter l’audit
-          </button>
-        </li>
-        <li>
-          <component
-            :is="isOffline ? 'button' : 'RouterLink'"
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line no-external-icon"
-            :to="{
-              name: 'report',
-              params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
-            }"
-            target="_blank"
-            :disabled="isOffline"
-          >
-            Consulter le rapport
-            <span class="sr-only">(Nouvelle fenêtre)</span>
-          </component>
-        </li>
-      </template>
-    </AuditGenerationHeader>
+    />
 
     <div class="fr-grid-row columns">
       <div
@@ -318,12 +253,6 @@ const accountStore = useAccountStore();
       </div>
     </div>
   </div>
-
-  <NotesModal
-    ref="notesModal"
-    :is-loading="isNotesLoading"
-    @confirm="updateAuditNotes"
-  />
 </template>
 
 <style scoped>

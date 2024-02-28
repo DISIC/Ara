@@ -21,6 +21,7 @@ import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import DuplicateModal from "./DuplicateModal.vue";
+import NotesModal from "../../components/audit/NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "../SummaryCard.vue";
 import CopyIcon from "../icons/CopyIcon.vue";
@@ -128,6 +129,40 @@ function confirmDelete() {
     });
 }
 
+/**
+ * Update audit notes
+ */
+const notesModal = ref<InstanceType<typeof NotesModal>>();
+const isNotesLoading = ref(false);
+
+function openNotesModal() {
+  notesModal.value?.show();
+}
+
+const updateAuditNotes = async (notes: string) => {
+  isNotesLoading.value = true;
+  try {
+    await auditStore.updateAuditNotes(uniqueId.value, {
+      notes
+    });
+    notify(
+      "success",
+      undefined,
+      "Annotation de l’audit mise à jour avec succès"
+    );
+  } catch (error) {
+    console.error(error);
+    notify(
+      "error",
+      "Une erreur est survenue",
+      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+  } finally {
+    isNotesLoading.value = false;
+    notesModal.value?.hide();
+  }
+};
+
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 
@@ -190,8 +225,6 @@ onMounted(() => {
   </div>
 
   <h1>{{ auditName }}</h1>
-
-  <!-- TODO: Link to actions somehow -->
 
   <div
     id="sticky-indicator"
@@ -322,7 +355,31 @@ onMounted(() => {
           </Dropdown>
         </li>
 
-        <slot name="actions" />
+        <li>
+          <button
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+            :disabled="isOffline"
+            @click="openNotesModal"
+          >
+            Annoter l’audit
+          </button>
+        </li>
+
+        <li>
+          <component
+            :is="isOffline ? 'button' : 'RouterLink'"
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line no-external-icon"
+            :to="{
+              name: 'report',
+              params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
+            }"
+            target="_blank"
+            :disabled="isOffline"
+          >
+            Consulter le rapport
+            <span class="sr-only">(Nouvelle fenêtre)</span>
+          </component>
+        </li>
       </ul>
     </div>
   </div>
@@ -381,6 +438,12 @@ onMounted(() => {
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
+  />
+
+  <NotesModal
+    ref="notesModal"
+    :is-loading="isNotesLoading"
+    @confirm="updateAuditNotes"
   />
 </template>
 
