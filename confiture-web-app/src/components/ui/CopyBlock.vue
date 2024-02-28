@@ -94,7 +94,7 @@ function onClose() {
   flex-shrink: 0;
 }
 
-@media (max-width: 37.5rem) {
+@media (max-width: 36rem) {
   .copy-block {
     align-items: start;
     flex-direction: column;

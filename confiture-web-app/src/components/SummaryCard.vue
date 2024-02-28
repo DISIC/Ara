@@ -86,7 +86,7 @@ const uniqueId = useUniqueId();
   color: var(--text-mention-grey);
 }
 
-@media (max-width: 992px) {
+@media (max-width: 62rem) {
   .card {
     flex-direction: column;
   }

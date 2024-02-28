@@ -548,7 +548,7 @@ onMounted(() => {
   min-height: 4rem;
 }
 
-@media (min-width: 62em) {
+@media (min-width: 62rem) {
   .sticky-indicator {
     z-index: 3;
   }
@@ -595,7 +595,7 @@ onMounted(() => {
   display: none;
 }
 
-@media (width < 62.5rem) {
+@media (width < 62rem) {
   .mobile-dropdown-item.settings-item {
     display: block;
   }

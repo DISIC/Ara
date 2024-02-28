@@ -455,13 +455,13 @@ function combineEnvironments(
   grid-column: 1 / -1;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 62rem) {
   .suggested-environments {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 36rem) {
   .suggested-environments {
     grid-template-columns: 1fr;
   }
