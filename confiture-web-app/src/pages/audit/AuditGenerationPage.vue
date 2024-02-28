@@ -99,7 +99,7 @@ const headerInfos = computed(() => [
           description: auditIsInProgress.value
             ? "(Disponible à la fin de l’audit)"
             : "RGAA version 4.1",
-          value: complianceLevel.value,
+          value: auditIsInProgress.value ? 0 : complianceLevel.value,
           total: 100,
           unit: "%",
           theme: "blue" as StatDonutTheme

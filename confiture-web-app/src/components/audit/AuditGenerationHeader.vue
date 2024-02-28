@@ -426,7 +426,7 @@ onMounted(() => {
         <SummaryCard
           :title="keyInfos[0].title"
           :description="keyInfos[0].description"
-          :value="auditIsInProgress ? 0 : keyInfos[0].value"
+          :value="keyInfos[0].value"
           :total="keyInfos[0].total"
           :unit="keyInfos[0].unit"
           :theme="keyInfos[0].theme"
