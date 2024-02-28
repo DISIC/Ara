@@ -290,6 +290,14 @@ const accountStore = useAccountStore();
   overflow-y: auto;
 }
 
+@media (width < 48rem) {
+  .filters-wrapper {
+    position: static;
+    max-height: none;
+    overflow-y: initial;
+  }
+}
+
 .page-wrapper {
   display: flex;
   flex-wrap: wrap;
