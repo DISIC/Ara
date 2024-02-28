@@ -86,11 +86,7 @@ const uniqueId = useUniqueId();
   color: var(--text-mention-grey);
 }
 
-@media (max-width: 62rem) {
-  .card {
-    flex-direction: column;
-  }
-
+@media (width < 48rem) {
   .card-info {
     text-align: center;
   }

@@ -548,12 +548,6 @@ onMounted(() => {
   min-height: 4rem;
 }
 
-@media (min-width: 62rem) {
-  .sticky-indicator {
-    z-index: 3;
-  }
-}
-
 .audit-status {
   display: flex;
   align-items: center;
@@ -596,20 +590,11 @@ onMounted(() => {
 }
 
 @media (width < 62rem) {
-  .mobile-dropdown-item.settings-item {
-    display: block;
-  }
-
-  .settings-item:not(.mobile-dropdown-item) {
-    display: none;
-  }
-}
-
-@media (width < 56.25rem) {
   .mobile-dropdown-item {
     display: block;
   }
 
+  .settings-item:not(.mobile-dropdown-item),
   .notes-item:not(.mobile-dropdown-item),
   .report-item:not(.mobile-dropdown-item) {
     display: none;

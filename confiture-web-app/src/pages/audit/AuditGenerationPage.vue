@@ -262,7 +262,7 @@ const accountStore = useAccountStore();
   --filters-column-width: 2rem;
 }
 
-@media (max-width: 62rem) {
+@media (width < 62rem) {
   .columns {
     --gap: 1rem;
   }

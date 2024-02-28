@@ -239,10 +239,14 @@ const auditInProgress = computed(
 }
 
 /* To avoid JS based MQ, we replicate `fr-table--layout-fixed` */
-@media (min-width: 36rem) {
+.fr-table table {
+  display: table;
+  table-layout: fixed;
+}
+
+@media (width < 36rem) {
   .fr-table table {
-    display: table;
-    table-layout: fixed;
+    display: block;
   }
 }
 </style>

@@ -166,7 +166,7 @@ const auditIsPublishable = computed(() => {
   grid-row: 4;
 }
 
-@media (max-width: 48rem) {
+@media (width < 48rem) {
   .statement-step-actions > li:first-child {
     width: 100%;
   }
