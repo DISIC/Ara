@@ -48,3 +48,12 @@ Les tests peuvent être lancés de 2 manières :
   ```sh
   yarn cypress run
   ```
+
+## Guidelines
+
+- Utiliser les media queries en "desktop first" et avec la notation suivante avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture) :
+  ```css
+  @media (width < 62rem) {
+    ...
+  }
+  ```
