@@ -107,7 +107,7 @@ const auditInProgress = computed(
           :value="stat.value!"
           :total="stat.total!"
           :unit="stat.unit"
-          :theme="stat.theme"
+          :theme="stat.disabled ? 'grey' : stat.theme"
           :disabled="stat.disabled"
         >
           <template v-if="stat.hasDetails" #accordion-title>

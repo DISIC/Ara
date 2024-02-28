@@ -429,7 +429,7 @@ onMounted(() => {
           :value="keyInfos[0].value"
           :total="keyInfos[0].total"
           :unit="keyInfos[0].unit"
-          :theme="keyInfos[0].theme"
+          :theme="auditIsInProgress ? 'grey' : keyInfos[0].theme"
           :disabled="auditIsInProgress"
         />
       </div>
