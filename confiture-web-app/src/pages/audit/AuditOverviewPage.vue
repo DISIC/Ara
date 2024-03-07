@@ -2,20 +2,18 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import BackLink from "../../components/ui/BackLink.vue";
 import PageMeta from "../../components/PageMeta";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
-const accountStore = useAccountStore();
 
 useWrappedFetch(async () => {
   resultsStore.$reset();
@@ -59,13 +57,6 @@ function focusPageHeading() {
       :title="`Synthèse ${audit.procedureName}`"
       description="Suivez l'avancement de votre travail et accédez à votre audit et vos livrables. Commencez par réaliser votre audit avant compléter la déclaration d'accessibilité. Livrez ensuite le rapport d'audit et la déclaration d'accessibilité. Le rapport d'audit est généré automatiquement à partir de l'audit. La déclaration d'accessibilité est pré-complétée automatiquement à partir de l'audit."
     />
-
-    <template v-if="accountStore.account">
-      <BackLink
-        label="Retourner à mes audits"
-        :to="{ name: 'account-dashboard' }"
-      />
-    </template>
 
     <!-- Email alert -->
     <div

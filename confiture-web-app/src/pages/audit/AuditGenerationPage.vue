@@ -205,12 +205,7 @@ const accountStore = useAccountStore();
     />
 
     <BackLink
-      :label="
-        accountStore.account &&
-        previousRoute.route?.name === 'account-dashboard'
-          ? 'Accéder à la synthèse'
-          : 'Retourner à la synthèse'
-      "
+      label="Aller au tableau de bord de l’audit"
       :to="
         accountStore.account &&
         previousRoute.route?.name === 'account-dashboard'
