@@ -220,6 +220,10 @@ function handleSubmit() {
     });
 }
 
+const auditIsPublishable = computed(() => {
+  return !!auditStore.currentAudit?.initiator;
+});
+
 /**
  * Dev function to avoid filling all fields manually
  */
@@ -273,15 +277,16 @@ const isDevMode = useDevMode();
     description="Saisissez les informations requises pour établir la déclaration d’accessibilité."
   />
 
+  <BackLink
+    label="Aller au tableau de bord de l'audit"
+    :to="{ name: 'audit-overview', params: { uniqueId } }"
+  />
+
   <form
     v-if="auditStore.currentAudit"
     class="content"
     @submit.prevent="handleSubmit"
   >
-    <BackLink
-      label="Aller au tableau de bord de l'audit"
-      :to="{ name: 'audit-overview', params: { uniqueId } }"
-    />
     <h1 class="fr-mb-3w">Déclaration d’accessibilité</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
@@ -546,7 +551,23 @@ const isDevMode = useDevMode();
     </div>
 
     <div class="fr-mt-4w">
-      <button class="fr-btn" type="submit">Enregistrer</button>
+      <button class="fr-btn fr-mr-2w" type="submit">
+        {{
+          auditIsPublishable
+            ? "Enregistrer les modifications"
+            : "Valider la déclaration"
+        }}
+      </button>
+      <RouterLink
+        :to="{
+          name: 'audit-overview',
+          params: { uniqueId }
+        }"
+        class="fr-btn fr-btn--tertiary-no-outline"
+        type="button"
+      >
+        Annuler
+      </RouterLink>
     </div>
   </form>
 </template>
