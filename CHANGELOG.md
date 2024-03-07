@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 07/03/2024
+
+### Autres changements ⚙️
+
+- Supprime la rubrique des ressources ([#675](https://github.com/DISIC/Ara/pull/675))
+
 ## 22/02/2024
 
 ### Autres changements ⚙️
