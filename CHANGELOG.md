@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Améliorer l’affichage sur mobile du header sticky sur la page de génération de l’audit ([#678](https://github.com/DISIC/Ara/pull/678))
+- Corrige l’affichage des donuts des statistiques parfois désactivés ([#676](https://github.com/DISIC/Ara/pull/676))
 
 ### Autres changements ⚙️
 
