@@ -93,25 +93,35 @@ function focusPageHeading() {
       </button>
     </div>
 
-    <h1>{{ audit.procedureName }}</h1>
+    <div class="content">
+      <h1 class="fr-mb-6w">{{ audit.procedureName }}</h1>
 
-    <ul class="fr-p-0 fr-m-0 overview-steps">
-      <!-- Audit -->
-      <AuditStep :audit="audit" />
+      <ul class="fr-p-0 fr-m-0 overview-steps">
+        <!-- Audit -->
+        <AuditStep :audit="audit" />
 
-      <!-- Report -->
-      <ReportStep :audit="audit" />
+        <!-- Report -->
+        <ReportStep :audit="audit" />
 
-      <!-- a11y statement -->
-      <StatementStep v-if="audit.auditType === AuditType.FULL" :audit="audit" />
-    </ul>
+        <!-- a11y statement -->
+        <StatementStep
+          v-if="audit.auditType === AuditType.FULL"
+          :audit="audit"
+        />
+      </ul>
+    </div>
   </template>
 </template>
 
 <style scoped>
+.content {
+  max-width: 49.5rem;
+  margin: 0 auto;
+}
+
 .overview-steps {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 }
 </style>

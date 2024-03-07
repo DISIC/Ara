@@ -54,7 +54,10 @@ const auditIsPublishable = computed(() => {
     </p>
 
     <ul
-      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left fr-mb-3w statement-step-actions"
+      :class="[
+        'fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions',
+        { 'fr-mb-3w': auditIsPublishable }
+      ]"
     >
       <li>
         <RouterLink
@@ -79,7 +82,7 @@ const auditIsPublishable = computed(() => {
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-fill': auditIsPublishable
+            'fr-icon-eye-line': auditIsPublishable
           }"
           :title="
             auditIsPublishable
@@ -153,7 +156,7 @@ const auditIsPublishable = computed(() => {
 }
 
 /* FIXME: overrides fr-btns-group style */
-.statement-step-actions > li:first-child {
+.statement-step-actions > li {
   width: 50%;
 }
 
