@@ -9,7 +9,6 @@ import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
-import { StatDonutTheme } from "../../components/StatDonut.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
@@ -99,10 +98,11 @@ const headerInfos = computed(() => [
           description: auditIsInProgress.value
             ? "(Disponible à la fin de l’audit)"
             : "RGAA version 4.1",
-          value: complianceLevel.value,
+          value: auditIsInProgress.value ? 0 : complianceLevel.value,
           total: 100,
           unit: "%",
-          theme: "blue" as StatDonutTheme
+          theme: auditIsInProgress.value ? "grey" : "blue",
+          disabled: auditIsInProgress.value
         }
       ]
     : []),
@@ -115,13 +115,13 @@ const headerInfos = computed(() => [
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "red" as StatDonutTheme
+    theme: "red"
   },
   {
     title: "Critères<br/> conformes",
     value: compliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "green" as StatDonutTheme
+    theme: "green"
   }
 ]);
 

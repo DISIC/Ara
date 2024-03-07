@@ -108,6 +108,7 @@ watch(currentStep, () => {
                   class="stat-donut"
                   :value="accessibilityRate"
                   :total="100"
+                  theme="blue"
                   unit="%"
                 />
 

@@ -18,7 +18,7 @@ const stats = computed(() => {
             description: auditInProgress.value
               ? "(Disponible à la fin de l’audit)"
               : "RGAA version 4.1",
-            value: report.data?.accessibilityRate,
+            value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
             unit: "%",
             hasDetails: true,
@@ -107,7 +107,7 @@ const auditInProgress = computed(
           :value="stat.value!"
           :total="stat.total!"
           :unit="stat.unit"
-          :theme="stat.theme"
+          :theme="stat.disabled ? 'grey' : stat.theme"
           :disabled="stat.disabled"
         >
           <template v-if="stat.hasDetails" #accordion-title>
