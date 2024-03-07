@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 07/03/2024
+
+### Corrections 🐛
+
+- Améliorer l’affichage sur mobile du header sticky sur la page de génération de l’audit ([#678](https://github.com/DISIC/Ara/pull/678))
+
 ## 22/02/2024
 
 ### Autres changements ⚙️
