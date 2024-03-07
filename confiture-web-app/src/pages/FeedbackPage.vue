@@ -84,7 +84,7 @@ const previousPageName = route?.meta.name ?? "précédente";
     description="Contribuez à l’amélioration de l’outil Ara en donnant votre avis."
   />
 
-  <h1 class="fr-mb-6w">Donner mon avis</h1>
+  <h1 class="fr-mb-3w">Donner mon avis</h1>
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">
       <p class="fr-h3 success-title">
@@ -104,8 +104,8 @@ const previousPageName = route?.meta.name ?? "précédente";
     </template>
   </div>
   <form v-if="!showSuccess" class="content" @submit.prevent="submitFeedback">
-    <p class="fr-text--sm mandatory-notice">
-      Sauf mentions contraires, tous les champs sont obligatoires
+    <p class="fr-text--sm fr-mb-4w mandatory-notice">
+      Sauf mention contraire, tous les champs sont obligatoires
     </p>
 
     <section class="fr-form-group">

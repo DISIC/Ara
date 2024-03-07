@@ -224,11 +224,6 @@ const previousRoute = usePreviousRoute();
 <template>
   <template v-if="accountStore.account">
     <BackLink
-      v-if="previousRoute.route?.name === 'account-dashboard'"
-      label="Retourner à mes audits"
-      :to="{ name: 'account-dashboard' }"
-    />
-    <BackLink
       v-if="previousRoute.route?.name === 'audit-generation'"
       label="Retourner à mon audit"
       :to="{
@@ -239,7 +234,7 @@ const previousRoute = usePreviousRoute();
   </template>
 
   <form class="narrow-content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3v">
+    <h1 class="fr-mb-3w">
       <span aria-hidden="true">⚙️</span> Paramètres de l’audit
     </h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">

@@ -79,7 +79,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-4w">
+  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w">
     <RouterView />
   </main>
 

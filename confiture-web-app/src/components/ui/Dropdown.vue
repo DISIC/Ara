@@ -162,6 +162,7 @@ defineExpose({ buttonRef, closeOptions });
 .dropdown-content :deep(.dropdown-item--with-meta > button) {
   display: grid;
   grid-template-columns: auto 1fr;
+  justify-items: start;
 }
 
 .dropdown-content :deep(.dropdown-item-meta) {
