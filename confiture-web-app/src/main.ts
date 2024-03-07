@@ -19,11 +19,17 @@ import router from "./router";
 
 // markdown configuration
 {
-  // TODO: use a <RouterLink />
   const renderer = {
     link(href: string, title: string, text: string) {
       if (href.startsWith("#")) {
-        return `<a href="/ressources/glossaire${href}">${text}</a>`;
+        return `<a
+          href="https://accessibilite.numerique.gouv.fr/methode/glossaire/${href}"
+          target="_blank"
+          class="no-external-icon"
+        >
+          ${text}
+          <span class="sr-only"> (ouvre dans une nouvelle fenêtre)</span>
+        </a>`;
       } else {
         return `<a href="${href}">${text}</a>`;
       }
