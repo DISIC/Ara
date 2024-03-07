@@ -216,19 +216,6 @@ function handleDisconnectClick() {
                 </RouterLink>
               </li>
 
-              <!-- Ressources -->
-              <li class="fr-nav__item">
-                <RouterLink
-                  class="fr-nav__link"
-                  :to="{ name: 'resources' }"
-                  :aria-current="
-                    currentRoute.path.startsWith('/ressources') ? 'true' : null
-                  "
-                >
-                  Ressources
-                </RouterLink>
-              </li>
-
               <!-- Nouveautés -->
               <li class="fr-nav__item">
                 <button

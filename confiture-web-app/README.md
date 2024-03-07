@@ -17,7 +17,7 @@ Installer les dépendances :
 yarn install
 ```
 
-Générer les fichiers requis du RGAA (critères et tests, glossaire et méthodologie) :
+Générer les fichiers requis du RGAA (critères et tests et méthodologies) :
 
 ```sh
 yarn generate:rgaa

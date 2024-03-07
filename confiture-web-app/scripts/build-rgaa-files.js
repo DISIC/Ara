@@ -37,22 +37,6 @@ async function generateMethodologies() {
   await fs.copyFile(METHODOLOGIES_SOURCE, METHODOLOGIES_DESTINATION);
 }
 
-async function generateGlossary() {
-  const GLOSSARY_SOURCE = path.join(
-    __dirname,
-    "..",
-    "./accessibilite.numerique.gouv.fr/RGAA/glossaire.json"
-  );
-
-  const GLOSSARY_DESTINATION = path.join(
-    __dirname,
-    "..",
-    "./src/glossaire.json"
-  );
-
-  await fs.copyFile(GLOSSARY_SOURCE, GLOSSARY_DESTINATION);
-}
-
 async function generateCriteria() {
   const CRITERIA_SOURCE = path.join(
     __dirname,
@@ -72,6 +56,5 @@ async function generateCriteria() {
 (async function main() {
   await cloneRgaaRepository();
   await generateMethodologies();
-  await generateGlossary();
   await generateCriteria();
 })();
