@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { marked } from "marked";
-import { ref, computed, inject } from "vue";
-import { debounce } from "lodash-es";
 import { HTTPError } from "ky";
+import { debounce } from "lodash-es";
+import { marked } from "marked";
+import { computed, inject, ref, watch } from "vue";
 
+import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
@@ -12,15 +15,12 @@ import {
   CriteriumResultStatus,
   ExampleImage
 } from "../../types";
+import { captureWithPayloads, formatStatus } from "../../utils";
+import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore, useFiltersStore, useAuditStore } from "../../store";
-import { useNotifications } from "../../composables/useNotifications";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
-import { captureWithPayloads, formatStatus } from "../../utils";
-import { useIsOffline } from "../../composables/useIsOffline";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
@@ -76,6 +76,10 @@ const transverseResult = computed(
 const isResultTransverse = computed(() =>
   store.isCriteriumTransverse(result.value.topic, result.value.criterium)
 );
+
+watch(isResultTransverse, (newValue) => {
+  console.log("isResultTransverse new value: ", newValue);
+});
 
 const criteriumStatus = computed(() =>
   store.getCriteriumStatus(
@@ -306,7 +310,7 @@ const openTransverseWarning = inject<() => Promise<void>>(
 );
 
 async function updateTransverseStatus(e: Event) {
-  const isTransverse = (e.target as HTMLInputElement).checked;
+  const isTransverse = !isResultTransverse.value;
 
   if (
     isTransverse &&
@@ -316,6 +320,8 @@ async function updateTransverseStatus(e: Event) {
       props.page.id
     )
   ) {
+    // Prevent the default event so the checkbox doesnt appear checked before the user confirmed the modal
+    e.preventDefault();
     // Show modal if the same criterion is already evaluated on another page
     await openTransverseWarning?.();
   }
@@ -391,10 +397,6 @@ const isOffline = useIsOffline();
       />
 
       <div class="fr-toggle fr-toggle--label-left">
-        <!-- 
-          FIXME: the checkbox desync from the `:checked="isResultTransverse` binding.
-          Seems to be a Vue issue...
-        -->
         <input
           :id="`applicable-all-pages-${uniqueId}`"
           :checked="isResultTransverse"
@@ -403,7 +405,7 @@ const isOffline = useIsOffline();
           :disabled="
             criteriumStatus === CriteriumResultStatus.NOT_TESTED || isOffline
           "
-          @click.prevent="updateTransverseStatus"
+          @click="updateTransverseStatus"
         />
         <label
           class="fr-toggle__label"
