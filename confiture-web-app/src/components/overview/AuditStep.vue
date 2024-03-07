@@ -266,7 +266,7 @@ const auditIsInProgress = computed(() => {
   grid-column: 1;
 }
 
-@media (max-width: 48rem) {
+@media (width < 48rem) {
   .audit-step-charts {
     grid-template-columns: 1fr;
     gap: 1rem;

@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 07/03/2024
 
+### Corrections 🐛
+
+- Améliorer l’affichage sur mobile du header sticky sur la page de génération de l’audit ([#678](https://github.com/DISIC/Ara/pull/678))
+
 ### Autres changements ⚙️
 
 - Supprime la rubrique des ressources ([#675](https://github.com/DISIC/Ara/pull/675))

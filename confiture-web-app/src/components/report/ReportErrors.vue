@@ -786,7 +786,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   content: none;
 }
 
-@media (max-width: 768px) {
+@media (width < 48rem) {
   .main {
     grid-template-columns: 1fr;
   }
