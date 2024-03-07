@@ -187,8 +187,6 @@ const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
 
-const auditIsInProgress = computed(() => resultStore.auditProgress < 1);
-
 const showAuditProgressBar = computed(() => {
   return (
     !auditStore.currentAudit?.publicationDate ||
@@ -429,8 +427,8 @@ onMounted(() => {
           :value="keyInfos[0].value"
           :total="keyInfos[0].total"
           :unit="keyInfos[0].unit"
-          :theme="auditIsInProgress ? 'grey' : keyInfos[0].theme"
-          :disabled="auditIsInProgress"
+          :theme="keyInfos[0].theme"
+          :disabled="keyInfos[0].disabled"
         />
       </div>
       <div
