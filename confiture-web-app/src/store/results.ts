@@ -547,25 +547,8 @@ export const useResultsStore = defineStore("results", {
 
       const perPageUpdates: CriteriumResult[] = perPageResults.map((r) => ({
         ...r,
-        status: r.pageId === pageId ? status : transverseResult.status,
-        errorDescription: (
-          (r.errorDescription ?? "") +
-          "\n\n" +
-          (transverseResult.errorDescription ?? "")
-        ).trim(),
-        compliantComment:
-          (r.compliantComment ?? "") +
-          "\n\n" +
-          (transverseResult.compliantComment ?? ""),
-        notApplicableComment:
-          (r.notApplicableComment ?? "") +
-          "\n\n" +
-          (transverseResult.notApplicableComment ?? ""),
-        recommandation:
-          (r.recommandation ?? "") +
-          "\n\n" +
-          (transverseResult.recommandation ?? "")
-        // TODO: what to do with quickwin, userImpact
+        // Reset status of the criteria on other pages
+        status: r.pageId === pageId ? status : CriteriumResultStatus.NOT_TESTED
       }));
 
       return this.updateResults(uniqueId, perPageUpdates, [transverseUpdate]);

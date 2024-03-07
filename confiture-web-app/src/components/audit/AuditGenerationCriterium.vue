@@ -257,17 +257,13 @@ async function updateResultStatus(status: CriteriumResultStatus) {
               : "Il ne vous reste qu’à livrer votre rapport."
           );
         });
-      } else if (transverseNoticeChoice === "allPages") {
+      } else {
         notify(
           "success",
           undefined,
-          `Critère défini comme **${formattedStatus}** sur toutes les pages`
-        );
-      } else if (transverseNoticeChoice === "thisPage") {
-        notify(
-          "success",
-          undefined,
-          `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
+          transverseNoticeChoice === "allPages"
+            ? `Critère défini comme **${formattedStatus}** sur toutes les pages`
+            : `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
         );
       }
     })
@@ -335,14 +331,14 @@ async function updateTransverseStatus(e: Event) {
       isTransverse
     )
     .then(() => {
-      if (isTransverse) {
-        const status = formatStatus(result.value.status);
-        notify(
-          "success",
-          undefined,
-          `Critère défini comme **${status}** sur toutes les pages`
-        );
-      }
+      const status = formatStatus(result.value.status);
+      notify(
+        "success",
+        undefined,
+        isTransverse
+          ? `Critère défini comme **${status}** sur toutes les pages`
+          : "Critère mis à jour sur toutes les pages"
+      );
     })
     .catch(handleUpdateResultError);
 }
