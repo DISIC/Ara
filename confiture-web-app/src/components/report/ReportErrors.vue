@@ -49,7 +49,8 @@ const errors = computed(() => {
         .filter((r) => {
           return (
             r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
+            // TODO: take transverse criteria into account
+            // !r.transverse &&
             userImpactFilters.value.includes(r.userImpact)
           );
         })
@@ -74,7 +75,9 @@ const errors = computed(() => {
                 topic: Number(topicNumber),
                 name: getTopicName(Number(topicNumber)),
                 errors: sortBy(
-                  results.filter((r) => !r.transverse),
+                  // TODO: take transverse criteria into account
+                  // results.filter((r) => !r.transverse),
+                  results,
                   "criterium"
                 )
               };
@@ -103,7 +106,8 @@ const transverseErrors = computed(() => {
         uniqWith(
           report.data?.results.filter((r) => {
             return (
-              r.transverse &&
+              // TODO: take transverse criteria into account
+              // r.transverse &&
               r.status === CriteriumResultStatus.NOT_COMPLIANT &&
               userImpactFilters.value.includes(r.userImpact)
             );
