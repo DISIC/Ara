@@ -40,7 +40,6 @@ function handleDisconnectClick() {
 
       <Dropdown
         v-if="accountStore.account"
-        ref="optionsDropdownRef"
         :title="accountStore.account.email"
         class="account-dropdown"
       >
