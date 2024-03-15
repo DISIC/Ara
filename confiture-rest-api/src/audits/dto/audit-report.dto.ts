@@ -66,6 +66,7 @@ export class AuditReportDto {
   topicDistributions: TopicResultDistribution[];
 
   results: ReportCriterionResult[];
+  transverseResults: TransverseReportCriterionResult[];
 }
 
 class RawAndPercentage {
@@ -170,21 +171,17 @@ class Environment {
   browserVersion: string;
 }
 
-class ReportCriterionResult {
+class TransverseReportCriterionResult {
   /** @example 2 */
   topic: number;
   /** @example 3 */
   criterium: number;
-  /** @example 234 */
-  pageId: number;
 
   /**
    * @example "NOT_COMPLIANT"
    */
   @ApiProperty({ enum: CriterionResultStatus })
   status: CriterionResultStatus;
-
-  transverse: boolean;
 
   compliantComment: string | null;
 
@@ -204,6 +201,11 @@ class ReportCriterionResult {
   recommandation: string | null;
 
   notApplicableComment: string | null;
+}
+
+class ReportCriterionResult extends TransverseReportCriterionResult {
+  /** @example 234 */
+  pageId: number;
 }
 
 class ExampleImage {

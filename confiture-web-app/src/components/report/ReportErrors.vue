@@ -104,14 +104,14 @@ const transverseErrors = computed(() => {
     mapValues(
       groupBy(
         uniqWith(
-          report.data?.results.filter((r) => {
-            return (
-              // TODO: take transverse criteria into account
-              // r.transverse &&
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              userImpactFilters.value.includes(r.userImpact)
-            );
-          }),
+          report.data?.transverseResults
+            .filter((r) => {
+              return (
+                r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+                userImpactFilters.value.includes(r.userImpact)
+              );
+            })
+            .filter((r) => (quickWinFilter.value ? r.quickWin : true)),
           (a, b) => a.criterium === b.criterium && a.topic === b.topic
         ),
         "topic"

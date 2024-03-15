@@ -756,7 +756,33 @@ export class AuditService {
       return;
     }
 
-    const results = await this.prisma.criterionResult.findMany({
+    const transverseResults =
+      await this.prisma.transverseCriterionResult.findMany({
+        where: {
+          audit: {
+            consultUniqueId
+          },
+          transverse: true,
+          criterium: {
+            in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
+          },
+          topic: {
+            in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
+          }
+        },
+        include: {
+          exampleImages: true
+        }
+      });
+
+    const transverseResultsByTopicAndCriterium = transverseResults.reduce<
+      Record<number, Record<number, TransverseCriterionResult>>
+    >((acc, c) => {
+      setWith(acc, [c.topic, c.criterium], c, Object);
+      return acc;
+    }, {});
+
+    const tempResults = await this.prisma.criterionResult.findMany({
       where: {
         page: {
           auditUniqueId: audit.editUniqueId
@@ -772,6 +798,13 @@ export class AuditService {
         exampleImages: true
       }
     });
+
+    const results = tempResults.map((r) => ({
+      ...r,
+      status:
+        transverseResultsByTopicAndCriterium[r.topic]?.[r.criterium]?.status ||
+        r.status
+    }));
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
       (acc, c) => {
@@ -993,7 +1026,24 @@ export class AuditService {
         criterium: r.criterium,
 
         status: r.status,
-        transverse: r.transverse,
+
+        compliantComment: r.compliantComment,
+        errorDescription: r.errorDescription,
+        notApplicableComment: r.notApplicableComment,
+        recommandation: r.recommandation,
+        userImpact: r.userImpact,
+        quickWin: r.quickWin,
+        exampleImages: r.exampleImages.map((img) => ({
+          url: img.url,
+          filename: img.originalFilename
+        }))
+      })),
+
+      transverseResults: transverseResults.map((r) => ({
+        topic: r.topic,
+        criterium: r.criterium,
+
+        status: r.status,
 
         compliantComment: r.compliantComment,
         errorDescription: r.errorDescription,

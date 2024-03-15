@@ -1,4 +1,8 @@
-import { AuditType, CriteriumResult } from "../types";
+import {
+  AuditType,
+  CriteriumResult,
+  TransverseCriteriumResult
+} from "../types";
 
 export interface AuditReport {
   consultUniqueId: string;
@@ -44,6 +48,15 @@ export interface AuditReport {
 
   results: Array<
     Omit<CriteriumResult, "exampleImages"> & {
+      exampleImages: {
+        url: string;
+        filename: string;
+      }[];
+    }
+  >;
+
+  transverseResults: Array<
+    Omit<TransverseCriteriumResult, "exampleImages" | "transverse"> & {
       exampleImages: {
         url: string;
         filename: string;
