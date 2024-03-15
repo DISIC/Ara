@@ -16,10 +16,12 @@ const isOffline = useIsOffline();
 </script>
 
 <template>
-  <LazyAccordion
-    disclose-color="var(--background-default-grey)"
-    title="Commentaire"
-  >
+  <LazyAccordion disclose-color="var(--background-default-grey)">
+    <template #title>
+      <slot name="title">
+        Commentaire de&nbsp;<strong>cette page</strong>
+      </slot>
+    </template>
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">

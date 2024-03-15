@@ -417,31 +417,57 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
-    <CriteriumNotCompliantAccordion
-      v-if="isResultTransverse"
-      :id="`transverse-not-compliant-accordion-${uniqueId}`"
-      :comment="transverseResult.errorDescription"
-      :user-impact="transverseResult.userImpact"
-      :example-images="transverseResult.exampleImages"
-      :recommandation="transverseResult.recommandation"
-      :quick-win="transverseResult.quickWin"
-      :show-file-format-error="showTransverseFileFormatError"
-      :show-file-size-error="showTransverseFileSizeError"
-      @update:comment="updateResultComment($event, 'errorDescription', true)"
-      @update:user-impact="updateResultImpact($event, true)"
-      @upload-example="handleUploadExample($event, true)"
-      @delete-example="handleDeleteExample($event, true)"
-      @update:recommandation="
-        updateResultComment($event, 'recommandation', true)
-      "
-      @update:quick-win="updateQuickWin($event, true)"
-    >
-      <template #title>
-        Erreur(s) et recommandation(s) sur&nbsp;<strong
-          >toutes les pages</strong
-        >
-      </template>
-    </CriteriumNotCompliantAccordion>
+    <template v-if="isResultTransverse">
+      <CriteriumCompliantAccordion
+        v-if="criteriumStatus === CriteriumResultStatus.COMPLIANT"
+        :id="`compliant-accordion-${uniqueId}`"
+        :comment="transverseResult.compliantComment"
+        @update:comment="updateResultComment($event, 'compliantComment', true)"
+      >
+        <template #title>
+          Commentaire de&nbsp;<strong>toutes les pages</strong>
+        </template>
+      </CriteriumCompliantAccordion>
+
+      <CriteriumNotApplicableAccordion
+        v-else-if="criteriumStatus === CriteriumResultStatus.NOT_APPLICABLE"
+        :id="`not-applicable-accordion-${uniqueId}`"
+        :comment="transverseResult.notApplicableComment"
+        @update:comment="
+          updateResultComment($event, 'notApplicableComment', true)
+        "
+      >
+        <template #title>
+          Commentaire de&nbsp;<strong>toutes les pages</strong>
+        </template>
+      </CriteriumNotApplicableAccordion>
+
+      <CriteriumNotCompliantAccordion
+        v-else-if="criteriumStatus === CriteriumResultStatus.NOT_COMPLIANT"
+        :id="`transverse-not-compliant-accordion-${uniqueId}`"
+        :comment="transverseResult.errorDescription"
+        :user-impact="transverseResult.userImpact"
+        :example-images="transverseResult.exampleImages"
+        :recommandation="transverseResult.recommandation"
+        :quick-win="transverseResult.quickWin"
+        :show-file-format-error="showTransverseFileFormatError"
+        :show-file-size-error="showTransverseFileSizeError"
+        @update:comment="updateResultComment($event, 'errorDescription', true)"
+        @update:user-impact="updateResultImpact($event, true)"
+        @upload-example="handleUploadExample($event, true)"
+        @delete-example="handleDeleteExample($event, true)"
+        @update:recommandation="
+          updateResultComment($event, 'recommandation', true)
+        "
+        @update:quick-win="updateQuickWin($event, true)"
+      >
+        <template #title>
+          Erreur(s) et recommandation(s) sur&nbsp;<strong
+            >toutes les pages</strong
+          >
+        </template>
+      </CriteriumNotCompliantAccordion>
+    </template>
 
     <CriteriumCompliantAccordion
       v-if="criteriumStatus === CriteriumResultStatus.COMPLIANT"
