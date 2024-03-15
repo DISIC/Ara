@@ -24,7 +24,7 @@ const width = useWindowWidth();
 </script>
 
 <template>
-  <header class="account-header">
+  <header id="header" role="banner" class="account-header">
     <div class="fr-p-1w fr-px-md-3w fr-py-md-2w content">
       <p class="fr-h6 fr-mb-0 site-name">
         Ara

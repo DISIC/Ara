@@ -18,6 +18,7 @@ import {
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
+import TopLink from "../../components/ui/TopLink.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -550,8 +551,8 @@ const isDevMode = useDevMode();
       </button>
     </div>
 
-    <div class="fr-mt-4w">
-      <button class="fr-btn fr-mr-2w" type="submit">
+    <div class="fr-mt-4w actions">
+      <button class="fr-btn" type="submit">
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
@@ -568,6 +569,8 @@ const isDevMode = useDevMode();
       >
         Annuler
       </RouterLink>
+
+      <TopLink class="fr-ml-auto top-link" />
     </div>
   </form>
 </template>
@@ -584,5 +587,18 @@ const isDevMode = useDevMode();
 
 .mandatory-notice {
   color: var(--text-mention-grey);
+}
+
+.actions {
+  /* position: relative; */
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 5rem 1rem;
+}
+
+.top-link {
+  margin-top: 0;
 }
 </style>
