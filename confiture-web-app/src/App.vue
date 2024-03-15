@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue";
 import { onMounted, provide, ref } from "vue";
-
 import SiteFooter from "./components/layout/SiteFooter.vue";
-import SiteHeader from "./components/layout/SiteHeader.vue";
 import MarkdownHelpModal from "./components/audit/MarkdownHelpModal.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
+import SiteHeader from "./components/layout/SiteHeader.vue";
 
 // Default meta tags
 useHead({
@@ -89,3 +88,9 @@ onMounted(() => {
 
   <ToastNotification />
 </template>
+
+<style scoped>
+[id="main"]:target {
+  scroll-margin: 2rem;
+}
+</style>

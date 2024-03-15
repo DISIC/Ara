@@ -3,6 +3,7 @@ import Dropdown from "../ui/Dropdown.vue";
 import { useAccountStore } from "../../store";
 import { useRoute, useRouter } from "vue-router";
 import { useNotifications } from "../../composables/useNotifications";
+import { useWindowWidth } from "../../composables/useWindowWidth";
 
 const accountStore = useAccountStore();
 
@@ -18,33 +19,34 @@ function handleDisconnectClick() {
   }
   notify("success", "Vous avez été deconnecté avec succès.");
 }
+
+const width = useWindowWidth();
 </script>
 
 <template>
-  <header class="fr-header">
-    <div class="fr-container content">
-      <div class="fr-header__service fr-pl-0">
-        <p class="fr-header__service-title">
-          Ara
-          <span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
-            >BÊTA</span
-          >
-        </p>
-      </div>
+  <header class="account-header">
+    <div class="fr-p-1w fr-px-md-3w fr-py-md-2w content">
+      <p class="fr-h6 fr-mb-0 site-name">
+        Ara
+        <span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">
+          BÊTA
+        </span>
+      </p>
 
       <RouterLink
         :to="{ name: 'account-dashboard' }"
         class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-home-4-line"
-        >Mes audits</RouterLink
       >
+        {{ width < 768 ? "Audits" : "Mes audits" }}
+      </RouterLink>
 
       <Dropdown
         v-if="accountStore.account"
-        :title="accountStore.account.email"
+        :title="width < 768 ? 'Compte' : accountStore.account.email"
         class="account-dropdown"
       >
-        <ul role="list" class="fr-p-0 fr-m-0">
-          <li>
+        <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+          <li class="dropdown-item">
             <RouterLink
               :to="{ name: 'account-settings' }"
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
@@ -53,7 +55,7 @@ function handleDisconnectClick() {
             </RouterLink>
           </li>
           <li aria-hidden="true" class="dropdown-separator"></li>
-          <li>
+          <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-logout-box-r-line fr-m-0"
               @click="handleDisconnectClick"
@@ -67,11 +69,23 @@ function handleDisconnectClick() {
   </header>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .content {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  max-width: 78rem;
+  margin: 0 auto;
+
+  @media (width < 48rem) {
+    gap: 0.5rem;
+  }
+}
+
+.site-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
 .account-dropdown {

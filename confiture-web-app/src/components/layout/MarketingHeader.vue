@@ -85,8 +85,11 @@ function handleDisconnectClick() {
                 </li>
               </ul>
               <Dropdown v-else :title="accountStore.account.email">
-                <ul role="list" class="fr-p-0 fr-m-0 user-dropdown">
-                  <li>
+                <ul
+                  role="list"
+                  class="fr-p-0 fr-m-0 user-dropdown dropdown-list"
+                >
+                  <li class="dropdown-item">
                     <RouterLink
                       :to="{ name: 'account-settings' }"
                       class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
@@ -95,7 +98,7 @@ function handleDisconnectClick() {
                     </RouterLink>
                   </li>
                   <li aria-hidden="true" class="dropdown-separator"></li>
-                  <li>
+                  <li class="dropdown-item">
                     <button
                       class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-logout-box-r-line fr-m-0"
                       @click="handleDisconnectClick"
