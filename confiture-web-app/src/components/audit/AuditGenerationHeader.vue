@@ -38,6 +38,7 @@ defineProps<{
     total: number;
     unit?: string;
     theme?: StatDonutTheme;
+    disabled?: boolean;
   }[];
   editUniqueId?: string;
 }>();
