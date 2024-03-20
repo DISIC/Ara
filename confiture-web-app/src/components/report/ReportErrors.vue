@@ -564,29 +564,31 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.url"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
-                      target="_blank"
+                <template v-if="error.exampleImages.length > 0">
+                  <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                    Exemple(s) d’erreur(s)
+                  </p>
+                  <div class="fr-container--fluid">
+                    <div
+                      v-for="(line, k) in chunk(error.exampleImages, 2)"
+                      :key="k"
+                      class="fr-grid-row fr-grid-row--gutters"
                     >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
-                    </a>
+                      <a
+                        v-for="example in line"
+                        :key="example.url"
+                        class="fr-col-md-6 fr-col-12 image-link"
+                        :href="example.url"
+                        target="_blank"
+                      >
+                        <span class="sr-only">
+                          Ouvrir l’image dans une nouvelle fenêtre
+                        </span>
+                        <img style="width: 100%" :src="example.url" alt="" />
+                      </a>
+                    </div>
                   </div>
-                </div>
+                </template>
               </LazyAccordion>
 
               <!-- Recommendation -->
@@ -687,29 +689,31 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.url"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
-                      target="_blank"
+                <template v-if="error.exampleImages.length > 0">
+                  <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                    Exemple(s) d’erreur(s)
+                  </p>
+                  <div class="fr-container--fluid">
+                    <div
+                      v-for="(line, k) in chunk(error.exampleImages, 2)"
+                      :key="k"
+                      class="fr-grid-row fr-grid-row--gutters"
                     >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
-                    </a>
+                      <a
+                        v-for="example in line"
+                        :key="example.url"
+                        class="fr-col-md-6 fr-col-12 image-link"
+                        :href="example.url"
+                        target="_blank"
+                      >
+                        <span class="sr-only">
+                          Ouvrir l’image dans une nouvelle fenêtre
+                        </span>
+                        <img style="width: 100%" :src="example.url" alt="" />
+                      </a>
+                    </div>
                   </div>
-                </div>
+                </template>
               </LazyAccordion>
 
               <!-- Recommendation -->
