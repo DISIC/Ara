@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-
 import fiphfpLogo from "../../assets/images/fiphfp.png";
 import ThemeModal from "./ThemeModal.vue";
 
@@ -27,14 +24,6 @@ const bottomLinks = [
     routeName: "contact"
   }
 ];
-
-const accountPages = ["account-dashboard", "account-settings", "missing-audit"];
-const deliverablePages = ["report", "context"];
-const route = useRoute();
-
-const isTargetBlank = computed(() => {
-  return [...accountPages, ...deliverablePages].includes(route.name as string);
-});
 </script>
 
 <template>
@@ -148,7 +137,6 @@ const isTargetBlank = computed(() => {
             <RouterLink
               class="fr-footer__bottom-link"
               :to="{ name: link.routeName }"
-              :target="isTargetBlank ? '_blank' : undefined"
             >
               {{ link.label }}
             </RouterLink>
