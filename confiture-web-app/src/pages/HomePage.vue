@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
 import { history } from "../router";
+import { useAccountStore } from "../store";
 
 const router = useRouter();
 
@@ -17,6 +18,14 @@ onMounted(async () => {
     isDeleteAlertVisible.value = true;
     await nextTick();
     closeAlertRef.value.focus();
+  }
+});
+
+// Redirect connected user to his account
+const accountStore = useAccountStore();
+onMounted(async () => {
+  if (accountStore.account) {
+    router.push({ name: "account-dashboard" });
   }
 });
 
