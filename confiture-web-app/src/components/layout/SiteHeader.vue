@@ -11,26 +11,16 @@ const accountStore = useAccountStore();
 const route = useRoute();
 
 /**
- * Determine which header to display depending on:
- * - the current route
- * - the presence of a user account
+ * Determine which header to display depending:
+ * - on the current route
+ * - if the user is connected
  */
 const headerComponent = computed(() => {
-  const accountHeaderPages = [
-    "account-dashboard",
-    "account-settings",
-    "missing-audit"
-  ];
-
   if (route.name === "report" || route.name === "context") {
     return DeliverableHeader;
   }
 
-  if (
-    accountStore.account &&
-    (accountHeaderPages.includes(route.name as string) ||
-      route.path.startsWith("/audits"))
-  ) {
+  if (accountStore.account) {
     return AccountHeader;
   }
 

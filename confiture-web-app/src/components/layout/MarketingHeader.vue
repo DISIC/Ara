@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
-import { useAccountStore } from "../../store/account";
-import Dropdown from "../ui/Dropdown.vue";
-import { useNotifications } from "../../composables/useNotifications";
-
-const accountStore = useAccountStore();
+import { useRoute } from "vue-router";
 
 const currentRoute = useRoute();
 
@@ -14,17 +8,6 @@ const newsSubMenu = ref<HTMLButtonElement>();
 
 function closeNewsSubMenu() {
   dsfr(newsSubMenu.value).collapse.conceal();
-}
-
-const router = useRouter();
-const notify = useNotifications();
-
-function handleDisconnectClick() {
-  accountStore.logout();
-  if (currentRoute.meta.authRequired) {
-    router.push({ name: "login" });
-  }
-  notify("success", "Vous avez été deconnecté avec succès.");
 }
 </script>
 
@@ -69,7 +52,7 @@ function handleDisconnectClick() {
           </div>
           <div class="fr-header__tools">
             <div class="fr-header__tools-links">
-              <ul v-if="!accountStore.account" class="fr-btns-group">
+              <ul class="fr-btns-group">
                 <li>
                   <RouterLink class="fr-btn" :to="{ name: 'login' }">
                     Se connecter
@@ -84,30 +67,6 @@ function handleDisconnectClick() {
                   </RouterLink>
                 </li>
               </ul>
-              <Dropdown v-else :title="accountStore.account.email">
-                <ul
-                  role="list"
-                  class="fr-p-0 fr-m-0 user-dropdown dropdown-list"
-                >
-                  <li class="dropdown-item">
-                    <RouterLink
-                      :to="{ name: 'account-settings' }"
-                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-line fr-m-0"
-                    >
-                      Mon compte
-                    </RouterLink>
-                  </li>
-                  <li aria-hidden="true" class="dropdown-separator"></li>
-                  <li class="dropdown-item">
-                    <button
-                      class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-logout-box-r-line fr-m-0"
-                      @click="handleDisconnectClick"
-                    >
-                      Me déconnecter
-                    </button>
-                  </li>
-                </ul>
-              </Dropdown>
             </div>
           </div>
         </div>
@@ -132,29 +91,12 @@ function handleDisconnectClick() {
               <li class="fr-nav__item">
                 <RouterLink
                   class="fr-nav__link"
-                  :to="
-                    accountStore.account
-                      ? { name: 'account-dashboard' }
-                      : { name: 'home' }
-                  "
+                  :to="{ name: 'home' }"
                   :aria-current="
-                    accountStore.account
-                      ? [
-                          'audit-overview',
-                          'audit-generation',
-                          'report',
-                          'account-dashboard'
-                        ].includes(currentRoute.name as string)
-                        ? 'true'
-                        : null
-                      : ['home', 'account-dashboard'].includes(
-                            currentRoute.name as string
-                          )
-                        ? 'true'
-                        : null
+                    currentRoute.name === 'home' ? 'true' : undefined
                   "
                 >
-                  {{ accountStore.account ? "Mes audits" : "Accueil" }}
+                  Accueil
                 </RouterLink>
               </li>
 
@@ -208,9 +150,3 @@ function handleDisconnectClick() {
     </div>
   </header>
 </template>
-
-<style scoped>
-.user-dropdown {
-  text-align: initial !important;
-}
-</style>
