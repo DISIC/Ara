@@ -19,7 +19,7 @@ const isOffline = useIsOffline();
   <LazyAccordion disclose-color="var(--background-default-grey)">
     <template #title>
       <slot name="title">
-        Commentaire de&nbsp;<strong>cette page</strong>
+        Commentaire sur&nbsp;<strong>cette page</strong>
       </slot>
     </template>
     <!-- COMMENT -->
