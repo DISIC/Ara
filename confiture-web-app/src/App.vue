@@ -1,28 +1,11 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue";
-import { onMounted, provide, ref, watch } from "vue";
-import { useRoute } from "vue-router";
-
-import Breadcrumb, { BreadcrumbLink } from "./components/layout/Breadcrumb.vue";
+import { onMounted, provide, ref } from "vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
-import SiteHeader from "./components/layout/SiteHeader.vue";
 import MarkdownHelpModal from "./components/audit/MarkdownHelpModal.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
-
-const route = useRoute();
-
-const breadcrumbLinks = ref<BreadcrumbLink[]>([]);
-
-watch(route, () => {
-  if (!route.meta || !route.meta.breadcrumbLinks) breadcrumbLinks.value = [];
-  if (typeof route.meta.breadcrumbLinks === "function") {
-    breadcrumbLinks.value = route.meta.breadcrumbLinks();
-  } else {
-    breadcrumbLinks.value =
-      (route.meta.breadcrumbLinks as BreadcrumbLink[]) || [];
-  }
-});
+import SiteHeader from "./components/layout/SiteHeader.vue";
 
 // Default meta tags
 useHead({
@@ -95,12 +78,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <main
-    id="main"
-    role="main"
-    :class="['fr-container fr-mb-12w', { 'fr-mt-9w': !breadcrumbLinks.length }]"
-  >
-    <Breadcrumb v-if="breadcrumbLinks.length" :links="breadcrumbLinks" />
+  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w">
     <RouterView />
   </main>
 
@@ -110,3 +88,9 @@ onMounted(() => {
 
   <ToastNotification />
 </template>
+
+<style scoped>
+[id="main"]:target {
+  scroll-margin: 2rem;
+}
+</style>

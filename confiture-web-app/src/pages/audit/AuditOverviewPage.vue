@@ -2,20 +2,18 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import BackLink from "../../components/ui/BackLink.vue";
 import PageMeta from "../../components/PageMeta";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
-const accountStore = useAccountStore();
 
 useWrappedFetch(async () => {
   resultsStore.$reset();
@@ -60,13 +58,6 @@ function focusPageHeading() {
       description="Suivez l'avancement de votre travail et accédez à votre audit et vos livrables. Commencez par réaliser votre audit avant compléter la déclaration d'accessibilité. Livrez ensuite le rapport d'audit et la déclaration d'accessibilité. Le rapport d'audit est généré automatiquement à partir de l'audit. La déclaration d'accessibilité est pré-complétée automatiquement à partir de l'audit."
     />
 
-    <template v-if="accountStore.account">
-      <BackLink
-        label="Retourner à mes audits"
-        :to="{ name: 'account-dashboard' }"
-      />
-    </template>
-
     <!-- Email alert -->
     <div
       v-if="auditStore.showAuditEmailAlert"
@@ -102,25 +93,35 @@ function focusPageHeading() {
       </button>
     </div>
 
-    <h1>{{ audit.procedureName }}</h1>
+    <div class="content">
+      <h1 class="fr-mb-6w">{{ audit.procedureName }}</h1>
 
-    <ul class="fr-p-0 fr-m-0 overview-steps">
-      <!-- Audit -->
-      <AuditStep :audit="audit" />
+      <ul class="fr-p-0 fr-m-0 overview-steps">
+        <!-- Audit -->
+        <AuditStep :audit="audit" />
 
-      <!-- Report -->
-      <ReportStep :audit="audit" />
+        <!-- Report -->
+        <ReportStep :audit="audit" />
 
-      <!-- a11y statement -->
-      <StatementStep v-if="audit.auditType === AuditType.FULL" :audit="audit" />
-    </ul>
+        <!-- a11y statement -->
+        <StatementStep
+          v-if="audit.auditType === AuditType.FULL"
+          :audit="audit"
+        />
+      </ul>
+    </div>
   </template>
 </template>
 
 <style scoped>
+.content {
+  max-width: 49.5rem;
+  margin: 0 auto;
+}
+
 .overview-steps {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 }
 </style>

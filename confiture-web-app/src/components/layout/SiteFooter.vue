@@ -1,6 +1,29 @@
 <script setup lang="ts">
 import fiphfpLogo from "../../assets/images/fiphfp.png";
 import ThemeModal from "./ThemeModal.vue";
+
+const bottomLinks = [
+  {
+    label: "Plan du site",
+    routeName: "site-map"
+  },
+  {
+    label: "Accessibilité : non conforme",
+    routeName: "accessibility"
+  },
+  {
+    label: "Mentions légales",
+    routeName: "legal"
+  },
+  {
+    label: "Données personnelles",
+    routeName: "privacy"
+  },
+  {
+    label: "Contact et contributions",
+    routeName: "contact"
+  }
+];
 </script>
 
 <template>
@@ -106,41 +129,16 @@ import ThemeModal from "./ThemeModal.vue";
       </div>
       <div class="fr-footer__bottom">
         <ul class="fr-footer__bottom-list">
-          <li class="fr-footer__bottom-item">
+          <li
+            v-for="link in bottomLinks"
+            :key="link.routeName"
+            class="fr-footer__bottom-item"
+          >
             <RouterLink
               class="fr-footer__bottom-link"
-              :to="{ name: 'site-map' }"
+              :to="{ name: link.routeName }"
             >
-              Plan du site
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'accessibility' }"
-            >
-              Accessibilité : non conforme
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink class="fr-footer__bottom-link" :to="{ name: 'legal' }">
-              Mentions légales
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'privacy' }"
-            >
-              Données personnelles
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'contact' }"
-            >
-              Contact et contributions
+              {{ link.label }}
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">

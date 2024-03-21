@@ -264,8 +264,7 @@ function copyReportLink(uniqueId: string) {
               }"
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-todo-line fr-m-0"
             >
-              Accéder à la synthèse
-              <span class="sr-only">de l’audit {{ audit.procedureName }}</span>
+              Accéder au tableau de bord
             </RouterLink>
           </li>
 
