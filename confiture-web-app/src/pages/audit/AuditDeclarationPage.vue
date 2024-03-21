@@ -569,8 +569,10 @@ const isDevMode = useDevMode();
       >
         Annuler
       </RouterLink>
+    </div>
 
-      <TopLink class="fr-ml-auto top-link" />
+    <div class="top-link">
+      <TopLink class="fr-ml-auto" />
     </div>
   </form>
 </template>
@@ -590,15 +592,15 @@ const isDevMode = useDevMode();
 }
 
 .actions {
-  /* position: relative; */
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   justify-content: start;
-  gap: 5rem 1rem;
+  gap: 1rem;
 }
 
 .top-link {
-  margin-top: 0;
+  display: flex;
+  justify-content: end;
 }
 </style>
