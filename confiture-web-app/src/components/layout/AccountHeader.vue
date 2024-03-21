@@ -69,7 +69,7 @@ const width = useWindowWidth();
   </header>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .content {
   display: flex;
   align-items: center;
