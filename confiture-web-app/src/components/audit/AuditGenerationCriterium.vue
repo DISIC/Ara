@@ -243,7 +243,7 @@ async function updateResultStatus(status: CriteriumResultStatus) {
 
   updatePromise
     .then(() => {
-      const formattedStatus = formatStatus(status);
+      const formattedStatus = formatStatus(status).toLowerCase();
       if (
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
@@ -258,13 +258,15 @@ async function updateResultStatus(status: CriteriumResultStatus) {
           );
         });
       } else {
-        notify(
-          "success",
-          undefined,
-          transverseNoticeChoice === "allPages"
-            ? `Critère défini comme **${formattedStatus}** sur toutes les pages`
-            : `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
-        );
+        if (transverseNoticeChoice) {
+          notify(
+            "success",
+            undefined,
+            transverseNoticeChoice === "allPages"
+              ? `Critère défini comme **${formattedStatus}** sur toutes les pages`
+              : `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
+          );
+        }
       }
     })
     .catch(handleUpdateResultError);
@@ -331,7 +333,7 @@ async function updateTransverseStatus(e: Event) {
       isTransverse
     )
     .then(() => {
-      const status = formatStatus(result.value.status);
+      const status = formatStatus(result.value.status).toLowerCase();
       notify(
         "success",
         undefined,
