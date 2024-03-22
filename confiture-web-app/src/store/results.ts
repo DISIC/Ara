@@ -548,7 +548,7 @@ export const useResultsStore = defineStore("results", {
       const perPageUpdates: CriteriumResult[] = perPageResults.map((r) => ({
         ...r,
         // Reset status of the criteria on other pages
-        status: r.pageId === pageId ? status : CriteriumResultStatus.NOT_TESTED
+        status: r.pageId === pageId ? status : r.status
       }));
 
       return this.updateResults(uniqueId, perPageUpdates, [transverseUpdate]);
