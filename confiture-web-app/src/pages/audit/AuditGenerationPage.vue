@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, provide, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -22,6 +22,8 @@ import {
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
+import TransverseWarningModal from "../../components/audit/TransverseWarningModal.vue";
+import TransverseNoticeModal from "../../components/audit/TransverseNoticeModal.vue";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -143,12 +145,13 @@ const filterResultsCount = computed(() =>
 );
 
 watch(
-  () => auditStore.currentAudit?.pages,
-  (curr, prev) => {
-    if (curr && !prev) {
-      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
+  () => auditStore.currentAudit,
+  (currentAudit) => {
+    if (currentAudit) {
+      auditStore.currentPageId = currentAudit.pages[0].id;
     }
-  }
+  },
+  { immediate: true }
 );
 
 const pageTitle = computed(() => {
@@ -191,6 +194,50 @@ const tabsData = computed((): TabData[] => {
 });
 
 const accountStore = useAccountStore();
+
+const transverseWarningModalRef =
+  ref<InstanceType<typeof TransverseWarningModal>>();
+
+const transverseWarningResolve = ref<() => void>();
+
+function onTransverseWarningConfirm() {
+  transverseWarningResolve.value?.();
+}
+
+provide("openTransverseWarning", () => {
+  transverseWarningModalRef.value?.show();
+
+  return new Promise<void>((resolve) => {
+    // Store the resolve callback to be called when the modal is "accepted"
+    transverseWarningResolve.value = resolve;
+  });
+});
+
+const transverseNoticeModalRef =
+  ref<InstanceType<typeof TransverseNoticeModal>>();
+
+type TransverseNoticeResult = "thisPage" | "allPages";
+
+const transverseNoticeResolve = ref<(result: TransverseNoticeResult) => void>();
+
+function onTransverseNoticeConfirm(result: TransverseNoticeResult) {
+  transverseNoticeResolve.value?.(result);
+}
+
+provide("openTransverseNotice", () => {
+  transverseNoticeModalRef.value?.show();
+
+  return new Promise<TransverseNoticeResult>((resolve) => {
+    transverseNoticeResolve.value = resolve;
+  });
+});
+
+const currentPageName = computed(
+  () =>
+    auditStore.currentAudit?.pages.find(
+      (p) => p.id === auditStore.currentPageId
+    )?.name ?? ""
+);
 </script>
 
 <template>
@@ -253,6 +300,18 @@ const accountStore = useAccountStore();
       </div>
     </div>
   </div>
+
+  <TransverseWarningModal
+    ref="transverseWarningModalRef"
+    @confirm="onTransverseWarningConfirm"
+  />
+
+  <TransverseNoticeModal
+    ref="transverseNoticeModalRef"
+    :page-name="currentPageName"
+    @confirm-on-all-pages="onTransverseNoticeConfirm('allPages')"
+    @confirm-on-page="onTransverseNoticeConfirm('thisPage')"
+  />
 </template>
 
 <style scoped>

@@ -20,6 +20,11 @@ const props = defineProps<{
   showFileSizeError: boolean;
 }>();
 
+defineSlots<{
+  /** Title of the accordion */
+  title(): any;
+}>();
+
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
@@ -79,10 +84,12 @@ const isOffline = useIsOffline();
 </script>
 
 <template>
-  <LazyAccordion
-    title="Description et recommandation"
-    disclose-color="var(--background-default-grey)"
-  >
+  <LazyAccordion disclose-color="var(--background-default-grey)">
+    <template #title>
+      <slot name="title">
+        Erreur(s) et recommandation(s) sur&nbsp;<strong>cette page</strong>
+      </slot>
+    </template>
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label

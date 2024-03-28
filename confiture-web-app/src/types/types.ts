@@ -121,6 +121,24 @@ export interface CriteriumResult {
 
   // DATA
   status: CriteriumResultStatus;
+  // transverse: boolean;
+
+  compliantComment: string | null;
+  errorDescription: string | null;
+  userImpact: CriterionResultUserImpact | null;
+  recommandation: string | null;
+  notApplicableComment: string | null;
+  exampleImages: ExampleImage[];
+  quickWin: boolean;
+}
+
+export interface TransverseCriteriumResult {
+  // ID
+  topic: number;
+  criterium: number;
+
+  // DATA
+  status: CriteriumResultStatus;
   transverse: boolean;
 
   compliantComment: string | null;
@@ -130,4 +148,16 @@ export interface CriteriumResult {
   notApplicableComment: string | null;
   exampleImages: ExampleImage[];
   quickWin: boolean;
+}
+
+export function isPerPageResult(
+  r: CriteriumResult | TransverseCriteriumResult
+): r is CriteriumResult {
+  return (r as CriteriumResult).pageId !== undefined;
+}
+
+export function isTransverseResult(
+  r: CriteriumResult | TransverseCriteriumResult
+): r is TransverseCriteriumResult {
+  return !isPerPageResult(r);
 }

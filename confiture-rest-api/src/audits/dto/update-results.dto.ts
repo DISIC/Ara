@@ -25,7 +25,7 @@ import { CRITERIA } from "../criteria";
 /** Validates the criterium property to make sure the criterium exists in the RGAA. */
 export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
   return function (
-    object: Pick<UpdateResultsItem, "topic" | "criterium">,
+    object: Pick<UpdateResultsItemBase, "topic" | "criterium">,
     propertyName: string
   ) {
     registerDecorator({
@@ -36,7 +36,7 @@ export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-          const { topic } = args.object as UpdateResultsItem;
+          const { topic } = args.object as UpdateResultsItemBase;
           return !!CRITERIA.find(
             (criterium) =>
               criterium.criterium === value && criterium.topic === topic
@@ -47,15 +47,7 @@ export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
   };
 }
 
-class UpdateResultsItem {
-  // ID
-
-  /**
-   * @example 123
-   */
-  @IsNumber()
-  pageId: number;
-
+class UpdateResultsItemBase {
   /**
    * @example 3
    */
@@ -83,13 +75,6 @@ class UpdateResultsItem {
   @IsString()
   @IsIn(Object.values(CriterionResultStatus))
   status: CriterionResultStatus;
-
-  /**
-   * Whether the status is the same on all pages
-   */
-  @IsBoolean()
-  @IsOptional()
-  transverse?: boolean;
 
   /**
    * @example "Ad culpa cupidatat proident amet ullamco proident proident mollit ipsum enim consectetur consequat labore."
@@ -135,9 +120,31 @@ class UpdateResultsItem {
   notApplicableComment?: string;
 }
 
+class UpdateResultsItem extends UpdateResultsItemBase {
+  /**
+   * @example 123
+   */
+  @IsNumber()
+  pageId: number;
+}
+
+class TransverseResultsItem extends UpdateResultsItemBase {
+  /**
+   * Whether the status is the same on all pages
+   */
+  @IsBoolean()
+  @IsOptional()
+  transverse?: boolean;
+}
+
 export class UpdateResultsDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdateResultsItem)
   data: UpdateResultsItem[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => TransverseResultsItem)
+  transverseData: TransverseResultsItem[];
 }

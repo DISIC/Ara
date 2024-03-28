@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
 import Account from "../../components/account/settings/Account.vue";
 import Password from "../../components/account/settings/Password.vue";

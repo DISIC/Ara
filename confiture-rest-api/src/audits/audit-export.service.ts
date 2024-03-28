@@ -78,7 +78,8 @@ export class AuditExportService {
       audit.editUniqueId
     );
 
-    return this.generateCsvExport(audit, results);
+    // TODO: include transverse results
+    return this.generateCsvExport(audit, results.results);
   }
 
   async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
@@ -87,6 +88,7 @@ export class AuditExportService {
     const results =
       await this.auditService.getResultsWithEditUniqueId(editUniqueId);
 
-    return this.generateCsvExport(audit, results);
+    // TODO: include transverse results
+    return this.generateCsvExport(audit, results.results);
   }
 }

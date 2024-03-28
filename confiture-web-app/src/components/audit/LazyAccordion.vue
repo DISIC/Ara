@@ -4,9 +4,14 @@ import { useUniqueId } from "../../composables/useUniqueId";
 
 defineProps<{
   /** Label of the accordion toggle button. */
-  title: string;
+  title?: string;
   /** When the accordion is disclosed, change the background color. */
   discloseColor?: string;
+}>();
+
+defineSlots<{
+  default: () => void;
+  title: () => void;
 }>();
 
 const showContent = ref(false);
@@ -32,7 +37,8 @@ function onDisclose() {
         aria-expanded="false"
         :aria-controls="`accordion-${uniqueId}`"
       >
-        {{ title }}
+        <slot v-if="$slots.title" name="title"></slot>
+        <template v-else>{{ title }}</template>
       </button>
     </span>
     <div

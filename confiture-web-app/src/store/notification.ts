@@ -8,6 +8,7 @@ interface NotificationStoreState {
     id: number;
     status: NotificationStatus;
     title?: string;
+    /** Can be styled using markdown. */
     description?: string;
     action?: { label: string; cb: () => void };
   } | null;

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { marked } from "marked";
-import { ref, computed } from "vue";
-import { debounce } from "lodash-es";
 import { HTTPError } from "ky";
+import { debounce } from "lodash-es";
+import { marked } from "marked";
+import { computed, inject, ref, watch } from "vue";
 
+import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
@@ -12,15 +15,12 @@ import {
   CriteriumResultStatus,
   ExampleImage
 } from "../../types";
+import { captureWithPayloads, formatStatus } from "../../utils";
+import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore, useFiltersStore, useAuditStore } from "../../store";
-import { useNotifications } from "../../composables/useNotifications";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
-import { captureWithPayloads, formatStatus } from "../../utils";
-import { useIsOffline } from "../../composables/useIsOffline";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
@@ -65,17 +65,49 @@ const result = computed(
     )!
 );
 
+const transverseResult = computed(
+  () =>
+    store.getTransverseCriteriumResult(
+      props.topicNumber,
+      props.criterium.number
+    )!
+);
+
+const isResultTransverse = computed(() =>
+  store.isCriteriumTransverse(result.value.topic, result.value.criterium)
+);
+
+watch(isResultTransverse, (newValue) => {
+  console.log("isResultTransverse new value: ", newValue);
+});
+
+const criteriumStatus = computed(() =>
+  store.getCriteriumStatus(
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number
+  )
+);
+
 const notify = useNotifications();
 
 const showFileSizeError = ref(false);
 const showFileFormatError = ref(false);
+const showTransverseFileSizeError = ref(false);
+const showTransverseFileFormatError = ref(false);
 
-function handleUploadExample(file: File) {
-  showFileSizeError.value = false;
-  showFileFormatError.value = false;
+function handleUploadExample(file: File, transverse = false) {
+  if (transverse) {
+    showTransverseFileFormatError.value = false;
+    showTransverseFileSizeError.value = false;
+  } else {
+    showFileSizeError.value = false;
+    showFileFormatError.value = false;
+  }
 
   if (file.size > 2000000) {
-    showFileSizeError.value = true;
+    if (transverse) showTransverseFileSizeError.value = true;
+    else showFileSizeError.value = true;
     notify(
       "error",
       "Le téléchargement de l'exemple a échoué",
@@ -87,7 +119,7 @@ function handleUploadExample(file: File) {
   store
     .uploadExampleImage(
       props.auditUniqueId,
-      props.page.id,
+      transverse ? null : props.page.id,
       props.topicNumber,
       props.criterium.number,
       file
@@ -111,14 +143,22 @@ function handleUploadExample(file: File) {
           const body = await error.response.json();
 
           if (body.message.includes("expected type")) {
-            showFileFormatError.value = true;
+            if (transverse) {
+              showTransverseFileFormatError.value = true;
+            } else {
+              showFileFormatError.value = true;
+            }
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
               "Format de fichier non supporté"
             );
           } else if (body.message.includes("expected size")) {
-            showFileSizeError.value = true;
+            if (transverse) {
+              showTransverseFileSizeError.value = true;
+            } else {
+              showFileSizeError.value = true;
+            }
             notify(
               "error",
               "Le téléchargement de l'exemple a échoué",
@@ -144,11 +184,11 @@ function handleUploadExample(file: File) {
     });
 }
 
-function handleDeleteExample(image: ExampleImage) {
+function handleDeleteExample(image: ExampleImage, transverse = false) {
   store
     .deleteExampleImage(
       props.auditUniqueId,
-      props.page.id,
+      transverse ? null : props.page.id,
       props.topicNumber,
       props.criterium.number,
       image.id
@@ -174,10 +214,36 @@ function handleUpdateResultError(err: any) {
   );
 }
 
-function updateResultStatus(status: CriteriumResultStatus) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, status }])
+const openTransverseNotice = inject<() => Promise<"thisPage" | "allPages">>(
+  "openTransverseNotice"
+);
+
+async function updateResultStatus(status: CriteriumResultStatus) {
+  let transverseNoticeChoice: "thisPage" | "allPages" | undefined;
+  if (isResultTransverse.value) {
+    transverseNoticeChoice = await openTransverseNotice?.();
+  }
+
+  const updatePromise =
+    transverseNoticeChoice === "thisPage"
+      ? store.untransversifyCriterium(
+          props.auditUniqueId,
+          props.page.id,
+          props.topicNumber,
+          props.criterium.number,
+          status
+        )
+      : store.updateCriteriumStatus(
+          props.auditUniqueId,
+          props.page.id,
+          props.topicNumber,
+          props.criterium.number,
+          status
+        );
+
+  updatePromise
     .then(() => {
+      const formattedStatus = formatStatus(status).toLowerCase();
       if (
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
@@ -191,6 +257,16 @@ function updateResultStatus(status: CriteriumResultStatus) {
               : "Il ne vous reste qu’à livrer votre rapport."
           );
         });
+      } else {
+        if (transverseNoticeChoice) {
+          notify(
+            "success",
+            undefined,
+            transverseNoticeChoice === "allPages"
+              ? `Critère défini comme **${formattedStatus}** sur toutes les pages`
+              : `Critère défini comme ${formattedStatus} sur la page **${props.page.name}**`
+          );
+        }
       }
     })
     .catch(handleUpdateResultError);
@@ -198,11 +274,15 @@ function updateResultStatus(status: CriteriumResultStatus) {
 
 // Wait 500ms since the last modification before sending the PATCH request
 const updateResultComment = debounce(
-  async (comment: string, key: keyof CriteriumResult) => {
+  async (comment: string, key: keyof CriteriumResult, transverse = false) => {
     try {
-      await store.updateResults(props.auditUniqueId, [
-        { ...result.value, [key]: comment }
-      ]);
+      if (transverse) {
+        const update = { ...transverseResult.value, [key]: comment };
+        await store.updateResults(props.auditUniqueId, [], [update]);
+      } else {
+        const update = { ...result.value, [key]: comment };
+        await store.updateResults(props.auditUniqueId, [update], []);
+      }
     } catch (error) {
       handleUpdateResultError(error);
     }
@@ -210,22 +290,68 @@ const updateResultComment = debounce(
   500
 );
 
-function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
+function updateResultImpact(
+  userImpact: CriterionResultUserImpact | null,
+  transverse = false
+) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
+    .updateResults(
+      props.auditUniqueId,
+      transverse ? [] : [{ ...result.value, userImpact }],
+      transverse ? [{ ...transverseResult.value, userImpact }] : []
+    )
     .catch(handleUpdateResultError);
 }
 
-function updateTransverseStatus(e: Event) {
-  const transverse = (e.target as HTMLInputElement).checked;
+const openTransverseWarning = inject<() => Promise<void>>(
+  "openTransverseWarning"
+);
+
+async function updateTransverseStatus(e: Event) {
+  const isTransverse = !isResultTransverse.value;
+
+  if (
+    isTransverse &&
+    store.isCriteriumEvaluatedAtLeastOnce(
+      props.topicNumber,
+      props.criterium.number,
+      props.page.id
+    )
+  ) {
+    // Prevent the default event so the checkbox doesnt appear checked before the user confirmed the modal
+    e.preventDefault();
+    // Show modal if the same criterion is already evaluated on another page
+    await openTransverseWarning?.();
+  }
+
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
+    .updateResultIsTransverse(
+      props.auditUniqueId,
+      props.page.id,
+      result.value.topic,
+      result.value.criterium,
+      isTransverse
+    )
+    .then(() => {
+      const status = formatStatus(result.value.status).toLowerCase();
+      notify(
+        "success",
+        undefined,
+        isTransverse
+          ? `Critère défini comme **${status}** sur toutes les pages`
+          : "Critère mis à jour sur toutes les pages"
+      );
+    })
     .catch(handleUpdateResultError);
 }
 
-function updateQuickWin(quickWin: boolean) {
+function updateQuickWin(quickWin: boolean, transverse = false) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
+    .updateResults(
+      props.auditUniqueId,
+      transverse ? [] : [{ ...result.value, quickWin }],
+      transverse ? [{ ...transverseResult.value, quickWin }] : []
+    )
     .catch(handleUpdateResultError);
 }
 
@@ -254,13 +380,13 @@ const isOffline = useIsOffline();
       :class="[
         'fr-ml-6w criterium-radios-container',
         {
-          'fr-mb-2w': result.status !== CriteriumResultStatus.NOT_TESTED
+          'fr-mb-2w': criteriumStatus !== CriteriumResultStatus.NOT_TESTED
         }
       ]"
     >
       <RadioGroup
         :disabled="isOffline"
-        :model-value="result.status"
+        :model-value="criteriumStatus"
         :label="`Statut du critère ${topicNumber}.${criterium.number}`"
         hide-label
         :default-value="CriteriumResultStatus.NOT_TESTED"
@@ -271,20 +397,20 @@ const isOffline = useIsOffline();
       <div class="fr-toggle fr-toggle--label-left">
         <input
           :id="`applicable-all-pages-${uniqueId}`"
-          :checked="result.transverse"
+          :checked="isResultTransverse"
           type="checkbox"
           class="fr-toggle__input"
           :disabled="
-            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
+            criteriumStatus === CriteriumResultStatus.NOT_TESTED || isOffline
           "
-          @input="updateTransverseStatus"
+          @click="updateTransverseStatus"
         />
         <label
           class="fr-toggle__label"
           :for="`applicable-all-pages-${uniqueId}`"
         >
           <span class="sr-only">
-            Appliquer le statut {{ formatStatus(result.status) }} pour le
+            Appliquer le statut {{ formatStatus(criteriumStatus) }} pour le
             critère {{ topicNumber }}.{{ criterium.number }}
           </span>
           &nbsp;Sur toutes les pages
@@ -292,24 +418,75 @@ const isOffline = useIsOffline();
       </div>
     </div>
 
-    <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
+    <template v-if="isResultTransverse">
+      <CriteriumCompliantAccordion
+        v-if="criteriumStatus === CriteriumResultStatus.COMPLIANT"
+        :id="`compliant-accordion-${uniqueId}`"
+        :comment="transverseResult.compliantComment"
+        @update:comment="updateResultComment($event, 'compliantComment', true)"
+      >
+        <template #title>
+          Commentaire de&nbsp;<strong>toutes les pages</strong>
+        </template>
+      </CriteriumCompliantAccordion>
+
+      <CriteriumNotApplicableAccordion
+        v-else-if="criteriumStatus === CriteriumResultStatus.NOT_APPLICABLE"
+        :id="`not-applicable-accordion-${uniqueId}`"
+        :comment="transverseResult.notApplicableComment"
+        @update:comment="
+          updateResultComment($event, 'notApplicableComment', true)
+        "
+      >
+        <template #title>
+          Commentaire de&nbsp;<strong>toutes les pages</strong>
+        </template>
+      </CriteriumNotApplicableAccordion>
+
+      <CriteriumNotCompliantAccordion
+        v-else-if="criteriumStatus === CriteriumResultStatus.NOT_COMPLIANT"
+        :id="`transverse-not-compliant-accordion-${uniqueId}`"
+        :comment="transverseResult.errorDescription"
+        :user-impact="transverseResult.userImpact"
+        :example-images="transverseResult.exampleImages"
+        :recommandation="transverseResult.recommandation"
+        :quick-win="transverseResult.quickWin"
+        :show-file-format-error="showTransverseFileFormatError"
+        :show-file-size-error="showTransverseFileSizeError"
+        @update:comment="updateResultComment($event, 'errorDescription', true)"
+        @update:user-impact="updateResultImpact($event, true)"
+        @upload-example="handleUploadExample($event, true)"
+        @delete-example="handleDeleteExample($event, true)"
+        @update:recommandation="
+          updateResultComment($event, 'recommandation', true)
+        "
+        @update:quick-win="updateQuickWin($event, true)"
+      >
+        <template #title>
+          Erreur(s) et recommandation(s) sur&nbsp;<strong
+            >toutes les pages</strong
+          >
+        </template>
+      </CriteriumNotCompliantAccordion>
+    </template>
+
     <CriteriumCompliantAccordion
-      v-if="result.status === CriteriumResultStatus.COMPLIANT"
+      v-if="criteriumStatus === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
       :comment="result.compliantComment"
       @update:comment="updateResultComment($event, 'compliantComment')"
     />
 
     <CriteriumNotApplicableAccordion
-      v-else-if="result.status === CriteriumResultStatus.NOT_APPLICABLE"
+      v-else-if="criteriumStatus === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
       :comment="result.notApplicableComment"
       @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
 
     <CriteriumNotCompliantAccordion
-      v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
+      v-else-if="criteriumStatus === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       :comment="result.errorDescription"
       :user-impact="result.userImpact"
@@ -330,7 +507,7 @@ const isOffline = useIsOffline();
     <CriteriumTestsAccordion
       v-if="!filtersStore.hideTestsAndReferences"
       :class="{
-        'fr-mt-2w': result.status === CriteriumResultStatus.NOT_TESTED
+        'fr-mt-2w': criteriumStatus === CriteriumResultStatus.NOT_TESTED
       }"
       :topic-number="topicNumber"
       :criterium="criterium"

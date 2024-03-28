@@ -1,5 +1,12 @@
 import { Type } from "class-transformer";
-import { IsInt, IsNumber, IsPositive, Max, Min } from "class-validator";
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  Max,
+  Min
+} from "class-validator";
 import { IsRgaaCriterium } from "./update-results.dto";
 
 /*
@@ -9,10 +16,12 @@ The `@Type(() => Number)` decorator is required to correctly parse strings into 
 export class UploadImageDto {
   /**
    * @example 123
+   * Leave empty to upload an example for a transverse criterium
    */
   @Type(() => Number)
   @IsNumber()
-  pageId: number;
+  @IsOptional()
+  pageId: number | undefined;
 
   /**
    * @example 3

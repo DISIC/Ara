@@ -6,10 +6,14 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  ExampleImage
+  ExampleImage,
+  TransverseCriteriumResult,
+  isPerPageResult,
+  isTransverseResult
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
+import { CRITERIA_BY_AUDIT_TYPE } from "../criteria";
 
 type PageId = number;
 type TopicNumber = number;
@@ -18,15 +22,26 @@ type CriteriumNumber = number;
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastRequestTimestamp:${auditId}`;
 
+type TransverseData = {
+  [key: TopicNumber]: {
+    [key: CriteriumNumber]: TransverseCriteriumResult;
+  };
+};
+
+type PerPagedata = {
+  [key: PageId]: {
+    [key: TopicNumber]: {
+      [key: CriteriumNumber]: CriteriumResult;
+    };
+  };
+};
+
 interface ResultsStoreState {
   auditId: string | null;
 
   data: {
-    [key: PageId]: {
-      [key: TopicNumber]: {
-        [key: CriteriumNumber]: CriteriumResult;
-      };
-    };
+    transverse: TransverseData;
+    perPage: PerPagedata;
   } | null;
 
   /**
@@ -74,44 +89,71 @@ export const useResultsStore = defineStore("results", {
       return (pageId: number, topicNumber: number, criteriumNumber: number) => {
         if (
           !this.data ||
-          !this.data[pageId] ||
-          !this.data[pageId][topicNumber] ||
-          !this.data[pageId][topicNumber][criteriumNumber]
+          !this.data.perPage[pageId] ||
+          !this.data.perPage[pageId][topicNumber] ||
+          !this.data.perPage[pageId][topicNumber][criteriumNumber]
         ) {
           return;
         }
 
-        return this.data[pageId][topicNumber][criteriumNumber];
+        return this.data.perPage[pageId][topicNumber][criteriumNumber];
+      };
+    },
+
+    getTransverseCriteriumResult() {
+      return (topicNumber: number, criteriumNumber: number) => {
+        return this.data?.transverse[topicNumber][criteriumNumber];
       };
     },
 
     /**
      * @returns A getter returning all the results concerning a particular topic on a particular audited page.
+     *   If a result if "transverse", the transverse version of the result is returned, the "perPage" version otherwise
      */
     getTopicResults() {
-      return (pageId: number, topicNumber: number) => {
+      return (
+        pageId: number,
+        topicNumber: number
+      ): (CriteriumResult | TransverseCriteriumResult)[] => {
         if (
           !this.data ||
-          !this.data[pageId] ||
-          !this.data[pageId][topicNumber]
+          !this.data.perPage[pageId] ||
+          !this.data.perPage[pageId][topicNumber]
         ) {
           return [];
         }
 
-        return Object.values(this.data[pageId][topicNumber]);
+        const perPageResults = { ...this.data.perPage[pageId][topicNumber] };
+
+        const transverseResults = {
+          ...this.data.transverse[topicNumber]
+        };
+
+        return Object.values(perPageResults).map((r) =>
+          transverseResults[r.criterium].transverse
+            ? transverseResults[r.criterium]
+            : r
+        );
       };
     },
 
     /**
      * @returns Every results in a list. Or undefined if the data is not fetched yet.
      */
-    allResults(): CriteriumResult[] | undefined {
+    allResults(): (CriteriumResult | TransverseCriteriumResult)[] | undefined {
       if (!this.data) {
         return;
       }
-      return Object.values(this.data)
+      const perPageResults = Object.values(this.data.perPage)
         .map((page) => Object.values(page).map((topic) => Object.values(topic)))
         .flat(2);
+
+      // FIXME: are some transverse criteria duplicated here ?
+      return perPageResults.map((r) =>
+        this.data?.transverse[r.topic][r.criterium].transverse
+          ? this.data?.transverse[r.topic][r.criterium]
+          : r
+      );
     },
 
     /**
@@ -135,7 +177,7 @@ export const useResultsStore = defineStore("results", {
      * @returns Number of pages in the audit
      */
     pagesCount(): number {
-      return this.data ? Object.keys(this.data).length : 0;
+      return this.data ? Object.keys(this.data.perPage).length : 0;
     },
 
     isLoading(): boolean {
@@ -148,20 +190,82 @@ export const useResultsStore = defineStore("results", {
      * `0.5` means half of the audit criteria have been tested.
      */
     auditProgress(): number {
-      if (!this.data) {
+      const auditStore = useAuditStore();
+
+      if (!this.data || !auditStore.currentAudit) {
         return 0;
       }
-      const r = Object.values(this.data)
-        .flatMap(Object.values)
-        .flatMap(Object.values) as CriteriumResult[];
 
-      const total = r.length;
+      const criteriaNumbers =
+        CRITERIA_BY_AUDIT_TYPE[auditStore.currentAudit?.auditType];
 
-      const testedCriteria = r.filter(
-        (t) => t.status !== CriteriumResultStatus.NOT_TESTED
+      const pagesIds = Object.keys(this.data.perPage).map(Number);
+
+      const everyResultIds = pagesIds.flatMap((pageId) =>
+        criteriaNumbers.map(({ criterium, topic }) => ({
+          pageId,
+          criterium,
+          topic
+        }))
+      );
+
+      const totalResultsCount = everyResultIds.length;
+      const testedResultsCount = everyResultIds.filter(
+        ({ criterium, pageId, topic }) =>
+          this.getCriteriumStatus(pageId, topic, criterium) !==
+          CriteriumResultStatus.NOT_TESTED
       ).length;
 
-      return testedCriteria / total;
+      return testedResultsCount / totalResultsCount;
+    },
+
+    getCriteriumStatus() {
+      return (pageId: number, topicNumber: number, criteriumNumber: number) => {
+        if (!this.data) {
+          throw new Error("Cant get status of unfetched result");
+        }
+        const isTransverse = this.isCriteriumTransverse(
+          topicNumber,
+          criteriumNumber
+        );
+        if (isTransverse) {
+          return this.data.transverse[topicNumber][criteriumNumber].status;
+        } else {
+          return this.data.perPage[pageId][topicNumber][criteriumNumber].status;
+        }
+      };
+    },
+
+    isCriteriumTransverse() {
+      return (topicNumber: number, criteriumNumber: number) => {
+        const transverseResult =
+          this.data?.transverse[topicNumber][criteriumNumber];
+        return transverseResult?.transverse ?? false;
+      };
+    },
+
+    /**
+     * Returns true if a criterium is evaluated (status other than NT) on any
+     * page other than `exceptPage`.
+     */
+    isCriteriumEvaluatedAtLeastOnce() {
+      return (
+        topicNumber: number,
+        criteriumNumber: number,
+        exceptPageId: number
+      ) => {
+        if (!this.data) {
+          throw new Error("Cant check unfetched results");
+        }
+        const perPageResults = Object.values(this.data.perPage).map(
+          (o) => o[topicNumber][criteriumNumber]
+        );
+        return perPageResults.some(
+          (result) =>
+            result.pageId !== exceptPageId &&
+            result.status !== CriteriumResultStatus.NOT_TESTED
+        );
+      };
     }
   },
 
@@ -169,20 +273,34 @@ export const useResultsStore = defineStore("results", {
     async fetchResults(uniqueId: string) {
       const response = (await ky
         .get(`/api/audits/${uniqueId}/results`)
-        .json()) as CriteriumResult[];
+        .json()) as {
+        results: CriteriumResult[];
+        transverseResults: TransverseCriteriumResult[];
+      };
 
-      const data: ResultsStoreState["data"] = {};
+      const perPageData: PerPagedata = {};
 
-      response.forEach((r) => {
-        if (!(r.pageId in data)) {
-          data[r.pageId] = {};
+      // Store standard results
+      response.results.forEach((r) => {
+        if (!(r.pageId in perPageData)) {
+          perPageData[r.pageId] = {};
         }
 
-        if (!(r.topic in data[r.pageId])) {
-          data[r.pageId][r.topic] = {};
+        if (!(r.topic in perPageData[r.pageId])) {
+          perPageData[r.pageId][r.topic] = {};
         }
 
-        data[r.pageId][r.topic][r.criterium] = r;
+        perPageData[r.pageId][r.topic][r.criterium] = r;
+      });
+
+      // Store transverse results
+      const transverseData: TransverseData = {};
+      response.transverseResults.forEach((r) => {
+        if (!(r.topic in transverseData)) {
+          transverseData[r.topic] = {};
+        }
+
+        transverseData[r.topic][r.criterium] = r;
       });
 
       const storageKey = getLastRequestTimestampStorageKey(uniqueId);
@@ -190,59 +308,41 @@ export const useResultsStore = defineStore("results", {
         Number(localStorage.getItem(storageKey)) || null;
 
       this.auditId = uniqueId;
-      this.data = data;
+      this.data = {
+        perPage: perPageData,
+        transverse: transverseData
+      };
     },
 
-    async updateResults(uniqueId: string, updates: CriteriumResult[]) {
+    async updateResults(
+      uniqueId: string,
+      updates: CriteriumResult[],
+      transverseUpdates: TransverseCriteriumResult[] = []
+    ) {
       if (!this.data) {
         return;
       }
 
       const previousResults: CriteriumResult[] = [];
+      const previousTransverseResults: TransverseCriteriumResult[] = [];
 
       updates.forEach((update) => {
-        if (!this.data) {
-          return;
-        }
-
         previousResults.push(
-          this.data[update.pageId][update.topic][update.criterium]
+          this.data!.perPage[update.pageId][update.topic][update.criterium]
         );
 
         // Update UI immediately, rollbacks later if update fails.
-        this.data[update.pageId][update.topic][update.criterium] = update;
+        this.data!.perPage[update.pageId][update.topic][update.criterium] =
+          update;
+      });
 
-        // Apply `transverse` result update to every pages
-        if (update.transverse) {
-          Object.keys(this.data)
-            .map(Number) // this.data requires a number index
-            .filter((pageId) => pageId !== update.pageId) // Ignore current page
-            .forEach((pageId) => {
-              if (!this.data) {
-                return;
-              }
+      transverseUpdates.forEach((update) => {
+        previousTransverseResults.push(
+          this.data!.transverse[update.topic][update.criterium]
+        );
 
-              const target = this.data[pageId][update.topic][update.criterium];
-
-              target.status = update.status;
-              target.transverse = true;
-
-              if (update.status === CriteriumResultStatus.COMPLIANT) {
-                target.compliantComment = update.compliantComment;
-              }
-
-              if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
-                target.errorDescription = update.errorDescription;
-                target.recommandation = update.recommandation;
-                target.userImpact = update.userImpact;
-                target.quickWin = update.quickWin;
-              }
-
-              if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
-                target.notApplicableComment = update.notApplicableComment;
-              }
-            });
-        }
+        // Update UI immediately, rollbacks later if update fails.
+        this.data!.transverse[update.topic][update.criterium] = update;
       });
 
       // update the edition date of the local audit. It will not be the same
@@ -271,7 +371,15 @@ export const useResultsStore = defineStore("results", {
           if (!this.data) {
             return;
           }
-          this.data[result.pageId][result.topic][result.criterium] = result;
+          this.data.perPage[result.pageId][result.topic][result.criterium] =
+            result;
+        });
+
+        previousTransverseResults.forEach((result) => {
+          if (!this.data) {
+            return;
+          }
+          this.data.transverse[result.topic][result.criterium] = result;
         });
       };
 
@@ -280,7 +388,8 @@ export const useResultsStore = defineStore("results", {
       await ky
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
-            data: updates
+            data: updates,
+            transverseData: transverseUpdates
           }
         })
         .catch((err) => {
@@ -311,7 +420,7 @@ export const useResultsStore = defineStore("results", {
         results.forEach((r) => {
           setWith(
             this.previousStatuses,
-            [r.pageId, r.topic, r.criterium],
+            [pageId, r.topic, r.criterium],
             r.status,
             Object
           );
@@ -323,7 +432,10 @@ export const useResultsStore = defineStore("results", {
         status
       }));
 
-      await this.updateResults(uniqueId, updates);
+      const perPageUpdates = updates.filter(isPerPageResult);
+      const transverseUpdates = updates.filter(isTransverseResult);
+
+      await this.updateResults(uniqueId, perPageUpdates, transverseUpdates);
     },
 
     /**
@@ -359,15 +471,101 @@ export const useResultsStore = defineStore("results", {
       }
     },
 
-    async uploadExampleImage(
+    /** Mark a criterium as transverse, the status of the page result is applied to the transverse result. */
+    updateResultIsTransverse(
       uniqueId: string,
       pageId: number,
+      topic: number,
+      criterium: number,
+      isTransverse: boolean
+    ) {
+      console.log("updateResultIsTransverse", isTransverse);
+      const transverseResult = this.data?.transverse[topic][criterium];
+      const pageResult = this.data?.perPage[pageId][topic][criterium];
+
+      if (!transverseResult || !pageResult) {
+        throw new Error("Cannot update unfetched result");
+      }
+
+      const updatedTransverseResult: TransverseCriteriumResult = {
+        ...transverseResult,
+        transverse: isTransverse,
+        // Apply the current status of the perPage result to the transverse one.
+        status: isTransverse ? pageResult.status : transverseResult.status
+      };
+      return this.updateResults(uniqueId, [], [updatedTransverseResult]);
+    },
+
+    updateCriteriumStatus(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      status: CriteriumResultStatus
+    ) {
+      if (this.isCriteriumTransverse(topic, criterium)) {
+        // Update transverse result
+        const result = this.data?.transverse[topic][criterium];
+        if (!result) {
+          throw new Error("Cannot update unfetched result");
+        }
+        return this.updateResults(uniqueId, [], [{ ...result, status }]);
+      } else {
+        // Update per page result
+        const result = this.data?.perPage[pageId][topic][criterium];
+        if (!result) {
+          throw new Error("Cannot update unfetched result");
+        }
+        return this.updateResults(uniqueId, [{ ...result, status }], []);
+      }
+    },
+
+    /**
+    Set a transverse criterium as not-transverse and update its status for the given page.
+    On the other pages, we "transfer" the props from the transverse criterium to the per page criteria.
+    */
+    async untransversifyCriterium(
+      uniqueId: string,
+      pageId: number,
+      topic: number,
+      criterium: number,
+      status: CriteriumResultStatus
+    ) {
+      if (!this.data) {
+        throw new Error("Cannot update unfetched results");
+      }
+
+      const perPageResults = Object.values(this.data.perPage).map(
+        (p) => p[topic][criterium]
+      );
+      const transverseResult = this.data.transverse[topic][criterium];
+
+      const transverseUpdate: TransverseCriteriumResult = {
+        ...transverseResult,
+        transverse: false
+      };
+
+      const perPageUpdates: CriteriumResult[] = perPageResults.map((r) => ({
+        ...r,
+        // Reset status of the criteria on other pages
+        status: r.pageId === pageId ? status : r.status
+      }));
+
+      return this.updateResults(uniqueId, perPageUpdates, [transverseUpdate]);
+    },
+
+    /**
+     * @param pageId Id of the criterium page. If null, the image is associated with the transverse criterium
+     */
+    async uploadExampleImage(
+      uniqueId: string,
+      pageId: number | null,
       topic: number,
       criterium: number,
       file: File
     ) {
       const formData = new FormData();
-      formData.set("pageId", pageId.toString());
+      pageId !== null && formData.set("pageId", pageId.toString());
       formData.set("topic", topic.toString());
       formData.set("criterium", criterium.toString());
       // To handle non-ascii characters, we encode the filename here and decode it on the back
@@ -384,16 +582,22 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         })) as ExampleImage;
 
-      const result = this.data![pageId][topic][criterium];
-
-      if (result) {
-        result.exampleImages.push(exampleImage);
+      if (pageId !== null) {
+        const result = this.data!.perPage[pageId][topic][criterium];
+        if (result) {
+          result.exampleImages.push(exampleImage);
+        }
+      } else {
+        const transverseResult = this.data?.transverse[topic][criterium];
+        if (transverseResult) {
+          transverseResult.exampleImages.push(exampleImage);
+        }
       }
     },
 
     async deleteExampleImage(
       uniqueId: string,
-      pageId: number,
+      pageId: number | null,
       topic: number,
       criterium: number,
       exampleId: number
@@ -406,7 +610,10 @@ export const useResultsStore = defineStore("results", {
           this.decreaseCurrentRequestCount();
         });
 
-      const result = this.data![pageId][topic][criterium];
+      const result =
+        pageId !== null
+          ? this.data?.perPage[pageId][topic][criterium]
+          : this.data?.transverse[topic][criterium];
 
       if (result) {
         const exampleIndex = result.exampleImages.findIndex(
@@ -440,7 +647,7 @@ export const useResultsStore = defineStore("results", {
     async DEV_fillResults(uniqueId: string) {
       const auditStore = useAuditStore();
       const updates =
-        this.allResults?.map((r) => ({
+        (this.allResults?.map((r) => ({
           ...r,
           /* eslint-disable @typescript-eslint/no-non-null-assertion */
           status: sample([
@@ -454,9 +661,12 @@ export const useResultsStore = defineStore("results", {
           recommandation: sample(["Recommandation", "Rien"])!,
           userImpact: sample(CriterionResultUserImpact)!
           /* eslint-enable @typescript-eslint/no-non-null-assertion */
-        })) ?? [];
+        })) as (CriteriumResult | TransverseCriteriumResult)[]) ?? [];
 
-      await this.updateResults(uniqueId, updates);
+      const perPageUpdates = updates.filter(isPerPageResult);
+      const transverseUpdates = updates.filter(isTransverseResult);
+
+      await this.updateResults(uniqueId, perPageUpdates, transverseUpdates);
       await auditStore.publishAudit(uniqueId);
     }
   }

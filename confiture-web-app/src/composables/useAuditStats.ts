@@ -1,10 +1,10 @@
 import { computed } from "vue";
-import { uniqWith } from "lodash-es";
 
 import {
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  CriteriumResult
+  CriteriumResult,
+  TransverseCriteriumResult
 } from "../types";
 import { useResultsStore } from "../store";
 
@@ -13,7 +13,9 @@ export function useAuditStats() {
 
   const groupedCriteria = computed(() => {
     return (
-      store.allResults?.reduce<Record<string, CriteriumResult[]>>((acc, c) => {
+      store.allResults?.reduce<
+        Record<string, (CriteriumResult | TransverseCriteriumResult)[]>
+      >((acc, c) => {
         const key = `${c.topic}.${c.criterium}`;
         if (acc[key]) {
           acc[key].push(c);

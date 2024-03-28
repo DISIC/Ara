@@ -7,7 +7,8 @@ import {
   CriterionResultUserImpact,
   Prisma,
   StoredFile,
-  TestEnvironment
+  TestEnvironment,
+  TransverseCriterionResult
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
@@ -116,40 +117,49 @@ export class AuditService {
     });
   }
 
-  async getResultsWithEditUniqueId(
-    uniqueId: string
-  ): Promise<
-    Omit<
+  async getResultsWithEditUniqueId(uniqueId: string): Promise<{
+    results: Omit<
       CriterionResult & { exampleImages: StoredFile[] },
       "id" | "auditUniqueId"
-    >[]
-  > {
-    const [audit, pages, existingResults] = await Promise.all([
-      this.prisma.audit.findUnique({
-        where: {
-          editUniqueId: uniqueId
-        }
-      }),
-      this.prisma.auditedPage.findMany({
-        where: { auditUniqueId: uniqueId }
-      }),
-      this.prisma.criterionResult.findMany({
-        where: {
-          page: {
-            audit: {
-              editUniqueId: uniqueId
-            }
+    >[];
+    transverseResults: Omit<
+      TransverseCriterionResult & { exampleImages: StoredFile[] },
+      "id" | "auditUniqueId"
+    >[];
+  }> {
+    const [audit, pages, existingResults, existingTransverseResults] =
+      await Promise.all([
+        this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
           }
-        },
-        include: {
-          exampleImages: true
-        }
-      })
-    ]);
+        }),
+        this.prisma.auditedPage.findMany({
+          where: { auditUniqueId: uniqueId }
+        }),
+        this.prisma.criterionResult.findMany({
+          where: {
+            page: {
+              audit: {
+                editUniqueId: uniqueId
+              }
+            }
+          },
+          include: {
+            exampleImages: true
+          }
+        }),
+        this.prisma.transverseCriterionResult.findMany({
+          where: { auditUniqueId: uniqueId },
+          include: {
+            exampleImages: true
+          }
+        })
+      ]);
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
-    return pages.flatMap((page) =>
+    const results = pages.flatMap((page) =>
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
@@ -178,6 +188,35 @@ export class AuditService {
         };
       })
     );
+
+    const transverseResults = CRITERIA_BY_AUDIT_TYPE[audit.auditType].map(
+      (criterion) => {
+        const existingResult = existingTransverseResults.find(
+          (result) =>
+            result.topic === criterion.topic &&
+            result.criterium == criterion.criterium
+        );
+
+        if (existingResult) return existingResult;
+
+        return {
+          status: CriterionResultStatus.NOT_TESTED,
+          compliantComment: null,
+          errorDescription: null,
+          userImpact: null,
+          recommandation: null,
+          notApplicableComment: null,
+          exampleImages: [],
+          transverse: false,
+          quickWin: false,
+
+          topic: criterion.topic,
+          criterium: criterion.criterium
+        };
+      }
+    );
+
+    return { results, transverseResults };
   }
 
   async updateAudit(
@@ -360,9 +399,9 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId }
-    });
+    // const pages = await this.prisma.auditedPage.findMany({
+    //   where: { auditUniqueId: uniqueId }
+    // });
 
     const promises = body.data
       .map((item) => {
@@ -381,19 +420,13 @@ export class AuditService {
           notApplicableComment: item.notApplicableComment,
           recommandation: item.recommandation,
           userImpact: item.userImpact,
-          quickWin: item.quickWin,
-          transverse: item.transverse
+          quickWin: item.quickWin
+          // transverse: item.transverse
         };
 
         const result = [
           this.prisma.criterionResult.upsert({
             where: {
-              // auditUniqueId_pageUrl_topic_criterium: {
-              //   auditUniqueId: uniqueId,
-              //   criterium: item.criterium,
-              //   pageUrl: item.pageUrl,
-              //   topic: item.topic,
-              // },
               pageId_topic_criterium: {
                 criterium: item.criterium,
                 topic: item.topic,
@@ -405,67 +438,102 @@ export class AuditService {
           })
         ];
 
-        if (item.transverse) {
-          pages
-            .filter((page) => page.id !== item.pageId)
-            .forEach((page) => {
-              const data: Prisma.CriterionResultUpsertArgs["create"] = {
-                criterium: item.criterium,
-                topic: item.topic,
-                page: {
-                  connect: {
-                    id: page.id
-                  }
-                },
+        // if (item.transverse) {
+        //   pages
+        //     .filter((page) => page.id !== item.pageId)
+        //     .forEach((page) => {
+        //       const data: Prisma.CriterionResultUpsertArgs["create"] = {
+        //         criterium: item.criterium,
+        //         topic: item.topic,
+        //         page: {
+        //           connect: {
+        //             id: page.id
+        //           }
+        //         },
 
-                status: item.status,
-                transverse: true,
+        //         status: item.status,
+        //         transverse: true,
 
-                ...(item.status === CriterionResultStatus.COMPLIANT && {
-                  compliantComment: item.compliantComment
-                }),
+        //         ...(item.status === CriterionResultStatus.COMPLIANT && {
+        //           compliantComment: item.compliantComment
+        //         }),
 
-                ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
-                  errorDescription: item.errorDescription,
-                  recommandation: item.recommandation,
-                  userImpact: item.userImpact,
-                  quickWin: item.quickWin
-                }),
+        //         ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
+        //           errorDescription: item.errorDescription,
+        //           recommandation: item.recommandation,
+        //           userImpact: item.userImpact,
+        //           quickWin: item.quickWin
+        //         }),
 
-                ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
-                  notApplicableComment: item.notApplicableComment
-                })
-              };
+        //         ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
+        //           notApplicableComment: item.notApplicableComment
+        //         })
+        //       };
 
-              result.push(
-                this.prisma.criterionResult.upsert({
-                  where: {
-                    pageId_topic_criterium: {
-                      criterium: item.criterium,
-                      topic: item.topic,
-                      pageId: page.id
-                    }
-                  },
-                  create: data,
-                  update: data
-                })
-              );
-            });
-        }
+        //       result.push(
+        //         this.prisma.criterionResult.upsert({
+        //           where: {
+        //             pageId_topic_criterium: {
+        //               criterium: item.criterium,
+        //               topic: item.topic,
+        //               pageId: page.id
+        //             }
+        //           },
+        //           create: data,
+        //           update: data
+        //         })
+        //       );
+        //     });
+        // }
 
         return result;
       })
       .flat();
 
+    const transversePromises = body.transverseData.map((item) => {
+      const data: Prisma.TransverseCriterionResultUpsertArgs["create"] = {
+        criterium: item.criterium,
+        topic: item.topic,
+        auditUniqueId: uniqueId,
+
+        status: item.status,
+        compliantComment: item.compliantComment,
+        errorDescription: item.errorDescription,
+        notApplicableComment: item.notApplicableComment,
+        recommandation: item.recommandation,
+        userImpact: item.userImpact,
+        quickWin: item.quickWin,
+        transverse: item.transverse
+      };
+
+      const result = this.prisma.transverseCriterionResult.upsert({
+        where: {
+          auditUniqueId_topic_criterium: {
+            auditUniqueId: uniqueId,
+            topic: item.topic,
+            criterium: item.criterium
+          }
+        },
+        create: data,
+        update: data
+      });
+
+      return result;
+    });
+
     await this.prisma.$transaction([
       ...promises,
+      ...transversePromises,
       this.updateAuditEditDate(uniqueId)
     ]);
   }
 
+  /**
+   * @param pageId Id of the criterium page. If null, the image is associated with the transverse criterium
+   */
   async saveExampleImage(
     editUniqueId: string,
-    pageId: number,
+    pageId: number | undefined,
     topic: number,
     criterium: number,
     file: Express.Multer.File
@@ -495,18 +563,34 @@ export class AuditService {
     const publicUrl = this.fileStorageService.getPublicUrl(key);
     const thumbnailUrl = this.fileStorageService.getPublicUrl(thumbnailKey);
 
-    const storedFile = await this.prisma.storedFile.create({
-      data: {
-        criterionResult: {
-          connect: {
-            pageId_topic_criterium: {
-              pageId,
-              topic,
-              criterium
+    const isTransverse = pageId !== undefined;
+    const criterionData = isTransverse
+      ? {
+          criterionResult: {
+            connect: {
+              pageId_topic_criterium: {
+                pageId,
+                topic,
+                criterium
+              }
             }
           }
-        },
+        }
+      : {
+          transverseCriterionResult: {
+            connect: {
+              auditUniqueId_topic_criterium: {
+                auditUniqueId: editUniqueId,
+                criterium,
+                topic
+              }
+            }
+          }
+        };
 
+    const storedFile = await this.prisma.storedFile.create({
+      data: {
+        ...criterionData,
         key,
         originalFilename: file.originalname,
         size: file.size,
@@ -534,7 +618,9 @@ export class AuditService {
     });
 
     const storedFile = await storedFilePromise;
-    const audit = await storedFilePromise.criterionResult().page().audit();
+    const audit = storedFile.criterionResultId
+      ? await storedFilePromise.criterionResult().page().audit()
+      : await storedFilePromise.transverseCriterionResult().audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
@@ -569,17 +655,24 @@ export class AuditService {
           }
         }
       });
+      const transverseFiles = await this.prisma.storedFile.findMany({
+        where: {
+          transverseCriterionResult: {
+            auditUniqueId: uniqueId
+          }
+        }
+      });
+
+      const allFiles = [...storedFiles, ...transverseFiles];
 
       await Promise.all([
         await this.prisma.audit.delete({
           where: { editUniqueId: uniqueId }
         }),
-        ...(storedFiles.length > 0
+        ...(allFiles.length > 0
           ? [
               this.fileStorageService.deleteMultipleFiles(
-                ...storedFiles
-                  .map((file) => [file.key, file.thumbnailKey])
-                  .flat()
+                ...allFiles.map((file) => [file.key, file.thumbnailKey]).flat()
               )
             ]
           : [])
@@ -668,7 +761,33 @@ export class AuditService {
       return;
     }
 
-    const results = await this.prisma.criterionResult.findMany({
+    const transverseResults =
+      await this.prisma.transverseCriterionResult.findMany({
+        where: {
+          audit: {
+            consultUniqueId
+          },
+          transverse: true,
+          criterium: {
+            in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
+          },
+          topic: {
+            in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
+          }
+        },
+        include: {
+          exampleImages: true
+        }
+      });
+
+    const transverseResultsByTopicAndCriterium = transverseResults.reduce<
+      Record<number, Record<number, TransverseCriterionResult>>
+    >((acc, c) => {
+      setWith(acc, [c.topic, c.criterium], c, Object);
+      return acc;
+    }, {});
+
+    const tempResults = await this.prisma.criterionResult.findMany({
       where: {
         page: {
           auditUniqueId: audit.editUniqueId
@@ -684,6 +803,13 @@ export class AuditService {
         exampleImages: true
       }
     });
+
+    const results = tempResults.map((r) => ({
+      ...r,
+      status:
+        transverseResultsByTopicAndCriterium[r.topic]?.[r.criterium]?.status ||
+        r.status
+    }));
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
       (acc, c) => {
@@ -911,7 +1037,24 @@ export class AuditService {
         criterium: r.criterium,
 
         status: r.status,
-        transverse: r.transverse,
+
+        compliantComment: r.compliantComment,
+        errorDescription: r.errorDescription,
+        notApplicableComment: r.notApplicableComment,
+        recommandation: r.recommandation,
+        userImpact: r.userImpact,
+        quickWin: r.quickWin,
+        exampleImages: r.exampleImages.map((img) => ({
+          url: img.url,
+          filename: img.originalFilename
+        }))
+      })),
+
+      transverseResults: transverseResults.map((r) => ({
+        topic: r.topic,
+        criterium: r.criterium,
+
+        status: r.status,
 
         compliantComment: r.compliantComment,
         errorDescription: r.errorDescription,

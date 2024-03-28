@@ -49,7 +49,8 @@ const errors = computed(() => {
         .filter((r) => {
           return (
             r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
+            // TODO: take transverse criteria into account
+            // !r.transverse &&
             userImpactFilters.value.includes(r.userImpact)
           );
         })
@@ -76,7 +77,9 @@ const errors = computed(() => {
                   topic: Number(topicNumber),
                   name: getTopicName(Number(topicNumber)),
                   errors: sortBy(
-                    results.filter((r) => !r.transverse),
+                    // TODO: take transverse criteria into account
+                    // results.filter((r) => !r.transverse),
+                    results,
                     "criterium"
                   )
                 };
@@ -105,13 +108,14 @@ const transverseErrors = computed(() => {
     mapValues(
       groupBy(
         uniqWith(
-          report.data?.results.filter((r) => {
-            return (
-              r.transverse &&
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              userImpactFilters.value.includes(r.userImpact)
-            );
-          }),
+          report.data?.transverseResults
+            .filter((r) => {
+              return (
+                r.status === CriteriumResultStatus.NOT_COMPLIANT &&
+                userImpactFilters.value.includes(r.userImpact)
+              );
+            })
+            .filter((r) => (quickWinFilter.value ? r.quickWin : true)),
           (a, b) => a.criterium === b.criterium && a.topic === b.topic
         ),
         "topic"
@@ -564,29 +568,31 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.url"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
-                      target="_blank"
+                <template v-if="error.exampleImages.length > 0">
+                  <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                    Exemple(s) d’erreur(s)
+                  </p>
+                  <div class="fr-container--fluid">
+                    <div
+                      v-for="(line, k) in chunk(error.exampleImages, 2)"
+                      :key="k"
+                      class="fr-grid-row fr-grid-row--gutters"
                     >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
-                    </a>
+                      <a
+                        v-for="example in line"
+                        :key="example.url"
+                        class="fr-col-md-6 fr-col-12 image-link"
+                        :href="example.url"
+                        target="_blank"
+                      >
+                        <span class="sr-only">
+                          Ouvrir l’image dans une nouvelle fenêtre
+                        </span>
+                        <img style="width: 100%" :src="example.url" alt="" />
+                      </a>
+                    </div>
                   </div>
-                </div>
+                </template>
               </LazyAccordion>
 
               <!-- Recommendation -->
@@ -687,29 +693,31 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.url"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
-                      target="_blank"
+                <template v-if="error.exampleImages.length > 0">
+                  <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                    Exemple(s) d’erreur(s)
+                  </p>
+                  <div class="fr-container--fluid">
+                    <div
+                      v-for="(line, k) in chunk(error.exampleImages, 2)"
+                      :key="k"
+                      class="fr-grid-row fr-grid-row--gutters"
                     >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
-                    </a>
+                      <a
+                        v-for="example in line"
+                        :key="example.url"
+                        class="fr-col-md-6 fr-col-12 image-link"
+                        :href="example.url"
+                        target="_blank"
+                      >
+                        <span class="sr-only">
+                          Ouvrir l’image dans une nouvelle fenêtre
+                        </span>
+                        <img style="width: 100%" :src="example.url" alt="" />
+                      </a>
+                    </div>
                   </div>
-                </div>
+                </template>
               </LazyAccordion>
 
               <!-- Recommendation -->
