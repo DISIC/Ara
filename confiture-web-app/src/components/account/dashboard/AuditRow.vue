@@ -5,10 +5,10 @@ import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import {
   formatDate,
-  formatAuditType,
   captureWithPayloads,
   slugify,
-  formatBytes
+  formatBytes,
+  getCriteriaCount
 } from "../../../utils";
 import Dropdown from "../../ui/Dropdown.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
@@ -114,6 +114,30 @@ const csvExportFilename = computed(() => {
   }
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
+
+function copyAuditLink(uniqueId: string) {
+  const url = `${window.location.origin}/audits/${uniqueId}/generation`;
+
+  navigator.clipboard.writeText(url).then(() => {
+    notify(
+      "success",
+      undefined,
+      `Le lien vers l’audit a bien été copié dans le presse-papier.`
+    );
+  });
+}
+
+function copyReportLink(uniqueId: string) {
+  const url = `${window.location.origin}/rapports/${uniqueId}`;
+
+  navigator.clipboard.writeText(url).then(() => {
+    notify(
+      "success",
+      undefined,
+      `Le lien vers le rapport a bien été copié dans le presse-papier.`
+    );
+  });
+}
 </script>
 
 <template>
@@ -148,7 +172,7 @@ const csvExportFilename = computed(() => {
     <!-- Type -->
     <p class="fr-mb-0 audit-type">
       <span class="sr-only">Type </span>
-      {{ formatAuditType(audit.auditType) }}
+      {{ getCriteriaCount(audit.auditType) }} critères
     </p>
 
     <!-- Compliance level -->
@@ -179,7 +203,23 @@ const csvExportFilename = computed(() => {
           }}
         </p>
       </template>
-      <p v-else class="fr-m-0">Non-applicable</p>
+      <p v-else class="fr-m-0">
+        Non-applicable
+        <button
+          class="fr-btn--tooltip fr-btn audit-compliance-level-tooltip"
+          aria-describedby="compliance-tooltip"
+        >
+          Information contextuelle
+        </button>
+        <span
+          id="compliance-tooltip"
+          class="fr-tooltip fr-placement"
+          role="tooltip"
+          aria-hidden="true"
+        >
+          Seul l'audit 106 critères permet d'obtenir un taux de conformité
+        </span>
+      </p>
     </div>
 
     <!-- Main action -->
@@ -193,7 +233,9 @@ const csvExportFilename = computed(() => {
           : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
       "
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
-      :class="isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line'"
+      :class="
+        isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line no-external-icon'
+      "
       :target="isInProgress ? null : '_blank'"
     >
       {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
@@ -214,22 +256,43 @@ const csvExportFilename = computed(() => {
         }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-          <template v-if="!isInProgress">
-            <li class="dropdown-item">
-              <RouterLink
-                :to="{
-                  name: 'audit-generation',
-                  params: { uniqueId: audit.editUniqueId }
-                }"
-                :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
-                  isInProgress ? 'fr-icon-edit-line' : 'fr-icon-file-line'
-                } fr-m-0`"
-              >
-                {{ isInProgress ? "Modifier l’audit" : "Accéder à l’audit" }}
-                <span class="sr-only"> {{ audit.procedureName }}</span>
-              </RouterLink>
-            </li>
-          </template>
+          <li class="dropdown-item">
+            <RouterLink
+              :to="{
+                name: 'audit-overview',
+                params: { uniqueId: audit.editUniqueId }
+              }"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-todo-line fr-m-0"
+            >
+              Accéder à la synthèse
+              <span class="sr-only">de l’audit {{ audit.procedureName }}</span>
+            </RouterLink>
+          </li>
+
+          <li class="dropdown-item">
+            <RouterLink
+              :to="
+                isInProgress
+                  ? {
+                      name: 'report',
+                      params: { uniqueId: audit.consultUniqueId }
+                    }
+                  : {
+                      name: 'audit-generation',
+                      params: { uniqueId: audit.editUniqueId }
+                    }
+              "
+              :target="isInProgress ? '_blank' : undefined"
+              :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
+                isInProgress ? 'fr-icon-eye-line' : 'fr-icon-file-line'
+              } fr-m-0 no-external-icon`"
+            >
+              {{ isInProgress ? "Voir le rapport" : "Accéder à l’audit" }}
+              <span class="sr-only"> {{ audit.procedureName }}</span>
+            </RouterLink>
+          </li>
+
+          <li aria-hidden="true" class="dropdown-separator"></li>
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
@@ -238,6 +301,30 @@ const csvExportFilename = computed(() => {
               <CopyIcon class="fr-mr-2v" />
               Créer une copie
               <span class="sr-only">de l’audit {{ audit.procedureName }}</span>
+            </button>
+          </li>
+
+          <li aria-hidden="true" class="dropdown-separator"></li>
+
+          <li class="dropdown-item dropdown-item--with-meta">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              @click="copyAuditLink(audit.editUniqueId)"
+            >
+              Copier le lien de l’audit
+              <span class="sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
+                Ce lien permet de modifier l’audit
+              </span>
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              @click="copyReportLink(audit.consultUniqueId)"
+            >
+              Copier le lien du rapport
+              <span class="sr-only"> de l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
 
@@ -295,7 +382,7 @@ const csvExportFilename = computed(() => {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
@@ -316,8 +403,8 @@ const csvExportFilename = computed(() => {
 .audit-name:focus {
   outline: none;
 }
-.audit-name:focus::before {
-  outline: 2px solid #0a76f6;
+.audit-name:focus-visible::before {
+  outline: 2px solid var(--dsfr-outline);
 }
 
 .audit-name::before {
@@ -328,9 +415,13 @@ const csvExportFilename = computed(() => {
 
 .audit-status,
 .audit-date,
-.audit-type,
-.audit-compliance-level {
+.audit-type {
   pointer-events: none;
+  z-index: 1;
+}
+
+.audit-compliance-level-tooltip {
+  position: relative;
   z-index: 1;
 }
 

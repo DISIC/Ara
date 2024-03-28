@@ -12,7 +12,7 @@ import {
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, pick, setWith } from "lodash";
+import { omit, pick, setWith, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -62,7 +62,9 @@ export class AuditService {
 
         pages: {
           createMany: {
-            data: data.pages
+            data: data.pages.map((p, i) => {
+              return { ...p, order: i };
+            })
           }
         },
 
@@ -222,8 +224,9 @@ export class AuditService {
     data: UpdateAuditDto
   ): Promise<Audit | undefined> {
     try {
-      const updatedPages = data.pages.filter((p) => p.id);
-      const newPages = data.pages.filter((p) => !p.id);
+      const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
+      const updatedPages = orderedPages.filter((p) => p.id);
+      const newPages = orderedPages.filter((p) => !p.id);
 
       const [audit] = await this.prisma.$transaction([
         this.prisma.audit.update({
@@ -341,12 +344,14 @@ export class AuditService {
               update: updatedPages.map((p) => ({
                 where: { id: p.id },
                 data: {
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }
               })),
               createMany: {
                 data: newPages.map((p) => ({
+                  order: p.order,
                   name: p.name,
                   url: p.url
                 }))
@@ -841,9 +846,10 @@ export class AuditService {
       criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)
     );
 
-    const accessibilityRate = Math.round(
-      (compliantCriteria.length / applicableCriteria.length) * 100
-    );
+    const accessibilityRate =
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0;
 
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
 
@@ -866,19 +872,21 @@ export class AuditService {
       notInScopeContent: audit.notInScopeContent,
       notes: audit.notes,
 
-      errorCount: results.filter(
-        (r) => r.status === CriterionResultStatus.NOT_COMPLIANT
-      ).length,
-
-      blockingErrorCount: results.filter(
-        (r) =>
-          r.status === CriterionResultStatus.NOT_COMPLIANT &&
-          r.userImpact === CriterionResultUserImpact.BLOCKING
-      ).length,
-
-      totalCriteriaCount,
-
-      applicableCriteriaCount: applicableCriteria.length,
+      criteriaCount: {
+        total: totalCriteriaCount,
+        compliant: compliantCriteria.length,
+        notCompliant: notCompliantCriteria.length,
+        blocking: uniqBy(
+          results.filter(
+            (r) =>
+              r.status === CriterionResultStatus.NOT_COMPLIANT &&
+              r.userImpact === CriterionResultUserImpact.BLOCKING
+          ),
+          (r) => `${r.topic}.${r.criterium}`
+        ).length,
+        applicable: applicableCriteria.length,
+        notApplicable: notApplicableCriteria.length
+      },
 
       accessibilityRate,
 
@@ -908,12 +916,15 @@ export class AuditService {
             browserVersion: e.browserVersion
           })),
         referencial: "RGAA Version 4.1",
-        samples: audit.pages.map((p, i) => ({
-          name: p.name,
-          number: i + 1,
-          url: p.url,
-          id: p.id
-        })),
+        samples: audit.pages
+          .map((p, i) => ({
+            name: p.name,
+            order: p.order,
+            number: i + 1,
+            url: p.url,
+            id: p.id
+          }))
+          .sort((p) => p.order),
         tools: audit.tools,
         technologies: audit.technologies
       },

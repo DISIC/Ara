@@ -62,31 +62,35 @@ const errors = computed(() => {
   } as Record<number, AuditReport["results"]>;
 
   // TODO: make more legible
-  const data = Object.values(
-    mapValues(resultsGroupedByPage, (results, pageId) => {
-      return {
-        pageId: Number(pageId),
-        pageName: getPage(Number(pageId)).name,
-        pageUrl: getPage(Number(pageId)).url,
-        topics: sortBy(
-          Object.values(
-            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-              return {
-                topic: Number(topicNumber),
-                name: getTopicName(Number(topicNumber)),
-                errors: sortBy(
-                  // TODO: take transverse criteria into account
-                  // results.filter((r) => !r.transverse),
-                  results,
-                  "criterium"
-                )
-              };
-            })
-          ),
-          "topic"
-        )
-      };
-    })
+  const data = sortBy(
+    Object.values(
+      mapValues(resultsGroupedByPage, (results, pageId) => {
+        return {
+          pageId: Number(pageId),
+          pageOrder: getPage(Number(pageId)).order,
+          pageName: getPage(Number(pageId)).name,
+          pageUrl: getPage(Number(pageId)).url,
+          topics: sortBy(
+            Object.values(
+              mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+                return {
+                  topic: Number(topicNumber),
+                  name: getTopicName(Number(topicNumber)),
+                  errors: sortBy(
+                    // TODO: take transverse criteria into account
+                    // results.filter((r) => !r.transverse),
+                    results,
+                    "criterium"
+                  )
+                };
+              })
+            ),
+            "topic"
+          )
+        };
+      })
+    ),
+    (el) => el.pageOrder
   );
 
   return data;
@@ -790,7 +794,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
   content: none;
 }
 
-@media (max-width: 768px) {
+@media (width < 48rem) {
   .main {
     grid-template-columns: 1fr;
   }

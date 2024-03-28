@@ -73,7 +73,7 @@ defineProps<{
 
 .headers {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
   grid-gap: 1rem;
 }
 

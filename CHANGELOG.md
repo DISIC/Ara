@@ -2,6 +2,69 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 07/03/2024
+
+### Corrections 🐛
+
+- Améliorer l’affichage sur mobile du header sticky sur la page de génération de l’audit ([#678](https://github.com/DISIC/Ara/pull/678))
+- Corrige l’affichage des donuts des statistiques parfois désactivés ([#676](https://github.com/DISIC/Ara/pull/676))
+
+### Autres changements ⚙️
+
+- Supprime la rubrique des ressources ([#675](https://github.com/DISIC/Ara/pull/675))
+
+## 22/02/2024
+
+### Autres changements ⚙️
+
+- Ajoute des liens d’accès dans le menu déroulant d’un audit sur la page "Mes audits" ([#658](https://github.com/DISIC/Ara/pull/658))
+
+### Corrections 🐛
+
+- Corrige l’affichage du taux de conformité dans les cartes des donuts et harmonise les cartes entre l’audit et le rapport ([#661](https://github.com/DISIC/Ara/pull/661))
+
+## 16/02/2024
+
+### Corrections 🐛
+
+- Corrige l’affichage du bandeau "Audit en cours" qui parfois n’était pas visible ([#659](https://github.com/DISIC/Ara/pull/659))
+
+## 31/01/2024
+
+### Corrections 🐛
+
+- Empêche la création de pages avec des espaces dans l’URL ([#623](https://github.com/DISIC/Ara/pull/623))
+
+### Autres changements ⚙️
+
+- Corrige l’accessibilité de l’indicateur d’étape terminée sur la synthèse d’un audit ([#630](https://github.com/DISIC/Ara/pull/630))
+
+## 25/01/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute la possibilité de changer l’ordre des pages de l’échantillon depuis les paramètres de l’audit ([#613](https://github.com/DISIC/Ara/pull/613))
+
+### Corrections 🐛
+
+- Corrige la navigation au clavier des onglets des pages de l’audit ([#625](https://github.com/DISIC/Ara/pull/625))
+
+## 18/01/2024
+
+### Autres changements ⚙️
+
+- Améliorer l’accessibilité et la compréhension de l’onglet du détail des résultats ([#606](https://github.com/DISIC/Ara/pull/606))
+
+### Corrections 🐛
+
+- Corrige l’affichage des blocs de page de la page de paramètres sur Safari ([#608](https://github.com/DISIC/Ara/pull/608))
+
+## 16/01/2024
+
+### Autres changements ⚙️
+
+- Informe mieux l’usager sur les différents types d’audits lors du paramétrage d’un audit ([#604](https://github.com/DISIC/Ara/pull/604))
+
 ## 14/12/2023
 
 ### Nouvelles fonctionnalités 🚀

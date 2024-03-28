@@ -5,23 +5,39 @@ Générer et consulter les rapports de ces audits et les déclarations d'accessi
 
 ## Développement
 
-- La partie front est une application Vue.js 3 avec Typescript. [Voir les instructions de développement](https://github.com/DISIC/Ara/blob/main/confiture-web-app/README.md).
-- La partie back est une API Nest.js et utilise une base de données PostgreSQL. [Voir les instructions de développement](https://github.com/DISIC/Ara/blob/main/confiture-rest-api/README.md).
+- [Documentation du front](https://github.com/DISIC/Ara/blob/main/confiture-web-app/README.md).
+- [Documentation du back](https://github.com/DISIC/Ara/blob/main/confiture-rest-api/README.md).
 
-## Tests
+## Déploiement
 
-[Cypress](https://www.cypress.io/) est utilisé pour lancer des tests end-to-end (e2e) dans un navigateur pour reproduire le comportement des utilisateurs.
+- La branche principale `main` correspond à l’environnement de production.
+- Les branches de pull request (PR) correspondent à l’environnement de développement.
 
-Les tests peuvent être lancés de 2 manières :
+### Environnement de développement
 
-- Via l’application Cypress avec :
+Le front-end est automatiquement déployé sur Netlify :
 
-  ```sh
-  yarn cypress open
-  ```
+- La branche principale `main` est déployée sur [https://confiture.netlify.app](https://confiture.netlify.app).
+- Les branches des PR sont déployées sur [https://deploy-preview-XXX--confiture.netlify.app](https://deploy-preview-XXX--confiture.netlify.app) (où XXX est l’id de la PR).
 
-- Via le terminal avec :
+Le back-end doit être déployé manuellement sur Heroku :
 
-  ```sh
-  yarn cypress run
-  ```
+```sh
+git push heroku <nom-de-la-branche>:main
+```
+
+Pour réinitialiser la base de données :
+
+```sh
+DATABASE_URL="<url_de_la_base_de_donnees_de_developpement>" yarn prisma migrate reset
+```
+
+### Environnement de production
+
+⚠️ Avant de déployer sur l’environnement de production, s’assurer que son adresse IP est whitelistée sur OVH.
+
+Pour lancer les migrations de la base de données sur OVH :
+
+```sh
+DATABASE_URL="<url_de_la_base_de_donnees_de_production>" yarn prisma migrate deploy
+```

@@ -1,5 +1,4 @@
 import { computed } from "vue";
-import { countBy, uniqWith } from "lodash-es";
 
 import {
   CriteriumResultStatus,
@@ -12,67 +11,8 @@ import { useResultsStore } from "../store";
 export function useAuditStats() {
   const store = useResultsStore();
 
-  const applicableCriteriaCount = computed(
-    () =>
-      Object.values(
-        countBy(
-          store.allResults
-            ?.filter((r) => {
-              return r.status === CriteriumResultStatus.NOT_APPLICABLE;
-            })
-            .map((r) => {
-              return { ...r, tc: `${r.topic}.${r.criterium}` };
-            }),
-          (r) => r.tc
-        )
-      ).filter((r) => r !== store.pagesCount).length
-  );
-
-  const notApplicableCriteriaCount = computed(
-    () =>
-      Object.values(
-        countBy(
-          store.allResults
-            ?.filter((r) => {
-              return r.status === CriteriumResultStatus.NOT_APPLICABLE;
-            })
-            .map((r) => {
-              return { ...r, tc: `${r.topic}.${r.criterium}` };
-            }),
-          (r) => r.tc
-        )
-      ).filter((r) => r === store.pagesCount).length
-  );
-
-  const notCompliantCriteriaCount = computed(
-    () =>
-      uniqWith(
-        store.allResults?.filter((r) => {
-          return r.status === CriteriumResultStatus.NOT_COMPLIANT;
-        }),
-        (a, b) => {
-          return a.topic === b.topic && a.criterium === b.criterium;
-        }
-      ).length
-  );
-
-  const blockingCriteriaCount = computed(
-    () =>
-      uniqWith(
-        store.allResults?.filter((r) => {
-          return (
-            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            r.userImpact === CriterionResultUserImpact.BLOCKING
-          );
-        }),
-        (a, b) => {
-          return a.topic === b.topic && a.criterium === b.criterium;
-        }
-      ).length
-  );
-
-  const complianceLevel = computed(() => {
-    const groupedCriteria =
+  const groupedCriteria = computed(() => {
+    return (
       store.allResults?.reduce<
         Record<string, (CriteriumResult | TransverseCriteriumResult)[]>
       >((acc, c) => {
@@ -83,9 +23,50 @@ export function useAuditStats() {
           acc[key] = [c];
         }
         return acc;
-      }, {}) || {};
+      }, {}) || {}
+    );
+  });
 
-    const applicableCriteria = Object.values(groupedCriteria).filter(
+  const applicableCriteria = computed(() => {
+    return Object.values(groupedCriteria.value).filter((criteria) =>
+      criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+    );
+  });
+
+  const notApplicableCriteriaCount = computed(() => {
+    return Object.values(groupedCriteria.value).filter((criteria) => {
+      return criteria.every((c) => c.status === "NOT_APPLICABLE");
+    }).length;
+  });
+
+  const compliantCriteriaCount = computed(() => {
+    return applicableCriteria.value.filter((criteria) =>
+      criteria.every(
+        (c) =>
+          c.status === CriteriumResultStatus.COMPLIANT ||
+          c.status === CriteriumResultStatus.NOT_APPLICABLE
+      )
+    ).length;
+  });
+
+  const notCompliantCriteriaCount = computed(() => {
+    return applicableCriteria.value.filter((criteria) =>
+      criteria.some((c) => c.status === CriteriumResultStatus.NOT_COMPLIANT)
+    ).length;
+  });
+
+  const blockingCriteriaCount = computed(() => {
+    return applicableCriteria.value.filter((criteria) =>
+      criteria.some(
+        (c) =>
+          c.status === CriteriumResultStatus.NOT_COMPLIANT &&
+          c.userImpact === CriterionResultUserImpact.BLOCKING
+      )
+    ).length;
+  });
+
+  const complianceLevel = computed(() => {
+    const applicableCriteria = Object.values(groupedCriteria.value).filter(
       (criteria) =>
         criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
     );
@@ -98,8 +79,10 @@ export function useAuditStats() {
       )
     );
 
-    return Math.round(
-      (compliantCriteria.length / applicableCriteria.length) * 100
+    return (
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0
     );
   });
 
@@ -121,8 +104,9 @@ export function useAuditStats() {
   });
 
   return {
-    applicableCriteriaCount,
+    groupedCriteria,
     notApplicableCriteriaCount,
+    compliantCriteriaCount,
     notCompliantCriteriaCount,
     blockingCriteriaCount,
     complianceLevel,

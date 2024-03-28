@@ -10,36 +10,6 @@ interface SiteMapLink {
 import PageMeta from "../../components/PageMeta";
 
 const links: SiteMapLink[] = [
-  {
-    label: "Ressources",
-    name: "resources",
-    children: [
-      {
-        label: "Formations accessibilité",
-        name: "accessibility-training",
-        children: [
-          {
-            label: "Introduction à l’accessibilité numérique",
-            name: "a11y-intro-training"
-          },
-          {
-            label: "Bien faire du numérique public",
-            name: "public-digital"
-          }
-        ]
-      },
-      { label: "Outils", name: "tools" },
-      { label: "Glossaire RGAA", name: "glossary" },
-      { label: "Réaliser un audit accessibilité", name: "make-a11y-audit" },
-      { label: "Obligations légales", name: "legal-requirements" },
-      { label: "RGAA", name: "rgaa" },
-      {
-        label: "Déclaration d’accessibilité",
-        name: "accessibility-statement"
-      },
-      { label: "Schéma pluriannuel", name: "accessibility-plan" }
-    ]
-  },
   { label: "Donner mon avis", name: "feedback" },
   { label: "Accessibilité", name: "accessibility" },
   { label: "Mentions légales", name: "legal" },

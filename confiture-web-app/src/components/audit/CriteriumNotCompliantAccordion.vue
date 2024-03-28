@@ -267,7 +267,7 @@ const isOffline = useIsOffline();
 
 .upload-label {
   cursor: pointer;
-  outline-color: #0a76f6;
+  outline-color: var(--dsfr-outline);
   outline-offset: 2px;
   outline-width: 2px;
   outline-style: none;

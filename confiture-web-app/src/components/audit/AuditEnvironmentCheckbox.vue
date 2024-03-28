@@ -28,7 +28,12 @@ function onInput() {
 </script>
 
 <template>
-  <div class="fr-p-3w container">
+  <div
+    class="fr-p-3w container"
+    :class="{ 'container-checked': modelValue.includes(value) }"
+  >
+    <!-- Allow click on the whole radio square -->
+    <div class="container-layer" @click="onInput" />
     <p
       v-if="platform === Platform.DESKTOP"
       class="fr-badge fr-badge--sm fr-badge--purple-glycine fr-mb-1w"
@@ -55,7 +60,7 @@ function onInput() {
     </div>
 
     <div
-      class="fr-table fr-table--bordered fr-table--layout-fixed fr-table--no-caption fr-mb-0"
+      class="fr-table fr-table--bordered fr-table--layout-fixed fr-table--no-caption fr-mb-0 combination-table"
     >
       <table :id="slugify(`combinations-table-${title}-${platform}`)">
         <caption>
@@ -84,7 +89,28 @@ function onInput() {
 <style scoped>
 .container {
   border: 1px solid var(--border-default-grey);
+  position: relative;
 }
+
+.container:hover {
+  background-color: var(--background-default-grey-hover);
+}
+
+.container-checked {
+  border-color: var(--border-plain-blue-france);
+}
+
+.container-layer {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+/* Override position to allow click on whole card */
+.combination-table {
+  position: initial;
+}
+
 .label::before {
   /* Align radio to label. This label size for radio does not exist in DSFR. */
   margin-top: 0.25rem !important;

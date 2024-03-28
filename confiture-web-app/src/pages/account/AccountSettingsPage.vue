@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Sidebar from "../../components/account/settings/Sidebar.vue";
 import Profile from "../../components/account/settings/Profile.vue";
 import Account from "../../components/account/settings/Account.vue";
 import Password from "../../components/account/settings/Password.vue";
@@ -14,7 +13,8 @@ import PageMeta from "../../components/PageMeta";
   <div class="fr-container">
     <div class="fr-grid-row">
       <div class="fr-col-12 fr-col-lg-3">
-        <Sidebar />
+        <!-- Hide sidebar while there is only 1 link inside -->
+        <!-- <Sidebar /> -->
       </div>
       <div class="fr-col-12 fr-col-lg-7">
         <h1 class="fr-h2">Mon compte</h1>

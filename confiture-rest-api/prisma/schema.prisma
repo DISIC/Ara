@@ -105,9 +105,10 @@ model TestEnvironment {
 }
 
 model AuditedPage {
-  id   Int    @id @default(autoincrement())
-  name String
-  url  String
+  id    Int    @id @default(autoincrement())
+  order Int    @default(0)
+  name  String
+  url   String
 
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?

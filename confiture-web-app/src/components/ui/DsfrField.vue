@@ -7,6 +7,8 @@ const props = defineProps<{
   hint?: string;
   type?: "text" | "email" | "url";
   required?: boolean;
+  pattern?: RegExp;
+  title?: string;
   error?: string;
   id: string;
 }>();
@@ -39,6 +41,8 @@ defineExpose({ inputRef });
       :type="type"
       :aria-describedby="isError ? errorId : undefined"
       :required="required"
+      :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
+      :title="title"
       :value="modelValue"
       @input="
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)

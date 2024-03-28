@@ -21,9 +21,11 @@ import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import DuplicateModal from "./DuplicateModal.vue";
+import NotesModal from "../../components/audit/NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 import SummaryCard from "../SummaryCard.vue";
 import CopyIcon from "../icons/CopyIcon.vue";
+import { StatDonutTheme } from "../StatDonut.vue";
 
 defineProps<{
   auditName: string;
@@ -31,11 +33,11 @@ defineProps<{
   auditEditionDate: string | null;
   keyInfos: {
     title: string;
-    description: string;
+    description?: string;
     value: number;
     total: number;
     unit?: string;
-    theme?: string;
+    theme?: StatDonutTheme;
   }[];
   editUniqueId?: string;
 }>();
@@ -127,6 +129,40 @@ function confirmDelete() {
     });
 }
 
+/**
+ * Update audit notes
+ */
+const notesModal = ref<InstanceType<typeof NotesModal>>();
+const isNotesLoading = ref(false);
+
+function openNotesModal() {
+  notesModal.value?.show();
+}
+
+const updateAuditNotes = async (notes: string) => {
+  isNotesLoading.value = true;
+  try {
+    await auditStore.updateAuditNotes(uniqueId.value, {
+      notes
+    });
+    notify(
+      "success",
+      undefined,
+      "Annotation de l’audit mise à jour avec succès"
+    );
+  } catch (error) {
+    console.error(error);
+    notify(
+      "error",
+      "Une erreur est survenue",
+      "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+    );
+  } finally {
+    isNotesLoading.value = false;
+    notesModal.value?.hide();
+  }
+};
+
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 
@@ -150,8 +186,6 @@ const csvExportSizeEstimation = computed(() => {
 const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
-
-const unfinishedAudit = computed(() => resultStore.auditProgress < 1);
 
 const showAuditProgressBar = computed(() => {
   return (
@@ -190,8 +224,6 @@ onMounted(() => {
 
   <h1>{{ auditName }}</h1>
 
-  <!-- TODO: Link to actions somehow -->
-
   <div
     id="sticky-indicator"
     class="sticky-indicator fr-grid-row fr-p-0 fr-mb-3w"
@@ -211,7 +243,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="indicator-left-side fr-col-12 fr-col-md-3"
+      class="indicator-left-side fr-col-12 fr-col-sm-5 fr-col-md-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
       <AuditProgressBar
@@ -248,13 +280,13 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="fr-col-12 fr-col-md-9 sub-header">
+    <div class="fr-col-12 fr-col-sm-7 fr-col-md-9 sub-header">
       <SaveIndicator
         v-if="route.name === 'audit-generation'"
         class="fr-ml-2w"
       />
       <ul class="top-actions fr-my-0 fr-p-0" role="list">
-        <li>
+        <li class="fr-p-0 settings-item">
           <RouterLink
             class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
             :to="{
@@ -266,39 +298,71 @@ onMounted(() => {
           </RouterLink>
         </li>
 
-        <li>
+        <li class="fr-p-0">
           <Dropdown
             ref="optionsDropdownRef"
             title="Actions"
             :disabled="isOffline"
-            :align-left="route.name === 'audit-generation'"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <template v-if="!!auditPublicationDate">
-                <li class="dropdown-item">
-                  <RouterLink
-                    :to="{
-                      name: 'audit-generation',
-                      params: { uniqueId: editUniqueId }
-                    }"
-                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-m-0"
-                  >
-                    Modifier l’audit
-                  </RouterLink>
-                </li>
-              </template>
+              <li class="dropdown-item mobile-dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-draft-line"
+                  :disabled="isOffline"
+                  @click="openNotesModal"
+                >
+                  Annoter l’audit
+                </button>
+              </li>
+              <li
+                aria-hidden="true"
+                class="dropdown-separator mobile-dropdown-item"
+              />
               <li class="dropdown-item">
                 <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                  class="fr-btn fr-btn--tertiary-no-outline"
                   @click="duplicateModal?.show()"
                 >
                   <CopyIcon class="fr-mr-2v" />
                   Créer une copie
                 </button>
               </li>
+              <li class="fr-p-0 settings-item mobile-dropdown-item">
+                <RouterLink
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+                  :to="{
+                    name: 'audit-settings',
+                    params: { uniqueId: editUniqueId }
+                  }"
+                >
+                  Accéder aux paramètres
+                </RouterLink>
+              </li>
+              <li
+                aria-hidden="true"
+                class="dropdown-separator mobile-dropdown-item"
+              />
+              <li class="fr-p-0 report-item mobile-dropdown-item">
+                <component
+                  :is="isOffline ? 'button' : 'RouterLink'"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line no-external-icon"
+                  :to="{
+                    name: 'report',
+                    params: {
+                      uniqueId: auditStore.currentAudit?.consultUniqueId
+                    }
+                  }"
+                  target="_blank"
+                  :disabled="isOffline"
+                >
+                  Consulter le rapport
+                  <span class="sr-only">(Nouvelle fenêtre)</span>
+                </component>
+              </li>
+              <li aria-hidden="true" class="dropdown-separator" />
               <li class="dropdown-item">
                 <a
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill fr-m-0 download-link"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill download-link"
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
@@ -321,7 +385,31 @@ onMounted(() => {
           </Dropdown>
         </li>
 
-        <slot name="actions" />
+        <li class="fr-p-0 notes-item">
+          <button
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+            :disabled="isOffline"
+            @click="openNotesModal"
+          >
+            Annoter l’audit
+          </button>
+        </li>
+
+        <li class="fr-p-0 report-item">
+          <component
+            :is="isOffline ? 'button' : 'RouterLink'"
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line no-external-icon"
+            :to="{
+              name: 'report',
+              params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
+            }"
+            target="_blank"
+            :disabled="isOffline"
+          >
+            Consulter le rapport
+            <span class="sr-only">(Nouvelle fenêtre)</span>
+          </component>
+        </li>
       </ul>
     </div>
   </div>
@@ -335,16 +423,12 @@ onMounted(() => {
       <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
         <SummaryCard
           :title="keyInfos[0].title"
-          :description="
-            unfinishedAudit
-              ? '(Disponible à la fin de l’audit)'
-              : keyInfos[0].description
-          "
-          :value="unfinishedAudit ? 0 : keyInfos[0].value"
+          :description="keyInfos[0].description"
+          :value="keyInfos[0].value"
           :total="keyInfos[0].total"
           :unit="keyInfos[0].unit"
-          :theme="unfinishedAudit ? undefined : keyInfos[0].theme"
-          :disabled="unfinishedAudit"
+          :theme="keyInfos[0].theme"
+          :disabled="keyInfos[0].disabled"
         />
       </div>
       <div
@@ -385,6 +469,12 @@ onMounted(() => {
       optionsDropdownRef?.closeOptions();
     "
   />
+
+  <NotesModal
+    ref="notesModal"
+    :is-loading="isNotesLoading"
+    @confirm="updateAuditNotes"
+  />
 </template>
 
 <style scoped>
@@ -418,9 +508,6 @@ onMounted(() => {
 .download-meta {
   flex-basis: 100%;
   color: var(--text-mention-grey);
-}
-:deep(.top-actions > li) {
-  padding-bottom: 0;
 }
 
 .delete-button {
@@ -459,12 +546,6 @@ onMounted(() => {
   min-height: 4rem;
 }
 
-@media (min-width: 62em) {
-  .sticky-indicator {
-    z-index: 3;
-  }
-}
-
 .audit-status {
   display: flex;
   align-items: center;
@@ -499,5 +580,22 @@ onMounted(() => {
 
 .progress-bar {
   flex-grow: 1;
+}
+
+/* Display / Hide items from the menu in the toolbar or in the dropdown */
+.mobile-dropdown-item {
+  display: none;
+}
+
+@media (width < 62rem) {
+  .mobile-dropdown-item {
+    display: block;
+  }
+
+  .settings-item:not(.mobile-dropdown-item),
+  .notes-item:not(.mobile-dropdown-item),
+  .report-item:not(.mobile-dropdown-item) {
+    display: none;
+  }
 }
 </style>

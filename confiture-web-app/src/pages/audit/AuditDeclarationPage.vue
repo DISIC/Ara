@@ -17,7 +17,7 @@ import {
 } from "../../enums";
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
-import { formatEmail } from "../../utils";
+import { formatEmail, URL_REGEX } from "../../utils";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -310,6 +310,8 @@ const isDevMode = useDevMode();
         v-model="procedureUrl"
         label="URL de la page d’accueil du site audité"
         type="url"
+        :pattern="URL_REGEX"
+        title="https://domaine.fr et sans espaces"
         required
       >
         <template #hint>
@@ -361,6 +363,8 @@ const isDevMode = useDevMode();
           label="Formulaire de contact en ligne"
           hint="Exemple : contact@ministere.gouv.fr"
           type="url"
+          :pattern="URL_REGEX"
+          title="https://domaine.fr et sans espaces"
           placeholder="https://"
           :error="
             hasNoContactInfo

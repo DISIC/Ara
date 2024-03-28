@@ -29,13 +29,14 @@ export interface AuditReport {
 
   accessibilityRate: number;
 
-  errorCount: number;
-
-  blockingErrorCount: number;
-
-  applicableCriteriaCount: number;
-
-  totalCriteriaCount: number;
+  criteriaCount: {
+    total: number;
+    compliant: number;
+    notCompliant: number;
+    blocking: number;
+    applicable: number;
+    notApplicable: number;
+  };
 
   /** Global distribution of criteria by result */
   resultDistribution: ResultDistribution;
@@ -108,6 +109,7 @@ interface AuditReportContext {
 interface PageSample {
   // number: number;
   id: number;
+  order: number;
   name: string;
   url: string;
 }
