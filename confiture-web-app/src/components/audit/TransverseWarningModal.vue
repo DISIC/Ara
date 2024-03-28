@@ -47,13 +47,13 @@ function handleConfirm() {
             <div class="fr-modal__content">
               <h1 id="transverse-warning-title" class="fr-modal__title">
                 <span class="fr-icon-alert-line" aria-hidden="true"></span>
-                Modification appliquée à toutes les pages de l’échantillon
+                Ce critère est déjà évalué sur d'autres pages
               </h1>
               <p>
-                Ce critère a déjà été évalué sur d’autres pages de
-                l’échantillon. Si vous définissez ce critère comme transverse,
-                le nouveau <strong>statut de ce critère</strong> sera appliqué à
-                toutes les pages de l’échantillon.
+                Vous aller définir ce critère comme [statut critère] sur
+                <strong>toutes les pages</strong> de l'échantillon. Les saisies
+                déià réalisés pour ce critère dans d'autres pages ne seront pas
+                perdues.
               </p>
             </div>
             <div class="fr-modal__footer">
