@@ -23,11 +23,10 @@ onMounted(async () => {
 
 // Redirect connected user to his account
 const accountStore = useAccountStore();
-onMounted(async () => {
-  if (accountStore.account) {
-    router.push({ name: "account-dashboard" });
-  }
-});
+
+if (accountStore.account) {
+  router.push({ name: "account-dashboard" });
+}
 
 // Hide alert, remove query param and focus main title
 async function hideDeleteAlert() {
