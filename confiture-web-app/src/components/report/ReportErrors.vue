@@ -2,7 +2,6 @@
 import { chunk, groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
 
 import rgaa from "../../criteres.json";
 import { useReportStore } from "../../store";
@@ -11,18 +10,12 @@ import {
   CriterionResultUserImpact,
   CriteriumResultStatus
 } from "../../types";
-import {
-  formatStatus,
-  formatUserImpact,
-  slugify,
-  pluralize
-} from "../../utils";
+import { formatStatus, formatUserImpact, pluralize } from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
 import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 const report = useReportStore();
-const router = useRouter();
 
 /*
 [{
@@ -60,33 +53,30 @@ const errors = computed(() => {
     )
   } as Record<number, AuditReport["results"]>;
 
-  // TODO: make more legible
   const data = sortBy(
-    Object.values(
-      mapValues(resultsGroupedByPage, (results, pageId) => {
-        return {
-          pageId: Number(pageId),
-          pageOrder: getPage(Number(pageId)).order,
-          pageName: getPage(Number(pageId)).name,
-          pageUrl: getPage(Number(pageId)).url,
-          topics: sortBy(
-            Object.values(
-              mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-                return {
-                  topic: Number(topicNumber),
-                  name: getTopicName(Number(topicNumber)),
-                  errors: sortBy(
-                    results.filter((r) => !r.transverse),
-                    "criterium"
-                  )
-                };
-              })
-            ),
-            "topic"
-          )
-        };
-      })
-    ),
+    Object.entries(resultsGroupedByPage).map(([pageId, results]) => {
+      return {
+        pageId: Number(pageId),
+        pageOrder: getPage(pageId).order,
+        pageName: getPage(pageId).name,
+        pageUrl: getPage(pageId).url,
+        topics: sortBy(
+          Object.values(
+            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
+              return {
+                topic: Number(topicNumber),
+                name: getTopicName(Number(topicNumber)),
+                errors: sortBy(
+                  results.filter((r) => !r.transverse),
+                  "criterium"
+                )
+              };
+            })
+          ),
+          "topic"
+        )
+      };
+    }),
     (el) => el.pageOrder
   );
 
@@ -233,41 +223,8 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 }
 
 /** Get a page by its id */
-function getPage(pageId: number) {
-  return report.data!.context.samples.find((p) => p.id === pageId)!;
-}
-
-function getPageSlug(pageId: number) {
-  return slugify(getPage(pageId)?.name);
-}
-
-/**
- * Manually reproduce DSFR menu item anchor links
- * See following issue: https://github.com/DISIC/Ara/issues/130
- */
-function updateActiveAnchorLink(id: string, event: MouseEvent) {
-  event.preventDefault();
-
-  const previousSelectedAnchor = document.querySelector(
-    '.fr-sidemenu__link[aria-current="true"]'
-  );
-  if (previousSelectedAnchor) {
-    previousSelectedAnchor.removeAttribute("aria-current");
-    previousSelectedAnchor.parentElement?.classList.remove(
-      "fr-sidemenu__item--active"
-    );
-  }
-  const target = event.target as HTMLAnchorElement;
-  if (target) {
-    target.setAttribute("aria-current", "true");
-    target.parentElement?.classList.add("fr-sidemenu__item--active");
-
-    const anchor = document.querySelector(`#${id}`);
-    if (anchor) {
-      anchor.scrollIntoView();
-      router.push({ hash: `#${id}` });
-    }
-  }
+function getPage(pageId: number | string) {
+  return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
 }
 </script>
 
@@ -299,13 +256,10 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                     }
                   ]"
                 >
-                  <!-- FIXME: seems there is an issue with anchor links inside tabs -->
                   <a
                     class="fr-sidemenu__link"
                     href="#all-pages"
-                    target="_self"
                     :aria-current="Boolean(transverseErrors.length)"
-                    @click="updateActiveAnchorLink('all-pages', $event)"
                     >Toutes les pages</a
                   >
                 </li>
@@ -321,34 +275,21 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
                 >
                   <a
                     class="fr-sidemenu__link"
-                    :href="`#${getPageSlug(report.data.context.samples[0].id)}`"
-                    target="_self"
+                    :href="`#${errors[0].pageId}`"
                     :aria-current="
                       !transverseErrors.length ? 'true' : undefined
                     "
-                    @click="
-                      updateActiveAnchorLink(
-                        getPageSlug(report.data!.context.samples[0].id),
-                        $event
-                      )
-                    "
-                    >{{ report.data.context.samples[0].name }}</a
+                    >{{ errors[0].pageName }}</a
                   >
                 </li>
                 <li
-                  v-for="page in report.data.context.samples.slice(1)"
-                  :key="page.name"
+                  v-for="page in errors.slice(1)"
+                  :key="page.pageName"
                   class="fr-sidemenu__item"
                 >
-                  <a
-                    class="fr-sidemenu__link"
-                    :href="`#${getPageSlug(page.id)}`"
-                    target="_self"
-                    @click="
-                      updateActiveAnchorLink(getPageSlug(page.id), $event)
-                    "
-                    >{{ page.name }}</a
-                  >
+                  <a class="fr-sidemenu__link" :href="`#${page.pageId}`">
+                    {{ page.pageName }}
+                  </a>
                 </li>
               </ul>
             </div>
@@ -610,10 +551,7 @@ function updateActiveAnchorLink(id: string, event: MouseEvent) {
           </div>
         </section>
         <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <h2
-            :id="`${getPageSlug(page.pageId)}`"
-            class="fr-h3 fr-mb-2w page-title"
-          >
+          <h2 :id="`${page.pageId}`" class="fr-h3 fr-mb-2w page-title">
             {{ page.pageName }}
           </h2>
           <a
