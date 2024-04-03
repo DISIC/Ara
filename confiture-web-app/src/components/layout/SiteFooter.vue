@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import fiphfpLogo from "../../assets/images/fiphfp.png";
 import ThemeModal from "./ThemeModal.vue";
+import { useAccountStore } from "../../store/account";
+
+const accountStore = useAccountStore();
 
 const bottomLinks = [
   {
@@ -28,6 +31,31 @@ const bottomLinks = [
 
 <template>
   <footer id="footer" class="fr-footer" role="contentinfo">
+    <div v-if="accountStore.account" class="fr-footer__top">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
+            <h3 class="fr-footer__top-cat">Nouveautés</h3>
+            <ul class="fr-footer__top-list">
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'changelog' }"
+                  >Notes de versions</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'roadmap' }"
+                  >Feuille de route</RouterLink
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="fr-container">
       <div class="fr-footer__body">
         <div class="fr-footer__brand fr-enlarge-link">
