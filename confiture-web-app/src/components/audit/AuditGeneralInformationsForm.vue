@@ -409,14 +409,13 @@ const previousRoute = usePreviousRoute();
         Valider les paramètres
       </button>
 
-      <button
+      <RouterLink
         v-if="route.name !== 'create-audit'"
         class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
-        type="button"
-        @click="$router.back()"
+        :to="{ name: 'audit-generation', uniqueId: route.params.uniqueId }"
       >
         Annuler
-      </button>
+      </RouterLink>
     </div>
   </form>
 </template>
