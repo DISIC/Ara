@@ -25,6 +25,6 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
-          eslint_dir: confiture-web-app/**
+          eslint_dir: confiture-web-app/
           prettier: true
-          prettier_dir: confiture-web-app/**
+          prettier_dir: confiture-web-app/
