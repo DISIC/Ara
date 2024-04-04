@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "confiture-web-app/**"
   pull_request:
     branches:
       - main
-    paths:
-      - "confiture-web-app/**"
 
 permissions:
   checks: write
@@ -29,6 +25,6 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
+          eslint_dir: confiture-web-app/**
           prettier: true
-          eslint_dir: confiture-web-app/
-          prettier_dir: confiture-web-app/
+          prettier_dir: confiture-web-app/**
