@@ -22,6 +22,7 @@ import {
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
+import { StatDonutTheme } from "../../components/StatDonut.vue";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -101,7 +102,9 @@ const headerInfos = computed(() => [
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
           total: 100,
           unit: "%",
-          theme: auditIsInProgress.value ? "grey" : "blue",
+          theme: auditIsInProgress.value
+            ? ("grey" as StatDonutTheme)
+            : ("blue" as StatDonutTheme),
           disabled: auditIsInProgress.value
         }
       ]
@@ -115,13 +118,13 @@ const headerInfos = computed(() => [
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "red"
+    theme: "red" as StatDonutTheme
   },
   {
     title: "Critères<br/> conformes",
     value: compliantCriteriaCount.value,
     total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
-    theme: "green"
+    theme: "green" as StatDonutTheme
   }
 ]);
 
