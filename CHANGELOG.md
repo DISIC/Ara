@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 05/04/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute la possibilité de filtrer les critères par statut "Non testé" lors de la réalisation de l’audit ([#693](https://github.com/DISIC/Ara/pull/693))
+
 ## 07/03/2024
 
 ### Corrections 🐛
