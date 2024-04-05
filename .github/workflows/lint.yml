@@ -18,21 +18,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 1️⃣ Check out Git repository
+      - name: Check out Git repository
         uses: actions/checkout@v3
 
-      - name: 2️⃣ Install Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 18
 
-      - name: 3️⃣ Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 4️⃣ Run ESLint and Prettier
+      - name: Run ESLint and Prettier
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
           eslint_dir: confiture-web-app/
-          prettier: true
-          prettier_dir: confiture-web-app/
