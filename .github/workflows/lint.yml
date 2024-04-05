@@ -27,7 +27,7 @@ jobs:
           node-version: 18
 
       - name: 3️⃣ Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: 4️⃣ Run ESLint and Prettier
         uses: wearerequired/lint-action@v2
