@@ -139,6 +139,7 @@ const statementIsPublished = computed(() => {
             class="fr-link"
             target="_blank"
             href="https://accessibilite.numerique.gouv.fr/obligations/mentions-et-pages-obligatoires/"
+            rel="noopener"
           >
             Tout savoir sur les obligations légales et sanctions
             <span class="sr-only">(nouvelle fenêtre)</span>

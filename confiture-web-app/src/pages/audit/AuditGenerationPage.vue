@@ -13,19 +13,12 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import {
-  useAuditStore,
-  useFiltersStore,
-  useResultsStore,
-  useAccountStore
-} from "../../store";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
-import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 
 const route = useRoute();
-const previousRoute = usePreviousRoute();
 
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
@@ -192,8 +185,6 @@ const tabsData = computed((): TabData[] => {
     (p) => p.data.order
   );
 });
-
-const accountStore = useAccountStore();
 </script>
 
 <template>
@@ -205,18 +196,8 @@ const accountStore = useAccountStore();
     />
 
     <BackLink
-      :label="
-        accountStore.account &&
-        previousRoute.route?.name === 'account-dashboard'
-          ? 'Accéder à la synthèse'
-          : 'Retourner à la synthèse'
-      "
-      :to="
-        accountStore.account &&
-        previousRoute.route?.name === 'account-dashboard'
-          ? { name: 'account-dashboard' }
-          : { name: 'audit-overview', params: { uniqueId } }
-      "
+      label="Aller au tableau de bord de l’audit"
+      :to="{ name: 'audit-overview', params: { uniqueId } }"
     />
 
     <AuditGenerationHeader

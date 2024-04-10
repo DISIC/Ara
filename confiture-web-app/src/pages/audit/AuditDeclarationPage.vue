@@ -18,6 +18,7 @@ import {
 import { useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
+import TopLink from "../../components/ui/TopLink.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -220,6 +221,10 @@ function handleSubmit() {
     });
 }
 
+const auditIsPublishable = computed(() => {
+  return !!auditStore.currentAudit?.initiator;
+});
+
 /**
  * Dev function to avoid filling all fields manually
  */
@@ -274,294 +279,328 @@ const isDevMode = useDevMode();
   />
 
   <BackLink
-    label="Retourner à la synthèse"
+    label="Aller au tableau de bord de l'audit"
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
-  <form v-if="auditStore.currentAudit" @submit.prevent="handleSubmit">
-    <div class="narrow-content">
-      <h1 class="fr-mb-3v">📄 Déclaration d’accessibilité</h1>
-      <p class="fr-text--sm mandatory-notice">
-        Sauf mention contraire, tous les champs sont obligatoires.
+  <form
+    v-if="auditStore.currentAudit"
+    class="content"
+    @submit.prevent="handleSubmit"
+  >
+    <h1 class="fr-mb-3w">Déclaration d’accessibilité</h1>
+    <p class="fr-text--sm fr-mb-4w mandatory-notice">
+      Sauf mention contraire, tous les champs sont obligatoires.
+    </p>
+
+    <h2 class="fr-h4">Informations générales</h2>
+
+    <DsfrField
+      id="initiator"
+      v-model="auditInitiator"
+      label="Entité qui a demandé l’audit"
+      hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
+      type="text"
+      required
+    />
+
+    <DsfrField
+      id="auditorOrganisation"
+      v-model="auditorOrganisation"
+      label="Entité qui a réalisé l’audit"
+      hint="L’entité qui a demandé et réalisé l’audit peut être identique dans le cas d’un audit réalisé en interne."
+      type="text"
+      required
+    />
+
+    <DsfrField
+      id="procedure-url"
+      v-model="procedureUrl"
+      label="URL de la page d’accueil du site audité"
+      type="url"
+      :pattern="URL_REGEX"
+      title="https://domaine.fr et sans espaces"
+      required
+    >
+      <template #hint>
+        Saisissez une url valide, commençant par
+        <code>https://</code>
+      </template>
+    </DsfrField>
+
+    <fieldset
+      class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
+    >
+      <legend>
+        <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
+      </legend>
+
+      <p>
+        Ces informations permettent aux usagers qui rencontrent des difficultés
+        pour accéder à du contenu ou à un service d’être orienté vers une
+        solution adaptée.
       </p>
 
-      <h2 class="fr-h4">Informations générales</h2>
+      <DsfrField
+        id="procedure-manager-name"
+        v-model="contactName"
+        label="Nom et prénom du contact (optionnel)"
+        type="text"
+      />
+
+      <p>
+        Vous devez renseigner au moins un des deux moyens de contact suivant :
+      </p>
 
       <DsfrField
-        id="initiator"
-        v-model="auditInitiator"
-        label="Entité qui a demandé l’audit"
-        hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
-        type="text"
-        required
+        id="contact-email"
+        v-model="contactEmail"
+        label="Adresse e-mail"
+        hint="Exemple : contact@ministere.gouv.fr"
+        type="email"
+        :error="
+          hasNoContactInfo
+            ? 'Vous devez renseigner au moins 1 moyen de contact'
+            : undefined
+        "
       />
 
       <DsfrField
-        id="auditorOrganisation"
-        v-model="auditorOrganisation"
-        label="Entité qui a réalisé l’audit"
-        hint="L’entité qui a demandé et réalisé l’audit peut être identique dans le cas d’un audit réalisé en interne."
-        type="text"
-        required
-      />
-
-      <DsfrField
-        id="procedure-url"
-        v-model="procedureUrl"
-        label="URL de la page d’accueil du site audité"
+        id="contact-form-url"
+        v-model="contactFormUrl"
+        label="Formulaire de contact en ligne"
+        hint="Exemple : contact@ministere.gouv.fr"
         type="url"
         :pattern="URL_REGEX"
         title="https://domaine.fr et sans espaces"
-        required
+        placeholder="https://"
+        :error="
+          hasNoContactInfo
+            ? 'Vous devez renseigner au moins 1 moyen de contact'
+            : undefined
+        "
       >
         <template #hint>
-          Saisissez une url valide, commençant par
+          Saisissez une URL valide, commençant par <code>http://</code> ou
           <code>https://</code>
         </template>
       </DsfrField>
+    </fieldset>
 
-      <fieldset
-        class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
-      >
-        <legend>
-          <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
-        </legend>
+    <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-        <p>
-          Ces informations permettent aux usagers qui rencontrent des
-          difficultés pour accéder à du contenu ou à un service d’être orienté
-          vers une solution adaptée.
-        </p>
+    <DsfrField
+      id="temp-technologies"
+      v-model="tempTechnologies"
+      label="Ajouter des technologies"
+      hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
+      type="text"
+      :required="!validatedTechnologies.length"
+      @keydown.enter.prevent="validateTechnologies"
+    />
 
-        <DsfrField
-          id="procedure-manager-name"
-          v-model="contactName"
-          label="Nom et prénom du contact (optionnel)"
-          type="text"
-        />
-
-        <p>
-          Vous devez renseigner au moins un des deux moyens de contact suivant :
-        </p>
-
-        <DsfrField
-          id="contact-email"
-          v-model="contactEmail"
-          label="Adresse e-mail"
-          hint="Exemple : contact@ministere.gouv.fr"
-          type="email"
-          :error="
-            hasNoContactInfo
-              ? 'Vous devez renseigner au moins 1 moyen de contact'
-              : undefined
-          "
-        />
-
-        <DsfrField
-          id="contact-form-url"
-          v-model="contactFormUrl"
-          label="Formulaire de contact en ligne"
-          hint="Exemple : contact@ministere.gouv.fr"
-          type="url"
-          :pattern="URL_REGEX"
-          title="https://domaine.fr et sans espaces"
-          placeholder="https://"
-          :error="
-            hasNoContactInfo
-              ? 'Vous devez renseigner au moins 1 moyen de contact'
-              : undefined
-          "
+    <ul class="fr-tags-group">
+      <li v-for="(techno, i) in validatedTechnologies" :key="i">
+        <button
+          ref="validatedTechnologiesRefs"
+          class="fr-tag fr-tag--dismiss"
+          type="button"
+          :aria-label="`Retirer ${techno}`"
+          @click="removeTechnology(i)"
         >
-          <template #hint>
-            Saisissez une URL valide, commençant par <code>http://</code> ou
-            <code>https://</code>
-          </template>
-        </DsfrField>
-      </fieldset>
+          {{ techno }}
+        </button>
+      </li>
+    </ul>
 
-      <h2 class="fr-h4">Technologies utilisées sur le site</h2>
+    <button
+      ref="validateTechnologiesRef"
+      class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
+      type="button"
+      @click="validateTechnologies"
+    >
+      Valider les technologies
+    </button>
 
-      <DsfrField
-        id="temp-technologies"
-        v-model="tempTechnologies"
-        label="Ajouter des technologies"
-        hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
-        type="text"
-        :required="!validatedTechnologies.length"
-        @keydown.enter.prevent="validateTechnologies"
-      />
-
-      <ul class="fr-tags-group">
-        <li v-for="(techno, i) in validatedTechnologies" :key="i">
-          <button
-            ref="validatedTechnologiesRefs"
-            class="fr-tag fr-tag--dismiss"
-            type="button"
-            :aria-label="`Retirer ${techno}`"
-            @click="removeTechnology(i)"
+    <div class="fr-form-group">
+      <fieldset class="fr-fieldset fr-mb-4w">
+        <legend class="fr-fieldset__legend fr-text--regular">
+          <h2 class="fr-h4 fr-mb-0">
+            Outils d’assistance utilisés pour vérifier l’accessibilité
+          </h2>
+        </legend>
+        <div class="fr-fieldset__content fr-mt-2w">
+          <div
+            v-for="(tool, i) in availableTools"
+            :key="i"
+            class="fr-checkbox-group"
           >
-            {{ techno }}
-          </button>
-        </li>
-      </ul>
-
-      <button
-        ref="validateTechnologiesRef"
-        class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
-        type="button"
-        @click="validateTechnologies"
-      >
-        Valider les technologies
-      </button>
-
-      <!-- <div class="narrow-content"> -->
-      <div class="fr-form-group">
-        <fieldset class="fr-fieldset fr-mb-4w">
-          <legend class="fr-fieldset__legend fr-text--regular">
-            <h2 class="fr-h4 fr-mb-0">
-              Outils d’assistance utilisés pour vérifier l’accessibilité
-            </h2>
-          </legend>
-          <div class="fr-fieldset__content fr-mt-2w">
-            <div
-              v-for="(tool, i) in availableTools"
-              :key="i"
-              class="fr-checkbox-group"
-            >
-              <input
-                :id="`tool-${i}`"
-                v-model="defaultTools"
-                type="checkbox"
-                :value="tool"
-              />
-              <label class="fr-label" :for="`tool-${i}`">
-                {{ tool }}
-              </label>
-            </div>
+            <input
+              :id="`tool-${i}`"
+              v-model="defaultTools"
+              type="checkbox"
+              :value="tool"
+            />
+            <label class="fr-label" :for="`tool-${i}`">
+              {{ tool }}
+            </label>
           </div>
-        </fieldset>
-      </div>
-
-      <DsfrField
-        id="temp-tools"
-        v-model="tempTools"
-        label="Ajouter des outils d’assistance"
-        hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
-        type="text"
-        :required="!validatedTools.length && !defaultTools.length"
-        @keydown.enter.prevent="validateTools"
-      />
-
-      <ul class="fr-tags-group">
-        <li v-for="(tool, i) in validatedTools" :key="i">
-          <button
-            ref="validatedToolsRefs"
-            class="fr-tag fr-tag--dismiss"
-            type="button"
-            :aria-label="`Retirer ${tool}`"
-            @click="removeTool(i)"
-          >
-            {{ tool }}
-          </button>
-        </li>
-      </ul>
-
-      <button
-        ref="validateToolsRef"
-        class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
-        type="button"
-        @click="validateTools"
-      >
-        Valider les outils
-      </button>
+        </div>
+      </fieldset>
     </div>
+
+    <DsfrField
+      id="temp-tools"
+      v-model="tempTools"
+      label="Ajouter des outils d’assistance"
+      hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
+      type="text"
+      :required="!validatedTools.length && !defaultTools.length"
+      @keydown.enter.prevent="validateTools"
+    />
+
+    <ul class="fr-tags-group">
+      <li v-for="(tool, i) in validatedTools" :key="i">
+        <button
+          ref="validatedToolsRefs"
+          class="fr-tag fr-tag--dismiss"
+          type="button"
+          :aria-label="`Retirer ${tool}`"
+          @click="removeTool(i)"
+        >
+          {{ tool }}
+        </button>
+      </li>
+    </ul>
+
+    <button
+      ref="validateToolsRef"
+      class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
+      type="button"
+      @click="validateTools"
+    >
+      Valider les outils
+    </button>
 
     <TestEnvironmentSelection v-model="environments" />
 
-    <div class="narrow-content">
-      <h2 class="fr-h4">Dérogations</h2>
-      <p>
-        Ces informations doivent faire l’objet d’une discussion entre l’auditeur
-        ou l’auditrice et le responsable du site audité. C’est le responsable du
-        site audité qui accepte de prendre le risque juridique de mentionner des
-        contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux
-        champs vides.
-      </p>
+    <!-- <div class="narrow-content"> -->
+    <h2 class="fr-h4">Dérogations</h2>
+    <p>
+      Ces informations doivent faire l’objet d’une discussion entre l’auditeur
+      ou l’auditrice et le responsable du site audité. C’est le responsable du
+      site audité qui accepte de prendre le risque juridique de mentionner des
+      contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux
+      champs vides.
+    </p>
 
-      <div class="fr-input-group">
-        <label class="fr-label" for="notCompliantContent">
-          Non-conformités (optionnel)
-          <span class="fr-hint-text">
-            Il s’agit d’un résumé des contenus et fonctionnalités non conformes
-            identifiés sur le site. Ils doivent être rédigés dans un langage
-            simple et compréhensible par toutes et tous.
-          </span>
-        </label>
-        <textarea
-          id="notCompliantContent"
-          v-model="notCompliantContent"
-          class="fr-input"
-        />
-      </div>
+    <div class="fr-input-group">
+      <label class="fr-label" for="notCompliantContent">
+        Non-conformités (optionnel)
+        <span class="fr-hint-text">
+          Il s’agit d’un résumé des contenus et fonctionnalités non conformes
+          identifiés sur le site. Ils doivent être rédigés dans un langage
+          simple et compréhensible par toutes et tous.
+        </span>
+      </label>
+      <textarea
+        id="notCompliantContent"
+        v-model="notCompliantContent"
+        class="fr-input"
+      />
+    </div>
 
-      <div class="fr-input-group">
-        <label class="fr-label" for="derogatedContent">
-          Dérogations pour charge disproportionnée (optionnel)
-          <span class="fr-hint-text">
-            Il s’agit des contenus qu’il serait trop coûteux de rendre
-            accessibles.
-          </span>
-        </label>
-        <textarea
-          id="derogatedContent"
-          v-model="derogatedContent"
-          class="fr-input"
-        />
-      </div>
+    <div class="fr-input-group">
+      <label class="fr-label" for="derogatedContent">
+        Dérogations pour charge disproportionnée (optionnel)
+        <span class="fr-hint-text">
+          Il s’agit des contenus qu’il serait trop coûteux de rendre
+          accessibles.
+        </span>
+      </label>
+      <textarea
+        id="derogatedContent"
+        v-model="derogatedContent"
+        class="fr-input"
+      />
+    </div>
 
-      <div class="fr-input-group">
-        <label class="fr-label" for="notInScopeContent">
-          Contenus non soumis à l’obligation d’accessibilité, contenus tiers
-          (optionnel)
-          <span class="fr-hint-text">
-            Exemple : Cartes interactives, fil d’actualité réseaux social,
-            lecteur vidéo, etc
-          </span>
-        </label>
-        <textarea
-          id="notInScopeContent"
-          v-model="notInScopeContent"
-          class="fr-input"
-        />
-      </div>
+    <div class="fr-input-group">
+      <label class="fr-label" for="notInScopeContent">
+        Contenus non soumis à l’obligation d’accessibilité, contenus tiers
+        (optionnel)
+        <span class="fr-hint-text">
+          Exemple : Cartes interactives, fil d’actualité réseaux social, lecteur
+          vidéo, etc
+        </span>
+      </label>
+      <textarea
+        id="notInScopeContent"
+        v-model="notInScopeContent"
+        class="fr-input"
+      />
+    </div>
 
-      <div v-if="isDevMode">
-        <button
-          class="fr-btn fr-mt-4w fr-mb-2w"
-          type="button"
-          @click="DEBUG_fillFields"
-        >
-          [DEV] Remplir les champs
-        </button>
-      </div>
+    <div v-if="isDevMode">
+      <button
+        class="fr-btn fr-mt-4w fr-mb-2w"
+        type="button"
+        @click="DEBUG_fillFields"
+      >
+        [DEV] Remplir les champs
+      </button>
+    </div>
 
-      <div class="fr-mt-4w">
-        <button class="fr-btn" type="submit">Enregistrer</button>
-      </div>
+    <div class="fr-mt-4w actions">
+      <button class="fr-btn" type="submit">
+        {{
+          auditIsPublishable
+            ? "Enregistrer les modifications"
+            : "Valider la déclaration"
+        }}
+      </button>
+      <RouterLink
+        :to="{
+          name: 'audit-overview',
+          params: { uniqueId }
+        }"
+        class="fr-btn fr-btn--tertiary-no-outline"
+        type="button"
+      >
+        Annuler
+      </RouterLink>
+    </div>
+
+    <div class="top-link">
+      <TopLink class="fr-ml-auto" />
     </div>
   </form>
 </template>
 
 <style scoped>
+.content {
+  max-width: 49.5rem;
+  margin: 0 auto;
+}
+
 .contact-fieldset {
   display: block;
 }
 
-.narrow-content {
-  max-width: 49.5rem;
-}
-
 .mandatory-notice {
   color: var(--text-mention-grey);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 1rem;
+}
+
+.top-link {
+  display: flex;
+  justify-content: end;
 }
 </style>

@@ -1,10 +1,61 @@
 <script setup lang="ts">
 import fiphfpLogo from "../../assets/images/fiphfp.png";
 import ThemeModal from "./ThemeModal.vue";
+import { useAccountStore } from "../../store/account";
+
+const accountStore = useAccountStore();
+
+const bottomLinks = [
+  {
+    label: "Plan du site",
+    routeName: "site-map"
+  },
+  {
+    label: "Accessibilité : non conforme",
+    routeName: "accessibility"
+  },
+  {
+    label: "Mentions légales",
+    routeName: "legal"
+  },
+  {
+    label: "Données personnelles",
+    routeName: "privacy"
+  },
+  {
+    label: "Contact et contributions",
+    routeName: "contact"
+  }
+];
 </script>
 
 <template>
   <footer id="footer" class="fr-footer" role="contentinfo">
+    <div v-if="accountStore.account" class="fr-footer__top">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
+            <h3 class="fr-footer__top-cat">Nouveautés</h3>
+            <ul class="fr-footer__top-list">
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'changelog' }"
+                  >Notes de versions</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'roadmap' }"
+                  >Feuille de route</RouterLink
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="fr-container">
       <div class="fr-footer__body">
         <div class="fr-footer__brand fr-enlarge-link">
@@ -106,41 +157,16 @@ import ThemeModal from "./ThemeModal.vue";
       </div>
       <div class="fr-footer__bottom">
         <ul class="fr-footer__bottom-list">
-          <li class="fr-footer__bottom-item">
+          <li
+            v-for="link in bottomLinks"
+            :key="link.routeName"
+            class="fr-footer__bottom-item"
+          >
             <RouterLink
               class="fr-footer__bottom-link"
-              :to="{ name: 'site-map' }"
+              :to="{ name: link.routeName }"
             >
-              Plan du site
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'accessibility' }"
-            >
-              Accessibilité : non conforme
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink class="fr-footer__bottom-link" :to="{ name: 'legal' }">
-              Mentions légales
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'privacy' }"
-            >
-              Données personnelles
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: 'contact' }"
-            >
-              Contact et contributions
+              {{ link.label }}
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
