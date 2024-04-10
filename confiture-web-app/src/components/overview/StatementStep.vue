@@ -156,7 +156,7 @@ const auditIsPublishable = computed(() => {
 }
 
 /* FIXME: overrides fr-btns-group style */
-.statement-step-actions > li {
+.statement-step-actions > li:first-child {
   width: 50%;
 }
 
