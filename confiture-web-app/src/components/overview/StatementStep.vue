@@ -64,10 +64,9 @@ const auditIsPublishable = computed(() => {
           :to="
             auditIsPublishable
               ? {
-                  name: 'report',
+                  name: 'a11y-statement',
                   params: {
-                    uniqueId: audit.consultUniqueId,
-                    tab: 'declaration-daccessibilite'
+                    uniqueId: audit.consultUniqueId
                   }
                 }
               : {
@@ -115,10 +114,9 @@ const auditIsPublishable = computed(() => {
       <CopyBlock
         class="fr-m-0 statement-step-copy-block"
         :to="{
-          name: 'report',
+          name: 'a11y-statement',
           params: {
-            uniqueId: audit.consultUniqueId,
-            tab: 'declaration-daccessibilite'
+            uniqueId: audit.consultUniqueId
           }
         }"
         label="Lien de partage"

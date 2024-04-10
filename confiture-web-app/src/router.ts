@@ -265,7 +265,7 @@ const router = createRouter({
     },
     // a11y statement
     {
-      path: "/declarations-accessibilite/:uniqueId",
+      path: "/declarations/:uniqueId",
       name: "a11y-statement",
       component: StatementPage,
       meta: {

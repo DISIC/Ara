@@ -114,7 +114,6 @@ const siteUrl = computed(() => {
       <h1 class="fr-m-0">Déclaration d’accessibilité</h1>
       <button
         class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
-        title="Copier le lien du rapport"
         @click="copyA11yStatementUrl"
       >
         Copier le lien de la déclaration
