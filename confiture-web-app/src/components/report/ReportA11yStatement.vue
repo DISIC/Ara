@@ -137,6 +137,7 @@ const statementIsPublished = computed(() => {
           </p>
           <a
             class="fr-link"
+            href="https://accessibilite.numerique.gouv.fr/obligations/mentions-et-pages-obligatoires/"
             target="_blank"
             href="https://accessibilite.numerique.gouv.fr/obligations/mentions-et-pages-obligatoires/"
             rel="noopener"

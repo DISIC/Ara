@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatDate, formatAuditType, getCriteriaCount } from "../../utils";
+import { formatDate, getCriteriaCount } from "../../utils";
 import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
 import { AuditType } from "../../types";
@@ -40,8 +40,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
         <strong>{{ formatDate(report.data.publishDate) }}</strong></template
       >
       est un audit
-      <strong>{{ formatAuditType(report.data.auditType).toLowerCase() }}</strong
-      >,
+      <strong>{{ report.data.criteriaCount.total }} critères </strong>,
       {{
         report.data.auditType === AuditType.FULL
           ? "l’intégralité"
