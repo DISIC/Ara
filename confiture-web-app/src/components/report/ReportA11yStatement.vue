@@ -135,15 +135,15 @@ const statementIsPublished = computed(() => {
             d’accessibilité sur leur site et d’afficher le niveau de conformité
             au RGAA dès la page d’accueil.
           </p>
-          <RouterLink
+          <a
             class="fr-link"
             target="_blank"
             rel="noopener"
-            :to="{ name: 'legal-requirements' }"
+            href="https://accessibilite.numerique.gouv.fr/obligations/champ-application/"
           >
             Tout savoir sur les obligations légales et sanctions
             <span class="sr-only">(nouvelle fenêtre)</span>
-          </RouterLink>
+          </a>
         </div>
 
         <button

@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 10/04/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Améliore la navigation entre les différents espaces du site : audit, compte utilisateur et livrables ([#683](https://github.com/DISIC/Ara/pull/683))
+
 ## 05/04/2024
 
 ### Nouvelles fonctionnalités 🚀
