@@ -161,235 +161,240 @@ const siteUrl = computed(() => {
         <template v-else>Non renseignée</template>
       </p>
 
-      <h2>Comment publier la déclaration</h2>
+      <div class="content">
+        <h2>Comment publier la déclaration</h2>
 
-      <ol class="fr-mb-5w">
-        <li>
-          Vérifier les informations contenues dans la déclaration ci-dessous.
-        </li>
-        <li>Publier sur votre site cette déclaration dans une page dédiée.</li>
-        <li>
-          Dès la page d’accueil et sur toutes les pages de votre site, afficher
-          la mention “<strong
-            >Accessibilité : {{ getA11yLevel() }} conforme</strong
-          >”. Cette mention peut être par exemple, un lien dans le pied de page
-          vers la page contenant votre déclaration.
-        </li>
-      </ol>
-
-      <h2>Document à intégrer sur le site audité</h2>
-
-      <p>
-        Cette déclaration d’accessibilité adopte un format obligatoire donné par
-        le Référentiel général d'amélioration de l'accessibilité (RGAA). Vous
-        devez publier l’intégralité de cette déclaration.
-      </p>
-
-      <button
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill fr-mb-4w"
-        @click="copyA11yStatementHTML"
-      >
-        Copier le code HTML de la déclaration
-      </button>
-
-      <div ref="statementContainerRef" class="fr-p-9v statement-container">
-        <h3 class="fr-h1">Déclaration d’accessibilité</h3>
-        <p>
-          <strong>{{ report.data.procedureInitiator }}</strong> s’engage à
-          rendre ses sites internet, intranet, extranet et ses progiciels
-          accessibles (et ses applications mobiles et mobilier urbain numérique)
-          conformément à l’article 47 de la loi n°2005-102 du 11 février 2005.
-        </p>
-
-        <p class="fr-mb-9v fr-mb-md-6w">
-          Cette déclaration d’accessibilité s’applique à
-          <strong>{{ report.data.procedureUrl }}</strong
-          >.
-        </p>
-
-        <h4 class="fr-h2">État de conformité</h4>
-        <p class="fr-mb-9v fr-mb-md-6w">
-          <strong
-            >{{ report.data.procedureName }}
-            <a target="_blank" :href="report.data.procedureUrl">
-              {{ report.data.procedureUrl }}
-            </a></strong
-          >
-          est <strong>{{ getA11yLevel() }}</strong> conforme avec le référentiel
-          général d’amélioration de l’accessibilité (RGAA).
-        </p>
-
-        <h4 class="fr-h2">Résultats des tests</h4>
-        <p class="fr-mb-9v fr-mb-md-6w">
-          L’audit de conformité réalisé par
-          <strong>{{ report.data.context.auditorOrganisation }}</strong> révèle
-          que <strong>{{ report.data.accessibilityRate }}%</strong> des critères
-          du RGAA version 4 sont respectés.
-        </p>
-
-        <template
-          v-if="
-            report.data.notCompliantContent ||
-            report.data.derogatedContent ||
-            report.data.notInScopeContent
-          "
-        >
-          <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
-
-          <template v-if="report.data.notCompliantContent">
-            <h5 class="fr-h3">Non-conformités</h5>
-            <MarkdownRenderer
-              class="fr-mb-2w fr-mb-md-3w"
-              :markdown="report.data.notCompliantContent"
-            />
-          </template>
-
-          <template v-if="report.data.derogatedContent">
-            <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-            <MarkdownRenderer
-              class="fr-mb-2w fr-mb-md-3w"
-              :markdown="report.data.derogatedContent"
-            />
-          </template>
-
-          <template v-if="report.data.notInScopeContent">
-            <h5 class="fr-h3">
-              Contenus non soumis à l’obligation d’accessibilité
-            </h5>
-            <MarkdownRenderer
-              class="fr-mb-2w fr-mb-md-3w"
-              :markdown="report.data.notInScopeContent"
-            />
-          </template>
-        </template>
-
-        <h4 class="fr-h2">
-          Établissement de cette déclaration d’accessibilité
-        </h4>
-        <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
-          Cette déclaration a été établie le
-          <strong>{{ formatDate(report.data.publishDate) }}</strong
-          >.
-          <template v-if="report.data.updateDate"
-            >Elle a été mise à jour le
-            <strong>{{ formatDate(report.data.updateDate) }}</strong
-            >.</template
-          >
-        </p>
-
-        <h5 class="fr-h3">
-          Technologies utilisées pour la réalisation de l’audit
-        </h5>
-        <ul class="fr-mb-2w fr-mb-md-3w">
-          <li v-for="tech in report.data.context.technologies" :key="tech">
-            {{ tech }}
-          </li>
-        </ul>
-
-        <h5 class="fr-h3">Environnement de test</h5>
-        <p>
-          Les vérifications de restitution de contenus ont été réalisées sur la
-          base de la combinaison fournie par la base de référence du RGAA, avec
-          les versions suivantes :
-        </p>
-        <ul class="fr-mb-2w fr-mb-md-3w">
-          <template v-if="report.data.context.desktopEnvironments.length">
-            <li
-              v-for="(env, i) in report.data.context.desktopEnvironments"
-              :key="i"
-            >
-              Sur ordinateur {{ env.operatingSystem }}
-              <template v-if="env.operatingSystemVersion">{{
-                env.operatingSystemVersion
-              }}</template>
-              avec {{ env.browser }}
-              <template v-if="env.browserVersion">{{
-                env.browserVersion
-              }}</template>
-              et
-              {{ env.assistiveTechnology }}
-              <template v-if="env.assistiveTechnologyVersion">{{
-                env.assistiveTechnologyVersion
-              }}</template>
-            </li>
-          </template>
-          <template v-if="report.data.context.mobileEnvironments.length">
-            <li
-              v-for="(env, i) in report.data.context.mobileEnvironments"
-              :key="i"
-            >
-              Sur mobile {{ env.operatingSystem }}
-              <template v-if="env.operatingSystemVersion">{{
-                env.operatingSystemVersion
-              }}</template>
-              avec {{ env.browser }}
-              <template v-if="env.browserVersion">{{
-                env.browserVersion
-              }}</template>
-              et
-              {{ env.assistiveTechnology }}
-              <template v-if="env.assistiveTechnologyVersion">{{
-                env.assistiveTechnologyVersion
-              }}</template>
-            </li>
-          </template>
-        </ul>
-        <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
-        <ul class="fr-mb-2w fr-mb-md-3w">
-          <li v-for="tool in report.data.context.tools" :key="tool">
-            {{ tool }}
-          </li>
-        </ul>
-        <h5 class="fr-h3">
-          Pages du site ayant fait l’objet de la vérification de conformité
-        </h5>
-        <ul class="fr-mb-9v fr-mb-md-6w">
-          <li v-for="page in report.data.context.samples" :key="page.name">
-            {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
-          </li>
-        </ul>
-        <h4 class="fr-h2">Retour d’information et contact</h4>
-        <p>
-          Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-          pouvez contacter le responsable de
-          {{ report.data.procedureName }} pour être orienté vers une alternative
-          accessible ou obtenir le contenu sous une autre forme.
-        </p>
-        <ul class="fr-mb-9v fr-mb-md-6w">
-          <li v-if="report.data.contactFormUrl">
-            Envoyer un message
-            <strong>{{ report.data.contactFormUrl }}</strong>
-          </li>
-          <li v-if="report.data.contactEmail">
-            Contacter
-            <strong
-              >{{ report.data.procedureInitiator }} :
-              {{ report.data.contactEmail }}</strong
-            >
-          </li>
-        </ul>
-
-        <h4 class="fr-h2">Voies de recours</h4>
-        <p>
-          Si vous constatez un défaut d’accessibilité vous empêchant d’accéder à
-          un contenu ou une fonctionnalité du site, que vous nous le signalez et
-          que vous ne parvenez pas à obtenir une réponse de notre part, vous
-          êtes en droit de faire parvenir vos doléances ou une demande de
-          saisine au Défenseur des droits.
-        </p>
-
-        <p>Plusieurs moyens sont à votre disposition :</p>
-        <ul>
-          <li>Écrire un message au Défenseur des droits</li>
+        <ol class="fr-mb-5w">
           <li>
-            Contacter le délégué du Défenseur des droits dans votre région
+            Vérifier les informations contenues dans la déclaration ci-dessous.
           </li>
-        </ul>
+          <li>
+            Publier sur votre site cette déclaration dans une page dédiée.
+          </li>
+          <li>
+            Dès la page d’accueil et sur toutes les pages de votre site,
+            afficher la mention “<strong
+              >Accessibilité : {{ getA11yLevel() }} conforme</strong
+            >”. Cette mention peut être par exemple, un lien dans le pied de
+            page vers la page contenant votre déclaration.
+          </li>
+        </ol>
+
+        <h2>Document à intégrer sur le site audité</h2>
 
         <p>
-          Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre)
-          Défenseur des droits Libre réponse 71120 75342 Paris CEDEX 07
+          Cette déclaration d’accessibilité adopte un format obligatoire donné
+          par le Référentiel général d'amélioration de l'accessibilité (RGAA).
+          Vous devez publier l’intégralité de cette déclaration.
         </p>
+
+        <button
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill fr-mb-4w"
+          @click="copyA11yStatementHTML"
+        >
+          Copier le code HTML de la déclaration
+        </button>
+
+        <div ref="statementContainerRef" class="fr-p-9v statement-container">
+          <h3 class="fr-h1">Déclaration d’accessibilité</h3>
+          <p>
+            <strong>{{ report.data.procedureInitiator }}</strong> s’engage à
+            rendre ses sites internet, intranet, extranet et ses progiciels
+            accessibles (et ses applications mobiles et mobilier urbain
+            numérique) conformément à l’article 47 de la loi n°2005-102 du 11
+            février 2005.
+          </p>
+
+          <p class="fr-mb-9v fr-mb-md-6w">
+            Cette déclaration d’accessibilité s’applique à
+            <strong>{{ report.data.procedureUrl }}</strong
+            >.
+          </p>
+
+          <h4 class="fr-h2">État de conformité</h4>
+          <p class="fr-mb-9v fr-mb-md-6w">
+            <strong
+              >{{ report.data.procedureName }}
+              <a target="_blank" :href="report.data.procedureUrl">
+                {{ report.data.procedureUrl }}
+              </a></strong
+            >
+            est <strong>{{ getA11yLevel() }}</strong> conforme avec le
+            référentiel général d’amélioration de l’accessibilité (RGAA).
+          </p>
+
+          <h4 class="fr-h2">Résultats des tests</h4>
+          <p class="fr-mb-9v fr-mb-md-6w">
+            L’audit de conformité réalisé par
+            <strong>{{ report.data.context.auditorOrganisation }}</strong>
+            révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des
+            critères du RGAA version 4 sont respectés.
+          </p>
+
+          <template
+            v-if="
+              report.data.notCompliantContent ||
+              report.data.derogatedContent ||
+              report.data.notInScopeContent
+            "
+          >
+            <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
+
+            <template v-if="report.data.notCompliantContent">
+              <h5 class="fr-h3">Non-conformités</h5>
+              <MarkdownRenderer
+                class="fr-mb-2w fr-mb-md-3w"
+                :markdown="report.data.notCompliantContent"
+              />
+            </template>
+
+            <template v-if="report.data.derogatedContent">
+              <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+              <MarkdownRenderer
+                class="fr-mb-2w fr-mb-md-3w"
+                :markdown="report.data.derogatedContent"
+              />
+            </template>
+
+            <template v-if="report.data.notInScopeContent">
+              <h5 class="fr-h3">
+                Contenus non soumis à l’obligation d’accessibilité
+              </h5>
+              <MarkdownRenderer
+                class="fr-mb-2w fr-mb-md-3w"
+                :markdown="report.data.notInScopeContent"
+              />
+            </template>
+          </template>
+
+          <h4 class="fr-h2">
+            Établissement de cette déclaration d’accessibilité
+          </h4>
+          <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
+            Cette déclaration a été établie le
+            <strong>{{ formatDate(report.data.publishDate) }}</strong
+            >.
+            <template v-if="report.data.updateDate"
+              >Elle a été mise à jour le
+              <strong>{{ formatDate(report.data.updateDate) }}</strong
+              >.</template
+            >
+          </p>
+
+          <h5 class="fr-h3">
+            Technologies utilisées pour la réalisation de l’audit
+          </h5>
+          <ul class="fr-mb-2w fr-mb-md-3w">
+            <li v-for="tech in report.data.context.technologies" :key="tech">
+              {{ tech }}
+            </li>
+          </ul>
+
+          <h5 class="fr-h3">Environnement de test</h5>
+          <p>
+            Les vérifications de restitution de contenus ont été réalisées sur
+            la base de la combinaison fournie par la base de référence du RGAA,
+            avec les versions suivantes :
+          </p>
+          <ul class="fr-mb-2w fr-mb-md-3w">
+            <template v-if="report.data.context.desktopEnvironments.length">
+              <li
+                v-for="(env, i) in report.data.context.desktopEnvironments"
+                :key="i"
+              >
+                Sur ordinateur {{ env.operatingSystem }}
+                <template v-if="env.operatingSystemVersion">{{
+                  env.operatingSystemVersion
+                }}</template>
+                avec {{ env.browser }}
+                <template v-if="env.browserVersion">{{
+                  env.browserVersion
+                }}</template>
+                et
+                {{ env.assistiveTechnology }}
+                <template v-if="env.assistiveTechnologyVersion">{{
+                  env.assistiveTechnologyVersion
+                }}</template>
+              </li>
+            </template>
+            <template v-if="report.data.context.mobileEnvironments.length">
+              <li
+                v-for="(env, i) in report.data.context.mobileEnvironments"
+                :key="i"
+              >
+                Sur mobile {{ env.operatingSystem }}
+                <template v-if="env.operatingSystemVersion">{{
+                  env.operatingSystemVersion
+                }}</template>
+                avec {{ env.browser }}
+                <template v-if="env.browserVersion">{{
+                  env.browserVersion
+                }}</template>
+                et
+                {{ env.assistiveTechnology }}
+                <template v-if="env.assistiveTechnologyVersion">{{
+                  env.assistiveTechnologyVersion
+                }}</template>
+              </li>
+            </template>
+          </ul>
+          <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
+          <ul class="fr-mb-2w fr-mb-md-3w">
+            <li v-for="tool in report.data.context.tools" :key="tool">
+              {{ tool }}
+            </li>
+          </ul>
+          <h5 class="fr-h3">
+            Pages du site ayant fait l’objet de la vérification de conformité
+          </h5>
+          <ul class="fr-mb-9v fr-mb-md-6w">
+            <li v-for="page in report.data.context.samples" :key="page.name">
+              {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
+            </li>
+          </ul>
+          <h4 class="fr-h2">Retour d’information et contact</h4>
+          <p>
+            Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
+            pouvez contacter le responsable de
+            {{ report.data.procedureName }} pour être orienté vers une
+            alternative accessible ou obtenir le contenu sous une autre forme.
+          </p>
+          <ul class="fr-mb-9v fr-mb-md-6w">
+            <li v-if="report.data.contactFormUrl">
+              Envoyer un message
+              <strong>{{ report.data.contactFormUrl }}</strong>
+            </li>
+            <li v-if="report.data.contactEmail">
+              Contacter
+              <strong
+                >{{ report.data.procedureInitiator }} :
+                {{ report.data.contactEmail }}</strong
+              >
+            </li>
+          </ul>
+
+          <h4 class="fr-h2">Voies de recours</h4>
+          <p>
+            Si vous constatez un défaut d’accessibilité vous empêchant d’accéder
+            à un contenu ou une fonctionnalité du site, que vous nous le
+            signalez et que vous ne parvenez pas à obtenir une réponse de notre
+            part, vous êtes en droit de faire parvenir vos doléances ou une
+            demande de saisine au Défenseur des droits.
+          </p>
+
+          <p>Plusieurs moyens sont à votre disposition :</p>
+          <ul>
+            <li>Écrire un message au Défenseur des droits</li>
+            <li>
+              Contacter le délégué du Défenseur des droits dans votre région
+            </li>
+          </ul>
+
+          <p>
+            Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre)
+            Défenseur des droits Libre réponse 71120 75342 Paris CEDEX 07
+          </p>
+        </div>
       </div>
     </template>
   </template>
@@ -408,9 +413,12 @@ const siteUrl = computed(() => {
   max-width: 49.5rem;
 }
 
+.content {
+  max-width: 58rem;
+}
+
 .statement-container {
   border: 1px solid var(--border-default-grey);
-  max-width: 58rem;
 }
 
 .page-url {
