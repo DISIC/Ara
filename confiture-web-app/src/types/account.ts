@@ -27,4 +27,5 @@ export interface AccountAudit {
   editUniqueId: string;
   consultUniqueId: string;
   estimatedCsvSize: number;
+  statementIsPublished: boolean;
 }

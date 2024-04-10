@@ -138,6 +138,18 @@ function copyReportLink(uniqueId: string) {
     );
   });
 }
+
+function copyStatementLink(uniqueId: string) {
+  const url = `${window.location.origin}/declarations/${uniqueId}`;
+
+  navigator.clipboard.writeText(url).then(() => {
+    notify(
+      "success",
+      undefined,
+      `Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier.`
+    );
+  });
+}
 </script>
 
 <template>
@@ -324,6 +336,15 @@ function copyReportLink(uniqueId: string) {
             >
               Copier le lien du rapport
               <span class="sr-only"> de l’audit {{ audit.procedureName }}</span>
+            </button>
+          </li>
+
+          <li v-if="audit.statementIsPublished" class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              @click="copyStatementLink(audit.consultUniqueId)"
+            >
+              Copier le lien de la déclaration
             </button>
           </li>
 
