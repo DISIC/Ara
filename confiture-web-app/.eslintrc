@@ -12,9 +12,6 @@
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended"
   ],
-  "env": {
-    "jest": true
-  },
   "globals": {
     "dsfr": true
   },
