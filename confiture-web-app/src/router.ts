@@ -246,7 +246,7 @@ const router = createRouter({
     },
     // Report pages
     {
-      path: "/rapports/:uniqueId/contexte",
+      path: "/rapport/:uniqueId/contexte",
       name: "context",
       component: ContextPage,
       meta: {
@@ -254,8 +254,16 @@ const router = createRouter({
         hideHomeLink: true
       }
     },
+    // TODO: remove this redirect in few months (17/04/2024)
     {
-      path: "/rapports/:uniqueId/:tab?",
+      path: "/rapports/:uniqueId/contexte",
+      name: "context-old",
+      redirect: () => {
+        return { name: "context" };
+      }
+    },
+    {
+      path: "/rapport/:uniqueId/:tab?",
       name: "report",
       component: ReportPage,
       meta: {
@@ -263,13 +271,29 @@ const router = createRouter({
         hideHomeLink: true
       }
     },
+    // TODO: remove this redirect in few months (17/04/2024)
+    {
+      path: "/rapports/:uniqueId/:tab?",
+      name: "report-old",
+      redirect: () => {
+        return { name: "report" };
+      }
+    },
     // a11y statement
     {
-      path: "/declarations/:uniqueId",
+      path: "/declaration/:uniqueId",
       name: "a11y-statement",
       component: StatementPage,
       meta: {
         name: "Déclaration d’accessibilité"
+      }
+    },
+    // TODO: remove this redirect in few months (17/04/2024)
+    {
+      path: "/declarations/:uniqueId",
+      name: "a11y-statement-old",
+      redirect: () => {
+        return { name: "a11y-statement" };
       }
     },
     // Roadmap

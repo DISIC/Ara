@@ -140,7 +140,7 @@ function copyReportLink(uniqueId: string) {
 }
 
 function copyStatementLink(uniqueId: string) {
-  const url = `${window.location.origin}/declarations/${uniqueId}`;
+  const url = `${window.location.origin}/declaration/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
     notify(
