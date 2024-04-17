@@ -34,19 +34,6 @@ export function formatDate(dateString: string, short?: boolean): string {
     : formatter.format(new Date(dateString));
 }
 
-const FORMATTED_TYPES = {
-  [AuditType.COMPLEMENTARY]: "Complémentaire",
-  [AuditType.FAST]: "Rapide",
-  [AuditType.FULL]: "Complet"
-};
-
-/**
- * Format an audit type string into French.
- */
-export function formatAuditType(auditType: AuditType): string {
-  return FORMATTED_TYPES[auditType];
-}
-
 const FORMATTED_USER_IMPACT = {
   [CriterionResultUserImpact.MINOR]: "mineur",
   [CriterionResultUserImpact.MAJOR]: "majeur",

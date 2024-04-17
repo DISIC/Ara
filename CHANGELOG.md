@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 17/04/2024
 
+### Nouvelles fonctionnalités 🚀
+
+- Détache la déclaration d’accessibilité du rapport d’accessibilité ([#696](https://github.com/DISIC/Ara/pull/696))
+
 ### Corrections 🐛
 
 - Corrige le problème d’ordre des pages sur le rapport ([#692](https://github.com/DISIC/Ara/pull/692))
