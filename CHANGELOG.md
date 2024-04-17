@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 17/04/2024
+
+### Corrections 🐛
+
+- Corrige le problème d’ordre des pages sur le rapport ([#692](https://github.com/DISIC/Ara/pull/692))
+
 ## 10/04/2024
 
 ### Nouvelles fonctionnalités 🚀
