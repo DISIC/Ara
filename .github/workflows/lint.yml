@@ -29,6 +29,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run ESLint and Prettier
+      - name: Lint front-end
         run: yarn lint
         working-directory: confiture-web-app/
+
+      - name: Lint back-end
+        run: yarn eslint "src/**/*.ts"
+        working-directory: confiture-rest-api/
