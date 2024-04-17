@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useReportStore } from "../../store";
-import { formatDate } from "../../utils";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import PageMeta from "../components/PageMeta";
+import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
+import { useNotifications } from "../composables/useNotifications";
+import { useWrappedFetch } from "../composables/useWrappedFetch";
+import { useReportStore } from "../store";
+import { AuditStatus } from "../types";
+import { formatDate, getAuditStatus } from "../utils";
 
 const report = useReportStore();
 
@@ -13,6 +16,22 @@ const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
+
+const notify = useNotifications();
+
+async function copyA11yStatementUrl() {
+  const url = `${window.location.origin}/temp/${uniqueId}/declaration-accessibilite`;
+
+  navigator.clipboard.writeText(url).then(() => {
+    showCopyAlert.value = true;
+
+    notify(
+      "success",
+      "",
+      "Le lien vers le rapport a bien été copié dans le presse-papier."
+    );
+  });
+}
 
 function getA11yLevel() {
   if (report.data!.accessibilityRate === 100) {
@@ -24,7 +43,7 @@ function getA11yLevel() {
   }
 }
 
-const statementRef = ref<HTMLDivElement>();
+const statementContainerRef = ref<HTMLDivElement>();
 const showCopyAlert = ref(false);
 
 async function copyA11yStatementHTML() {
@@ -35,7 +54,7 @@ async function copyA11yStatementHTML() {
   const twoLineBreakTags = /<\/(?<tagName>h1|h2|h3|p|ul)>/g; // "</XX>"
   const indentedTags = /<(?<tagName>li)>/g; // "<li>"
 
-  const html = statementRef.value?.innerHTML
+  const html = statementContainerRef.value?.innerHTML
     // Replace heading levels
     .replaceAll("<h3", "<h1")
     .replaceAll("</h3>", "</h1>")
@@ -62,22 +81,46 @@ async function copyA11yStatementHTML() {
 
   if (html) {
     navigator.clipboard.writeText(html).then(() => {
-      showCopyAlert.value = true;
+      notify(
+        "success",
+        "",
+        "Le code HTML de la déclaration d’accessibilité a bien été copié dans le presse-papier."
+      );
     });
   }
-}
-
-function hideCopyAlert() {
-  showCopyAlert.value = false;
 }
 
 const statementIsPublished = computed(() => {
   return !!report.data?.procedureInitiator;
 });
+
+const siteUrl = computed(() => {
+  if (report.data) {
+    return (
+      report.data.procedureUrl ||
+      new URL(report.data.context.samples[0].url).origin
+    );
+  }
+
+  return null;
+});
 </script>
 
 <template>
   <template v-if="report.data">
+    <PageMeta title="Déclaration d’accessibilité" />
+
+    <div class="fr-mb-4w heading">
+      <h1 class="fr-m-0">Déclaration d’accessibilité</h1>
+      <button
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
+        title="Copier le lien du rapport"
+        @click="copyA11yStatementUrl"
+      >
+        Copier le lien de la déclaration
+      </button>
+    </div>
+
     <div v-if="!statementIsPublished" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
       <p>
@@ -87,91 +130,70 @@ const statementIsPublished = computed(() => {
     </div>
 
     <template v-else>
-      <div class="info-container">
-        <h2 class="fr-h3">
-          Comment publier la déclaration d’accessibilité sur mon site ?
-        </h2>
-        <ol class="fr-mb-3w">
-          <li>
-            Vérifier les informations contenues dans la déclaration ci-dessous
-            et corrigez si besoin les données qui vous concernent
-          </li>
-          <li>
-            Publier sur votre site cette déclaration d’accessibilité dans une
-            page dédiée.
-          </li>
-          <li>
-            Dès la page d’accueil et sur toutes les pages, afficher la mention
-            <strong>“Accessibilité : {{ getA11yLevel() }} conforme”</strong>.
-            Cette mention peut être un lien, par exemple dans le pied de page,
-            vers cette déclaration.
-          </li>
-        </ol>
+      <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
-        <div class="fr-callout fr-callout--blue-ecume fr-mb-3w">
-          <h3 class="fr-h4">Format obligatoire</h3>
-          <p class="fr-callout__text fr-mb-2w">
-            Cette déclaration d’accessibilité adopte un format obligatoire donné
-            par le RGAA. Vous devez publier l’intégralité de cette déclaration
-            sur votre site.
-          </p>
-          <a
-            href="https://accessibilite.numerique.gouv.fr/obligations/declaration-accessibilite/"
-            class="fr-link"
-            target="_blank"
-            rel="noopener"
-          >
-            Tout savoir sur la déclaration d’accessibilité
-            <span class="sr-only">(nouvelle fenêtre)</span>
-          </a>
-        </div>
+      <p
+        v-if="
+          getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
+          report.data.creationDate
+        "
+        class="fr-text--light fr-mb-4w dates"
+      >
+        Commencé le {{ formatDate(report.data.creationDate) }}
+      </p>
 
-        <div class="fr-callout fr-callout--blue-ecume fr-mb-6w">
-          <h3 class="fr-h4">
-            Mention et publication obligatoire pour les sites publics
-          </h3>
-          <p class="fr-callout__text fr-mb-2w">
-            Les sites publics ont l’obligation de publier une déclaration
-            d’accessibilité sur leur site et d’afficher le niveau de conformité
-            au RGAA dès la page d’accueil.
-          </p>
-          <a
-            class="fr-link"
-            href="https://accessibilite.numerique.gouv.fr/obligations/mentions-et-pages-obligatoires/"
-            target="_blank"
-            href="https://accessibilite.numerique.gouv.fr/obligations/mentions-et-pages-obligatoires/"
-            rel="noopener"
-          >
-            Tout savoir sur les obligations légales et sanctions
-            <span class="sr-only">(nouvelle fenêtre)</span>
-          </a>
-        </div>
+      <p
+        v-else-if="report.data.publishDate"
+        class="fr-text--light fr-mb-4w dates"
+      >
+        Publié le {{ formatDate(report.data.publishDate) }}
+        <template v-if="report.data.updateDate">
+          - Mis à jour le {{ formatDate(report.data.updateDate) }}
+        </template>
+      </p>
 
-        <button
-          class="fr-btn fr-btn--icon-right fr-icon-file-line fr-mb-4w"
-          @click="copyA11yStatementHTML"
-          @blur="hideCopyAlert"
-        >
-          Copier le code HTML
-        </button>
+      <p class="fr-mb-9w">
+        URL du site :
+        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
+          {{ siteUrl }}
+          <span class="sr-only">(nouvelle fenêtre)</span>
+        </a>
+        <template v-else>Non renseignée</template>
+      </p>
 
-        <div role="alert" aria-live="polite">
-          <div
-            v-if="showCopyAlert"
-            class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
-          >
-            <p>
-              Le code
-              <abbr title="Hypertext Markup Language">HTML</abbr> de la
-              déclaration d’accessibilité a bien été copié dans le
-              presse-papier.
-            </p>
-          </div>
-        </div>
-      </div>
+      <h2>Comment publier la déclaration</h2>
 
-      <div ref="statementRef" class="fr-p-6w statement-container">
-        <h3 class="fr-h2">Déclaration d’accessibilité</h3>
+      <ol class="fr-mb-5w">
+        <li>
+          Vérifier les informations contenues dans la déclaration ci-dessous.
+        </li>
+        <li>Publier sur votre site cette déclaration dans une page dédiée.</li>
+        <li>
+          Dès la page d’accueil et sur toutes les pages de votre site, afficher
+          la mention “<strong
+            >Accessibilité : {{ getA11yLevel() }} conforme</strong
+          >”. Cette mention peut être par exemple, un lien dans le pied de page
+          vers la page contenant votre déclaration.
+        </li>
+      </ol>
+
+      <h2>Document à intégrer sur le site audité</h2>
+
+      <p>
+        Cette déclaration d’accessibilité adopte un format obligatoire donné par
+        le Référentiel général d'amélioration de l'accessibilité (RGAA). Vous
+        devez publier l’intégralité de cette déclaration.
+      </p>
+
+      <button
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill fr-mb-4w"
+        @click="copyA11yStatementHTML"
+      >
+        Copier le code HTML de la déclaration
+      </button>
+
+      <div ref="statementContainerRef" class="fr-p-9v statement-container">
+        <h3 class="fr-h1">Déclaration d’accessibilité</h3>
         <p>
           <strong>{{ report.data.procedureInitiator }}</strong> s’engage à
           rendre ses sites internet, intranet, extranet et ses progiciels
@@ -194,8 +216,7 @@ const statementIsPublished = computed(() => {
             </a></strong
           >
           est <strong>{{ getA11yLevel() }}</strong> conforme avec le référentiel
-          général d’amélioration de l’accessibilité (RGAA), version 4 en raison
-          des non-conformités et des dérogations énumérées ci-dessous.
+          général d’amélioration de l’accessibilité (RGAA).
         </p>
 
         <h4 class="fr-h2">Résultats des tests</h4>
@@ -375,6 +396,14 @@ const statementIsPublished = computed(() => {
 </template>
 
 <style scoped>
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .info-container {
   max-width: 49.5rem;
 }

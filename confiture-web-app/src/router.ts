@@ -25,6 +25,7 @@ import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ContextPage from "./pages/report/ContextPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
+import StatementPage from "./pages/StatementPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
 
@@ -260,6 +261,15 @@ const router = createRouter({
       meta: {
         name: "Rapport d’audit",
         hideHomeLink: true
+      }
+    },
+    // a11y statement
+    {
+      path: "/declarations-accessibilite/:uniqueId",
+      name: "a11y-statement",
+      component: StatementPage,
+      meta: {
+        name: "Déclaration d’accessibilité"
       }
     },
     // Roadmap
