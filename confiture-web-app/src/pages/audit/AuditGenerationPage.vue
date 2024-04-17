@@ -18,6 +18,7 @@ import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize } from "../../utils";
 import TransverseWarningModal from "../../components/audit/TransverseWarningModal.vue";
 import TransverseNoticeModal from "../../components/audit/TransverseNoticeModal.vue";
+
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 
 const route = useRoute();
