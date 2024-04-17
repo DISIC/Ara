@@ -27,10 +27,8 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Run ESLint and Prettier
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          eslint_dir: confiture-web-app/
+        run: yarn lint
+        working-directory: confiture-web-app/
