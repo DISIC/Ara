@@ -25,6 +25,7 @@ import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ContextPage from "./pages/report/ContextPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
+import StatementPage from "./pages/StatementPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
 
@@ -32,9 +33,6 @@ declare module "vue-router" {
   interface RouteMeta {
     // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
     name: string;
-    breadcrumbLinks?:
-      | Array<{ label: string; name: string }>
-      | (() => Array<{ label: string; name: string }>);
     hideHomeLink?: boolean;
     authRequired?: boolean;
   }
@@ -43,22 +41,11 @@ declare module "vue-router" {
 export const history = createWebHistory();
 
 /**
- * Fetch the audit name from store to display in breadcrumb.
+ * Fetch the audit name from store to display in meta.
  */
 function getProcedureName() {
   const auditStore = useAuditStore();
   return auditStore.currentAudit?.procedureName ?? "Mon audit";
-}
-
-/**
- * Get the home link as first one
- */
-function getHomeBreadcrumbLink() {
-  const accountStore = useAccountStore();
-
-  return accountStore.account
-    ? { label: "Mes audits", name: "account-dashboard" }
-    : { label: "Accueil", name: "home" };
 }
 
 /**
@@ -86,11 +73,7 @@ const router = createRouter({
       name: "site-map",
       component: SiteMapPage,
       meta: {
-        name: "Plan du site",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Plan du site", name: "site-map" }
-        ]
+        name: "Plan du site"
       }
     },
     {
@@ -98,11 +81,7 @@ const router = createRouter({
       name: "accessibility",
       component: AccessibilityPage,
       meta: {
-        name: "Accessibilité",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Accessibilité", name: "accessibility" }
-        ]
+        name: "Accessibilité"
       }
     },
     {
@@ -110,11 +89,7 @@ const router = createRouter({
       name: "privacy",
       component: PrivacyPage,
       meta: {
-        name: "Données personnelles",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Données personnelles", name: "privacy" }
-        ]
+        name: "Données personnelles"
       }
     },
     {
@@ -122,11 +97,7 @@ const router = createRouter({
       name: "legal",
       component: LegalPage,
       meta: {
-        name: "Mentions légales",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Mentions légales", name: "legal" }
-        ]
+        name: "Mentions légales"
       }
     },
     // Contact page
@@ -135,11 +106,7 @@ const router = createRouter({
       name: "contact",
       component: ContactPage,
       meta: {
-        name: "Contact",
-        breadcrumbLinks: [
-          { label: "Accueil", name: "home" },
-          { label: "Contactez-nous ou contribuez", name: "contact" }
-        ]
+        name: "Contact"
       }
     },
     // Account pages
@@ -148,11 +115,7 @@ const router = createRouter({
       name: "new-account",
       component: NewAccountPage,
       meta: {
-        name: "Créer votre compte Ara",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Créer votre compte Ara", name: "new-account" }
-        ]
+        name: "Créer votre compte Ara"
       }
     },
     {
@@ -160,14 +123,7 @@ const router = createRouter({
       name: "new-account-validation",
       component: NewAccountValidationPage,
       meta: {
-        name: "Valider votre compte Ara",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: "Valider votre compte Ara",
-            name: "new-account-validation"
-          }
-        ]
+        name: "Valider votre compte Ara"
       }
     },
     {
@@ -175,14 +131,7 @@ const router = createRouter({
       name: "email-update-validation",
       component: UpdateEmailValidationPage,
       meta: {
-        name: "Changement d'adresse e-mail",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: "Changement d'adresse e-mail",
-            name: "email-update-validation"
-          }
-        ]
+        name: "Changement d'adresse e-mail"
       }
     },
     {
@@ -190,14 +139,7 @@ const router = createRouter({
       name: "login",
       component: LoginPage,
       meta: {
-        name: "Connexion à Ara",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: "Connexion à Ara",
-            name: "login"
-          }
-        ]
+        name: "Connexion à Ara"
       }
     },
     {
@@ -223,11 +165,7 @@ const router = createRouter({
       component: AccountSettingsPage,
       meta: {
         authRequired: true,
-        name: "Mon compte",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Mon compte", name: "account-settings" }
-        ]
+        name: "Mon compte"
       }
     },
     {
@@ -235,11 +173,7 @@ const router = createRouter({
       name: "account-deletion-feedback",
       component: AccountDeletionFeedback,
       meta: {
-        name: "Suppression compte",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Suppression compte", name: "account-deletion-feedback" }
-        ]
+        name: "Suppression compte"
       },
       beforeEnter() {
         // Check that a feedback token is present in the store, otherwise redirect to homepage.
@@ -254,11 +188,7 @@ const router = createRouter({
       name: "missing-audit",
       component: MissingAuditPage,
       meta: {
-        name: "Je ne retrouve pas mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Je ne retrouve pas mon audit", name: "missing-audit" }
-        ]
+        name: "Je ne retrouve pas mon audit"
       }
     },
     // Audit pages
@@ -267,11 +197,7 @@ const router = createRouter({
       name: "create-audit",
       component: CreateAuditPage,
       meta: {
-        name: "Nouvel audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Nouvel audit", name: "create-audit" }
-        ]
+        name: "Nouvel audit"
       }
     },
     {
@@ -280,14 +206,7 @@ const router = createRouter({
       component: AuditSettingsPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: getProcedureName(),
-            name: "audit-settings"
-          }
-        ]
+        name: "Mon audit"
       }
     },
     {
@@ -296,18 +215,7 @@ const router = createRouter({
       component: AuditGenerationPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: `Synthèse ${getProcedureName()}`,
-            name: "audit-overview"
-          },
-          {
-            label: getProcedureName(),
-            name: "audit-generation"
-          }
-        ]
+        name: "Mon audit"
       }
     },
     {
@@ -316,14 +224,7 @@ const router = createRouter({
       component: AuditDeclarationPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
-        name: "Mon audit",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          {
-            label: getProcedureName(),
-            name: "audit-declaration"
-          }
-        ]
+        name: "Mon audit"
       }
     },
     // TODO: remove this redirect in few months?
@@ -340,34 +241,59 @@ const router = createRouter({
       name: "audit-overview",
       component: AuditOverviewPage,
       meta: {
-        name: `Synthèse ${getProcedureName}`,
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: `Synthèse ${getProcedureName()}`, name: "audit-overview" }
-        ]
+        name: `Synthèse ${getProcedureName}`
       }
     },
     // Report pages
     {
-      path: "/rapports/:uniqueId/contexte",
+      path: "/rapport/:uniqueId/contexte",
       name: "context",
       component: ContextPage,
       meta: {
         name: "Contexte",
-        hideHomeLink: true,
-        breadcrumbLinks: () => [
-          { label: "Rapport d’audit", name: "report" },
-          { label: "Contexte", name: "context" }
-        ]
+        hideHomeLink: true
+      }
+    },
+    // TODO: remove this redirect in few months (17/04/2024)
+    {
+      path: "/rapports/:uniqueId/contexte",
+      name: "context-old",
+      redirect: () => {
+        return { name: "context" };
       }
     },
     {
-      path: "/rapports/:uniqueId/:tab?",
+      path: "/rapport/:uniqueId/:tab?",
       name: "report",
       component: ReportPage,
       meta: {
         name: "Rapport d’audit",
         hideHomeLink: true
+      }
+    },
+    // TODO: remove this redirect in few months (17/04/2024)
+    {
+      path: "/rapports/:uniqueId/:tab?",
+      name: "report-old",
+      redirect: () => {
+        return { name: "report" };
+      }
+    },
+    // a11y statement
+    {
+      path: "/declaration/:uniqueId",
+      name: "a11y-statement",
+      component: StatementPage,
+      meta: {
+        name: "Déclaration d’accessibilité"
+      }
+    },
+    // TODO: remove this redirect in few months (17/04/2024)
+    {
+      path: "/declarations/:uniqueId",
+      name: "a11y-statement-old",
+      redirect: () => {
+        return { name: "a11y-statement" };
       }
     },
     // Roadmap
@@ -376,11 +302,7 @@ const router = createRouter({
       name: "roadmap",
       component: RoadmapPage,
       meta: {
-        name: "Feuille de route",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Feuille de route", name: "roadmap" }
-        ]
+        name: "Feuille de route"
       }
     },
     // Changelog
@@ -389,11 +311,7 @@ const router = createRouter({
       name: "changelog",
       component: ChangelogPage,
       meta: {
-        name: "Notes de versions",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Notes de versions", name: "changelog" }
-        ]
+        name: "Notes de versions"
       }
     },
     // Feedback page
@@ -402,11 +320,7 @@ const router = createRouter({
       name: "feedback",
       component: FeedbackPage,
       meta: {
-        name: "Donner mon avis",
-        breadcrumbLinks: () => [
-          getHomeBreadcrumbLink(),
-          { label: "Donner mon avis", name: "feedback" }
-        ]
+        name: "Donner mon avis"
       }
     },
     // Error pages

@@ -3,7 +3,6 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
-import ReportA11yStatement from "../../components/report/ReportA11yStatement.vue";
 import ReportNotes from "../../components/report/ReportNotes.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
 import ReportResults from "../../components/report/ReportResults.vue";
@@ -12,14 +11,8 @@ import PageMeta from "../../components/PageMeta";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { AuditType, AuditStatus } from "../../types";
-import {
-  formatAuditType,
-  getAuditStatus,
-  formatDate,
-  slugify,
-  formatBytes
-} from "../../utils";
+import { AuditStatus } from "../../types";
+import { getAuditStatus, formatDate, slugify, formatBytes } from "../../utils";
 
 const report = useReportStore();
 
@@ -28,19 +21,12 @@ const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
-const hasA11yStatement = computed(() => {
-  return report.data?.auditType === AuditType.FULL;
-});
-
 const hasNotes = computed(() => {
   return !!report.data?.notes;
 });
 
 const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
-  ...(hasA11yStatement.value
-    ? [{ title: "Déclaration d’accessibilité", component: ReportA11yStatement }]
-    : []),
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
   { title: "Détail des résultats", component: ReportErrors }
 ]);
@@ -210,7 +196,7 @@ const siteUrl = computed(() => {
         "
         class="fr-text--light fr-mb-4w dates"
       >
-        Audit commencé le {{ formatDate(report.data.creationDate) }}
+        Commencé le {{ formatDate(report.data.creationDate) }}
       </p>
 
       <p
@@ -224,7 +210,7 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-0">
-        <strong>URL du site</strong> :
+        URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
           <span class="sr-only">(nouvelle fenêtre)</span>
@@ -232,18 +218,15 @@ const siteUrl = computed(() => {
         <template v-else>Non renseignée</template>
       </p>
       <p class="fr-mb-0">
-        <strong>Type d’audit</strong> :
-        {{ formatAuditType(report.data.auditType) }} ({{
-          report.data.criteriaCount.total
-        }}
-        critères)
+        Type d’audit :
+        <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-0">
-        <strong>Référentiel</strong> : {{ report.data.context.referencial }}
+        Référentiel : <strong>{{ report.data.context.referencial }}</strong>
       </p>
       <p class="fr-mb-1v">
-        <strong>Auditeur</strong> ou <strong>auditrice</strong> :
-        {{ report.data.context.auditorName }}
+        Auditeur ou auditrice :
+        <strong>{{ report.data.context.auditorName }}</strong>
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">

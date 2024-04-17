@@ -54,17 +54,19 @@ const auditIsPublishable = computed(() => {
     </p>
 
     <ul
-      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left fr-mb-3w statement-step-actions"
+      :class="[
+        'fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions',
+        { 'fr-mb-3w': auditIsPublishable }
+      ]"
     >
       <li>
         <RouterLink
           :to="
             auditIsPublishable
               ? {
-                  name: 'report',
+                  name: 'a11y-statement',
                   params: {
-                    uniqueId: audit.consultUniqueId,
-                    tab: 'declaration-daccessibilite'
+                    uniqueId: audit.consultUniqueId
                   }
                 }
               : {
@@ -79,7 +81,7 @@ const auditIsPublishable = computed(() => {
           :class="{
             'fr-btn--secondary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-fill': auditIsPublishable
+            'fr-icon-eye-line': auditIsPublishable
           }"
           :title="
             auditIsPublishable
@@ -112,10 +114,9 @@ const auditIsPublishable = computed(() => {
       <CopyBlock
         class="fr-m-0 statement-step-copy-block"
         :to="{
-          name: 'report',
+          name: 'a11y-statement',
           params: {
-            uniqueId: audit.consultUniqueId,
-            tab: 'declaration-daccessibilite'
+            uniqueId: audit.consultUniqueId
           }
         }"
         label="Lien de partage"

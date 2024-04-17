@@ -44,7 +44,12 @@ const auditIsReady = computed(() => {
           : "Terminez l’audit avant de livrer le rapport d’audit."
       }}
     </p>
-    <ul class="fr-btns-group fr-btns-group--icon-left fr-mb-3w">
+    <ul
+      :class="[
+        'fr-btns-group fr-btns-group--icon-left',
+        { 'fr-mb-3w': auditIsReady }
+      ]"
+    >
       <li>
         <RouterLink
           :to="{
@@ -91,7 +96,7 @@ const auditIsReady = computed(() => {
   /* FIXME: DSFR default badges dont align. Those with icons does. */
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .report-step-check {

@@ -57,3 +57,10 @@ Les tests peuvent être lancés de 2 manières :
     ...
   }
   ```
+- Ordonner les classes CSS de la manière suivante : `<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`. Exemple :
+  ```html
+  <button class="fr-btn fr-btn--secondary fr-mt-4w submit-button">...</button>
+  ```
+  1. `fr-btn fr-btn--secondary`
+  2. `fr-mt-4w`
+  3. `submit-button`

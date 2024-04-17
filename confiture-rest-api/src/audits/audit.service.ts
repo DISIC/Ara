@@ -1283,6 +1283,7 @@ export class AuditService {
         auditType: true,
         editUniqueId: true,
         consultUniqueId: true,
+        initiator: true,
         pages: {
           select: {
             results: true
@@ -1339,6 +1340,8 @@ export class AuditService {
         );
       }
 
+      const statementIsPublished = !!a.initiator;
+
       return {
         ...pick(
           a,
@@ -1350,7 +1353,8 @@ export class AuditService {
         ),
         complianceLevel,
         status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
-        estimatedCsvSize: 502 + a.pages.length * 318
+        estimatedCsvSize: 502 + a.pages.length * 318,
+        statementIsPublished
       };
     });
   }
