@@ -5,15 +5,12 @@ import { AuditType } from "../../types";
 import { ref } from "vue";
 
 const props = defineProps<{
-  auditType?: AuditType;
-  procedureName?: string;
+  auditType: string | null;
+  procedureName: string;
 }>();
 
 const emit = defineEmits<{
-  (
-    e: "submit",
-    payload: { auditType: AuditType | null; procedureName: string }
-  ): void;
+  (e: "submit", payload: { auditType: AuditType; procedureName: string }): void;
 }>();
 
 const fullAudit = {
@@ -41,12 +38,12 @@ const partialAudits = [
   }
 ];
 
-const auditType = ref<AuditType | null>(props.auditType);
+const auditType = ref(props.auditType);
 const procedureName = ref(props.procedureName);
 
 function submitAuditType() {
   emit("submit", {
-    auditType: auditType.value,
+    auditType: auditType.value as AuditType,
     procedureName: procedureName.value
   });
 }

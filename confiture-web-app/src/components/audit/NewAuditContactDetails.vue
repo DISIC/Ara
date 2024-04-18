@@ -3,8 +3,8 @@ import { ref } from "vue";
 import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
-  email?: string;
-  name?: string;
+  email: string;
+  name: string;
 }>();
 
 const emit = defineEmits<{
