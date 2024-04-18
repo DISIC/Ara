@@ -4,6 +4,11 @@ import DsfrField from "../ui/DsfrField.vue";
 import { AuditType } from "../../types";
 import { ref } from "vue";
 
+const props = defineProps<{
+  auditType?: AuditType;
+  procedureName?: string;
+}>();
+
 const emit = defineEmits<{
   (
     e: "submit",
@@ -36,8 +41,8 @@ const partialAudits = [
   }
 ];
 
-const auditType = ref<AuditType | null>(null);
-const procedureName = ref("");
+const auditType = ref<AuditType | null>(props.auditType);
+const procedureName = ref(props.procedureName);
 
 function submitAuditType() {
   emit("submit", {

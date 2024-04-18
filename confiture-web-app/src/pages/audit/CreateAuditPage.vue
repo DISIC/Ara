@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 // import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
@@ -109,44 +109,50 @@ const steps = [
   { title: "Renseignez l’échantillon des pages à auditer", component: null },
   { title: "Indiquez vos coordonnées", component: null }
 ];
+const stepHeadingRef = ref<HTMLHeadingElement>();
 
 // Setup audit object
 const audit = ref({
   auditType: AuditType.FAST,
   procedureName: "",
-  pages: [],
+  pages: [{ name: "", url: "" }],
   auditorEmail: "",
   auditorName: ""
 });
 
 // Audit type step
-function submitAuditTypeStep(data) {
-  console.log(data);
+async function submitAuditTypeStep(data) {
   audit.value.auditType = data.auditType;
   audit.value.procedureName = data.procedureName;
 
   currentStep.value = 1;
+
+  await nextTick();
+  stepHeadingRef.value?.focus();
 }
 
 // Pages step
-function submitAuditPages(pages) {
-  console.log(pages);
+async function submitAuditPages(pages) {
   audit.value.pages = pages;
 
   currentStep.value = 2;
+
+  await nextTick();
+  stepHeadingRef.value?.focus();
 }
 
 // Personal infos and final step
 function submitContactDetailsStep({ email, name }) {
-  console.log(email);
-  console.log(name);
   audit.value.auditorEmail = email;
   audit.value.auditorName = name;
 }
 
 // Previous button
-function goToPreviousStep() {
+async function goToPreviousStep() {
   currentStep.value -= 1;
+
+  await nextTick();
+  stepHeadingRef.value?.focus();
 }
 </script>
 
@@ -157,8 +163,9 @@ function goToPreviousStep() {
   />
 
   <div class="content">
+    <h1 class="fr-mb-6w">Démarrer un audit</h1>
     <div class="fr-stepper fr-mb-9v">
-      <h2 class="fr-stepper__title fr-h2">
+      <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h2">
         {{ steps[currentStep].title }}
         <span class="fr-stepper__state">
           Étape {{ currentStep + 1 }} sur {{ steps.length }}
@@ -171,15 +178,23 @@ function goToPreviousStep() {
       />
     </div>
 
-    <NewAuditType v-if="currentStep === 0" @submit="submitAuditTypeStep" />
+    <NewAuditType
+      v-if="currentStep === 0"
+      :audit-type="audit.auditType"
+      :procedure-name="audit.procedureName"
+      @submit="submitAuditTypeStep"
+    />
     <NewAuditPages
       v-else-if="currentStep === 1"
       :audit-type="audit.auditType"
+      :pages="audit.pages"
       @previous="goToPreviousStep"
       @submit="submitAuditPages"
     />
     <NewAuditContactDetails
       v-else-if="currentStep === 2"
+      :email="audit.auditorEmail"
+      :name="audit.auditorName"
       @previous="goToPreviousStep"
       @submit="submitContactDetailsStep"
     />

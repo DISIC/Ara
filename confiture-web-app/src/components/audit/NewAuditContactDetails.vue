@@ -2,13 +2,18 @@
 import { ref } from "vue";
 import DsfrField from "../ui/DsfrField.vue";
 
+const props = defineProps<{
+  email?: string;
+  name?: string;
+}>();
+
 const emit = defineEmits<{
   (e: "previous"): void;
   (e: "submit", payload: { email: string; name: string }): void;
 }>();
 
-const email = ref("");
-const name = ref("");
+const email = ref(props.email);
+const name = ref(props.name);
 
 function submitAuditContactDetails() {
   emit("submit", {

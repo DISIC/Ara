@@ -8,15 +8,12 @@ const emit = defineEmits<{
   (e: "submit", payload: Omit<AuditPage, "id" | "order">[]): void;
 }>();
 
-defineProps<{
+const props = defineProps<{
   auditType: AuditType;
+  pages: Omit<AuditPage, "id" | "order">[];
 }>();
 
-const pages = ref<Omit<AuditPage, "id" | "order">[]>([
-  { name: "Bla", url: "https://example.com" },
-  { name: "Bla", url: "https://example.com" },
-  { name: "Bla", url: "https://example.com" }
-]);
+const pages = ref<Omit<AuditPage, "id" | "order">[]>(props.pages);
 
 function goToPreviousStep() {
   emit("previous");
