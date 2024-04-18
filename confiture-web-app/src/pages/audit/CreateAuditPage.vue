@@ -14,6 +14,7 @@ import router from "../../router";
 import NewAuditType from "../../components/audit/NewAuditType.vue";
 import NewAuditPages from "../../components/audit/NewAuditPages.vue";
 import { AuditType } from "../../types";
+import NewAuditContactDetails from "../../components/audit/NewAuditContactDetails.vue";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -102,7 +103,7 @@ const isSubmitting = ref(false);
 // }
 
 // Steps management
-const currentStep = ref(1);
+const currentStep = ref(0);
 const steps = [
   { title: "Choisissez un type d’audit", component: NewAuditType },
   { title: "Renseignez l’échantillon des pages à auditer", component: null },
@@ -113,7 +114,9 @@ const steps = [
 const audit = ref({
   auditType: AuditType.FAST,
   procedureName: "",
-  pages: []
+  pages: [],
+  auditorEmail: "",
+  auditorName: ""
 });
 
 // Audit type step
@@ -134,6 +137,12 @@ function submitAuditPages(pages) {
 }
 
 // Personal infos and final step
+function submitContactDetailsStep({ email, name }) {
+  console.log(email);
+  console.log(name);
+  audit.value.auditorEmail = email;
+  audit.value.auditorName = name;
+}
 
 // Previous button
 function goToPreviousStep() {
@@ -168,6 +177,11 @@ function goToPreviousStep() {
       :audit-type="audit.auditType"
       @previous="goToPreviousStep"
       @submit="submitAuditPages"
+    />
+    <NewAuditContactDetails
+      v-else-if="currentStep === 2"
+      @previous="goToPreviousStep"
+      @submit="submitContactDetailsStep"
     />
   </div>
 
