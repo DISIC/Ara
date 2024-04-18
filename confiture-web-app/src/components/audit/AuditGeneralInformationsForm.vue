@@ -4,12 +4,12 @@ import { useRoute } from "vue-router";
 
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
-import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAccountStore } from "../../store/account";
 import { AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import BackLink from "../ui/BackLink.vue";
+import TopLink from "../ui/TopLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
@@ -20,49 +20,52 @@ const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
 }>();
 
-const fullAudit = {
-  value: AuditType.FULL,
-  goals: [
-    {
-      emoji: "🔎",
-      label: "Identifier toutes les erreurs d’accessibilité"
-    },
-    {
-      emoji: "📊",
-      label: "Obtenir un taux global de conformité au RGAA "
-    },
-    {
-      emoji: "📄",
-      label: "Générer une déclaration d’accessibilité"
-    }
-  ],
-  documentation:
-    "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
-};
-const partialAudits = [
+const audits = [
+  {
+    value: AuditType.FULL,
+    goals: [
+      "Identifier toutes les erreurs d’accessibilité",
+      "Obtenir un taux global de conformité au RGAA ",
+      "Générer une déclaration d’accessibilité"
+    ],
+    documentation:
+      "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
+  },
   {
     value: AuditType.FAST,
-    goals: [
-      {
-        emoji: "🔎",
-        label: "Identifier les principales erreurs d’accessibilité"
-      }
-    ],
+    goals: ["Identifier les principales erreurs d’accessibilité"],
     documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
   },
   {
     value: AuditType.COMPLEMENTARY,
-    goals: [
-      {
-        emoji: "🔎",
-        label:
-          "Approfondir l’audit 25 critères avec 25 critères supplémentaires"
-      }
-    ],
+    goals: ["Approfondir l’audit 25 critères avec 25 critères supplémentaires"],
     documentation:
       "https://design.numerique.gouv.fr/outils/audit-complementaire/"
   }
 ];
+// const fullAudit = {
+//   value: AuditType.FULL,
+//   goals: [
+//     "Identifier toutes les erreurs d’accessibilité",
+//     "Obtenir un taux global de conformité au RGAA ",
+//     "Générer une déclaration d’accessibilité"
+//   ],
+//   documentation:
+//     "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
+// };
+// const partialAudits = [
+//   {
+//     value: AuditType.FAST,
+//     goals: ["Identifier les principales erreurs d’accessibilité"],
+//     documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
+//   },
+//   {
+//     value: AuditType.COMPLEMENTARY,
+//     goals: ["Approfondir l’audit 25 critères avec 25 critères supplémentaires"],
+//     documentation:
+//       "https://design.numerique.gouv.fr/outils/audit-complementaire/"
+//   }
+// ];
 
 const fullDefaultPages = [
   { name: "Accueil", url: "" },
@@ -218,36 +221,47 @@ function onSubmit() {
 const isDevMode = useDevMode();
 const notify = useNotifications();
 const route = useRoute();
-const previousRoute = usePreviousRoute();
 </script>
 
 <template>
-  <template v-if="accountStore.account">
-    <BackLink
-      v-if="previousRoute.route?.name === 'audit-generation'"
-      label="Retourner à mon audit"
-      :to="{
-        name: 'audit-generation',
-        params: { uniqueId: route.params.uniqueId }
-      }"
-    />
-  </template>
+  <BackLink
+    label="Retourner à mon audit"
+    :to="{
+      name: 'audit-generation',
+      params: { uniqueId: route.params.uniqueId }
+    }"
+  />
 
-  <form class="narrow-content" @submit.prevent="onSubmit">
-    <h1 class="fr-mb-3w">
-      <span aria-hidden="true">⚙️</span> Paramètres de l’audit
-    </h1>
-    <p class="fr-text--sm fr-mb-4w mandatory-notice">
-      Sauf mention contraire, tous les champs sont obligatoires.
-    </p>
+  <form class="content" @submit.prevent="onSubmit">
+    <h1 class="fr-mb-6w">Paramètres de l’audit</h1>
+
+    <DsfrField
+      id="procedure-name"
+      v-model="procedureName"
+      class="fr-mb-6w"
+      label="Nom du site audité"
+      required
+    />
 
     <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
-    <h3 class="fr-text--lg fr-mb-1v">Audit complet</h3>
+    <!-- <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
     <p class="fr-mb-2w">
       Cet audit permet de mesurer la conformité au RGAA d’un site internet, il a
       une <strong>valeur légale</strong>.
-    </p>
-    <AuditTypeRadio
+    </p> -->
+    <div class="fr-mb-4w audits">
+      <AuditTypeRadio
+        v-for="type in audits"
+        :key="type.value"
+        v-model="auditType"
+        class="audit-type"
+        :value="type.value"
+        :checked="auditType === type.value"
+        :goals="type.goals"
+        :documentation-link="type.documentation"
+      />
+    </div>
+    <!-- <AuditTypeRadio
       :key="fullAudit.value"
       v-model="auditType"
       class="fr-mb-3w audit-type"
@@ -255,14 +269,14 @@ const previousRoute = usePreviousRoute();
       :checked="auditType === fullAudit.value"
       :goals="fullAudit.goals"
       :documentation-link="fullAudit.documentation"
-    />
-    <h3 class="fr-text--lg fr-mb-1v">Audits partiels</h3>
+    /> -->
+    <!-- <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
     <p class="fr-mb-2w">
       Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
       n’ont <strong>pas de valeur légale</strong>.
-    </p>
+    </p> -->
 
-    <div class="partial-audit-radios">
+    <!-- <div class="audits">
       <AuditTypeRadio
         v-for="type in partialAudits"
         :key="type.value"
@@ -273,27 +287,15 @@ const previousRoute = usePreviousRoute();
         :goals="type.goals"
         :documentation-link="type.documentation"
       />
-    </div>
-
-    <DsfrField
-      id="procedure-name"
-      v-model="procedureName"
-      class="fr-my-6w"
-      label="Nom du site à auditer"
-      required
-    />
+    </div> -->
 
     <h2 class="fr-h4">Échantillon des pages à auditer</h2>
-
-    <p v-if="!auditType || auditType === AuditType.FULL" class="fr-mb-2w">
-      Par défaut nous vous proposons les pages obligatoires prévues par le RGAA.
-    </p>
 
     <fieldset
       v-for="(page, i) in pages"
       :key="i"
       class="fr-p-4w page-card"
-      :class="{ 'fr-mb-4w': i !== pages.length - 1 }"
+      :class="{ 'fr-mb-3w': i !== pages.length - 1 }"
     >
       <legend class="page-legend">
         <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
@@ -301,7 +303,7 @@ const previousRoute = usePreviousRoute();
 
       <div class="page-right-actions">
         <button
-          class="fr-btn fr-btn--icon-left fr-icon-delete-line fr-btn--tertiary-no-outline"
+          class="fr-btn fr-btn--tertiary-no-outline"
           type="button"
           :disabled="pages.length === 1"
           data-cy="delete"
@@ -362,32 +364,30 @@ const previousRoute = usePreviousRoute();
         </template>
       </DsfrField>
     </fieldset>
-    <button
+    <!-- <button
       class="fr-btn fr-btn--icon-left fr-icon-add-line fr-btn--secondary fr-mt-4w fr-mb-6w"
       type="button"
       @click="addPage"
     >
       Ajouter une page
-    </button>
+    </button> -->
 
     <fieldset
-      v-if="!accountStore.account?.name || !accountStore.account?.email"
-      class="fr-p-0 auditor-fields"
+      v-if="!accountStore.account"
+      class="fr-p-0 fr-mt-4w auditor-fields"
     >
       <legend>
-        <h2 class="fr-h4 fr-mb-2w">Auditeur ou auditrice</h2>
+        <h2 class="fr-h4">Informations personnelles</h2>
       </legend>
 
       <DsfrField
-        v-if="!accountStore.account?.name"
         id="procedure-auditor-name"
         v-model="procedureAuditorName"
         label="Prénom et nom (optionnel)"
-        hint="Sera affiché dans le rapport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
       />
 
       <DsfrField
-        v-if="!accountStore.account?.email"
         id="procedure-auditor-email"
         v-model="procedureAuditorEmail"
         class="fr-mb-0"
@@ -405,8 +405,8 @@ const previousRoute = usePreviousRoute();
     </div>
 
     <div>
-      <button class="fr-btn fr-mt-4w" type="submit">
-        Valider les paramètres
+      <button class="fr-btn fr-mt-6w" type="submit">
+        Enregistrer les modifications
       </button>
 
       <RouterLink
@@ -420,19 +420,24 @@ const previousRoute = usePreviousRoute();
         Annuler
       </RouterLink>
     </div>
+
+    <div class="top-link">
+      <TopLink class="fr-ml-auto" />
+    </div>
   </form>
 </template>
 
 <style scoped>
-.narrow-content {
+.content {
   max-width: 49.5rem;
+  margin: 0 auto;
 }
 
 .mandatory-notice {
   color: var(--text-mention-grey);
 }
 
-.partial-audit-radios {
+.audits {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -461,5 +466,11 @@ const previousRoute = usePreviousRoute();
 
 .auditor-fields {
   border: none;
+  max-width: 33rem;
+}
+
+.top-link {
+  display: flex;
+  justify-content: end;
 }
 </style>
