@@ -2,15 +2,16 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
+// import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
 import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
 import router from "../../router";
-import { CreateAuditRequestData } from "../../types";
-import { useAuditStore } from "../../store";
-import { useNotifications } from "../../composables/useNotifications";
-import { captureWithPayloads } from "../../utils";
-import { useAccountStore } from "../../store/account";
+// import { CreateAuditRequestData } from "../../types";
+// import { useAuditStore } from "../../store";
+// import { useNotifications } from "../../composables/useNotifications";
+// import { captureWithPayloads } from "../../utils";
+// import { useAccountStore } from "../../store/account";
+import NewAuditType from "../../components/audit/NewAuditType.vue";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -56,47 +57,74 @@ onUnmounted(() => {
 
 const isSubmitting = ref(false);
 
-const auditStore = useAuditStore();
+// const auditStore = useAuditStore();
 
-const notify = useNotifications();
+// const notify = useNotifications();
 
-const accountStore = useAccountStore();
+// const accountStore = useAccountStore();
 
-async function submitStepOne(data: CreateAuditRequestData) {
-  isSubmitting.value = true;
+// async function submitStepOne(data: CreateAuditRequestData) {
+//   isSubmitting.value = true;
 
-  // Update user profile when their name/org is not known.
-  if (accountStore.account && data.auditorName && !accountStore.account?.name) {
-    // Since this update is not necessary for the audit to be created, we ignore eventual errors.
-    accountStore
-      .updateProfile({ name: data.auditorName })
-      .catch(captureWithPayloads);
-  }
+//   // Update user profile when their name/org is not known.
+//   if (accountStore.account && data.auditorName && !accountStore.account?.name) {
+//     // Since this update is not necessary for the audit to be created, we ignore eventual errors.
+//     accountStore
+//       .updateProfile({ name: data.auditorName })
+//       .catch(captureWithPayloads);
+//   }
 
-  auditStore
-    .createAudit(data)
-    .then((audit) => {
-      if (!accountStore.account) {
-        auditStore.showAuditEmailAlert = true;
-      }
-      // TODO: replace current history entry with the edit page
-      return router.push({
-        name: "audit-overview",
-        params: { uniqueId: audit.editUniqueId }
-      });
-    })
-    .catch((err) => {
-      notify(
-        "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
-      );
-      captureWithPayloads(err);
-    })
-    .finally(() => {
-      isSubmitting.value = false;
-    });
+//   auditStore
+//     .createAudit(data)
+//     .then((audit) => {
+//       if (!accountStore.account) {
+//         auditStore.showAuditEmailAlert = true;
+//       }
+//       // TODO: replace current history entry with the edit page
+//       return router.push({
+//         name: "audit-overview",
+//         params: { uniqueId: audit.editUniqueId }
+//       });
+//     })
+//     .catch((err) => {
+//       notify(
+//         "error",
+//         "Une erreur est survenue",
+//         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+//       );
+//       captureWithPayloads(err);
+//     })
+//     .finally(() => {
+//       isSubmitting.value = false;
+//     });
+// }
+
+// Steps management
+const currentStep = ref(0);
+const steps = [
+  { title: "Choisissez un type d’audit", component: NewAuditType },
+  { title: "Renseignez l’échantillon des pages à auditer", component: null },
+  { title: "Indiquez vos coordonnées", component: null }
+];
+
+// Setup audit object
+const audit = ref({
+  auditType: "",
+  procedureName: ""
+});
+
+// Audit type step
+function submitAuditTypeStep(data) {
+  console.log(data);
+  audit.value.auditType = data.auditType;
+  audit.value.procedureName = data.procedureName;
+
+  currentStep.value += 1;
 }
+
+// Pages step
+
+// Personal infos and final step
 </script>
 
 <template>
@@ -105,7 +133,23 @@ async function submitStepOne(data: CreateAuditRequestData) {
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 
-  <AuditGeneralInformationsForm @submit="submitStepOne" />
+  <div class="content">
+    <div class="fr-stepper fr-mb-9v">
+      <h2 class="fr-stepper__title fr-h2">
+        {{ steps[currentStep].title }}
+        <span class="fr-stepper__state">
+          Étape {{ currentStep + 1 }} sur {{ steps.length }}
+        </span>
+      </h2>
+      <div
+        class="fr-stepper__steps"
+        :data-fr-current-step="currentStep + 1"
+        :data-fr-steps="steps.length"
+      />
+    </div>
+
+    <NewAuditType v-if="currentStep === 0" @submit="submitAuditTypeStep" />
+  </div>
 
   <LeaveModal
     ref="leaveModalRef"
@@ -123,3 +167,10 @@ async function submitStepOne(data: CreateAuditRequestData) {
     </p>
   </LeaveModal>
 </template>
+
+<style scoped>
+.content {
+  max-width: 49.5rem;
+  margin: 0 auto;
+}
+</style>
