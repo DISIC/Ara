@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from "vue";
 import { AuditPage } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
 import { useDevMode } from "../../composables/useDevMode";
+import { useAccountStore } from "../../store";
 
 const props = defineProps<{
   pages: Omit<AuditPage, "id" | "order">[];
@@ -13,6 +14,8 @@ const emit = defineEmits<{
   (e: "submit", payload: Omit<AuditPage, "id" | "order">[]): void;
   (e: "change"): void;
 }>();
+
+const accountStore = useAccountStore();
 
 const pages = ref(props.pages);
 
@@ -95,7 +98,11 @@ function fillSettings() {
         type="submit"
         class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
       >
-        Étape suivante
+        {{
+          accountStore.account && accountStore.account.name
+            ? "Valider les paramètres"
+            : "Étape suivante"
+        }}
       </button>
     </div>
   </form>

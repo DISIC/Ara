@@ -57,16 +57,18 @@ onUnmounted(() => {
   window.removeEventListener("beforeunload", onBeforeUnload);
 });
 
+const accountStore = useAccountStore();
+
 // Steps management
 const currentStep = ref(0);
 const steps = [
-  { title: "Choisissez un type d’audit", component: NewAuditType },
-  { title: "Renseignez l’échantillon des pages à auditer", component: null },
-  { title: "Indiquez vos coordonnées", component: null }
+  "Choisissez un type d’audit",
+  "Renseignez l’échantillon des pages à auditer",
+  ...(accountStore.account && accountStore.account.name
+    ? []
+    : ["Indiquez vos coordonnées"])
 ];
 const stepHeadingRef = ref<HTMLHeadingElement>();
-
-const accountStore = useAccountStore();
 
 // Setup audit object
 const audit = ref<CreateAuditRequestData>({
@@ -211,7 +213,7 @@ async function goToPreviousStep() {
     <h1 class="fr-mb-6w">Démarrer un audit</h1>
     <div class="fr-stepper fr-mb-9v">
       <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h2">
-        {{ steps[currentStep].title }}
+        {{ steps[currentStep] }}
         <span class="fr-stepper__state">
           Étape {{ currentStep + 1 }} sur {{ steps.length }}
         </span>

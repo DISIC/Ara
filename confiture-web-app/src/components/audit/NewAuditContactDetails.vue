@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import DsfrField from "../ui/DsfrField.vue";
 import { useDevMode } from "../../composables/useDevMode";
+import { useAccountStore } from "../../store";
 
 // TODO: fix name prop
 const props = defineProps<{
@@ -13,6 +14,8 @@ const emit = defineEmits<{
   (e: "previous"): void;
   (e: "submit", payload: { email: string; name: string }): void;
 }>();
+
+const accountStore = useAccountStore();
 
 const emailValue = ref(props.email);
 const nameValue = ref(props.name);
@@ -51,6 +54,7 @@ function fillSettings() {
       </p>
 
       <DsfrField
+        v-if="!accountStore.account"
         id="procedure-auditor-email"
         v-model="emailValue"
         class="fr-mb-2w"
@@ -65,6 +69,7 @@ function fillSettings() {
       </DsfrField>
 
       <DsfrField
+        v-if="!accountStore.account?.name"
         id="procedure-auditor-name"
         v-model="nameValue"
         class="fr-mb-6w"
