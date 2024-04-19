@@ -100,7 +100,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
     <fieldset
       v-for="(page, i) in pages"
       :key="i"
-      class="fr-p-4w page-card"
+      class="fr-p-2w fr-p-md-4w page-card"
       :class="{ 'fr-mb-3w': i !== pages.length - 1 }"
     >
       <legend class="page-legend">
@@ -187,5 +187,11 @@ function updatePageOrder(startIndex: number, endIndex: number) {
   align-items: center;
   gap: 1rem;
   float: right;
+
+  @media (width < 36rem) {
+    float: none;
+    flex-wrap: wrap;
+    margin-top: 4rem;
+  }
 }
 </style>
