@@ -25,7 +25,6 @@ defineExpose({
 const notify = useNotifications();
 
 const positionSuccessMessage = ref("");
-const pagesArePristine = ref(!props.modelValue);
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 const pages = ref(props.modelValue);
@@ -46,10 +45,6 @@ async function deletePage(i: number) {
     `La page ${pageName ? pageName : ""} a bien été supprimée`
   );
   previousField.inputRef?.focus();
-
-  if (pagesArePristine.value) {
-    pagesArePristine.value = false;
-  }
 }
 
 const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
@@ -64,7 +59,6 @@ const pageOrderSelectRefs = ref<HTMLSelectElement[]>();
  */
 function updatePageOrder(startIndex: number, endIndex: number) {
   positionSuccessMessage.value = "";
-  pagesArePristine.value = false;
 
   const defaultState = [...pages.value];
   const startEl = defaultState[startIndex];
@@ -158,7 +152,6 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         v-model="page.name"
         label="Nom de la page"
         class="fr-mt-7w"
-        @change="pagesArePristine = false"
       />
 
       <DsfrField
@@ -169,7 +162,6 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         required
         :pattern="URL_REGEX"
         title="https://domaine.fr et sans espaces"
-        @change="pagesArePristine = false"
       >
         <template #hint>
           L’URL de la page doit commencer par <code>https://</code>

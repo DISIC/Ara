@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
@@ -12,7 +12,7 @@ import AuditTypeRadio from "./AuditTypeRadio.vue";
 import PagesSample from "./PagesSample.vue";
 
 const props = defineProps<{
-  defaultValues?: CreateAuditRequestData;
+  audit: CreateAuditRequestData;
 }>();
 
 const emit = defineEmits<{
@@ -43,48 +43,14 @@ const audits = [
   }
 ];
 
-const fullDefaultPages = [
-  { name: "Accueil", url: "" },
-  { name: "Contact", url: "" },
-  { name: "Mentions légales", url: "" },
-  { name: "Accessibilité", url: "" },
-  { name: "Plan du site", url: "" },
-  { name: "Aide", url: "" },
-  { name: "Authentification", url: "" }
-];
-
-const fastAndComplementaryDefaultPages = [
-  { name: "Accueil", url: "" },
-  { name: "Contact", url: "" }
-];
-
-const pagesArePristine = ref(!props.defaultValues?.pages);
-
+const route = useRoute();
 const accountStore = useAccountStore();
 
-const auditType = ref(props.defaultValues?.auditType ?? null);
-const procedureName = ref(props.defaultValues?.procedureName ?? "");
-const pages = ref(props.defaultValues?.pages ?? fullDefaultPages);
-const procedureAuditorName = ref(
-  props.defaultValues?.auditorName ?? accountStore.account?.name ?? ""
-);
-const procedureAuditorEmail = ref(
-  props.defaultValues?.auditorEmail ?? accountStore.account?.email ?? ""
-);
-
-// Update default pages except if pages has been changed by user
-watch(auditType, (newValue) => {
-  if (
-    (newValue === AuditType.FAST || newValue === AuditType.COMPLEMENTARY) &&
-    pagesArePristine.value
-  ) {
-    pages.value = [...fastAndComplementaryDefaultPages];
-  }
-
-  if (newValue === AuditType.FULL && pagesArePristine.value) {
-    pages.value = [...fullDefaultPages];
-  }
-});
+const auditType = ref(props.audit?.auditType);
+const procedureName = ref(props.audit?.procedureName);
+const pages = ref(props.audit?.pages);
+const auditorEmail = ref(props.audit?.auditorEmail);
+const auditorName = ref(props.audit?.auditorName ?? "");
 
 const pagesSampleRef = ref<InstanceType<typeof PagesSample>>();
 /**
@@ -101,12 +67,10 @@ function onSubmit() {
     auditType: auditType.value!,
     procedureName: procedureName.value,
     pages: pages.value.map((p) => ({ ...p, url: p.url })),
-    auditorName: procedureAuditorName.value,
-    auditorEmail: formatEmail(procedureAuditorEmail.value)
+    auditorName: auditorName.value,
+    auditorEmail: formatEmail(auditorEmail.value)
   });
 }
-
-const route = useRoute();
 </script>
 
 <template>
@@ -144,14 +108,17 @@ const route = useRoute();
     </div>
 
     <h2 class="fr-h4">Échantillon des pages à auditer</h2>
-    <PagesSample ref="pagesSampleRef" v-model="pages" />
-    <button
-      class="fr-btn fr-btn--icon-left fr-icon-add-line fr-btn--secondary fr-mt-4w fr-mb-6w"
-      type="button"
-      @click="addPage"
-    >
-      Ajouter une page
-    </button>
+    <PagesSample ref="pagesSampleRef" v-model="pages" class="fr-mb-3w" />
+
+    <div class="fr-mb-6w add-page-button-wrapper">
+      <button
+        type="button"
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+        @click="addPage"
+      >
+        Ajouter une page
+      </button>
+    </div>
 
     <fieldset
       v-if="!accountStore.account"
@@ -163,14 +130,14 @@ const route = useRoute();
 
       <DsfrField
         id="procedure-auditor-name"
-        v-model="procedureAuditorName"
+        v-model="auditorName"
         label="Prénom et nom (optionnel)"
         hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
       />
 
       <DsfrField
         id="procedure-auditor-email"
-        v-model="procedureAuditorEmail"
+        v-model="auditorEmail"
         class="fr-mb-0"
         label="Adresse e-mail"
         hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
@@ -208,10 +175,6 @@ const route = useRoute();
   margin: 0 auto;
 }
 
-.mandatory-notice {
-  color: var(--text-mention-grey);
-}
-
 .audits {
   display: flex;
   flex-wrap: wrap;
@@ -222,21 +185,8 @@ const route = useRoute();
   flex: 1 1 0;
 }
 
-.page-card {
-  border: 1px solid var(--border-default-grey);
-}
-
-.page-legend {
-  float: left;
-  /* FIXME: hack to align */
-  margin-top: 0.375rem;
-}
-
-.page-right-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  float: right;
+.add-page-button-wrapper {
+  text-align: center;
 }
 
 .auditor-fields {

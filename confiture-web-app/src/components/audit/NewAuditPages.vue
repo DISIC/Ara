@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { AuditPage, AuditType } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
 
 const emit = defineEmits<{
   (e: "previous"): void;
   (e: "submit", payload: Omit<AuditPage, "id" | "order">[]): void;
+  (e: "change"): void;
 }>();
 
 const props = defineProps<{
@@ -32,6 +33,14 @@ async function addPage() {
 function submitAuditPages() {
   emit("submit", pages.value);
 }
+
+watch(
+  pages,
+  () => {
+    emit("change");
+  },
+  { deep: true }
+);
 </script>
 
 <template>

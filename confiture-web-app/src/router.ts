@@ -13,7 +13,7 @@ import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
-import CreateAuditPage from "./pages/audit/CreateAuditPage.vue";
+import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
@@ -195,7 +195,7 @@ const router = createRouter({
     {
       path: "/audits/nouveau",
       name: "create-audit",
-      component: CreateAuditPage,
+      component: AuditCreatePage,
       meta: {
         name: "Nouvel audit"
       }

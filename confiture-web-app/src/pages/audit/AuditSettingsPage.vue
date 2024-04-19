@@ -51,13 +51,13 @@ function submitStepOne(data: CreateAuditRequestData) {
 <template>
   <!-- TODO: meta -->
   <PageMeta
-    title="Informations générales sur le site à auditer"
+    title="Paramètres de l’audit"
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 
   <AuditGeneralInformationsForm
     v-if="auditStore.currentAudit"
-    :default-values="auditStore.currentAudit"
+    :audit="auditStore.currentAudit"
     @submit="submitStepOne"
   />
 </template>

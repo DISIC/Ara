@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import DsfrField from "../ui/DsfrField.vue";
 
+// TODO: fix name prop
 const props = defineProps<{
   email: string;
   name: string;

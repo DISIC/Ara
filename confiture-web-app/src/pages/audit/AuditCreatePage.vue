@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 // import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
@@ -75,6 +75,39 @@ const audit = ref<CreateAuditRequestData>({
   pages: [{ name: "", url: "" }],
   auditorEmail: "",
   auditorName: ""
+});
+
+// Default pages per audit type
+const fullDefaultPages = [
+  { name: "Accueil", url: "" },
+  { name: "Contact", url: "" },
+  { name: "Mentions légales", url: "" },
+  { name: "Accessibilité", url: "" },
+  { name: "Plan du site", url: "" },
+  { name: "Aide", url: "" },
+  { name: "Authentification", url: "" }
+];
+
+const fastAndComplementaryDefaultPages = [
+  { name: "Accueil", url: "" },
+  { name: "Contact", url: "" }
+];
+
+// Update default pages except if pages has been changed by user
+const pagesArePristine = ref(true);
+
+watch(audit.value, (newValue) => {
+  if (
+    (newValue.auditType === AuditType.FAST ||
+      newValue.auditType === AuditType.COMPLEMENTARY) &&
+    pagesArePristine.value
+  ) {
+    audit.value.pages = [...fastAndComplementaryDefaultPages];
+  }
+
+  if (newValue.auditType === AuditType.FULL && pagesArePristine.value) {
+    audit.value.pages = [...fullDefaultPages];
+  }
 });
 
 // 1. Audit type step
@@ -202,11 +235,12 @@ async function goToPreviousStep() {
       :pages="audit.pages"
       @previous="goToPreviousStep"
       @submit="submitAuditPages"
+      @change="pagesArePristine = false"
     />
     <NewAuditContactDetails
       v-else-if="currentStep === 2"
       :email="audit.auditorEmail"
-      :name="audit.procedureName"
+      :name="audit.auditorName"
       @previous="goToPreviousStep"
       @submit="submitContactDetailsStep"
     />
