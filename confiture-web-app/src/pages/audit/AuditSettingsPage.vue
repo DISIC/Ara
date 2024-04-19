@@ -28,6 +28,7 @@ function submitStepOne(data: CreateAuditRequestData) {
     .then(() => {
       notify(
         "success",
+        undefined,
         "Les paramètres de votre audit ont été mis à jour avec succès"
       );
 
