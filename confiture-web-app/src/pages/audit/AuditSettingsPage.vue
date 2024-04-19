@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
 
-import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
+import AuditSettingsForm from "../../components/audit/AuditSettingsForm.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -55,7 +55,7 @@ function submitStepOne(data: CreateAuditRequestData) {
     description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
   />
 
-  <AuditGeneralInformationsForm
+  <AuditSettingsForm
     v-if="auditStore.currentAudit"
     :audit="auditStore.currentAudit"
     @submit="submitStepOne"
