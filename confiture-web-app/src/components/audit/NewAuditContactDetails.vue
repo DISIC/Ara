@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import DsfrField from "../ui/DsfrField.vue";
+import { useDevMode } from "../../composables/useDevMode";
 
 // TODO: fix name prop
 const props = defineProps<{
@@ -13,31 +14,45 @@ const emit = defineEmits<{
   (e: "submit", payload: { email: string; name: string }): void;
 }>();
 
-const email = ref(props.email);
-const name = ref(props.name);
+const emailValue = ref(props.email);
+const nameValue = ref(props.name);
 
 function submitAuditContactDetails() {
   emit("submit", {
-    email: email.value,
-    name: name.value
+    email: emailValue.value,
+    name: nameValue.value
   });
 }
 
 function goToPreviousStep() {
   emit("previous");
 }
+
+// Dev mode
+const isDevMode = useDevMode();
+
+function fillSettings() {
+  emailValue.value = "etienne-dupont@example.com";
+  nameValue.value = "Etienne Dupont";
+}
 </script>
 
 <template>
   <form @submit.prevent="submitAuditContactDetails">
     <div class="content">
+      <div v-if="isDevMode" class="fr-mb-4w">
+        <button class="fr-btn" type="button" @click="fillSettings">
+          [DEV] Remplir les paramètres
+        </button>
+      </div>
+
       <p class="fr-text--sm notice">
         Sauf mentions contraires, tous les champs sont obligatoires.
       </p>
 
       <DsfrField
         id="procedure-auditor-email"
-        v-model="email"
+        v-model="emailValue"
         class="fr-mb-2w"
         label="Adresse e-mail"
         type="email"
@@ -51,7 +66,7 @@ function goToPreviousStep() {
 
       <DsfrField
         id="procedure-auditor-name"
-        v-model="name"
+        v-model="nameValue"
         class="fr-mb-6w"
         label="Prénom et nom (optionnel)"
         hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."

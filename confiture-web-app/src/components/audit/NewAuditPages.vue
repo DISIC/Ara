@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
-import { AuditPage, AuditType } from "../../types";
+import { AuditPage } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
+import { useDevMode } from "../../composables/useDevMode";
+
+const props = defineProps<{
+  pages: Omit<AuditPage, "id" | "order">[];
+}>();
 
 const emit = defineEmits<{
   (e: "previous"): void;
@@ -9,12 +14,7 @@ const emit = defineEmits<{
   (e: "change"): void;
 }>();
 
-const props = defineProps<{
-  auditType: AuditType;
-  pages: Omit<AuditPage, "id" | "order">[];
-}>();
-
-const pages = ref<Omit<AuditPage, "id" | "order">[]>(props.pages);
+const pages = ref(props.pages);
 
 function goToPreviousStep() {
   emit("previous");
@@ -41,10 +41,26 @@ watch(
   },
   { deep: true }
 );
+
+// Dev mode
+const isDevMode = useDevMode();
+
+function fillSettings() {
+  pages.value = [
+    { name: "Accueil", url: "https://example.com" },
+    { name: "Contact", url: "https://example.com/contact" }
+  ];
+}
 </script>
 
 <template>
   <form @submit.prevent="submitAuditPages">
+    <div v-if="isDevMode" class="fr-mb-4w">
+      <button class="fr-btn" type="button" @click="fillSettings">
+        [DEV] Remplir les paramètres
+      </button>
+    </div>
+
     <p class="fr-text--sm notice">
       Sauf mentions contraires, tous les champs sont obligatoires. Au moins une
       page à auditer doit être renseignée.

@@ -3,6 +3,7 @@ import AuditTypeRadio from "./AuditTypeRadio.vue";
 import DsfrField from "../ui/DsfrField.vue";
 import { AuditType } from "../../types";
 import { ref } from "vue";
+import { useDevMode } from "../../composables/useDevMode";
 
 const props = defineProps<{
   auditType: string | null;
@@ -47,10 +48,24 @@ function submitAuditType() {
     procedureName: procedureName.value
   });
 }
+
+// Dev mode
+const isDevMode = useDevMode();
+
+function fillSettings() {
+  auditType.value = AuditType.FULL;
+  procedureName.value = "Ma procédure";
+}
 </script>
 
 <template>
   <form @submit.prevent="submitAuditType">
+    <div v-if="isDevMode" class="fr-mb-4w">
+      <button class="fr-btn" type="button" @click="fillSettings">
+        [DEV] Remplir les paramètres
+      </button>
+    </div>
+
     <p class="fr-text--sm notice">
       Sauf mentions contraires, tous les champs sont obligatoires. Au moins un
       type d’audit doit être selectionné.

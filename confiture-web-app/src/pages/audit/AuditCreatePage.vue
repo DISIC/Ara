@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 // import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
-import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
-import router from "../../router";
-import { CreateAuditRequestData } from "../../types";
-import { useAuditStore } from "../../store";
-import { useNotifications } from "../../composables/useNotifications";
-import { captureWithPayloads } from "../../utils";
-import { useAccountStore } from "../../store/account";
-import NewAuditType from "../../components/audit/NewAuditType.vue";
-import NewAuditPages from "../../components/audit/NewAuditPages.vue";
-import { AuditPage, AuditType } from "../../types";
+import LeaveModal from "../../components/audit/LeaveModal.vue";
 import NewAuditContactDetails from "../../components/audit/NewAuditContactDetails.vue";
+import NewAuditPages from "../../components/audit/NewAuditPages.vue";
+import NewAuditType from "../../components/audit/NewAuditType.vue";
+import { useNotifications } from "../../composables/useNotifications";
+import router from "../../router";
+import { useAuditStore } from "../../store";
+import { useAccountStore } from "../../store/account";
+import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
+import { captureWithPayloads } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -67,14 +66,16 @@ const steps = [
 ];
 const stepHeadingRef = ref<HTMLHeadingElement>();
 
+const accountStore = useAccountStore();
+
 // Setup audit object
 const audit = ref<CreateAuditRequestData>({
   // FIXME: dont set default auditType
   auditType: AuditType.FAST,
   procedureName: "",
   pages: [{ name: "", url: "" }],
-  auditorEmail: "",
-  auditorName: ""
+  auditorEmail: accountStore.account?.email ?? "",
+  auditorName: accountStore.account?.name ?? ""
 });
 
 // Default pages per audit type
@@ -141,7 +142,6 @@ async function submitAuditPages(pages: Omit<AuditPage, "id" | "order">[]) {
 const isSubmitting = ref(false);
 const auditStore = useAuditStore();
 const notify = useNotifications();
-const accountStore = useAccountStore();
 
 function submitContactDetailsStep({
   email,
@@ -231,7 +231,6 @@ async function goToPreviousStep() {
     />
     <NewAuditPages
       v-else-if="currentStep === 1"
-      :audit-type="audit.auditType"
       :pages="audit.pages"
       @previous="goToPreviousStep"
       @submit="submitAuditPages"
