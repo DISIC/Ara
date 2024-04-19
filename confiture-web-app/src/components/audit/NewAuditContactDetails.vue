@@ -90,7 +90,7 @@ function fillSettings() {
         type="submit"
         class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
       >
-        Étape suivante
+        Valider les paramètres
       </button>
     </div>
   </form>

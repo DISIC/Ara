@@ -134,17 +134,17 @@ async function submitAuditTypeStep({
 async function submitAuditPages(pages: Omit<AuditPage, "id" | "order">[]) {
   audit.value.pages = pages;
 
-  currentStep.value = 2;
+  if (steps.length === 2) {
+    submitAuditSettings();
+  } else {
+    currentStep.value = 2;
 
-  await nextTick();
-  stepHeadingRef.value?.focus();
+    await nextTick();
+    stepHeadingRef.value?.focus();
+  }
 }
 
 // 3. Personal infos and final step
-const isSubmitting = ref(false);
-const auditStore = useAuditStore();
-const notify = useNotifications();
-
 function submitContactDetailsStep({
   email,
   name
@@ -155,6 +155,17 @@ function submitContactDetailsStep({
   audit.value.auditorEmail = email;
   audit.value.auditorName = name;
 
+  if (steps.length === 3) {
+    submitAuditSettings();
+  }
+}
+
+// Final submission
+const isSubmitting = ref(false);
+const auditStore = useAuditStore();
+const notify = useNotifications();
+
+function submitAuditSettings() {
   isSubmitting.value = true;
 
   // Update user profile when their name is not known.
