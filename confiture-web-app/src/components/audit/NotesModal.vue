@@ -44,10 +44,10 @@ watch(auditStore, () => {
     id="notes-modal"
     ref="modal"
     aria-labelledby="notes-modal-title"
+    class="modal-side-bar"
     @closed="$emit('closed')"
   >
     <form @submit.prevent="handleSubmit">
-      <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
           <div class="fr-col-12 fr-col-md-8">
             <div class="fr-modal__body">
@@ -68,9 +68,8 @@ watch(auditStore, () => {
                   <label class="fr-label" for="audit-notes">
                     Commentaire sur votre audit
                     <span class="fr-hint-text">
-                      Exemple : remarques et recommandations générales sur le
-                      site audité. Ces notes seront affichées dans le rapport
-                      d’audit.
+                      Exemple : remarques et recommandations générales sur le site
+                      audité. Ces notes seront affichées dans le rapport d’audit.
                     </span>
                   </label>
                   <textarea
@@ -87,9 +86,12 @@ watch(auditStore, () => {
                 </p>
               </div>
               <div class="fr-modal__footer">
-                <ul
-                  class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg"
-                >
+                <ul class="fr-btns-group fr-btns-group--inline-lg">
+                  <li>
+                    <button class="fr-btn" :disabled="isLoading" type="submit">
+                      Enregistrer
+                    </button>
+                  </li>
                   <li>
                     <button
                       class="fr-btn fr-btn--secondary"
@@ -99,17 +101,11 @@ watch(auditStore, () => {
                       Annuler
                     </button>
                   </li>
-                  <li>
-                    <button class="fr-btn" :disabled="isLoading" type="submit">
-                      Enregistrer
-                    </button>
-                  </li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </form>
   </DsfrModal>
 </template>

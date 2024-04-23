@@ -34,7 +34,7 @@ function hide() {
 const isOpened = ref(false);
 
 function onConceal() {
-  /* 
+  /*
   FIXME: For some reason, the DSFR modal emits the `dsfr.conceal` event as
   soon as the page loads. We want to ignore this one event fire so we track if
   the modal is *actually* opened before firing our own event.
@@ -81,3 +81,30 @@ defineExpose({ show, hide });
     </dialog>
   </Teleport>
 </template>
+
+<style scoped>
+.modal-side-bar {
+  padding-inline-end: 0;
+}
+
+.modal-side-bar::before,
+.modal-side-bar::after {
+  content: unset;
+}
+
+.modal-side-bar :deep(.fr-modal__body) {
+  max-height: 100vh !important;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-side-bar :deep(.fr-grid-row--center) {
+  justify-content: flex-end;
+}
+
+.modal-side-bar :deep(.fr-modal__footer) {
+  flex-grow: 1;
+  align-items: flex-end;
+}
+</style>
