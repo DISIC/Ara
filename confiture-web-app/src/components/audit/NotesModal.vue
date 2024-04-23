@@ -61,16 +61,12 @@ watch(auditStore, () => {
               </button>
             </div>
             <div class="fr-modal__content">
-              <h1 id="notes-modal-title" class="fr-modal__title sr-only">
+              <h1 id="notes-modal-title" class="fr-modal__title">
                 Annoter l’audit
               </h1>
               <div class="fr-input-group fr-mb-1v">
                 <label class="fr-label" for="audit-notes">
-                  Commentaire sur votre audit
-                  <span class="fr-hint-text">
-                    Exemple : remarques et recommandations générales sur le site
-                    audité. Ces notes seront affichées dans le rapport d’audit.
-                  </span>
+                  Remarques et recommandations générales
                 </label>
                 <textarea
                   id="audit-notes"
