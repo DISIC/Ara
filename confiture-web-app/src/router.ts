@@ -201,12 +201,20 @@ const router = createRouter({
       }
     },
     {
-      path: "/audits/:uniqueId/informations-generales",
+      path: "/audits/:uniqueId/parametres",
       name: "audit-settings",
       component: AuditSettingsPage,
       beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
+      }
+    },
+    // TODO: remove this redirect in few months (24/04/2024)
+    {
+      path: "/audits/:uniqueId/informations-generales",
+      name: "audit-settings-old",
+      redirect: () => {
+        return { name: "audit-settings" };
       }
     },
     {
