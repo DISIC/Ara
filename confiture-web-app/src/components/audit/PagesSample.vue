@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { AuditPage } from "../../types";
 import DsfrField from "../ui/DsfrField.vue";
 import { useNotifications } from "../../composables/useNotifications";
@@ -28,6 +28,13 @@ const positionSuccessMessage = ref("");
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 const pages = ref(props.modelValue);
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    pages.value = newValue;
+  }
+);
 
 /**
  * Delete page at index and focus previous or first name field.

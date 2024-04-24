@@ -4,7 +4,6 @@ import DsfrField from "../ui/DsfrField.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useAccountStore } from "../../store";
 
-// TODO: fix name prop
 const props = defineProps<{
   email: string;
   name: string | null;

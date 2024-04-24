@@ -72,8 +72,7 @@ const stepHeadingRef = ref<HTMLHeadingElement>();
 
 // Setup audit object
 const audit = ref<CreateAuditRequestData>({
-  // FIXME: dont set default auditType
-  auditType: AuditType.FAST,
+  auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
   auditorEmail: accountStore.account?.email ?? "",
