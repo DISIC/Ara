@@ -217,7 +217,7 @@ async function goToPreviousStep() {
 <template>
   <PageMeta
     title="Démarrer un audit"
-    description="Saisissez les informations de l'entité qui fait la demande d'audit ainsi que du site à auditer."
+    description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
   />
 
   <div class="content">
