@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteLocation } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
@@ -46,15 +46,6 @@ export const history = createWebHistory();
 function getProcedureName() {
   const auditStore = useAuditStore();
   return auditStore.currentAudit?.procedureName ?? "Mon audit";
-}
-
-/**
- * When entering an "edit page", store the current page url to use in the header menu.
- */
-function saveCurrentEditionStep(to: RouteLocation) {
-  const auditStore = useAuditStore();
-  auditStore.lastVisitedStepLocation = to.fullPath;
-  return true;
 }
 
 const router = createRouter({
@@ -204,7 +195,6 @@ const router = createRouter({
       path: "/audits/:uniqueId/parametres",
       name: "audit-settings",
       component: AuditSettingsPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
       }
@@ -221,7 +211,6 @@ const router = createRouter({
       path: "/audits/:uniqueId/generation",
       name: "audit-generation",
       component: AuditGenerationPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
       }
@@ -230,7 +219,6 @@ const router = createRouter({
       path: "/audits/:uniqueId/declaration",
       name: "audit-declaration",
       component: AuditDeclarationPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
       }

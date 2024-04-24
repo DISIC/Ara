@@ -9,7 +9,6 @@ import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
 
 interface AuditStoreState {
-  lastVisitedStepLocation: string | null;
   currentPageId: number | null;
   showAuditEmailAlert: boolean;
 
@@ -20,7 +19,6 @@ interface AuditStoreState {
 
 export const useAuditStore = defineStore("audit", {
   state: (): AuditStoreState => ({
-    lastVisitedStepLocation: null,
     currentPageId: null,
     showAuditEmailAlert: false,
 
