@@ -83,6 +83,10 @@ model Audit {
   sourceAuditId Int?
   auditCopies   Audit[] @relation("AuditDuplicationHistory")
 
+  // As of https://github.com/DISIC/Ara/pull/662, when an audit is deleted, its
+  // data is longer editable, but the report remainn available
+  isHidden Boolean @default(false)
+
   @@unique([editUniqueId, consultUniqueId])
 }
 
