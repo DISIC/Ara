@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 // import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
@@ -99,16 +99,19 @@ const fastAndComplementaryDefaultPages = [
 // Update default pages except if pages has been changed by user
 const pagesArePristine = ref(true);
 
-watch(audit.value, (newValue) => {
+const auditType = computed(() => {
+  return audit.value.auditType;
+});
+
+watch(auditType, (newValue) => {
   if (
-    (newValue.auditType === AuditType.FAST ||
-      newValue.auditType === AuditType.COMPLEMENTARY) &&
+    (newValue === AuditType.FAST || newValue === AuditType.COMPLEMENTARY) &&
     pagesArePristine.value
   ) {
     audit.value.pages = [...fastAndComplementaryDefaultPages];
   }
 
-  if (newValue.auditType === AuditType.FULL && pagesArePristine.value) {
+  if (newValue === AuditType.FULL && pagesArePristine.value) {
     audit.value.pages = [...fullDefaultPages];
   }
 });

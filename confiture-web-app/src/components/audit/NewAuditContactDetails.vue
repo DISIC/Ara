@@ -7,7 +7,7 @@ import { useAccountStore } from "../../store";
 // TODO: fix name prop
 const props = defineProps<{
   email: string;
-  name: string;
+  name: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -17,8 +17,8 @@ const emit = defineEmits<{
 
 const accountStore = useAccountStore();
 
-const emailValue = ref(props.email);
-const nameValue = ref(props.name);
+const emailValue = ref(props.email ?? "");
+const nameValue = ref(props.name ?? "");
 
 function submitAuditContactDetails() {
   emit("submit", {
