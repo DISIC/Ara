@@ -224,7 +224,7 @@ const siteUrl = computed(() => {
       <p class="fr-mb-0">
         Référentiel : <strong>{{ report.data.context.referencial }}</strong>
       </p>
-      <p class="fr-mb-1v">
+      <p v-if="report.data.context.auditorName" class="fr-mb-1v">
         Auditeur ou auditrice :
         <strong>{{ report.data.context.auditorName }}</strong>
       </p>
