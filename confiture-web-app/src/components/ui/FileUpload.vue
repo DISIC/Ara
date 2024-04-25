@@ -7,9 +7,20 @@ import { useUniqueId } from "../../composables/useUniqueId";
 import { ExampleImage } from "../../types";
 import { formatBytes, getUploadUrl } from "../../utils";
 
-const props = defineProps<{
+export interface Props {
+  acceptedFormats?: Array<string>;
   exampleImages: ExampleImage[];
-}>();
+  maxFileSize?: string;
+  multiple?: boolean;
+  title: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  acceptedFormats: undefined,
+  maxFileSize: "2 Mo",
+  multiple: false,
+  title: "Ajouter un fichier"
+});
 
 const emit = defineEmits<{
   (e: "upload-example", payload: File): void;
@@ -34,6 +45,25 @@ const selectedFiles = computed(() => {
   }
 });
 
+const acceptedFormatsHtml = computed(() => {
+  if (!props.acceptedFormats) {
+    return "Tous les formats sont pris en compte";
+  } else {
+    return (
+      "Fichiers supportés&#8239;:" +
+      props.acceptedFormats.map((e) => `<b>${e}</b>`).join(", ")
+    );
+  }
+});
+
+const acceptedFormatsAttr = computed(() => {
+  if (!props.acceptedFormats) {
+    return undefined;
+  } else {
+    return props.acceptedFormats.map((e) => `.${e}`).join(",");
+  }
+});
+
 function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     emit("upload-example", fileInputRef.value?.files[0]);
@@ -49,10 +79,12 @@ function deleteImage(image: ExampleImage) {
 <template>
   <div class="upload-wrapper">
     <div :id="`file-upload-description-${id}`" class="fr-text--bold fr-label">
-      Ajouter un exemple de l’erreur
+      {{ title }}
       <span class="fr-mt-1v fr-text--regular fr-hint-text">
-        Taille maximale par fichier : 2 Mo. Formats : jpg, png. Plusieurs
-        fichiers possibles.
+        <span
+          >Taille maximale par fichier&#8239;: <b>{{ maxFileSize }}</b></span
+        ><span> — <span v-html="acceptedFormatsHtml"></span></span>
+        <span v-if="multiple"> — Plusieurs fichiers possibles.</span>
       </span>
     </div>
 
@@ -65,12 +97,14 @@ function deleteImage(image: ExampleImage) {
         Choisir un fichier
       </label>
 
+      <!-- TODO: handle multiple files upload -->
+      <!-- :multiple="multiple ?? undefined" -->
       <input
         :id="`file-upload-${id}`"
         ref="fileInputRef"
         class="sr-only"
         type="file"
-        accept="image/*"
+        :accept="acceptedFormatsAttr"
         :disabled="isOffline"
         :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
         @change="handleFileChange"
