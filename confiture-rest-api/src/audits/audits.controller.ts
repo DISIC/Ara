@@ -176,6 +176,30 @@ export class AuditsController {
     );
   }
 
+  @Post("/:uniqueId/notes/files")
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 2000000
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+        })
+    )
+    file: Express.Multer.File
+  ) {
+    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    return await this.auditService.saveNotesFile(uniqueId, file);
+  }
+
   @Delete("/:uniqueId/results/examples/:exampleId")
   async deleteExampleImage(
     @Param("uniqueId") uniqueId: string,

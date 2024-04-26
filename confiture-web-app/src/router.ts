@@ -28,6 +28,7 @@ import ReportPage from "./pages/report/ReportPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
+import MarkdownHelperPage from "./pages/MarkdownHelperPage.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -317,6 +318,15 @@ const router = createRouter({
       component: FeedbackPage,
       meta: {
         name: "Donner mon avis"
+      }
+    },
+    // Markdown helper
+    {
+      path: "/syntaxe-markdown",
+      name: "markdown-syntax",
+      component: MarkdownHelperPage,
+      meta: {
+        name: "Syntaxe Markdown"
       }
     },
     // Error pages

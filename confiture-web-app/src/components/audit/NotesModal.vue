@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
+import { ExampleImage } from "../../types";
+
 import DsfrModal from "../ui/DsfrModal.vue";
+import FileUpload from "../ui/FileUpload.vue";
+
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useAuditStore } from "../../store/audit";
 
@@ -37,6 +42,16 @@ function handleClose() {
 watch(auditStore, () => {
   notes.value = auditStore.currentAudit?.notes ?? "";
 });
+
+function handleUploadFile(file: File) {
+  // TODO
+  console.log(file);
+}
+
+function handleDeleteFile(image: ExampleImage) {
+  // TODO
+  console.log(image);
+}
 </script>
 
 <template>
@@ -77,9 +92,19 @@ watch(auditStore, () => {
                   aria-describedby="notes-markdown"
                 ></textarea>
               </div>
-              <p id="notes-markdown" class="fr-text--sm fr-m-0">
-                Markdown pris en compte
-              </p>
+              <MarkdownHelpButton
+                :id="`markdown-notice-notes`"
+                class="fr-mb-4w"
+              />
+              <!-- FILE -->
+              <FileUpload
+                class="fr-mb-4w"
+                :disabled="isOffline"
+                :example-images="[]"
+                :multiple="true"
+                @upload-example="handleUploadFile"
+                @delete-example="handleDeleteFile"
+              />
             </div>
             <div class="fr-modal__footer">
               <ul class="fr-btns-group fr-btns-group--inline-lg">

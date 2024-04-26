@@ -85,6 +85,23 @@ export class AuditService {
     });
   }
 
+  getAuditWithEditUniqueId(uniqueId: string) {
+    return this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: {
+        recipients: true,
+        environments: true,
+        pages: true,
+        sourceAudit: {
+          select: {
+            procedureName: true
+          }
+        },
+        notesFiles: true
+      }
+    });
+  }
+
   getAuditWithConsultUniqueId(uniqueId: string) {
     return this.prisma.audit.findUnique({
       where: { consultUniqueId: uniqueId },
@@ -493,6 +510,62 @@ export class AuditService {
         originalFilename: file.originalname,
         size: file.size,
         thumbnailKey
+      }
+    });
+
+    return storedFile;
+  }
+
+  async saveNotesFile(editUniqueId: string, file: Express.Multer.File) {
+    const randomPrefix = nanoid();
+
+    const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
+
+    let thumbnailKey;
+
+    if (file.mimetype.startsWith("image")) {
+      // If it's an image, create a thumbnail and upload it
+      thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
+
+      const thumbnailBuffer = await sharp(file.buffer)
+        .resize(200, 200, { fit: "cover" })
+        .jpeg({
+          mozjpeg: true
+        })
+        .toBuffer();
+
+      await Promise.all([
+        this.fileStorageService.uploadFile(file.buffer, file.mimetype, key),
+        this.fileStorageService.uploadFile(
+          thumbnailBuffer,
+          "image/jpeg",
+          thumbnailKey
+        )
+      ]);
+    } else {
+      await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
+    }
+
+    const publicUrl = this.fileStorageService.getPublicUrl(key);
+    const thumbnailUrl = thumbnailKey
+      ? this.fileStorageService.getPublicUrl(thumbnailKey)
+      : null;
+
+    const storedFile = await this.prisma.auditFile.create({
+      data: {
+        audit: {
+          connect: {
+            editUniqueId
+          }
+        },
+
+        key,
+        originalFilename: file.originalname,
+        size: file.size,
+        url: publicUrl,
+
+        thumbnailKey,
+        thumbnailUrl
       }
     });
 
