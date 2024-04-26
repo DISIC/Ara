@@ -262,17 +262,15 @@ async function goToPreviousStep() {
 
   <LeaveModal
     ref="leaveModalRef"
-    title="Vous allez quitter l’audit"
+    title="Le paramétrage de l’audit n’est pas terminé"
     icon="fr-icon-warning-line"
-    confirm="Oui, quitter l’audit"
-    cancel="Non, poursuivre l’audit"
-    danger
+    confirm="Abandonner le paramétrage de l’audit"
+    cancel="Poursuivre le paramétrage de l’audit"
     @confirm="confirmLeave"
   >
     <p>
-      A ce stade aucune des informations saisies ne sera sauvegardée. C’est à
-      partir de l’étape suivante que vous pourrez quitter votre audit et y
-      revenir sans perdre vos informations. Souhaitez-vous quitter l’audit ?
+      Aucune des informations saisies ne sera enregistrée. Souhaitez-vous
+      vraiment abandonner le paramétrage de l’audit ?
     </p>
   </LeaveModal>
 </template>
