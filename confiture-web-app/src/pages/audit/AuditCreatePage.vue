@@ -2,7 +2,6 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-// import AuditGeneralInformationsForm from "../../components/audit/AuditGeneralInformationsForm.vue";
 import PageMeta from "../../components/PageMeta";
 import LeaveModal from "../../components/audit/LeaveModal.vue";
 import NewAuditContactDetails from "../../components/audit/NewAuditContactDetails.vue";
@@ -33,6 +32,10 @@ function confirmLeave() {
   router.push(leaveModalDestination.value);
 }
 
+function cancelLeave() {
+  leaveModalRef.value?.hide();
+}
+
 // Display leave modal when navigating to another route
 // FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
@@ -46,7 +49,6 @@ onBeforeRouteLeave((to) => {
 // Display the native browser confirm modal when leaving site
 function onBeforeUnload(e: BeforeUnloadEvent) {
   e.preventDefault();
-  e.returnValue = "Rester sur la page";
 }
 
 onMounted(() => {
@@ -267,6 +269,7 @@ async function goToPreviousStep() {
     confirm="Abandonner le paramétrage de l’audit"
     cancel="Poursuivre le paramétrage de l’audit"
     @confirm="confirmLeave"
+    @cancel="cancelLeave"
   >
     <p>
       Aucune des informations saisies ne sera enregistrée. Souhaitez-vous

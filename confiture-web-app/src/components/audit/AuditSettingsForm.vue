@@ -152,7 +152,6 @@ function onSubmit() {
       </button>
 
       <RouterLink
-        v-if="route.name !== 'create-audit'"
         class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
         :to="{
           name: 'audit-generation',

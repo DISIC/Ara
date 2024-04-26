@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
+import { ref } from "vue";
 import AuditSettingsForm from "../../components/audit/AuditSettingsForm.vue";
+import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -9,16 +11,59 @@ import { useAuditStore } from "../../store";
 import { CreateAuditRequestData } from "../../types";
 
 const router = useRouter();
-
 const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
+const notify = useNotifications();
 
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
 
-const notify = useNotifications();
+// Before leave modal
+const isSubmitting = ref(false);
+const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
+const leaveModalDestination = ref<string>("");
+const confirmedLeave = ref(false);
 
+function showLeaveModal() {
+  leaveModalRef.value?.show();
+}
+
+/**
+ * TODO: submit form
+ */
+function confirmLeave() {
+  // Not closing the modal before route navigation would leave a dangling
+  // "trap focus" event handler on the document body, which would break further
+  // tab navigation
+  leaveModalRef.value?.hide();
+
+  confirmedLeave.value = true;
+  router.push(leaveModalDestination.value);
+}
+
+function cancelLeave() {
+  // Not closing the modal before route navigation would leave a dangling
+  // "trap focus" event handler on the document body, which would break further
+  // tab navigation
+  leaveModalRef.value?.hide();
+
+  confirmedLeave.value = true;
+  router.push(leaveModalDestination.value);
+}
+
+// Display leave modal when navigating to another route
+// FIXME: it causes bug with links on the page
+onBeforeRouteLeave((to) => {
+  if (!isSubmitting.value && !confirmedLeave.value) {
+    leaveModalDestination.value = to.fullPath;
+    showLeaveModal();
+    return false;
+  }
+});
+
+// Form submission
 function submitStepOne(data: CreateAuditRequestData) {
+  isSubmitting.value = true;
   auditStore
     .updateAudit(auditUniqueId, {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -44,6 +89,9 @@ function submitStepOne(data: CreateAuditRequestData) {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
+    })
+    .finally(() => {
+      isSubmitting.value = false;
     });
 }
 </script>
@@ -59,4 +107,19 @@ function submitStepOne(data: CreateAuditRequestData) {
     :audit="auditStore.currentAudit"
     @submit="submitStepOne"
   />
+
+  <LeaveModal
+    ref="leaveModalRef"
+    title="Vous aller quitter sans enregistrer vos modifications"
+    icon="fr-icon-warning-line"
+    confirm="Enregistrer et quitter"
+    cancel="Quitter sans enregistrer"
+    @confirm="confirmLeave"
+    @cancel="cancelLeave"
+  >
+    <p>
+      Les modifications de votre audit ne seront pas prises en compte.
+      Souhaitez-vous quitter sans enregistrer vos modifications ?
+    </p>
+  </LeaveModal>
 </template>
