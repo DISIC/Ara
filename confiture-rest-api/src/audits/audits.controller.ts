@@ -215,6 +215,21 @@ export class AuditsController {
     }
   }
 
+  @Delete("/:uniqueId/notes/files/:fileId")
+  async deleteAuditFile(
+    @Param("uniqueId") uniqueId: string,
+    @Param("fileId", new ParseIntPipe()) fileId: number
+  ) {
+    const deleted = await this.auditService.deleteAuditFile(
+      uniqueId,
+      Number(fileId)
+    );
+
+    if (!deleted) {
+      throw new NotFoundException();
+    }
+  }
+
   /** Retrieve the results of an audit (compliance data) from the database. */
   @Get("/:uniqueId/results")
   @ApiOkResponse({ type: [CriterionResult] })

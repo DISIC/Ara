@@ -479,7 +479,7 @@ export class AuditService {
     const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
 
     const thumbnailBuffer = await sharp(file.buffer)
-      .resize(200, 200, { fit: "cover" })
+      .resize(200, 200, { fit: "inside" })
       .jpeg({
         mozjpeg: true
       })
@@ -516,6 +516,40 @@ export class AuditService {
     return storedFile;
   }
 
+  /**
+   * Returns true if stored filed was found and deleted. False if not found.
+   */
+  async deleteExampleImage(
+    editUniqueId: string,
+    exampleId: number
+  ): Promise<boolean> {
+    const storedFilePromise = this.prisma.storedFile.findUnique({
+      where: {
+        id: exampleId
+      }
+    });
+
+    const storedFile = await storedFilePromise;
+    const audit = await storedFilePromise.criterionResult().page().audit();
+
+    if (!audit || audit.editUniqueId !== editUniqueId) {
+      return false;
+    }
+
+    await this.fileStorageService.deleteMultipleFiles(
+      storedFile.key,
+      storedFile.thumbnailKey
+    );
+
+    await this.prisma.storedFile.delete({
+      where: {
+        id: exampleId
+      }
+    });
+
+    return true;
+  }
+
   async saveNotesFile(editUniqueId: string, file: Express.Multer.File) {
     const randomPrefix = nanoid();
 
@@ -528,7 +562,7 @@ export class AuditService {
       thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
 
       const thumbnailBuffer = await sharp(file.buffer)
-        .resize(200, 200, { fit: "cover" })
+        .resize(200, 200, { fit: "inside" })
         .jpeg({
           mozjpeg: true
         })
@@ -575,31 +609,33 @@ export class AuditService {
   /**
    * Returns true if stored filed was found and deleted. False if not found.
    */
-  async deleteExampleImage(
+  async deleteAuditFile(
     editUniqueId: string,
-    exampleId: number
+    fileId: number
   ): Promise<boolean> {
-    const storedFilePromise = this.prisma.storedFile.findUnique({
+    const storedFilePromise = this.prisma.auditFile.findUnique({
       where: {
-        id: exampleId
+        id: fileId
       }
     });
 
     const storedFile = await storedFilePromise;
-    const audit = await storedFilePromise.criterionResult().page().audit();
+    const audit = await storedFilePromise.audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
     }
 
-    await this.fileStorageService.deleteMultipleFiles(
-      storedFile.key,
-      storedFile.thumbnailKey
-    );
+    if (storedFile.thumbnailKey) {
+      await this.fileStorageService.deleteMultipleFiles(
+        storedFile.key,
+        storedFile.thumbnailKey
+      );
+    }
 
-    await this.prisma.storedFile.delete({
+    await this.prisma.auditFile.delete({
       where: {
-        id: exampleId
+        id: fileId
       }
     });
 
