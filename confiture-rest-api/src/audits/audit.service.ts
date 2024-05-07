@@ -479,10 +479,11 @@ export class AuditService {
     const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
 
     const thumbnailBuffer = await sharp(file.buffer)
-      .resize(200, 200, { fit: "inside" })
       .jpeg({
         mozjpeg: true
       })
+      .flatten({ background: { r: 255, g: 255, b: 255, alpha: 0 } })
+      .resize(200, 200, { fit: "inside" })
       .toBuffer();
 
     await Promise.all([
