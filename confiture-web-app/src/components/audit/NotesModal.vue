@@ -1,13 +1,18 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { debounce } from "lodash-es";
+import { computed, ref } from "vue";
+import { HTTPError } from "ky";
+import { useRoute } from "vue-router";
+import { captureWithPayloads } from "../../utils";
 
-import { ExampleImage } from "../../types";
+import { AuditFile } from "../../types";
 
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
 
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
 import { useAuditStore } from "../../store/audit";
 
 defineProps<{
@@ -24,33 +29,96 @@ defineExpose({
   hide: () => modal.value?.hide()
 });
 
+const showFileSizeError = ref(false);
+const showFileFormatError = ref(false);
+
 const auditStore = useAuditStore();
+const notify = useNotifications();
+const route = useRoute();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 const isOffline = useIsOffline();
 
-const notes = ref("");
+const notes = ref(auditStore.currentAudit?.notes || "");
 
-function handleSubmit() {
-  emit("confirm", notes.value);
-}
+const uniqueId = computed(() => route.params.uniqueId as string);
+const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 
-function handleClose() {
-  modal.value?.hide();
-}
-
-watch(auditStore, () => {
-  notes.value = auditStore.currentAudit?.notes ?? "";
-});
+const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
 function handleUploadFile(file: File) {
-  // TODO
-  console.log(file);
+  showFileSizeError.value = false;
+  showFileFormatError.value = false;
+  notify("info", "Chargement en cours");
+  auditStore
+    .uploadAuditFile(uniqueId.value, file)
+    .then(() => {
+      notify("success", "Fichier téléchargé avec succès.");
+    })
+    .catch(async (error) => {
+      if (error instanceof HTTPError) {
+        if (error.response.status === 413) {
+          showFileSizeError.value = true;
+          notify(
+            "error",
+            "Le téléchargement du fichier a échoué",
+            "Poids du fichier trop lourd"
+          );
+        }
+
+        // Unprocessable Entity
+        if (error.response.status === 422) {
+          const body = await error.response.json();
+
+          if (body.message.includes("expected type")) {
+            showFileFormatError.value = true;
+            notify(
+              "error",
+              "Le téléchargement du fichier a échoué",
+              "Format de fichier non supporté"
+            );
+          } else if (body.message.includes("expected size")) {
+            showFileSizeError.value = true;
+            notify(
+              "error",
+              "Le téléchargement du fichier a échoué",
+              "Poids du fichier trop lourd"
+            );
+          } else {
+            notify(
+              "error",
+              "Le téléchargement du fichier a échoué",
+              "Une erreur inconnue est survenue"
+            );
+            captureWithPayloads(error);
+          }
+        } else {
+          notify(
+            "error",
+            "Téléchargement échoué",
+            "Une erreur inconnue est survenue"
+          );
+          captureWithPayloads(error);
+        }
+      }
+    });
 }
 
-function handleDeleteFile(image: ExampleImage) {
-  // TODO
-  console.log(image);
+function handleDeleteFile(file: AuditFile) {
+  auditStore
+    .deleteAuditFile(uniqueId.value, file.id)
+    .then(() => {
+      showFileSizeError.value = false;
+      showFileFormatError.value = false;
+      notify("success", "Fichier supprimé avec succès");
+    })
+    .catch(() => {
+      notify(
+        "error",
+        "Échec lors de la suppression du fichier",
+        "Une erreur inconnue empêche la suppression du fichier."
+      );
+    });
 }
 </script>
 
@@ -62,8 +130,8 @@ function handleDeleteFile(image: ExampleImage) {
     class="modal-side-bar"
     @closed="$emit('closed')"
   >
-    <form @submit.prevent="handleSubmit">
-      <div class="fr-grid-row fr-grid-row--center">
+    <form class="fr-container" @submit.prevent>
+      <div class="fr-grid-row">
         <div class="fr-col-12 fr-col-md-8">
           <div class="fr-modal__body">
             <div class="fr-modal__header">
@@ -90,6 +158,7 @@ function handleDeleteFile(image: ExampleImage) {
                   rows="10"
                   :disabled="isOffline"
                   aria-describedby="notes-markdown"
+                  @input="handleNotesChange"
                 ></textarea>
               </div>
               <MarkdownHelpButton
@@ -100,29 +169,13 @@ function handleDeleteFile(image: ExampleImage) {
               <FileUpload
                 class="fr-mb-4w"
                 :disabled="isOffline"
-                :example-images="[]"
+                :audit-files="files"
                 :multiple="true"
-                @upload-example="handleUploadFile"
-                @delete-example="handleDeleteFile"
+                :show-file-size-error="showFileSizeError"
+                :show-file-format-error="showFileFormatError"
+                @upload-file="handleUploadFile"
+                @delete-file="handleDeleteFile"
               />
-            </div>
-            <div class="fr-modal__footer">
-              <ul class="fr-btns-group fr-btns-group--inline-lg">
-                <li>
-                  <button class="fr-btn" :disabled="isLoading" type="submit">
-                    Enregistrer
-                  </button>
-                </li>
-                <li>
-                  <button
-                    class="fr-btn fr-btn--secondary"
-                    type="button"
-                    @click="handleClose"
-                  >
-                    Annuler
-                  </button>
-                </li>
-              </ul>
             </div>
           </div>
         </div>

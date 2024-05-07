@@ -92,6 +92,15 @@ defineExpose({ show, hide });
   content: unset;
 }
 
+.modal-side-bar :deep(.fr-container) {
+  padding-inline: 0;
+  max-width: revert;
+}
+
+.modal-side-bar :deep(.fr-grid-row) {
+  justify-content: flex-end;
+}
+
 .modal-side-bar :deep(.fr-modal__body) {
   max-height: 100vh !important;
   height: 100vh;
@@ -99,12 +108,7 @@ defineExpose({ show, hide });
   flex-direction: column;
 }
 
-.modal-side-bar :deep(.fr-grid-row--center) {
-  justify-content: flex-end;
-}
-
-.modal-side-bar :deep(.fr-modal__footer) {
-  flex-grow: 1;
-  align-items: flex-end;
+.modal-side-bar :deep(.fr-modal__content) {
+  margin-bottom: 0;
 }
 </style>

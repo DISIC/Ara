@@ -10,7 +10,7 @@ import {
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
-  ExampleImage
+  AuditFile
 } from "../../types";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
@@ -73,7 +73,7 @@ const showFileFormatError = ref(false);
 function handleUploadExample(file: File) {
   showFileSizeError.value = false;
   showFileFormatError.value = false;
-
+  notify("info", "Chargement en cours");
   if (file.size > 2000000) {
     showFileSizeError.value = true;
     notify(
@@ -144,7 +144,7 @@ function handleUploadExample(file: File) {
     });
 }
 
-function handleDeleteExample(image: ExampleImage) {
+function handleDeleteExample(image: AuditFile) {
   store
     .deleteExampleImage(
       props.auditUniqueId,
@@ -155,11 +155,13 @@ function handleDeleteExample(image: ExampleImage) {
     )
     .then(() => {
       notify("success", "Exemple supprimé avec succès");
+      showFileSizeError.value = false;
+      showFileFormatError.value = false;
     })
     .catch(() => {
       notify(
         "error",
-        "Echec de la suppression de l'exemple",
+        "Échec lors de la suppression de l'exemple",
         "Une erreur inconnue empêche la suppression de l'exemple."
       );
     });
@@ -320,8 +322,8 @@ const isOffline = useIsOffline();
       :show-file-size-error="showFileSizeError"
       @update:comment="updateResultComment($event, 'errorDescription')"
       @update:user-impact="updateResultImpact($event)"
-      @upload-example="handleUploadExample"
-      @delete-example="handleDeleteExample"
+      @upload-file="handleUploadExample"
+      @delete-file="handleDeleteExample"
       @update:recommandation="updateResultComment($event, 'recommandation')"
       @update:quick-win="updateQuickWin"
     />

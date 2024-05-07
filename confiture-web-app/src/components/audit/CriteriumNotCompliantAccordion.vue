@@ -2,7 +2,7 @@
 import { useIsOffline } from "../../composables/useIsOffline";
 import { formatUserImpact } from "../../utils";
 
-import { CriterionResultUserImpact, ExampleImage } from "../../types";
+import { CriterionResultUserImpact, AuditFile } from "../../types";
 import FileUpload from "../ui/FileUpload.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
@@ -13,7 +13,7 @@ defineProps<{
   id: string;
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
-  exampleImages: ExampleImage[];
+  exampleImages: AuditFile[];
   recommandation: string | null;
   quickWin?: boolean;
 
@@ -24,8 +24,8 @@ defineProps<{
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "upload-example", payload: File): void;
-  (e: "delete-example", payload: ExampleImage): void;
+  (e: "upload-file", payload: File): void;
+  (e: "delete-file", payload: AuditFile): void;
   (e: "update:recommandation", payload: string): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
@@ -52,12 +52,12 @@ const userImpacts: Array<{
   }
 ];
 
-function handleUploadImage(file: File) {
-  emit("upload-example", file);
+function handleUploadFile(image: File) {
+  emit("upload-file", image);
 }
 
-function handleDeleteImage(image: ExampleImage) {
-  emit("delete-example", image);
+function handleDeleteFile(image: AuditFile) {
+  emit("delete-file", image);
 }
 
 const isOffline = useIsOffline();
@@ -94,14 +94,15 @@ const isOffline = useIsOffline();
     <!-- FILE -->
     <FileUpload
       class="fr-mb-4w"
-      :disabled="isOffline"
-      :example-images="exampleImages"
       :accepted-formats="['jpg', 'jpeg', 'png']"
+      :audit-files="exampleImages"
+      :disabled="isOffline"
       :multiple="true"
+      :show-file-size-error="showFileSizeError"
+      :show-file-format-error="showFileFormatError"
       title="Ajouter une image d’exemple de l’erreur"
-      @upload-example="handleUploadImage"
-      @delete-example="handleDeleteImage"
-      @update:model-value="$emit('update:userImpact', $event)"
+      @delete-file="handleDeleteFile"
+      @upload-file="handleUploadFile"
     />
 
     <!-- USER IMPACT -->

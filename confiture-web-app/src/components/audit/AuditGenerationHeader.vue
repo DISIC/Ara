@@ -160,7 +160,6 @@ const updateAuditNotes = async (notes: string) => {
     );
   } finally {
     isNotesLoading.value = false;
-    notesModal.value?.hide();
   }
 };
 

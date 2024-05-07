@@ -65,6 +65,7 @@ export interface Audit {
   derogatedContent: string | null;
   notInScopeContent: string | null;
   notes: string | null;
+  notesFiles: AuditFile[];
 }
 
 /** Audit type fields needed to create an audit */
@@ -107,11 +108,12 @@ export enum CriterionResultUserImpact {
   BLOCKING = "BLOCKING"
 }
 
-export interface ExampleImage {
+export interface AuditFile {
   id: number;
   originalFilename: string;
   size: number;
   key: string;
+  mimetype: string;
   thumbnailKey: string;
 }
 
@@ -130,6 +132,6 @@ export interface CriteriumResult {
   userImpact: CriterionResultUserImpact | null;
   recommandation: string | null;
   notApplicableComment: string | null;
-  exampleImages: ExampleImage[];
+  exampleImages: AuditFile[];
   quickWin: boolean;
 }
