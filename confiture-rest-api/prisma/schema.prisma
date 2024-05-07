@@ -170,6 +170,7 @@ model AuditTrace {
 model StoredFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
+  mimetype         String @default("image/unknown")
   size             Int
 
   // S3 storage keys
@@ -184,6 +185,7 @@ model AuditFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
   url              String
+  mimetype         String @default("image/unknown")
   size             Int
 
   // S3 storage key

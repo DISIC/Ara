@@ -508,6 +508,7 @@ export class AuditService {
 
         key,
         originalFilename: file.originalname,
+        mimetype: file.mimetype,
         size: file.size,
         thumbnailKey
       }
@@ -595,8 +596,9 @@ export class AuditService {
 
         key,
         originalFilename: file.originalname,
-        size: file.size,
         url: publicUrl,
+        mimetype: file.mimetype,
+        size: file.size,
 
         thumbnailKey,
         thumbnailUrl
@@ -1158,6 +1160,7 @@ export class AuditService {
             {
               originalFilename: e.originalFilename,
               url: publicUrl,
+              mimetype: e.mimetype,
               size: e.size,
               key: key,
               thumbnailUrl: thumbnailUrl,
