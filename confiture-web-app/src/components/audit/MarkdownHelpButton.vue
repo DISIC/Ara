@@ -1,18 +1,5 @@
 <script lang="ts" setup>
-import { inject } from "vue";
 import MarkdownIcon from "../icons/MarkdownIcon.vue";
-
-// Provided in App.vue
-const openMarkdownHelp = inject<() => void>("openMarkdownHelp");
-if (!openMarkdownHelp) {
-  console.warn(
-    "Cannot inject `openMarkdownHelp`. Make sure it is provided somewhere higher in the component tree."
-  );
-}
-
-function onClick() {
-  openMarkdownHelp && openMarkdownHelp();
-}
 </script>
 
 <template>
