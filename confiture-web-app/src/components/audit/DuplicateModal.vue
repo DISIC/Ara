@@ -8,6 +8,7 @@ const modal = ref<InstanceType<typeof DsfrModal>>();
 defineProps<{
   originalAuditName?: string;
   isLoading: boolean;
+  id: string;
 }>();
 
 const emit = defineEmits<{
@@ -71,7 +72,7 @@ function handleClose() {
                   commentaires et recommandations, etc.
                 </p>
                 <DsfrField
-                  id="duplicate-audit-name"
+                  :id="`duplicate-audit-name-${id}`"
                   ref="duplicateAuditNameRef"
                   v-model="duplicateAuditName"
                   label="Nom de la copie"
