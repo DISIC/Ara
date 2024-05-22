@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 
 defineEmits(["closed", "confirm"]);
