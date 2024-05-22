@@ -4,7 +4,7 @@ import MarkdownIcon from "../icons/MarkdownIcon.vue";
 
 <template>
   <div class="markdown-wrapper">
-    <p class="fr-text--sm fr-m-0"><MarkdownIcon /> Markdown pris en compte</p>
+    <p class="fr-text--sm fr-m-0">Markdown pris en compte</p>
     <a
       class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm"
       href="/syntaxe-markdown"
