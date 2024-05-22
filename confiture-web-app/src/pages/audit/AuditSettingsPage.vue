@@ -8,7 +8,7 @@ import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore } from "../../store";
-import { CreateAuditRequestData } from "../../types";
+import { AuditPage, AuditType } from "../../types";
 
 const router = useRouter();
 const route = useRoute();
@@ -59,7 +59,13 @@ onBeforeRouteLeave((to) => {
 });
 
 // Form submission
-function submitSettings(data: CreateAuditRequestData) {
+function submitSettings(data: {
+  auditType: AuditType;
+  procedureName: string;
+  pages: Omit<AuditPage, "id" | "order">[];
+  auditorName: string;
+  auditorEmail: string;
+}) {
   isSubmitting.value = true;
   auditStore
     .updateAudit(auditUniqueId, {

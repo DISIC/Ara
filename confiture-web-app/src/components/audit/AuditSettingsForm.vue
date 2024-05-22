@@ -3,7 +3,7 @@ import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
-import { AuditType, CreateAuditRequestData } from "../../types";
+import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
@@ -16,7 +16,16 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "submit", payload: CreateAuditRequestData): void;
+  (
+    e: "submit",
+    payload: {
+      auditType: AuditType;
+      procedureName: string;
+      pages: Omit<AuditPage, "id" | "order">[];
+      auditorName: string;
+      auditorEmail: string;
+    }
+  ): void;
   (e: "change"): void;
 }>();
 
