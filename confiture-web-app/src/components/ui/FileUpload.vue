@@ -93,10 +93,9 @@ function isViewable(auditFile: AuditFile) {
       <div :id="`file-upload-description-${id}`" class="fr-text--bold fr-label">
         {{ title }}
         <span class="fr-mt-1v fr-text--regular fr-hint-text">
-          <span
-            >Taille maximale par fichier&#8239;: <b>{{ maxFileSize }}</b></span
-          ><span> — <span v-html="acceptedFormatsHtml"></span></span>
-          <span v-if="multiple"> — Plusieurs fichiers possibles.</span>
+          <span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
+          ><span>. <span v-html="acceptedFormatsHtml"></span></span>
+          <span v-if="multiple">. Plusieurs fichiers possibles.</span>
         </span>
       </div>
 
