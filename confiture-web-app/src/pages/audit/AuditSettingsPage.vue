@@ -19,6 +19,7 @@ const notify = useNotifications();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
 
 // Before leave modal
+const isPristine = ref(true);
 const isSubmitting = ref(false);
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -28,17 +29,13 @@ function showLeaveModal() {
   leaveModalRef.value?.show();
 }
 
-/**
- * TODO: submit form
- */
-function confirmLeave() {
-  // Not closing the modal before route navigation would leave a dangling
-  // "trap focus" event handler on the document body, which would break further
-  // tab navigation
-  leaveModalRef.value?.hide();
+const settingsFormRef = ref<InstanceType<typeof AuditSettingsForm>>();
 
+function confirmLeave() {
+  leaveModalRef.value?.hide();
   confirmedLeave.value = true;
-  router.push(leaveModalDestination.value);
+
+  settingsFormRef.value?.onSubmit();
 }
 
 function cancelLeave() {
@@ -54,7 +51,7 @@ function cancelLeave() {
 // Display leave modal when navigating to another route
 // FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
-  if (!isSubmitting.value && !confirmedLeave.value) {
+  if (!isSubmitting.value && !confirmedLeave.value && !isPristine.value) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
@@ -62,7 +59,7 @@ onBeforeRouteLeave((to) => {
 });
 
 // Form submission
-function submitStepOne(data: CreateAuditRequestData) {
+function submitSettings(data: CreateAuditRequestData) {
   isSubmitting.value = true;
   auditStore
     .updateAudit(auditUniqueId, {
@@ -77,10 +74,14 @@ function submitStepOne(data: CreateAuditRequestData) {
         "Les paramètres de votre audit ont été mis à jour avec succès"
       );
 
-      router.push({
-        name: "audit-generation",
-        params: { uniqueId: auditUniqueId }
-      });
+      if (leaveModalDestination.value) {
+        router.push(leaveModalDestination.value);
+      } else {
+        router.push({
+          name: "audit-generation",
+          params: { uniqueId: auditUniqueId }
+        });
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -89,8 +90,6 @@ function submitStepOne(data: CreateAuditRequestData) {
         "Une erreur est survenue",
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
-    })
-    .finally(() => {
       isSubmitting.value = false;
     });
 }
@@ -104,8 +103,10 @@ function submitStepOne(data: CreateAuditRequestData) {
 
   <AuditSettingsForm
     v-if="auditStore.currentAudit"
+    ref="settingsFormRef"
     :audit="auditStore.currentAudit"
-    @submit="submitStepOne"
+    @submit="submitSettings"
+    @change="isPristine = false"
   />
 
   <LeaveModal

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
@@ -17,7 +17,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "submit", payload: CreateAuditRequestData): void;
+  (e: "change"): void;
 }>();
+
+defineExpose({
+  onSubmit
+});
 
 const audits = [
   {
@@ -71,6 +76,14 @@ function onSubmit() {
     auditorEmail: formatEmail(auditorEmail.value)
   });
 }
+
+watch(
+  pages,
+  () => {
+    emit("change");
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -91,6 +104,7 @@ function onSubmit() {
       class="fr-mb-6w"
       label="Nom du site audité"
       required
+      @update:model-value="emit('change')"
     />
 
     <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
@@ -104,6 +118,7 @@ function onSubmit() {
         :checked="auditType === type.value"
         :goals="type.goals"
         :documentation-link="type.documentation"
+        @update:model-value="emit('change')"
       />
     </div>
 
@@ -133,6 +148,7 @@ function onSubmit() {
         v-model="auditorName"
         label="Prénom et nom (optionnel)"
         hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        @update:model-value="emit('change')"
       />
 
       <DsfrField
@@ -143,6 +159,7 @@ function onSubmit() {
         hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
         type="email"
         required
+        @update:model-value="emit('change')"
       />
     </fieldset>
 
