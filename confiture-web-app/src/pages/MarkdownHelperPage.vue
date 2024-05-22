@@ -39,7 +39,7 @@ const linkExample = `L’outil Ara est réalisé par [DesignGouv](https://design
     title="Syntaxe markdown"
     description="Syntaxe markdown sur le site ara.numerique.gouv.fr"
   />
-  <section class="fr-col-12 fr-col-md-8">
+  <section class="fr-col-12 fr-col-md-8 fr-mx-auto">
     <h1>Syntaxe markdown</h1>
 
     <p>
