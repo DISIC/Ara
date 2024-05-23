@@ -40,9 +40,9 @@ function handleClose() {
 
 <template>
   <DsfrModal
-    id="duplicate-modal"
+    :id="`duplicate-modal-${id}`"
     ref="modal"
-    aria-labelledby="duplicate-modal-title"
+    :aria-labelledby="`duplicate-modal-title-${id}`"
     @closed="$emit('closed')"
   >
     <form @submit.prevent="handleSubmit">
@@ -53,14 +53,14 @@ function handleClose() {
               <div class="fr-modal__header">
                 <button
                   class="fr-btn--close fr-btn"
-                  aria-controls="duplicate-modal"
+                  :aria-controls="`duplicate-modal-${id}`"
                   type="button"
                 >
                   Fermer
                 </button>
               </div>
               <div class="fr-modal__content">
-                <h1 id="duplicate-modal-title" class="fr-modal__title">
+                <h1 :id="`duplicate-modal-title-${id}`" class="fr-modal__title">
                   Créer une copie de l’audit
                   <template v-if="originalAuditName">
                     {{ originalAuditName }}

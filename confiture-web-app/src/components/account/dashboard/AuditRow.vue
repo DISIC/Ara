@@ -391,6 +391,7 @@ function copyStatementLink(uniqueId: string) {
   />
 
   <DeleteModal
+    :id="audit.editUniqueId"
     ref="deleteModal"
     @confirm="deleteAudit"
     @closed="

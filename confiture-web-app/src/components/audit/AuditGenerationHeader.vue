@@ -464,6 +464,7 @@ onMounted(() => {
   />
 
   <DeleteModal
+    :id="uniqueId"
     ref="deleteModal"
     @confirm="confirmDelete"
     @closed="
