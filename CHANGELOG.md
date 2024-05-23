@@ -8,12 +8,15 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Permet d’accéder à un rapport quand l’audit est supprimer ([#662](https://github.com/DISIC/Ara/pull/662))
 
+### Corrections 🐛
+
+- Corrige l’URL copiée de la déclaration d’accessibilité ([#713](https://github.com/DISIC/Ara/pull/713))
+
 ## 26/04/2024
 
 ### Autres changements ⚙️
 
 - Ajoute un lien de retour vers le rapport depuis la page de contexte de l’audit ([#703](https://github.com/DISIC/Ara/pull/703))
-
 
 ## 17/04/2024
 
