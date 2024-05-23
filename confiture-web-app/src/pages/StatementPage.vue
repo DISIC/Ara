@@ -20,7 +20,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 const notify = useNotifications();
 
 async function copyA11yStatementUrl() {
-  const url = `${window.location.origin}/temp/${uniqueId}/declaration-accessibilite`;
+  const url = `${window.location.origin}/declaration/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
     showCopyAlert.value = true;
@@ -28,7 +28,7 @@ async function copyA11yStatementUrl() {
     notify(
       "success",
       "",
-      "Le lien vers le rapport a bien été copié dans le presse-papier."
+      "Le lien vers la déclaration a bien été copié dans le presse-papier."
     );
   });
 }
