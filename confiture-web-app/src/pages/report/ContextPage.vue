@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
+import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { formatDate, getCriteriaCount } from "../../utils";
-import TopLink from "../../components/ui/TopLink.vue";
-import PageMeta from "../../components/PageMeta";
 import { AuditType } from "../../types";
+import { formatDate, getCriteriaCount } from "../../utils";
 
 const report = useReportStore();
 
@@ -31,6 +32,11 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       title="Contexte"
       :description="`Découvrez en détails le contexte de l’audit ${report.data.procedureName}.`"
     />
+    <BackLink
+      label="Retourner au rapport d’audit"
+      :to="{ name: 'report', params: { uniqueId } }"
+    />
+
     <h1 class="fr-mb-3w fr-mb-md-9v">Contexte de l’audit</h1>
     <h2 class="fr-mb-2w fr-mb-md-3w">Introduction</h2>
     <p>
