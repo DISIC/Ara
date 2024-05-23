@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 23/05/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Permet d’accéder à un rapport quand l’audit est supprimer ([#662](https://github.com/DISIC/Ara/pull/662))
+
 ## 17/04/2024
 
 ### Nouvelles fonctionnalités 🚀
