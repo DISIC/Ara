@@ -76,17 +76,3 @@ defineExpose({
     </div>
   </DsfrModal>
 </template>
-
-<style scoped>
-.danger-button {
-  background-color: var(--background-action-high-error);
-}
-
-.danger-button:hover {
-  background-color: var(--background-action-high-error-hover);
-}
-
-.danger-button:focus {
-  background-color: var(--background-action-high-error-active);
-}
-</style>

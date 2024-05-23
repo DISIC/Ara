@@ -86,7 +86,15 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAudit(@Param("uniqueId") uniqueId: string) {
-    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
+      environments: true,
+      pages: true,
+      sourceAudit: {
+        select: {
+          procedureName: true
+        }
+      }
+    });
 
     if (!audit) {
       return this.sendAuditNotFoundStatus(uniqueId);
@@ -153,7 +161,7 @@ export class AuditsController {
     file: Express.Multer.File,
     @Body() body: UploadImageDto
   ) {
-    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
       return this.sendAuditNotFoundStatus(uniqueId);
@@ -210,7 +218,7 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Body() body: UpdateResultsDto
   ) {
-    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
       return this.sendAuditNotFoundStatus(uniqueId);
@@ -247,7 +255,7 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async deleteAudit(@Param("uniqueId") uniqueId: string) {
-    const deleted = await this.auditService.deleteAudit(uniqueId);
+    const deleted = await this.auditService.softDeleteAudit(uniqueId);
 
     if (!deleted) {
       return this.sendAuditNotFoundStatus(uniqueId);

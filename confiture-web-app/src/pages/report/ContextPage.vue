@@ -103,11 +103,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       <h2 class="fr-mb-2w fr-mb-md-3w">Auditeur ou auditrice</h2>
 
       <p class="fr-mb-9v fr-mb-md-6w">
-        <template v-if="report.data.context.auditorName">
-          Cet audit a été réalisé par
-          <strong>{{ report.data.context.auditorName }}</strong
-          >.
-        </template>
+        Cet audit a été réalisé par
+        <strong>{{ report.data.context.auditorName }}</strong
+        >.
       </p>
     </template>
 

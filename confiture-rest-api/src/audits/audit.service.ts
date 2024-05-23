@@ -78,25 +78,10 @@ export class AuditService {
     });
   }
 
-  // getAuditWithConsultUniqueId(uniqueId: string) {
-  //   return this.prisma.audit.findUnique({
-  //     where: { consultUniqueId: uniqueId },
-  //   });
-  // }
-
-  getAuditWithEditUniqueId(uniqueId: string) {
-    return this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      include: {
-        recipients: true,
-        environments: true,
-        pages: true,
-        sourceAudit: {
-          select: {
-            procedureName: true
-          }
-        }
-      }
+  findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
+    return this.prisma.audit.findFirst({
+      where: { editUniqueId: uniqueId, isHidden: false },
+      include
     });
   }
 
@@ -555,10 +540,10 @@ export class AuditService {
   }
 
   /**
-   * Delete an audit and the data associated with it.
+   * Completely delete an audit and all the data associated with it.
    * @returns True if an audit was deleted, false otherwise.
    */
-  async deleteAudit(uniqueId: string): Promise<boolean> {
+  async hardDeleteAudit(uniqueId: string): Promise<boolean> {
     try {
       const storedFiles = await this.prisma.storedFile.findMany({
         where: {
@@ -585,6 +570,30 @@ export class AuditService {
           : [])
       ]);
 
+      return true;
+    } catch (e) {
+      if (e?.code === "P2025") {
+        return false;
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Mark an audit as deleted and remove auditor informations. Its data will be not be deleted.
+   * @returns True if an audit was deleted, false otherwise.
+   */
+  async softDeleteAudit(uniqueId: string): Promise<boolean> {
+    try {
+      await this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: {
+          isHidden: true,
+          auditorEmail: null,
+          auditorName: null,
+          auditorOrganisation: null
+        }
+      });
       return true;
     } catch (e) {
       if (e?.code === "P2025") {
@@ -930,9 +939,8 @@ export class AuditService {
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const audit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      include: { pages: true }
+    const audit = await this.findAuditWithEditUniqueId(uniqueId, {
+      pages: true
     });
 
     const testedCount = await this.prisma.criterionResult.count({
@@ -959,8 +967,8 @@ export class AuditService {
   }
 
   async duplicateAudit(sourceUniqueId: string, newAuditName: string) {
-    const originalAudit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: sourceUniqueId },
+    const originalAudit = await this.prisma.audit.findFirst({
+      where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
         environments: true,
         pages: {
@@ -1132,7 +1140,8 @@ export class AuditService {
   async getAuditsByAuditorEmail(email: string) {
     const audits = await this.prisma.audit.findMany({
       where: {
-        auditorEmail: email
+        auditorEmail: email,
+        isHidden: false
       },
       select: {
         procedureName: true,

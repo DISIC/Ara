@@ -82,8 +82,12 @@ export class AuditExportService {
   }
 
   async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
-    const audit =
-      await this.auditService.getAuditWithEditUniqueId(editUniqueId);
+    const audit = (await this.auditService.findAuditWithEditUniqueId(
+      editUniqueId,
+      { pages: true }
+    )) as Audit & {
+      pages: AuditedPage[];
+    };
     const results =
       await this.auditService.getResultsWithEditUniqueId(editUniqueId);
 
