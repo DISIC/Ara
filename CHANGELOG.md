@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 24/05/2024
+
+### Corrections 🐛
+
+- Corrige des `id` dupliqués dans les modales de duplication et de suppression d’audit ([#712](https://github.com/DISIC/Ara/pull/712))
+
 ## 23/05/2024
 
 ### Nouvelles fonctionnalités 🚀

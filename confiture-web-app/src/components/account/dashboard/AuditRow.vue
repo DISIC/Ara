@@ -379,6 +379,7 @@ function copyStatementLink(uniqueId: string) {
   </div>
 
   <DuplicateModal
+    :id="audit.editUniqueId"
     ref="duplicateModal"
     :original-audit-name="audit.procedureName"
     :is-loading="isDuplicationLoading"
@@ -390,6 +391,7 @@ function copyStatementLink(uniqueId: string) {
   />
 
   <DeleteModal
+    :id="audit.editUniqueId"
     ref="deleteModal"
     @confirm="deleteAudit"
     @closed="

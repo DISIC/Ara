@@ -452,6 +452,7 @@ onMounted(() => {
   <div ref="scrollSentinelRef" />
 
   <DuplicateModal
+    :id="uniqueId"
     ref="duplicateModal"
     :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
@@ -463,6 +464,7 @@ onMounted(() => {
   />
 
   <DeleteModal
+    :id="uniqueId"
     ref="deleteModal"
     @confirm="confirmDelete"
     @closed="
