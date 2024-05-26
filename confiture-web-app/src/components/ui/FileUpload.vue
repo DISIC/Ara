@@ -10,6 +10,7 @@ import { formatBytes, getUploadUrl } from "../../utils";
 export interface Props {
   acceptedFormats?: Array<string>;
   auditFiles: AuditFile[];
+  readonly: boolean;
   maxFileSize?: string;
   multiple?: boolean;
   title?: string;
@@ -19,6 +20,7 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   acceptedFormats: undefined,
+  readonly: false,
   maxFileSize: "2 Mo",
   multiple: false,
   title: "Ajouter un fichier",
@@ -97,7 +99,7 @@ function isViewable(auditFile: AuditFile) {
 <template>
   <div>
     <div class="upload-wrapper">
-      <div class="fr-upload-group">
+      <div v-if="!readonly" class="fr-upload-group">
         <label
           :id="`file-upload-description-${id}`"
           class="fr-label"
@@ -193,7 +195,7 @@ function isViewable(auditFile: AuditFile) {
               <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
             </a>
           </li>
-          <li>
+          <li v-if="!readonly">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
               :disabled="isOffline"
