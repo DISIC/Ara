@@ -130,9 +130,9 @@ function handleDeleteFile(file: AuditFile) {
     class="modal-side-bar"
     @closed="$emit('closed')"
   >
-    <form class="fr-container" @submit.prevent>
+    <form @submit.prevent>
       <div class="fr-grid-row">
-        <div class="fr-col-12 fr-col-md-8">
+        <div class="fr-col-12 sidebar-col">
           <div class="fr-modal__body">
             <div class="fr-modal__header">
               <button

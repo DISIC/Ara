@@ -92,9 +92,8 @@ defineExpose({ show, hide });
   content: unset;
 }
 
-.modal-side-bar :deep(.fr-container) {
+.modal-side-bar > :deep(.fr-container) {
   padding-inline: 0;
-  max-width: revert;
 }
 
 .modal-side-bar :deep(.fr-grid-row) {
@@ -110,5 +109,21 @@ defineExpose({ show, hide });
 
 .modal-side-bar :deep(.fr-modal__content) {
   margin-bottom: 0;
+}
+
+@media (min-width: 63em) {
+  .modal-side-bar :deep(.sidebar-col) {
+    flex: 0 0 63rem;
+    max-width: revert;
+    width: revert;
+  }
+}
+
+@media (max-width: 62.9999999em) {
+  .modal-side-bar :deep(.sidebar-col) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+  }
 }
 </style>

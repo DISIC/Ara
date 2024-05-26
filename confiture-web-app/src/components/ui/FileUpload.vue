@@ -50,10 +50,7 @@ const acceptedFormatsHtml = computed(() => {
   if (!props.acceptedFormats) {
     return "Tous les formats sont pris en compte";
   } else {
-    return (
-      "Fichiers supportés&#8239;:" +
-      props.acceptedFormats.map((e) => `<b>${e}</b>`).join(", ")
-    );
+    return "Fichiers supportés&#8239;: " + props.acceptedFormats.join(", ");
   }
 });
 
@@ -77,7 +74,17 @@ function deleteFile(file: AuditFile) {
 }
 
 function getFileName(auditFile: AuditFile) {
-  return auditFile.originalFilename + " ( " + formatBytes(auditFile.size) + ")";
+  return auditFile.originalFilename;
+}
+
+function getFullFileName(auditFile: AuditFile) {
+  return getFileName(auditFile) + " (" + getFileDetails(auditFile) + ")";
+}
+
+function getFileDetails(auditFile: AuditFile) {
+  const name = auditFile.originalFilename;
+  const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
+  return extension + " — " + formatBytes(auditFile.size);
 }
 
 function isViewable(auditFile: AuditFile) {
@@ -90,22 +97,18 @@ function isViewable(auditFile: AuditFile) {
 <template>
   <div>
     <div class="upload-wrapper">
-      <div :id="`file-upload-description-${id}`" class="fr-text--bold fr-label">
-        {{ title }}
-        <span class="fr-mt-1v fr-text--regular fr-hint-text">
-          <span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
-          ><span>. <span v-html="acceptedFormatsHtml"></span></span>
-          <span v-if="multiple">. Plusieurs fichiers possibles.</span>
-        </span>
-      </div>
-
-      <div class="upload-line fr-mt-2w fr-mb-2w">
+      <div class="fr-upload-group">
         <label
-          class="fr-btn fr-btn--tertiary upload-label"
-          :class="{ 'upload-label--disabled': isOffline }"
+          :id="`file-upload-description-${id}`"
+          class="fr-label"
           :for="`file-upload-${id}`"
         >
-          Choisir un fichier
+          {{ title }}
+          <span class="fr-hint-text"
+            ><span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
+            ><span>. <span v-html="acceptedFormatsHtml"></span></span>
+            <span v-if="multiple">. Plusieurs fichiers possibles.</span></span
+          >
         </label>
 
         <!-- TODO: handle multiple files upload -->
@@ -113,15 +116,13 @@ function isViewable(auditFile: AuditFile) {
         <input
           :id="`file-upload-${id}`"
           ref="fileInputRef"
-          class="sr-only"
+          class="fr-upload"
           type="file"
           :accept="acceptedFormatsAttr"
           :disabled="isOffline"
           :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
           @change="handleFileChange"
         />
-
-        <p class="fr-mb-0 fr-ml-2w">{{ selectedFiles }}</p>
       </div>
 
       <p
@@ -150,6 +151,8 @@ function isViewable(auditFile: AuditFile) {
           :src="getUploadUrl(auditFile.thumbnailKey)"
           alt=""
           loading="lazy"
+          width="80"
+          height="80"
         />
         <span
           v-else
@@ -158,7 +161,9 @@ function isViewable(auditFile: AuditFile) {
         >
         </span>
         <div class="file-link">
-          {{ getFileName(auditFile) }}
+          <span>{{ getFileName(auditFile) }}</span
+          ><br />
+          <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
         </div>
         <ul class="fr-btns-group fr-btns-group--inline">
           <li v-if="isViewable(auditFile)">
@@ -167,10 +172,12 @@ function isViewable(auditFile: AuditFile) {
               :href="getUploadUrl(auditFile.key)"
               :disabled="isOffline"
               target="_blank"
-              :title="'Voir ' + getFileName(auditFile) + ' - nouvelle fenêtre'"
+              :title="
+                'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
+              "
             >
               Voir
-              <span class="sr-only">{{ auditFile.originalFilename }}</span>
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
             </a>
           </li>
           <li>
@@ -180,23 +187,21 @@ function isViewable(auditFile: AuditFile) {
               :href="getUploadUrl(auditFile.key)"
               rel="noreferrer noopener"
               :disabled="isOffline"
-              :title="'Télécharger ' + getFileName(auditFile)"
+              :title="'Télécharger ' + getFullFileName(auditFile)"
             >
               Télécharger
-              <span class="sr-only">{{ getFileName(auditFile) }}</span>
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
             </a>
           </li>
           <li>
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
               :disabled="isOffline"
-              :title="
-                'Supprimer ' + getFileName(auditFile) + ' - nouvelle fenêtre'
-              "
+              :title="'Supprimer ' + getFullFileName(auditFile)"
               @click="deleteFile(auditFile)"
             >
               Supprimer
-              <span class="sr-only">{{ getFileName(auditFile) }}</span>
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
             </button>
           </li>
         </ul>
@@ -206,49 +211,12 @@ function isViewable(auditFile: AuditFile) {
 </template>
 
 <style scoped>
-.upload-label {
-  cursor: pointer;
-  outline-color: var(--dsfr-outline);
-  outline-offset: 2px;
-  outline-width: 2px;
-  outline-style: none;
-}
-
-.upload-label--disabled {
-  background: var(--background-disabled-grey);
-  color: var(--text-disabled-grey);
-  cursor: not-allowed;
-}
-
-@supports selector(:has(p)) {
-  .upload-wrapper:has(:focus-visible):focus-within .upload-label {
-    outline-style: solid;
-  }
-}
-
-@supports not (selector(:has(p))) {
-  .upload-wrapper:focus-within .upload-label {
-    outline-style: solid;
-  }
-}
-
-.upload-label:not(.upload-label--disabled):hover {
-  background-color: var(--hover-tint);
-}
-
-.upload-label:not(.upload-label--disabled):active {
-  background-color: var(--active-tint);
-}
-
-.upload-line {
-  display: flex;
-  align-items: center;
-}
-
 .files {
   padding: 0;
   list-style: bullet;
   width: fit-content;
+  width: -moz-fit-content;
+  min-width: 50%;
 }
 
 .files > li {
@@ -256,7 +224,7 @@ function isViewable(auditFile: AuditFile) {
   flex-wrap: wrap;
   gap: 1.5rem;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.5rem;
   border: 1px solid var(--artwork-motif-grey);
 }
 
@@ -273,6 +241,7 @@ function isViewable(auditFile: AuditFile) {
 .file-thumbnail__default {
   --thumbnail-size: 4.5rem;
   color: var(--artwork-motif-grey);
+  background-color: var(--background-alt-blue-france);
   width: var(--thumbnail-size);
   height: var(--thumbnail-size);
   min-width: var(--thumbnail-size);
