@@ -1,18 +1,18 @@
-<script lang="ts" setup>
-import MarkdownIcon from "../icons/MarkdownIcon.vue";
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <div class="markdown-wrapper">
-    <p class="fr-text--sm fr-m-0">Markdown pris en compte</p>
-    <a
-      class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm"
-      href="/syntaxe-markdown"
-      target="_blank"
-      title="Voir la syntaxe Markdown"
-    >
-      Voir la syntaxe<span class="sr-only"> Markdown</span>
-    </a>
+    <p class="fr-text--sm fr-m-0">
+      Markdown pris en compte
+      <a
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm"
+        href="/syntaxe-markdown"
+        target="_blank"
+        title="Voir la syntaxe Markdown - nouvelle fenêtre"
+      >
+        Voir la syntaxe<span class="sr-only"> Markdown</span>
+      </a>
+    </p>
   </div>
 </template>
 
