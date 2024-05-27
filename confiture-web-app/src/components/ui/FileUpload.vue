@@ -86,7 +86,7 @@ function getFullFileName(auditFile: AuditFile) {
 function getFileDetails(auditFile: AuditFile) {
   const name = auditFile.originalFilename;
   const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
-  return extension + " — " + formatBytes(auditFile.size);
+  return extension + " — " + formatBytes(auditFile.size);
 }
 
 function isViewable(auditFile: AuditFile) {
@@ -187,7 +187,6 @@ function isViewable(auditFile: AuditFile) {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
               download
               :href="getUploadUrl(auditFile.key)"
-              rel="noreferrer noopener"
               :disabled="isOffline"
               :title="'Télécharger ' + getFullFileName(auditFile)"
             >
@@ -237,6 +236,7 @@ function isViewable(auditFile: AuditFile) {
 .file-link {
   flex-basis: 33%;
   flex-grow: 1;
+  word-break: break-all;
 }
 
 .file-thumbnail,
