@@ -385,16 +385,6 @@ onMounted(() => {
           </Dropdown>
         </li>
 
-        <li class="fr-p-0 notes-item">
-          <button
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
-            :disabled="isOffline"
-            @click="openNotesModal"
-          >
-            Annoter l’audit
-          </button>
-        </li>
-
         <li class="fr-p-0 report-item">
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
@@ -409,6 +399,16 @@ onMounted(() => {
             Consulter le rapport
             <span class="sr-only">(Nouvelle fenêtre)</span>
           </component>
+        </li>
+
+        <li class="fr-p-0 notes-item">
+          <button
+            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+            :disabled="isOffline"
+            @click="openNotesModal"
+          >
+            Annoter l’audit
+          </button>
         </li>
       </ul>
     </div>
