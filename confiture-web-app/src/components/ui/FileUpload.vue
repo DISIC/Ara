@@ -220,6 +220,7 @@ function isViewable(auditFile: AuditFile) {
   list-style: bullet;
   width: 39rem; /* 6 columns */
   min-width: 50%;
+  max-width: 100%;
 }
 
 .files > li {
