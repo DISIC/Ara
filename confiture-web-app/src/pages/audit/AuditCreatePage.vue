@@ -11,7 +11,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
-import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
+import { AuditType, CreateAuditRequestData } from "../../types";
 import { captureWithPayloads } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
@@ -114,50 +114,19 @@ watch(auditType, (newValue) => {
   }
 });
 
-// 1. Audit type step
-async function submitAuditTypeStep({
-  auditType,
-  procedureName
-}: {
-  auditType: AuditType;
-  procedureName: string;
-}) {
-  audit.value.auditType = auditType;
-  audit.value.procedureName = procedureName;
+async function submitStep(payload: Partial<CreateAuditRequestData>) {
+  audit.value = {
+    ...audit.value,
+    ...payload
+  };
 
-  currentStep.value = 1;
-
-  await nextTick();
-  stepHeadingRef.value?.focus();
-}
-
-// 2. Pages step
-async function submitAuditPages(pages: Omit<AuditPage, "id" | "order">[]) {
-  audit.value.pages = pages;
-
-  if (steps.length === 2) {
+  if (currentStep.value === steps.length - 1) {
     submitAuditSettings();
   } else {
-    currentStep.value = 2;
+    currentStep.value += 1;
 
     await nextTick();
     stepHeadingRef.value?.focus();
-  }
-}
-
-// 3. Personal infos and final step
-function submitContactDetailsStep({
-  email,
-  name
-}: {
-  email: string;
-  name: string;
-}) {
-  audit.value.auditorEmail = email;
-  audit.value.auditorName = name;
-
-  if (steps.length === 3) {
-    submitAuditSettings();
   }
 }
 
@@ -241,14 +210,14 @@ async function goToPreviousStep() {
       v-if="currentStep === 0"
       :audit-type="audit.auditType"
       :procedure-name="audit.procedureName"
-      @submit="submitAuditTypeStep"
+      @submit="submitStep"
     />
     <NewAuditPages
       v-else-if="currentStep === 1"
       :audit-type="audit.auditType"
       :pages="audit.pages"
       @previous="goToPreviousStep"
-      @submit="submitAuditPages"
+      @submit="submitStep"
       @change="pagesArePristine = false"
     />
     <NewAuditContactDetails
@@ -256,7 +225,7 @@ async function goToPreviousStep() {
       :email="audit.auditorEmail"
       :name="audit.auditorName"
       @previous="goToPreviousStep"
-      @submit="submitContactDetailsStep"
+      @submit="submitStep"
     />
   </div>
 

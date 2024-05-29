@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "previous"): void;
-  (e: "submit", payload: { email: string; name: string }): void;
+  (e: "submit", payload: { auditorEmail: string; auditorName: string }): void;
 }>();
 
 const accountStore = useAccountStore();
@@ -21,8 +21,8 @@ const nameValue = ref(props.name ?? "");
 
 function submitAuditContactDetails() {
   emit("submit", {
-    email: emailValue.value,
-    name: nameValue.value
+    auditorEmail: emailValue.value,
+    auditorName: nameValue.value
   });
 }
 

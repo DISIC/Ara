@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "previous"): void;
-  (e: "submit", payload: Omit<AuditPage, "id" | "order">[]): void;
+  (e: "submit", payload: { pages: Omit<AuditPage, "id" | "order">[] }): void;
   (e: "change"): void;
 }>();
 
@@ -35,7 +35,7 @@ async function addPage() {
 }
 
 function submitAuditPages() {
-  emit("submit", pages.value);
+  emit("submit", { pages: pages.value });
 }
 
 watch(
