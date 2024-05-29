@@ -24,6 +24,7 @@ export class AuditReportDto {
   derogatedContent?: string;
   notInScopeContent?: string;
   notes?: string;
+  notesFiles: NotesFile[];
 
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;
@@ -213,4 +214,12 @@ class ExampleImage {
   key: string;
   /** @example "audit/xxxx/my-image_thumbnail.jpg" */
   thumbnailKey: string;
+}
+
+class NotesFile {
+  originalFilename: string;
+  url: string;
+  thumbnailUrl: string;
+  size: number;
+  mimetype: string;
 }

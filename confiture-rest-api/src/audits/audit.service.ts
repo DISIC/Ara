@@ -5,6 +5,7 @@ import {
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
+  AuditFile,
   Prisma,
   StoredFile,
   TestEnvironment
@@ -31,7 +32,8 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
     select: {
       procedureName: true
     }
-  }
+  },
+  notesFiles: true
 };
 
 @Injectable()
@@ -777,6 +779,7 @@ export class AuditService {
     })) as Audit & {
       environments: TestEnvironment[];
       pages: AuditedPage[];
+      notesFiles: AuditFile[];
     };
 
     if (!audit) {
@@ -860,6 +863,13 @@ export class AuditService {
       derogatedContent: audit.derogatedContent,
       notInScopeContent: audit.notInScopeContent,
       notes: audit.notes,
+      notesFiles: audit.notesFiles.map((file) => ({
+        originalFilename: file.originalFilename,
+        url: file.url,
+        thumbnailUrl: file.thumbnailUrl,
+        size: file.size,
+        mimetype: file.mimetype
+      })),
 
       criteriaCount: {
         total: totalCriteriaCount,
