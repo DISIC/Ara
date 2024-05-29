@@ -105,7 +105,7 @@ function isViewable(auditFile: AuditFile) {
           class="fr-label"
           :for="`file-upload-${id}`"
         >
-          {{ title }}
+          {{ title }}<br />
           <span class="fr-hint-text"
             ><span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
             ><span>. <span v-html="acceptedFormatsHtml"></span></span>
@@ -215,8 +215,7 @@ function isViewable(auditFile: AuditFile) {
 .files {
   padding: 0;
   list-style: bullet;
-  width: fit-content;
-  width: -moz-fit-content;
+  width: 39rem; /* 6 columns */
   min-width: 50%;
 }
 
@@ -236,7 +235,7 @@ function isViewable(auditFile: AuditFile) {
 .file-link {
   flex-basis: 33%;
   flex-grow: 1;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .file-thumbnail,
