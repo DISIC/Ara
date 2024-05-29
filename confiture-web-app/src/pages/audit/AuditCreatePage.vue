@@ -92,10 +92,7 @@ const fullDefaultPages = [
   { name: "Authentification", url: "" }
 ];
 
-const fastAndComplementaryDefaultPages = [
-  { name: "Accueil", url: "" },
-  { name: "Contact", url: "" }
-];
+const fastAndComplementaryDefaultPages = [{ name: "Accueil", url: "" }];
 
 // Update default pages except if pages has been changed by user
 const pagesArePristine = ref(true);
@@ -248,6 +245,7 @@ async function goToPreviousStep() {
     />
     <NewAuditPages
       v-else-if="currentStep === 1"
+      :audit-type="audit.auditType"
       :pages="audit.pages"
       @previous="goToPreviousStep"
       @submit="submitAuditPages"

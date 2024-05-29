@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
-import { AuditPage } from "../../types";
+import { AuditPage, AuditType } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useAccountStore } from "../../store";
 
 const props = defineProps<{
+  auditType: AuditType | null;
   pages: Omit<AuditPage, "id" | "order">[];
 }>();
 
@@ -69,7 +70,7 @@ function fillSettings() {
       page à auditer doit être renseignée.
     </p>
 
-    <p class="fr-mb-2w">
+    <p v-if="auditType === AuditType.FULL" class="fr-mb-2w">
       Par défaut nous vous proposons les pages obligatoires prévues par le RGAA
       quand elles sont disponibles sur le site à auditer.
     </p>
