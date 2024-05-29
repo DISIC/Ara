@@ -498,7 +498,7 @@ function getPage(pageId: number | string) {
               <!-- Error -->
               <LazyAccordion
                 v-if="error.errorDescription || error.exampleImages.length > 0"
-                title="Description de la ou des erreurs"
+                title="Erreur et recommandation"
                 data-accordion
               >
                 <MarkdownRenderer
@@ -506,7 +506,10 @@ function getPage(pageId: number | string) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <p
+                  v-if="chunk(error.exampleImages, 2).length"
+                  class="fr-text--xs fr-mb-1w error-accordion-subtitle"
+                >
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
@@ -533,18 +536,6 @@ function getPage(pageId: number | string) {
                     </a>
                   </div>
                 </div>
-              </LazyAccordion>
-
-              <!-- Recommendation -->
-              <LazyAccordion
-                v-if="error.recommandation"
-                title="Recommandation de correction"
-                data-accordion
-              >
-                <MarkdownRenderer
-                  class="fr-mb-0"
-                  :markdown="error.recommandation"
-                />
               </LazyAccordion>
 
               <!-- Tests -->
@@ -622,7 +613,7 @@ function getPage(pageId: number | string) {
               <!-- Error -->
               <LazyAccordion
                 v-if="error.errorDescription || error.exampleImages.length > 0"
-                title="Description de la ou des erreurs"
+                title="Erreur et recommandation"
                 data-accordion
               >
                 <MarkdownRenderer
@@ -630,7 +621,10 @@ function getPage(pageId: number | string) {
                   class="fr-mb-3w"
                   :markdown="error.errorDescription"
                 />
-                <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+                <p
+                  v-if="chunk(error.exampleImages, 2).length"
+                  class="fr-text--xs fr-mb-1w error-accordion-subtitle"
+                >
                   Exemple(s) d’erreur(s)
                 </p>
                 <div class="fr-container--fluid">
@@ -657,18 +651,6 @@ function getPage(pageId: number | string) {
                     </a>
                   </div>
                 </div>
-              </LazyAccordion>
-
-              <!-- Recommendation -->
-              <LazyAccordion
-                v-if="error.recommandation"
-                title="Recommandation de correction"
-                data-accordion
-              >
-                <MarkdownRenderer
-                  class="fr-mb-0"
-                  :markdown="error.recommandation"
-                />
               </LazyAccordion>
 
               <!-- Tests -->

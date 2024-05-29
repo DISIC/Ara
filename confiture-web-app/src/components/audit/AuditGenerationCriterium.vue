@@ -314,7 +314,6 @@ const isOffline = useIsOffline();
       :comment="result.errorDescription"
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
-      :recommandation="result.recommandation"
       :quick-win="result.quickWin"
       :show-file-format-error="showFileFormatError"
       :show-file-size-error="showFileSizeError"
@@ -322,7 +321,6 @@ const isOffline = useIsOffline();
       @update:user-impact="updateResultImpact($event)"
       @upload-example="handleUploadExample"
       @delete-example="handleDeleteExample"
-      @update:recommandation="updateResultComment($event, 'recommandation')"
       @update:quick-win="updateQuickWin"
     />
 

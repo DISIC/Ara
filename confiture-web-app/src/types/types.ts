@@ -128,7 +128,6 @@ export interface CriteriumResult {
   compliantComment: string | null;
   errorDescription: string | null;
   userImpact: CriterionResultUserImpact | null;
-  recommandation: string | null;
   notApplicableComment: string | null;
   exampleImages: ExampleImage[];
   quickWin: boolean;
