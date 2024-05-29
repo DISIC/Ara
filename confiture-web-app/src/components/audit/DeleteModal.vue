@@ -41,13 +41,12 @@ defineExpose({
                   class="fr-icon-warning-line fr-fi--lg"
                   aria-hidden="true"
                 />
-                Vous allez supprimer cet audit
+                Vous allez supprimer l’audit
               </h1>
               <p>
                 Cet audit sera définitivement supprimé. Le rapport de cet audit
-                restera disponible mais toutes vos informations personnelles
-                seront supprimées : prénom, nom, nom de la structure et adresse
-                e-mail.
+                restera accessible mais toutes vos informations personnelles
+                seront supprimées : prénom et nom.
               </p>
             </div>
             <div class="fr-modal__footer">
