@@ -14,6 +14,7 @@ export interface Props {
   maxFileSize?: string;
   multiple?: boolean;
   title?: string;
+  boldTitle?: boolean;
   showFileFormatError?: boolean;
   showFileSizeError?: boolean;
 }
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   maxFileSize: "2 Mo",
   multiple: false,
   title: "Ajouter un fichier",
+  boldTitle: false,
   showFileFormatError: false,
   showFileSizeError: false
 });
@@ -103,6 +105,7 @@ function isViewable(auditFile: AuditFile) {
         <label
           :id="`file-upload-description-${id}`"
           class="fr-label"
+          :class="{ 'fr-text--bold': boldTitle }"
           :for="`file-upload-${id}`"
         >
           {{ title }}<br />

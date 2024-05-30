@@ -101,6 +101,7 @@ const isOffline = useIsOffline();
       :show-file-size-error="showFileSizeError"
       :show-file-format-error="showFileFormatError"
       title="Ajouter des images d’exemple"
+      :bold-title="true"
       @delete-file="handleDeleteFile"
       @upload-file="handleUploadFile"
     />
