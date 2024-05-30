@@ -111,15 +111,20 @@ defineExpose({ show, hide });
   margin-bottom: 0;
 }
 
-@media (min-width: 63em) {
+.modal-side-bar :deep(textarea) {
+  height: 50vh;
+  max-height: 60rem;
+}
+
+@media (min-width: 56em) {
   .modal-side-bar :deep(.sidebar-col) {
-    flex: 0 0 63rem;
+    flex: 0 0 56rem;
     max-width: revert;
     width: revert;
   }
 }
 
-@media (max-width: 62.9999999em) {
+@media (max-width: 55.9999999em) {
   .modal-side-bar :deep(.sidebar-col) {
     flex: 0 0 100%;
     max-width: 100%;

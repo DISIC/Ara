@@ -145,7 +145,7 @@ function handleDeleteFile(file: AuditFile) {
             </div>
             <div class="fr-modal__content">
               <h1 id="notes-modal-title" class="fr-modal__title">
-                Annoter l’audit
+                Annotations de l’audit
               </h1>
               <div class="fr-input-group fr-mb-1v">
                 <label class="fr-label" for="audit-notes">
