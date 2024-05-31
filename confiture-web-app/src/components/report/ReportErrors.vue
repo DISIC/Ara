@@ -14,6 +14,7 @@ import { formatStatus, formatUserImpact, pluralize } from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
 import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import { getUploadUrl } from "../../utils";
 
 const report = useReportStore();
 
@@ -516,15 +517,19 @@ function getPage(pageId: number | string) {
                   >
                     <a
                       v-for="example in line"
-                      :key="example.url"
+                      :key="example.key"
                       class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
+                      :href="getUploadUrl(example.key)"
                       target="_blank"
                     >
                       <span class="sr-only">
                         Ouvrir l’image dans une nouvelle fenêtre
                       </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
+                      <img
+                        style="width: 100%"
+                        :src="getUploadUrl(example.key)"
+                        alt=""
+                      />
                     </a>
                   </div>
                 </div>
@@ -636,15 +641,19 @@ function getPage(pageId: number | string) {
                   >
                     <a
                       v-for="example in line"
-                      :key="example.url"
+                      :key="example.key"
                       class="fr-col-md-6 fr-col-12 image-link"
-                      :href="example.url"
+                      :href="getUploadUrl(example.key)"
                       target="_blank"
                     >
                       <span class="sr-only">
                         Ouvrir l’image dans une nouvelle fenêtre
                       </span>
-                      <img style="width: 100%" :src="example.url" alt="" />
+                      <img
+                        style="width: 100%"
+                        :src="getUploadUrl(example.key)"
+                        alt=""
+                      />
                     </a>
                   </div>
                 </div>

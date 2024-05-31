@@ -108,9 +108,8 @@ export interface ExampleImage {
   id: number;
   originalFilename: string;
   size: number;
-  url: string;
-
-  thumbnailUrl: string;
+  key: string;
+  thumbnailKey: string;
 }
 
 export interface CriteriumResult {
