@@ -477,9 +477,6 @@ export class AuditService {
       )
     ]);
 
-    const publicUrl = this.fileStorageService.getPublicUrl(key);
-    const thumbnailUrl = this.fileStorageService.getPublicUrl(thumbnailKey);
-
     const storedFile = await this.prisma.storedFile.create({
       data: {
         criterionResult: {
@@ -495,10 +492,7 @@ export class AuditService {
         key,
         originalFilename: file.originalname,
         size: file.size,
-        url: publicUrl,
-
-        thumbnailKey,
-        thumbnailUrl
+        thumbnailKey
       }
     });
 
@@ -929,8 +923,9 @@ export class AuditService {
         userImpact: r.userImpact,
         quickWin: r.quickWin,
         exampleImages: r.exampleImages.map((img) => ({
-          url: img.url,
-          filename: img.originalFilename
+          filename: img.originalFilename,
+          key: img.key,
+          thumbnailKey: img.thumbnailKey
         }))
       }))
     };

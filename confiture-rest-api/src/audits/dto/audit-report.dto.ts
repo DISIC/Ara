@@ -207,8 +207,10 @@ class ReportCriterionResult {
 }
 
 class ExampleImage {
-  /** @example "https://example.com/mon-image.jpg" */
-  url: string;
   /** @example "mon-image.jpg" */
   filename: string;
+  /** @example "audit/xxxx/my-image.jpg" */
+  key: string;
+  /** @example "audit/xxxx/my-image_thumbnail.jpg" */
+  thumbnailKey: string;
 }
