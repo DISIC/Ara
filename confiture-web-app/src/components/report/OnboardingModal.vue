@@ -7,9 +7,11 @@ import magnifierIllustration from "../../assets/images/onboarding-magnifier.svg"
 import handsIllustration from "../../assets/images/onboarding-hands.svg";
 import StatDonut from "../StatDonut.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
+import { AuditType } from "../../types";
 
 const props = defineProps<{
   accessibilityRate: number;
+  auditType: AuditType;
 }>();
 
 const emit = defineEmits<{
@@ -24,19 +26,23 @@ defineExpose({
 });
 
 const steps = computed(() => [
-  {
-    title: "Bienvenue sur votre rapport d’audit",
-    subTitle: "",
-    // FIXME: different wording when accessibility rate is low ?
-    text: `Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, on peut faire encore mieux et pour ça nous allons vous aider !`,
-    illustration: `url(${uploadIllustration})`
-  },
-  {
-    title: "Je mets en ligne la déclaration d’accessibilité",
-    subTitle: "Par quoi commencer ?",
-    text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournie avec ce rapport sur votre site.",
-    illustration: `url(${uploadIllustration})`
-  },
+  ...(props.auditType === AuditType.FULL
+    ? [
+        {
+          title: "Bienvenue sur votre rapport d’audit",
+          subTitle: "",
+          // FIXME: different wording when accessibility rate is low ?
+          text: `Le taux d’accessibilité de votre site est de ${props.accessibilityRate}%, on peut faire encore mieux et pour ça nous allons vous aider !`,
+          illustration: `url(${uploadIllustration})`
+        },
+        {
+          title: "Je mets en ligne la déclaration d’accessibilité",
+          subTitle: "Par quoi commencer ?",
+          text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournie avec ce rapport sur votre site.",
+          illustration: `url(${uploadIllustration})`
+        }
+      ]
+    : []),
   {
     title: "Je corrige les erreurs relevées",
     subTitle: "Ensuite ?",
@@ -61,15 +67,15 @@ const currentStep = ref(0);
 const contentEl = ref<HTMLDivElement>();
 
 const previousStep = () => {
-  currentStep.value = Math.max(0, currentStep.value - 1);
+  currentStep.value -= 1;
 };
 
 const nextStep = () => {
-  if (currentStep.value === 4) {
+  if (currentStep.value === steps.value.length - 1) {
     modal.value?.hide();
+  } else {
+    currentStep.value += 1;
   }
-
-  currentStep.value = Math.min(4, currentStep.value + 1);
 };
 
 watch(currentStep, () => {
@@ -136,7 +142,7 @@ watch(currentStep, () => {
                   :aria-label="`Étape ${currentStep + 1} sur ${steps.length}`"
                 >
                   <div
-                    v-for="i in 5"
+                    v-for="i in steps.length"
                     :key="i"
                     :class="{ 'active-step': i === currentStep + 1 }"
                   />
@@ -162,7 +168,11 @@ watch(currentStep, () => {
                     class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
                     @click="nextStep"
                   >
-                    {{ currentStep === 4 ? "Accéder au rapport" : "Suivant" }}
+                    {{
+                      currentStep === steps.length - 1
+                        ? "Accéder au rapport"
+                        : "Suivant"
+                    }}
                   </button>
                 </li>
               </ul>
@@ -172,8 +182,6 @@ watch(currentStep, () => {
       </div>
     </div>
   </DsfrModal>
-  <!-- </dialog>
-  </Teleport> -->
 </template>
 
 <style scoped>

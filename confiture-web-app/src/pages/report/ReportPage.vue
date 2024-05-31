@@ -183,6 +183,7 @@ const siteUrl = computed(() => {
     <OnboardingModal
       ref="onboardingModalRef"
       :accessibility-rate="report.data.accessibilityRate"
+      :audit-type="report.data.auditType"
       @close="onOnboardingClose"
     />
 
