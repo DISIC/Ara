@@ -28,6 +28,8 @@ export enum AuditType {
   FULL = "FULL"
 }
 
+export type AuditTypeString = `${AuditType}`;
+
 export enum AuditStatus {
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
