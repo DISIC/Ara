@@ -41,7 +41,7 @@ function updateProfile() {
       orgName: orgName.value || null
     })
     .then(() => {
-      notify("success", "Profil mis à jour avec succès");
+      notify("success", undefined, "Profil mis à jour avec succès");
     })
     .catch(() => {
       notify(

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteLocation } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
@@ -13,7 +13,7 @@ import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
-import CreateAuditPage from "./pages/audit/CreateAuditPage.vue";
+import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
@@ -46,15 +46,6 @@ export const history = createWebHistory();
 function getProcedureName() {
   const auditStore = useAuditStore();
   return auditStore.currentAudit?.procedureName ?? "Mon audit";
-}
-
-/**
- * When entering an "edit page", store the current page url to use in the header menu.
- */
-function saveCurrentEditionStep(to: RouteLocation) {
-  const auditStore = useAuditStore();
-  auditStore.lastVisitedStepLocation = to.fullPath;
-  return true;
 }
 
 const router = createRouter({
@@ -195,25 +186,31 @@ const router = createRouter({
     {
       path: "/audits/nouveau",
       name: "create-audit",
-      component: CreateAuditPage,
+      component: AuditCreatePage,
       meta: {
         name: "Nouvel audit"
       }
     },
     {
-      path: "/audits/:uniqueId/informations-generales",
+      path: "/audits/:uniqueId/parametres",
       name: "audit-settings",
       component: AuditSettingsPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
+      }
+    },
+    // TODO: remove this redirect in few months (24/04/2024)
+    {
+      path: "/audits/:uniqueId/informations-generales",
+      name: "audit-settings-old",
+      redirect: () => {
+        return { name: "audit-settings" };
       }
     },
     {
       path: "/audits/:uniqueId/generation",
       name: "audit-generation",
       component: AuditGenerationPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
       }
@@ -222,7 +219,6 @@ const router = createRouter({
       path: "/audits/:uniqueId/declaration",
       name: "audit-declaration",
       component: AuditDeclarationPage,
-      beforeEnter: saveCurrentEditionStep,
       meta: {
         name: "Mon audit"
       }

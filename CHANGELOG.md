@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 31/05/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Séquence le paramétrage d’un audit en plusieurs étapes ([#702](https://github.com/DISIC/Ara/pull/702))
+
 ## 24/05/2024
 
 ### Corrections 🐛

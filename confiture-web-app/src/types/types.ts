@@ -67,11 +67,14 @@ export interface Audit {
   notes: string | null;
 }
 
-/** Audit type but without the generated ìd` and `order` and step 2 fields */
-export type CreateAuditRequestData = Pick<
-  Audit,
-  "auditType" | "procedureName" | "auditorEmail" | "auditorName"
-> & { pages: Omit<AuditPage, "id" | "order">[] };
+/** Audit type fields needed to create an audit */
+export interface CreateAuditRequestData {
+  auditType: AuditType | null;
+  procedureName: string;
+  pages: Omit<AuditPage, "id" | "order">[];
+  auditorEmail: string;
+  auditorName: string | null;
+}
 
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {

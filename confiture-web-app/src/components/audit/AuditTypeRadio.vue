@@ -8,8 +8,9 @@ const props = defineProps<{
   value: AuditType;
   checked: boolean;
   modelValue: string | null;
-  goals: { emoji: string; label: string }[];
+  goals: string[];
   documentationLink: string;
+  detailed?: boolean;
 }>();
 
 defineEmits(["update:modelValue"]);
@@ -47,13 +48,15 @@ const descriptionId = computed(() => {
         "
       />
       <label
-        class="fr-label fr-text--xl fr-text--bold radio-label fr-mb-3v"
+        :class="`fr-label ${
+          detailed ? 'fr-h4 fr-mb-3v' : 'fr-text--xl fr-text--bold fr-mb-0'
+        } radio-label`"
         :for="`audit-type-${value}`"
       >
         {{ getCriteriaCount(value) }} critères
       </label>
     </div>
-    <div class="fr-pl-3w">
+    <div v-if="detailed" class="fr-pl-3w">
       <p :id="`goal-${value}`" class="fr-text--sm fr-mb-1w list-heading">
         {{ pluralize("Objectif", "Objectifs", goals.length) }}
       </p>
@@ -61,37 +64,30 @@ const descriptionId = computed(() => {
         <li
           v-for="(goal, i) in goals"
           :id="`goal-${i}-${value}`"
-          :key="goal.label"
+          :key="goal"
           class="fr-mb-1w list-item"
         >
-          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
-            {{ goal.emoji }}
-          </span>
-          {{ goal.label }}
+          <span
+            class="fr-icon-check-line fr-icon--sm list-item-icon"
+            aria-hidden="true"
+          />
+          {{ goal }}
         </li>
       </ul>
-      <p
-        :id="`requirements-${value}`"
-        class="fr-text--sm fr-mb-1w list-heading"
+      <p class="fr-text--sm prerequisite fr-mb-3v">
+        Nécessite de très bonnes connaissances techniques et du RGAA
+      </p>
+      <a
+        :href="documentationLink"
+        class="fr-link fr-link--sm radio-link"
+        target="_blank"
       >
-        Prérequis
-      </p>
-      <ul class="fr-mt-0 fr-mb-2w fr-p-0">
-        <li :id="`requirement-${value}`" class="fr-mb-1w list-item">
-          <span class="fr-text--lg fr-mb-0 list-item-icon" aria-hidden="true">
-            🧑
-          </span>
-          Très bonnes connaissances techniques et du RGAA
-        </li>
-      </ul>
-      <p class="fr-text--sm fr-mb-0 radio-link">
-        <a :href="documentationLink" class="fr-link" target="_blank">
-          Liste des
-          <span class="sr-only">{{ getCriteriaCount(value) }}</span>
-          critères
-        </a>
-      </p>
+        Liste des {{ getCriteriaCount(value) }} critères
+      </a>
     </div>
+    <p v-else class="fr-text--xs fr-pl-3w fr-m-0 audit-type-name">
+      {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
+    </p>
   </div>
 </template>
 
@@ -124,17 +120,18 @@ const descriptionId = computed(() => {
 .list-heading {
   color: var(--text-mention-grey);
 }
+
 .list-item {
   display: flex;
   align-items: first baseline;
   gap: 0.5rem;
-  /* position: relative; */
 }
 
 .list-item-icon {
-  background-color: var(--background-alt-grey);
-  height: 2rem;
-  width: 2rem;
+  background-color: var(--background-contrast-info);
+  color: var(--text-default-info);
+  height: 1.5rem;
+  width: 1.5rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -144,6 +141,15 @@ const descriptionId = computed(() => {
 
 .radio-link {
   position: relative;
+}
+
+.prerequisite {
+  font-weight: 500;
+  color: var(--text-mention-grey);
+}
+
+.audit-type-name {
+  color: var(--text-mention-grey);
 }
 
 /* Override DSFR radio input position to align with a larger label */

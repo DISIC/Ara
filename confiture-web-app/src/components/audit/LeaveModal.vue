@@ -7,13 +7,12 @@ defineProps<{
   icon: string;
   confirm: string;
   cancel: string;
-  danger?: boolean;
 }>();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 const isOpen = ref(false);
 
-defineEmits(["confirm"]);
+defineEmits(["confirm", "cancel"]);
 
 defineExpose({
   show: () => {
@@ -53,17 +52,14 @@ defineExpose({
                 class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left"
               >
                 <li>
-                  <button
-                    :class="['fr-btn', { 'danger-button': danger }]"
-                    @click="$emit('confirm')"
-                  >
+                  <button class="fr-btn" @click="$emit('confirm')">
                     {{ confirm }}
                   </button>
                 </li>
                 <li>
                   <button
                     class="fr-btn fr-btn--secondary"
-                    @click="modal?.hide()"
+                    @click="$emit('cancel')"
                   >
                     {{ cancel }}
                   </button>
