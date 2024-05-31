@@ -124,9 +124,9 @@ const defaultUserImpactFillters = [
   null
 ];
 
-const userImpactFilters = ref<Array<CriterionResultUserImpact | null>>(
-  defaultUserImpactFillters
-);
+const userImpactFilters = ref<
+  Array<CriterionResultUserImpact | `${CriterionResultUserImpact}` | null>
+>(defaultUserImpactFillters);
 
 const disabledResetFilters = computed(
   () =>

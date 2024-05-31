@@ -12,7 +12,8 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "migrate:dev": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && yarn generate-api-types",
+    "generate-api-types": "rimraf dist && GENERATE_TYPES=1 nest start --entryFile generate-api-typings.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.218.0",
@@ -59,6 +60,7 @@
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.0.1",
+    "openapi-typescript": "^6.7.6",
     "prettier": "^3.1.1",
     "source-map-support": "^0.5.20",
     "ts-loader": "^9.2.3",

@@ -37,3 +37,6 @@ lerna-debug.log*
 .env
 
 src/generated
+
+# Generated API typings
+confiture-api.ts

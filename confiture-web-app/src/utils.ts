@@ -8,6 +8,7 @@ import {
   AuditReport,
   AuditStatus,
   AuditType,
+  AuditTypeString,
   CriterionResultUserImpact,
   CriteriumResultStatus
 } from "./types";
@@ -44,7 +45,7 @@ const FORMATTED_USER_IMPACT = {
  * Format a criterion result user impact type string into French.
  */
 export function formatUserImpact(
-  userImpact: CriterionResultUserImpact
+  userImpact: CriterionResultUserImpact | `${CriterionResultUserImpact}`
 ): string {
   return FORMATTED_USER_IMPACT[userImpact];
 }
@@ -59,7 +60,9 @@ const FORMATTED_STATUS = {
 /**
  * Format a criterion result status type string into French.
  */
-export function formatStatus(status: CriteriumResultStatus): string {
+export function formatStatus(
+  status: CriteriumResultStatus | `${CriteriumResultStatus}`
+): string {
   return FORMATTED_STATUS[status];
 }
 
@@ -72,7 +75,7 @@ const CRITERIA_COUNT = {
 /**
  * Return the number of criteria for a given audit type.
  */
-export function getCriteriaCount(auditType: AuditType): number {
+export function getCriteriaCount(auditType: AuditTypeString): number {
   return CRITERIA_COUNT[auditType];
 }
 

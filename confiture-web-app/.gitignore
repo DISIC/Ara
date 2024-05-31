@@ -30,3 +30,4 @@ coverage
 accessibilite.numerique.gouv.fr
 src/methodologies.json
 src/criteres.json
+src/types/confiture-api.ts
