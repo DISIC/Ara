@@ -112,7 +112,6 @@ function handleDeleteFile(file: AuditFile) {
     .then(() => {
       showFileSizeError.value = false;
       showFileFormatError.value = false;
-      notify("success", "Fichier supprimé avec succès");
     })
     .catch(() => {
       notify(

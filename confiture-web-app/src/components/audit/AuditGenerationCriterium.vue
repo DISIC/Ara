@@ -73,7 +73,6 @@ const showFileFormatError = ref(false);
 function handleUploadExample(file: File) {
   showFileSizeError.value = false;
   showFileFormatError.value = false;
-  notify("info", "Chargement en cours");
   if (file.size > 2000000) {
     showFileSizeError.value = true;
     notify(
@@ -92,9 +91,6 @@ function handleUploadExample(file: File) {
       props.criterium.number,
       file
     )
-    .then(() => {
-      notify("success", "Exemple téléchargé avec succès.");
-    })
     .catch(async (error) => {
       if (error instanceof HTTPError) {
         if (error.response.status === 413) {
@@ -154,7 +150,6 @@ function handleDeleteExample(image: AuditFile) {
       image.id
     )
     .then(() => {
-      notify("success", "Exemple supprimé avec succès");
       showFileSizeError.value = false;
       showFileFormatError.value = false;
     })
