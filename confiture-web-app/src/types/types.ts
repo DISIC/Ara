@@ -135,3 +135,8 @@ export interface CriteriumResult {
   exampleImages: AuditFile[];
   quickWin: boolean;
 }
+
+export enum StoreName {
+  AUDIT_STORE = "AUDIT_STORE",
+  RESULTS_STORE = "RESULTS_STORE"
+}

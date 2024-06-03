@@ -224,10 +224,7 @@ onMounted(() => {
 
   <h1>{{ auditName }}</h1>
 
-  <div
-    id="sticky-indicator"
-    class="sticky-indicator fr-grid-row fr-p-0 fr-mb-3w"
-  >
+  <div id="sticky-indicator" class="sticky-indicator fr-grid-row fr-mb-3w">
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
@@ -249,7 +246,7 @@ onMounted(() => {
       <AuditProgressBar
         v-if="showAuditProgressBar"
         label="Progression de l’audit"
-        class="fr-pr-2w progress-bar"
+        class="progress-bar"
       />
 
       <div
@@ -283,7 +280,7 @@ onMounted(() => {
     <div class="fr-col-12 fr-col-sm-7 fr-col-md-9 sub-header">
       <SaveIndicator
         v-if="route.name === 'audit-generation'"
-        class="fr-ml-2w"
+        class="audit-main-indicator"
       />
       <ul class="top-actions fr-my-0 fr-p-0" role="list">
         <li class="fr-p-0 settings-item">
@@ -482,6 +479,7 @@ onMounted(() => {
 <style scoped>
 .sub-header {
   display: flex;
+  column-gap: 2rem;
   align-items: center;
   justify-content: space-between;
   z-index: 3;
@@ -547,6 +545,14 @@ onMounted(() => {
   background: var(--background-default-grey);
   min-height: 4rem;
 }
+.audit-main-indicator {
+  margin-left: 2rem;
+}
+@media (width < 36rem) {
+  .audit-main-indicator {
+    margin-left: 0;
+  }
+}
 
 .audit-status {
   display: flex;
@@ -574,6 +580,20 @@ onMounted(() => {
   border-bottom: 1px solid transparent;
   border-right: 1px solid var(--border-default-grey);
   transition: border-color 0.2s ease;
+  padding-right: 0.75rem;
+}
+
+@media (width < 48rem) {
+  .indicator-left-side {
+    padding-right: 1rem;
+  }
+}
+
+@media (width < 36rem) {
+  .indicator-left-side {
+    border-right: none;
+    padding-right: 0;
+  }
 }
 
 .indicator-left-side.with-border {

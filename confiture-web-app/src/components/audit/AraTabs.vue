@@ -5,12 +5,12 @@
  -->
 
 <script setup lang="ts" generic="T">
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useUniqueId } from "../../composables/useUniqueId";
-import { waitForElement } from "../../utils";
 
 const props = defineProps<{
   tabs: { label: string; data: T; icon?: string }[];
+  stickyTop: string;
 }>();
 
 defineSlots<{
@@ -55,16 +55,6 @@ const selectLastTab = () => {
 watch(currentTab, (currentTab) => {
   emit("change", currentTab);
 });
-
-// Observe the height of the sticky indicator and sync the `top` CSS property with it.
-const tabsTopOffset = ref("0");
-onMounted(async () => {
-  const el = await waitForElement("#sticky-indicator");
-  const resizeObserver = new ResizeObserver((entries) => {
-    tabsTopOffset.value = entries[0].target.clientHeight + "px";
-  });
-  resizeObserver.observe(el);
-});
 </script>
 
 <!--
@@ -73,7 +63,7 @@ onMounted(async () => {
 -->
 
 <template>
-  <div class="tabs-wrapper" :style="{ '--tabs-top-offset': tabsTopOffset }">
+  <div class="tabs-wrapper" :style="{ '--tabs-top-offset': stickyTop }">
     <ul role="tablist" class="tabs">
       <li v-for="(tab, i) in tabs" :key="i">
         <button

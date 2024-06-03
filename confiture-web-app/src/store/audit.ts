@@ -97,18 +97,22 @@ export const useAuditStore = defineStore("audit", {
         this.entities[uniqueId].notes = data.notes ?? null;
       }
 
-      try {
-        await ky
-          .patch(`/api/audits/${uniqueId}`, {
-            json: data
-          })
-          .json();
-      } catch (error) {
-        if (this.entities[uniqueId] && previousNotes) {
-          this.entities[uniqueId].notes = previousNotes;
-        }
-        throw error;
-      }
+      this.increaseCurrentRequestCount();
+
+      await ky
+        .patch(`/api/audits/${uniqueId}`, {
+          json: data
+        })
+        .json()
+        .catch((error) => {
+          if (this.entities[uniqueId] && previousNotes) {
+            this.entities[uniqueId].notes = previousNotes;
+          }
+          throw error;
+        })
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        });
     },
 
     async deleteAudit(uniqueId: string): Promise<void> {
@@ -127,6 +131,7 @@ export const useAuditStore = defineStore("audit", {
       // To handle non-ascii characters, we encode the filename here and decode it on the back
       formData.set("file", file, encodeURI(file.name));
 
+      this.increaseCurrentRequestCount();
       const notesFile = (await ky
         .post(`/api/audits/${uniqueId}/notes/files`, {
           body: formData
@@ -142,7 +147,6 @@ export const useAuditStore = defineStore("audit", {
 
     async deleteAuditFile(uniqueId: string, fileId: number) {
       this.increaseCurrentRequestCount();
-
       await ky
         .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
         .finally(() => {
@@ -240,6 +244,10 @@ export const useAuditStore = defineStore("audit", {
         return null;
       }
       return state.entities[state.currentAuditId];
+    },
+
+    isLoading(): boolean {
+      return this.currentRequestCount > 0;
     }
   }
 });

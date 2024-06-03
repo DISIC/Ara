@@ -25,8 +25,8 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
 
 <template>
   <div :class="['audit-progress', { 'audit-progress--thick': isLarge }]">
-    <span class="audit-progress-label">{{ label }}</span>
-    <span
+    <span class="audit-progress-label">{{ label }}</span
+    ><span
       :class="[
         'fr-text--xs fr-text--action-high-grey fr-m-0 audit-progress-percentage',
         { 'fr-text--sm': isLarge }
@@ -48,7 +48,7 @@ const progressBarValue = computed(() => results.auditProgress * 100 + "%");
 .audit-progress {
   background: none;
   display: grid;
-  gap: 0.25rem 0;
+  gap: 0.25rem 1rem;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 0.25rem;
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -15,7 +15,7 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { getCriteriaCount, pluralize } from "../../utils";
+import { getCriteriaCount, pluralize, waitForElement } from "../../utils";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 
 const route = useRoute();
@@ -147,6 +147,16 @@ watch(
   }
 );
 
+// Observe the height of the sticky indicator and sync the `top` CSS property with it.
+const stickyTop = ref("0");
+onMounted(async () => {
+  const el = await waitForElement("#sticky-indicator");
+  const resizeObserver = new ResizeObserver((entries) => {
+    stickyTop.value = entries[0].target.clientHeight + "px";
+  });
+  resizeObserver.observe(el);
+});
+
 const pageTitle = computed(() => {
   // Audit XXX - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
@@ -218,6 +228,7 @@ const tabsData = computed((): TabData[] => {
         <div
           :class="['filters-wrapper', 'fr-pb-6w', { 'fr-pr-3v': showFilters }]"
           role="search"
+          :style="{ '--filters-top-offset': stickyTop }"
         >
           <AuditGenerationFilters
             :topics="topics"
@@ -226,7 +237,11 @@ const tabsData = computed((): TabData[] => {
         </div>
       </div>
       <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
-        <AraTabs :tabs="tabsData" @change="updateCurrentPageId">
+        <AraTabs
+          :tabs="tabsData"
+          :sticky-top="stickyTop"
+          @change="updateCurrentPageId"
+        >
           <template #panel="{ data }">
             <AuditGenerationPageCriteria
               :page="data"
@@ -269,9 +284,10 @@ const tabsData = computed((): TabData[] => {
 
 .filters-wrapper {
   position: sticky;
-  top: 5rem;
+  top: var(--filters-top-offset, 0);
   max-height: 100vh;
   overflow-y: auto;
+  padding-top: 1rem;
 }
 
 @media (width < 48rem) {

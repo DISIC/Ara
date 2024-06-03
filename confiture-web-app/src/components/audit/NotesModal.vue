@@ -8,12 +8,14 @@ import { captureWithPayloads } from "../../utils";
 import { AuditFile } from "../../types";
 
 import DsfrModal from "../ui/DsfrModal.vue";
+import SaveIndicator from "./SaveIndicator.vue";
 import FileUpload from "../ui/FileUpload.vue";
 
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { useAuditStore } from "../../store/audit";
+import { StoreName } from "../../types";
 
 defineProps<{
   isLoading: boolean;
@@ -144,9 +146,12 @@ function handleDeleteFile(file: AuditFile) {
               </button>
             </div>
             <div class="fr-modal__content">
-              <h1 id="notes-modal-title" class="fr-modal__title">
-                Annotations de l’audit
-              </h1>
+              <div class="title-container">
+                <h1 id="notes-modal-title" class="fr-modal__title">
+                  Annotations de l’audit
+                </h1>
+                <SaveIndicator :store-name="StoreName.AUDIT_STORE" />
+              </div>
               <div class="fr-input-group fr-mb-1v">
                 <label class="fr-label" for="audit-notes">
                   Remarques et recommandations générales
@@ -183,3 +188,33 @@ function handleDeleteFile(file: AuditFile) {
     </form>
   </DsfrModal>
 </template>
+
+<style scoped>
+.fr-modal__header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--background-default-grey);
+}
+.title-container {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  align-items: center;
+  margin: var(--title-spacing);
+  position: sticky;
+  top: 3.5rem;
+  z-index: 9;
+  background-color: var(--background-default-grey);
+}
+@media (min-width: 48em) {
+  .title-container {
+    top: 4rem;
+  }
+}
+.title-container h1 {
+  margin-bottom: 0;
+  padding-right: 1rem;
+  border-right: solid var(--border-default-grey);
+}
+</style>

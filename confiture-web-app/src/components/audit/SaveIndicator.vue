@@ -2,20 +2,37 @@
 import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
 
-import { useResultsStore, useSystemStore } from "../../store";
+import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
 import Dropdown from "../ui/Dropdown.vue";
+
+import { StoreName } from "../../types";
 
 /* Change the saving status in a way that it wont "flicker" */
 
-const resultsStore = useResultsStore();
-const isLoading = ref(resultsStore.isLoading);
+export interface Props {
+  storeName?: StoreName;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  storeName: StoreName.RESULTS_STORE
+});
+
+const store = computed(() => {
+  if (props.storeName === StoreName.AUDIT_STORE) {
+    return useAuditStore();
+  }
+
+  return useResultsStore();
+});
+
+const isLoading = ref(store.value.isLoading);
 
 const unsetIsLoadingDebounced = debounce(() => {
   isLoading.value = false;
 }, 500);
 
 watch(
-  () => resultsStore.isLoading,
+  () => store.value.isLoading,
   (newValue) => {
     if (newValue) {
       isLoading.value = true;
@@ -82,7 +99,7 @@ function formatInterval(seconds: number) {
 }
 
 setInterval(() => {
-  const timestamp = resultsStore.lastRequestSuccessEnd;
+  const timestamp = store.value.lastRequestSuccessEnd;
 
   if (!timestamp) {
     return;
@@ -99,7 +116,7 @@ setInterval(() => {
     align-left
     icon-left
     :button-props="{
-      class: `indicator fr-btn--tertiary-no-outline ${dropdownIcon}`,
+      class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
       'aria-live': !systemStore.isOnline ? 'assertive' : 'polite',
       role: 'alert',
       style: !systemStore.isOnline
@@ -116,3 +133,9 @@ setInterval(() => {
     </p>
   </Dropdown>
 </template>
+
+<style scoped>
+:deep(.fr-btn--tertiary-no-outline) {
+  padding: 0;
+}
+</style>
