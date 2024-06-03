@@ -102,32 +102,37 @@ function isViewable(auditFile: AuditFile) {
   <div>
     <div class="upload-wrapper">
       <div v-if="!readonly" class="fr-upload-group">
-        <label
+        <div
           :id="`file-upload-description-${id}`"
           class="fr-label"
           :class="{ 'fr-text--bold': boldTitle }"
-          :for="`file-upload-${id}`"
         >
           {{ title }}<br />
-          <span class="fr-hint-text"
+          <span class="fr-mt-1v fr-text--regular fr-hint-text"
             ><span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
             ><span>. <span v-html="acceptedFormatsHtml"></span></span>
             <span v-if="multiple">. Plusieurs fichiers possibles.</span></span
           >
-        </label>
+        </div>
 
         <!-- TODO: handle multiple files upload -->
         <!-- :multiple="multiple ?? undefined" -->
-        <input
-          :id="`file-upload-${id}`"
-          ref="fileInputRef"
-          class="fr-upload"
-          type="file"
-          :accept="acceptedFormatsAttr"
-          :disabled="isOffline"
-          :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
-          @change="handleFileChange"
-        />
+        <div class="upload-line fr-mt-2w fr-mb-2w">
+          <label class="fr-btn fr-btn--tertiary" :for="`file-upload-${id}`"
+            >Choisir un fichier</label
+          >
+          <input
+            :id="`file-upload-${id}`"
+            ref="fileInputRef"
+            class="fr-sr-only"
+            type="file"
+            :accept="acceptedFormatsAttr"
+            :disabled="isOffline"
+            :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
+            @change="handleFileChange"
+          />
+          <span>{{ selectedFiles }}</span>
+        </div>
       </div>
 
       <p
@@ -215,6 +220,13 @@ function isViewable(auditFile: AuditFile) {
 </template>
 
 <style scoped>
+.upload-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
 .files {
   padding: 0;
   list-style: bullet;

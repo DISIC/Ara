@@ -76,7 +76,7 @@ from DSFR links with `target="_blank"` */
 }
 
 /* File upload styling */
-input[type="file" i]::-webkit-file-upload-button {
+/* input[type="file" i]::-webkit-file-upload-button {
   background-color: transparent;
   border: none;
   box-shadow: inset 0 0 0 1px #ddd;
@@ -133,7 +133,7 @@ input[type="file"]::file-selector-button {
   width: fit-content;
 }
 @media (hover: hover) and (pointer: fine) {
-  /* hover */
+  hover
   input[type="file" i]::-webkit-file-upload-button:hover {
     background-color: #f6f6f6;
     background-color: var(--background-default-grey-hover);
@@ -147,7 +147,7 @@ input[type="file"]::file-selector-button {
     background-color: var(--background-default-grey-hover);
   }
 
-  /* active */
+  active
   input[type="file" i]::-webkit-file-upload-button:active {
     background-color: #ededed;
     background-color: var(--background-default-grey-active);
@@ -160,7 +160,7 @@ input[type="file"]::file-selector-button {
     background-color: #ededed;
     background-color: var(--background-default-grey-active);
   }
-}
+} */
 
 /* input[type="file"]::-ms-browse, */
 /* input[type="file"]::file-selector-button, */
