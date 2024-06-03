@@ -94,6 +94,7 @@ defineExpose({ show, hide });
 
 .modal-side-bar > :deep(.fr-container) {
   padding-inline: 0;
+  max-width: unset;
 }
 
 .modal-side-bar :deep(.fr-grid-row) {
@@ -116,7 +117,7 @@ defineExpose({ show, hide });
   max-height: 60rem;
 }
 
-@media (min-width: 56em) {
+@media (min-width: 56rem) {
   .modal-side-bar :deep(.sidebar-col) {
     flex: 0 0 56rem;
     max-width: revert;
@@ -124,7 +125,12 @@ defineExpose({ show, hide });
   }
 }
 
-@media (max-width: 55.9999999em) {
+@media (max-width: 57rem) {
+  .modal-side-bar :deep(.sidebar-col) {
+    margin-top: 1rem;
+  }
+}
+@media (max-width: 56rem) {
   .modal-side-bar :deep(.sidebar-col) {
     flex: 0 0 100%;
     max-width: 100%;
