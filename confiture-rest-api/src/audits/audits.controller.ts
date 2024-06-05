@@ -93,7 +93,8 @@ export class AuditsController {
         select: {
           procedureName: true
         }
-      }
+      },
+      notesFiles: true
     });
 
     if (!audit) {
