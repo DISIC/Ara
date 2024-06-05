@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 05/06/2024
+
+### Autres changements ⚙️
+
+- Permet d’accéder au rapport depuis la déclaration et vice-versa ([#725](https://github.com/DISIC/Ara/pull/725))
+
 ## 31/05/2024
 
 ### Nouvelles fonctionnalités 🚀
