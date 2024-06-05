@@ -47,19 +47,31 @@ function hideReportAlert() {
 
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
 
-watch(
-  () => report.data,
-  (report) => {
-    if (report) {
-      if (
-        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:seen-onboarding") !== "true"
-      ) {
-        onboardingModalRef.value?.show();
-      }
-    }
+// FIXME: make this work
+// watch(
+//   () => report.data,
+//   (report) => {
+//     if (
+//       report &&
+//       getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
+//       localStorage.getItem("confiture:seen-onboarding") !== "true"
+//     ) {
+//       onboardingModalRef.value?.show();
+//     }
+//   }
+// );
+watch([report, () => onboardingModalRef.value], ([report, modal]) => {
+  console.log(report);
+  console.log(modal);
+  if (
+    report.data &&
+    getAuditStatus(report.data) !== AuditStatus.IN_PROGRESS &&
+    localStorage.getItem("confiture:seen-onboarding") !== "true" &&
+    modal
+  ) {
+    modal.show();
   }
-);
+});
 
 function onOnboardingClose() {
   localStorage.setItem("confiture:seen-onboarding", "true");
