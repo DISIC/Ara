@@ -209,7 +209,7 @@ const siteUrl = computed(() => {
         </template>
       </p>
 
-      <p class="fr-mb-0">
+      <p class="fr-mb-1v">
         URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
@@ -217,16 +217,27 @@ const siteUrl = computed(() => {
         </a>
         <template v-else>Non renseignée</template>
       </p>
-      <p class="fr-mb-0">
+      <p class="fr-mb-1v">
         Type d’audit :
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
-      <p class="fr-mb-0">
+      <p class="fr-mb-1v">
         Référentiel : <strong>{{ report.data.context.referencial }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
         Auditeur ou auditrice :
         <strong>{{ report.data.context.auditorName }}</strong>
+      </p>
+      <p v-if="report.data.procedureInitiator">
+        Déclaration d’accessibilité :
+        <RouterLink
+          :to="{ name: 'a11y-statement', params: { uniqueId } }"
+          class="fr-link"
+          target="_blank"
+        >
+          accéder à la déclaration
+          <span class="sr-only">(nouvelle fenêtre)</span>
+        </RouterLink>
       </p>
 
       <RouterLink class="fr-link" :to="{ name: 'context' }">
