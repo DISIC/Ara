@@ -165,13 +165,14 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         :id="`page-url-${i + 1}`"
         v-model="page.url"
         label="URL de la page"
-        type="url"
+        type="text"
         required
         :pattern="URL_REGEX"
-        title="https://domaine.fr et sans espaces"
+        title="L’URL de la page doit commencer par https:// ou http://"
       >
         <template #hint>
-          L’URL de la page doit commencer par <code>https://</code>
+          L’URL de la page doit commencer par <code>https://</code> ou
+          <code>http://</code>
         </template>
       </DsfrField>
     </fieldset>

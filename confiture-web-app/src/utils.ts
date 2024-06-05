@@ -191,9 +191,8 @@ export function formatEmail(s: string): string {
   return s.trim().toLocaleLowerCase();
 }
 
-// https://regexr.com/7fjmt
-export const URL_REGEX =
-  /^(https?:\/\/)((?!-)(?!.*--)[a-zA-Z\-0-9]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}(\/[^\s]*)?$/;
+// https://regexr.com/819do
+export const URL_REGEX = /^https?:\/\/(.*)/;
 
 export function isJwtExpired(jwt: string) {
   const payload = jwtDecode<{ exp?: number }>(jwt);
