@@ -28,6 +28,7 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "express-http-proxy": "^2.0.0",
     "got": "^11.8.5",
     "handlebars": "^4.7.7",
     "joi": "^17.6.0",

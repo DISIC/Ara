@@ -46,7 +46,8 @@ export interface AuditReport {
   results: Array<
     Omit<CriteriumResult, "exampleImages"> & {
       exampleImages: {
-        url: string;
+        key: string;
+        thumbnailKey: string;
         filename: string;
       }[];
     }

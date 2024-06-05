@@ -3,6 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import morgan from "morgan";
+import proxy from "express-http-proxy";
 
 import { AppModule } from "./app.module";
 
@@ -17,6 +18,7 @@ async function bootstrap() {
 
   app.useBodyParser("json", { limit: "500kb" });
   app.use(morgan(process.env.NODE_ENV !== "production" ? "dev" : "common"));
+  app.use("/uploads", proxy(process.env.S3_VIRTUAL_HOST));
 
   app.setGlobalPrefix("/api");
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

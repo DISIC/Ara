@@ -7,6 +7,7 @@ import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import { getUploadUrl } from "../../utils";
 
 const props = defineProps<{
   id: string;
@@ -162,13 +163,13 @@ const isOffline = useIsOffline();
         <img
           width="50"
           height="50"
-          :src="image.thumbnailUrl"
+          :src="getUploadUrl(image.thumbnailKey)"
           alt=""
           loading="lazy"
         />
         <a
           class="fr-link"
-          :href="image.url"
+          :href="getUploadUrl(image.key)"
           target="_blank"
           rel="noreferrer noopener"
         >

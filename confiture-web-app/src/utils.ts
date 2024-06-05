@@ -231,3 +231,7 @@ export function waitForElement(selector: string): Promise<Element> {
     });
   });
 }
+
+export function getUploadUrl(key: string): string {
+  return `/uploads/${key}`;
+}

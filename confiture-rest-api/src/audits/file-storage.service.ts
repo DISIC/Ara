@@ -35,7 +35,7 @@ export class FileStorageService {
   }
 
   getPublicUrl(key: string): string {
-    return `${this.config.get("S3_VIRTUAL_HOST")}${key}`;
+    return `${this.config.get("FRONT_BASE_URL")}/${key}}`;
   }
 
   async deleteStoredFile(key: string) {

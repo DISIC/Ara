@@ -1,2 +1,3 @@
-/api/*  https://confiture-api.herokuapp.com/api/:splat  200
-/*      /index.html   200
+/api/*      https://confiture-api.herokuapp.com/api/:splat      200
+/uploads/*  https://confiture-api.herokuapp.com/uploads/:splat  200
+/*          /index.html                                         200
