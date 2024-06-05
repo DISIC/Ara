@@ -232,7 +232,7 @@ export const useResultsStore = defineStore("results", {
               }
 
               if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
-                target.errorDescription = update.errorDescription;
+                target.notCompliantComment = update.notCompliantComment;
                 target.userImpact = update.userImpact;
                 target.quickWin = update.quickWin;
               }
@@ -448,7 +448,7 @@ export const useResultsStore = defineStore("results", {
             CriteriumResultStatus.NOT_APPLICABLE
           ])!,
           compliantComment: sample(["Commentaire conforme", "Rien"])!,
-          errorDescription: sample(["Commentaire non conforme", "Rien"])!,
+          notCompliantComment: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
           userImpact: sample(CriterionResultUserImpact)!
           /* eslint-enable @typescript-eslint/no-non-null-assertion */

@@ -189,19 +189,15 @@ class ReportCriterionResult {
   compliantComment: string | null;
 
   /**
-   * @example "There is an accessibility error there."
+   * @example "There is an accessibility error there. You should do this and that."
    */
-  errorDescription: string | null;
+  notCompliantComment: string | null;
   exampleImages: ExampleImage[];
   /**
    * @example "MAJOR"
    */
   @ApiProperty({ enum: CriterionResultUserImpact })
   userImpact: CriterionResultUserImpact | null;
-  /**
-   * @example "You could do this or do that."
-   */
-  recommandation: string | null;
 
   notApplicableComment: string | null;
 }

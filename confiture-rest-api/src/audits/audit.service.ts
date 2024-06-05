@@ -149,9 +149,8 @@ export class AuditService {
         return {
           status: CriterionResultStatus.NOT_TESTED,
           compliantComment: null,
-          errorDescription: null,
+          notCompliantComment: null,
           userImpact: null,
-          recommandation: null,
           notApplicableComment: null,
           exampleImages: [],
           transverse: false,
@@ -362,9 +361,8 @@ export class AuditService {
 
           status: item.status,
           compliantComment: item.compliantComment,
-          errorDescription: item.errorDescription,
+          notCompliantComment: item.notCompliantComment,
           notApplicableComment: item.notApplicableComment,
-          recommandation: item.recommandation,
           userImpact: item.userImpact,
           quickWin: item.quickWin,
           transverse: item.transverse
@@ -411,8 +409,7 @@ export class AuditService {
                 }),
 
                 ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
-                  errorDescription: item.errorDescription,
-                  recommandation: item.recommandation,
+                  notCompliantComment: item.notCompliantComment,
                   userImpact: item.userImpact,
                   quickWin: item.quickWin
                 }),
@@ -917,9 +914,8 @@ export class AuditService {
         transverse: r.transverse,
 
         compliantComment: r.compliantComment,
-        errorDescription: r.errorDescription,
+        notCompliantComment: r.notCompliantComment,
         notApplicableComment: r.notApplicableComment,
-        recommandation: r.recommandation,
         userImpact: r.userImpact,
         quickWin: r.quickWin,
         exampleImages: r.exampleImages.map((img) => ({

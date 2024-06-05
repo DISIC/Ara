@@ -497,14 +497,16 @@ function getPage(pageId: number | string) {
 
               <!-- Error -->
               <LazyAccordion
-                v-if="error.errorDescription || error.exampleImages.length > 0"
+                v-if="
+                  error.notCompliantComment || error.exampleImages.length > 0
+                "
                 title="Erreur et recommandation"
                 data-accordion
               >
                 <MarkdownRenderer
-                  v-if="error.errorDescription"
+                  v-if="error.notCompliantComment"
                   class="fr-mb-3w"
-                  :markdown="error.errorDescription"
+                  :markdown="error.notCompliantComment"
                 />
                 <p
                   v-if="chunk(error.exampleImages, 2).length"
@@ -612,14 +614,16 @@ function getPage(pageId: number | string) {
 
               <!-- Error -->
               <LazyAccordion
-                v-if="error.errorDescription || error.exampleImages.length > 0"
+                v-if="
+                  error.notCompliantComment || error.exampleImages.length > 0
+                "
                 title="Erreur et recommandation"
                 data-accordion
               >
                 <MarkdownRenderer
-                  v-if="error.errorDescription"
+                  v-if="error.notCompliantComment"
                   class="fr-mb-3w"
-                  :markdown="error.errorDescription"
+                  :markdown="error.notCompliantComment"
                 />
                 <p
                   v-if="chunk(error.exampleImages, 2).length"
