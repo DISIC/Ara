@@ -51,59 +51,53 @@ const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 function handleUploadFile(file: File) {
   showFileSizeError.value = false;
   showFileFormatError.value = false;
-  notify("info", "Chargement en cours");
-  auditStore
-    .uploadAuditFile(uniqueId.value, file)
-    .then(() => {
-      notify("success", "Fichier téléchargé avec succès.");
-    })
-    .catch(async (error) => {
-      if (error instanceof HTTPError) {
-        if (error.response.status === 413) {
+  auditStore.uploadAuditFile(uniqueId.value, file).catch(async (error) => {
+    if (error instanceof HTTPError) {
+      if (error.response.status === 413) {
+        showFileSizeError.value = true;
+        notify(
+          "error",
+          "Le téléchargement du fichier a échoué",
+          "Poids du fichier trop lourd"
+        );
+      }
+
+      // Unprocessable Entity
+      if (error.response.status === 422) {
+        const body = await error.response.json();
+
+        if (body.message.includes("expected type")) {
+          showFileFormatError.value = true;
+          notify(
+            "error",
+            "Le téléchargement du fichier a échoué",
+            "Format de fichier non supporté"
+          );
+        } else if (body.message.includes("expected size")) {
           showFileSizeError.value = true;
           notify(
             "error",
             "Le téléchargement du fichier a échoué",
             "Poids du fichier trop lourd"
           );
-        }
-
-        // Unprocessable Entity
-        if (error.response.status === 422) {
-          const body = await error.response.json();
-
-          if (body.message.includes("expected type")) {
-            showFileFormatError.value = true;
-            notify(
-              "error",
-              "Le téléchargement du fichier a échoué",
-              "Format de fichier non supporté"
-            );
-          } else if (body.message.includes("expected size")) {
-            showFileSizeError.value = true;
-            notify(
-              "error",
-              "Le téléchargement du fichier a échoué",
-              "Poids du fichier trop lourd"
-            );
-          } else {
-            notify(
-              "error",
-              "Le téléchargement du fichier a échoué",
-              "Une erreur inconnue est survenue"
-            );
-            captureWithPayloads(error);
-          }
         } else {
           notify(
             "error",
-            "Téléchargement échoué",
+            "Le téléchargement du fichier a échoué",
             "Une erreur inconnue est survenue"
           );
           captureWithPayloads(error);
         }
+      } else {
+        notify(
+          "error",
+          "Téléchargement échoué",
+          "Une erreur inconnue est survenue"
+        );
+        captureWithPayloads(error);
       }
-    });
+    }
+  });
 }
 
 function handleDeleteFile(file: AuditFile) {
