@@ -4,7 +4,6 @@ import {
   IsEmail,
   IsOptional,
   IsString,
-  IsUrl,
   ValidateNested
 } from "class-validator";
 
@@ -75,7 +74,7 @@ export class UpdateAuditDto extends CreateAuditDto {
   /**
    * @example "https://procedure.government.com"
    */
-  @IsUrl()
+  @IsString()
   @IsOptional()
   procedureUrl?: string;
 
@@ -110,7 +109,7 @@ export class UpdateAuditDto extends CreateAuditDto {
   /**
    * @example "https://procedure.government.com/contact-a11y"
    */
-  @IsUrl()
+  @IsString()
   @IsOptional()
   contactFormUrl?: string;
 

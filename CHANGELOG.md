@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Corrige un problème du filtre de conformité des critères ([#726](https://github.com/DISIC/Ara/pull/726))
+- Corrige la validation des champs URL pour être plus flexible ([#727](https://github.com/DISIC/Ara/pull/727))
 
 ## 05/06/2024
 

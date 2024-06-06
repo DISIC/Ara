@@ -7,7 +7,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   ValidateNested
 } from "class-validator";
 
@@ -28,7 +27,7 @@ export class CreateAuditPage {
   /**
    * @example "https://example.com/contact"
    */
-  @IsUrl()
+  @IsString()
   url: string;
 }
 

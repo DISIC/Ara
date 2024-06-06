@@ -317,14 +317,13 @@ const isDevMode = useDevMode();
       id="procedure-url"
       v-model="procedureUrl"
       label="URL de la page d’accueil du site audité"
-      type="url"
+      type="text"
       :pattern="URL_REGEX"
-      title="https://domaine.fr et sans espaces"
       required
     >
       <template #hint>
-        Saisissez une url valide, commençant par
-        <code>https://</code>
+        Saisissez une URL valide, commençant par
+        <code>https://</code> ou <code>http://</code>
       </template>
     </DsfrField>
 
@@ -370,9 +369,8 @@ const isDevMode = useDevMode();
         v-model="contactFormUrl"
         label="Formulaire de contact en ligne"
         hint="Exemple : contact@ministere.gouv.fr"
-        type="url"
+        type="text"
         :pattern="URL_REGEX"
-        title="https://domaine.fr et sans espaces"
         placeholder="https://"
         :error="
           hasNoContactInfo
@@ -381,8 +379,8 @@ const isDevMode = useDevMode();
         "
       >
         <template #hint>
-          Saisissez une URL valide, commençant par <code>http://</code> ou
-          <code>https://</code>
+          Saisissez une URL valide, commençant par <code>https://</code> ou
+          <code>http://</code>
         </template>
       </DsfrField>
     </fieldset>
