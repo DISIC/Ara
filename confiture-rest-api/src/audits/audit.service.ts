@@ -1096,7 +1096,8 @@ export class AuditService {
               }
             }
           }
-        }
+        },
+        notesFiles: true
       }
     });
 
@@ -1136,10 +1137,15 @@ export class AuditService {
     } = {};
 
     /**
+    Object storing duplicate notesFiles creation data
+    */
+    const notesFilesCreateData = [];
+
+    /**
      * contains s3 file duplications which will be executed together by calling
      * `fileStorageService.duplicateMultipleFiles()`
      */
-    const imageDuplications: { originalKey: string; destinationKey: string }[] =
+    const fileDuplications: { originalKey: string; destinationKey: string }[] =
       [];
 
     originalAudit.pages.forEach((p) => {
@@ -1154,7 +1160,7 @@ export class AuditService {
           const thumbnailUrl =
             this.fileStorageService.getPublicUrl(thumbnailKey);
 
-          imageDuplications.push(
+          fileDuplications.push(
             {
               originalKey: e.key,
               destinationKey: key
@@ -1183,7 +1189,46 @@ export class AuditService {
       });
     });
 
-    await this.fileStorageService.duplicateMultipleFiles(imageDuplications);
+    originalAudit.notesFiles.forEach((e) => {
+      const randomPrefix = nanoid();
+
+      // No thumbnail? It means there is no image as well!
+      const hasThumbnail = e.thumbnailKey !== null;
+
+      const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
+      const publicUrl = this.fileStorageService.getPublicUrl(key);
+
+      const thumbnailKey = hasThumbnail
+        ? `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`
+        : null;
+      const thumbnailUrl = hasThumbnail
+        ? this.fileStorageService.getPublicUrl(thumbnailKey)
+        : null;
+
+      if (hasThumbnail) {
+        fileDuplications.push({
+          originalKey: e.thumbnailKey,
+          destinationKey: thumbnailKey
+        });
+      }
+
+      fileDuplications.push({
+        originalKey: e.key,
+        destinationKey: key
+      });
+
+      notesFilesCreateData.push({
+        originalFilename: e.originalFilename,
+        url: publicUrl,
+        mimetype: e.mimetype,
+        size: e.size,
+        key: key,
+        thumbnailUrl: thumbnailUrl,
+        thumbnailKey: thumbnailKey
+      });
+    });
+
+    await this.fileStorageService.duplicateMultipleFiles(fileDuplications);
 
     const newAudit = await this.prisma.audit.create({
       data: {
@@ -1228,6 +1273,10 @@ export class AuditService {
               }))
             }
           }))
+        },
+
+        notesFiles: {
+          create: notesFilesCreateData
         },
 
         auditTrace: {
