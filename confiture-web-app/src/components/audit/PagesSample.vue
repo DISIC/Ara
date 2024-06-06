@@ -168,7 +168,6 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         type="text"
         required
         :pattern="URL_REGEX"
-        title="L’URL de la page doit commencer par https:// ou http://"
       >
         <template #hint>
           L’URL de la page doit commencer par <code>https://</code> ou

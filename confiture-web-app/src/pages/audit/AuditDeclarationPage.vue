@@ -319,7 +319,6 @@ const isDevMode = useDevMode();
       label="URL de la page d’accueil du site audité"
       type="text"
       :pattern="URL_REGEX"
-      title="L’URL doit commencer par https:// ou http://"
       required
     >
       <template #hint>
@@ -372,7 +371,6 @@ const isDevMode = useDevMode();
         hint="Exemple : contact@ministere.gouv.fr"
         type="text"
         :pattern="URL_REGEX"
-        title="L’URL doit commencer par https:// ou http://"
         placeholder="https://"
         :error="
           hasNoContactInfo
