@@ -85,12 +85,6 @@ const notApplicableCount = computed(
       (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
     ).length
 );
-const notTestedCount = computed(
-  () =>
-    resultStore.allResults?.filter(
-      (r) => r.status === CriteriumResultStatus.NOT_TESTED
-    ).length
-);
 </script>
 
 <template>
@@ -151,7 +145,6 @@ const notTestedCount = computed(
         {{ resultsCount }}
         {{ pluralize("résultat", "résultats", resultsCount) }}
       </p>
-      <!-- FIXME: can't change color on dismissable tags. "fr-tag--blue-france" -->
     </div>
     <button
       v-if="filterStore.search"
@@ -248,19 +241,6 @@ const notTestedCount = computed(
           />
           <label class="fr-label" for="compliance-level-not-applicable">
             Non applicable ({{ notApplicableCount }})
-          </label>
-        </div>
-      </div>
-      <div class="fr-fieldset__element">
-        <div class="fr-checkbox-group">
-          <input
-            id="compliance-level-not-tested"
-            v-model="filterStore.complianceLevels"
-            :value="CriteriumResultStatus.NOT_TESTED"
-            type="checkbox"
-          />
-          <label class="fr-label" for="compliance-level-not-tested">
-            Non testé ({{ notTestedCount }})
           </label>
         </div>
       </div>
