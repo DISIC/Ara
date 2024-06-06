@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 06/06/2024
+
+### Corrections 🐛
+
+- Corrige un problème du filtre de conformité des critères ([#726](https://github.com/DISIC/Ara/pull/726))
+
 ## 05/06/2024
 
 ### Autres changements ⚙️
