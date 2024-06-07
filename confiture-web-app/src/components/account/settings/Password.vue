@@ -74,7 +74,7 @@ async function updatePassword() {
         // Unexpected network error
         notify(
           "error",
-          "Echéc de la mise à jour du mot de passe",
+          "Échec de la mise à jour du mot de passe",
           "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
         );
         captureWithPayloads(err, false);

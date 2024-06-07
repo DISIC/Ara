@@ -51,7 +51,7 @@ onMounted(async () => {
         console.log(err);
         notify(
           "error",
-          "Echéc de la validation de l'adresse mail.",
+          "Échec de la validation de l'adresse mail.",
           "Une erreur inconnue est survenue"
         );
       }
