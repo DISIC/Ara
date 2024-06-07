@@ -4,14 +4,15 @@
   <div class="markdown-wrapper">
     <p class="fr-text--sm fr-m-0">
       Markdown pris en compte
-      <a
+      <RouterLink
         class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm"
         href="/syntaxe-markdown"
         target="_blank"
         title="Voir la syntaxe Markdown - nouvelle fenêtre"
+        to="{ name: 'markdown-syntax'}"
       >
         Voir la syntaxe<span class="sr-only"> Markdown</span>
-      </a>
+      </RouterLink>
     </p>
   </div>
 </template>
