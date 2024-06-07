@@ -118,13 +118,17 @@ function isViewable(auditFile: AuditFile) {
         <!-- TODO: handle multiple files upload -->
         <!-- :multiple="multiple ?? undefined" -->
         <div class="upload-line fr-mt-2w fr-mb-2w">
-          <label class="fr-btn fr-btn--tertiary" :for="`file-upload-${id}`"
+          <label
+            class="fr-btn fr-btn--tertiary"
+            tabindex="0"
+            :for="`file-upload-${id}`"
             >Choisir un fichier</label
           >
           <input
             :id="`file-upload-${id}`"
             ref="fileInputRef"
             class="fr-sr-only"
+            tabindex="-1"
             type="file"
             :accept="acceptedFormatsAttr"
             :disabled="isOffline"
@@ -225,6 +229,12 @@ function isViewable(auditFile: AuditFile) {
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   align-items: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .upload-line .fr-btn:not(:disabled):hover:hover {
+    background-color: var(--hover-tint);
+  }
 }
 
 .files {
