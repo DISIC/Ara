@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 
-defineEmits(["closed", "confirm"]);
-
 const titlesExample = `### Titre h3 (commencer à partir de ce niveau)
 #### Titre h4
 ##### Titre h5
