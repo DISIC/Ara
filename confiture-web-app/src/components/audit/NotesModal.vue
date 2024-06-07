@@ -122,7 +122,7 @@ function handleDeleteFile(file: AuditFile) {
     id="notes-modal"
     ref="modal"
     aria-labelledby="notes-modal-title"
-    class="modal-side-bar"
+    :is-sidebar="true"
     @closed="$emit('closed')"
   >
     <form class="fr-container fr-container--fluid" @submit.prevent>

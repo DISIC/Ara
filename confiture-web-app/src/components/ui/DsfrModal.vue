@@ -9,6 +9,7 @@ import { ref } from "vue";
 
 defineProps<{
   id: string;
+  isSidebar?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -73,7 +74,7 @@ defineExpose({ show, hide });
       :id="id"
       ref="modal"
       role="dialog"
-      class="fr-modal"
+      :class="['fr-modal', { sidebar: isSidebar }]"
       v-bind="$attrs"
       v-on="{ 'dsfr.conceal': onConceal, 'dsfr.disclose': onDisclose }"
     >
@@ -83,42 +84,42 @@ defineExpose({ show, hide });
 </template>
 
 <style scoped>
-.modal-side-bar {
+.sidebar {
   padding-inline-end: 0;
 }
 
-.modal-side-bar::before,
-.modal-side-bar::after {
+.sidebar::before,
+.sidebar::after {
   content: unset;
 }
 
-.modal-side-bar > :deep(.fr-container) {
+.sidebar > :deep(.fr-container) {
   padding-inline: 0;
   max-width: unset;
 }
 
-.modal-side-bar :deep(.fr-grid-row) {
+.sidebar :deep(.fr-grid-row) {
   justify-content: flex-end;
 }
 
-.modal-side-bar :deep(.fr-modal__body) {
+.sidebar :deep(.fr-modal__body) {
   max-height: 100vh !important;
   height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.modal-side-bar :deep(.fr-modal__content) {
+.sidebar :deep(.fr-modal__content) {
   margin-bottom: 0;
 }
 
-.modal-side-bar :deep(textarea) {
+.sidebar :deep(textarea) {
   height: 50vh;
   max-height: 60rem;
 }
 
 @media (min-width: 56rem) {
-  .modal-side-bar :deep(.sidebar-col) {
+  .sidebar :deep(.sidebar-col) {
     flex: 0 0 56rem;
     max-width: revert;
     width: revert;
@@ -126,12 +127,12 @@ defineExpose({ show, hide });
 }
 
 @media (max-width: 57rem) {
-  .modal-side-bar :deep(.sidebar-col) {
+  .sidebar :deep(.sidebar-col) {
     margin-top: 1rem;
   }
 }
 @media (max-width: 56rem) {
-  .modal-side-bar :deep(.sidebar-col) {
+  .sidebar :deep(.sidebar-col) {
     flex: 0 0 100%;
     max-width: 100%;
     width: 100%;
