@@ -194,7 +194,7 @@ function handleDeleteFile(file: AuditFile) {
   position: sticky;
   top: 0;
   z-index: 9;
-  background-color: var(--background-default-grey);
+  background-color: var(--background-lifted-grey);
 }
 .sidebar-header h1 {
   margin-bottom: 0;
