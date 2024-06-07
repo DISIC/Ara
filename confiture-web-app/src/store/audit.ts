@@ -9,7 +9,6 @@ import {
 import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
 
-// TODO: use this in NotesModal (add a SaveIndicator specific to notes?)
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastNotesRequestTimestamp:${auditId}`;
 

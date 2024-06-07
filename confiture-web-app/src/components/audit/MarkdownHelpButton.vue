@@ -1,5 +1,3 @@
-<script lang="ts" setup></script>
-
 <template>
   <div class="markdown-wrapper">
     <p class="fr-text--sm fr-m-0">

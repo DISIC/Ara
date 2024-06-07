@@ -183,12 +183,6 @@ function handleDeleteFile(file: AuditFile) {
 </template>
 
 <style scoped>
-/* .fr-modal__header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: var(--background-default-grey);
-} */
 .sidebar-header {
   display: flex;
   flex-direction: row-reverse;
