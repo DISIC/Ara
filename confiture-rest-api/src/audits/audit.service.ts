@@ -1141,7 +1141,7 @@ export class AuditService {
     } = {};
 
     /**
-    Object storing duplicate notesFiles creation data
+    Array storing duplicate notesFiles creation data
     */
     const notesFilesCreateData = [];
 
