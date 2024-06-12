@@ -624,12 +624,11 @@ export class AuditService {
       return false;
     }
 
+    const filesToDelete = [storedFile.key];
     if (storedFile.thumbnailKey) {
-      await this.fileStorageService.deleteMultipleFiles(
-        storedFile.key,
-        storedFile.thumbnailKey
-      );
+      filesToDelete.push(storedFile.thumbnailKey);
     }
+    await this.fileStorageService.deleteMultipleFiles(...filesToDelete);
 
     await this.prisma.auditFile.delete({
       where: {
@@ -655,20 +654,32 @@ export class AuditService {
           }
         }
       });
+      const notesFiles = await this.prisma.auditFile.findMany({
+        where: {
+          auditUniqueId: uniqueId
+        }
+      });
+
+      const keysToDelete = [];
+      if (storedFiles.length > 0) {
+        keysToDelete.push(
+          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat()
+        );
+      }
+      if (notesFiles.length > 0) {
+        keysToDelete.push(
+          ...notesFiles
+            .map((file) => [file.key, file.thumbnailKey])
+            .flat()
+            .filter((key) => key !== null)
+        );
+      }
 
       await Promise.all([
         await this.prisma.audit.delete({
           where: { editUniqueId: uniqueId }
         }),
-        ...(storedFiles.length > 0
-          ? [
-              this.fileStorageService.deleteMultipleFiles(
-                ...storedFiles
-                  .map((file) => [file.key, file.thumbnailKey])
-                  .flat()
-              )
-            ]
-          : [])
+        this.fileStorageService.deleteMultipleFiles(...keysToDelete)
       ]);
 
       return true;
