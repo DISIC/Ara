@@ -218,8 +218,8 @@ class ExampleImage {
 
 class NotesFile {
   originalFilename: string;
-  url: string;
-  thumbnailUrl: string;
+  key: string;
+  thumbnailKey: string;
   size: number;
   mimetype: string;
 }

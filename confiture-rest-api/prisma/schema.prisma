@@ -184,14 +184,12 @@ model StoredFile {
 model AuditFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
-  url              String
   mimetype         String @default("image/unknown")
   size             Int
 
   // S3 storage key
   key String
 
-  thumbnailUrl String?
   thumbnailKey String?
 
   audit				 Audit? @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)

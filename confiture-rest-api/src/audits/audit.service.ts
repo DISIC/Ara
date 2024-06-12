@@ -584,11 +584,6 @@ export class AuditService {
       await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
     }
 
-    const publicUrl = this.fileStorageService.getPublicUrl(key);
-    const thumbnailUrl = thumbnailKey
-      ? this.fileStorageService.getPublicUrl(thumbnailKey)
-      : null;
-
     const storedFile = await this.prisma.auditFile.create({
       data: {
         audit: {
@@ -599,12 +594,10 @@ export class AuditService {
 
         key,
         originalFilename: file.originalname,
-        url: publicUrl,
         mimetype: file.mimetype,
         size: file.size,
 
-        thumbnailKey,
-        thumbnailUrl
+        thumbnailKey
       }
     });
 
@@ -865,8 +858,8 @@ export class AuditService {
       notes: audit.notes,
       notesFiles: audit.notesFiles.map((file) => ({
         originalFilename: file.originalFilename,
-        url: file.url,
-        thumbnailUrl: file.thumbnailUrl,
+        key: file.key,
+        thumbnailKey: file.thumbnailKey,
         size: file.size,
         mimetype: file.mimetype
       })),
@@ -1190,13 +1183,9 @@ export class AuditService {
       const hasThumbnail = e.thumbnailKey !== null;
 
       const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
-      const publicUrl = this.fileStorageService.getPublicUrl(key);
 
       const thumbnailKey = hasThumbnail
         ? `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`
-        : null;
-      const thumbnailUrl = hasThumbnail
-        ? this.fileStorageService.getPublicUrl(thumbnailKey)
         : null;
 
       if (hasThumbnail) {
@@ -1213,11 +1202,9 @@ export class AuditService {
 
       notesFilesCreateData.push({
         originalFilename: e.originalFilename,
-        url: publicUrl,
         mimetype: e.mimetype,
         size: e.size,
         key: key,
-        thumbnailUrl: thumbnailUrl,
         thumbnailKey: thumbnailKey
       });
     });
