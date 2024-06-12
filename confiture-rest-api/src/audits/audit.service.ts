@@ -1009,7 +1009,7 @@ export class AuditService {
     */
     const imagesCreateData: {
       [pageId: string]: {
-        [resultId: string]: object;
+        [resultId: string]: Prisma.StoredFileCreateInput;
       };
     } = {};
 
@@ -1028,10 +1028,6 @@ export class AuditService {
           const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
           const thumbnailKey = `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`;
 
-          const publicUrl = this.fileStorageService.getPublicUrl(key);
-          const thumbnailUrl =
-            this.fileStorageService.getPublicUrl(thumbnailKey);
-
           imageDuplications.push(
             {
               originalKey: e.key,
@@ -1048,10 +1044,8 @@ export class AuditService {
             [p.id, r.id, e.id],
             {
               originalFilename: e.originalFilename,
-              url: publicUrl,
               size: e.size,
               key: key,
-              thumbnailUrl: thumbnailUrl,
               thumbnailKey: thumbnailKey
             },
             Object
