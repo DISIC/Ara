@@ -311,18 +311,16 @@ const isOffline = useIsOffline();
     <CriteriumNotCompliantAccordion
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
-      :comment="result.errorDescription"
+      :comment="result.notCompliantComment"
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
-      :recommandation="result.recommandation"
       :quick-win="result.quickWin"
       :show-file-format-error="showFileFormatError"
       :show-file-size-error="showFileSizeError"
-      @update:comment="updateResultComment($event, 'errorDescription')"
+      @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:user-impact="updateResultImpact($event)"
       @upload-example="handleUploadExample"
       @delete-example="handleDeleteExample"
-      @update:recommandation="updateResultComment($event, 'recommandation')"
       @update:quick-win="updateQuickWin"
     />
 

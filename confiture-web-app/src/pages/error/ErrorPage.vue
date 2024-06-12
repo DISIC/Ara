@@ -17,7 +17,7 @@ const errorTitle =
     // TODO: get default content
   }[statusCode] ?? "Erreur inconnue";
 
-const errorDescription =
+const notCompliantComment =
   {
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
@@ -68,7 +68,7 @@ const route = useRoute();
       <h1>{{ errorTitle }}</h1>
       <p class="fr-text--sm">Erreur {{ statusCode }}</p>
       <p class="fr-text--xl fr-mb-5w">
-        {{ errorDescription }}
+        {{ notCompliantComment }}
       </p>
       <div
         v-if="statusCode !== 410"

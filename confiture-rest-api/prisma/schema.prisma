@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -127,11 +127,10 @@ model CriterionResult {
 
   compliantComment String?
 
-  errorDescription String?
-  userImpact       CriterionResultUserImpact?
-  recommandation   String?
-  exampleImages    StoredFile[]
-  quickWin         Boolean                    @default(false)
+  notCompliantComment String?                    @map("errorDescription")
+  userImpact          CriterionResultUserImpact?
+  exampleImages       StoredFile[]
+  quickWin            Boolean                    @default(false)
 
   notApplicableComment String?
 
