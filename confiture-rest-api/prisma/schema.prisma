@@ -170,7 +170,12 @@ model AuditTrace {
 model StoredFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
+
+	// The default mimetype set to "image/unknown" to handle existing files
+	// in the DB (before the property has been added).
+	// Originally, all files were images.
   mimetype         String @default("image/unknown")
+
   size             Int
 
   // S3 storage keys
@@ -184,12 +189,16 @@ model StoredFile {
 model AuditFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
+
+	// The default mimetype set to "image/unknown" to handle existing files
+	// in the DB (before the property has been added).
+	// Originally, all files were images.
   mimetype         String @default("image/unknown")
+
   size             Int
 
   // S3 storage key
   key String
-
   thumbnailKey String?
 
   audit				 Audit? @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
