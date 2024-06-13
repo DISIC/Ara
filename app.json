@@ -1,0 +1,17 @@
+{
+  "addons": ["heroku-postgresql"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {},
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "confiture",
+  "scripts": {},
+  "stack": "heroku-22"
+}
