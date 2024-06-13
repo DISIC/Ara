@@ -26,7 +26,8 @@
     "slugify": "^1.6.5",
     "vue": "^3.3.8",
     "vue-matomo": "^4.2.0",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vite": "^4.5.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "^0.3.0",
@@ -43,7 +44,6 @@
     "eslint-plugin-vue": "^9.18.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vite": "^4.5.0",
     "vue-tsc": "^1.8.22"
   }
 }
