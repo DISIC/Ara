@@ -4,7 +4,7 @@ module.exports = {
       name: "Frontend SPA",
       cwd: "./confiture-web-app",
       script: "npm",
-      args: "run preview",
+      args: "run preview --host",
       env: {
         NODE_ENV: "production"
       }
