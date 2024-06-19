@@ -418,7 +418,7 @@ function getPage(pageId: number | string) {
                   type="checkbox"
                 />
                 <label class="fr-label" for="quick-win-filter">
-                  Facile à corriger
+                  Uniquement les erreurs faciles à corriger
                 </label>
               </div>
             </div>
