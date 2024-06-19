@@ -28,7 +28,7 @@ const hasNotes = computed(() => {
 const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
-  { title: "Détail des résultats", component: ReportErrors }
+  { title: "Détails des non-conformités", component: ReportErrors }
 ]);
 
 const showCopyAlert = ref(false);
