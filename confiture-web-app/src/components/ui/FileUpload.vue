@@ -102,9 +102,9 @@ function isViewable(auditFile: AuditFile) {
   <div>
     <div class="upload-wrapper">
       <div v-if="!readonly" class="fr-upload-group">
-        <div
+        <p
           :id="`file-upload-description-${id}`"
-          class="fr-label"
+          class="fr-label fr-upload-group__desc"
           :class="{ 'fr-text--bold': boldTitle }"
         >
           {{ title }}<br />
@@ -113,7 +113,7 @@ function isViewable(auditFile: AuditFile) {
             ><span>. <span v-html="acceptedFormatsHtml"></span></span>
             <span v-if="multiple">. Plusieurs fichiers possibles.</span></span
           >
-        </div>
+        </p>
 
         <!-- TODO: handle multiple files upload -->
         <!-- :multiple="multiple ?? undefined" -->
@@ -224,6 +224,10 @@ function isViewable(auditFile: AuditFile) {
 </template>
 
 <style scoped>
+.fr-upload-group__desc {
+  margin: 0;
+}
+
 .upload-line {
   display: flex;
   flex-wrap: wrap;
