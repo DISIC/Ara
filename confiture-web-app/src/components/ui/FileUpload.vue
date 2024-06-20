@@ -42,11 +42,11 @@ const fileInputRef = ref<HTMLInputElement>();
 const selectedFiles = computed(() => {
   const len = props.auditFiles.length;
   if (len === 0) {
-    return "Aucun fichier sélectionné.";
+    return "Aucun fichier ajouté.";
   } else if (len === 1) {
-    return `${len} fichier sélectionné.`;
+    return `${len} fichier ajouté.`;
   } else {
-    return `${len} fichiers sélectionnés.`;
+    return `${len} fichiers ajoutés.`;
   }
 });
 
