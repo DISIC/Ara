@@ -104,7 +104,9 @@ defineExpose({ show, hide });
 
 .sidebar :deep(.fr-modal__body) {
   max-height: 100vh !important;
+  max-height: 100dvh !important;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -115,6 +117,7 @@ defineExpose({ show, hide });
 
 .sidebar :deep(textarea) {
   height: 50vh;
+  height: 50dvh;
   max-height: 60rem;
 }
 

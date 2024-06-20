@@ -226,7 +226,7 @@ const tabsData = computed((): TabData[] => {
         ]"
       >
         <div
-          :class="['filters-wrapper', 'fr-pb-6w', { 'fr-pr-3v': showFilters }]"
+          :class="['filters-wrapper', { 'fr-pr-3v': showFilters }]"
           role="search"
           :style="{ '--filters-top-offset': stickyTop }"
         >
@@ -285,7 +285,8 @@ const tabsData = computed((): TabData[] => {
 .filters-wrapper {
   position: sticky;
   top: var(--filters-top-offset, 0);
-  max-height: 100vh;
+  max-height: calc(100vh - var(--filters-top-offset, 0));
+  max-height: calc(100dvh - var(--filters-top-offset, 0));
   overflow-y: auto;
   padding-top: 1rem;
 }
