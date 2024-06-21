@@ -1,89 +1,79 @@
 <script setup lang="ts">
-import { groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
-import { marked } from "marked";
+import { groupBy, mapValues, uniqWith } from "lodash-es";
 import { computed } from "vue";
 
 import rgaa from "../../criteres.json";
 import { useReportStore } from "../../store";
-import { AuditReport, CriteriumResultStatus } from "../../types";
+import { CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 
 const report = useReportStore();
 
-/*
-[{
-  pageUrl: "https://example.com",
-  pageName: "Accueil"
-  topics: [{
-    topic: 2,
-    name: "Cadres",
-    errors: [{ ... }]
-  }]
-}]
-*/
+/**
+ *
+[
+  {
+    id: 0,
+    url: 'https://example.com',
+    order: 0,
+    name: 'Ma page',
+    topics: [
+      {
+        number: 1,
+        name: 'Images',
+        improvements: [
+          {
+            criterium: 1,
+            comment: 'blabla'
+          }
+        ]
+      }
+    ]
+  }
+]
+ */
 
-const errors = computed(() => {
-  const resultsGroupedByPage = {
-    // include pages with no errors
-    ...report.data?.context.samples.reduce<Record<string, []>>((acc, val) => {
-      acc[val.id] = [];
-      return acc;
-    }, {}),
-
-    ...groupBy(
-      report.data?.results.filter((r) => {
-        return (
-          [
-            CriteriumResultStatus.COMPLIANT,
-            CriteriumResultStatus.NOT_APPLICABLE
-          ].includes(r.status) && !r.transverse
-        );
-      }),
-      "pageId"
-    )
-  } as Record<number, AuditReport["results"]>;
-
-  const data = sortBy(
-    Object.entries(resultsGroupedByPage).map(([pageId, results]) => {
-      return {
-        pageId: Number(pageId),
-        pageOrder: getPage(pageId).order,
-        pageName: getPage(pageId).name,
-        pageUrl: getPage(pageId).url,
-        topics: sortBy(
-          Object.values(
-            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-              return {
-                topic: Number(topicNumber),
-                name: getTopicName(Number(topicNumber)),
-                errors: sortBy(
-                  results.filter(
-                    (r) =>
-                      !r.transverse &&
-                      (r.compliantComment || r.notApplicableComment)
-                  ),
-                  "criterium"
-                ).map((r) => {
+const pages = computed(() => {
+  return (
+    report.data?.context.samples
+      .map((el) => {
+        return {
+          ...el,
+          topics: Object.entries(
+            groupBy(
+              report.data?.results.filter((r) => {
+                return r.pageId === el.id;
+              }),
+              "topic"
+            )
+          ).map(([topic, results]) => {
+            return {
+              number: Number(topic),
+              name: getTopicName(Number(topic)),
+              improvements: results
+                .filter((r) => {
+                  return (
+                    !r.transverse &&
+                    ((r.status === CriteriumResultStatus.COMPLIANT &&
+                      r.compliantComment) ||
+                      (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
+                        r.notApplicableComment))
+                  );
+                })
+                .map((r) => {
                   return {
-                    ...r,
-                    comment:
-                      r.status === CriteriumResultStatus.COMPLIANT
-                        ? r.compliantComment
-                        : r.notApplicableComment
+                    criterium: r.criterium,
+                    status: r.status,
+                    comment: r.compliantComment || r.notApplicableComment
                   };
                 })
-              };
-            })
-          ),
-          "topic"
-        )
-      };
-    }),
-    (el) => el.pageOrder
+            };
+          })
+        };
+      })
+      .filter((p) => p.topics.length) || []
   );
-
-  return data;
 });
 
 /**
@@ -132,32 +122,14 @@ const transverseErrors = computed(() => {
 
 const displayedErrorCount = computed(() => {
   return (
-    errors.value.map((page) => page.topics.map((topic) => topic.errors)).flat(2)
-      .length + transverseErrors.value.length
+    pages.value
+      .map((page) => page.topics.map((topic) => topic.improvements))
+      .flat(2).length + transverseErrors.value.length
   );
 });
 
 function getTopicName(topicNumber: number) {
   return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
-}
-
-function getCriterium(topicNumber: number, criteriumNumber: number) {
-  // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
-  const criterium = (rgaa.topics as any)
-    .find((t: any) => t.number === topicNumber)
-    ?.criteria.find((c: any) => c.criterium.number === criteriumNumber)
-    .criterium;
-
-  return criterium;
-}
-
-function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
-  return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
-}
-
-/** Get a page by its id */
-function getPage(pageId: number | string) {
-  return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
 }
 </script>
 
@@ -208,20 +180,20 @@ function getPage(pageId: number | string) {
                 >
                   <a
                     class="fr-sidemenu__link"
-                    :href="`#${errors[0].pageId}`"
+                    :href="`#${pages[0].id}`"
                     :aria-current="
                       !transverseErrors.length ? 'true' : undefined
                     "
-                    >{{ errors[0].pageName }}</a
+                    >{{ pages[0].name }}</a
                   >
                 </li>
                 <li
-                  v-for="page in errors.slice(1)"
-                  :key="page.pageName"
+                  v-for="page in pages.slice(1)"
+                  :key="page.name"
                   class="fr-sidemenu__item"
                 >
-                  <a class="fr-sidemenu__link" :href="`#${page.pageId}`">
-                    {{ page.pageName }}
+                  <a class="fr-sidemenu__link" :href="`#${page.id}`">
+                    {{ page.name }}
                   </a>
                 </li>
               </ul>
@@ -240,13 +212,6 @@ function getPage(pageId: number | string) {
           </div>
         </div>
 
-        <section v-if="!transverseErrors.length && !errors.length">
-          <h2 class="fr-h6 fr-mb-1w">
-            Aucun résultat ne correspond à votre recherche
-          </h2>
-          <p>Veuillez sélectionner au moins un filtre "impact de l'erreur".</p>
-        </section>
-
         <section v-if="transverseErrors.length" class="fr-mb-8w">
           <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
             Toutes les pages
@@ -257,72 +222,51 @@ function getPage(pageId: number | string) {
             :key="topic.topic"
             :class="{ 'fr-mt-9v': i !== 0 }"
           >
-            <p class="fr-tag fr-tag--sm fr-mb-3w">
+            <p class="fr-tag fr-tag--sm fr-mb-3v">
               {{ i + 1 }}.&nbsp;{{ topic.name }}
             </p>
-            <template v-for="(error, j) in topic.errors" :key="j">
-              <p
-                :class="[
-                  'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 }
-                ]"
-              >
-                {{ error.topic }}.{{ error.criterium }}&nbsp;
-                <span
-                  v-html="getCriteriumTitle(error.topic, error.criterium)"
-                />
-              </p>
-
-              <MarkdownRenderer
-                v-if="error.comment"
-                :markdown="error.comment"
-              />
-            </template>
+            <ReportImprovementCriterium
+              v-for="(error, j) in topic.errors"
+              :key="j"
+              :class="j === 0 ? null : 'fr-mt-9v'"
+              :topic="error.topic"
+              :criterium="error.criterium"
+              :comment="error.comment!"
+              :status="error.status"
+            />
           </div>
         </section>
-        <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <h2 :id="`${page.pageId}`" class="fr-h3 fr-mb-2w page-title">
-            {{ page.pageName }}
+
+        <section v-for="page in pages" :key="page.id" class="fr-mb-8w">
+          <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
+            {{ page.name }}
           </h2>
           <a
-            :href="page.pageUrl"
+            :href="page.url"
             class="fr-link page-url"
             target="_blank"
             rel="noopener"
           >
-            {{ page.pageUrl }} <span class="sr-only">(nouvelle fenêtre)</span>
+            {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
           </a>
-
-          <p v-if="page.topics.length === 0" class="fr-mt-4w">
-            Aucune erreur d'accessibilité relevée sur cette page.
-          </p>
 
           <div
             v-for="(topic, i) in page.topics"
-            :key="topic.topic"
+            :key="topic.number"
             :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
           >
-            <p class="fr-tag fr-tag--sm fr-mb-3w">
+            <p class="fr-tag fr-tag--sm fr-mb-3v">
               {{ i + 1 }}.&nbsp;{{ topic.name }}
             </p>
-            <template v-for="(error, j) in topic.errors" :key="j">
-              <p
-                :class="[
-                  'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 }
-                ]"
-              >
-                {{ error.topic }}.{{ error.criterium }}&nbsp;
-                <span
-                  v-html="getCriteriumTitle(error.topic, error.criterium)"
-                />
-              </p>
-
-              <MarkdownRenderer
-                v-if="error.comment"
-                :markdown="error.comment"
-              />
-            </template>
+            <ReportImprovementCriterium
+              v-for="(improvement, j) in topic.improvements"
+              :key="j"
+              :class="j === 0 ? null : 'fr-mt-9v'"
+              :topic="topic.number"
+              :criterium="improvement.criterium"
+              :comment="improvement.comment!"
+              :status="improvement.status"
+            />
           </div>
         </section>
       </div>
@@ -354,10 +298,6 @@ function getPage(pageId: number | string) {
 
 .page-url {
   word-break: break-all;
-}
-
-.criterium-title {
-  color: var(--text-title-grey);
 }
 
 .fr-sidemenu__inner {
