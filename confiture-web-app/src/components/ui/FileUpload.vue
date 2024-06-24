@@ -1,39 +1,43 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, Ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useUniqueId } from "../../composables/useUniqueId";
 
+import { FileErrorMessage } from "../../enums";
 import { AuditFile } from "../../types";
 import { formatBytes, getUploadUrl } from "../../utils";
 
 export interface Props {
   acceptedFormats?: Array<string>;
   auditFiles: AuditFile[];
-  readonly?: boolean;
+  boldTitle?: boolean;
+  errorMessage?: FileErrorMessage | null;
   maxFileSize?: string;
   multiple?: boolean;
+  readonly?: boolean;
   title?: string;
-  boldTitle?: boolean;
-  showFileFormatError?: boolean;
-  showFileSizeError?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   acceptedFormats: undefined,
-  readonly: false,
+  boldTitle: false,
+  errorMessage: null,
+  errorMessageTitle: null,
   maxFileSize: "2 Mo",
   multiple: false,
-  title: "Ajouter un fichier",
-  boldTitle: false,
-  showFileFormatError: false,
-  showFileSizeError: false
+  readonly: false,
+  title: "Ajouter un fichier"
 });
 
 const emit = defineEmits<{
   (e: "upload-file", payload: File): void;
   (e: "delete-file", payload: AuditFile): void;
 }>();
+
+defineExpose({ onFileRequestFinished });
+
+const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
 
 const id = useUniqueId();
 const isOffline = useIsOffline();
@@ -68,7 +72,12 @@ const acceptedFormatsAttr = computed(() => {
 
 function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
-    emit("upload-file", fileInputRef.value?.files[0]);
+    const file = fileInputRef.value?.files[0];
+    if (file.size > 2000000) {
+      localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
+      return;
+    }
+    emit("upload-file", file);
     fileInputRef.value.value = "";
   }
 }
@@ -95,6 +104,10 @@ function isViewable(auditFile: AuditFile) {
   return (
     auditFile.mimetype.startsWith("image") || auditFile.mimetype.includes("pdf")
   );
+}
+
+function onFileRequestFinished() {
+  localErrorMessage.value = null;
 }
 </script>
 
@@ -140,19 +153,11 @@ function isViewable(auditFile: AuditFile) {
       </div>
 
       <p
-        v-if="showFileFormatError"
+        v-if="errorMessage || localErrorMessage"
         :id="`file-upload-error-format-${id}`"
         class="fr-error-text fr-mt-0"
       >
-        Format de fichier non supporté.
-      </p>
-
-      <p
-        v-if="showFileSizeError"
-        :id="`file-upload-error-size-${id}`"
-        class="fr-error-text fr-mt-0"
-      >
-        Poids du fichier trop lourd.
+        {{ errorMessage ? errorMessage : localErrorMessage }}
       </p>
     </div>
 

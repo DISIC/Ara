@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 import { useIsOffline } from "../../composables/useIsOffline";
+import { FileErrorMessage } from "../../enums";
 import { formatUserImpact } from "../../utils";
 
 import { CriterionResultUserImpact, AuditFile } from "../../types";
@@ -9,17 +12,19 @@ import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 
-defineProps<{
+export interface Props {
   id: string;
   comment: string | null;
-  userImpact: CriterionResultUserImpact | null;
+  errorMessage?: FileErrorMessage | null;
   exampleImages: AuditFile[];
-  recommandation: string | null;
   quickWin?: boolean;
+  recommandation: string | null;
+  userImpact: CriterionResultUserImpact | null;
+}
 
-  showFileFormatError: boolean;
-  showFileSizeError: boolean;
-}>();
+withDefaults(defineProps<Props>(), {
+  errorMessage: null
+});
 
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
@@ -29,6 +34,8 @@ const emit = defineEmits<{
   (e: "update:recommandation", payload: string): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
+
+defineExpose({ onFileRequestFinished });
 
 const userImpacts: Array<{
   label: string;
@@ -52,6 +59,10 @@ const userImpacts: Array<{
   }
 ];
 
+const isOffline = useIsOffline();
+
+const fileUpload = ref<InstanceType<typeof FileUpload>>();
+
 function handleUploadFile(image: File) {
   emit("upload-file", image);
 }
@@ -60,7 +71,9 @@ function handleDeleteFile(image: AuditFile) {
   emit("delete-file", image);
 }
 
-const isOffline = useIsOffline();
+function onFileRequestFinished() {
+  fileUpload.value?.onFileRequestFinished();
+}
 </script>
 
 <template>
@@ -93,13 +106,13 @@ const isOffline = useIsOffline();
 
     <!-- FILE -->
     <FileUpload
+      ref="fileUpload"
       class="fr-mb-4w"
       :accepted-formats="['jpg', 'jpeg', 'png']"
       :audit-files="exampleImages"
       :disabled="isOffline"
       :multiple="true"
-      :show-file-size-error="showFileSizeError"
-      :show-file-format-error="showFileFormatError"
+      :error-message="errorMessage"
       title="Ajouter des images d’exemple"
       :bold-title="true"
       @delete-file="handleDeleteFile"

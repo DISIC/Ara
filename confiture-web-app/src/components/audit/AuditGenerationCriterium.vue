@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { marked } from "marked";
-import { ref, computed } from "vue";
+import { computed, ref, Ref } from "vue";
 import { debounce } from "lodash-es";
-import { HTTPError } from "ky";
+import { FileErrorMessage } from "../../enums";
+import {
+  formatStatus,
+  handleFileUploadError,
+  handleFileDeleteError
+} from "../../utils";
 
 import {
   AuditPage,
@@ -19,7 +24,6 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 import { useResultsStore, useFiltersStore, useAuditStore } from "../../store";
 import { useNotifications } from "../../composables/useNotifications";
 import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
-import { captureWithPayloads, formatStatus } from "../../utils";
 import { useIsOffline } from "../../composables/useIsOffline";
 
 const store = useResultsStore();
@@ -67,22 +71,11 @@ const result = computed(
 
 const notify = useNotifications();
 
-const showFileSizeError = ref(false);
-const showFileFormatError = ref(false);
+const errorMessage: Ref<FileErrorMessage | null> = ref(null);
+const criteriumNotCompliantAccordion =
+  ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
 function handleUploadExample(file: File) {
-  showFileSizeError.value = false;
-  showFileFormatError.value = false;
-  if (file.size > 2000000) {
-    showFileSizeError.value = true;
-    notify(
-      "error",
-      "Le téléchargement de l'exemple a échoué",
-      "Poids du fichier trop lourd"
-    );
-    return;
-  }
-
   store
     .uploadExampleImage(
       props.auditUniqueId,
@@ -91,52 +84,14 @@ function handleUploadExample(file: File) {
       props.criterium.number,
       file
     )
+    .then(() => {
+      errorMessage.value = null;
+    })
     .catch(async (error) => {
-      if (error instanceof HTTPError) {
-        if (error.response.status === 413) {
-          showFileSizeError.value = true;
-          notify(
-            "error",
-            "Le téléchargement de l'exemple a échoué",
-            "Poids du fichier trop lourd"
-          );
-        }
-
-        // Unprocessable Entity
-        if (error.response.status === 422) {
-          const body = await error.response.json();
-
-          if (body.message.includes("expected type")) {
-            showFileFormatError.value = true;
-            notify(
-              "error",
-              "Le téléchargement de l'exemple a échoué",
-              "Format de fichier non supporté"
-            );
-          } else if (body.message.includes("expected size")) {
-            showFileSizeError.value = true;
-            notify(
-              "error",
-              "Le téléchargement de l'exemple a échoué",
-              "Poids du fichier trop lourd"
-            );
-          } else {
-            notify(
-              "error",
-              "Le téléchargement de l'exemple a échoué",
-              "Une erreur inconnue est survenue"
-            );
-            captureWithPayloads(error);
-          }
-        } else {
-          notify(
-            "error",
-            "Téléchargement échoué",
-            "Une erreur inconnue est survenue"
-          );
-          captureWithPayloads(error);
-        }
-      }
+      errorMessage.value = await handleFileUploadError(error);
+    })
+    .finally(() => {
+      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
     });
 }
 
@@ -150,15 +105,13 @@ function handleDeleteExample(image: AuditFile) {
       image.id
     )
     .then(() => {
-      showFileSizeError.value = false;
-      showFileFormatError.value = false;
+      errorMessage.value = null;
     })
-    .catch(() => {
-      notify(
-        "error",
-        "Échec lors de la suppression de l'exemple",
-        "Une erreur inconnue empêche la suppression de l'exemple."
-      );
+    .catch(async (error) => {
+      errorMessage.value = await handleFileDeleteError(error);
+    })
+    .finally(() => {
+      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
     });
 }
 
@@ -308,13 +261,13 @@ const isOffline = useIsOffline();
     <CriteriumNotCompliantAccordion
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
+      ref="criteriumNotCompliantAccordion"
       :comment="result.errorDescription"
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :recommandation="result.recommandation"
       :quick-win="result.quickWin"
-      :show-file-format-error="showFileFormatError"
-      :show-file-size-error="showFileSizeError"
+      :error-message="errorMessage"
       @update:comment="updateResultComment($event, 'errorDescription')"
       @update:user-impact="updateResultImpact($event)"
       @upload-file="handleUploadExample"

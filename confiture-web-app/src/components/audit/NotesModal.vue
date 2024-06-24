@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, ref } from "vue";
-import { HTTPError } from "ky";
+import { computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";
-import { captureWithPayloads } from "../../utils";
+import { FileErrorMessage } from "../../enums";
+import { handleFileUploadError, handleFileDeleteError } from "../../utils";
 
 import { AuditFile } from "../../types";
 
@@ -13,7 +13,6 @@ import FileUpload from "../ui/FileUpload.vue";
 
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useNotifications } from "../../composables/useNotifications";
 import { useAuditStore } from "../../store/audit";
 import { StoreName } from "../../types";
 
@@ -31,11 +30,10 @@ defineExpose({
   hide: () => modal.value?.hide()
 });
 
-const showFileSizeError = ref(false);
-const showFileFormatError = ref(false);
+const errorMessage: Ref<FileErrorMessage | null> = ref(null);
+const fileUpload = ref<InstanceType<typeof FileUpload>>();
 
 const auditStore = useAuditStore();
-const notify = useNotifications();
 const route = useRoute();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
@@ -49,70 +47,30 @@ const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
 function handleUploadFile(file: File) {
-  showFileSizeError.value = false;
-  showFileFormatError.value = false;
-  auditStore.uploadAuditFile(uniqueId.value, file).catch(async (error) => {
-    if (error instanceof HTTPError) {
-      if (error.response.status === 413) {
-        showFileSizeError.value = true;
-        notify(
-          "error",
-          "Le téléchargement du fichier a échoué",
-          "Poids du fichier trop lourd"
-        );
-      }
-
-      // Unprocessable Entity
-      if (error.response.status === 422) {
-        const body = await error.response.json();
-
-        if (body.message.includes("expected type")) {
-          showFileFormatError.value = true;
-          notify(
-            "error",
-            "Le téléchargement du fichier a échoué",
-            "Format de fichier non supporté"
-          );
-        } else if (body.message.includes("expected size")) {
-          showFileSizeError.value = true;
-          notify(
-            "error",
-            "Le téléchargement du fichier a échoué",
-            "Poids du fichier trop lourd"
-          );
-        } else {
-          notify(
-            "error",
-            "Le téléchargement du fichier a échoué",
-            "Une erreur inconnue est survenue"
-          );
-          captureWithPayloads(error);
-        }
-      } else {
-        notify(
-          "error",
-          "Téléchargement échoué",
-          "Une erreur inconnue est survenue"
-        );
-        captureWithPayloads(error);
-      }
-    }
-  });
+  auditStore
+    .uploadAuditFile(uniqueId.value, file)
+    .then(() => {
+      errorMessage.value = null;
+    })
+    .catch(async (error) => {
+      errorMessage.value = await handleFileUploadError(error);
+    })
+    .finally(() => {
+      fileUpload.value?.onFileRequestFinished();
+    });
 }
 
 function handleDeleteFile(file: AuditFile) {
   auditStore
     .deleteAuditFile(uniqueId.value, file.id)
     .then(() => {
-      showFileSizeError.value = false;
-      showFileFormatError.value = false;
+      errorMessage.value = null;
     })
-    .catch(() => {
-      notify(
-        "error",
-        "Échec lors de la suppression du fichier",
-        "Une erreur inconnue empêche la suppression du fichier."
-      );
+    .catch(async (error) => {
+      errorMessage.value = await handleFileDeleteError(error);
+    })
+    .finally(() => {
+      fileUpload.value?.onFileRequestFinished();
     });
 }
 </script>
@@ -165,12 +123,12 @@ function handleDeleteFile(file: AuditFile) {
               />
               <!-- FILE -->
               <FileUpload
+                ref="fileUpload"
                 class="fr-mb-4w"
                 :disabled="isOffline"
                 :audit-files="files"
                 :multiple="true"
-                :show-file-size-error="showFileSizeError"
-                :show-file-format-error="showFileFormatError"
+                :error-message="errorMessage"
                 @upload-file="handleUploadFile"
                 @delete-file="handleDeleteFile"
               />
