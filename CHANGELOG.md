@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 12/06/2024
+
+### Autres changements ⚙️
+
+- Fusionne les champs "Recommandation" et "Description de l'erreur" ([#720](https://github.com/DISIC/Ara/pull/720))
+
 ## 06/06/2024
 
 ### Corrections 🐛

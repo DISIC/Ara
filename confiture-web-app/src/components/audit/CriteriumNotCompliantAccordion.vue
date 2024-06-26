@@ -18,7 +18,6 @@ export interface Props {
   errorMessage?: FileErrorMessage | null;
   exampleImages: AuditFile[];
   quickWin?: boolean;
-  recommandation: string | null;
   userImpact: CriterionResultUserImpact | null;
 }
 
@@ -31,7 +30,6 @@ const emit = defineEmits<{
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
   (e: "upload-file", payload: File): void;
   (e: "delete-file", payload: AuditFile): void;
-  (e: "update:recommandation", payload: string): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
@@ -78,7 +76,7 @@ function onFileRequestFinished() {
 
 <template>
   <LazyAccordion
-    title="Description et recommandation"
+    title="Erreur et recommandation"
     disclose-color="var(--background-default-grey)"
   >
     <!-- COMMENT -->
@@ -87,7 +85,7 @@ function onFileRequestFinished() {
         class="fr-label fr-text--bold"
         :for="`criterum-comment-field-${id}`"
       >
-        Description de la ou des erreurs
+        Description des erreurs et recommandations
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
@@ -129,32 +127,6 @@ function onFileRequestFinished() {
       :disabled="isOffline"
       @update:model-value="$emit('update:userImpact', $event)"
     />
-
-    <!-- RECOMMANDATION -->
-    <div class="fr-input-group fr-mb-1w">
-      <label
-        class="fr-label fr-text--bold"
-        :for="`criterum-comment-field-recommendation-${id}`"
-      >
-        Recommandation de correction
-      </label>
-      <textarea
-        :id="`criterum-comment-field-recommendation-${id}`"
-        :value="recommandation ?? ''"
-        class="fr-input"
-        rows="5"
-        :disabled="isOffline"
-        :aria-describedby="`markdown-notice-${id}`"
-        @input="
-          $emit(
-            'update:recommandation',
-            ($event.target as HTMLTextAreaElement).value
-          )
-        "
-      ></textarea>
-    </div>
-
-    <MarkdownHelpButton :id="`markdown-notice-${id}`" class="fr-mb-3w" />
 
     <!-- QUICK WIN -->
     <div class="fr-fieldset__element fr-fieldset__element--inline">

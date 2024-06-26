@@ -103,7 +103,7 @@ class UpdateResultsItem {
    */
   @IsString()
   @IsOptional()
-  errorDescription?: string;
+  notCompliantComment?: string;
 
   /**
    * @example "MAJOR"
@@ -112,13 +112,6 @@ class UpdateResultsItem {
   @IsIn(Object.values(CriterionResultUserImpact))
   @IsOptional()
   userImpact?: CriterionResultUserImpact;
-
-  /**
-   * @example "Quis do mollit eu incididunt duis et cillum ullamco laborum tempor laboris deserunt."
-   */
-  @IsString()
-  @IsOptional()
-  recommandation?: string;
 
   /**
    * Whether the result is easy to fix
