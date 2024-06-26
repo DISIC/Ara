@@ -1,20 +1,18 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import { marked } from "marked";
-import { createHead } from "@unhead/vue";
-// @ts-expect-error vue-matomo does not have any sort of typescript support :'(
-import Matomo from "vue-matomo";
-
-import * as Sentry from "@sentry/vue";
-import { BrowserTracing } from "@sentry/tracing";
-
-import App from "./App.vue";
-
 import "./styles/main.css";
 import "@gouvfr/dsfr/dist/dsfr.min.css";
 import "@gouvfr/dsfr/dist/dsfr.module.min.js";
 import "@gouvfr/dsfr/dist/utility/icons/icons.css";
 
+import { BrowserTracing } from "@sentry/tracing";
+import * as Sentry from "@sentry/vue";
+import { createHead } from "@unhead/vue";
+import { marked } from "marked";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+// @ts-expect-error vue-matomo does not have any sort of typescript support :'(
+import Matomo from "vue-matomo";
+
+import App from "./App.vue";
 import router from "./router";
 
 // markdown configuration

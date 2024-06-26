@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue";
 import { onMounted } from "vue";
+
 import SiteFooter from "./components/layout/SiteFooter.vue";
+import SiteHeader from "./components/layout/SiteHeader.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
-import SiteHeader from "./components/layout/SiteHeader.vue";
 
 // Default meta tags
 useHead({

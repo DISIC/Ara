@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import fiphfpLogo from "../../assets/images/fiphfp.png";
-import ThemeModal from "./ThemeModal.vue";
 import { useAccountStore } from "../../store/account";
+import ThemeModal from "./ThemeModal.vue";
 
 const accountStore = useAccountStore();
 

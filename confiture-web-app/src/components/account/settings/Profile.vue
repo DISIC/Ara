@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
-import { useAccountStore } from "../../../store/account";
 import { useNotifications } from "../../../composables/useNotifications";
+import { useAccountStore } from "../../../store/account";
 import DsfrField from "../../ui/DsfrField.vue";
 
 const accountStore = useAccountStore();

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import AuditTypeRadio from "./AuditTypeRadio.vue";
-import DsfrField from "../ui/DsfrField.vue";
-import { AuditType } from "../../types";
 import { ref } from "vue";
+
 import { useDevMode } from "../../composables/useDevMode";
+import { AuditType } from "../../types";
+import DsfrField from "../ui/DsfrField.vue";
+import AuditTypeRadio from "./AuditTypeRadio.vue";
 
 const props = defineProps<{
   auditType: string | null;

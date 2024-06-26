@@ -6,9 +6,9 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
 import { formatDate, getCriteriaCount, pluralize } from "../../utils";
-import StepCard from "./StepCard.vue";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
 import StatDonut from "../StatDonut.vue";
+import StepCard from "./StepCard.vue";
 
 defineProps<{
   audit: Audit;

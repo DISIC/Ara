@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { watch, computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+
+import { useIsOffline } from "../../composables/useIsOffline";
 import { useResultsStore } from "../../store";
 import { CriteriumResultStatus } from "../../types";
-import { useIsOffline } from "../../composables/useIsOffline";
 
 const props = defineProps<{
   pageId: number;

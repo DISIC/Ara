@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import Dropdown from "../ui/Dropdown.vue";
-import { useAccountStore } from "../../store";
 import { useRoute, useRouter } from "vue-router";
+
 import { useNotifications } from "../../composables/useNotifications";
 import { useWindowWidth } from "../../composables/useWindowWidth";
+import { useAccountStore } from "../../store";
+import Dropdown from "../ui/Dropdown.vue";
 
 const accountStore = useAccountStore();
 

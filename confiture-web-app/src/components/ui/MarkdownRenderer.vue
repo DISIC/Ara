@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { computed } from "vue";
-import DOMPurify from "dompurify";
 
 const props = defineProps<{
   markdown: string;

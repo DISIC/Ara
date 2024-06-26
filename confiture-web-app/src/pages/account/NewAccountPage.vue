@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useAccountStore } from "../../store/account";
-import NewAccountForm from "../../components/account/new-acccount/NewAccountForm.vue";
+import { onBeforeRouteLeave } from "vue-router";
+
 import EmailSent from "../../components/account/new-acccount/EmailSent.vue";
+import NewAccountForm from "../../components/account/new-acccount/NewAccountForm.vue";
 import Success from "../../components/account/new-acccount/Success.vue";
 import PageMeta from "../../components/PageMeta";
-import { onBeforeRouteLeave } from "vue-router";
+import { useAccountStore } from "../../store/account";
 
 const currentStep = ref(0);
 const userEmail = ref<string>();

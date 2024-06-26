@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import light from "@gouvfr/dsfr/dist/artwork/light.svg";
 import dark from "@gouvfr/dsfr/dist/artwork/dark.svg";
+import light from "@gouvfr/dsfr/dist/artwork/light.svg";
 import system from "@gouvfr/dsfr/dist/artwork/system.svg";
 </script>
 

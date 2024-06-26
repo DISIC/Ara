@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+
 import rgaa from "../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../criteria";
 import { AuditType, CriteriumResultStatus } from "../types";

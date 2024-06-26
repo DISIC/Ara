@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 
+import { useNotifications } from "../../../composables/useNotifications";
+import { useAuditStore } from "../../../store";
 import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import {
-  formatDate,
   captureWithPayloads,
-  slugify,
   formatBytes,
-  getCriteriaCount
+  formatDate,
+  getCriteriaCount,
+  slugify
 } from "../../../utils";
-import Dropdown from "../../ui/Dropdown.vue";
-import CopyIcon from "../../icons/CopyIcon.vue";
-import DuplicateModal from "../../audit/DuplicateModal.vue";
 import DeleteModal from "../../audit/DeleteModal.vue";
-import { useNotifications } from "../../../composables/useNotifications";
-import { useAuditStore } from "../../../store";
+import DuplicateModal from "../../audit/DuplicateModal.vue";
+import CopyIcon from "../../icons/CopyIcon.vue";
+import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
   audit: AccountAudit;

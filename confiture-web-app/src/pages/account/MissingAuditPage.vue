@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useAccountStore } from "../../store/account";
 import PageMeta from "../../components/PageMeta";
+import { useAccountStore } from "../../store/account";
 
 const accountStore = useAccountStore();
 </script>

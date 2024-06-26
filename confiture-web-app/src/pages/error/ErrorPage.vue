@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { marked } from "marked";
 import { useRoute } from "vue-router";
+
 import AuditNotFoundImage from "../../assets/images/audit-not-found.svg";
 import GenericErrorImage from "../../assets/images/server-error.svg";
 import { history } from "../../router";
-import { marked } from "marked";
 
 const statusCode = (history.state.errorStatus ?? 404) as number;
 

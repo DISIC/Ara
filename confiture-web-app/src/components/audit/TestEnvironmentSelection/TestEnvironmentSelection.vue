@@ -9,8 +9,8 @@ import {
   Platform
 } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
-import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
 import DsfrField from "../../ui/DsfrField.vue";
+import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
 import {
   desktopCombinations,
   getCustomEnvironments,

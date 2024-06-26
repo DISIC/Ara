@@ -2,17 +2,17 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import OnboardingModal from "../../components/report/OnboardingModal.vue";
-import ReportNotes from "../../components/report/ReportNotes.vue";
-import ReportErrors from "../../components/report/ReportErrors.vue";
-import ReportResults from "../../components/report/ReportResults.vue";
-import TopLink from "../../components/ui/TopLink.vue";
 import PageMeta from "../../components/PageMeta";
+import OnboardingModal from "../../components/report/OnboardingModal.vue";
+import ReportErrors from "../../components/report/ReportErrors.vue";
+import ReportNotes from "../../components/report/ReportNotes.vue";
+import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
+import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
 import { AuditStatus } from "../../types";
-import { getAuditStatus, formatDate, slugify, formatBytes } from "../../utils";
+import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
 const report = useReportStore();
 

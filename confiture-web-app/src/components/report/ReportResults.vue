@@ -3,9 +3,9 @@ import { computed } from "vue";
 
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
-import { slugify, getAuditStatus, pluralize } from "../../utils";
-import SummaryCard from "../SummaryCard.vue";
+import { getAuditStatus, pluralize, slugify } from "../../utils";
 import { StatDonutTheme } from "../StatDonut.vue";
+import SummaryCard from "../SummaryCard.vue";
 
 const report = useReportStore();
 

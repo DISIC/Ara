@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
+
 import DsfrModal from "../ui/DsfrModal.vue";
 
 const modal = ref<InstanceType<typeof DsfrModal>>();

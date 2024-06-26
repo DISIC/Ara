@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { slugify } from "../../utils";
 import { AssistiveTechnology, Browsers, Platform } from "../../enums";
+import { slugify } from "../../utils";
 
 const props = defineProps<{
   value: string;

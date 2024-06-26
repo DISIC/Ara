@@ -1,4 +1,5 @@
 import { RouteLocation, useRouter } from "vue-router";
+
 import { history } from "../router";
 
 interface UsePreviousRouteResult {

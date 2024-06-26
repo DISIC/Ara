@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useSlots, computed } from "vue";
+import { computed, useSlots } from "vue";
+
 import { useUniqueId } from "../composables/useUniqueId";
 import StatDonut, { StatDonutTheme } from "./StatDonut.vue";
 

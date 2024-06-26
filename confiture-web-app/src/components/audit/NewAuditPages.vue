@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
-import { AuditPage, AuditType } from "../../types";
-import PagesSample from "../audit/PagesSample.vue";
+
 import { useDevMode } from "../../composables/useDevMode";
 import { useAccountStore } from "../../store";
+import { AuditPage, AuditType } from "../../types";
+import PagesSample from "../audit/PagesSample.vue";
 
 const props = defineProps<{
   auditType: AuditType | null;

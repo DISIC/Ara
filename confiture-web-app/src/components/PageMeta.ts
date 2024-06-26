@@ -1,5 +1,5 @@
-import { defineComponent } from "vue";
 import { useHead } from "@unhead/vue";
+import { defineComponent } from "vue";
 
 const PageMeta = defineComponent({
   name: "PageMeta",

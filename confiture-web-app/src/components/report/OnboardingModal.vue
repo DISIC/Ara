@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
-import uploadIllustration from "../../assets/images/onboarding-upload.svg";
 import hammerIllustration from "../../assets/images/onboarding-hammer.svg";
-import magnifierIllustration from "../../assets/images/onboarding-magnifier.svg";
 import handsIllustration from "../../assets/images/onboarding-hands.svg";
+import magnifierIllustration from "../../assets/images/onboarding-magnifier.svg";
+import uploadIllustration from "../../assets/images/onboarding-upload.svg";
 import StatDonut from "../StatDonut.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 

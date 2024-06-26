@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, watch, nextTick } from "vue";
-import { ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 
 import { useFiltersStore, useResultsStore } from "../../store";
-import { pluralize } from "../../utils";
 import { CriteriumResultStatus } from "../../types";
+import { pluralize } from "../../utils";
 
 defineProps<{
   topics: { title: string; number: number; value: number }[];

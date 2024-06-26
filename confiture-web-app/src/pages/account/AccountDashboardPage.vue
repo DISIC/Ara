@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, ref } from "vue";
 
-import PageMeta from "../../components/PageMeta";
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
+import PageMeta from "../../components/PageMeta";
 import TopLink from "../../components/ui/TopLink.vue";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
