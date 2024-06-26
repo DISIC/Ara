@@ -36,17 +36,6 @@ const isOffline = useIsOffline();
     </div>
 
     <MarkdownHelpButton :id="`markdown-notice-${id}`" />
-
-    <!-- FILE -->
-    <!-- <div class="fr-upload-group">
-      <label class="fr-text--bold fr-label" :for="`file-upload-${id}`">
-        Ajouter un exemple
-        <span class="fr-mt-1v fr-text--regular fr-hint-text">
-          Taille maximale par fichier : 1 Mo, formats : jpg, png, pdf
-        </span>
-      </label>
-      <input :id="`file-upload-${id}`" class="fr-upload" type="file" />
-    </div> -->
   </LazyAccordion>
 </template>
 

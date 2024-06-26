@@ -38,7 +38,7 @@ onMounted(async () => {
       } else {
         notify(
           "error",
-          "Echéc de la vérification du compte",
+          "Échec de la vérification du compte",
           "Une erreur inconnue est survenue"
         );
       }

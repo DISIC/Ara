@@ -6,7 +6,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   CriterionResultUserImpact,
-  ExampleImage
+  AuditFile
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -381,7 +381,7 @@ export const useResultsStore = defineStore("results", {
         .json()
         .finally(() => {
           this.decreaseCurrentRequestCount();
-        })) as ExampleImage;
+        })) as AuditFile;
 
       const result = this.data![pageId][topic][criterium];
 

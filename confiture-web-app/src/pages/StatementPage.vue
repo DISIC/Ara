@@ -27,7 +27,7 @@ async function copyA11yStatementUrl() {
 
     notify(
       "success",
-      "",
+      undefined,
       "Le lien vers la déclaration a bien été copié dans le presse-papier."
     );
   });
@@ -83,7 +83,7 @@ async function copyA11yStatementHTML() {
     navigator.clipboard.writeText(html).then(() => {
       notify(
         "success",
-        "",
+        undefined,
         "Le code HTML de la déclaration d’accessibilité a bien été copié dans le presse-papier."
       );
     });

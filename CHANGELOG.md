@@ -2,6 +2,19 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 26/06/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute la possibilité de télécharger (téléverser) des fichiers – « pièces jointes » – au niveau des annotations de l’audit ([#669](https://github.com/DISIC/Ara/pull/669)) :
+  - Agrandissement de la zone d’annotation en panneau latéral
+  - Sauvegarde automatique des changements
+  - Création d’un composant d’ajout de fichier commun (critères non conformes + annotations)
+  - Choix de *télécharger* ou de *visualiser* chaque fichier
+  - Affichage des pièces jointes dans les notes du rapport d’audit
+  - Suppression des bannières de notification d’ajout et de suppression de fichier
+  - Affichage de la syntaxe Markdown dans une page séparée (au lieu d’une modale)
+
 ## 12/06/2024
 
 ### Autres changements ⚙️

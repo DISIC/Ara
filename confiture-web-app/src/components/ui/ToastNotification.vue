@@ -61,7 +61,7 @@ const store = useNotificationStore();
   bottom: 1rem;
   background-color: var(--background-default-grey);
   max-width: min(50rem, calc(100vw - 2rem));
-  z-index: 1000;
+  z-index: 2000;
 
   display: flex;
   gap: 0.5rem;

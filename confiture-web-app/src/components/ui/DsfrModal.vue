@@ -9,6 +9,7 @@ import { ref } from "vue";
 
 defineProps<{
   id: string;
+  isSidebar?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -34,7 +35,7 @@ function hide() {
 const isOpened = ref(false);
 
 function onConceal() {
-  /* 
+  /*
   FIXME: For some reason, the DSFR modal emits the `dsfr.conceal` event as
   soon as the page loads. We want to ignore this one event fire so we track if
   the modal is *actually* opened before firing our own event.
@@ -73,7 +74,7 @@ defineExpose({ show, hide });
       :id="id"
       ref="modal"
       role="dialog"
-      class="fr-modal"
+      :class="['fr-modal', { sidebar: isSidebar }]"
       v-bind="$attrs"
       v-on="{ 'dsfr.conceal': onConceal, 'dsfr.disclose': onDisclose }"
     >
@@ -81,3 +82,63 @@ defineExpose({ show, hide });
     </dialog>
   </Teleport>
 </template>
+
+<style scoped>
+.sidebar {
+  padding-inline-end: 0;
+}
+
+.sidebar::before,
+.sidebar::after {
+  content: unset;
+}
+
+.sidebar > :deep(.fr-container) {
+  padding-inline: 0;
+  max-width: unset;
+}
+
+.sidebar :deep(.fr-grid-row) {
+  justify-content: flex-end;
+}
+
+.sidebar :deep(.fr-modal__body) {
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar :deep(.fr-modal__content) {
+  margin-bottom: 0;
+}
+
+.sidebar :deep(textarea) {
+  height: 50vh;
+  height: 50dvh;
+  max-height: 60rem;
+}
+
+@media (min-width: 56rem) {
+  .sidebar :deep(.sidebar-col) {
+    flex: 0 0 56rem;
+    max-width: revert;
+    width: revert;
+  }
+}
+
+@media (max-width: 57rem) {
+  .sidebar :deep(.sidebar-col) {
+    margin-top: 1rem;
+  }
+}
+@media (max-width: 56rem) {
+  .sidebar :deep(.sidebar-col) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+</style>

@@ -93,7 +93,8 @@ export class AuditsController {
         select: {
           procedureName: true
         }
-      }
+      },
+      notesFiles: true
     });
 
     if (!audit) {
@@ -176,6 +177,30 @@ export class AuditsController {
     );
   }
 
+  @Post("/:uniqueId/notes/files")
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 2000000
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+        })
+    )
+    file: Express.Multer.File
+  ) {
+    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+
+    if (!audit) {
+      return this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    return await this.auditService.saveNotesFile(uniqueId, file);
+  }
+
   @Delete("/:uniqueId/results/examples/:exampleId")
   async deleteExampleImage(
     @Param("uniqueId") uniqueId: string,
@@ -184,6 +209,21 @@ export class AuditsController {
     const deleted = await this.auditService.deleteExampleImage(
       uniqueId,
       Number(exampleId)
+    );
+
+    if (!deleted) {
+      throw new NotFoundException();
+    }
+  }
+
+  @Delete("/:uniqueId/notes/files/:fileId")
+  async deleteAuditFile(
+    @Param("uniqueId") uniqueId: string,
+    @Param("fileId", new ParseIntPipe()) fileId: number
+  ) {
+    const deleted = await this.auditService.deleteAuditFile(
+      uniqueId,
+      Number(fileId)
     );
 
     if (!deleted) {

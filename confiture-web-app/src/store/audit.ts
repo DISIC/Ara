@@ -3,10 +3,14 @@ import { defineStore } from "pinia";
 import {
   Audit,
   CreateAuditRequestData,
+  AuditFile,
   UpdateAuditRequestData
 } from "../types";
 import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
+
+const getLastRequestTimestampStorageKey = (auditId: string) =>
+  `confiture:lastNotesRequestTimestamp:${auditId}`;
 
 interface AuditStoreState {
   currentPageId: number | null;
@@ -15,6 +19,19 @@ interface AuditStoreState {
   currentAuditId: string | null;
   entities: Record<string, Audit>;
   listing: AccountAudit[];
+
+  /**
+   * Number of update requests actually loading.
+   *
+   * When 0, nothing is loading.
+   * When 1 or more, there's something loading.
+   */
+  currentRequestCount: number;
+
+  /**
+   * Timestamp of the last moment `currentRequestCount` changed from a non-zero value to zero.
+   */
+  lastRequestSuccessEnd: number | null;
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -24,7 +41,9 @@ export const useAuditStore = defineStore("audit", {
 
     currentAuditId: null,
     entities: {},
-    listing: []
+    listing: [],
+    currentRequestCount: 0,
+    lastRequestSuccessEnd: null
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
@@ -77,18 +96,22 @@ export const useAuditStore = defineStore("audit", {
         this.entities[uniqueId].notes = data.notes ?? null;
       }
 
-      try {
-        await ky
-          .patch(`/api/audits/${uniqueId}`, {
-            json: data
-          })
-          .json();
-      } catch (error) {
-        if (this.entities[uniqueId] && previousNotes) {
-          this.entities[uniqueId].notes = previousNotes;
-        }
-        throw error;
-      }
+      this.increaseCurrentRequestCount();
+
+      await ky
+        .patch(`/api/audits/${uniqueId}`, {
+          json: data
+        })
+        .json()
+        .catch((error) => {
+          if (this.entities[uniqueId] && previousNotes) {
+            this.entities[uniqueId].notes = previousNotes;
+          }
+          throw error;
+        })
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        });
     },
 
     async deleteAudit(uniqueId: string): Promise<void> {
@@ -100,6 +123,39 @@ export const useAuditStore = defineStore("audit", {
       if (this.currentAuditId === uniqueId) {
         this.currentAuditId = null;
       }
+    },
+
+    async uploadAuditFile(uniqueId: string, file: File) {
+      const formData = new FormData();
+      // To handle non-ascii characters, we encode the filename here and decode it on the back
+      formData.set("file", file, encodeURI(file.name));
+
+      this.increaseCurrentRequestCount();
+      const notesFile = (await ky
+        .post(`/api/audits/${uniqueId}/notes/files`, {
+          body: formData
+        })
+        .json()
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        })) as AuditFile;
+
+      const notesFiles = this.entities[uniqueId].notesFiles || [];
+      notesFiles.push(notesFile);
+    },
+
+    async deleteAuditFile(uniqueId: string, fileId: number) {
+      this.increaseCurrentRequestCount();
+      await ky
+        .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
+        .finally(() => {
+          this.decreaseCurrentRequestCount();
+        });
+
+      const notesFiles = this.entities[uniqueId].notesFiles || [];
+      const fileIndex = notesFiles.findIndex((f) => f.id === fileId);
+
+      notesFiles.splice(fileIndex, 1);
     },
 
     async publishAudit(uniqueId: string): Promise<Audit> {
@@ -162,6 +218,23 @@ export const useAuditStore = defineStore("audit", {
         .json()) as AccountAudit[];
 
       this.listing = audits;
+    },
+
+    increaseCurrentRequestCount() {
+      this.currentRequestCount++;
+    },
+
+    /**
+     * When `currentRequestCount` changes from a non-zero value to zero, save a timestamp to the store and localstorage
+     */
+    decreaseCurrentRequestCount() {
+      this.currentRequestCount--;
+
+      if (this.currentRequestCount === 0) {
+        this.lastRequestSuccessEnd = Date.now();
+        const key = getLastRequestTimestampStorageKey(this.currentAuditId!);
+        localStorage.setItem(key, this.lastRequestSuccessEnd.toString());
+      }
     }
   },
   getters: {
@@ -170,6 +243,10 @@ export const useAuditStore = defineStore("audit", {
         return null;
       }
       return state.entities[state.currentAuditId];
+    },
+
+    isLoading(): boolean {
+      return this.currentRequestCount > 0;
     }
   }
 });

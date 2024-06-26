@@ -17,7 +17,7 @@ function handleDisconnectClick() {
   if (currentRoute.meta.authRequired) {
     router.push({ name: "login" });
   }
-  notify("success", "Vous avez été deconnecté avec succès.");
+  notify("success", undefined, "Vous avez été deconnecté avec succès.");
 }
 
 const width = useWindowWidth();

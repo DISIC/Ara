@@ -1,4 +1,4 @@
-import { AuditType, CriteriumResult } from "../types";
+import { AuditFile, AuditType, CriteriumResult } from "../types";
 
 export interface AuditReport {
   consultUniqueId: string;
@@ -18,6 +18,7 @@ export interface AuditReport {
   derogatedContent?: string;
   notInScopeContent?: string;
   notes?: string;
+  notesFiles: AuditFile[];
 
   auditType: AuditType;
 

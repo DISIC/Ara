@@ -172,8 +172,6 @@ watch(currentStep, () => {
       </div>
     </div>
   </DsfrModal>
-  <!-- </dialog>
-  </Teleport> -->
 </template>
 
 <style scoped>

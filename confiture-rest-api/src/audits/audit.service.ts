@@ -5,6 +5,7 @@ import {
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
+  AuditFile,
   Prisma,
   StoredFile,
   TestEnvironment
@@ -31,7 +32,8 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
     select: {
       procedureName: true
     }
-  }
+  },
+  notesFiles: true
 };
 
 @Injectable()
@@ -82,6 +84,23 @@ export class AuditService {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },
       include
+    });
+  }
+
+  getAuditWithEditUniqueId(uniqueId: string) {
+    return this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: {
+        recipients: true,
+        environments: true,
+        pages: true,
+        sourceAudit: {
+          select: {
+            procedureName: true
+          }
+        },
+        notesFiles: true
+      }
     });
   }
 
@@ -459,10 +478,11 @@ export class AuditService {
     const thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
 
     const thumbnailBuffer = await sharp(file.buffer)
-      .resize(200, 200, { fit: "cover" })
       .jpeg({
         mozjpeg: true
       })
+      .flatten({ background: { r: 255, g: 255, b: 255, alpha: 0 } })
+      .resize(200, 200, { fit: "inside" })
       .toBuffer();
 
     await Promise.all([
@@ -488,6 +508,7 @@ export class AuditService {
 
         key,
         originalFilename: file.originalname,
+        mimetype: file.mimetype,
         size: file.size,
         thumbnailKey
       }
@@ -530,6 +551,91 @@ export class AuditService {
     return true;
   }
 
+  async saveNotesFile(editUniqueId: string, file: Express.Multer.File) {
+    const randomPrefix = nanoid();
+
+    const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
+
+    let thumbnailKey;
+
+    if (file.mimetype.startsWith("image")) {
+      // If it's an image, create a thumbnail and upload it
+      thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
+
+      const thumbnailBuffer = await sharp(file.buffer)
+        .resize(200, 200, { fit: "inside" })
+        .jpeg({
+          mozjpeg: true
+        })
+        .toBuffer();
+
+      await Promise.all([
+        this.fileStorageService.uploadFile(file.buffer, file.mimetype, key),
+        this.fileStorageService.uploadFile(
+          thumbnailBuffer,
+          "image/jpeg",
+          thumbnailKey
+        )
+      ]);
+    } else {
+      await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
+    }
+
+    const storedFile = await this.prisma.auditFile.create({
+      data: {
+        audit: {
+          connect: {
+            editUniqueId
+          }
+        },
+
+        key,
+        originalFilename: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+
+        thumbnailKey
+      }
+    });
+
+    return storedFile;
+  }
+
+  /**
+   * Returns true if stored filed was found and deleted. False if not found.
+   */
+  async deleteAuditFile(
+    editUniqueId: string,
+    fileId: number
+  ): Promise<boolean> {
+    const storedFilePromise = this.prisma.auditFile.findUnique({
+      where: {
+        id: fileId
+      }
+    });
+
+    const storedFile = await storedFilePromise;
+    const audit = await storedFilePromise.audit();
+
+    if (!audit || audit.editUniqueId !== editUniqueId) {
+      return false;
+    }
+
+    const filesToDelete = [storedFile.key];
+    if (storedFile.thumbnailKey) {
+      filesToDelete.push(storedFile.thumbnailKey);
+    }
+    await this.fileStorageService.deleteMultipleFiles(...filesToDelete);
+
+    await this.prisma.auditFile.delete({
+      where: {
+        id: fileId
+      }
+    });
+
+    return true;
+  }
+
   /**
    * Completely delete an audit and all the data associated with it.
    * @returns True if an audit was deleted, false otherwise.
@@ -545,20 +651,32 @@ export class AuditService {
           }
         }
       });
+      const notesFiles = await this.prisma.auditFile.findMany({
+        where: {
+          auditUniqueId: uniqueId
+        }
+      });
+
+      const keysToDelete = [];
+      if (storedFiles.length > 0) {
+        keysToDelete.push(
+          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat()
+        );
+      }
+      if (notesFiles.length > 0) {
+        keysToDelete.push(
+          ...notesFiles
+            .map((file) => [file.key, file.thumbnailKey])
+            .flat()
+            .filter((key) => key !== null)
+        );
+      }
 
       await Promise.all([
         await this.prisma.audit.delete({
           where: { editUniqueId: uniqueId }
         }),
-        ...(storedFiles.length > 0
-          ? [
-              this.fileStorageService.deleteMultipleFiles(
-                ...storedFiles
-                  .map((file) => [file.key, file.thumbnailKey])
-                  .flat()
-              )
-            ]
-          : [])
+        this.fileStorageService.deleteMultipleFiles(...keysToDelete)
       ]);
 
       return true;
@@ -662,6 +780,7 @@ export class AuditService {
     })) as Audit & {
       environments: TestEnvironment[];
       pages: AuditedPage[];
+      notesFiles: AuditFile[];
     };
 
     if (!audit) {
@@ -745,6 +864,13 @@ export class AuditService {
       derogatedContent: audit.derogatedContent,
       notInScopeContent: audit.notInScopeContent,
       notes: audit.notes,
+      notesFiles: audit.notesFiles.map((file) => ({
+        originalFilename: file.originalFilename,
+        key: file.key,
+        thumbnailKey: file.thumbnailKey,
+        size: file.size,
+        mimetype: file.mimetype
+      })),
 
       criteriaCount: {
         total: totalCriteriaCount,
@@ -970,7 +1096,8 @@ export class AuditService {
               }
             }
           }
-        }
+        },
+        notesFiles: true
       }
     });
 
@@ -1010,10 +1137,15 @@ export class AuditService {
     } = {};
 
     /**
+    Array storing duplicate notesFiles creation data
+    */
+    const notesFilesCreateData = [];
+
+    /**
      * contains s3 file duplications which will be executed together by calling
      * `fileStorageService.duplicateMultipleFiles()`
      */
-    const imageDuplications: { originalKey: string; destinationKey: string }[] =
+    const fileDuplications: { originalKey: string; destinationKey: string }[] =
       [];
 
     originalAudit.pages.forEach((p) => {
@@ -1024,7 +1156,7 @@ export class AuditService {
           const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
           const thumbnailKey = `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`;
 
-          imageDuplications.push(
+          fileDuplications.push(
             {
               originalKey: e.key,
               destinationKey: key
@@ -1040,6 +1172,7 @@ export class AuditService {
             [p.id, r.id, e.id],
             {
               originalFilename: e.originalFilename,
+              mimetype: e.mimetype,
               size: e.size,
               key: key,
               thumbnailKey: thumbnailKey
@@ -1050,7 +1183,40 @@ export class AuditService {
       });
     });
 
-    await this.fileStorageService.duplicateMultipleFiles(imageDuplications);
+    originalAudit.notesFiles.forEach((e) => {
+      const randomPrefix = nanoid();
+
+      // No thumbnail? It means there is no image as well!
+      const hasThumbnail = e.thumbnailKey !== null;
+
+      const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
+
+      const thumbnailKey = hasThumbnail
+        ? `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`
+        : null;
+
+      if (hasThumbnail) {
+        fileDuplications.push({
+          originalKey: e.thumbnailKey,
+          destinationKey: thumbnailKey
+        });
+      }
+
+      fileDuplications.push({
+        originalKey: e.key,
+        destinationKey: key
+      });
+
+      notesFilesCreateData.push({
+        originalFilename: e.originalFilename,
+        mimetype: e.mimetype,
+        size: e.size,
+        key: key,
+        thumbnailKey: thumbnailKey
+      });
+    });
+
+    await this.fileStorageService.duplicateMultipleFiles(fileDuplications);
 
     const newAudit = await this.prisma.audit.create({
       data: {
@@ -1095,6 +1261,10 @@ export class AuditService {
               }))
             }
           }))
+        },
+
+        notesFiles: {
+          create: notesFilesCreateData
         },
 
         auditTrace: {

@@ -109,7 +109,7 @@ async function handleSubmit() {
           // Unkown error
           notify(
             "error",
-            "Echéc de la création de compte",
+            "Échec de la création de compte",
             "Une erreur inconnue est survenue"
           );
           captureWithPayloads(err, false);

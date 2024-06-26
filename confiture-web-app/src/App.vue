@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue";
-import { onMounted, provide, ref } from "vue";
+import { onMounted } from "vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
-import MarkdownHelpModal from "./components/audit/MarkdownHelpModal.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useAccountStore } from "./store/account";
 import SiteHeader from "./components/layout/SiteHeader.vue";
@@ -28,12 +27,6 @@ useHead({
     { name: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" }
   ]
-});
-
-const markdownHelpModal = ref<InstanceType<typeof MarkdownHelpModal>>();
-
-provide("openMarkdownHelp", () => {
-  markdownHelpModal.value?.show();
 });
 
 const accountStore = useAccountStore();
@@ -83,8 +76,6 @@ onMounted(() => {
   </main>
 
   <SiteFooter />
-
-  <MarkdownHelpModal ref="markdownHelpModal" />
 
   <ToastNotification />
 </template>
