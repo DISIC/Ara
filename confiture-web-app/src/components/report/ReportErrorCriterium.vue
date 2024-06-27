@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { marked } from "marked";
 import { chunk } from "lodash-es";
+import { marked } from "marked";
 
-import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
 import rgaa from "../../criteres.json";
 import { CriterionResultUserImpact, ReportCriteriumResult } from "../../types";
-import LazyAccordion from "../audit/LazyAccordion.vue";
+import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
+import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 defineProps<{

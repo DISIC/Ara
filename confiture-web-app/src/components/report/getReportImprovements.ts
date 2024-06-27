@@ -1,7 +1,8 @@
 import { groupBy, mapValues, uniqWith } from "lodash-es";
+
+import rgaa from "../../criteres.json";
 import { ReportStoreState } from "../../store";
 import { CriteriumResultStatus, ReportCriteriumResult } from "../../types";
-import rgaa from "../../criteres.json";
 
 type ReportImprovement = {
   id: number;
