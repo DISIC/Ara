@@ -182,26 +182,6 @@ const displayedErrorCount = computed(() => {
   );
 });
 
-// function expandAll() {
-//   const collapses = Array.from(
-//     document.querySelectorAll("[data-accordion] > [data-fr-js-collapse]")
-//   );
-
-//   const everyCollapseIsOpen = collapses.every((el) => {
-//     return el.classList.contains("fr-collapse--expanded");
-//   });
-
-//   if (!everyCollapseIsOpen) {
-//     collapses.forEach((el) => {
-//       dsfr(el).collapse.disclose();
-//     });
-//   } else {
-//     collapses.forEach((el) => {
-//       dsfr(el).collapse.conceal();
-//     });
-//   }
-// }
-
 const quickWinFilter = ref(false);
 
 function resetFilters() {
@@ -434,10 +414,6 @@ function getPage(pageId: number | string) {
               {{ pluralize("résultat", "résultats", displayedErrorCount) }}
             </p>
           </div>
-          <!-- FIXME: make this work -->
-          <!-- <button class="fr-btn fr-btn--tertiary-no-outline" @click="expandAll">
-            Tout déplier
-          </button> -->
         </div>
 
         <section v-if="!userImpactFilters.length">

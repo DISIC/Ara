@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
+import ReportImprovements from "../../components/report/ReportImprovements.vue";
 import ReportNotes from "../../components/report/ReportNotes.vue";
 import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
@@ -28,7 +29,8 @@ const hasNotes = computed(() => {
 const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
-  { title: "Détails des non-conformités", component: ReportErrors }
+  { title: "Détails des non-conformités", component: ReportErrors },
+  { title: "Points d’amélioration", component: ReportImprovements }
 ]);
 
 const showCopyAlert = ref(false);
