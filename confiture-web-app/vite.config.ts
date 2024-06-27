@@ -34,5 +34,8 @@ export default defineConfig({
       "/uploads": "http://localhost:4000"
     },
     port: 3000
+  },
+  preview: {
+    port: process.env.PORT ? Number(process.env.PORT) : undefined
   }
 });
