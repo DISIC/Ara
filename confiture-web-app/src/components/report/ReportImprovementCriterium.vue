@@ -2,9 +2,9 @@
 import { marked } from "marked";
 
 import rgaa from "../../criteres.json";
+import { CriteriumResultStatus } from "../../types";
 import { formatStatus } from "../../utils";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
-import { CriteriumResultStatus } from "../../types";
 
 defineProps<{
   topic: number;

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useReportStore } from "../../store";
-import ReportCriteria from "./ReportCriteria.vue";
-import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 import {
   getReportImprovements,
   getReportTransverseImprovements
 } from "./getReportImprovements";
+import ReportCriteria from "./ReportCriteria.vue";
+import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 
 const report = useReportStore();
 </script>

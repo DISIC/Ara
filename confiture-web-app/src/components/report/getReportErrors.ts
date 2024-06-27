@@ -1,6 +1,7 @@
 import { groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
-import { ReportStoreState } from "../../store";
+
 import rgaa from "../../criteres.json";
+import { ReportStoreState } from "../../store";
 import {
   AuditReport,
   CriterionResultUserImpact,
