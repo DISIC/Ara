@@ -13,7 +13,13 @@ export const configValidationSchema = Joi.object({
   MAILER_SMTP_SECURE: Joi.boolean().required(),
   FRONT_BASE_URL: Joi.string()
     .uri({ scheme: ["http", "https"] })
-    .default("http://localhost:3000"),
+    .default((env) => {
+      return (
+        (env.HEROKU_APP_NAME &&
+          `https://${env.HEROKU_APP_NAME}.herokuapp.com`) ||
+        "http://localhost:3000"
+      );
+    }),
   AIRTABLE_BASE_ID: Joi.string().required(),
   AIRTABLE_TABLE_ID: Joi.string().required(),
   AIRTABLE_ACCESS_TOKEN: Joi.string().required(),
