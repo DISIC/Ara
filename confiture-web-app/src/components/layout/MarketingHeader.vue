@@ -39,7 +39,7 @@ function closeNewsSubMenu() {
             </div>
             <div class="fr-header__service">
               <p class="fr-header__service-title">
-                Ara
+                Ara TEST TEST TEST
                 <span
                   class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
                   >BÊTA</span
