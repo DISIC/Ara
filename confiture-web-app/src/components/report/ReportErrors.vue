@@ -10,15 +10,11 @@ import {
   CriterionResultUserImpact,
   CriteriumResultStatus
 } from "../../types";
-import {
-  formatStatus,
-  formatUserImpact,
-  getUploadUrl,
-  pluralize
-} from "../../utils";
+import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
 import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import ReportCriteria from "./ReportCriteria.vue";
 
 const report = useReportStore();
 
@@ -61,10 +57,10 @@ const errors = computed(() => {
   const data = sortBy(
     Object.entries(resultsGroupedByPage).map(([pageId, results]) => {
       return {
-        pageId: Number(pageId),
-        pageOrder: getPage(pageId).order,
-        pageName: getPage(pageId).name,
-        pageUrl: getPage(pageId).url,
+        id: Number(pageId),
+        order: getPage(pageId).order,
+        name: getPage(pageId).name,
+        url: getPage(pageId).url,
         topics: sortBy(
           Object.values(
             mapValues(groupBy(results, "topic"), (results, topicNumber) => {
@@ -82,7 +78,7 @@ const errors = computed(() => {
         )
       };
     }),
-    (el) => el.pageOrder
+    (el) => el.order
   );
 
   return data;
@@ -122,6 +118,7 @@ const transverseErrors = computed(() => {
   );
 });
 
+// Filters
 const defaultUserImpactFillters = [
   CriterionResultUserImpact.MINOR,
   CriterionResultUserImpact.MAJOR,
@@ -175,13 +172,6 @@ const unknownUserImpactErrorCount = computed(
     ).length
 );
 
-const displayedErrorCount = computed(() => {
-  return (
-    errors.value.map((page) => page.topics.map((topic) => topic.errors)).flat(2)
-      .length + transverseErrors.value.length
-  );
-});
-
 const quickWinFilter = ref(false);
 
 function resetFilters() {
@@ -189,6 +179,7 @@ function resetFilters() {
   quickWinFilter.value = false;
 }
 
+// Utility
 function getTopicName(topicNumber: number) {
   return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
 }
@@ -214,498 +205,325 @@ function getPage(pageId: number | string) {
 </script>
 
 <template>
-  <template v-if="report.data">
-    <div class="main">
-      <div class="sidebar">
-        <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
-          <div class="fr-sidemenu__inner">
-            <button
-              class="fr-sidemenu__btn"
-              hidden
-              aria-controls="fr-sidemenu-wrapper"
-              aria-expanded="false"
-            >
-              Pages
-            </button>
-            <div id="fr-sidemenu-wrapper" class="fr-collapse">
-              <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
-              <ul class="fr-sidemenu__list">
-                <li
-                  v-if="transverseErrors.length"
-                  :class="[
-                    'fr-sidemenu__item',
-                    {
-                      'fr-sidemenu__item--active': Boolean(
-                        transverseErrors.length
-                      )
-                    }
-                  ]"
-                >
-                  <a
-                    class="fr-sidemenu__link"
-                    href="#all-pages"
-                    :aria-current="Boolean(transverseErrors.length)"
-                    >Toutes les pages</a
-                  >
-                </li>
-                <li
-                  :class="[
-                    'fr-sidemenu__item',
-                    {
-                      'fr-sidemenu__item--active': !Boolean(
-                        transverseErrors.length
-                      )
-                    }
-                  ]"
-                >
-                  <a
-                    class="fr-sidemenu__link"
-                    :href="`#${errors[0].pageId}`"
-                    :aria-current="
-                      !transverseErrors.length ? 'true' : undefined
-                    "
-                    >{{ errors[0].pageName }}</a
-                  >
-                </li>
-                <li
-                  v-for="page in errors.slice(1)"
-                  :key="page.pageName"
-                  class="fr-sidemenu__item"
-                >
-                  <a class="fr-sidemenu__link" :href="`#${page.pageId}`">
-                    {{ page.pageName }}
-                  </a>
-                </li>
-              </ul>
+  <ReportCriteria
+    v-if="report.data"
+    :pages-data="errors"
+    :transverse-data="transverseErrors"
+    :show-filters="true"
+  >
+    <template #filter>
+      <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
+      <button
+        class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-3w"
+        :disabled="disabledResetFilters"
+        @click="resetFilters"
+      >
+        Réinitialiser les filtres
+      </button>
+      <div class="fr-form-group">
+        <fieldset class="fr-fieldset">
+          <legend
+            id="checkboxes-hint-element-legend"
+            class="fr-fieldset__legend fr-text--regular fr-text--bold"
+          >
+            Impact de l’erreur
+          </legend>
+          <div class="fr-fieldset__content">
+            <div class="fr-checkbox-group">
+              <input
+                id="user-impact-filter-minor"
+                v-model="userImpactFilters"
+                :value="CriterionResultUserImpact.MINOR"
+                type="checkbox"
+              />
+              <label class="fr-label" for="user-impact-filter-minor">
+                Mineur ({{ minorUserImpactErrorCount }})
+                <span class="fr-hint-text">
+                  Gêne dans l’utilisation du site
+                </span>
+              </label>
+            </div>
+            <div class="fr-checkbox-group">
+              <input
+                id="user-impact-filter-major"
+                v-model="userImpactFilters"
+                :value="CriterionResultUserImpact.MAJOR"
+                type="checkbox"
+              />
+              <label class="fr-label" for="user-impact-filter-major">
+                Majeur ({{ majorUserImpactErrorCount }})
+                <span class="fr-hint-text">
+                  Complexifie grandement l’utilisation du site
+                </span>
+              </label>
+            </div>
+            <div class="fr-checkbox-group">
+              <input
+                id="user-impact-filter-blocking"
+                v-model="userImpactFilters"
+                :value="CriterionResultUserImpact.BLOCKING"
+                type="checkbox"
+              />
+              <label class="fr-label" for="user-impact-filter-blocking">
+                Bloquant ({{ blockingUserImpactErrorCount }})
+                <span class="fr-hint-text">
+                  Empêche totalement l’utilisation du site
+                </span>
+              </label>
+            </div>
+            <div class="fr-checkbox-group">
+              <input
+                id="user-impact-filter-unknown"
+                v-model="userImpactFilters"
+                :value="null"
+                type="checkbox"
+              />
+              <label class="fr-label" for="user-impact-filter-unknown">
+                Impact non renseigné ({{ unknownUserImpactErrorCount }})
+              </label>
             </div>
           </div>
-        </nav>
-        <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">
-          Filtres
-        </div>
-        <button
-          class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-3w"
-          :disabled="disabledResetFilters"
-          @click="resetFilters"
+        </fieldset>
+      </div>
+      <div class="fr-form-group">
+        <fieldset class="fr-fieldset">
+          <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
+            Correction de l’erreur
+          </legend>
+          <div class="fr-fieldset__content">
+            <div class="fr-checkbox-group">
+              <input
+                id="quick-win-filter"
+                v-model="quickWinFilter"
+                type="checkbox"
+              />
+              <label class="fr-label" for="quick-win-filter">
+                Uniquement les erreurs faciles à corriger
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </template>
+
+    <template #transverse-data>
+      <section v-if="transverseErrors.length" class="fr-mb-8w">
+        <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
+          Toutes les pages
+        </h2>
+
+        <div
+          v-for="(topic, i) in transverseErrors"
+          :key="topic.topic"
+          :class="{ 'fr-mt-9v': i !== 0 }"
         >
-          Réinitialiser les filtres
-        </button>
-        <!-- <div class="fr-form-group">
-          <fieldset class="fr-fieldset">
-            <legend
-              id="checkboxes-hint-element-legend"
-              class="fr-fieldset__legend fr-text--regular fr-text--bold"
-            >
-              Critères
-            </legend>
-            <div class="fr-fieldset__content">
-              <div class="fr-checkbox-group">
-                <input id="user-impact-filter-minor" type="checkbox" />
-                <label class="fr-label" for="user-impact-filter-minor"
-                  >Conformes (10)
-                </label>
-              </div>
-              <div class="fr-checkbox-group">
-                <input id="user-impact-filter-major" type="checkbox" />
-                <label class="fr-label" for="user-impact-filter-major"
-                  >Non conforme (34)
-                </label>
-              </div>
-              <div class="fr-checkbox-group">
-                <input id="user-impact-filter-blocking" type="checkbox" />
-                <label class="fr-label" for="user-impact-filter-blocking"
-                  >Non applicable (56)
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div> -->
-        <div class="fr-form-group">
-          <fieldset class="fr-fieldset">
-            <legend
-              id="checkboxes-hint-element-legend"
-              class="fr-fieldset__legend fr-text--regular fr-text--bold"
-            >
-              Impact de l’erreur
-            </legend>
-            <div class="fr-fieldset__content">
-              <div class="fr-checkbox-group">
-                <input
-                  id="user-impact-filter-minor"
-                  v-model="userImpactFilters"
-                  :value="CriterionResultUserImpact.MINOR"
-                  type="checkbox"
-                />
-                <label class="fr-label" for="user-impact-filter-minor">
-                  Mineur ({{ minorUserImpactErrorCount }})
-                  <span class="fr-hint-text">
-                    Gêne dans l’utilisation du site
-                  </span>
-                </label>
-              </div>
-              <div class="fr-checkbox-group">
-                <input
-                  id="user-impact-filter-major"
-                  v-model="userImpactFilters"
-                  :value="CriterionResultUserImpact.MAJOR"
-                  type="checkbox"
-                />
-                <label class="fr-label" for="user-impact-filter-major">
-                  Majeur ({{ majorUserImpactErrorCount }})
-                  <span class="fr-hint-text">
-                    Complexifie grandement l’utilisation du site
-                  </span>
-                </label>
-              </div>
-              <div class="fr-checkbox-group">
-                <input
-                  id="user-impact-filter-blocking"
-                  v-model="userImpactFilters"
-                  :value="CriterionResultUserImpact.BLOCKING"
-                  type="checkbox"
-                />
-                <label class="fr-label" for="user-impact-filter-blocking">
-                  Bloquant ({{ blockingUserImpactErrorCount }})
-                  <span class="fr-hint-text">
-                    Empêche totalement l’utilisation du site
-                  </span>
-                </label>
-              </div>
-              <div class="fr-checkbox-group">
-                <input
-                  id="user-impact-filter-unknown"
-                  v-model="userImpactFilters"
-                  :value="null"
-                  type="checkbox"
-                />
-                <label class="fr-label" for="user-impact-filter-unknown">
-                  Impact non renseigné ({{ unknownUserImpactErrorCount }})
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        <div class="fr-form-group">
-          <fieldset class="fr-fieldset">
-            <legend class="fr-fieldset__legend fr-text--regular fr-text--bold">
-              Correction de l’erreur
-            </legend>
-            <div class="fr-fieldset__content">
-              <div class="fr-checkbox-group">
-                <input
-                  id="quick-win-filter"
-                  v-model="quickWinFilter"
-                  type="checkbox"
-                />
-                <label class="fr-label" for="quick-win-filter">
-                  Uniquement les erreurs faciles à corriger
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-
-      <div>
-        <div class="fr-mb-6w header">
-          <div role="alert" aria-live="polite">
-            <p class="fr-mb-0 fr-text--xl fr-text--bold">
-              {{ displayedErrorCount }}
-              {{ pluralize("résultat", "résultats", displayedErrorCount) }}
-            </p>
-          </div>
-        </div>
-
-        <section v-if="!userImpactFilters.length">
-          <h2 class="fr-h6 fr-mb-1w">
-            Aucun résultat ne correspond à votre recherche
-          </h2>
-          <p>Veuillez sélectionner au moins un filtre "impact de l'erreur".</p>
-        </section>
-
-        <section v-if="transverseErrors.length" class="fr-mb-8w">
-          <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
-            Toutes les pages
-          </h2>
-
-          <div
-            v-for="(topic, i) in transverseErrors"
-            :key="topic.topic"
-            :class="{ 'fr-mt-9v': i !== 0 }"
-          >
-            <p class="fr-tag fr-tag--sm fr-mb-3w">
-              {{ topic.name }}
-            </p>
-            <template v-for="(error, j) in topic.errors" :key="j">
-              <p
-                :class="[
-                  'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 }
-                ]"
-              >
-                {{ error.topic }}.{{ error.criterium }}&nbsp;
-                <span
-                  v-html="getCriteriumTitle(error.topic, error.criterium)"
-                />
-              </p>
-
-              <ul class="fr-badges-group fr-mb-2w">
-                <li>
-                  <p
-                    class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
-                  >
-                    {{ formatStatus(error.status) }}
-                  </p>
-                </li>
-                <li v-if="error.userImpact">
-                  <p
-                    class="fr-badge fr-badge--sm"
-                    :class="{
-                      'fr-badge--yellow-moutarde':
-                        error.userImpact === CriterionResultUserImpact.MAJOR,
-                      'fr-badge--error fr-badge--no-icon':
-                        error.userImpact === CriterionResultUserImpact.BLOCKING
-                    }"
-                  >
-                    Impact {{ formatUserImpact(error.userImpact) }}
-                  </p>
-                </li>
-                <li v-if="error.quickWin">
-                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
-                </li>
-              </ul>
-
-              <!-- Error -->
-              <LazyAccordion
-                v-if="
-                  error.notCompliantComment || error.exampleImages.length > 0
-                "
-                title="Erreur et recommandation"
-                data-accordion
-              >
-                <MarkdownRenderer
-                  v-if="error.notCompliantComment"
-                  class="fr-mb-3w"
-                  :markdown="error.notCompliantComment"
-                />
-                <p
-                  v-if="chunk(error.exampleImages, 2).length"
-                  class="fr-text--xs fr-mb-1w error-accordion-subtitle"
-                >
-                  Exemple(s) d’erreur(s)
-                </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.key"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="getUploadUrl(example.key)"
-                      target="_blank"
-                    >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img
-                        style="width: 100%"
-                        :src="getUploadUrl(example.key)"
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                </div>
-              </LazyAccordion>
-
-              <!-- Tests -->
-              <CriteriumTestsAccordion
-                :topic-number="error.topic"
-                :criterium="getCriterium(error.topic, error.criterium)"
-              />
-            </template>
-          </div>
-        </section>
-        <section v-for="page in errors" :key="page.pageId" class="fr-mb-8w">
-          <h2 :id="`${page.pageId}`" class="fr-h3 fr-mb-2w page-title">
-            {{ page.pageName }}
-          </h2>
-          <a
-            :href="page.pageUrl"
-            class="fr-link page-url"
-            target="_blank"
-            rel="noopener"
-          >
-            {{ page.pageUrl }} <span class="sr-only">(nouvelle fenêtre)</span>
-          </a>
-
-          <p v-if="page.topics.length === 0" class="fr-mt-4w">
-            Aucune erreur d'accessibilité relevée sur cette page.
+          <p class="fr-tag fr-tag--sm fr-mb-3w">
+            {{ topic.topic }}.&nbsp;{{ topic.name }}
           </p>
-
-          <div
-            v-for="(topic, i) in page.topics"
-            :key="topic.topic"
-            :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
-          >
-            <p class="fr-tag fr-tag--sm fr-mb-3w">
-              {{ topic.name }}
+          <template v-for="(error, j) in topic.errors" :key="j">
+            <p
+              :class="[
+                'fr-text--lg fr-text--bold criterium-title',
+                { 'fr-mt-9v': j !== 0 }
+              ]"
+            >
+              {{ error.topic }}.{{ error.criterium }}&nbsp;
+              <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
             </p>
-            <template v-for="(error, j) in topic.errors" :key="j">
-              <p
-                :class="[
-                  'fr-text--lg fr-text--bold criterium-title',
-                  { 'fr-mt-9v': j !== 0 }
-                ]"
-              >
-                {{ error.topic }}.{{ error.criterium }}&nbsp;
-                <span
-                  v-html="getCriteriumTitle(error.topic, error.criterium)"
-                />
-              </p>
 
-              <ul class="fr-badges-group fr-mb-2w">
-                <li>
-                  <p
-                    class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
-                  >
-                    {{ formatStatus(error.status) }}
-                  </p>
-                </li>
-                <li v-if="error.userImpact">
-                  <p
-                    class="fr-badge fr-badge--sm"
-                    :class="{
-                      'fr-badge--yellow-moutarde':
-                        error.userImpact === CriterionResultUserImpact.MAJOR,
-                      'fr-badge--error fr-badge--no-icon':
-                        error.userImpact === CriterionResultUserImpact.BLOCKING
-                    }"
-                  >
-                    Impact {{ formatUserImpact(error.userImpact) }}
-                  </p>
-                </li>
-                <li v-if="error.quickWin">
-                  <p class="fr-badge fr-badge--sm">Facile à corriger</p>
-                </li>
-              </ul>
-
-              <!-- Error -->
-              <LazyAccordion
-                v-if="
-                  error.notCompliantComment || error.exampleImages.length > 0
-                "
-                title="Erreur et recommandation"
-                data-accordion
-              >
-                <MarkdownRenderer
-                  v-if="error.notCompliantComment"
-                  class="fr-mb-3w"
-                  :markdown="error.notCompliantComment"
-                />
+            <ul class="fr-badges-group fr-mb-2w">
+              <li>
                 <p
-                  v-if="chunk(error.exampleImages, 2).length"
-                  class="fr-text--xs fr-mb-1w error-accordion-subtitle"
+                  class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
                 >
-                  Exemple(s) d’erreur(s)
+                  {{ formatStatus(error.status) }}
                 </p>
-                <div class="fr-container--fluid">
-                  <div
-                    v-for="(line, k) in chunk(error.exampleImages, 2)"
-                    :key="k"
-                    class="fr-grid-row fr-grid-row--gutters"
-                  >
-                    <a
-                      v-for="example in line"
-                      :key="example.key"
-                      class="fr-col-md-6 fr-col-12 image-link"
-                      :href="getUploadUrl(example.key)"
-                      target="_blank"
-                    >
-                      <span class="sr-only">
-                        Ouvrir l’image dans une nouvelle fenêtre
-                      </span>
-                      <img
-                        style="width: 100%"
-                        :src="getUploadUrl(example.key)"
-                        alt=""
-                      />
-                    </a>
-                  </div>
-                </div>
-              </LazyAccordion>
+              </li>
+              <li v-if="error.userImpact">
+                <p
+                  class="fr-badge fr-badge--sm"
+                  :class="{
+                    'fr-badge--yellow-moutarde':
+                      error.userImpact === CriterionResultUserImpact.MAJOR,
+                    'fr-badge--error fr-badge--no-icon':
+                      error.userImpact === CriterionResultUserImpact.BLOCKING
+                  }"
+                >
+                  Impact {{ formatUserImpact(error.userImpact) }}
+                </p>
+              </li>
+              <li v-if="error.quickWin">
+                <p class="fr-badge fr-badge--sm">Facile à corriger</p>
+              </li>
+            </ul>
 
-              <!-- Tests -->
-              <CriteriumTestsAccordion
-                :topic-number="error.topic"
-                :criterium="getCriterium(error.topic, error.criterium)"
+            <!-- Error -->
+            <LazyAccordion
+              v-if="error.notCompliantComment || error.exampleImages.length > 0"
+              title="Erreur et recommandation"
+              data-accordion
+            >
+              <MarkdownRenderer
+                v-if="error.notCompliantComment"
+                class="fr-mb-3w"
+                :markdown="error.notCompliantComment"
               />
-            </template>
-          </div>
-        </section>
-      </div>
-    </div>
-  </template>
+              <p
+                v-if="chunk(error.exampleImages, 2).length"
+                class="fr-text--xs fr-mb-1w error-accordion-subtitle"
+              >
+                Exemple(s) d’erreur(s)
+              </p>
+              <div class="fr-container--fluid">
+                <div
+                  v-for="(line, k) in chunk(error.exampleImages, 2)"
+                  :key="k"
+                  class="fr-grid-row fr-grid-row--gutters"
+                >
+                  <a
+                    v-for="example in line"
+                    :key="example.key"
+                    class="fr-col-md-6 fr-col-12 image-link"
+                    :href="getUploadUrl(example.key)"
+                    target="_blank"
+                  >
+                    <span class="sr-only">
+                      Ouvrir l’image dans une nouvelle fenêtre
+                    </span>
+                    <img
+                      style="width: 100%"
+                      :src="getUploadUrl(example.key)"
+                      alt=""
+                    />
+                  </a>
+                </div>
+              </div>
+            </LazyAccordion>
+
+            <!-- Tests -->
+            <CriteriumTestsAccordion
+              :topic-number="error.topic"
+              :criterium="getCriterium(error.topic, error.criterium)"
+            />
+          </template>
+        </div>
+      </section>
+    </template>
+
+    <template #pages-data>
+      <section v-for="page in errors" :key="page.id" class="fr-mb-8w">
+        <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
+          {{ page.name }}
+        </h2>
+        <a
+          :href="page.url"
+          class="fr-link page-url"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+        </a>
+
+        <p v-if="page.topics.length === 0" class="fr-mt-4w">
+          Aucune erreur d'accessibilité relevée sur cette page.
+        </p>
+
+        <div
+          v-for="(topic, i) in page.topics"
+          :key="topic.topic"
+          :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
+        >
+          <p class="fr-tag fr-tag--sm fr-mb-3w">
+            {{ topic.topic }}.&nbsp;{{ topic.name }}
+          </p>
+          <template v-for="(error, j) in topic.errors" :key="j">
+            <p
+              :class="[
+                'fr-text--lg fr-text--bold criterium-title',
+                { 'fr-mt-9v': j !== 0 }
+              ]"
+            >
+              {{ error.topic }}.{{ error.criterium }}&nbsp;
+              <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
+            </p>
+
+            <ul class="fr-badges-group fr-mb-2w">
+              <li>
+                <p
+                  class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon"
+                >
+                  {{ formatStatus(error.status) }}
+                </p>
+              </li>
+              <li v-if="error.userImpact">
+                <p
+                  class="fr-badge fr-badge--sm"
+                  :class="{
+                    'fr-badge--yellow-moutarde':
+                      error.userImpact === CriterionResultUserImpact.MAJOR,
+                    'fr-badge--error fr-badge--no-icon':
+                      error.userImpact === CriterionResultUserImpact.BLOCKING
+                  }"
+                >
+                  Impact {{ formatUserImpact(error.userImpact) }}
+                </p>
+              </li>
+              <li v-if="error.quickWin">
+                <p class="fr-badge fr-badge--sm">Facile à corriger</p>
+              </li>
+            </ul>
+
+            <!-- Error -->
+            <LazyAccordion
+              v-if="error.notCompliantComment || error.exampleImages.length > 0"
+              title="Erreur et recommandation"
+              data-accordion
+            >
+              <MarkdownRenderer
+                v-if="error.notCompliantComment"
+                class="fr-mb-3w"
+                :markdown="error.notCompliantComment"
+              />
+              <p
+                v-if="chunk(error.exampleImages, 2).length"
+                class="fr-text--xs fr-mb-1w error-accordion-subtitle"
+              >
+                Exemple(s) d’erreur(s)
+              </p>
+              <div class="fr-container--fluid">
+                <div
+                  v-for="(line, k) in chunk(error.exampleImages, 2)"
+                  :key="k"
+                  class="fr-grid-row fr-grid-row--gutters"
+                >
+                  <a
+                    v-for="example in line"
+                    :key="example.key"
+                    class="fr-col-md-6 fr-col-12 image-link"
+                    :href="getUploadUrl(example.key)"
+                    target="_blank"
+                  >
+                    <span class="sr-only">
+                      Ouvrir l’image dans une nouvelle fenêtre
+                    </span>
+                    <img
+                      style="width: 100%"
+                      :src="getUploadUrl(example.key)"
+                      alt=""
+                    />
+                  </a>
+                </div>
+              </div>
+            </LazyAccordion>
+
+            <!-- Tests -->
+            <CriteriumTestsAccordion
+              :topic-number="error.topic"
+              :criterium="getCriterium(error.topic, error.criterium)"
+            />
+          </template>
+        </div>
+      </section>
+    </template>
+  </ReportCriteria>
 </template>
-
-<style scoped>
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.filter-title {
-  color: var(--text-title-grey);
-}
-
-.main {
-  display: grid;
-  grid-template-columns: 20rem 1fr;
-  gap: 2rem;
-}
-
-.sidebar {
-  box-shadow: inset -1px 0 0 0 var(--border-default-grey);
-}
-
-.page-title {
-  color: var(--text-active-blue-france);
-}
-
-.page-url {
-  word-break: break-all;
-}
-
-.criterium-title {
-  color: var(--text-title-grey);
-}
-
-/* .error-accordion-subtitle {
-  color: var(--text-mention-grey);
-} */
-
-.fr-sidemenu__inner {
-  box-shadow: none !important;
-}
-
-.image-link {
-  background: none;
-}
-.image-link::after {
-  content: none;
-}
-
-@media (width < 48rem) {
-  .main {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    box-shadow: none;
-  }
-}
-</style>
