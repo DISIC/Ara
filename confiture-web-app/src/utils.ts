@@ -1,10 +1,10 @@
-import { Scope, captureException } from "@sentry/vue";
+import { captureException, Scope } from "@sentry/vue";
+import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
-import jwtDecode from "jwt-decode";
-import { FileErrorMessage } from "./enums";
 
+import { FileErrorMessage } from "./enums";
 import {
   AuditReport,
   AuditStatus,

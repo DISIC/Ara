@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import jwtDecode from "jwt-decode";
+import { HTTPError } from "ky";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
+import PageMeta from "../../components/PageMeta";
+import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
-import { HTTPError } from "ky";
-import { useNotifications } from "../../composables/useNotifications";
 import { NewEmailVerificationJwtPayload } from "../../types";
-import PageMeta from "../../components/PageMeta";
 
 const route = useRoute();
 const store = useAccountStore();

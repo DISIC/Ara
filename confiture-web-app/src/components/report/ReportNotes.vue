@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { computed } from "vue";
+
+import { useReportStore } from "../../store";
 import FileUpload from "../ui/FileUpload.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
-import { computed } from "vue";
-import { useReportStore } from "../../store";
 
 const report = useReportStore();
 

@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import NotesModal from "../../components/audit/NotesModal.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -17,15 +18,14 @@ import {
   formatDate,
   slugify
 } from "../../utils";
-import AuditProgressBar from "./AuditProgressBar.vue";
-import DeleteModal from "./DeleteModal.vue";
-import Dropdown from "../ui/Dropdown.vue";
-import DuplicateModal from "./DuplicateModal.vue";
-import NotesModal from "../../components/audit/NotesModal.vue";
-import SaveIndicator from "./SaveIndicator.vue";
-import SummaryCard from "../SummaryCard.vue";
 import CopyIcon from "../icons/CopyIcon.vue";
 import { StatDonutTheme } from "../StatDonut.vue";
+import SummaryCard from "../SummaryCard.vue";
+import Dropdown from "../ui/Dropdown.vue";
+import AuditProgressBar from "./AuditProgressBar.vue";
+import DeleteModal from "./DeleteModal.vue";
+import DuplicateModal from "./DuplicateModal.vue";
+import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;

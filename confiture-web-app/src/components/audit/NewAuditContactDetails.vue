@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import DsfrField from "../ui/DsfrField.vue";
+
 import { useDevMode } from "../../composables/useDevMode";
 import { useAccountStore } from "../../store";
+import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
   email: string;

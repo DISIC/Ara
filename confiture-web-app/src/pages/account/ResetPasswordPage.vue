@@ -1,17 +1,16 @@
 <script lang="ts" setup>
+import jwtDecode from "jwt-decode";
 import { computed, nextTick, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import NewPasswordForm from "../../components/account/password-reset/NewPasswordForm.vue";
-import ResetInstructions from "../../components/account/password-reset/ResetInstructions.vue";
 import RequestPasswordReset from "../../components/account/password-reset/RequestPasswordReset.vue";
+import ResetInstructions from "../../components/account/password-reset/ResetInstructions.vue";
 import PageMeta from "../../components/PageMeta";
-
-import { useAccountStore } from "../../store/account";
-import { captureWithPayloads, formatEmail, isJwtExpired } from "../../utils";
 import { useNotifications } from "../../composables/useNotifications";
-import jwtDecode from "jwt-decode";
+import { useAccountStore } from "../../store/account";
 import { PasswordResetVerificationJwtPayload } from "../../types";
+import { captureWithPayloads, formatEmail, isJwtExpired } from "../../utils";
 
 const route = useRoute();
 const router = useRouter();

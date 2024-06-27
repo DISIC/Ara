@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { useFiltersStore } from "../../store";
 import { AuditPage } from "../../types";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
-
-import { useFiltersStore } from "../../store";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
 
 defineProps<{

@@ -1,12 +1,11 @@
 import { computed } from "vue";
-import { uniqWith } from "lodash-es";
 
-import {
-  CriteriumResultStatus,
-  CriterionResultUserImpact,
-  CriteriumResult
-} from "../types";
 import { useResultsStore } from "../store";
+import {
+  CriterionResultUserImpact,
+  CriteriumResult,
+  CriteriumResultStatus
+} from "../types";
 
 export function useAuditStats() {
   const store = useResultsStore();

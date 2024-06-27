@@ -8,6 +8,7 @@ import AuditGenerationFilters from "../../components/audit/AuditGenerationFilter
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
+import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -16,7 +17,6 @@ import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { getCriteriaCount, pluralize, waitForElement } from "../../utils";
-import { StatDonutTheme } from "../../components/StatDonut.vue";
 
 const route = useRoute();
 

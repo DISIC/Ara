@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useResultsStore } from "../../store";
-import { useAccountStore } from "../../store";
+import { useAccountStore, useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import StepCard from "./StepCard.vue";
 import CopyBlock from "../ui/CopyBlock.vue";
+import StepCard from "./StepCard.vue";
 
 const props = defineProps<{
   audit: Audit;

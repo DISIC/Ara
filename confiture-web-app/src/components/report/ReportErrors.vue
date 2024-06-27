@@ -10,11 +10,15 @@ import {
   CriterionResultUserImpact,
   CriteriumResultStatus
 } from "../../types";
-import { formatStatus, formatUserImpact, pluralize } from "../../utils";
+import {
+  formatStatus,
+  formatUserImpact,
+  getUploadUrl,
+  pluralize
+} from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
 import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
-import { getUploadUrl } from "../../utils";
 
 const report = useReportStore();
 

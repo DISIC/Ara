@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
 import ky from "ky";
 import { has, sample, setWith, unset } from "lodash-es";
+import { defineStore } from "pinia";
 
 import {
-  CriteriumResult,
-  CriteriumResultStatus,
+  AuditFile,
   CriterionResultUserImpact,
-  AuditFile
+  CriteriumResult,
+  CriteriumResultStatus
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";

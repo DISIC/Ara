@@ -9,15 +9,16 @@ import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
 import UpdateEmailValidationPage from "./pages/account/UpdateEmailValidationPage.vue";
+import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
-import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import HomePage from "./pages/HomePage.vue";
+import MarkdownHelperPage from "./pages/MarkdownHelperPage.vue";
 import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
@@ -25,10 +26,9 @@ import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ContextPage from "./pages/report/ContextPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
-import StatementPage from "./pages/StatementPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
+import StatementPage from "./pages/StatementPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
-import MarkdownHelperPage from "./pages/MarkdownHelperPage.vue";
 
 declare module "vue-router" {
   interface RouteMeta {

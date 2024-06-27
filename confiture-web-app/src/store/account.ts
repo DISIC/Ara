@@ -1,6 +1,7 @@
+import jwtDecode from "jwt-decode";
 import ky from "ky";
 import { defineStore } from "pinia";
-import jwtDecode from "jwt-decode";
+
 import { AuthenticationJwtPayload } from "../types";
 import {
   AccountDeletionResponse,

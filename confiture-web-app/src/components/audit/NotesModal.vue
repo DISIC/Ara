@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, ref, Ref } from "vue";
+import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
-import { FileErrorMessage } from "../../enums";
-import { handleFileUploadError, handleFileDeleteError } from "../../utils";
 
-import { AuditFile } from "../../types";
-
-import DsfrModal from "../ui/DsfrModal.vue";
-import SaveIndicator from "./SaveIndicator.vue";
-import FileUpload from "../ui/FileUpload.vue";
-
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { useIsOffline } from "../../composables/useIsOffline";
+import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
-import { StoreName } from "../../types";
+import { AuditFile, StoreName } from "../../types";
+import { handleFileDeleteError, handleFileUploadError } from "../../utils";
+import DsfrModal from "../ui/DsfrModal.vue";
+import FileUpload from "../ui/FileUpload.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
+import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   isLoading: boolean;

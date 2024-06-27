@@ -5,22 +5,25 @@
     "parser": "@typescript-eslint/parser",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "unused-imports", "simple-import-sort"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended"
   ],
-  "env": {
-    "jest": true
-  },
   "globals": {
     "dsfr": true
   },
   "rules": {
     "vue/multi-word-component-names": "off",
     "vue/no-v-html": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "no-duplicate-imports": "error",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": "error"
   }
 }

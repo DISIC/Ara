@@ -2,10 +2,10 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
+import { useAccountStore } from "../../store/account";
+import AccountHeader from "./AccountHeader.vue";
 import DeliverableHeader from "./DeliverableHeader.vue";
 import MarketingHeader from "./MarketingHeader.vue";
-import AccountHeader from "./AccountHeader.vue";
-import { useAccountStore } from "../../store/account";
 
 const accountStore = useAccountStore();
 const route = useRoute();

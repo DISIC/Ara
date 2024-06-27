@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { computed, ref, Ref } from "vue";
+import { computed, Ref, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useUniqueId } from "../../composables/useUniqueId";
-
 import { FileErrorMessage } from "../../enums";
 import { AuditFile } from "../../types";
 import { formatBytes, getUploadUrl } from "../../utils";

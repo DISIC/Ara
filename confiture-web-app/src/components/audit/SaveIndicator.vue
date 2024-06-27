@@ -3,9 +3,8 @@ import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
 
 import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
-import Dropdown from "../ui/Dropdown.vue";
-
 import { StoreName } from "../../types";
+import Dropdown from "../ui/Dropdown.vue";
 
 /* Change the saving status in a way that it wont "flicker" */
 

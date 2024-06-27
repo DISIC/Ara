@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import { HTTPError } from "ky";
 import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { useAccountStore } from "../../../store/account";
-import { HTTPError } from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
+import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
 

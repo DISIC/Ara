@@ -3,14 +3,13 @@ import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
+import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
-
-import { CriterionResultUserImpact, AuditFile } from "../../types";
 import FileUpload from "../ui/FileUpload.vue";
-import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import LazyAccordion from "./LazyAccordion.vue";
+import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 export interface Props {
   id: string;

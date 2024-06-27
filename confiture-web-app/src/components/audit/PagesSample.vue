@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
-import { AuditPage } from "../../types";
-import DsfrField from "../ui/DsfrField.vue";
+
 import { useNotifications } from "../../composables/useNotifications";
+import { AuditPage } from "../../types";
 import { URL_REGEX } from "../../utils";
+import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
   modelValue: Omit<AuditPage, "id" | "order">[];

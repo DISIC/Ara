@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { AuditStatus } from "../../../types";
-import { pluralize } from "../../../utils";
-import NoAudit from "./NoAudit.vue";
-import AuditRow from "./AuditRow.vue";
 import { AccountAudit } from "../../../types/account";
+import { pluralize } from "../../../utils";
+import AuditRow from "./AuditRow.vue";
+import NoAudit from "./NoAudit.vue";
 
 // FIXME: "audits" type
 defineProps<{

@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { marked } from "marked";
-import { computed, ref, Ref } from "vue";
 import { debounce } from "lodash-es";
-import { FileErrorMessage } from "../../enums";
-import {
-  formatStatus,
-  handleFileUploadError,
-  handleFileDeleteError
-} from "../../utils";
+import { marked } from "marked";
+import { computed, Ref, ref } from "vue";
 
+import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
+import { FileErrorMessage } from "../../enums";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
+  AuditFile,
   AuditPage,
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus,
-  AuditFile
+  CriteriumResultStatus
 } from "../../types";
+import {
+  formatStatus,
+  handleFileDeleteError,
+  handleFileUploadError
+} from "../../utils";
+import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import { useResultsStore, useFiltersStore, useAuditStore } from "../../store";
-import { useNotifications } from "../../composables/useNotifications";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
-import { useIsOffline } from "../../composables/useIsOffline";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();

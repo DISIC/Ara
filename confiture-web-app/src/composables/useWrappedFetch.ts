@@ -1,7 +1,7 @@
-import { onMounted, watch } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { TimeoutError } from "ky";
 import { isEqual } from "lodash-es";
+import { onMounted, watch } from "vue";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 import { captureWithPayloads } from "../utils";
 

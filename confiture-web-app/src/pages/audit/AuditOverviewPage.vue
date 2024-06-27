@@ -2,10 +2,10 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import PageMeta from "../../components/PageMeta";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
+import PageMeta from "../../components/PageMeta";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
