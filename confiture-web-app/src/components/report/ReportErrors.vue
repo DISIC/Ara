@@ -1,122 +1,19 @@
 <script setup lang="ts">
-import { chunk, groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
+import { chunk } from "lodash-es";
 import { marked } from "marked";
 import { computed, ref } from "vue";
 
 import rgaa from "../../criteres.json";
 import { useReportStore } from "../../store";
-import {
-  AuditReport,
-  CriterionResultUserImpact,
-  CriteriumResultStatus
-} from "../../types";
+import { CriterionResultUserImpact, CriteriumResultStatus } from "../../types";
 import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
 import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
 import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import { getReportErrors, getReportTransverseErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 
 const report = useReportStore();
-
-/*
-[{
-  pageUrl: "https://example.com",
-  pageName: "Accueil"
-  topics: [{
-    topic: 2,
-    name: "Cadres",
-    errors: [{ ... }]
-  }]
-}]
-*/
-
-const errors = computed(() => {
-  const resultsGroupedByPage = {
-    // include pages with no errors
-    ...report.data?.context.samples.reduce<Record<string, []>>((acc, val) => {
-      acc[val.id] = [];
-      return acc;
-    }, {}),
-
-    ...groupBy(
-      report.data?.results
-        .filter((r) => {
-          return (
-            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
-            userImpactFilters.value.includes(r.userImpact)
-          );
-        })
-        .filter((r) => {
-          return quickWinFilter.value ? r.quickWin : r;
-        }),
-      "pageId"
-    )
-  } as Record<number, AuditReport["results"]>;
-
-  const data = sortBy(
-    Object.entries(resultsGroupedByPage).map(([pageId, results]) => {
-      return {
-        id: Number(pageId),
-        order: getPage(pageId).order,
-        name: getPage(pageId).name,
-        url: getPage(pageId).url,
-        topics: sortBy(
-          Object.values(
-            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
-              return {
-                topic: Number(topicNumber),
-                name: getTopicName(Number(topicNumber)),
-                errors: sortBy(
-                  results.filter((r) => !r.transverse),
-                  "criterium"
-                )
-              };
-            })
-          ),
-          "topic"
-        )
-      };
-    }),
-    (el) => el.order
-  );
-
-  return data;
-});
-
-/**
- [{
-    topic: 2,
-    name: "Cadres",
-    errors: [{ ... }]
-  }]
- */
-const transverseErrors = computed(() => {
-  return Object.values(
-    mapValues(
-      groupBy(
-        uniqWith(
-          report.data?.results.filter((r) => {
-            return (
-              r.transverse &&
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              userImpactFilters.value.includes(r.userImpact)
-            );
-          }),
-          (a, b) => a.criterium === b.criterium && a.topic === b.topic
-        ),
-        "topic"
-      ),
-      (results, topicNumber) => {
-        return {
-          topic: topicNumber,
-          name: getTopicName(Number(topicNumber)),
-          errors: results
-        };
-      }
-    )
-  );
-});
 
 // Filters
 const defaultUserImpactFillters = [
@@ -180,10 +77,6 @@ function resetFilters() {
 }
 
 // Utility
-function getTopicName(topicNumber: number) {
-  return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
-}
-
 function getCriterium(topicNumber: number, criteriumNumber: number) {
   // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
   const criterium = (rgaa.topics as any)
@@ -197,18 +90,13 @@ function getCriterium(topicNumber: number, criteriumNumber: number) {
 function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
   return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
 }
-
-/** Get a page by its id */
-function getPage(pageId: number | string) {
-  return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
-}
 </script>
 
 <template>
   <ReportCriteria
     v-if="report.data"
-    :pages-data="errors"
-    :transverse-data="transverseErrors"
+    :pages-data="getReportErrors(report, quickWinFilter, userImpactFilters)"
+    :transverse-data="getReportTransverseErrors(report, userImpactFilters)"
     :show-filters="true"
   >
     <template #filter>
@@ -307,13 +195,19 @@ function getPage(pageId: number | string) {
     </template>
 
     <template #transverse-data>
-      <section v-if="transverseErrors.length" class="fr-mb-8w">
+      <section
+        v-if="getReportTransverseErrors(report, userImpactFilters).length"
+        class="fr-mb-8w"
+      >
         <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
           Toutes les pages
         </h2>
 
         <div
-          v-for="(topic, i) in transverseErrors"
+          v-for="(topic, i) in getReportTransverseErrors(
+            report,
+            userImpactFilters
+          )"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -411,7 +305,15 @@ function getPage(pageId: number | string) {
     </template>
 
     <template #pages-data>
-      <section v-for="page in errors" :key="page.id" class="fr-mb-8w">
+      <section
+        v-for="page in getReportErrors(
+          report,
+          quickWinFilter,
+          userImpactFilters
+        )"
+        :key="page.id"
+        class="fr-mb-8w"
+      >
         <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h2>
