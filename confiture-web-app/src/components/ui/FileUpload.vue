@@ -122,9 +122,9 @@ function onFileRequestFinished() {
         {{ title }}
       </p>
       <p class="fr-text--regular fr-hint-text fr-my-2v">
-        <span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
-        ><span>. <span v-html="acceptedFormatsHtml"></span></span>
-        <span v-if="multiple">. Plusieurs fichiers possibles.</span>
+        Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+        <span v-html="acceptedFormatsHtml"></span>
+        <template v-if="multiple">. Plusieurs fichiers possibles.</template>
       </p>
 
       <!-- TODO: handle multiple files upload -->
