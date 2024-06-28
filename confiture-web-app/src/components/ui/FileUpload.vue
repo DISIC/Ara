@@ -96,7 +96,7 @@ function getFullFileName(auditFile: AuditFile) {
 function getFileDetails(auditFile: AuditFile) {
   const name = auditFile.originalFilename;
   const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
-  return extension + " — " + formatBytes(auditFile.size);
+  return extension + " – " + formatBytes(auditFile.size);
 }
 
 function isViewable(auditFile: AuditFile) {
@@ -111,120 +111,116 @@ function onFileRequestFinished() {
 </script>
 
 <template>
-  <div>
-    <div class="upload-wrapper">
-      <div v-if="!readonly" class="fr-upload-group">
-        <p
-          :id="`file-upload-description-${id}`"
-          class="fr-label fr-upload-group__desc"
-          :class="{ 'fr-text--bold': boldTitle }"
-        >
-          {{ title }}<br />
-          <span class="fr-mt-1v fr-text--regular fr-hint-text"
-            ><span>Taille maximale par fichier&#8239;: {{ maxFileSize }}</span
-            ><span>. <span v-html="acceptedFormatsHtml"></span></span>
-            <span v-if="multiple">. Plusieurs fichiers possibles.</span></span
-          >
-        </p>
-
-        <!-- TODO: handle multiple files upload -->
-        <!-- :multiple="multiple ?? undefined" -->
-        <div class="upload-line fr-mt-2w fr-mb-2w">
-          <label
-            class="fr-btn fr-btn--tertiary"
-            tabindex="0"
-            :for="`file-upload-${id}`"
-            >Choisir un fichier</label
-          >
-          <input
-            :id="`file-upload-${id}`"
-            ref="fileInputRef"
-            class="fr-sr-only"
-            tabindex="-1"
-            type="file"
-            :accept="acceptedFormatsAttr"
-            :disabled="isOffline"
-            :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
-            @change="handleFileChange"
-          />
-          <span>{{ selectedFiles }}</span>
-        </div>
-      </div>
-
+  <div class="upload-wrapper">
+    <div v-if="!readonly" class="fr-upload-group">
       <p
-        v-if="errorMessage || localErrorMessage"
-        :id="`file-upload-error-format-${id}`"
-        class="fr-error-text fr-mt-0"
+        :id="`file-upload-description-${id}`"
+        class="fr-label fr-upload-group__desc"
+        :class="{ 'fr-text--bold': boldTitle }"
       >
-        {{ errorMessage ? errorMessage : localErrorMessage }}
+        {{ title }}
       </p>
+      <p class="fr-text--regular fr-hint-text fr-my-2v">
+        Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+        <span v-html="acceptedFormatsHtml"></span>
+        <template v-if="multiple">. Plusieurs fichiers possibles.</template>
+      </p>
+
+      <!-- TODO: handle multiple files upload -->
+      <!-- :multiple="multiple ?? undefined" -->
+      <label
+        class="upload-btn fr-btn fr-btn--tertiary"
+        tabindex="0"
+        :for="`file-upload-${id}`"
+        >Choisir un fichier</label
+      >
+      <input
+        :id="`file-upload-${id}`"
+        ref="fileInputRef"
+        class="fr-sr-only"
+        tabindex="-1"
+        type="file"
+        :accept="acceptedFormatsAttr"
+        :disabled="isOffline"
+        :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
+        @change="handleFileChange"
+      />
+      <p class="fr-text--sm fr-mt-3v fr-mb-2v">{{ selectedFiles }}</p>
     </div>
 
-    <!-- Audit files -->
-    <ul class="files">
-      <li v-for="auditFile in auditFiles" :key="auditFile.id">
-        <img
-          v-if="auditFile.thumbnailKey"
-          class="fr-icon--lg file-thumbnail"
-          :src="getUploadUrl(auditFile.thumbnailKey)"
-          alt=""
-          loading="lazy"
-          width="80"
-          height="80"
-        />
-        <span
-          v-else
-          class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
-          loading="lazy"
-        >
-        </span>
-        <div class="file-link">
-          <span>{{ getFileName(auditFile) }}</span
-          ><br />
-          <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
-        </div>
-        <ul class="fr-btns-group fr-btns-group--inline">
-          <li v-if="isViewable(auditFile)">
-            <a
-              class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
-              :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
-              target="_blank"
-              :title="
-                'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
-              "
-            >
-              Voir
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-            </a>
-          </li>
-          <li>
-            <a
-              class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
-              download
-              :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
-              :title="'Télécharger ' + getFullFileName(auditFile)"
-            >
-              Télécharger
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-            </a>
-          </li>
-          <li v-if="!readonly">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
-              :disabled="isOffline"
-              :title="'Supprimer ' + getFullFileName(auditFile)"
-              @click="deleteFile(auditFile)"
-            >
-              Supprimer
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-            </button>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <p
+      v-if="errorMessage || localErrorMessage"
+      :id="`file-upload-error-format-${id}`"
+      class="fr-error-text fr-mt-0"
+    >
+      {{ errorMessage ? errorMessage : localErrorMessage }}
+    </p>
   </div>
+
+  <!-- Audit files -->
+  <ul class="files">
+    <li v-for="auditFile in auditFiles" :key="auditFile.id">
+      <img
+        v-if="auditFile.thumbnailKey"
+        class="fr-icon--lg file-thumbnail"
+        :src="getUploadUrl(auditFile.thumbnailKey)"
+        alt=""
+        loading="lazy"
+        width="80"
+        height="80"
+      />
+      <span
+        v-else
+        class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
+        loading="lazy"
+      >
+      </span>
+      <div class="file-link">
+        <span>{{ getFileName(auditFile) }}</span
+        ><br />
+        <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
+      </div>
+      <ul class="fr-btns-group fr-btns-group--inline">
+        <li v-if="isViewable(auditFile)">
+          <a
+            class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
+            :href="getUploadUrl(auditFile.key)"
+            :disabled="isOffline"
+            target="_blank"
+            :title="
+              'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
+            "
+          >
+            Voir
+            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
+            download
+            :href="getUploadUrl(auditFile.key)"
+            :disabled="isOffline"
+            :title="'Télécharger ' + getFullFileName(auditFile)"
+          >
+            Télécharger
+            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+          </a>
+        </li>
+        <li v-if="!readonly">
+          <button
+            class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
+            :disabled="isOffline"
+            :title="'Supprimer ' + getFullFileName(auditFile)"
+            @click="deleteFile(auditFile)"
+          >
+            Supprimer
+            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+          </button>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </template>
 
 <style scoped>
@@ -232,16 +228,10 @@ function onFileRequestFinished() {
   margin: 0;
 }
 
-.upload-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  align-items: center;
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .upload-line .fr-btn:not(:disabled):hover:hover {
+  .upload-btn:not(:disabled):hover {
     background-color: var(--hover-tint);
+    cursor: pointer;
   }
 }
 
@@ -258,7 +248,7 @@ function onFileRequestFinished() {
   flex-wrap: wrap;
   gap: 1.5rem;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border: 1px solid var(--artwork-motif-grey);
 }
 
@@ -274,7 +264,7 @@ function onFileRequestFinished() {
 
 .file-thumbnail,
 .file-thumbnail__default {
-  --thumbnail-size: 4.5rem;
+  --thumbnail-size: 3rem;
   color: var(--artwork-motif-grey);
   background-color: var(--background-alt-blue-france);
   width: var(--thumbnail-size);
@@ -293,6 +283,6 @@ function onFileRequestFinished() {
 }
 
 .file-thumbnail__default::before {
-  --icon-size: 3rem;
+  --icon-size: 2.5rem;
 }
 </style>
