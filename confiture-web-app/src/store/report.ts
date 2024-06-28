@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 import { AuditReport } from "../types";
 
-interface ReportStoreState {
+export interface ReportStoreState {
   data: AuditReport | null;
 }
 
