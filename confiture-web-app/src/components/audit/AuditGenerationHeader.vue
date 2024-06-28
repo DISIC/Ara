@@ -474,7 +474,7 @@ onMounted(() => {
 <style scoped>
 .sub-header {
   display: flex;
-  column-gap: 2rem;
+  column-gap: 1rem;
   align-items: center;
   justify-content: space-between;
   z-index: 3;
