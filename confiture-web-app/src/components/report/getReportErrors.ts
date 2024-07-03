@@ -9,7 +9,7 @@ import {
   ReportCriteriumResult
 } from "../../types";
 
-type ReportErrors = {
+export type ReportErrors = {
   id: number;
   name?: string;
   order: number;
@@ -81,7 +81,7 @@ function getPage(report: ReportStoreState, pageId: number | string) {
   return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
 }
 
-type ReportTransverseError = {
+export type ReportTransverseError = {
   topic: number;
   name?: string;
   errors: ReportCriteriumResult[];

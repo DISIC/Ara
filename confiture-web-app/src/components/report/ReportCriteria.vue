@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
+import { ReportErrors, ReportTransverseError } from "./getReportErrors";
 
-// FIXME: type things
 const props = defineProps<{
-  pagesData: any;
-  transverseData: any;
+  pagesData: ReportErrors[];
+  transverseData: ReportTransverseError[];
   showFilters?: boolean;
 }>();
 
@@ -17,12 +18,23 @@ const dataCount = computed(() => {
       .flat(2).length + props.transverseData.length
   );
 });
+
+// Set active side menu link
+const route = useRoute();
+console.log(route.hash);
+
+function isActive(id: string) {
+  return route.hash && route.hash === id;
+}
 </script>
 
 <template>
   <div class="main">
     <div class="sidebar">
-      <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
+      <nav
+        class="fr-sidemenu fr-sidemenu--sticky fr-mb-3w"
+        aria-label="Liste des pages"
+      >
         <div class="fr-sidemenu__inner">
           <button
             class="fr-sidemenu__btn"
@@ -40,38 +52,37 @@ const dataCount = computed(() => {
                 :class="[
                   'fr-sidemenu__item',
                   {
-                    'fr-sidemenu__item--active': transverseData.length > 0
+                    'fr-sidemenu__item--active':
+                      !route.hash || isActive('#all-pages')
                   }
                 ]"
               >
                 <a
                   class="fr-sidemenu__link"
                   href="#all-pages"
-                  :aria-current="Boolean(transverseData.length)"
+                  :aria-current="
+                    route.hash
+                      ? isActive('#all-pages')
+                        ? 'true'
+                        : undefined
+                      : 'true'
+                  "
                   >Toutes les pages</a
                 >
               </li>
               <li
-                :class="[
-                  'fr-sidemenu__item',
-                  {
-                    'fr-sidemenu__item--active': !Boolean(transverseData.length)
-                  }
-                ]"
+                v-for="page in pagesData"
+                :key="page.name"
+                class="fr-sidemenu__item"
+                :class="{
+                  'fr-sidemenu__item--active': isActive(`#${page.id}`)
+                }"
               >
                 <a
                   class="fr-sidemenu__link"
-                  :href="`#${pagesData[0].id}`"
-                  :aria-current="!transverseData.length ? 'true' : undefined"
-                  >{{ pagesData[0].name }}</a
+                  :href="`#${page.id}`"
+                  :aria-current="isActive(`#${page.id}`) ? 'true' : undefined"
                 >
-              </li>
-              <li
-                v-for="page in pagesData.slice(1)"
-                :key="page.name"
-                class="fr-sidemenu__item"
-              >
-                <a class="fr-sidemenu__link" :href="`#${page.id}`">
                   {{ page.name }}
                 </a>
               </li>
