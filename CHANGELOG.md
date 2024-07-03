@@ -8,6 +8,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajoute les critères conformes et non applicables au rapport dans l’onglet "Points d’améliorations" ([#732](https://github.com/DISIC/Ara/pull/732))
 
+### Corrections 🐛
+
+- Correction des filtres de critères qui ne fonctionnaient pas correctement dans certains cas ([#737](https://github.com/DISIC/Ara/pull/737))
+
 ## 26/06/2024
 
 ### Nouvelles fonctionnalités 🚀

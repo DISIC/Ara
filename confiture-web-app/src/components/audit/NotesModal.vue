@@ -87,7 +87,7 @@ function handleDeleteFile(file: AuditFile) {
             <div class="fr-modal__content">
               <div class="sidebar-header">
                 <button
-                  class="fr-btn--close fr-btn"
+                  class="fr-btn--close fr-btn fr-text--md"
                   aria-controls="notes-modal"
                   type="button"
                 >
@@ -101,7 +101,7 @@ function handleDeleteFile(file: AuditFile) {
                 </div>
               </div>
               <div class="fr-input-group fr-mb-1v">
-                <label class="fr-label" for="audit-notes">
+                <label class="fr-label fr-text--bold" for="audit-notes">
                   Remarques et recommandations générales
                 </label>
                 <textarea
@@ -122,10 +122,11 @@ function handleDeleteFile(file: AuditFile) {
               <FileUpload
                 ref="fileUpload"
                 class="fr-mb-4w"
-                :disabled="isOffline"
                 :audit-files="files"
-                :multiple="true"
+                :bold-title="true"
+                :disabled="isOffline"
                 :error-message="errorMessage"
+                :multiple="true"
                 @upload-file="handleUploadFile"
                 @delete-file="handleDeleteFile"
               />
@@ -138,13 +139,17 @@ function handleDeleteFile(file: AuditFile) {
 </template>
 
 <style scoped>
+.fr-modal__content {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
 .sidebar-header {
   display: flex;
   flex-direction: row-reverse;
   flex-wrap: wrap;
   column-gap: 1rem;
   align-items: center;
-  margin: var(--title-spacing);
+  margin: 2rem 0 1.5rem 0;
   padding: 0.75rem 0;
   position: sticky;
   top: 0;
@@ -159,6 +164,11 @@ function handleDeleteFile(file: AuditFile) {
 .title-container {
   flex-basis: 100%;
 }
+
+textarea {
+  resize: vertical;
+}
+
 @media (min-width: 36em) {
   .title-container {
     display: flex;
@@ -166,7 +176,7 @@ function handleDeleteFile(file: AuditFile) {
     align-items: center;
   }
   .sidebar-header h1 {
-    border-right: solid var(--border-default-grey);
+    border-right: 1px solid var(--border-default-grey);
   }
 }
 </style>

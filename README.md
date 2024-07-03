@@ -17,14 +17,8 @@ Générer et consulter les rapports de ces audits et les déclarations d'accessi
 
 Le front-end est automatiquement déployé sur Netlify :
 
-- La branche principale `main` est déployée sur [https://confiture.netlify.app](https://confiture.netlify.app).
-- Les branches des PR sont déployées sur [https://deploy-preview-XXX--confiture.netlify.app](https://deploy-preview-XXX--confiture.netlify.app) (où XXX est l’id de la PR).
-
-Le back-end doit être déployé manuellement sur Heroku :
-
-```sh
-git push heroku <nom-de-la-branche>:main
-```
+- La branche principale `main` est déployée sur [https://ara-production-81d0da406fda.herokuapp.com/](https://ara-production-81d0da406fda.herokuapp.com/).
+- Les branches des PR sont déployées sur [ pipeline-xxxxxx-xxxxxx.herokuapp.com ](pipeline-xxxxxx-xxxxxx.herokuapp.com) (où XXX est un identifiant aléatoire généré par Heroku).
 
 Pour réinitialiser la base de données :
 

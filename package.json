@@ -8,5 +8,15 @@
     "cypress": "^13.6.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
+  },
+  "scripts": {
+    "heroku-postbuild": "yarn workspaces run build"
+  },
+  "dependencies": {
+    "pm2": "^5.4.0"
+  },
+  "engines": {
+    "node": "^18.0.0",
+    "yarn": "^1.22.19"
   }
 }
