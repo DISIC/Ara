@@ -21,7 +21,6 @@ const dataCount = computed(() => {
 
 // Set active side menu link
 const route = useRoute();
-console.log(route.hash);
 
 function isActive(id: string) {
   return route.hash && route.hash === id;
