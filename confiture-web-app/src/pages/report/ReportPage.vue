@@ -5,13 +5,14 @@ import { useRoute, useRouter } from "vue-router";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
+import ReportImprovements from "../../components/report/ReportImprovements.vue";
 import ReportNotes from "../../components/report/ReportNotes.vue";
 import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useReportStore } from "../../store";
-import { AuditStatus } from "../../types";
+import { AuditStatus, CriteriumResultStatus } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
 const report = useReportStore();
@@ -25,10 +26,23 @@ const hasNotes = computed(() => {
   return !!report.data?.notes;
 });
 
+const hasCompliantOrNotApplicableComments = computed(() => {
+  return report.data?.results.some((r) => {
+    return (
+      (r.status === CriteriumResultStatus.COMPLIANT && r.compliantComment) ||
+      (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
+        r.notApplicableComment)
+    );
+  });
+});
+
 const tabs = computed(() => [
   { title: "Résultats", component: ReportResults },
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
-  { title: "Détail des résultats", component: ReportErrors }
+  { title: "Détails des non-conformités", component: ReportErrors },
+  ...(hasCompliantOrNotApplicableComments.value
+    ? [{ title: "Points d’améliorations", component: ReportImprovements }]
+    : [])
 ]);
 
 const showCopyAlert = ref(false);

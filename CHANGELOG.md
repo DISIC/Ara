@@ -2,7 +2,11 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 03/06/2024
+## 03/07/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute les critères conformes et non applicables au rapport dans l’onglet "Points d’améliorations" ([#732](https://github.com/DISIC/Ara/pull/732))
 
 ### Corrections 🐛
 
@@ -16,7 +20,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
   - Agrandissement de la zone d’annotation en panneau latéral
   - Sauvegarde automatique des changements
   - Création d’un composant d’ajout de fichier commun (critères non conformes + annotations)
-  - Choix de *télécharger* ou de *visualiser* chaque fichier
+  - Choix de _télécharger_ ou de _visualiser_ chaque fichier
   - Affichage des pièces jointes dans les notes du rapport d’audit
   - Suppression des bannières de notification d’ajout et de suppression de fichier
   - Affichage de la syntaxe Markdown dans une page séparée (au lieu d’une modale)

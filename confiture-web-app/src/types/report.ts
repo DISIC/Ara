@@ -44,16 +44,16 @@ export interface AuditReport {
   /** Distribution of criteria by topic */
   topicDistributions: TopicResultDistribution[];
 
-  results: Array<
-    Omit<CriteriumResult, "exampleImages"> & {
-      exampleImages: {
-        key: string;
-        thumbnailKey: string;
-        filename: string;
-      }[];
-    }
-  >;
+  results: Array<ReportCriteriumResult>;
 }
+
+export type ReportCriteriumResult = Omit<CriteriumResult, "exampleImages"> & {
+  exampleImages: {
+    key: string;
+    thumbnailKey: string;
+    filename: string;
+  }[];
+};
 
 interface ResultDistribution {
   compliant: {
