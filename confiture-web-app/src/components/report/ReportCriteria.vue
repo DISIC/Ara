@@ -30,10 +30,7 @@ function isActive(id: string) {
 <template>
   <div class="main">
     <div class="sidebar">
-      <nav
-        class="fr-sidemenu fr-sidemenu--sticky fr-mb-3w"
-        aria-label="Liste des pages"
-      >
+      <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
         <div class="fr-sidemenu__inner">
           <button
             class="fr-sidemenu__btn"
