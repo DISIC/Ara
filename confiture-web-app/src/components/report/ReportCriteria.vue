@@ -40,7 +40,7 @@ const dataCount = computed(() => {
                 :class="[
                   'fr-sidemenu__item',
                   {
-                    'fr-sidemenu__item--active': Boolean(transverseData.length)
+                    'fr-sidemenu__item--active': transverseData.length > 0
                   }
                 ]"
               >
