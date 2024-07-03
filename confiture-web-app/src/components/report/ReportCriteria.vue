@@ -4,10 +4,14 @@ import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
 import { ReportErrors, ReportTransverseError } from "./getReportErrors";
+import {
+  ReportImprovement,
+  ReportTransverseImprovement
+} from "./getReportImprovements";
 
 const props = defineProps<{
-  pagesData: ReportErrors[];
-  transverseData: ReportTransverseError[];
+  pagesData: ReportErrors[] | ReportImprovement[];
+  transverseData: ReportTransverseError[] | ReportTransverseImprovement[];
   showFilters?: boolean;
 }>();
 

@@ -4,7 +4,7 @@ import rgaa from "../../criteres.json";
 import { ReportStoreState } from "../../store";
 import { CriteriumResultStatus, ReportCriteriumResult } from "../../types";
 
-type ReportImprovement = {
+export type ReportImprovement = {
   id: number;
   url: string;
   order: number;
@@ -76,7 +76,7 @@ function getTopicName(topicNumber: number) {
   return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
 }
 
-type ReportTransverseImprovement = {
+export type ReportTransverseImprovement = {
   number: number;
   name?: string;
   improvements: {
