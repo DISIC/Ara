@@ -101,7 +101,7 @@ function handleDeleteFile(file: AuditFile) {
                 </div>
               </div>
               <div class="fr-input-group fr-mb-1v">
-                <label class="fr-label fr-text--bold" for="audit-notes">
+                <label class="fr-label" for="audit-notes">
                   Remarques et recommandations générales
                 </label>
                 <textarea
@@ -123,7 +123,6 @@ function handleDeleteFile(file: AuditFile) {
                 ref="fileUpload"
                 class="fr-mb-4w"
                 :audit-files="files"
-                :bold-title="true"
                 :disabled="isOffline"
                 :error-message="errorMessage"
                 :multiple="true"
