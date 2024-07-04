@@ -110,6 +110,7 @@ function onFileRequestFinished() {
 </script>
 
 <template>
+	<div>
   <div class="upload-wrapper">
     <div v-if="!readonly" class="fr-upload-group">
       <p
@@ -219,6 +220,7 @@ function onFileRequestFinished() {
       </ul>
     </li>
   </ul>
+	</div>
 </template>
 
 <style scoped>
