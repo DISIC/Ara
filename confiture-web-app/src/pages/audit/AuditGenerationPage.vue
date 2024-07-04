@@ -239,7 +239,10 @@ const tabsData = computed((): TabData[] => {
           />
         </div>
       </div>
-      <div :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`">
+      <div
+        id="audit-tabs"
+        :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`"
+      >
         <AraTabs
           :tabs="tabsData"
           :sticky-top="stickyTop"
