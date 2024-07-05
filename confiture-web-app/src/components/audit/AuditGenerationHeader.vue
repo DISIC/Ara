@@ -297,7 +297,7 @@ onMounted(() => {
             :disabled="isOffline"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <li class="dropdown-item mobile-dropdown-item">
+              <li class="dropdown-item notes-item mobile-dropdown-item">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-draft-line"
                   :disabled="isOffline"
@@ -604,14 +604,29 @@ onMounted(() => {
   display: none;
 }
 
-@media (width < 62rem) {
-  .mobile-dropdown-item {
+@media (width < 83rem) {
+  .report-item.mobile-dropdown-item {
     display: block;
   }
-
-  .settings-item:not(.mobile-dropdown-item),
-  .notes-item:not(.mobile-dropdown-item),
   .report-item:not(.mobile-dropdown-item) {
+    display: none;
+  }
+}
+
+@media (width < 64rem) {
+  .settings-item.mobile-dropdown-item {
+    display: block;
+  }
+  .settings-item:not(.mobile-dropdown-item) {
+    display: none;
+  }
+}
+
+@media (width < 50rem) {
+  .notes-item.mobile-dropdown-item {
+    display: block;
+  }
+  .notes-item:not(.mobile-dropdown-item) {
     display: none;
   }
 }
