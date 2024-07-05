@@ -43,6 +43,12 @@ defineProps<{
   editUniqueId?: string;
 }>();
 
+const stickyIndicator = ref<HTMLDivElement>();
+
+defineExpose({
+  stickyIndicator
+});
+
 const isOffline = useIsOffline();
 
 const router = useRouter();
@@ -219,7 +225,7 @@ onMounted(() => {
 
   <h1>{{ auditName }}</h1>
 
-  <div id="sticky-indicator" class="sticky-indicator fr-grid-row fr-mb-3w">
+  <div ref="stickyIndicator" class="sticky-indicator fr-grid-row fr-mb-3w">
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
