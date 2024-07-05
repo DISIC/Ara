@@ -110,6 +110,7 @@ setInterval(() => {
 </script>
 
 <template>
+  <div class="dropdown-container">
   <Dropdown
     :title="dropdownTitle"
     align-left
@@ -131,9 +132,13 @@ setInterval(() => {
       Dernier enregistrement {{ relativeLastSaveDate }}
     </p>
   </Dropdown>
+  </div>
 </template>
 
 <style scoped>
+.dropdown-container {
+  min-width: 10rem;
+}
 :deep(.fr-btn--tertiary-no-outline) {
   padding: 0;
 }
