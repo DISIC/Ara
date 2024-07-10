@@ -23,7 +23,7 @@ const uniqueId = route.params.uniqueId as string;
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
 const hasNotes = computed(() => {
-  return !!report.data?.notes;
+  return !!report.data?.notes || report.data?.notesFiles.length;
 });
 
 const hasCompliantOrNotApplicableComments = computed(() => {

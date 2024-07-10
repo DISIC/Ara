@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 10/07/2024
+
+### Corrections 🐛
+
+- Corrige l’onglet des notes qui n’était pas affiché lorsque l’audit avait des pièces jointes mais pas de notes textuelles ([#753](https://github.com/DISIC/Ara/pull/753))
+
 ## 03/07/2024
 
 ### Nouvelles fonctionnalités 🚀
