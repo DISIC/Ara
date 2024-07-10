@@ -207,7 +207,8 @@ const tabsData = computed((): TabData[] => {
   return sortBy(
     auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      data: p
+      data: p,
+      icon: p.id === -1 ? "arrow-right-s-line-double" : null
     })) ?? [],
     (p) => p.data.order
   );

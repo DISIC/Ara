@@ -20,7 +20,8 @@ import {
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
+import { RadioColor } from "../ui/Radio.vue";
+import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -45,22 +46,26 @@ const statuses: Array<{
   value: CriteriumResultStatus;
   color?: RadioColor;
 }> = [
-  {
-    label: formatStatus(CriteriumResultStatus.COMPLIANT),
-    value: CriteriumResultStatus.COMPLIANT,
-    color: "green"
-  },
+  ...(props.page.id !== -1
+    ? [
+        {
+          label: formatStatus(CriteriumResultStatus.COMPLIANT),
+          value: CriteriumResultStatus.COMPLIANT,
+          color: RadioColor.GREEN
+        }
+      ]
+    : []),
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
       "Le focus se déplacera dans le champ « Erreur et recommandation »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
-    color: "red"
+    color: RadioColor.RED
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
     value: CriteriumResultStatus.NOT_APPLICABLE,
-    color: "grey"
+    color: RadioColor.GREY
   }
 ];
 
