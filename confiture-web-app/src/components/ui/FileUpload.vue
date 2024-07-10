@@ -10,7 +10,6 @@ import { formatBytes, getUploadUrl } from "../../utils";
 export interface Props {
   acceptedFormats?: Array<string>;
   auditFiles: AuditFile[];
-  boldTitle?: boolean;
   errorMessage?: FileErrorMessage | null;
   maxFileSize?: string;
   multiple?: boolean;
@@ -116,7 +115,6 @@ function onFileRequestFinished() {
       <p
         :id="`file-upload-description-${id}`"
         class="fr-label fr-upload-group__desc"
-        :class="{ 'fr-text--bold': boldTitle }"
       >
         {{ title }}
       </p>

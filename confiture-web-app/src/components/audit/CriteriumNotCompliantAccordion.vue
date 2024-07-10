@@ -80,10 +80,7 @@ function onFileRequestFinished() {
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
-      <label
-        class="fr-label fr-text--bold"
-        :for="`criterum-comment-field-${id}`"
-      >
+      <label class="fr-label" :for="`criterum-comment-field-${id}`">
         Description des erreurs et recommandations
       </label>
       <textarea
@@ -111,7 +108,6 @@ function onFileRequestFinished() {
       :multiple="true"
       :error-message="errorMessage"
       title="Ajouter des images d’exemple"
-      :bold-title="true"
       @delete-file="handleDeleteFile"
       @upload-file="handleUploadFile"
     />
