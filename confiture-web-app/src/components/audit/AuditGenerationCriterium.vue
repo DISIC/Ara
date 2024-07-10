@@ -78,6 +78,18 @@ const result = computed(
     )!
 );
 
+// TODO: UX is not finalized.
+const showTransverseNotice = computed(() => {
+  if (props.page.id === -1) {
+    return false;
+  }
+
+  const transverseStatus =
+    store.data?.[-1][props.topicNumber][props.criterium.number].status;
+
+  return transverseStatus !== CriteriumResultStatus.NOT_TESTED;
+});
+
 const notify = useNotifications();
 
 const errorMessage: Ref<FileErrorMessage | null> = ref(null);
@@ -206,6 +218,19 @@ const isOffline = useIsOffline();
 
 <template>
   <li class="fr-p-2w criterium-container">
+    <div
+      v-if="showTransverseNotice"
+      class="fr-mb-2w criterium-transverse-notice"
+    >
+      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+      <p class="fr-text--sm fr-m-0">
+        Vous avez relevé une erreur concernant ce critère sur toutes les pages
+        <button class="fr-link fr-link--sm fr-ml-3v">
+          Voir l’erreur <span class="fr-sr-only">transverse</span>
+        </button>
+      </p>
+    </div>
+
     <div class="fr-mb-2w criterium-main-section">
       <span class="fr-text--bold criterium-number">
         {{ topicNumber }}.{{ criterium.number }}
@@ -295,6 +320,13 @@ const isOffline = useIsOffline();
 
 .criterium-container::marker {
   content: none;
+}
+
+.criterium-transverse-notice {
+  align-items: start;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
 }
 
 .criterium-main-section {
