@@ -6,20 +6,32 @@ Cette feuille de route liste les prochaines évolutions et fonctionnalités d’
 * **À venir** : fonctionnalité prochainement en conception ou en développement.
 * **Plus tard** : fonctionnalité identifiée et intégrée à la feuille de route.
 
-## Améliorations
 
-- Critères transverses **En cours**
-- Refonte du parcours entre l’audit, le rapport et la déclaration **En cours**
-- Refonte de la rubrique Ressources **À venir**
-- Refonte de la page d’accueil **À venir**
-  
-## Nouvelles fonctionnalités
 
-- Intégration des tests automatiques **À venir**
+## Campagne de tests usagers
+En juillet 2024, nous avons rencontré 16 personnes auditrices en accessibilité numérique débutantes ou confirmées.
+Ces tests nous ont permis d’identifier des pistes d’améliorations, des points de blocages et ont été une aide précieuse dans la priorisation des tâches en cours et à venir. Merci à celles et ceux qui ont joué le jeu :slightly_smiling_face:
 
-## Exporter les documents
+## En cours
+* Appliquer le résultat d’un critère à toutes les pages de l’échantillon.
+* Ajout d’un nouvel onglet permettant d’évaluer les critères pour des éléments ou des composants communs à toutes les pages (haut ou bas de page, menu de navigation, bandeau cookie, etc.)
+* Améliorer la saisie des commentaires ou recommandations.
+  * Ajout d’un éditeur de texte à chaque champ de saisie.
+  * Possibilité d’ajouter une ou plusieurs images dans chaque champ de saisie.
+  * Permettre le glisser déposer d’image
 
-- Exporter au format odt le rapport d’audit **À venir**
-- Exporter au fomat ods les résultats d’audit **Plus tard**
-- Exporter au fomat odp la restitution d’audit **Plus tard**
+## À venir
+La notion d’anomalie arrive. Une anomalie comprend un champ de saise, une ou plusieurs images, un impact et un degrès de facilité. 
+* Pouvoir associer plusieurs anomalies à un critère
+* Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des crières)
+* Refonte du rapport pour mettre en avant la liste des anomalies relevées
+* Appliquer le résultat d'un critère à plusieurs pages de l’échantillon
+
+
+## Plus tard
+* Exporter les livrables (grille d’audit, rapport et déclaration d’accessibilité)
+* Permettre la collaboration à plusieurs auditeurs ou auditrices sur un même audit
+* Intégrer des tests automatiques
+* Exporter les anomalies vers les outils de ticketing
+
 
