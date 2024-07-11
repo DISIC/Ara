@@ -110,115 +110,117 @@ function onFileRequestFinished() {
 </script>
 
 <template>
-  <div class="upload-wrapper">
-    <div v-if="!readonly" class="fr-upload-group">
-      <p
-        :id="`file-upload-description-${id}`"
-        class="fr-label fr-upload-group__desc"
-      >
-        {{ title }}
-      </p>
-      <p class="fr-text--regular fr-hint-text fr-my-2v">
-        Taille maximale par fichier&#8239;: {{ maxFileSize }}.
-        <span v-html="acceptedFormatsHtml"></span>
-        <template v-if="multiple">. Plusieurs fichiers possibles.</template>
-      </p>
+  <div>
+    <div class="upload-wrapper">
+      <div v-if="!readonly" class="fr-upload-group">
+        <p
+          :id="`file-upload-description-${id}`"
+          class="fr-label fr-upload-group__desc"
+        >
+          {{ title }}
+        </p>
+        <p class="fr-text--regular fr-hint-text fr-my-2v">
+          Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+          <span v-html="acceptedFormatsHtml"></span>
+          <template v-if="multiple">. Plusieurs fichiers possibles.</template>
+        </p>
 
-      <!-- TODO: handle multiple files upload -->
-      <!-- :multiple="multiple ?? undefined" -->
-      <label
-        class="upload-btn fr-btn fr-btn--tertiary"
-        tabindex="0"
-        :for="`file-upload-${id}`"
-        >Choisir un fichier</label
+        <!-- TODO: handle multiple files upload -->
+        <!-- :multiple="multiple ?? undefined" -->
+        <label
+          class="upload-btn fr-btn fr-btn--tertiary"
+          tabindex="0"
+          :for="`file-upload-${id}`"
+          >Choisir un fichier</label
+        >
+        <input
+          :id="`file-upload-${id}`"
+          ref="fileInputRef"
+          class="fr-sr-only"
+          tabindex="-1"
+          type="file"
+          :accept="acceptedFormatsAttr"
+          :disabled="isOffline"
+          :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
+          @change="handleFileChange"
+        />
+        <p class="fr-text--sm fr-mt-3v fr-mb-2v">{{ selectedFiles }}</p>
+      </div>
+
+      <p
+        v-if="errorMessage || localErrorMessage"
+        :id="`file-upload-error-format-${id}`"
+        class="fr-error-text fr-mt-0"
       >
-      <input
-        :id="`file-upload-${id}`"
-        ref="fileInputRef"
-        class="fr-sr-only"
-        tabindex="-1"
-        type="file"
-        :accept="acceptedFormatsAttr"
-        :disabled="isOffline"
-        :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
-        @change="handleFileChange"
-      />
-      <p class="fr-text--sm fr-mt-3v fr-mb-2v">{{ selectedFiles }}</p>
+        {{ errorMessage ? errorMessage : localErrorMessage }}
+      </p>
     </div>
 
-    <p
-      v-if="errorMessage || localErrorMessage"
-      :id="`file-upload-error-format-${id}`"
-      class="fr-error-text fr-mt-0"
-    >
-      {{ errorMessage ? errorMessage : localErrorMessage }}
-    </p>
+    <!-- Audit files -->
+    <ul class="files">
+      <li v-for="auditFile in auditFiles" :key="auditFile.id">
+        <img
+          v-if="auditFile.thumbnailKey"
+          class="fr-icon--lg file-thumbnail"
+          :src="getUploadUrl(auditFile.thumbnailKey)"
+          alt=""
+          loading="lazy"
+          width="80"
+          height="80"
+        />
+        <span
+          v-else
+          class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
+          loading="lazy"
+        >
+        </span>
+        <div class="file-link">
+          <span>{{ getFileName(auditFile) }}</span
+          ><br />
+          <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
+        </div>
+        <ul class="fr-btns-group fr-btns-group--inline">
+          <li v-if="isViewable(auditFile)">
+            <a
+              class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
+              :href="getUploadUrl(auditFile.key)"
+              :disabled="isOffline"
+              target="_blank"
+              :title="
+                'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
+              "
+            >
+              Voir
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
+              download
+              :href="getUploadUrl(auditFile.key)"
+              :disabled="isOffline"
+              :title="'Télécharger ' + getFullFileName(auditFile)"
+            >
+              Télécharger
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+            </a>
+          </li>
+          <li v-if="!readonly">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
+              :disabled="isOffline"
+              :title="'Supprimer ' + getFullFileName(auditFile)"
+              @click="deleteFile(auditFile)"
+            >
+              Supprimer
+              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+            </button>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
-
-  <!-- Audit files -->
-  <ul class="files">
-    <li v-for="auditFile in auditFiles" :key="auditFile.id">
-      <img
-        v-if="auditFile.thumbnailKey"
-        class="fr-icon--lg file-thumbnail"
-        :src="getUploadUrl(auditFile.thumbnailKey)"
-        alt=""
-        loading="lazy"
-        width="80"
-        height="80"
-      />
-      <span
-        v-else
-        class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
-        loading="lazy"
-      >
-      </span>
-      <div class="file-link">
-        <span>{{ getFileName(auditFile) }}</span
-        ><br />
-        <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
-      </div>
-      <ul class="fr-btns-group fr-btns-group--inline">
-        <li v-if="isViewable(auditFile)">
-          <a
-            class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
-            :href="getUploadUrl(auditFile.key)"
-            :disabled="isOffline"
-            target="_blank"
-            :title="
-              'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
-            "
-          >
-            Voir
-            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-          </a>
-        </li>
-        <li>
-          <a
-            class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
-            download
-            :href="getUploadUrl(auditFile.key)"
-            :disabled="isOffline"
-            :title="'Télécharger ' + getFullFileName(auditFile)"
-          >
-            Télécharger
-            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-          </a>
-        </li>
-        <li v-if="!readonly">
-          <button
-            class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
-            :disabled="isOffline"
-            :title="'Supprimer ' + getFullFileName(auditFile)"
-            @click="deleteFile(auditFile)"
-          >
-            Supprimer
-            <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
-          </button>
-        </li>
-      </ul>
-    </li>
-  </ul>
 </template>
 
 <style scoped>

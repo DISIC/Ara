@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -16,7 +16,7 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { getCriteriaCount, pluralize, waitForElement } from "../../utils";
+import { getCriteriaCount, pluralize } from "../../utils";
 
 const route = useRoute();
 
@@ -151,13 +151,27 @@ watch(
 );
 
 // Observe the height of the sticky indicator and sync the `top` CSS property with it.
-const stickyTop = ref("0");
-onMounted(async () => {
-  const el = await waitForElement("#sticky-indicator");
-  const resizeObserver = new ResizeObserver((entries) => {
+const auditGenerationHeader = ref<InstanceType<
+  typeof AuditGenerationHeader
+> | null>(null);
+
+const stickyTop = ref<string>("0");
+let resizeObserver: ResizeObserver | null = null;
+
+// Because auditGenerationHeader ref is inside a "v-if",
+// Vue will not instantiate the ref immediately.
+// We need to watch it before observing nested stickyIndicator
+watch(auditGenerationHeader, async () => {
+  const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
+  resizeObserver = new ResizeObserver((entries) => {
     stickyTop.value = entries[0].target.clientHeight + "px";
   });
-  resizeObserver.observe(el);
+  stickyIndicator && resizeObserver.observe(stickyIndicator);
+});
+
+onBeforeUnmount(() => {
+  const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
+  stickyIndicator && resizeObserver?.unobserve(stickyIndicator);
 });
 
 const pageTitle = computed(() => {
@@ -214,6 +228,7 @@ const tabsData = computed((): TabData[] => {
     />
 
     <AuditGenerationHeader
+      ref="auditGenerationHeader"
       :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
       :audit-publication-date="auditStore.currentAudit.publicationDate"
