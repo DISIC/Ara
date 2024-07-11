@@ -79,15 +79,12 @@ const result = computed(
 );
 
 // TODO: UX is not finalized.
-const showTransverseNotice = computed(() => {
-  if (props.page.id === -1) {
-    return false;
+const transverseStatus = computed((): CriteriumResultStatus | null => {
+  if (store.data) {
+    return store.data?.[-1][props.topicNumber][props.criterium.number].status;
   }
 
-  const transverseStatus =
-    store.data?.[-1][props.topicNumber][props.criterium.number].status;
-
-  return transverseStatus !== CriteriumResultStatus.NOT_TESTED;
+  return null;
 });
 
 const notify = useNotifications();
@@ -219,14 +216,23 @@ const isOffline = useIsOffline();
 <template>
   <li class="fr-p-2w criterium-container">
     <div
-      v-if="showTransverseNotice"
+      v-if="
+        page.id !== -1 &&
+        transverseStatus &&
+        [
+          CriteriumResultStatus.NOT_COMPLIANT,
+          CriteriumResultStatus.NOT_APPLICABLE
+        ].includes(transverseStatus)
+      "
       class="fr-mb-2w criterium-transverse-notice"
     >
       <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
       <p class="fr-text--sm fr-m-0">
-        Vous avez relevé une erreur concernant ce critère sur toutes les pages
+        Vous avez déjà évalué ce critère à
+        <strong>{{ formatStatus(transverseStatus) }}</strong> sur toutes les
+        pages
         <button class="fr-link fr-link--sm fr-ml-3v">
-          Voir l’erreur <span class="fr-sr-only">transverse</span>
+          Voir le critère <span class="fr-sr-only">transverse</span>
         </button>
       </p>
     </div>
