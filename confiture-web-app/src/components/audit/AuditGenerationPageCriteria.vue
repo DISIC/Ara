@@ -76,7 +76,7 @@ const noResults = computed(() => {
       </ol>
 
       <div class="fr-grid-row fr-grid-row--right">
-        <TopLink id="audit-tabs" />
+        <TopLink target="audit-tabs" />
       </div>
     </section>
   </template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 defineProps<{
-  id?: string;
+  target?: string;
 }>();
 </script>
 
 <template>
   <a
     class="top-link fr-link fr-icon-arrow-up-fill fr-link--icon-left"
-    :href="`#${id ?? 'header'}`"
+    :href="`#${target ?? 'header'}`"
   >
     Haut de page
   </a>
