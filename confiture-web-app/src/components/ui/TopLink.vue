@@ -1,7 +1,13 @@
+<script setup lang="ts">
+defineProps<{
+  target?: string;
+}>();
+</script>
+
 <template>
   <a
     class="top-link fr-link fr-icon-arrow-up-fill fr-link--icon-left"
-    href="#header"
+    :href="`#${target ?? 'header'}`"
   >
     Haut de page
   </a>

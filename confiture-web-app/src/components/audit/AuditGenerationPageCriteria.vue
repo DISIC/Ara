@@ -3,6 +3,7 @@ import { computed } from "vue";
 
 import { useFiltersStore } from "../../store";
 import { AuditPage } from "../../types";
+import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
 
@@ -75,12 +76,7 @@ const noResults = computed(() => {
       </ol>
 
       <div class="fr-grid-row fr-grid-row--right">
-        <a
-          class="fr-link fr-icon-arrow-up-fill fr-link--icon-left"
-          href="#main"
-        >
-          Haut de page
-        </a>
+        <TopLink target="audit-tabs" />
       </div>
     </section>
   </template>
