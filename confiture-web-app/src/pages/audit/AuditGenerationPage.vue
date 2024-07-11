@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from "lodash-es";
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -157,17 +157,16 @@ const auditGenerationHeader = ref<InstanceType<
 
 const stickyTop = ref<string>("0");
 let resizeObserver: ResizeObserver | null = null;
-onMounted(async () => {
-  // Because auditGenerationHeader ref is inside a "v-if",
-  // Vue will not instantiate the ref immediately.
-  // We need to watch it before observing nested stickyIndicator
-  watch(auditGenerationHeader, async () => {
-    const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
-    resizeObserver = new ResizeObserver((entries) => {
-      stickyTop.value = entries[0].target.clientHeight + "px";
-    });
-    stickyIndicator && resizeObserver.observe(stickyIndicator);
+
+// Because auditGenerationHeader ref is inside a "v-if",
+// Vue will not instantiate the ref immediately.
+// We need to watch it before observing nested stickyIndicator
+watch(auditGenerationHeader, async () => {
+  const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
+  resizeObserver = new ResizeObserver((entries) => {
+    stickyTop.value = entries[0].target.clientHeight + "px";
   });
+  stickyIndicator && resizeObserver.observe(stickyIndicator);
 });
 
 onBeforeUnmount(() => {
