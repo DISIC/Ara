@@ -46,15 +46,11 @@ const statuses: Array<{
   value: CriteriumResultStatus;
   color?: RadioColor;
 }> = [
-  ...(props.page.id !== -1
-    ? [
-        {
-          label: formatStatus(CriteriumResultStatus.COMPLIANT),
-          value: CriteriumResultStatus.COMPLIANT,
-          color: RadioColor.GREEN
-        }
-      ]
-    : []),
+  {
+    label: formatStatus(CriteriumResultStatus.COMPLIANT),
+    value: CriteriumResultStatus.COMPLIANT,
+    color: RadioColor.GREEN
+  },
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
