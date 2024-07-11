@@ -162,6 +162,7 @@ function handleDeleteFile(file: AuditFile) {
 }
 .title-container {
   flex-basis: 100%;
+  flex-grow: 1;
 }
 
 textarea {

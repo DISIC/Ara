@@ -110,30 +110,35 @@ setInterval(() => {
 </script>
 
 <template>
-  <Dropdown
-    :title="dropdownTitle"
-    align-left
-    icon-left
-    :button-props="{
-      class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
-      'aria-live': !systemStore.isOnline ? 'assertive' : 'polite',
-      role: 'alert',
-      style: !systemStore.isOnline
-        ? 'color: var(--text-default-error);'
-        : undefined
-    }"
-  >
-    <p class="fr-text--sm fr-mb-1v">
-      {{ dropdownMainText }}
-    </p>
+  <div class="dropdown-container">
+    <Dropdown
+      :title="dropdownTitle"
+      align-left
+      icon-left
+      :button-props="{
+        class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
+        'aria-live': !systemStore.isOnline ? 'assertive' : 'polite',
+        role: 'alert',
+        style: !systemStore.isOnline
+          ? 'color: var(--text-default-error);'
+          : undefined
+      }"
+    >
+      <p class="fr-text--sm fr-mb-1v">
+        {{ dropdownMainText }}
+      </p>
 
-    <p v-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
-      Dernier enregistrement {{ relativeLastSaveDate }}
-    </p>
-  </Dropdown>
+      <p v-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
+        Dernier enregistrement {{ relativeLastSaveDate }}
+      </p>
+    </Dropdown>
+  </div>
 </template>
 
 <style scoped>
+.dropdown-container {
+  min-width: 10rem;
+}
 :deep(.fr-btn--tertiary-no-outline) {
   padding: 0;
 }
