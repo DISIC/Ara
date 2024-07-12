@@ -70,7 +70,7 @@ export class AuditService {
                 url: ""
               },
               ...data.pages.map((p, i) => {
-                return { ...p, order: i };
+                return { ...p, order: i + 1 };
               })
             ]
           }
