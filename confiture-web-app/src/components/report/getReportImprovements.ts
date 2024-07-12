@@ -1,4 +1,4 @@
-import { groupBy, mapValues, uniqWith } from "lodash-es";
+import { groupBy } from "lodash-es";
 
 import rgaa from "../../criteres.json";
 import { ReportStoreState } from "../../store";
@@ -56,10 +56,8 @@ const hasOneOrMoreImprovements = (t: { improvements: unknown[] }) =>
   t.improvements.length > 0;
 
 const hasImprovement = (r: ReportCriteriumResult) =>
-  !r.transverse &&
-  ((r.status === CriteriumResultStatus.COMPLIANT && r.compliantComment) ||
-    (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
-      r.notApplicableComment));
+  (r.status === CriteriumResultStatus.COMPLIANT && r.compliantComment) ||
+  (r.status === CriteriumResultStatus.NOT_APPLICABLE && r.notApplicableComment);
 
 const getImprovementObject = (r: ReportCriteriumResult) => {
   return {
@@ -74,56 +72,4 @@ const resultIsFromPage = (pageId: number) => (result: ReportCriteriumResult) =>
 
 function getTopicName(topicNumber: number) {
   return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
-}
-
-export type ReportTransverseImprovement = {
-  number: number;
-  name?: string;
-  improvements: {
-    topic: number;
-    criterium: number;
-    status: CriteriumResultStatus;
-    comment: string | null;
-  }[];
-};
-
-export function getReportTransverseImprovements(
-  reportData: ReportStoreState
-): ReportTransverseImprovement[] {
-  return Object.values(
-    mapValues(
-      groupBy(
-        uniqWith(
-          reportData.data?.results.filter((r) => {
-            return (
-              r.transverse &&
-              [
-                CriteriumResultStatus.COMPLIANT,
-                CriteriumResultStatus.NOT_APPLICABLE
-              ].includes(r.status)
-            );
-          }),
-          (a, b) => a.criterium === b.criterium && a.topic === b.topic
-        ),
-        "topic"
-      ),
-      (results, topicNumber) => {
-        return {
-          number: Number(topicNumber),
-          name: getTopicName(Number(topicNumber)),
-          improvements: results.map((r) => {
-            return {
-              topic: r.topic,
-              criterium: r.criterium,
-              status: r.status,
-              comment:
-                r.status === CriteriumResultStatus.COMPLIANT
-                  ? r.compliantComment
-                  : r.notApplicableComment
-            };
-          })
-        };
-      }
-    )
-  );
 }

@@ -9,7 +9,7 @@ import {
   ReportCriteriumResult
 } from "../../types";
 
-export type ReportErrors = {
+export type ReportError = {
   id: number;
   name?: string;
   order: number;
@@ -21,11 +21,11 @@ export type ReportErrors = {
   }[];
 };
 
-export function getAllReportErrors(
+export function getReportErrors(
   report: ReportStoreState,
   quickWinFilter: boolean,
   userImpactFilters: Array<CriterionResultUserImpact | null>
-): ReportErrors[] {
+): ReportError[] {
   const resultsGroupedByPage = {
     // include pages with no errors
     ...report.data?.context.samples.reduce<Record<string, []>>((acc, val) => {

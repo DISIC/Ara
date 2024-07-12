@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { useReportStore } from "../../store";
-import {
-  getReportImprovements,
-  getReportTransverseImprovements
-} from "./getReportImprovements";
+import { getReportImprovements } from "./getReportImprovements";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 
 const report = useReportStore();
+
+const improvementsCount = computed(() => {
+  return getReportImprovements(report)
+    .map((page: any) => page.topics.map((topic: any) => topic.improvements))
+    .flat(2).length;
+});
 </script>
 
 <template>
   <ReportCriteria
     v-if="report.data"
-    :pages-data="getReportImprovements(report)"
-    :transverse-data="getReportTransverseImprovements(report)"
+    :count="improvementsCount"
+    :pages-data="getReportImprovements(report).slice(1)"
+    :transverse-data="getReportImprovements(report).slice(0, 1)"
   >
     <template #transverse-data>
       <section class="fr-mb-8w">
@@ -23,7 +29,8 @@ const report = useReportStore();
         </h2>
 
         <div
-          v-for="(topic, i) in getReportTransverseImprovements(report)"
+          v-for="(topic, i) in getReportImprovements(report).slice(0, 1)[0]
+            .topics"
           :key="topic.number"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -35,7 +42,7 @@ const report = useReportStore();
             v-for="(improvement, j) in topic.improvements"
             :key="j"
             :class="j === 0 ? null : 'fr-mt-9v'"
-            :topic="improvement.topic"
+            :topic="topic.number"
             :criterium="improvement.criterium"
             :comment="improvement.comment!"
             :status="improvement.status"
@@ -46,7 +53,7 @@ const report = useReportStore();
 
     <template #pages-data>
       <section
-        v-for="page in getReportImprovements(report)"
+        v-for="page in getReportImprovements(report).slice(1)"
         :key="page.id"
         class="fr-mb-8w"
       >
