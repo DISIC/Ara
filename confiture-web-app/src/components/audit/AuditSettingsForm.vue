@@ -62,7 +62,7 @@ const accountStore = useAccountStore();
 
 const auditType = ref(props.audit?.auditType);
 const procedureName = ref(props.audit?.procedureName);
-const pages = ref(props.audit?.pages);
+const pages = ref(props.audit?.pages.slice(1));
 const auditorEmail = ref(props.audit?.auditorEmail);
 const auditorName = ref(props.audit?.auditorName ?? "");
 
@@ -80,7 +80,10 @@ function onSubmit() {
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,
-    pages: pages.value.map((p) => ({ ...p, url: p.url })),
+    pages: [
+      props.audit.pages[0],
+      ...pages.value.map((p) => ({ ...p, url: p.url }))
+    ],
     auditorName: auditorName.value,
     auditorEmail: formatEmail(auditorEmail.value)
   });
