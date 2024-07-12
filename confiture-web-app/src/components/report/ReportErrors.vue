@@ -63,6 +63,22 @@ const unknownUserImpactErrorCount = computed(
     ).length
 );
 
+const transverseErrors = computed(() => {
+  return getReportErrors(
+    report,
+    quickWinFilter.value,
+    userImpactFilters.value
+  ).slice(0, 1);
+});
+
+const pagesErrors = computed(() => {
+  return getReportErrors(
+    report,
+    quickWinFilter.value,
+    userImpactFilters.value
+  ).slice(1);
+});
+
 const errorsCount = computed(() => {
   return getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
     .map((page: any) => page.topics.map((topic: any) => topic.errors))
@@ -81,12 +97,8 @@ function resetFilters() {
   <ReportCriteria
     v-if="report.data"
     :count="errorsCount"
-    :pages-data="
-      getReportErrors(report, quickWinFilter, userImpactFilters).slice(1)
-    "
-    :transverse-data="
-      getReportErrors(report, quickWinFilter, userImpactFilters).slice(0, 1)
-    "
+    :pages-data="pagesErrors"
+    :transverse-data="transverseErrors"
     :show-filters="true"
   >
     <template #filter>
@@ -185,27 +197,17 @@ function resetFilters() {
     </template>
 
     <template #transverse-data>
-      <section
-        v-if="
-          getReportErrors(report, quickWinFilter, userImpactFilters)[0].id ===
-          -1
-        "
-        class="fr-mb-8w"
-      >
+      <section v-if="transverseErrors[0].id === -1" class="fr-mb-8w">
         <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
           Toutes les pages
         </h2>
 
         <div
-          v-for="(topic, i) in getReportErrors(
-            report,
-            quickWinFilter,
-            userImpactFilters
-          ).slice(0, 1)[0].topics"
+          v-for="(topic, i) in transverseErrors[0].topics"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
-          <p class="fr-tag fr-tag--sm fr-mb-3w">
+          <p class="fr-tag fr-tag--sm fr-mb-3v">
             {{ topic.topic }}.&nbsp;{{ topic.name }}
           </p>
 
@@ -220,15 +222,7 @@ function resetFilters() {
     </template>
 
     <template #pages-data>
-      <section
-        v-for="page in getReportErrors(
-          report,
-          quickWinFilter,
-          userImpactFilters
-        ).slice(1)"
-        :key="page.id"
-        class="fr-mb-8w"
-      >
+      <section v-for="page in pagesErrors" :key="page.id" class="fr-mb-8w">
         <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h2>

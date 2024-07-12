@@ -8,6 +8,14 @@ import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 
 const report = useReportStore();
 
+const transverseImprovements = computed(() => {
+  return getReportImprovements(report).slice(0, 1);
+});
+
+const pagesImprovements = computed(() => {
+  return getReportImprovements(report).slice(1);
+});
+
 const improvementsCount = computed(() => {
   return getReportImprovements(report)
     .map((page: any) => page.topics.map((topic: any) => topic.improvements))
@@ -20,8 +28,8 @@ const improvementsCount = computed(() => {
     v-if="report.data"
     top-notice="Ci-dessous les commentaires de l’auditeur ou de l’auditrice concernant des critères conformes ou non applicables."
     :count="improvementsCount"
-    :pages-data="getReportImprovements(report).slice(1)"
-    :transverse-data="getReportImprovements(report).slice(0, 1)"
+    :pages-data="pagesImprovements"
+    :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
       <section class="fr-mb-8w">
@@ -30,8 +38,7 @@ const improvementsCount = computed(() => {
         </h2>
 
         <div
-          v-for="(topic, i) in getReportImprovements(report).slice(0, 1)[0]
-            .topics"
+          v-for="(topic, i) in transverseImprovements[0].topics"
           :key="topic.number"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -54,7 +61,7 @@ const improvementsCount = computed(() => {
 
     <template #pages-data>
       <section
-        v-for="page in getReportImprovements(report).slice(1)"
+        v-for="page in pagesImprovements"
         :key="page.id"
         class="fr-mb-8w"
       >
