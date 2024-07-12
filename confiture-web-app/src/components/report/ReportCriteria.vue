@@ -1,27 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
-import { ReportErrors, ReportTransverseError } from "./getReportErrors";
+import type { ReportErrors } from "./getReportErrors";
 import {
   ReportImprovement,
   ReportTransverseImprovement
 } from "./getReportImprovements";
 
-const props = defineProps<{
+defineProps<{
+  count: number;
   pagesData: ReportErrors[] | ReportImprovement[];
-  transverseData: ReportTransverseError[] | ReportTransverseImprovement[];
+  transverseData: ReportErrors[] | ReportTransverseImprovement[];
   showFilters?: boolean;
 }>();
-
-const dataCount = computed(() => {
-  return (
-    props.pagesData
-      .map((page: any) => page.topics.map((topic: any) => topic.improvements))
-      .flat(2).length + props.transverseData.length
-  );
-});
 
 // Set active side menu link
 const route = useRoute();
@@ -97,8 +89,8 @@ function isActive(id: string) {
       <div class="fr-mb-6w header">
         <div role="alert" aria-live="polite">
           <p class="fr-mb-0 fr-text--xl fr-text--bold">
-            {{ dataCount }}
-            {{ pluralize("résultat", "résultats", dataCount) }}
+            {{ count }}
+            {{ pluralize("résultat", "résultats", count) }}
           </p>
         </div>
       </div>

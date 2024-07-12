@@ -1,4 +1,4 @@
-import { groupBy, mapValues, sortBy, uniqWith } from "lodash-es";
+import { groupBy, mapValues, sortBy } from "lodash-es";
 
 import rgaa from "../../criteres.json";
 import { ReportStoreState } from "../../store";
@@ -21,7 +21,7 @@ export type ReportErrors = {
   }[];
 };
 
-export function getReportErrors(
+export function getAllReportErrors(
   report: ReportStoreState,
   quickWinFilter: boolean,
   userImpactFilters: Array<CriterionResultUserImpact | null>
@@ -38,7 +38,6 @@ export function getReportErrors(
         .filter((r) => {
           return (
             r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            !r.transverse &&
             userImpactFilters.includes(r.userImpact)
           );
         })
@@ -79,42 +78,6 @@ export function getReportErrors(
 
 function getPage(report: ReportStoreState, pageId: number | string) {
   return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
-}
-
-export type ReportTransverseError = {
-  topic: number;
-  name?: string;
-  errors: ReportCriteriumResult[];
-};
-
-export function getReportTransverseErrors(
-  report: ReportStoreState,
-  userImpactFilters: Array<CriterionResultUserImpact | null>
-): ReportTransverseError[] {
-  return Object.values(
-    mapValues(
-      groupBy(
-        uniqWith(
-          report.data?.results.filter((r) => {
-            return (
-              r.transverse &&
-              r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-              userImpactFilters.includes(r.userImpact)
-            );
-          }),
-          (a, b) => a.criterium === b.criterium && a.topic === b.topic
-        ),
-        "topic"
-      ),
-      (results, topicNumber) => {
-        return {
-          topic: Number(topicNumber),
-          name: getTopicName(Number(topicNumber)),
-          errors: results
-        };
-      }
-    )
-  );
 }
 
 function getTopicName(topicNumber: number) {
