@@ -63,9 +63,16 @@ export class AuditService {
 
         pages: {
           createMany: {
-            data: data.pages.map((p, i) => {
-              return { ...p, order: i };
-            })
+            data: [
+              {
+                id: -1,
+                name: "Éléments transverses",
+                url: ""
+              },
+              ...data.pages.map((p, i) => {
+                return { ...p, order: i + 1 };
+              })
+            ]
           }
         },
 

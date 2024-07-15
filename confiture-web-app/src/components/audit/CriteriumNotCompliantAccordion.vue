@@ -42,17 +42,17 @@ const userImpacts: Array<{
   {
     value: CriterionResultUserImpact.MINOR,
     label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: "grey"
+    color: RadioColor.GREY
   },
   {
     value: CriterionResultUserImpact.MAJOR,
     label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: "yellow"
+    color: RadioColor.YELLOW
   },
   {
     value: CriterionResultUserImpact.BLOCKING,
     label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: "red"
+    color: RadioColor.RED
   }
 ];
 

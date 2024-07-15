@@ -20,7 +20,8 @@ import {
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
+import { RadioColor } from "../ui/Radio.vue";
+import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -46,17 +47,17 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.COMPLIANT),
     value: CriteriumResultStatus.COMPLIANT,
-    color: "green"
+    color: RadioColor.GREEN
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     value: CriteriumResultStatus.NOT_COMPLIANT,
-    color: "red"
+    color: RadioColor.RED
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
     value: CriteriumResultStatus.NOT_APPLICABLE,
-    color: "grey"
+    color: RadioColor.GREY
   }
 ];
 
@@ -68,6 +69,15 @@ const result = computed(
       props.criterium.number
     )!
 );
+
+// TODO: UX is not finalized.
+const transverseStatus = computed((): CriteriumResultStatus | null => {
+  if (store.data) {
+    return store.data?.[-1][props.topicNumber][props.criterium.number].status;
+  }
+
+  return null;
+});
 
 const notify = useNotifications();
 
@@ -166,13 +176,6 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
     .catch(handleUpdateResultError);
 }
 
-function updateTransverseStatus(e: Event) {
-  const transverse = (e.target as HTMLInputElement).checked;
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
-    .catch(handleUpdateResultError);
-}
-
 function updateQuickWin(quickWin: boolean) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
@@ -189,6 +192,28 @@ const isOffline = useIsOffline();
 
 <template>
   <li class="fr-p-2w criterium-container">
+    <div
+      v-if="
+        page.id !== -1 &&
+        transverseStatus &&
+        [
+          CriteriumResultStatus.NOT_COMPLIANT,
+          CriteriumResultStatus.NOT_APPLICABLE
+        ].includes(transverseStatus)
+      "
+      class="fr-mb-2w criterium-transverse-notice"
+    >
+      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+      <p class="fr-text--sm fr-m-0">
+        Vous avez déjà évalué ce critère à
+        <strong>{{ formatStatus(transverseStatus) }}</strong> sur toutes les
+        pages
+        <button class="fr-link fr-link--sm fr-ml-3v">
+          Voir le critère <span class="fr-sr-only">transverse</span>
+        </button>
+      </p>
+    </div>
+
     <div class="fr-mb-2w criterium-main-section">
       <span class="fr-text--bold criterium-number">
         {{ topicNumber }}.{{ criterium.number }}
@@ -217,32 +242,8 @@ const isOffline = useIsOffline();
         :items="statuses"
         @update:model-value="updateResultStatus"
       />
-
-      <div class="fr-toggle fr-toggle--label-left">
-        <input
-          :id="`applicable-all-pages-${uniqueId}`"
-          :checked="result.transverse"
-          type="checkbox"
-          class="fr-toggle__input"
-          :disabled="
-            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
-          "
-          @input="updateTransverseStatus"
-        />
-        <label
-          class="fr-toggle__label"
-          :for="`applicable-all-pages-${uniqueId}`"
-        >
-          <span class="sr-only">
-            Appliquer le statut {{ formatStatus(result.status) }} pour le
-            critère {{ topicNumber }}.{{ criterium.number }}
-          </span>
-          &nbsp;Sur toutes les pages
-        </label>
-      </div>
     </div>
 
-    <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
@@ -295,6 +296,13 @@ const isOffline = useIsOffline();
 
 .criterium-container::marker {
   content: none;
+}
+
+.criterium-transverse-notice {
+  align-items: start;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
 }
 
 .criterium-main-section {
