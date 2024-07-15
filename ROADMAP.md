@@ -2,17 +2,13 @@
 
 Cette feuille de route liste les prochaines évolutions et fonctionnalités d’Ara. Elle est mise à jour régulièrement afin de vous offrir une vision précise des statuts et priorisations des travaux menés par l’équipe.
 
-* **En cours** : fonctionnalité en cours de conception ou de développement. Bientôt en production.
-* **À venir** : fonctionnalité prochainement en conception ou en développement.
-* **Plus tard** : fonctionnalité identifiée et intégrée à la feuille de route.
-
-
-
 ## Campagne de tests usagers
 En juillet 2024, nous avons rencontré 16 personnes auditrices en accessibilité numérique débutantes ou confirmées.
-Ces tests nous ont permis d’identifier des pistes d’améliorations, des points de blocages et ont été une aide précieuse dans la priorisation des tâches en cours et à venir. Merci à celles et ceux qui ont joué le jeu :slightly_smiling_face:
+Ces tests nous ont permis d’identifier des pistes d’améliorations, des points de blocages et ont été une aide précieuse dans la priorisation des tâches en cours et à venir. Merci à celles et ceux qui ont joué le jeu !
 
-## En cours
+## En cours 
+<p class="fr-text--xs">Fonctionnalités en cours de conception ou de développement. Bientôt en production.</p>
+
 * Appliquer le résultat d’un critère à toutes les pages de l’échantillon.
 * Ajout d’un nouvel onglet permettant d’évaluer les critères pour des éléments ou des composants communs à toutes les pages (haut ou bas de page, menu de navigation, bandeau cookie, etc.)
 * Améliorer la saisie des commentaires ou recommandations.
@@ -21,6 +17,8 @@ Ces tests nous ont permis d’identifier des pistes d’améliorations, des poin
   * Permettre le glisser déposer d’image
 
 ## À venir
+<p class="fr-text--xs">Fonctionnalités prochainement en conception ou en développement.</p>
+
 La notion d’anomalie arrive. Une anomalie comprend un champ de saise, une ou plusieurs images, un impact et un degrès de facilité. 
 * Pouvoir associer plusieurs anomalies à un critère
 * Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des crières)
@@ -29,6 +27,8 @@ La notion d’anomalie arrive. Une anomalie comprend un champ de saise, une ou p
 
 
 ## Plus tard
+<p class="fr-text--xs">Fonctionnalités identifiées et intégrées à la feuille de route.</p>
+
 * Exporter les livrables (grille d’audit, rapport et déclaration d’accessibilité)
 * Permettre la collaboration à plusieurs auditeurs ou auditrices sur un même audit
 * Intégrer des tests automatiques
