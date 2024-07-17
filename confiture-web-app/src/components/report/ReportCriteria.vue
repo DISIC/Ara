@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
@@ -12,7 +12,7 @@ import {
 const props = defineProps<{
   pagesData: ReportErrors[] | ReportImprovement[];
   transverseData: ReportTransverseError[] | ReportTransverseImprovement[];
-  showFilters?: boolean;
+  topNotice?: string;
 }>();
 
 const dataCount = computed(() => {
@@ -29,6 +29,12 @@ const route = useRoute();
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
+
+const slots = useSlots();
+
+const hasFilters = computed(() => {
+  return !!slots.filter;
+});
 </script>
 
 <template>
@@ -94,7 +100,7 @@ function isActive(id: string) {
     </div>
 
     <div>
-      <div class="fr-mb-6w header">
+      <div v-if="hasFilters" class="fr-mb-6w header">
         <div role="alert" aria-live="polite">
           <p class="fr-mb-0 fr-text--xl fr-text--bold">
             {{ dataCount }}
@@ -102,6 +108,10 @@ function isActive(id: string) {
           </p>
         </div>
       </div>
+
+      <p v-if="topNotice" class="fr-text--sm improvements-notice">
+        {{ topNotice }}
+      </p>
 
       <slot v-if="transverseData.length" name="transverse-data" />
 
@@ -148,5 +158,9 @@ function isActive(id: string) {
   .sidebar {
     box-shadow: none;
   }
+}
+
+.improvements-notice {
+  color: var(--text-mention-grey);
 }
 </style>

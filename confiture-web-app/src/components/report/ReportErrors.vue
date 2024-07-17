@@ -76,7 +76,6 @@ function resetFilters() {
     v-if="report.data"
     :pages-data="getReportErrors(report, quickWinFilter, userImpactFilters)"
     :transverse-data="getReportTransverseErrors(report, userImpactFilters)"
-    :show-filters="true"
   >
     <template #filter>
       <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
