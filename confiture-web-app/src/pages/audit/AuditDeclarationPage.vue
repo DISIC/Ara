@@ -484,17 +484,9 @@ const isDevMode = useDevMode();
 
     <TestEnvironmentSelection v-model="environments" />
 
-    <!-- <div class="narrow-content"> -->
-    <h2 class="fr-h4">Dérogations</h2>
-    <p>
-      Ces informations doivent faire l’objet d’une discussion entre l’auditeur
-      ou l’auditrice et le responsable du site audité. C’est le responsable du
-      site audité qui accepte de prendre le risque juridique de mentionner des
-      contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux
-      champs vides.
-    </p>
+    <h2 class="fr-h4">Contenus non accessibles</h2>
 
-    <div class="fr-input-group">
+    <div class="fr-input-group fr-mb-2w">
       <label class="fr-label" for="notCompliantContent">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
@@ -509,6 +501,15 @@ const isDevMode = useDevMode();
         class="fr-input"
       />
     </div>
+
+    <h3 class="fr-h6 fr-mb-2w">Dérogations</h3>
+
+    <p>
+      Les contenus dérogés doivent faire l’objet d’une discussion entre
+      l’auditeur et le responsable du site audité. C’est le responsable du site
+      audité qui accepte de prendre le risque juridique de mentionner des
+      contenus dérogés.
+    </p>
 
     <div class="fr-input-group">
       <label class="fr-label" for="derogatedContent">
