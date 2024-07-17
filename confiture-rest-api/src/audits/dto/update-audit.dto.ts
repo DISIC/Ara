@@ -23,37 +23,16 @@ class UpdateAuditEnvironment {
   operatingSystem: string;
 
   /**
-   * @example "11"
-   */
-  @IsString()
-  @IsOptional()
-  operatingSystemVersion?: string;
-
-  /**
    * @example "JAWS"
    */
   @IsString()
   assistiveTechnology: string;
 
   /**
-   * @example "14.2"
-   */
-  @IsString()
-  @IsOptional()
-  assistiveTechnologyVersion?: string;
-
-  /**
    * @example "Firefox"
    */
   @IsString()
   browser: string;
-
-  /**
-   * @example "104"
-   */
-  @IsString()
-  @IsOptional()
-  browserVersion?: string;
 }
 
 // class CreateAuditRecipients {

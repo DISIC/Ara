@@ -146,29 +146,14 @@ class Environment {
   operatingSystem: string;
 
   /**
-   * @example "11"
-   */
-  operatingSystemVersion: string;
-
-  /**
    * @example "JAWS"
    */
   assistiveTechnology: string;
 
   /**
-   * @example "14.2"
-   */
-  assistiveTechnologyVersion: string;
-
-  /**
    * @example "Firefox"
    */
   browser: string;
-
-  /**
-   * @example "104"
-   */
-  browserVersion: string;
 }
 
 class ReportCriterionResult {
