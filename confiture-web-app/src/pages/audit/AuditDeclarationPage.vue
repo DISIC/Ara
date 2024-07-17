@@ -345,6 +345,7 @@ const isDevMode = useDevMode();
         v-model="contactName"
         label="Nom et prénom du contact (optionnel)"
         type="text"
+        class="narrow-field"
       />
 
       <p>
@@ -362,6 +363,7 @@ const isDevMode = useDevMode();
             ? 'Vous devez renseigner au moins 1 moyen de contact'
             : undefined
         "
+        class="narrow-field"
       />
 
       <DsfrField
@@ -583,6 +585,10 @@ const isDevMode = useDevMode();
 
 .contact-fieldset {
   display: block;
+}
+
+.narrow-field {
+  max-width: 25rem;
 }
 
 .mandatory-notice {
