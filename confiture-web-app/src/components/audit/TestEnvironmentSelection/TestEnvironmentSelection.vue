@@ -2,12 +2,7 @@
 import { uniqWith } from "lodash-es";
 import { nextTick, ref, watch } from "vue";
 
-import {
-  AssistiveTechnology,
-  Browsers,
-  OperatingSystem,
-  Platform
-} from "../../../enums";
+import { Platform } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
 import DsfrField from "../../ui/DsfrField.vue";
 import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
@@ -45,11 +40,8 @@ const customEnvironments = ref([
         {
           platform: "",
           operatingSystem: "",
-          operatingSystemVersion: "",
           assistiveTechnology: "",
-          assistiveTechnologyVersion: "",
-          browser: "",
-          browserVersion: ""
+          browser: ""
         }
       ]
     : [])
@@ -74,105 +66,33 @@ watch(
   }
 );
 
-function availableOs(platform: string) {
-  switch (platform) {
-    case Platform.DESKTOP:
-      return [OperatingSystem.WINDOWS, OperatingSystem.MAC_OS];
-    case Platform.MOBILE:
-      return [OperatingSystem.ANDROID, OperatingSystem.I_OS];
-  }
-}
-
-function availableAT(os: string) {
-  switch (os) {
-    case OperatingSystem.WINDOWS:
-      return [AssistiveTechnology.NVDA, AssistiveTechnology.JAWS];
-    case OperatingSystem.MAC_OS:
-    case OperatingSystem.I_OS:
-      return [AssistiveTechnology.VOICE_OVER];
-    case OperatingSystem.ANDROID:
-      return [AssistiveTechnology.TALKBACK];
-    default:
-      return [Browsers.FIREFOX, Browsers.CHROME, Browsers.EDGE];
-  }
-}
-
-function availableBrowsers(os: string) {
-  switch (os) {
-    case OperatingSystem.WINDOWS:
-      return [Browsers.FIREFOX, Browsers.CHROME, Browsers.EDGE];
-    case OperatingSystem.MAC_OS:
-      return [
-        Browsers.FIREFOX,
-        Browsers.CHROME,
-        Browsers.EDGE,
-        Browsers.SAFARI
-      ];
-    case OperatingSystem.I_OS:
-      return [Browsers.SAFARI, Browsers.CHROME];
-    case OperatingSystem.ANDROID:
-      return [Browsers.FIREFOX, Browsers.CHROME];
-    default:
-      return [
-        Browsers.FIREFOX,
-        Browsers.CHROME,
-        Browsers.EDGE,
-        Browsers.SAFARI
-      ];
-  }
-}
-
-const envSupportRefs = ref<HTMLInputElement[]>([]);
+const envPlatformRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 /**
- * Create a new environment and focus its support field.
+ * Create a new environment and focus its platform field.
  */
 async function addEnvironment() {
   customEnvironments.value.push({
     platform: "",
     operatingSystem: "",
-    operatingSystemVersion: "",
     assistiveTechnology: "",
-    assistiveTechnologyVersion: "",
-    browser: "",
-    browserVersion: ""
+    browser: ""
   });
   await nextTick();
-  const lastInput = envSupportRefs.value[envSupportRefs.value.length - 1];
-  lastInput.focus();
+  const lastInput = envPlatformRefs.value[envPlatformRefs.value.length - 1];
+  lastInput.inputRef?.focus();
 }
 
 /**
- * Delete environment at index and focus previous or first support field.
+ * Delete environment at index and focus previous or first platform field.
  * @param {number} i
  */
 async function deleteEnvironment(i: number) {
   customEnvironments.value.splice(i, 1);
   await nextTick();
   const previousInput =
-    i === 0 ? envSupportRefs.value[0] : envSupportRefs.value[i - 1];
-  previousInput.focus();
-}
-
-const forceShowEnvFields = ref(false);
-
-async function onPlatformChange(env: Omit<AuditEnvironment, "id">) {
-  if (!env.operatingSystem && !env.browser && !env.assistiveTechnology) return;
-  if (env.operatingSystem && env.browser && env.assistiveTechnology) {
-    forceShowEnvFields.value = true;
-  }
-  if (env.operatingSystem) env.operatingSystem = "";
-  if (env.assistiveTechnology) env.assistiveTechnology = "";
-  if (env.browser) env.browser = "";
-}
-
-async function onOsChange(env: Omit<AuditEnvironment, "id">) {
-  if (!env.browser && !env.assistiveTechnology) return;
-  if (env.browser && env.assistiveTechnology) {
-    forceShowEnvFields.value = true;
-  }
-  if (env.assistiveTechnology) env.assistiveTechnology = "";
-  if (env.browser) env.browser = "";
+    i === 0 ? envPlatformRefs.value[0] : envPlatformRefs.value[i - 1];
+  previousInput.inputRef?.focus();
 }
 
 /**
@@ -262,7 +182,7 @@ function combineEnvironments(
     />
   </div>
 
-  <div class="suggested-environments">
+  <div class="fr-mb-4w suggested-environments">
     <AuditEnvironmentCheckbox
       v-for="env in mobileCombinations"
       :key="env.title"
@@ -274,11 +194,15 @@ function combineEnvironments(
     />
   </div>
 
-  <div class="narrow-content">
+  <h3 class="fr-text--lg fr-mb-2w">
+    Ajouter un environnement de test personnalisé
+  </h3>
+
+  <div class="custom-environment">
     <fieldset
       v-for="(env, i) in customEnvironments"
       :key="i"
-      class="fr-fieldset fr-m-0 fr-p-0 fr-mt-4w fr-p-4w env-card"
+      class="fr-p-3w fr-m-0 env-card"
     >
       <legend class="env-legend">
         <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
@@ -291,138 +215,53 @@ function combineEnvironments(
       >
         Supprimer
       </button>
-      <div class="fr-form-group env-form">
-        <fieldset class="fr-fieldset fr-fieldset--inline">
-          <legend class="fr-fieldset__legend fr-text--regular fr-mt-2w">
-            Support
-          </legend>
-          <div class="fr-fieldset__content">
-            <div class="fr-radio-group">
-              <input
-                :id="`env-support-desktop-${i}`"
-                ref="envSupportRefs"
-                v-model="env.platform"
-                type="radio"
-                :name="`env-support-${i}`"
-                :value="Platform.DESKTOP"
-                @change="onPlatformChange(customEnvironments[i])"
-              />
-              <label class="fr-label" :for="`env-support-desktop-${i}`"
-                >Ordinateur</label
-              >
-            </div>
-            <div class="fr-radio-group">
-              <input
-                :id="`env-support-mobile-${i}`"
-                v-model="env.platform"
-                type="radio"
-                :name="`env-support-${i}`"
-                :value="Platform.MOBILE"
-                @change="onPlatformChange(customEnvironments[i])"
-              />
-              <label class="fr-label" :for="`env-support-mobile-${i}`">
-                Mobile
-              </label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div v-if="env.platform" class="fr-select-group">
-        <label class="fr-label" :for="`env-os-${i}`">
-          Logiciel d’exploitation
-        </label>
-        <select
-          :id="`env-os-${i}`"
-          v-model="env.operatingSystem"
-          class="fr-select"
-          @change="onOsChange(customEnvironments[i])"
-        >
-          <option value="" selected disabled hidden>
-            Selectionnez une option
-          </option>
-          <option v-for="os in availableOs(env.platform)" :key="os" :value="os">
-            {{ os }}
-          </option>
-        </select>
-      </div>
+
       <DsfrField
-        v-if="env.operatingSystem || forceShowEnvFields"
-        :id="`env-os-version-${i}`"
-        v-model="env.operatingSystemVersion"
-        label="Version du logiciel d’exploitation (optionnel)"
+        :id="`env-device-${i}`"
+        ref="envPlatformRefs"
+        v-model="env.platform"
+        label="Appareil"
+        hint="Exemples : mobile, borne interactive"
         type="text"
+        required
       />
 
-      <div
-        v-if="env.operatingSystem || forceShowEnvFields"
-        class="fr-select-group"
-      >
-        <label class="fr-label" :for="`env-at-${i}`">
-          Technologie d’assistance
-        </label>
-        <select
-          :id="`env-at-${i}`"
-          v-model="env.assistiveTechnology"
-          class="fr-select"
-        >
-          <option value="" selected disabled hidden>
-            Selectionnez une option
-          </option>
-          <option
-            v-for="at in availableAT(env.operatingSystem)"
-            :key="at"
-            :value="at"
-          >
-            {{ at }}
-          </option>
-        </select>
-      </div>
       <DsfrField
-        v-if="env.assistiveTechnology || forceShowEnvFields"
-        :id="`env-at-version-${i}`"
-        v-model="env.assistiveTechnologyVersion"
-        label="Version de la technologie d’assistance (optionnel)"
+        :id="`env-os-${i}`"
+        v-model="env.operatingSystem"
+        label="Logiciel d’exploitation"
+        hint="Exemple : macOS"
         type="text"
+        required
       />
 
-      <div
-        v-if="env.assistiveTechnology || forceShowEnvFields"
-        class="fr-select-group"
-      >
-        <label class="fr-label" :for="`env-browser-${i}`"> Navigateur </label>
-        <select
-          :id="`env-browser-${i}`"
-          v-model="env.browser"
-          class="fr-select"
-        >
-          <option value="" selected disabled hidden>
-            Selectionnez une option
-          </option>
-          <option
-            v-for="browser in availableBrowsers(env.operatingSystem)"
-            :key="browser"
-            :value="browser"
-          >
-            {{ browser }}
-          </option>
-        </select>
-      </div>
       <DsfrField
-        v-if="env.browser || forceShowEnvFields"
-        :id="`env-browser-version-${i}`"
-        v-model="env.browserVersion"
-        label="Version du navigateur (optionnel)"
+        :id="`env-at-${i}`"
+        v-model="env.assistiveTechnology"
+        label="Technologie d’assistance"
+        hint="Exemple : VoiceOver"
         type="text"
+        required
+      />
+
+      <DsfrField
+        :id="`env-browser-${i}`"
+        v-model="env.browser"
+        label="Navigateur"
+        hint="Exemple : Safari"
+        type="text"
+        required
       />
     </fieldset>
-    <button
-      class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-5w"
-      type="button"
-      @click="addEnvironment"
-    >
-      Ajouter un environnement
-    </button>
   </div>
+
+  <button
+    class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-5w"
+    type="button"
+    @click="addEnvironment"
+  >
+    Ajouter un environnement
+  </button>
 </template>
 
 <style scoped>
@@ -430,6 +269,7 @@ function combineEnvironments(
   max-width: 49.5rem;
 }
 
+.custom-environment,
 .suggested-environments {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -439,6 +279,7 @@ function combineEnvironments(
 .env-card {
   border: 1px solid var(--border-default-grey);
   display: grid;
+  gap: 1rem;
   grid-template-columns: auto auto;
   align-items: center;
 }
@@ -455,16 +296,10 @@ function combineEnvironments(
   grid-column: 1 / -1;
 }
 
-@media (width < 62rem) {
-  .suggested-environments {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (width < 36rem) {
+@media (width < 48rem) {
+  .custom-environment,
   .suggested-environments {
     grid-template-columns: 1fr;
   }
 }
 </style>
-../../../enums../../../types
