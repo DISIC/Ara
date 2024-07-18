@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, Ref, ref } from "vue";
+import { computed, nextTick, Ref, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -128,6 +128,10 @@ function updateResultStatus(status: CriteriumResultStatus) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
+      if (status === CriteriumResultStatus.NOT_COMPLIANT) {
+        criteriumNotCompliantAccordion.value?.disclose();
+      }
+
       if (
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate

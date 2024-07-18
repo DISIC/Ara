@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -32,7 +32,7 @@ const emit = defineEmits<{
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished });
+defineExpose({ onFileRequestFinished, disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -71,10 +71,25 @@ function handleDeleteFile(image: AuditFile) {
 function onFileRequestFinished() {
   fileUpload.value?.onFileRequestFinished();
 }
+
+const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const commentFieldRef = ref<HTMLTextAreaElement>();
+
+// FIXME: avoid setTimeout()
+async function disclose() {
+  const accordion = lazyAccordionRef.value?.accordionRef;
+
+  dsfr(accordion).accordionsGroup.members[0].disclose();
+  await nextTick();
+  setTimeout(() => {
+    commentFieldRef.value?.focus();
+  }, 10);
+}
 </script>
 
 <template>
   <LazyAccordion
+    ref="lazyAccordionRef"
     title="Erreur et recommandation"
     disclose-color="var(--background-default-grey)"
   >
@@ -85,6 +100,7 @@ function onFileRequestFinished() {
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
+        ref="commentFieldRef"
         :value="comment ?? ''"
         class="fr-input"
         rows="5"
