@@ -134,5 +134,7 @@ input:checked + .label.red {
 
 input:checked + .label::after {
   background-color: currentColor;
+  outline: 0.25rem solid transparent;
+  outline-offset: -0.25rem;
 }
 </style>
