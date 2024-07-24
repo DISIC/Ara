@@ -100,18 +100,9 @@ const bottomLinks = [
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
-                href="https://legifrance.gouv.fr"
+                href="https://info.gouv.fr"
                 target="_blank"
-                >legifrance.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
-              >
-            </li>
-            <li class="fr-footer__content-item">
-              <a
-                class="fr-footer__content-link"
-                href="https://gouvernement.fr"
-                target="_blank"
-                >gouvernement.fr
+                >info.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
@@ -121,6 +112,15 @@ const bottomLinks = [
                 href="https://service-public.fr"
                 target="_blank"
                 >service-public.fr
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
+              >
+            </li>
+            <li class="fr-footer__content-item">
+              <a
+                class="fr-footer__content-link"
+                href="https://legifrance.gouv.fr"
+                target="_blank"
+                >legifrance.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
