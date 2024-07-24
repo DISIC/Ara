@@ -242,7 +242,6 @@ const isOffline = useIsOffline();
       </div>
     </div>
 
-    <!-- FIXME: left/right arrow bug -->
     <!-- COMMENT / DESCRIPTION -->
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
@@ -313,6 +312,6 @@ const isOffline = useIsOffline();
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0 1rem;
+  gap: 0.5rem 1rem;
 }
 </style>
