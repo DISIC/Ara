@@ -36,13 +36,13 @@ function handleChange(value: string) {
 
 <template>
   <fieldset class="fr-mx-0 fr-p-0 fieldset">
-    <legend :class="hideLabel ? 'sr-only' : 'fr-label fr-mb-3v'">
+    <legend :class="hideLabel ? 'fr-sr-only' : 'fr-label fr-mb-3v'">
       {{ label }}
     </legend>
     <div v-for="(item, i) in items" :key="i">
       <input
         :id="`checkbox-group-${uniqueId}--${i}`"
-        class="sr-only"
+        class="fr-sr-only"
         type="checkbox"
         :disabled="disabled"
         :checked="modelValue === item.value"

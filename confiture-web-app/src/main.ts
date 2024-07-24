@@ -26,7 +26,7 @@ import router from "./router";
           class="no-external-icon"
         >
           ${text}
-          <span class="sr-only"> (ouvre dans une nouvelle fenêtre)</span>
+          <span class="fr-sr-only"> (ouvre dans une nouvelle fenêtre)</span>
         </a>`;
       } else {
         return `<a href="${href}">${text}</a>`;

@@ -101,7 +101,7 @@ watch(currentStep, () => {
 
             <div ref="contentEl" class="fr-modal__content" tabindex="-1">
               <div class="content">
-                <h1 class="sr-only">{{ steps[0].title }}</h1>
+                <h1 class="fr-sr-only">{{ steps[0].title }}</h1>
 
                 <StatDonut
                   v-if="currentStep === 0"

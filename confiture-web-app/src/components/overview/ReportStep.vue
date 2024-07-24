@@ -25,7 +25,7 @@ const auditIsReady = computed(() => {
         id="report-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill report-step-check"
       >
-        <span class="sr-only">Étape terminée</span>
+        <span class="fr-sr-only">Étape terminée</span>
       </span>
       <h2
         class="fr-h3 fr-mb-0 report-step-title"
@@ -61,7 +61,7 @@ const auditIsReady = computed(() => {
           title="Consulter le rapport - nouvelle fenêtre"
         >
           Consulter
-          <span class="sr-only">(nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </li>
     </ul>

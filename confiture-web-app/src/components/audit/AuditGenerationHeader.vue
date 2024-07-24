@@ -354,7 +354,7 @@ onMounted(() => {
                   :disabled="isOffline"
                 >
                   Consulter le rapport
-                  <span class="sr-only">(Nouvelle fenêtre)</span>
+                  <span class="fr-sr-only">(Nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -395,7 +395,7 @@ onMounted(() => {
             :disabled="isOffline"
           >
             Consulter le rapport
-            <span class="sr-only">(Nouvelle fenêtre)</span>
+            <span class="fr-sr-only">(Nouvelle fenêtre)</span>
           </component>
         </li>
 

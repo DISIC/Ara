@@ -22,7 +22,7 @@ const isOffline = useIsOffline();
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
-      <label class="fr-label sr-only" :for="`criterum-comment-field-${id}`">
+      <label class="fr-label fr-sr-only" :for="`criterum-comment-field-${id}`">
         Points d’améliorations
       </label>
       <textarea

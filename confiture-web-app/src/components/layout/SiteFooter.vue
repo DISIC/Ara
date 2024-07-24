@@ -74,7 +74,7 @@ const bottomLinks = [
               href="https://design.numerique.gouv.fr/"
               target="_blank"
             >
-              DesignGouv <span class="sr-only">(nouvelle fenêtre)</span></a
+              DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a
             >, le pôle Design des services numériques de la
             <a
               class="fr-link fr-text--sm"
@@ -83,14 +83,14 @@ const bottomLinks = [
               target="_blank"
             >
               direction interministérielle du numérique
-              <span class="sr-only">(nouvelle fenêtre)</span></a
+              <span class="fr-sr-only">(nouvelle fenêtre)</span></a
             >
             avec le soutien du
             <a
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
-              >FIPHFP<span class="sr-only">
+              >FIPHFP<span class="fr-sr-only">
                 Fonds pour l’insertion des personnes handicapées dans la
                 Fonction publique (nouvelle fenêtre)
               </span></a
@@ -103,7 +103,7 @@ const bottomLinks = [
                 href="https://legifrance.gouv.fr"
                 target="_blank"
                 >legifrance.gouv.fr
-                <span class="sr-only">(nouvelle fenêtre)</span></a
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
             <li class="fr-footer__content-item">
@@ -112,7 +112,7 @@ const bottomLinks = [
                 href="https://gouvernement.fr"
                 target="_blank"
                 >gouvernement.fr
-                <span class="sr-only">(nouvelle fenêtre)</span></a
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
             <li class="fr-footer__content-item">
@@ -121,7 +121,7 @@ const bottomLinks = [
                 href="https://service-public.fr"
                 target="_blank"
                 >service-public.fr
-                <span class="sr-only">(nouvelle fenêtre)</span></a
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
             <li class="fr-footer__content-item">
@@ -129,7 +129,8 @@ const bottomLinks = [
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
-                >data.gouv.fr <span class="sr-only">(nouvelle fenêtre)</span></a
+                >data.gouv.fr
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
           </ul>
@@ -186,7 +187,7 @@ const bottomLinks = [
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
               >licence etalab-2.0
-              <span class="sr-only">(nouvelle fenêtre)</span></a
+              <span class="fr-sr-only">(nouvelle fenêtre)</span></a
             >
           </p>
         </div>

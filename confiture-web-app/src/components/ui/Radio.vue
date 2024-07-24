@@ -18,7 +18,7 @@ defineEmits(["update:modelValue"]);
   <div>
     <input
       :id="id"
-      class="sr-only"
+      class="fr-sr-only"
       type="radio"
       :name="name"
       :checked="value === modelValue"

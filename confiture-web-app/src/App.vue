@@ -40,7 +40,12 @@ onMounted(() => {
 
 <template>
   <!-- Page title container, filled on page change -->
-  <div id="page-title-alert" class="sr-only" role="alert" aria-live="polite" />
+  <div
+    id="page-title-alert"
+    class="fr-sr-only"
+    role="alert"
+    aria-live="polite"
+  />
 
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">
@@ -65,7 +70,7 @@ onMounted(() => {
           nous faire part de vos retours depuis ce
           <RouterLink :to="{ name: 'feedback' }" target="_blank">
             court formulaire
-            <span class="sr-only">(nouvelle fenêtre)</span>
+            <span class="fr-sr-only">(nouvelle fenêtre)</span>
           </RouterLink>
         </p>
       </div>

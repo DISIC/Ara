@@ -29,7 +29,7 @@ const auditIsPublishable = computed(() => {
         id="statement-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill statement-step-check"
       >
-        <span class="sr-only">Étape terminée</span>
+        <span class="fr-sr-only">Étape terminée</span>
       </span>
       <h2
         class="fr-h3 fr-mb-0 statement-step-title"
@@ -91,7 +91,7 @@ const auditIsPublishable = computed(() => {
           {{ auditIsPublishable ? "Consulter" : "Compléter" }}
           <span
             v-if="auditIsPublishable || !accountStore.account"
-            class="sr-only"
+            class="fr-sr-only"
             >(nouvelle fenêtre)</span
           >
         </RouterLink>

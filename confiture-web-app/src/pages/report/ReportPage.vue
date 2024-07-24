@@ -227,7 +227,7 @@ const siteUrl = computed(() => {
         URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
-          <span class="sr-only">(nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -250,7 +250,7 @@ const siteUrl = computed(() => {
           target="_blank"
         >
           accéder à la déclaration
-          <span class="sr-only">(nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
 
@@ -271,7 +271,9 @@ const siteUrl = computed(() => {
             :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
           >
             {{ tab.title }}
-            <span v-if="i === targetTabIndex" class="sr-only">&nbsp;Actif</span>
+            <span v-if="i === targetTabIndex" class="fr-sr-only"
+              >&nbsp;Actif</span
+            >
           </button>
         </li>
       </ul>
