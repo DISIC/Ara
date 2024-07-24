@@ -91,8 +91,7 @@ interface AuditReportContext {
 
   tools: string[];
 
-  desktopEnvironments: Environment[];
-  mobileEnvironments: Environment[];
+  environments: Environment[];
 }
 
 interface PageSample {
@@ -104,10 +103,8 @@ interface PageSample {
 }
 
 interface Environment {
+  platform: string;
   operatingSystem: string;
-  operatingSystemVersion?: string;
   assistiveTechnology: string;
-  assistiveTechnologyVersion?: string;
   browser: string;
-  browserVersion?: string;
 }

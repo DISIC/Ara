@@ -301,60 +301,28 @@ const siteUrl = computed(() => {
             </li>
           </ul>
 
-          <h5 class="fr-h3">Environnement de test</h5>
-          <p>
-            Les vérifications de restitution de contenus ont été réalisées sur
-            la base de la combinaison fournie par la base de référence du RGAA,
-            avec les versions suivantes :
-          </p>
-          <ul class="fr-mb-2w fr-mb-md-3w">
-            <template v-if="report.data.context.desktopEnvironments.length">
-              <li
-                v-for="(env, i) in report.data.context.desktopEnvironments"
-                :key="i"
-              >
-                Sur ordinateur {{ env.operatingSystem }}
-                <template v-if="env.operatingSystemVersion">{{
-                  env.operatingSystemVersion
-                }}</template>
-                avec {{ env.browser }}
-                <template v-if="env.browserVersion">{{
-                  env.browserVersion
-                }}</template>
-                et
+          <template v-if="report.data.context.environments">
+            <h5 class="fr-h3">Environnement de test</h5>
+            <p>
+              Les vérifications de restitution de contenus ont été réalisées sur
+              la base de la combinaison fournie par la base de référence du
+              RGAA, avec les versions suivantes :
+            </p>
+            <ul class="fr-mb-2w fr-mb-md-3w">
+              <li v-for="(env, i) in report.data.context.environments" :key="i">
+                Sur {{ env.platform }} {{ env.operatingSystem }} avec
+                {{ env.browser }} et
                 {{ env.assistiveTechnology }}
-                <template v-if="env.assistiveTechnologyVersion">{{
-                  env.assistiveTechnologyVersion
-                }}</template>
               </li>
-            </template>
-            <template v-if="report.data.context.mobileEnvironments.length">
-              <li
-                v-for="(env, i) in report.data.context.mobileEnvironments"
-                :key="i"
-              >
-                Sur mobile {{ env.operatingSystem }}
-                <template v-if="env.operatingSystemVersion">{{
-                  env.operatingSystemVersion
-                }}</template>
-                avec {{ env.browser }}
-                <template v-if="env.browserVersion">{{
-                  env.browserVersion
-                }}</template>
-                et
-                {{ env.assistiveTechnology }}
-                <template v-if="env.assistiveTechnologyVersion">{{
-                  env.assistiveTechnologyVersion
-                }}</template>
+            </ul>
+            <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
+            <ul class="fr-mb-2w fr-mb-md-3w">
+              <li v-for="tool in report.data.context.tools" :key="tool">
+                {{ tool }}
               </li>
-            </template>
-          </ul>
-          <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
-          <ul class="fr-mb-2w fr-mb-md-3w">
-            <li v-for="tool in report.data.context.tools" :key="tool">
-              {{ tool }}
-            </li>
-          </ul>
+            </ul>
+          </template>
+
           <h5 class="fr-h3">
             Pages du site ayant fait l’objet de la vérification de conformité
           </h5>

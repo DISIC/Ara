@@ -244,20 +244,14 @@ function DEBUG_fillFields() {
     {
       platform: Platform.DESKTOP,
       operatingSystem: OperatingSystem.WINDOWS,
-      operatingSystemVersion: "11",
       assistiveTechnology: AssistiveTechnology.NVDA,
-      assistiveTechnologyVersion: "",
-      browser: Browsers.FIREFOX,
-      browserVersion: "104"
+      browser: Browsers.FIREFOX
     },
     {
       platform: Platform.DESKTOP,
       operatingSystem: OperatingSystem.MAC_OS,
-      operatingSystemVersion: "12.5",
       assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-      assistiveTechnologyVersion: "",
-      browser: Browsers.SAFARI,
-      browserVersion: "15.6"
+      browser: Browsers.SAFARI
     }
   ];
 
@@ -345,6 +339,7 @@ const isDevMode = useDevMode();
         v-model="contactName"
         label="Nom et prénom du contact (optionnel)"
         type="text"
+        class="narrow-field"
       />
 
       <p>
@@ -362,6 +357,7 @@ const isDevMode = useDevMode();
             ? 'Vous devez renseigner au moins 1 moyen de contact'
             : undefined
         "
+        class="narrow-field"
       />
 
       <DsfrField
@@ -482,17 +478,9 @@ const isDevMode = useDevMode();
 
     <TestEnvironmentSelection v-model="environments" />
 
-    <!-- <div class="narrow-content"> -->
-    <h2 class="fr-h4">Dérogations</h2>
-    <p>
-      Ces informations doivent faire l’objet d’une discussion entre l’auditeur
-      ou l’auditrice et le responsable du site audité. C’est le responsable du
-      site audité qui accepte de prendre le risque juridique de mentionner des
-      contenus dérogés. Si aucun contenu n’est à déroger, laissez les deux
-      champs vides.
-    </p>
+    <h2 class="fr-h4">Contenus non accessibles</h2>
 
-    <div class="fr-input-group">
+    <div class="fr-input-group fr-mb-2w">
       <label class="fr-label" for="notCompliantContent">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
@@ -507,6 +495,15 @@ const isDevMode = useDevMode();
         class="fr-input"
       />
     </div>
+
+    <h3 class="fr-h6 fr-mb-2w">Dérogations</h3>
+
+    <p>
+      Les contenus dérogés doivent faire l’objet d’une discussion entre
+      l’auditeur et le responsable du site audité. C’est le responsable du site
+      audité qui accepte de prendre le risque juridique de mentionner des
+      contenus dérogés.
+    </p>
 
     <div class="fr-input-group">
       <label class="fr-label" for="derogatedContent">
@@ -583,6 +580,10 @@ const isDevMode = useDevMode();
 
 .contact-fieldset {
   display: block;
+}
+
+.narrow-field {
+  max-width: 25rem;
 }
 
 .mandatory-notice {

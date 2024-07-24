@@ -251,16 +251,14 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       conformément aux environnements de test suivants :
     </p>
 
-    <template v-if="report.data.context.desktopEnvironments.length">
-      <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Ordinateur</h3>
-
+    <template v-if="report.data.context.environments.length">
       <div class="fr-table fr-table--no-caption fr-mb-3w">
         <div class="fr-table__wrapper">
           <div class="fr-table__container">
             <div class="fr-table__content">
               <table>
                 <caption>
-                  Environnements de test sur ordinateur
+                  Environnements de test
                 </caption>
                 <thead>
                   <tr>
@@ -271,77 +269,12 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
                 </thead>
                 <tbody>
                   <tr
-                    v-for="(env, i) in report.data.context.desktopEnvironments"
+                    v-for="(env, i) in report.data.context.environments"
                     :key="i"
                   >
-                    <td>
-                      {{ env.assistiveTechnology }}
-                      <template v-if="env.assistiveTechnologyVersion">{{
-                        env.assistiveTechnologyVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.browser }}
-                      <template v-if="env.browserVersion">{{
-                        env.browserVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.operatingSystem }}
-                      <template v-if="env.operatingSystemVersion">{{
-                        env.operatingSystemVersion
-                      }}</template>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <template v-if="report.data.context.mobileEnvironments.length">
-      <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Mobile</h3>
-
-      <div class="fr-table fr-table--no-caption fr-mb-3w">
-        <div class="fr-table__wrapper">
-          <div class="fr-table__container">
-            <div class="fr-table__content">
-              <table>
-                <caption>
-                  Environnements de test sur mobile
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Technologie d’assistance</th>
-                    <th scope="col">Navigateur</th>
-                    <th scope="col">Système d’exploitation</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(env, i) in report.data.context.mobileEnvironments"
-                    :key="i"
-                  >
-                    <td>
-                      {{ env.assistiveTechnology }}
-                      <template v-if="env.assistiveTechnologyVersion">{{
-                        env.assistiveTechnologyVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.browser }}
-                      <template v-if="env.browserVersion">
-                        {{ env.browserVersion }}
-                      </template>
-                    </td>
-                    <td>
-                      {{ env.operatingSystem }}
-                      <template v-if="env.operatingSystemVersion">{{
-                        env.operatingSystemVersion
-                      }}</template>
-                    </td>
+                    <td>{{ env.assistiveTechnology }}</td>
+                    <td>{{ env.browser }}</td>
+                    <td>{{ env.operatingSystem }}</td>
                   </tr>
                 </tbody>
               </table>

@@ -249,50 +249,26 @@ export class AuditService {
                     }
                   },
                   {
-                    operatingSystemVersion: {
-                      notIn: data.environments.map(
-                        (e) => e.operatingSystemVersion
-                      )
-                    }
-                  },
-                  {
                     assistiveTechnology: {
                       notIn: data.environments.map((e) => e.assistiveTechnology)
-                    }
-                  },
-                  {
-                    assistiveTechnologyVersion: {
-                      notIn: data.environments.map(
-                        (e) => e.assistiveTechnologyVersion
-                      )
                     }
                   },
                   {
                     browser: {
                       notIn: data.environments.map((e) => e.browser)
                     }
-                  },
-                  {
-                    browserVersion: {
-                      notIn: data.environments.map((e) => e.browserVersion)
-                    }
                   }
                 ]
               },
               upsert: data.environments.map((environment) => ({
                 where: {
-                  platform_operatingSystem_operatingSystemVersion_assistiveTechnology_assistiveTechnologyVersion_browser_browserVersion_auditUniqueId:
+                  platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
                     {
                       auditUniqueId: uniqueId,
                       platform: environment.platform,
                       operatingSystem: environment.operatingSystem,
-                      operatingSystemVersion:
-                        environment.operatingSystemVersion,
                       assistiveTechnology: environment.assistiveTechnology,
-                      assistiveTechnologyVersion:
-                        environment.assistiveTechnologyVersion,
-                      browser: environment.browser,
-                      browserVersion: environment.browserVersion
+                      browser: environment.browser
                     }
                 },
                 create: environment,
@@ -895,26 +871,12 @@ export class AuditService {
         auditorName: audit.auditorName,
         auditorEmail: null,
         auditorOrganisation: audit.auditorOrganisation,
-        desktopEnvironments: audit.environments
-          .filter((e) => e.platform === "desktop")
-          .map((e) => ({
-            operatingSystem: e.operatingSystem,
-            operatingSystemVersion: e.operatingSystemVersion,
-            assistiveTechnology: e.assistiveTechnology,
-            assistiveTechnologyVersion: e.assistiveTechnologyVersion,
-            browser: e.browser,
-            browserVersion: e.browserVersion
-          })),
-        mobileEnvironments: audit.environments
-          .filter((e) => e.platform === "mobile")
-          .map((e) => ({
-            operatingSystem: e.operatingSystem,
-            operatingSystemVersion: e.operatingSystemVersion,
-            assistiveTechnology: e.assistiveTechnology,
-            assistiveTechnologyVersion: e.assistiveTechnologyVersion,
-            browser: e.browser,
-            browserVersion: e.browserVersion
-          })),
+        environments: audit.environments.map((e) => ({
+          platform: e.platform,
+          operatingSystem: e.operatingSystem,
+          assistiveTechnology: e.assistiveTechnology,
+          browser: e.browser
+        })),
         referencial: "RGAA Version 4.1",
         samples: audit.pages
           .map((p, i) => ({

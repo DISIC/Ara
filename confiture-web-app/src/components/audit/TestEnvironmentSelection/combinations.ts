@@ -15,27 +15,18 @@ export const desktopCombinations = [
     environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.NVDA
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.JAWS
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
         browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER
       }
     ]
   },
@@ -44,27 +35,18 @@ export const desktopCombinations = [
     environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.NVDA
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.EDGE,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.JAWS
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
         browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER
       }
     ]
   },
@@ -73,27 +55,18 @@ export const desktopCombinations = [
     environments: [
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.EDGE,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.NVDA,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.NVDA
       },
       {
         operatingSystem: OperatingSystem.WINDOWS,
-        operatingSystemVersion: "",
         browser: Browsers.FIREFOX,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.JAWS,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.JAWS
       },
       {
         operatingSystem: OperatingSystem.MAC_OS,
-        operatingSystemVersion: "",
         browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER
       }
     ]
   }
@@ -106,11 +79,8 @@ export const mobileCombinations = [
     environments: [
       {
         operatingSystem: OperatingSystem.I_OS,
-        operatingSystemVersion: "",
         browser: Browsers.SAFARI,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.VOICE_OVER
       }
     ]
   },
@@ -119,18 +89,15 @@ export const mobileCombinations = [
     environments: [
       {
         operatingSystem: OperatingSystem.ANDROID,
-        operatingSystemVersion: "",
         browser: Browsers.CHROME,
-        browserVersion: "",
-        assistiveTechnology: AssistiveTechnology.TALKBACK,
-        assistiveTechnologyVersion: ""
+        assistiveTechnology: AssistiveTechnology.TALKBACK
       }
     ]
   }
 ];
 
 /**
- * @returns true if same environment (ignoring version fields)
+ * @returns true if same environment
  */
 function compareEnvironments(
   a: Partial<AuditEnvironment>,
@@ -150,12 +117,7 @@ export function getDesktopCombinations(
   environments: Omit<AuditEnvironment, "id">[]
 ): string[] {
   const candidateEnvs = environments.filter((env) => {
-    return (
-      env.platform === Platform.DESKTOP &&
-      !env.assistiveTechnologyVersion &&
-      !env.operatingSystemVersion &&
-      !env.browserVersion
-    );
+    return env.platform === Platform.DESKTOP;
   });
 
   return desktopCombinations
@@ -174,12 +136,7 @@ export function getMobileCombinations(
   environments: Omit<AuditEnvironment, "id">[]
 ): string[] {
   const candidateEnvs = environments.filter((env) => {
-    return (
-      env.platform === Platform.MOBILE &&
-      !env.assistiveTechnologyVersion &&
-      !env.operatingSystemVersion &&
-      !env.browserVersion
-    );
+    return env.platform === Platform.MOBILE;
   });
 
   return mobileCombinations
@@ -210,14 +167,6 @@ export function getCustomEnvironments(
     .filter(Boolean);
 
   return environments.filter((env) => {
-    if (
-      env.assistiveTechnologyVersion ||
-      env.operatingSystemVersion ||
-      env.browserVersion
-    ) {
-      return true;
-    }
-
     return !(
       d.some((desktopEnv) => compareEnvironments(desktopEnv!, env)) ||
       m.some((mobileEnv) => compareEnvironments(mobileEnv!, env))

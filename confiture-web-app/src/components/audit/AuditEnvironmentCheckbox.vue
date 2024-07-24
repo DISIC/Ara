@@ -69,7 +69,7 @@ function onInput() {
               <caption>
                 Couples navigateur et technologie d’assistance sur
                 {{
-                  platform === Platform.DESKTOP ? "ordinateur" : "mobile"
+                  platform
                 }}
               </caption>
               <thead>

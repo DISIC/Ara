@@ -127,8 +127,7 @@ class ReportContext {
 
   tools: string[];
 
-  desktopEnvironments: Environment[];
-  mobileEnvironments: Environment[];
+  environments: Environment[];
 }
 
 class PageSample {
@@ -141,14 +140,13 @@ class PageSample {
 
 class Environment {
   /**
+   * @example "Mobile"
+   */
+  platform: string;
+  /**
    * @example "Windows"
    */
   operatingSystem: string;
-
-  /**
-   * @example "11"
-   */
-  operatingSystemVersion: string;
 
   /**
    * @example "JAWS"
@@ -156,19 +154,9 @@ class Environment {
   assistiveTechnology: string;
 
   /**
-   * @example "14.2"
-   */
-  assistiveTechnologyVersion: string;
-
-  /**
    * @example "Firefox"
    */
   browser: string;
-
-  /**
-   * @example "104"
-   */
-  browserVersion: string;
 }
 
 class ReportCriterionResult {

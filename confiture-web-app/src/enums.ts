@@ -1,6 +1,6 @@
 export enum Platform {
-  DESKTOP = "desktop",
-  MOBILE = "mobile"
+  DESKTOP = "Ordinateur",
+  MOBILE = "Mobile"
 }
 
 export enum OperatingSystem {
