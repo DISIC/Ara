@@ -15,6 +15,7 @@ const report = useReportStore();
     v-if="report.data"
     :pages-data="getReportImprovements(report)"
     :transverse-data="getReportTransverseImprovements(report)"
+    top-notice="Ci-dessous les commentaires de l’auditeur ou de l’auditrice concernant des critères conformes ou non applicables."
   >
     <template #transverse-data>
       <section class="fr-mb-8w">
