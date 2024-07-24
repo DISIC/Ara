@@ -233,7 +233,7 @@ const isOffline = useIsOffline();
           class="fr-toggle__label"
           :for="`applicable-all-pages-${uniqueId}`"
         >
-          <span class="sr-only">
+          <span class="fr-sr-only">
             Appliquer le statut {{ formatStatus(result.status) }} pour le
             critère {{ topicNumber }}.{{ criterium.number }}
           </span>

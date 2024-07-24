@@ -223,7 +223,7 @@ function resetFilters() {
           target="_blank"
           rel="noopener"
         >
-          {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+          {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
 
         <p v-if="page.topics.length === 0" class="fr-mt-4w">

@@ -124,11 +124,11 @@ function updatePageOrder(startIndex: number, endIndex: number) {
           @click="deletePage(i)"
         >
           Supprimer
-          <span class="sr-only">la page {{ i + 1 }}</span>
+          <span class="fr-sr-only">la page {{ i + 1 }}</span>
         </button>
 
         <div class="fr-select-group fr-mb-0">
-          <label class="fr-label sr-only" :for="`page-order-${i}`">
+          <label class="fr-label fr-sr-only" :for="`page-order-${i}`">
             Position de la page {{ i + 1 }}
           </label>
           <select
@@ -148,7 +148,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
             </option>
           </select>
 
-          <div class="sr-only" aria-live="polite" role="alert">
+          <div class="fr-sr-only" aria-live="polite" role="alert">
             <p v-if="positionSuccessMessage">{{ positionSuccessMessage }}</p>
           </div>
         </div>

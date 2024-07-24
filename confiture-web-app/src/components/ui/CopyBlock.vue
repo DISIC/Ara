@@ -44,7 +44,7 @@ function onClose() {
           target="_blank"
         >
           {{ fullUrl }}
-          <span class="sr-only">(Nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(Nouvelle fenêtre)</span>
         </RouterLink>
       </p>
       <button

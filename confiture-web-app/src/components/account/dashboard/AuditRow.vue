@@ -169,13 +169,13 @@ function copyStatementLink(uniqueId: string) {
         'fr-badge--purple-glycine': isInProgress
       }"
     >
-      <span class="sr-only">Statut </span>
+      <span class="fr-sr-only">Statut </span>
       {{ isInProgress ? "En cours" : "Terminé" }}
     </p>
 
     <!-- Creation date -->
     <p class="fr-mb-0 audit-date">
-      <span class="sr-only">Date de création </span>
+      <span class="fr-sr-only">Date de création </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -183,7 +183,7 @@ function copyStatementLink(uniqueId: string) {
 
     <!-- Type -->
     <p class="fr-mb-0 audit-type">
-      <span class="sr-only">Type </span>
+      <span class="fr-sr-only">Type </span>
       {{ getCriteriaCount(audit.auditType) }} critères
     </p>
 
@@ -202,7 +202,9 @@ function copyStatementLink(uniqueId: string) {
                 }
           "
         >
-          <span v-if="!isInProgress" class="sr-only">Taux de conformité </span>
+          <span v-if="!isInProgress" class="fr-sr-only"
+            >Taux de conformité
+          </span>
           {{ isInProgress ? "Audit en cours" : `${audit.complianceLevel}%` }}
         </p>
         <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
@@ -251,10 +253,12 @@ function copyStatementLink(uniqueId: string) {
       :target="isInProgress ? null : '_blank'"
     >
       {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
-      <span v-if="isInProgress" class="sr-only">
+      <span v-if="isInProgress" class="fr-sr-only">
         {{ audit.procedureName }}</span
       >
-      <span v-else class="sr-only">pour l’audit {{ audit.procedureName }}</span>
+      <span v-else class="fr-sr-only"
+        >pour l’audit {{ audit.procedureName }}</span
+      >
     </RouterLink>
 
     <!-- Sub actions -->
@@ -299,7 +303,7 @@ function copyStatementLink(uniqueId: string) {
               } fr-m-0 no-external-icon`"
             >
               {{ isInProgress ? "Voir le rapport" : "Accéder à l’audit" }}
-              <span class="sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </RouterLink>
           </li>
 
@@ -311,7 +315,9 @@ function copyStatementLink(uniqueId: string) {
             >
               <CopyIcon class="fr-mr-2v" />
               Créer une copie
-              <span class="sr-only">de l’audit {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"
+                >de l’audit {{ audit.procedureName }}</span
+              >
             </button>
           </li>
 
@@ -323,7 +329,7 @@ function copyStatementLink(uniqueId: string) {
               @click="copyAuditLink(audit.editUniqueId)"
             >
               Copier le lien de l’audit
-              <span class="sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 Ce lien permet de modifier l’audit
               </span>
@@ -335,7 +341,9 @@ function copyStatementLink(uniqueId: string) {
               @click="copyReportLink(audit.consultUniqueId)"
             >
               Copier le lien du rapport
-              <span class="sr-only"> de l’audit {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">
+                de l’audit {{ audit.procedureName }}</span
+              >
             </button>
           </li>
 
@@ -357,7 +365,7 @@ function copyStatementLink(uniqueId: string) {
               :download="csvExportFilename"
             >
               Télécharger l’audit
-              <span class="sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -370,7 +378,7 @@ function copyStatementLink(uniqueId: string) {
               @click="deleteModal?.show()"
             >
               Supprimer l’audit
-              <span class="sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>

@@ -26,7 +26,7 @@ import PageMeta from "../../components/PageMeta";
         rel="noreferrer noopener"
         target="_blank"
         >Design des services numériques
-        <span class="sr-only">(nouvelle fenêtre)</span></a
+        <span class="fr-sr-only">(nouvelle fenêtre)</span></a
       >
       de la Direction interministérielle du numérique, un service du Premier
       ministre.
@@ -51,7 +51,7 @@ import PageMeta from "../../components/PageMeta";
         rel="noreferrer noopener"
         target="_blank"
         >Design des services numériques
-        <span class="sr-only">(nouvelle fenêtre)</span></a
+        <span class="fr-sr-only">(nouvelle fenêtre)</span></a
       >
       et utilise le système de design de l’État.
     </p>
@@ -78,7 +78,7 @@ import PageMeta from "../../components/PageMeta";
         href="https://github.com/DISIC/Ara/"
         rel="noreferrer noopener"
         target="_blank"
-        >Github <span class="sr-only">(nouvelle fenêtre)</span></a
+        >Github <span class="fr-sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
 

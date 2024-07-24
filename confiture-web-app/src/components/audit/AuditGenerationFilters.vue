@@ -94,7 +94,7 @@ const notApplicableCount = computed(
     class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-right-s-line-double toggle-column-button fr-mr-3v"
     @click="displayFilters"
   >
-    <span class="sr-only">Afficher la colonne des filtres</span>
+    <span class="fr-sr-only">Afficher la colonne des filtres</span>
   </button>
   <template v-else>
     <div class="heading-wrapper">
@@ -105,7 +105,7 @@ const notApplicableCount = computed(
         class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-arrow-left-s-line-double toggle-column-button"
         @click="hideFilters"
       >
-        <span class="sr-only">Cacher la colonne des filtres</span>
+        <span class="fr-sr-only">Cacher la colonne des filtres</span>
       </button>
     </div>
     <button

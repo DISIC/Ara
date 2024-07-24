@@ -42,7 +42,7 @@ const auditIsInProgress = computed(() => {
         id="audit-step-status"
         class="fr-icon--lg fr-icon-checkbox-circle-fill audit-step-check"
       >
-        <span class="sr-only">Étape terminée</span>
+        <span class="fr-sr-only">Étape terminée</span>
       </span>
 
       <h2

@@ -89,7 +89,7 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
             :href="getUploadUrl(example.key)"
             target="_blank"
           >
-            <span class="sr-only">
+            <span class="fr-sr-only">
               Ouvrir l’image dans une nouvelle fenêtre
             </span>
             <img style="width: 100%" :src="getUploadUrl(example.key)" alt="" />

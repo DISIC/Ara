@@ -47,7 +47,7 @@ const noResults = computed(() => {
   <!-- TODO: handle empty state -->
   <div class="fr-mb-2w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
-      {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+      {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
   </div>
 

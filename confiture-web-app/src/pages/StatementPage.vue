@@ -155,7 +155,7 @@ const siteUrl = computed(() => {
         URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
-          <span class="sr-only">(nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -168,7 +168,7 @@ const siteUrl = computed(() => {
           :to="{ name: 'report', params: { uniqueId } }"
         >
           accéder au rapport d’audit
-          <span class="sr-only">(nouvelle fenêtre)</span>
+          <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
 

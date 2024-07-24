@@ -59,7 +59,7 @@ const report = useReportStore();
           target="_blank"
           rel="noopener"
         >
-          {{ page.url }} <span class="sr-only">(nouvelle fenêtre)</span>
+          {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
 
         <div

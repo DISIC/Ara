@@ -61,7 +61,7 @@ import PageMeta from "../../components/PageMeta";
           target="_blank"
           el="noreferrer noopener"
           >formulaire de contact
-          <span class="sr-only">(nouvelle fenêtre)</span></a
+          <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
       </li>
       <li>
@@ -71,7 +71,7 @@ import PageMeta from "../../components/PageMeta";
           el="noreferrer noopener"
           target="_blank"
           >liste des délégués de votre région
-          <span class="sr-only">(nouvelle fenêtre)</span></a
+          <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
         avec leurs informations de contact directs
       </li>
@@ -85,7 +85,7 @@ import PageMeta from "../../components/PageMeta";
           rel="noreferrer noopener"
           target="_blank"
           >annuaire de l’administration
-          <span class="sr-only">(nouvelle fenêtre)</span></a
+          <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
       </li>
     </ul>

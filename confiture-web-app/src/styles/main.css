@@ -2,16 +2,6 @@
   --dsfr-outline: #0a76f6;
 }
 
-.sr-only {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-
 /* FIXME: Collapses have awful transition performances. Re-enable when performance problems have been fixed. */
 .fr-collapse,
 .fr-collapse::before {
