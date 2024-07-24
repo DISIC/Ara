@@ -112,47 +112,57 @@ import PageMeta from "../../components/PageMeta";
       préalable. C’est pour cela que vous n’avez pas eu besoin de cliquer sur un
       bloc pour accepter le dépôt de cookies !
     </p>
-    <table class="fr-table fr-table--bordered fr-table--no-caption">
-      <caption>
-        <span lang="en">Cookies</span>
-        de mesure d’audience
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">Cookie lié au service</th>
-          <th scope="col">Nom technique</th>
-          <th scope="col">Finalité</th>
-          <th scope="col">Durée de conservation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Matomo</td>
-          <td>_pk_id#</td>
-          <td>
-            Permet de stocker votre identifiant unique de visite via Matomo
-          </td>
-          <td>13 mois</td>
-        </tr>
-        <tr>
-          <td>Matomo</td>
-          <td>_pk_ses#</td>
-          <td>
-            Permet de stocker temporairement vos données de visite via Matomo
-          </td>
-          <td>30 minutes</td>
-        </tr>
-        <tr>
-          <td>Matomo</td>
-          <td>piwik_ignore</td>
-          <td>
-            Permet de mémoriser votre choix d’ignorer la mesure d’audience via
-            Matomo
-          </td>
-          <td>2 ans</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="fr-table fr-table--no-caption">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table class="fr-cell--multiline">
+              <caption>
+                <span lang="en">Cookies</span>
+                de mesure d’audience
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Cookie lié au service</th>
+                  <th scope="col">Nom technique</th>
+                  <th scope="col">Finalité</th>
+                  <th scope="col">Durée de conservation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Matomo</td>
+                  <td>_pk_id#</td>
+                  <td>
+                    Permet de stocker votre identifiant unique de visite via
+                    Matomo
+                  </td>
+                  <td>13 mois</td>
+                </tr>
+                <tr>
+                  <td>Matomo</td>
+                  <td>_pk_ses#</td>
+                  <td>
+                    Permet de stocker temporairement vos données de visite via
+                    Matomo
+                  </td>
+                  <td>30 minutes</td>
+                </tr>
+                <tr>
+                  <td>Matomo</td>
+                  <td>piwik_ignore</td>
+                  <td>
+                    Permet de mémoriser votre choix d’ignorer la mesure
+                    d’audience via Matomo
+                  </td>
+                  <td>2 ans</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 

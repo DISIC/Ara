@@ -18,11 +18,8 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
 /**
  * FIXME: the following info are not provided:
- * - auditor position
  * - auditor email (API)
- * - technologies
  * - derogated content
- * - tools function
  */
 </script>
 
@@ -145,31 +142,41 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       <strong>{{ report.data.context.samples.length }} pages</strong> :
     </p>
 
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-      <table>
-        <caption>
-          Échantillon de pages auditées
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">N°</th>
-            <th scope="col">Nom de la page</th>
-            <th scope="col">URL</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(page, i) in report.data.context.samples" :key="i">
-            <td>{{ i + 1 }}</td>
-            <td>{{ page.name }}</td>
-            <td>
-              <a class="fr-link page-url" target="_blank" :href="page.url">
-                {{ page.url }}
-                <span class="fr-sr-only">(nouvelle fenêtre)</span>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="fr-table fr-table--no-caption">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table>
+              <caption>
+                Échantillon de pages auditées
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">N°</th>
+                  <th scope="col">Nom de la page</th>
+                  <th scope="col">URL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(page, i) in report.data.context.samples" :key="i">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ page.name }}</td>
+                  <td>
+                    <a
+                      class="fr-link fr-link--sm page-url"
+                      target="_blank"
+                      :href="page.url"
+                    >
+                      {{ page.url }}
+                      <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Contenus dérogés</h3>
@@ -203,22 +210,28 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
       accessibles dans le cas où l’examen du code seul n’a pas suffi.
     </p>
 
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-      <table>
-        <caption>
-          Outils d’assistance
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Nom</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(tool, i) in report.data.context.tools" :key="i">
-            <td>{{ tool }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="fr-table fr-table--no-caption fr-mb-3w">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table>
+              <caption>
+                Outils d’assistance
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Nom</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(tool, i) in report.data.context.tools" :key="i">
+                  <td>{{ tool }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <p class="fr-mb-9v fr-mb-md-6w">
@@ -241,88 +254,100 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
     <template v-if="report.data.context.desktopEnvironments.length">
       <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Ordinateur</h3>
 
-      <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-        <table>
-          <caption>
-            Environnements de test sur ordinateur
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Technologie d’assistance</th>
-              <th scope="col">Navigateur</th>
-              <th scope="col">Système d’exploitation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(env, i) in report.data.context.desktopEnvironments"
-              :key="i"
-            >
-              <td>
-                {{ env.assistiveTechnology }}
-                <template v-if="env.assistiveTechnologyVersion">{{
-                  env.assistiveTechnologyVersion
-                }}</template>
-              </td>
-              <td>
-                {{ env.browser }}
-                <template v-if="env.browserVersion">{{
-                  env.browserVersion
-                }}</template>
-              </td>
-              <td>
-                {{ env.operatingSystem }}
-                <template v-if="env.operatingSystemVersion">{{
-                  env.operatingSystemVersion
-                }}</template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="fr-table fr-table--no-caption fr-mb-3w">
+        <div class="fr-table__wrapper">
+          <div class="fr-table__container">
+            <div class="fr-table__content">
+              <table>
+                <caption>
+                  Environnements de test sur ordinateur
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Technologie d’assistance</th>
+                    <th scope="col">Navigateur</th>
+                    <th scope="col">Système d’exploitation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(env, i) in report.data.context.desktopEnvironments"
+                    :key="i"
+                  >
+                    <td>
+                      {{ env.assistiveTechnology }}
+                      <template v-if="env.assistiveTechnologyVersion">{{
+                        env.assistiveTechnologyVersion
+                      }}</template>
+                    </td>
+                    <td>
+                      {{ env.browser }}
+                      <template v-if="env.browserVersion">{{
+                        env.browserVersion
+                      }}</template>
+                    </td>
+                    <td>
+                      {{ env.operatingSystem }}
+                      <template v-if="env.operatingSystemVersion">{{
+                        env.operatingSystemVersion
+                      }}</template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
 
     <template v-if="report.data.context.mobileEnvironments.length">
       <h3 class="fr-h4 fr-mb-3v fr-mb-md-2w">Mobile</h3>
 
-      <div class="fr-table fr-table--bordered fr-table--no-caption fr-mb-3w">
-        <table>
-          <caption>
-            Environnements de test sur mobile
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Technologie d’assistance</th>
-              <th scope="col">Navigateur</th>
-              <th scope="col">Système d’exploitation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(env, i) in report.data.context.mobileEnvironments"
-              :key="i"
-            >
-              <td>
-                {{ env.assistiveTechnology }}
-                <template v-if="env.assistiveTechnologyVersion">{{
-                  env.assistiveTechnologyVersion
-                }}</template>
-              </td>
-              <td>
-                {{ env.browser }}
-                <template v-if="env.browserVersion">
-                  {{ env.browserVersion }}
-                </template>
-              </td>
-              <td>
-                {{ env.operatingSystem }}
-                <template v-if="env.operatingSystemVersion">{{
-                  env.operatingSystemVersion
-                }}</template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="fr-table fr-table--no-caption fr-mb-3w">
+        <div class="fr-table__wrapper">
+          <div class="fr-table__container">
+            <div class="fr-table__content">
+              <table>
+                <caption>
+                  Environnements de test sur mobile
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Technologie d’assistance</th>
+                    <th scope="col">Navigateur</th>
+                    <th scope="col">Système d’exploitation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(env, i) in report.data.context.mobileEnvironments"
+                    :key="i"
+                  >
+                    <td>
+                      {{ env.assistiveTechnology }}
+                      <template v-if="env.assistiveTechnologyVersion">{{
+                        env.assistiveTechnologyVersion
+                      }}</template>
+                    </td>
+                    <td>
+                      {{ env.browser }}
+                      <template v-if="env.browserVersion">
+                        {{ env.browserVersion }}
+                      </template>
+                    </td>
+                    <td>
+                      {{ env.operatingSystem }}
+                      <template v-if="env.operatingSystemVersion">{{
+                        env.operatingSystemVersion
+                      }}</template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -341,7 +366,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 </template>
 
 <style scoped>
-.content > *:not(.fr-table) {
+.content > * {
   max-width: 49.5rem;
 }
 

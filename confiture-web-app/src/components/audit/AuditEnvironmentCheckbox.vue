@@ -60,28 +60,34 @@ function onInput() {
     </div>
 
     <div
-      class="fr-table fr-table--bordered fr-table--layout-fixed fr-table--no-caption fr-mb-0 combination-table"
+      class="fr-table fr-table--no-scroll fr-table--no-caption fr-mb-0 combination-table"
     >
-      <table :id="slugify(`combinations-table-${title}-${platform}`)">
-        <caption>
-          Couples navigateur et technologie d’assistance sur
-          {{
-            platform === Platform.DESKTOP ? "ordinateur" : "mobile"
-          }}
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Navigateur</th>
-            <th scope="col">Technologie d’assistance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(couple, i) in combinations" :key="i">
-            <td>{{ couple.browser }}</td>
-            <td>{{ couple.assistiveTechnology }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table :id="slugify(`combinations-table-${title}-${platform}`)">
+              <caption>
+                Couples navigateur et technologie d’assistance sur
+                {{
+                  platform === Platform.DESKTOP ? "ordinateur" : "mobile"
+                }}
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Navigateur</th>
+                  <th scope="col">Technologie d’assistance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(couple, i) in combinations" :key="i">
+                  <td>{{ couple.browser }}</td>
+                  <td>{{ couple.assistiveTechnology }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -106,9 +112,9 @@ function onInput() {
   cursor: pointer;
 }
 
-/* Override position to allow click on whole card */
+/* Allow click through table to check card */
 .combination-table {
-  position: initial;
+  pointer-events: none;
 }
 
 .label::before {
