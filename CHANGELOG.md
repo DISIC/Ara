@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Autres changements ⚙️
 
 - Ajoute une information pour préciser la nature des contenus dans l’onglet "Points d’améliorations" ([#764](https://github.com/DISIC/Ara/pull/764))
+- Simplifie l’ajout d’environnements de test personnalisés ([#765](https://github.com/DISIC/Ara/pull/765))
 
 ## 11/07/2024
 
