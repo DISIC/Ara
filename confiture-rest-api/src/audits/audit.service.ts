@@ -871,20 +871,12 @@ export class AuditService {
         auditorName: audit.auditorName,
         auditorEmail: null,
         auditorOrganisation: audit.auditorOrganisation,
-        desktopEnvironments: audit.environments
-          .filter((e) => e.platform === "desktop")
-          .map((e) => ({
-            operatingSystem: e.operatingSystem,
-            assistiveTechnology: e.assistiveTechnology,
-            browser: e.browser
-          })),
-        mobileEnvironments: audit.environments
-          .filter((e) => e.platform === "mobile")
-          .map((e) => ({
-            operatingSystem: e.operatingSystem,
-            assistiveTechnology: e.assistiveTechnology,
-            browser: e.browser
-          })),
+        environments: audit.environments.map((e) => ({
+          platform: e.platform,
+          operatingSystem: e.operatingSystem,
+          assistiveTechnology: e.assistiveTechnology,
+          browser: e.browser
+        })),
         referencial: "RGAA Version 4.1",
         samples: audit.pages
           .map((p, i) => ({

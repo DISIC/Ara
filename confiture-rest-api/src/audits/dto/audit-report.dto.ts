@@ -127,8 +127,7 @@ class ReportContext {
 
   tools: string[];
 
-  desktopEnvironments: Environment[];
-  mobileEnvironments: Environment[];
+  environments: Environment[];
 }
 
 class PageSample {
@@ -140,6 +139,10 @@ class PageSample {
 }
 
 class Environment {
+  /**
+   * @example "Mobile"
+   */
+  platform: string;
   /**
    * @example "Windows"
    */

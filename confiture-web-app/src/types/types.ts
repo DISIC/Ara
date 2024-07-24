@@ -8,11 +8,8 @@ export interface AuditEnvironment {
   id: number;
   platform: string;
   operatingSystem: string;
-  operatingSystemVersion?: string;
   assistiveTechnology: string;
-  assistiveTechnologyVersion?: string;
   browser: string;
-  browserVersion?: string;
 }
 
 export interface AuditPage {

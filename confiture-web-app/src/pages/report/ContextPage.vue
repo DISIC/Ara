@@ -274,24 +274,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
                     v-for="(env, i) in report.data.context.desktopEnvironments"
                     :key="i"
                   >
-                    <td>
-                      {{ env.assistiveTechnology }}
-                      <template v-if="env.assistiveTechnologyVersion">{{
-                        env.assistiveTechnologyVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.browser }}
-                      <template v-if="env.browserVersion">{{
-                        env.browserVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.operatingSystem }}
-                      <template v-if="env.operatingSystemVersion">{{
-                        env.operatingSystemVersion
-                      }}</template>
-                    </td>
+                    <td>{{ env.assistiveTechnology }}</td>
+                    <td>{{ env.browser }}</td>
+                    <td>{{ env.operatingSystem }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -324,24 +309,9 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
                     v-for="(env, i) in report.data.context.mobileEnvironments"
                     :key="i"
                   >
-                    <td>
-                      {{ env.assistiveTechnology }}
-                      <template v-if="env.assistiveTechnologyVersion">{{
-                        env.assistiveTechnologyVersion
-                      }}</template>
-                    </td>
-                    <td>
-                      {{ env.browser }}
-                      <template v-if="env.browserVersion">
-                        {{ env.browserVersion }}
-                      </template>
-                    </td>
-                    <td>
-                      {{ env.operatingSystem }}
-                      <template v-if="env.operatingSystemVersion">{{
-                        env.operatingSystemVersion
-                      }}</template>
-                    </td>
+                    <td>{{ env.assistiveTechnology }}</td>
+                    <td>{{ env.browser }}</td>
+                    <td>{{ env.operatingSystem }}</td>
                   </tr>
                 </tbody>
               </table>

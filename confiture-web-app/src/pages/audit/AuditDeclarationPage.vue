@@ -244,20 +244,14 @@ function DEBUG_fillFields() {
     {
       platform: Platform.DESKTOP,
       operatingSystem: OperatingSystem.WINDOWS,
-      operatingSystemVersion: "11",
       assistiveTechnology: AssistiveTechnology.NVDA,
-      assistiveTechnologyVersion: "",
-      browser: Browsers.FIREFOX,
-      browserVersion: "104"
+      browser: Browsers.FIREFOX
     },
     {
       platform: Platform.DESKTOP,
       operatingSystem: OperatingSystem.MAC_OS,
-      operatingSystemVersion: "12.5",
       assistiveTechnology: AssistiveTechnology.VOICE_OVER,
-      assistiveTechnologyVersion: "",
-      browser: Browsers.SAFARI,
-      browserVersion: "15.6"
+      browser: Browsers.SAFARI
     }
   ];
 

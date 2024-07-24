@@ -223,7 +223,7 @@ function combineEnvironments(
         label="Appareil"
         hint="Exemples : mobile, borne interactive"
         type="text"
-        required
+        :required="customEnvironments.length > 1"
       />
 
       <DsfrField
@@ -232,7 +232,7 @@ function combineEnvironments(
         label="Logiciel d’exploitation"
         hint="Exemple : macOS"
         type="text"
-        required
+        :required="customEnvironments.length > 1"
       />
 
       <DsfrField
@@ -241,7 +241,7 @@ function combineEnvironments(
         label="Technologie d’assistance"
         hint="Exemple : VoiceOver"
         type="text"
-        required
+        :required="customEnvironments.length > 1"
       />
 
       <DsfrField
@@ -250,7 +250,7 @@ function combineEnvironments(
         label="Navigateur"
         hint="Exemple : Safari"
         type="text"
-        required
+        :required="customEnvironments.length > 1"
       />
     </fieldset>
   </div>
