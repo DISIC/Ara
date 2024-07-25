@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, nextTick, Ref, ref } from "vue";
+import { computed, Ref, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
