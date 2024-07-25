@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
+import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -75,12 +75,12 @@ function onFileRequestFinished() {
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentFieldRef = ref<HTMLTextAreaElement>();
 
-// FIXME: avoid setTimeout()
 async function disclose() {
   const accordion = lazyAccordionRef.value?.accordionRef;
 
   dsfr(accordion).accordionsGroup.members[0].disclose();
-  await nextTick();
+
+  // FIXME: avoid setTimeout()
   setTimeout(() => {
     commentFieldRef.value?.focus();
   }, 10);
