@@ -25,6 +25,7 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
+import DeleteFileModal from "./DeleteFileModal.vue";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
@@ -95,14 +96,24 @@ function handleUploadExample(file: File) {
     });
 }
 
-function handleDeleteExample(image: AuditFile) {
+const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
+const fileToDelete = ref<AuditFile>();
+
+function openDeleteFileModal(image: AuditFile) {
+  deleteFileModalRef.value?.show();
+  fileToDelete.value = image;
+}
+
+function handleDeleteExample() {
+  if (!fileToDelete.value) return;
+
   store
     .deleteExampleImage(
       props.auditUniqueId,
       props.page.id,
       props.topicNumber,
       props.criterium.number,
-      image.id
+      fileToDelete.value.id
     )
     .then(() => {
       errorMessage.value = null;
@@ -112,6 +123,7 @@ function handleDeleteExample(image: AuditFile) {
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
+      deleteFileModalRef.value?.hide();
     });
 }
 
@@ -269,8 +281,15 @@ const isOffline = useIsOffline();
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:user-impact="updateResultImpact($event)"
       @upload-file="handleUploadExample"
-      @delete-file="handleDeleteExample"
+      @delete-file="openDeleteFileModal"
       @update:quick-win="updateQuickWin"
+    />
+
+    <DeleteFileModal
+      ref="deleteFileModalRef"
+      :mime-type="fileToDelete?.mimetype"
+      @confirm="handleDeleteExample"
+      @cancel="deleteFileModalRef?.hide()"
     />
 
     <!-- TESTS + METHODO -->
