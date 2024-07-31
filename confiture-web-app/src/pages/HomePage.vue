@@ -61,7 +61,7 @@ const steps = [
 <template>
   <PageMeta
     title="Ara - Réaliser des audits d’accessibilité"
-    description="Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
+    description="Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d’accessibilité numérique."
   />
 
   <div
@@ -80,21 +80,18 @@ const steps = [
   </div>
 
   <section class="fr-mt-9w">
-    <h1 ref="headingRef">Faire un audit d’accessibilité avec Ara</h1>
+    <h1 ref="headingRef">Je réalise un audit d’accessibilité avec Ara</h1>
     <p class="fr-text--lg">
       Ara nécessite une bonne connaissance de la méthode technique du
       <abbr
-        title="référentiel général d'amélioration de
-          l'accessibilité"
+        title="référentiel général d’amélioration de
+          l’accessibilité"
         >RGAA</abbr
       >.
     </p>
     <p>
-      <strong>Ce n’est pas un outil d’audit automatique.</strong>
-    </p>
-    <p>
-      Basé sur la dernière version du référentiel général d'amélioration de
-      l'accessibilité (RGAA 4.1) vous pouvez&nbsp;:
+      Basé sur la dernière version du référentiel général d’amélioration de
+      l’accessibilité (RGAA 4.1) vous pouvez&nbsp;:
     </p>
     <ul>
       <li>Commencer par un audit rapide (25 critères)</li>
@@ -105,11 +102,20 @@ const steps = [
       </li>
     </ul>
 
-    <RouterLink :to="{ name: 'create-audit' }" class="fr-btn fr-mt-5w fr-mb-7w">
-      Je démarre un audit
-    </RouterLink>
+    <div class="cta-with-message fr-mt-5w fr-mb-7w">
+      <p class="fr-mb-0">
+        <span
+          class="fr-icon-information-line fr-mr-1v"
+          aria-hidden="true"
+        ></span>
+        <strong>Ara n’audite pas automatiquement votre site</strong>
+      </p>
+      <RouterLink :to="{ name: 'create-audit' }" class="fr-btn">
+        Je réalise un audit
+      </RouterLink>
+    </div>
 
-    <h2 class="fr-h5">Quelles étapes m'attendent ?</h2>
+    <h2 class="fr-h5">Quelles étapes m’attendent ?</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div v-for="step in steps" :key="step.title" class="fr-col">
         <div class="fr-p-4w step-wrapper">
@@ -127,6 +133,12 @@ const steps = [
 </template>
 
 <style scoped>
+.cta-with-message {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+}
+
 .steps {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
