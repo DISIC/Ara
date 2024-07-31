@@ -75,15 +75,22 @@ function onFileRequestFinished() {
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentFieldRef = ref<HTMLTextAreaElement>();
 
+let hasJustBeenSetAsNotCompliant = false;
+
 async function disclose() {
   const accordion = lazyAccordionRef.value?.accordionRef;
 
+  hasJustBeenSetAsNotCompliant = true;
   dsfr(accordion).accordionsGroup.members[0].disclose();
+}
 
-  // FIXME: avoid setTimeout()
-  setTimeout(() => {
-    commentFieldRef.value?.focus();
-  }, 10);
+function lazyAccordionOpened() {
+  if (!hasJustBeenSetAsNotCompliant) {
+    return;
+  }
+
+  commentFieldRef.value?.focus();
+  hasJustBeenSetAsNotCompliant = false;
 }
 </script>
 
@@ -92,6 +99,7 @@ async function disclose() {
     ref="lazyAccordionRef"
     title="Erreur et recommandation"
     disclose-color="var(--background-default-grey)"
+    @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">

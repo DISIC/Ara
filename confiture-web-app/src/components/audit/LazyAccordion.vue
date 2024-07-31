@@ -14,6 +14,8 @@ const accordionRef = ref<HTMLDivElement>();
 
 defineExpose({ accordionRef });
 
+const emit = defineEmits(["opened"]);
+
 const showContent = ref(false);
 const uniqueId = useUniqueId();
 
@@ -23,6 +25,9 @@ function onConceal() {
 
 function onDisclose() {
   showContent.value = true;
+  requestAnimationFrame(function () {
+    emit("opened");
+  });
 }
 </script>
 
