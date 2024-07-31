@@ -110,7 +110,7 @@ watch(currentTab, (currentTab) => {
 /* The styles are mostly copy-pasted from the DSFR tabs component. */
 .tabs-wrapper {
   background-color: var(--background-default-grey);
-  z-index: 1;
+  z-index: 2;
   position: sticky;
   top: var(--tabs-top-offset, 4rem);
 }
