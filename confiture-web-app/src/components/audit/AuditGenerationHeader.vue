@@ -250,6 +250,12 @@ function handleCancelDeleteFile() {
   deleteFileModalRef.value?.hide();
   notesModal.value?.show();
 }
+
+// Focus the notes button when closing notes modal
+const notesButtonRef = ref<HTMLButtonElement>();
+function focusNotesModalButton() {
+  notesButtonRef.value?.focus();
+}
 </script>
 
 <template>
@@ -437,6 +443,7 @@ function handleCancelDeleteFile() {
 
         <li class="fr-p-0 notes-item">
           <button
+            ref="notesButtonRef"
             class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
             :disabled="isOffline"
             @click="openNotesModal"
@@ -512,6 +519,7 @@ function handleCancelDeleteFile() {
     :default-error-message="deleteFileErrorMessage"
     @confirm="updateAuditNotes"
     @delete="openDeleteFileModal"
+    @closed="focusNotesModalButton"
   />
 
   <DeleteFileModal
