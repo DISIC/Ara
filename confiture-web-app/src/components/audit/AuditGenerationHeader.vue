@@ -6,16 +6,19 @@ import NotesModal from "../../components/audit/NotesModal.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
+import { FileErrorMessage } from "../../enums";
 import {
   useAccountStore,
   useAuditStore,
   useResultsStore,
   useSystemStore
 } from "../../store";
+import { AuditFile } from "../../types";
 import {
   captureWithPayloads,
   formatBytes,
   formatDate,
+  handleFileDeleteError,
   slugify
 } from "../../utils";
 import CopyIcon from "../icons/CopyIcon.vue";
@@ -23,6 +26,7 @@ import { StatDonutTheme } from "../StatDonut.vue";
 import SummaryCard from "../SummaryCard.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
+import DeleteFileModal from "./DeleteFileModal.vue";
 import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
@@ -214,6 +218,44 @@ onMounted(() => {
 
   observer.observe(scrollSentinelRef.value!);
 });
+
+const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
+const fileToDelete = ref<AuditFile>();
+const deleteFileErrorMessage = ref<FileErrorMessage | null>();
+
+function openDeleteFileModal(image: AuditFile) {
+  deleteFileModalRef.value?.show();
+  fileToDelete.value = image;
+}
+
+function handleDeleteFile() {
+  if (!fileToDelete.value) return;
+
+  auditStore
+    .deleteAuditFile(uniqueId.value, fileToDelete.value.id)
+    .then(() => {
+      deleteFileErrorMessage.value = null;
+    })
+    .catch(async (error) => {
+      deleteFileErrorMessage.value = await handleFileDeleteError(error);
+    })
+    .finally(() => {
+      deleteFileModalRef.value?.hide();
+      notesModal.value?.show();
+      notesModal.value?.fileUpload()?.onFileRequestFinished();
+    });
+}
+
+function handleCancelDeleteFile() {
+  deleteFileModalRef.value?.hide();
+  notesModal.value?.show();
+}
+
+// Focus the notes button when closing notes modal
+const notesButtonRef = ref<HTMLButtonElement>();
+function focusNotesModalButton() {
+  notesButtonRef.value?.focus();
+}
 </script>
 
 <template>
@@ -401,6 +443,7 @@ onMounted(() => {
 
         <li class="fr-p-0 notes-item">
           <button
+            ref="notesButtonRef"
             class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
             :disabled="isOffline"
             @click="openNotesModal"
@@ -473,7 +516,17 @@ onMounted(() => {
   <NotesModal
     ref="notesModal"
     :is-loading="isNotesLoading"
+    :default-error-message="deleteFileErrorMessage"
     @confirm="updateAuditNotes"
+    @delete="openDeleteFileModal"
+    @closed="focusNotesModalButton"
+  />
+
+  <DeleteFileModal
+    ref="deleteFileModalRef"
+    :mime-type="fileToDelete?.mimetype"
+    @confirm="handleDeleteFile"
+    @cancel="handleCancelDeleteFile"
   />
 </template>
 
