@@ -220,6 +220,7 @@ function combineEnvironments(
         :id="`env-device-${i}`"
         ref="envPlatformRefs"
         v-model="env.platform"
+        class="fr-m-0"
         label="Appareil"
         hint="Exemples : mobile, borne interactive"
         type="text"
@@ -229,6 +230,7 @@ function combineEnvironments(
       <DsfrField
         :id="`env-os-${i}`"
         v-model="env.operatingSystem"
+        class="fr-m-0"
         label="Logiciel d’exploitation"
         hint="Exemple : macOS"
         type="text"
@@ -238,6 +240,7 @@ function combineEnvironments(
       <DsfrField
         :id="`env-at-${i}`"
         v-model="env.assistiveTechnology"
+        class="fr-m-0"
         label="Technologie d’assistance"
         hint="Exemple : VoiceOver"
         type="text"
