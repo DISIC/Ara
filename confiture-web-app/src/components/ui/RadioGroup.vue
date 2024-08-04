@@ -11,6 +11,7 @@ const props = defineProps<{
   items: {
     value: any;
     label: string;
+    extraLabel?: string;
     color?: RadioColor;
   }[];
   disabled?: boolean;
@@ -53,7 +54,7 @@ function handleChange(value: string) {
         :class="item.color"
         :for="`checkbox-group-${uniqueId}--${i}`"
       >
-        {{ item.label }}
+        {{ item.label }}<span class="fr-sr-only">, {{ item.extraLabel }}</span>
       </label>
     </div>
   </fieldset>

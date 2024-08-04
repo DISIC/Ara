@@ -32,7 +32,7 @@ const emit = defineEmits<{
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished });
+defineExpose({ onFileRequestFinished, disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -71,12 +71,35 @@ function handleDeleteFile(image: AuditFile) {
 function onFileRequestFinished() {
   fileUpload.value?.onFileRequestFinished();
 }
+
+const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const commentFieldRef = ref<HTMLTextAreaElement>();
+
+let hasJustBeenSetAsNotCompliant = false;
+
+async function disclose() {
+  const accordion = lazyAccordionRef.value?.accordionRef;
+
+  hasJustBeenSetAsNotCompliant = true;
+  dsfr(accordion).accordionsGroup.members[0].disclose();
+}
+
+function lazyAccordionOpened() {
+  if (!hasJustBeenSetAsNotCompliant) {
+    return;
+  }
+
+  commentFieldRef.value?.focus();
+  hasJustBeenSetAsNotCompliant = false;
+}
 </script>
 
 <template>
   <LazyAccordion
+    ref="lazyAccordionRef"
     title="Erreur et recommandation"
     disclose-color="var(--background-default-grey)"
+    @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
@@ -85,6 +108,7 @@ function onFileRequestFinished() {
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
+        ref="commentFieldRef"
         :value="comment ?? ''"
         class="fr-input"
         rows="5"

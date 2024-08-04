@@ -40,6 +40,7 @@ const props = defineProps<{
 
 const statuses: Array<{
   label: string;
+  extraLabel?: string;
   value: CriteriumResultStatus;
   color?: RadioColor;
 }> = [
@@ -50,6 +51,7 @@ const statuses: Array<{
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
+    extraLabel: "le focus se déplacera sur le champ de saisie ci-après",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: "red"
   },
@@ -128,6 +130,10 @@ function updateResultStatus(status: CriteriumResultStatus) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
+      if (status === CriteriumResultStatus.NOT_COMPLIANT) {
+        criteriumNotCompliantAccordion.value?.disclose();
+      }
+
       if (
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
