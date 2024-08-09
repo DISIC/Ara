@@ -35,7 +35,7 @@ function getContent() {
   let jsonContent;
   try {
     jsonContent = JSON.parse(props.content);
-  } finally (e) {
+  } finally {
     return jsonContent;
   }
 }
