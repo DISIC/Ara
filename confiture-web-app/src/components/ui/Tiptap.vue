@@ -30,16 +30,14 @@ lowlight.register("ts", ts);
 
 const props = defineProps(["content"]);
 const emit = defineEmits(["update:content"]);
-//JSON.stringify(document.querySelector(".tiptap").editor.getJSON())
 
 function getContent() {
-  let jsonContent;
+  let jsonContent = props.content;
   try {
     jsonContent = JSON.parse(props.content);
-  } catch (e) {
-    return "";
+  } finally {
+    return jsonContent;
   }
-  return jsonContent;
 }
 
 const editor = useEditor({
