@@ -29,12 +29,14 @@ const props = defineProps(["content"]);
 const emit = defineEmits(["update:content"]);
 
 function getContent() {
-  let jsonContent = props.content;
+  let jsonContent;
   try {
     jsonContent = JSON.parse(props.content);
-  } finally {
-    return jsonContent;
+  } catch {
+    jsonContent = props.content;
   }
+
+  return jsonContent;
 }
 
 const editor = useEditor({
