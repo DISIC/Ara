@@ -43,7 +43,7 @@ function getContent() {
 const editor = useEditor({
   content: getContent(),
   extensions: [
-    CodeBlockLowlight.configure({ lowlight }),
+    CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
     Highlight,
     Heading.configure({
       levels: [2, 3, 4, 5, 6]
