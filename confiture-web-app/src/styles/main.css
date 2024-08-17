@@ -75,12 +75,14 @@ from DSFR links with `target="_blank"` */
   padding: 0.75rem;
 }
 .tiptap code {
-  padding: 0.2em 0.4em;
   font-size: 85%;
+}
+.tiptap :not(pre) code {
+  padding: 0.2em 0.4em;
 }
 .tiptap pre,
 .tiptap code {
-  background-color: var(--background-alt-grey);
+  background-color: var(--background-contrast-overlap-grey);
   border-radius: 0.25rem;
 }
 .tiptap blockquote:before {
