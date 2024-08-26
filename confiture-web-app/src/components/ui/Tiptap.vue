@@ -25,7 +25,9 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
-const props = defineProps(["content"]);
+const props = defineProps<{
+  content: string;
+}>();
 const emit = defineEmits(["update:content"]);
 
 function getContent() {
