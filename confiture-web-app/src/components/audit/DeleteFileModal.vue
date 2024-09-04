@@ -25,17 +25,21 @@ const isImage = computed(() => {
   return props.mimeType && props.mimeType.startsWith("image");
 });
 
-const title = isImage.value
-  ? "Voulez-vous supprimer cette image ?"
-  : "Voulez-vous supprimer ce fichier ?";
+const title = computed(() => {
+  return isImage.value
+    ? "Voulez-vous supprimer cette image ?"
+    : "Voulez-vous supprimer ce fichier ?";
+});
 
-const description = isImage.value
-  ? "Cette image sera définitivement supprimée de votre audit."
-  : "Ce fichier sera définitivement supprimé de votre audit.";
+const description = computed(() => {
+  return isImage.value
+    ? "Cette image sera définitivement supprimée de votre audit."
+    : "Ce fichier sera définitivement supprimé de votre audit.";
+});
 
-const confirm = isImage.value
-  ? "Supprimer l’image ?"
-  : "Supprimer le fichier ?";
+const confirm = computed(() => {
+  return isImage.value ? "Supprimer l’image ?" : "Supprimer le fichier ?";
+});
 </script>
 
 <template>
