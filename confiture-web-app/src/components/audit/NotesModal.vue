@@ -7,32 +7,27 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { AuditFile, StoreName } from "../../types";
-import { handleFileUploadError } from "../../utils";
+import { handleFileDeleteError, handleFileUploadError } from "../../utils";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
-const props = defineProps<{
+defineProps<{
   isLoading: boolean;
-  defaultErrorMessage?: FileErrorMessage | null;
 }>();
 
 const emit = defineEmits<{
   (e: "closed"): void;
   (e: "confirm", payload: string): void;
-  (e: "delete", payload: AuditFile): void;
 }>();
 
 defineExpose({
   show: () => modal.value?.show(),
-  hide: () => modal.value?.hide(),
-  fileUpload: () => fileUpload.value
+  hide: () => modal.value?.hide()
 });
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(
-  props.defaultErrorMessage ?? null
-);
+const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const fileUpload = ref<InstanceType<typeof FileUpload>>();
 
 const auditStore = useAuditStore();
@@ -63,7 +58,17 @@ function handleUploadFile(file: File) {
 }
 
 function handleDeleteFile(file: AuditFile) {
-  emit("delete", file);
+  auditStore
+    .deleteAuditFile(uniqueId.value, file.id)
+    .then(() => {
+      errorMessage.value = null;
+    })
+    .catch(async (error) => {
+      errorMessage.value = await handleFileDeleteError(error);
+    })
+    .finally(() => {
+      fileUpload.value?.onFileRequestFinished();
+    });
 }
 </script>
 
