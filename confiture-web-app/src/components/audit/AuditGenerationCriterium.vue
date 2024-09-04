@@ -185,13 +185,6 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
     .catch(handleUpdateResultError);
 }
 
-function updateTransverseStatus(e: Event) {
-  const transverse = (e.target as HTMLInputElement).checked;
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
-    .catch(handleUpdateResultError);
-}
-
 function updateQuickWin(quickWin: boolean) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
@@ -236,29 +229,6 @@ const isOffline = useIsOffline();
         :items="statuses"
         @update:model-value="updateResultStatus"
       />
-
-      <div class="fr-toggle fr-toggle--label-left">
-        <input
-          :id="`applicable-all-pages-${uniqueId}`"
-          :checked="result.transverse"
-          type="checkbox"
-          class="fr-toggle__input"
-          :disabled="
-            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
-          "
-          @input="updateTransverseStatus"
-        />
-        <label
-          class="fr-toggle__label"
-          :for="`applicable-all-pages-${uniqueId}`"
-        >
-          <span class="fr-sr-only">
-            Appliquer le statut {{ formatStatus(result.status) }} pour le
-            critère {{ topicNumber }}.{{ criterium.number }}
-          </span>
-          &nbsp;Sur toutes les pages
-        </label>
-      </div>
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
