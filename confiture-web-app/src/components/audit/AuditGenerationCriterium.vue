@@ -211,28 +211,6 @@ const isOffline = useIsOffline();
 
 <template>
   <li class="fr-p-2w criterium-container">
-    <div
-      v-if="
-        page.id !== -1 &&
-        transverseStatus &&
-        [
-          CriteriumResultStatus.NOT_COMPLIANT,
-          CriteriumResultStatus.NOT_APPLICABLE
-        ].includes(transverseStatus)
-      "
-      class="fr-mb-2w criterium-transverse-notice"
-    >
-      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
-      <p class="fr-text--sm fr-m-0">
-        Vous avez déjà évalué ce critère à
-        <strong>{{ formatStatus(transverseStatus) }}</strong> sur toutes les
-        pages
-        <button class="fr-link fr-link--sm fr-ml-3v">
-          Voir le critère <span class="fr-sr-only">transverse</span>
-        </button>
-      </p>
-    </div>
-
     <div class="fr-mb-2w criterium-main-section">
       <span class="fr-text--bold criterium-number">
         {{ topicNumber }}.{{ criterium.number }}
@@ -244,14 +222,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- STATUS -->
-    <div
-      :class="[
-        'fr-ml-6w criterium-radios-container',
-        {
-          'fr-mb-2w': result.status !== CriteriumResultStatus.NOT_TESTED
-        }
-      ]"
-    >
+    <div class="fr-ml-6w fr-mb-2w criterium-radios-container">
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
@@ -261,6 +232,38 @@ const isOffline = useIsOffline();
         :items="statuses"
         @update:model-value="updateResultStatus"
       />
+    </div>
+
+    <!-- TRANSVERSE STATUS -->
+    <div
+      v-if="
+        page.id !== -1 &&
+        transverseStatus &&
+        transverseStatus !== CriteriumResultStatus.NOT_TESTED
+      "
+      class="fr-ml-6w fr-mb-2w criterium-transverse-notice"
+    >
+      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+      <p class="fr-text--sm fr-m-0">
+        Vous avez déjà évalué ce critère à
+        <strong
+          :class="[
+            'fr-badge fr-badge--sm fr-badge--no-icon',
+            {
+              'fr-badge--success':
+                transverseStatus === CriteriumResultStatus.COMPLIANT,
+              'fr-badge--error':
+                transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
+            }
+          ]"
+          >{{ formatStatus(transverseStatus) }}</strong
+        >
+        sur toutes les pages
+      </p>
+      <button class="fr-link fr-link--sm">
+        Voir le commentaire <span class="fr-sr-only">transverse</span>
+        <span class="fr-icon-arrow-down-s-line fr-icon--sm" />
+      </button>
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
@@ -327,7 +330,7 @@ const isOffline = useIsOffline();
 .criterium-transverse-notice {
   align-items: start;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 0.75rem;
 }
 
