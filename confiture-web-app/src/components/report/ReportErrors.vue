@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 
 import { useReportStore } from "../../store";
 import { CriterionResultUserImpact, CriteriumResultStatus } from "../../types";
-import { getAllReportErrors } from "./getReportErrors";
+import { getReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
 
@@ -64,11 +64,7 @@ const unknownUserImpactErrorCount = computed(
 );
 
 const errorsCount = computed(() => {
-  return getAllReportErrors(
-    report,
-    quickWinFilter.value,
-    userImpactFilters.value
-  )
+  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
     .map((page: any) => page.topics.map((topic: any) => topic.errors))
     .flat(2).length;
 });
@@ -86,10 +82,10 @@ function resetFilters() {
     v-if="report.data"
     :count="errorsCount"
     :pages-data="
-      getAllReportErrors(report, quickWinFilter, userImpactFilters).slice(1)
+      getReportErrors(report, quickWinFilter, userImpactFilters).slice(1)
     "
     :transverse-data="
-      getAllReportErrors(report, quickWinFilter, userImpactFilters).slice(0, 1)
+      getReportErrors(report, quickWinFilter, userImpactFilters).slice(0, 1)
     "
     :show-filters="true"
   >
@@ -191,8 +187,8 @@ function resetFilters() {
     <template #transverse-data>
       <section
         v-if="
-          getAllReportErrors(report, quickWinFilter, userImpactFilters)[0]
-            .id === -1
+          getReportErrors(report, quickWinFilter, userImpactFilters)[0].id ===
+          -1
         "
         class="fr-mb-8w"
       >
@@ -201,7 +197,7 @@ function resetFilters() {
         </h2>
 
         <div
-          v-for="(topic, i) in getAllReportErrors(
+          v-for="(topic, i) in getReportErrors(
             report,
             quickWinFilter,
             userImpactFilters
@@ -225,7 +221,7 @@ function resetFilters() {
 
     <template #pages-data>
       <section
-        v-for="page in getAllReportErrors(
+        v-for="page in getReportErrors(
           report,
           quickWinFilter,
           userImpactFilters

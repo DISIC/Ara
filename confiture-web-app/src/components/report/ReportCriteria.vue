@@ -3,16 +3,14 @@ import { computed, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
-import type { ReportErrors } from "./getReportErrors";
-import {
-  ReportImprovement,
-  ReportTransverseImprovement
-} from "./getReportImprovements";
+import type { ReportError } from "./getReportErrors";
+import { ReportImprovement } from "./getReportImprovements";
 
 defineProps<{
   count: number;
-  pagesData: ReportErrors[] | ReportImprovement[];
-  transverseData: ReportErrors[] | ReportTransverseImprovement[];
+  pagesData: ReportError[] | ReportImprovement[];
+  transverseData: ReportError[] | ReportImprovement[];
+  showFilters?: boolean;
   topNotice?: string;
 }>();
 
