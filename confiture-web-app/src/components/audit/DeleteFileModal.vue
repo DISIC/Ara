@@ -68,7 +68,10 @@ const confirm = isImage.value
                 class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left"
               >
                 <li>
-                  <button class="fr-btn" @click="$emit('confirm')">
+                  <button
+                    class="fr-btn danger-button"
+                    @click="$emit('confirm')"
+                  >
                     {{ confirm }}
                   </button>
                 </li>
