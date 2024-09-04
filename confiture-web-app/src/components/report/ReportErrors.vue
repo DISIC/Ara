@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 
 import { useReportStore } from "../../store";
 import { CriterionResultUserImpact, CriteriumResultStatus } from "../../types";
-import { getReportErrors, getReportTransverseErrors } from "./getReportErrors";
+import { getAllReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
 
@@ -63,6 +63,16 @@ const unknownUserImpactErrorCount = computed(
     ).length
 );
 
+const errorsCount = computed(() => {
+  return getAllReportErrors(
+    report,
+    quickWinFilter.value,
+    userImpactFilters.value
+  )
+    .map((page: any) => page.topics.map((topic: any) => topic.errors))
+    .flat(2).length;
+});
+
 const quickWinFilter = ref(false);
 
 function resetFilters() {
@@ -74,8 +84,14 @@ function resetFilters() {
 <template>
   <ReportCriteria
     v-if="report.data"
-    :pages-data="getReportErrors(report, quickWinFilter, userImpactFilters)"
-    :transverse-data="getReportTransverseErrors(report, userImpactFilters)"
+    :count="errorsCount"
+    :pages-data="
+      getAllReportErrors(report, quickWinFilter, userImpactFilters).slice(1)
+    "
+    :transverse-data="
+      getAllReportErrors(report, quickWinFilter, userImpactFilters).slice(0, 1)
+    "
+    :show-filters="true"
   >
     <template #filter>
       <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
@@ -174,7 +190,10 @@ function resetFilters() {
 
     <template #transverse-data>
       <section
-        v-if="getReportTransverseErrors(report, userImpactFilters).length"
+        v-if="
+          getAllReportErrors(report, quickWinFilter, userImpactFilters)[0]
+            .id === -1
+        "
         class="fr-mb-8w"
       >
         <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
@@ -182,10 +201,11 @@ function resetFilters() {
         </h2>
 
         <div
-          v-for="(topic, i) in getReportTransverseErrors(
+          v-for="(topic, i) in getAllReportErrors(
             report,
+            quickWinFilter,
             userImpactFilters
-          )"
+          ).slice(0, 1)[0].topics"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -205,11 +225,11 @@ function resetFilters() {
 
     <template #pages-data>
       <section
-        v-for="page in getReportErrors(
+        v-for="page in getAllReportErrors(
           report,
           quickWinFilter,
           userImpactFilters
-        )"
+        ).slice(1)"
         :key="page.id"
         class="fr-mb-8w"
       >

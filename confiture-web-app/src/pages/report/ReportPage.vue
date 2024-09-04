@@ -122,7 +122,7 @@ const siteUrl = computed(() => {
   if (report.data) {
     return (
       report.data.procedureUrl ||
-      new URL(report.data.context.samples[0].url).origin
+      new URL(report.data.context.samples[1].url).origin
     );
   }
 
