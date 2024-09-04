@@ -66,7 +66,7 @@ export class AuditService {
             data: [
               {
                 id: -1,
-                name: "Éléments transverses",
+                name: "Éléments transverses (optionnel)",
                 url: ""
               },
               ...data.pages.map((p, i) => {
