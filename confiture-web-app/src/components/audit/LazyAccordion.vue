@@ -10,6 +10,12 @@ defineProps<{
   discloseColor?: string;
 }>();
 
+const accordionRef = ref<HTMLDivElement>();
+
+defineExpose({ accordionRef });
+
+const emit = defineEmits(["opened"]);
+
 const showContent = ref(false);
 const uniqueId = useUniqueId();
 
@@ -19,29 +25,34 @@ function onConceal() {
 
 function onDisclose() {
   showContent.value = true;
+  requestAnimationFrame(function () {
+    emit("opened");
+  });
 }
 </script>
 
 <template>
-  <div
-    class="fr-accordion"
-    :class="{ 'dynamic-color': !!discloseColor, 'is-open': showContent }"
-  >
-    <span class="fr-accordion__title">
-      <button
-        class="fr-accordion__btn"
-        aria-expanded="false"
-        :aria-controls="`accordion-${uniqueId}`"
-      >
-        {{ title }}
-      </button>
-    </span>
+  <div ref="accordionRef" class="fr-accordions-group">
     <div
-      :id="`accordion-${uniqueId}`"
-      class="fr-collapse"
-      v-on="{ 'dsfr.disclose': onDisclose, 'dsfr.conceal': onConceal }"
+      class="fr-accordion"
+      :class="{ 'dynamic-color': !!discloseColor, 'is-open': showContent }"
     >
-      <slot v-if="showContent"></slot>
+      <span class="fr-accordion__title">
+        <button
+          class="fr-accordion__btn"
+          aria-expanded="false"
+          :aria-controls="`accordion-${uniqueId}`"
+        >
+          {{ title }}
+        </button>
+      </span>
+      <div
+        :id="`accordion-${uniqueId}`"
+        class="fr-collapse"
+        v-on="{ 'dsfr.disclose': onDisclose, 'dsfr.conceal': onConceal }"
+      >
+        <slot v-if="showContent"></slot>
+      </div>
     </div>
   </div>
 </template>
