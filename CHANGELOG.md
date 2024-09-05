@@ -6,7 +6,8 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Nouvelles fonctionnalités 🚀
 
-- Le champs "Erreur et recommandation" est automatiquement focus lorsque le critère est défini comme "Non conforme" ([#766](https://github.com/DISIC/Ara/pull/766))
+- Ajoute une modale de confirmation lors de la suppression d’une pièce jointe sur un critère "Non conforme" ([#788](https://github.com/DISIC/Ara/pull/788))
+- Met automatiquement le focus sur le champs "Erreur et recommandation" lorsque qu’un critère est défini comme "Non conforme" ([#766](https://github.com/DISIC/Ara/pull/766))
 
 ## 24/07/2024
 
