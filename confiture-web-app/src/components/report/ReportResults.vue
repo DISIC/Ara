@@ -54,7 +54,7 @@ const pageDistributionTableData = {
   data: [
     ["Pages", "Critères conformes", "Critères non conformes"],
     ...(report.data
-      ? report.data.pageDistributions.map((p) => {
+      ? report.data.pageDistributions.slice(1).map((p) => {
           return [
             p.name,
             `${Math.round(p.compliant.raw)}`,
@@ -139,51 +139,49 @@ const auditInProgress = computed(
       {{ pageDistributionTableData.title }}
     </h3>
 
-    <div class="fr-p-4w fr-mb-6w table-wrapper">
-      <div class="fr-table fr-table--no-caption fr-m-0">
-        <div class="fr-table__wrapper">
-          <div class="fr-table__container">
-            <div class="fr-table__content">
-              <table class="fr-cell--multiline">
-                <caption>
-                  {{
-                    pageDistributionTableData.title
-                  }}
-                </caption>
-                <thead>
-                  <tr>
-                    <th
-                      v-for="header in pageDistributionTableData.data[0]"
-                      :key="header"
-                      scope="col"
-                    >
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(row, i) in pageDistributionTableData.data.slice(1)"
-                    :key="i"
+    <div class="fr-table fr-table--no-caption fr-mb-6w">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table class="fr-cell--multiline">
+              <caption>
+                {{
+                  pageDistributionTableData.title
+                }}
+              </caption>
+              <thead>
+                <tr>
+                  <th
+                    v-for="header in pageDistributionTableData.data[0]"
+                    :key="header"
+                    scope="col"
                   >
-                    <td>
-                      <a
-                        :href="
-                          report.data.context.samples.find(
-                            (s) => s.name === row[0]
-                          )?.url
-                        "
-                        target="_blank"
-                        class="fr-text--bold"
-                      >
-                        {{ row[0] }}
-                      </a>
-                    </td>
-                    <td v-for="data in row.slice(1)" :key="data">{{ data }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(row, i) in pageDistributionTableData.data.slice(1)"
+                  :key="i"
+                >
+                  <td>
+                    <a
+                      :href="
+                        report.data.context.samples.find(
+                          (s) => s.name === row[0]
+                        )?.url
+                      "
+                      target="_blank"
+                      class="fr-text--bold"
+                    >
+                      {{ row[0] }}
+                    </a>
+                  </td>
+                  <td v-for="data in row.slice(1)" :key="data">{{ data }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -194,62 +192,53 @@ const auditInProgress = computed(
       {{ topicDistributionTableData.title }}
     </h3>
 
-    <div class="fr-p-4w table-wrapper">
-      <div class="fr-table fr-table--no-caption fr-m-0">
-        <div class="fr-table__wrapper">
-          <div class="fr-table__container">
-            <div class="fr-table__content">
-              <table class="fr-cell--multiline">
-                <caption>
-                  {{
-                    topicDistributionTableData.title
-                  }}
-                </caption>
-                <thead>
-                  <tr>
-                    <th
-                      v-for="header in [
-                        'Thématique du RGAA',
-                        'Critères conformes',
-                        'Critères non conformes',
-                        'Critères non applicables'
-                      ]"
-                      :key="header"
-                      scope="col"
-                    >
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(row, i) in report.data.topicDistributions.map(
-                      (t, i) => {
-                        return [
-                          `${i + 1}. ${t.name}`,
-                          `${Math.round(t.compliant.raw)}`,
-                          `${Math.round(t.notCompliant.raw)}`,
-                          `${Math.round(t.notApplicable.raw)}`
-                        ];
-                      }
-                    )"
-                    :key="i"
+    <div class="fr-table fr-table--no-caption fr-m-0">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table class="fr-cell--multiline">
+              <caption>
+                {{
+                  topicDistributionTableData.title
+                }}
+              </caption>
+              <thead>
+                <tr>
+                  <th
+                    v-for="header in [
+                      'Thématique du RGAA',
+                      'Critères conformes',
+                      'Critères non conformes',
+                      'Critères non applicables'
+                    ]"
+                    :key="header"
+                    scope="col"
                   >
-                    <td v-for="data in row" :key="data">{{ data }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(row, i) in report.data.topicDistributions.map(
+                    (t, i) => {
+                      return [
+                        `${i + 1}. ${t.name}`,
+                        `${Math.round(t.compliant.raw)}`,
+                        `${Math.round(t.notCompliant.raw)}`,
+                        `${Math.round(t.notApplicable.raw)}`
+                      ];
+                    }
+                  )"
+                  :key="i"
+                >
+                  <td v-for="data in row" :key="data">{{ data }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </template>
 </template>
-
-<style scoped>
-.table-wrapper {
-  border: 1px solid var(--border-default-grey);
-  max-width: 49.5rem;
-}
-</style>
