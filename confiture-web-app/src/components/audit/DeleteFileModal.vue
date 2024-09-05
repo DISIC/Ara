@@ -38,7 +38,7 @@ const description = computed(() => {
 });
 
 const confirm = computed(() => {
-  return isImage.value ? "Supprimer l’image ?" : "Supprimer le fichier ?";
+  return isImage.value ? "Supprimer l’image" : "Supprimer le fichier";
 });
 </script>
 
