@@ -20,6 +20,7 @@ import {
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
+import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
@@ -82,6 +83,32 @@ const transverseStatus = computed((): CriteriumResultStatus | null => {
 
   return null;
 });
+
+const transverseComment = computed((): string | null => {
+  if (store.data) {
+    switch (transverseStatus.value) {
+      case CriteriumResultStatus.COMPLIANT:
+        return store.data?.[-1][props.topicNumber][props.criterium.number]
+          .compliantComment;
+      case CriteriumResultStatus.NOT_COMPLIANT:
+        return store.data?.[-1][props.topicNumber][props.criterium.number]
+          .notCompliantComment;
+      case CriteriumResultStatus.NOT_APPLICABLE:
+        return store.data?.[-1][props.topicNumber][props.criterium.number]
+          .notApplicableComment;
+      default:
+        return null;
+    }
+  }
+
+  return null;
+});
+
+const showTransverseComment = ref(false);
+
+function toggleTransverseComment() {
+  showTransverseComment.value = !showTransverseComment.value;
+}
 
 const notify = useNotifications();
 
@@ -222,7 +249,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- STATUS -->
-    <div class="fr-ml-6w fr-mb-2w criterium-radios-container">
+    <div class="fr-ml-6w fr-mb-1w criterium-radios-container">
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
@@ -241,29 +268,49 @@ const isOffline = useIsOffline();
         transverseStatus &&
         transverseStatus !== CriteriumResultStatus.NOT_TESTED
       "
-      class="fr-ml-6w fr-mb-2w criterium-transverse-notice"
+      class="fr-ml-5w fr-mb-2w fr-p-1w"
+      :class="{ 'criterium-transverse-is-open': showTransverseComment }"
     >
-      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
-      <p class="fr-text--sm fr-m-0">
-        Vous avez déjà évalué ce critère à
-        <strong
-          :class="[
-            'fr-badge fr-badge--sm fr-badge--no-icon',
-            {
-              'fr-badge--success':
-                transverseStatus === CriteriumResultStatus.COMPLIANT,
-              'fr-badge--error':
-                transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
-            }
-          ]"
-          >{{ formatStatus(transverseStatus) }}</strong
+      <div class="fr-mb-9v criterium-transverse-notice">
+        <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+        <p class="fr-text--sm fr-m-0">
+          Vous avez déjà évalué ce critère à
+          <strong
+            :class="[
+              'fr-badge fr-badge--sm fr-badge--no-icon',
+              {
+                'fr-badge--success':
+                  transverseStatus === CriteriumResultStatus.COMPLIANT,
+                'fr-badge--error':
+                  transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
+              }
+            ]"
+            >{{ formatStatus(transverseStatus) }}</strong
+          >
+          sur toutes les pages
+        </p>
+
+        <button
+          v-if="transverseComment"
+          class="fr-link fr-link--sm"
+          @click="toggleTransverseComment"
         >
-        sur toutes les pages
-      </p>
-      <button class="fr-link fr-link--sm">
-        Voir le commentaire <span class="fr-sr-only">transverse</span>
-        <span class="fr-icon-arrow-down-s-line fr-icon--sm" />
-      </button>
+          {{ showTransverseComment ? "Masquer" : "Voir" }}
+          {{
+            transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
+              ? "les erreurs"
+              : "le commentaire"
+          }}
+          <span class="fr-sr-only">transverse</span>
+          <span class="fr-icon-arrow-down-s-line fr-icon--sm" />
+        </button>
+      </div>
+
+      <MarkdownRenderer
+        v-if="showTransverseComment && transverseComment"
+        class="fr-mb-3w"
+        :markdown="transverseComment"
+      />
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
@@ -325,6 +372,10 @@ const isOffline = useIsOffline();
 
 .criterium-container::marker {
   content: none;
+}
+
+.criterium-transverse-is-open {
+  background: var(--background-contrast-info);
 }
 
 .criterium-transverse-notice {
