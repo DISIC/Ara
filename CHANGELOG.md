@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 05/09/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Le champs "Erreur et recommandation" est automatiquement focus lorsque le critère est défini comme "Non conforme" ([#766](https://github.com/DISIC/Ara/pull/766))
+
 ## 24/07/2024
 
 ### Autres changements ⚙️
