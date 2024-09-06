@@ -88,7 +88,7 @@ const targetTabIndex = computed(() => {
 });
 const router = useRouter();
 
-function handleTabChange(tab: { title: string }) {
+function handleTabChange(tabTitle: string) {
   // change the URL in the browser adress bar without triggering vue-router navigation
   history.pushState(
     {},
@@ -97,12 +97,12 @@ function handleTabChange(tab: { title: string }) {
       name: "report",
       params: {
         uniqueId,
-        tab: slugify(tab.title)
+        tab: slugify(tabTitle)
       }
     }).fullPath
   );
 
-  targetTab.value = slugify(tab.title);
+  targetTab.value = slugify(tabTitle);
 }
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
@@ -286,9 +286,9 @@ const siteUrl = computed(() => {
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
-        v-on="{ 'dsfr.disclose': () => handleTabChange(tab) }"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab.title) }"
       >
-        <component :is="tab.component" />
+        <component :is="tab.component" @to-tab="handleTabChange" />
       </div>
     </div>
   </template>

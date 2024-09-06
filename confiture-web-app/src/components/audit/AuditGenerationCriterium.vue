@@ -75,7 +75,6 @@ const result = computed(
     )!
 );
 
-// TODO: UX is not finalized.
 const transverseStatus = computed((): CriteriumResultStatus | null => {
   if (store.data) {
     return store.data?.[-1][props.topicNumber][props.criterium.number].status;
