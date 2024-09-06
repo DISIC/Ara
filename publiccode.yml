@@ -1,0 +1,25 @@
+publiccodeYmlVersion: "0.2"
+name: Ara
+url: https://github.com/DISIC/Ara
+landingURL: https://ara.numerique.gouv.fr/
+creationDate: 2022-07-11
+latestRelease:
+  date: ""
+  version: ""
+logo: https://github.com/DISIC.png
+usedBy: []
+roadmap: ""
+softwareType: ""
+description:
+  fr:
+    shortDescription: Faire des audits RGAA, les rendre lisibles et suivre
+      l’amélioration de leur taux de conformité
+    documentation: ""
+legal:
+  license: null
+  authorsFile: ""
+maintenance:
+  type: community
+  contacts:
+    - name: ""
+      email: ""
