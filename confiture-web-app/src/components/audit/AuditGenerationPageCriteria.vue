@@ -45,22 +45,7 @@ const noResults = computed(() => {
 
 <template>
   <!-- TODO: handle empty state -->
-  <template v-if="page.id === -1">
-    <div class="fr-alert fr-alert--info fr-mb-3w">
-      <p>
-        Vous pouvez indiquer dans cet onglet les critères non conformes, les
-        erreurs et les critères non applicables sur toutes les pages de votre
-        échantillon. Le statut des critères ne sera pas répercuté sur toutes les
-        pages.
-      </p>
-    </div>
-
-    <p class="fr-text--sm fr-mb-2w optional-notice">
-      Compléter les critères ci-dessous est optionnel
-    </p>
-  </template>
-
-  <div v-else class="fr-mb-2w page-url">
+  <div v-if="page.id !== -1" class="fr-mb-2w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>

@@ -3,6 +3,7 @@ import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
+import { useAuditStore } from "../../store";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
@@ -92,12 +93,15 @@ function lazyAccordionOpened() {
   commentFieldRef.value?.focus();
   hasJustBeenSetAsNotCompliant = false;
 }
+const auditStore = useAuditStore();
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    title="Erreur et recommandation"
+    :title="`Erreur et recommandation${
+      auditStore.currentPageId === -1 ? ' sur toutes les pages' : ''
+    }`"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
@@ -105,6 +109,9 @@ function lazyAccordionOpened() {
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label" :for="`criterum-comment-field-${id}`">
         Description des erreurs et recommandations
+        <template v-if="auditStore.currentPageId === -1">
+          sur toutes les pages</template
+        >
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
