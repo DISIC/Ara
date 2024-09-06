@@ -61,10 +61,7 @@ export function getReportErrors(
               return {
                 topic: Number(topicNumber),
                 name: getTopicName(Number(topicNumber)),
-                errors: sortBy(
-                  results.filter((r) => !r.transverse),
-                  "criterium"
-                )
+                errors: sortBy(results, "criterium")
               };
             })
           ),

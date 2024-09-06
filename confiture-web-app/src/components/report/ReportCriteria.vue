@@ -9,7 +9,7 @@ import { ReportImprovement } from "./getReportImprovements";
 defineProps<{
   count: number;
   pagesData: ReportError[] | ReportImprovement[];
-  transverseData: ReportError[] | ReportImprovement[];
+  transverseData: ReportError | ReportImprovement;
   showFilters?: boolean;
   topNotice?: string;
 }>();
@@ -45,7 +45,7 @@ const hasFilters = computed(() => {
             <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
             <ul class="fr-sidemenu__list">
               <li
-                v-if="transverseData.length"
+                v-if="transverseData"
                 :class="[
                   'fr-sidemenu__item',
                   {
@@ -104,7 +104,7 @@ const hasFilters = computed(() => {
         {{ topNotice }}
       </p>
 
-      <slot v-if="transverseData.length" name="transverse-data" />
+      <slot v-if="transverseData" name="transverse-data" />
 
       <slot name="pages-data" />
     </div>

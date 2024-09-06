@@ -68,7 +68,7 @@ const transverseErrors = computed(() => {
     report,
     quickWinFilter.value,
     userImpactFilters.value
-  ).slice(0, 1);
+  )[0];
 });
 
 const pagesErrors = computed(() => {
@@ -197,13 +197,13 @@ function resetFilters() {
     </template>
 
     <template #transverse-data>
-      <section v-if="transverseErrors[0].id === -1" class="fr-mb-8w">
+      <section class="fr-mb-8w">
         <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
           Toutes les pages
         </h2>
 
         <div
-          v-for="(topic, i) in transverseErrors[0].topics"
+          v-for="(topic, i) in transverseErrors.topics"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
