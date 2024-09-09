@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import {
   Audit,
+  AuditFile,
   AuditedPage,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  AuditFile,
+  FileDisplay,
   Prisma,
   StoredFile,
   TestEnvironment
@@ -445,7 +446,8 @@ export class AuditService {
     pageId: number,
     topic: number,
     criterium: number,
-    file: Express.Multer.File
+    file: Express.Multer.File,
+    display?: FileDisplay
   ) {
     const { key, thumbnailKey } = await this.uploadFileToStorage(
       editUniqueId,
@@ -469,7 +471,8 @@ export class AuditService {
         originalFilename: file.originalname,
         mimetype: file.mimetype,
         size: file.size,
-        thumbnailKey
+        thumbnailKey,
+        display
       }
     });
 
@@ -510,7 +513,11 @@ export class AuditService {
     return true;
   }
 
-  async saveNotesFile(editUniqueId: string, file: Express.Multer.File) {
+  async saveNotesFile(
+    editUniqueId: string,
+    file: Express.Multer.File,
+    display: FileDisplay = FileDisplay.ATTACHMENT
+  ) {
     const { key, thumbnailKey } = await this.uploadFileToStorage(
       editUniqueId,
       file,
@@ -531,6 +538,7 @@ export class AuditService {
         size: file.size,
 
         thumbnailKey,
+        display
       }
     });
 
@@ -842,7 +850,8 @@ export class AuditService {
         key: file.key,
         thumbnailKey: file.thumbnailKey,
         size: file.size,
-        mimetype: file.mimetype
+        mimetype: file.mimetype,
+        display: file.display
       })),
 
       criteriaCount: {
@@ -1006,7 +1015,8 @@ export class AuditService {
         exampleImages: r.exampleImages.map((img) => ({
           filename: img.originalFilename,
           key: img.key,
-          thumbnailKey: img.thumbnailKey
+          thumbnailKey: img.thumbnailKey,
+          display: img.display
         }))
       }))
     };
