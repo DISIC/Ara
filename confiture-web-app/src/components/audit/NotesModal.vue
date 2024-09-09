@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
-import { AuditFile, StoreName } from "../../types";
+import { AuditFile, FileDisplay, StoreName } from "../../types";
 import { handleFileDeleteError, handleFileUploadError } from "../../utils";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
@@ -40,7 +40,12 @@ const isOffline = useIsOffline();
 const notes = ref(auditStore.currentAudit?.notes || "");
 
 const uniqueId = computed(() => route.params.uniqueId as string);
-const files = computed(() => auditStore.currentAudit?.notesFiles || []);
+const files = computed(
+  () =>
+    auditStore.currentAudit?.notesFiles?.filter(
+      (e) => e.display === FileDisplay.ATTACHMENT
+    ) || []
+);
 
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
