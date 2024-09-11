@@ -94,8 +94,7 @@ const steps = [
       l’accessibilité (RGAA 4.1) vous pouvez&nbsp;:
     </p>
     <ul>
-      <li>Commencer par un audit rapide (25 critères)</li>
-      <li>Poursuivre par un audit complémentaire (50 critères)</li>
+      <li>Faire un état des lieux (audit partiel de 25 ou 50 critères)</li>
       <li>Faire un audit complet, dit de conformité (106 critères)</li>
       <li>
         Générer votre rapport d’audit et votre déclaration d’accessibilité
