@@ -61,18 +61,17 @@ export class AuditService {
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
 
+        transverseElementsPage: {
+          create: {
+            name: "Éléments transverses",
+            url: ""
+          }
+        },
         pages: {
           createMany: {
-            data: [
-              {
-                id: -1,
-                name: "Éléments transverses (optionnel)",
-                url: ""
-              },
-              ...data.pages.map((p, i) => {
-                return { ...p, order: i + 1 };
-              })
-            ]
+            data: data.pages.map((p, i) => {
+              return { ...p, order: i + 1 };
+            })
           }
         },
 
@@ -1057,6 +1056,15 @@ export class AuditService {
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
         environments: true,
+        transverseElementsPage: {
+          include: {
+            results: {
+              include: {
+                exampleImages: true
+              }
+            }
+          }
+        },
         pages: {
           include: {
             results: {
@@ -1212,6 +1220,25 @@ export class AuditService {
             data: originalAudit.environments.map((e) =>
               omit(e, ["id", "auditUniqueId"])
             )
+          }
+        },
+
+        transverseElementsPage: {
+          create: {
+            ...originalAudit.transverseElementsPage,
+            results: {
+              create: originalAudit.transverseElementsPage.results.map((r) => ({
+                ...omit(r, ["id", "pageId"]),
+                exampleImages: {
+                  create: r.exampleImages.map(
+                    (e) =>
+                      imagesCreateData[originalAudit.transverseElementsPage.id][
+                        r.id
+                      ][e.id]
+                  )
+                }
+              }))
+            }
           }
         },
 
