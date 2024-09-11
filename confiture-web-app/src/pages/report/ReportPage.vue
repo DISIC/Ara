@@ -288,7 +288,8 @@ const siteUrl = computed(() => {
         tabindex="0"
         v-on="{ 'dsfr.disclose': () => handleTabChange(tab.title) }"
       >
-        <component :is="tab.component" @to-tab="handleTabChange" />
+        <ReportResults v-if="i === 0" @to-tab="handleTabChange" />
+        <component :is="tab.component" v-else />
       </div>
     </div>
   </template>
