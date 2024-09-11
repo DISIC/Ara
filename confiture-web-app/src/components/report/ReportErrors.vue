@@ -64,11 +64,7 @@ const unknownUserImpactErrorCount = computed(
 );
 
 const transverseErrors = computed(() => {
-  return getReportErrors(
-    report,
-    quickWinFilter.value,
-    userImpactFilters.value
-  )[0];
+  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value);
 });
 
 const pagesErrors = computed(() => {
@@ -203,7 +199,7 @@ function resetFilters() {
         </h2>
 
         <div
-          v-for="(topic, i) in transverseErrors.topics"
+          v-for="(topic, i) in transverseErrors[0].topics"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >

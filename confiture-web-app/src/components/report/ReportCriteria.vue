@@ -9,7 +9,7 @@ import { ReportImprovement } from "./getReportImprovements";
 defineProps<{
   count: number;
   pagesData: ReportError[] | ReportImprovement[];
-  transverseData: ReportError | ReportImprovement;
+  transverseData: ReportError[] | ReportImprovement[];
   showFilters?: boolean;
   topNotice?: string;
 }>();
