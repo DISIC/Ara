@@ -149,9 +149,18 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            audit: {
-              editUniqueId: uniqueId
-            }
+            OR: [
+              {
+                audit: {
+                  editUniqueId: uniqueId
+                }
+              },
+              {
+                auditTransverse: {
+                  editUniqueId: uniqueId
+                }
+              }
+            ]
           }
         },
         include: {
