@@ -88,6 +88,7 @@ export class AuditsController {
   async getAudit(@Param("uniqueId") uniqueId: string) {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
       environments: true,
+      transverseElementsPage: true,
       pages: true,
       sourceAudit: {
         select: {

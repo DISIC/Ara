@@ -136,6 +136,9 @@ export class AuditService {
   > {
     const [audit, pages, existingResults] = await Promise.all([
       this.prisma.audit.findUnique({
+        include: {
+          transverseElementsPage: true
+        },
         where: {
           editUniqueId: uniqueId
         }
@@ -159,7 +162,7 @@ export class AuditService {
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
-    return pages.flatMap((page) =>
+    return [audit.transverseElementsPage, ...pages].flatMap((page) =>
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
@@ -1197,7 +1200,12 @@ export class AuditService {
 
     const newAudit = await this.prisma.audit.create({
       data: {
-        ...omit(originalAudit, ["id", "auditTraceId", "sourceAuditId"]),
+        ...omit(originalAudit, [
+          "id",
+          "auditTraceId",
+          "sourceAuditId",
+          "transverseElementsPageId"
+        ]),
 
         // link new audit with the original
         sourceAudit: {
