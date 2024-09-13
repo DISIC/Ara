@@ -316,7 +316,7 @@ const isOffline = useIsOffline();
 
       <MarkdownRenderer
         v-if="showTransverseComment && transverseComment"
-        class="fr-mb-3w"
+        class="fr-mt-5w"
         :markdown="transverseComment"
       />
     </div>
