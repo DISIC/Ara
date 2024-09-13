@@ -68,11 +68,7 @@ const transverseErrors = computed(() => {
 });
 
 const pagesErrors = computed(() => {
-  return getReportErrors(
-    report,
-    quickWinFilter.value,
-    userImpactFilters.value
-  ).slice(1);
+  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value);
 });
 
 const errorsCount = computed(() => {
@@ -218,7 +214,11 @@ function resetFilters() {
     </template>
 
     <template #pages-data>
-      <section v-for="page in pagesErrors" :key="page.id" class="fr-mb-8w">
+      <section
+        v-for="page in pagesErrors.slice(1)"
+        :key="page.id"
+        class="fr-mb-8w"
+      >
         <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h2>

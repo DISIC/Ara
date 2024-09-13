@@ -13,7 +13,7 @@ const transverseImprovements = computed(() => {
 });
 
 const pagesImprovements = computed(() => {
-  return getReportImprovements(report).slice(1);
+  return getReportImprovements(report);
 });
 
 const improvementsCount = computed(() => {
@@ -61,7 +61,7 @@ const improvementsCount = computed(() => {
 
     <template #pages-data>
       <section
-        v-for="page in pagesImprovements"
+        v-for="page in pagesImprovements.slice(1)"
         :key="page.id"
         class="fr-mb-8w"
       >

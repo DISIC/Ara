@@ -68,7 +68,7 @@ const hasFilters = computed(() => {
                 >
               </li>
               <li
-                v-for="page in pagesData"
+                v-for="page in pagesData.slice(1)"
                 :key="page.name"
                 class="fr-sidemenu__item"
                 :class="{

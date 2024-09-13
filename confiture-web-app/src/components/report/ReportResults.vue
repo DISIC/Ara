@@ -62,7 +62,7 @@ const pageDistributionTableData = {
   data: [
     ["Pages", "Critères conformes", "Critères non conformes"],
     ...(report.data
-      ? report.data.pageDistributions.map((p) => {
+      ? report.data.pageDistributions.slice(1).map((p) => {
           return [
             p.name,
             Math.round(p.compliant.raw),
@@ -212,7 +212,7 @@ const transverseNotCompliantCount = computed(() => {
           concernent des éléments transverses à toutes les pages de
           l’échantillon.
         </p>
-        <!-- TODO: make this link work -->
+        <!-- FIXME: make this link work -->
         <RouterLink
           :to="{
             name: 'report',

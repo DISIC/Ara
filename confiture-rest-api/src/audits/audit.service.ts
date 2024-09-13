@@ -24,9 +24,10 @@ import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 
-const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
+const AUDIT_EDIT_INCLUDE = {
   recipients: true,
   environments: true,
+  transverseElementsPage: true,
   pages: true,
   sourceAudit: {
     select: {
@@ -34,7 +35,7 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
     }
   },
   notesFiles: true
-};
+} as const;
 
 @Injectable()
 export class AuditService {
@@ -768,14 +769,10 @@ export class AuditService {
   async getAuditReportData(
     consultUniqueId: string
   ): Promise<AuditReportDto | undefined> {
-    const audit = (await this.prisma.audit.findUnique({
+    const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
       include: AUDIT_EDIT_INCLUDE
-    })) as Audit & {
-      environments: TestEnvironment[];
-      pages: AuditedPage[];
-      notesFiles: AuditFile[];
-    };
+    });
 
     if (!audit) {
       return;
@@ -784,7 +781,16 @@ export class AuditService {
     const results = await this.prisma.criterionResult.findMany({
       where: {
         page: {
-          auditUniqueId: audit.editUniqueId
+          OR: [
+            {
+              auditUniqueId: audit.editUniqueId
+            },
+            {
+              auditTransverse: {
+                editUniqueId: audit.editUniqueId
+              }
+            }
+          ]
         },
         criterium: {
           in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
@@ -896,7 +902,7 @@ export class AuditService {
           browser: e.browser
         })),
         referencial: "RGAA Version 4.1",
-        samples: audit.pages
+        samples: [audit.transverseElementsPage, ...audit.pages]
           .map((p, i) => ({
             name: p.name,
             order: p.order,
@@ -909,53 +915,56 @@ export class AuditService {
         technologies: audit.technologies
       },
 
-      pageDistributions: audit.pages.map((p) => ({
-        name: p.name,
-        compliant: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT
-          ).length,
-          percentage:
-            (results.filter(
+      pageDistributions: [audit.transverseElementsPage, ...audit.pages].map(
+        (p) => ({
+          name: p.name,
+          compliant: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.COMPLIANT
-            ).length /
-              totalCriteriaCount) *
-            100
-        },
-        notApplicable: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_APPLICABLE
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.COMPLIANT
+              ).length /
+                totalCriteriaCount) *
+              100
+          },
+          notApplicable: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE
-            ).length /
-              totalCriteriaCount) *
-            100
-        },
-        notCompliant: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_COMPLIANT
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.NOT_APPLICABLE
+              ).length /
+                totalCriteriaCount) *
+              100
+          },
+          notCompliant: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT
-            ).length /
-              totalCriteriaCount) *
-            100
-        }
-      })),
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.NOT_COMPLIANT
+              ).length /
+                totalCriteriaCount) *
+              100
+          }
+        })
+      ),
 
       resultDistribution: {
         compliant: {
