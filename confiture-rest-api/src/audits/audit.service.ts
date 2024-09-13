@@ -1,14 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import {
   Audit,
-  AuditedPage,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  AuditFile,
   Prisma,
-  StoredFile,
-  TestEnvironment
+  StoredFile
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
