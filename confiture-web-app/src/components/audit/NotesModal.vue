@@ -47,7 +47,10 @@ const files = computed(
     ) || []
 );
 
-const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
+const handleNotesChange = debounce((notesContent: string) => {
+  notes.value = notesContent;
+  emit("confirm", notes.value);
+}, 500);
 
 function handleUploadFile(file: File) {
   auditStore
@@ -116,8 +119,7 @@ function handleDeleteFile(file: AuditFile) {
                   rows="10"
                   :disabled="isOffline"
                   aria-describedby="notes-markdown"
-                  @input="handleNotesChange"
-                  @update:content="($content) => (notes = $content)"
+                  @update:content="handleNotesChange"
                 />
               </div>
               <MarkdownHelpButton
@@ -154,8 +156,8 @@ function handleDeleteFile(file: AuditFile) {
   flex-wrap: wrap;
   column-gap: 1rem;
   align-items: center;
-  margin: 2rem 0 1.5rem 0;
-  padding: 0.75rem 0;
+  margin: 0 -3rem 1.5rem -3rem;
+  padding: 2rem 3rem 0.75rem;
   position: sticky;
   top: 0;
   z-index: 9;
