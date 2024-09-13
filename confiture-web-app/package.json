@@ -19,6 +19,7 @@
     "@sentry/vue": "^7.37.2",
     "@tiptap/extension-code-block-lowlight": "^2.5.9",
     "@tiptap/extension-highlight": "^2.5.9",
+    "@tiptap/extension-image": "^2.6.6",
     "@tiptap/extension-link": "^2.5.9",
     "@tiptap/extension-task-item": "^2.5.9",
     "@tiptap/extension-task-list": "^2.5.9",

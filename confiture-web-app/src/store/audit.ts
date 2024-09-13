@@ -151,6 +151,7 @@ export const useAuditStore = defineStore("audit", {
 
       const notesFiles = this.entities[uniqueId].notesFiles || [];
       notesFiles.push(notesFile);
+      return notesFile;
     },
 
     async deleteAuditFile(uniqueId: string, fileId: number) {

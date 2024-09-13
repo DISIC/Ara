@@ -2,12 +2,13 @@
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Heading from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
+import { Image as ImageExtension } from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
-import { EditorContent, useEditor } from "@tiptap/vue-3";
+import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
@@ -15,6 +16,11 @@ import html from "highlight.js/lib/languages/xml";
 // load common languages
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
+import { computed, ShallowRef } from "vue";
+import { useRoute } from "vue-router";
+
+import { useNotifications } from "../../composables/useNotifications";
+import { ImageUploadTiptapExtension } from "../../tiptap/ImageUploadTiptapExtension";
 
 // create a lowlight instance
 const lowlight = createLowlight(common);
@@ -25,10 +31,15 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
+const route = useRoute();
+const notify = useNotifications();
+
 const props = defineProps<{
   content: string;
 }>();
 const emit = defineEmits(["update:content"]);
+
+const uniqueId = computed(() => route.params.uniqueId as string);
 
 function getContent() {
   let jsonContent;
@@ -57,6 +68,10 @@ const editor = useEditor({
     }),
     TaskItem,
     TaskList,
+    ImageExtension.configure({ inline: false }),
+    ImageUploadTiptapExtension.configure({
+      uniqueId: uniqueId.value
+    }),
     Typography.configure({
       openDoubleQuote: "« ",
       closeDoubleQuote: " »"
@@ -66,7 +81,7 @@ const editor = useEditor({
     // The content has changed.
     emit("update:content", JSON.stringify(editor.getJSON()));
   }
-});
+}) as ShallowRef<Editor>;
 </script>
 
 <template>

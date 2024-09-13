@@ -66,10 +66,39 @@ from DSFR links with `target="_blank"` */
 }
 
 .tiptap {
+  background-color: var(--background-default-grey);
   padding: 1rem;
   border: 1px solid var(--border-default-grey);
   min-height: 10rem;
+  height: 70vh;
+  height: 70dvh;
+  max-height: 80vh;
+  max-height: 80dvh;
+  overflow-y: auto;
 }
+
+.tiptap img {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.tiptap p {
+  vertical-align: middle;
+}
+
+/* Testing some different UI for TipTap editor: */
+/* .tiptap[contenteditable]:not([contenteditable="false"]),
+.tiptap[tabindex] {
+  color: rgba(10, 118, 246, 0);
+  transition: outline-color 0.3s ease-in;
+}
+
+.tiptap[contenteditable]:not([contenteditable="false"]):focus,
+.tiptap[tabindex]:focus {
+  outline-color: rgba(10, 118, 246, 0.2);
+  outline-offset: 2px;
+  outline-width: 500px;
+} */
 
 .tiptap pre {
   padding: 0.75rem;
@@ -144,6 +173,16 @@ from DSFR links with `target="_blank"` */
 
 .tiptap ul[data-type="taskList"] ul[data-type="taskList"] {
   margin: 0;
+}
+
+.ProseMirror-selectednode {
+  outline-style: dotted;
+  outline-width: 2px;
+  outline-color: var(--dsfr-outline);
+}
+
+.ProseMirror-widget {
+  opacity: 0.5;
 }
 
 /* File upload styling */
