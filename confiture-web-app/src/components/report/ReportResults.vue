@@ -62,7 +62,7 @@ const pageDistributionTableData = {
   data: [
     ["Pages", "Critères conformes", "Critères non conformes"],
     ...(report.data
-      ? report.data.pageDistributions.slice(1).map((p) => {
+      ? report.data.pageDistributions.map((p) => {
           return [
             p.name,
             Math.round(p.compliant.raw),

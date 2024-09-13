@@ -16,9 +16,15 @@ const isOffline = useIsOffline();
 
 const auditStore = useAuditStore();
 
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
+
 const title = computed(() => {
   return `Commentaire${
-    auditStore.currentPageId === -1 ? " sur toutes les pages" : ""
+    auditStore.currentPageId === transversePageId.value
+      ? " sur toutes les pages"
+      : ""
   }`;
 });
 </script>

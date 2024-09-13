@@ -75,26 +75,35 @@ const result = computed(
     )!
 );
 
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
+
 const transverseStatus = computed((): CriteriumResultStatus | null => {
-  if (store.data) {
-    return store.data?.[-1][props.topicNumber][props.criterium.number].status;
+  if (store.data && transversePageId.value) {
+    return store.data?.[transversePageId.value][props.topicNumber][
+      props.criterium.number
+    ].status;
   }
 
   return null;
 });
 
 const transverseComment = computed((): string | null => {
-  if (store.data) {
+  if (store.data && transversePageId.value) {
     switch (transverseStatus.value) {
       case CriteriumResultStatus.COMPLIANT:
-        return store.data?.[-1][props.topicNumber][props.criterium.number]
-          .compliantComment;
+        return store.data?.[transversePageId.value][props.topicNumber][
+          props.criterium.number
+        ].compliantComment;
       case CriteriumResultStatus.NOT_COMPLIANT:
-        return store.data?.[-1][props.topicNumber][props.criterium.number]
-          .notCompliantComment;
+        return store.data?.[transversePageId.value][props.topicNumber][
+          props.criterium.number
+        ].notCompliantComment;
       case CriteriumResultStatus.NOT_APPLICABLE:
-        return store.data?.[-1][props.topicNumber][props.criterium.number]
-          .notApplicableComment;
+        return store.data?.[transversePageId.value][props.topicNumber][
+          props.criterium.number
+        ].notApplicableComment;
       default:
         return null;
     }
@@ -248,7 +257,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- STATUS -->
-    <div class="fr-ml-6w fr-mb-1w criterium-radios-container">
+    <div class="fr-ml-6w fr-mb-2w criterium-radios-container">
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
@@ -263,14 +272,14 @@ const isOffline = useIsOffline();
     <!-- TRANSVERSE STATUS -->
     <div
       v-if="
-        page.id !== -1 &&
+        page.id !== transversePageId &&
         transverseStatus &&
         transverseStatus !== CriteriumResultStatus.NOT_TESTED
       "
-      class="fr-ml-5w fr-mb-2w fr-p-1w"
+      class="fr-ml-5w fr-mb-4w fr-p-1w"
       :class="{ 'criterium-transverse-is-open': showTransverseComment }"
     >
-      <div class="fr-mb-9v criterium-transverse-notice">
+      <div class="criterium-transverse-notice">
         <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
         <p class="fr-text--sm fr-m-0">
           Vous avez déjà évalué ce critère à

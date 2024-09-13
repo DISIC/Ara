@@ -204,14 +204,19 @@ const pageTitle = computed(() => {
 type TabData = { label: string; data: AuditPage };
 
 const tabsData = computed((): TabData[] => {
-  return sortBy(
-    auditStore.currentAudit?.pages.map((p) => ({
-      label: p.name,
-      data: p,
-      isTransverse: p.id === -1
-    })) ?? [],
-    (p) => p.data.order
-  );
+  const transversePage = auditStore.currentAudit?.transverseElementsPage;
+  return [
+    ...(transversePage
+      ? [{ label: transversePage?.name, data: transversePage }]
+      : []),
+    ...sortBy(
+      auditStore.currentAudit?.pages.map((p) => ({
+        label: p.name,
+        data: p
+      })) ?? [],
+      (p) => p.data.order
+    )
+  ];
 });
 </script>
 

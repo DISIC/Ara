@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useFiltersStore } from "../../store";
+import { useAuditStore, useFiltersStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
@@ -13,6 +13,11 @@ defineProps<{
 }>();
 
 const store = useFiltersStore();
+const auditStore = useAuditStore();
+
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
 
 const noResults = computed(() => {
   if (store.hasNoResultsFromEvaluated) {
@@ -45,7 +50,7 @@ const noResults = computed(() => {
 
 <template>
   <!-- TODO: handle empty state -->
-  <div v-if="page.id !== -1" class="fr-mb-2w page-url">
+  <div v-if="page.id !== transversePageId" class="fr-mb-2w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>

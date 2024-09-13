@@ -11,7 +11,7 @@ import { useUniqueId } from "../../composables/useUniqueId";
 import LayoutIcon from "../icons/LayoutIcon.vue";
 
 const props = defineProps<{
-  tabs: { label: string; data: T; isTransverse?: boolean }[];
+  tabs: { label: string; data: T }[];
   stickyTop: string;
 }>();
 
@@ -81,7 +81,7 @@ watch(currentTab, (currentTab) => {
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
-          <LayoutIcon v-if="tab.isTransverse" class="fr-mr-2v" />
+          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />
           {{ tab.label }}
         </button>
       </li>
