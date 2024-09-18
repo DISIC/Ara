@@ -49,7 +49,10 @@ const topics = computed(() => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number
+            (result) =>
+              result.topic === topic.number &&
+              result.pageId !==
+                auditStore.currentAudit?.transverseElementsPage.id
           ) ?? [];
 
         // number of criteria for the topic accross all pages
