@@ -27,9 +27,6 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(uniqueId.value);
   await resultsStore.fetchResults(uniqueId.value);
-  auditStore.updateCurrentPageId(
-    auditStore.currentAudit?.pages.at(0)?.id ?? null
-  );
 }, true);
 
 const resultsStore = useResultsStore();
@@ -76,8 +73,11 @@ const topics = computed(() => {
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
 function updateCurrentPageId(i: number) {
-  const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
-  auditStore.updateCurrentPageId(pageIdOrNull);
+  auditStore.updateCurrentPageId(
+    i === 0
+      ? auditStore.currentAudit?.transverseElementsPage.id ?? null
+      : auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
+  );
 }
 
 const {
