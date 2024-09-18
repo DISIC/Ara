@@ -295,7 +295,7 @@ const isOffline = useIsOffline();
             ]"
             >{{ formatStatus(transverseStatus) }}</strong
           >
-          sur toutes les pages
+          dans <strong>éléments transverses</strong>.
         </p>
 
         <button
