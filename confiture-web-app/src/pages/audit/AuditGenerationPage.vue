@@ -27,6 +27,9 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(uniqueId.value);
   await resultsStore.fetchResults(uniqueId.value);
+  await auditStore.updateCurrentPageId(
+    auditStore.currentAudit?.transverseElementsPage.id || null
+  );
 }, true);
 
 const resultsStore = useResultsStore();
