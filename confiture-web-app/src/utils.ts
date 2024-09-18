@@ -79,16 +79,19 @@ export function getCriteriaCount(auditType: AuditType): number {
 
 /**
  * Return the audit status based on:
- * - the number of results (criteria count * number of pages)
+ * - the number of results excluding transverse (criteria count * number of pages)
  * - the status of each criteria
  * - the completion of a11y statement
  */
 export function getAuditStatus(report: AuditReport): string {
+  const transversePageId = report.context.samples[0].id;
+
   if (
-    report.results.length !==
-      getCriteriaCount(report.auditType) * report.pageDistributions.length ||
+    report.results.filter((r) => r.pageId !== transversePageId).length !==
+      getCriteriaCount(report.auditType) *
+        (report.context.samples.length - 1) ||
     report?.results
-      .filter((r) => r.pageId !== report.context.samples[0].id)
+      .filter((r) => r.pageId !== transversePageId)
       .some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
   ) {
     return AuditStatus.IN_PROGRESS;
