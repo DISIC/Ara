@@ -15,13 +15,13 @@ useHead({
     {
       name: "description",
       content:
-        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
+        "Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
     },
     { name: "og:title", content: "Audit d’accessibilité numérique" },
     {
       name: "og:description",
       content:
-        "Ara est l’outil qui vous permet de réaliser, simplement et rapidement, des audits d'accessibilité numérique."
+        "Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
     },
     { name: "og:url", content: "URL" },
     { name: "og:image", content: "image" },
