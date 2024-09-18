@@ -87,7 +87,9 @@ export function getAuditStatus(report: AuditReport): string {
   if (
     report.results.length !==
       getCriteriaCount(report.auditType) * report.pageDistributions.length ||
-    report?.results.some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
+    report?.results
+      .filter((r) => r.pageId !== report.context.samples[0].id)
+      .some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
   ) {
     return AuditStatus.IN_PROGRESS;
   }
