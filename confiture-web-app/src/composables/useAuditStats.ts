@@ -32,18 +32,22 @@ export function useAuditStats() {
 
   const notApplicableCriteriaCount = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) => {
-      return criteria.every((c) => c.status === "NOT_APPLICABLE");
+      return criteria
+        .slice(1)
+        .every((c) => c.status === CriteriumResultStatus.NOT_APPLICABLE);
     }).length;
   });
 
   const compliantCriteriaCount = computed(() => {
-    return applicableCriteria.value.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    ).length;
+    return applicableCriteria.value.filter((criteria) => {
+      return criteria
+        .slice(1)
+        .every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        );
+    }).length;
   });
 
   const notCompliantCriteriaCount = computed(() => {
