@@ -185,9 +185,11 @@ const pageTitle = computed(() => {
   if (auditStore.currentAudit) {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
-    const tabName = ` - Page en cours « ${auditStore.currentAudit.pages.find(
-      (p) => p.id === auditStore.currentPageId
-    )?.name} »`;
+    const tabName = ` - Page en cours « ${
+      auditStore.currentAudit.pages.find(
+        (p) => p.id === auditStore.currentPageId
+      )?.name ?? "Éléments transverses"
+    } »`;
 
     title += tabName;
 
