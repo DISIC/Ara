@@ -16,10 +16,15 @@ description:
       l’amélioration de leur taux de conformité
     documentation: ""
 legal:
-  license: null
+  license: MIT
   authorsFile: ""
 maintenance:
   type: community
   contacts:
     - name: ""
       email: ""
+fundedBy:
+  - name: Direction interministérielle du numérique
+    url: https://www.numerique.gouv.fr/dinum/
+  - name: FIPHFP
+    url: https://www.fiphfp.fr/
