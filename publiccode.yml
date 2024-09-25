@@ -1,0 +1,30 @@
+publiccodeYmlVersion: "0.2"
+name: Ara
+url: https://github.com/DISIC/Ara
+landingURL: https://ara.numerique.gouv.fr/
+creationDate: 2022-07-11
+latestRelease:
+  date: ""
+  version: ""
+logo: https://github.com/DISIC.png
+usedBy: []
+roadmap: "https://ara.numerique.gouv.fr/feuille-de-route"
+softwareType: ""
+description:
+  fr:
+    shortDescription: Faire des audits RGAA, les rendre lisibles et suivre
+      l’amélioration de leur taux de conformité
+    documentation: ""
+legal:
+  license: MIT
+  authorsFile: ""
+maintenance:
+  type: community
+  contacts:
+    - name: ""
+      email: ""
+fundedBy:
+  - name: Direction interministérielle du numérique
+    url: https://www.numerique.gouv.fr/dinum/
+  - name: FIPHFP
+    url: https://www.fiphfp.fr/
