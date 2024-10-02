@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", payload: Omit<AuditPage, "id">[]): void;
+  (e: "update:modelValue", payload: Omit<AuditPage, "id" | "order">[]): void;
 }>();
 
 // Allow parent to focus last field
