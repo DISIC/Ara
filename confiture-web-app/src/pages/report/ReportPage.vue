@@ -41,7 +41,7 @@ const tabs = computed(() => [
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
   { title: "Détails des non-conformités", component: ReportErrors },
   ...(hasCompliantOrNotApplicableComments.value
-    ? [{ title: "Points d’améliorations", component: ReportImprovements }]
+    ? [{ title: "Points d’amélioration", component: ReportImprovements }]
     : [])
 ]);
 

@@ -24,7 +24,7 @@ const transversePageId = computed(() => {
 });
 
 const title = computed(() => {
-  return `Point d’amélioration${
+  return `Points d’amélioration${
     auditStore.currentPageId === transversePageId.value
       ? " sur toutes les pages"
       : ""
