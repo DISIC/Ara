@@ -820,17 +820,23 @@ export class AuditService {
     );
 
     const notApplicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) =>
-        criteria.every((c) => c.status === CriterionResultStatus.NOT_APPLICABLE)
+      (criteria) => {
+        return criteria
+          .filter((c) => c.pageId !== audit.transverseElementsPageId)
+          .every((c) => c.status === CriterionResultStatus.NOT_APPLICABLE);
+      }
     );
 
-    const compliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriterionResultStatus.COMPLIANT ||
-          c.status === CriterionResultStatus.NOT_APPLICABLE
-      )
-    );
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      // Exclude criteria from transverse elements page.
+      return criteria
+        .filter((c) => c.pageId !== audit.transverseElementsPageId)
+        .every(
+          (c) =>
+            c.status === CriterionResultStatus.COMPLIANT ||
+            c.status === CriterionResultStatus.NOT_APPLICABLE
+        );
+    });
 
     const notCompliantCriteria = applicableCriteria.filter((criteria) =>
       criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)

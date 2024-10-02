@@ -1,6 +1,6 @@
 import { computed } from "vue";
 
-import { useResultsStore } from "../store";
+import { useAuditStore, useResultsStore } from "../store";
 import {
   CriterionResultUserImpact,
   CriteriumResult,
@@ -8,6 +8,7 @@ import {
 } from "../types";
 
 export function useAuditStats() {
+  const auditStore = useAuditStore();
   const store = useResultsStore();
 
   const groupedCriteria = computed(() => {
@@ -33,15 +34,20 @@ export function useAuditStats() {
   const notApplicableCriteriaCount = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) => {
       return criteria
-        .slice(1)
+        .filter(
+          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+        )
         .every((c) => c.status === CriteriumResultStatus.NOT_APPLICABLE);
     }).length;
   });
 
   const compliantCriteriaCount = computed(() => {
     return applicableCriteria.value.filter((criteria) => {
+      // Exclude criteria from transverse elements page.
       return criteria
-        .slice(1)
+        .filter(
+          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+        )
         .every(
           (c) =>
             c.status === CriteriumResultStatus.COMPLIANT ||
@@ -72,13 +78,17 @@ export function useAuditStats() {
         criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
     );
 
-    const compliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    );
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      return criteria
+        .filter(
+          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+        )
+        .every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        );
+    });
 
     return (
       Math.round(
