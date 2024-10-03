@@ -282,7 +282,7 @@ const isOffline = useIsOffline();
       <div class="criterium-transverse-notice">
         <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
         <p class="fr-text--sm fr-m-0">
-          Vous avez déjà évalué ce critère à
+          Vous avez évalué ce critère
           <strong
             :class="[
               'fr-badge fr-badge--sm fr-badge--no-icon',
@@ -295,7 +295,7 @@ const isOffline = useIsOffline();
             ]"
             >{{ formatStatus(transverseStatus) }}</strong
           >
-          dans <strong>éléments transverses</strong>.
+          pour les éléments transverses.
         </p>
 
         <button
