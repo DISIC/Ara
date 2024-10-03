@@ -44,15 +44,24 @@ export function useAuditStats() {
   const compliantCriteriaCount = computed(() => {
     return applicableCriteria.value.filter((criteria) => {
       // Exclude criteria from transverse elements page.
-      return criteria
-        .filter(
-          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
-        )
-        .every(
-          (c) =>
-            c.status === CriteriumResultStatus.COMPLIANT ||
-            c.status === CriteriumResultStatus.NOT_APPLICABLE
-        );
+      return (
+        criteria
+          .filter(
+            (c) =>
+              c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+          )
+          .every(
+            (c) =>
+              c.status === CriteriumResultStatus.COMPLIANT ||
+              c.status === CriteriumResultStatus.NOT_APPLICABLE
+          ) &&
+        criteria
+          .filter(
+            (c) =>
+              c.pageId === auditStore.currentAudit?.transverseElementsPage.id
+          )
+          .every((c) => c.status !== CriteriumResultStatus.NOT_COMPLIANT)
+      );
     }).length;
   });
 
@@ -79,15 +88,24 @@ export function useAuditStats() {
     );
 
     const compliantCriteria = applicableCriteria.filter((criteria) => {
-      return criteria
-        .filter(
-          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
-        )
-        .every(
-          (c) =>
-            c.status === CriteriumResultStatus.COMPLIANT ||
-            c.status === CriteriumResultStatus.NOT_APPLICABLE
-        );
+      return (
+        criteria
+          .filter(
+            (c) =>
+              c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+          )
+          .every(
+            (c) =>
+              c.status === CriteriumResultStatus.COMPLIANT ||
+              c.status === CriteriumResultStatus.NOT_APPLICABLE
+          ) &&
+        criteria
+          .filter(
+            (c) =>
+              c.pageId === auditStore.currentAudit?.transverseElementsPage.id
+          )
+          .every((c) => c.status !== CriteriumResultStatus.NOT_COMPLIANT)
+      );
     });
 
     return (
