@@ -363,9 +363,21 @@ const siteUrl = computed(() => {
 
           <p>Plusieurs moyens sont à votre disposition :</p>
           <ul>
-            <li>Écrire un message au Défenseur des droits</li>
             <li>
-              Contacter le délégué du Défenseur des droits dans votre région
+              <a
+                href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
+                target="_blank"
+              >
+                Écrire un message au Défenseur des droits
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.defenseurdesdroits.fr/carte-des-delegues"
+                target="_blank"
+              >
+                Contacter le délégué du Défenseur des droits dans votre région
+              </a>
             </li>
           </ul>
 
