@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import Heading from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
 import { Image as ImageExtension } from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -57,14 +56,13 @@ const editor = useEditor({
   extensions: [
     CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
     Highlight,
-    Heading.configure({
-      levels: [2, 3, 4, 5, 6]
-    }),
     Link,
     Markdown,
     StarterKit.configure({
       codeBlock: false,
-      heading: false
+      heading: {
+        levels: [2, 3, 4, 5, 6]
+      }
     }),
     TaskItem,
     TaskList,
