@@ -10,8 +10,8 @@ const props = defineProps<{
   modelValue: Omit<AuditPage, "id" | "order">[];
 }>();
 
-defineEmits<{
-  (e: "update:modelValue", payload: Omit<AuditPage, "id">[]): void;
+const emit = defineEmits<{
+  (e: "update:modelValue", payload: Omit<AuditPage, "id" | "order">[]): void;
 }>();
 
 // Allow parent to focus last field
@@ -93,6 +93,8 @@ function updatePageOrder(startIndex: number, endIndex: number) {
             ...defaultState.slice(startIndex + 1)
           ];
   }
+
+  emit("update:modelValue", pages.value);
 
   // Focus `endIndex` select
   pageOrderSelectRefs.value?.at(endIndex)?.focus();
