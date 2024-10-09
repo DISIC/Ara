@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 09/10/2024
+
+### Corrections 🐛
+
+- Corrige l’application de l'attribut `autocomplete` sur le champ "email" du formulaire de connexion ([#808](https://github.com/DISIC/Ara/pull/808))
+
 ## 05/09/2024
 
 ### Nouvelles fonctionnalités 🚀
