@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Corrige la mise à jour de l’ordre des pages quand les 2 pages ne sont pas adjacentes ([#809](https://github.com/DISIC/Ara/pull/809))
 - Corrige l’application de l'attribut `autocomplete` sur le champ "email" du formulaire de connexion ([#808](https://github.com/DISIC/Ara/pull/808))
 
 ## 05/09/2024
