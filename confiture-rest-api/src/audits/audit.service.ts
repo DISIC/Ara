@@ -814,36 +814,50 @@ export class AuditService {
       {}
     );
 
-    const applicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) =>
-        criteria.some(
-          (c) =>
-            c.status !== CriterionResultStatus.NOT_APPLICABLE &&
-            c.status !== CriterionResultStatus.NOT_TESTED
-        )
-    );
+    const isCompliant = (c: CriterionResult) =>
+      c.status === CriterionResultStatus.COMPLIANT;
 
-    const notApplicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) => {
-        return criteria
-          .filter((c) => c.pageId !== audit.transverseElementsPageId)
-          .every((c) => c.status === CriterionResultStatus.NOT_APPLICABLE);
-      }
+    const isNotCompliant = (c: CriterionResult) =>
+      c.status === CriterionResultStatus.NOT_COMPLIANT;
+
+    const isNotApplicable = (c: CriterionResult) =>
+      c.status === CriterionResultStatus.NOT_APPLICABLE;
+
+    const isNotTested = (c: CriterionResult) =>
+      c.status === CriterionResultStatus.NOT_TESTED;
+
+    const isTransverse = (c: CriterionResult) =>
+      c.pageId === audit.transverseElementsPageId;
+
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
     );
 
     const compliantCriteria = applicableCriteria.filter((criteria) => {
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) => !(isTransverse(c) && isNotTested(c))
+      );
+
       return (
-        criteria.some((c) => c.status === CriterionResultStatus.COMPLIANT) &&
-        criteria.every(
-          (c) =>
-            c.status === CriterionResultStatus.COMPLIANT ||
-            c.status === CriterionResultStatus.NOT_APPLICABLE
-        )
+        withoutUntestedTrans.some((c) => isCompliant(c)) &&
+        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
       );
     });
 
-    const notCompliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)
+    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c));
+    });
+
+    const notApplicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => {
+        // remove untested transverse criterion
+        const withoutUntestedTrans = criteria.filter(
+          (c) => !isTransverse(c) && isNotTested(c)
+        );
+
+        return withoutUntestedTrans.every((c) => isNotApplicable(c));
+      }
     );
 
     const accessibilityRate =

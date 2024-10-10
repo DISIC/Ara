@@ -120,13 +120,13 @@ const headerInfos = computed(() => [
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: applicableCriteriaCount.value.length,
+    total: applicableCriteriaCount.value,
     theme: "red" as StatDonutTheme
   },
   {
     title: "Critères<br/> conformes",
     value: compliantCriteriaCount.value,
-    total: applicableCriteriaCount.value.length,
+    total: applicableCriteriaCount.value,
     theme: "green" as StatDonutTheme
   }
 ]);
