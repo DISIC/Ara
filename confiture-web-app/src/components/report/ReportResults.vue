@@ -51,7 +51,7 @@ const stats = computed(() => {
     {
       title: "Critères<br/> conformes",
       value: report.data?.criteriaCount.compliant,
-      total: report.data?.criteriaCount.total,
+      total: report.data?.criteriaCount.applicable,
       theme: "green" as StatDonutTheme
     }
   ];

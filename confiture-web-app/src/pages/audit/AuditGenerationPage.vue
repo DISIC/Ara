@@ -16,7 +16,7 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { getCriteriaCount, pluralize } from "../../utils";
+import { pluralize } from "../../utils";
 
 const route = useRoute();
 
@@ -89,6 +89,7 @@ function updateCurrentPageId(i: number) {
 const {
   complianceLevel,
   compliantCriteriaCount,
+  applicableCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
@@ -119,13 +120,13 @@ const headerInfos = computed(() => [
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    total: applicableCriteriaCount.value.length,
     theme: "red" as StatDonutTheme
   },
   {
     title: "Critères<br/> conformes",
     value: compliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    total: applicableCriteriaCount.value.length,
     theme: "green" as StatDonutTheme
   }
 ]);

@@ -27,7 +27,11 @@ export function useAuditStats() {
 
   const applicableCriteria = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) =>
-      criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+      criteria.some(
+        (c) =>
+          c.status !== CriteriumResultStatus.NOT_APPLICABLE &&
+          c.status !== CriteriumResultStatus.NOT_TESTED
+      )
     );
   });
 
@@ -118,6 +122,7 @@ export function useAuditStats() {
 
   return {
     groupedCriteria,
+    applicableCriteriaCount: applicableCriteria,
     notApplicableCriteriaCount,
     compliantCriteriaCount,
     notCompliantCriteriaCount,
