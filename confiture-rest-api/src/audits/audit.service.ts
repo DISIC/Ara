@@ -816,7 +816,11 @@ export class AuditService {
 
     const applicableCriteria = Object.values(groupedCriteria).filter(
       (criteria) =>
-        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE)
+        criteria.some(
+          (c) =>
+            c.status !== CriterionResultStatus.NOT_APPLICABLE &&
+            c.status !== CriterionResultStatus.NOT_TESTED
+        )
     );
 
     const notApplicableCriteria = Object.values(groupedCriteria).filter(
@@ -828,14 +832,14 @@ export class AuditService {
     );
 
     const compliantCriteria = applicableCriteria.filter((criteria) => {
-      // Exclude criteria from transverse elements page.
-      return criteria
-        .filter((c) => c.pageId !== audit.transverseElementsPageId)
-        .every(
+      return (
+        criteria.some((c) => c.status === CriterionResultStatus.COMPLIANT) &&
+        criteria.every(
           (c) =>
             c.status === CriterionResultStatus.COMPLIANT ||
             c.status === CriterionResultStatus.NOT_APPLICABLE
-        );
+        )
+      );
     });
 
     const notCompliantCriteria = applicableCriteria.filter((criteria) =>

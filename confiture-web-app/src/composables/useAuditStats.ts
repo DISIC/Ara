@@ -43,24 +43,13 @@ export function useAuditStats() {
 
   const compliantCriteriaCount = computed(() => {
     return applicableCriteria.value.filter((criteria) => {
-      // Exclude criteria from transverse elements page.
       return (
-        criteria
-          .filter(
-            (c) =>
-              c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
-          )
-          .every(
-            (c) =>
-              c.status === CriteriumResultStatus.COMPLIANT ||
-              c.status === CriteriumResultStatus.NOT_APPLICABLE
-          ) &&
-        criteria
-          .filter(
-            (c) =>
-              c.pageId === auditStore.currentAudit?.transverseElementsPage.id
-          )
-          .every((c) => c.status !== CriteriumResultStatus.NOT_COMPLIANT)
+        criteria.some((c) => c.status === CriteriumResultStatus.COMPLIANT) &&
+        criteria.every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        )
       );
     }).length;
   });
@@ -83,28 +72,23 @@ export function useAuditStats() {
 
   const complianceLevel = computed(() => {
     const applicableCriteria = Object.values(groupedCriteria.value).filter(
-      (criteria) =>
-        criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+      (criteria) => {
+        return criteria.some(
+          (c) =>
+            c.status !== CriteriumResultStatus.NOT_APPLICABLE &&
+            c.status !== CriteriumResultStatus.NOT_TESTED
+        );
+      }
     );
 
     const compliantCriteria = applicableCriteria.filter((criteria) => {
       return (
-        criteria
-          .filter(
-            (c) =>
-              c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
-          )
-          .every(
-            (c) =>
-              c.status === CriteriumResultStatus.COMPLIANT ||
-              c.status === CriteriumResultStatus.NOT_APPLICABLE
-          ) &&
-        criteria
-          .filter(
-            (c) =>
-              c.pageId === auditStore.currentAudit?.transverseElementsPage.id
-          )
-          .every((c) => c.status !== CriteriumResultStatus.NOT_COMPLIANT)
+        criteria.some((c) => c.status === CriteriumResultStatus.COMPLIANT) &&
+        criteria.every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        )
       );
     });
 
