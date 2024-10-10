@@ -41,7 +41,7 @@ const tabs = computed(() => [
   ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
   { title: "Détails des non-conformités", component: ReportErrors },
   ...(hasCompliantOrNotApplicableComments.value
-    ? [{ title: "Points d’améliorations", component: ReportImprovements }]
+    ? [{ title: "Points d’amélioration", component: ReportImprovements }]
     : [])
 ]);
 
@@ -88,7 +88,7 @@ const targetTabIndex = computed(() => {
 });
 const router = useRouter();
 
-function handleTabChange(tab: { title: string }) {
+function handleTabChange(tabTitle: string) {
   // change the URL in the browser adress bar without triggering vue-router navigation
   history.pushState(
     {},
@@ -97,12 +97,12 @@ function handleTabChange(tab: { title: string }) {
       name: "report",
       params: {
         uniqueId,
-        tab: slugify(tab.title)
+        tab: slugify(tabTitle)
       }
     }).fullPath
   );
 
-  targetTab.value = slugify(tab.title);
+  targetTab.value = slugify(tabTitle);
 }
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
@@ -122,7 +122,7 @@ const siteUrl = computed(() => {
   if (report.data) {
     return (
       report.data.procedureUrl ||
-      new URL(report.data.context.samples[0].url).origin
+      new URL(report.data.context.samples[1].url).origin
     );
   }
 
@@ -286,9 +286,10 @@ const siteUrl = computed(() => {
         role="tabpanel"
         :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
         tabindex="0"
-        v-on="{ 'dsfr.disclose': () => handleTabChange(tab) }"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab.title) }"
       >
-        <component :is="tab.component" />
+        <ReportResults v-if="i === 0" @to-tab="handleTabChange" />
+        <component :is="tab.component" v-else />
       </div>
     </div>
   </template>

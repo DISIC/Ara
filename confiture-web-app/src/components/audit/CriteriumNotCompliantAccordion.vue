@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
+import { useAuditStore } from "../../store";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
@@ -42,17 +43,17 @@ const userImpacts: Array<{
   {
     value: CriterionResultUserImpact.MINOR,
     label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: "grey"
+    color: RadioColor.GREY
   },
   {
     value: CriterionResultUserImpact.MAJOR,
     label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: "yellow"
+    color: RadioColor.YELLOW
   },
   {
     value: CriterionResultUserImpact.BLOCKING,
     label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: "red"
+    color: RadioColor.RED
   }
 ];
 
@@ -92,12 +93,21 @@ function lazyAccordionOpened() {
   commentFieldRef.value?.focus();
   hasJustBeenSetAsNotCompliant = false;
 }
+const auditStore = useAuditStore();
+
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    title="Erreur et recommandation"
+    :title="`Erreur et recommandation${
+      auditStore.currentPageId === transversePageId
+        ? ' sur toutes les pages'
+        : ''
+    }`"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
@@ -105,6 +115,9 @@ function lazyAccordionOpened() {
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label" :for="`criterum-comment-field-${id}`">
         Description des erreurs et recommandations
+        <template v-if="auditStore.currentPageId === transversePageId">
+          sur toutes les pages</template
+        >
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

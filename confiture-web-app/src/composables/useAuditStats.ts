@@ -1,6 +1,6 @@
 import { computed } from "vue";
 
-import { useResultsStore } from "../store";
+import { useAuditStore, useResultsStore } from "../store";
 import {
   CriterionResultUserImpact,
   CriteriumResult,
@@ -8,6 +8,7 @@ import {
 } from "../types";
 
 export function useAuditStats() {
+  const auditStore = useAuditStore();
   const store = useResultsStore();
 
   const groupedCriteria = computed(() => {
@@ -26,24 +27,35 @@ export function useAuditStats() {
 
   const applicableCriteria = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) =>
-      criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+      criteria.some(
+        (c) =>
+          c.status !== CriteriumResultStatus.NOT_APPLICABLE &&
+          c.status !== CriteriumResultStatus.NOT_TESTED
+      )
     );
   });
 
   const notApplicableCriteriaCount = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) => {
-      return criteria.every((c) => c.status === "NOT_APPLICABLE");
+      return criteria
+        .filter(
+          (c) => c.pageId !== auditStore.currentAudit?.transverseElementsPage.id
+        )
+        .every((c) => c.status === CriteriumResultStatus.NOT_APPLICABLE);
     }).length;
   });
 
   const compliantCriteriaCount = computed(() => {
-    return applicableCriteria.value.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    ).length;
+    return applicableCriteria.value.filter((criteria) => {
+      return (
+        criteria.some((c) => c.status === CriteriumResultStatus.COMPLIANT) &&
+        criteria.every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        )
+      );
+    }).length;
   });
 
   const notCompliantCriteriaCount = computed(() => {
@@ -64,17 +76,25 @@ export function useAuditStats() {
 
   const complianceLevel = computed(() => {
     const applicableCriteria = Object.values(groupedCriteria.value).filter(
-      (criteria) =>
-        criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+      (criteria) => {
+        return criteria.some(
+          (c) =>
+            c.status !== CriteriumResultStatus.NOT_APPLICABLE &&
+            c.status !== CriteriumResultStatus.NOT_TESTED
+        );
+      }
     );
 
-    const compliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    );
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      return (
+        criteria.some((c) => c.status === CriteriumResultStatus.COMPLIANT) &&
+        criteria.every(
+          (c) =>
+            c.status === CriteriumResultStatus.COMPLIANT ||
+            c.status === CriteriumResultStatus.NOT_APPLICABLE
+        )
+      );
+    });
 
     return (
       Math.round(
@@ -102,6 +122,7 @@ export function useAuditStats() {
 
   return {
     groupedCriteria,
+    applicableCriteriaCount: applicableCriteria,
     notApplicableCriteriaCount,
     compliantCriteriaCount,
     notCompliantCriteriaCount,

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useAuditStore } from "../../store";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
@@ -13,17 +16,28 @@ defineEmits<{
 }>();
 
 const isOffline = useIsOffline();
+
+const auditStore = useAuditStore();
+
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
+
+const title = computed(() => {
+  return `Points d’amélioration${
+    auditStore.currentPageId === transversePageId.value
+      ? " sur toutes les pages"
+      : ""
+  }`;
+});
 </script>
 
 <template>
-  <LazyAccordion
-    disclose-color="var(--background-default-grey)"
-    title="Points d’améliorations"
-  >
+  <LazyAccordion disclose-color="var(--background-default-grey)" :title="title">
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label fr-sr-only" :for="`criterum-comment-field-${id}`">
-        Points d’améliorations
+        {{ title }}
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

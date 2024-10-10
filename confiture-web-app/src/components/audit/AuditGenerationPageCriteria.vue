@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useFiltersStore } from "../../store";
+import { useAuditStore, useFiltersStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
@@ -13,6 +13,11 @@ defineProps<{
 }>();
 
 const store = useFiltersStore();
+const auditStore = useAuditStore();
+
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
 
 const noResults = computed(() => {
   if (store.hasNoResultsFromEvaluated) {
@@ -45,7 +50,7 @@ const noResults = computed(() => {
 
 <template>
   <!-- TODO: handle empty state -->
-  <div class="fr-mb-2w page-url">
+  <div v-if="page.id !== transversePageId" class="fr-mb-2w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
@@ -61,7 +66,11 @@ const noResults = computed(() => {
         <h3 :id="topic.number" class="fr-m-0 topic-heading">
           {{ topic.number }}. {{ topic.topic }}
         </h3>
-        <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
+        <NotApplicableSwitch
+          v-if="page.id !== transversePageId"
+          :page-id="page.id"
+          :topic-number="topic.number"
+        />
       </div>
       <ol class="fr-p-0 fr-m-0">
         <AuditGenerationCriterium
@@ -107,6 +116,10 @@ const noResults = computed(() => {
 </template>
 
 <style scoped>
+.optional-notice {
+  color: var(--text-mention-grey);
+}
+
 .page-url {
   text-align: right;
 }
