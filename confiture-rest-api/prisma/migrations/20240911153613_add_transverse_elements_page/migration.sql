@@ -13,7 +13,7 @@ BEGIN FOR temprow IN
         -- Lie la page à l'audit
     UPDATE "Audit" SET "transverseElementsPageId" = transversePageId WHERE "id" = "temprow"."id";
   END LOOP;
-END; $$
+END $$;
 
 -- Make transverseElementsPageId not nullable
 ALTER TABLE "Audit" ALTER COLUMN "transverseElementsPageId" SET NOT NULL;
