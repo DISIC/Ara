@@ -9,7 +9,7 @@ BEGIN FOR temprow IN
         SELECT * FROM "Audit" WHERE "transverseElementsPageId" IS NULL
     LOOP
       -- Crée la page élément transverse
-    INSERT INTO "AuditedPage"("name", "url", "order") VALUES ('Éléments transverses (optionnel)', '', 0) RETURNING "id" INTO transversePageId;
+    INSERT INTO "AuditedPage"("name", "url", "order") VALUES ('Éléments transverses (optionnel)', '', -1) RETURNING "id" INTO transversePageId;
         -- Lie la page à l'audit
     UPDATE "Audit" SET "transverseElementsPageId" = transversePageId WHERE "id" = "temprow"."id";
   END LOOP;

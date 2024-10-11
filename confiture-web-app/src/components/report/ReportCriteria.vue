@@ -45,7 +45,7 @@ const hasFilters = computed(() => {
             <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
             <ul class="fr-sidemenu__list">
               <li
-                v-if="transverseData"
+                v-if="transverseData.topics.length"
                 :class="[
                   'fr-sidemenu__item',
                   {

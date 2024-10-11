@@ -77,7 +77,8 @@ export class AuditService {
         transverseElementsPage: {
           create: {
             name: "Éléments transverses",
-            url: ""
+            url: "",
+            order: -1
           }
         },
         pages: {
