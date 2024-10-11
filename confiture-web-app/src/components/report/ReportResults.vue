@@ -66,10 +66,7 @@ const pageDistributionTableData = {
           return [
             p.name,
             Math.round(p.compliant.raw),
-            Math.round(p.notCompliant.raw) +
-              (report.data
-                ? report.data.pageDistributions[0].notCompliant.raw
-                : 0)
+            Math.round(p.notCompliant.raw)
           ];
         })
       : [])

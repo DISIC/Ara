@@ -34,6 +34,21 @@ const AUDIT_EDIT_INCLUDE = {
   notesFiles: true
 } as const;
 
+const isCompliant = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.COMPLIANT;
+
+const isNotCompliant = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_COMPLIANT;
+
+const isNotApplicable = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_APPLICABLE;
+
+const isNotTested = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_TESTED;
+
+const isTransverse = (c: CriterionResult, transversePageId: number) =>
+  c.pageId === transversePageId;
+
 @Injectable()
 export class AuditService {
   constructor(
@@ -789,12 +804,10 @@ export class AuditService {
             }
           ]
         },
-        criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
-        },
-        topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
-        }
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
+          criterium: c.criterium,
+          topic: c.topic
+        }))
       },
       include: {
         exampleImages: true
@@ -814,21 +827,6 @@ export class AuditService {
       {}
     );
 
-    const isCompliant = (c: CriterionResult) =>
-      c.status === CriterionResultStatus.COMPLIANT;
-
-    const isNotCompliant = (c: CriterionResult) =>
-      c.status === CriterionResultStatus.NOT_COMPLIANT;
-
-    const isNotApplicable = (c: CriterionResult) =>
-      c.status === CriterionResultStatus.NOT_APPLICABLE;
-
-    const isNotTested = (c: CriterionResult) =>
-      c.status === CriterionResultStatus.NOT_TESTED;
-
-    const isTransverse = (c: CriterionResult) =>
-      c.pageId === audit.transverseElementsPageId;
-
     const applicableCriteria = Object.values(groupedCriteria).filter(
       (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
     );
@@ -836,7 +834,8 @@ export class AuditService {
     const compliantCriteria = applicableCriteria.filter((criteria) => {
       // remove untested transverse criterion
       const withoutUntestedTrans = criteria.filter(
-        (c) => !(isTransverse(c) && isNotTested(c))
+        (c) =>
+          !(isTransverse(c, audit.transverseElementsPageId) && isNotTested(c))
       );
 
       return (
@@ -853,7 +852,8 @@ export class AuditService {
       (criteria) => {
         // remove untested transverse criterion
         const withoutUntestedTrans = criteria.filter(
-          (c) => !isTransverse(c) && isNotTested(c)
+          (c) =>
+            !isTransverse(c, audit.transverseElementsPageId) && isNotTested(c)
         );
 
         return withoutUntestedTrans.every((c) => isNotApplicable(c));
@@ -1348,7 +1348,13 @@ export class AuditService {
         editUniqueId: true,
         consultUniqueId: true,
         initiator: true,
+        transverseElementsPageId: true,
         pages: {
+          select: {
+            results: true
+          }
+        },
+        transverseElementsPage: {
           select: {
             results: true
           }
@@ -1357,7 +1363,10 @@ export class AuditService {
     });
 
     return audits.map((a) => {
-      const results = a.pages.flatMap((p) => p.results);
+      const results = [
+        ...a.transverseElementsPage.results,
+        ...a.pages.flatMap((p) => p.results)
+      ];
 
       const progress =
         results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
@@ -1383,21 +1392,24 @@ export class AuditService {
           (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
         );
 
-        const applicableCriteria = results2.filter(
-          (criteria) =>
-            criteria &&
-            criteria.some(
-              (c) => c.status !== CriterionResultStatus.NOT_APPLICABLE
-            )
+        const applicableCriteria = results2.filter((criteria) =>
+          criteria.some((c) => isCompliant(c) || isNotCompliant(c))
         );
 
-        const compliantCriteria = applicableCriteria.filter((criteria) =>
-          criteria.every(
+        const compliantCriteria = applicableCriteria.filter((criteria) => {
+          // remove untested transverse criterion
+          const withoutUntestedTrans = criteria.filter(
             (c) =>
-              c.status === CriterionResultStatus.COMPLIANT ||
-              c.status === CriterionResultStatus.NOT_APPLICABLE
-          )
-        );
+              !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
+          );
+
+          return (
+            withoutUntestedTrans.some((c) => isCompliant(c)) &&
+            withoutUntestedTrans.every(
+              (c) => isCompliant(c) || isNotApplicable(c)
+            )
+          );
+        });
 
         complianceLevel = Math.round(
           (compliantCriteria.length / applicableCriteria.length) * 100
