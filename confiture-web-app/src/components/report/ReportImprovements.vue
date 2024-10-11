@@ -9,11 +9,11 @@ import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 const report = useReportStore();
 
 const transverseImprovements = computed(() => {
-  return getReportImprovements(report).slice(0, 1);
+  return getReportImprovements(report)[0];
 });
 
 const pagesImprovements = computed(() => {
-  return getReportImprovements(report);
+  return getReportImprovements(report).slice(1);
 });
 
 const improvementsCount = computed(() => {
@@ -38,7 +38,7 @@ const improvementsCount = computed(() => {
         </h2>
 
         <div
-          v-for="(topic, i) in transverseImprovements[0].topics"
+          v-for="(topic, i) in transverseImprovements.topics"
           :key="topic.number"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -61,7 +61,7 @@ const improvementsCount = computed(() => {
 
     <template #pages-data>
       <section
-        v-for="page in pagesImprovements.slice(1)"
+        v-for="page in pagesImprovements"
         :key="page.id"
         class="fr-mb-8w"
       >

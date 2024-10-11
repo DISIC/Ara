@@ -9,7 +9,7 @@ import { ReportImprovement } from "./getReportImprovements";
 defineProps<{
   count: number;
   pagesData: ReportError[] | ReportImprovement[];
-  transverseData: ReportError[] | ReportImprovement[];
+  transverseData: ReportError | ReportImprovement;
   showFilters?: boolean;
   topNotice?: string;
 }>();
@@ -68,7 +68,7 @@ const hasFilters = computed(() => {
                 >
               </li>
               <li
-                v-for="page in pagesData.slice(1)"
+                v-for="page in pagesData"
                 :key="page.name"
                 class="fr-sidemenu__item"
                 :class="{

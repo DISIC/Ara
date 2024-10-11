@@ -64,11 +64,19 @@ const unknownUserImpactErrorCount = computed(
 );
 
 const transverseErrors = computed(() => {
-  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value);
+  return getReportErrors(
+    report,
+    quickWinFilter.value,
+    userImpactFilters.value
+  )[0];
 });
 
 const pagesErrors = computed(() => {
-  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value);
+  return getReportErrors(
+    report,
+    quickWinFilter.value,
+    userImpactFilters.value
+  ).slice(1);
 });
 
 const errorsCount = computed(() => {
@@ -195,7 +203,7 @@ function resetFilters() {
         </h2>
 
         <div
-          v-for="(topic, i) in transverseErrors[0].topics"
+          v-for="(topic, i) in transverseErrors.topics"
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
@@ -214,11 +222,7 @@ function resetFilters() {
     </template>
 
     <template #pages-data>
-      <section
-        v-for="page in pagesErrors.slice(1)"
-        :key="page.id"
-        class="fr-mb-8w"
-      >
+      <section v-for="page in pagesErrors" :key="page.id" class="fr-mb-8w">
         <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h2>
