@@ -70,7 +70,7 @@ export function useAuditStats() {
     return Object.values(groupedCriteria.value).filter((criteria) => {
       // remove untested transverse criterion
       const withoutUntestedTrans = criteria.filter(
-        (c) => !isTransverse(c) && isNotTested(c)
+        (c) => !(isTransverse(c) && isNotTested(c))
       );
 
       return withoutUntestedTrans.every((c) => isNotApplicable(c));
