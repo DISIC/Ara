@@ -66,7 +66,19 @@ const editor = useEditor({
     }),
     TaskItem,
     TaskList,
-    ImageExtension.configure({ inline: false }),
+    ImageExtension.extend({
+      addAttributes() {
+        return {
+          ...this.parent?.(),
+          width: {
+            default: "0"
+          },
+          height: {
+            default: "0"
+          }
+        };
+      }
+    }).configure({ inline: false }),
     ImageUploadTiptapExtension.configure({
       uniqueId: uniqueId.value
     }),
