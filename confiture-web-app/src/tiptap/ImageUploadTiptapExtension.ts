@@ -29,16 +29,12 @@ const placeholderPlugin = new Plugin({
         const deco = Decoration.widget(
           action.add.pos,
           () => {
-            const phImg: HTMLImageElement = document.createElement("img");
-            phImg.setAttribute("src", action.add.blobUrl);
-            phImg.onload = () => {
-              phImg.setAttribute("width", phImg.width.toString());
-              phImg.setAttribute("height", phImg.height.toString());
-            };
-            return phImg;
+            return action.add.blobElement;
           },
           {
-            id: action.add.id
+            id: action.add.id,
+            width: action.add.blobElement.width.toString(),
+            height: action.add.blobElement.height.toString()
           }
         );
         set = set.add(tr.doc, [deco]);
@@ -92,12 +88,16 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
             }
             const _URL = window.URL || window.webkitURL;
             const blobUrl = _URL.createObjectURL(file);
-            tr.setMeta(placeholderPlugin, {
-              add: { id, blobUrl, pos: coordinates.pos }
-            });
-            view.dispatch(tr);
+            const blobElement: HTMLImageElement = document.createElement("img");
+            blobElement.setAttribute("src", blobUrl);
+            blobElement.onload = () => {
+              tr.setMeta(placeholderPlugin, {
+                add: { id, blobElement, pos: coordinates.pos }
+              });
+              view.dispatch(tr);
 
-            uploadAndReplacePlaceHolder(view, file, id);
+              uploadAndReplacePlaceHolder(view, file, id);
+            };
           } else {
             //FIXME: use a notification
             window.alert(FileErrorMessage.UPLOAD_SIZE);
@@ -114,15 +114,22 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
     const auditStore = useAuditStore();
     auditStore.uploadAuditFile(uniqueId, file, FileDisplay.EDITOR).then(
       (response: AuditFile) => {
-        const pos = findPlaceholder(view.state, id);
+        const placeholder = findPlaceholderDecoration(view.state, id);
+        const pos: number | undefined = placeholder?.from;
+
         // If the content around the placeholder has been deleted, drop
         // the image
         if (pos === undefined) {
           //TODO remove image from server
           return;
         }
+
+        const width: string = placeholder?.spec.width;
+        const height: string = placeholder?.spec.height;
+
         // Otherwise, insert it at the placeholder's position, and remove
         // the placeholder
+        const imgUrl = getUploadUrl(response.key);
         view.dispatch(
           view.state.tr
             .replaceWith(
@@ -130,7 +137,9 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
               pos,
               //FIXME: add `width` and `height` to avoid layout shift
               view.state.schema.nodes.image.create({
-                src: getUploadUrl(response.key)
+                width,
+                height,
+                src: imgUrl
               })
             )
             .setMeta(placeholderPlugin, { remove: { id } })
@@ -147,10 +156,13 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
     );
   }
 
-  function findPlaceholder(state: EditorState, id: any) {
+  function findPlaceholderDecoration(
+    state: EditorState,
+    id: any
+  ): Decoration | undefined {
     const decos = placeholderPlugin.getState(state);
     const found = decos?.find(undefined, undefined, (spec) => spec.id == id);
-    return found?.[0].from;
+    return found?.[0];
   }
 };
 
