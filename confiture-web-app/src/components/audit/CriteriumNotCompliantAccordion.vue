@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
-import { useAuditStore } from "../../store";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
@@ -93,31 +92,21 @@ function lazyAccordionOpened() {
   commentFieldRef.value?.focus();
   hasJustBeenSetAsNotCompliant = false;
 }
-const auditStore = useAuditStore();
 
-const transversePageId = computed(() => {
-  return auditStore.currentAudit?.transverseElementsPage.id;
-});
+const title = "Erreur et recommandation";
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    :title="`Erreur et recommandation${
-      auditStore.currentPageId === transversePageId
-        ? ' sur toutes les pages'
-        : ''
-    }`"
+    :title="title"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label" :for="`criterum-comment-field-${id}`">
-        Description des erreurs et recommandations
-        <template v-if="auditStore.currentPageId === transversePageId">
-          sur toutes les pages</template
-        >
+        {{ title }}
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

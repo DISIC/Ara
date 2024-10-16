@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useAuditStore } from "../../store";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
@@ -17,19 +14,7 @@ defineEmits<{
 
 const isOffline = useIsOffline();
 
-const auditStore = useAuditStore();
-
-const transversePageId = computed(() => {
-  return auditStore.currentAudit?.transverseElementsPage.id;
-});
-
-const title = computed(() => {
-  return `Points d’amélioration${
-    auditStore.currentPageId === transversePageId.value
-      ? " sur toutes les pages"
-      : ""
-  }`;
-});
+const title = "Points d’amélioration";
 </script>
 
 <template>
