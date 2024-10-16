@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useResultsStore } from "../../store";
+import { useAuditStore, useResultsStore } from "../../store";
 import { CriteriumResultStatus } from "../../types";
 
 const props = defineProps<{
@@ -14,6 +14,10 @@ const props = defineProps<{
 const isOffline = useIsOffline();
 
 const resultsStore = useResultsStore();
+const auditStore = useAuditStore();
+
+const transverseElementsPageId =
+  auditStore.currentAudit?.transverseElementsPage.id;
 
 const isChecked = computed(() =>
   resultsStore
@@ -58,7 +62,12 @@ watch(switchValue, (switchValue) => {
       :disabled="isOffline"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
-      Non applicable sur la page
+      Non applicable
+      {{
+        pageId === transverseElementsPageId
+          ? "pour les éléments transverses"
+          : "sur la page"
+      }}
     </label>
   </div>
 </template>
