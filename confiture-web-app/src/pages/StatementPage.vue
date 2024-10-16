@@ -369,6 +369,7 @@ const siteUrl = computed(() => {
                 target="_blank"
               >
                 Écrire un message au Défenseur des droits
+                <span class="fr-sr-only">nouvelle fenêtre</span>
               </a>
             </li>
             <li>
@@ -377,14 +378,17 @@ const siteUrl = computed(() => {
                 target="_blank"
               >
                 Contacter le délégué du Défenseur des droits dans votre région
+                <span class="fr-sr-only">nouvelle fenêtre</span>
               </a>
             </li>
+            <li>
+              Envoyer un courrier par la poste (gratuit, ne pas mettre de
+              timbre)<br />
+              Défenseur des droits<br />
+              Libre réponse 71120<br />
+              75342 Paris CEDEX 07
+            </li>
           </ul>
-
-          <p>
-            Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre)
-            Défenseur des droits Libre réponse 71120 75342 Paris CEDEX 07
-          </p>
         </div>
       </div>
     </template>
