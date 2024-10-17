@@ -198,8 +198,8 @@ function resetFilters() {
 
     <template v-if="transverseErrors.topics.length" #transverse-data>
       <section class="fr-mb-8w">
-        <h2 id="all-pages" class="fr-h3 fr-mb-2w page-title">
-          Toutes les pages
+        <h2 id="elements-transverses" class="fr-h3 fr-mb-2w page-title">
+          Éléments transverses
         </h2>
 
         <div

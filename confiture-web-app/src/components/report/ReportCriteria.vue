@@ -50,21 +50,21 @@ const hasFilters = computed(() => {
                   'fr-sidemenu__item',
                   {
                     'fr-sidemenu__item--active':
-                      !route.hash || isActive('#all-pages')
+                      !route.hash || isActive('#elements-transverses')
                   }
                 ]"
               >
                 <a
                   class="fr-sidemenu__link"
-                  href="#all-pages"
+                  href="#elements-transverses"
                   :aria-current="
                     route.hash
-                      ? isActive('#all-pages')
+                      ? isActive('#elements-transverses')
                         ? 'true'
                         : undefined
                       : 'true'
                   "
-                  >Toutes les pages</a
+                  >Éléments transverses</a
                 >
               </li>
               <li
