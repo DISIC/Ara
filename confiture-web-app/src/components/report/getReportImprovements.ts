@@ -1,8 +1,12 @@
-import { groupBy } from "lodash-es";
+import { groupBy, mapValues, sortBy } from "lodash-es";
 
 import rgaa from "../../criteres.json";
 import { ReportStoreState } from "../../store";
-import { CriteriumResultStatus, ReportCriteriumResult } from "../../types";
+import {
+  AuditReport,
+  CriteriumResultStatus,
+  ReportCriteriumResult
+} from "../../types";
 
 export type ReportImprovement = {
   id: number;
@@ -21,39 +25,63 @@ export type ReportImprovement = {
 };
 
 export function getReportImprovements(
-  reportData: ReportStoreState
+  report: ReportStoreState
 ): ReportImprovement[] {
-  return (
-    reportData.data?.context.samples
-      .map((pageSample) => {
-        return {
-          ...pageSample,
-          topics: Object.entries(
-            groupBy(
-              reportData.data?.results.filter(resultIsFromPage(pageSample.id)),
-              "topic"
-            )
-          )
-            .map(([topic, results]) => {
+  const resultsGroupedByPage = {
+    // include pages with no errors
+    ...report.data?.context.samples.reduce<Record<string, []>>((acc, val) => {
+      acc[val.id] = [];
+      return acc;
+    }, {}),
+
+    ...groupBy(
+      report.data?.results.filter((r) => {
+        return (
+          (r.status === CriteriumResultStatus.COMPLIANT &&
+            r.compliantComment) ||
+          (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
+            r.notApplicableComment)
+        );
+      }),
+      "pageId"
+    )
+  } as Record<number, AuditReport["results"]>;
+
+  return sortBy(
+    Object.entries(resultsGroupedByPage).map(([pageId, results]) => {
+      return {
+        id: Number(pageId),
+        order: getPage(report, pageId).order,
+        name: getPage(report, pageId).name,
+        url: getPage(report, pageId).url,
+        topics: sortBy(
+          Object.values(
+            mapValues(groupBy(results, "topic"), (results, topicNumber) => {
               return {
-                number: Number(topic),
-                name: getTopicName(Number(topic)),
-                improvements: results
-                  .filter(hasImprovement)
-                  .map(getImprovementObject)
+                number: Number(topicNumber),
+                name: getTopicName(Number(topicNumber)),
+                improvements: sortBy(
+                  results.filter(hasImprovement).map(getImprovementObject),
+                  "criterium"
+                )
               };
             })
-            .filter(hasOneOrMoreImprovements)
-        };
-      })
-      .filter(hasOneOrMoreTopics) || []
+          ),
+          "topic"
+        )
+      };
+    }),
+    (el) => el.order
   );
 }
 
-const hasOneOrMoreTopics = (p: { topics: unknown[] }) => p.topics.length > 0;
+function getPage(report: ReportStoreState, pageId: number | string) {
+  return report.data!.context.samples.find((p) => p.id === Number(pageId))!;
+}
 
-const hasOneOrMoreImprovements = (t: { improvements: unknown[] }) =>
-  t.improvements.length > 0;
+function getTopicName(topicNumber: number) {
+  return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
+}
 
 const hasImprovement = (r: ReportCriteriumResult) =>
   (r.status === CriteriumResultStatus.COMPLIANT && r.compliantComment) ||
@@ -66,10 +94,3 @@ const getImprovementObject = (r: ReportCriteriumResult) => {
     comment: r.compliantComment || r.notApplicableComment
   };
 };
-
-const resultIsFromPage = (pageId: number) => (result: ReportCriteriumResult) =>
-  result.pageId === pageId;
-
-function getTopicName(topicNumber: number) {
-  return rgaa.topics.find((t) => t.number === topicNumber)?.topic;
-}

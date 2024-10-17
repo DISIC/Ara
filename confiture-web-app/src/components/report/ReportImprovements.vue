@@ -77,6 +77,10 @@ const improvementsCount = computed(() => {
           {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
 
+        <p v-if="page.topics.length === 0" class="fr-mt-4w">
+          Aucun point d’amélioration relevé sur cette page.
+        </p>
+
         <div
           v-for="(topic, i) in page.topics"
           :key="topic.number"
