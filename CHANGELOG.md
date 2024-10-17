@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 17/10/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Modifie la gestion des éléments transverses : l’interrupteur "Sur toutes les pages" est remplacé par l’onglet "Éléments transverses" qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
+
 ## 09/10/2024
 
 ### Corrections 🐛
