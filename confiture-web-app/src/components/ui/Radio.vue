@@ -1,5 +1,10 @@
 <script lang="ts">
-export type RadioColor = "red" | "green" | "yellow" | "grey";
+export enum RadioColor {
+  RED = "red",
+  GREEN = "green",
+  YELLOW = "yellow",
+  GREY = "grey"
+}
 </script>
 
 <script setup lang="ts">

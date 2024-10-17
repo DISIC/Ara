@@ -16,7 +16,7 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { getCriteriaCount, pluralize } from "../../utils";
+import { pluralize } from "../../utils";
 
 const route = useRoute();
 
@@ -27,8 +27,8 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(uniqueId.value);
   await resultsStore.fetchResults(uniqueId.value);
-  auditStore.updateCurrentPageId(
-    auditStore.currentAudit?.pages.at(0)?.id ?? null
+  await auditStore.updateCurrentPageId(
+    auditStore.currentAudit?.transverseElementsPage.id || null
   );
 }, true);
 
@@ -52,7 +52,10 @@ const topics = computed(() => {
         // Every results for the current topic
         const relevantResults =
           resultsStore.allResults?.filter(
-            (result) => result.topic === topic.number
+            (result) =>
+              result.topic === topic.number &&
+              result.pageId !==
+                auditStore.currentAudit?.transverseElementsPage.id
           ) ?? [];
 
         // number of criteria for the topic accross all pages
@@ -76,13 +79,17 @@ const topics = computed(() => {
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
 function updateCurrentPageId(i: number) {
-  const pageIdOrNull = auditStore.currentAudit?.pages.at(i)?.id ?? null;
-  auditStore.updateCurrentPageId(pageIdOrNull);
+  auditStore.updateCurrentPageId(
+    i === 0
+      ? auditStore.currentAudit?.transverseElementsPage.id ?? null
+      : auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
+  );
 }
 
 const {
   complianceLevel,
   compliantCriteriaCount,
+  applicableCriteriaCount,
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
@@ -113,13 +120,13 @@ const headerInfos = computed(() => [
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    total: applicableCriteriaCount.value,
     theme: "red" as StatDonutTheme
   },
   {
     title: "Critères<br/> conformes",
     value: compliantCriteriaCount.value,
-    total: getCriteriaCount(auditStore.currentAudit?.auditType as AuditType),
+    total: applicableCriteriaCount.value,
     theme: "green" as StatDonutTheme
   }
 ]);
@@ -179,9 +186,11 @@ const pageTitle = computed(() => {
   if (auditStore.currentAudit) {
     let title = `Audit ${auditStore.currentAudit.procedureName}`;
 
-    const tabName = ` - Page en cours « ${auditStore.currentAudit.pages.find(
-      (p) => p.id === auditStore.currentPageId
-    )?.name} »`;
+    const tabName = ` - Page en cours « ${
+      auditStore.currentAudit.pages.find(
+        (p) => p.id === auditStore.currentPageId
+      )?.name ?? "Éléments transverses"
+    } »`;
 
     title += tabName;
 
@@ -204,13 +213,19 @@ const pageTitle = computed(() => {
 type TabData = { label: string; data: AuditPage };
 
 const tabsData = computed((): TabData[] => {
-  return sortBy(
-    auditStore.currentAudit?.pages.map((p) => ({
-      label: p.name,
-      data: p
-    })) ?? [],
-    (p) => p.data.order
-  );
+  const transversePage = auditStore.currentAudit?.transverseElementsPage;
+  return [
+    ...(transversePage
+      ? [{ label: transversePage?.name, data: transversePage }]
+      : []),
+    ...sortBy(
+      auditStore.currentAudit?.pages.map((p) => ({
+        label: p.name,
+        data: p
+      })) ?? [],
+      (p) => p.data.order
+    )
+  ];
 });
 </script>
 

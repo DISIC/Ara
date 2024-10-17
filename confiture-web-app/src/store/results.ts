@@ -115,13 +115,17 @@ export const useResultsStore = defineStore("results", {
     },
 
     /**
-     * @returns True when every criterium in the audit have been tested (status is different from NOT_TESTED)
+     * @returns True when every criterium (transverse excluded) in the audit have been tested (status is different from NOT_TESTED)
      */
     everyCriteriumAreTested(): boolean {
+      const auditStore = useAuditStore();
+      const transversePageId =
+        auditStore.currentAudit?.transverseElementsPage.id;
+
       return (
-        !this.allResults?.some(
-          (r) => r.status === CriteriumResultStatus.NOT_TESTED
-        ) ?? false
+        !this.allResults
+          ?.filter((r) => r.pageId !== transversePageId)
+          .some((r) => r.status === CriteriumResultStatus.NOT_TESTED) ?? false
       );
     },
 
@@ -144,6 +148,7 @@ export const useResultsStore = defineStore("results", {
 
     /**
      * Ratio of tested criteria over total number of criteria.
+     * Transverse criteria are excluded.
      *
      * `0.5` means half of the audit criteria have been tested.
      */
@@ -151,9 +156,15 @@ export const useResultsStore = defineStore("results", {
       if (!this.data) {
         return 0;
       }
+
+      const auditStore = useAuditStore();
+      const transversePageId =
+        auditStore.currentAudit?.transverseElementsPage.id;
+
       const r = Object.values(this.data)
         .flatMap(Object.values)
-        .flatMap(Object.values) as CriteriumResult[];
+        .flatMap(Object.values)
+        .filter((cr) => cr.pageId !== transversePageId) as CriteriumResult[];
 
       const total = r.length;
 
@@ -211,37 +222,6 @@ export const useResultsStore = defineStore("results", {
 
         // Update UI immediately, rollbacks later if update fails.
         this.data[update.pageId][update.topic][update.criterium] = update;
-
-        // Apply `transverse` result update to every pages
-        if (update.transverse) {
-          Object.keys(this.data)
-            .map(Number) // this.data requires a number index
-            .filter((pageId) => pageId !== update.pageId) // Ignore current page
-            .forEach((pageId) => {
-              if (!this.data) {
-                return;
-              }
-
-              const target = this.data[pageId][update.topic][update.criterium];
-
-              target.status = update.status;
-              target.transverse = true;
-
-              if (update.status === CriteriumResultStatus.COMPLIANT) {
-                target.compliantComment = update.compliantComment;
-              }
-
-              if (update.status === CriteriumResultStatus.NOT_COMPLIANT) {
-                target.notCompliantComment = update.notCompliantComment;
-                target.userImpact = update.userImpact;
-                target.quickWin = update.quickWin;
-              }
-
-              if (update.status === CriteriumResultStatus.NOT_APPLICABLE) {
-                target.notApplicableComment = update.notApplicableComment;
-              }
-            });
-        }
       });
 
       // update the edition date of the local audit. It will not be the same

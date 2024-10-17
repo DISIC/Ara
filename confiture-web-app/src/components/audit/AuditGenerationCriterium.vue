@@ -20,7 +20,9 @@ import {
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
-import RadioGroup, { RadioColor } from "../ui/RadioGroup.vue";
+import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import { RadioColor } from "../ui/Radio.vue";
+import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
@@ -48,19 +50,19 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.COMPLIANT),
     value: CriteriumResultStatus.COMPLIANT,
-    color: "green"
+    color: RadioColor.GREEN
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
       "Le focus se déplacera dans le champ « Erreur et recommandation »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
-    color: "red"
+    color: RadioColor.RED
   },
   {
     label: formatStatus(CriteriumResultStatus.NOT_APPLICABLE),
     value: CriteriumResultStatus.NOT_APPLICABLE,
-    color: "grey"
+    color: RadioColor.GREY
   }
 ];
 
@@ -72,6 +74,48 @@ const result = computed(
       props.criterium.number
     )!
 );
+
+const transversePageId = computed(() => {
+  return auditStore.currentAudit?.transverseElementsPage.id;
+});
+
+const transverseStatus = computed((): CriteriumResultStatus | null => {
+  if (store.data && transversePageId.value) {
+    return store.data?.[transversePageId.value][props.topicNumber][
+      props.criterium.number
+    ].status;
+  }
+
+  return null;
+});
+
+const transverseComment = computed((): string | null => {
+  if (store.data && transversePageId.value) {
+    const result =
+      store.data?.[transversePageId.value][props.topicNumber][
+        props.criterium.number
+      ];
+
+    switch (transverseStatus.value) {
+      case CriteriumResultStatus.COMPLIANT:
+        return result.compliantComment;
+      case CriteriumResultStatus.NOT_COMPLIANT:
+        return result.notCompliantComment;
+      case CriteriumResultStatus.NOT_APPLICABLE:
+        return result.notApplicableComment;
+      default:
+        return null;
+    }
+  }
+
+  return null;
+});
+
+const showTransverseComment = ref(false);
+
+function toggleTransverseComment() {
+  showTransverseComment.value = !showTransverseComment.value;
+}
 
 const notify = useNotifications();
 
@@ -185,13 +229,6 @@ function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
     .catch(handleUpdateResultError);
 }
 
-function updateTransverseStatus(e: Event) {
-  const transverse = (e.target as HTMLInputElement).checked;
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, transverse }])
-    .catch(handleUpdateResultError);
-}
-
 function updateQuickWin(quickWin: boolean) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
@@ -219,14 +256,7 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- STATUS -->
-    <div
-      :class="[
-        'fr-ml-6w criterium-radios-container',
-        {
-          'fr-mb-2w': result.status !== CriteriumResultStatus.NOT_TESTED
-        }
-      ]"
-    >
+    <div class="fr-ml-6w fr-mb-2w criterium-radios-container">
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
@@ -236,29 +266,58 @@ const isOffline = useIsOffline();
         :items="statuses"
         @update:model-value="updateResultStatus"
       />
+    </div>
 
-      <div class="fr-toggle fr-toggle--label-left">
-        <input
-          :id="`applicable-all-pages-${uniqueId}`"
-          :checked="result.transverse"
-          type="checkbox"
-          class="fr-toggle__input"
-          :disabled="
-            result.status === CriteriumResultStatus.NOT_TESTED || isOffline
-          "
-          @input="updateTransverseStatus"
-        />
-        <label
-          class="fr-toggle__label"
-          :for="`applicable-all-pages-${uniqueId}`"
+    <!-- TRANSVERSE STATUS -->
+    <div
+      v-if="
+        page.id !== transversePageId &&
+        transverseStatus &&
+        transverseStatus !== CriteriumResultStatus.NOT_TESTED
+      "
+      class="fr-ml-5w fr-mb-4w fr-p-1w"
+      :class="{ 'criterium-transverse-is-open': showTransverseComment }"
+    >
+      <div class="criterium-transverse-notice">
+        <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+        <p class="fr-text--sm fr-m-0">
+          Vous avez évalué ce critère
+          <strong
+            :class="[
+              'fr-badge fr-badge--sm fr-badge--no-icon',
+              {
+                'fr-badge--success':
+                  transverseStatus === CriteriumResultStatus.COMPLIANT,
+                'fr-badge--error':
+                  transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
+              }
+            ]"
+            >{{ formatStatus(transverseStatus) }}</strong
+          >
+          pour les éléments transverses.
+        </p>
+
+        <button
+          v-if="transverseComment"
+          class="fr-link fr-link--sm"
+          @click="toggleTransverseComment"
         >
-          <span class="fr-sr-only">
-            Appliquer le statut {{ formatStatus(result.status) }} pour le
-            critère {{ topicNumber }}.{{ criterium.number }}
-          </span>
-          &nbsp;Sur toutes les pages
-        </label>
+          {{ showTransverseComment ? "Masquer" : "Voir" }}
+          {{
+            transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
+              ? "les erreurs"
+              : "le commentaire"
+          }}
+          <span class="fr-sr-only">transverse</span>
+          <span class="fr-icon-arrow-down-s-line fr-icon--sm" />
+        </button>
       </div>
+
+      <MarkdownRenderer
+        v-if="showTransverseComment && transverseComment"
+        class="fr-mt-5w"
+        :markdown="transverseComment"
+      />
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
@@ -320,6 +379,17 @@ const isOffline = useIsOffline();
 
 .criterium-container::marker {
   content: none;
+}
+
+.criterium-transverse-is-open {
+  background: var(--background-contrast-info);
+}
+
+.criterium-transverse-notice {
+  align-items: start;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
 }
 
 .criterium-main-section {

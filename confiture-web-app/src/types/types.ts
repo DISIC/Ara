@@ -44,6 +44,7 @@ export interface Audit {
   // Audit creation
   auditType: AuditType;
   procedureName: string;
+  transverseElementsPage: AuditPage;
   pages: AuditPage[];
   auditorEmail: string;
   auditorName: string | null;

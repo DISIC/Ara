@@ -42,17 +42,17 @@ const userImpacts: Array<{
   {
     value: CriterionResultUserImpact.MINOR,
     label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: "grey"
+    color: RadioColor.GREY
   },
   {
     value: CriterionResultUserImpact.MAJOR,
     label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: "yellow"
+    color: RadioColor.YELLOW
   },
   {
     value: CriterionResultUserImpact.BLOCKING,
     label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: "red"
+    color: RadioColor.RED
   }
 ];
 
@@ -92,19 +92,21 @@ function lazyAccordionOpened() {
   commentFieldRef.value?.focus();
   hasJustBeenSetAsNotCompliant = false;
 }
+
+const title = "Erreur et recommandation";
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    title="Erreur et recommandation"
+    :title="title"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label" :for="`criterum-comment-field-${id}`">
-        Description des erreurs et recommandations
+        {{ title }}
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

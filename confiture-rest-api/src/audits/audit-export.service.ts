@@ -38,7 +38,11 @@ export class AuditExportService {
     const data = [];
 
     // Column headers
-    data.push(["Critères", ...audit.pages.map((p) => p.name)]);
+    data.push([
+      "Critères",
+      "Éléments transverses",
+      ...audit.pages.map((p) => p.name)
+    ]);
 
     const resultsByCriteria = groupBy(
       results,
@@ -50,6 +54,13 @@ export class AuditExportService {
     // Tests results
     criteria.forEach((c) => {
       const criterionKey = c.topic + "." + c.criterium;
+
+      const transverseStatus =
+        CRITERIUM_STATUS[
+          resultsByCriteria[criterionKey].find(
+            (r) => r.pageId === audit.transverseElementsPageId
+          ).status
+        ];
       const criteriumStatuses = audit.pages.map(
         (p) =>
           CRITERIUM_STATUS[
@@ -57,7 +68,7 @@ export class AuditExportService {
               .status
           ]
       );
-      data.push([criterionKey, ...criteriumStatuses]);
+      data.push([criterionKey, transverseStatus, ...criteriumStatuses]);
     });
 
     // compile data to CSV buffer

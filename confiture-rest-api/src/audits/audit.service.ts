@@ -1,14 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import {
   Audit,
-  AuditedPage,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  AuditFile,
   Prisma,
-  StoredFile,
-  TestEnvironment
+  StoredFile
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
@@ -24,9 +21,10 @@ import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 
-const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
+const AUDIT_EDIT_INCLUDE = {
   recipients: true,
   environments: true,
+  transverseElementsPage: true,
   pages: true,
   sourceAudit: {
     select: {
@@ -34,7 +32,22 @@ const AUDIT_EDIT_INCLUDE: Prisma.AuditInclude = {
     }
   },
   notesFiles: true
-};
+} as const;
+
+const isCompliant = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.COMPLIANT;
+
+const isNotCompliant = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_COMPLIANT;
+
+const isNotApplicable = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_APPLICABLE;
+
+const isNotTested = (c: CriterionResult) =>
+  c.status === CriterionResultStatus.NOT_TESTED;
+
+const isTransverse = (c: CriterionResult, transversePageId: number) =>
+  c.pageId === transversePageId;
 
 @Injectable()
 export class AuditService {
@@ -61,10 +74,17 @@ export class AuditService {
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
 
+        transverseElementsPage: {
+          create: {
+            name: "Éléments transverses",
+            url: "",
+            order: -1
+          }
+        },
         pages: {
           createMany: {
             data: data.pages.map((p, i) => {
-              return { ...p, order: i };
+              return { ...p, order: i + 1 };
             })
           }
         },
@@ -130,6 +150,9 @@ export class AuditService {
   > {
     const [audit, pages, existingResults] = await Promise.all([
       this.prisma.audit.findUnique({
+        include: {
+          transverseElementsPage: true
+        },
         where: {
           editUniqueId: uniqueId
         }
@@ -140,9 +163,18 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            audit: {
-              editUniqueId: uniqueId
-            }
+            OR: [
+              {
+                audit: {
+                  editUniqueId: uniqueId
+                }
+              },
+              {
+                auditTransverse: {
+                  editUniqueId: uniqueId
+                }
+              }
+            ]
           }
         },
         include: {
@@ -153,7 +185,7 @@ export class AuditService {
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
-    return pages.flatMap((page) =>
+    return [audit.transverseElementsPage, ...pages].flatMap((page) =>
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
         const existingResult = existingResults.find(
           (result) =>
@@ -750,14 +782,10 @@ export class AuditService {
   async getAuditReportData(
     consultUniqueId: string
   ): Promise<AuditReportDto | undefined> {
-    const audit = (await this.prisma.audit.findUnique({
+    const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
       include: AUDIT_EDIT_INCLUDE
-    })) as Audit & {
-      environments: TestEnvironment[];
-      pages: AuditedPage[];
-      notesFiles: AuditFile[];
-    };
+    });
 
     if (!audit) {
       return;
@@ -766,14 +794,21 @@ export class AuditService {
     const results = await this.prisma.criterionResult.findMany({
       where: {
         page: {
-          auditUniqueId: audit.editUniqueId
+          OR: [
+            {
+              auditUniqueId: audit.editUniqueId
+            },
+            {
+              auditTransverse: {
+                editUniqueId: audit.editUniqueId
+              }
+            }
+          ]
         },
-        criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
-        },
-        topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
-        }
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
+          criterium: c.criterium,
+          topic: c.topic
+        }))
       },
       include: {
         exampleImages: true
@@ -794,25 +829,36 @@ export class AuditService {
     );
 
     const applicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) =>
-        criteria.some((c) => c.status !== CriterionResultStatus.NOT_APPLICABLE)
+      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
     );
+
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) =>
+          !(isTransverse(c, audit.transverseElementsPageId) && isNotTested(c))
+      );
+
+      return (
+        withoutUntestedTrans.some((c) => isCompliant(c)) &&
+        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
+      );
+    });
+
+    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c));
+    });
 
     const notApplicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) =>
-        criteria.every((c) => c.status === CriterionResultStatus.NOT_APPLICABLE)
-    );
+      (criteria) => {
+        // remove untested transverse criterion
+        const withoutUntestedTrans = criteria.filter(
+          (c) =>
+            !isTransverse(c, audit.transverseElementsPageId) && isNotTested(c)
+        );
 
-    const compliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriterionResultStatus.COMPLIANT ||
-          c.status === CriterionResultStatus.NOT_APPLICABLE
-      )
-    );
-
-    const notCompliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.some((c) => c.status === CriterionResultStatus.NOT_COMPLIANT)
+        return withoutUntestedTrans.every((c) => isNotApplicable(c));
+      }
     );
 
     const accessibilityRate =
@@ -878,7 +924,7 @@ export class AuditService {
           browser: e.browser
         })),
         referencial: "RGAA Version 4.1",
-        samples: audit.pages
+        samples: [audit.transverseElementsPage, ...audit.pages]
           .map((p, i) => ({
             name: p.name,
             order: p.order,
@@ -891,53 +937,56 @@ export class AuditService {
         technologies: audit.technologies
       },
 
-      pageDistributions: audit.pages.map((p) => ({
-        name: p.name,
-        compliant: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT
-          ).length,
-          percentage:
-            (results.filter(
+      pageDistributions: [audit.transverseElementsPage, ...audit.pages].map(
+        (p) => ({
+          name: p.name,
+          compliant: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.COMPLIANT
-            ).length /
-              totalCriteriaCount) *
-            100
-        },
-        notApplicable: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_APPLICABLE
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.COMPLIANT
+              ).length /
+                totalCriteriaCount) *
+              100
+          },
+          notApplicable: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE
-            ).length /
-              totalCriteriaCount) *
-            100
-        },
-        notCompliant: {
-          raw: results.filter(
-            (r) =>
-              r.pageId === p.id &&
-              r.status === CriterionResultStatus.NOT_COMPLIANT
-          ).length,
-          percentage:
-            (results.filter(
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.NOT_APPLICABLE
+              ).length /
+                totalCriteriaCount) *
+              100
+          },
+          notCompliant: {
+            raw: results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT
-            ).length /
-              totalCriteriaCount) *
-            100
-        }
-      })),
+            ).length,
+            percentage:
+              (results.filter(
+                (r) =>
+                  r.pageId === p.id &&
+                  r.status === CriterionResultStatus.NOT_COMPLIANT
+              ).length /
+                totalCriteriaCount) *
+              100
+          }
+        })
+      ),
 
       resultDistribution: {
         compliant: {
@@ -1050,6 +1099,15 @@ export class AuditService {
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
         environments: true,
+        transverseElementsPage: {
+          include: {
+            results: {
+              include: {
+                exampleImages: true
+              }
+            }
+          }
+        },
         pages: {
           include: {
             results: {
@@ -1182,7 +1240,12 @@ export class AuditService {
 
     const newAudit = await this.prisma.audit.create({
       data: {
-        ...omit(originalAudit, ["id", "auditTraceId", "sourceAuditId"]),
+        ...omit(originalAudit, [
+          "id",
+          "auditTraceId",
+          "sourceAuditId",
+          "transverseElementsPageId"
+        ]),
 
         // link new audit with the original
         sourceAudit: {
@@ -1205,6 +1268,25 @@ export class AuditService {
             data: originalAudit.environments.map((e) =>
               omit(e, ["id", "auditUniqueId"])
             )
+          }
+        },
+
+        transverseElementsPage: {
+          create: {
+            ...originalAudit.transverseElementsPage,
+            results: {
+              create: originalAudit.transverseElementsPage.results.map((r) => ({
+                ...omit(r, ["id", "pageId"]),
+                exampleImages: {
+                  create: r.exampleImages.map(
+                    (e) =>
+                      imagesCreateData[originalAudit.transverseElementsPage.id][
+                        r.id
+                      ][e.id]
+                  )
+                }
+              }))
+            }
           }
         },
 
@@ -1267,7 +1349,13 @@ export class AuditService {
         editUniqueId: true,
         consultUniqueId: true,
         initiator: true,
+        transverseElementsPageId: true,
         pages: {
+          select: {
+            results: true
+          }
+        },
+        transverseElementsPage: {
           select: {
             results: true
           }
@@ -1276,7 +1364,10 @@ export class AuditService {
     });
 
     return audits.map((a) => {
-      const results = a.pages.flatMap((p) => p.results);
+      const results = [
+        ...a.transverseElementsPage.results,
+        ...a.pages.flatMap((p) => p.results)
+      ];
 
       const progress =
         results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
@@ -1302,21 +1393,24 @@ export class AuditService {
           (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
         );
 
-        const applicableCriteria = results2.filter(
-          (criteria) =>
-            criteria &&
-            criteria.some(
-              (c) => c.status !== CriterionResultStatus.NOT_APPLICABLE
-            )
+        const applicableCriteria = results2.filter((criteria) =>
+          criteria.some((c) => isCompliant(c) || isNotCompliant(c))
         );
 
-        const compliantCriteria = applicableCriteria.filter((criteria) =>
-          criteria.every(
+        const compliantCriteria = applicableCriteria.filter((criteria) => {
+          // remove untested transverse criterion
+          const withoutUntestedTrans = criteria.filter(
             (c) =>
-              c.status === CriterionResultStatus.COMPLIANT ||
-              c.status === CriterionResultStatus.NOT_APPLICABLE
-          )
-        );
+              !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
+          );
+
+          return (
+            withoutUntestedTrans.some((c) => isCompliant(c)) &&
+            withoutUntestedTrans.every(
+              (c) => isCompliant(c) || isNotApplicable(c)
+            )
+          );
+        });
 
         complianceLevel = Math.round(
           (compliantCriteria.length / applicableCriteria.length) * 100
