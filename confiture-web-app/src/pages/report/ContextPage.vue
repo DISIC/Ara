@@ -139,7 +139,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
     <p>
       L’audit a porté sur un échantillon de
-      <strong>{{ report.data.context.samples.slice(1).length }} pages</strong> :
+      <strong>{{ report.data.context.samples.length - 1 }} pages</strong> :
     </p>
 
     <div class="fr-table fr-table--no-caption">
