@@ -91,19 +91,18 @@ const transverseStatus = computed((): CriteriumResultStatus | null => {
 
 const transverseComment = computed((): string | null => {
   if (store.data && transversePageId.value) {
+    const result =
+      store.data?.[transversePageId.value][props.topicNumber][
+        props.criterium.number
+      ];
+
     switch (transverseStatus.value) {
       case CriteriumResultStatus.COMPLIANT:
-        return store.data?.[transversePageId.value][props.topicNumber][
-          props.criterium.number
-        ].compliantComment;
+        return result.compliantComment;
       case CriteriumResultStatus.NOT_COMPLIANT:
-        return store.data?.[transversePageId.value][props.topicNumber][
-          props.criterium.number
-        ].notCompliantComment;
+        return result.notCompliantComment;
       case CriteriumResultStatus.NOT_APPLICABLE:
-        return store.data?.[transversePageId.value][props.topicNumber][
-          props.criterium.number
-        ].notApplicableComment;
+        return result.notApplicableComment;
       default:
         return null;
     }
