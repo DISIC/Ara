@@ -1273,7 +1273,7 @@ export class AuditService {
 
         transverseElementsPage: {
           create: {
-            ...originalAudit.transverseElementsPage,
+            ...omit(originalAudit.transverseElementsPage, ["id"]),
             results: {
               create: originalAudit.transverseElementsPage.results.map((r) => ({
                 ...omit(r, ["id", "pageId"]),
