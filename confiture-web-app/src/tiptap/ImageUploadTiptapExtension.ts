@@ -63,15 +63,20 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         dragEvent: DragEvent,
         slice: Slice,
         moved: boolean
-      ): boolean | void {
-        if (
-          !moved &&
-          dragEvent.dataTransfer &&
-          dragEvent.dataTransfer.files &&
-          dragEvent.dataTransfer.files[0]
-        ) {
+      ): boolean {
+        if (moved || !dragEvent.dataTransfer || !dragEvent.dataTransfer.files) {
+          return false;
+        }
+        if (dragEvent.dataTransfer.files.length === 0) {
+          // TODO external URL?
+          return false;
+        }
+
+        const files: FileList = dragEvent.dataTransfer.files;
+        for (let i = 0, il = files.length, file: File; i < il; i++) {
+          file = files.item(i)!;
+
           // If dropping external files
-          const file = dragEvent.dataTransfer.files[0];
           if (file.size < 2000000) {
             // A fresh object to act as the ID for this upload
             const id = {};
@@ -84,7 +89,7 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
             });
             if (!position) {
               console.warn("No position?!");
-              return;
+              return false;
             }
 
             // If image is being dropped *inside* a node,
@@ -110,10 +115,10 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
             //FIXME: use a notification
             window.alert(FileErrorMessage.UPLOAD_SIZE);
           }
-
-          // handled
-          return true;
         }
+
+        // handled
+        return true;
       }
     }
   });
