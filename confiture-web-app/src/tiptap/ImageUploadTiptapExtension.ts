@@ -78,21 +78,29 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
 
             // Place the now uploaded image in the editor where it was dropped
             const { tr } = view.state;
-            const coordinates = view.posAtCoords({
+            const position = view.posAtCoords({
               left: dragEvent.clientX,
               top: dragEvent.clientY
             });
-            if (!coordinates) {
-              console.log("No coordinates?!");
+            if (!position) {
+              console.warn("No position?!");
               return;
             }
+
+            // If image is being dropped *inside* a node,
+            // move it to next "gap", between 2 nodes
+            let pos = position.pos;
+            if (isDropCursorVertical(view, pos)) {
+              pos = view.state.doc.resolve(position.pos).end() + 1;
+            }
+
             const _URL = window.URL || window.webkitURL;
             const blobUrl = _URL.createObjectURL(file);
             const blobElement: HTMLImageElement = document.createElement("img");
             blobElement.setAttribute("src", blobUrl);
             blobElement.onload = () => {
               tr.setMeta(placeholderPlugin, {
-                add: { id, blobElement, pos: coordinates.pos }
+                add: { id, blobElement, pos }
               });
               view.dispatch(tr);
 
@@ -135,7 +143,6 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
             .replaceWith(
               pos,
               pos,
-              //FIXME: add `width` and `height` to avoid layout shift
               view.state.schema.nodes.image.create({
                 width,
                 height,
@@ -174,5 +181,31 @@ export const ImageUploadTiptapExtension =
         HandleDropPlugin({ uniqueId: this.options.uniqueId }),
         placeholderPlugin
       ];
+    },
+    extendNodeSchema() {
+      return {
+        disableDropCursor: (
+          view: EditorView,
+          position: { pos: number; inside: number }
+        ) => {
+          return isDropCursorVertical(view, position.pos);
+        }
+      };
     }
   });
+
+/**
+ * Tells if the drop cursor is vertical (inline content)
+ * @see prosemirror-dropcursor extension
+ *
+ * @param view:EditorView
+ * @param pos:number
+ * @returns boolean
+ */
+function isDropCursorVertical(view: EditorView, pos: number): boolean {
+  if (!pos) {
+    return false;
+  }
+  const $pos = view.state.doc.resolve(pos);
+  return $pos.parent.inlineContent;
+}
