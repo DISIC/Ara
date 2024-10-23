@@ -24,11 +24,11 @@ export enum Browsers {
   EDGE = "Microsoft Edge"
 }
 
-/* UPLOAD_FORMAT should never happen… */
 export enum FileErrorMessage {
   UPLOAD_SIZE = "Votre fichier dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
   UPLOAD_FORMAT = "Format de fichier non supporté.",
   UPLOAD_FORMAT_EXAMPLE = "Format de fichier non supporté. Veuillez choisir un fichier jpg, jpeg ou png.",
+  FETCH_ERROR = "Impossible de récupérer le fichier distant",
   UPLOAD_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier. Veuillez réessayer.",
   DELETE_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier. Veuillez réessayer."
 }
