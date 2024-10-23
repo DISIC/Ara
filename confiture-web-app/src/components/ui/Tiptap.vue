@@ -35,6 +35,7 @@ const notify = useNotifications();
 
 const props = defineProps<{
   content: string;
+  labelledBy: string;
 }>();
 const emit = defineEmits(["update:content"]);
 
@@ -52,6 +53,15 @@ function getContent() {
 }
 
 const editor = useEditor({
+  editorProps: {
+    attributes: {
+      "aria-labelledby": props.labelledBy,
+      "aria-describedby": "tiptap-description",
+      rows: "10",
+      "aria-multiline": "true",
+      role: "textbox"
+    }
+  },
   content: getContent(),
   extensions: [
     CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
@@ -95,5 +105,11 @@ const editor = useEditor({
 </script>
 
 <template>
-  <editor-content :editor="editor" />
+  <div>
+    <p id="tiptap-description" class="fr-sr-only">
+      Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
+      utiliser les raccourcis clavier.
+    </p>
+    <editor-content :editor="editor" />
+  </div>
 </template>
