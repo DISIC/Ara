@@ -248,6 +248,7 @@ export async function handleFileUploadError(
   }
 
   // Unprocessable Entity
+  /* UPLOAD_FORMAT should never happen… */
   if (error.response.status === 422) {
     const body = await error.response.json();
 
