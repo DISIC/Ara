@@ -420,7 +420,7 @@ export class AuditService {
     topic: number,
     criterium: number,
     file: Express.Multer.File,
-    display?: FileDisplay
+    display: FileDisplay = FileDisplay.ATTACHMENT
   ) {
     const { key, thumbnailKey } = await this.uploadFileToStorage(
       editUniqueId,
