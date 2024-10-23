@@ -110,15 +110,13 @@ function handleDeleteFile(file: AuditFile) {
                 </div>
               </div>
               <div class="fr-input-group fr-mb-1v">
-                <label class="fr-label" for="audit-notes">
+                <label id="audit-notes-label" class="fr-label">
                   Remarques et recommandations générales
                 </label>
                 <tiptap
-                  id="audit-notes"
                   :content="notes"
-                  rows="10"
+                  labelled-by="audit-notes-label"
                   :disabled="isOffline"
-                  aria-describedby="notes-markdown"
                   @update:content="handleNotesChange"
                 />
               </div>
