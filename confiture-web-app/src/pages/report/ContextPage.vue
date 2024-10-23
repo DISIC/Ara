@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { sortBy } from "lodash-es";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
@@ -21,6 +23,10 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
  * - auditor email (API)
  * - derogated content
  */
+
+const pages = computed(() => {
+  return sortBy(report.data?.context.samples.slice(1), (p) => p.order);
+});
 </script>
 
 <template>
@@ -139,7 +145,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
     <p>
       L’audit a porté sur un échantillon de
-      <strong>{{ report.data.context.samples.length - 1 }} pages</strong> :
+      <strong>{{ pages.length }} pages</strong> :
     </p>
 
     <div class="fr-table fr-table--no-caption">
@@ -158,10 +164,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="(page, i) in report.data.context.samples.slice(1)"
-                  :key="i"
-                >
+                <tr v-for="(page, i) in pages" :key="i">
                   <td>{{ i + 1 }}</td>
                   <td>{{ page.name }}</td>
                   <td>
