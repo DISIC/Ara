@@ -1,6 +1,6 @@
 import { computed } from "vue";
 
-import { useResultsStore } from "../store";
+import { useAuditStore, useResultsStore } from "../store";
 import {
   CriterionResultUserImpact,
   CriteriumResult,
@@ -8,6 +8,7 @@ import {
 } from "../types";
 
 export function useAuditStats() {
+  const auditStore = useAuditStore();
   const store = useResultsStore();
 
   const groupedCriteria = computed(() => {
@@ -24,63 +25,64 @@ export function useAuditStats() {
     );
   });
 
+  const isCompliant = (c: CriteriumResult) =>
+    c.status === CriteriumResultStatus.COMPLIANT;
+
+  const isNotCompliant = (c: CriteriumResult) =>
+    c.status === CriteriumResultStatus.NOT_COMPLIANT;
+
+  const isNotApplicable = (c: CriteriumResult) =>
+    c.status === CriteriumResultStatus.NOT_APPLICABLE;
+
+  const isNotTested = (c: CriteriumResult) =>
+    c.status === CriteriumResultStatus.NOT_TESTED;
+
+  const isTransverse = (c: CriteriumResult) =>
+    c.pageId === auditStore.currentAudit?.transverseElementsPage.id;
+
   const applicableCriteria = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) =>
-      criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
+      criteria.some((c) => isCompliant(c) || isNotCompliant(c))
     );
   });
 
-  const notApplicableCriteriaCount = computed(() => {
+  const compliantCriteria = computed(() => {
+    return applicableCriteria.value.filter((criteria) => {
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) => !(isTransverse(c) && isNotTested(c))
+      );
+
+      return (
+        withoutUntestedTrans.some((c) => isCompliant(c)) &&
+        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
+      );
+    });
+  });
+
+  const notCompliantCriteria = computed(() => {
+    return applicableCriteria.value.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c));
+    });
+  });
+
+  const notApplicableCriteria = computed(() => {
     return Object.values(groupedCriteria.value).filter((criteria) => {
-      return criteria.every((c) => c.status === "NOT_APPLICABLE");
-    }).length;
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) => !(isTransverse(c) && isNotTested(c))
+      );
+
+      return withoutUntestedTrans.every((c) => isNotApplicable(c));
+    });
   });
 
-  const compliantCriteriaCount = computed(() => {
-    return applicableCriteria.value.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    ).length;
-  });
-
-  const notCompliantCriteriaCount = computed(() => {
-    return applicableCriteria.value.filter((criteria) =>
-      criteria.some((c) => c.status === CriteriumResultStatus.NOT_COMPLIANT)
-    ).length;
-  });
-
-  const blockingCriteriaCount = computed(() => {
-    return applicableCriteria.value.filter((criteria) =>
-      criteria.some(
-        (c) =>
-          c.status === CriteriumResultStatus.NOT_COMPLIANT &&
-          c.userImpact === CriterionResultUserImpact.BLOCKING
-      )
-    ).length;
-  });
-
-  const complianceLevel = computed(() => {
-    const applicableCriteria = Object.values(groupedCriteria.value).filter(
-      (criteria) =>
-        criteria.some((c) => c.status !== CriteriumResultStatus.NOT_APPLICABLE)
-    );
-
-    const compliantCriteria = applicableCriteria.filter((criteria) =>
-      criteria.every(
-        (c) =>
-          c.status === CriteriumResultStatus.COMPLIANT ||
-          c.status === CriteriumResultStatus.NOT_APPLICABLE
-      )
-    );
-
-    return (
-      Math.round(
-        (compliantCriteria.length / applicableCriteria.length) * 100
-      ) || 0
-    );
+  const blockingCriteria = computed(() => {
+    return notCompliantCriteria.value.filter((criteria) => {
+      return criteria.some(
+        (c) => c.userImpact === CriterionResultUserImpact.BLOCKING
+      );
+    });
   });
 
   const errorsCount = computed(() => {
@@ -100,13 +102,25 @@ export function useAuditStats() {
     return { total, blocking };
   });
 
+  const complianceLevel = computed(() => {
+    return (
+      Math.round(
+        (compliantCriteria.value.length / applicableCriteria.value.length) * 100
+      ) || 0
+    );
+  });
+
   return {
-    groupedCriteria,
-    notApplicableCriteriaCount,
-    compliantCriteriaCount,
-    notCompliantCriteriaCount,
-    blockingCriteriaCount,
-    complianceLevel,
-    errorsCount
+    applicableCriteriaCount: computed(() => applicableCriteria.value.length),
+    compliantCriteriaCount: computed(() => compliantCriteria.value.length),
+    notCompliantCriteriaCount: computed(
+      () => notCompliantCriteria.value.length
+    ),
+    notApplicableCriteriaCount: computed(
+      () => notApplicableCriteria.value.length
+    ),
+    blockingCriteriaCount: computed(() => blockingCriteria.value.length),
+    errorsCount,
+    complianceLevel
   };
 }

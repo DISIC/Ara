@@ -10,17 +10,16 @@ defineEmits<{
 }>();
 
 const isOffline = useIsOffline();
+
+const title = "Commentaire";
 </script>
 
 <template>
-  <LazyAccordion
-    title="Commentaire"
-    disclose-color="var(--background-default-grey)"
-  >
+  <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label fr-sr-only" :for="`criterum-comment-field-${id}`">
-        Commentaire
+        {{ title }}
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"

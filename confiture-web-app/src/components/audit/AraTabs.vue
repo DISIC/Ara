@@ -8,9 +8,10 @@
 import { ref, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
+import LayoutIcon from "../icons/LayoutIcon.vue";
 
 const props = defineProps<{
-  tabs: { label: string; data: T; icon?: string }[];
+  tabs: { label: string; data: T }[];
   stickyTop: string;
 }>();
 
@@ -74,18 +75,13 @@ watch(currentTab, (currentTab) => {
           :aria-controls="panelId(i)"
           :aria-selected="i === currentTab ? 'true' : 'false'"
           :tabindex="i === currentTab ? undefined : '-1'"
-          :class="{
-            'fr-tabs__tab--icon-left': !!tab.icon,
-            ...(!!tab.icon && {
-              [`fr-icon-${tab.icon}`]: !!tab.icon
-            })
-          }"
           @click="currentTab = i"
           @keydown.right.down.prevent="selectNextTab"
           @keydown.left.up.prevent="selectPreviousTab"
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
+          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />
           {{ tab.label }}
         </button>
       </li>

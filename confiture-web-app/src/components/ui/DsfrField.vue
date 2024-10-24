@@ -11,6 +11,7 @@ const props = defineProps<{
   title?: string;
   error?: string;
   id: string;
+  autocomplete?: string;
 }>();
 
 defineEmits<{
@@ -43,6 +44,7 @@ defineExpose({ inputRef });
       :required="required"
       :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
       :title="title"
+      :autocomplete="autocomplete"
       :value="modelValue"
       @input="
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)

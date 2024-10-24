@@ -139,7 +139,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
     <p>
       L’audit a porté sur un échantillon de
-      <strong>{{ report.data.context.samples.length }} pages</strong> :
+      <strong>{{ report.data.context.samples.length - 1 }} pages</strong> :
     </p>
 
     <div class="fr-table fr-table--no-caption">
@@ -158,7 +158,10 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(page, i) in report.data.context.samples" :key="i">
+                <tr
+                  v-for="(page, i) in report.data.context.samples.slice(1)"
+                  :key="i"
+                >
                   <td>{{ i + 1 }}</td>
                   <td>{{ page.name }}</td>
                   <td>

@@ -3,25 +3,16 @@ import { computed, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
 import { pluralize } from "../../utils";
-import { ReportErrors, ReportTransverseError } from "./getReportErrors";
-import {
-  ReportImprovement,
-  ReportTransverseImprovement
-} from "./getReportImprovements";
+import type { ReportError } from "./getReportErrors";
+import { ReportImprovement } from "./getReportImprovements";
 
-const props = defineProps<{
-  pagesData: ReportErrors[] | ReportImprovement[];
-  transverseData: ReportTransverseError[] | ReportTransverseImprovement[];
+defineProps<{
+  count: number;
+  pagesData: ReportError[] | ReportImprovement[];
+  transverseData: ReportError | ReportImprovement;
+  showFilters?: boolean;
   topNotice?: string;
 }>();
-
-const dataCount = computed(() => {
-  return (
-    props.pagesData
-      .map((page: any) => page.topics.map((topic: any) => topic.improvements))
-      .flat(2).length + props.transverseData.length
-  );
-});
 
 // Set active side menu link
 const route = useRoute();
@@ -54,26 +45,26 @@ const hasFilters = computed(() => {
             <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
             <ul class="fr-sidemenu__list">
               <li
-                v-if="transverseData.length"
+                v-if="transverseData.topics.length"
                 :class="[
                   'fr-sidemenu__item',
                   {
                     'fr-sidemenu__item--active':
-                      !route.hash || isActive('#all-pages')
+                      !route.hash || isActive('#elements-transverses')
                   }
                 ]"
               >
                 <a
                   class="fr-sidemenu__link"
-                  href="#all-pages"
+                  href="#elements-transverses"
                   :aria-current="
                     route.hash
-                      ? isActive('#all-pages')
+                      ? isActive('#elements-transverses')
                         ? 'true'
                         : undefined
                       : 'true'
                   "
-                  >Toutes les pages</a
+                  >Éléments transverses</a
                 >
               </li>
               <li
@@ -103,8 +94,8 @@ const hasFilters = computed(() => {
       <div v-if="hasFilters" class="fr-mb-6w header">
         <div role="alert" aria-live="polite">
           <p class="fr-mb-0 fr-text--xl fr-text--bold">
-            {{ dataCount }}
-            {{ pluralize("résultat", "résultats", dataCount) }}
+            {{ count }}
+            {{ pluralize("résultat", "résultats", count) }}
           </p>
         </div>
       </div>
@@ -113,7 +104,7 @@ const hasFilters = computed(() => {
         {{ topNotice }}
       </p>
 
-      <slot v-if="transverseData.length" name="transverse-data" />
+      <slot v-if="transverseData" name="transverse-data" />
 
       <slot name="pages-data" />
     </div>

@@ -32,7 +32,7 @@ const emit = defineEmits<{
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished });
+defineExpose({ onFileRequestFinished, disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -42,17 +42,17 @@ const userImpacts: Array<{
   {
     value: CriterionResultUserImpact.MINOR,
     label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: "grey"
+    color: RadioColor.GREY
   },
   {
     value: CriterionResultUserImpact.MAJOR,
     label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: "yellow"
+    color: RadioColor.YELLOW
   },
   {
     value: CriterionResultUserImpact.BLOCKING,
     label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: "red"
+    color: RadioColor.RED
   }
 ];
 
@@ -71,20 +71,46 @@ function handleDeleteFile(image: AuditFile) {
 function onFileRequestFinished() {
   fileUpload.value?.onFileRequestFinished();
 }
+
+const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const commentFieldRef = ref<HTMLTextAreaElement>();
+
+let hasJustBeenSetAsNotCompliant = false;
+
+async function disclose() {
+  const accordion = lazyAccordionRef.value?.accordionRef;
+
+  hasJustBeenSetAsNotCompliant = true;
+  dsfr(accordion).accordionsGroup.members[0].disclose();
+}
+
+function lazyAccordionOpened() {
+  if (!hasJustBeenSetAsNotCompliant) {
+    return;
+  }
+
+  commentFieldRef.value?.focus();
+  hasJustBeenSetAsNotCompliant = false;
+}
+
+const title = "Erreur et recommandation";
 </script>
 
 <template>
   <LazyAccordion
-    title="Erreur et recommandation"
+    ref="lazyAccordionRef"
+    :title="title"
     disclose-color="var(--background-default-grey)"
+    @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
       <label class="fr-label" :for="`criterum-comment-field-${id}`">
-        Description des erreurs et recommandations
+        {{ title }}
       </label>
       <textarea
         :id="`criterum-comment-field-${id}`"
+        ref="commentFieldRef"
         :value="comment ?? ''"
         class="fr-input"
         rows="5"

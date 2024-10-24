@@ -142,6 +142,7 @@ async function handleSubmit() {
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
+        autocomplete="email"
         :error="userEmailError"
       />
 

@@ -1,9 +1,6 @@
-<script lang="ts">
-export type RadioColor = "red" | "green" | "yellow" | "grey";
-</script>
-
 <script lang="ts" setup>
 import { useUniqueId } from "../../composables/useUniqueId";
+import { RadioColor } from "./Radio.vue";
 
 const props = defineProps<{
   label: string;
@@ -11,6 +8,7 @@ const props = defineProps<{
   items: {
     value: any;
     label: string;
+    extraLabel?: string;
     color?: RadioColor;
   }[];
   disabled?: boolean;
@@ -53,7 +51,7 @@ function handleChange(value: string) {
         :class="item.color"
         :for="`checkbox-group-${uniqueId}--${i}`"
       >
-        {{ item.label }}
+        {{ item.label }}<span class="fr-sr-only">, {{ item.extraLabel }}</span>
       </label>
     </div>
   </fieldset>

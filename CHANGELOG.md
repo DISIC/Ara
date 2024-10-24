@@ -2,6 +2,32 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 18/10/2024
+
+### Autres changements ⚙️
+
+- Ajout de liens de recours dans la déclaration d’accessibilité générée ([#812](https://github.com/DISIC/Ara/pull/812))
+
+## 17/10/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Modifie la gestion des éléments transverses : l’interrupteur "Sur toutes les pages" est remplacé par l’onglet "Éléments transverses" qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
+
+## 09/10/2024
+
+### Corrections 🐛
+
+- Corrige la mise à jour de l’ordre des pages quand les 2 pages ne sont pas adjacentes ([#809](https://github.com/DISIC/Ara/pull/809))
+- Corrige l’application de l'attribut `autocomplete` sur le champ "email" du formulaire de connexion ([#808](https://github.com/DISIC/Ara/pull/808))
+
+## 05/09/2024
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute une modale de confirmation lors de la suppression d’une pièce jointe sur un critère "Non conforme" ([#788](https://github.com/DISIC/Ara/pull/788))
+- Met automatiquement le focus sur le champs "Erreur et recommandation" lorsque qu’un critère est défini comme "Non conforme" ([#766](https://github.com/DISIC/Ara/pull/766))
+
 ## 24/07/2024
 
 ### Autres changements ⚙️
