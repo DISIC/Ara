@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { sortBy } from "lodash-es";
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -329,7 +328,7 @@ const siteUrl = computed(() => {
           </h5>
           <ul class="fr-mb-9v fr-mb-md-6w">
             <li
-              v-for="page in report.data?.context.samples.slice(1)"
+              v-for="page in report.data.context.samples.slice(1)"
               :key="page.name"
             >
               {{ page.name }} <strong class="page-url">{{ page.url }}</strong>

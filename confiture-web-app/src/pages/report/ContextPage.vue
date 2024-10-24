@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { sortBy } from "lodash-es";
-import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
@@ -141,7 +139,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
     <p>
       L’audit a porté sur un échantillon de
-      <strong>{{ report.data?.context.samples.slice(1).length }} pages</strong>
+      <strong>{{ report.data.context.samples.slice(1).length }} pages</strong>
       :
     </p>
 
@@ -162,7 +160,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
               </thead>
               <tbody>
                 <tr
-                  v-for="(page, i) in report.data?.context.samples.slice(1)"
+                  v-for="(page, i) in report.data.context.samples.slice(1)"
                   :key="i"
                 >
                   <td>{{ i + 1 }}</td>
