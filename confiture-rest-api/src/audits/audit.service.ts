@@ -1423,6 +1423,13 @@ export class AuditService {
 
       const statementIsPublished = !!a.initiator;
 
+      const auditIsComplete =
+        results.length ===
+          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1) &&
+        results
+          .filter((r) => r.pageId !== a.transverseElementsPageId)
+          .every((r) => r.status !== "NOT_TESTED");
+
       return {
         ...pick(
           a,
@@ -1433,7 +1440,7 @@ export class AuditService {
           "auditType"
         ),
         complianceLevel,
-        status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
+        status: auditIsComplete ? "COMPLETED" : "IN_PROGRESS",
         estimatedCsvSize: 502 + a.pages.length * 318,
         statementIsPublished
       };
