@@ -182,7 +182,7 @@ model StoredFile {
   key String
   thumbnailKey String
 
-  // Inside TipTap editor (EDITOR) or added as an attachment (ATTACHMENT)?
+  // Inside Tiptap editor (EDITOR) or added as an attachment (ATTACHMENT)?
   display  					FileDisplay @default(ATTACHMENT)
 
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
