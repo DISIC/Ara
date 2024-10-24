@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, pick, setWith, uniqBy } from "lodash";
+import { omit, pick, setWith, sortBy, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -924,15 +924,16 @@ export class AuditService {
           browser: e.browser
         })),
         referencial: "RGAA Version 4.1",
-        samples: [audit.transverseElementsPage, ...audit.pages]
-          .map((p, i) => ({
+        samples: sortBy(
+          [audit.transverseElementsPage, ...audit.pages].map((p, i) => ({
             name: p.name,
             order: p.order,
             number: i + 1,
             url: p.url,
             id: p.id
-          }))
-          .sort((p) => p.order),
+          })),
+          "order"
+        ),
         tools: audit.tools,
         technologies: audit.technologies
       },

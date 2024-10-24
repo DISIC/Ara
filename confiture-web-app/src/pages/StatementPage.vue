@@ -327,7 +327,10 @@ const siteUrl = computed(() => {
             Pages du site ayant fait l’objet de la vérification de conformité
           </h5>
           <ul class="fr-mb-9v fr-mb-md-6w">
-            <li v-for="page in report.data.context.samples" :key="page.name">
+            <li
+              v-for="page in report.data.context.samples.slice(1)"
+              :key="page.name"
+            >
               {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
             </li>
           </ul>
