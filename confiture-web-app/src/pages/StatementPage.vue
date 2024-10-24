@@ -105,10 +105,6 @@ const siteUrl = computed(() => {
 
   return null;
 });
-
-const pages = computed(() => {
-  return sortBy(report.data?.context.samples.slice(1), (p) => p.order);
-});
 </script>
 
 <template>
@@ -332,7 +328,10 @@ const pages = computed(() => {
             Pages du site ayant fait l’objet de la vérification de conformité
           </h5>
           <ul class="fr-mb-9v fr-mb-md-6w">
-            <li v-for="page in pages" :key="page.name">
+            <li
+              v-for="page in report.data?.context.samples.slice(1)"
+              :key="page.name"
+            >
               {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
             </li>
           </ul>

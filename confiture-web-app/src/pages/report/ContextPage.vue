@@ -23,10 +23,6 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
  * - auditor email (API)
  * - derogated content
  */
-
-const pages = computed(() => {
-  return sortBy(report.data?.context.samples.slice(1), (p) => p.order);
-});
 </script>
 
 <template>
@@ -145,7 +141,8 @@ const pages = computed(() => {
 
     <p>
       L’audit a porté sur un échantillon de
-      <strong>{{ pages.length }} pages</strong> :
+      <strong>{{ report.data?.context.samples.slice(1).length }} pages</strong>
+      :
     </p>
 
     <div class="fr-table fr-table--no-caption">
@@ -164,7 +161,10 @@ const pages = computed(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(page, i) in pages" :key="i">
+                <tr
+                  v-for="(page, i) in report.data?.context.samples.slice(1)"
+                  :key="i"
+                >
                   <td>{{ i + 1 }}</td>
                   <td>{{ page.name }}</td>
                   <td>
