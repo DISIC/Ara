@@ -13,9 +13,12 @@ export interface ImageUploadTiptapExtensionOptions {
 }
 
 /**
- * Placeholder: the image blob (local to browser), with 50% opacity
+ * Placeholder plugin
+ *
+ * The placeholder is an image blob (local to browser), with 50% opacity.
+ * Within ProseMirror it’s a Decoration.
  */
-const placeholderPlugin = new Plugin({
+const PlaceholderPlugin = new Plugin({
   state: {
     init() {
       return DecorationSet.empty;
@@ -24,17 +27,17 @@ const placeholderPlugin = new Plugin({
       // Adjust decoration positions to changes made by the transaction
       set = set.map(tr.mapping, tr.doc);
       // See if the transaction adds or removes any placeholders
-      const action = tr.getMeta(placeholderPlugin);
+      const action = tr.getMeta(PlaceholderPlugin);
       if (action && action.add) {
         const deco = Decoration.widget(
           action.add.pos,
           () => {
-            return action.add.blobElement;
+            return action.add.element;
           },
           {
             id: action.add.id,
-            width: action.add.blobElement.width.toString(),
-            height: action.add.blobElement.height.toString()
+            width: action.add.element.width.toString(),
+            height: action.add.element.height.toString()
           }
         );
         set = set.add(tr.doc, [deco]);
@@ -53,10 +56,28 @@ const placeholderPlugin = new Plugin({
   }
 });
 
+/**
+ * HandleDrop plugin
+ *
+ * Handles drag and drop inside editor:
+ * - multiple image files
+ * - dataURL
+ * - external image from URL (⚠️ CORS)
+ */
 const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
   const { uniqueId } = options;
   return new Plugin({
     props: {
+      /**
+       * handleDrop: called when something is dropped on the editor.
+       *
+       * @param {Plugin<any>} this
+       * @param {EditorView} view
+       * @param {DragEvent} dragEvent
+       * @param {Slice} slice
+       * @param {boolean} moved
+       * @returns true if event is handled, otherwise false
+       */
       handleDrop(
         this: Plugin<any>,
         view: EditorView,
@@ -68,62 +89,120 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
           return false;
         }
         if (dragEvent.dataTransfer.files.length === 0) {
-          // TODO external URL?
-          return false;
+          // Handle a single URL (ex: when an external image is dragged from another window)
+          // TODO multiple URLs
+          // See: "text/uri-list" and
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
+          const url = dragEvent.dataTransfer.getData("URL");
+          if (url) {
+            createFileFromImageUrl(url).then((file) => {
+              if (file) {
+                handleFileDrop(view, dragEvent, file);
+              }
+            });
+          }
+          return true;
         }
 
+        // Handle multiple files
+        // FIXME: sometimes placeholders order differs from final images order
         const files: FileList = dragEvent.dataTransfer.files;
         for (let i = 0, il = files.length, file: File; i < il; i++) {
           file = files.item(i)!;
-
-          // If dropping external files
-          if (file.size < 2000000) {
-            // A fresh object to act as the ID for this upload
-            const id = {};
-
-            // Place the now uploaded image in the editor where it was dropped
-            const { tr } = view.state;
-            const position = view.posAtCoords({
-              left: dragEvent.clientX,
-              top: dragEvent.clientY
-            });
-            if (!position) {
-              console.warn("No position?!");
-              return false;
-            }
-
-            // If image is being dropped *inside* a node,
-            // move it to next "gap", between 2 nodes
-            let pos = position.pos;
-            if (isDropCursorVertical(view, pos)) {
-              pos = view.state.doc.resolve(position.pos).end() + 1;
-            }
-
-            const _URL = window.URL || window.webkitURL;
-            const blobUrl = _URL.createObjectURL(file);
-            const blobElement: HTMLImageElement = document.createElement("img");
-            blobElement.setAttribute("src", blobUrl);
-            blobElement.onload = () => {
-              tr.setMeta(placeholderPlugin, {
-                add: { id, blobElement, pos }
-              });
-              view.dispatch(tr);
-
-              uploadAndReplacePlaceHolder(view, file, id);
-            };
-          } else {
-            //FIXME: use a notification
-            window.alert(FileErrorMessage.UPLOAD_SIZE);
+          if (!handleFileDrop(view, dragEvent, file)) {
+            return false;
           }
         }
 
-        // handled
         return true;
       }
     }
   });
 
-  function uploadAndReplacePlaceHolder(view: EditorView, file: File, id: any) {
+  /**
+   * Handles file drop
+   *
+   * @param {EditorView} view
+   * @param {DragEvent} dragEvent
+   * @param {File} file
+   * @returns {boolean} true or false if file is not dropped inside of the editor (should not happen)
+   */
+  function handleFileDrop(
+    view: EditorView,
+    dragEvent: DragEvent,
+    file: File
+  ): boolean {
+    const position = view.posAtCoords({
+      left: dragEvent.clientX,
+      top: dragEvent.clientY
+    });
+    if (!position) {
+      console.warn(
+        `the given coordinates aren't inside of the editor: {${dragEvent.clientX}, ${dragEvent.clientY}}`
+      );
+      return false;
+    }
+
+    if (file.size > 2000000) {
+      //FIXME: use a notification
+      window.alert(FileErrorMessage.UPLOAD_SIZE);
+      return true;
+    }
+
+    // A fresh object to act as the ID for this upload
+    const id = {};
+
+    // If image is being dropped *inside* a node,
+    // move it to next "gap", between 2 nodes
+    let pos = position.pos;
+    if (isPosInsideInlineContent(view, pos)) {
+      pos = view.state.doc.resolve(position.pos).end() + 1;
+    }
+
+    const _URL = window.URL || window.webkitURL;
+    const localURL = _URL.createObjectURL(file);
+    let element: HTMLImageElement | HTMLVideoElement;
+    if (file.type.startsWith("image")) {
+      element = document.createElement("img");
+      element.onerror = () => {
+        //FIXME: use a notification
+        window.alert(FileErrorMessage.UPLOAD_FORMAT);
+      };
+      element.onload = () => {
+        URL.revokeObjectURL(element.src);
+        element.setAttribute("width", element.width.toString());
+        element.setAttribute("height", element.height.toString());
+        const { tr } = view.state;
+        tr.setMeta(PlaceholderPlugin, {
+          add: { id, element, pos }
+        });
+        view.dispatch(tr);
+
+        uploadAndReplacePlaceholder(view, file, id);
+      };
+      element.src = localURL;
+    } else if (file.type.startsWith("video")) {
+      //FIXME: Handle videos
+      // element = document.createElement("video");
+      // …
+      //FIXME: use a notification
+      window.alert(FileErrorMessage.UPLOAD_FORMAT);
+    } else {
+      //FIXME: use a notification
+      window.alert(FileErrorMessage.UPLOAD_FORMAT);
+    }
+
+    return true;
+  }
+
+  /**
+   * Uploads and then replaces the placeholder
+   *
+   * @param {EditorView} view
+   * @param {DragEvent} dragEvent
+   * @param {File} file
+   */
+  function uploadAndReplacePlaceholder(view: EditorView, file: File, id: any) {
     const auditStore = useAuditStore();
     auditStore.uploadAuditFile(uniqueId, file, FileDisplay.EDITOR).then(
       (response: AuditFile) => {
@@ -133,7 +212,7 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         // If the content around the placeholder has been deleted, drop
         // the image
         if (pos === undefined) {
-          //TODO remove image from server
+          // TODO remove image from server
           return;
         }
 
@@ -154,13 +233,13 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
                 src: imgUrl
               })
             )
-            .setMeta(placeholderPlugin, { remove: { id } })
+            .setMeta(PlaceholderPlugin, { remove: { id } })
         );
       },
       async (reason: any) => {
         // On failure, just clean up the placeholder
         view.dispatch(
-          view.state.tr.setMeta(placeholderPlugin, { remove: { id } })
+          view.state.tr.setMeta(PlaceholderPlugin, { remove: { id } })
         );
         //FIXME: use a notification
         window.alert(await handleFileUploadError(reason));
@@ -168,23 +247,63 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
     );
   }
 
+  /**
+   * Finds the given placeholder (by id) within the given editor state.
+   *
+   * @param {EditorState} state
+   * @param {any} id
+   * @returns {Decoration} the placeholder (a ProseMirror decoration)
+   */
   function findPlaceholderDecoration(
     state: EditorState,
     id: any
   ): Decoration | undefined {
-    const decos = placeholderPlugin.getState(state);
+    const decos = PlaceholderPlugin.getState(state);
     const found = decos?.find(undefined, undefined, (spec) => spec.id == id);
     return found?.[0];
   }
+
+  /**
+   * Creates a File object from a given URL
+   *
+   * @param {string} url
+   * @returns {Promise<File | null>} the created File or null if any error
+   */
+  function createFileFromImageUrl(url: string): Promise<File | null> {
+    let mimeType: string | undefined = undefined;
+    return fetch(url)
+      .then((res: Response) => {
+        mimeType = res.headers.get("content-type") || undefined;
+        return res.arrayBuffer();
+      })
+      .then((buf: ArrayBuffer) => {
+        return new File([buf], "external", { type: mimeType });
+      })
+      .catch(() => {
+        window.alert(FileErrorMessage.FETCH_ERROR);
+        return null;
+      });
+  }
 };
 
+/**
+ * Extension ImageUploadTiptapExtension
+ *
+ * Tiptap extension handling images “drag and drop” and upload
+ * Adds 2 custom ProseMirror plugins (@see https://tiptap.dev/docs/editor/extensions/custom-extensions/extend-existing#prosemirror-plugins-advanced):
+ * - HandleDropPlugin
+ * - PlaceholderPlugin
+ * Modifies schema: adds a disableDropCursor property to Nodes spec to control
+ * the showing of a drop cursor inside them (only shows horizontal cursors)
+ * @see https://github.com/ProseMirror/prosemirror-dropcursor
+ */
 export const ImageUploadTiptapExtension =
   Extension.create<ImageUploadTiptapExtensionOptions>({
     name: "imageUpload",
     addProseMirrorPlugins() {
       return [
         HandleDropPlugin({ uniqueId: this.options.uniqueId }),
-        placeholderPlugin
+        PlaceholderPlugin
       ];
     },
     extendNodeSchema() {
@@ -193,21 +312,22 @@ export const ImageUploadTiptapExtension =
           view: EditorView,
           position: { pos: number; inside: number }
         ) => {
-          return isDropCursorVertical(view, position.pos);
+          return isPosInsideInlineContent(view, position.pos);
         }
       };
     }
   });
 
 /**
- * Tells if the drop cursor is vertical (inline content)
+ * Tells if the given position is inside inline content
+ * (meaning the drop cursor would be vertical)
  * @see prosemirror-dropcursor extension
  *
- * @param view:EditorView
- * @param pos:number
- * @returns boolean
+ * @param {EditorView} view
+ * @param {number} pos
+ * @returns {boolean} true if position is inside inline content, otherwise false
  */
-function isDropCursorVertical(view: EditorView, pos: number): boolean {
+function isPosInsideInlineContent(view: EditorView, pos: number): boolean {
   if (!pos) {
     return false;
   }
