@@ -6,10 +6,11 @@ import { useRoute } from "vue-router";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
-import { AuditFile, StoreName } from "../../types";
+import { AuditFile, FileDisplay, StoreName } from "../../types";
 import { handleFileDeleteError, handleFileUploadError } from "../../utils";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
+import Tiptap from "../ui/Tiptap.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
@@ -39,9 +40,17 @@ const isOffline = useIsOffline();
 const notes = ref(auditStore.currentAudit?.notes || "");
 
 const uniqueId = computed(() => route.params.uniqueId as string);
-const files = computed(() => auditStore.currentAudit?.notesFiles || []);
+const files = computed(
+  () =>
+    auditStore.currentAudit?.notesFiles?.filter(
+      (e) => e.display === FileDisplay.ATTACHMENT
+    ) || []
+);
 
-const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
+const handleNotesChange = debounce((notesContent: string) => {
+  notes.value = notesContent;
+  emit("confirm", notes.value);
+}, 500);
 
 function handleUploadFile(file: File) {
   auditStore
@@ -104,15 +113,14 @@ function handleDeleteFile(file: AuditFile) {
                 <label class="fr-label" for="audit-notes">
                   Remarques et recommandations générales
                 </label>
-                <textarea
+                <tiptap
                   id="audit-notes"
-                  v-model="notes"
-                  class="fr-input"
+                  :content="notes"
                   rows="10"
                   :disabled="isOffline"
                   aria-describedby="notes-markdown"
-                  @input="handleNotesChange"
-                ></textarea>
+                  @update:content="handleNotesChange"
+                />
               </div>
               <MarkdownHelpButton
                 :id="`markdown-notice-notes`"
@@ -148,8 +156,8 @@ function handleDeleteFile(file: AuditFile) {
   flex-wrap: wrap;
   column-gap: 1rem;
   align-items: center;
-  margin: 2rem 0 1.5rem 0;
-  padding: 0.75rem 0;
+  margin: 0 -3rem 1.5rem -3rem;
+  padding: 2rem 3rem 0.75rem;
   position: sticky;
   top: 0;
   z-index: 9;
@@ -165,8 +173,8 @@ function handleDeleteFile(file: AuditFile) {
   flex-grow: 1;
 }
 
-textarea {
-  resize: vertical;
+label {
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 36em) {
