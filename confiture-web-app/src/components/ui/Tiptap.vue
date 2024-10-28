@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import DropCursor from "@tiptap/extension-dropcursor";
 import Highlight from "@tiptap/extension-highlight";
 import { Image as ImageExtension } from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -64,16 +65,18 @@ const editor = useEditor({
   },
   content: getContent(),
   extensions: [
-    CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-    Highlight,
-    Link,
-    Markdown,
     StarterKit.configure({
       codeBlock: false,
+      dropcursor: false,
       heading: {
         levels: [2, 3, 4, 5, 6]
       }
     }),
+    CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
+    DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 }),
+    Highlight,
+    Link,
+    Markdown,
     TaskItem,
     TaskList,
     ImageExtension.extend({
