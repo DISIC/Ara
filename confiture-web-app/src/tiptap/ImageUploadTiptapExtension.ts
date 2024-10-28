@@ -1,6 +1,7 @@
 import { Extension } from "@tiptap/core";
 import { Slice } from "@tiptap/pm/model";
-import { EditorState, Plugin } from "@tiptap/pm/state";
+import { EditorState, Plugin, Selection, Transaction } from "@tiptap/pm/state";
+import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
 import { FileErrorMessage } from "../enums";
@@ -24,8 +25,9 @@ const PlaceholderPlugin = new Plugin({
       return DecorationSet.empty;
     },
     apply(tr, set) {
+      const trDoc = tr.doc;
       // Adjust decoration positions to changes made by the transaction
-      set = set.map(tr.mapping, tr.doc);
+      set = set.map(tr.mapping, trDoc);
       // See if the transaction adds or removes any placeholders
       const action = tr.getMeta(PlaceholderPlugin);
       if (action && action.add) {
@@ -40,7 +42,7 @@ const PlaceholderPlugin = new Plugin({
             height: action.add.element.height.toString()
           }
         );
-        set = set.add(tr.doc, [deco]);
+        set = set.add(trDoc, [deco]);
       } else if (action && action.remove) {
         set = set.remove(
           set.find(undefined, undefined, (spec) => spec.id == action.remove.id)
@@ -57,14 +59,14 @@ const PlaceholderPlugin = new Plugin({
 });
 
 /**
- * HandleDrop plugin
+ * HandleFileImport plugin
  *
- * Handles drag and drop inside editor:
+ * Handles "drag and drop" and "copy / paste" inside editor, then upload to server:
  * - multiple image files
  * - dataURL
  * - external image from URL (⚠️ CORS)
  */
-const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
+const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
   const { uniqueId } = options;
   return new Plugin({
     props: {
@@ -88,61 +90,108 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         if (moved || !dragEvent.dataTransfer || !dragEvent.dataTransfer.files) {
           return false;
         }
-        if (dragEvent.dataTransfer.files.length === 0) {
-          // Handle a single URL (ex: when an external image is dragged from another window)
-          // TODO multiple URLs
-          // See: "text/uri-list" and
-          // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
-          const url = dragEvent.dataTransfer.getData("URL");
-          if (url) {
-            createFileFromImageUrl(url).then((file) => {
-              if (file) {
-                handleFileDrop(view, dragEvent, file);
-              }
-            });
-          }
-          return true;
+        const position = view.posAtCoords({
+          left: dragEvent.clientX,
+          top: dragEvent.clientY
+        });
+        if (!position) {
+          console.warn(
+            `the given coordinates aren't inside of the editor: {${dragEvent.clientX}, ${dragEvent.clientY}}`
+          );
+          return false;
         }
 
-        // Handle multiple files
-        // FIXME: sometimes placeholders order differs from final images order
-        const files: FileList = dragEvent.dataTransfer.files;
-        for (let i = 0, il = files.length, file: File; i < il; i++) {
-          file = files.item(i)!;
-          if (!handleFileDrop(view, dragEvent, file)) {
-            return false;
-          }
+        return handleDataTransfer(view, dragEvent.dataTransfer, position.pos);
+      },
+
+      /**
+       * handlePaste: called when something is dropped on the editor.
+       *
+       * @param {Plugin<any>} this
+       * @param {EditorView} view
+       * @param {ClipboardEvent} clipboardEvent
+       * @param {Slice} slice
+       * @returns true if event is handled, otherwise false
+       */
+      handlePaste(
+        this: Plugin<any>,
+        view: EditorView,
+        clipboardEvent: ClipboardEvent
+      ): boolean {
+        if (
+          !clipboardEvent.clipboardData ||
+          !(clipboardEvent.clipboardData?.files?.length > 0)
+        ) {
+          return false;
         }
 
-        return true;
+        const pos = view.state.selection.from;
+        return handleDataTransfer(view, clipboardEvent.clipboardData, pos, {
+          replaceSelection: true
+        });
       }
     }
   });
 
   /**
-   * Handles file drop
+   * handleDataTransfer: called for both drop and paste.
    *
    * @param {EditorView} view
-   * @param {DragEvent} dragEvent
-   * @param {File} file
-   * @returns {boolean} true or false if file is not dropped inside of the editor (should not happen)
+   * @param {DataTransfer} dataTransfer
+   * @param {number} pos
+   * @param {{replaceSelection: boolean}} options
+   * @returns true if event is handled, otherwise false
    */
-  function handleFileDrop(
+  function handleDataTransfer(
     view: EditorView,
-    dragEvent: DragEvent,
-    file: File
-  ): boolean {
-    const position = view.posAtCoords({
-      left: dragEvent.clientX,
-      top: dragEvent.clientY
-    });
-    if (!position) {
-      console.warn(
-        `the given coordinates aren't inside of the editor: {${dragEvent.clientX}, ${dragEvent.clientY}}`
-      );
-      return false;
+    dataTransfer: DataTransfer,
+    pos: number,
+    options?: { replaceSelection: boolean }
+  ) {
+    if (dataTransfer.files.length === 0) {
+      // Handle a single URL (ex: when an external image is dragged from another window)
+      // TODO multiple URLs
+      // See: "text/uri-list" and
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
+      const url = dataTransfer.getData("URL");
+      if (url) {
+        createFileFromImageUrl(url).then((file) => {
+          if (file) {
+            handleFileImport(view, pos, file, options);
+          }
+        });
+      }
+      return true;
     }
 
+    // Handle multiple files
+    // FIXME: sometimes placeholders order differs from final images order
+    const files: FileList = dataTransfer.files;
+    for (let i = 0, il = files.length, file: File; i < il; i++) {
+      file = files.item(i)!;
+      if (!handleFileImport(view, pos, file, options)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Handles file import (drop or paste)
+   *
+   * @param {EditorView} view
+   * @param {number} pos
+   * @param {File} file
+   * @param {{replaceSelection: boolean}} options
+   * @returns {boolean} true or false if file is not dropped inside of the editor (should not happen)
+   */
+  function handleFileImport(
+    view: EditorView,
+    pos: number,
+    file: File,
+    options?: { replaceSelection: boolean }
+  ): boolean {
     if (file.size > 2000000) {
       //FIXME: use a notification
       window.alert(FileErrorMessage.UPLOAD_SIZE);
@@ -152,18 +201,13 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
     // A fresh object to act as the ID for this upload
     const id = {};
 
-    // If image is being dropped *inside* a node,
-    // move it to next "gap", between 2 nodes
-    let pos = position.pos;
-    if (isPosInsideInlineContent(view, pos)) {
-      pos = view.state.doc.resolve(position.pos).end() + 1;
-    }
-
     const _URL = window.URL || window.webkitURL;
     const localURL = _URL.createObjectURL(file);
+    // const container: HTMLParagraphElement = document.createElement("p");
     let element: HTMLImageElement | HTMLVideoElement;
     if (file.type.startsWith("image")) {
       element = document.createElement("img");
+      // container.appendChild(element);
       element.onerror = () => {
         //FIXME: use a notification
         window.alert(FileErrorMessage.UPLOAD_FORMAT);
@@ -172,12 +216,34 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         URL.revokeObjectURL(element.src);
         element.setAttribute("width", element.width.toString());
         element.setAttribute("height", element.height.toString());
-        const { tr } = view.state;
-        tr.setMeta(PlaceholderPlugin, {
-          add: { id, element, pos }
-        });
-        view.dispatch(tr);
+        const state: EditorState = view.state;
+        const tr: Transaction = state.tr;
 
+        if (options?.replaceSelection) {
+          tr.deleteSelection();
+
+          // Delete the paragraph if it becomes empty
+          if (tr.doc.resolve(pos).parent.textContent === "") {
+            tr.deleteRange(pos - 1, pos + 1);
+          }
+        }
+
+        const $pos = tr.doc.resolve(pos);
+        if (canSplit(state.tr.doc, pos)) {
+          if (pos === $pos.start()) {
+            pos -= 1;
+          } else {
+            if (pos < $pos.end()) {
+              tr.split(pos);
+            }
+            pos += 1;
+          }
+        }
+        tr.setMeta(PlaceholderPlugin, {
+          add: { id, container: null, element, pos }
+        });
+        tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
+        view.dispatch(tr);
         uploadAndReplacePlaceholder(view, file, id);
       };
       element.src = localURL;
@@ -201,6 +267,7 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
    * @param {EditorView} view
    * @param {DragEvent} dragEvent
    * @param {File} file
+   * @param {{replaceSelection: boolean}} options
    */
   function uploadAndReplacePlaceholder(view: EditorView, file: File, id: any) {
     const auditStore = useAuditStore();
@@ -216,25 +283,22 @@ const HandleDropPlugin = (options: ImageUploadTiptapExtensionOptions) => {
           return;
         }
 
-        const width: string = placeholder?.spec.width;
-        const height: string = placeholder?.spec.height;
-
         // Otherwise, insert it at the placeholder's position, and remove
         // the placeholder
-        const imgUrl = getUploadUrl(response.key);
-        view.dispatch(
-          view.state.tr
-            .replaceWith(
-              pos,
-              pos,
-              view.state.schema.nodes.image.create({
-                width,
-                height,
-                src: imgUrl
-              })
-            )
-            .setMeta(PlaceholderPlugin, { remove: { id } })
-        );
+        const imgUrl: string = getUploadUrl(response.key);
+        const state = view.state;
+        const tr = state.tr;
+        const node = state.schema.nodes.image.create({
+          width: placeholder?.spec.width,
+          height: placeholder?.spec.height,
+          src: imgUrl
+        });
+        tr.replaceWith(pos, pos, node);
+        tr.setMeta(PlaceholderPlugin, { remove: { id } });
+
+        // Selects the image
+        // tr.setSelection(new NodeSelection(tr.doc.resolve(pos)));
+        view.dispatch(tr);
       },
       async (reason: any) => {
         // On failure, just clean up the placeholder
@@ -302,35 +366,20 @@ export const ImageUploadTiptapExtension =
     name: "imageUpload",
     addProseMirrorPlugins() {
       return [
-        HandleDropPlugin({ uniqueId: this.options.uniqueId }),
+        HandleFileImportPlugin({ uniqueId: this.options.uniqueId }),
         PlaceholderPlugin
       ];
-    },
-    extendNodeSchema() {
-      return {
-        disableDropCursor: (
-          view: EditorView,
-          position: { pos: number; inside: number }
-        ) => {
-          return isPosInsideInlineContent(view, position.pos);
-        }
-      };
     }
+    // Deactivate vertical cursor?
+    // extendNodeSchema() {
+    //   return {
+    //     disableDropCursor: (
+    //       view: EditorView,
+    //       position: { pos: number; inside: number }
+    //     ) => {
+    //       const $pos = view.state.doc.resolve(position.pos);
+    //       return isPosInsideInlineContent(view, $pos);
+    //     }
+    //   };
+    // }
   });
-
-/**
- * Tells if the given position is inside inline content
- * (meaning the drop cursor would be vertical)
- * @see prosemirror-dropcursor extension
- *
- * @param {EditorView} view
- * @param {number} pos
- * @returns {boolean} true if position is inside inline content, otherwise false
- */
-function isPosInsideInlineContent(view: EditorView, pos: number): boolean {
-  if (!pos) {
-    return false;
-  }
-  const $pos = view.state.doc.resolve(pos);
-  return $pos.parent.inlineContent;
-}
