@@ -1,6 +1,6 @@
 import { captureException, Scope } from "@sentry/vue";
 import jwtDecode from "jwt-decode";
-import { HTTPError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
@@ -246,7 +246,11 @@ export async function handleFileUploadError(
 ): Promise<FileErrorMessage | null> {
   let errorType: FileErrorMessage | null = null;
   if (!(error instanceof HTTPError)) {
-    return null;
+    if (error instanceof TimeoutError) {
+      return FileErrorMessage.UPLOAD_TIMEOUT;
+    } else {
+      return null;
+    }
   }
   if (error.response.status === 413) {
     errorType = FileErrorMessage.UPLOAD_SIZE;
@@ -276,9 +280,9 @@ export async function handleFileUploadError(
 export async function handleFileDeleteError(
   error: Error
 ): Promise<FileErrorMessage | null> {
-  if (!(error instanceof HTTPError)) {
+  if (error instanceof TimeoutError) {
+    return FileErrorMessage.DELETE_TIMEOUT;
+  } else {
     return null;
   }
-
-  return FileErrorMessage.DELETE_UNKNOWN;
 }

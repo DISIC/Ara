@@ -29,6 +29,8 @@ export enum FileErrorMessage {
   UPLOAD_FORMAT = "Format de fichier non supporté.",
   UPLOAD_FORMAT_EXAMPLE = "Format de fichier non supporté. Veuillez choisir un fichier jpg, jpeg ou png.",
   FETCH_ERROR = "Impossible de récupérer le fichier distant",
+  UPLOAD_TIMEOUT = "Une erreur réseau empêche le téléchargement du fichier (expiration du délai d'attente). Veuillez réessayer.",
   UPLOAD_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier. Veuillez réessayer.",
+  DELETE_TIMEOUT = "Une erreur réseau empêche la suppression du fichier (expiration du délai d'attente). Veuillez réessayer.",
   DELETE_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier. Veuillez réessayer."
 }
