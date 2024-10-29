@@ -9,8 +9,6 @@ Ces tests nous ont permis d’identifier des pistes d’améliorations, des poin
 ## En cours <span aria-hidden="true">✍</span>
 <p class="fr-text--sm mention-grey">Fonctionnalités en cours de conception ou de développement. Bientôt en production.</p>
 
-* Appliquer le résultat d’un critère à toutes les pages de l’échantillon.
-* Ajout d’un nouvel onglet permettant d’évaluer les critères pour des éléments ou des composants communs à toutes les pages (haut ou bas de page, menu de navigation, bandeau cookie, etc.)
 * Améliorer la saisie des commentaires ou recommandations.
   * Ajout d’un éditeur de texte à chaque champ de saisie.
   * Possibilité d’ajouter une ou plusieurs images dans chaque champ de saisie.
