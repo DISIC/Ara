@@ -383,10 +383,12 @@ const siteUrl = computed(() => {
             </li>
             <li>
               Envoyer un courrier par la poste (gratuit, ne pas mettre de
-              timbre)<br />
-              Défenseur des droits<br />
-              Libre réponse 71120<br />
-              75342 Paris CEDEX 07
+              timbre) à :<br />
+              <span class="fr-mt-1w mailing-address"
+                >Défenseur des droits<br />
+                Libre réponse 71120<br />
+                75342 Paris CEDEX 07</span
+              >
             </li>
           </ul>
         </div>
@@ -418,5 +420,10 @@ const siteUrl = computed(() => {
 
 .page-url {
   word-break: break-all;
+}
+
+.mailing-address {
+  display: inline-block;
+  font-style: italic;
 }
 </style>
