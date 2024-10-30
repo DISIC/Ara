@@ -230,7 +230,7 @@ const siteUrl = computed(() => {
                 {{ report.data.procedureUrl }}
               </a></strong
             >
-            est <strong>{{ getA11yLevel() }}</strong> conforme avec le
+            est <strong>{{ getA11yLevel() }} conforme</strong> avec le
             référentiel général d’amélioration de l’accessibilité (RGAA).
           </p>
 
