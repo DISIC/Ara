@@ -201,7 +201,7 @@ const transverseNotCompliantCount = computed(() => {
       </div>
 
       <div v-if="transverseNotCompliantCount" class="fr-callout fr-mb-6w">
-        <p class="fr-callout__text fr-mb-2w">
+        <p class="fr-callout__text fr-text--md fr-mb-2w">
           <strong>{{ transverseNotCompliantCount }}</strong>
           {{ pluralize("critère", "critères", transverseNotCompliantCount) }}
           non
@@ -215,7 +215,7 @@ const transverseNotCompliantCount = computed(() => {
             name: 'report',
             params: { uniqueId, tab: slugify('Détails des non-conformités') }
           }"
-          class="fr-link"
+          class="fr-link fr-link--sm"
           @click="$emit('toTab', 'Détails des non-conformités')"
           >Voir
           {{
