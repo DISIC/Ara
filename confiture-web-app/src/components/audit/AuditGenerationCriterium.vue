@@ -241,6 +241,14 @@ const uniqueId = computed(() => {
 });
 
 const isOffline = useIsOffline();
+
+const showTransverseStatus = computed(() => {
+  return (
+    props.page.id !== transversePageId.value &&
+    transverseStatus &&
+    transverseStatus.value !== CriteriumResultStatus.NOT_TESTED
+  );
+});
 </script>
 
 <template>
@@ -256,7 +264,11 @@ const isOffline = useIsOffline();
     </div>
 
     <!-- STATUS -->
-    <div class="fr-ml-6w fr-mb-2w criterium-radios-container">
+    <div
+      :class="`fr-ml-6w criterium-radios-container ${
+        showTransverseStatus ? 'fr-mb-3v' : 'fr-mb-2w'
+      }`"
+    >
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
@@ -270,12 +282,8 @@ const isOffline = useIsOffline();
 
     <!-- TRANSVERSE STATUS -->
     <div
-      v-if="
-        page.id !== transversePageId &&
-        transverseStatus &&
-        transverseStatus !== CriteriumResultStatus.NOT_TESTED
-      "
-      class="fr-ml-5w fr-mb-4w fr-p-1w"
+      v-if="showTransverseStatus"
+      class="fr-ml-5w fr-mb-4w fr-px-1w"
       :class="{ 'criterium-transverse-is-open': showTransverseComment }"
     >
       <div class="criterium-transverse-notice">
@@ -292,7 +300,7 @@ const isOffline = useIsOffline();
                   transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
               }
             ]"
-            >{{ formatStatus(transverseStatus) }}</strong
+            >{{ formatStatus(transverseStatus!) }}</strong
           >
           pour les éléments transverses.
         </p>
