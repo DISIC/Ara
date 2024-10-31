@@ -2,6 +2,10 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 31/10/2024
+
+- Corrige un bug rendant impossible la duplication d'un audit contenant des images d'exemple pour des critères transverses ([#836](https://github.com/DISIC/Ara/pull/836))
+
 ## 18/10/2024
 
 ### Autres changements ⚙️
