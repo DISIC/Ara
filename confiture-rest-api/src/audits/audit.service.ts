@@ -1168,40 +1168,42 @@ export class AuditService {
     const fileDuplications: { originalKey: string; destinationKey: string }[] =
       [];
 
-    originalAudit.pages.forEach((p) => {
-      p.results.forEach((r) => {
-        r.exampleImages.forEach((e) => {
-          const randomPrefix = nanoid();
+    [...originalAudit.pages, originalAudit.transverseElementsPage].forEach(
+      (p) => {
+        p.results.forEach((r) => {
+          r.exampleImages.forEach((e) => {
+            const randomPrefix = nanoid();
 
-          const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
-          const thumbnailKey = `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`;
+            const key = `audits/${duplicateEditUniqueId}/${randomPrefix}/${e.originalFilename}`;
+            const thumbnailKey = `audits/${duplicateEditUniqueId}/${randomPrefix}/thumbnail_${e.originalFilename}`;
 
-          fileDuplications.push(
-            {
-              originalKey: e.key,
-              destinationKey: key
-            },
-            {
-              originalKey: e.thumbnailKey,
-              destinationKey: thumbnailKey
-            }
-          );
+            fileDuplications.push(
+              {
+                originalKey: e.key,
+                destinationKey: key
+              },
+              {
+                originalKey: e.thumbnailKey,
+                destinationKey: thumbnailKey
+              }
+            );
 
-          setWith(
-            imagesCreateData,
-            [p.id, r.id, e.id],
-            {
-              originalFilename: e.originalFilename,
-              mimetype: e.mimetype,
-              size: e.size,
-              key: key,
-              thumbnailKey: thumbnailKey
-            },
-            Object
-          );
+            setWith(
+              imagesCreateData,
+              [p.id, r.id, e.id],
+              {
+                originalFilename: e.originalFilename,
+                mimetype: e.mimetype,
+                size: e.size,
+                key: key,
+                thumbnailKey: thumbnailKey
+              },
+              Object
+            );
+          });
         });
-      });
-    });
+      }
+    );
 
     originalAudit.notesFiles.forEach((e) => {
       const randomPrefix = nanoid();
