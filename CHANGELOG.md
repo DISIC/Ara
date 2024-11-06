@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Ordonne correctement les pages dans la déclaration d’accessibilité et le contexte de l’audit ([#819](https://github.com/DISIC/Ara/pull/819))
+- Ordonne les audits du tableau de bord par date de création descendante (du plus récent au plus ancien) ([#821](https://github.com/DISIC/Ara/pull/821))
 
 ## 31/10/2024
 
