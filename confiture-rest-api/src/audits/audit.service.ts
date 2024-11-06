@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, pick, setWith, sortBy, uniqBy } from "lodash";
+import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -1366,76 +1366,80 @@ export class AuditService {
       }
     });
 
-    return audits.map((a) => {
-      const results = [
-        ...a.transverseElementsPage.results,
-        ...a.pages.flatMap((p) => p.results)
-      ];
+    return orderBy(
+      audits.map((a) => {
+        const results = [
+          ...a.transverseElementsPage.results,
+          ...a.pages.flatMap((p) => p.results)
+        ];
 
-      const progress =
-        results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
-          .length /
-        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
+        const progress =
+          results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
+            .length /
+          (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
 
-      let complianceLevel = null;
+        let complianceLevel = null;
 
-      if (progress >= 1) {
-        const resultsGroupedById = results.reduce<
-          Record<string, CriterionResult[]>
-        >((acc, c) => {
-          const key = `${c.topic}.${c.criterium}`;
-          if (acc[key]) {
-            acc[key].push(c);
-          } else {
-            acc[key] = [c];
-          }
-          return acc;
-        }, {});
+        if (progress >= 1) {
+          const resultsGroupedById = results.reduce<
+            Record<string, CriterionResult[]>
+          >((acc, c) => {
+            const key = `${c.topic}.${c.criterium}`;
+            if (acc[key]) {
+              acc[key].push(c);
+            } else {
+              acc[key] = [c];
+            }
+            return acc;
+          }, {});
 
-        const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
-          (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
-        );
-
-        const applicableCriteria = results2.filter((criteria) =>
-          criteria.some((c) => isCompliant(c) || isNotCompliant(c))
-        );
-
-        const compliantCriteria = applicableCriteria.filter((criteria) => {
-          // remove untested transverse criterion
-          const withoutUntestedTrans = criteria.filter(
-            (c) =>
-              !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
+          const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
+            (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
           );
 
-          return (
-            withoutUntestedTrans.some((c) => isCompliant(c)) &&
-            withoutUntestedTrans.every(
-              (c) => isCompliant(c) || isNotApplicable(c)
-            )
+          const applicableCriteria = results2.filter((criteria) =>
+            criteria.some((c) => isCompliant(c) || isNotCompliant(c))
           );
-        });
 
-        complianceLevel = Math.round(
-          (compliantCriteria.length / applicableCriteria.length) * 100
-        );
-      }
+          const compliantCriteria = applicableCriteria.filter((criteria) => {
+            // remove untested transverse criterion
+            const withoutUntestedTrans = criteria.filter(
+              (c) =>
+                !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
+            );
 
-      const statementIsPublished = !!a.initiator;
+            return (
+              withoutUntestedTrans.some((c) => isCompliant(c)) &&
+              withoutUntestedTrans.every(
+                (c) => isCompliant(c) || isNotApplicable(c)
+              )
+            );
+          });
 
-      return {
-        ...pick(
-          a,
-          "procedureName",
-          "editUniqueId",
-          "consultUniqueId",
-          "creationDate",
-          "auditType"
-        ),
-        complianceLevel,
-        status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
-        estimatedCsvSize: 502 + a.pages.length * 318,
-        statementIsPublished
-      };
-    });
+          complianceLevel = Math.round(
+            (compliantCriteria.length / applicableCriteria.length) * 100
+          );
+        }
+
+        const statementIsPublished = !!a.initiator;
+
+        return {
+          ...pick(
+            a,
+            "procedureName",
+            "editUniqueId",
+            "consultUniqueId",
+            "creationDate",
+            "auditType"
+          ),
+          complianceLevel,
+          status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
+          estimatedCsvSize: 502 + a.pages.length * 318,
+          statementIsPublished
+        };
+      }),
+      (a) => a.creationDate,
+      ["desc"]
+    );
   }
 }
