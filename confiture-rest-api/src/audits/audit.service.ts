@@ -1366,80 +1366,78 @@ export class AuditService {
       }
     });
 
-    return orderBy(
-      audits.map((a) => {
-        const results = [
-          ...a.transverseElementsPage.results,
-          ...a.pages.flatMap((p) => p.results)
-        ];
+    const unorderedAudits = audits.map((a) => {
+      const results = [
+        ...a.transverseElementsPage.results,
+        ...a.pages.flatMap((p) => p.results)
+      ];
 
-        const progress =
-          results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
-            .length /
-          (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
+      const progress =
+        results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
+          .length /
+        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
 
-        let complianceLevel = null;
+      let complianceLevel = null;
 
-        if (progress >= 1) {
-          const resultsGroupedById = results.reduce<
-            Record<string, CriterionResult[]>
-          >((acc, c) => {
-            const key = `${c.topic}.${c.criterium}`;
-            if (acc[key]) {
-              acc[key].push(c);
-            } else {
-              acc[key] = [c];
-            }
-            return acc;
-          }, {});
+      if (progress >= 1) {
+        const resultsGroupedById = results.reduce<
+          Record<string, CriterionResult[]>
+        >((acc, c) => {
+          const key = `${c.topic}.${c.criterium}`;
+          if (acc[key]) {
+            acc[key].push(c);
+          } else {
+            acc[key] = [c];
+          }
+          return acc;
+        }, {});
 
-          const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
-            (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
+        const results2 = CRITERIA_BY_AUDIT_TYPE[a.auditType].map(
+          (c) => resultsGroupedById[`${c.topic}.${c.criterium}`] ?? null
+        );
+
+        const applicableCriteria = results2.filter((criteria) =>
+          criteria.some((c) => isCompliant(c) || isNotCompliant(c))
+        );
+
+        const compliantCriteria = applicableCriteria.filter((criteria) => {
+          // remove untested transverse criterion
+          const withoutUntestedTrans = criteria.filter(
+            (c) =>
+              !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
           );
 
-          const applicableCriteria = results2.filter((criteria) =>
-            criteria.some((c) => isCompliant(c) || isNotCompliant(c))
+          return (
+            withoutUntestedTrans.some((c) => isCompliant(c)) &&
+            withoutUntestedTrans.every(
+              (c) => isCompliant(c) || isNotApplicable(c)
+            )
           );
+        });
 
-          const compliantCriteria = applicableCriteria.filter((criteria) => {
-            // remove untested transverse criterion
-            const withoutUntestedTrans = criteria.filter(
-              (c) =>
-                !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
-            );
+        complianceLevel = Math.round(
+          (compliantCriteria.length / applicableCriteria.length) * 100
+        );
+      }
 
-            return (
-              withoutUntestedTrans.some((c) => isCompliant(c)) &&
-              withoutUntestedTrans.every(
-                (c) => isCompliant(c) || isNotApplicable(c)
-              )
-            );
-          });
+      const statementIsPublished = !!a.initiator;
 
-          complianceLevel = Math.round(
-            (compliantCriteria.length / applicableCriteria.length) * 100
-          );
-        }
+      return {
+        ...pick(
+          a,
+          "procedureName",
+          "editUniqueId",
+          "consultUniqueId",
+          "creationDate",
+          "auditType"
+        ),
+        complianceLevel,
+        status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
+        estimatedCsvSize: 502 + a.pages.length * 318,
+        statementIsPublished
+      };
+    });
 
-        const statementIsPublished = !!a.initiator;
-
-        return {
-          ...pick(
-            a,
-            "procedureName",
-            "editUniqueId",
-            "consultUniqueId",
-            "creationDate",
-            "auditType"
-          ),
-          complianceLevel,
-          status: progress < 1 ? "IN_PROGRESS" : "COMPLETED",
-          estimatedCsvSize: 502 + a.pages.length * 318,
-          statementIsPublished
-        };
-      }),
-      (a) => a.creationDate,
-      ["desc"]
-    );
+    return orderBy(unorderedAudits, (a) => a.creationDate, ["desc"]);
   }
 }
