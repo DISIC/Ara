@@ -91,6 +91,9 @@ const getImprovementObject = (r: ReportCriteriumResult) => {
   return {
     criterium: r.criterium,
     status: r.status,
-    comment: r.compliantComment || r.notApplicableComment
+    comment:
+      r.status === CriteriumResultStatus.COMPLIANT
+        ? r.compliantComment
+        : r.notApplicableComment
   };
 };
