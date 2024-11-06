@@ -1296,6 +1296,7 @@ export class AuditService {
           create: originalAudit.pages.map((p) => ({
             name: p.name,
             url: p.url,
+            order: p.order,
             results: {
               create: p.results.map((r) => ({
                 ...omit(r, ["id", "pageId"]),
