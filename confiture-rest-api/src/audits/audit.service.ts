@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, pick, setWith, sortBy, uniqBy } from "lodash";
+import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -1366,7 +1366,7 @@ export class AuditService {
       }
     });
 
-    return audits.map((a) => {
+    const unorderedAudits = audits.map((a) => {
       const results = [
         ...a.transverseElementsPage.results,
         ...a.pages.flatMap((p) => p.results)
@@ -1437,5 +1437,7 @@ export class AuditService {
         statementIsPublished
       };
     });
+
+    return orderBy(unorderedAudits, (a) => a.creationDate, ["desc"]);
   }
 }
