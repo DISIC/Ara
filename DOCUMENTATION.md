@@ -44,3 +44,11 @@ Exemple avec 89 critères applicables et 27 critères conformes :
 ```
 Taux de conformité = (27 / 89) * 100 = 30,34%
 ```
+
+## Statut d’un audit
+
+Un audit est considéré...
+
+- **En cours** si tous les critères ne sont pas testés (hors éléments transverses).
+- **Terminé** si tous les critères sont testés (hors éléments transverses) et qu’il a une date de publication.
+- **Modifié** si tous les critères sont testés (hors éléments transverses), qu’il a une date de publication et une date d’édition.
