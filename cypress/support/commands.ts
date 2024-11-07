@@ -35,3 +35,31 @@
 //     }
 //   }
 // }
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      /**
+       * Custom command to select DOM element based on label
+       * @example cy.getByLabel('Title')
+       */
+      getByLabel(value: string): Chainable;
+    }
+  }
+}
+
+Cypress.Commands.add(
+  "getByLabel",
+  { prevSubject: "optional" },
+  (subject, label: string) => {
+    const localCy = subject ? cy.wrap(subject) : cy;
+    localCy
+      .contains("label", label)
+      .invoke("attr", "for")
+      .then((id) => {
+        cy.get("#" + id);
+      });
+  }
+);
+
+export {};
