@@ -1424,8 +1424,9 @@ export class AuditService {
       const statementIsPublished = !!a.initiator;
 
       const auditIsComplete =
-        results.length ===
-          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1) &&
+        results.filter((r) => r.pageId !== a.transverseElementsPageId)
+          .length ===
+          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length &&
         results
           .filter((r) => r.pageId !== a.transverseElementsPageId)
           .every((r) => r.status !== "NOT_TESTED");
