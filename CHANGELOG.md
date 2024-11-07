@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 07/11/2024
+
+### Corrections 🐛
+
+- Affiche le bon statut des audits dans la liste des audits du compte en fonction de leur complétion ([#822](https://github.com/DISIC/Ara/pull/822))
+
 ## 06/11/2024
 
 ### Corrections 🐛
