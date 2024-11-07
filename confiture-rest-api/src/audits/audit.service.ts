@@ -1368,20 +1368,20 @@ export class AuditService {
     });
 
     const unorderedAudits = audits.map((a) => {
-      const results = [
+      const allResults = [
         ...a.transverseElementsPage.results,
         ...a.pages.flatMap((p) => p.results)
       ];
 
       const progress =
-        results.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
+        allResults.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
           .length /
         (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
 
       let complianceLevel = null;
 
       if (progress >= 1) {
-        const resultsGroupedById = results.reduce<
+        const resultsGroupedById = allResults.reduce<
           Record<string, CriterionResult[]>
         >((acc, c) => {
           const key = `${c.topic}.${c.criterium}`;
@@ -1423,13 +1423,14 @@ export class AuditService {
 
       const statementIsPublished = !!a.initiator;
 
+      const pagesResults = allResults.filter(
+        (r) => r.pageId !== a.transverseElementsPageId
+      );
+
       const auditIsComplete =
-        results.filter((r) => r.pageId !== a.transverseElementsPageId)
-          .length ===
+        pagesResults.length ===
           CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length &&
-        results
-          .filter((r) => r.pageId !== a.transverseElementsPageId)
-          .every((r) => r.status !== "NOT_TESTED");
+        pagesResults.every((r) => r.status !== "NOT_TESTED");
 
       return {
         ...pick(
