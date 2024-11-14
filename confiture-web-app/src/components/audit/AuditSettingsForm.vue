@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAccountStore } from "../../store/account";
@@ -62,7 +62,7 @@ const accountStore = useAccountStore();
 
 const auditType = ref(props.audit?.auditType);
 const procedureName = ref(props.audit?.procedureName);
-const pages = ref(props.audit?.pages);
+const pages = ref(structuredClone(toRaw(props.audit?.pages)));
 const auditorEmail = ref(props.audit?.auditorEmail);
 const auditorName = ref(props.audit?.auditorName ?? "");
 

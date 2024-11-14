@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSelection/TestEnvironmentSelection.vue";
@@ -144,7 +144,7 @@ watch(
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
     validatedTechnologies.value = audit.technologies.length
-      ? audit.technologies
+      ? structuredClone(toRaw(audit.technologies))
       : [];
 
     defaultTools.value = audit.tools.length
@@ -155,7 +155,7 @@ watch(
       ? audit.tools.filter((tool) => !availableTools.includes(tool))
       : [];
 
-    environments.value = audit.environments ?? [];
+    environments.value = structuredClone(toRaw(audit.environments)) ?? [];
 
     notCompliantContent.value = audit.notCompliantContent ?? "";
     derogatedContent.value = audit.derogatedContent ?? "";
