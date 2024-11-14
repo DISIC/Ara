@@ -77,7 +77,7 @@ function handleClose() {
                   ref="duplicateAuditNameRef"
                   v-model="duplicateAuditName"
                   label="Nom de la copie"
-                  :hint="`Exemple : contre audit ${
+                  :hint="`Exemple : contre-audit ${
                     originalAuditName ?? 'site DesignGouv'
                   }`"
                   type="text"
