@@ -82,7 +82,9 @@ function updateCurrentPageId(i: number) {
   auditStore.updateCurrentPageId(
     i === 0
       ? auditStore.currentAudit?.transverseElementsPage.id ?? null
-      : auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
+      : auditStore.currentAudit?.pages
+        ? sortBy(auditStore.currentAudit.pages, "order").at(i - 1)?.id ?? null
+        : null
   );
 }
 
