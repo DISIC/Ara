@@ -85,13 +85,6 @@ class UpdateResultsItem {
   status: CriterionResultStatus;
 
   /**
-   * Whether the status is the same on all pages
-   */
-  @IsBoolean()
-  @IsOptional()
-  transverse?: boolean;
-
-  /**
    * @example "Ad culpa cupidatat proident amet ullamco proident proident mollit ipsum enim consectetur consequat labore."
    */
   @IsString()

@@ -173,8 +173,6 @@ class ReportCriterionResult {
   @ApiProperty({ enum: CriterionResultStatus })
   status: CriterionResultStatus;
 
-  transverse: boolean;
-
   compliantComment: string | null;
 
   /**

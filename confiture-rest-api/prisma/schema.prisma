@@ -51,8 +51,8 @@ model Audit {
   /// @DtoEntityHidden
   pages                    AuditedPage[] @relation("UserPages")
   // single page for transverse elements
-  transverseElementsPage       AuditedPage @relation("TransversePage", fields: [transverseElementsPageId], references: [id])
-  transverseElementsPageId Int @unique
+  transverseElementsPage   AuditedPage   @relation("TransversePage", fields: [transverseElementsPageId], references: [id])
+  transverseElementsPageId Int           @unique
   auditorName              String?
   auditorEmail             String?
   showAuditorEmailInReport Boolean       @default(false)
@@ -96,11 +96,11 @@ model Audit {
 }
 
 model TestEnvironment {
-  id                         Int     @id @default(autoincrement())
-  platform                   String
-  operatingSystem            String
-  assistiveTechnology        String
-  browser                    String
+  id                  Int    @id @default(autoincrement())
+  platform            String
+  operatingSystem     String
+  assistiveTechnology String
+  browser             String
 
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
@@ -121,15 +121,13 @@ model AuditedPage {
   // parent audit when the page is a transverse page
   auditTransverse Audit? @relation(name: "TransversePage")
 
-
   results CriterionResult[]
 }
 
 model CriterionResult {
   id Int @id @default(autoincrement())
 
-  status     CriterionResultStatus @default(NOT_TESTED)
-  transverse Boolean               @default(false)
+  status CriterionResultStatus @default(NOT_TESTED)
 
   compliantComment String?
 
@@ -175,15 +173,15 @@ model StoredFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
-	// The default mimetype set to "image/unknown" to handle existing files
-	// in the DB (before the property has been added).
-	// Originally, all files were images.
-  mimetype         String @default("image/unknown")
+  // The default mimetype set to "image/unknown" to handle existing files
+  // in the DB (before the property has been added).
+  // Originally, all files were images.
+  mimetype String @default("image/unknown")
 
-  size             Int
+  size Int
 
   // S3 storage keys
-  key String
+  key          String
   thumbnailKey String
 
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -194,18 +192,18 @@ model AuditFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
-	// The default mimetype set to "image/unknown" to handle existing files
-	// in the DB (before the property has been added).
-	// Originally, all files were images.
-  mimetype         String @default("image/unknown")
+  // The default mimetype set to "image/unknown" to handle existing files
+  // in the DB (before the property has been added).
+  // Originally, all files were images.
+  mimetype String @default("image/unknown")
 
-  size             Int
+  size Int
 
   // S3 storage key
-  key String
+  key          String
   thumbnailKey String?
 
-  audit				 Audit? @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
 }
 
