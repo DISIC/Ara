@@ -245,7 +245,7 @@ export async function handleFileUploadError(
   error: Error
 ): Promise<FileErrorMessage | string> {
   if (error instanceof HTTPError) {
-    let errorType: FileErrorMessage | null = null;
+    let errorType: FileErrorMessage;
     if (error.response.status === 413) {
       errorType = FileErrorMessage.UPLOAD_SIZE;
     }

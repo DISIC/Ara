@@ -10,7 +10,7 @@ import { formatBytes, getUploadUrl } from "../../utils";
 export interface Props {
   acceptedFormats?: Array<string>;
   auditFiles: AuditFile[];
-  errorMessage?: FileErrorMessage | null;
+  errorMessage?: FileErrorMessage | string | null;
   maxFileSize?: string;
   multiple?: boolean;
   readonly?: boolean;

@@ -28,7 +28,7 @@ defineExpose({
   hide: () => modal.value?.hide()
 });
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
+const errorMessage: Ref<FileErrorMessage | string | null> = ref(null);
 const fileUpload = ref<InstanceType<typeof FileUpload>>();
 
 const auditStore = useAuditStore();
