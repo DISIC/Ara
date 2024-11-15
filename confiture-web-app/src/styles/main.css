@@ -70,10 +70,6 @@ from DSFR links with `target="_blank"` */
   padding: 1rem;
   border: 1px solid var(--border-default-grey);
   min-height: 10rem;
-  height: 70vh;
-  height: 70dvh;
-  max-height: 80vh;
-  max-height: 80dvh;
   overflow-y: auto;
 }
 
