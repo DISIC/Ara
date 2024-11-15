@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 15/11/2024
+
+### Corrections 🐛
+
+- Corrige un bug lié à l'ancienne gestion des critères transverses provoquant parfois des écrasenements de données ([#876](https://github.com/DISIC/Ara/pull/876))
+
 ## 07/11/2024
 
 ### Corrections 🐛

@@ -204,7 +204,6 @@ export class AuditService {
           userImpact: null,
           notApplicableComment: null,
           exampleImages: [],
-          transverse: false,
           quickWin: false,
 
           topic: criterion.topic,
@@ -371,10 +370,6 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const pages = await this.prisma.auditedPage.findMany({
-      where: { auditUniqueId: uniqueId }
-    });
-
     const promises = body.data
       .map((item) => {
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
@@ -391,19 +386,12 @@ export class AuditService {
           notCompliantComment: item.notCompliantComment,
           notApplicableComment: item.notApplicableComment,
           userImpact: item.userImpact,
-          quickWin: item.quickWin,
-          transverse: item.transverse
+          quickWin: item.quickWin
         };
 
         const result = [
           this.prisma.criterionResult.upsert({
             where: {
-              // auditUniqueId_pageUrl_topic_criterium: {
-              //   auditUniqueId: uniqueId,
-              //   criterium: item.criterium,
-              //   pageUrl: item.pageUrl,
-              //   topic: item.topic,
-              // },
               pageId_topic_criterium: {
                 criterium: item.criterium,
                 topic: item.topic,
@@ -414,53 +402,6 @@ export class AuditService {
             update: data
           })
         ];
-
-        if (item.transverse) {
-          pages
-            .filter((page) => page.id !== item.pageId)
-            .forEach((page) => {
-              const data: Prisma.CriterionResultUpsertArgs["create"] = {
-                criterium: item.criterium,
-                topic: item.topic,
-                page: {
-                  connect: {
-                    id: page.id
-                  }
-                },
-
-                status: item.status,
-                transverse: true,
-
-                ...(item.status === CriterionResultStatus.COMPLIANT && {
-                  compliantComment: item.compliantComment
-                }),
-
-                ...(item.status === CriterionResultStatus.NOT_COMPLIANT && {
-                  notCompliantComment: item.notCompliantComment,
-                  userImpact: item.userImpact,
-                  quickWin: item.quickWin
-                }),
-
-                ...(item.status === CriterionResultStatus.NOT_APPLICABLE && {
-                  notApplicableComment: item.notApplicableComment
-                })
-              };
-
-              result.push(
-                this.prisma.criterionResult.upsert({
-                  where: {
-                    pageId_topic_criterium: {
-                      criterium: item.criterium,
-                      topic: item.topic,
-                      pageId: page.id
-                    }
-                  },
-                  create: data,
-                  update: data
-                })
-              );
-            });
-        }
 
         return result;
       })
@@ -1049,7 +990,6 @@ export class AuditService {
         criterium: r.criterium,
 
         status: r.status,
-        transverse: r.transverse,
 
         compliantComment: r.compliantComment,
         notCompliantComment: r.notCompliantComment,
