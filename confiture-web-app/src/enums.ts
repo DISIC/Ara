@@ -24,6 +24,10 @@ export enum Browsers {
   EDGE = "Microsoft Edge"
 }
 
+export enum Limitations {
+  FILE_SIZE = 2000000
+}
+
 export enum FileErrorMessage {
   UPLOAD_SIZE = "Votre fichier dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
   UPLOAD_FORMAT = "Format de fichier non supporté.",

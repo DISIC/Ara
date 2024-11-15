@@ -3,7 +3,7 @@ import { computed, Ref, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useUniqueId } from "../../composables/useUniqueId";
-import { FileErrorMessage } from "../../enums";
+import { FileErrorMessage, Limitations } from "../../enums";
 import { AuditFile } from "../../types";
 import { formatBytes, getUploadUrl } from "../../utils";
 
@@ -71,7 +71,7 @@ const acceptedFormatsAttr = computed(() => {
 function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
-    if (file.size > 2000000) {
+    if (file.size > Limitations.FILE_SIZE) {
       localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
       return;
     }

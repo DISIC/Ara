@@ -16,11 +16,14 @@ import html from "highlight.js/lib/languages/xml";
 // load common languages
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
-import { computed, ShallowRef } from "vue";
+import { computed, onMounted, ShallowRef } from "vue";
 import { useRoute } from "vue-router";
 
 import { useNotifications } from "../../composables/useNotifications";
-import { ImageUploadTiptapExtension } from "../../tiptap/ImageUploadTiptapExtension";
+import {
+  ImageUploadTiptapExtension,
+  insertFilesAtSelection
+} from "../../tiptap/ImageUploadTiptapExtension";
 
 // create a lowlight instance
 const lowlight = createLowlight(common);
@@ -105,6 +108,27 @@ const editor = useEditor({
     emit("update:content", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
+
+onMounted(() => {
+  const browseButton = document.getElementById("tiptap-browse-btn")!;
+  const browseInput = document.getElementById("tiptap-browse-input")!;
+  browseButton.addEventListener(
+    "click",
+    () => {
+      browseInput.click();
+    },
+    false
+  );
+  browseInput.addEventListener(
+    "change",
+    (e) => {
+      const inputElement = e?.target as HTMLInputElement;
+      const files = inputElement.files!;
+      insertFilesAtSelection(uniqueId.value, editor.value, files);
+    },
+    false
+  );
+});
 </script>
 
 <template>
@@ -114,5 +138,15 @@ const editor = useEditor({
       utiliser les raccourcis clavier.
     </p>
     <editor-content :editor="editor" />
+    <input
+      id="tiptap-browse-input"
+      type="file"
+      class="fr-hidden"
+      hidden
+      multiple
+    />
+    <button id="tiptap-browse-btn" class="fr-btn fr-btn--tertiary-no-outline">
+      parcourir
+    </button>
   </div>
 </template>
