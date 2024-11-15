@@ -78,12 +78,16 @@ const topics = computed(() => {
 
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
+const orderedPages = computed(() => {
+  return sortBy(auditStore.currentAudit?.pages, "order");
+});
+
 function updateCurrentPageId(i: number) {
   auditStore.updateCurrentPageId(
     i === 0
       ? auditStore.currentAudit?.transverseElementsPage.id ?? null
       : auditStore.currentAudit?.pages
-        ? sortBy(auditStore.currentAudit.pages, "order").at(i - 1)?.id ?? null
+        ? orderedPages.value.at(i - 1)?.id ?? null
         : null
   );
 }
@@ -220,13 +224,10 @@ const tabsData = computed((): TabData[] => {
     ...(transversePage
       ? [{ label: transversePage?.name, data: transversePage }]
       : []),
-    ...sortBy(
-      auditStore.currentAudit?.pages.map((p) => ({
-        label: p.name,
-        data: p
-      })) ?? [],
-      (p) => p.data.order
-    )
+    ...(orderedPages.value.map((p) => ({
+      label: p.name,
+      data: p
+    })) ?? [])
   ];
 });
 </script>
