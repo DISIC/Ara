@@ -87,6 +87,12 @@ from DSFR links with `target="_blank"` */
   padding: 0.5rem;
 }
 
+.tiptap:focus,
+.tiptap:focus-visible {
+  outline-width: 4px !important;
+  outline-offset: 0 !important;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .tiptap img:hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
