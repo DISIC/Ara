@@ -33,7 +33,7 @@ import { useAccountStore, useAuditStore } from "./store";
 declare module "vue-router" {
   interface RouteMeta {
     // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
-    name: string;
+    name: string | (() => string);
     hideHomeLink?: boolean;
     authRequired?: boolean;
   }
@@ -46,7 +46,7 @@ export const history = createWebHistory();
  */
 function getProcedureName() {
   const auditStore = useAuditStore();
-  return auditStore.currentAudit?.procedureName ?? "Mon audit";
+  return auditStore.currentAudit?.procedureName ?? "de mon audit";
 }
 
 const router = createRouter({
@@ -238,7 +238,7 @@ const router = createRouter({
       name: "audit-overview",
       component: AuditOverviewPage,
       meta: {
-        name: `Synthèse ${getProcedureName}`
+        name: () => `Synthèse ${getProcedureName()}`
       }
     },
     // Report pages
@@ -368,7 +368,9 @@ router.afterEach(async (to, from) => {
   if (from.path !== to.path) {
     const pageTitleAlert = document.querySelector("#page-title-alert");
     if (pageTitleAlert) {
-      pageTitleAlert.innerHTML = `<p>${to.meta.name}</p>`;
+      pageTitleAlert.innerHTML = `<p>${
+        typeof to.meta.name === "function" ? to.meta.name() : to.meta.name
+      }</p>`;
 
       setTimeout(() => {
         pageTitleAlert.innerHTML = "";

@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 20/11/2024
+
+### Corrections 🐛
+
+- Corrige un problème de vocalisation de lecteur d’écran sur la page du tableau de bord ([#883](https://github.com/DISIC/Ara/pull/883))
+
 ## 15/11/2024
 
 ### Corrections 🐛
