@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { sortBy } from "lodash-es";
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 
@@ -78,16 +77,12 @@ const topics = computed(() => {
 
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
-const orderedPages = computed(() => {
-  return sortBy(auditStore.currentAudit?.pages, "order");
-});
-
 function updateCurrentPageId(i: number) {
   auditStore.updateCurrentPageId(
     i === 0
       ? auditStore.currentAudit?.transverseElementsPage.id ?? null
       : auditStore.currentAudit?.pages
-        ? orderedPages.value.at(i - 1)?.id ?? null
+        ? auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
         : null
   );
 }
@@ -224,7 +219,7 @@ const tabsData = computed((): TabData[] => {
     ...(transversePage
       ? [{ label: transversePage?.name, data: transversePage }]
       : []),
-    ...(orderedPages.value.map((p) => ({
+    ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
       data: p
     })) ?? [])
