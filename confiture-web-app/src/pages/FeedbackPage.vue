@@ -75,7 +75,10 @@ const router = useRouter();
 
 const { route, url } = usePreviousRoute();
 const previousPageUrl = url ?? router.resolve({ name: "home" }).href;
-const previousPageName = route?.meta.name ?? "précédente";
+const previousPageName =
+  (typeof route?.meta.name === "function"
+    ? route?.meta.name()
+    : route?.meta.name) ?? "précédente";
 </script>
 
 <template>
