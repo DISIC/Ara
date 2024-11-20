@@ -1,7 +1,61 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 async function main() {
   const prisma = new PrismaClient();
+
+  const auditData: Omit<
+    Prisma.AuditCreateInput,
+    "editUniqueId" | "consultUniqueId" | "auditTrace"
+  > = {
+    auditType: "FULL",
+    procedureName: "Audit de mon petit site",
+    auditorEmail: "etienne.durand@example.com",
+    auditorName: "Étienne Durand",
+    transverseElementsPage: {
+      create: {
+        name: "Éléments transverses",
+        url: ""
+      }
+    },
+    pages: {
+      createMany: {
+        data: [
+          {
+            name: "Accueil",
+            url: "https://example.com"
+          },
+          {
+            name: "Contact",
+            url: "https://example.com/contact"
+          },
+          {
+            name: "À propos",
+            url: "https://example.com/a-propos"
+          },
+          {
+            name: "Blog",
+            url: "https://example.com/blog"
+          },
+          {
+            name: "Article",
+            url: "https://example.com/blog/article"
+          },
+          {
+            name: "Connexion",
+            url: "https://example.com/connexion"
+          },
+          {
+            name: "Documentation",
+            url: "https://example.com/documentation"
+          },
+          {
+            name: "FAQ",
+            url: "https://example.com/faq"
+          }
+        ]
+      }
+    }
+  };
 
   // EDITION AUDIT
   const editAuditIdEdition = "edit-audit-edition";
@@ -17,55 +71,7 @@ async function main() {
           auditEditUniqueId: consultUniqueIdEdition
         }
       },
-
-      auditType: "FULL",
-      procedureName: "Audit de mon petit site",
-      auditorEmail: "etienne.durand@example.com",
-      auditorName: "Étienne Durand",
-      transverseElementsPage: {
-        create: {
-          name: "Éléments transverses",
-          url: ""
-        }
-      },
-      pages: {
-        createMany: {
-          data: [
-            {
-              name: "Accueil",
-              url: "https://example.com"
-            },
-            {
-              name: "Contact",
-              url: "https://example.com/contact"
-            },
-            {
-              name: "À propos",
-              url: "https://example.com/a-propos"
-            },
-            {
-              name: "Blog",
-              url: "https://example.com/blog"
-            },
-            {
-              name: "Article",
-              url: "https://example.com/blog/article"
-            },
-            {
-              name: "Connexion",
-              url: "https://example.com/connexion"
-            },
-            {
-              name: "Documentation",
-              url: "https://example.com/documentation"
-            },
-            {
-              name: "FAQ",
-              url: "https://example.com/faq"
-            }
-          ]
-        }
-      }
+      ...auditData
     }
   });
 
@@ -83,27 +89,7 @@ async function main() {
           auditEditUniqueId: consultUniqueIdDeletion
         }
       },
-
-      auditType: "FULL",
-      procedureName: "Audit de mon petit site",
-      auditorEmail: "etienne.durand@example.com",
-      auditorName: "Étienne Durand",
-      transverseElementsPage: {
-        create: {
-          name: "Éléments transverses",
-          url: ""
-        }
-      },
-      pages: {
-        createMany: {
-          data: [
-            {
-              name: "Accueil",
-              url: "https://example.com"
-            }
-          ]
-        }
-      }
+      ...auditData
     }
   });
 }
