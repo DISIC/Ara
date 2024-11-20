@@ -73,7 +73,7 @@ describe("Audit", () => {
       pages: auditJson.pages.slice(0, 2),
     }).then((data) => {
       cy.visit(
-        `http://localhost:3000/audits/${data.body.editUniqueId}/generation`
+        `   http://localhost:3000/audits/${data.body.editUniqueId}/generation`,
       );
 
       cy.contains("button", auditJson.pages[0].name).click();
@@ -93,7 +93,7 @@ describe("Audit", () => {
           cy.wrap(container)
             .getByLabel("Erreur et recommandation")
             .type(
-              "Oh no there's an error concerning this non compliant criterium"
+              "   Oh no there's an error concerning this non compliant criterium",
             );
 
           if (i % 2 === 0) {
@@ -104,6 +104,113 @@ describe("Audit", () => {
           cy.wrap(container).contains("Commentaire").click();
           cy.wrap(container).getByLabel("Commentaire").type("I dunno.");
         }
+      });
+    });
+  });
+
+  it("User can go to settings page from audit (small viewport)", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-1/generation");
+    cy.contains("Actions").click();
+    cy.contains("Accéder aux paramètres").click();
+    cy.get("h1").contains("Paramètres de l’audit");
+    cy.url().should(
+      "eq",
+      "http://localhost:3000/audits/edit-audit-1/parametres",
+    );
+  });
+
+  it("User can go to settings page from audit (large viewport)", () => {
+    cy.viewport(1400, 800);
+    cy.visit("http://localhost:3000/audits/edit-audit-1/generation");
+    cy.contains("a", "Paramètres").click();
+    cy.get("h1").contains("Paramètres de l’audit");
+    cy.url().should(
+      "eq",
+      "http://localhost:3000/audits/edit-audit-1/parametres",
+    );
+  });
+
+  it("User can edit procedure name", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-1/parametres");
+
+    cy.getByLabel("Nom du site audité").should(
+      "have.value",
+      "Audit de mon petit site",
+    );
+
+    cy.getByLabel("Nom du site audité").clear().type("Audit de mon gros site");
+
+    cy.contains("Enregistrer les modifications").click();
+
+    cy.url().should(
+      "eq",
+      "http://localhost:3000/audits/edit-audit-1/generation",
+    );
+    cy.get("h1").contains("Audit de mon gros site");
+  });
+
+  it("User can edit pages", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-1/parametres");
+
+    cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
+      (els) => {
+        expect(els).to.have.length(8);
+        const expectedPages = [
+          "Accueil",
+          "Contact",
+          "À propos",
+          "Blog",
+          "Article",
+          "Connexion",
+          "Documentation",
+          "FAQ",
+        ];
+        expectedPages.forEach((expectedPageName, i) => {
+          cy.wrap(els[i]).should("have.value", expectedPageName);
+        });
+      },
+    );
+
+    cy.contains("button", "Supprimer").click();
+    cy.contains("button", "Supprimer").click();
+    cy.contains("button", "Supprimer").click();
+
+    cy.getByLabel("Nom de la page").clear().type("Accueil du blog");
+    cy.getByLabel("URL de la page")
+      .clear()
+      .type("https://example.com/blog/accueil");
+
+    cy.get("#page-order-1").select("0");
+
+    cy.get("#page-order-4").select("1");
+
+    cy.contains("Ajouter une page").click();
+    cy.get("fieldset .fr-input-group .fr-input[id^='page-name']")
+      .last()
+      .type("Paramètres");
+    cy.get("fieldset .fr-input-group .fr-input[id^='page-url']")
+      .last()
+      .type("https://example.com/parametres");
+
+    cy.contains("Enregistrer les modifications").click();
+    cy.url().should(
+      "eq",
+      "http://localhost:3000/audits/edit-audit-1/generation",
+    );
+
+    cy.get("[role='tablist'] button").then((els) => {
+      expect(els).to.have.length(7);
+      const expectedPages = [
+        "Éléments transverses",
+        "Article",
+        "FAQ",
+        "Accueil du blog",
+        "Connexion",
+        "Documentation",
+        "Paramètres",
+      ];
+      expectedPages.forEach((expectedPageName, i) => {
+        cy.wrap(els[i]).should("have.text", expectedPageName);
       });
     });
   });
