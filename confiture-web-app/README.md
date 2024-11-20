@@ -35,6 +35,15 @@ yarn dev
 
 [Cypress](https://www.cypress.io/) est utilisé pour lancer des tests end-to-end (e2e) dans un navigateur pour reproduire le comportement des utilisateurs.
 
+Avant de lancer les tests, il faut seeder la base de données depuis le dossier `confiture-rest-api` :
+
+```sh
+yarn prisma migrate reset
+yarn ts-node scripts/seed.ts
+```
+
+Comme certains tests modifient la base de données (édition, suppression d’audit...), il est important de vérifier l’état de cette dernière et de la réinitialiser au besoin.
+
 Les tests peuvent être lancés de 2 manières :
 
 - Via l’application Cypress avec :
