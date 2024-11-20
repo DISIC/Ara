@@ -3,17 +3,18 @@ import { PrismaClient } from "@prisma/client";
 async function main() {
   const prisma = new PrismaClient();
 
-  const editUniqueId = "edit-audit-1";
-  const consultUniqueId = "consult-audit-1";
+  // EDITION AUDIT
+  const editAuditIdEdition = "edit-audit-edition";
+  const consultUniqueIdEdition = "consult-audit-edition";
 
-  const audit = await prisma.audit.create({
+  await prisma.audit.create({
     data: {
-      editUniqueId,
-      consultUniqueId,
+      editUniqueId: editAuditIdEdition,
+      consultUniqueId: consultUniqueIdEdition,
       auditTrace: {
         create: {
-          auditConsultUniqueId: consultUniqueId,
-          auditEditUniqueId: editUniqueId
+          auditConsultUniqueId: editAuditIdEdition,
+          auditEditUniqueId: consultUniqueIdEdition
         }
       },
 
@@ -68,7 +69,43 @@ async function main() {
     }
   });
 
-  return audit;
+  // DELETION AUDIT
+  const editAuditIdDeletion = "edit-audit-deletion";
+  const consultUniqueIdDeletion = "consult-audit-deletion";
+
+  await prisma.audit.create({
+    data: {
+      editUniqueId: editAuditIdDeletion,
+      consultUniqueId: consultUniqueIdDeletion,
+      auditTrace: {
+        create: {
+          auditConsultUniqueId: editAuditIdDeletion,
+          auditEditUniqueId: consultUniqueIdDeletion
+        }
+      },
+
+      auditType: "FULL",
+      procedureName: "Audit de mon petit site",
+      auditorEmail: "etienne.durand@example.com",
+      auditorName: "Étienne Durand",
+      transverseElementsPage: {
+        create: {
+          name: "Éléments transverses",
+          url: ""
+        }
+      },
+      pages: {
+        createMany: {
+          data: [
+            {
+              name: "Accueil",
+              url: "https://example.com"
+            }
+          ]
+        }
+      }
+    }
+  });
 }
 
 main();

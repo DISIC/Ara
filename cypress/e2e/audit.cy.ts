@@ -109,29 +109,29 @@ describe("Audit", () => {
   });
 
   it("User can go to settings page from audit (small viewport)", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-1/generation");
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
     cy.contains("Actions").click();
     cy.contains("Accéder aux paramètres").click();
     cy.get("h1").contains("Paramètres de l’audit");
     cy.url().should(
       "eq",
-      "http://localhost:3000/audits/edit-audit-1/parametres",
+      "http://localhost:3000/audits/edit-audit-edition/parametres",
     );
   });
 
   it("User can go to settings page from audit (large viewport)", () => {
     cy.viewport(1400, 800);
-    cy.visit("http://localhost:3000/audits/edit-audit-1/generation");
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
     cy.contains("a", "Paramètres").click();
     cy.get("h1").contains("Paramètres de l’audit");
     cy.url().should(
       "eq",
-      "http://localhost:3000/audits/edit-audit-1/parametres",
+      "http://localhost:3000/audits/edit-audit-edition/parametres",
     );
   });
 
   it("User can edit procedure name", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-1/parametres");
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/parametres");
 
     cy.getByLabel("Nom du site audité").should(
       "have.value",
@@ -144,13 +144,13 @@ describe("Audit", () => {
 
     cy.url().should(
       "eq",
-      "http://localhost:3000/audits/edit-audit-1/generation",
+      "http://localhost:3000/audits/edit-audit-edition/generation",
     );
     cy.get("h1").contains("Audit de mon gros site");
   });
 
   it("User can edit pages", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-1/parametres");
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/parametres");
 
     cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
       (els) => {
@@ -195,7 +195,7 @@ describe("Audit", () => {
     cy.contains("Enregistrer les modifications").click();
     cy.url().should(
       "eq",
-      "http://localhost:3000/audits/edit-audit-1/generation",
+      "http://localhost:3000/audits/edit-audit-edition/generation",
     );
 
     cy.get("[role='tablist'] button").then((els) => {
@@ -215,12 +215,24 @@ describe("Audit", () => {
     });
   });
 
+  it("User can delete an audit (small viewport)", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-deletion/generation");
+
+    cy.contains("Actions").click();
+    cy.contains("Supprimer l’audit").click();
+
+    cy.contains("Vous allez supprimer l’audit");
+    cy.get("dialog").contains("button", "Supprimer l’audit").click();
+
+    cy.url().should("eq", "http://localhost:3000/");
+    cy.contains("L’audit a correctement été supprimé.");
+  });
+
   // it.skip("User can filter criteria", () => {});
   // it.skip("User can copy an audit", () => {});
   // it.skip("User can complete a11y statement", () => {});
   // it.skip("User can update notes", () => {});
   // it.skip("User can download an audit", () => {});
-  // it.skip("User can delete an audit", () => {});
   // it.skip("User can search criteria", () => {});
   // it.skip("User can check Markdown syntax", () => {});
 });
