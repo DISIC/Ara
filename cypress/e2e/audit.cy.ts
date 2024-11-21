@@ -305,8 +305,39 @@ describe("Audit", () => {
     cy.contains("http://localhost:3000/declaration/consult-audit-edition");
   });
 
+  it("User can copy an audit", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.contains("button", "Actions").click();
+    cy.contains("button", "Créer une copie").click();
+
+    cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
+    cy.get("dialog").contains("button", "Créer une copie").click();
+
+    cy.contains("Audit copié avec succès");
+    cy.contains("Audit de mon petit site (2)");
+    // TODO: verify results are the same
+  });
+
+  it("User can search in criteria title", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.getByLabel("Rechercher par mots clés")
+      .clear()
+      .type("alternative")
+      .type("{enter}");
+
+    cy.contains("9 résultats");
+    cy.get("li.criterium-container").then((els) => {
+      expect(els).to.have.length(9);
+    });
+  });
+
+  it("User can hide tests and references", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.contains("Masquer les tests et références").click();
+    cy.contains("Tests et références du critère 1.1").should("not.exist");
+  });
+
   // it.skip("User can filter criteria", () => {});
-  // it.skip("User can copy an audit", () => {});
   // it.skip("User can download an audit", () => {});
-  // it.skip("User can search criteria", () => {});
+  // it.skip("User can reset filters"), () => {});
 });
