@@ -1,4 +1,5 @@
 import * as auditJson from "../fixtures/audit.json";
+import * as statementJson from "../fixtures/statement.json";
 
 describe("Audit", () => {
   it("User can create an audit", () => {
@@ -238,6 +239,70 @@ describe("Audit", () => {
     cy.get("dialog#notes-modal").contains("button", "Fermer").click();
     cy.contains("Annoter l’audit").click();
     cy.contains("Annotations de l’audit");
+  });
+
+  it("User can fill a11y statement", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/synthese");
+    cy.contains("Compléter").invoke("removeAttr", "target").click();
+
+    // General infos
+    cy.getByLabel("Entité qui a demandé l’audit")
+      .clear()
+      .type(statementJson.auditInitiator);
+    cy.getByLabel("Entité qui a réalisé l’audit")
+      .clear()
+      .type(statementJson.auditorOrganisation);
+    cy.getByLabel("URL de la page d’accueil du site audité")
+      .clear()
+      .type(statementJson.procedureUrl);
+
+    // Contact
+    cy.getByLabel("Nom et prénom du contact (optionnel)")
+      .clear()
+      .type(statementJson.contactName);
+    cy.getByLabel("Adresse e-mail").clear().type(statementJson.contactEmail);
+    cy.getByLabel("Formulaire de contact en ligne")
+      .clear()
+      .type(statementJson.contactFormUrl);
+
+    // Technologies
+    cy.getByLabel("Ajouter des technologies")
+      .clear()
+      .type(statementJson.technologies);
+
+    cy.contains("button", "Valider les technologies").click();
+
+    // Tools
+    cy.contains("Web Developer Toolbar").click();
+    cy.contains("WCAG Contrast checker").click();
+    cy.getByLabel("Ajouter des outils d’assistance")
+      .clear()
+      .type(statementJson.tools);
+
+    cy.contains("button", "Valider les outils").click();
+
+    // Environments
+    cy.contains("Combinaison 1").click();
+    cy.getByLabel("Appareil").clear().type("Ordinateur");
+    cy.getByLabel("Logiciel d’exploitation").clear().type("Windows");
+    cy.getByLabel("Technologie d’assistance").clear().type("JAWS");
+    cy.getByLabel("Navigateur").clear().type("Edge");
+
+    // Not accessible content
+    cy.getByLabel("Non-conformités (optionnel)")
+      .clear()
+      .type(statementJson.notCompliantContent);
+    cy.getByLabel("Dérogations pour charge disproportionnée (optionnel)")
+      .clear()
+      .type(statementJson.derogatedContent);
+    cy.getByLabel(
+      "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
+    )
+      .clear()
+      .type(statementJson.notInScopeContent);
+
+    cy.contains("button", "Valider la déclaration").click();
+    cy.contains("http://localhost:3000/declaration/consult-audit-edition");
   });
 
   // it.skip("User can filter criteria", () => {});
