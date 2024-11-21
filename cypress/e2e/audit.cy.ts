@@ -215,7 +215,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can delete an audit (small viewport)", () => {
+  it("User can delete an audit", () => {
     cy.visit("http://localhost:3000/audits/edit-audit-deletion/generation");
 
     cy.contains("Actions").click();
@@ -228,11 +228,20 @@ describe("Audit", () => {
     cy.contains("L’audit a correctement été supprimé.");
   });
 
+  it("User can update notes", () => {
+    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+
+    cy.contains("Annoter l’audit").click();
+    cy.getByLabel("Remarques et recommandations générales")
+      .clear()
+      .type("Annotations de l’audit");
+    cy.get("dialog#notes-modal").contains("button", "Fermer").click();
+    cy.contains("Annoter l’audit").click();
+    cy.contains("Annotations de l’audit");
+  });
+
   // it.skip("User can filter criteria", () => {});
   // it.skip("User can copy an audit", () => {});
-  // it.skip("User can complete a11y statement", () => {});
-  // it.skip("User can update notes", () => {});
   // it.skip("User can download an audit", () => {});
   // it.skip("User can search criteria", () => {});
-  // it.skip("User can check Markdown syntax", () => {});
 });
