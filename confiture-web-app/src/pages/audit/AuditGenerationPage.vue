@@ -70,7 +70,7 @@ const topics = computed(() => {
         return {
           title: topic.topic,
           number: topic.number,
-          value: Math.round((testedCount / relevantCount) * 100)
+          value: Math.floor((testedCount / relevantCount) * 100)
         };
       })
   );

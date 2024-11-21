@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 21/11/2024
+
+### Corrections 🐛
+
+- Corrige un mauvais calcul d’arrondi sur la complétion des thématiques de l’audit ([#882](https://github.com/DISIC/Ara/pull/882))
+
 ## 20/11/2024
 
 ### Corrections 🐛
