@@ -11,6 +11,9 @@
     "lint-staged": "^15.2.0"
   },
   "scripts": {
+    "tests:setup": "cd confiture-rest-api && yarn prisma migrate reset && ts-node scripts/seed.ts",
+    "tests:open": "yarn cypress open",
+    "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build"
   },
   "dependencies": {
