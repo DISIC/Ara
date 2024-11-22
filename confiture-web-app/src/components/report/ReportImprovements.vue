@@ -29,11 +29,15 @@ const improvementsCount = computed(() => {
     top-notice="Ci-dessous les commentaires de l’auditeur ou de l’auditrice concernant des critères conformes ou non applicables."
     :count="improvementsCount"
     :pages-data="pagesImprovements"
+    tab-slug="improvements"
     :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
       <section class="fr-mb-8w">
-        <h2 id="elements-transverses" class="fr-h3 fr-mb-2w page-title">
+        <h2
+          id="improvements_elements-transverses"
+          class="fr-h3 fr-mb-2w page-title"
+        >
           Éléments transverses
         </h2>
 
@@ -65,7 +69,7 @@ const improvementsCount = computed(() => {
         :key="page.id"
         class="fr-mb-8w"
       >
-        <h2 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h2 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h2>
         <a
