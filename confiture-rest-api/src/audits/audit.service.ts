@@ -1385,9 +1385,9 @@ export class AuditService {
         status:
           progress === 0
             ? "NOT_STARTED"
-            : progress < 1
-              ? "IN_PROGRESS"
-              : "COMPLETED",
+            : auditIsComplete
+              ? "COMPLETED"
+              : "IN_PROGRESS",
         estimatedCsvSize: 502 + a.pages.length * 318,
         statementIsPublished
       };
