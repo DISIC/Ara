@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 22/11/2024
 
+### Autres changements ⚙️
+
+- Change le texte du bouton principal des audits à 0% dans la liste des audits de "Continuer l’audit" à "Commencer l’audit" ([#843](https://github.com/DISIC/Ara/pull/843))
+
 ### Corrections 🐛
 
 - Corrige le problème des filtres des critères qui décalait l’ordre des pages de l’échantillon sur la page d’audit ([#877](https://github.com/DISIC/Ara/pull/877))

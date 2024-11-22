@@ -1382,7 +1382,12 @@ export class AuditService {
           "auditType"
         ),
         complianceLevel,
-        status: auditIsComplete ? "COMPLETED" : "IN_PROGRESS",
+        status:
+          progress === 0
+            ? "NOT_STARTED"
+            : auditIsComplete
+              ? "COMPLETED"
+              : "IN_PROGRESS",
         estimatedCsvSize: 502 + a.pages.length * 318,
         statementIsPublished
       };

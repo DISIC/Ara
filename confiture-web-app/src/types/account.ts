@@ -20,7 +20,10 @@ export interface AccountDeletionResponse {
 
 export interface AccountAudit {
   procedureName: string;
-  status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
+  status:
+    | AuditStatus.NOT_STARTED
+    | AuditStatus.IN_PROGRESS
+    | AuditStatus.COMPLETED;
   creationDate: string;
   auditType: AuditType;
   complianceLevel: number;
