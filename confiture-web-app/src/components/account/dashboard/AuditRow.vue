@@ -25,6 +25,10 @@ const props = defineProps<{
 const notify = useNotifications();
 const auditStore = useAuditStore();
 
+const isNotStarted = computed(
+  () => props.audit.status === AuditStatus.NOT_STARTED
+);
+
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
@@ -166,11 +170,11 @@ function copyStatementLink(uniqueId: string) {
     <p
       class="fr-badge fr-badge--sm audit-status"
       :class="{
-        'fr-badge--purple-glycine': isInProgress
+        'fr-badge--purple-glycine': isInProgress || isNotStarted
       }"
     >
       <span class="fr-sr-only">Statut </span>
-      {{ isInProgress ? "En cours" : "Terminé" }}
+      {{ isInProgress || isNotStarted ? "En cours" : "Terminé" }}
     </p>
 
     <!-- Creation date -->
@@ -193,7 +197,7 @@ function copyStatementLink(uniqueId: string) {
         <p
           class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
           :class="
-            isInProgress
+            isInProgress || isNotStarted
               ? null
               : {
                   'fr-badge--green-emeraude': audit.complianceLevel === 100,
@@ -205,9 +209,16 @@ function copyStatementLink(uniqueId: string) {
           <span v-if="!isInProgress" class="fr-sr-only"
             >Taux de conformité
           </span>
-          {{ isInProgress ? "Audit en cours" : `${audit.complianceLevel}%` }}
+          {{
+            isInProgress || isNotStarted
+              ? "Audit en cours"
+              : `${audit.complianceLevel}%`
+          }}
         </p>
-        <p v-if="!isInProgress" class="fr-text--xs fr-mb-0 fr-mt-1v">
+        <p
+          v-if="!isInProgress && !isNotStarted"
+          class="fr-text--xs fr-mb-0 fr-mt-1v"
+        >
           {{
             audit.complianceLevel === 100
               ? "Totalement conforme"
@@ -252,7 +263,13 @@ function copyStatementLink(uniqueId: string) {
       "
       :target="isInProgress ? null : '_blank'"
     >
-      {{ isInProgress ? "Continuer l’audit" : "Voir le rapport" }}
+      {{
+        isNotStarted
+          ? "Commencer l’audit"
+          : isInProgress
+            ? "Continuer l’audit"
+            : "Voir le rapport"
+      }}
       <span v-if="isInProgress" class="fr-sr-only">
         {{ audit.procedureName }}</span
       >

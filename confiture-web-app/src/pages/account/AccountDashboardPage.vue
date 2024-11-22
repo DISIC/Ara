@@ -37,7 +37,9 @@ async function hideAuditsAlert() {
 // TODO: filter audits
 const inProgressAudits = computed(() => {
   return auditStore.listing?.filter(
-    (a) => a.status === AuditStatus.IN_PROGRESS
+    (a) =>
+      a.status === AuditStatus.IN_PROGRESS ||
+      a.status === AuditStatus.NOT_STARTED
   );
 });
 

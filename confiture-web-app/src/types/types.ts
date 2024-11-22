@@ -26,6 +26,7 @@ export enum AuditType {
 }
 
 export enum AuditStatus {
+  NOT_STARTED = "NOT_STARTED",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
   PUBLISHABLE = "PUBLISHABLE"
