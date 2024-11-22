@@ -2,27 +2,26 @@
 
 [Cypress](https://www.cypress.io/) est utilisé pour lancer des tests end-to-end (e2e) dans un navigateur pour reproduire le comportement des utilisateurs.
 
-Avant de lancer les tests, il faut seeder la base de données depuis le dossier `confiture-rest-api` :
+Avant de lancer les tests, il faut seeder la base de données (⚠️ cela va écraser l’ensemble de la base de données). Depuis la racine du projet, lancer :
 
 ```sh
-yarn prisma migrate reset
-yarn ts-node scripts/seed.ts
+yarn tests:setup
 ```
 
 Comme certains tests modifient la base de données (édition, suppression d’audit...), il est important de vérifier l’état de cette dernière et de la réinitialiser au besoin.
 
-Les tests peuvent être lancés de 2 manières :
+Les tests peuvent être lancés de 2 manières, depuis la racine du projet :
 
 - Via l’application Cypress avec :
 
   ```sh
-  yarn cypress open
+  yarn tests:open
   ```
 
 - Via le terminal avec :
 
   ```sh
-  yarn cypress run
+  yarn tests:run
   ```
 
 ## Guidelines
