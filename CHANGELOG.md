@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 22/11/2024
+
+### Corrections 🐛
+
+- Corrige la "fausse" mise à jour des paramètres de l’audit quand on quitte la page sans sauvegarder ([#875](https://github.com/DISIC/Ara/pull/875))
+
 ## 21/11/2024
 
 ### Corrections 🐛
