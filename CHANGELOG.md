@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Corrige le problème des filtres des critères qui décalait l’ordre des pages de l’échantillon sur la page d’audit ([#877](https://github.com/DISIC/Ara/pull/877))
 - Corrige la "fausse" mise à jour des paramètres de l’audit quand on quitte la page sans sauvegarder ([#875](https://github.com/DISIC/Ara/pull/875))
 
 ## 21/11/2024
