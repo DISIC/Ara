@@ -1,4 +1,5 @@
 import ky from "ky";
+import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
 import {
@@ -60,13 +61,20 @@ export const useAuditStore = defineStore("audit", {
       return response;
     },
 
+    setAudit(id: string, audit: Audit) {
+      this.entities[id] = {
+        ...audit,
+        pages: sortBy(audit.pages, "order")
+      };
+    },
+
     async fetchAudit(editUniqueId: string) {
       this.currentAuditId = editUniqueId;
       const data = (await ky
         .get(`/api/audits/${editUniqueId}`)
         .json()) as Audit;
 
-      this.entities[editUniqueId] = data;
+      this.setAudit(editUniqueId, data);
     },
 
     async fetchAuditIfNeeded(editUniqueId: string) {
@@ -86,7 +94,7 @@ export const useAuditStore = defineStore("audit", {
           json: data
         })
         .json()) as Audit;
-      this.entities[uniqueId] = response;
+      this.setAudit(uniqueId, response);
       return response;
     },
 
@@ -163,7 +171,7 @@ export const useAuditStore = defineStore("audit", {
       const response = (await ky
         .put(`/api/audits/${uniqueId}/publish`)
         .json()) as Audit;
-      this.entities[uniqueId] = response;
+      this.setAudit(uniqueId, response);
       return response;
     },
 
