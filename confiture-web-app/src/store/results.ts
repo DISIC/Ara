@@ -122,10 +122,10 @@ export const useResultsStore = defineStore("results", {
       const transversePageId =
         auditStore.currentAudit?.transverseElementsPage.id;
 
-      return (
-        !this.allResults
+      return !(
+        this.allResults
           ?.filter((r) => r.pageId !== transversePageId)
-          .some((r) => r.status === CriteriumResultStatus.NOT_TESTED) ?? false
+          .some((r) => r.status === CriteriumResultStatus.NOT_TESTED) ?? true
       );
     },
 
