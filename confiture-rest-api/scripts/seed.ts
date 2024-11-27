@@ -1,4 +1,10 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import {
+  PrismaClient,
+  Prisma,
+  CriterionResultStatus,
+  CriterionResultUserImpact
+} from "@prisma/client";
+import { CRITERIA } from "../src/audits/criteria";
 
 async function main() {
   const prisma = new PrismaClient();
@@ -61,7 +67,7 @@ async function main() {
   const editAuditIdEdition = "edit-audit-edition";
   const consultUniqueIdEdition = "consult-audit-edition";
 
-  await prisma.audit.create({
+  const editionAudit = await prisma.audit.create({
     data: {
       editUniqueId: editAuditIdEdition,
       consultUniqueId: consultUniqueIdEdition,
@@ -72,6 +78,9 @@ async function main() {
         }
       },
       ...auditData
+    },
+    include: {
+      transverseElementsPage: true
     }
   });
 
@@ -90,6 +99,49 @@ async function main() {
         }
       },
       ...auditData
+    }
+  });
+
+  const pages = await prisma.auditedPage.findMany({
+    where: {
+      auditUniqueId: editAuditIdEdition
+    }
+  });
+
+  await Promise.all(
+    [editionAudit.transverseElementsPage, ...pages].map(async (p) =>
+      prisma.criterionResult.createMany({
+        data: CRITERIA.map((c, i) => ({
+          status: [
+            CriterionResultStatus.COMPLIANT,
+            CriterionResultStatus.NOT_APPLICABLE,
+            CriterionResultStatus.NOT_COMPLIANT
+          ][i % 3],
+          notCompliantComment: "Une erreur ici",
+          notApplicableComment: "Attention quand même si ça devient applicable",
+          compliantComment: "Peut mieux faire",
+          quickWin: i % 7 === 0,
+          userImpact: [
+            CriterionResultUserImpact.MINOR,
+            CriterionResultUserImpact.MAJOR,
+            CriterionResultUserImpact.BLOCKING,
+            null
+          ][i % 4],
+          topic: c.topic,
+          criterium: c.criterium,
+          pageId: p.id
+        }))
+      })
+    )
+  );
+
+  await prisma.criterionResult.delete({
+    where: {
+      pageId_topic_criterium: {
+        topic: 1,
+        criterium: 1,
+        pageId: pages[0].id
+      }
     }
   });
 }
