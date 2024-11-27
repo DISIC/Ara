@@ -44,6 +44,12 @@ declare global {
        * @example cy.getByLabel('Title')
        */
       getByLabel(value: string | RegExp): Chainable;
+
+      /**
+       * Command to assert the content of the clipboard
+       * @example cy.assertClipboardValue('Pouet')
+       */
+      assertClipboardValue(value: string): Chainable;
     }
   }
 }
@@ -61,5 +67,14 @@ Cypress.Commands.add(
       });
   },
 );
+
+Cypress.Commands.add("assertClipboardValue", (value: string) => {
+  cy.window().focus();
+  cy.window().then((win) => {
+    win.navigator.clipboard.readText().then((text) => {
+      expect(text).to.eq(value);
+    });
+  });
+});
 
 export {};
