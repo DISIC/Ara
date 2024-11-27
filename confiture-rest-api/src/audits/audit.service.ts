@@ -879,56 +879,56 @@ export class AuditService {
         technologies: audit.technologies
       },
 
-      pageDistributions: [audit.transverseElementsPage, ...audit.pages].map(
-        (p) => ({
-          name: p.name,
-          compliant: {
-            raw: results.filter(
+      pageDistributions: [
+        audit.transverseElementsPage,
+        ...sortBy(audit.pages, "order")
+      ].map((p) => ({
+        name: p.name,
+        compliant: {
+          raw: results.filter(
+            (r) =>
+              r.pageId === p.id && r.status === CriterionResultStatus.COMPLIANT
+          ).length,
+          percentage:
+            (results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.COMPLIANT
-            ).length,
-            percentage:
-              (results.filter(
-                (r) =>
-                  r.pageId === p.id &&
-                  r.status === CriterionResultStatus.COMPLIANT
-              ).length /
-                totalCriteriaCount) *
-              100
-          },
-          notApplicable: {
-            raw: results.filter(
+            ).length /
+              totalCriteriaCount) *
+            100
+        },
+        notApplicable: {
+          raw: results.filter(
+            (r) =>
+              r.pageId === p.id &&
+              r.status === CriterionResultStatus.NOT_APPLICABLE
+          ).length,
+          percentage:
+            (results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_APPLICABLE
-            ).length,
-            percentage:
-              (results.filter(
-                (r) =>
-                  r.pageId === p.id &&
-                  r.status === CriterionResultStatus.NOT_APPLICABLE
-              ).length /
-                totalCriteriaCount) *
-              100
-          },
-          notCompliant: {
-            raw: results.filter(
+            ).length /
+              totalCriteriaCount) *
+            100
+        },
+        notCompliant: {
+          raw: results.filter(
+            (r) =>
+              r.pageId === p.id &&
+              r.status === CriterionResultStatus.NOT_COMPLIANT
+          ).length,
+          percentage:
+            (results.filter(
               (r) =>
                 r.pageId === p.id &&
                 r.status === CriterionResultStatus.NOT_COMPLIANT
-            ).length,
-            percentage:
-              (results.filter(
-                (r) =>
-                  r.pageId === p.id &&
-                  r.status === CriterionResultStatus.NOT_COMPLIANT
-              ).length /
-                totalCriteriaCount) *
-              100
-          }
-        })
-      ),
+            ).length /
+              totalCriteriaCount) *
+            100
+        }
+      })),
 
       resultDistribution: {
         compliant: {
