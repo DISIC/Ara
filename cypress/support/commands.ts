@@ -43,7 +43,7 @@ declare global {
        * Custom command to select DOM element based on label
        * @example cy.getByLabel('Title')
        */
-      getByLabel(value: string): Chainable;
+      getByLabel(value: string | RegExp): Chainable;
     }
   }
 }
@@ -51,7 +51,7 @@ declare global {
 Cypress.Commands.add(
   "getByLabel",
   { prevSubject: "optional" },
-  (subject, label: string) => {
+  (subject, label: string | RegExp) => {
     const localCy = subject ? cy.wrap(subject) : cy;
     localCy
       .contains("label", label)
@@ -59,7 +59,7 @@ Cypress.Commands.add(
       .then((id) => {
         cy.get("#" + id);
       });
-  }
+  },
 );
 
 export {};
