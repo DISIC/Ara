@@ -13,7 +13,9 @@ const transverseImprovements = computed(() => {
 });
 
 const pagesImprovements = computed(() => {
-  return getReportImprovements(report).slice(1);
+  return getReportImprovements(report)
+    .slice(1)
+    .filter((p) => p.topics.length > 0);
 });
 
 const improvementsCount = computed(() => {
@@ -32,7 +34,7 @@ const improvementsCount = computed(() => {
     :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
-      <section class="fr-mb-8w">
+      <section v-if="transverseImprovements.topics.length > 0" class="fr-mb-8w">
         <h2 id="elements-transverses" class="fr-h3 fr-mb-2w page-title">
           Éléments transverses
         </h2>
@@ -76,10 +78,6 @@ const improvementsCount = computed(() => {
         >
           {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
-
-        <p v-if="page.topics.length === 0" class="fr-mt-4w">
-          Aucun point d’amélioration relevé sur cette page.
-        </p>
 
         <div
           v-for="(topic, i) in page.topics"
