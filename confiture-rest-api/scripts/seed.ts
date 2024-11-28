@@ -7,8 +7,8 @@ import { CRITERIA } from "../src/audits/criteria";
 import { nanoid } from "nanoid";
 
 async function main() {
-  const isComplete = process.argv.at(2) === "--complete";
-  const hasNoImprovementsComments = process.argv.at(3) === "--no-impr";
+  const isComplete = process.argv.includes("--complete");
+  const hasNoImprovementsComments = process.argv.includes("--no-impr");
 
   const prisma = new PrismaClient();
 
