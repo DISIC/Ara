@@ -4,6 +4,12 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 27/11/2024
 
+### Corrections 🐛
+
+- Corrige l’ordre des pages dans le tableau de répartition des critères par page dans le rapport ([#885](https://github.com/DISIC/Ara/pull/885))
+
+## 27/11/2024
+
 ### Autres changements ⚙️
 
 - Affiche seulement les pages avec des commentaires C ou NA dans l’onglet du rapport "Points d’amélioration" ([#884](https://github.com/DISIC/Ara/pull/884))
