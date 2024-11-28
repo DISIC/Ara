@@ -5,7 +5,7 @@ import * as statementJson from "../fixtures/statement.json";
 describe("Report", () => {
   it("User can see audit in progress banner for in progress audit", () => {
     cy.createTestAudit().then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains(
         "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé.",
       );
@@ -13,10 +13,9 @@ describe("Report", () => {
   });
 
   it("User can't see audit in progress banner for completed audit", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
-      // FIXME: how to force Cy to wait until UI refreshes?
-      cy.wait(5000);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
+      cy.get(".header").contains(auditJson.procedureName);
       cy.contains(
         "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé.",
       ).should("not.exist");
@@ -24,8 +23,8 @@ describe("Report", () => {
   });
 
   it("User can see audit header infos", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.get(".header").contains(auditJson.procedureName);
       cy.get(".header").contains(`URL du site : ${statementJson.procedureUrl}`);
       cy.get(".header").contains("Type d’audit : 106 critères");
@@ -36,10 +35,10 @@ describe("Report", () => {
   });
 
   it("User can copy report URL", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Copier le lien du rapport").click();
-      cy.assertClipboardValue(`http://localhost:3000/rapports/${reportId}`);
+      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
       cy.contains(
         "Le lien vers le rapport a bien été copié dans le presse-papier.",
       );
@@ -47,8 +46,8 @@ describe("Report", () => {
   });
 
   it("User can download results", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Télécharger").click();
       cy.contains("a", "Télécharger l'audit").click();
 
@@ -57,8 +56,8 @@ describe("Report", () => {
   });
 
   it("User can see correct pages count and transverse criteria count", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.get("#repartition-des-criteres-par-pages + .fr-table tbody tr").then(
         (els) => {
           expect(els).to.have.length(8);
@@ -72,17 +71,19 @@ describe("Report", () => {
   });
 
   it("User can’t see improvements tab if there are no improvements with comment", () => {
-    cy.createTestAudit(true, true).then(({ reportId, pouet }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
-      // FIXME: wait
-      cy.wait(5000);
+    cy.createTestAudit({
+      isComplete: true,
+      hasNoImprovementsComments: true,
+    }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
+      cy.get(".header").contains(auditJson.procedureName);
       cy.contains("button", "Points d’amélioration").should("not.exist");
     });
   });
 
   it("User can see pages anchors in improvements tab", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.get("#tabpanel-points-damelioration-panel .fr-sidemenu__item").then(
         (els) => {
@@ -93,8 +94,8 @@ describe("Report", () => {
   });
 
   it("User can see pages anchors in errors tab", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .fr-sidemenu__item",
@@ -105,8 +106,8 @@ describe("Report", () => {
   });
 
   it("User can filter errors", () => {
-    cy.createTestAudit(true).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapports/${reportId}`);
+    cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.contains("315 résultats");
       cy.get(
