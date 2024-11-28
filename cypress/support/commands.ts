@@ -88,6 +88,9 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
   });
 });
 
+/**
+ * Runs a script and parses its options to create a test audit and returns the `editId` and `reportId`.
+ */
 Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
   const isComplete = options?.isComplete;
   const hasNoImprovementsComments = options?.hasNoImprovementsComments;
