@@ -53,9 +53,12 @@ declare global {
 
       /**
        * Create a test audit with auto generated IDs
-       * @param isComplete
+       * @example cy.createTestAudit(true, true)
        */
-      createTestAudit(isComplete?: boolean): Chainable;
+      createTestAudit(
+        isComplete?: boolean,
+        hasNoImprovementsComments?: boolean,
+      ): Chainable;
     }
   }
 }
@@ -83,21 +86,29 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
   });
 });
 
-Cypress.Commands.add("createTestAudit", (isComplete?: boolean) => {
-  cy.exec(
-    `yarn run tests:seed-debug-audit ${isComplete ? "--complete" : ""}`,
-  ).then((result) => {
-    if (result.code !== 0) {
-      // failure
-      throw "Command exited with non-zero code";
-    }
+Cypress.Commands.add(
+  "createTestAudit",
+  (isComplete?: boolean, hasNoImprovementsComments?: boolean) => {
+    cy.exec(
+      `yarn run tests:seed-debug-audit ${isComplete ? "--complete" : ""} ${
+        hasNoImprovementsComments ? "--no-impr" : ""
+      }`,
+    ).then((result) => {
+      if (result.code !== 0) {
+        // failure
+        throw "Command exited with non-zero code";
+      }
 
-    // sucesss
-    const json = result.stdout.split("\n")[1];
-    const data = JSON.parse(json);
+      // sucesss
+      const json = result.stdout.split("\n")[1];
+      const data = JSON.parse(json);
 
-    return { editId: data.editId, reportId: data.reportId };
-  });
-});
+      return {
+        editId: data.editId,
+        reportId: data.reportId,
+      };
+    });
+  },
+);
 
 export {};

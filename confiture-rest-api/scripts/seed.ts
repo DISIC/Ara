@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 
 async function main() {
   const isComplete = process.argv.at(2) === "--complete";
+  const hasNoImprovementsComments = process.argv.at(3) === "--no-impr";
 
   const prisma = new PrismaClient();
 
@@ -95,8 +96,12 @@ async function main() {
             CriterionResultStatus.NOT_COMPLIANT
           ][i % 3],
           notCompliantComment: "Une erreur ici",
-          notApplicableComment: "Attention quand même si ça devient applicable",
-          compliantComment: "Peut mieux faire",
+          notApplicableComment: hasNoImprovementsComments
+            ? null
+            : "Attention quand même si ça devient applicable",
+          compliantComment: hasNoImprovementsComments
+            ? null
+            : "Peut mieux faire",
           quickWin: i % 7 === 0,
           userImpact: [
             CriterionResultUserImpact.MINOR,
