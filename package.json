@@ -11,7 +11,7 @@
     "lint-staged": "^15.2.0"
   },
   "scripts": {
-    "tests:setup": "rm -f -d cypress/downloads/* && cd confiture-rest-api && yarn prisma migrate reset && ts-node scripts/seed.ts",
+    "tests:seed-debug-audit": "cd confiture-rest-api && ts-node scripts/seed.ts",
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build"
