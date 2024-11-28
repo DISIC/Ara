@@ -414,7 +414,6 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      // TODO: la
       cy.contains('button[role="tab"]', "Accueil").click();
 
       cy.get("li.criterium-container fieldset input")
@@ -430,6 +429,12 @@ describe("Audit", () => {
       cy.contains("a", "Accéder");
 
       cy.contains("a", `http://localhost:3000/rapport/${reportId}`);
+
+      cy.contains("button", "Copier le lien").click();
+      cy.contains(
+        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier.",
+      );
+      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
     });
   });
 
