@@ -68,439 +68,471 @@ describe("Audit", () => {
   });
 
   it("User can go to settings page from audit (small viewport)", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.contains("Actions").click();
-    cy.contains("Accéder aux paramètres").click();
-    cy.get("h1").contains("Paramètres de l’audit");
-    cy.url().should(
-      "eq",
-      "http://localhost:3000/audits/edit-audit-edition/parametres",
-    );
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.contains("Actions").click();
+      cy.contains("Accéder aux paramètres").click();
+      cy.get("h1").contains("Paramètres de l’audit");
+      cy.url().should(
+        "eq",
+        `http://localhost:3000/audits/${editId}/parametres`,
+      );
+    });
   });
 
   it("User can go to settings page from audit (large viewport)", () => {
-    cy.viewport(1400, 800);
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.contains("a", "Paramètres").click();
-    cy.get("h1").contains("Paramètres de l’audit");
-    cy.url().should(
-      "eq",
-      "http://localhost:3000/audits/edit-audit-edition/parametres",
-    );
+    cy.createTestAudit().then(({ editId }) => {
+      cy.viewport(1400, 800);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.contains("a", "Paramètres").click();
+      cy.get("h1").contains("Paramètres de l’audit");
+      cy.url().should(
+        "eq",
+        `http://localhost:3000/audits/${editId}/parametres`,
+      );
+    });
   });
 
   it("User can edit procedure name", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/parametres");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
-    cy.getByLabel("Nom du site audité").should(
-      "have.value",
-      "Audit de mon petit site",
-    );
+      cy.getByLabel("Nom du site audité").should(
+        "have.value",
+        "Audit de mon petit site",
+      );
 
-    cy.getByLabel("Nom du site audité").clear().type("Audit de mon gros site");
+      cy.getByLabel("Nom du site audité")
+        .clear()
+        .type("Audit de mon gros site");
 
-    cy.contains("Enregistrer les modifications").click();
+      cy.contains("Enregistrer les modifications").click();
 
-    cy.url().should(
-      "eq",
-      "http://localhost:3000/audits/edit-audit-edition/generation",
-    );
-    cy.get("h1").contains("Audit de mon gros site");
+      cy.url().should(
+        "eq",
+        `http://localhost:3000/audits/${editId}/generation`,
+      );
+      cy.get("h1").contains("Audit de mon gros site");
+    });
   });
 
-  /**
-   * FIXME: as we're adding new empty pages, audit is not 99% complete anymore and it breaks the other tests.
-   */
-  it.skip("User can edit pages", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/parametres");
+  it("User can edit pages", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
-    cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
-      (els) => {
-        expect(els).to.have.length(8);
+      cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
+        (els) => {
+          expect(els).to.have.length(8);
+          const expectedPages = [
+            "Accueil",
+            "Contact",
+            "À propos",
+            "Blog",
+            "Article",
+            "Connexion",
+            "Documentation",
+            "FAQ",
+          ];
+          expectedPages.forEach((expectedPageName, i) => {
+            cy.wrap(els[i]).should("have.value", expectedPageName);
+          });
+        },
+      );
+
+      cy.contains("button", "Supprimer").click();
+      cy.contains("button", "Supprimer").click();
+      cy.contains("button", "Supprimer").click();
+
+      cy.getByLabel("Nom de la page").clear().type("Accueil du blog");
+      cy.getByLabel("URL de la page")
+        .clear()
+        .type("https://example.com/blog/accueil");
+
+      cy.get("#page-order-1").select("0");
+
+      cy.get("#page-order-4").select("1");
+
+      cy.contains("Ajouter une page").click();
+      cy.get("fieldset .fr-input-group .fr-input[id^='page-name']")
+        .last()
+        .type("Paramètres");
+      cy.get("fieldset .fr-input-group .fr-input[id^='page-url']")
+        .last()
+        .type("https://example.com/parametres");
+
+      cy.contains("Enregistrer les modifications").click();
+      cy.url().should(
+        "eq",
+        `http://localhost:3000/audits/${editId}/generation`,
+      );
+
+      cy.get("[role='tablist'] button").then((els) => {
+        expect(els).to.have.length(7);
         const expectedPages = [
-          "Accueil",
-          "Contact",
-          "À propos",
-          "Blog",
+          "Éléments transverses",
           "Article",
+          "FAQ",
+          "Accueil du blog",
           "Connexion",
           "Documentation",
-          "FAQ",
+          "Paramètres",
         ];
         expectedPages.forEach((expectedPageName, i) => {
-          cy.wrap(els[i]).should("have.value", expectedPageName);
+          cy.wrap(els[i]).should("have.text", expectedPageName);
         });
-      },
-    );
-
-    cy.contains("button", "Supprimer").click();
-    cy.contains("button", "Supprimer").click();
-    cy.contains("button", "Supprimer").click();
-
-    cy.getByLabel("Nom de la page").clear().type("Accueil du blog");
-    cy.getByLabel("URL de la page")
-      .clear()
-      .type("https://example.com/blog/accueil");
-
-    cy.get("#page-order-1").select("0");
-
-    cy.get("#page-order-4").select("1");
-
-    cy.contains("Ajouter une page").click();
-    cy.get("fieldset .fr-input-group .fr-input[id^='page-name']")
-      .last()
-      .type("Paramètres");
-    cy.get("fieldset .fr-input-group .fr-input[id^='page-url']")
-      .last()
-      .type("https://example.com/parametres");
-
-    cy.contains("Enregistrer les modifications").click();
-    cy.url().should(
-      "eq",
-      "http://localhost:3000/audits/edit-audit-edition/generation",
-    );
-
-    cy.get("[role='tablist'] button").then((els) => {
-      expect(els).to.have.length(7);
-      const expectedPages = [
-        "Éléments transverses",
-        "Article",
-        "FAQ",
-        "Accueil du blog",
-        "Connexion",
-        "Documentation",
-        "Paramètres",
-      ];
-      expectedPages.forEach((expectedPageName, i) => {
-        cy.wrap(els[i]).should("have.text", expectedPageName);
       });
     });
   });
 
   it("User can delete an audit", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-deletion/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains("Actions").click();
-    cy.contains("Supprimer l’audit").click();
+      cy.contains("Actions").click();
+      cy.contains("Supprimer l’audit").click();
 
-    cy.contains("Vous allez supprimer l’audit");
-    cy.get("dialog").contains("button", "Supprimer l’audit").click();
+      cy.contains("Vous allez supprimer l’audit");
+      cy.get("dialog").contains("button", "Supprimer l’audit").click();
 
-    cy.url().should("eq", "http://localhost:3000/");
-    cy.contains("L’audit a correctement été supprimé.");
+      cy.url().should("eq", "http://localhost:3000/");
+      cy.contains("L’audit a correctement été supprimé.");
+    });
   });
 
   it("User can update notes", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains("Annoter l’audit").click();
-    cy.getByLabel("Remarques et recommandations générales")
-      .clear()
-      .type("Annotations de l’audit");
-    cy.get("dialog#notes-modal").contains("button", "Fermer").click();
-    cy.contains("Annoter l’audit").click();
-    cy.contains("Annotations de l’audit");
+      cy.contains("Annoter l’audit").click();
+      cy.getByLabel("Remarques et recommandations générales")
+        .clear()
+        .type("Annotations de l’audit");
+      cy.get("dialog#notes-modal").contains("button", "Fermer").click();
+      cy.contains("Annoter l’audit").click();
+      cy.contains("Annotations de l’audit");
+    });
   });
 
   it("User can fill a11y statement", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/synthese");
-    cy.contains("Compléter").invoke("removeAttr", "target").click();
+    cy.createTestAudit().then(({ editId, reportId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+      cy.contains("Compléter").invoke("removeAttr", "target").click();
 
-    // General infos
-    cy.getByLabel("Entité qui a demandé l’audit")
-      .clear()
-      .type(statementJson.auditInitiator);
-    cy.getByLabel("Entité qui a réalisé l’audit")
-      .clear()
-      .type(statementJson.auditorOrganisation);
-    cy.getByLabel("URL de la page d’accueil du site audité")
-      .clear()
-      .type(statementJson.procedureUrl);
+      // General infos
+      cy.getByLabel("Entité qui a demandé l’audit")
+        .clear()
+        .type(statementJson.auditInitiator);
+      cy.getByLabel("Entité qui a réalisé l’audit")
+        .clear()
+        .type(statementJson.auditorOrganisation);
+      cy.getByLabel("URL de la page d’accueil du site audité")
+        .clear()
+        .type(statementJson.procedureUrl);
 
-    // Contact
-    cy.getByLabel("Nom et prénom du contact (optionnel)")
-      .clear()
-      .type(statementJson.contactName);
-    cy.getByLabel("Adresse e-mail").clear().type(statementJson.contactEmail);
-    cy.getByLabel("Formulaire de contact en ligne")
-      .clear()
-      .type(statementJson.contactFormUrl);
+      // Contact
+      cy.getByLabel("Nom et prénom du contact (optionnel)")
+        .clear()
+        .type(statementJson.contactName);
+      cy.getByLabel("Adresse e-mail").clear().type(statementJson.contactEmail);
+      cy.getByLabel("Formulaire de contact en ligne")
+        .clear()
+        .type(statementJson.contactFormUrl);
 
-    // Technologies
-    cy.getByLabel("Ajouter des technologies")
-      .clear()
-      .type(statementJson.technologies);
+      // Technologies
+      cy.getByLabel("Ajouter des technologies")
+        .clear()
+        .type(statementJson.technologies);
 
-    cy.contains("button", "Valider les technologies").click();
+      cy.contains("button", "Valider les technologies").click();
 
-    // Tools
-    cy.contains("Web Developer Toolbar").click();
-    cy.contains("WCAG Contrast checker").click();
-    cy.getByLabel("Ajouter des outils d’assistance")
-      .clear()
-      .type(statementJson.tools);
+      // Tools
+      cy.contains("Web Developer Toolbar").click();
+      cy.contains("WCAG Contrast checker").click();
+      cy.getByLabel("Ajouter des outils d’assistance")
+        .clear()
+        .type(statementJson.tools);
 
-    cy.contains("button", "Valider les outils").click();
+      cy.contains("button", "Valider les outils").click();
 
-    // Environments
-    cy.contains("Combinaison 1").click();
-    cy.getByLabel("Appareil").clear().type("Ordinateur");
-    cy.getByLabel("Logiciel d’exploitation").clear().type("Windows");
-    cy.getByLabel("Technologie d’assistance").clear().type("JAWS");
-    cy.getByLabel("Navigateur").clear().type("Edge");
+      // Environments
+      cy.contains("Combinaison 1").click();
+      cy.getByLabel("Appareil").clear().type("Ordinateur");
+      cy.getByLabel("Logiciel d’exploitation").clear().type("Windows");
+      cy.getByLabel("Technologie d’assistance").clear().type("JAWS");
+      cy.getByLabel("Navigateur").clear().type("Edge");
 
-    // Not accessible content
-    cy.getByLabel("Non-conformités (optionnel)")
-      .clear()
-      .type(statementJson.notCompliantContent);
-    cy.getByLabel("Dérogations pour charge disproportionnée (optionnel)")
-      .clear()
-      .type(statementJson.derogatedContent);
-    cy.getByLabel(
-      "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
-    )
-      .clear()
-      .type(statementJson.notInScopeContent);
+      // Not accessible content
+      cy.getByLabel("Non-conformités (optionnel)")
+        .clear()
+        .type(statementJson.notCompliantContent);
+      cy.getByLabel("Dérogations pour charge disproportionnée (optionnel)")
+        .clear()
+        .type(statementJson.derogatedContent);
+      cy.getByLabel(
+        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
+      )
+        .clear()
+        .type(statementJson.notInScopeContent);
 
-    cy.contains("button", "Valider la déclaration").click();
-    cy.contains("http://localhost:3000/declaration/consult-audit-edition");
+      cy.contains("button", "Valider la déclaration").click();
+      cy.contains(`http://localhost:3000/declaration/${reportId}`);
+    });
   });
 
   it("User can copy an audit", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.contains("button", "Actions").click();
-    cy.contains("button", "Créer une copie").click();
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Créer une copie").click();
 
-    cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
-    cy.get("dialog").contains("button", "Créer une copie").click();
+      cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
+      cy.get("dialog").contains("button", "Créer une copie").click();
 
-    cy.contains("Audit copié avec succès");
-    cy.contains("Audit de mon petit site (2)");
+      cy.contains("Audit copié avec succès", { timeout: 50_000 });
+      cy.contains("Audit de mon petit site (2)");
+    });
   });
 
   it("User can search in criteria title", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.getByLabel("Rechercher par mots clés")
-      .clear()
-      .type("alternative")
-      .type("{enter}");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.getByLabel("Rechercher par mots clés")
+        .clear()
+        .type("alternative")
+        .type("{enter}");
 
-    cy.contains("9 résultats");
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(9);
+      cy.contains("9 résultats");
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(9);
+      });
     });
   });
 
   it("User can hide tests and references", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.contains("Masquer les tests et références").click();
-    cy.contains("Tests et références du critère 1.1").should("not.exist");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.contains("Masquer les tests et références").click();
+      cy.contains("Tests et références du critère 1.1").should("not.exist");
+    });
   });
 
   it("User can filter criteria", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    // Check total length
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(106);
-    });
+      // Check total length
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(106);
+      });
 
-    // Check C criteria
-    cy.contains("Conforme (323)").click();
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(36);
-    });
-    cy.get("li.criterium-container").each((el) => {
-      cy.wrap(el)
-        .find("fieldset > div label")
-        .first()
-        .should("have.class", "green");
-    });
+      // Check C criteria
+      cy.contains("Conforme (323)").click();
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(36);
+      });
+      cy.get("li.criterium-container").each((el) => {
+        cy.wrap(el)
+          .find("fieldset > div label")
+          .first()
+          .should("have.class", "green");
+      });
 
-    // Add NA criteria
-    cy.contains("Non applicable (315)").click();
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(71);
-    });
-    cy.get("li.criterium-container").each((el) => {
-      cy.wrap(el)
-        .find("fieldset > div label")
-        .should(
-          "satisfy",
-          (el) =>
-            el[0].classList.contains("green") || el.at(-1).contains("grey"),
-        );
-    });
+      // Add NA criteria
+      cy.contains("Non applicable (315)").click();
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(71);
+      });
+      cy.get("li.criterium-container").each((el) => {
+        cy.wrap(el)
+          .find("fieldset > div label")
+          .should(
+            "satisfy",
+            (el) =>
+              el[0].classList.contains("green") || el.at(-1).contains("grey"),
+          );
+      });
 
-    // Add NC criteria
-    cy.contains("Non conforme (315)").click();
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(106);
-    });
-    cy.get("li.criterium-container").each((el) => {
-      cy.wrap(el)
-        .find("fieldset > div label")
-        .should(
-          "satisfy",
-          (el) =>
-            el[0].classList.contains("green") ||
-            el[1].contains("red") ||
-            el.at(-1).contains("grey"),
-        );
+      // Add NC criteria
+      cy.contains("Non conforme (315)").click();
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(106);
+      });
+      cy.get("li.criterium-container").each((el) => {
+        cy.wrap(el)
+          .find("fieldset > div label")
+          .should(
+            "satisfy",
+            (el) =>
+              el[0].classList.contains("green") ||
+              el[1].contains("red") ||
+              el.at(-1).contains("grey"),
+          );
+      });
     });
   });
 
   it("User can filter evaluated criteria", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains("Masquer critères évalués").click();
-    cy.contains("Tous les critères évalués ont été masqués");
+      cy.contains("Masquer critères évalués").click();
+      cy.contains("Tous les critères évalués ont été masqués");
 
-    cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer critères évalués").click();
 
-    cy.get("li.criterium-container fieldset input:checked")
-      .first()
-      .click({ force: true });
+      cy.get("li.criterium-container fieldset input:checked")
+        .first()
+        .click({ force: true });
 
-    cy.get("li.criterium-container fieldset input:checked")
-      .eq(0)
-      .click({ force: true });
+      cy.get("li.criterium-container fieldset input:checked")
+        .eq(0)
+        .click({ force: true });
 
-    cy.contains('button[role="tab"]', "Article").click();
+      cy.contains('button[role="tab"]', "Article").click();
 
-    cy.get("li.criterium-container fieldset input:checked")
-      .first()
-      .click({ force: true });
+      cy.get("li.criterium-container fieldset input:checked")
+        .first()
+        .click({ force: true });
 
-    cy.contains("Masquer critères évalués").click();
-    cy.get("li.criterium-container").should("have.length", 1);
+      cy.contains("Masquer critères évalués").click();
+      cy.get("li.criterium-container").should("have.length", 1);
 
-    cy.contains('button[role="tab"]', "Éléments transverses").click();
-    cy.get("li.criterium-container").should("have.length", 2);
+      cy.contains('button[role="tab"]', "Éléments transverses").click();
+      cy.get("li.criterium-container").should("have.length", 2);
 
-    cy.get("li.criterium-container fieldset input")
-      .first()
-      .click({ force: true });
+      cy.get("li.criterium-container fieldset input")
+        .first()
+        .click({ force: true });
 
-    cy.contains("Mettre à jour critères masqués").click();
+      cy.contains("Mettre à jour critères masqués").click();
 
-    cy.get("li.criterium-container").should("have.length", 1);
+      cy.get("li.criterium-container").should("have.length", 1);
+    });
   });
 
   it("User can finish the audit", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId, reportId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    // TODO: la
-    cy.contains('button[role="tab"]', "Accueil").click();
+      // TODO: la
+      cy.contains('button[role="tab"]', "Accueil").click();
 
-    cy.get("li.criterium-container fieldset input")
-      .first()
-      .click({ force: true });
+      cy.get("li.criterium-container fieldset input")
+        .first()
+        .click({ force: true });
 
-    cy.contains('button[role="tab"]', "Article").click();
+      cy.contains(/Audit terminé le \d{2}\/\d{2}\/\d{4}/);
+      cy.contains("Bravo ! Il semblerait que vous ayez terminé votre audit 💪");
 
-    cy.get("li.criterium-container fieldset input")
-      .first()
-      .click({ force: true });
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
 
-    cy.contains(/Audit terminé le \d{2}\/\d{2}\/\d{4}/);
-    cy.contains("Bravo ! Il semblerait que vous ayez terminé votre audit 💪");
+      cy.contains(/Terminé le \d{2} [a-z]+ \d{4}/);
+      cy.contains("a", "Accéder");
 
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/synthese");
-
-    cy.contains(/Terminé le \d{2} [a-z]+ \d{4}/);
-    cy.contains("a", "Accéder");
-
-    cy.contains("a", "http://localhost:3000/rapport/consult-audit-edition");
+      cy.contains("a", `http://localhost:3000/rapport/${reportId}`);
+    });
   });
 
   it("User can set a topic as NA", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
-    cy.contains('button[role="tab"]', "Connexion").click();
-    cy.contains(" Non applicable sur la page").click();
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.contains('button[role="tab"]', "Connexion").click();
+      cy.contains(" Non applicable sur la page").click();
 
-    cy.get(".page-url + section fieldset input:checked + label").should(
-      "have.class",
-      "grey",
-    );
+      cy.get(".page-url + section fieldset input:checked + label").should(
+        "have.class",
+        "grey",
+      );
+    });
   });
 
   it("User can edit a criterium content", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains('button[role="tab"]', "FAQ").click();
-    cy.get(".criterium-container").contains("Non conforme").click();
+      cy.contains('button[role="tab"]', "FAQ").click();
+      cy.get(".criterium-container").contains("Non conforme").click();
 
-    cy.focused().should("have.attr", "rows");
+      cy.focused().should("have.attr", "rows");
 
-    cy.getByLabel(/^Erreur et recommandation$/)
-      .clear({ force: true })
-      .type("Il n’y a pas de alt sur l’image du hero");
+      cy.getByLabel(/^Erreur et recommandation$/)
+        .clear({ force: true })
+        .type("Il n’y a pas de alt sur l’image du hero");
 
-    cy.get(".criterium-container").contains("majeur").click();
-    cy.get(".criterium-container").contains("Facile à corriger").click();
+      cy.get(".criterium-container").contains("majeur").click();
+      cy.get(".criterium-container").contains("Facile à corriger").click();
+    });
   });
 
   it("User can see transverse status and comment from other pages", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains('button[role="tab"]', "Documentation").click();
-    cy.get(".criterium-container")
-      .eq(2)
-      .find(".criterium-transverse-notice")
-      .contains(
-        "Vous avez évalué ce critère Non conforme pour les éléments transverses.",
-      );
+      cy.contains('button[role="tab"]', "Documentation").click();
+      cy.get(".criterium-container")
+        .eq(2)
+        .find(".criterium-transverse-notice")
+        .contains(
+          "Vous avez évalué ce critère Non conforme pour les éléments transverses.",
+        );
 
-    cy.get(".criterium-container")
-      .eq(2)
-      .contains("button", "Voir les erreurs")
-      .click();
+      cy.get(".criterium-container")
+        .eq(2)
+        .contains("button", "Voir les erreurs")
+        .click();
 
-    cy.get(".criterium-container").eq(2).contains("Une erreur ici");
+      cy.get(".criterium-container").eq(2).contains("Une erreur ici");
 
-    cy.get(".criterium-container")
-      .eq(2)
-      .contains("button", "Masquer les erreurs")
-      .click();
+      cy.get(".criterium-container")
+        .eq(2)
+        .contains("button", "Masquer les erreurs")
+        .click();
 
-    cy.get(".criterium-container")
-      .eq(2)
-      .contains("Une erreur ici")
-      .should("not.exist");
+      cy.get(".criterium-container")
+        .eq(2)
+        .contains("Une erreur ici")
+        .should("not.exist");
+    });
   });
 
   it("User can download an audit", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.exec("rm -f -d cypress/downloads/*");
 
-    cy.contains("Actions").click();
-    cy.contains("Exporter l’audit").click();
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.readFile("cypress/downloads/audit-audit-de-mon-gros-site.csv");
+      cy.contains("Actions").click();
+      cy.contains("Exporter l’audit").click();
+
+      cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
+    });
   });
 
   it("User can reset filters", () => {
-    cy.visit("http://localhost:3000/audits/edit-audit-edition/generation");
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-    cy.contains("Conforme (320)").click();
-    cy.contains("Non applicable (320)").click();
-    cy.contains("Masquer les tests et références").click();
-    cy.getByLabel(" Rechercher par mots clés")
-      .clear()
-      .type("alternative")
-      .type("{enter}");
+      cy.contains("Conforme (323)").click();
+      cy.contains("Non applicable (315)").click();
+      cy.contains("Masquer les tests et références").click();
+      cy.getByLabel(" Rechercher par mots clés")
+        .clear()
+        .type("alternative")
+        .type("{enter}");
 
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(6);
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(6);
+      });
+
+      cy.contains("button", "Réinitialiser").click();
+
+      cy.get("li.criterium-container").then((els) => {
+        expect(els).to.have.length(106);
+      });
+
+      cy.focused().should("have.attr", "placeholder", "Rechercher");
+      cy.contains("button", "Réinitialiser").should("not.exist");
     });
-
-    cy.contains("button", "Réinitialiser").click();
-
-    cy.get("li.criterium-container").then((els) => {
-      expect(els).to.have.length(106);
-    });
-
-    cy.focused().should("have.attr", "placeholder", "Rechercher");
-    cy.contains("button", "Réinitialiser").should("not.exist");
   });
 });

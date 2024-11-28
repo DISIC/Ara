@@ -50,6 +50,12 @@ declare global {
        * @example cy.assertClipboardValue('Pouet')
        */
       assertClipboardValue(value: string): Chainable;
+
+      /**
+       * Create a test audit with auto generated IDs
+       * @param isComplete
+       */
+      createTestAudit(isComplete?: boolean): Chainable;
     }
   }
 }
@@ -74,6 +80,23 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
     win.navigator.clipboard.readText().then((text) => {
       expect(text).to.eq(value);
     });
+  });
+});
+
+Cypress.Commands.add("createTestAudit", (isComplete?: boolean) => {
+  cy.exec(
+    `yarn run tests:seed-debug-audit ${isComplete ? "--complete" : ""}`,
+  ).then((result) => {
+    if (result.code !== 0) {
+      // failure
+      throw "Command exited with non-zero code";
+    }
+
+    // sucesss
+    const json = result.stdout.split("\n")[1];
+    const data = JSON.parse(json);
+
+    return { editId: data.editId, reportId: data.reportId };
   });
 });
 
