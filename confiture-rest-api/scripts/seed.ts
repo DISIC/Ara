@@ -6,6 +6,7 @@ import {
 import { CRITERIA } from "../src/audits/criteria";
 import { nanoid } from "nanoid";
 
+// Create a test audit and return its `editId` and `reportId`.
 async function main() {
   const isComplete = process.argv.includes("--complete");
   const hasNoImprovementsComments = process.argv.includes("--no-impr");
@@ -135,4 +136,5 @@ async function main() {
   };
 }
 
+// Allows calling Cypress command to retrieve data as parsed JSON.
 main().then((result) => console.log(JSON.stringify(result)));

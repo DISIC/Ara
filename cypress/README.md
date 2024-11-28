@@ -2,13 +2,7 @@
 
 [Cypress](https://www.cypress.io/) est utilisé pour lancer des tests end-to-end (e2e) dans un navigateur pour reproduire le comportement des utilisateurs.
 
-Avant de lancer les tests, il faut seeder la base de données (⚠️ cela va écraser l’ensemble de la base de données). Depuis la racine du projet, lancer :
-
-```sh
-yarn tests:setup
-```
-
-Comme certains tests modifient la base de données (édition, suppression d’audit...), il est important de vérifier l’état de cette dernière et de la réinitialiser au besoin.
+Différentes données (audit, rapport ou compte) sont créées avant chaque test et de manière indépendante. Il est possible d’ajouter des options en fonction de la donnée souhaitée avec la fonction [`createTestAudit()`](/cypress/support/commands.ts).
 
 Les tests peuvent être lancés de 2 manières, depuis la racine du projet :
 
