@@ -425,7 +425,7 @@ describe("Audit", () => {
 
       cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
 
-      cy.contains(/Terminé le \d{2} [a-z]+ \d{4}/);
+      cy.contains(/Terminé le \d{1,2} [A-zÀ-ú]{3,9} \d{4}/);
       cy.contains("a", "Accéder");
 
       cy.contains("a", `http://localhost:3000/rapport/${reportId}`);
