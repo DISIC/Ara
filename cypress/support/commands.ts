@@ -36,11 +36,6 @@
 //   }
 // }
 
-interface CreateTestAuditOptions {
-  isComplete?: boolean;
-  hasNoImprovementsComments?: boolean;
-}
-
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -49,7 +44,6 @@ declare global {
        * @example cy.getByLabel('Title')
        */
       getByLabel(value: string | RegExp): Chainable;
-
       /**
        * Command to assert the content of the clipboard
        * @example cy.assertClipboardValue('Pouet')
@@ -60,7 +54,21 @@ declare global {
        * Create a test audit with auto generated IDs
        * @example cy.createTestAudit(true, true)
        */
-      createTestAudit(options?: CreateTestAuditOptions): Chainable;
+      createTestAudit(
+        options?: CreateTestAuditOptions,
+      ): Chainable<{ editId: string; reportId: string }>;
+
+      /**
+       * Create a test account and return its username and password
+       */
+      createTestAccount(
+        options?: CreateTestAccountOptions,
+      ): Chainable<{
+        username: string;
+        password: string;
+        authToken: string;
+        uid: string;
+      }>;
     }
   }
 }
@@ -88,6 +96,11 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
   });
 });
 
+interface CreateTestAuditOptions {
+  isComplete?: boolean;
+  hasNoImprovementsComments?: boolean;
+}
+
 /**
  * Runs a script and parses its options to create a test audit and returns the `editId` and `reportId`.
  */
@@ -114,5 +127,27 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     };
   });
 });
+
+interface CreateTestAccountOptions {
+  login?: boolean;
+}
+
+Cypress.Commands.add(
+  "createTestAccount",
+  (options?: CreateTestAccountOptions) => {
+    cy.request("POST", "http://localhost:3000/api/debug/create-verified-user")
+      .its("body")
+      .as("userCredentials")
+      .then(({ authToken }) => {
+        if (options?.login) {
+          cy.window().then((win) =>
+            win.localStorage.setItem("confiture:authToken", authToken),
+          );
+        }
+      });
+
+    cy.get("@userCredentials");
+  },
+);
 
 export {};

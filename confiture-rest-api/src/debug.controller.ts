@@ -17,13 +17,29 @@ export class DebugController {
     return token;
   }
 
+  @Post("password-reset-verification-token")
+  async getPasswordResetVerificationToken(@Body() body: { username: string }) {
+    const token = this.auth.generatePasswordResetVerificationToken(
+      body.username
+    );
+
+    return token;
+  }
+
+  @Post("email-update-verification-token")
+  async getEmailUpdateVerificationToken(@Body() body: { uid: string }) {
+    const token = this.auth.regenerateEmailUpdateVerificationToken(body.uid);
+
+    return token;
+  }
+
   @Post("create-verified-user")
   async createVerifiedUser() {
     const email = `john-doe${Math.random()}@example.com`;
     const password = "pouetpouetpouet";
 
     await this.auth.createUnverifiedUser(email, password);
-    await this.prisma.user.update({
+    const user = await this.prisma.user.update({
       data: {
         isVerified: true,
         verificationJti: null
@@ -33,9 +49,13 @@ export class DebugController {
       }
     });
 
+    const authToken = await this.auth.signin(email, password);
+
     return {
       username: email,
-      password: password
+      password,
+      authToken,
+      uid: user.uid
     };
   }
 }
