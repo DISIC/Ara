@@ -175,7 +175,7 @@ function handleDataTransfer(
         }
       });
     }
-    return true;
+    return false;
   }
 
   // Handle multiple files

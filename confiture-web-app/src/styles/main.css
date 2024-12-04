@@ -65,11 +65,18 @@ from DSFR links with `target="_blank"` */
   color: var(--background-action-high-error) !important;
 }
 
+/* Tiptap */
+.tiptap-container {
+  position: relative;
+}
+
 .tiptap {
-  background-color: var(--background-default-grey);
-  padding: 1rem;
-  border: 1px solid var(--border-default-grey);
-  min-height: 10rem;
+  background-color: var(--background-alt-grey);
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 4rem 1.5rem 1rem;
+  border: 0 solid var(--border-plain-grey);
+  border-bottom-width: 1px;
+  min-height: 30rem;
   overflow-y: auto;
 }
 
@@ -85,7 +92,7 @@ from DSFR links with `target="_blank"` */
 
 .tiptap:focus,
 .tiptap:focus-visible {
-  outline-width: 4px !important;
+  outline-width: 3px !important;
   outline-offset: 0 !important;
 }
 
@@ -190,6 +197,86 @@ from DSFR links with `target="_blank"` */
   margin: 0;
 }
 
+.tiptap-buttons,
+.tiptap-buttons ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tiptap-buttons {
+  margin: 0.5rem 0.75rem;
+  width: calc(100% - 1.5rem);
+  position: absolute;
+  overflow-x: auto;
+  white-space: nowrap;
+  top: 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+.titptap-buttons::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.tiptap-buttons li,
+.tiptap-buttons ul {
+  display: inline-block;
+}
+
+.tiptap-buttons li + li {
+  margin-left: 0.2rem;
+}
+
+.tiptap-buttons > li + li:before {
+  box-shadow: inset 0 0 0 1px #ddd;
+  box-shadow: inset 0 0 0 1px var(--border-default-grey);
+  content: "";
+  display: inline-block;
+  height: 1.5rem;
+  padding: 0;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  position: relative;
+  vertical-align: baseline;
+  width: 1px;
+}
+
+.tiptap-buttons .fr-btn--tertiary {
+  color: var(--text-defult-grey);
+  box-shadow: none;
+  border-radius: 0.2rem;
+}
+.tiptap-buttons .fr-btn--tertiary:not([aria-pressed="true"]) {
+  --hover-tint: var(--background-alt-grey-hover);
+}
+
+.tiptap-buttons .fr-btn--tertiary[disabled] {
+  box-shadow: unset;
+  opacity: 0.5;
+}
+
+.tiptap-buttons .fr-btn--tertiary:not(:disabled):active {
+  background-color: var(--background-alt-grey-active);
+}
+
+.tiptap-buttons .fr-btn--tertiary[aria-pressed="true"] {
+  background-color: var(--background-alt-grey-active);
+}
+
+.tiptap-buttons .fr-btn--tertiary[aria-pressed="true"]:hover {
+  background-color: var(--background-alt-grey-hover);
+}
+
+/* @media (width < 36rem) {
+  .tiptap-buttons .fr-btn--icon-left[class*=" fr-icon-"] {
+    overflow: hidden;
+    max-width: 2.5rem;
+    max-height: 2.5rem;
+  }
+} */
+
 .ProseMirror-selectednode {
   outline-style: dotted;
   outline-width: 2px;
@@ -200,6 +287,25 @@ from DSFR links with `target="_blank"` */
   opacity: 0.5;
 }
 
+/* Extra icons */
+.fr-icon-strikethrough::before,
+.fr-icon-strikethrough::after {
+  -webkit-mask-image: url("../assets/images/strikethrough-2.svg");
+  mask-image: url("../assets/images/strikethrough-2.svg");
+}
+.fr-icon-code-block::before,
+.fr-icon-code-block::after {
+  -webkit-mask-image: url("../assets/images/code-block.svg");
+  mask-image: url("../assets/images/code-block.svg");
+}
+
+.tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"]:before {
+  --icon-size: 1.5rem;
+}
 /* File upload styling */
 /* input[type="file" i]::-webkit-file-upload-button {
   background-color: transparent;
