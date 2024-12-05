@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { RouterLink } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAuditStore } from "../../../store";
@@ -16,8 +17,6 @@ import DeleteModal from "../../audit/DeleteModal.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
 import Dropdown from "../../ui/Dropdown.vue";
-import { RouterLink } from "vue-router";
-import { uniqueId } from "lodash-es";
 
 const props = defineProps<{
   audit: AccountAudit;
