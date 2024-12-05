@@ -45,7 +45,7 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModal.value?.hide();
 
-      notify("success", undefined, `Audit ${name} copié avec succès`, {
+      notify("success", undefined, `Audit ${name} dupliqué avec succès`, {
         action: {
           label: "Annuler",
           cb() {
@@ -53,7 +53,7 @@ function duplicateAudit(name: string) {
             auditStore
               .deleteAudit(newAuditId)
               .then(() => {
-                notify("success", undefined, "Copie annulée.");
+                notify("success", undefined, "Duplication de l’audit annulée.");
               })
               .catch((error) => {
                 notify(
@@ -331,10 +331,8 @@ function copyStatementLink(uniqueId: string) {
               @click="duplicateModal?.show()"
             >
               <CopyIcon class="fr-mr-2v" />
-              Créer une copie
-              <span class="fr-sr-only"
-                >de l’audit {{ audit.procedureName }}</span
-              >
+              Dupliquer l’audit
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
 
