@@ -180,11 +180,16 @@ export const useAuditStore = defineStore("audit", {
      * @returns A promise to the unique id of the copy
      */
     async duplicateAudit(uniqueId: string, copyName: string): Promise<string> {
+      const accountStore = useAccountStore();
+
       const newAudit = (await ky
         .post(`/api/audits/${uniqueId}/duplicate`, {
           json: {
             procedureName: copyName
           },
+          headers: accountStore.authToken
+            ? { Authorization: `Bearer ${accountStore.authToken}` }
+            : undefined,
           // Duplicating an audit can be a pretty long process
           timeout: false
         })
