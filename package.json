@@ -5,11 +5,15 @@
     "confiture-web-app"
   ],
   "devDependencies": {
+    "@faker-js/faker": "^9.2.0",
     "cypress": "^13.6.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
   },
   "scripts": {
+    "tests:seed-debug-audit": "cd confiture-rest-api && ts-node scripts/seed.ts",
+    "tests:open": "yarn cypress open",
+    "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build"
   },
   "dependencies": {
