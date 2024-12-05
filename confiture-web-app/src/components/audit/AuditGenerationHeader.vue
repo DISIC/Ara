@@ -322,7 +322,7 @@ onMounted(() => {
                   @click="duplicateModal?.show()"
                 >
                   <CopyIcon class="fr-mr-2v" />
-                  Créer une copie
+                  Dupliquer l’audit
                 </button>
               </li>
               <li class="fr-p-0 settings-item mobile-dropdown-item">

@@ -62,9 +62,9 @@ function handleClose() {
               </div>
               <div class="fr-modal__content">
                 <h1 :id="`duplicate-modal-title-${id}`" class="fr-modal__title">
-                  Créer une copie de l’audit
+                  Dupliquer l’audit
                   <template v-if="originalAuditName">
-                    {{ originalAuditName }}
+                    « {{ originalAuditName }} »
                   </template>
                 </h1>
                 <p>
@@ -100,7 +100,7 @@ function handleClose() {
                   </li>
                   <li>
                     <button class="fr-btn" :disabled="isLoading" type="submit">
-                      Créer une copie
+                      Dupliquer l’audit
                     </button>
                   </li>
                 </ul>
