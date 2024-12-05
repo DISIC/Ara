@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Audit, EmailStatus, EmailType } from "@prisma/client";
+import { Audit, AuditType, EmailStatus, EmailType } from "@prisma/client";
 import { createTransport, getTestMessageUrl, Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
@@ -57,7 +57,7 @@ export class MailService {
 
     await this.transporter
       .sendMail({
-        from: this.config.get("MAILER_USER"),
+        from: `Ara ${this.config.get("MAILER_USER")}`,
         to,
         subject,
         text,
@@ -93,7 +93,8 @@ export class MailService {
     const data: AuditCreationEmailData = {
       procedureName: audit.procedureName,
       overviewUrl,
-      reportUrl
+      reportUrl,
+      is106Criteria: audit.auditType === AuditType.FULL
     };
 
     return this.sendMail(audit.auditorEmail, EmailType.AUDIT_CREATION, data);
