@@ -57,7 +57,7 @@ export class MailService {
 
     await this.transporter
       .sendMail({
-        from: this.config.get("MAILER_USER"),
+        from: `Ara ${this.config.get("MAILER_USER")}`,
         to,
         subject,
         text,
