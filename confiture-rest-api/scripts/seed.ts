@@ -7,7 +7,7 @@ import { CRITERIA } from "../src/audits/criteria";
 import { nanoid } from "nanoid";
 
 // Create a test audit and return its `editId` and `reportId`.
-async function main() {
+async function createTestAudit() {
   const isComplete = process.argv.includes("--complete");
   const hasNoImprovementsComments = process.argv.includes("--no-impr");
 
@@ -134,6 +134,25 @@ async function main() {
     editId: editUniqueId,
     reportId: reportUniqueId
   };
+}
+
+async function createTestAccount() {
+  const prisma = new PrismaClient();
+
+  const account = await prisma.user.create({
+    data: {
+      username: "john-doe@example.com",
+      password: "pouetpouetpouet"
+    }
+  });
+}
+
+async function main() {
+  if (process.argv.includes("--account")) {
+    return createTestAccount();
+  } else if (process.argv.includes("--audit")) {
+    return createTestAudit();
+  }
 }
 
 // Allows calling Cypress command to retrieve data as parsed JSON.
