@@ -14,6 +14,6 @@ export function plain(): string {
 
     Votre compte Ara a été créé avec succès.
 
-    Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
+    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
   `;
 }

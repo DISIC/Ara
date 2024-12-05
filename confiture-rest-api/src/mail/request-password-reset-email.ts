@@ -19,6 +19,6 @@ Pour réinitialiser le mot de passe de votre compte Ara, veuillez cliquer sur le
     
 ${data.verificationLink}
 
-Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
+Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
 `;
 }

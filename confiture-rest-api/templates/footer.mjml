@@ -6,32 +6,40 @@
 
 <mj-section padding-bottom="32px">
   <mj-column>
-    <mj-text font-size="18px" padding-bottom="8px">
-      <strong>Vous avez une question ?</strong>
-    </mj-text>
-    <mj-text font-size="14px">Vous pouvez nous contacter en utilisant l’adresse e-mail <strong>ara@design.numerique.gouv.fr</strong>.
+    <mj-text font-size="14px">
+      Si vous avez des questions ou besoin d’aide, contactez notre support par
+      e-mail à l’adresse : ara@design.numerique.gouv.fr.
     </mj-text>
   </mj-column>
 </mj-section>
 
 <mj-section>
   <mj-column>
-    <mj-text mj-class="black-link">Propulsé avec ❤️ par l’équipe
-      <a style="color: inherit" href="https://design.numerique.gouv.fr/">Design des services numériques</a>
+    <mj-text color="#666666" font-size="12px" mj-class="black-link">
+      Ara est un produit conçu et developpé par l’équipe
+      <a style="color: inherit" href="https://design.numerique.gouv.fr/">
+        DesignGouv
+      </a>
     </mj-text>
-    <mj-text font-size="10px" color="#666666">Cet e-mail est envoyé automatiquement, merci de ne pas y
-      répondre.</mj-text>
   </mj-column>
 </mj-section>
 
 <mj-section padding="24px 0">
   <mj-column>
-    <mj-divider border-width="1px" border-style="solid" border-color="#E5E5E5" />
+    <mj-divider
+      border-width="1px"
+      border-style="solid"
+      border-color="#E5E5E5"
+    />
   </mj-column>
 </mj-section>
 
 <mj-section padding-bottom="24px">
   <mj-column>
-    <mj-image align="left" src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502" width="100px"></mj-image>
+    <mj-image
+      align="left"
+      src="https://upload.wikimedia.org/wikipedia/fr/thumb/2/22/Republique-francaise-logo.svg/1024px-Republique-francaise-logo.svg.png?20201008150502"
+      width="100px"
+    ></mj-image>
   </mj-column>
 </mj-section>
