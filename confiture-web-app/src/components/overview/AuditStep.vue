@@ -58,6 +58,15 @@ const auditIsInProgress = computed(() => {
           critères
         </p>
       </h2>
+      <RouterLink
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line audit-step-settings-link"
+        :to="{
+          name: 'audit-settings',
+          params: { uniqueId: audit.editUniqueId }
+        }"
+      >
+        Modifier les paramètres
+      </RouterLink>
     </div>
 
     <p class="fr-text--sm fr-mb-2w audit-step-date">
@@ -206,12 +215,10 @@ const auditIsInProgress = computed(() => {
   align-items: center;
   display: flex;
   gap: 1rem;
+  grid-column: 1 / -1;
 }
 
 .audit-step-title {
-  grid-column: 1 / -1;
-  grid-row: 1;
-
   /* FIXME: DSFR default badges dont align. Those with icons does. */
   display: flex;
   align-items: center;
@@ -220,6 +227,10 @@ const auditIsInProgress = computed(() => {
 
 .audit-step-check {
   color: var(--text-default-success);
+}
+
+.audit-step-settings-link {
+  margin-inline-start: auto;
 }
 
 .audit-step-date {
