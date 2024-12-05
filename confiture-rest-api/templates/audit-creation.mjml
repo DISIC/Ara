@@ -13,14 +13,16 @@
     <!-- BODY -->
     <mj-section>
       <mj-column>
-        <mj-text font-size="20px" font-weight="700" padding-bottom="16px"
-          >Accéder à votre audit, rapport et déclaration</mj-text
-        >
+        <mj-text font-size="20px" font-weight="700" padding-bottom="16px">
+          {{#if is106Criteria}}Accéder à votre audit, rapport et
+          déclaration{{else}}Accéder à votre audit et rapport{{/if}}
+        </mj-text>
         <mj-text padding-bottom="12px">
           Vous venez de créer l’audit «
-          <strong>{{ procedureName }}</strong> ». Pour accéder à votre audit,
-          rapport d’audit et déclaration d’accessibilité, utilisez le lien
-          ci-dessous :
+          <strong>{{ procedureName }}</strong> ». {{#if is106Criteria}}Pour
+          accéder à votre audit, rapport d’audit et déclaration d’accessibilité,
+          utilisez le lien ci-dessous :{{else}}Pour accéder à votre audit et
+          rapport d’audit, utilisez le lien ci-dessous :{{/if}}
         </mj-text>
       </mj-column>
     </mj-section>
