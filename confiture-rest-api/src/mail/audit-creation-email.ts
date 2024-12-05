@@ -7,7 +7,7 @@ export interface AuditCreationEmailData {
 }
 
 export function subject(data: AuditCreationEmailData): string {
-  return `Création d’un nouvel audit : ${data.procedureName}`;
+  return `Accéder à l'audit : « ${data.procedureName} »`;
 }
 
 export function html(data: AuditCreationEmailData): string {
@@ -16,13 +16,12 @@ export function html(data: AuditCreationEmailData): string {
 
 export function plain(data: AuditCreationEmailData): string {
   return `
-    Bonjour, vous venez de créer l’audit "${data.procedureName}".
+    Accéder à votre audit et rapport
 
-    Voici le lien de la synthèse d’audit (privé) permettant d’accéder aux documents suivants : l’audit, le rapport d’audit et la déclaration d’accessibilité (dans le cas d’un audit 106 critères). Pensez-bien à conserver ce lien, c’est le seul moyen d’accéder à vos documents.
+    Vous venez de créer l’audit « ${data.procedureName} ». Pour accéder à votre audit et rapport d’audit, utilisez le lien ci-dessous :
+
     ${data.overviewUrl}
 
-    Voici le lien du rapport d’audit (public) : ${data.reportUrl}
-
-    Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
+    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
   `;
 }
