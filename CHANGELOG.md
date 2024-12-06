@@ -4,7 +4,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 06/12/2024
 
-- Corrige la possibilité de supprimer une image liée à un critère d’élément transverse
+- Corrige la possibilité de supprimer une image liée à un critère d’élément transverse ([#898](https://github.com/DISIC/Ara/pull/898))
 
 ## 27/11/2024
 
