@@ -7,6 +7,7 @@ import NewAuditContactDetails from "../../components/audit/NewAuditContactDetail
 import NewAuditPages from "../../components/audit/NewAuditPages.vue";
 import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAuditStore } from "../../store";
@@ -188,6 +189,11 @@ async function goToPreviousStep() {
   <PageMeta
     title="Démarrer un audit"
     description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
+  />
+
+  <BackLink
+    :label="`Retourner à ${accountStore.account ? 'mes audits' : 'l’accueil'}`"
+    :to="{ name: accountStore.account ? 'account-dashboard' : 'home' }"
   />
 
   <div class="content">
