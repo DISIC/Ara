@@ -480,7 +480,14 @@ export class AuditService {
     });
 
     const storedFile = await storedFilePromise;
-    const audit = await storedFilePromise.criterionResult().page().audit();
+
+    const page = await storedFilePromise.criterionResult().page();
+
+    // Checks whether its a user page or transverse page
+    const audit =
+      page.url === ""
+        ? await storedFilePromise.criterionResult().page().auditTransverse()
+        : await storedFilePromise.criterionResult().page().audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
