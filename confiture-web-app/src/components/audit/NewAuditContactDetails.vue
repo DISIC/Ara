@@ -81,15 +81,12 @@ function fillSettings() {
     <div class="actions">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line"
+        class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-arrow-left-s-line"
         @click="goToPreviousStep"
       >
         Étape précédente
       </button>
-      <button
-        type="submit"
-        class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
-      >
+      <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-check-line">
         Valider les paramètres
       </button>
     </div>

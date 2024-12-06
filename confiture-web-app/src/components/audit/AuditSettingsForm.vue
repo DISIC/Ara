@@ -149,7 +149,7 @@ const backLinkLabel = computed(() => {
     <div class="fr-mb-6w add-page-button-wrapper">
       <button
         type="button"
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-px-8w"
         @click="addPage"
       >
         Ajouter une page
