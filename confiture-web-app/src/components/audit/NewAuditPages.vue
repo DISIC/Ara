@@ -81,7 +81,7 @@ function fillSettings() {
     <div class="fr-mb-6w add-page-button-wrapper">
       <button
         type="button"
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-px-8w"
         @click="addPage"
       >
         Ajouter une page
@@ -91,20 +91,24 @@ function fillSettings() {
     <div class="actions">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line"
+        class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-arrow-left-s-line"
         @click="goToPreviousStep"
       >
         Étape précédente
       </button>
       <button
+        v-if="accountStore.account && accountStore.account.name"
+        type="submit"
+        class="fr-btn fr-btn--icon-left fr-icon-check-line"
+      >
+        Valider les paramètres
+      </button>
+      <button
+        v-else
         type="submit"
         class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
       >
-        {{
-          accountStore.account && accountStore.account.name
-            ? "Valider les paramètres"
-            : "Étape suivante"
-        }}
+        Étape suivante
       </button>
     </div>
   </form>
