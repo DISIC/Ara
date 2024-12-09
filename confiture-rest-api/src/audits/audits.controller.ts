@@ -317,7 +317,8 @@ export class AuditsController {
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async duplicateAudit(
     @Param("uniqueId") uniqueId: string,
-    @Body() body: DuplicateAuditDto
+    @Body() body: DuplicateAuditDto,
+    @User() user: AuthenticationJwtPayload
   ) {
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
@@ -328,10 +329,14 @@ export class AuditsController {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
-      console.error(`Failed to send email for audit ${newAudit.editUniqueId}`);
-      console.error(err);
-    });
+    if (!user) {
+      this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
+        console.error(
+          `Failed to send email for audit ${newAudit.editUniqueId}`
+        );
+        console.error(err);
+      });
+    }
 
     return newAudit;
   }

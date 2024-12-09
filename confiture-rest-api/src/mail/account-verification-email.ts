@@ -20,6 +20,6 @@ export function plain(data: AccountVerificationEmailData): string {
 
     Si vous ne voulez pas créer de compte sur Ara ou si vous n’avez pas demandé à créer de compte, vous pouvez ignorer et supprimer cet e-mail.
 
-    Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
+    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
   `;
 }
