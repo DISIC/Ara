@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { nextTick, ref, toRaw, watch } from "vue";
+import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useAccountStore } from "../../store/account";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
@@ -58,6 +59,7 @@ const audits = [
 ];
 
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 const accountStore = useAccountStore();
 
 const auditType = ref(props.audit?.auditType);
@@ -93,13 +95,23 @@ watch(
   },
   { deep: true }
 );
+const backLinkLabel = computed(() => {
+  switch (previousRoute.route?.name) {
+    case "account-dashboard":
+      return "Retourner à mes audits";
+    case "audit-overview":
+      return "Retourner au tableau de bord de l’audit";
+    default:
+      return "Retourner à mon audit";
+  }
+});
 </script>
 
 <template>
   <BackLink
-    label="Retourner à mon audit"
+    :label="backLinkLabel"
     :to="{
-      name: 'audit-generation',
+      name: previousRoute.route?.name || 'audit-overview',
       params: { uniqueId: route.params.uniqueId }
     }"
   />
