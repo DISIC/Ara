@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { RouterLink } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAuditStore } from "../../../store";
@@ -344,6 +345,17 @@ function copyStatementLink(uniqueId: string) {
                 >de l’audit {{ audit.procedureName }}</span
               >
             </button>
+          </li>
+          <li class="dropdown-item">
+            <RouterLink
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line fr-m-0"
+              :to="{
+                name: 'audit-settings',
+                params: { uniqueId: audit.editUniqueId }
+              }"
+            >
+              Modifier les paramètres de l’audit
+            </RouterLink>
           </li>
 
           <li aria-hidden="true" class="dropdown-separator"></li>
