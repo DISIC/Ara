@@ -7,6 +7,7 @@ import NewAuditContactDetails from "../../components/audit/NewAuditContactDetail
 import NewAuditPages from "../../components/audit/NewAuditPages.vue";
 import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAuditStore } from "../../store";
@@ -36,10 +37,16 @@ function cancelLeave() {
   leaveModalRef.value?.hide();
 }
 
+const newAuditTypeRef = ref<InstanceType<typeof NewAuditType>>();
+
 // Display leave modal when navigating to another route
 // FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
-  if (!isSubmitting.value && !confirmedLeave.value) {
+  if (
+    !isSubmitting.value &&
+    !confirmedLeave.value &&
+    (newAuditTypeRef.value?.procedureName || newAuditTypeRef.value?.auditType)
+  ) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
@@ -190,6 +197,11 @@ async function goToPreviousStep() {
     description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
   />
 
+  <BackLink
+    :label="`Retourner à ${accountStore.account ? 'mes audits' : 'l’accueil'}`"
+    :to="{ name: accountStore.account ? 'account-dashboard' : 'home' }"
+  />
+
   <div class="content">
     <h1 class="fr-mb-6w">Démarrer un audit</h1>
     <div class="fr-stepper fr-mb-9v">
@@ -208,6 +220,7 @@ async function goToPreviousStep() {
 
     <NewAuditType
       v-if="currentStep === 0"
+      ref="newAuditTypeRef"
       :audit-type="audit.auditType"
       :procedure-name="audit.procedureName"
       @submit="submitStep"

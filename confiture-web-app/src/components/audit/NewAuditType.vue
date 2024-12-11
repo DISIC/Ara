@@ -50,6 +50,8 @@ function submitAuditType() {
   });
 }
 
+defineExpose({ procedureName, auditType });
+
 // Dev mode
 const isDevMode = useDevMode();
 
