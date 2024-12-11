@@ -37,10 +37,17 @@ function cancelLeave() {
   leaveModalRef.value?.hide();
 }
 
+const newAuditTypeRef = ref<InstanceType<typeof NewAuditType>>();
+
 // Display leave modal when navigating to another route
 // FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
-  if (!isSubmitting.value && !confirmedLeave.value) {
+  console.log(newAuditTypeRef.value?.procedureName);
+  if (
+    !isSubmitting.value &&
+    !confirmedLeave.value &&
+    (newAuditTypeRef.value?.procedureName || newAuditTypeRef.value?.auditType)
+  ) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
@@ -214,6 +221,7 @@ async function goToPreviousStep() {
 
     <NewAuditType
       v-if="currentStep === 0"
+      ref="newAuditTypeRef"
       :audit-type="audit.auditType"
       :procedure-name="audit.procedureName"
       @submit="submitStep"
