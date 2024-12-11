@@ -250,7 +250,7 @@ function copyStatementLink(uniqueId: string) {
     <!-- Main action -->
     <RouterLink
       :to="
-        isInProgress
+        isInProgress || isNotStarted
           ? {
               name: 'audit-generation',
               params: { uniqueId: audit.editUniqueId }
@@ -259,9 +259,11 @@ function copyStatementLink(uniqueId: string) {
       "
       class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
       :class="
-        isInProgress ? 'fr-icon-edit-line' : 'fr-icon-eye-line no-external-icon'
+        isInProgress || isNotStarted
+          ? 'fr-icon-edit-line'
+          : 'fr-icon-eye-line no-external-icon'
       "
-      :target="isInProgress ? null : '_blank'"
+      :target="isInProgress || isNotStarted ? null : '_blank'"
     >
       {{
         isNotStarted
@@ -304,7 +306,7 @@ function copyStatementLink(uniqueId: string) {
           <li class="dropdown-item">
             <RouterLink
               :to="
-                isInProgress
+                isInProgress || isNotStarted
                   ? {
                       name: 'report',
                       params: { uniqueId: audit.consultUniqueId }
@@ -314,12 +316,18 @@ function copyStatementLink(uniqueId: string) {
                       params: { uniqueId: audit.editUniqueId }
                     }
               "
-              :target="isInProgress ? '_blank' : undefined"
+              :target="isInProgress || isNotStarted ? '_blank' : undefined"
               :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
-                isInProgress ? 'fr-icon-eye-line' : 'fr-icon-file-line'
+                isInProgress || isNotStarted
+                  ? 'fr-icon-eye-line'
+                  : 'fr-icon-file-line'
               } fr-m-0 no-external-icon`"
             >
-              {{ isInProgress ? "Voir le rapport" : "Accéder à l’audit" }}
+              {{
+                isInProgress || isNotStarted
+                  ? "Voir le rapport"
+                  : "Accéder à l’audit"
+              }}
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </RouterLink>
           </li>

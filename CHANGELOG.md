@@ -2,21 +2,27 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 06/12/2024
-
-- Corrige la possibilité de supprimer une image liée à un critère d’élément transverse ([#898](https://github.com/DISIC/Ara/pull/898))
-
-## 27/11/2024
+## 11/12/2024
 
 ### Corrections 🐛
 
-- Corrige l’ordre des pages dans le tableau de répartition des critères par page dans le rapport ([#885](https://github.com/DISIC/Ara/pull/885))
+- Corrige le lien et l’icône des audits "non commencés" dans la liste des audits du compte ([#886](https://github.com/DISIC/Ara/pull/886))
+
+## 06/12/2024
+
+### Corrections 🐛
+
+- Corrige la possibilité de supprimer une image liée à un critère d’élément transverse ([#898](https://github.com/DISIC/Ara/pull/898))
 
 ## 27/11/2024
 
 ### Autres changements ⚙️
 
 - Affiche seulement les pages avec des commentaires C ou NA dans l’onglet du rapport "Points d’amélioration" ([#884](https://github.com/DISIC/Ara/pull/884))
+
+### Corrections 🐛
+
+- Corrige l’ordre des pages dans le tableau de répartition des critères par page dans le rapport ([#885](https://github.com/DISIC/Ara/pull/885))
 
 ## 22/11/2024
 
