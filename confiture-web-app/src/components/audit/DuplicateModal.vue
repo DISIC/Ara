@@ -62,15 +62,16 @@ function handleClose() {
               </div>
               <div class="fr-modal__content">
                 <h1 :id="`duplicate-modal-title-${id}`" class="fr-modal__title">
-                  Créer une copie de l’audit
+                  Dupliquer l’audit
                   <template v-if="originalAuditName">
-                    {{ originalAuditName }}
+                    « {{ originalAuditName }} »
                   </template>
                 </h1>
                 <p>
-                  La copie de votre audit reprend l’intégralité des éléments de
-                  l’audit initial : échantillon, état de conformité,
-                  commentaires et recommandations, etc.
+                  La copie de votre audit reprendra l’intégralité des éléments
+                  de l’audit initial : l’échantillon des pages à auditer, l’état
+                  de conformité des critères, la description des erreurs et
+                  recommandations, etc.
                 </p>
                 <DsfrField
                   :id="`duplicate-audit-name-${id}`"
@@ -100,7 +101,7 @@ function handleClose() {
                   </li>
                   <li>
                     <button class="fr-btn" :disabled="isLoading" type="submit">
-                      Créer une copie
+                      Dupliquer l’audit
                     </button>
                   </li>
                 </ul>

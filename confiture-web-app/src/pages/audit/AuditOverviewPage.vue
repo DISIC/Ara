@@ -80,7 +80,7 @@ function focusPageHeading() {
 
     <!-- Duplicated audit alert -->
     <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
-      <p class="fr-alert__title">Audit copié avec succès</p>
+      <p class="fr-alert__title">Audit dupliqué avec succès</p>
       <p>
         Un lien pour accéder à cette page vient de vous être envoyé par mail.
       </p>
