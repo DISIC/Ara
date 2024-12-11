@@ -42,7 +42,6 @@ const newAuditTypeRef = ref<InstanceType<typeof NewAuditType>>();
 // Display leave modal when navigating to another route
 // FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
-  console.log(newAuditTypeRef.value?.procedureName);
   if (
     !isSubmitting.value &&
     !confirmedLeave.value &&
