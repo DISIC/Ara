@@ -233,12 +233,12 @@ function copyStatementLink(uniqueId: string) {
         Non-applicable
         <button
           class="fr-btn--tooltip fr-btn audit-compliance-level-tooltip"
-          aria-describedby="compliance-tooltip"
+          :aria-describedby="`compliance-tooltip-${zIndex}`"
         >
           Information contextuelle
         </button>
         <span
-          id="compliance-tooltip"
+          :id="`compliance-tooltip-${zIndex}`"
           class="fr-tooltip fr-placement"
           role="tooltip"
           aria-hidden="true"
