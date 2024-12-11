@@ -68,9 +68,10 @@ function handleClose() {
                   </template>
                 </h1>
                 <p>
-                  La copie de votre audit reprend l’intégralité des éléments de
-                  l’audit initial : échantillon, état de conformité,
-                  commentaires et recommandations, etc.
+                  La copie de votre audit reprendra l’intégralité des éléments
+                  de l’audit initial : échantillon des pages à auditer, état de
+                  conformité des critères, description des erreurs et
+                  recommandations, etc.
                 </p>
                 <DsfrField
                   :id="`duplicate-audit-name-${id}`"
