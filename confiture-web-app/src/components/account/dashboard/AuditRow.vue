@@ -250,7 +250,7 @@ function copyStatementLink(uniqueId: string) {
     <!-- Main action -->
     <RouterLink
       :to="
-        isInProgress
+        isInProgress || isNotStarted
           ? {
               name: 'audit-generation',
               params: { uniqueId: audit.editUniqueId }
