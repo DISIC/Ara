@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Autres changements ⚙️
 
+- Ajoute un lien de retour sur la page de création d’audit ([#902](https://github.com/DISIC/Ara/pull/902))
 - Ajoute un lien vers les paramètres de l’audit dans la synthèse et la liste des audits ([#900](https://github.com/DISIC/Ara/pull/900))
 - Ajuste le contenu de l’email de création d’audit ([#901](https://github.com/DISIC/Ara/pull/901))
 
