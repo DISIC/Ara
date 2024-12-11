@@ -30,7 +30,9 @@
     <mj-section mj-class="blue-section">
       <mj-column>
         <mj-text align="center" mj-class="blue-link" padding-bottom="20px">
-          <a href="{{ reportUrl }}" style="color: inherit">{{ reportUrl }}</a>
+          <a href="{{ overviewUrl }}" style="color: inherit"
+            >{{ overviewUrl }}</a
+          >
         </mj-text>
         <mj-text align="center" font-weight="700"
           >ℹ️ Ce lien est votre seul moyen d’accéder à vos documents.</mj-text
