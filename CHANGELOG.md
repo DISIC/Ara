@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 11/12/2024
 
+### Autres changements ⚙️
+
+- Ajuste le contenu de l’email de création d’audit ([#901](https://github.com/DISIC/Ara/pull/901))
+
 ### Corrections 🐛
 
 - Corrige le lien et l’icône des audits "non commencés" dans la liste des audits du compte ([#886](https://github.com/DISIC/Ara/pull/886))

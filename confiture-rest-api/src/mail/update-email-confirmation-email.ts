@@ -17,6 +17,6 @@ export function plain(data: UpdateEmailConfirmationData): string {
 
 L’adresse e-mail de votre compte Ara a bien été modifiée. La prochaine fois que vous vous connectez à votre compte, assurez-vous que vous utilisez l’adresse e-mail : ${data.newEmail}.
 
-Vous avez une question ? Vous pouvez nous contacter en utilisant l’adresse e-mail ara@design.numerique.gouv.fr.
+Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
 `;
 }
