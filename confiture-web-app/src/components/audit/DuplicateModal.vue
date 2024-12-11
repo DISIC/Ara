@@ -69,8 +69,8 @@ function handleClose() {
                 </h1>
                 <p>
                   La copie de votre audit reprendra l’intégralité des éléments
-                  de l’audit initial : échantillon des pages à auditer, état de
-                  conformité des critères, description des erreurs et
+                  de l’audit initial : l’échantillon des pages à auditer, l’état
+                  de conformité des critères, la description des erreurs et
                   recommandations, etc.
                 </p>
                 <DsfrField
