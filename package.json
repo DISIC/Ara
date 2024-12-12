@@ -5,7 +5,6 @@
     "confiture-web-app"
   ],
   "devDependencies": {
-    "@faker-js/faker": "^9.2.0",
     "cypress": "^13.6.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
