@@ -168,8 +168,7 @@ export const useAccountStore = defineStore("account", {
         json: {
           feedback,
           feedbackToken: this.accountDeletionFeedbackToken
-        },
-        headers: { Authorization: `Bearer ${this.authToken}` }
+        }
       });
     },
 
