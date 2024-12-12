@@ -136,24 +136,5 @@ async function createTestAudit() {
   };
 }
 
-async function createTestAccount() {
-  const prisma = new PrismaClient();
-
-  const account = await prisma.user.create({
-    data: {
-      username: "john-doe@example.com",
-      password: "pouetpouetpouet"
-    }
-  });
-}
-
-async function main() {
-  if (process.argv.includes("--account")) {
-    return createTestAccount();
-  } else if (process.argv.includes("--audit")) {
-    return createTestAudit();
-  }
-}
-
 // Allows calling Cypress command to retrieve data as parsed JSON.
-main().then((result) => console.log(JSON.stringify(result)));
+createTestAudit().then((result) => console.log(JSON.stringify(result)));
