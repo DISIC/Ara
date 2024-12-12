@@ -67,7 +67,13 @@ export class DebugController {
 
   @Post("create-audit")
   async createAudit(
-    @Body() body: { isComplete: boolean; noImprovements: boolean }
+    @Body()
+    body: {
+      isComplete: boolean;
+      isPristine: boolean;
+      noImprovements: boolean;
+      auditorEmail?: string;
+    }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
     const reportUniqueId = `report-${nanoid()}`;
@@ -76,6 +82,7 @@ export class DebugController {
       data: {
         editUniqueId: editUniqueId,
         consultUniqueId: reportUniqueId,
+        creationDate: new Date(),
         publicationDate: body.isComplete ? new Date() : null,
         auditTrace: {
           create: {
@@ -85,7 +92,7 @@ export class DebugController {
         },
         auditType: "FULL",
         procedureName: "Audit de mon petit site",
-        auditorEmail: "etienne.durand@example.com",
+        auditorEmail: body.auditorEmail || "etienne.durand@example.com",
         auditorName: "Étienne Durand",
         transverseElementsPage: {
           create: {
@@ -143,36 +150,38 @@ export class DebugController {
       }
     });
 
-    await Promise.all(
-      [completedAudit.transverseElementsPage, ...auditPages].map(async (p) =>
-        this.prisma.criterionResult.createMany({
-          data: CRITERIA.map((c, i) => ({
-            status: [
-              CriterionResultStatus.COMPLIANT,
-              CriterionResultStatus.NOT_APPLICABLE,
-              CriterionResultStatus.NOT_COMPLIANT
-            ][i % 3],
-            notCompliantComment: "Une erreur ici",
-            notApplicableComment: body.noImprovements
-              ? null
-              : "Attention quand même si ça devient applicable",
-            compliantComment: body.noImprovements ? null : "Peut mieux faire",
-            quickWin: i % 7 === 0,
-            userImpact: [
-              CriterionResultUserImpact.MINOR,
-              CriterionResultUserImpact.MAJOR,
-              CriterionResultUserImpact.BLOCKING,
-              null
-            ][i % 4],
-            topic: c.topic,
-            criterium: c.criterium,
-            pageId: p.id
-          }))
-        })
-      )
-    );
+    if (!body.isPristine) {
+      await Promise.all(
+        [completedAudit.transverseElementsPage, ...auditPages].map(async (p) =>
+          this.prisma.criterionResult.createMany({
+            data: CRITERIA.map((c, i) => ({
+              status: [
+                CriterionResultStatus.COMPLIANT,
+                CriterionResultStatus.NOT_APPLICABLE,
+                CriterionResultStatus.NOT_COMPLIANT
+              ][i % 3],
+              notCompliantComment: "Une erreur ici",
+              notApplicableComment: body.noImprovements
+                ? null
+                : "Attention quand même si ça devient applicable",
+              compliantComment: body.noImprovements ? null : "Peut mieux faire",
+              quickWin: i % 7 === 0,
+              userImpact: [
+                CriterionResultUserImpact.MINOR,
+                CriterionResultUserImpact.MAJOR,
+                CriterionResultUserImpact.BLOCKING,
+                null
+              ][i % 4],
+              topic: c.topic,
+              criterium: c.criterium,
+              pageId: p.id
+            }))
+          })
+        )
+      );
+    }
 
-    if (!body.isComplete) {
+    if (!body.isComplete && !body.isPristine) {
       await this.prisma.criterionResult.delete({
         where: {
           pageId_topic_criterium: {

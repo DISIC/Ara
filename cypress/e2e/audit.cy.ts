@@ -502,7 +502,7 @@ describe("Audit", () => {
   });
 
   it("User can download an audit", () => {
-    cy.exec("rm -f -d cypress/downloads/*");
+    cy.exec("rm -rf cypress/downloads");
 
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
