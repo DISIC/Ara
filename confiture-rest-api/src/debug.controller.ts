@@ -1,11 +1,9 @@
-import { Body, Controller, Get, Post, Put } from "@nestjs/common";
-import { ApiHideProperty } from "@nestjs/swagger";
+import { Body, Controller, Post } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 import { AuthService } from "./auth/auth.service";
 import {
   CriterionResultStatus,
-  CriterionResultUserImpact,
-  Prisma
+  CriterionResultUserImpact
 } from "@prisma/client";
 import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
