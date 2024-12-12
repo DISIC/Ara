@@ -8,7 +8,7 @@ En parallèle des tests, le serveur back-end doit être lancé avec la variable 
 DEBUG_ENDPOINTS=1 yarn start:dev
 ```
 
-Différentes données (audit, rapport ou compte) sont créées avant chaque test et de manière indépendante. Il est possible d’ajouter des options en fonction de la donnée souhaitée avec la fonction [`createTestAudit()`](/cypress/support/commands.ts).
+Différentes données (audit, rapport ou compte) sont créées avant chaque test et de manière indépendante. Il est possible d’ajouter des options en fonction de la donnée souhaitée avec les fonctions [`createTestAccount` et `createTestAudit()`](/cypress/support/commands.ts).
 
 Les tests peuvent être lancés de 2 manières, depuis la racine du projet :
 
