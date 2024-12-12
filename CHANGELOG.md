@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 12/12/2024
+
+### Corrections 🐛
+
+- Corrige le formulaire de retour après avoir supprimé le compte ([#907](https://github.com/DISIC/Ara/pull/907))
+
 ## 11/12/2024
 
 ### Autres changements ⚙️
