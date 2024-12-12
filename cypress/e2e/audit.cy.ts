@@ -283,12 +283,12 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
-      cy.contains("button", "Créer une copie").click();
+      cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
-      cy.get("dialog").contains("button", "Créer une copie").click();
+      cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
-      cy.contains("Audit copié avec succès", { timeout: 50_000 });
+      cy.contains("Audit dupliqué avec succès", { timeout: 50_000 });
       cy.contains("Audit de mon petit site (2)");
     });
   });

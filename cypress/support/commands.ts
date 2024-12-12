@@ -61,9 +61,7 @@ declare global {
       /**
        * Create a test account and return its username and password
        */
-      createTestAccount(
-        options?: CreateTestAccountOptions,
-      ): Chainable<{
+      createTestAccount(options?: CreateTestAccountOptions): Chainable<{
         username: string;
         password: string;
         authToken: string;
@@ -102,36 +100,22 @@ interface CreateTestAuditOptions {
 }
 
 /**
- * Runs a script and parses its options to create a test audit and returns the `editId` and `reportId`.
+ * Create a test audit with specific options by calling debug API endpoints.
  */
 Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
-  const isComplete = options?.isComplete;
-  const hasNoImprovementsComments = options?.hasNoImprovementsComments;
-  cy.exec(
-    `yarn run tests:seed-debug-audit ${isComplete ? "--complete" : ""} ${
-      hasNoImprovementsComments ? "--no-impr" : ""
-    }`,
-  ).then((result) => {
-    if (result.code !== 0) {
-      // failure
-      throw "Command exited with non-zero code";
-    }
-
-    // sucesss
-    const json = result.stdout.split("\n")[1];
-    const data = JSON.parse(json);
-
-    return {
-      editId: data.editId,
-      reportId: data.reportId,
-    };
-  });
+  cy.request("POST", "http://localhost:3000/api/debug/create-audit", {
+    isComplete: options?.isComplete,
+    noImprovements: options?.hasNoImprovementsComments,
+  }).its("body");
 });
 
 interface CreateTestAccountOptions {
   login?: boolean;
 }
 
+/**
+ * Create a test account with specific options by calling debug API endpoints.
+ */
 Cypress.Commands.add(
   "createTestAccount",
   (options?: CreateTestAccountOptions) => {

@@ -211,8 +211,7 @@ describe("Account", () => {
       });
     });
 
-    // FIXME: 500 error on submit feedback
-    it.skip("User can delete their account", () => {
+    it("User can delete their account", () => {
       cy.createTestAccount({ login: true }).then(({ password }) => {
         cy.visit("http://localhost:3000/compte/parametres");
 
