@@ -23,11 +23,10 @@ import { PrismaService } from "./prisma.service";
     AuthModule,
     ProfileModule
   ],
-  // FIXME: use config module
   providers: process.env.DEBUG_ENDPOINTS ? [PrismaService] : [],
   controllers: [
     HealthCheckController,
-    // FIXME: use config module
+    // enable debug enpoints only when the DEBUG_ENDPOINTS variable is set
     ...(process.env.DEBUG_ENDPOINTS ? [DebugController] : [])
   ]
 })

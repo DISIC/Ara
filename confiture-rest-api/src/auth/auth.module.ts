@@ -31,7 +31,6 @@ import { CreateAccountController } from "./create-account.controller";
     FeedbackModule,
     AuditsModule
   ],
-  // FIXME: use config module
-  exports: process.env.DEBUG_ENDPOINTS ? [AuthService] : []
+  exports: [AuthService]
 })
 export class AuthModule {}
