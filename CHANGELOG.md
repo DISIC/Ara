@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 13/12/2024
+
+### Corrections 🐛
+
+- Corrige la position des infobulle "Non-applicable" sur la liste des audits ([#904](https://github.com/DISIC/Ara/pull/904))
+
 ## 12/12/2024
 
 ### Corrections 🐛
