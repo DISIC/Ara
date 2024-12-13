@@ -10,6 +10,8 @@
     "lint-staged": "^15.2.0"
   },
   "scripts": {
+    "tests:open": "yarn cypress open",
+    "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build"
   },
   "dependencies": {

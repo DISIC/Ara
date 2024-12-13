@@ -133,7 +133,7 @@ function copyAuditLink(uniqueId: string) {
 }
 
 function copyReportLink(uniqueId: string) {
-  const url = `${window.location.origin}/rapports/${uniqueId}`;
+  const url = `${window.location.origin}/rapport/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
     notify(
@@ -174,8 +174,8 @@ function copyStatementLink(uniqueId: string) {
         'fr-badge--purple-glycine': isInProgress || isNotStarted
       }"
     >
-      <span class="fr-sr-only">Statut </span>
-      {{ isInProgress || isNotStarted ? "En cours" : "Terminé" }}
+      <span class="fr-sr-only">Statut </span
+      >{{ isInProgress || isNotStarted ? "En cours" : "Terminé" }}
     </p>
 
     <!-- Creation date -->
@@ -273,7 +273,7 @@ function copyStatementLink(uniqueId: string) {
             ? "Continuer l’audit"
             : "Voir le rapport"
       }}
-      <span v-if="isInProgress" class="fr-sr-only">
+      <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
         {{ audit.procedureName }}</span
       >
       <span v-else class="fr-sr-only"
