@@ -123,7 +123,7 @@ const backLinkLabel = computed(() => {
       id="procedure-name"
       v-model="procedureName"
       class="fr-mb-6w"
-      label="Nom du site audité"
+      label="Nom du site ou du service audité"
       required
       @update:model-value="emit('change')"
     />
