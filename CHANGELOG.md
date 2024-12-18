@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 18/12/2024
+
+### Corrections 🐛
+
+- Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport ([#879](https://github.com/DISIC/Ara/pull/879))
+
 ## 13/12/2024
 
 ### Corrections 🐛
