@@ -598,7 +598,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Autres changements ⚙️
 
 - Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
-- Mise à jour de l’adresse email de contact : ara@design.numerique.gouv.fr ([#328](https://github.com/DISIC/Ara/pull/328))
+- Mise à jour de l’adresse email de contact : <ara@design.numerique.gouv.fr> ([#328](https://github.com/DISIC/Ara/pull/328))
 
 ## 08/03/2023
 
