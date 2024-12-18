@@ -112,7 +112,8 @@ function fillSettings() {
       id="procedure-name"
       v-model="procedureName"
       class="fr-mb-6w"
-      label="Nom du site à auditer"
+      label="Nom du site ou du service à auditer"
+      hint="Exemples : Service-Public, Demande de permis de conduire."
       required
     />
 
