@@ -22,7 +22,7 @@ describe("Audit", () => {
     // Fill fields
     cy.contains("106 critères").click();
 
-    cy.contains("Nom du site à auditer")
+    cy.contains("Nom du site ou du service à auditer")
       .parent()
       .find("input")
       .type(auditJson.procedureName);
@@ -97,12 +97,12 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
-      cy.getByLabel("Nom du site audité").should(
+      cy.getByLabel("Nom du site ou du service audité").should(
         "have.value",
         "Audit de mon petit site",
       );
 
-      cy.getByLabel("Nom du site audité")
+      cy.getByLabel("Nom du site ou du service audité")
         .clear()
         .type("Audit de mon gros site");
 
