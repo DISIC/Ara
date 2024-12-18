@@ -287,7 +287,7 @@ describe("Account", () => {
 
       cy.contains("106 critères").click();
 
-      cy.contains("Nom du site à auditer")
+      cy.contains("Nom du site ou du service à auditer")
         .parent()
         .find("input")
         .type(auditJson.procedureName);
@@ -327,7 +327,7 @@ describe("Account", () => {
 
       cy.contains("106 critères").click();
 
-      cy.contains("Nom du site à auditer")
+      cy.contains("Nom du site ou du service à auditer")
         .parent()
         .find("input")
         .type(auditJson.procedureName);
