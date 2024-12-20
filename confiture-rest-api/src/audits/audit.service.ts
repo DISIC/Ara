@@ -1316,9 +1316,19 @@ export class AuditService {
 
     const unorderedAudits = audits.map((a) => {
       const allResults = [
-        ...a.transverseElementsPage.results,
+        // ...a.transverseElementsPage.results,
         ...a.pages.flatMap((p) => p.results)
       ];
+
+      console.log(
+        allResults.length +
+          " / " +
+          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length
+      );
+      console.log(
+        allResults.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
+          .length
+      );
 
       const progress =
         allResults.filter((r) => r.status !== CriterionResultStatus.NOT_TESTED)
@@ -1396,7 +1406,8 @@ export class AuditService {
               ? "COMPLETED"
               : "IN_PROGRESS",
         estimatedCsvSize: 502 + a.pages.length * 318,
-        statementIsPublished
+        statementIsPublished,
+        progress
       };
     });
 

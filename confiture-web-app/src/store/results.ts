@@ -172,6 +172,7 @@ export const useResultsStore = defineStore("results", {
         (t) => t.status !== CriteriumResultStatus.NOT_TESTED
       ).length;
 
+      console.log(testedCriteria + " / " + total);
       return testedCriteria / total;
     }
   },
