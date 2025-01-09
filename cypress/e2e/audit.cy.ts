@@ -203,12 +203,17 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Annoter l’audit").click();
+      cy.get(".notes-item:last-of-type")
+        .contains("button", "Annoter l’audit")
+        .click();
       cy.getByLabel("Remarques et recommandations générales")
         .clear()
         .type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
-      cy.contains("Annoter l’audit").click();
+
+      cy.get(".notes-item:last-of-type")
+        .contains("button", "Annoter l’audit")
+        .click();
       cy.contains("Annotations de l’audit");
     });
   });
