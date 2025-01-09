@@ -25,7 +25,6 @@
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
     "vue": "^3.3.8",
-    "vue-matomo": "^4.2.0",
     "vue-router": "^4.2.5",
     "vite": "^4.5.0",
     "@vitejs/plugin-vue": "^4.4.1",
