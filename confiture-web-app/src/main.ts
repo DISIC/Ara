@@ -9,10 +9,10 @@ import { createHead } from "@unhead/vue";
 import { marked } from "marked";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-// @ts-expect-error vue-matomo does not have any sort of typescript support :'(
-import Matomo from "vue-matomo";
 
 import App from "./App.vue";
+// @ts-expect-error the matomo plugin is a js file without type declarations
+import Matomo from "./matomo.js";
 import router from "./router";
 
 // markdown configuration
@@ -47,7 +47,8 @@ if (import.meta.env.VITE_MATOMO_ENABLE) {
   app.use(Matomo, {
     host: "https://stats.data.gouv.fr",
     siteId: 269,
-    router
+    router,
+    enableLinkTracking: false
   });
 }
 
