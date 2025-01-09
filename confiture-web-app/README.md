@@ -6,7 +6,7 @@ La partie style utilise le [DSFR (Système de Design de l'État)](https://www.sy
 
 ## Prérequis
 
-- [Node.js](https://nodejs.org)
+- [Node.js](https://nodejs.org) en version `22.13.0`
 - [Yarn](https://yarnpkg.com)
 
 ## Installation
