@@ -857,10 +857,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.55.0.tgz#b721d52060f369aa259cf97392403cb9ce892ec6"
   integrity sha512-qQfo2mxH5yVom1kacMtZZJFVdW+E70mqHMJvVg6WTLo+VBuQJ4TojZlfWBjK0ve5BdEeNAVxOsl/nvNMpJOaJA==
 
-"@gouvfr/dsfr@1.12.1":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.12.1.tgz#c25df1df5d3bacc4b847a1856c1d7f22219304a8"
-  integrity sha512-2zXBHSDjjlaNcxGtqbPQN/vyjJQKIRUP3CKOYoodj2/45pAWM1AXo3kCwXFLUo5kQOltShZUquQ7hSeVg4RRtA==
+"@gouvfr/dsfr@1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.13.0.tgz#5f9661d3093acea8fd4fa9154ad948f051ad5998"
+  integrity sha512-I6JLYfE63dogk5qOx69gMfW/bKsm+daFgfx2QX75isbKBy5khlJdVxOD0A6ohvywvUJlEcZTmVK8rNHeVvGmgw==
 
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
