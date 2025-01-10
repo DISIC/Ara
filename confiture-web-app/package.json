@@ -13,7 +13,7 @@
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
   "dependencies": {
-    "@gouvfr/dsfr": "1.12.1",
+    "@gouvfr/dsfr": "1.13.0",
     "@sentry/tracing": "^7.37.2",
     "@sentry/vue": "^7.37.2",
     "@unhead/vue": "^1.5.3",
