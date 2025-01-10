@@ -4,7 +4,7 @@ Le projet est une API [Nest.js](https://nestjs.com/) et utilise une base de donn
 
 ## Prérequis
 
-- [Node.js](https://nodejs.org)
+- [Node.js](https://nodejs.org) en version `22.13.0`
 - [Yarn](https://yarnpkg.com)
 - [Docker](https://www.docker.com)
 
