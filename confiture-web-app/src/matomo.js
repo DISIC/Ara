@@ -236,8 +236,8 @@ function getResolvedHref(router, path) {
   /** @type string */
   const href = router.resolve(path).href;
 
-  // For example : `my-site.org/audits/my_secret_id/generation`
-  // is transformed into `my-site.org/audits/*****/generation`
-  const urlRegex = /^(.+\/audits\/)(.+)(\/.+)$/i;
+  // For example : `/audits/my_secret_id/generation`
+  // is transformed into `/audits/*****/generation`
+  const urlRegex = /^(.*\/audits\/)(.+)(\/.+)$/i;
   return href.replace(urlRegex, "$1*****$3");
 }
