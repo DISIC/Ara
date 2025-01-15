@@ -20,7 +20,7 @@ import PageMeta from "../../components/PageMeta";
       Stéphanie Schaer, directrice interministérielle du numérique.
     </p>
     <h3>Pourquoi et comment vos données personnelles sont traitées ?</h3>
-    <div class="fr-table fr-table--no-caption">
+    <div class="fr-table fr-table--bordered fr-table--no-caption">
       <div class="fr-table__wrapper">
         <div class="fr-table__container">
           <div class="fr-table__content">
@@ -28,33 +28,38 @@ import PageMeta from "../../components/PageMeta";
               <caption>
                 Traitement des données personnelles
               </caption>
-              <tr>
-                <th scope="col">Données</th>
-                <th scope="col">Finalité poursuivie</th>
-                <th scope="col">Fondement juridique</th>
-                <th scope="col">Durée de conservation</th>
-              </tr>
-              <tr>
-                <td>Adresse électronique</td>
-                <td>
-                  Permettre la création de compte. <br />Transmettre par
-                  courriel les URL liées à l’audit
-                </td>
-                <td>
-                  Mission d’intérêt public relevant de la compétence de la DINUM
-                  (article 6 – 5° du décret n° 2019-1088 du 25 octobre 2019)
-                </td>
-                <td rowspan="2">
-                  Suppression du compte possible par l’utilisateur.<br />Sans
-                  connexion de l’utilisateur à son compte dans un délai de 5
-                  ans, ses données sont supprimées.
-                </td>
-              </tr>
-              <tr>
-                <td>Prénom et nom</td>
-                <td>« Signer » le rapport d’accessibilité</td>
-                <td>Intérêt légitime</td>
-              </tr>
+              <thead>
+                <tr>
+                  <th scope="col">Données</th>
+                  <th scope="col">Finalité poursuivie</th>
+                  <th scope="col">Fondement juridique</th>
+                  <th scope="col">Durée de conservation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Adresse électronique</td>
+                  <td>
+                    Permettre la création de compte. <br />Transmettre par
+                    courriel les URL liées à l’audit
+                  </td>
+                  <td>
+                    Mission d’intérêt public relevant de la compétence de la
+                    DINUM (article 6 – 5° du décret n° 2019-1088 du 25 octobre
+                    2019)
+                  </td>
+                  <td rowspan="2">
+                    Suppression du compte possible par l’utilisateur.<br />Sans
+                    connexion de l’utilisateur à son compte dans un délai de 5
+                    ans, ses données sont supprimées.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Prénom et nom</td>
+                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>Intérêt légitime</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -68,7 +73,7 @@ import PageMeta from "../../components/PageMeta";
       et du respect de conditions strictes de confidentialité, d’usage et de
       protection des données.
     </p>
-    <div class="fr-table fr-table--no-caption">
+    <div class="fr-table fr-table--bordered fr-table--no-caption">
       <div class="fr-table__wrapper">
         <div class="fr-table__container">
           <div class="fr-table__content">
@@ -76,18 +81,22 @@ import PageMeta from "../../components/PageMeta";
               <caption>
                 Partenaire traitant les données personnelles
               </caption>
-              <tr>
-                <th scope="col">Partenaire</th>
-                <th scope="col">Pays destinataire</th>
-                <th scope="col">Traitement réalisé</th>
-                <th scope="col">Garanties</th>
-              </tr>
-              <tr>
-                <td>OVH</td>
-                <td>France</td>
-                <td>Stockage des données en base de données</td>
-                <td>Clauses de sous-traitance</td>
-              </tr>
+              <thead>
+                <tr>
+                  <th scope="col">Partenaire</th>
+                  <th scope="col">Pays destinataire</th>
+                  <th scope="col">Traitement réalisé</th>
+                  <th scope="col">Garanties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>OVH</td>
+                  <td>France</td>
+                  <td>Stockage des données en base de données</td>
+                  <td>Clauses de sous-traitance</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
