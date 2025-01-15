@@ -10,7 +10,7 @@ import PageMeta from "../../components/PageMeta";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Données personnelles, suivi d’audience et vie privée</h1>
     <h2>Données personnelles</h2>
-    <h3>Qui est responsable de Ara ?</h3>
+    <h3>Qui est responsable d’Ara ?</h3>
     <p>
       Ara est un outil d’audit d’accessibilité numérique développé au sein la
       direction interministérielle du numérique (DINUM).
@@ -138,8 +138,8 @@ import PageMeta from "../../components/PageMeta";
       saurait dépasser 1 mois à compter de la réception de votre demande.
     </p>
 
-    <h2>Suivi d'audience et vie privée</h2>
-    <h3>Cookies déposés et opt-out</h3>
+    <h2>Suivi d’audience et vie privée</h2>
+    <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
     <p>
       Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
       lorsque vous le consultez. Cela nous permet de mesurer le nombre de
@@ -151,21 +151,21 @@ import PageMeta from "../../components/PageMeta";
     </h3>
     <p>
       Nous respectons simplement la loi, qui dit que certains outils de suivi
-      d'audience, correctement configurés pour respecter la vie privée, sont
-      exemptés d'autorisation préalable.
+      d’audience, correctement configurés pour respecter la vie privée, sont
+      exemptés d’autorisation préalable.
     </p>
     <p>
       Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
       conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
-      que votre adresse IP, par exemple, est anonymisée avant d'être
-      enregistrée. Il est donc impossible d'associer vos visites sur ce site à
+      que votre adresse IP, par exemple, est anonymisée avant d’être
+      enregistrée. Il est donc impossible d’associer vos visites sur ce site à
       votre personne.
     </p>
 
     <h3>Je contribue à enrichir vos données, puis-je y accéder ?</h3>
     <p>
       Bien sûr ! Les statistiques d’usage sont disponibles en accès libre sur
-      stats.data.gouv.fr.
+      <a href="https://stats.data.gouv.fr/">stats.data.gouv.fr</a>.
     </p>
   </section>
 </template>
