@@ -255,10 +255,6 @@ const siteUrl = computed(() => {
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
-
-      <RouterLink class="fr-link" :to="{ name: 'context' }">
-        Voir le contexte de l’audit
-      </RouterLink>
     </div>
 
     <div class="fr-tabs">
