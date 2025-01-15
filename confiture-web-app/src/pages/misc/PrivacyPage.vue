@@ -10,7 +10,7 @@ import PageMeta from "../../components/PageMeta";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Données personnelles, suivi d’audience et vie privée</h1>
     <h2>Données personnelles</h2>
-    <h3>Qui est responsable d’Ara ?</h3>
+    <h3>Qui est responsable d’Ara ?</h3>
     <p>
       Ara est un outil d’audit d’accessibilité numérique développé au sein la
       direction interministérielle du numérique (DINUM).
