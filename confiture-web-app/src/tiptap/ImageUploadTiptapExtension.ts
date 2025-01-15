@@ -174,8 +174,10 @@ function handleDataTransfer(
           handleFileImport(uniqueId, view, pos, file, options);
         }
       });
+      return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   // Handle multiple files
