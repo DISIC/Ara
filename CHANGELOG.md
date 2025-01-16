@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 16/01/2025
+
+### Autres changements ⚙️
+
+- Supprime la page "Contexte" ([#924](https://github.com/DISIC/Ara/pull/924))
+
 ## 10/01/2025
 
 ### Autres changements ⚙️
