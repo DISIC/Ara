@@ -24,7 +24,6 @@ import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
 import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
-import ContextPage from "./pages/report/ContextPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
@@ -242,23 +241,6 @@ const router = createRouter({
       }
     },
     // Report pages
-    {
-      path: "/rapport/:uniqueId/contexte",
-      name: "context",
-      component: ContextPage,
-      meta: {
-        name: "Contexte",
-        hideHomeLink: true
-      }
-    },
-    // TODO: remove this redirect in few months (17/04/2024)
-    {
-      path: "/rapports/:uniqueId/contexte",
-      name: "context-old",
-      redirect: () => {
-        return { name: "context" };
-      }
-    },
     {
       path: "/rapport/:uniqueId/:tab?",
       name: "report",
