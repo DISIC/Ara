@@ -8,12 +8,25 @@ interface SiteMapLink {
 
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
+import { useAccountStore } from "../../store";
+
+const accountStore = useAccountStore();
 
 const links: SiteMapLink[] = [
+  ...(accountStore.account?.email
+    ? [
+        { label: "Mes audits", name: "account-dashboard" },
+        { label: "Mon compte", name: "account-settings" }
+      ]
+    : []),
+  { label: "Notes de versions", name: "changelog" },
+  { label: "Feuille de route", name: "roadmap" },
   { label: "Donner mon avis", name: "feedback" },
+  { label: "Plan du site", name: "site-map" },
   { label: "Accessibilité", name: "accessibility" },
   { label: "Mentions légales", name: "legal" },
-  { label: "Données personnelles", name: "privacy" }
+  { label: "Données personnelles", name: "privacy" },
+  { label: "Contact et contributions", name: "contact" }
 ];
 </script>
 
