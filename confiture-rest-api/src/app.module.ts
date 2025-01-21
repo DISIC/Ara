@@ -7,6 +7,7 @@ import { configValidationSchema } from "./config-validation-schema";
 import { MailModule } from "./mail/mail.module";
 import { AuthModule } from "./auth/auth.module";
 import { ProfileModule } from "./profile/profile.module";
+import { SystemModule } from "./system/system.module";
 import { UserMiddleware } from "./auth/user.middleware";
 
 @Module({
@@ -19,7 +20,8 @@ import { UserMiddleware } from "./auth/user.middleware";
     AuditsModule,
     MailModule,
     AuthModule,
-    ProfileModule
+    ProfileModule,
+    SystemModule
   ],
   controllers: [HealthCheckController]
 })

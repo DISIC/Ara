@@ -1,3 +1,4 @@
+import ky from "ky";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -17,11 +18,16 @@ export const useSystemStore = defineStore("system", {
       isOnline.value = false;
     }
 
+    async function pruneUploads() {
+      await ky.post(`/api/system/prune-uploads`);
+    }
+
     window.addEventListener("online", onOnline);
     window.addEventListener("offline", onOffline);
 
     return {
-      isOnline
+      isOnline,
+      pruneUploads
     };
   }
 });
