@@ -556,7 +556,7 @@ export class AuditService {
   }
 
   /**
-   * Returns true if stored filed was found and deleted. False if not found.
+   * Returns true if stored file has been found and deleted. False if not found.
    */
   async deleteAuditFile(
     editUniqueId: string,
@@ -584,6 +584,42 @@ export class AuditService {
     await this.prisma.auditFile.delete({
       where: {
         id: fileId
+      }
+    });
+
+    return true;
+  }
+
+  /**
+   * Returns true if all stored file have been found and deleted. False otherwise.
+   */
+  async deleteAuditFiles(fileIds: number[]): Promise<boolean> {
+    const storedFiles = await this.prisma.auditFile.findMany({
+      select: {
+        id: true,
+        key: true,
+        thumbnailKey: true
+      },
+      where: {
+        id: {
+          in: fileIds
+        }
+      }
+    });
+
+    const filesToDelete = storedFiles.map((e) => e.key);
+    const thumbnailsToDelete = storedFiles
+      .map((e) => e.thumbnailKey)
+      .filter((e) => e != null);
+    await this.fileStorageService.deleteMultipleFiles(
+      ...filesToDelete.concat(thumbnailsToDelete)
+    );
+
+    await this.prisma.auditFile.deleteMany({
+      where: {
+        id: {
+          in: fileIds
+        }
       }
     });
 
