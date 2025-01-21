@@ -156,16 +156,17 @@ export const useAuditStore = defineStore("audit", {
 
     async deleteAuditFile(uniqueId: string, fileId: number) {
       this.increaseCurrentRequestCount();
+
       await ky
         .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
+        .then(() => {
+          const notesFiles = this.entities[uniqueId].notesFiles || [];
+          const fileIndex = notesFiles.findIndex((f) => f.id === fileId);
+          notesFiles.splice(fileIndex, 1);
+        })
         .finally(() => {
           this.decreaseCurrentRequestCount();
         });
-
-      const notesFiles = this.entities[uniqueId].notesFiles || [];
-      const fileIndex = notesFiles.findIndex((f) => f.id === fileId);
-
-      notesFiles.splice(fileIndex, 1);
     },
 
     async publishAudit(uniqueId: string): Promise<Audit> {
