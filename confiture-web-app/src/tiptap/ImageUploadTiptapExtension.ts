@@ -413,7 +413,42 @@ export const ImageUploadTiptapExtension =
         PlaceholderPlugin
       ];
     }
-    // Deactivate vertical cursor?
+    // //Compare JSONContent before and after update
+    // onUpdate() {
+    //   const editor = this.editor;
+    //   const currentImages: JSONContent[] = [];
+    //   editor.getJSON().content?.forEach((item: JSONContent) => {
+    //     if (item.type === "image") {
+    //       currentImages.push(item?.attrs?.src);
+    //     }
+    //   });
+    //   const deletedImages = previousImages.filter(
+    //     (url) => !currentImages.includes(url)
+    //   );
+    //   for (const url of deletedImages) {
+    //     const uniqueId = this.options.uniqueId;
+    //     const baseUri = "/uploads/";
+    //     // Not an uploaded file?
+    //     if (url.indexOf(baseUri) !== 0) {
+    //       continue;
+    //     }
+    //     const key = url.slice(baseUri.length);
+    //     if (!key) {
+    //       // No key in URL?
+    //       //TODO display error
+    //     }
+    //     const auditStore = useAuditStore();
+    //     auditStore.deleteAuditFileByKey(uniqueId, key!).then(
+    //       () => {},
+    //       async (reason: any) => {
+    //         window.alert(await handleFileDeleteError(reason));
+    //       }
+    //     );
+    //   }
+    //   previousImages = currentImages;
+    // }
+
+    // // Deactivate vertical cursor?
     // extendNodeSchema() {
     //   return {
     //     disableDropCursor: (
