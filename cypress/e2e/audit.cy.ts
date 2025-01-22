@@ -459,7 +459,6 @@ describe("Audit", () => {
   it("User can edit a criterium content", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains('button[role="tab"]', "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme").click();
@@ -470,7 +469,7 @@ describe("Audit", () => {
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
-      cy.get(".criterium-container").contains("majeur").click();
+      cy.get(".criterium-container label").contains("majeur").click();
       cy.get(".criterium-container").contains("Facile à corriger").click();
     });
   });
