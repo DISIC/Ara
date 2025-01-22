@@ -17,9 +17,9 @@ Ces tests nous ont permis d’identifier des pistes d’améliorations, des poin
 ## À venir <span aria-hidden="true">👍</span>
 <p class="fr-text--sm mention-grey">Fonctionnalités prochainement en conception ou en développement.</p>
 
-La notion d’anomalie arrive. Une anomalie comprend un champ de saise, une ou plusieurs images, un impact et un degrès de facilité. 
+La notion d’anomalie arrive. Une anomalie comprend un champ de saisie, une ou plusieurs images, un impact et un degrès de facilité. 
 * Pouvoir associer plusieurs anomalies à un critère
-* Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des crières)
+* Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des critères)
 * Refonte du rapport pour mettre en avant la liste des anomalies relevées
 * Appliquer le résultat d'un critère à plusieurs pages de l’échantillon
 
