@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Autres changements
 
+- Affiche le taux de progression de l’audit sur la page "Mes audits" ([#914](https://github.com/DISIC/Ara/pull/914))
 - Ne demande pas son adresse email à un utilisateur déjà connecté lors de la réinitialisation de mot de passe ([#926](https://github.com/DISIC/Ara/pull/926))
 
 ## 16/01/2025
