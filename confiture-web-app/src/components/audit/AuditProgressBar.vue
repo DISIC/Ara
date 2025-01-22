@@ -59,7 +59,7 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
 
 .audit-progress--inline {
   grid-template-rows: v-bind(progressBarSize);
-  gap: 0 1rem;
+  gap: 0 0.5rem;
 
   .audit-progress-bar {
     height: v-bind(progressBarSize);
