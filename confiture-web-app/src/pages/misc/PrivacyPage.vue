@@ -4,158 +4,60 @@ import PageMeta from "../../components/PageMeta";
 
 <template>
   <PageMeta
-    title="Données personnelles"
+    title="Données personnelles, suivi d’audience et vie privée"
     description="Politique de confidentialité des données personnelles du site ara.numerique.gouv.fr"
   />
   <section class="fr-my-0 fr-mx-auto content">
-    <h1>Politique de confidentialité des données personnelles</h1>
-    <h2>Traitement des données</h2>
+    <h1>Données personnelles, suivi d’audience et vie privée</h1>
+    <h2>Données personnelles</h2>
+    <h3>Qui est responsable d’Ara ?</h3>
     <p>
-      La Direction interministérielle du numérique s’engage à ce que le
-      traitement des données personnelles effectué sur ara.numerique.gouv.fr
-      soit conforme au règlement général sur la protection des données (RGPD) et
-      à la loi Informatique et Libertés.
-    </p>
-
-    <h2>Objet du traitement</h2>
-    <p>
-      Ara est un outil d’audit d’accessibilité numérique. Un audit est réalisé
-      par une personne qui doit ou peut saisir les informations personnelles
-      suivantes&nbsp;:
-    </p>
-    <ul>
-      <li>
-        L’<strong>adresse électronique</strong> est obligatoire au bon
-        fonctionnement d’Ara&nbsp;:
-        <ul>
-          <li>
-            pour que l’auditeur ou auditrice reçoive par courriel les URL liées
-            à l’audit en cours de réalisation&nbsp;;
-          </li>
-          <li>comme identifiant lors de la création d’un compte.</li>
-        </ul>
-      </li>
-      <li>
-        Les <strong>prénom</strong> et <strong>nom</strong> de l’auditeur ou
-        auditrice peuvent être saisis lors de la création du compte et sont
-        ajoutés comme <em>signature</em> du rapport d’accessibilité. Ils peuvent
-        également être saisis lors du paramétrage d’un audit (en mode non
-        connecté) ou depuis son profil (en mode connecté).
-      </li>
-    </ul>
-    <p>
-      Lors de la suppression de l’audit, les données de l’audit, le rapport de
-      l’audit et les données personnelles de l’auditeur ou auditrice sont
-      supprimées.
+      Ara est un outil d’audit d’accessibilité numérique développé au sein la
+      direction interministérielle du numérique (DINUM).
     </p>
     <p>
-      La suppression du compte est possible depuis son compte. Elle permet de
-      supprimer toutes les données personnelles de l'auditeur ou auditrice.
+      Le responsable du traitement des données est la DINUM, représentée par
+      Stéphanie Schaer, directrice interministérielle du numérique.
     </p>
-    <h2>Vos droits sur vos données</h2>
-    <p>
-      Vous pouvez exercer vos droits ou obtenir des informations concernant le
-      traitement de vos données personnelles par courriel à l’adresse suivante :
-      <strong>contact@design.numerique.gouv.fr</strong>.
-    </p>
-    <p>
-      Si la réponse apportée ne vous convient pas, vous pouvez alors saisir le
-      délégué à la protection des données des services du Premier ministre.
-    </p>
-    <ul>
-      <li>par courriel à l’adresse suivante : dpd@pm.gouv.fr ;</li>
-      <li>
-        par courrier à l’adresse suivante :<br />
-        Service du Premier ministre<br />
-        À l’attention du délégué à la protection des données (DPD)<br />
-        56 rue de Varenne<br />75007 Paris
-      </li>
-    </ul>
-
-    <h2>À propos des <span lang="en">cookies</span></h2>
-    <p>
-      Le site ara.numérique.gouv.fr utilise des
-      <span lang="en">cookies</span> uniquement à des fins statistiques de
-      mesure d’audience.
-    </p>
-    <h3>Qu’est-ce qu’un &laquo;<span lang="en">cookie</span>&raquo; ?</h3>
-    <p>
-      Un &laquo;<span lang="en">cookie</span>&raquo; est une suite
-      d’informations, généralement de petite taille et identifié par un nom, qui
-      peut être transmis à votre navigateur par un site
-      <span lang="en">web</span> sur lequel vous vous connectez. Votre
-      navigateur <span lang="en">web</span> le conservera pendant une certaine
-      durée, et le renverra au serveur web chaque fois que vous vous y
-      re-connecterez. Les cookies ont de multiples usages : ils peuvent servir à
-      mémoriser votre identifiant client auprès d’un site marchand, le contenu
-      courant de votre panier d’achat, un identifiant permettant de tracer votre
-      navigation pour des finalités statistiques ou publicitaires, etc.
-    </p>
-
-    <h4>
-      Type de <span lang="en">cookie</span> déposé sur ara.numerique.gouv.fr
-    </h4>
-
-    <p>
-      L’outil de mesure d’audience que nous utilisons, Matomo (ex-Piwik), est
-      paramétré de façon à ce que les informations recueillies soient
-      anonymisées. Le petit fichier texte (« <span lang="en">cookie</span> »)
-      déposé sur votre ordinateur lorsque vous le consultez nous permet
-      simplement de connaître le nombre de visites et les pages les plus
-      consultées, et ainsi d’améliorer nos contenus et votre expérience, sans
-      pour autant permettre de vous identifier personnellement.
-    </p>
-
-    <p>
-      Nous sommes ainsi en conformité avec la réglementation «
-      <span lang="en">cookie</span> » de la CNIL et exemptés d’autorisation
-      préalable. C’est pour cela que vous n’avez pas eu besoin de cliquer sur un
-      bloc pour accepter le dépôt de cookies !
-    </p>
-    <div class="fr-table fr-table--no-caption">
+    <h3>Pourquoi et comment vos données personnelles sont traitées ?</h3>
+    <div class="fr-table fr-table--bordered fr-table--no-caption">
       <div class="fr-table__wrapper">
         <div class="fr-table__container">
           <div class="fr-table__content">
             <table class="fr-cell--multiline">
               <caption>
-                <span lang="en">Cookies</span>
-                de mesure d’audience
+                Traitement des données personnelles
               </caption>
               <thead>
                 <tr>
-                  <th scope="col">Cookie lié au service</th>
-                  <th scope="col">Nom technique</th>
-                  <th scope="col">Finalité</th>
+                  <th scope="col">Données</th>
+                  <th scope="col">Finalité poursuivie</th>
+                  <th scope="col">Fondement juridique</th>
                   <th scope="col">Durée de conservation</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Matomo</td>
-                  <td>_pk_id#</td>
+                  <td>Adresse électronique</td>
                   <td>
-                    Permet de stocker votre identifiant unique de visite via
-                    Matomo
+                    Permettre la création de compte. <br />Transmettre par
+                    courriel les URL liées à l’audit
                   </td>
-                  <td>13 mois</td>
+                  <td>
+                    Mission d’intérêt public relevant de la compétence de la
+                    DINUM (article 6 – 5° du décret n° 2019-1088 du 25 octobre
+                    2019)
+                  </td>
+                  <td rowspan="2">
+                    Suppression du compte possible par l’utilisateur.<br />Sans
+                    connexion de l’utilisateur à son compte dans un délai de 5
+                    ans, ses données sont supprimées.
+                  </td>
                 </tr>
                 <tr>
-                  <td>Matomo</td>
-                  <td>_pk_ses#</td>
-                  <td>
-                    Permet de stocker temporairement vos données de visite via
-                    Matomo
-                  </td>
-                  <td>30 minutes</td>
-                </tr>
-                <tr>
-                  <td>Matomo</td>
-                  <td>piwik_ignore</td>
-                  <td>
-                    Permet de mémoriser votre choix d’ignorer la mesure
-                    d’audience via Matomo
-                  </td>
-                  <td>2 ans</td>
+                  <td>Prénom et nom</td>
+                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>Intérêt légitime</td>
                 </tr>
               </tbody>
             </table>
@@ -163,6 +65,108 @@ import PageMeta from "../../components/PageMeta";
         </div>
       </div>
     </div>
+    <h3>Qui nous aide à traiter vos données personnelles ?</h3>
+    <p>
+      Afin d’héberger vos données personnelles, nous faisons appel à un
+      sous-traitant. Avant de lui transmettre vos données, nous nous sommes
+      assurés de la mise en œuvre par ses sous-traitants de garanties adéquates
+      et du respect de conditions strictes de confidentialité, d’usage et de
+      protection des données.
+    </p>
+    <div class="fr-table fr-table--bordered fr-table--no-caption">
+      <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+          <div class="fr-table__content">
+            <table class="fr-cell--multiline">
+              <caption>
+                Partenaire traitant les données personnelles
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Partenaire</th>
+                  <th scope="col">Pays destinataire</th>
+                  <th scope="col">Traitement réalisé</th>
+                  <th scope="col">Garanties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>OVH</td>
+                  <td>France</td>
+                  <td>Stockage des données en base de données</td>
+                  <td>Clauses de sous-traitance</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h3>Quels sont vos droits ?</h3>
+    <p>Vous disposez :</p>
+    <ul>
+      <li>d’un droit d’information et d’un droit d’accès à vos données ;</li>
+      <li>d’un droit à la limitation du traitement de vos données ;</li>
+      <li>d’un droit de rectification ;</li>
+      <li>d’un droit d’opposition.</li>
+    </ul>
+    <p>
+      Pour les exercer, contactez-nous par message électronique : dpd@pm.gouv.fr
+    </p>
+    <p>Ou par voie postale à l’adresse suivante :</p>
+    <p>
+      Services du Premier ministre<br />
+      À l’attention du délégué à la protection des données (DPD)<br />
+      56 rue de Varenne<br />
+      75007 Paris
+    </p>
+    <p>
+      Puisque ce sont des droits personnels, nous ne traiterons votre demande
+      que si nous sommes en mesure de vous identifier. Dans le cas où nous ne
+      parvenons pas à vous identifier, nous pouvons être amenés à vous demander
+      une preuve de votre identité.
+    </p>
+    <p>
+      Pour vous aider dans votre démarche, vous trouverez un modèle de demande
+      élaboré par la CNIL ici :
+      <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces"
+        >www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a
+      >.
+    </p>
+    <p>
+      Nous nous engageons à vous répondre dans un délai raisonnable qui ne
+      saurait dépasser 1 mois à compter de la réception de votre demande.
+    </p>
+
+    <h2>Suivi d’audience et vie privée</h2>
+    <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
+    <p>
+      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
+      lorsque vous le consultez. Cela nous permet de mesurer le nombre de
+      visites et de comprendre quelles sont les pages les plus consultées.
+    </p>
+
+    <h3>
+      Ce site n’affiche pas de bannière de consentement aux cookies, pourquoi ?
+    </h3>
+    <p>
+      Nous respectons simplement la loi, qui dit que certains outils de suivi
+      d’audience, correctement configurés pour respecter la vie privée, sont
+      exemptés d’autorisation préalable.
+    </p>
+    <p>
+      Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
+      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
+      que votre adresse IP, par exemple, est anonymisée avant d’être
+      enregistrée. Il est donc impossible d’associer vos visites sur ce site à
+      votre personne.
+    </p>
+
+    <h3>Je contribue à enrichir vos données, puis-je y accéder ?</h3>
+    <p>
+      Bien sûr ! Les statistiques d’usage sont disponibles en accès libre sur
+      <a href="https://stats.data.gouv.fr/">stats.data.gouv.fr</a>.
+    </p>
   </section>
 </template>
 

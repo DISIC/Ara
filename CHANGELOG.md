@@ -8,6 +8,12 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ne demande pas son adresse email à un utilisateur déjà connecté lors de la réinitialisation de mot de passe ([#926](https://github.com/DISIC/Ara/pull/926))
 
+## 16/01/2025
+
+### Autres changements ⚙️
+
+- Supprime la page "Contexte" ([#924](https://github.com/DISIC/Ara/pull/924))
+
 ## 10/01/2025
 
 ### Autres changements ⚙️
