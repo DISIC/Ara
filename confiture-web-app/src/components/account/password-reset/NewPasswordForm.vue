@@ -41,7 +41,11 @@ function submitPassword() {
 </script>
 
 <template>
-  <form class="wrapper" novalidate @submit.prevent="submitPassword">
+  <form
+    class="new-password-wrapper"
+    novalidate
+    @submit.prevent="submitPassword"
+  >
     <h1 class="fr-h3">Changer de mot de passe</h1>
 
     <DsfrPassword
@@ -73,7 +77,7 @@ function submitPassword() {
 </template>
 
 <style scoped>
-.wrapper {
+.new-password-wrapper {
   max-width: 25rem;
   margin: 0 auto;
 }
