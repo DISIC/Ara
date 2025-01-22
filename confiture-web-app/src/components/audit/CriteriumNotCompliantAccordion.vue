@@ -148,24 +148,40 @@ const title = "Erreur et recommandation";
       @update:model-value="$emit('update:userImpact', $event)"
     >
       <template #label>
-        Impact sur l’usager
-        <button
-          aria-describedby="tooltip"
-          type="button"
-          class="fr-btn fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
-          data-fr-js-tooltip-referent="true"
-        >
-          Informations sur l’impact usager
-        </button>
+        <div class="user-impact-label">
+          Impact sur l’usager
+          <button
+            aria-describedby="tooltip"
+            type="button"
+            class="fr-btn fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
+            data-fr-js-tooltip-referent="true"
+          >
+            Informations sur l’impact usager
+          </button>
 
-        <span
-          id="tooltip"
-          class="fr-tooltip fr-placement"
-          role="tooltip"
-          data-fr-js-tooltip="true"
-        >
-          lorem ipsum dolor sit amet consectetur adipiscing elit
-        </span>
+          <div
+            id="tooltip"
+            class="fr-tooltip fr-placement"
+            role="tooltip"
+            data-fr-js-tooltip="true"
+          >
+            <p class="fr-text--xs fr-mb-1w">
+              <strong>Impact bloquant</strong> : empêche complètement l’accès ou
+              l’utilisation.<br /><span>·</span> Exemple : il est impossible de
+              soumettre un formulaire au clavier.
+            </p>
+            <p class="fr-text--xs fr-mb-1w">
+              <strong>Impact majeur</strong> : rend l’accès ou l’utilisation
+              difficile.<br /><span>·</span> Exemple : les champs ne sont pas
+              regroupés.
+            </p>
+            <p class="fr-text--xs fr-mb-0">
+              <strong>Impact mineur</strong> : gêne légèrement sans empêcher
+              l’accès ou l’utilisation.<br /><span>·</span> Exemple : des
+              retours à la ligne sont utilisés pour espacer des textes.
+            </p>
+          </div>
+        </div>
       </template>
     </RadioGroup>
 
@@ -198,10 +214,9 @@ const title = "Erreur et recommandation";
   gap: 0.5rem;
 }
 
-.user-impact-container {
-  border: none;
+.user-impact-label {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 </style>
