@@ -143,11 +143,31 @@ const title = "Erreur et recommandation";
       class="fr-mb-4w"
       :model-value="userImpact"
       :items="userImpacts"
-      label="Impact sur l’usager"
       :default-value="null"
       :disabled="isOffline"
       @update:model-value="$emit('update:userImpact', $event)"
-    />
+    >
+      <template #label>
+        Impact sur l’usager
+        <button
+          aria-describedby="tooltip"
+          type="button"
+          class="fr-btn fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
+          data-fr-js-tooltip-referent="true"
+        >
+          Informations sur l’impact usager
+        </button>
+
+        <span
+          id="tooltip"
+          class="fr-tooltip fr-placement"
+          role="tooltip"
+          data-fr-js-tooltip="true"
+        >
+          lorem ipsum dolor sit amet consectetur adipiscing elit
+        </span>
+      </template>
+    </RadioGroup>
 
     <!-- QUICK WIN -->
     <div class="fr-fieldset__element fr-fieldset__element--inline">

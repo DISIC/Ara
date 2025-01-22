@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { defineSlots } from "vue";
+
 import { useUniqueId } from "../../composables/useUniqueId";
 import { RadioColor } from "./Radio.vue";
 
 const props = defineProps<{
-  label: string;
   hideLabel?: boolean;
   items: {
     value: any;
@@ -16,6 +17,8 @@ const props = defineProps<{
 
   modelValue: any;
 }>();
+
+defineSlots<{ label(): void }>;
 
 const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;
@@ -35,7 +38,7 @@ function handleChange(value: string) {
 <template>
   <fieldset class="fr-mx-0 fr-p-0 fieldset">
     <legend :class="hideLabel ? 'fr-sr-only' : 'fr-label fr-mb-3v'">
-      {{ label }}
+      <slot name="label" />
     </legend>
     <div v-for="(item, i) in items" :key="i">
       <input
