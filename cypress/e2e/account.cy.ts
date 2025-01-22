@@ -184,13 +184,12 @@ describe("Account", () => {
       });
     });
 
-    it.only("User can reset their password (logged in)", () => {
+    it("User can reset their password (logged in)", () => {
       cy.createTestAccount({ login: true }).then(({ username, password }) => {
         cy.visit("http://localhost:3000/compte/parametres");
         cy.contains("Changer de mot de passe").click();
         cy.contains("Mot de passe oublié ?").click();
-        // cy.getByLabel("Adresse e-mail").type(username);
-        // cy.contains("button", "Valider").click();
+
         cy.contains(
           `Un lien de réinitialisation vient de vous être envoyé à l’adresse e-mail suivante : ${username}`
         );
