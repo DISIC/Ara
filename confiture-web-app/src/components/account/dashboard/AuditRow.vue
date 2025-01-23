@@ -456,11 +456,7 @@ function copyStatementLink(uniqueId: string) {
   position: relative;
   transition: background 0.25s ease;
 
-  @media (width < 48rem) {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  @media (width < 36rem) {
+  @media (width < 55rem) {
     grid-template-columns: 1fr;
   }
 }
