@@ -5,7 +5,6 @@ import { pluralize } from "../../../utils";
 import AuditRow from "./AuditRow.vue";
 import NoAudit from "./NoAudit.vue";
 
-// FIXME: "audits" type
 defineProps<{
   audits: AccountAudit[];
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
@@ -80,7 +79,7 @@ defineProps<{
 
 .headers {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 0.75fr;
   grid-gap: 1rem;
 }
 

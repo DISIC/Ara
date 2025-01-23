@@ -159,11 +159,11 @@ function copyStatementLink(uniqueId: string) {
 </script>
 
 <template>
-  <div class="fr-py-2w grid">
+  <div class="fr-p-2w grid">
     <!-- Name -->
     <RouterLink
       :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
-      class="fr-pl-2w audit-name"
+      class="audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
@@ -281,7 +281,7 @@ function copyStatementLink(uniqueId: string) {
     </RouterLink>
 
     <!-- Sub actions -->
-    <div class="fr-pr-2w" :style="{ zIndex: zIndex }">
+    <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
         title="Options"
@@ -446,7 +446,7 @@ function copyStatementLink(uniqueId: string) {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 0.75fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
