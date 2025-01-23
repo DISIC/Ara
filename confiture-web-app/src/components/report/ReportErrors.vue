@@ -217,10 +217,6 @@ function resetFilters() {
           :key="topic.topic"
           :class="{ 'fr-mt-9v': i !== 0 }"
         >
-          <p class="fr-tag fr-tag--sm fr-mb-3v">
-            {{ topic.topic }}.&nbsp;{{ topic.name }}
-          </p>
-
           <ReportErrorCriterium
             v-for="(error, j) in topic.errors"
             :key="j"
