@@ -170,7 +170,7 @@ function copyStatementLink(uniqueId: string) {
 
     <!-- Creation date -->
     <p class="fr-mb-0 audit-date">
-      <span class="fr-sr-only">Date de création </span>
+      <span class="fr-sr-only-md">Date de création : </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -183,8 +183,11 @@ function copyStatementLink(uniqueId: string) {
     </p>
 
     <!-- Compliance level / Progression level -->
-    <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-4w">
-      <template v-if="audit.auditType === AuditType.FULL">
+    <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-lg-4w">
+      <div
+        v-if="audit.auditType === AuditType.FULL"
+        class="audit-compliance-level"
+      >
         <p
           class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
           :class="
@@ -218,7 +221,7 @@ function copyStatementLink(uniqueId: string) {
                 : "Non conforme"
           }}
         </p>
-      </template>
+      </div>
       <p v-else class="fr-m-0">
         Non-applicable
         <button
@@ -240,7 +243,7 @@ function copyStatementLink(uniqueId: string) {
 
     <AuditProgressBar
       v-else
-      class="fr-mr-4w"
+      class="fr-mr-lg-4w"
       label="Progression de l’audit"
       :value="audit.progress"
       :size="8"
@@ -452,6 +455,14 @@ function copyStatementLink(uniqueId: string) {
   border: 1px solid var(--border-default-grey);
   position: relative;
   transition: background 0.25s ease;
+
+  @media (width < 48rem) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (width < 36rem) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .grid:hover,
@@ -482,6 +493,14 @@ function copyStatementLink(uniqueId: string) {
 .audit-type {
   pointer-events: none;
   z-index: 1;
+}
+
+.audit-compliance-level {
+  @media (width < 62rem) {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
 }
 
 .audit-compliance-level-tooltip {
