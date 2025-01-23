@@ -122,10 +122,6 @@ function isActive(id: string) {
   color: var(--text-active-blue-france);
 }
 
-.page-url {
-  word-break: break-all;
-}
-
 .fr-sidemenu__inner {
   box-shadow: none !important;
 }

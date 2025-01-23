@@ -60,34 +60,38 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
     <!-- Error -->
     <MarkdownRenderer
       v-if="error.notCompliantComment"
-      class="fr-mb-3w"
+      :class="{ 'fr-mb-3w': chunk(error.exampleImages, 2).length }"
       :markdown="error.notCompliantComment"
     />
-    <p
-      v-if="chunk(error.exampleImages, 2).length"
-      class="fr-text--xs fr-mb-1w error-accordion-subtitle"
-    >
-      Exemple(s) d’erreur(s)
+
+    <p v-else>
+      Aucune description de l’erreur ou recommandation de correction.
     </p>
-    <div class="fr-container--fluid">
-      <div
-        v-for="(line, k) in chunk(error.exampleImages, 2)"
-        :key="k"
-        class="fr-grid-row fr-grid-row--gutters"
-      >
-        <a
-          v-for="example in line"
-          :key="example.key"
-          class="fr-col-md-6 fr-col-12 image-link"
-          :href="getUploadUrl(example.key)"
-          target="_blank"
+
+    <template v-if="chunk(error.exampleImages, 2).length">
+      <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
+        Exemple(s) d’erreur(s)
+      </p>
+      <div class="fr-container--fluid">
+        <div
+          v-for="(line, k) in chunk(error.exampleImages, 2)"
+          :key="k"
+          class="fr-grid-row fr-grid-row--gutters"
         >
-          <span class="fr-sr-only">
-            Ouvrir l’image dans une nouvelle fenêtre
-          </span>
-          <img style="width: 100%" :src="getUploadUrl(example.key)" alt="" />
-        </a>
+          <a
+            v-for="example in line"
+            :key="example.key"
+            class="fr-col-md-6 fr-col-12 image-link"
+            :href="getUploadUrl(example.key)"
+            target="_blank"
+          >
+            <span class="fr-sr-only">
+              Ouvrir l’image dans une nouvelle fenêtre
+            </span>
+            <img style="width: 100%" :src="getUploadUrl(example.key)" alt="" />
+          </a>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>

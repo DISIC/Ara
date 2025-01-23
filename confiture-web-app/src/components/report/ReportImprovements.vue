@@ -90,7 +90,11 @@ const improvementsCount = computed(() => {
           {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
 
-        <div v-for="(topic, j) in page.topics" :key="topic.number">
+        <div
+          v-for="(topic, j) in page.topics"
+          :key="topic.number"
+          :class="{ 'fr-mt-4w': j === 0 }"
+        >
           <template v-for="(improvement, k) in topic.improvements" :key="k">
             <ReportImprovementCriterium
               :topic="topic.number"
@@ -112,3 +116,9 @@ const improvementsCount = computed(() => {
     </template>
   </ReportCriteria>
 </template>
+
+<style>
+.page-title {
+  color: var(--text-active-blue-france);
+}
+</style>
