@@ -216,6 +216,8 @@ model AuditFile {
   display FileDisplay @default(ATTACHMENT)
 
   auditUniqueId String?
+
+  creationDate DateTime @default(now())
 }
 
 enum EmailStatus {
