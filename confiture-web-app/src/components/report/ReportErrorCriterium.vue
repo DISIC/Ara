@@ -88,10 +88,22 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
             <span class="fr-sr-only">
               Ouvrir l’image dans une nouvelle fenêtre
             </span>
-            <img style="width: 100%" :src="getUploadUrl(example.key)" alt="" />
+            <img
+              class="example-image"
+              :src="getUploadUrl(example.key)"
+              alt=""
+            />
           </a>
         </div>
       </div>
     </template>
   </div>
 </template>
+
+<style>
+.example-image {
+  max-height: 12.5rem;
+  max-width: calc(100% - 1.5rem); /* Full width minus externa icon size */
+  width: auto;
+}
+</style>
