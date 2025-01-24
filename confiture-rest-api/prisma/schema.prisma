@@ -213,13 +213,13 @@ model AuditFile {
   key          String
   thumbnailKey String?
 
-  audit   Audit?      @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
+  creationDate DateTime @default(now())
+
   // Inside TipTap editor (EDITOR) or added as an attachment (ATTACHMENT)?
   display FileDisplay @default(ATTACHMENT)
 
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   auditUniqueId String?
-
-  creationDate DateTime @default(now())
 }
 
 enum EmailStatus {
