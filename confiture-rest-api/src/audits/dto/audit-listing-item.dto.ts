@@ -13,4 +13,5 @@ export class AuditListingItemDto {
   status: "NOT_STARTED" | "COMPLETED" | "IN_PROGRESS";
   estimatedCsvSize: number;
   statementIsPublished: boolean;
+  progress: number;
 }
