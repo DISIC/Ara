@@ -2,9 +2,15 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 24/01/2025
+
+### Autres changements ⚙️
+
+- Explicite l'ouverture des livrables dans un nouvel onglet ([#932](https://github.com/DISIC/Ara/pull/932))
+
 ## 22/01/2025
 
-### Autres changements
+### Autres changements ⚙️
 
 - Affiche le taux de progression de l’audit sur la page "Mes audits" ([#914](https://github.com/DISIC/Ara/pull/914))
 - Ne demande pas son adresse email à un utilisateur déjà connecté lors de la réinitialisation de mot de passe ([#926](https://github.com/DISIC/Ara/pull/926))
