@@ -87,6 +87,8 @@ const showTransverseAlert = ref(
     </a>
   </div>
 
+  <h2 class="fr-sr-only">Thématiques et critères</h2>
+
   <template v-if="store.filteredTopics.length">
     <section
       v-for="topic in store.filteredTopics"

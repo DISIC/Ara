@@ -253,15 +253,15 @@ const showTransverseStatus = computed(() => {
 
 <template>
   <li class="fr-p-2w criterium-container">
-    <div class="fr-mb-2w criterium-main-section">
+    <h4 class="fr-mb-2w fr-text--md criterium-main-section">
       <span class="fr-text--bold criterium-number">
         {{ topicNumber }}.{{ criterium.number }}
       </span>
-      <div
+      <span
         class="fr-text--bold criterium-title"
         v-html="marked.parseInline(criterium.title)"
       />
-    </div>
+    </h4>
 
     <!-- STATUS -->
     <div
