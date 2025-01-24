@@ -81,8 +81,6 @@ const csvExportSizeEstimation = computed(() => {
 </template>
 
 <style scoped>
-/* TODO: factory common styles into step card */
-
 .audit-grid-step-heading {
   align-items: center;
   display: flex;
