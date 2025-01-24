@@ -192,6 +192,8 @@ model StoredFile {
   // Inside TipTap editor (EDITOR) or added as an attachment (ATTACHMENT)?
   display FileDisplay @default(ATTACHMENT)
 
+  creationDate DateTime @default(now())
+
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criterionResultId Int?
 }
