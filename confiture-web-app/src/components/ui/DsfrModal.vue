@@ -124,8 +124,8 @@ defineExpose({ show, hide });
 @media (min-width: 56rem) {
   .sidebar :deep(.sidebar-col) {
     flex: 0 0 56rem;
-    max-width: revert;
-    width: revert;
+    max-width: 56rem;
+    width: 56rem;
   }
 }
 
