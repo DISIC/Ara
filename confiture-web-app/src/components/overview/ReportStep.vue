@@ -57,7 +57,7 @@ const auditIsReady = computed(() => {
             params: { uniqueId: audit.consultUniqueId }
           }"
           target="_blank"
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line fr-mb-0 no-external-icon"
+          class="fr-btn fr-btn--tertiary fr-mb-0"
           title="Consulter le rapport - nouvelle fenêtre"
         >
           Consulter
@@ -76,6 +76,7 @@ const auditIsReady = computed(() => {
         label="Lien de partage"
         title="Lien de partage du rapport d’audit"
         success-message="Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
+        button-class="fr-btn--secondary"
       />
     </template>
   </StepCard>

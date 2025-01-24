@@ -76,11 +76,10 @@ const auditIsPublishable = computed(() => {
           :target="
             auditIsPublishable || !accountStore.account ? '_blank' : null
           "
-          class="fr-btn fr-btn--icon-left fr-mb-md-0 no-external-icon"
+          class="fr-btn fr-btn--icon-left fr-mb-md-0"
           :class="{
-            'fr-btn--secondary': !auditIsReady || auditIsPublishable,
-            'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-line': auditIsPublishable
+            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
+            'fr-icon-edit-line no-external-icon': !auditIsPublishable
           }"
           :title="
             auditIsPublishable

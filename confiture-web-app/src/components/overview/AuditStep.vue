@@ -194,7 +194,7 @@ const auditIsInProgress = computed(() => {
           class="fr-btn fr-btn--icon-left fr-mb-0"
           :class="
             auditIsReady
-              ? 'fr-btn--secondary fr-icon-draft-line'
+              ? 'fr-btn--tertiary fr-icon-draft-line'
               : 'fr-icon-edit-fill'
           "
         >
