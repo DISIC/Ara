@@ -118,6 +118,8 @@ RUN adduser -D -u 2003 dinum_backend
 # install application \
 WORKDIR /home/dinum_backend
 RUN mv /tmp/* .
+# Disable generating types for frontend on install
+RUN npm pkg delete scripts.postinstall
 RUN yarn install --frozen-lockfile --non-interactive
 WORKDIR /home/dinum_backend/confiture-rest-api
 RUN yarn build
