@@ -1,5 +1,14 @@
 import { Type } from "class-transformer";
-import { IsInt, IsNumber, IsPositive, Max, Min } from "class-validator";
+import {
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Max,
+  Min
+} from "class-validator";
 import { IsRgaaCriterium } from "./update-results.dto";
 import { FileDisplay } from "@prisma/client";
 
@@ -36,5 +45,8 @@ export class UploadImageDto {
   })
   criterium: number;
 
+  @IsOptional()
+  @IsString()
+  @IsIn(Object.values(FileDisplay))
   display: FileDisplay;
 }

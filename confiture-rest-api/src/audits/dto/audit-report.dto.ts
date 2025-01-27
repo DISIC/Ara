@@ -191,27 +191,35 @@ class ReportCriterionResult {
 }
 
 class ExampleImage {
-  /** @example "my-image.jpg" */
-  filename: string;
-  /** @example "audit/EWIsM6sYI2cC0lI7Ok2PE/3gnCTQ5ztOdEnKRraIMYG/my-image.jpg" */
-  key: string;
-  /** @example "audit/EWIsM6sYI2cC0lI7Ok2PE/3gnCTQ5ztOdEnKRraIMYG/my-image_thumbnail.jpg" */
-  thumbnailKey: string;
-  /** @example "ATTACHMENT" */
-  display: FileDisplay;
-}
-
-class NotesFile {
   /** @example "screenshot_001.png" */
-  originalFilename: string;
+  originalFilename?: string;
   /** @example "audits/EWIsM6sYI2cC0lI7Ok2PE/uqoOes4QqhFyKV8v0s2AQ/screenshot_001.png" */
   key: string;
   /** @example "audits/EWIsM6sYI2cC0lI7Ok2PE/uqoOes4QqhFyKV8v0s2AQ/thumbnail_screenshot_001.png" */
   thumbnailKey: string;
   /** @example 4631 */
-  size: number;
+  size?: number;
   /** @example "image/png" */
-  mimetype: string;
+  mimetype?: string;
   /** @example "ATTACHMENT" */
   display: FileDisplay;
+  /** @example 2025-01-24T16:39:12.811Z */
+  creationDate?: Date;
+}
+
+class NotesFile {
+  /** @example "screenshot_001.png" */
+  originalFilename?: string;
+  /** @example "audits/EWIsM6sYI2cC0lI7Ok2PE/uqoOes4QqhFyKV8v0s2AQ/screenshot_001.png" */
+  key: string;
+  /** @example "audits/EWIsM6sYI2cC0lI7Ok2PE/uqoOes4QqhFyKV8v0s2AQ/thumbnail_screenshot_001.png" */
+  thumbnailKey: string;
+  /** @example 4631 */
+  size?: number;
+  /** @example "image/png" */
+  mimetype?: string;
+  /** @example "ATTACHMENT" */
+  display: FileDisplay;
+  /** @example 2025-01-24T16:39:12.811Z */
+  creationDate?: Date;
 }
