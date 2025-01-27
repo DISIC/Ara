@@ -3,7 +3,9 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
-  CopyObjectCommand
+  CopyObjectCommand,
+  ListObjectsV2Command,
+  ListObjectsV2Output
 } from "@aws-sdk/client-s3";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -32,6 +34,40 @@ export class FileStorageService {
       ContentType: contentType
     });
     await this.s3Client.send(command);
+  }
+
+  /**
+   * Retrieves all the keys of the files stored in the S3 bucket.
+   * Note: it’s retrieved by chunks of 1000 files at a time.
+   *
+   * @returns {Promise<string[]>} An array of strings representing the keys of the files stored in the S3 bucket.
+   */
+  async getAllFileKeys() {
+    let allFiles = [];
+    let shouldContinue = true;
+    let nextContinuationToken = null;
+    let command = null;
+    while (shouldContinue) {
+      command = new ListObjectsV2Command({
+        Bucket: this.config.get<string>("S3_BUCKET"),
+        ContinuationToken: nextContinuationToken || undefined
+      });
+
+      const res: ListObjectsV2Output = await (<ListObjectsV2Output>(
+        this.s3Client.send(command)
+      ));
+      if (!res.Contents?.length) {
+        break;
+      }
+      allFiles = [...allFiles, ...res.Contents];
+      if (res.IsTruncated) {
+        nextContinuationToken = res.NextContinuationToken;
+      } else {
+        shouldContinue = false;
+        nextContinuationToken = null;
+      }
+    }
+    return allFiles.map((e) => e.Key);
   }
 
   getPublicUrl(key: string): string {
