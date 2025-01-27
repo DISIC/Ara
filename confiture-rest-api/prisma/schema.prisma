@@ -187,7 +187,7 @@ model StoredFile {
 
   // S3 storage keys
   key          String
-  thumbnailKey String
+  thumbnailKey String?
 
   // Inside TipTap editor (EDITOR) or added as an attachment (ATTACHMENT)?
   display FileDisplay @default(ATTACHMENT)
