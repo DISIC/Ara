@@ -22,7 +22,7 @@ import { computed, onBeforeUnmount, onMounted, ref, ShallowRef } from "vue";
 import { useRoute } from "vue-router";
 
 import { useNotifications } from "../../composables/useNotifications";
-import { AraTiptapExtension } from "../../tiptap/AraTiptapExtension";
+import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap/AraTiptapExtension";
 import {
   ImageUploadTiptapExtension,
   insertFilesAtSelection
@@ -139,7 +139,8 @@ const editor = useEditor({
     Typography.configure({
       openDoubleQuote: "« ",
       closeDoubleQuote: " »"
-    })
+    }),
+    CustomSelectionExtension
   ],
   onUpdate({ editor }) {
     // The content has changed.

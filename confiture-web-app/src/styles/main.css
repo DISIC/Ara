@@ -277,6 +277,7 @@ from DSFR links with `target="_blank"` */
   }
 } */
 
+.tiptap-selection,
 .ProseMirror-selectednode {
   outline-style: dotted;
   outline-width: 2px;
