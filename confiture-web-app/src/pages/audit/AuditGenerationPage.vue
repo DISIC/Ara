@@ -183,9 +183,9 @@ onBeforeUnmount(() => {
 });
 
 const pageTitle = computed(() => {
-  // Audit XXX - Page en cours « XXX » - X résultats pour « XXX »
+  // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
-    let title = `Audit ${auditStore.currentAudit.procedureName}`;
+    let title = auditStore.currentAudit.procedureName;
 
     const tabName = ` - Page en cours « ${
       auditStore.currentAudit.pages.find(
