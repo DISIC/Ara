@@ -87,7 +87,9 @@ const showTransverseAlert = ref(
     </a>
   </div>
 
-  <h2 class="fr-sr-only">Thématiques et critères</h2>
+  <h2 class="fr-sr-only">
+    Éléments transverses et autres pages de l’échantillon de chaque onglet
+  </h2>
 
   <template v-if="store.filteredTopics.length">
     <section

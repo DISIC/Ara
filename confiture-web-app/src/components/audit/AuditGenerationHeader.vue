@@ -223,7 +223,13 @@ onMounted(() => {
     </button>
   </div>
 
-  <h1>{{ auditName }}</h1>
+  <h1>
+    {{ auditName }}
+    <span class="fr-sr-only">
+      Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
+      problème lié à l’enregistrement
+    </span>
+  </h1>
 
   <div ref="stickyIndicator" class="sticky-indicator fr-grid-row fr-mb-3w">
     <div
