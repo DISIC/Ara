@@ -346,7 +346,7 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       file: File,
       display?: FileDisplay
-    ) {
+    ): Promise<AuditFile> {
       const formData = new FormData();
       formData.set("pageId", pageId.toString());
       formData.set("topic", topic.toString());
@@ -359,9 +359,12 @@ export const useResultsStore = defineStore("results", {
 
       this.increaseCurrentRequestCount();
 
-      const exampleImage = (await ky
+      // Adding images inside tiptap editor is asynchronous,
+      // so no need to set a timeout on the client side
+      const exampleImage: AuditFile | null = (await ky
         .post(`/api/audits/${uniqueId}/results/examples`, {
-          body: formData
+          body: formData,
+          timeout: false
         })
         .json()
         .finally(() => {
@@ -370,9 +373,10 @@ export const useResultsStore = defineStore("results", {
 
       const result = this.data![pageId][topic][criterium];
 
-      if (result) {
+      if (result && exampleImage) {
         result.exampleImages.push(exampleImage);
       }
+      return exampleImage;
     },
 
     async deleteExampleImage(
