@@ -296,6 +296,7 @@ function handleFileImport(
       tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
       view.dispatch(tr);
       uploadAndReplacePlaceholder(uploadFn, view, file, id, element);
+      view.focus();
     };
     element.src = localURL;
   } else if (file.type.startsWith("video")) {
