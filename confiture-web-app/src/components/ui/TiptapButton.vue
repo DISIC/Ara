@@ -28,7 +28,7 @@ const title = computed(() =>
 <template>
   <button
     :disabled="disabled"
-    class="fr-btn fr-btn--tertiary"
+    class="fr-btn--sm fr-btn--tertiary"
     :class="[
       labelVisible ? 'fr-btn--icon-left' : '',
       icon ? 'fr-icon-' + icon : '',
