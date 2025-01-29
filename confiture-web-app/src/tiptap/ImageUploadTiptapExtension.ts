@@ -11,7 +11,7 @@ export interface ImageUploadTiptapExtensionOptions {
   /**
    * Function to upload a file (image) inside the editor
    */
-  uploadFn: UploadFn;
+  uploadFn: UploadFn | null;
 }
 
 /**
@@ -115,7 +115,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         }
 
         return handleDataTransfer(
-          uploadFn,
+          uploadFn!,
           view,
           dragEvent.dataTransfer,
           position.pos
@@ -145,7 +145,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
 
         const pos = view.state.selection.from;
         return handleDataTransfer(
-          uploadFn,
+          uploadFn!,
           view,
           clipboardEvent.clipboardData,
           pos,

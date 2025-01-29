@@ -44,11 +44,20 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
-const props = defineProps<{
-  content: string | null;
-  labelledBy: string;
-  uploadFn: UploadFn;
-}>();
+export interface Props {
+  content?: string | null;
+  editable?: boolean;
+  labelledBy?: string | null;
+  uploadFn?: UploadFn | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  content: "",
+  editable: true,
+  labelledBy: null,
+  uploadFn: null
+});
+
 const emit = defineEmits(["update:content"]);
 
 function getContent() {
@@ -64,85 +73,98 @@ function getContent() {
   return jsonContent;
 }
 
+let editorAttributes: any = {
+  "aria-describedby": "tiptap-description",
+  rows: "10",
+  "aria-multiline": "true",
+  role: "textbox"
+};
+if (props.labelledBy) {
+  editorAttributes["aria-labelledby"] = props.labelledBy;
+}
+
+let extensions = [
+  AraTiptapExtension,
+  Heading.extend({
+    // prevent all marks from being applied to headings
+    marks: ""
+  }).configure({
+    levels: HEADINGS_LEVELS
+  }),
+  StarterKit.configure({
+    codeBlock: false,
+    dropcursor: false,
+    heading: false
+  }),
+  CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
+  Highlight,
+  Link.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        class: {
+          default: null,
+          renderHTML: () => {
+            return { class: null }; // reset class when copy pasting for example
+          }
+        },
+        title: {
+          default: null,
+          renderHTML: (attributes) => {
+            return {
+              title: attributes.title
+            };
+          }
+        }
+      };
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ["a", mergeAttributes(HTMLAttributes), 0];
+    }
+  }).configure({
+    openOnClick: false,
+    defaultProtocol: "https"
+  }),
+  Markdown,
+  TaskItem,
+  TaskList,
+  ImageExtension.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        width: {
+          default: "0"
+        },
+        height: {
+          default: "0"
+        }
+      };
+    }
+  }).configure({ inline: false }),
+  Typography.configure({
+    openDoubleQuote: "« ",
+    closeDoubleQuote: " »"
+  }),
+  CustomSelectionExtension
+];
+if (props.editable) {
+  extensions.push(
+    ...[
+      DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 }),
+      ImageUploadTiptapExtension.configure({
+        uploadFn: props.uploadFn
+      })
+    ]
+  );
+}
+
 const editor = useEditor({
   editorProps: {
-    attributes: {
-      "aria-labelledby": props.labelledBy,
-      "aria-describedby": "tiptap-description",
-      rows: "10",
-      "aria-multiline": "true",
-      role: "textbox"
-    }
+    attributes: editorAttributes
   },
+  editable: props.editable,
   content: getContent(),
-  extensions: [
-    Heading.extend({
-      // prevent all marks from being applied to headings
-      marks: ""
-    }).configure({
-      levels: HEADINGS_LEVELS
-    }),
-    StarterKit.configure({
-      codeBlock: false,
-      dropcursor: false,
-      heading: false
-    }),
-    CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-    DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 }),
-    Highlight,
-    Link.extend({
-      addAttributes() {
-        return {
-          ...this.parent?.(),
-          class: {
-            default: null,
-            renderHTML: () => {
-              return { class: null }; // reset class when copy pasting for example
-            }
-          },
-          title: {
-            default: null,
-            renderHTML: (attributes) => {
-              return {
-                title: attributes.title
-              };
-            }
-          }
-        };
-      },
-      renderHTML({ HTMLAttributes }) {
-        return ["a", mergeAttributes(HTMLAttributes), 0];
-      }
-    }).configure({
-      openOnClick: false,
-      defaultProtocol: "https"
-    }),
-    Markdown,
-    TaskItem,
-    TaskList,
-    ImageExtension.extend({
-      addAttributes() {
-        return {
-          ...this.parent?.(),
-          width: {
-            default: "0"
-          },
-          height: {
-            default: "0"
-          }
-        };
-      }
-    }).configure({ inline: false }),
-    ImageUploadTiptapExtension.configure({
-      uploadFn: props.uploadFn
-    }),
-    AraTiptapExtension,
-    Typography.configure({
-      openDoubleQuote: "« ",
-      closeDoubleQuote: " »"
-    }),
-    CustomSelectionExtension
-  ],
+  extensions,
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:content", JSON.stringify(editor.getJSON()));
@@ -151,15 +173,17 @@ const editor = useEditor({
 
 const browseInput = ref<InstanceType<typeof HTMLInputElement>>();
 onMounted(() => {
-  browseInput.value?.addEventListener(
-    "change",
-    (e: Event) => {
-      const inputElement = e?.target as HTMLInputElement;
-      const files = inputElement.files!;
-      insertFilesAtSelection(props.uploadFn, editor.value, files);
-    },
-    false
-  );
+  if (props.uploadFn) {
+    browseInput.value?.addEventListener(
+      "change",
+      (e: Event) => {
+        const inputElement = e?.target as HTMLInputElement;
+        const files = inputElement.files!;
+        insertFilesAtSelection(props.uploadFn!, editor.value, files);
+      },
+      false
+    );
+  }
 });
 
 onBeforeUnmount(() => {
@@ -205,13 +229,16 @@ function onImageAdd() {
 </script>
 
 <template>
-  <div class="tiptap-container">
+  <div
+    class="tiptap-container"
+    :class="editable ? 'tiptap-container--editable' : null"
+  >
     <p id="tiptap-description" class="fr-sr-only">
       Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
       utiliser les raccourcis clavier.
     </p>
     <editor-content :editor="editor" />
-    <ul class="tiptap-buttons">
+    <ul v-if="editable" class="tiptap-buttons">
       <li>
         <ul>
           <li>

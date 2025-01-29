@@ -73,11 +73,15 @@ from DSFR links with `target="_blank"` */
 .tiptap {
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 4rem 1.5rem 1rem;
+  padding: 1rem 1.5rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
   min-height: 30rem;
   overflow-y: auto;
+}
+
+.tiptap-container--editable .tiptap {
+  padding-top: 4rem;
 }
 
 .tiptap img {

@@ -9,7 +9,7 @@ import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 defineProps<{
   topic: number;
   criterium: number;
-  comment: string;
+  comment: string | null;
   status: CriteriumResultStatus;
 }>();
 
