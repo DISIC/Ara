@@ -3,11 +3,13 @@ import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
+import { UploadFn } from "../../tiptap/ImageUploadTiptapExtension";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import Tiptap from "../ui/Tiptap.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
@@ -18,6 +20,7 @@ export interface Props {
   exampleImages: AuditFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
+  uploadFn: UploadFn;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -59,6 +62,10 @@ const userImpacts: Array<{
 const isOffline = useIsOffline();
 
 const fileUpload = ref<InstanceType<typeof FileUpload>>();
+
+function handleCommentChange(commentContent: string) {
+  emit("update:comment", commentContent);
+}
 
 function handleUploadFile(image: File) {
   emit("upload-file", image);
@@ -105,21 +112,17 @@ const title = "Erreur et recommandation";
   >
     <!-- COMMENT -->
     <div class="fr-input-group fr-mb-1w">
-      <label class="fr-label" :for="`criterum-comment-field-${id}`">
+      <p :id="`criterum-comment-label-${id}`" class="fr-label fr-sr-only">
         {{ title }}
-      </label>
-      <textarea
-        :id="`criterum-comment-field-${id}`"
+      </p>
+      <tiptap
         ref="commentFieldRef"
-        :value="comment ?? ''"
-        class="fr-input"
-        rows="5"
+        :content="comment"
+        :labelled-by="`criterum-comment-label-${id}`"
         :disabled="isOffline"
-        :aria-describedby="`markdown-notice-${id}`"
-        @input="
-          $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
-        "
-      ></textarea>
+        :upload-fn="uploadFn"
+        @update:content="handleCommentChange"
+      />
     </div>
 
     <MarkdownHelpButton :id="`markdown-notice-${id}`" class="fr-mb-4w" />

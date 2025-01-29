@@ -22,10 +22,11 @@ import { computed, onBeforeUnmount, onMounted, ref, ShallowRef } from "vue";
 import { useRoute } from "vue-router";
 
 import { useNotifications } from "../../composables/useNotifications";
-import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap/AraTiptapExtension";
+import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap";
 import {
   ImageUploadTiptapExtension,
-  insertFilesAtSelection
+  insertFilesAtSelection,
+  UploadFn
 } from "../../tiptap/ImageUploadTiptapExtension";
 import TiptapButton from "./TiptapButton.vue";
 
@@ -41,23 +42,21 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
-const route = useRoute();
-const notify = useNotifications();
-
 const props = defineProps<{
-  content: string;
+  content: string | null;
   labelledBy: string;
+  uploadFn: UploadFn;
 }>();
 const emit = defineEmits(["update:content"]);
 
-const uniqueId = computed(() => route.params.uniqueId as string);
-
 function getContent() {
-  let jsonContent;
-  try {
-    jsonContent = JSON.parse(props.content);
-  } catch {
-    jsonContent = props.content;
+  let jsonContent = null;
+  if (props.content) {
+    try {
+      jsonContent = JSON.parse(props.content);
+    } catch {
+      jsonContent = props.content;
+    }
   }
 
   return jsonContent;
@@ -133,7 +132,7 @@ const editor = useEditor({
       }
     }).configure({ inline: false }),
     ImageUploadTiptapExtension.configure({
-      uniqueId: uniqueId.value
+      uploadFn: props.uploadFn
     }),
     AraTiptapExtension,
     Typography.configure({
@@ -152,10 +151,10 @@ const browseInput = ref<InstanceType<typeof HTMLInputElement>>();
 onMounted(() => {
   browseInput.value?.addEventListener(
     "change",
-    (e) => {
+    (e: Event) => {
       const inputElement = e?.target as HTMLInputElement;
       const files = inputElement.files!;
-      insertFilesAtSelection(uniqueId.value, editor.value, files);
+      insertFilesAtSelection(props.uploadFn, editor.value, files);
     },
     false
   );
@@ -191,6 +190,9 @@ function setLink() {
 }
 
 function onImageAdd() {
+  if (browseInput.value) {
+    browseInput.value.value = "";
+  }
   browseInput.value?.click();
 }
 </script>

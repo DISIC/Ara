@@ -13,10 +13,12 @@ import {
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  FileDisplay
 } from "../../types";
 import {
   formatStatus,
+  getUploadUrl,
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
@@ -124,7 +126,7 @@ const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
 function handleUploadExample(file: File) {
-  store
+  return store
     .uploadExampleImage(
       props.auditUniqueId,
       props.page.id,
@@ -137,6 +139,28 @@ function handleUploadExample(file: File) {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileUploadError(error);
+    })
+    .finally(() => {
+      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
+    });
+}
+function handleUploadExampleInEditor(file: File) {
+  return store
+    .uploadExampleImage(
+      props.auditUniqueId,
+      props.page.id,
+      props.topicNumber,
+      props.criterium.number,
+      file,
+      FileDisplay.EDITOR
+    )
+    .then((response: AuditFile) => {
+      errorMessage.value = null;
+      return getUploadUrl(response.key);
+    })
+    .catch(async (error) => {
+      errorMessage.value = await handleFileUploadError(error);
+      throw error;
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
@@ -332,6 +356,7 @@ const showTransverseStatus = computed(() => {
     <CriteriumCompliantAccordion
       v-if="result.status === CriteriumResultStatus.COMPLIANT"
       :id="`compliant-accordion-${uniqueId}`"
+      :upload-fn="handleUploadExampleInEditor"
       :comment="result.compliantComment"
       @update:comment="updateResultComment($event, 'compliantComment')"
     />
@@ -339,6 +364,7 @@ const showTransverseStatus = computed(() => {
     <CriteriumNotApplicableAccordion
       v-else-if="result.status === CriteriumResultStatus.NOT_APPLICABLE"
       :id="`not-applicable-accordion-${uniqueId}`"
+      :upload-fn="handleUploadExampleInEditor"
       :comment="result.notApplicableComment"
       @update:comment="updateResultComment($event, 'notApplicableComment')"
     />
@@ -349,9 +375,14 @@ const showTransverseStatus = computed(() => {
       ref="criteriumNotCompliantAccordion"
       :comment="result.notCompliantComment"
       :user-impact="result.userImpact"
-      :example-images="result.exampleImages"
+      :example-images="
+        result.exampleImages.filter(
+          (auditFile: AuditFile) => auditFile.display === FileDisplay.ATTACHMENT
+        )
+      "
       :quick-win="result.quickWin"
       :error-message="errorMessage"
+      :upload-fn="handleUploadExampleInEditor"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:user-impact="updateResultImpact($event)"
       @upload-file="handleUploadExample"

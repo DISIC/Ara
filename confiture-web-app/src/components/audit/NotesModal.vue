@@ -7,7 +7,11 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { AuditFile, FileDisplay, StoreName } from "../../types";
-import { handleFileDeleteError, handleFileUploadError } from "../../utils";
+import {
+  getUploadUrl,
+  handleFileDeleteError,
+  handleFileUploadError
+} from "../../utils";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import Tiptap from "../ui/Tiptap.vue";
@@ -79,6 +83,14 @@ function handleDeleteFile(file: AuditFile) {
       fileUpload.value?.onFileRequestFinished();
     });
 }
+
+function handleUploadFileInEditor(file: File): Promise<string> {
+  return auditStore
+    .uploadAuditFile(uniqueId.value, file, FileDisplay.EDITOR)
+    .then((response: AuditFile) => {
+      return getUploadUrl(response.key);
+    });
+}
 </script>
 
 <template>
@@ -110,13 +122,14 @@ function handleDeleteFile(file: AuditFile) {
                 </div>
               </div>
               <div class="fr-input-group fr-mb-1v">
-                <label id="audit-notes-label" class="fr-label">
+                <p id="audit-notes-label" class="fr-label">
                   Remarques et recommandations générales
-                </label>
+                </p>
                 <tiptap
                   :content="notes"
                   labelled-by="audit-notes-label"
                   :disabled="isOffline"
+                  :upload-fn="handleUploadFileInEditor"
                   @update:content="handleNotesChange"
                 />
               </div>

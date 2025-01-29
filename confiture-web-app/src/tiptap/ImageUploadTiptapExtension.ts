@@ -5,12 +5,23 @@ import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
 import { FileErrorMessage, Limitations } from "../enums";
-import { useAuditStore } from "../store/audit";
-import { AuditFile, FileDisplay } from "../types";
-import { getUploadUrl, handleFileUploadError } from "../utils";
+import { handleFileUploadError } from "../utils";
 
 export interface ImageUploadTiptapExtensionOptions {
-  uniqueId: string;
+  /**
+   * Function to upload a file (image) inside the editor
+   */
+  uploadFn: UploadFn;
+}
+
+/**
+ * Function to upload a file inside the editor
+ *
+ * @param {File} file File to upload
+ * @returns {Promise<string>} a promise to the URL of the uploaded image
+ */
+export interface UploadFn {
+  (file: File): Promise<string>;
 }
 
 /**
@@ -67,7 +78,7 @@ const PlaceholderPlugin = new Plugin({
  * - external image from URL (⚠️ CORS)
  */
 const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
-  const { uniqueId } = options;
+  const { uploadFn } = options;
   return new Plugin({
     props: {
       /**
@@ -102,7 +113,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
         }
 
         return handleDataTransfer(
-          uniqueId,
+          uploadFn,
           view,
           dragEvent.dataTransfer,
           position.pos
@@ -132,7 +143,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
 
         const pos = view.state.selection.from;
         return handleDataTransfer(
-          uniqueId,
+          uploadFn,
           view,
           clipboardEvent.clipboardData,
           pos,
@@ -148,7 +159,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
 /**
  * handleDataTransfer: called for both drop and paste.
  *
- * @param {string} uniqueId
+ * @param {UploadFn} uploadFn
  * @param {EditorView} view
  * @param {DataTransfer} dataTransfer
  * @param {number} pos
@@ -156,7 +167,7 @@ const HandleFileImportPlugin = (options: ImageUploadTiptapExtensionOptions) => {
  * @returns true if event is handled, otherwise false
  */
 function handleDataTransfer(
-  uniqueId: string,
+  uploadFn: UploadFn,
   view: EditorView,
   dataTransfer: DataTransfer,
   pos: number,
@@ -171,7 +182,7 @@ function handleDataTransfer(
     if (url) {
       createFileFromImageUrl(url).then((file) => {
         if (file) {
-          handleFileImport(uniqueId, view, pos, file, options);
+          handleFileImport(uploadFn, view, pos, file, options);
         }
       });
       return true;
@@ -181,13 +192,13 @@ function handleDataTransfer(
   }
 
   // Handle multiple files
-  return handleFilesImport(uniqueId, view, pos, dataTransfer.files, options);
+  return handleFilesImport(uploadFn, view, pos, dataTransfer.files, options);
 }
 
 /**
  * Handles multiple files import (drop or paste)
  *
- * @param {string} uniqueId
+ * @param {UploadFn} uploadFn
  * @param {EditorView} view
  * @param {number} pos
  * @param {FileList} files
@@ -197,7 +208,7 @@ function handleDataTransfer(
  *   - any file is not dropped inside of the editor (should not happen)
  */
 function handleFilesImport(
-  uniqueId: string,
+  uploadFn: UploadFn,
   view: EditorView,
   pos: number,
   files: FileList,
@@ -206,7 +217,7 @@ function handleFilesImport(
   // FIXME: sometimes placeholders order differs from final images order
   for (let i = 0, il = files.length, file: File; i < il; i++) {
     file = files.item(i)!;
-    if (!handleFileImport(uniqueId, view, pos, file, options)) {
+    if (!handleFileImport(uploadFn, view, pos, file, options)) {
       return false;
     }
   }
@@ -216,7 +227,7 @@ function handleFilesImport(
 /**
  * Handles file import (drop or paste)
  *
- * @param {string} uniqueId
+ * @param {UploadFn} uploadFn
  * @param {EditorView} view
  * @param {number} pos
  * @param {File} file
@@ -224,7 +235,7 @@ function handleFilesImport(
  * @returns {boolean} true or false if file is not dropped inside of the editor (should not happen)
  */
 function handleFileImport(
-  uniqueId: string,
+  uploadFn: UploadFn,
   view: EditorView,
   pos: number,
   file: File,
@@ -302,34 +313,31 @@ function handleFileImport(
 /**
  * Uploads and then replaces the placeholder
  *
- * @param {string} uniqueId
+ * @param {UploadFn} uploadFn
  * @param {EditorView} view
  * @param {DragEvent} dragEvent
  * @param {File} file
  * @param {{replaceSelection: boolean}} options
  */
 function uploadAndReplacePlaceholder(
-  uniqueId: string,
+  uploadFn: UploadFn,
   view: EditorView,
   file: File,
   id: any
 ) {
-  const auditStore = useAuditStore();
-  auditStore.uploadAuditFile(uniqueId, file, FileDisplay.EDITOR).then(
-    (response: AuditFile) => {
+  uploadFn(file).then(
+    (imgUrl: string) => {
       const placeholder = findPlaceholderDecoration(view.state, id);
       const pos: number | undefined = placeholder?.from;
 
-      // If the content around the placeholder has been deleted, drop
-      // the image
+      // If the content around the placeholder has been deleted,
+      // do not insert the image
       if (pos === undefined) {
-        // TODO remove image from server
         return;
       }
 
       // Otherwise, insert it at the placeholder's position, and remove
       // the placeholder
-      const imgUrl: string = getUploadUrl(response.key);
       const state = view.state;
       const tr = state.tr;
       const node = state.schema.nodes.image.create({
@@ -409,7 +417,7 @@ export const ImageUploadTiptapExtension =
     name: "imageUpload",
     addProseMirrorPlugins() {
       return [
-        HandleFileImportPlugin({ uniqueId: this.options.uniqueId }),
+        HandleFileImportPlugin({ uploadFn: this.options.uploadFn }),
         PlaceholderPlugin
       ];
     }
@@ -463,7 +471,7 @@ export const ImageUploadTiptapExtension =
   });
 
 export function insertFilesAtSelection(
-  uniqueId: string,
+  uploadFn: UploadFn,
   editor: Editor,
   files: FileList
 ) {
@@ -475,7 +483,7 @@ export function insertFilesAtSelection(
   view.focus();
   tr.deleteSelection();
 
-  return handleFilesImport(uniqueId, view, pos, files, {
+  return handleFilesImport(uploadFn, view, pos, files, {
     replaceSelection: true
   });
 }
