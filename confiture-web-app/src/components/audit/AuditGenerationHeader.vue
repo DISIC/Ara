@@ -127,7 +127,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -159,6 +159,7 @@ const updateAuditNotes = async (notes: string) => {
       "Une erreur est survenue",
       "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
     );
+    auditStore.lastRequestFailed = true;
   } finally {
     isNotesLoading.value = false;
   }

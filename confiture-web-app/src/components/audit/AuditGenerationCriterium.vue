@@ -137,6 +137,7 @@ function handleUploadExample(file: File) {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileUploadError(error);
+      store.lastRequestFailed = true;
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
@@ -167,6 +168,7 @@ function handleDeleteExample() {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileDeleteError(error);
+      auditStore.lastRequestFailed = true;
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
@@ -176,6 +178,7 @@ function handleDeleteExample() {
 
 function handleUpdateResultError(err: any) {
   console.log(err);
+  auditStore.lastRequestFailed = true;
   notify(
     "error",
     "Une erreur est survenue",
