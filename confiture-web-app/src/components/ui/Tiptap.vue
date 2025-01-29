@@ -19,9 +19,7 @@ import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
 import { computed, onBeforeUnmount, onMounted, ref, ShallowRef } from "vue";
-import { useRoute } from "vue-router";
 
-import { useNotifications } from "../../composables/useNotifications";
 import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap";
 import {
   ImageUploadTiptapExtension,
