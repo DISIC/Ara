@@ -58,6 +58,8 @@ const PlaceholderPlugin = new Plugin({
         set = set.remove(
           set.find(undefined, undefined, (spec) => spec.id == action.remove.id)
         );
+
+        action.element.remove();
       }
       return set;
     }
@@ -293,7 +295,7 @@ function handleFileImport(
       });
       tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
       view.dispatch(tr);
-      uploadAndReplacePlaceholder(uniqueId, view, file, id);
+      uploadAndReplacePlaceholder(uploadFn, view, file, id, element);
     };
     element.src = localURL;
   } else if (file.type.startsWith("video")) {
@@ -323,7 +325,8 @@ function uploadAndReplacePlaceholder(
   uploadFn: UploadFn,
   view: EditorView,
   file: File,
-  id: any
+  id: any,
+  element: HTMLImageElement | HTMLVideoElement
 ) {
   uploadFn(file).then(
     (imgUrl: string) => {
@@ -346,16 +349,16 @@ function uploadAndReplacePlaceholder(
         src: imgUrl
       });
       tr.replaceWith(pos, pos, node);
-      tr.setMeta(PlaceholderPlugin, { remove: { id } });
+      tr.setMeta(PlaceholderPlugin, { element, remove: { id } });
 
       // Selects the image
       // tr.setSelection(new NodeSelection(tr.doc.resolve(pos)));
       view.dispatch(tr);
     },
-    async (reason: any) => {
+    async (reason: Error) => {
       // On failure, just clean up the placeholder
       view.dispatch(
-        view.state.tr.setMeta(PlaceholderPlugin, { remove: { id } })
+        view.state.tr.setMeta(PlaceholderPlugin, { element, remove: { id } })
       );
       //FIXME: use a notification
       window.alert(await handleFileUploadError(reason));
