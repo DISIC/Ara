@@ -20,6 +20,8 @@ import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
 import { computed, onBeforeUnmount, onMounted, ref, ShallowRef } from "vue";
 
+// import { useDevMode } from "../../composables/useDevMode";
+// import { useSystemStore } from "../../store/system";
 import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap";
 import {
   ImageUploadTiptapExtension,
@@ -27,6 +29,8 @@ import {
   UploadFn
 } from "../../tiptap/ImageUploadTiptapExtension";
 import TiptapButton from "./TiptapButton.vue";
+
+// const isDevMode = useDevMode();
 
 const HEADINGS_LEVELS = [2, 3, 4, 5, 6] as Array<Level>;
 const displayedHeadings = computed(() => HEADINGS_LEVELS.slice(0, 3));
@@ -193,6 +197,11 @@ function onImageAdd() {
   }
   browseInput.value?.click();
 }
+
+// function onRecycle() {
+//   const systemStore = useSystemStore();
+//   systemStore.pruneUploads();
+// }
 </script>
 
 <template>
@@ -348,6 +357,16 @@ function onImageAdd() {
           multiple
         />
       </li>
+      <!--
+			<li>
+        <TiptapButton
+          v-if="isDevMode"
+          label="Nettoyage des images obsolètes"
+          icon="recycle-line"
+          @click="onRecycle"
+        />
+      </li>
+			-->
     </ul>
   </div>
 </template>
