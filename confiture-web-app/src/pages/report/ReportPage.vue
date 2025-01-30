@@ -137,7 +137,7 @@ const siteUrl = computed(() => {
     v-if="
       report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
     "
-    class="fr-pt-1w in-progress-alert"
+    class="fr-pt-1w"
   >
     <div class="fr-alert fr-alert--warning fr-mb-6w">
       <p class="fr-alert__title">Audit en cours</p>
@@ -311,12 +311,5 @@ const siteUrl = computed(() => {
 
 .dates {
   color: var(--text-mention-grey);
-}
-
-.in-progress-alert {
-  position: sticky;
-  top: 0;
-  background-color: var(--background-default-grey);
-  z-index: 3;
 }
 </style>
