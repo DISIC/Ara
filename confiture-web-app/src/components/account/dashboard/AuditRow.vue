@@ -159,18 +159,18 @@ function copyStatementLink(uniqueId: string) {
 </script>
 
 <template>
-  <div class="fr-py-2w grid">
+  <div class="fr-p-2w grid">
     <!-- Name -->
     <RouterLink
       :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
-      class="fr-pl-2w audit-name"
+      class="audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
     <!-- Creation date -->
     <p class="fr-mb-0 audit-date">
-      <span class="fr-sr-only">Date de création </span>
+      <span class="fr-sr-only-md">Date de création : </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -183,8 +183,11 @@ function copyStatementLink(uniqueId: string) {
     </p>
 
     <!-- Compliance level / Progression level -->
-    <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-4w">
-      <template v-if="audit.auditType === AuditType.FULL">
+    <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-lg-4w">
+      <div
+        v-if="audit.auditType === AuditType.FULL"
+        class="audit-compliance-level"
+      >
         <p
           class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-0"
           :class="
@@ -218,7 +221,7 @@ function copyStatementLink(uniqueId: string) {
                 : "Non conforme"
           }}
         </p>
-      </template>
+      </div>
       <p v-else class="fr-m-0">
         Non-applicable
         <button
@@ -240,7 +243,7 @@ function copyStatementLink(uniqueId: string) {
 
     <AuditProgressBar
       v-else
-      class="fr-mr-4w"
+      class="fr-mr-lg-4w"
       label="Progression de l’audit"
       :value="audit.progress"
       :size="8"
@@ -281,7 +284,7 @@ function copyStatementLink(uniqueId: string) {
     </RouterLink>
 
     <!-- Sub actions -->
-    <div class="fr-pr-2w" :style="{ zIndex: zIndex }">
+    <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
         title="Options"
@@ -446,12 +449,16 @@ function copyStatementLink(uniqueId: string) {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 1fr;
+  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 0.75fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
   position: relative;
   transition: background 0.25s ease;
+
+  @media (width < 55rem) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .grid:hover,
@@ -482,6 +489,14 @@ function copyStatementLink(uniqueId: string) {
 .audit-type {
   pointer-events: none;
   z-index: 1;
+}
+
+.audit-compliance-level {
+  @media (width < 62rem) {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
 }
 
 .audit-compliance-level-tooltip {
