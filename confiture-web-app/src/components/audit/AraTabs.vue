@@ -67,7 +67,7 @@ watch(currentTab, (currentTab) => {
 <template>
   <div class="tabs-wrapper" :style="{ '--tabs-top-offset': stickyTop }">
     <ul role="tablist" class="tabs">
-      <li v-for="(tab, i) in tabs" :key="i">
+      <li v-for="(tab, i) in tabs" :key="i" role="presentation">
         <button
           :id="tabId(i)"
           ref="tabControlRefs"

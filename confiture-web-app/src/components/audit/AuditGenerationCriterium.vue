@@ -258,7 +258,7 @@ const showTransverseStatus = computed(() => {
   <li class="fr-p-2w criterium-container">
     <h4 class="fr-mb-2w fr-text--md criterium-main-section">
       <span class="fr-text--bold criterium-number">
-        {{ topicNumber }}.{{ criterium.number }}
+        {{ topicNumber }}.{{ criterium.number }}&nbsp;
       </span>
       <span
         class="fr-text--bold criterium-title"

@@ -64,9 +64,7 @@ const showTransverseAlert = ref(
 <template>
   <!-- TODO: handle empty state -->
   <div v-if="showTransverseAlert" class="fr-alert fr-alert--info fr-mb-4w">
-    <h3 class="fr-alert__title">
-      Nouveauté : gestion des éléments transverses
-    </h3>
+    <p class="fr-alert__title">Nouveauté : gestion des éléments transverses</p>
     <p>
       L'interrupteur "Sur toutes les pages" est remplacé par l'onglet "Éléments
       transverses", qui vous permet d’évaluer les éléments communs à toutes les
@@ -86,10 +84,6 @@ const showTransverseAlert = ref(
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
   </div>
-
-  <h2 class="fr-sr-only">
-    Éléments transverses et autres pages de l’échantillon de chaque onglet
-  </h2>
 
   <template v-if="store.filteredTopics.length">
     <section
