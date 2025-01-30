@@ -23,7 +23,7 @@ export const CustomSelectionExtension = Extension.create({
               selection.from,
               selection.to,
               (node, pos) => {
-                if (!node.isTextblock) {
+                if (!node.isTextblock && node.isLeaf) {
                   decorations.push(
                     Decoration.node(pos, pos + node.nodeSize, {
                       class: "tiptap-selection"
