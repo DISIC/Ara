@@ -4,9 +4,12 @@ import { useRoute } from "vue-router";
 
 import AuditGridStep from "../../components/overview/AuditGridStep.vue";
 import AuditStep from "../../components/overview/AuditStep.vue";
+import GridStep from "../../components/overview/GridStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
+import { useIsConnected } from "../../composables/useIsConnected";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
@@ -50,6 +53,8 @@ function focusPageHeading() {
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
 }
+
+const isConnected = useIsConnected();
 </script>
 
 <template>
@@ -94,15 +99,39 @@ function focusPageHeading() {
       </button>
     </div>
 
-    <div class="content">
-      <h1 class="fr-mb-6w">{{ audit.procedureName }}</h1>
+    <BackLink
+      v-if="isConnected"
+      label="Retourner à mes audits"
+      :to="{ name: 'account-dashboard' }"
+    />
 
-      <ul class="fr-p-0 fr-m-0 overview-steps">
+    <div class="content">
+      <template v-if="isConnected">
+        <h1 class="fr-mb-3v">Livrables</h1>
+        <p class="fr-text--xl fr-mb-4w">{{ audit.procedureName }}</p>
+      </template>
+
+      <h1 v-else class="fr-mb-6w">{{ audit.procedureName }}</h1>
+
+      <div class="fr-p-0 fr-m-0 overview-steps">
         <!-- Audit -->
-        <AuditStep :audit="audit" />
+        <AuditStep v-if="!isConnected" :audit="audit" class="fr-mb-1w" />
+
+        <h2 v-if="!isConnected" class="fr-mb-0">Livrables</h2>
 
         <!-- Report -->
-        <ReportStep :audit="audit" />
+        <ReportStep
+          :audit="audit"
+          class="fr-mb-1w"
+          :heading-level="isConnected ? 'h2' : 'h3'"
+        />
+
+        <!-- Grid -->
+        <GridStep
+          :audit="audit"
+          class="fr-mb-1w"
+          :heading-level="isConnected ? 'h2' : 'h3'"
+        />
 
         <!-- Audit grid -->
         <AuditGridStep :audit="audit" />
@@ -111,8 +140,9 @@ function focusPageHeading() {
         <StatementStep
           v-if="audit.auditType === AuditType.FULL"
           :audit="audit"
+          :heading-level="isConnected ? 'h2' : 'h3'"
         />
-      </ul>
+      </div>
     </div>
   </template>
 </template>
@@ -126,6 +156,6 @@ function focusPageHeading() {
 .overview-steps {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 </style>

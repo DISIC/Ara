@@ -8,6 +8,7 @@ import StepCard from "./StepCard.vue";
 
 defineProps<{
   audit: Audit;
+  headingLevel: "h2" | "h3";
 }>();
 
 const resultsStore = useResultsStore();
@@ -19,7 +20,7 @@ const auditIsReady = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-3w report-step-heading">
+    <div class="fr-mb-2w report-step-heading">
       <span
         v-if="auditIsReady"
         id="report-step-status"
@@ -27,7 +28,8 @@ const auditIsReady = computed(() => {
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
-      <h2
+      <component
+        :is="headingLevel"
         class="fr-h3 fr-mb-0 report-step-title"
         aria-describedby="report-step-status"
       >
@@ -35,7 +37,7 @@ const auditIsReady = computed(() => {
         <p class="fr-badge fr-badge--info fr-badge--no-icon">
           Généré automatiquement
         </p>
-      </h2>
+      </component>
     </div>
     <p class="report-step-description">
       {{
