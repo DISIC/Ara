@@ -7,6 +7,7 @@ import {
   CriteriumResultStatus,
   ReportUserImpact
 } from "../../types";
+import { pluralize } from "../../utils";
 import { getReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
@@ -100,7 +101,11 @@ function resetFilters() {
 <template>
   <ReportCriteria
     v-if="report.data"
-    :count="errorsCount"
+    :count="`${errorsCount} ${pluralize(
+      'Non-conformité détaillée',
+      'Non-conformités détaillées',
+      errorsCount
+    )}`"
     :pages-data="pagesErrors"
     :transverse-data="transverseErrors"
     :show-filters="true"
