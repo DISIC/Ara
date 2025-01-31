@@ -1,7 +1,7 @@
 <template>
-  <li class="fr-px-4w fr-py-3w step-card">
+  <div class="fr-px-4w fr-py-3w step-card">
     <slot />
-  </li>
+  </div>
 </template>
 
 <style scoped>
