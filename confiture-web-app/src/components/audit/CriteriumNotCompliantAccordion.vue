@@ -166,19 +166,27 @@ const title = "Erreur et recommandation";
             data-fr-js-tooltip="true"
           >
             <p class="fr-text--xs fr-mb-1w">
-              <strong>Impact bloquant</strong> : empêche complètement l’accès ou
-              l’utilisation.<br /><span>·</span> Exemple : il est impossible de
-              soumettre un formulaire au clavier.
+              <strong>Bloquant</strong> : empêche complètement l’accès ou
+              l’utilisation.<br /><span>·</span>
+              <span class="user-impact-example"
+                >Ex : il est impossible de soumettre un formulaire au
+                clavier.</span
+              >
             </p>
             <p class="fr-text--xs fr-mb-1w">
-              <strong>Impact majeur</strong> : rend l’accès ou l’utilisation
-              difficile.<br /><span>·</span> Exemple : les champs ne sont pas
-              regroupés.
+              <strong>Majeur</strong> : rend l’accès ou l’utilisation
+              difficile.<br /><span>·</span>
+              <span class="user-impact-example"
+                >Ex : les champs ne sont pas regroupés.</span
+              >
             </p>
             <p class="fr-text--xs fr-mb-0">
-              <strong>Impact mineur</strong> : gêne légèrement sans empêcher
-              l’accès ou l’utilisation.<br /><span>·</span> Exemple : des
-              retours à la ligne sont utilisés pour espacer des textes.
+              <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
+              l’utilisation.<br /><span>·</span>
+              <span class="user-impact-example"
+                >Ex : des retours à la ligne sont utilisés pour espacer des
+                textes.</span
+              >
             </p>
           </div>
         </div>
@@ -218,5 +226,9 @@ const title = "Erreur et recommandation";
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.user-impact-example {
+  font-style: italic;
 }
 </style>
