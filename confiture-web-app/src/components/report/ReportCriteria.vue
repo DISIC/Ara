@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
 import type { ReportError } from "./getReportErrors";
@@ -19,6 +20,32 @@ const route = useRoute();
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
+
+const slots = useSlots();
+
+const hasFilters = computed(() => {
+  return !!slots.filter;
+});
+
+onMounted(() => {
+  // Hack to scroll correctly to the anchor (DSFR bug)
+  document.querySelectorAll(".fr-sidemenu__link").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const href = (event.target as HTMLElement).getAttribute("href");
+      if (!href) {
+        return;
+      }
+      const target = document.querySelector(href);
+      const tabs = document.querySelector(".fr-tabs");
+      if (target && tabs) {
+        tabs.classList.add("fr-hack_force-overflow-visible");
+        target.scrollIntoView({ behavior: "smooth" });
+        tabs.classList.remove("fr-hack_force-overflow-visible");
+      }
+    });
+  });
+});
 </script>
 
 <template>
