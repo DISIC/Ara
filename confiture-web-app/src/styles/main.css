@@ -42,6 +42,10 @@
   border: 1px solid var(--border-default-grey);
 }
 
+.fr-hack_force-overflow-visible {
+  overflow: visible !important;
+}
+
 pre {
   white-space: pre-wrap;
 }
