@@ -106,6 +106,7 @@ const auditIsPublishable = computed(() => {
     <template v-if="auditIsPublishable">
       <CopyBlock
         class="fr-m-0 statement-step-copy-block"
+        :button-class="'fr-btn--secondary'"
         :to="{
           name: 'a11y-statement',
           params: {
