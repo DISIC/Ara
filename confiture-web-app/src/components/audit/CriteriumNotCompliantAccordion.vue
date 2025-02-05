@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, Teleport } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -159,36 +159,38 @@ const title = "Erreur et recommandation";
             Informations sur l’impact usager
           </button>
 
-          <div
-            id="tooltip"
-            class="fr-tooltip fr-placement"
-            role="tooltip"
-            data-fr-js-tooltip="true"
-          >
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Bloquant</strong> : empêche complètement l’accès ou
-              l’utilisation.<br /><span>·</span>
-              <span class="user-impact-example"
-                >Ex : il est impossible de soumettre un formulaire au
-                clavier.</span
-              >
-            </p>
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Majeur</strong> : rend l’accès ou l’utilisation
-              difficile.<br /><span>·</span>
-              <span class="user-impact-example"
-                >Ex : les champs ne sont pas regroupés.</span
-              >
-            </p>
-            <p class="fr-text--xs fr-mb-0">
-              <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
-              l’utilisation.<br /><span>·</span>
-              <span class="user-impact-example"
-                >Ex : des retours à la ligne sont utilisés pour espacer des
-                textes.</span
-              >
-            </p>
-          </div>
+          <Teleport to="body">
+            <div
+              id="tooltip"
+              class="fr-tooltip fr-placement"
+              role="tooltip"
+              data-fr-js-tooltip="true"
+            >
+              <p class="fr-text--xs fr-mb-1w">
+                <strong>Bloquant</strong> : empêche complètement l’accès ou
+                l’utilisation.<br /><span>·</span>
+                <span class="user-impact-example"
+                  >Ex : il est impossible de soumettre un formulaire au
+                  clavier.</span
+                >
+              </p>
+              <p class="fr-text--xs fr-mb-1w">
+                <strong>Majeur</strong> : rend l’accès ou l’utilisation
+                difficile.<br /><span>·</span>
+                <span class="user-impact-example"
+                  >Ex : les champs ne sont pas regroupés.</span
+                >
+              </p>
+              <p class="fr-text--xs fr-mb-0">
+                <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès
+                ou l’utilisation.<br /><span>·</span>
+                <span class="user-impact-example"
+                  >Ex : des retours à la ligne sont utilisés pour espacer des
+                  textes.</span
+                >
+              </p>
+            </div>
+          </Teleport>
         </div>
       </template>
     </RadioGroup>
