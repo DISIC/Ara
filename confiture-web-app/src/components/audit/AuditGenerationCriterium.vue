@@ -277,7 +277,9 @@ const showTransverseStatus = computed(() => {
         :items="statuses"
         @update:model-value="updateResultStatus"
       >
-        Statut du critère {{ topicNumber }}.{{ criterium.number }}
+        <template #label>
+          Statut du critère {{ topicNumber }}.{{ criterium.number }}
+        </template>
       </RadioGroup>
     </div>
 
