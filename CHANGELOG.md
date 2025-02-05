@@ -2,13 +2,18 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-<<<<<<< HEAD
 ## 05/02/2025
+
+### Corrections
+
+- Dans la page du rapport, lorsque l’un des deux onglets « Détails des non-conformités » ou « Points d’amélioration » est sélectionné, les liens présents dans le menu latéral de gauche pointent désormais correctement vers les différentes parties du rapport (ancres), et on fait défiler la page pour rendre ce titre visible en haut du panneau d’onglet. ([#839](https://github.com/DISIC/Ara/issues/839))
 
 ### Autres changements ⚙️
 
 - Améliore l’affichage des erreurs et points d’amélioration dans le rapport ([#929](https://github.com/DISIC/Ara/pull/929))
 - Explicite l'ouverture des livrables dans un nouvel onglet ([#932](https://github.com/DISIC/Ara/pull/932))
+- L’interface du rapport a été revue : la barre d’onglets et le menu latéral de gauche sont désormais positionnés « en adhérence » (_sticky_)
+- La page de création d’audit conserve l’onglet sélectionné lorsque l’on rafraichit la page
 
 ## 22/01/2025
 
@@ -31,14 +36,18 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 =======
 >>>>>>> 54bb726 (Update CHANGELOG)
+>>>>>>>
 ## 18/12/2024
 
 ### Corrections 🐛
 
 <<<<<<< HEAD
+
 - Corrige les menus déroulants en rendant le code HTML généré valide ([#881](https://github.com/DISIC/Ara/pull/881))
 =======
+
 >>>>>>> 54bb726 (Update CHANGELOG)
+
 - Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport ([#879](https://github.com/DISIC/Ara/pull/879))
 
 ## 13/12/2024
