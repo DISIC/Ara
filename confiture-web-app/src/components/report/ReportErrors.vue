@@ -207,10 +207,11 @@ function resetFilters() {
     </template>
 
     <template v-if="transverseErrors.topics.length" #transverse-data>
+      <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <section class="fr-mb-8w">
-        <h2 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
+        <h3 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
           Éléments transverses
-        </h2>
+        </h3>
 
         <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
           <template v-for="(error, j) in topic.errors" :key="j">
@@ -233,9 +234,9 @@ function resetFilters() {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h2 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
-        </h2>
+        </h3>
         <a
           :href="page.url"
           class="fr-link fr-mb-4w page-url"
