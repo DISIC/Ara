@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
 import type { ReportError } from "./getReportErrors";
@@ -20,12 +19,6 @@ const route = useRoute();
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
-
-const slots = useSlots();
-
-const hasFilters = computed(() => {
-  return !!slots.filter;
-});
 </script>
 
 <template>
