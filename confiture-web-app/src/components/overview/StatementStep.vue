@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { useAccountStore, useResultsStore } from "../../store";
+import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
 import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
@@ -11,7 +11,6 @@ const props = defineProps<{
 }>();
 
 const resultsStore = useResultsStore();
-const accountStore = useAccountStore();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
@@ -73,14 +72,11 @@ const auditIsPublishable = computed(() => {
                   params: { uniqueId: audit.editUniqueId }
                 }
           "
-          :target="
-            auditIsPublishable || !accountStore.account ? '_blank' : null
-          "
-          class="fr-btn fr-btn--icon-left fr-mb-md-0 no-external-icon"
+          :target="auditIsPublishable ? '_blank' : null"
+          class="fr-btn fr-btn--icon-left fr-mb-md-0"
           :class="{
-            'fr-btn--secondary': !auditIsReady || auditIsPublishable,
-            'fr-icon-edit-line': !auditIsPublishable,
-            'fr-icon-eye-line': auditIsPublishable
+            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
+            'fr-icon-edit-line no-external-icon': !auditIsPublishable
           }"
           :title="
             auditIsPublishable
@@ -89,9 +85,7 @@ const auditIsPublishable = computed(() => {
           "
         >
           {{ auditIsPublishable ? "Consulter" : "Compléter" }}
-          <span
-            v-if="auditIsPublishable || !accountStore.account"
-            class="fr-sr-only"
+          <span v-if="auditIsPublishable" class="fr-sr-only"
             >(nouvelle fenêtre)</span
           >
         </RouterLink>
@@ -112,6 +106,7 @@ const auditIsPublishable = computed(() => {
     <template v-if="auditIsPublishable">
       <CopyBlock
         class="fr-m-0 statement-step-copy-block"
+        :button-class="'fr-btn--secondary'"
         :to="{
           name: 'a11y-statement',
           params: {

@@ -9,6 +9,7 @@ const props = defineProps<{
   title: string;
   to: RouteLocationRaw;
   successMessage: string;
+  buttonClass?: string;
 }>();
 
 const showCopyAlert = ref(false);
@@ -50,6 +51,7 @@ function onClose() {
       <button
         ref="copyButtonRef"
         class="fr-btn fr-icon-file-line fr-btn--icon-left fr-m-0 copy-block-action"
+        :class="buttonClass"
         :title="`Copier le ${title}`"
         @click="copyLink"
       >
