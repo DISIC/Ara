@@ -22,13 +22,26 @@ const store = useNotificationStore();
           aria-atomic="true"
           role="alert"
         >
-          <div class="text-content">
+          <div>
             <p v-if="store.notification.title" class="fr-alert__title">
               {{ store.notification.title }}
             </p>
-            <p v-if="store.notification.description" class="">
+            <p
+              v-if="store.notification.description"
+              :class="{ 'fr-mb-2w': store.notification.link }"
+            >
               {{ store.notification.description }}
             </p>
+
+            <!-- FIXME: this link is not accessible with keyboard -->
+            <RouterLink
+              v-if="store.notification.link"
+              class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+              :to="store.notification.link.to"
+              @click="store.hideNotification()"
+            >
+              {{ store.notification.link.label }}
+            </RouterLink>
           </div>
 
           <!-- FIXME: this button is not accessible with keyboard -->
@@ -66,12 +79,6 @@ const store = useNotificationStore();
   display: flex;
   gap: 0.5rem;
   align-items: center;
-}
-
-.text-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .v-enter-active,
