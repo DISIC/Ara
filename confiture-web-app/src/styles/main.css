@@ -63,9 +63,6 @@
     max-height: none;
     overflow-y: initial;
   }
-
-.fr-hack_force-overflow-visible {
-  overflow: visible !important;
 }
 
 pre {
