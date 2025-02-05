@@ -2,6 +2,12 @@
   --dsfr-outline: #0a76f6;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 #app {
   display: flex;
   flex-direction: column;
