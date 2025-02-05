@@ -17,6 +17,7 @@ import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DeleteModal from "../../audit/DeleteModal.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
+import EditDocumentIcon from "../../icons/EditDocumentIcon.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -256,9 +257,10 @@ function copyStatementLink(uniqueId: string) {
         name: 'audit-generation',
         params: { uniqueId: audit.editUniqueId }
       }"
-      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-edit-box-line no-external-icon audit-main-action"
+      class="fr-btn fr-btn--secondary no-external-icon audit-main-action"
       :target="isInProgress || isNotStarted ? null : '_blank'"
     >
+      <EditDocumentIcon class="fr-mr-2v main-action-icon" />
       {{
         isNotStarted
           ? "Commencer l’audit"
@@ -486,6 +488,10 @@ function copyStatementLink(uniqueId: string) {
   justify-content: center;
   width: initial;
   z-index: 1;
+}
+
+.main-action-icon {
+  flex: 0 0 auto;
 }
 
 .delete-button {
