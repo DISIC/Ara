@@ -63,6 +63,8 @@ const showTransverseAlert = ref(
 
 <template>
   <!-- TODO: handle empty state -->
+  <h2 class="fr-sr-only">{{ page.name }}</h2>
+
   <div v-if="showTransverseAlert" class="fr-alert fr-alert--info fr-mb-4w">
     <p class="fr-alert__title">Nouveauté : gestion des éléments transverses</p>
     <p>
