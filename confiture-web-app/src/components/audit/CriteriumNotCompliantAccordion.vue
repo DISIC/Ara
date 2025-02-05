@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Teleport } from "vue";
+import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
