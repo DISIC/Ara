@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
+import AuditGridStep from "../../components/overview/AuditGridStep.vue";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
@@ -102,6 +103,9 @@ function focusPageHeading() {
 
         <!-- Report -->
         <ReportStep :audit="audit" />
+
+        <!-- Audit grid -->
+        <AuditGridStep :audit="audit" />
 
         <!-- a11y statement -->
         <StatementStep

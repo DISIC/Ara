@@ -345,7 +345,7 @@ onMounted(() => {
               <li class="fr-p-0 report-item mobile-dropdown-item">
                 <component
                   :is="isOffline ? 'button' : 'RouterLink'"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line no-external-icon"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left"
                   :to="{
                     name: 'report',
                     params: {
@@ -388,7 +388,7 @@ onMounted(() => {
         <li class="fr-p-0 report-item">
           <component
             :is="isOffline ? 'button' : 'RouterLink'"
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-eye-line no-external-icon"
+            class="fr-btn fr-btn--secondary fr-btn--icon-left"
             :to="{
               name: 'report',
               params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
