@@ -31,8 +31,8 @@ const improvementsCount = computed(() => {
     v-if="report.data"
     top-notice="Ci-dessous les commentaires de l’auditeur ou de l’auditrice concernant des critères conformes ou non applicables."
     :count="`${improvementsCount} ${pluralize(
-      'Point d’amélioration',
-      'Points d’amélioration',
+      'point d’amélioration',
+      'points d’amélioration',
       improvementsCount
     )}`"
     :pages-data="pagesImprovements"
