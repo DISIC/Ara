@@ -96,9 +96,9 @@ const hasFilters = computed(() => {
     </div>
 
     <div>
-      <div v-if="hasFilters" class="fr-mb-6w header">
+      <div v-if="hasFilters" class="fr-mb-5w header">
         <div role="alert" aria-live="polite">
-          <p class="fr-mb-0 fr-text--xl fr-text--bold">
+          <p class="fr-mb-0">
             {{ count }}
             {{ pluralize("résultat", "résultats", count) }}
           </p>
@@ -134,7 +134,7 @@ const hasFilters = computed(() => {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-.page-title {
+:deep(.page-title) {
   color: var(--text-active-blue-france);
 }
 
