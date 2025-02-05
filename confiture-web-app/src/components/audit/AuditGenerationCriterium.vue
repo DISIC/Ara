@@ -6,13 +6,7 @@ import { computed, Ref, ref } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { FileErrorMessage } from "../../enums";
-import router from "../../router";
-import {
-  useAuditStore,
-  useFiltersStore,
-  useNotificationStore,
-  useResultsStore
-} from "../../store";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditFile,
   AuditPage,
@@ -38,7 +32,6 @@ import DeleteFileModal from "./DeleteFileModal.vue";
 const store = useResultsStore();
 const auditStore = useAuditStore();
 const filtersStore = useFiltersStore();
-const notificationStore = useNotificationStore();
 
 const props = defineProps<{
   topicNumber: number;
@@ -208,22 +201,16 @@ function updateResultStatus(status: CriteriumResultStatus) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
           notify(
             "info",
-            "Bravo ! Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
               ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
               : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
             {
-              action: {
+              link: {
                 label: "Accéder aux livrables",
-                cb() {
-                  router
-                    .push({
-                      name: "audit-overview",
-                      params: { uniqueId: props.auditUniqueId }
-                    })
-                    .then(() => {
-                      notificationStore.hideNotification();
-                    });
+                to: {
+                  name: "audit-overview",
+                  params: { uniqueId: props.auditUniqueId }
                 }
               }
             }
