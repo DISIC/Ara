@@ -102,8 +102,8 @@ function resetFilters() {
   <ReportCriteria
     v-if="report.data"
     :count="`${errorsCount} ${pluralize(
-      'Non-conformité détaillée',
-      'Non-conformités détaillées',
+      'non-conformité',
+      'non-conformités',
       errorsCount
     )}`"
     :pages-data="pagesErrors"
