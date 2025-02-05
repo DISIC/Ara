@@ -172,7 +172,10 @@ let resizeObserver: ResizeObserver | null = null;
 watch(auditGenerationHeader, async () => {
   const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
   resizeObserver = new ResizeObserver((entries) => {
-    stickyTop.value = entries[0].target.clientHeight + "px";
+    const target = entries[0].target;
+    stickyTop.value = `calc(${getComputedStyle(target).top} + ${
+      target.clientHeight
+    }px)`;
   });
   stickyIndicator && resizeObserver.observe(stickyIndicator);
 });

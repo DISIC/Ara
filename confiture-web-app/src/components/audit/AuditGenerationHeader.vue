@@ -541,7 +541,7 @@ onMounted(() => {
 
 .sticky-indicator {
   position: sticky;
-  top: 0;
+  top: -0.1px;
   z-index: 4;
   gap: 0.5rem 0;
   align-items: center;
