@@ -34,20 +34,11 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Mise à jour du DSFR en version `1.13.0` ([#915](https://github.com/DISIC/Ara/pull/915))
 
-=======
->>>>>>> 54bb726 (Update CHANGELOG)
->>>>>>>
 ## 18/12/2024
 
 ### Corrections 🐛
 
-<<<<<<< HEAD
-
 - Corrige les menus déroulants en rendant le code HTML généré valide ([#881](https://github.com/DISIC/Ara/pull/881))
-=======
-
->>>>>>> 54bb726 (Update CHANGELOG)
-
 - Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport ([#879](https://github.com/DISIC/Ara/pull/879))
 
 ## 13/12/2024
