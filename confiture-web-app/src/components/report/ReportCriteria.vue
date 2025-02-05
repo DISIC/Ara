@@ -31,7 +31,7 @@ const hasFilters = computed(() => {
 
 <template>
   <div class="main">
-    <div class="sidebar">
+    <div class="sidebar filters-wrapper">
       <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
         <div class="fr-sidemenu__inner">
           <button
@@ -136,6 +136,7 @@ const hasFilters = computed(() => {
 
 :deep(.page-title) {
   color: var(--text-active-blue-france);
+  scroll-margin: 4rem;
 }
 
 .page-url {
@@ -158,5 +159,9 @@ const hasFilters = computed(() => {
 
 .improvements-notice {
   color: var(--text-mention-grey);
+}
+
+.filters-wrapper {
+  --filters-top-offset: 4.5rem;
 }
 </style>
