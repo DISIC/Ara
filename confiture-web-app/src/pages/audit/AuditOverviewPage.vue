@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import AuditGridStep from "../../components/overview/AuditGridStep.vue";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import GridStep from "../../components/overview/GridStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
@@ -132,9 +131,6 @@ const isConnected = useIsConnected();
           class="fr-mb-1w"
           :heading-level="isConnected ? 'h2' : 'h3'"
         />
-
-        <!-- Audit grid -->
-        <AuditGridStep :audit="audit" />
 
         <!-- a11y statement -->
         <StatementStep
