@@ -35,5 +35,5 @@ export const configValidationSchema = Joi.object({
   AWS_ACCESS_KEY_ID: Joi.string().required(),
   AWS_SECRET_ACCESS_KEY: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
-  PRUNING_ACCESS_TOKEN: Joi.string().required()
+  PRUNING_ACCESS_TOKEN: Joi.string().min(32).required()
 });
