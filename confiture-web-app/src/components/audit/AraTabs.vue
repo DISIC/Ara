@@ -5,14 +5,18 @@
  -->
 
 <script setup lang="ts" generic="T">
-import { ref, watch } from "vue";
+import { type Component, ref, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import LayoutIcon from "../icons/LayoutIcon.vue";
 
 const props = defineProps<{
-  tabs: { label: string; data: T }[];
-  stickyTop: string;
+  tabs: {
+    label: string;
+    icon?: Component;
+    data: T;
+  }[];
+  selectedTab?: number;
+  stickyTop?: string;
 }>();
 
 defineSlots<{
@@ -27,7 +31,7 @@ const uniqueId = useUniqueId();
 const tabId = (i: number) => "tab-" + uniqueId.value + "-" + i;
 const panelId = (i: number) => "panel-" + uniqueId.value + "-" + i;
 
-const currentTab = ref(0);
+const currentTab = ref(props.selectedTab || 0);
 const tabControlRefs = ref<HTMLButtonElement[]>();
 
 const selectNextTab = () => {
@@ -81,7 +85,9 @@ watch(currentTab, (currentTab) => {
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
-          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />{{ tab.label }}
+          <component :is="tab.icon" v-if="tab.icon" class="fr-mr-2v" />{{
+            tab.label
+          }}
         </button>
       </li>
     </ul>
