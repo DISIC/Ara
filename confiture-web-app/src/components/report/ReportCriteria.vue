@@ -107,6 +107,7 @@ function isActive(id: string) {
 </template>
 
 <style scoped>
+@import "../../styles/filters.css";
 .main {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);

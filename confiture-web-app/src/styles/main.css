@@ -42,23 +42,6 @@
   border: 1px solid var(--border-default-grey);
 }
 
-.filters-wrapper {
-  position: sticky;
-  top: var(--filters-top-offset, 0);
-  max-height: calc(100vh - var(--filters-top-offset, 0));
-  max-height: calc(100dvh - var(--filters-top-offset, 0));
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-@media (width < 48rem) {
-  .filters-wrapper {
-    position: static;
-    max-height: none;
-    overflow-y: initial;
-  }
-}
-
 pre {
   white-space: pre-wrap;
 }

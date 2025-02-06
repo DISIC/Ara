@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Basic component type
 import { type Component, computed, onBeforeUnmount, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
@@ -327,6 +326,8 @@ const tabsData = computed((): TabData[] => {
 </template>
 
 <style scoped>
+@import "../../styles/filters.css";
+
 /* Override DSFR columns width */
 .columns {
   --gap: 1.5rem;
