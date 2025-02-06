@@ -87,7 +87,7 @@ function isActive(id: string) {
       <slot name="filter" />
     </div>
     <div>
-      <div class="fr-mb-5w header">
+      <div class="fr-mb-5w">
         <p v-if="topNotice" class="fr-text--sm fr-mb-3w improvements-notice">
           {{ topNotice }}
         </p>
