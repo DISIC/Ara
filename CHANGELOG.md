@@ -12,6 +12,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - L’interface du rapport a été revue : la barre d’onglets et le menu latéral de gauche sont désormais positionnés « en adhérence » (_sticky_)
 - La page de création d’audit conserve l’onglet sélectionné lorsque l’on rafraichit la page
+- Corrige la hiérarchie des titres et les annonces d’enregistrement pour les technologies d’assistance ([#933](https://github.com/DISIC/Ara/pull/933))
 
 ## 05/02/2025
 

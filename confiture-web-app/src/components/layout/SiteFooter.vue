@@ -35,7 +35,7 @@ const bottomLinks = [
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
-            <h3 class="fr-footer__top-cat">Nouveautés</h3>
+            <p class="fr-footer__top-cat">Nouveautés</p>
             <ul class="fr-footer__top-list">
               <li>
                 <RouterLink

@@ -53,6 +53,7 @@ interface ResultsStoreState {
    * Timestamp of the last moment `currentRequestCount` changed from a non-zero value to zero.
    */
   lastRequestSuccessEnd: number | null;
+  lastRequestFailed: boolean;
 }
 
 export const useResultsStore = defineStore("results", {
@@ -62,7 +63,8 @@ export const useResultsStore = defineStore("results", {
       data: null,
       previousStatuses: {},
       currentRequestCount: 0,
-      lastRequestSuccessEnd: null
+      lastRequestSuccessEnd: null,
+      lastRequestFailed: false
     };
   },
 
