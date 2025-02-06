@@ -415,7 +415,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can finish the audit", () => {
+  it("User can finish the audit", () => {
     cy.createTestAudit().then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
