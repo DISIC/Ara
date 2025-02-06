@@ -259,6 +259,8 @@ const siteUrl = computed(() => {
       </p>
     </div>
 
+    <!-- sticky-top="-0.1px" to prevent "one line background flickering"
+			when scrolling the page -->
     <AraTabs
       :tabs="tabsData"
       sticky-top="-0.1px"
