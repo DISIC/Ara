@@ -34,6 +34,7 @@ interface AuditStoreState {
    * Timestamp of the last moment `currentRequestCount` changed from a non-zero value to zero.
    */
   lastRequestSuccessEnd: number | null;
+  lastRequestFailed: boolean;
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -45,7 +46,8 @@ export const useAuditStore = defineStore("audit", {
     entities: {},
     listing: [],
     currentRequestCount: 0,
-    lastRequestSuccessEnd: null
+    lastRequestSuccessEnd: null,
+    lastRequestFailed: false
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {

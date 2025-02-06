@@ -44,7 +44,7 @@ const uniqueId = useUniqueId();
     </div>
 
     <section v-if="showDetails" class="fr-accordion card-accordion">
-      <h3 class="fr-accordion__title">
+      <div class="fr-accordion__title">
         <button
           class="fr-accordion__btn"
           aria-expanded="false"
@@ -52,7 +52,7 @@ const uniqueId = useUniqueId();
         >
           <slot name="accordion-title"></slot>
         </button>
-      </h3>
+      </div>
       <div :id="`accordion-${uniqueId}`" class="fr-collapse">
         <slot name="accordion-content" />
       </div>

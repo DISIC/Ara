@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 06/02/2025
+
+### Corrections 🐛
+
+- Corrige la hiérarchie des titres et les annonces d’enregistrement pour les technologies d’assistance ([#933](https://github.com/DISIC/Ara/pull/933))
+
 ## 05/02/2025
 
 ### Autres changements ⚙️

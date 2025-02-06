@@ -40,13 +40,14 @@ const improvementsCount = computed(() => {
     :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
+      <h2 class="fr-sr-only">Points d’amélioration</h2>
       <section v-if="transverseImprovements.topics.length > 0" class="fr-mb-8w">
-        <h2
+        <h3
           id="improvements_elements-transverses"
           class="fr-h3 fr-mb-2w page-title"
         >
           Éléments transverses
-        </h2>
+        </h3>
 
         <div
           v-for="(topic, i) in transverseImprovements.topics"
@@ -78,9 +79,9 @@ const improvementsCount = computed(() => {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesImprovements.length - 1 }"
       >
-        <h2 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
-        </h2>
+        </h3>
         <a
           :href="page.url"
           class="fr-link page-url"

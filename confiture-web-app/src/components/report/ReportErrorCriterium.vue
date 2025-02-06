@@ -28,10 +28,10 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 
 <template>
   <div>
-    <p class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
+    <h4 class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
       {{ error.topic }}.{{ error.criterium }}&nbsp;
       <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
-    </p>
+    </h4>
 
     <ul class="fr-badges-group fr-mb-2w">
       <li>
