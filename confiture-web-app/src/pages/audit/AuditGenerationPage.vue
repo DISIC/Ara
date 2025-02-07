@@ -10,6 +10,7 @@ import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
+import { useIsConnected } from "../../composables/useIsConnected";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
@@ -225,6 +226,8 @@ const tabsData = computed((): TabData[] => {
     })) ?? [])
   ];
 });
+
+const isConnected = useIsConnected();
 </script>
 
 <template>
@@ -236,8 +239,16 @@ const tabsData = computed((): TabData[] => {
     />
 
     <BackLink
-      label="Aller au tableau de bord de l’audit"
-      :to="{ name: 'audit-overview', params: { uniqueId } }"
+      :label="
+        isConnected
+          ? 'Retourner à mes audits'
+          : 'Retourner au tableau de bord de l’audit'
+      "
+      :to="
+        isConnected
+          ? { name: 'account-dashboard' }
+          : { name: 'audit-overview', params: { uniqueId } }
+      "
     />
 
     <AuditGenerationHeader
