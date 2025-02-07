@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRoute } from "vue-router";
+import { type Component, computed, onBeforeUnmount, ref, watch } from "vue";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
+import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -15,9 +16,10 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
-import { pluralize } from "../../utils";
+import { pluralize, slugify } from "../../utils";
 
 const route = useRoute();
+const router = useRouter();
 
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
@@ -77,13 +79,26 @@ const topics = computed(() => {
 
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
-function updateCurrentPageId(i: number) {
+function updateCurrentPageId(tabIndex: number) {
   auditStore.updateCurrentPageId(
-    i === 0
+    tabIndex === 0
       ? auditStore.currentAudit?.transverseElementsPage.id ?? null
       : auditStore.currentAudit?.pages
-        ? auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
+        ? auditStore.currentAudit?.pages.at(tabIndex - 1)?.id ?? null
         : null
+  );
+
+  // change the URL in the browser adress bar without triggering vue-router navigation
+  history.pushState(
+    {},
+    "null",
+    router.resolve({
+      name: "audit-generation",
+      params: {
+        uniqueId: uniqueId.value,
+        tab: slugify(tabsData.value[tabIndex].label)
+      }
+    }).fullPath
   );
 }
 
@@ -172,7 +187,10 @@ let resizeObserver: ResizeObserver | null = null;
 watch(auditGenerationHeader, async () => {
   const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
   resizeObserver = new ResizeObserver((entries) => {
-    stickyTop.value = entries[0].target.clientHeight + "px";
+    const target = entries[0].target;
+    stickyTop.value = `calc(${getComputedStyle(target).top} + ${
+      target.clientHeight
+    }px)`;
   });
   stickyIndicator && resizeObserver.observe(stickyIndicator);
 });
@@ -183,9 +201,9 @@ onBeforeUnmount(() => {
 });
 
 const pageTitle = computed(() => {
-  // Audit XXX - Page en cours « XXX » - X résultats pour « XXX »
+  // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
-    let title = `Audit ${auditStore.currentAudit.procedureName}`;
+    let title = auditStore.currentAudit.procedureName;
 
     const tabName = ` - Page en cours « ${
       auditStore.currentAudit.pages.find(
@@ -211,13 +229,31 @@ const pageTitle = computed(() => {
   return "";
 });
 
-type TabData = { label: string; data: AuditPage };
+const targetTab = ref(route.params.tab as string | undefined);
+const targetTabIndex = computed(() => {
+  let index = tabsData.value.findIndex(
+    (t) => slugify(t.label).toLowerCase() === targetTab.value?.toLowerCase()
+  );
+  return index === -1 ? 0 : index;
+});
+
+type TabData = {
+  label: string;
+  icon?: Component;
+  data: AuditPage;
+};
 
 const tabsData = computed((): TabData[] => {
   const transversePage = auditStore.currentAudit?.transverseElementsPage;
   return [
     ...(transversePage
-      ? [{ label: transversePage?.name, data: transversePage }]
+      ? [
+          {
+            label: transversePage?.name,
+            icon: LayoutIcon,
+            data: transversePage
+          }
+        ]
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
@@ -257,7 +293,7 @@ const tabsData = computed((): TabData[] => {
         ]"
       >
         <div
-          :class="['filters-wrapper', { 'fr-pr-3v': showFilters }]"
+          :class="['filters-wrapper fr-pt-4v', { 'fr-pr-3v': showFilters }]"
           role="search"
           :style="{ '--filters-top-offset': stickyTop }"
         >
@@ -274,6 +310,7 @@ const tabsData = computed((): TabData[] => {
         <AraTabs
           :tabs="tabsData"
           :sticky-top="stickyTop"
+          :selected-tab="targetTabIndex"
           @change="updateCurrentPageId"
         >
           <template #panel="{ data }">
@@ -289,6 +326,8 @@ const tabsData = computed((): TabData[] => {
 </template>
 
 <style scoped>
+@import "../../styles/filters.css";
+
 /* Override DSFR columns width */
 .columns {
   --gap: 1.5rem;
@@ -314,23 +353,6 @@ const tabsData = computed((): TabData[] => {
 
 .back-summary-link {
   display: inline-block;
-}
-
-.filters-wrapper {
-  position: sticky;
-  top: var(--filters-top-offset, 0);
-  max-height: calc(100vh - var(--filters-top-offset, 0));
-  max-height: calc(100dvh - var(--filters-top-offset, 0));
-  overflow-y: auto;
-  padding-top: 1rem;
-}
-
-@media (width < 48rem) {
-  .filters-wrapper {
-    position: static;
-    max-height: none;
-    overflow-y: initial;
-  }
 }
 
 .page-wrapper {

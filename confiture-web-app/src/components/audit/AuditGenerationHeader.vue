@@ -127,7 +127,7 @@ function confirmDelete() {
       notify(
         "error",
         "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
       );
       captureWithPayloads(error);
     })
@@ -159,6 +159,7 @@ const updateAuditNotes = async (notes: string) => {
       "Une erreur est survenue",
       "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
     );
+    auditStore.lastRequestFailed = true;
   } finally {
     isNotesLoading.value = false;
   }
@@ -223,7 +224,13 @@ onMounted(() => {
     </button>
   </div>
 
-  <h1>{{ auditName }}</h1>
+  <h1>
+    {{ auditName }}
+    <span class="fr-sr-only">
+      Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
+      problème lié à l’enregistrement
+    </span>
+  </h1>
 
   <div ref="stickyIndicator" class="sticky-indicator fr-grid-row fr-mb-3w">
     <div
@@ -541,7 +548,8 @@ onMounted(() => {
 
 .sticky-indicator {
   position: sticky;
-  top: 0;
+  /* Prevent "one line background flickering" when scrolling the page */
+  top: -0.1px;
   z-index: 4;
   gap: 0.5rem 0;
   align-items: center;

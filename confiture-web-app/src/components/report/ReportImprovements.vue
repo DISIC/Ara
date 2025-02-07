@@ -2,6 +2,7 @@
 import { computed } from "vue";
 
 import { useReportStore } from "../../store";
+import { pluralize } from "../../utils";
 import { getReportImprovements } from "./getReportImprovements";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
@@ -29,51 +30,58 @@ const improvementsCount = computed(() => {
   <ReportCriteria
     v-if="report.data"
     top-notice="Ci-dessous les commentaires de l’auditeur ou de l’auditrice concernant des critères conformes ou non applicables."
-    :count="improvementsCount"
+    :count="`${improvementsCount} ${pluralize(
+      'point d’amélioration',
+      'points d’amélioration',
+      improvementsCount
+    )}`"
     :pages-data="pagesImprovements"
     tab-slug="improvements"
     :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
+      <h2 class="fr-sr-only">Points d’amélioration</h2>
       <section v-if="transverseImprovements.topics.length > 0" class="fr-mb-8w">
-        <h2
+        <h3
           id="improvements_elements-transverses"
           class="fr-h3 fr-mb-2w page-title"
         >
           Éléments transverses
-        </h2>
+        </h3>
 
         <div
           v-for="(topic, i) in transverseImprovements.topics"
           :key="topic.number"
-          :class="{ 'fr-mt-9v': i !== 0 }"
         >
-          <p class="fr-tag fr-tag--sm fr-mb-3v">
-            {{ topic.number }}.&nbsp;{{ topic.name }}
-          </p>
+          <template v-for="(improvement, j) in topic.improvements" :key="j">
+            <ReportImprovementCriterium
+              :topic="topic.number"
+              :criterium="improvement.criterium"
+              :comment="improvement.comment!"
+              :status="improvement.status"
+            />
 
-          <ReportImprovementCriterium
-            v-for="(improvement, j) in topic.improvements"
-            :key="j"
-            :class="j === 0 ? null : 'fr-mt-9v'"
-            :topic="topic.number"
-            :criterium="improvement.criterium"
-            :comment="improvement.comment!"
-            :status="improvement.status"
-          />
+            <hr
+              v-if="
+                i !== transverseImprovements.topics.length - 1 ||
+                j !== topic.improvements.length - 1
+              "
+              class="fr-mt-4w fr-pb-4w"
+            />
+          </template>
         </div>
       </section>
     </template>
 
     <template #pages-data>
       <section
-        v-for="page in pagesImprovements"
+        v-for="(page, i) in pagesImprovements"
         :key="page.id"
-        class="fr-mb-8w"
+        :class="{ 'fr-mb-8w': i !== pagesImprovements.length - 1 }"
       >
-        <h2 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
-        </h2>
+        </h3>
         <a
           :href="page.url"
           class="fr-link page-url"
@@ -84,24 +92,34 @@ const improvementsCount = computed(() => {
         </a>
 
         <div
-          v-for="(topic, i) in page.topics"
+          v-for="(topic, j) in page.topics"
           :key="topic.number"
-          :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
+          :class="{ 'fr-mt-4w': j === 0 }"
         >
-          <p class="fr-tag fr-tag--sm fr-mb-3v">
-            {{ topic.number }}.&nbsp;{{ topic.name }}
-          </p>
-          <ReportImprovementCriterium
-            v-for="(improvement, j) in topic.improvements"
-            :key="j"
-            :class="j === 0 ? null : 'fr-mt-9v'"
-            :topic="topic.number"
-            :criterium="improvement.criterium"
-            :comment="improvement.comment!"
-            :status="improvement.status"
-          />
+          <template v-for="(improvement, k) in topic.improvements" :key="k">
+            <ReportImprovementCriterium
+              :topic="topic.number"
+              :criterium="improvement.criterium"
+              :comment="improvement.comment!"
+              :status="improvement.status"
+            />
+
+            <hr
+              v-if="
+                j !== page.topics.length - 1 ||
+                k !== topic.improvements.length - 1
+              "
+              class="fr-mt-4w fr-pb-4w"
+            />
+          </template>
         </div>
       </section>
     </template>
   </ReportCriteria>
 </template>
+
+<style>
+.page-title {
+  color: var(--text-active-blue-france);
+}
+</style>

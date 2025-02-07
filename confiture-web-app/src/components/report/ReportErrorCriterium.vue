@@ -5,8 +5,6 @@ import { marked } from "marked";
 import rgaa from "../../criteres.json";
 import { CriterionResultUserImpact, ReportCriteriumResult } from "../../types";
 import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
-import CriteriumTestsAccordion from "../audit/CriteriumTestsAccordion.vue";
-import LazyAccordion from "../audit/LazyAccordion.vue";
 import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
 
 defineProps<{
@@ -30,10 +28,10 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 
 <template>
   <div>
-    <p class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
+    <h4 class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
       {{ error.topic }}.{{ error.criterium }}&nbsp;
       <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
-    </p>
+    </h4>
 
     <ul class="fr-badges-group fr-mb-2w">
       <li>
@@ -60,20 +58,18 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
     </ul>
 
     <!-- Error -->
-    <LazyAccordion
-      v-if="error.notCompliantComment || error.exampleImages.length > 0"
-      title="Erreur et recommandation"
-      data-accordion
-    >
-      <MarkdownRenderer
-        v-if="error.notCompliantComment"
-        class="fr-mb-3w"
-        :markdown="error.notCompliantComment"
-      />
-      <p
-        v-if="chunk(error.exampleImages, 2).length"
-        class="fr-text--xs fr-mb-1w error-accordion-subtitle"
-      >
+    <MarkdownRenderer
+      v-if="error.notCompliantComment"
+      :class="{ 'fr-mb-3w': chunk(error.exampleImages, 2).length }"
+      :markdown="error.notCompliantComment"
+    />
+
+    <p v-else>
+      Aucune description de l’erreur ou recommandation de correction.
+    </p>
+
+    <template v-if="chunk(error.exampleImages, 2).length">
+      <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
         Exemple(s) d’erreur(s)
       </p>
       <div class="fr-container--fluid">
@@ -92,16 +88,22 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
             <span class="fr-sr-only">
               Ouvrir l’image dans une nouvelle fenêtre
             </span>
-            <img style="width: 100%" :src="getUploadUrl(example.key)" alt="" />
+            <img
+              class="example-image"
+              :src="getUploadUrl(example.key)"
+              alt=""
+            />
           </a>
         </div>
       </div>
-    </LazyAccordion>
-
-    <!-- Tests -->
-    <CriteriumTestsAccordion
-      :topic-number="error.topic"
-      :criterium="getCriterium(error.topic, error.criterium)"
-    />
+    </template>
   </div>
 </template>
+
+<style>
+.example-image {
+  max-height: 12.5rem;
+  max-width: calc(100% - 1.5rem); /* Full width minus externa icon size */
+  width: auto;
+}
+</style>

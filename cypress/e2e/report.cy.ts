@@ -109,7 +109,7 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
-      cy.contains("315 résultats");
+      cy.contains("315 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {
@@ -118,7 +118,7 @@ describe("Report", () => {
 
       // Check & uncheck easy to fix
       cy.contains("Uniquement les erreurs faciles à corriger").click();
-      cy.contains("45 résultats");
+      cy.contains("45 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {
@@ -128,7 +128,7 @@ describe("Report", () => {
 
       // Uncheck minor impact
       cy.contains("Mineur (81)").click();
-      cy.contains("234 résultats");
+      cy.contains("234 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {
@@ -137,7 +137,7 @@ describe("Report", () => {
 
       // Uncheck major impact
       cy.contains("Majeur (81)").click();
-      cy.contains("153 résultats");
+      cy.contains("153 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {
@@ -146,7 +146,7 @@ describe("Report", () => {
 
       // Uncheck blocking impact
       cy.contains("Bloquant (81)").click();
-      cy.contains("72 résultats");
+      cy.contains("72 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {
@@ -155,14 +155,14 @@ describe("Report", () => {
 
       // Uncheck not specified impact
       cy.contains("Impact non renseigné (72)").click();
-      cy.contains("0 résultats");
+      cy.contains("0 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).should("not.exist");
 
       // Reset filters
       cy.contains("button", "Réinitialiser les filtres").click();
-      cy.contains("315 résultats");
+      cy.contains("315 non-conformités");
       cy.get(
         "#tabpanel-details-des-non-conformites-panel .criterium-title",
       ).then((els) => {

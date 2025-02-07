@@ -8,10 +8,23 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Ajoute une aide et des exemples sur l’impact usager ([#928](https://github.com/DISIC/Ara/pull/928))
 
+## 06/02/2025
+
+### Corrections 🐛
+
+- Dans la page du rapport, lorsque l’un des deux onglets « Détails des non-conformités » ou « Points d’amélioration » est sélectionné, les liens présents dans le menu latéral de gauche pointent désormais correctement vers les différentes parties du rapport. ([#839](https://github.com/DISIC/Ara/issues/839))
+
+### Autres changements ⚙️
+
+- L’interface du rapport a été revue : la barre d’onglets et le menu latéral de gauche sont désormais positionnés « en adhérence » (_sticky_)
+- La page de création d’audit conserve l’onglet sélectionné lorsque l’on rafraichit la page
+- Corrige la hiérarchie des titres et les annonces d’enregistrement pour les technologies d’assistance ([#933](https://github.com/DISIC/Ara/pull/933))
+
 ## 05/02/2025
 
 ### Autres changements ⚙️
 
+- Améliore l’affichage des erreurs et points d’amélioration dans le rapport ([#929](https://github.com/DISIC/Ara/pull/929))
 - Explicite l'ouverture des livrables dans un nouvel onglet ([#932](https://github.com/DISIC/Ara/pull/932))
 
 ## 22/01/2025
@@ -607,7 +620,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Autres changements ⚙️
 
 - Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
-- Mise à jour de l’adresse email de contact : ara@design.numerique.gouv.fr ([#328](https://github.com/DISIC/Ara/pull/328))
+- Mise à jour de l’adresse email de contact : <ara@design.numerique.gouv.fr> ([#328](https://github.com/DISIC/Ara/pull/328))
 
 ## 08/03/2023
 

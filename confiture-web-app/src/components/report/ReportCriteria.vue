@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed, useSlots } from "vue";
 import { useRoute } from "vue-router";
 
-import { pluralize } from "../../utils";
 import type { ReportError } from "./getReportErrors";
 import { ReportImprovement } from "./getReportImprovements";
 
 defineProps<{
-  count: number;
+  count: string;
   pagesData: ReportError[] | ReportImprovement[];
   tabSlug: string;
   transverseData: ReportError | ReportImprovement;
@@ -21,17 +19,11 @@ const route = useRoute();
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
-
-const slots = useSlots();
-
-const hasFilters = computed(() => {
-  return !!slots.filter;
-});
 </script>
 
 <template>
   <div class="main">
-    <div class="sidebar">
+    <div class="sidebar filters-wrapper">
       <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
         <div class="fr-sidemenu__inner">
           <button
@@ -94,20 +86,18 @@ const hasFilters = computed(() => {
       </nav>
       <slot name="filter" />
     </div>
-
     <div>
-      <div v-if="hasFilters" class="fr-mb-6w header">
+      <div class="fr-mb-5w">
+        <p v-if="topNotice" class="fr-text--sm fr-mb-3w improvements-notice">
+          {{ topNotice }}
+        </p>
+
         <div role="alert" aria-live="polite">
-          <p class="fr-mb-0 fr-text--xl fr-text--bold">
+          <p class="fr-mb-0 count">
             {{ count }}
-            {{ pluralize("résultat", "résultats", count) }}
           </p>
         </div>
       </div>
-
-      <p v-if="topNotice" class="fr-text--sm improvements-notice">
-        {{ topNotice }}
-      </p>
 
       <slot v-if="transverseData" name="transverse-data" />
 
@@ -117,13 +107,7 @@ const hasFilters = computed(() => {
 </template>
 
 <style scoped>
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
+@import "../../styles/filters.css";
 .main {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);
@@ -134,12 +118,9 @@ const hasFilters = computed(() => {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-.page-title {
+:deep(.page-title) {
   color: var(--text-active-blue-france);
-}
-
-.page-url {
-  word-break: break-all;
+  scroll-margin: 4rem;
 }
 
 .fr-sidemenu__inner {
@@ -156,7 +137,12 @@ const hasFilters = computed(() => {
   }
 }
 
+.count,
 .improvements-notice {
   color: var(--text-mention-grey);
+}
+
+.filters-wrapper {
+  --filters-top-offset: 4.5rem;
 }
 </style>

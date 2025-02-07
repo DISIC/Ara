@@ -51,6 +51,7 @@ function handleUploadFile(file: File) {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileUploadError(error);
+      auditStore.lastRequestFailed = true;
     })
     .finally(() => {
       fileUpload.value?.onFileRequestFinished();
@@ -65,6 +66,7 @@ function handleDeleteFile(file: AuditFile) {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileDeleteError(error);
+      auditStore.lastRequestFailed = true;
     })
     .finally(() => {
       fileUpload.value?.onFileRequestFinished();

@@ -208,7 +208,7 @@ const router = createRouter({
       }
     },
     {
-      path: "/audits/:uniqueId/generation",
+      path: "/audits/:uniqueId/generation/:tab?",
       name: "audit-generation",
       component: AuditGenerationPage,
       meta: {

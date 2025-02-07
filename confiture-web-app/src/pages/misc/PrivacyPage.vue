@@ -49,14 +49,19 @@ import PageMeta from "../../components/PageMeta";
                     2019)
                   </td>
                   <td rowspan="2">
-                    Suppression du compte possible par l’utilisateur.<br />Sans
-                    connexion de l’utilisateur à son compte dans un délai de 5
-                    ans, ses données sont supprimées.
+                    L’utilisateur·rice peut supprimer son compte et ses données
+                    personnelles à tout moment.<br />
+                    Un compte inactif pendant 5 ans est automatiquement supprimé
+                    ainsi que les données personnelles de l'utilisateur·rice.
+                    Les audits associés sont alors anonymisés.<br />
+                    Les audits réalisés sans compte sont automatiquement
+                    anonymisés après 5 ans et les données personnelles de
+                    l'utilisateur·rice supprimées.
                   </td>
                 </tr>
                 <tr>
                   <td>Prénom et nom</td>
-                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>« Signer » le rapport d’accessibilité</td>
                   <td>Intérêt légitime</td>
                 </tr>
               </tbody>
@@ -141,7 +146,7 @@ import PageMeta from "../../components/PageMeta";
     <h2>Suivi d’audience et vie privée</h2>
     <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
     <p>
-      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
+      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
       lorsque vous le consultez. Cela nous permet de mesurer le nombre de
       visites et de comprendre quelles sont les pages les plus consultées.
     </p>
@@ -156,7 +161,7 @@ import PageMeta from "../../components/PageMeta";
     </p>
     <p>
       Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
-      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
+      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
       que votre adresse IP, par exemple, est anonymisée avant d’être
       enregistrée. Il est donc impossible d’associer vos visites sur ce site à
       votre personne.

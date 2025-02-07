@@ -104,9 +104,26 @@ setInterval(() => {
     return;
   }
 
-  var seconds = Math.round((Date.now() - timestamp) / 1000);
+  const seconds = Math.round((Date.now() - timestamp) / 1000);
   relativeLastSaveDate.value = formatInterval(seconds);
 }, 1000);
+
+// Vocally announce when requests are working again after a failure
+const saveText = ref("");
+
+watch(
+  () => store.value.lastRequestFailed,
+  () => {
+    if (store.value.lastRequestFailed) {
+      saveText.value = "Information : vos saisies sont à nouveau enregistrées.";
+
+      setTimeout(() => {
+        saveText.value = "";
+        store.value.lastRequestFailed = false;
+      }, 5000);
+    }
+  }
+);
 </script>
 
 <template>
@@ -117,8 +134,6 @@ setInterval(() => {
       icon-left
       :button-props="{
         class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
-        'aria-live': !systemStore.isOnline ? 'assertive' : 'polite',
-        role: 'alert',
         style: !systemStore.isOnline
           ? 'color: var(--text-default-error);'
           : undefined
@@ -132,6 +147,10 @@ setInterval(() => {
         Dernier enregistrement {{ relativeLastSaveDate }}
       </p>
     </Dropdown>
+
+    <p class="fr-sr-only" aria-live="polite" role="alert">
+      {{ saveText }}
+    </p>
   </div>
 </template>
 

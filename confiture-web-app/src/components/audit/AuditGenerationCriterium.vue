@@ -137,6 +137,7 @@ function handleUploadExample(file: File) {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileUploadError(error);
+      store.lastRequestFailed = true;
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
@@ -167,6 +168,7 @@ function handleDeleteExample() {
     })
     .catch(async (error) => {
       errorMessage.value = await handleFileDeleteError(error);
+      auditStore.lastRequestFailed = true;
     })
     .finally(() => {
       criteriumNotCompliantAccordion.value?.onFileRequestFinished();
@@ -176,6 +178,7 @@ function handleDeleteExample() {
 
 function handleUpdateResultError(err: any) {
   console.log(err);
+  auditStore.lastRequestFailed = true;
   notify(
     "error",
     "Une erreur est survenue",
@@ -253,15 +256,15 @@ const showTransverseStatus = computed(() => {
 
 <template>
   <li class="fr-p-2w criterium-container">
-    <div class="fr-mb-2w criterium-main-section">
+    <h4 class="fr-mb-2w fr-text--md criterium-main-section">
       <span class="fr-text--bold criterium-number">
-        {{ topicNumber }}.{{ criterium.number }}
+        {{ topicNumber }}.{{ criterium.number }}&nbsp;
       </span>
-      <div
+      <span
         class="fr-text--bold criterium-title"
         v-html="marked.parseInline(criterium.title)"
       />
-    </div>
+    </h4>
 
     <!-- STATUS -->
     <div

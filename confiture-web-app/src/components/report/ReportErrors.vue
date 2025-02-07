@@ -7,6 +7,7 @@ import {
   CriteriumResultStatus,
   ReportUserImpact
 } from "../../types";
+import { pluralize } from "../../utils";
 import { getReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
@@ -100,7 +101,11 @@ function resetFilters() {
 <template>
   <ReportCriteria
     v-if="report.data"
-    :count="errorsCount"
+    :count="`${errorsCount} ${pluralize(
+      'non-conformité',
+      'non-conformités',
+      errorsCount
+    )}`"
     :pages-data="pagesErrors"
     :transverse-data="transverseErrors"
     :show-filters="true"
@@ -196,38 +201,39 @@ function resetFilters() {
     </template>
 
     <template v-if="transverseErrors.topics.length" #transverse-data>
+      <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <section class="fr-mb-8w">
-        <h2 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
+        <h3 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
           Éléments transverses
-        </h2>
+        </h3>
 
-        <div
-          v-for="(topic, i) in transverseErrors.topics"
-          :key="topic.topic"
-          :class="{ 'fr-mt-9v': i !== 0 }"
-        >
-          <p class="fr-tag fr-tag--sm fr-mb-3v">
-            {{ topic.topic }}.&nbsp;{{ topic.name }}
-          </p>
-
-          <ReportErrorCriterium
-            v-for="(error, j) in topic.errors"
-            :key="j"
-            :error="error"
-            :class="{ 'fr-mt-9v': j !== 0 }"
-          />
+        <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
+          <template v-for="(error, j) in topic.errors" :key="j">
+            <ReportErrorCriterium :error="error" />
+            <hr
+              v-if="
+                i !== transverseErrors.topics.length - 1 ||
+                j !== topic.errors.length - 1
+              "
+              class="fr-mt-4w fr-pb-4w"
+            />
+          </template>
         </div>
       </section>
     </template>
 
     <template #pages-data>
-      <section v-for="page in pagesErrors" :key="page.id" class="fr-mb-8w">
-        <h2 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+      <section
+        v-for="(page, i) in pagesErrors"
+        :key="page.id"
+        :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
+      >
+        <h3 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
-        </h2>
+        </h3>
         <a
           :href="page.url"
-          class="fr-link page-url"
+          class="fr-link fr-mb-4w page-url"
           target="_blank"
           rel="noopener"
         >
@@ -239,22 +245,27 @@ function resetFilters() {
         </p>
 
         <div
-          v-for="(topic, i) in page.topics"
+          v-for="(topic, j) in page.topics"
           :key="topic.topic"
-          :class="i === 0 ? 'fr-mt-4w' : 'fr-mt-9v'"
+          :class="{ 'fr-mt-4w': j === 0 }"
         >
-          <p class="fr-tag fr-tag--sm fr-mb-3w">
-            {{ topic.topic }}.&nbsp;{{ topic.name }}
-          </p>
-
-          <ReportErrorCriterium
-            v-for="(error, j) in topic.errors"
-            :key="j"
-            :error="error"
-            :class="{ 'fr-mt-9v': j !== 0 }"
-          />
+          <template v-for="(error, k) in topic.errors" :key="k">
+            <ReportErrorCriterium :error="error" />
+            <hr
+              v-if="
+                j !== page.topics.length - 1 || k !== topic.errors.length - 1
+              "
+              class="fr-mt-4w fr-pb-4w"
+            />
+          </template>
         </div>
       </section>
     </template>
   </ReportCriteria>
 </template>
+
+<style>
+.page-title {
+  color: var(--text-active-blue-france);
+}
+</style>
