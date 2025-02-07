@@ -168,7 +168,7 @@ const title = "Erreur et recommandation";
             >
               <p class="fr-text--xs fr-mb-1w">
                 <strong>Bloquant</strong> : empêche complètement l’accès ou
-                l’utilisation.<br /><span>·</span>
+                l’utilisation.<br />
                 <span class="user-impact-example"
                   >Ex : il est impossible de soumettre un formulaire au
                   clavier.</span
@@ -176,14 +176,14 @@ const title = "Erreur et recommandation";
               </p>
               <p class="fr-text--xs fr-mb-1w">
                 <strong>Majeur</strong> : rend l’accès ou l’utilisation
-                difficile.<br /><span>·</span>
+                difficile.<br />
                 <span class="user-impact-example"
                   >Ex : les champs ne sont pas regroupés.</span
                 >
               </p>
               <p class="fr-text--xs fr-mb-0">
                 <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès
-                ou l’utilisation.<br /><span>·</span>
+                ou l’utilisation.<br />
                 <span class="user-impact-example"
                   >Ex : des retours à la ligne sont utilisés pour espacer des
                   textes.</span
