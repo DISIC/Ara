@@ -1,0 +1,19 @@
+name: prune-images
+
+on:
+  schedule:
+    - cron: "0 0 1 * *" # Runs at 00:00, on day 1 of the month
+  workflow_dispatch: # Can also be run manually from the github UI
+
+jobs:
+  request_pruning:
+    name: Request images pruning
+    runs-on: ubuntu-latest
+
+    steps:
+      - env:
+          SUPER_SECRET: ${{ secrets.PRUNING_ACCESS_TOKEN }}
+        run: |
+          curl 'https://ara.numerique.gouv.fr/api/system/prune-uploads' 
+            -H 'X-PruneToken: Bearer "$PRUNING_ACCESS_TOKEN"' 
+            -d ''
