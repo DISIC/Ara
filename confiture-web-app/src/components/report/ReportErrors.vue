@@ -131,16 +131,14 @@ function resetFilters() {
           <div class="fr-fieldset__content">
             <div class="fr-checkbox-group">
               <input
-                id="user-impact-filter-minor"
+                id="user-impact-filter-blocking"
                 v-model="userImpactFilters"
-                :value="CriterionResultUserImpact.MINOR"
+                :value="CriterionResultUserImpact.BLOCKING"
                 type="checkbox"
               />
-              <label class="fr-label" for="user-impact-filter-minor">
-                Mineur ({{ minorUserImpactErrorCount }})
-                <span class="fr-hint-text">
-                  Gêne dans l’utilisation du site
-                </span>
+              <label class="fr-label" for="user-impact-filter-blocking">
+                Bloquant ({{ blockingUserImpactErrorCount }})
+                <span class="fr-hint-text">Empêche l’utilisation</span>
               </label>
             </div>
             <div class="fr-checkbox-group">
@@ -152,23 +150,19 @@ function resetFilters() {
               />
               <label class="fr-label" for="user-impact-filter-major">
                 Majeur ({{ majorUserImpactErrorCount }})
-                <span class="fr-hint-text">
-                  Complexifie grandement l’utilisation du site
-                </span>
+                <span class="fr-hint-text">Complexifie l’utilisation</span>
               </label>
             </div>
             <div class="fr-checkbox-group">
               <input
-                id="user-impact-filter-blocking"
+                id="user-impact-filter-minor"
                 v-model="userImpactFilters"
-                :value="CriterionResultUserImpact.BLOCKING"
+                :value="CriterionResultUserImpact.MINOR"
                 type="checkbox"
               />
-              <label class="fr-label" for="user-impact-filter-blocking">
-                Bloquant ({{ blockingUserImpactErrorCount }})
-                <span class="fr-hint-text">
-                  Empêche totalement l’utilisation du site
-                </span>
+              <label class="fr-label" for="user-impact-filter-minor">
+                Mineur ({{ minorUserImpactErrorCount }})
+                <span class="fr-hint-text">Gêne l’utilisation</span>
               </label>
             </div>
             <div class="fr-checkbox-group">

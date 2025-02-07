@@ -275,12 +275,15 @@ const showTransverseStatus = computed(() => {
       <RadioGroup
         :disabled="isOffline"
         :model-value="result.status"
-        :label="`Statut du critère ${topicNumber}.${criterium.number}`"
         hide-label
         :default-value="CriteriumResultStatus.NOT_TESTED"
         :items="statuses"
         @update:model-value="updateResultStatus"
-      />
+      >
+        <template #label>
+          Statut du critère {{ topicNumber }}.{{ criterium.number }}
+        </template>
+      </RadioGroup>
     </div>
 
     <!-- TRANSVERSE STATUS -->
