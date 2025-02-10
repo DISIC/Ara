@@ -61,7 +61,7 @@ import PageMeta from "../../components/PageMeta";
                 </tr>
                 <tr>
                   <td>Prénom et nom</td>
-                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>« Signer » le rapport d’accessibilité</td>
                   <td>Intérêt légitime</td>
                 </tr>
               </tbody>
@@ -146,7 +146,7 @@ import PageMeta from "../../components/PageMeta";
     <h2>Suivi d’audience et vie privée</h2>
     <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
     <p>
-      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
+      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
       lorsque vous le consultez. Cela nous permet de mesurer le nombre de
       visites et de comprendre quelles sont les pages les plus consultées.
     </p>
@@ -161,7 +161,7 @@ import PageMeta from "../../components/PageMeta";
     </p>
     <p>
       Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
-      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
+      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
       que votre adresse IP, par exemple, est anonymisée avant d’être
       enregistrée. Il est donc impossible d’associer vos visites sur ce site à
       votre personne.

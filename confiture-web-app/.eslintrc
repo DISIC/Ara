@@ -17,18 +17,6 @@
   },
   "rules": {
     "vue/multi-word-component-names": "off",
-    "no-irregular-whitespace": "off",
-    "vue/no-irregular-whitespace": [
-      "error",
-      {
-        "skipStrings": true,
-        "skipComments": true,
-        "skipRegExps": true,
-        "skipTemplates": true,
-        "skipHTMLAttributeValues": true,
-        "skipHTMLTextContents": true
-      }
-    ],
     "vue/no-v-html": "off",
     "no-duplicate-imports": "error",
     "@typescript-eslint/no-explicit-any": "off",

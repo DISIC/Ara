@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import AraTabs from "../../components/audit/AraTabs.vue";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
@@ -37,17 +36,14 @@ const hasCompliantOrNotApplicableComments = computed(() => {
   });
 });
 
-type TabData = { label: string; data: any };
-const tabsData = computed((): TabData[] => {
-  return [
-    { label: "Résultats", data: ReportResults },
-    ...(hasNotes.value ? [{ label: "Notes", data: ReportNotes }] : []),
-    { label: "Détails des non-conformités", data: ReportErrors },
-    ...(hasCompliantOrNotApplicableComments.value
-      ? [{ label: "Points d’amélioration", data: ReportImprovements }]
-      : [])
-  ];
-});
+const tabs = computed(() => [
+  { title: "Résultats", component: ReportResults },
+  ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
+  { title: "Détails des non-conformités", component: ReportErrors },
+  ...(hasCompliantOrNotApplicableComments.value
+    ? [{ title: "Points d’amélioration", component: ReportImprovements }]
+    : [])
+]);
 
 const showCopyAlert = ref(false);
 
@@ -87,14 +83,14 @@ function onOnboardingClose() {
 
 const targetTab = ref(route.params.tab as string | undefined);
 const targetTabIndex = computed(() => {
-  let index = tabsData.value.findIndex(
-    (t) => slugify(t.label).toLowerCase() === targetTab.value?.toLowerCase()
+  let index = tabs.value.findIndex(
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
   );
   return index === -1 ? 0 : index;
 });
 const router = useRouter();
 
-function handleTabChange(tabIndex: number) {
+function handleTabChange(tabTitle: string) {
   // change the URL in the browser adress bar without triggering vue-router navigation
   history.pushState(
     {},
@@ -103,10 +99,12 @@ function handleTabChange(tabIndex: number) {
       name: "report",
       params: {
         uniqueId,
-        tab: slugify(tabsData.value[tabIndex].label)
+        tab: slugify(tabTitle)
       }
     }).fullPath
   );
+
+  targetTab.value = slugify(tabTitle);
 }
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
@@ -139,7 +137,7 @@ const siteUrl = computed(() => {
     v-if="
       report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
     "
-    class="fr-pt-1w"
+    class="fr-pt-1w in-progress-alert"
   >
     <div class="fr-alert fr-alert--warning fr-mb-6w">
       <p class="fr-alert__title">Audit en cours</p>
@@ -259,19 +257,39 @@ const siteUrl = computed(() => {
       </p>
     </div>
 
-    <!-- sticky-top="-0.1px" to prevent "one line background flickering"
-			when scrolling the page -->
-    <AraTabs
-      :tabs="tabsData"
-      sticky-top="-0.1px"
-      :selected-tab="targetTabIndex"
-      @change="handleTabChange"
-    >
-      <template #panel="{ data, i }">
-        <ReportResults v-if="i === 0" />
-        <component :is="data" v-else />
-      </template>
-    </AraTabs>
+    <div class="fr-tabs">
+      <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
+        <li v-for="(tab, i) in tabs" :key="tab.title" role="presentation">
+          <button
+            :id="`tabpanel-${slugify(tab.title)}`"
+            class="fr-tabs__tab"
+            tabindex="0"
+            role="tab"
+            :aria-selected="i === targetTabIndex"
+            :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
+          >
+            {{ tab.title }}
+            <span v-if="i === targetTabIndex" class="fr-sr-only"
+              >&nbsp;Actif</span
+            >
+          </button>
+        </li>
+      </ul>
+      <div
+        v-for="(tab, i) in tabs"
+        :id="`tabpanel-${slugify(tab.title)}-panel`"
+        :key="tab.title"
+        class="fr-tabs__panel"
+        :class="{ 'fr-tabs__panel--selected': i === targetTabIndex }"
+        role="tabpanel"
+        :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
+        tabindex="0"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab.title) }"
+      >
+        <ReportResults v-if="i === 0" @to-tab="handleTabChange" />
+        <component :is="tab.component" v-else />
+      </div>
+    </div>
   </template>
 
   <TopLink />
@@ -293,5 +311,12 @@ const siteUrl = computed(() => {
 
 .dates {
   color: var(--text-mention-grey);
+}
+
+.in-progress-alert {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-default-grey);
+  z-index: 3;
 }
 </style>

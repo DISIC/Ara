@@ -548,8 +548,7 @@ onMounted(() => {
 
 .sticky-indicator {
   position: sticky;
-  /* Prevent "one line background flickering" when scrolling the page */
-  top: -0.1px;
+  top: 0;
   z-index: 4;
   gap: 0.5rem 0;
   align-items: center;
