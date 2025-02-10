@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Relevé par** :  [Prénom]
+**Relevé par** : [Prénom]
 **Le** : [xx/xx/xx]
 
 ## Description du problème
@@ -20,7 +20,7 @@ assignees: ''
 
 ## Correction à apporter
 
-- [Description du comportement attendue]
+- [Description du comportement attendu]
 
 --- 
 
