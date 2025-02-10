@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type Component, computed, onBeforeUnmount, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
@@ -19,7 +19,6 @@ import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize, slugify } from "../../utils";
 
 const route = useRoute();
-const router = useRouter();
 
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
@@ -89,17 +88,17 @@ function updateCurrentPageId(tabIndex: number) {
   );
 
   // change the URL in the browser adress bar without triggering vue-router navigation
-  history.pushState(
-    {},
-    "null",
-    router.resolve({
-      name: "audit-generation",
-      params: {
-        uniqueId: uniqueId.value,
-        tab: slugify(tabsData.value[tabIndex].label)
-      }
-    }).fullPath
-  );
+  // history.pushState(
+  //   {},
+  //   "null",
+  //   router.resolve({
+  //     name: "audit-generation",
+  //     params: {
+  //       uniqueId: uniqueId.value,
+  //       tab: slugify(tabsData.value[tabIndex].label)
+  //     }
+  //   }).fullPath
+  // );
 }
 
 const {
