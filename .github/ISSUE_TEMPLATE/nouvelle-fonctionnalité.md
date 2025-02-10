@@ -16,3 +16,7 @@ assignees: ''
 ## Pistes de solutions
 
 - [Premières Idées ou recommandations pour résoudre(s) le problème(s).]
+
+--- 
+
+🔮  Pensez à lancer et/ou mettre à jour les tests end-to-end si nécessaire avant passage en prod.
