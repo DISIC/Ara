@@ -10,12 +10,12 @@ assignees: ''
 
 ## Description du problème 
 
-- [Description détaillée du problème, localisation et impact sur l'usager.]
-- [Inclus toutes informations/données pertinentes.] 
+- [Description détaillée du problème, localisation et impact sur l’usager.]
+- [Inclure toutes les informations ou données pertinentes.] 
 
 ## Pistes de solutions
 
-- [Premières Idées ou recommandations pour résoudre(s) le problème(s).]
+- [Premières idées ou recommandations pour résoudre(s) le(s) problème(s).]
 
 --- 
 
