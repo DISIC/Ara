@@ -23,7 +23,7 @@ function isActive(id: string) {
 
 <template>
   <div class="main">
-    <div class="sidebar filters-wrapper">
+    <div class="sidebar">
       <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
         <div class="fr-sidemenu__inner">
           <button
@@ -86,6 +86,7 @@ function isActive(id: string) {
       </nav>
       <slot name="filter" />
     </div>
+
     <div>
       <div class="fr-mb-5w">
         <p v-if="topNotice" class="fr-text--sm fr-mb-3w improvements-notice">
@@ -107,7 +108,6 @@ function isActive(id: string) {
 </template>
 
 <style scoped>
-@import "../../styles/filters.css";
 .main {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);
@@ -118,9 +118,8 @@ function isActive(id: string) {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-:deep(.page-title) {
+.page-title {
   color: var(--text-active-blue-france);
-  scroll-margin: 4rem;
 }
 
 .fr-sidemenu__inner {
@@ -140,9 +139,5 @@ function isActive(id: string) {
 .count,
 .improvements-notice {
   color: var(--text-mention-grey);
-}
-
-.filters-wrapper {
-  --filters-top-offset: 4.5rem;
 }
 </style>
