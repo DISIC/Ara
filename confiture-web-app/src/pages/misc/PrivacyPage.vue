@@ -49,9 +49,14 @@ import PageMeta from "../../components/PageMeta";
                     2019)
                   </td>
                   <td rowspan="2">
-                    L’utilisateur·rice peut supprimer son compte et ses données personnelles à tout moment.<br>
-                    Un compte inactif pendant 5 ans est automatiquement supprimé ainsi que les données personnelles de l'utilisateur·rice. Les audits associés sont alors anonymisés.<br>
-                    Les audits réalisés sans compte sont automatiquement anonymisés après 5 ans et les données personnelles de l'utilisateur·rice supprimées.
+                    L’utilisateur·rice peut supprimer son compte et ses données
+                    personnelles à tout moment.<br />
+                    Un compte inactif pendant 5 ans est automatiquement supprimé
+                    ainsi que les données personnelles de l'utilisateur·rice.
+                    Les audits associés sont alors anonymisés.<br />
+                    Les audits réalisés sans compte sont automatiquement
+                    anonymisés après 5 ans et les données personnelles de
+                    l'utilisateur·rice supprimées.
                   </td>
                 </tr>
                 <tr>
