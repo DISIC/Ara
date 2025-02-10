@@ -2,6 +2,7 @@
 import { marked } from "marked";
 
 import methodologies from "../../methodologies.json";
+import { pluralize } from "../../utils";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
@@ -37,7 +38,7 @@ const methodologiesHtml = Object.values(
   >
     <template v-for="(test, i) in testsHtml" :key="i">
       <div class="criterium-test">
-        <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
+        <strong>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</strong>
         <div v-html="test" />
       </div>
 
@@ -68,6 +69,91 @@ const methodologiesHtml = Object.values(
         </div>
       </div>
     </template>
+
+    <!-- Particular cases -->
+    <div v-if="criterium.particularCases?.length" class="fr-mt-4w">
+      <h5 class="fr-text--lg fr-mb-2w">
+        {{
+          pluralize(
+            "Cas particulier",
+            "Cas particuliers",
+            criterium.particularCases.length
+          )
+        }}
+      </h5>
+      <div class="fr-m-0 fr-p-0">
+        <template
+          v-for="(particularCase, j) in criterium.particularCases"
+          :key="j"
+        >
+          <ul
+            v-if="particularCase.ul"
+            :class="
+              j === criterium.particularCases.length - 1
+                ? 'fr-mb-0'
+                : 'fr-mb-2w'
+            "
+          >
+            <!-- substring() removes "- " which creates unwanted <ul> -->
+            <li
+              v-for="(li, k) in particularCase.ul"
+              :key="k"
+              v-html="marked.parseInline(li.substring(2))"
+            />
+          </ul>
+          <p
+            v-else
+            :class="
+              j === criterium.particularCases.length - 1 ||
+              criterium.particularCases[j + 1]?.ul?.length
+                ? 'fr-mb-0'
+                : 'fr-mb-2w'
+            "
+            v-html="marked.parseInline(particularCase)"
+          />
+        </template>
+      </div>
+    </div>
+
+    <!-- Technical notes -->
+    <div v-if="criterium.technicalNote?.length" class="fr-mt-4w">
+      <h5 class="fr-text--lg fr-mb-2w">
+        {{
+          pluralize(
+            "Note technique",
+            "Notes techniques",
+            criterium.technicalNote.length
+          )
+        }}
+      </h5>
+      <div class="fr-m-0 fr-p-0">
+        <template v-for="(note, j) in criterium.technicalNote" :key="j">
+          <ul
+            v-if="note.ul"
+            :class="
+              j === criterium.technicalNote.length - 1 ? 'fr-mb-0' : 'fr-mb-2w'
+            "
+          >
+            <!-- substring() removes "- " which creates unwanted <ul> -->
+            <li
+              v-for="(li, k) in note.ul"
+              :key="k"
+              v-html="marked.parseInline(li.substring(2))"
+            />
+          </ul>
+          <p
+            v-else
+            :class="
+              j === criterium.technicalNote.length - 1 ||
+              criterium.technicalNote[j + 1]?.ul?.length
+                ? 'fr-mb-0'
+                : 'fr-mb-2w'
+            "
+            v-html="marked.parseInline(note)"
+          />
+        </template>
+      </div>
+    </div>
   </LazyAccordion>
 </template>
 
