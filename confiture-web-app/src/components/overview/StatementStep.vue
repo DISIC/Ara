@@ -8,6 +8,7 @@ import StepCard from "./StepCard.vue";
 
 const props = defineProps<{
   audit: Audit;
+  headingLevel: "h2" | "h3";
 }>();
 
 const resultsStore = useResultsStore();
@@ -22,7 +23,7 @@ const auditIsPublishable = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-3w statement-step-heading">
+    <div class="fr-mb-2w statement-step-heading">
       <span
         v-if="auditIsPublishable"
         id="statement-step-status"
@@ -30,12 +31,13 @@ const auditIsPublishable = computed(() => {
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
-      <h2
+      <component
+        :is="headingLevel"
         class="fr-h3 fr-mb-0 statement-step-title"
         aria-describedby="statement-step-status"
       >
         Déclaration d’accessibilité
-      </h2>
+      </component>
     </div>
 
     <p class="statement-step-description">
@@ -75,7 +77,7 @@ const auditIsPublishable = computed(() => {
           :target="auditIsPublishable ? '_blank' : null"
           class="fr-btn fr-btn--icon-left fr-mb-md-0"
           :class="{
-            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
+            'fr-btn--secondary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line no-external-icon': !auditIsPublishable
           }"
           :title="
