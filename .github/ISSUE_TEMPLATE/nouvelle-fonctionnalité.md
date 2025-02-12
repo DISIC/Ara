@@ -14,7 +14,7 @@ assignees: ''
 
 ## Pistes de solutions
 
-- [Premières idées ou recommandations pour résoudre(s) le(s) problème(s).]
+- [Premières idées ou recommandations pour résoudre le problème.]
 
 --- 
 
