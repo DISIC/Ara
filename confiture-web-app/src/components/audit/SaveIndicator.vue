@@ -158,7 +158,4 @@ watch(
 .dropdown-container {
   min-width: 10rem;
 }
-:deep(.fr-btn--tertiary-no-outline) {
-  padding: 0;
-}
 </style>

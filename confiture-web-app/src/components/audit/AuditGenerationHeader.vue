@@ -251,13 +251,16 @@ onMounted(() => {
       class="indicator-left-side fr-col-12 fr-col-sm-5 fr-col-md-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
-      <AuditProgressBar
-        v-if="showAuditProgressBar"
-        :value="resultStore.auditProgress"
-        label="Progression de l’audit"
-        :size="4"
-        class="progress-bar"
-      />
+      <div v-if="showAuditProgressBar" class="progress-bar-wrapper">
+        <div class="fr-mr-3v progress-bar">
+          <AuditProgressBar
+            :value="resultStore.auditProgress"
+            label="Progression de l’audit"
+            :size="8"
+          />
+          <div class="progress-bar-hover" />
+        </div>
+      </div>
 
       <div
         v-else-if="auditStore.currentAudit?.publicationDate"
@@ -555,9 +558,11 @@ onMounted(() => {
   background: var(--background-default-grey);
   min-height: 4rem;
 }
+
 .audit-main-indicator {
-  margin-left: 2rem;
+  margin-left: 0.375rem;
 }
+
 @media (width < 36rem) {
   .audit-main-indicator {
     margin-left: 0;
@@ -610,8 +615,24 @@ onMounted(() => {
   border-color: var(--border-default-grey);
 }
 
-.progress-bar {
+.progress-bar-wrapper {
   flex-grow: 1;
+}
+
+.progress-bar {
+  position: relative;
+
+  &:hover .progress-bar-hover {
+    opacity: 1;
+  }
+}
+
+.progress-bar-hover {
+  position: absolute;
+  inset: -0.75rem;
+  background-color: var(--background-alt-grey);
+  opacity: 0;
+  z-index: -1;
 }
 
 /* Display / Hide items from the menu in the toolbar or in the dropdown */
