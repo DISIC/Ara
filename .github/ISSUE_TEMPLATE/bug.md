@@ -1,14 +1,14 @@
 ---
 name: Bug
-about: Le titre du ticket doit être clair, concis et résumer le problème.
+about: Le titre du ticket doit être clair, concis et résumer le problème
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Relevé par** : [Prénom]
-**Le** : [xx/xx/xx]
+- **Relevé par** : [Prénom]
+- **Le** : [xx/xx/xx]
 
 ## Description du problème
 
