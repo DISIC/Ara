@@ -17,6 +17,7 @@ import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DeleteModal from "../../audit/DeleteModal.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
+import EditDocumentIcon from "../../icons/EditDocumentIcon.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -252,28 +253,20 @@ function copyStatementLink(uniqueId: string) {
 
     <!-- Main action -->
     <RouterLink
-      :to="
-        isInProgress || isNotStarted
-          ? {
-              name: 'audit-generation',
-              params: { uniqueId: audit.editUniqueId }
-            }
-          : { name: 'report', params: { uniqueId: audit.consultUniqueId } }
-      "
-      class="fr-btn fr-btn--secondary fr-btn--icon-left audit-main-action"
-      :class="
-        isInProgress || isNotStarted
-          ? 'fr-icon-edit-line'
-          : 'fr-icon-eye-line no-external-icon'
-      "
+      :to="{
+        name: 'audit-generation',
+        params: { uniqueId: audit.editUniqueId }
+      }"
+      class="fr-btn fr-btn--secondary no-external-icon audit-main-action"
       :target="isInProgress || isNotStarted ? null : '_blank'"
     >
+      <EditDocumentIcon class="fr-mr-2v main-action-icon" />
       {{
         isNotStarted
           ? "Commencer l’audit"
           : isInProgress
             ? "Continuer l’audit"
-            : "Voir le rapport"
+            : "Accéder à l’audit"
       }}
       <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
         {{ audit.procedureName }}</span
@@ -283,7 +276,19 @@ function copyStatementLink(uniqueId: string) {
       >
     </RouterLink>
 
-    <!-- Sub actions -->
+    <!-- Secondary action -->
+    <RouterLink
+      :to="{
+        name: 'audit-overview',
+        params: { uniqueId: audit.editUniqueId }
+      }"
+      class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line no-external-icon"
+      target="_blank"
+    >
+      Livrables
+    </RouterLink>
+
+    <!-- Tertiary actions -->
     <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
@@ -294,48 +299,23 @@ function copyStatementLink(uniqueId: string) {
         }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-          <li class="dropdown-item">
-            <RouterLink
-              :to="{
-                name: 'audit-overview',
-                params: { uniqueId: audit.editUniqueId }
-              }"
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-todo-line fr-m-0"
-            >
-              Accéder au tableau de bord
-            </RouterLink>
-          </li>
+          <template v-if="!isInProgress && !isNotStarted">
+            <li class="dropdown-item">
+              <RouterLink
+                :to="{
+                  name: 'report',
+                  params: { uniqueId: audit.consultUniqueId }
+                }"
+                target="_blank"
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0 no-external-icon"
+                >Voir le rapport
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              </RouterLink>
+            </li>
 
-          <li class="dropdown-item">
-            <RouterLink
-              :to="
-                isInProgress || isNotStarted
-                  ? {
-                      name: 'report',
-                      params: { uniqueId: audit.consultUniqueId }
-                    }
-                  : {
-                      name: 'audit-generation',
-                      params: { uniqueId: audit.editUniqueId }
-                    }
-              "
-              :target="isInProgress || isNotStarted ? '_blank' : undefined"
-              :class="`fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left ${
-                isInProgress || isNotStarted
-                  ? 'fr-icon-eye-line'
-                  : 'fr-icon-file-line'
-              } fr-m-0 no-external-icon`"
-            >
-              {{
-                isInProgress || isNotStarted
-                  ? "Voir le rapport"
-                  : "Accéder à l’audit"
-              }}
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
-            </RouterLink>
-          </li>
+            <li aria-hidden="true" class="dropdown-separator" />
+          </template>
 
-          <li aria-hidden="true" class="dropdown-separator"></li>
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
@@ -358,8 +338,6 @@ function copyStatementLink(uniqueId: string) {
             </RouterLink>
           </li>
 
-          <li aria-hidden="true" class="dropdown-separator"></li>
-
           <li class="dropdown-item dropdown-item--with-meta">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
@@ -372,6 +350,9 @@ function copyStatementLink(uniqueId: string) {
               </span>
             </button>
           </li>
+
+          <li aria-hidden="true" class="dropdown-separator" />
+
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
@@ -392,8 +373,6 @@ function copyStatementLink(uniqueId: string) {
               Copier le lien de la déclaration
             </button>
           </li>
-
-          <li aria-hidden="true" class="dropdown-separator"></li>
 
           <li class="dropdown-item dropdown-item--with-meta">
             <a
@@ -449,7 +428,7 @@ function copyStatementLink(uniqueId: string) {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 2fr 0.75fr 0.75fr 1.25fr 1.5fr 0.75fr;
+  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
@@ -509,6 +488,10 @@ function copyStatementLink(uniqueId: string) {
   justify-content: center;
   width: initial;
   z-index: 1;
+}
+
+.main-action-icon {
+  flex: 0 0 auto;
 }
 
 .delete-button {
