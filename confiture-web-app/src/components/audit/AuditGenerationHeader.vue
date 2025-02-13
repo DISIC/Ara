@@ -252,14 +252,36 @@ onMounted(() => {
       :class="{ 'with-border': showLeftSideBorders }"
     >
       <div v-if="showAuditProgressBar" class="progress-bar-wrapper">
-        <div class="fr-mr-3v progress-bar">
+        <button
+          class="fr-mr-3v progress-bar"
+          aria-describedby="progress-bar-tooltip"
+          type="button"
+          data-fr-js-tooltip-referent="true"
+        >
           <AuditProgressBar
             :value="resultStore.auditProgress"
             label="Progression de l’audit"
             :size="8"
           />
           <div class="progress-bar-hover" />
-        </div>
+        </button>
+        <span
+          id="progress-bar-tooltip"
+          class="fr-tooltip fr-placement fr-text--sm"
+          role="tooltip"
+          data-fr-js-tooltip="true"
+        >
+          La progression de l'audit se base sur les critères évalués de chaque
+          <strong>page de votre échantillon</strong>. Évaluez les critères de
+          toutes les pages pour terminer votre audit.
+          <br class="fr-mb-1w" />
+          <span class="fr-text--xs">
+            À noter : les critères des
+            <strong>éléments transverses</strong> sont optionnels. Ils sont pris
+            en compte dans le calcul du taux mais pas dans la progression de
+            l’audit.
+          </span>
+        </span>
       </div>
 
       <div
@@ -621,6 +643,8 @@ onMounted(() => {
 
 .progress-bar {
   position: relative;
+  width: 100%;
+  text-align: initial;
 
   &:hover .progress-bar-hover {
     opacity: 1;
@@ -629,7 +653,7 @@ onMounted(() => {
 
 .progress-bar-hover {
   position: absolute;
-  inset: -0.75rem;
+  inset: -0.5rem;
   background-color: var(--background-alt-grey);
   opacity: 0;
   z-index: -1;

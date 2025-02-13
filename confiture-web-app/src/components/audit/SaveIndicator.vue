@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
+import { useUniqueId } from "../../composables/useUniqueId";
 import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
 import { StoreName } from "../../types";
-import Dropdown from "../ui/Dropdown.vue";
 
 /* Change the saving status in a way that it wont "flicker" */
 
@@ -15,6 +15,8 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   storeName: StoreName.RESULTS_STORE
 });
+
+const uniqueId = useUniqueId();
 
 const store = computed(() => {
   if (props.storeName === StoreName.AUDIT_STORE) {
@@ -124,29 +126,37 @@ watch(
     }
   }
 );
+
+onMounted(() => {
+  console.log("hey");
+});
 </script>
 
 <template>
   <div class="dropdown-container">
-    <Dropdown
-      :title="dropdownTitle"
-      align-left
-      icon-left
-      :button-props="{
-        class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
-        style: !systemStore.isOnline
-          ? 'color: var(--text-default-error);'
-          : undefined
-      }"
+    <button
+      :aria-describedby="`save-indicator-tooltip-${uniqueId}`"
+      type="button"
+      :class="`fr-btn fr-btn--tertiary-no-outline ${dropdownIcon} fr-btn--icon-left`"
+      data-fr-js-tooltip-referent="true"
     >
-      <p class="fr-text--sm fr-mb-1v">
-        {{ dropdownMainText }}
-      </p>
+      {{ dropdownTitle }}
+    </button>
 
-      <p v-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
-        Dernier enregistrement {{ relativeLastSaveDate }}
-      </p>
-    </Dropdown>
+    <span
+      :id="`save-indicator-tooltip-${uniqueId}`"
+      class="fr-tooltip fr-placement"
+      role="tooltip"
+      data-fr-js-tooltip="true"
+    >
+      {{ dropdownMainText }}
+      <template v-if="relativeLastSaveDate">
+        <br />
+        <span class="fr-text--xs">
+          Dernier enregistrement {{ relativeLastSaveDate }}
+        </span>
+      </template>
+    </span>
 
     <p class="fr-sr-only" aria-live="polite" role="alert">
       {{ saveText }}
