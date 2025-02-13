@@ -97,7 +97,7 @@ const notApplicableCount = computed(
     <span class="fr-sr-only">Afficher la colonne des filtres</span>
   </button>
   <template v-else>
-    <div class="heading-wrapper">
+    <div class="fr-mb-3w heading-wrapper">
       <h2 class="fr-h4 fr-mb-0">Filtres</h2>
       <button
         ref="hideFiltersRef"
@@ -152,7 +152,7 @@ const notApplicableCount = computed(
       {{ filterStore.search }}
     </button>
 
-    <div class="fr-my-4w fr-py-4w">
+    <div class="fr-mt-4w fr-mb-3w">
       <div class="fr-checkbox-group">
         <input
           id="hide-evaluated-criteria"
@@ -243,10 +243,8 @@ const notApplicableCount = computed(
       </div>
     </fieldset>
 
-    <hr />
-
     <div class="fr-form-group">
-      <h2 id="anchor-nav-title" class="fr-h4 fr-mb-1w">
+      <h2 id="anchor-nav-title" class="fr-h4 fr-mb-2w">
         Thématiques de critères
       </h2>
       <nav aria-labelledby="anchor-nav-title">
@@ -280,7 +278,6 @@ const notApplicableCount = computed(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
 }
 
 .toggle-column-button:focus-visible {
