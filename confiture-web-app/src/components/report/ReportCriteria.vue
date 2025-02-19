@@ -19,6 +19,19 @@ const route = useRoute();
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
+
+/**
+ * Temp fix to allow anchors scrolling by toggling the `overflow` style on the tabs.
+ * See: https://github.com/DISIC/Ara/issues/839#issuecomment-2607413187
+ */
+async function scrollToPage() {
+  const tabs = document.querySelector(".fr-tabs") as HTMLDivElement;
+  tabs.style.overflow = "visible";
+
+  setTimeout(() => {
+    tabs.style.overflow = "hidden";
+  }, 10);
+}
 </script>
 
 <template>
@@ -57,6 +70,7 @@ function isActive(id: string) {
                         : undefined
                       : 'true'
                   "
+                  @click="scrollToPage"
                   >Éléments transverses</a
                 >
               </li>
@@ -76,6 +90,7 @@ function isActive(id: string) {
                   :aria-current="
                     isActive(`#${tabSlug}_${page.id}`) ? 'true' : undefined
                   "
+                  @click="scrollToPage"
                 >
                   {{ page.name }}
                 </a>
