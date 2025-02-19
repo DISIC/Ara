@@ -98,7 +98,7 @@ const notApplicableCount = computed(
   </button>
   <template v-else>
     <div class="fr-mb-3w heading-wrapper">
-      <h2 class="fr-h4 fr-mb-0">Filtres</h2>
+      <h2 class="fr-h6 fr-mb-0">Filtres</h2>
       <button
         ref="hideFiltersRef"
         type="button"
@@ -122,7 +122,7 @@ const notApplicableCount = computed(
 
     <form @submit.prevent="submit">
       <div class="fr-search-bar" role="search">
-        <label class="fr-label" for="filters-search"> Recherche </label>
+        <label class="fr-label" for="filters-search">Recherche</label>
         <input
           id="filters-search"
           ref="searchInputRef"
@@ -160,7 +160,7 @@ const notApplicableCount = computed(
           type="checkbox"
         />
         <label class="fr-label" for="hide-evaluated-criteria">
-          Masquer critères évalués
+          Masquer les critères évalués
           <template v-if="resultStore.testedCriteriumCount">
             ({{ resultStore.testedCriteriumCount }})
           </template>
@@ -244,9 +244,7 @@ const notApplicableCount = computed(
     </fieldset>
 
     <div class="fr-form-group">
-      <h2 id="anchor-nav-title" class="fr-h4 fr-mb-2w">
-        Thématiques de critères
-      </h2>
+      <h2 id="anchor-nav-title" class="fr-h6 fr-mb-2w">Thématiques</h2>
       <nav aria-labelledby="anchor-nav-title">
         <ol class="fr-pl-0 fr-ml-0">
           <li
