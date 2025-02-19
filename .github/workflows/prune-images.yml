@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - env:
-          SUPER_SECRET: ${{ secrets.PRUNING_ACCESS_TOKEN }}
+          PRUNING_ACCESS_TOKEN: ${{ secrets.PRUNING_ACCESS_TOKEN }}
         run: |
           curl 'https://ara.numerique.gouv.fr/api/system/prune-uploads' 
             -H 'X-PruneToken: Bearer "$PRUNING_ACCESS_TOKEN"' 
