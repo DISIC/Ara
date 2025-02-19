@@ -153,7 +153,7 @@ const title = "Erreur et recommandation";
           <button
             aria-describedby="tooltip"
             type="button"
-            class="fr-btn fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
+            class="fr-btn fr-btn--tooltip fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
             data-fr-js-tooltip-referent="true"
           >
             Informations sur l’impact usager
