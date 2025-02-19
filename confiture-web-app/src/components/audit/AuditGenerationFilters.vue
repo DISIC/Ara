@@ -122,7 +122,9 @@ const notApplicableCount = computed(
 
     <form @submit.prevent="submit">
       <div class="fr-search-bar" role="search">
-        <label class="fr-label" for="filters-search">Recherche</label>
+        <label class="fr-label" for="filters-search"
+          >Recherche par mots clés</label
+        >
         <input
           id="filters-search"
           ref="searchInputRef"
