@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 12/03/2025
 
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute une liste éditable des éléments audités dans l'onglet transverse ([#964](https://github.com/DISIC/Ara/pull/964))
+
 ### Autres changements ⚙️
 
 - Revoit la navigation entre les pages de l’audit ([#937](https://github.com/DISIC/Ara/pull/937))

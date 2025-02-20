@@ -545,7 +545,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can add transverse elements", () => {
+  it("User can add transverse elements", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
