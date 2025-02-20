@@ -6,6 +6,7 @@ import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
+import TransverseElementsList from "./TransverseElementsList.vue";
 
 defineProps<{
   page: AuditPage;
@@ -52,11 +53,13 @@ const noResults = computed(() => {
   <!-- TODO: handle empty state -->
   <h2 class="fr-sr-only">{{ page.name }}</h2>
 
-  <div v-if="page.id !== transversePageId" class="fr-mb-2w page-url">
+  <div v-if="page.id !== transversePageId" class="fr-mb-3w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
   </div>
+
+  <TransverseElementsList v-else class="fr-mb-3w transverse-elements" />
 
   <template v-if="store.filteredTopics.length">
     <section
@@ -120,6 +123,11 @@ const noResults = computed(() => {
 
 .page-url {
   text-align: right;
+}
+
+.page-url,
+.transervse-elements {
+  min-height: 2.75rem;
 }
 
 .topic-header {
