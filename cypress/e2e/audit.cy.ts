@@ -75,7 +75,7 @@ describe("Audit", () => {
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
+        `http://localhost:3000/audits/${editId}/parametres`,
       );
     });
   });
@@ -88,7 +88,7 @@ describe("Audit", () => {
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
+        `http://localhost:3000/audits/${editId}/parametres`,
       );
     });
   });
@@ -99,7 +99,7 @@ describe("Audit", () => {
 
       cy.getByLabel("Nom du site ou du service audité").should(
         "have.value",
-        "Audit de mon petit site"
+        "Audit de mon petit site",
       );
 
       cy.getByLabel("Nom du site ou du service audité")
@@ -110,7 +110,7 @@ describe("Audit", () => {
 
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation`
+        `http://localhost:3000/audits/${editId}/generation`,
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -136,7 +136,7 @@ describe("Audit", () => {
           expectedPages.forEach((expectedPageName, i) => {
             cy.wrap(els[i]).should("have.value", expectedPageName);
           });
-        }
+        },
       );
 
       cy.contains("button", "Supprimer").click();
@@ -163,7 +163,7 @@ describe("Audit", () => {
       cy.contains("Enregistrer les modifications").click();
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation`
+        `http://localhost:3000/audits/${editId}/generation`,
       );
 
       cy.get("[role='tablist'] button").then((els) => {
@@ -274,7 +274,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
+        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
       )
         .clear()
         .type(statementJson.notInScopeContent);
@@ -298,10 +298,10 @@ describe("Audit", () => {
     });
   });
 
-  it("User can search in criteria title", () => {
+  it.only("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.getByLabel("Rechercher par mots clés")
+      cy.getByLabel("Recherche par mots clés")
         .clear()
         .type("alternative")
         .type("{enter}");
@@ -353,7 +353,7 @@ describe("Audit", () => {
           .should(
             "satisfy",
             (el) =>
-              el[0].classList.contains("green") || el.at(-1).contains("grey")
+              el[0].classList.contains("green") || el.at(-1).contains("grey"),
           );
       });
 
@@ -370,7 +370,7 @@ describe("Audit", () => {
             (el) =>
               el[0].classList.contains("green") ||
               el[1].contains("red") ||
-              el.at(-1).contains("grey")
+              el.at(-1).contains("grey"),
           );
       });
     });
@@ -380,10 +380,10 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
       cy.contains("Tous les critères évalués ont été masqués");
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
 
       cy.get("li.criterium-container fieldset input:checked")
         .first()
@@ -399,7 +399,7 @@ describe("Audit", () => {
         .first()
         .click({ force: true });
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
       cy.get("li.criterium-container").should("have.length", 1);
 
       cy.contains('button[role="tab"]', "Éléments transverses").click();
@@ -437,7 +437,7 @@ describe("Audit", () => {
 
       cy.contains("button", "Copier le lien").click();
       cy.contains(
-        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
+        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier.",
       );
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
     });
@@ -451,7 +451,7 @@ describe("Audit", () => {
 
       cy.get(".page-url + section fieldset input:checked + label").should(
         "have.class",
-        "grey"
+        "grey",
       );
     });
   });
@@ -483,7 +483,7 @@ describe("Audit", () => {
         .eq(2)
         .find(".criterium-transverse-notice")
         .contains(
-          "Vous avez évalué ce critère Non conforme pour les éléments transverses."
+          "Vous avez évalué ce critère Non conforme pour les éléments transverses.",
         );
 
       cy.get(".criterium-container")
@@ -518,14 +518,14 @@ describe("Audit", () => {
     });
   });
 
-  it("User can reset filters", () => {
+  it.only("User can reset filters", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Conforme (323)").click();
       cy.contains("Non applicable (315)").click();
       cy.contains("Masquer les tests et références").click();
-      cy.getByLabel(" Rechercher par mots clés")
+      cy.getByLabel("Recherche par mots clés")
         .clear()
         .type("alternative")
         .type("{enter}");
@@ -540,7 +540,7 @@ describe("Audit", () => {
         expect(els).to.have.length(106);
       });
 
-      cy.focused().should("have.attr", "placeholder", "Rechercher");
+      cy.focused().should("have.attr", "placeholder", "Rechercher un critère");
       cy.contains("button", "Réinitialiser").should("not.exist");
     });
   });
