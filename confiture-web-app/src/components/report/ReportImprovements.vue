@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { pluralize } from "../../utils";
 import { getReportImprovements } from "./getReportImprovements";
@@ -46,7 +47,7 @@ const improvementsCount = computed(() => {
           id="improvements_elements-transverses"
           class="fr-h3 fr-mb-2w page-title"
         >
-          Éléments transverses
+          {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
         </h3>
 
         <div
@@ -117,9 +118,3 @@ const improvementsCount = computed(() => {
     </template>
   </ReportCriteria>
 </template>
-
-<style>
-.page-title {
-  color: var(--text-active-blue-france);
-}
-</style>

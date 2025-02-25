@@ -1,5 +1,12 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  RouteLocationNormalized
+} from "vue-router";
 
+import AraTabsPanel from "./components/audit/AraTabsPanel.vue";
+import { useResizeObserver } from "./composables/useResizeObserver";
+import { FirstTab } from "./enums";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
@@ -28,6 +35,7 @@ import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
+import { ScrollPosition } from "./types";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -208,12 +216,30 @@ const router = createRouter({
       }
     },
     {
-      path: "/audits/:uniqueId/generation/:tab?",
+      path: "/audits/:uniqueId/generation",
       name: "audit-generation",
+      redirect: (to: any) => {
+        return {
+          name: "audit-generation-full",
+          params: {
+            uniqueId: to.params.uniqueId,
+            tabSlug: FirstTab.AUDIT_SLUG
+          }
+        };
+      },
       component: AuditGenerationPage,
+      children: [
+        {
+          path: ":tabSlug",
+          name: "audit-generation-full",
+          component: AraTabsPanel,
+          props: true
+        }
+      ],
       meta: {
         name: "Mon audit"
-      }
+      },
+      props: true
     },
     {
       path: "/audits/:uniqueId/declaration",
@@ -242,22 +268,40 @@ const router = createRouter({
     },
     // Report pages
     {
-      path: "/rapport/:uniqueId/:tab?",
+      path: "/rapport/:uniqueId/",
       name: "report",
+      redirect: (to: any) => {
+        return {
+          name: "report-full",
+          params: {
+            uniqueId: to.params.uniqueId,
+            tabSlug: FirstTab.REPORT_SLUG
+          }
+        };
+      },
       component: ReportPage,
+      children: [
+        {
+          name: "report-full",
+          path: ":tabSlug",
+          component: AraTabsPanel,
+          props: true
+        }
+      ],
       meta: {
         name: "Rapport d’audit",
         hideHomeLink: true
-      }
+      },
+      props: true
     },
     // TODO: remove this redirect in few months (17/04/2024)
-    {
-      path: "/rapports/:uniqueId/:tab?",
-      name: "report-old",
-      redirect: () => {
-        return { name: "report" };
-      }
-    },
+    // {
+    //   path: "/rapports/:uniqueId/:tabSlug?",
+    //   name: "report-old",
+    //   redirect: () => {
+    //     return { name: "report" };
+    //   }
+    // },
     // a11y statement
     {
       path: "/declaration/:uniqueId",
@@ -319,10 +363,36 @@ const router = createRouter({
     }
   ],
   history,
-  scrollBehavior(to) {
-    if (!to.hash) {
-      return { top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return scrollToHash(to.hash);
     }
+
+    if (savedPosition) {
+      return scrollToSavedPosition(savedPosition);
+    }
+
+    // When navigating between tabs, scroll to display tabs
+    // at the top of the screen
+    if (isTabNavigation(to, from)) {
+      const tabs = document.querySelector(".tabs-wrapper") as HTMLElement;
+      if (!tabs) {
+        console.warn(
+          'When navigating between tabs with the "tabSlug" route parameter, \
+					there should be an Element with class "tabs-wrapper"'
+        );
+      } else {
+        const behavior = tabs.dataset.panelScrollBehavior;
+        if (behavior === "tabsTop") {
+          return scrollToTabPanelTop(tabs);
+        } else {
+          // behavior === "sameCriteria"
+          return scrollToElement(tabs);
+        }
+      }
+    }
+
+    return scrollToTop();
   }
 });
 
@@ -359,10 +429,119 @@ router.afterEach(async (to, from) => {
       }, 2000);
     }
 
-    document.body.setAttribute("tabindex", "-1");
-    document.body.focus();
-    document.body.removeAttribute("tabindex");
+    if (!to.hash && !isTabNavigation(to, from)) {
+      document.body.setAttribute("tabindex", "-1");
+      document.body.focus();
+      document.body.removeAttribute("tabindex");
+    }
   }
 });
+
+/** Functions */
+
+function isTabNavigation(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized
+) {
+  return (
+    to.name === from.name &&
+    to.params.tabSlug !== undefined &&
+    to.params.tabSlug !== from.params.tabSlug
+  );
+}
+
+function scrollToTop() {
+  console.info(`⬆ scroll to top`);
+  return { top: 0 };
+}
+
+function scrollToHash(hash: string) {
+  console.info(`⇣ scroll to hash(${hash})`);
+  return new Promise((resolve) => {
+    const { stop } = useResizeObserver(document.body, () => {
+      const hashEl = document.querySelector(
+        "#" + CSS.escape(hash.substring(1))
+      ) as HTMLElement;
+      if (hashEl) {
+        // Force hash focus: usefull when hash element is not n the DOM on page load
+        hashEl.focus();
+        const scrollMargin = parseFloat(
+          window.getComputedStyle(hashEl).scrollMargin
+        );
+        resolve({ el: hashEl, top: scrollMargin });
+        stop();
+      }
+    });
+  }) as Promise<ScrollPosition>;
+}
+
+function scrollToSavedPosition(savedPosition: ScrollPosition) {
+  const { left, top } = savedPosition;
+  console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
+
+  return new Promise((resolve) => {
+    const { stop } = useResizeObserver(document.body, (entries) => {
+      if (entries[0].target.clientHeight >= top! + screen.height) {
+        resolve(savedPosition);
+        stop();
+      }
+    });
+  }) as Promise<ScrollPosition>;
+}
+
+function scrollToTabPanelTop(tabs: HTMLElement) {
+  console.info(`⬆ scroll to tabs panel top`);
+
+  const panel = tabs.nextElementSibling as HTMLElement;
+  const tabComputedStyle = window.getComputedStyle(tabs);
+
+  const behavior =
+    tabs.getBoundingClientRect().top > 0 ? getScrollBehavior() : "instant";
+
+  return new Promise((resolve) => {
+    const { stop } = useResizeObserver(document.body, async (entries) => {
+      const scrollMargin =
+        parseFloat(tabComputedStyle.top) + parseFloat(tabComputedStyle.height);
+      if (entries[0].target.clientHeight >= scrollMargin + screen.height) {
+        const scrollPosition = {
+          el: panel,
+          top: scrollMargin,
+          behavior
+        };
+        resolve(scrollPosition);
+        stop();
+      }
+    });
+  }) as Promise<ScrollPosition>;
+}
+
+/**
+ * @todo TODO: scroll to a smart position (same criteria as previous tabSlug?)
+ */
+async function scrollToElement(el: HTMLElement) {
+  console.info(`⇣ scroll to element ${el}`);
+
+  return new Promise((resolve) => {
+    const { stop } = useResizeObserver(document.body, async (entries) => {
+      const scrollMargin = parseFloat(window.getComputedStyle(el).top);
+      if (entries[0].target.clientHeight >= scrollMargin + screen.height) {
+        const scrollPosition = {
+          el,
+          top: scrollMargin,
+          behavior: getScrollBehavior()
+        };
+        resolve(scrollPosition);
+        stop();
+      }
+    });
+  }) as Promise<ScrollPosition>;
+}
+
+function getScrollBehavior(): ScrollBehavior {
+  // Use smooth scrolling only if user does not dislike animations
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "instant"
+    : "smooth";
+}
 
 export default router;

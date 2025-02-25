@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref, watch, watchEffect } from "vue";
+import { useRouter } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
+import { AraTabsTabData } from "../../components/audit/AraTabsTabData";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
@@ -12,16 +13,37 @@ import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { FirstTab, StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
+/** Props */
+const props = withDefaults(
+  defineProps<{
+    tabSlug?: string;
+    uniqueId: string;
+  }>(),
+  {
+    tabSlug: FirstTab.REPORT_SLUG
+  }
+);
+
+/** Variables */
+const uniqueId = props.uniqueId;
+
+/** Stores */
 const report = useReportStore();
 
-const route = useRoute();
-const uniqueId = route.params.uniqueId as string;
+/** Routing */
+const router = useRouter();
 
-useWrappedFetch(() => report.fetchReport(uniqueId));
+/** Refs */
+const showCopyAlert = ref(false);
+const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
+const selectedTabSlug = ref(props.tabSlug);
+
+/** Computed properties */
 
 const hasNotes = computed(() => {
   return !!report.data?.notes || report.data?.notesFiles.length;
@@ -37,77 +59,47 @@ const hasCompliantOrNotApplicableComments = computed(() => {
   });
 });
 
-type TabData = { label: string; data: any };
-const tabsData = computed((): TabData[] => {
-  return [
-    { label: "Résultats", data: ReportResults },
-    ...(hasNotes.value ? [{ label: "Notes", data: ReportNotes }] : []),
-    { label: "Détails des non-conformités", data: ReportErrors },
-    ...(hasCompliantOrNotApplicableComments.value
-      ? [{ label: "Points d’amélioration", data: ReportImprovements }]
-      : [])
-  ];
-});
+const tabsData = computed((): AraTabsTabData[] => {
+  const tabs: AraTabsTabData[] = [];
 
-const showCopyAlert = ref(false);
+  // Results
+  tabs.push(
+    new AraTabsTabData({
+      label: StaticTabLabel.REPORT_RESULTS_TAB_LABEL,
+      component: ReportResults
+    })
+  );
 
-async function copyReportUrl() {
-  const url =
-    window.location.origin +
-    router.resolve({ name: "report", params: { uniqueId } }).fullPath;
-
-  navigator.clipboard.writeText(url).then(() => {
-    showCopyAlert.value = true;
-  });
-}
-
-function hideReportAlert() {
-  showCopyAlert.value = false;
-}
-
-const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
-
-watch(
-  () => report.data,
-  (report) => {
-    if (report) {
-      if (
-        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:seen-onboarding") !== "true"
-      ) {
-        onboardingModalRef.value?.show();
-      }
-    }
+  // Notes
+  if (hasNotes.value) {
+    tabs.push(
+      new AraTabsTabData({
+        label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
+        component: ReportNotes
+      })
+    );
   }
-);
 
-function onOnboardingClose() {
-  localStorage.setItem("confiture:seen-onboarding", "true");
-}
-
-const targetTab = ref(route.params.tab as string | undefined);
-const targetTabIndex = computed(() => {
-  let index = tabsData.value.findIndex(
-    (t) => slugify(t.label).toLowerCase() === targetTab.value?.toLowerCase()
+  // Errors
+  tabs.push(
+    new AraTabsTabData({
+      label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
+      component: ReportErrors
+    })
   );
-  return index === -1 ? 0 : index;
+
+  // Improvements
+  if (hasCompliantOrNotApplicableComments.value) {
+    tabs.push(
+      new AraTabsTabData({
+        label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
+        component: ReportImprovements
+      })
+    );
+  }
+
+  return tabs;
 });
-const router = useRouter();
-
-function handleTabChange(tabIndex: number) {
-  // change the URL in the browser adress bar without triggering vue-router navigation
-  history.pushState(
-    {},
-    "null",
-    router.resolve({
-      name: "report",
-      params: {
-        uniqueId,
-        tab: slugify(tabsData.value[tabIndex].label)
-      }
-    }).fullPath
-  );
-}
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
 
@@ -131,6 +123,50 @@ const siteUrl = computed(() => {
   }
 
   return null;
+});
+
+/** Functions */
+async function copyReportUrl() {
+  const url =
+    window.location.origin +
+    router.resolve({ name: "report", params: { uniqueId } }).fullPath;
+
+  navigator.clipboard.writeText(url).then(() => {
+    showCopyAlert.value = true;
+  });
+}
+
+function hideReportAlert() {
+  showCopyAlert.value = false;
+}
+
+function onOnboardingClose() {
+  localStorage.setItem("confiture:seen-onboarding", "true");
+}
+
+/** Lifecycle hooks */
+
+/** Note: here useWrappedFetch uses onMounted callback */
+useWrappedFetch(() => report.fetchReport(uniqueId), false);
+
+/** Watchers */
+
+watch(
+  () => report.data,
+  (report) => {
+    if (report) {
+      if (
+        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
+        localStorage.getItem("confiture:seen-onboarding") !== "true"
+      ) {
+        onboardingModalRef.value?.show();
+      }
+    }
+  }
+);
+
+watchEffect(() => {
+  selectedTabSlug.value = props.tabSlug;
 });
 </script>
 
@@ -262,15 +298,11 @@ const siteUrl = computed(() => {
     <!-- sticky-top="-0.1px" to prevent "one line background flickering"
 			when scrolling the page -->
     <AraTabs
-      :tabs="tabsData"
+      :route="{ name: 'report-full', params: { uniqueId } }"
+      :selected-tab-slug="selectedTabSlug"
       sticky-top="-0.1px"
-      :selected-tab="targetTabIndex"
-      @change="handleTabChange"
+      :tabs="tabsData"
     >
-      <template #panel="{ data, i }">
-        <ReportResults v-if="i === 0" />
-        <component :is="data" v-else />
-      </template>
     </AraTabs>
   </template>
 

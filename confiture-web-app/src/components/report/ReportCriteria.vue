@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
+import { StaticTabLabel } from "../../enums";
 import type { ReportError } from "./getReportErrors";
 import { ReportImprovement } from "./getReportImprovements";
 
@@ -55,9 +56,9 @@ function isActive(id: string) {
                       ? isActive(`#${tabSlug}_elements-transverses`)
                         ? 'true'
                         : undefined
-                      : 'true'
+                      : undefined
                   "
-                  >Éléments transverses</a
+                  >{{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}</a
                 >
               </li>
               <li

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
+import { StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import {
   CriterionResultUserImpact,
@@ -210,7 +211,7 @@ function resetFilters() {
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <section class="fr-mb-8w">
         <h3 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
-          Éléments transverses
+          {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
         </h3>
 
         <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
@@ -269,9 +270,3 @@ function resetFilters() {
     </template>
   </ReportCriteria>
 </template>
-
-<style>
-.page-title {
-  color: var(--text-active-blue-france);
-}
-</style>

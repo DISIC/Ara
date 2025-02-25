@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
+import { StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
@@ -209,14 +210,16 @@ const transverseNotCompliantCount = computed(() => {
           concernent des éléments transverses à toutes les pages de
           l’échantillon.
         </p>
-        <!-- FIXME: make this link work -->
         <RouterLink
           :to="{
-            name: 'report',
-            params: { uniqueId, tab: slugify('Détails des non-conformités') }
+            name: 'report-full',
+            params: {
+              uniqueId,
+              tabSlug: slugify(StaticTabLabel.REPORT_ERRORS_TAB_LABEL)
+            }
           }"
           class="fr-link fr-link--sm"
-          @click="$emit('toTab', 'Détails des non-conformités')"
+          @click="$emit('toTab', StaticTabLabel.REPORT_ERRORS_TAB_LABEL)"
           >Voir
           {{
             pluralize(
