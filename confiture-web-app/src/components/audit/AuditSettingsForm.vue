@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, toRaw, watch } from "vue";
-import { useRoute } from "vue-router";
 
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import router from "../../router";
@@ -59,7 +58,6 @@ const audits = [
   }
 ];
 
-const route = useRoute();
 const previousRoute = usePreviousRoute();
 const accountStore = useAccountStore();
 

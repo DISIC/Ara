@@ -303,7 +303,7 @@ watchEffect(() => {
         ]"
       >
         <div
-          :class="['filters-wrapper fr-pt-4v', { 'fr-pr-3v': showFilters }]"
+          :class="['filters-wrapper', { 'fr-pr-3v': showFilters }]"
           role="search"
           :style="{ '--filters-top-offset': stickyTop }"
         >
@@ -332,8 +332,6 @@ watchEffect(() => {
 </template>
 
 <style scoped>
-@import "../../styles/filters.css";
-
 /* Override DSFR columns width */
 .columns {
   --gap: 1.5rem;
@@ -359,6 +357,23 @@ watchEffect(() => {
 
 .back-summary-link {
   display: inline-block;
+}
+
+.filters-wrapper {
+  position: sticky;
+  top: var(--filters-top-offset, 0);
+  max-height: calc(100vh - var(--filters-top-offset, 0));
+  max-height: calc(100dvh - var(--filters-top-offset, 0));
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+@media (width < 48rem) {
+  .filters-wrapper {
+    position: static;
+    max-height: none;
+    overflow-y: initial;
+  }
 }
 
 .page-wrapper {

@@ -40,9 +40,9 @@ const userImpacts: Array<{
   color?: RadioColor;
 }> = [
   {
-    value: CriterionResultUserImpact.MINOR,
-    label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: RadioColor.GREY
+    value: CriterionResultUserImpact.BLOCKING,
+    label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
+    color: RadioColor.RED
   },
   {
     value: CriterionResultUserImpact.MAJOR,
@@ -50,9 +50,9 @@ const userImpacts: Array<{
     color: RadioColor.YELLOW
   },
   {
-    value: CriterionResultUserImpact.BLOCKING,
-    label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: RadioColor.RED
+    value: CriterionResultUserImpact.MINOR,
+    label: formatUserImpact(CriterionResultUserImpact.MINOR),
+    color: RadioColor.GREY
   }
 ];
 
@@ -143,11 +143,57 @@ const title = "Erreur et recommandation";
       class="fr-mb-4w"
       :model-value="userImpact"
       :items="userImpacts"
-      label="Impact sur l’usager"
       :default-value="null"
       :disabled="isOffline"
       @update:model-value="$emit('update:userImpact', $event)"
-    />
+    >
+      <template #label>
+        <div class="user-impact-label">
+          Impact sur l’usager
+          <button
+            aria-describedby="tooltip"
+            type="button"
+            class="fr-btn fr-btn--tooltip fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
+            data-fr-js-tooltip-referent="true"
+          >
+            Informations sur l’impact usager
+          </button>
+
+          <Teleport to="body">
+            <div
+              id="tooltip"
+              class="fr-tooltip fr-placement"
+              role="tooltip"
+              data-fr-js-tooltip="true"
+            >
+              <p class="fr-text--xs fr-mb-1w">
+                <strong>Bloquant</strong> : empêche complètement l’accès ou
+                l’utilisation.<br />
+                <span class="user-impact-example"
+                  >Ex : il est impossible de soumettre un formulaire au
+                  clavier.</span
+                >
+              </p>
+              <p class="fr-text--xs fr-mb-1w">
+                <strong>Majeur</strong> : rend l’accès ou l’utilisation
+                difficile.<br />
+                <span class="user-impact-example"
+                  >Ex : les champs ne sont pas regroupés.</span
+                >
+              </p>
+              <p class="fr-text--xs fr-mb-0">
+                <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès
+                ou l’utilisation.<br />
+                <span class="user-impact-example"
+                  >Ex : des retours à la ligne sont utilisés pour espacer des
+                  textes.</span
+                >
+              </p>
+            </div>
+          </Teleport>
+        </div>
+      </template>
+    </RadioGroup>
 
     <!-- QUICK WIN -->
     <div class="fr-fieldset__element fr-fieldset__element--inline">
@@ -178,10 +224,13 @@ const title = "Erreur et recommandation";
   gap: 0.5rem;
 }
 
-.user-impact-container {
-  border: none;
+.user-impact-label {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-impact-example {
+  font-style: italic;
 }
 </style>

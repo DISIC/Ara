@@ -15,7 +15,6 @@ import { useUniqueId } from "../../composables/useUniqueId";
 import { AraTabsTabData } from "./AraTabsTabData";
 
 /** Types */
-
 export interface TabsRouteParams {
   name: string;
   params: {
@@ -196,9 +195,7 @@ onBeforeRouteUpdate(async (to, from) => {
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
-          <component :is="tab.icon" v-if="tab.icon" class="fr-mr-2v" />{{
-            tab.label
-          }}
+          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />{{ tab.label }}
         </button>
       </li>
     </ul>

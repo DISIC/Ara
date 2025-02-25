@@ -61,7 +61,8 @@ const csvExportSizeEstimation = computed(() => {
     <ul class="fr-btns-group fr-btns-group--icon-left">
       <li>
         <a
-          class="fr-btn fr-btn--tertiary fr-mb-1w fr-btn--icon-left fr-icon-download-line"
+          class="fr-btn fr-mb-1w fr-btn--icon-left fr-icon-download-line"
+          :class="auditIsReady ? 'fr-btn--secondary' : 'fr-btn--tertiary'"
           aria-describedby="audit-grid-step-download-informations"
           :href="csvExportUrl"
           :download="csvExportFilename"
