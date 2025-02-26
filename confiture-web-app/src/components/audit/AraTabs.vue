@@ -12,6 +12,7 @@ import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useUniqueId } from "../../composables/useUniqueId";
+import LayoutIcon from "../icons/LayoutIcon.vue";
 import { AraTabsTabData } from "./AraTabsTabData";
 
 /** Types */
