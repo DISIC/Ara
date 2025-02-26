@@ -59,6 +59,7 @@ async function removeElement(at: number) {
 const notify = useNotifications();
 
 function submitForm() {
+  addElements();
   editing.value = false;
 
   if (!auditStore.currentAudit) return;
@@ -156,21 +157,27 @@ function cancelEdition() {
             </button>
           </li>
         </ul>
-        <button
-          ref="submitButtonRef"
-          type="button"
-          class="fr-btn fr-btn--sm"
-          @click="submitForm"
-        >
-          Enregistrer
-        </button>
-        <button
-          type="button"
-          class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-          @click="cancelEdition"
-        >
-          Annuler
-        </button>
+        <ul class="fr-btns-group fr-btns-group--inline-md">
+          <li>
+            <button
+              ref="submitButtonRef"
+              type="button"
+              class="fr-btn"
+              @click="submitForm"
+            >
+              Enregistrer
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="fr-btn fr-btn--tertiary-no-outline"
+              @click="cancelEdition"
+            >
+              Annuler
+            </button>
+          </li>
+        </ul>
       </form>
       <hr v-if="editing" class="fr-mt-3w" />
     </template>
