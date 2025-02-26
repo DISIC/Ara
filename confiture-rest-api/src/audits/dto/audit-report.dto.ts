@@ -49,6 +49,8 @@ export class AuditReportDto {
   topicDistributions: TopicResultDistribution[];
 
   results: ReportCriterionResult[];
+
+  transverseElements: string[];
 }
 
 class CriteriaCount {

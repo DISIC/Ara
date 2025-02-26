@@ -1010,7 +1010,9 @@ export class AuditService {
           key: img.key,
           thumbnailKey: img.thumbnailKey
         }))
-      }))
+      })),
+
+      transverseElements: audit.transverseElements
     };
 
     return report;
