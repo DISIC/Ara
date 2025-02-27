@@ -49,6 +49,15 @@ const improvementsCount = computed(() => {
           Éléments transverses
         </h3>
 
+        <ul
+          v-if="report.data.transverseElements.length"
+          class="fr-tags-group fr-mb-5v"
+        >
+          <li v-for="(tag, i) in report.data.transverseElements" :key="i">
+            <p class="fr-tag">{{ tag }}</p>
+          </li>
+        </ul>
+
         <div
           v-for="(topic, i) in transverseImprovements.topics"
           :key="topic.number"
