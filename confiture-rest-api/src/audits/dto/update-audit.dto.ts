@@ -134,4 +134,12 @@ export class UpdateAuditDto extends CreateAuditDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  /**
+   * @example ["En-tête", "pied de page", "bandeau cookies"]
+   */
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  transverseElements?: string[];
 }

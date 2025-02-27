@@ -395,9 +395,10 @@ const isDevMode = useDevMode();
 
     <ul class="fr-tags-group">
       <li v-for="(techno, i) in validatedTechnologies" :key="i">
+        <!-- TODO: generate unique ids for each techno, using i is bugged. See how it's done in TransverseElementsList.vue -->
         <button
           ref="validatedTechnologiesRefs"
-          class="fr-tag fr-tag--dismiss"
+          class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
           type="button"
           :aria-label="`Retirer ${techno}`"
           @click="removeTechnology(i)"
@@ -601,5 +602,14 @@ const isDevMode = useDevMode();
 .top-link {
   display: flex;
   justify-content: end;
+}
+
+.light-blue-button-tags {
+  flex-direction: row-reverse;
+  gap: 0.25rem;
+
+  &::before {
+    margin: 0;
+  }
 }
 </style>

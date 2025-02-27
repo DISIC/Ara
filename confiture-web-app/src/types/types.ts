@@ -63,6 +63,8 @@ export interface Audit {
   notInScopeContent: string | null;
   notes: string | null;
   notesFiles: AuditFile[];
+
+  transverseElements: string[];
 }
 
 /** Audit type fields needed to create an audit */
