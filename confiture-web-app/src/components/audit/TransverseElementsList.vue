@@ -29,8 +29,16 @@ watch(
   }
 );
 
+const editButtonRef = ref<HTMLButtonElement[]>();
+const inputRef = ref<InstanceType<typeof DsfrField>>();
 const tagButtonsRefs = ref<HTMLButtonElement[]>([]);
 const submitButtonRef = ref<HTMLButtonElement>();
+
+async function startEdition() {
+  editing.value = true;
+  await nextTick();
+  inputRef.value?.inputRef?.focus();
+}
 
 function addElements() {
   const tech = inputValue.value.split(",").filter(Boolean);
@@ -58,7 +66,7 @@ async function removeElement(at: number) {
 
 const notify = useNotifications();
 
-function submitForm() {
+async function submitForm() {
   addElements();
   editing.value = false;
 
@@ -66,12 +74,14 @@ function submitForm() {
 
   const uniqueId = auditStore.currentAudit?.editUniqueId;
   const transverseElements = tags.value.map(([, element]) => element);
+
   auditStore
     .updateAudit(uniqueId, {
       ...auditStore.currentAudit,
       transverseElements
     })
     .then(() => {
+      editButtonRef.value?.at(0)?.focus();
       notify("success", undefined, "Éléments transverses sauvegardés");
     })
     .catch((err) => {
@@ -84,7 +94,7 @@ function submitForm() {
     });
 }
 
-function cancelEdition() {
+async function cancelEdition() {
   editing.value = false;
   if (auditStore.currentAudit) {
     tags.value = auditStore.currentAudit.transverseElements.map((element) => [
@@ -92,6 +102,8 @@ function cancelEdition() {
       element
     ]);
   }
+  await nextTick();
+  editButtonRef.value?.at(0)?.focus();
 }
 </script>
 
@@ -110,11 +122,11 @@ function cancelEdition() {
           <li v-for="([uid, tag], i) in tags" :key="uid">
             <p class="fr-tag">{{ tag }}</p>
 
-            <!-- FIXME: find a better way to inline list with trailing button -->
             <button
               v-if="i === tags.length - 1"
+              ref="editButtonRef"
               class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-fill fr-ml-1v edit-tags-button"
-              @click="editing = true"
+              @click="startEdition"
             >
               Modifier <span class="fr-sr-only">les éléments transverses</span>
             </button>
@@ -127,6 +139,7 @@ function cancelEdition() {
       <form @submit.prevent>
         <DsfrField
           id="transverse-elements-list"
+          ref="inputRef"
           v-model="inputValue"
           class="fr-mb-3v elements-field"
           label="Nom de l’élément transverse"
@@ -140,7 +153,7 @@ function cancelEdition() {
               class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
               @click="addElements"
             >
-              Ajouter
+              Ajouter <span class="fr-sr-only">l’éléments transverse</span>
             </button>
           </template>
         </DsfrField>
