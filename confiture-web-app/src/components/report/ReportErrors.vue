@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { StaticTabLabel } from "../../enums";
+import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import {
   CriterionResultUserImpact,
@@ -13,6 +13,7 @@ import { getReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
 
+/** Store */
 const report = useReportStore();
 
 // Filters
@@ -110,7 +111,6 @@ function resetFilters() {
     :pages-data="pagesErrors"
     :transverse-data="transverseErrors"
     :show-filters="true"
-    tab-slug="errors"
   >
     <template #filter>
       <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
@@ -204,7 +204,10 @@ function resetFilters() {
     <template v-if="transverseErrors.topics.length" #transverse-data>
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <section class="fr-mb-8w">
-        <h3 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
+        <h3
+          :id="`${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`"
+          class="fr-h3 fr-mb-2w page-title"
+        >
           {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
         </h3>
 
@@ -229,7 +232,7 @@ function resetFilters() {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h3 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h3>
         <a

@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect } from "vue";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useUniqueId } from "../../composables/useUniqueId";
@@ -20,22 +20,24 @@ export interface TabsRouteParams {
   name: string;
   params: {
     uniqueId: string;
-    tabSlug?: string;
   };
 }
 
 /**
  * Props
  * - tabs: array of tab data objects
- * - routeParams: route parameters common to all tabs
- * - selectedTabIndex: the selected tab index. Default is 0 (first one).
+ * - route: route parameters common to all tabs
  * - stickyTop: CSS top value (e.g. "0", "4px" or "1rem"). Default is "0";
+ * - panelScrollBehavior:
+ * 		- "sameCriteria" tries to scroll page to the same
+ * 			criteria as previous tab (e.g. for Audit)
+ *    - "tabsTop" always scrolls to push the tabs panel at the top
+ *      of the screen (e.g. for Report)
  */
 const props = withDefaults(
   defineProps<{
     tabs: AraTabsTabData[];
     route: TabsRouteParams;
-    selectedTabSlug: string;
     stickyTop?: string;
     panelScrollBehavior?: "tabsTop" | "sameCriteria";
   }>(),
@@ -46,7 +48,8 @@ const props = withDefaults(
 );
 
 /** Refs */
-const selectedTabSlug = ref(props.selectedTabSlug);
+const selectedTabIndex = ref();
+const selectedTabSlug = ref();
 const stickyTop = ref(props.stickyTop);
 const tabButtonsRef = ref<HTMLButtonElement[]>();
 const panelBottomMarkerRef = ref<HTMLDivElement>();
@@ -57,32 +60,16 @@ const uniqueId = useUniqueId();
 
 /** Routing */
 const router = useRouter();
+const routerRoute = useRoute();
 
 /** Event: "selectedTabChange" */
 const emit = defineEmits<{
   (e: "selectedTabChange", selectedTabIndex: number): void;
 }>();
 
-/** Computed propoerties */
+/** Computed properties */
 const selectedTab = computed(() => {
   return props.tabs[selectedTabIndex.value];
-});
-
-/** Writable computed properties */
-const selectedTabIndex = computed({
-  get(prevTabIndex) {
-    let foundIndex = props.tabs.findIndex(
-      (tabData) => tabData.slug === selectedTabSlug.value
-    );
-    if (foundIndex === -1) {
-      return prevTabIndex;
-    } else {
-      return foundIndex;
-    }
-  },
-  set(newTabIndex) {
-    selectedTabSlug.value = props.tabs[newTabIndex].slug;
-  }
 });
 
 /** Functions */
@@ -95,12 +82,21 @@ function panelId(i: number) {
   return "panel-" + uniqueId.value + "-" + i;
 }
 
+/**
+ * Selects the tab at index i
+ *
+ * Note: `selectedTabIndex` ref is not updated here,
+ *       it will be updated **after route update**
+ *       See watchEffect
+ *
+ * @param {number} i New index to focus
+ */
 function selectTab(i: number) {
   if (i === selectedTabIndex.value) {
     return;
   }
 
-  selectedTabIndex.value = i;
+  // Focus the new tab element
   tabButtonsRef.value?.at(i)?.focus();
 
   // Change route
@@ -154,19 +150,15 @@ watchEffect(() => {
   // stickyTop can change on window resize
   stickyTop.value = props.stickyTop;
 
-  selectedTabSlug.value = props.tabs[selectedTabIndex.value].slug;
+  // tabSlug changes on route change
+  selectedTabSlug.value = routerRoute.params.tabSlug as string;
+
+  selectedTabIndex.value = props.tabs.findIndex(
+    (tabData) => tabData.slug === selectedTabSlug.value
+  );
 
   // other components may be interested by the current selected tab index
   emit("selectedTabChange", selectedTabIndex.value);
-});
-
-/** Navigation guards */
-
-onBeforeRouteUpdate(async (to, from) => {
-  // When going back
-  if (to.params.tabSlug !== from.params.tabSlug) {
-    selectedTabSlug.value = to.params.tabSlug as string;
-  }
 });
 </script>
 

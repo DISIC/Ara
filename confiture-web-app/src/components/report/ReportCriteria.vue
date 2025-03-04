@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
-import { StaticTabLabel } from "../../enums";
+import { StaticTabLabel, TabSlug } from "../../enums";
 import type { ReportError } from "./getReportErrors";
 import { ReportImprovement } from "./getReportImprovements";
 
 defineProps<{
   count: string;
   pagesData: ReportError[] | ReportImprovement[];
-  tabSlug: string;
   transverseData: ReportError | ReportImprovement;
   showFilters?: boolean;
   topNotice?: string;
@@ -17,6 +16,7 @@ defineProps<{
 // Set active side menu link
 const route = useRoute();
 
+/** Functions */
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
@@ -30,12 +30,12 @@ function isActive(id: string) {
           <button
             class="fr-sidemenu__btn"
             hidden
-            :aria-controls="`report-${tabSlug}_sidemenu-wrapper`"
+            :aria-controls="`report_sidemenu-wrapper`"
             aria-expanded="false"
           >
             Pages
           </button>
-          <div :id="`report-${tabSlug}_sidemenu-wrapper`" class="fr-collapse">
+          <div :id="`report_sidemenu-wrapper`" class="fr-collapse">
             <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
             <ul class="fr-sidemenu__list">
               <li
@@ -44,21 +44,24 @@ function isActive(id: string) {
                   'fr-sidemenu__item',
                   {
                     'fr-sidemenu__item--active':
-                      !route.hash || isActive('#elements-transverses')
+                      !route.hash ||
+                      isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                   }
                 ]"
               >
-                <a
+                <RouterLink
+                  :to="{ hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}` }"
                   class="fr-sidemenu__link"
-                  :href="`#${tabSlug}_elements-transverses`"
                   :aria-current="
                     route.hash
-                      ? isActive(`#${tabSlug}_elements-transverses`)
+                      ? isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                         ? 'true'
                         : undefined
                       : undefined
                   "
-                  >{{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}</a
+                  >{{
+                    StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
+                  }}</RouterLink
                 >
               </li>
               <li
@@ -66,26 +69,22 @@ function isActive(id: string) {
                 :key="page.name"
                 class="fr-sidemenu__item"
                 :class="{
-                  'fr-sidemenu__item--active': isActive(
-                    `#${tabSlug}_${page.id}`
-                  )
+                  'fr-sidemenu__item--active': isActive(`#${page.id}`)
                 }"
               >
-                <a
+                <RouterLink
                   class="fr-sidemenu__link"
-                  :href="`#${tabSlug}_${page.id}`"
-                  :aria-current="
-                    isActive(`#${tabSlug}_${page.id}`) ? 'true' : undefined
-                  "
+                  :to="{ hash: `#${page.id}` }"
+                  :aria-current="isActive(`#${page.id}`) ? 'true' : undefined"
                 >
                   {{ page.name }}
-                </a>
+                </RouterLink>
               </li>
             </ul>
           </div>
         </div>
       </nav>
-      <slot name="filter" />
+      <slot name="filter"></slot>
     </div>
     <div>
       <div class="fr-mb-5w">

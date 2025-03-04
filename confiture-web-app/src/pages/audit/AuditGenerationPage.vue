@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRef, watch, watchEffect } from "vue";
+import { computed, ref, toRef, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -16,21 +16,15 @@ import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { FirstTab, StaticTabLabel } from "../../enums";
+import { StaticTabLabel } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
 
 /** Props */
-const props = withDefaults(
-  defineProps<{
-    tabSlug?: string;
-    uniqueId: string;
-  }>(),
-  {
-    tabSlug: FirstTab.AUDIT_SLUG
-  }
-);
+const props = defineProps<{
+  uniqueId: string;
+}>();
 
 /** Refs */
 
@@ -42,7 +36,6 @@ const auditGenerationHeaderRef = ref<InstanceType<
 > | null>(null);
 
 const stickyTop = ref("0px");
-const selectedTabSlug = ref(props.tabSlug);
 
 /** Stores */
 const auditStore = useAuditStore();
@@ -215,7 +208,6 @@ const tabsData = computed((): AraTabsTabData[] => {
  * @param {number} tabIndex
  */
 function onSelectedTabChange(tabIndex: number) {
-  console.log("onSelectedTabChange: " + tabIndex);
   auditStore.updateCurrentPageId(
     tabIndex === 0
       ? auditStore.currentAudit?.transverseElementsPage.id ?? null
@@ -267,10 +259,6 @@ watch(
     }
   }
 );
-
-watchEffect(() => {
-  selectedTabSlug.value = props.tabSlug;
-});
 </script>
 
 <template>
@@ -321,7 +309,6 @@ watchEffect(() => {
           panel-scroll-behavior="sameCriteria"
           :route="{ name: 'audit-generation-full', params: { uniqueId } }"
           :sticky-top="stickyTop"
-          :selected-tab-slug="selectedTabSlug"
           :tabs="tabsData"
           @selected-tab-change="onSelectedTabChange"
         >

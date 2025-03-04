@@ -43,6 +43,18 @@ export enum StaticTabLabel {
   REPORT_IMPROVEMENTS_TAB_LABEL = "Points d’amélioration"
 }
 
+export const TabSlug = {
+  AUDIT_COMMON_ELEMENTS_SLUG: slugify(
+    StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
+  ),
+  REPORT_RESULTS_SLUG: slugify(StaticTabLabel.REPORT_RESULTS_TAB_LABEL),
+  REPORT_NOTES_SLUG: slugify(StaticTabLabel.REPORT_NOTES_TAB_LABEL),
+  REPORT_ERRORS_SLUG: slugify(StaticTabLabel.REPORT_ERRORS_TAB_LABEL),
+  REPORT_IMPROVEMENTS_SLUG: slugify(
+    StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL
+  )
+};
+
 export const FirstTab = {
   AUDIT_SLUG: slugify(StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL),
   REPORT_SLUG: slugify(StaticTabLabel.REPORT_RESULTS_TAB_LABEL)

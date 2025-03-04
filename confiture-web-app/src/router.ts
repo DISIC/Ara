@@ -232,8 +232,7 @@ const router = createRouter({
         {
           path: ":tabSlug",
           name: "audit-generation-full",
-          component: AraTabsPanel,
-          props: true
+          component: AraTabsPanel
         }
       ],
       meta: {
@@ -282,10 +281,9 @@ const router = createRouter({
       component: ReportPage,
       children: [
         {
-          name: "report-full",
           path: ":tabSlug",
-          component: AraTabsPanel,
-          props: true
+          name: "report-full",
+          component: AraTabsPanel
         }
       ],
       meta: {
@@ -364,12 +362,12 @@ const router = createRouter({
   ],
   history,
   scrollBehavior(to, from, savedPosition) {
-    if (to.hash) {
-      return scrollToHash(to.hash);
-    }
-
     if (savedPosition) {
       return scrollToSavedPosition(savedPosition);
+    }
+
+    if (to.hash) {
+      return scrollToHash(to.hash);
     }
 
     // When navigating between tabs, scroll to display tabs
@@ -475,13 +473,14 @@ function scrollToHash(hash: string) {
   }) as Promise<ScrollPosition>;
 }
 
-function scrollToSavedPosition(savedPosition: ScrollPosition) {
+async function scrollToSavedPosition(savedPosition: ScrollPosition) {
   const { left, top } = savedPosition;
-  console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
 
   return new Promise((resolve) => {
-    const { stop } = useResizeObserver(document.body, (entries) => {
-      if (entries[0].target.clientHeight >= top! + screen.height) {
+    const { stop } = useResizeObserver(document.body, async () => {
+      const htmlEl = document.getElementsByTagName("html")[0];
+      if (htmlEl.scrollHeight > htmlEl.clientHeight) {
+        console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
         resolve(savedPosition);
         stop();
       }
@@ -519,7 +518,7 @@ function scrollToTabPanelTop(tabs: HTMLElement) {
  * @todo TODO: scroll to a smart position (same criteria as previous tabSlug?)
  */
 async function scrollToElement(el: HTMLElement) {
-  console.info(`⇣ scroll to element ${el}`);
+  console.info(`⇣ scroll to element ${el.className || el.id}`);
 
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async (entries) => {

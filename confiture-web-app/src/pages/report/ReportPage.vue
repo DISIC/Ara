@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -13,21 +13,16 @@ import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { FirstTab, StaticTabLabel } from "../../enums";
+import { StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
 /** Props */
-const props = withDefaults(
-  defineProps<{
-    tabSlug?: string;
-    uniqueId: string;
-  }>(),
-  {
-    tabSlug: FirstTab.REPORT_SLUG
-  }
-);
+const props = defineProps<{
+  tabSlug: string; // given by router (props: true). TODO check why needed here and not on AuditGenerationPage
+  uniqueId: string;
+}>();
 
 /** Variables */
 const uniqueId = props.uniqueId;
@@ -41,7 +36,6 @@ const router = useRouter();
 /** Refs */
 const showCopyAlert = ref(false);
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
-const selectedTabSlug = ref(props.tabSlug);
 
 /** Computed properties */
 
@@ -164,10 +158,6 @@ watch(
     }
   }
 );
-
-watchEffect(() => {
-  selectedTabSlug.value = props.tabSlug;
-});
 </script>
 
 <template>
@@ -299,7 +289,6 @@ watchEffect(() => {
 			when scrolling the page -->
     <AraTabs
       :route="{ name: 'report-full', params: { uniqueId } }"
-      :selected-tab-slug="selectedTabSlug"
       sticky-top="-0.1px"
       :tabs="tabsData"
     >
