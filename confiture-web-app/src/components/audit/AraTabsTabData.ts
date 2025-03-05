@@ -1,18 +1,17 @@
 import { type Component } from "vue";
 
-import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import { slugify } from "../../utils";
 
 export class AraTabsTabData {
   label: string;
   #slug: string; // do not allow slug to be defined from outside
-  icon: typeof LayoutIcon | undefined;
+  icon: Component | undefined;
   component: Component;
   componentParams: object | undefined;
 
   constructor(data: {
     label: string;
-    icon?: typeof LayoutIcon;
+    icon?: Component;
     component: Component;
     componentParams?: object;
   }) {

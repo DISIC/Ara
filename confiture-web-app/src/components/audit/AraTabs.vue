@@ -12,7 +12,6 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useUniqueId } from "../../composables/useUniqueId";
-import LayoutIcon from "../icons/LayoutIcon.vue";
 import { AraTabsTabData } from "./AraTabsTabData";
 
 /** Types */
@@ -188,7 +187,12 @@ watchEffect(() => {
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
-          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />{{ tab.label }}
+          <component
+            :is="props.tabs[i].icon"
+            v-if="props.tabs[i].icon && i === 0"
+            class="fr-mr-2v"
+          ></component
+          >{{ tab.label }}
         </button>
       </li>
     </ul>
