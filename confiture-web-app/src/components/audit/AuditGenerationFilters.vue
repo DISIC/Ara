@@ -97,8 +97,8 @@ const notApplicableCount = computed(
     <span class="fr-sr-only">Afficher la colonne des filtres</span>
   </button>
   <template v-else>
-    <div class="heading-wrapper">
-      <h2 class="fr-h4 fr-mb-0">Filtres</h2>
+    <div class="fr-mb-3w heading-wrapper">
+      <h2 class="fr-h6 fr-mb-0">Filtres</h2>
       <button
         ref="hideFiltersRef"
         type="button"
@@ -121,16 +121,16 @@ const notApplicableCount = computed(
     </button>
 
     <form @submit.prevent="submit">
-      <label class="fr-label fr-text--bold fr-mb-1w" for="filters-search">
-        Rechercher par mots clés
-      </label>
-      <div class="fr-search-bar">
+      <div class="fr-search-bar" role="search">
+        <label class="fr-label" for="filters-search"
+          >Recherche par mots clés</label
+        >
         <input
           id="filters-search"
           ref="searchInputRef"
           v-model="search"
           class="fr-input"
-          placeholder="Rechercher"
+          placeholder="Rechercher un critère"
           type="search"
         />
         <button type="submit" class="fr-btn" title="Rechercher">
@@ -154,7 +154,7 @@ const notApplicableCount = computed(
       {{ filterStore.search }}
     </button>
 
-    <div class="fr-my-4w fr-py-4w evaluated-criteria-filter">
+    <div class="fr-mt-4w fr-mb-3w">
       <div class="fr-checkbox-group">
         <input
           id="hide-evaluated-criteria"
@@ -162,7 +162,7 @@ const notApplicableCount = computed(
           type="checkbox"
         />
         <label class="fr-label" for="hide-evaluated-criteria">
-          Masquer critères évalués
+          Masquer les critères évalués
           <template v-if="resultStore.testedCriteriumCount">
             ({{ resultStore.testedCriteriumCount }})
           </template>
@@ -245,12 +245,8 @@ const notApplicableCount = computed(
       </div>
     </fieldset>
 
-    <hr />
-
     <div class="fr-form-group">
-      <p id="anchor-nav-title" class="fr-text--regular fr-text--bold fr-mb-1w">
-        Thématiques de critères
-      </p>
+      <h2 id="anchor-nav-title" class="fr-h6 fr-mb-2w">Thématiques</h2>
       <nav aria-labelledby="anchor-nav-title">
         <ol class="fr-pl-0 fr-ml-0">
           <li
@@ -282,17 +278,11 @@ const notApplicableCount = computed(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
 }
 
 .toggle-column-button:focus-visible {
   outline: 2px solid var(--dsfr-outline);
   outline-offset: -2px;
-}
-
-.evaluated-criteria-filter {
-  border-top: 1px solid var(--border-default-grey);
-  border-bottom: 1px solid var(--border-default-grey);
 }
 
 .topic-filter-item::marker {
