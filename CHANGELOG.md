@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 05/03/2025
 
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute les cas particuliers et les notes techniques aux critères de l’audit ([#947](https://github.com/DISIC/Ara/pull/947))
+
 ### Autres changements ⚙️
 
 - Amélioration de la visibilité des ancres dans la barre latérale de l’audit ([#957](https://github.com/DISIC/Ara/pull/957))

@@ -2,6 +2,8 @@
 import { marked } from "marked";
 
 import methodologies from "../../methodologies.json";
+import { pluralize } from "../../utils";
+import CriteriumAppendix from "./CriteriumAppendix.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
@@ -37,7 +39,7 @@ const methodologiesHtml = Object.values(
   >
     <template v-for="(test, i) in testsHtml" :key="i">
       <div class="criterium-test">
-        <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
+        <strong>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</strong>
         <div v-html="test" />
       </div>
 
@@ -68,6 +70,32 @@ const methodologiesHtml = Object.values(
         </div>
       </div>
     </template>
+
+    <!-- Particular cases -->
+    <CriteriumAppendix
+      v-if="criterium.particularCases?.length"
+      :title="
+        pluralize(
+          'Cas particulier',
+          'Cas particuliers',
+          criterium.particularCases.length
+        )
+      "
+      :appendices="criterium.particularCases"
+    />
+
+    <!-- Technical notes -->
+    <CriteriumAppendix
+      v-if="criterium.technicalNote?.length"
+      :title="
+        pluralize(
+          'Note technique',
+          'Notes techniques',
+          criterium.technicalNote.length
+        )
+      "
+      :appendices="criterium.technicalNote"
+    />
   </LazyAccordion>
 </template>
 
