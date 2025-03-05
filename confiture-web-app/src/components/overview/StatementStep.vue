@@ -77,7 +77,7 @@ const auditIsPublishable = computed(() => {
           :target="auditIsPublishable ? '_blank' : null"
           class="fr-btn fr-btn--icon-left fr-mb-md-0"
           :class="{
-            'fr-btn--secondary': !auditIsReady || auditIsPublishable,
+            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line no-external-icon': !auditIsPublishable
           }"
           :title="
