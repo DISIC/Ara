@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import slugify from "slugify";
 import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import { formatBytes, slugify } from "../../utils";
+import { formatBytes } from "../../utils";
 import StepCard from "./StepCard.vue";
 
 const props = defineProps<{
   audit: Audit;
+  headingLevel: "h2" | "h3";
 }>();
 
 const resultsStore = useResultsStore();
@@ -31,33 +33,32 @@ const csvExportSizeEstimation = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-3w audit-grid-step-heading">
+    <div class="fr-mb-2w grid-step-heading">
       <span
         v-if="auditIsReady"
-        id="audit-export-step-status"
-        class="fr-icon--lg fr-icon-checkbox-circle-fill audit-grid-step-check"
+        id="grid-step-status"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill grid-step-check"
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
-      <h2
-        class="fr-h3 fr-mb-0 audit-grid-step-title"
-        aria-describedby="audit-export-step-status"
+      <component
+        :is="headingLevel"
+        class="fr-h3 fr-mb-0 grid-step-title"
+        aria-describedby="grid-step-status"
       >
         Grille d’audit
         <p class="fr-badge fr-badge--info fr-badge--no-icon">
           Généré automatiquement
         </p>
-      </h2>
+      </component>
     </div>
-
-    <p class="audit-grid-step-description">
+    <p class="grid-step-description">
       {{
         auditIsReady
           ? "Vous pouvez livrer la grille d’audit."
           : "Terminez l’audit avant de livrer la grille d’audit."
       }}
     </p>
-
     <ul class="fr-btns-group fr-btns-group--icon-left">
       <li>
         <a
@@ -69,27 +70,29 @@ const csvExportSizeEstimation = computed(() => {
         >
           Télécharger
         </a>
-        <p
-          id="audit-grid-step-download-informations"
-          class="fr-text--sm fr-mb-0 audit-grid-step-instructions"
-        >
-          Contient seulement les résultats des critères.<br />
-          CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}.
-        </p>
       </li>
     </ul>
+    <div class="grid-step-download-info">
+      <p
+        id="audit-grid-step-download-informations"
+        class="fr-text--xs fr-mb-0 fr-mt-1v"
+      >
+        Contient seulement les résultats des critères.<br />CSV –
+        {{ formatBytes(csvExportSizeEstimation, 2) }}.
+      </p>
+    </div>
   </StepCard>
 </template>
 
 <style scoped>
-.audit-grid-step-heading {
+.grid-step-heading {
   align-items: center;
   display: flex;
   gap: 1rem;
   grid-column: 1 / -1;
 }
 
-.audit-grid-step-title {
+.grid-step-title {
   grid-column: 1 / -1;
   grid-row: 1;
 
@@ -99,17 +102,17 @@ const csvExportSizeEstimation = computed(() => {
   gap: 0.75rem;
 }
 
-.audit-grid-step-check {
+.grid-step-check {
   color: var(--text-default-success);
 }
 
-.audit-grid-step-description {
+.grid-step-description {
   grid-column: 1 / -1;
   grid-row: 2;
 }
 
-.audit-grid-step-instructions {
+.grid-step-download-info {
   color: var(--text-mention-grey);
-  margin-left: 0.5rem;
+  grid-column: 1;
 }
 </style>

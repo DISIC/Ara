@@ -10,10 +10,16 @@ import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
+import { useIsLoggedIn } from "../../composables/useIsLoggedIn";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import {
+  useAccountStore,
+  useAuditStore,
+  useFiltersStore,
+  useResultsStore
+} from "../../store";
 import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
 
@@ -225,6 +231,15 @@ const tabsData = computed((): TabData[] => {
     })) ?? [])
   ];
 });
+
+const isLoggedIn = useIsLoggedIn();
+const accountStore = useAccountStore();
+
+const isLoggedInAndOwnAudit = computed(() => {
+  return auditStore.currentAudit
+    ? auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+    : isLoggedIn;
+});
 </script>
 
 <template>
@@ -236,8 +251,16 @@ const tabsData = computed((): TabData[] => {
     />
 
     <BackLink
-      label="Aller au tableau de bord de l’audit"
-      :to="{ name: 'audit-overview', params: { uniqueId } }"
+      :label="
+        isLoggedInAndOwnAudit
+          ? 'Retourner à mes audits'
+          : 'Retourner au tableau de bord de l’audit'
+      "
+      :to="
+        isLoggedInAndOwnAudit
+          ? { name: 'account-dashboard' }
+          : { name: 'audit-overview', params: { uniqueId } }
+      "
     />
 
     <AuditGenerationHeader
