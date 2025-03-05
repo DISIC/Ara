@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import slugify from "slugify";
 import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
+import { formatBytes } from "../../utils";
 import StepCard from "./StepCard.vue";
 
-defineProps<{
+const props = defineProps<{
   audit: Audit;
   headingLevel: "h2" | "h3";
 }>();
@@ -14,6 +16,18 @@ const resultsStore = useResultsStore();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
+});
+
+const csvExportUrl = computed(
+  () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
+);
+
+const csvExportFilename = computed(() => {
+  return `audit-${slugify(props.audit.procedureName)}.csv`;
+});
+
+const csvExportSizeEstimation = computed(() => {
+  return 502 + Object.keys(resultsStore.data ?? {}).length * 318;
 });
 </script>
 
@@ -47,18 +61,23 @@ const auditIsReady = computed(() => {
     </p>
     <ul class="fr-btns-group fr-btns-group--icon-left">
       <li>
-        <!-- TODO: download link + CSV -->
         <a
-          href="#"
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-download-line fr-mb-0"
+          class="fr-btn fr-btn--secondary fr-mb-1w fr-btn--icon-left fr-icon-download-line"
+          aria-describedby="audit-grid-step-download-informations"
+          :href="csvExportUrl"
+          :download="csvExportFilename"
         >
           Télécharger
         </a>
       </li>
     </ul>
     <div class="grid-step-download-info">
-      <p class="fr-text--xs fr-mb-0 fr-mt-1v">
-        Contient seulement les résultats des critères.<br />CSV – 22,45 Ko.
+      <p
+        id="audit-grid-step-download-informations"
+        class="fr-text--xs fr-mb-0 fr-mt-1v"
+      >
+        Contient seulement les résultats des critères.<br />CSV –
+        {{ formatBytes(csvExportSizeEstimation, 2) }}.
       </p>
     </div>
   </StepCard>
