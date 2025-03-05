@@ -8,15 +8,16 @@ import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
-import { useIsConnected } from "../../composables/useIsConnected";
+import { useIsLoggedIn } from "../../composables/useIsLoggedIn";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useAuditStore, useResultsStore } from "../../store";
+import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
+const accountStore = useAccountStore();
 
 useWrappedFetch(async () => {
   resultsStore.$reset();
@@ -53,7 +54,13 @@ function focusPageHeading() {
   pageHeading?.focus();
 }
 
-const isConnected = useIsConnected();
+const isLoggedIn = useIsLoggedIn();
+
+const isLoggedInAndOwnAudit = computed(() => {
+  return auditStore.currentAudit
+    ? auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+    : isLoggedIn;
+});
 </script>
 
 <template>
@@ -99,13 +106,13 @@ const isConnected = useIsConnected();
     </div>
 
     <BackLink
-      v-if="isConnected"
+      v-if="isLoggedInAndOwnAudit"
       label="Retourner à mes audits"
       :to="{ name: 'account-dashboard' }"
     />
 
     <div class="content">
-      <template v-if="isConnected">
+      <template v-if="isLoggedInAndOwnAudit">
         <h1 class="fr-mb-3v">Livrables</h1>
         <p class="fr-text--xl fr-mb-4w">{{ audit.procedureName }}</p>
       </template>
@@ -114,29 +121,33 @@ const isConnected = useIsConnected();
 
       <div class="fr-p-0 fr-m-0 overview-steps">
         <!-- Audit -->
-        <AuditStep v-if="!isConnected" :audit="audit" class="fr-mb-1w" />
+        <AuditStep
+          v-if="!isLoggedInAndOwnAudit"
+          :audit="audit"
+          class="fr-mb-1w"
+        />
 
-        <h2 v-if="!isConnected" class="fr-mb-0">Livrables</h2>
+        <h2 v-if="!isLoggedInAndOwnAudit" class="fr-mb-0">Livrables</h2>
 
         <!-- Report -->
         <ReportStep
           :audit="audit"
           class="fr-mb-1w"
-          :heading-level="isConnected ? 'h2' : 'h3'"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
         />
 
         <!-- Grid -->
         <GridStep
           :audit="audit"
           class="fr-mb-1w"
-          :heading-level="isConnected ? 'h2' : 'h3'"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
         />
 
         <!-- a11y statement -->
         <StatementStep
           v-if="audit.auditType === AuditType.FULL"
           :audit="audit"
-          :heading-level="isConnected ? 'h2' : 'h3'"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
         />
       </div>
     </div>
