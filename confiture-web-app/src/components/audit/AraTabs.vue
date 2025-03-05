@@ -202,6 +202,7 @@ watchEffect(() => {
         :labelled-by="tabId(selectedTabIndex)"
         :component-params="selectedTab.componentParams"
       >
+        <!-- Slot inside AraTabsPanel -->
         <component
           :is="selectedTab.component"
           v-bind="selectedTab.componentParams"
