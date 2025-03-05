@@ -107,7 +107,6 @@ function isActive(id: string) {
 </template>
 
 <style scoped>
-@import "../../styles/filters.css";
 .main {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);
@@ -144,5 +143,19 @@ function isActive(id: string) {
 
 .filters-wrapper {
   --filters-top-offset: 4.5rem;
+  position: sticky;
+  top: var(--filters-top-offset, 0);
+  max-height: calc(100vh - var(--filters-top-offset, 0));
+  max-height: calc(100dvh - var(--filters-top-offset, 0));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (width < 48rem) {
+  .filters-wrapper {
+    position: static;
+    max-height: none;
+    overflow-y: initial;
+  }
 }
 </style>
