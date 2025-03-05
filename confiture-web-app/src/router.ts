@@ -293,13 +293,20 @@ const router = createRouter({
       props: true
     },
     // TODO: remove this redirect in few months (17/04/2024)
-    // {
-    //   path: "/rapports/:uniqueId/:tabSlug?",
-    //   name: "report-old",
-    //   redirect: () => {
-    //     return { name: "report" };
-    //   }
-    // },
+    {
+      path: "/rapports/:uniqueId/:tabSlug?",
+      name: "report-old",
+      redirect: (to: any) => {
+        const tabSlug = to.params.tabSlug;
+        return {
+          name: "report-full",
+          params: {
+            uniqueId: to.params.uniqueId,
+            tabSlug: tabSlug.length > 0 ? tabSlug : FirstTab.REPORT_SLUG
+          }
+        };
+      }
+    },
     // a11y statement
     {
       path: "/declaration/:uniqueId",
