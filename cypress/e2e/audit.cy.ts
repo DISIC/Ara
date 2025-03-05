@@ -298,7 +298,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can search in criteria title", () => {
+  it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.getByLabel("Recherche par mots clés")
@@ -518,7 +518,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can reset filters", () => {
+  it("User can reset filters", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
