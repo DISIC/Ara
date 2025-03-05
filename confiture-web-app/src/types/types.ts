@@ -118,3 +118,35 @@ export enum StoreName {
   AUDIT_STORE = "AUDIT_STORE",
   RESULTS_STORE = "RESULTS_STORE"
 }
+
+// Routing
+export declare type ScrollPosition =
+  | ScrollPositionCoordinates
+  | ScrollPositionElement;
+
+/**
+ * Scroll position similar to
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/ScrollToOptions | `ScrollToOptions`}.
+ * Note that not all browsers support `behavior`.
+ */
+declare type ScrollPositionCoordinates = {
+  behavior?: ScrollOptions["behavior"];
+  left?: number;
+  top?: number;
+};
+
+declare interface ScrollPositionElement extends ScrollToOptions {
+  /**
+   * A valid CSS selector. Note some characters must be escaped in id selectors (https://mathiasbynens.be/notes/css-escapes).
+   * @example
+   * Here are a few examples:
+   *
+   * - `.title`
+   * - `.content:first-child`
+   * - `#marker`
+   * - `#marker\~with\~symbols`
+   * - `#marker.with.dot`: selects `class="with dot" id="marker"`, not `id="marker.with.dot"`
+   *
+   */
+  el: string | Element;
+}
