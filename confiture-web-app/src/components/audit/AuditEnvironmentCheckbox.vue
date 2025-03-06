@@ -80,8 +80,8 @@ function onInput() {
               </thead>
               <tbody>
                 <tr v-for="(couple, i) in combinations" :key="i">
-                  <td>{{ couple.browser }}</td>
-                  <td>{{ couple.assistiveTechnology }}</td>
+                  <td lang="en">{{ couple.browser }}</td>
+                  <td lang="en">{{ couple.assistiveTechnology }}</td>
                 </tr>
               </tbody>
             </table>
