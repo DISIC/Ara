@@ -77,7 +77,9 @@ onMounted(() => {
 
   <!-- Welcome alert -->
   <div v-if="showAuditsAlert" class="fr-alert fr-alert--info fr-mb-4w">
-    <p class="fr-alert__title">Bienvenue dans votre espace 👋</p>
+    <p class="fr-alert__title">
+      Bienvenue dans votre espace <span aria-hidden="true">👋</span>
+    </p>
     <p class="fr-mb-3v">
       Vous trouverez ici tous les audits associés à votre adresse e-mail :
       <strong>{{ accountStore.account?.email }}</strong>
