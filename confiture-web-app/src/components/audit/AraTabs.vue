@@ -7,10 +7,10 @@
  -->
 
 <script setup lang="ts">
+import { useResizeObserver } from "@vueuse/core";
 import { computed, onMounted, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useUniqueId } from "../../composables/useUniqueId";
 import { AraTabsTabData } from "./AraTabsTabData";
 

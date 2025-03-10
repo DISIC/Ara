@@ -1,3 +1,4 @@
+import { useResizeObserver } from "@vueuse/core";
 import {
   createRouter,
   createWebHistory,
@@ -5,7 +6,6 @@ import {
 } from "vue-router";
 
 import AraTabsPanel from "./components/audit/AraTabsPanel.vue";
-import { useResizeObserver } from "./composables/useResizeObserver";
 import { FirstTab } from "./enums";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";

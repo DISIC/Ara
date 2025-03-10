@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, toRef, watch } from "vue";
+import { useResizeObserver } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -12,7 +13,6 @@ import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useResizeObserver } from "../../composables/useResizeObserver";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
@@ -34,6 +34,8 @@ const showFilters = ref(true);
 const auditGenerationHeaderRef = ref<InstanceType<
   typeof AuditGenerationHeader
 > | null>(null);
+
+const stickyIndicator = ref();
 
 const stickyTop = ref("0px");
 
@@ -233,13 +235,10 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(props.uniqueId);
   await resultsStore.fetchResults(props.uniqueId);
-  const stickyIndicator = toRef(
-    auditGenerationHeaderRef.value!.stickyIndicator
-  );
-
-  useResizeObserver(stickyIndicator, () => {
-    stickyTop.value = `calc(${getComputedStyle(stickyIndicator.value!).top} + ${
-      stickyIndicator.value!.clientHeight
+  stickyIndicator.value = auditGenerationHeaderRef.value!.stickyIndicator;
+  useResizeObserver(stickyIndicator.value, () => {
+    stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
+      stickyIndicator!.value.clientHeight
     }px)`;
   });
 }, false);
