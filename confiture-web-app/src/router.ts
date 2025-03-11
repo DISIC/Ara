@@ -36,6 +36,7 @@ import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
 import { ScrollPosition } from "./types";
+import { getScrollBehavior } from "./utils";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -541,13 +542,6 @@ async function scrollToElement(el: HTMLElement) {
       }
     });
   }) as Promise<ScrollPosition>;
-}
-
-function getScrollBehavior(): ScrollBehavior {
-  // Use smooth scrolling only if user does not dislike animations
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ? "instant"
-    : "smooth";
 }
 
 export default router;
