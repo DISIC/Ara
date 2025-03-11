@@ -193,7 +193,22 @@ watchEffect(() => {
   // tabSlug changes on route change
   selectedTabSlug.value = routerRoute.params.tabSlug as string;
 
-  selectedTabIndex.value = tabSlugIndexes[selectedTabSlug.value];
+  // if slug not found go to Error page (404).
+  const tabIndex = tabSlugIndexes[selectedTabSlug.value];
+  if (tabIndex === undefined) {
+    router.replace({
+      name: "Error",
+      params: { pathMatch: routerRoute.path.substring(1).split("/") },
+      query: routerRoute.query,
+      hash: routerRoute.hash,
+      state: {
+        errorStatus: 404
+      }
+    });
+    return;
+  }
+
+  selectedTabIndex.value = tabIndex;
 
   // other components may be interested by the current selected tab index
   emit("selectedTabChange", selectedTabIndex.value);
