@@ -181,7 +181,7 @@ const tabsData = computed((): TabData[] => {
             component: AuditGenerationPageCriteria,
             componentParams: {
               page: transversePage,
-              auditUniqueId: "uniqueId"
+              auditUniqueId: props.uniqueId
             }
           }
         ]
@@ -192,7 +192,7 @@ const tabsData = computed((): TabData[] => {
       component: AuditGenerationPageCriteria,
       componentParams: {
         page: p,
-        auditUniqueId: "uniqueId"
+        auditUniqueId: props.uniqueId
       }
     })) ?? [])
   ];
