@@ -13,7 +13,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
 import { TabData } from "../../types";
-import { slugify } from "../../utils";
+import { getScrollBehavior, slugify } from "../../utils";
 
 /** Types */
 interface TabsRouteParams {
@@ -177,6 +177,12 @@ watchEffect(() => {
   selectedTabSlug.value = routerRoute.params.tabSlug as string;
 
   selectedTabIndex.value = tabSlugIndexes[selectedTabSlug.value];
+
+  // Make the current tab always visible horizontally.
+  // Especially, when navigating backward or forward,
+  // user does not select explicitely a tab button
+  const tabButton = tabButtonsRef.value?.at(selectedTabIndex.value);
+  tabButton?.scrollIntoView({ behavior: getScrollBehavior() });
 
   // other components may be interested by the current selected tab index
   emit("selectedTabChange", selectedTabIndex.value);
