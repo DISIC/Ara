@@ -54,8 +54,8 @@ async function removeTechnology(index: number) {
 
   await nextTick();
 
-  const nextTechnologyButton: HTMLButtonElement =
-    validatedTechnologiesRefs.value[index];
+  const nextTechnologyButton: HTMLButtonElement = validatedTechnologiesRefs
+    .value[index] as HTMLButtonElement;
   if (nextTechnologyButton) {
     nextTechnologyButton.focus();
   } else {
@@ -108,7 +108,9 @@ async function removeTool(index: number) {
 
   await nextTick();
 
-  const nextToolButton: HTMLButtonElement = validatedToolsRefs.value[index];
+  const nextToolButton: HTMLButtonElement = validatedToolsRefs.value[
+    index
+  ] as HTMLButtonElement;
   if (nextToolButton) {
     nextToolButton.focus();
   } else {

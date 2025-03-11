@@ -15,8 +15,11 @@
   "dependencies": {
     "@gouvfr/dsfr": "1.13.0",
     "@sentry/tracing": "^7.37.2",
+    "@sentry/vite-plugin": "^0.3.0",
     "@sentry/vue": "^7.37.2",
     "@unhead/vue": "^1.5.3",
+    "@vitejs/plugin-vue": "^4.4.1",
+    "@vueuse/core": "^12.8.2",
     "dompurify": "^2.4.1",
     "jwt-decode": "^3.1.2",
     "ky": "^0.33.0",
@@ -24,11 +27,9 @@
     "marked": "^4.2.4",
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
-    "vue": "^3.3.8",
-    "vue-router": "^4.2.5",
     "vite": "^4.5.0",
-    "@vitejs/plugin-vue": "^4.4.1",
-    "@sentry/vite-plugin": "^0.3.0"
+    "vue": "^3.3.8",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@types/dompurify": "^2.4.0",
