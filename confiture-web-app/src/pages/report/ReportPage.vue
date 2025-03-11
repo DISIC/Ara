@@ -3,7 +3,6 @@ import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
-import { AraTabsTabData } from "../../components/audit/AraTabsTabData";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
@@ -15,7 +14,7 @@ import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
-import { AuditStatus, CriteriumResultStatus } from "../../types";
+import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
 /** Props */
@@ -53,43 +52,35 @@ const hasCompliantOrNotApplicableComments = computed(() => {
   });
 });
 
-const tabsData = computed((): AraTabsTabData[] => {
-  const tabs: AraTabsTabData[] = [];
+const tabsData = computed((): TabData[] => {
+  const tabs: TabData[] = [];
 
   // Results
-  tabs.push(
-    new AraTabsTabData({
-      label: StaticTabLabel.REPORT_RESULTS_TAB_LABEL,
-      component: ReportResults
-    })
-  );
+  tabs.push({
+    label: StaticTabLabel.REPORT_RESULTS_TAB_LABEL,
+    component: ReportResults
+  } as TabData);
 
   // Notes
   if (hasNotes.value) {
-    tabs.push(
-      new AraTabsTabData({
-        label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
-        component: ReportNotes
-      })
-    );
+    tabs.push({
+      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
+      component: ReportNotes
+    } as TabData);
   }
 
   // Errors
-  tabs.push(
-    new AraTabsTabData({
-      label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
-      component: ReportErrors
-    })
-  );
+  tabs.push({
+    label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
+    component: ReportErrors
+  } as TabData);
 
   // Improvements
   if (hasCompliantOrNotApplicableComments.value) {
-    tabs.push(
-      new AraTabsTabData({
-        label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
-        component: ReportImprovements
-      })
-    );
+    tabs.push({
+      label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
+      component: ReportImprovements
+    } as TabData);
   }
 
   return tabs;

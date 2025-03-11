@@ -4,7 +4,6 @@ import { computed, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
-import { AraTabsTabData } from "../../components/audit/AraTabsTabData";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
@@ -18,7 +17,7 @@ import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { StaticTabLabel } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
-import { AuditType, CriteriumResultStatus } from "../../types";
+import { AuditType, CriteriumResultStatus, TabData } from "../../types";
 import { pluralize } from "../../utils";
 
 /** Props */
@@ -171,12 +170,12 @@ const pageTitle = computed(() => {
   return "";
 });
 
-const tabsData = computed((): AraTabsTabData[] => {
+const tabsData = computed((): TabData[] => {
   const transversePage = auditStore.currentAudit?.transverseElementsPage;
   return [
     ...(transversePage
       ? [
-          new AraTabsTabData({
+          {
             label: transversePage?.name,
             icon: LayoutIcon,
             component: AuditGenerationPageCriteria,
@@ -184,20 +183,18 @@ const tabsData = computed((): AraTabsTabData[] => {
               page: transversePage,
               auditUniqueId: "uniqueId"
             }
-          })
+          }
         ]
       : []),
-    ...(auditStore.currentAudit?.pages.map(
-      (p) =>
-        new AraTabsTabData({
-          label: p.name,
-          component: AuditGenerationPageCriteria,
-          componentParams: {
-            page: p,
-            auditUniqueId: "uniqueId"
-          }
-        })
-    ) ?? [])
+    ...(auditStore.currentAudit?.pages.map((p) => ({
+      label: p.name,
+      id: p.id,
+      component: AuditGenerationPageCriteria,
+      componentParams: {
+        page: p,
+        auditUniqueId: "uniqueId"
+      }
+    })) ?? [])
   ];
 });
 

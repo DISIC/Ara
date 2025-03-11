@@ -12,10 +12,11 @@ import { computed, onMounted, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import { AraTabsTabData } from "./AraTabsTabData";
+import { TabData } from "../../types";
+import { slugify } from "../../utils";
 
 /** Types */
-export interface TabsRouteParams {
+interface TabsRouteParams {
   name: string;
   params: {
     uniqueId: string;
@@ -35,7 +36,7 @@ export interface TabsRouteParams {
  */
 const props = withDefaults(
   defineProps<{
-    tabs: AraTabsTabData[];
+    tabs: TabData[];
     route: TabsRouteParams;
     stickyTop?: string;
     panelScrollBehavior?: "tabsTop" | "sameCriteria";
@@ -46,9 +47,32 @@ const props = withDefaults(
   }
 );
 
+const tabSlugsArray: string[] = [];
+const tabSlugIndexes: { [slug: string]: number } = {};
+const tabSlugs: { [slug: string]: TabData } = {};
+
+props.tabs.forEach((t, i) => {
+  let slug = slugify(t.label);
+  if (t.id) {
+    slug += `-${t.id}`;
+  }
+  tabSlugs[slug] = t;
+  tabSlugIndexes[slug] = i;
+  tabSlugsArray[i] = slug;
+});
+
+// Test if each tab slug is unique
+if (new Set(tabSlugsArray).size !== tabSlugsArray.length) {
+  throw new Error(
+    `\n\n❌ Tab slugs need to be unique. You can pass an id in the TabData object,
+		it will be appended to the slug.\n\nCurrent tag slugs are:\n
+		${tabSlugsArray.join("  |  ")}`
+  );
+}
+
 /** Refs */
-const selectedTabIndex = ref();
-const selectedTabSlug = ref();
+const selectedTabIndex = ref<number>(0);
+const selectedTabSlug = ref<string>("");
 const stickyTop = ref(props.stickyTop);
 const tabButtonsRef = ref<HTMLButtonElement[]>();
 const panelBottomMarkerRef = ref<HTMLDivElement>();
@@ -103,7 +127,7 @@ function selectTab(i: number) {
     ...props.route,
     params: {
       ...props.route.params,
-      tabSlug: props.tabs[i].slug
+      tabSlug: tabSlugsArray[i]
     }
   });
 }
@@ -152,9 +176,7 @@ watchEffect(() => {
   // tabSlug changes on route change
   selectedTabSlug.value = routerRoute.params.tabSlug as string;
 
-  selectedTabIndex.value = props.tabs.findIndex(
-    (tabData) => tabData.slug === selectedTabSlug.value
-  );
+  selectedTabIndex.value = tabSlugIndexes[selectedTabSlug.value];
 
   // other components may be interested by the current selected tab index
   emit("selectedTabChange", selectedTabIndex.value);
