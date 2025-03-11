@@ -195,12 +195,6 @@ watchEffect(() => {
 
   selectedTabIndex.value = tabSlugIndexes[selectedTabSlug.value];
 
-  // Make the current tab always visible horizontally.
-  // Especially, when navigating backward or forward,
-  // user does not select explicitely a tab button
-  const tabButton = tabButtonsRef.value?.at(selectedTabIndex.value);
-  tabButton?.scrollIntoView({ behavior: getScrollBehavior() });
-
   // other components may be interested by the current selected tab index
   emit("selectedTabChange", selectedTabIndex.value);
 });
@@ -223,6 +217,7 @@ watchEffect(() => {
           :id="tabId(i)"
           ref="tabButtonsRef"
           role="tab"
+          :data-slug="tabSlugsArray[i]"
           :aria-controls="panelId(i)"
           :aria-selected="i === selectedTabIndex ? 'true' : 'false'"
           :tabindex="i === selectedTabIndex ? undefined : '-1'"

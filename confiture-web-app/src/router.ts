@@ -371,6 +371,9 @@ const router = createRouter({
   history,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
+      if (isTabNavigation(to, from)) {
+        horizontalScrollToNewTab(to.params.tabSlug as string);
+      }
       return scrollToSavedPosition(savedPosition);
     }
 
@@ -388,6 +391,9 @@ const router = createRouter({
 					there should be an Element with class "tabs-wrapper"'
         );
       } else {
+        if (isTabNavigation(to, from)) {
+          horizontalScrollToNewTab(to.params.tabSlug as string);
+        }
         const behavior = tabs.dataset.panelScrollBehavior;
         if (behavior === "tabsTop") {
           return scrollToTabPanelTop(tabs);
@@ -454,6 +460,20 @@ function isTabNavigation(
     to.params.tabSlug !== undefined &&
     to.params.tabSlug !== from.params.tabSlug
   );
+}
+
+function horizontalScrollToNewTab(tabSlug: string) {
+  const tabs = document.querySelector(".tabs-wrapper") as HTMLElement;
+  if (!tabs) {
+    console.warn("No tabs?");
+    return;
+  }
+
+  // Make the current tab always visible horizontally.
+  // Especially, when navigating backward or forward,
+  // user does not select explicitely a tab button
+  const tabButton = tabs.querySelector(`[data-slug="${tabSlug}"]`);
+  tabButton?.scrollIntoView({ behavior: getScrollBehavior() });
 }
 
 function scrollToTop() {
