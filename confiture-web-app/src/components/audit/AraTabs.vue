@@ -13,7 +13,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
 import { TabData } from "../../types";
-import { getScrollBehavior, slugify } from "../../utils";
+import { slugify } from "../../utils";
 
 /** Types */
 interface TabsRouteParams {
@@ -53,8 +53,25 @@ const tabSlugs: { [slug: string]: TabData } = {};
 
 props.tabs.forEach((t, i) => {
   let slug = slugify(t.label);
-  if (t.id) {
-    slug += `-${t.id}`;
+  // Avoid duplicates
+  let otherTab: TabData;
+  let otherSlug: string;
+  if (slug in tabSlugs) {
+    // Duplicate found: the tab with the highest id will get its slug
+    // modified as "[slug]-[id]".
+    // That way, reordering tabs will keep the same modified slugs)
+    // Note: ids need to be declared for each of the duplicate tabs
+    otherTab = tabSlugs[slug];
+    if (otherTab.id && t.id) {
+      if (otherTab.id > t.id) {
+        otherSlug = slug + `-${otherTab.id}`;
+        tabSlugs[otherSlug] = otherTab;
+        tabSlugIndexes[otherSlug] = tabSlugIndexes[slug];
+        tabSlugsArray[tabSlugIndexes[slug]] = otherSlug;
+      } else {
+        slug += `-${t.id}`;
+      }
+    }
   }
   tabSlugs[slug] = t;
   tabSlugIndexes[slug] = i;
