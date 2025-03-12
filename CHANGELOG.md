@@ -14,6 +14,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Corrige la hiérarchie des titres dans les onglets du rapport ([#975](https://github.com/DISIC/Ara/pull/975))
 - Ajoute un attribut `lang="en"` aux noms d’outils, de navigateurs et de technologies d’assistance dans la déclaration d’accessibilité ([#974](https://github.com/DISIC/Ara/pull/974))
 - Cache de manière accessible l’emoji de la bannière de bienvenue ([#973](https://github.com/DISIC/Ara/pull/973))
 
