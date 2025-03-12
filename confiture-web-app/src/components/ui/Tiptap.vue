@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { mergeAttributes } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Heading, type Level } from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
+import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Typography from "@tiptap/extension-typography";
@@ -92,33 +94,33 @@ let extensions = [
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Highlight,
-  //   Link.extend({
-  //     addAttributes() {
-  //       return {
-  //         ...this.parent?.(),
-  //         class: {
-  //           default: null,
-  //           renderHTML: () => {
-  //             return { class: null }; // reset class when copy pasting for example
-  //           }
-  //         },
-  //         title: {
-  //           default: null,
-  //           renderHTML: (attributes) => {
-  //             return {
-  //               title: attributes.title
-  //             };
-  //           }
-  //         }
-  //       };
-  //     },
-  //     renderHTML({ HTMLAttributes }) {
-  //       return ["a", mergeAttributes(HTMLAttributes), 0];
-  //     }
-  //   }).configure({
-  //     openOnClick: false,
-  //     defaultProtocol: "https"
-  //   }),
+  Link.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        class: {
+          default: null,
+          renderHTML: () => {
+            return { class: null }; // reset class when copy pasting for example
+          }
+        },
+        title: {
+          default: null,
+          renderHTML: (attributes) => {
+            return {
+              title: attributes.title
+            };
+          }
+        }
+      };
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ["a", mergeAttributes(HTMLAttributes), 0];
+    }
+  }).configure({
+    openOnClick: false,
+    defaultProtocol: "https"
+  }),
   //   Markdown,
   TaskItem,
   TaskList,
@@ -184,30 +186,30 @@ onBeforeUnmount(() => {
   editor.value?.destroy();
 });
 
-// function setLink() {
-//   const previousUrl = editor.value.getAttributes("link").href;
-//   const url = window.prompt("URL", previousUrl);
+function setLink() {
+  const previousUrl = editor.value.getAttributes("link").href;
+  const url = window.prompt("URL", previousUrl);
 
-//   // cancelled
-//   if (url === null) {
-//     return;
-//   }
+  // cancelled
+  if (url === null) {
+    return;
+  }
 
-//   // empty
-//   if (url === "") {
-//     editor.value.chain().focus().extendMarkRange("link").unsetLink().run();
+  // empty
+  if (url === "") {
+    editor.value.chain().focus().extendMarkRange("link").unsetLink().run();
 
-//     return;
-//   }
+    return;
+  }
 
-//   // update link
-//   editor.value
-//     .chain()
-//     .focus()
-//     .extendMarkRange("link")
-//     .setLink({ href: url })
-//     .run();
-// }
+  // update link
+  editor.value
+    .chain()
+    .focus()
+    .extendMarkRange("link")
+    .setLink({ href: url })
+    .run();
+}
 
 // function onImageAdd() {
 //   if (browseInput.value) {
@@ -289,7 +291,7 @@ onBeforeUnmount(() => {
           </li>
         </ul>
       </li>
-      <!-- <li>
+      <li>
         <ul>
           <li>
             <TiptapButton
@@ -303,7 +305,7 @@ onBeforeUnmount(() => {
             />
           </li>
         </ul>
-      </li> -->
+      </li>
       <li>
         <ul>
           <li>
