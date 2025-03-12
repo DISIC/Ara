@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { Heading, type Level } from "@tiptap/extension-heading";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
@@ -84,7 +87,7 @@ let extensions = [
     codeBlock: false,
     dropcursor: false,
     heading: false
-  })
+  }),
   //   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   //   Highlight,
   //   Link.extend({
@@ -115,8 +118,8 @@ let extensions = [
   //     defaultProtocol: "https"
   //   }),
   //   Markdown,
-  //   TaskItem,
-  //   TaskList,
+  TaskItem,
+  TaskList,
   //   ImageExtension.extend({
   //     addAttributes() {
   //       return {
@@ -130,10 +133,10 @@ let extensions = [
   //       };
   //     }
   //   }).configure({ inline: false }),
-  //   Typography.configure({
-  //     openDoubleQuote: "« ",
-  //     closeDoubleQuote: " »"
-  //   }),
+  Typography.configure({
+    openDoubleQuote: "« ",
+    closeDoubleQuote: " »"
+  })
   //   CustomSelectionExtension
 ];
 // if (props.editable) {
@@ -298,7 +301,7 @@ onBeforeUnmount(() => {
             />
           </li>
         </ul>
-      </li>
+      </li> -->
       <li>
         <ul>
           <li>
@@ -331,7 +334,7 @@ onBeforeUnmount(() => {
           </li>
         </ul>
       </li>
-      <li>
+      <!-- <li>
         <ul>
           <li>
             <TiptapButton
