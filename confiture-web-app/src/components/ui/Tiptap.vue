@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Heading, type Level } from "@tiptap/extension-heading";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
@@ -7,7 +8,7 @@ import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 // load common languages
 import { common, createLowlight } from "lowlight";
-import { onBeforeUnmount, ShallowRef } from "vue";
+import { computed, onBeforeUnmount, ShallowRef } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
 
@@ -20,8 +21,8 @@ import TiptapButton from "./TiptapButton.vue";
 
 // const isDevMode = useDevMode();
 
-// const HEADINGS_LEVELS = [2, 3, 4, 5, 6] as Array<Level>;
-// const displayedHeadings = computed(() => HEADINGS_LEVELS.slice(0, 3));
+const HEADINGS_LEVELS = [2, 3, 4, 5, 6] as Array<Level>;
+const displayedHeadings = computed(() => HEADINGS_LEVELS.slice(0, 3));
 
 // create a lowlight instance
 const lowlight = createLowlight(common);
@@ -73,12 +74,12 @@ if (props.labelledBy) {
 
 let extensions = [
   //   AraTiptapExtension,
-  // Heading.extend({
-  //   // prevent all marks from being applied to headings
-  //   marks: ""
-  // }).configure({
-  //   levels: HEADINGS_LEVELS
-  // }),
+  Heading.extend({
+    // prevent all marks from being applied to headings
+    marks: ""
+  }).configure({
+    levels: HEADINGS_LEVELS
+  }),
   StarterKit.configure({
     codeBlock: false,
     dropcursor: false,
@@ -262,7 +263,7 @@ onBeforeUnmount(() => {
               @click="editor.chain().focus().toggleStrike().run()"
             />
           </li>
-          <!-- <li v-for="(hLevel, i) in displayedHeadings" :key="i">
+          <li v-for="(hLevel, i) in displayedHeadings" :key="i">
             <TiptapButton
               :label="`Passer en titre de niveau ${i + 1}`"
               :switch-off-label="`Retirer le niveau de titre ${i + 1}`"
@@ -280,7 +281,7 @@ onBeforeUnmount(() => {
                   .run()
               "
             />
-          </li> -->
+          </li>
         </ul>
       </li>
       <!-- <li>
