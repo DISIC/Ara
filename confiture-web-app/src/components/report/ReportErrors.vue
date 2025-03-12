@@ -231,6 +231,10 @@ function resetFilters() {
       </section>
     </template>
 
+    <template v-else #transverse-data>
+      <h2 class="fr-sr-only">Détails des non-conformités</h2>
+    </template>
+
     <template #pages-data>
       <section
         v-for="(page, i) in pagesErrors"
