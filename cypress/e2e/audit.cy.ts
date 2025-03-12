@@ -544,4 +544,28 @@ describe("Audit", () => {
       cy.contains("button", "Réinitialiser").should("not.exist");
     });
   });
+
+  it("User can add transverse elements", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.contains("Lister les éléments transverses").click();
+      cy.getByLabel("Nom de l’élément transverse").type(
+        "FoooElements, BarElements, ThingElements"
+      );
+      cy.contains("Ajouter").click();
+
+      cy.contains("button", "FoooElements").should("exist");
+      cy.contains("button", "BarElements").should("exist");
+      cy.contains("button", "ThingElements").should("exist");
+
+      cy.contains("BarElements").click();
+
+      cy.contains("Enregistrer").click();
+
+      cy.contains("FoooElements").should("exist");
+      cy.contains("BarElements").should("not.exist");
+      cy.contains("ThingElements").should("exist");
+    });
+  });
 });

@@ -332,7 +332,8 @@ export class AuditService {
             notCompliantContent: data.notCompliantContent,
             derogatedContent: data.derogatedContent,
             notInScopeContent: data.notInScopeContent,
-            notes: data.notes
+            notes: data.notes,
+            transverseElements: data.transverseElements
           },
           include: AUDIT_EDIT_INCLUDE
         }),
@@ -1009,7 +1010,9 @@ export class AuditService {
           key: img.key,
           thumbnailKey: img.thumbnailKey
         }))
-      }))
+      })),
+
+      transverseElements: audit.transverseElements
     };
 
     return report;
