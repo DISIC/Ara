@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Heading, type Level } from "@tiptap/extension-heading";
+import Highlight from "@tiptap/extension-highlight";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Typography from "@tiptap/extension-typography";
@@ -88,8 +90,8 @@ let extensions = [
     dropcursor: false,
     heading: false
   }),
-  //   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-  //   Highlight,
+  CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
+  Highlight,
   //   Link.extend({
   //     addAttributes() {
   //       return {
@@ -334,7 +336,7 @@ onBeforeUnmount(() => {
           </li>
         </ul>
       </li>
-      <!-- <li>
+      <li>
         <ul>
           <li>
             <TiptapButton
@@ -359,7 +361,7 @@ onBeforeUnmount(() => {
             />
           </li>
         </ul>
-      </li> -->
+      </li>
       <!-- <li>
         <TiptapButton
           label="Insérer une image"
