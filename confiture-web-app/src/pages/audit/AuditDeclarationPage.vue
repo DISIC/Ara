@@ -76,14 +76,14 @@ const tools = computed(() => {
 });
 
 const availableTools = [
-  "Web Developer Toolbar",
-  "Colour Contrast Analyser",
-  "HeadingsMap",
-  "ArcToolkit",
-  "WCAG Contrast checker",
-  "Inspecteur de composants",
-  "Assistant RGAA",
-  "Validateur HTML du W3C"
+  { name: "Web Developer Toolbar", lang: "en" },
+  { name: "Colour Contrast Analyser", lang: "en" },
+  { name: "HeadingsMap", lang: "en" },
+  { name: "ArcToolkit", lang: "en" },
+  { name: "WCAG Contrast checker", lang: "en" },
+  { name: "Inspecteur de composants" },
+  { name: "Assistant RGAA" },
+  { name: "Validateur HTML du W3C" }
 ];
 
 /**
@@ -149,10 +149,14 @@ watch(
 
     defaultTools.value = audit.tools.length
       ? // Cannot use filtered audit.tools because the checkbox array v-model binding wont work with different object refs
-        availableTools.filter((tool) => audit.tools.includes(tool))
+        availableTools
+          .map((t) => t.name)
+          .filter((tool) => audit.tools.includes(tool))
       : [];
     validatedTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => !availableTools.includes(tool))
+      ? audit.tools.filter(
+          (tool) => !availableTools.map((t) => t.name).includes(tool)
+        )
       : [];
 
     environments.value = structuredClone(toRaw(audit.environments)) ?? [];
@@ -237,7 +241,7 @@ function DEBUG_fillFields() {
 
   validatedTechnologies.value = ["HTML", "CSS"];
 
-  defaultTools.value = [availableTools[2]];
+  defaultTools.value = [availableTools[2].name];
   validatedTools.value = ["Firefox Devtools", "AXE Webextension"];
 
   environments.value = [
@@ -434,10 +438,10 @@ const isDevMode = useDevMode();
               :id="`tool-${i}`"
               v-model="defaultTools"
               type="checkbox"
-              :value="tool"
+              :value="tool.name"
             />
-            <label class="fr-label" :for="`tool-${i}`">
-              {{ tool }}
+            <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
+              {{ tool.name }}
             </label>
           </div>
         </div>
