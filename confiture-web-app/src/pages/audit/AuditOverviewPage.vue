@@ -8,7 +8,6 @@ import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
-import { useIsLoggedIn } from "../../composables/useIsLoggedIn";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
@@ -54,12 +53,11 @@ function focusPageHeading() {
   pageHeading?.focus();
 }
 
-const isLoggedIn = useIsLoggedIn();
-
 const isLoggedInAndOwnAudit = computed(() => {
-  return auditStore.currentAudit
-    ? auditStore.currentAudit?.auditorEmail === accountStore.account?.email
-    : isLoggedIn;
+  return (
+    auditStore.currentAudit &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+  );
 });
 </script>
 

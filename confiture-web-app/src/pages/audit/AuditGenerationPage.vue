@@ -10,7 +10,6 @@ import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useIsLoggedIn } from "../../composables/useIsLoggedIn";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
@@ -232,13 +231,13 @@ const tabsData = computed((): TabData[] => {
   ];
 });
 
-const isLoggedIn = useIsLoggedIn();
 const accountStore = useAccountStore();
 
 const isLoggedInAndOwnAudit = computed(() => {
-  return auditStore.currentAudit
-    ? auditStore.currentAudit?.auditorEmail === accountStore.account?.email
-    : isLoggedIn;
+  return (
+    auditStore.currentAudit &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+  );
 });
 </script>
 
