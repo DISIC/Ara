@@ -200,39 +200,40 @@ function resetFilters() {
       </div>
     </template>
 
-    <template v-if="transverseErrors.topics.length" #transverse-data>
+    <template #transverse-data>
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
-      <section class="fr-mb-8w">
-        <h3 id="errors_elements-transverses" class="fr-h3 fr-mb-2w page-title">
-          Éléments transverses
-        </h3>
+      <template v-if="transverseErrors.topics.length">
+        <section class="fr-mb-8w">
+          <h3
+            id="errors_elements-transverses"
+            class="fr-h3 fr-mb-2w page-title"
+          >
+            Éléments transverses
+          </h3>
 
-        <ul
-          v-if="report.data.transverseElements.length"
-          class="fr-tags-group fr-mb-5v"
-        >
-          <li v-for="(tag, i) in report.data.transverseElements" :key="i">
-            <p class="fr-tag">{{ tag }}</p>
-          </li>
-        </ul>
+          <ul
+            v-if="report.data.transverseElements.length"
+            class="fr-tags-group fr-mb-5v"
+          >
+            <li v-for="(tag, i) in report.data.transverseElements" :key="i">
+              <p class="fr-tag">{{ tag }}</p>
+            </li>
+          </ul>
 
-        <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
-          <template v-for="(error, j) in topic.errors" :key="j">
-            <ReportErrorCriterium :error="error" />
-            <hr
-              v-if="
-                i !== transverseErrors.topics.length - 1 ||
-                j !== topic.errors.length - 1
-              "
-              class="fr-mt-4w fr-pb-4w"
-            />
-          </template>
-        </div>
-      </section>
-    </template>
-
-    <template v-else #transverse-data>
-      <h2 class="fr-sr-only">Détails des non-conformités</h2>
+          <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
+            <template v-for="(error, j) in topic.errors" :key="j">
+              <ReportErrorCriterium :error="error" />
+              <hr
+                v-if="
+                  i !== transverseErrors.topics.length - 1 ||
+                  j !== topic.errors.length - 1
+                "
+                class="fr-mt-4w fr-pb-4w"
+              />
+            </template>
+          </div>
+        </section>
+      </template>
     </template>
 
     <template #pages-data>
