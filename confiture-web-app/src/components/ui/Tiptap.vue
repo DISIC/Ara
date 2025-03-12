@@ -4,8 +4,6 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Heading, type Level } from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
@@ -121,9 +119,9 @@ let extensions = [
     openOnClick: false,
     defaultProtocol: "https"
   }),
-  //   Markdown,
-  TaskItem,
-  TaskList,
+  // Markdown,
+  // TaskItem,
+  // TaskList,
   //   ImageExtension.extend({
   //     addAttributes() {
   //       return {
