@@ -2,19 +2,21 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import AuditGridStep from "../../components/overview/AuditGridStep.vue";
 import AuditStep from "../../components/overview/AuditStep.vue";
+import GridStep from "../../components/overview/GridStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useAuditStore, useResultsStore } from "../../store";
+import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
+const accountStore = useAccountStore();
 
 useWrappedFetch(async () => {
   resultsStore.$reset();
@@ -50,6 +52,13 @@ function focusPageHeading() {
   pageHeading?.setAttribute("tabindex", "-1");
   pageHeading?.focus();
 }
+
+const isLoggedInAndOwnAudit = computed(() => {
+  return (
+    auditStore.currentAudit &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+  );
+});
 </script>
 
 <template>
@@ -94,25 +103,51 @@ function focusPageHeading() {
       </button>
     </div>
 
-    <div class="content">
-      <h1 class="fr-mb-6w">{{ audit.procedureName }}</h1>
+    <BackLink
+      v-if="isLoggedInAndOwnAudit"
+      label="Retourner à mes audits"
+      :to="{ name: 'account-dashboard' }"
+    />
 
-      <ul class="fr-p-0 fr-m-0 overview-steps">
+    <div class="content">
+      <template v-if="isLoggedInAndOwnAudit">
+        <h1 class="fr-mb-3v">Livrables</h1>
+        <p class="fr-text--xl fr-mb-4w">{{ audit.procedureName }}</p>
+      </template>
+
+      <h1 v-else class="fr-mb-6w">{{ audit.procedureName }}</h1>
+
+      <div class="fr-p-0 fr-m-0 overview-steps">
         <!-- Audit -->
-        <AuditStep :audit="audit" />
+        <AuditStep
+          v-if="!isLoggedInAndOwnAudit"
+          :audit="audit"
+          class="fr-mb-1w"
+        />
+
+        <h2 v-if="!isLoggedInAndOwnAudit" class="fr-mb-0">Livrables</h2>
 
         <!-- Report -->
-        <ReportStep :audit="audit" />
+        <ReportStep
+          :audit="audit"
+          class="fr-mb-1w"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
+        />
 
-        <!-- Audit grid -->
-        <AuditGridStep :audit="audit" />
+        <!-- Grid -->
+        <GridStep
+          :audit="audit"
+          class="fr-mb-1w"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
+        />
 
         <!-- a11y statement -->
         <StatementStep
           v-if="audit.auditType === AuditType.FULL"
           :audit="audit"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
         />
-      </ul>
+      </div>
     </div>
   </template>
 </template>
@@ -126,6 +161,6 @@ function focusPageHeading() {
 .overview-steps {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 </style>

@@ -201,10 +201,19 @@ function updateResultStatus(status: CriteriumResultStatus) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
           notify(
             "info",
-            "Bravo ! Il semblerait que vous ayez terminé votre audit 💪",
+            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
-              ? "Il ne vous reste qu’à compléter la déclaration d’accessibilité avant de la livrer avec votre rapport."
-              : "Il ne vous reste qu’à livrer votre rapport."
+              ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
+              : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
+            {
+              link: {
+                label: "Accéder aux livrables",
+                to: {
+                  name: "audit-overview",
+                  params: { uniqueId: props.auditUniqueId }
+                }
+              }
+            }
           );
         });
       }

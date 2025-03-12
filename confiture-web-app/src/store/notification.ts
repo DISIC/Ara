@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { RouteLocationRaw } from "vue-router";
 
 type NotificationStatus = "error" | "info" | "success" | "warning";
 
@@ -10,11 +11,13 @@ interface NotificationStoreState {
     title?: string;
     description?: string;
     action?: { label: string; cb: () => void };
+    link?: { label: string; to: RouteLocationRaw };
   } | null;
 }
 
 interface NotificationOptions {
   action?: { label: string; cb: () => void };
+  link?: { label: string; to: RouteLocationRaw };
 }
 
 export const useNotificationStore = defineStore("notification", {
@@ -36,7 +39,7 @@ export const useNotificationStore = defineStore("notification", {
         description,
         title,
         status,
-        ...(options?.action && { action: options.action })
+        ...options
       };
     },
 

@@ -298,7 +298,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can search in criteria title", () => {
+  it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.getByLabel("Recherche par mots clés")
@@ -426,9 +426,9 @@ describe("Audit", () => {
         .click({ force: true });
 
       cy.contains(/Audit terminé le \d{2}\/\d{2}\/\d{4}/);
-      cy.contains("Bravo ! Il semblerait que vous ayez terminé votre audit 💪");
+      cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
-      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+      cy.contains("a", "Accéder aux livrables").click();
 
       cy.contains(/Terminé le \d{1,2} [A-zÀ-ú]{3,9} \d{4}/);
       cy.contains("a", "Accéder");
@@ -518,7 +518,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can reset filters", () => {
+  it("User can reset filters", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
