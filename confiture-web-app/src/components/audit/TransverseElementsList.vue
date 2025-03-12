@@ -113,7 +113,7 @@ async function cancelEdition() {
       <button
         v-if="tags.length === 0"
         class="fr-btn fr-btn--sm fr-btn--tertiary"
-        @click="editing = true"
+        @click="startEdition"
       >
         Lister les éléments transverses
       </button>
