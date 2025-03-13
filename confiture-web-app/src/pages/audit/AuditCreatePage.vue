@@ -165,7 +165,7 @@ function submitAuditSettings() {
       }
 
       return router.push({
-        name: "audit-overview",
+        name: "audit-generation",
         params: { uniqueId: audit.editUniqueId }
       });
     })
