@@ -1,4 +1,3 @@
 User-agent: *
 Disallow: /audits/
 Disallow: /rapports/
-Disallow: /tiptap

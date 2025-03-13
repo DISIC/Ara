@@ -10,23 +10,10 @@ import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
-// load common languages
 import { common, createLowlight } from "lowlight";
-import { computed, onBeforeUnmount, ShallowRef } from "vue";
+import { onBeforeUnmount, ShallowRef } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
-
-const HEADINGS_LEVELS = [2, 3, 4, 5, 6] as Array<Level>;
-const displayedHeadings = computed(() => HEADINGS_LEVELS.slice(0, 3));
-
-// create a lowlight instance
-const lowlight = createLowlight(common);
-
-// you can also register languages
-lowlight.register("html", html);
-lowlight.register("css", css);
-lowlight.register("js", js);
-lowlight.register("ts", ts);
 
 export interface Props {
   modelValue?: string | null;
@@ -42,6 +29,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(["update:modelValue"]);
 
+// Define needed heading levels
+const displayedHeadings = [2, 3, 4] as Array<Level>;
+
+// LowLight languages
+const lowlight = createLowlight(common);
+
+lowlight.register("html", html);
+lowlight.register("css", css);
+lowlight.register("js", js);
+lowlight.register("ts", ts);
+
 function getContent() {
   let jsonContent = null;
   if (props.modelValue) {
@@ -55,22 +53,49 @@ function getContent() {
   return jsonContent;
 }
 
-let editorAttributes: any = {
+function setLink() {
+  const previousUrl = editor.value.getAttributes("link").href;
+  const url = window.prompt("Adresse du lien", previousUrl);
+
+  // cancelled
+  if (url === null) {
+    return;
+  }
+
+  // empty
+  if (url === "") {
+    editor.value.chain().focus().extendMarkRange("link").unsetLink().run();
+
+    return;
+  }
+
+  // update link
+  editor.value
+    .chain()
+    .focus()
+    .extendMarkRange("link")
+    .setLink({ href: url })
+    .run();
+}
+
+// Editor attributes to create an accessible textarea
+const editorAttributes: any = {
   "aria-describedby": "tiptap-description",
   rows: "10",
   "aria-multiline": "true",
   role: "textbox"
 };
+
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
 }
 
-let extensions = [
+const extensions = [
   Heading.extend({
     // prevent all marks from being applied to headings
     marks: ""
   }).configure({
-    levels: HEADINGS_LEVELS
+    levels: displayedHeadings
   }),
   StarterKit.configure({
     codeBlock: false,
@@ -127,31 +152,6 @@ const editor = useEditor({
 onBeforeUnmount(() => {
   editor.value?.destroy();
 });
-
-function setLink() {
-  const previousUrl = editor.value.getAttributes("link").href;
-  const url = window.prompt("Adresse du lien", previousUrl);
-
-  // cancelled
-  if (url === null) {
-    return;
-  }
-
-  // empty
-  if (url === "") {
-    editor.value.chain().focus().extendMarkRange("link").unsetLink().run();
-
-    return;
-  }
-
-  // update link
-  editor.value
-    .chain()
-    .focus()
-    .extendMarkRange("link")
-    .setLink({ href: url })
-    .run();
-}
 </script>
 
 <template>
@@ -362,17 +362,21 @@ function setLink() {
 .tiptap pre {
   padding: 0.75rem;
 }
+
 .tiptap code {
   font-size: 85%;
 }
+
 .tiptap :not(pre) code {
   padding: 0.2em 0.4em;
 }
+
 .tiptap pre,
 .tiptap code {
   background-color: var(--background-contrast-overlap-grey);
   border-radius: 0.25rem;
 }
+
 .tiptap blockquote:before {
   --icon-size: 2rem;
   color: var(--artwork-minor-blue-france);
@@ -381,7 +385,7 @@ function setLink() {
   background-color: currentColor;
   display: inline-block;
   height: var(--icon-size);
-  mask-image: url("../../assets/images/quote.svg");
+  mask-image: url("@gouvfr/dsfr/dist/icons/editor/fr--quote-line.svg");
   mask-size: 100% 100%;
   width: var(--icon-size);
 }
@@ -413,6 +417,7 @@ function setLink() {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
+
 .titptap-buttons::-webkit-scrollbar {
   /* WebKit */
   width: 0;
@@ -428,7 +433,7 @@ function setLink() {
   margin-left: 0.2rem;
 }
 
-.tiptap-buttons > li + li:before {
+.tiptap-buttons > li + li::before {
   box-shadow: inset 0 0 0 1px #ddd;
   box-shadow: inset 0 0 0 1px var(--border-default-grey);
   content: "";
@@ -447,6 +452,7 @@ function setLink() {
   box-shadow: none;
   border-radius: 0.2rem;
 }
+
 .tiptap-buttons .fr-btn--tertiary:not([aria-pressed="true"]) {
   --hover-tint: var(--background-alt-grey-hover);
 }
@@ -484,6 +490,7 @@ function setLink() {
 .fr-icon-strikethrough::after {
   mask-image: url("../../assets/images/strikethrough.svg");
 }
+
 .fr-icon-code-block::before,
 .fr-icon-code-block::after {
   mask-image: url("../../assets/images/code-block.svg");
@@ -493,7 +500,8 @@ function setLink() {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
-.tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"]:before {
+
+.tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"]::before {
   --icon-size: 1.5rem;
 }
 </style>

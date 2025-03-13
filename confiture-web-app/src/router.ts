@@ -319,11 +319,15 @@ const router = createRouter({
       component: ErrorPage
     },
     // TODO: to delete when done with WYSIWYG
-    {
-      path: "/tiptap",
-      name: "Tiptap",
-      component: TiptapPage
-    }
+    ...(import.meta.env.VITE_ENABLE_TIPTAP
+      ? [
+          {
+            path: "/tiptap",
+            name: "Tiptap",
+            component: TiptapPage
+          }
+        ]
+      : [])
   ],
   history,
   scrollBehavior(to) {
