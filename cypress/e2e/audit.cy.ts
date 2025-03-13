@@ -63,7 +63,7 @@ describe("Audit", () => {
     // Submit new audit form
     cy.contains("Valider les paramètres").click();
 
-    // Check user is redirect to audit overview page
+    // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
   });
 
@@ -551,7 +551,7 @@ describe("Audit", () => {
 
       cy.contains("Lister les éléments transverses").click();
       cy.getByLabel("Nom de l’élément transverse").type(
-        "FoooElements, BarElements, ThingElements"
+        "FoooElements, BarElements, ThingElements",
       );
       cy.contains("Ajouter").click();
 
