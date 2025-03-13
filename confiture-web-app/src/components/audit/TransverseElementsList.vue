@@ -82,7 +82,6 @@ async function submitForm() {
     })
     .then(() => {
       editButtonRef.value?.at(0)?.focus();
-      notify("success", undefined, "Éléments transverses sauvegardés");
     })
     .catch((err) => {
       notify(
