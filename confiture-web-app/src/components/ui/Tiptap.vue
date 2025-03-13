@@ -2,7 +2,6 @@
 import { mergeAttributes } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Heading, type Level } from "@tiptap/extension-heading";
-import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
@@ -79,7 +78,6 @@ let extensions = [
     heading: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-  Highlight,
   Link.extend({
     addAttributes() {
       return {
@@ -132,7 +130,7 @@ onBeforeUnmount(() => {
 
 function setLink() {
   const previousUrl = editor.value.getAttributes("link").href;
-  const url = window.prompt("URL", previousUrl);
+  const url = window.prompt("Adresse du lien", previousUrl);
 
   // cancelled
   if (url === null) {
@@ -274,6 +272,17 @@ function setLink() {
         <ul>
           <li>
             <TiptapButton
+              label="Définir comme citation"
+              switch-off-label="Ne pas définir comme citation"
+              icon="quote-line"
+              :is-toggle="true"
+              :disabled="!editor?.can().toggleBlockquote()"
+              :pressed="editor?.isActive('blockquote')"
+              @click="editor.chain().focus().toggleBlockquote().run()"
+            />
+          </li>
+          <li>
+            <TiptapButton
               label="Définir comme passage de code"
               switch-off-label="Ne pas définir comme passage de code"
               icon="code-view"
@@ -350,20 +359,6 @@ function setLink() {
   vertical-align: middle;
 }
 
-/* Testing some different UI for Tiptap editor: */
-/* .tiptap[contenteditable]:not([contenteditable="false"]),
-.tiptap[tabindex] {
-  color: rgba(10, 118, 246, 0);
-  transition: outline-color 0.3s ease-in;
-}
-
-.tiptap[contenteditable]:not([contenteditable="false"]):focus,
-.tiptap[tabindex]:focus {
-  outline-color: rgba(10, 118, 246, 0.2);
-  outline-offset: 2px;
-  outline-width: 500px;
-} */
-
 .tiptap pre {
   padding: 0.75rem;
 }
@@ -382,13 +377,11 @@ function setLink() {
   --icon-size: 2rem;
   color: var(--artwork-minor-blue-france);
   content: "";
-  display: block;
   margin-bottom: 0.5rem;
   background-color: currentColor;
   display: inline-block;
-  flex: 0 0 auto;
   height: var(--icon-size);
-  mask-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggZD0iTTE0IDNhOCA4IDAgMSAxIDAgMTZ2My41Yy01LTItMTItNS0xMi0xMS41YTggOCAwIDAgMSA4LThoNFptMCAyaC00YTYgNiAwIDAgMC02IDZjMCAzLjYxIDIuNDYyIDUuOTY2IDggOC40OFYxN2gyYTYgNiAwIDEgMCAwLTEyWm0tMiAyLjUtMi41MDYgMy43NUwxMiAxNUg5LjI5NUw2Ljc1IDExLjI1IDkuMjk1IDcuNUgxMlptNC41IDAtMi41MDYgMy43NUwxNi41IDE1aC0yLjcwNWwtMi41NDUtMy43NSAyLjU0NS0zLjc1SDE2LjVaIi8+PC9zdmc+);
+  mask-image: url("../../assets/images/quote.svg");
   mask-size: 100% 100%;
   width: var(--icon-size);
 }
@@ -401,41 +394,6 @@ function setLink() {
 
 .tiptap li > p {
   margin-bottom: 0.25em;
-}
-
-/* FIXME: tiptap tasklist are not accessible yet. */
-/* https://github.com/ueberdosis/tiptap/issues/4774 */
-.tiptap ul[data-type="taskList"] {
-  list-style: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-.tiptap ul[data-type="taskList"] li {
-  align-items: flex-start;
-  display: flex;
-}
-
-.tiptap ul[data-type="taskList"] li > label {
-  flex: 0 0 auto;
-  margin-right: 0.5rem;
-  user-select: none;
-}
-
-.tiptap ul[data-type="taskList"] li > div {
-  flex: 1 1 auto;
-}
-
-.tiptap ul[data-type="taskList"] li > div p {
-  margin-bottom: 0.25em;
-}
-
-.tiptap ul[data-type="taskList"] input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.tiptap ul[data-type="taskList"] ul[data-type="taskList"] {
-  margin: 0;
 }
 
 .tiptap-buttons,
@@ -509,14 +467,6 @@ function setLink() {
 .tiptap-buttons .fr-btn--tertiary[aria-pressed="true"]:hover {
   background-color: var(--background-alt-grey-hover);
 }
-
-/* @media (width < 36rem) {
-  .tiptap-buttons .fr-btn--icon-left[class*=" fr-icon-"] {
-    overflow: hidden;
-    max-width: 2.5rem;
-    max-height: 2.5rem;
-  }
-} */
 
 .tiptap-selection,
 .ProseMirror-selectednode {
