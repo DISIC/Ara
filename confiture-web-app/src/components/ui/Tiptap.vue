@@ -443,7 +443,7 @@ onBeforeUnmount(() => {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   position: relative;
-  vertical-align: baseline;
+  vertical-align: middle;
   width: 1px;
 }
 
