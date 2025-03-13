@@ -20,8 +20,6 @@
     "@tiptap/extension-code-block-lowlight": "^2.5.9",
     "@tiptap/extension-highlight": "^2.5.9",
     "@tiptap/extension-link": "^2.5.9",
-    "@tiptap/extension-task-item": "^2.5.9",
-    "@tiptap/extension-task-list": "^2.5.9",
     "@tiptap/extension-typography": "^2.5.9",
     "@tiptap/starter-kit": "^2.5.9",
     "@tiptap/vue-3": "^2.5.9",
@@ -36,7 +34,6 @@
     "marked": "^4.2.4",
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
-    "tiptap-markdown": "^0.8.10",
     "vite": "^4.5.0",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"

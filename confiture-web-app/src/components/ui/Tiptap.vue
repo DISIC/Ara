@@ -17,15 +17,6 @@ import { computed, onBeforeUnmount, ShallowRef } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
 
-// import { AraTiptapExtension, CustomSelectionExtension } from "../../tiptap";
-// import {
-//   ImageUploadTiptapExtension,
-//   insertFilesAtSelection,
-//   UploadFn
-// } from "../../tiptap/ImageUploadTiptapExtension";
-
-// const isDevMode = useDevMode();
-
 const HEADINGS_LEVELS = [2, 3, 4, 5, 6] as Array<Level>;
 const displayedHeadings = computed(() => HEADINGS_LEVELS.slice(0, 3));
 
@@ -39,28 +30,26 @@ lowlight.register("js", js);
 lowlight.register("ts", ts);
 
 export interface Props {
-  content?: string | null;
+  modelValue?: string | null;
   editable?: boolean;
   labelledBy?: string | null;
-  // uploadFn?: UploadFn | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  content: "",
+  modelValue: "",
   editable: true,
   labelledBy: null
-  // uploadFn: null
 });
 
-const emit = defineEmits(["update:content"]);
+const emit = defineEmits(["update:modelValue"]);
 
 function getContent() {
   let jsonContent = null;
-  if (props.content) {
+  if (props.modelValue) {
     try {
-      jsonContent = JSON.parse(props.content);
+      jsonContent = JSON.parse(props.modelValue);
     } catch {
-      jsonContent = props.content;
+      jsonContent = props.modelValue;
     }
   }
 
@@ -78,7 +67,6 @@ if (props.labelledBy) {
 }
 
 let extensions = [
-  //   AraTiptapExtension,
   Heading.extend({
     // prevent all marks from being applied to headings
     marks: ""
@@ -119,38 +107,11 @@ let extensions = [
     openOnClick: false,
     defaultProtocol: "https"
   }),
-  // Markdown,
-  // TaskItem,
-  // TaskList,
-  //   ImageExtension.extend({
-  //     addAttributes() {
-  //       return {
-  //         ...this.parent?.(),
-  //         width: {
-  //           default: "0"
-  //         },
-  //         height: {
-  //           default: "0"
-  //         }
-  //       };
-  //     }
-  //   }).configure({ inline: false }),
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   })
-  //   CustomSelectionExtension
 ];
-// if (props.editable) {
-//   extensions.push(
-//     ...[
-//       DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 }),
-//       ImageUploadTiptapExtension.configure({
-//         uploadFn: props.uploadFn
-//       })
-//     ]
-//   );
-// }
 
 const editor = useEditor({
   editorProps: {
@@ -161,24 +122,9 @@ const editor = useEditor({
   extensions,
   onUpdate({ editor }) {
     // The content has changed.
-    emit("update:content", JSON.stringify(editor.getJSON()));
+    emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
-
-// const browseInput = ref<InstanceType<typeof HTMLInputElement>>();
-// onMounted(() => {
-//   if (props.uploadFn) {
-//     browseInput.value?.addEventListener(
-//       "change",
-//       (e: Event) => {
-//         const inputElement = e?.target as HTMLInputElement;
-//         const files = inputElement.files!;
-//         insertFilesAtSelection(props.uploadFn!, editor.value, files);
-//       },
-//       false
-//     );
-//   }
-// });
 
 onBeforeUnmount(() => {
   editor.value?.destroy();
@@ -208,18 +154,6 @@ function setLink() {
     .setLink({ href: url })
     .run();
 }
-
-// function onImageAdd() {
-//   if (browseInput.value) {
-//     browseInput.value.value = "";
-//   }
-//   browseInput.value?.click();
-// }
-
-// function onRecycle() {
-//   const systemStore = useSystemStore();
-//   systemStore.pruneUploads();
-// }
 </script>
 
 <template>
@@ -362,38 +296,16 @@ function setLink() {
           </li>
         </ul>
       </li>
-      <!-- <li>
-        <TiptapButton
-          label="Insérer une image"
-          icon="image-add-line"
-          :label-visible="true"
-          @click="onImageAdd"
-        />
-        <input
-          id="tiptap-browse-input"
-          ref="browseInput"
-          type="file"
-          class="fr-hidden"
-          hidden
-          multiple
-        />
-      </li> -->
-      <!--
-			<li>
-        <TiptapButton
-          v-if="isDevMode"
-          label="Nettoyage des images obsolètes"
-          icon="recycle-line"
-          @click="onRecycle"
-        />
-      </li>
-			-->
     </ul>
   </div>
 </template>
 
 <style>
-/* Tiptap */
+@import url("highlight.js/styles/github.css") screen and
+  (prefers-color-scheme: light);
+@import url("highlight.js/styles/github-dark.css") screen and
+  (prefers-color-scheme: dark);
+
 .tiptap-container {
   position: relative;
 }
