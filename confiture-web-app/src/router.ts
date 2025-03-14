@@ -27,6 +27,7 @@ import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
+import TiptapPage from "./pages/TiptapPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
 
 declare module "vue-router" {
@@ -316,7 +317,17 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "Error",
       component: ErrorPage
-    }
+    },
+    // TODO: to delete when done with WYSIWYG
+    ...(import.meta.env.VITE_ENABLE_TIPTAP
+      ? [
+          {
+            path: "/tiptap",
+            name: "Tiptap",
+            component: TiptapPage
+          }
+        ]
+      : [])
   ],
   history,
   scrollBehavior(to) {
