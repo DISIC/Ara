@@ -17,14 +17,20 @@
           Changer l’adresse e-mail de votre compte
         </mj-text>
         <mj-text padding-bottom="24px">
-          Pour finaliser le changement d’adresse e-mail associée à votre compte Ara, nous devons vérifier votre nouvelle adresse. Veuillez cliquer sur le bouton ci-dessous :
+          Pour finaliser le changement d’adresse e-mail associée à votre compte
+          Ara, nous devons vérifier votre nouvelle adresse. Veuillez cliquer sur
+          le bouton ci-dessous :
         </mj-text>
-        <mj-button href="{{verificationLink}}" mj-class="blue-button">Valider mon adresse e-mail</mj-button>
+        <mj-button href="{{verificationLink}}" mj-class="blue-button"
+          >Valider mon adresse e-mail</mj-button
+        >
         <mj-text align="center" font-weight="700" padding-bottom="24px">
           Ce lien est valable 1h
         </mj-text>
         <mj-text font-size="12px">
-          Si vous ne voulez pas changer votre adresse e-mail ou si vous n’avez pas demandé à changer d’adresse e-mail, vous pouvez ignorer et supprimer cet e-mail.
+          Si vous ne voulez pas changer votre adresse e-mail ou si vous n’avez
+          pas demandé à changer d’adresse e-mail, vous pouvez ignorer et
+          supprimer cet e-mail.
         </mj-text>
       </mj-column>
     </mj-section>
