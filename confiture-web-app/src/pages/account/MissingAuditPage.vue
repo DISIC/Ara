@@ -50,7 +50,7 @@ const accountStore = useAccountStore();
     <h2 class="fr-h4 fr-mb-2w">Vous rencontrez toujours un problème ?</h2>
     <p class="fr-mb-0">
       Contactez notre support par e-mail à l’adresse :
-      <strong>ara@design.numérique.gouv.fr</strong>
+      <strong>ara@design.numerique.gouv.fr</strong>
     </p>
   </div>
 </template>
