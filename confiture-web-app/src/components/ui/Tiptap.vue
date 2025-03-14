@@ -140,7 +140,9 @@ const extensions = [
 if (props.editable) {
   extensions.push(
     // Improve visibility of selected dragged block
-    ...[DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })]
+    // TODO: fix this TS issue
+    // @ts-expect-error DropCursor options
+    DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
   );
 }
 
