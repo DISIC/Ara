@@ -29,11 +29,11 @@ const title = computed(() =>
   <button
     :disabled="disabled"
     class="fr-btn--sm fr-btn--tertiary"
-    :class="[
-      labelVisible ? 'fr-btn--icon-left' : '',
-      icon ? 'fr-icon-' + icon : '',
-      isToggle ? 'fr-btn--is-toggle' : ''
-    ]"
+    :class="{
+      'fr-btn--icon-left': labelVisible,
+      ['fr-icon-' + icon]: !!icon,
+      'fr-btn--is-toggle': isToggle
+    }"
     :aria-pressed="isPressed"
     :title="labelVisible ? '' : title"
   >
