@@ -18,6 +18,7 @@
     "@sentry/vite-plugin": "^0.3.0",
     "@sentry/vue": "^7.37.2",
     "@tiptap/extension-code-block-lowlight": "^2.5.9",
+    "@tiptap/extension-dropcursor": "^2.11.5",
     "@tiptap/extension-link": "^2.5.9",
     "@tiptap/extension-typography": "^2.5.9",
     "@tiptap/starter-kit": "^2.5.9",

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { mergeAttributes } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
@@ -136,6 +137,13 @@ const extensions = [
   })
 ];
 
+if (props.editable) {
+  extensions.push(
+    // Improve visibility of selected dragged block
+    ...[DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })]
+  );
+}
+
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
@@ -163,7 +171,6 @@ onBeforeUnmount(() => {
       Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
       utiliser les raccourcis clavier.
     </p>
-    <editor-content :editor="editor" />
     <ul v-if="editable" class="tiptap-buttons">
       <li>
         <ul>
@@ -306,6 +313,7 @@ onBeforeUnmount(() => {
         </ul>
       </li>
     </ul>
+    <editor-content :editor="editor" />
   </div>
 </template>
 
@@ -317,20 +325,12 @@ onBeforeUnmount(() => {
 
 .tiptap-container {
   position: relative;
-}
-
-.tiptap {
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
   min-height: 30rem;
-  overflow-y: auto;
-}
-
-.tiptap-container--editable .tiptap {
-  padding-top: 4rem;
 }
 
 .tiptap img {
@@ -408,20 +408,29 @@ onBeforeUnmount(() => {
 }
 
 .tiptap-buttons {
-  margin: 0.5rem 0.75rem;
-  width: calc(100% - 1.5rem);
-  position: absolute;
   overflow-x: auto;
   white-space: nowrap;
-  top: 0;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--background-alt-grey);
+  margin-block-end: 0.5rem;
+  padding-block: 0.25rem;
+  width: calc(100% + 1.5rem);
+  transform: translateX(-0.75rem);
+  padding-inline: 0.75rem;
 }
 
 .titptap-buttons::-webkit-scrollbar {
   /* WebKit */
   width: 0;
   height: 0;
+}
+
+.tiptap-buttons li {
+  padding: 0;
 }
 
 .tiptap-buttons li,
