@@ -85,7 +85,7 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
-      cy.get("#tabpanel-points-damelioration-panel .fr-sidemenu__item").then(
+      cy.get(".fr-sidemenu__item").then(
         (els) => {
           expect(els).to.have.length(9);
         },
@@ -98,7 +98,7 @@ describe("Report", () => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .fr-sidemenu__item",
+        ".fr-sidemenu__item",
       ).then((els) => {
         expect(els).to.have.length(9);
       });
@@ -111,7 +111,7 @@ describe("Report", () => {
       cy.contains("button", "Détails des non-conformités").click();
       cy.contains("315 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(315);
       });
@@ -120,7 +120,7 @@ describe("Report", () => {
       cy.contains("Uniquement les erreurs faciles à corriger").click();
       cy.contains("45 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(45);
       });
@@ -130,7 +130,7 @@ describe("Report", () => {
       cy.contains("Mineur (81)").click();
       cy.contains("234 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(234);
       });
@@ -139,7 +139,7 @@ describe("Report", () => {
       cy.contains("Majeur (81)").click();
       cy.contains("153 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(153);
       });
@@ -148,7 +148,7 @@ describe("Report", () => {
       cy.contains("Bloquant (81)").click();
       cy.contains("72 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(72);
       });
@@ -157,14 +157,14 @@ describe("Report", () => {
       cy.contains("Impact non renseigné (72)").click();
       cy.contains("0 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).should("not.exist");
 
       // Reset filters
       cy.contains("button", "Réinitialiser les filtres").click();
       cy.contains("315 non-conformités");
       cy.get(
-        "#tabpanel-details-des-non-conformites-panel .criterium-title",
+        ".criterium-title",
       ).then((els) => {
         expect(els).to.have.length(315);
       });
