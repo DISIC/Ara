@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mergeAttributes } from "@tiptap/core";
+import { mergeAttributes, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(["update:modelValue"]);
 
 // Define needed heading levels
-const displayedHeadings = [2, 3, 4] as Array<Level>;
+const displayedHeadings = [4, 5, 6] as Array<Level>;
 
 // LowLight languages
 const lowlight = createLowlight(common);
@@ -94,7 +94,22 @@ if (props.labelledBy) {
 const extensions = [
   Heading.extend({
     // prevent all marks from being applied to headings
-    marks: ""
+    marks: "",
+    // Shift heading levels when typing markdown
+    // Example: "## Foobar" would render a `h5`
+    addInputRules() {
+      return this.options.levels.map((level) => {
+        return textblockTypeInputRule({
+          find: new RegExp(
+            `^(#{${Math.min(...this.options.levels) - 3},${level - 3}})\\s$`
+          ),
+          type: this.type,
+          getAttributes: {
+            level
+          }
+        });
+      });
+    }
   }).configure({
     levels: displayedHeadings
   }),
