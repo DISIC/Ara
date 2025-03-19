@@ -404,9 +404,9 @@ const isDevMode = useDevMode();
           ref="validatedTechnologiesRefs"
           class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
           type="button"
-          :aria-label="`Retirer ${techno}`"
           @click="removeTechnology(i)"
         >
+          <span class="fr-sr-only">Retirer</span>
           {{ techno }}
         </button>
       </li>
@@ -464,9 +464,9 @@ const isDevMode = useDevMode();
           ref="validatedToolsRefs"
           class="fr-tag fr-tag--dismiss"
           type="button"
-          :aria-label="`Retirer ${tool}`"
           @click="removeTool(i)"
         >
+          <span class="fr-sr-only">Retirer</span>
           {{ tool }}
         </button>
       </li>
