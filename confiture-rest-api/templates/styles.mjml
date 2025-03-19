@@ -9,3 +9,4 @@
   inner-padding="8px 16px"
   border-radius="0"
 />
+<mj-style>a { text-decoration: underline !important }</mj-style>
