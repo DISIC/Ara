@@ -13,7 +13,7 @@ const files = computed(() => report.data?.notesFiles);
 <template>
   <h2 class="fr-sr-only">Notes</h2>
   <MarkdownRenderer :markdown="report.data?.notes!" />
-  <h3 v-if="files.length" class="fr-text--sm">Pièces jointes</h3>
+  <h3 v-if="files?.length" class="fr-text--sm">Pièces jointes</h3>
   <FileUpload
     v-if="files"
     class="fr-mb-4w"
