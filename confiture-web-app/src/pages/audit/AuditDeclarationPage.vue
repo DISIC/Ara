@@ -16,13 +16,14 @@ import {
   OperatingSystem,
   Platform
 } from "../../enums";
-import { useAuditStore } from "../../store";
+import { useAccountStore, useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
+const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 // Technologies
@@ -277,7 +278,11 @@ const isDevMode = useDevMode();
   />
 
   <BackLink
-    label="Aller au tableau de bord de l'audit"
+    :label="
+      accountStore.account?.email
+        ? 'Retourner à mes livrables'
+        : 'Retourner au tableau de bord de l’audit'
+    "
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
