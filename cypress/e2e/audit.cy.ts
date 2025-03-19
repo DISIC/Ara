@@ -1,5 +1,6 @@
 import * as auditJson from "../fixtures/audit.json";
 import * as statementJson from "../fixtures/statement.json";
+import { TabSlug } from "../../confiture-web-app/src/enums";
 
 describe("Audit", () => {
   it("User can create an audit", () => {
@@ -110,7 +111,7 @@ describe("Audit", () => {
 
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -163,7 +164,7 @@ describe("Audit", () => {
       cy.contains("Enregistrer les modifications").click();
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
       cy.get("[role='tablist'] button").then((els) => {
