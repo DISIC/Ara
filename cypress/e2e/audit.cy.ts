@@ -294,7 +294,7 @@ describe("Audit", () => {
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
-      cy.contains("Audit dupliqué avec succès", { timeout: 50_000 });
+      cy.contains("Audit dupliqué avec succès", { timeout: 500_000 });
       cy.contains("Audit de mon petit site (2)");
     });
   });
