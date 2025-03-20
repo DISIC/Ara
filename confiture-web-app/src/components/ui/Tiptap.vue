@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
   border-radius: 0.25rem;
 }
 
-.tiptap blockquote:before {
+.tiptap blockquote::before {
   --icon-size: 2rem;
   color: var(--artwork-minor-blue-france);
   content: "";
@@ -456,7 +456,7 @@ onBeforeUnmount(() => {
 }
 
 .tiptap-buttons li + li {
-  margin-left: 0.2rem;
+  margin-left: 0.125rem;
 }
 
 .tiptap-buttons > li + li::before {
@@ -465,18 +465,15 @@ onBeforeUnmount(() => {
   content: "";
   display: inline-block;
   height: 1.5rem;
-  padding: 0;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin-right: 0.125rem;
   position: relative;
   vertical-align: middle;
   width: 1px;
 }
 
 .tiptap-buttons .fr-btn--tertiary {
-  color: var(--text-defult-grey);
+  color: var(--text-mention-grey);
   box-shadow: none;
-  border-radius: 0.2rem;
 }
 
 .tiptap-buttons .fr-btn--tertiary:not([aria-pressed="true"]) {
