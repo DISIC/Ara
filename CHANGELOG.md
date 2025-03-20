@@ -8,6 +8,12 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrige l’affichage sans CSS du composant pour l’ajout de technologies, d’outils d’assistance ou d’éléments transverses ([#1014](https://github.com/DISIC/Ara/pull/1014))
 
+## 19/03/2025
+
+### Corrections 🐛
+
+- Ajoute un titre manquant sur l’onglet des notes sur le rapport ([#1002](https://github.com/DISIC/Ara/pull/1002))
+
 ## 12/03/2025
 
 ### Nouvelles fonctionnalités 🚀
