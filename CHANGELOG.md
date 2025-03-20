@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 20/03/2025
+
+### Corrections 🐛
+
+- Corrige l’affichage sans CSS du composant pour l’ajout de technologies, d’outils d’assistance ou d’éléments transverses ([#1014](https://github.com/DISIC/Ara/pull/1014))
+
 ## 19/03/2025
 
 ### Corrections 🐛

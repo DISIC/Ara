@@ -163,9 +163,9 @@ async function cancelEdition() {
               ref="tagButtonsRefs"
               class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
               type="button"
-              :aria-label="`Retirer ${tag}`"
               @click="removeElement(i)"
             >
+              <span class="fr-sr-only">Retirer</span>
               {{ tag }}
             </button>
           </li>
