@@ -19,8 +19,11 @@ const emit = defineEmits(["opened"]);
 const showContent = ref(false);
 const uniqueId = useUniqueId();
 
-function onConceal() {
+function onConceal(e: Event) {
   showContent.value = false;
+
+  // When nesting <LazyAccordion />, prevent from closing the parent.
+  e.stopPropagation();
 }
 
 function onDisclose() {
