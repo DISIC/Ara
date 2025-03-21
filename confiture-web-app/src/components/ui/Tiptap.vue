@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { mergeAttributes, textblockTypeInputRule } from "@tiptap/core";
+import {
+  Extensions,
+  mergeAttributes,
+  textblockTypeInputRule
+} from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
@@ -91,7 +95,7 @@ if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
 }
 
-const extensions = [
+const extensions: Extensions = [
   Heading.extend({
     // prevent all marks from being applied to headings
     marks: "",
@@ -155,8 +159,6 @@ const extensions = [
 if (props.editable) {
   extensions.push(
     // Improve visibility of selected dragged block
-    // TODO: fix this TS issue
-    // @ts-expect-error DropCursor options
     DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
   );
 }
