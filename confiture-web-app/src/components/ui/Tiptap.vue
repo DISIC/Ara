@@ -16,7 +16,7 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { onBeforeUnmount, ShallowRef } from "vue";
+import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
 
@@ -176,8 +176,21 @@ const editor = useEditor({
   }
 }) as ShallowRef<Editor>;
 
+watch(
+  () => props.editable,
+  (editable) => {
+    editor.value.setEditable(editable);
+  }
+);
+
 onBeforeUnmount(() => {
   editor.value?.destroy();
+});
+
+defineExpose({
+  focusEditor: () => {
+    editor.value.commands.focus();
+  }
 });
 </script>
 
@@ -349,7 +362,10 @@ onBeforeUnmount(() => {
   padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
-  min-height: 30rem;
+}
+
+.tiptap {
+  min-height: 10rem;
 }
 
 .tiptap img {

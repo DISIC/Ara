@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useIsOffline } from "../../composables/useIsOffline";
+import Tiptap from "../ui/Tiptap.vue";
 import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 defineProps<{
   id: string;
@@ -20,23 +20,14 @@ const title = "Points d’amélioration";
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)" :title="title">
     <!-- COMMENT -->
-    <div class="fr-input-group fr-mb-1w">
-      <label class="fr-label fr-sr-only" :for="`criterum-comment-field-${id}`">
-        {{ title }}
-      </label>
-      <textarea
-        :id="`criterum-comment-field-${id}`"
-        :value="comment ?? ''"
-        class="fr-mt-0 fr-input"
-        rows="5"
-        :disabled="isOffline"
-        :aria-describedby="`markdown-notice-${id}`"
-        @input="
-          $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
-        "
-      ></textarea>
-    </div>
-
-    <MarkdownHelpButton :id="`markdown-notice-${id}`" />
+    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
+      {{ title }}
+    </p>
+    <Tiptap
+      :model-value="comment"
+      :labelled-by="`criterum-comment-field-${id}`"
+      :editable="!isOffline"
+      @update:model-value="$emit('update:comment', $event)"
+    />
   </LazyAccordion>
 </template>
