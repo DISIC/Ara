@@ -16,7 +16,8 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { onBeforeUnmount, ShallowRef } from "vue";
+import { Markdown } from "tiptap-markdown";
+import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
 
@@ -84,12 +85,13 @@ function setLink() {
 }
 
 // Editor attributes to create an accessible textarea
-const editorAttributes: any = {
-  "aria-describedby": "tiptap-description",
-  rows: "10",
-  "aria-multiline": "true",
-  role: "textbox"
-};
+const editorAttributes: any = props.editable
+  ? {
+      "aria-describedby": "tiptap-description",
+      "aria-multiline": "true",
+      role: "textbox"
+    }
+  : undefined;
 
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
@@ -153,7 +155,8 @@ const extensions: Extensions = [
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
-  })
+  }),
+  Markdown
 ];
 
 if (props.editable) {
@@ -176,17 +179,30 @@ const editor = useEditor({
   }
 }) as ShallowRef<Editor>;
 
+watch(
+  () => props.editable,
+  (editable) => {
+    editor.value.setEditable(editable);
+  }
+);
+
 onBeforeUnmount(() => {
   editor.value?.destroy();
+});
+
+defineExpose({
+  focusEditor: () => {
+    editor.value.commands.focus();
+  }
 });
 </script>
 
 <template>
   <div
     class="tiptap-container"
-    :class="editable ? 'tiptap-container--editable' : null"
+    :class="{ 'tiptap-container--not-editable': !editable }"
   >
-    <p id="tiptap-description" class="fr-sr-only">
+    <p v-if="editable" id="tiptap-description" class="fr-sr-only">
       Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
       utiliser les raccourcis clavier.
     </p>
@@ -349,7 +365,20 @@ onBeforeUnmount(() => {
   padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
-  min-height: 30rem;
+}
+
+.tiptap-container--not-editable {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+
+  .tiptap {
+    min-height: 0;
+  }
+}
+
+.tiptap {
+  min-height: 10rem;
 }
 
 .tiptap img {
