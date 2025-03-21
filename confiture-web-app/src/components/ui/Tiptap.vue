@@ -197,7 +197,7 @@ defineExpose({
 <template>
   <div
     class="tiptap-container"
-    :class="editable ? 'tiptap-container--editable' : null"
+    :class="{ 'tiptap-container--not-editable': !editable }"
   >
     <p id="tiptap-description" class="fr-sr-only">
       Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
@@ -362,6 +362,16 @@ defineExpose({
   padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
+}
+
+.tiptap-container--not-editable {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+
+  .tiptap {
+    min-height: 0;
+  }
 }
 
 .tiptap {

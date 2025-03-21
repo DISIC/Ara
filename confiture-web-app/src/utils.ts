@@ -1,4 +1,5 @@
 import { captureException, Scope } from "@sentry/vue";
+import { JSONContent } from "@tiptap/vue-3";
 import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
@@ -283,4 +284,24 @@ export async function handleFileDeleteError(
   }
 
   return FileErrorMessage.DELETE_UNKNOWN;
+}
+
+/** Check if a tiptap document string correspond to an empty document. */
+export function isTiptapDocumentEmpty(
+  jsonString: string | null | undefined
+): boolean {
+  if (!jsonString) return true;
+
+  let parsedJson: JSONContent;
+  try {
+    parsedJson = JSON.parse(jsonString);
+  } catch {
+    return true;
+  }
+
+  if (!parsedJson.content?.at(0)?.content) {
+    return true;
+  }
+
+  return false;
 }
