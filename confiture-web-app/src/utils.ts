@@ -290,13 +290,14 @@ export async function handleFileDeleteError(
 export function isTiptapDocumentEmpty(
   jsonString: string | null | undefined
 ): boolean {
-  if (!jsonString) return true;
+  if (!jsonString?.trim()) return true;
 
   let parsedJson: JSONContent;
   try {
     parsedJson = JSON.parse(jsonString);
   } catch {
-    return true;
+    // not json, most likely markdown
+    return false;
   }
 
   if (!parsedJson.content?.at(0)?.content) {

@@ -16,6 +16,7 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
+import { Markdown } from "tiptap-markdown";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
@@ -84,12 +85,13 @@ function setLink() {
 }
 
 // Editor attributes to create an accessible textarea
-const editorAttributes: any = {
-  "aria-describedby": "tiptap-description",
-  rows: "10",
-  "aria-multiline": "true",
-  role: "textbox"
-};
+const editorAttributes: any = props.editable
+  ? {
+      "aria-describedby": "tiptap-description",
+      "aria-multiline": "true",
+      role: "textbox"
+    }
+  : undefined;
 
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
@@ -153,7 +155,8 @@ const extensions: Extensions = [
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
-  })
+  }),
+  Markdown
 ];
 
 if (props.editable) {
@@ -199,7 +202,7 @@ defineExpose({
     class="tiptap-container"
     :class="{ 'tiptap-container--not-editable': !editable }"
   >
-    <p id="tiptap-description" class="fr-sr-only">
+    <p v-if="editable" id="tiptap-description" class="fr-sr-only">
       Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
       utiliser les raccourcis clavier.
     </p>
