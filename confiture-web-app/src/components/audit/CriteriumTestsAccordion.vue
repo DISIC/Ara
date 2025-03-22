@@ -43,32 +43,14 @@ const methodologiesHtml = Object.values(
         <div v-html="test" />
       </div>
 
-      <div
-        class="fr-accordion"
+      <LazyAccordion
+        :title="`Méthodologie du test ${topicNumber}.${criterium.number}.${
+          i + 1
+        }`"
         :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
       >
-        <span class="fr-accordion__title">
-          <button
-            class="fr-accordion__btn"
-            aria-expanded="false"
-            :aria-controls="`criterium-tests-accordion-${topicNumber}-${
-              criterium.number
-            }-${i + 1}`"
-          >
-            Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
-              i + 1
-            }}
-          </button>
-        </span>
-        <div
-          :id="`criterium-tests-accordion-${topicNumber}-${criterium.number}-${
-            i + 1
-          }`"
-          class="fr-collapse criterium-test-methodology"
-        >
-          <div v-html="methodologiesHtml[i]" />
-        </div>
-      </div>
+        <div class="criterium-test-methodology" v-html="methodologiesHtml[i]" />
+      </LazyAccordion>
     </template>
 
     <!-- Particular cases -->
