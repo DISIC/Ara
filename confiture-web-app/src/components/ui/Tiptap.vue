@@ -365,6 +365,10 @@ defineExpose({
   padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--background-contrast-grey);
+  }
 }
 
 .tiptap-container--not-editable {
@@ -463,7 +467,6 @@ defineExpose({
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: var(--background-alt-grey);
   margin-block-end: 0.5rem;
   padding-block: 0.25rem;
   width: calc(100% + 1.5rem);
