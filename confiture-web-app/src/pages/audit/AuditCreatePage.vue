@@ -195,7 +195,9 @@ async function goToPreviousStep() {
 
 <template>
   <PageMeta
-    title="Démarrer un audit"
+    :title="`Démarrer un audit, étape ${currentStep + 1} sur ${steps.length}, ${
+      steps[currentStep]
+    }`"
     description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
   />
 

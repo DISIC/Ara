@@ -108,7 +108,9 @@ const siteUrl = computed(() => {
 
 <template>
   <template v-if="report.data">
-    <PageMeta title="Déclaration d’accessibilité" />
+    <PageMeta
+      :title="`Déclaration d'accessibilité de ${report.data.procedureName}`"
+    />
 
     <div class="fr-mb-4w heading">
       <h1 class="fr-m-0">Déclaration d’accessibilité</h1>

@@ -192,7 +192,7 @@ const siteUrl = computed(() => {
 
   <template v-if="report.data">
     <PageMeta
-      title="Rapport d’audit accessibilité"
+      :title="`Rapport d’audit accessibilité de ${report.data.procedureName}`"
       :description="`Découvrez la synthèse de l'audit de ${report.data?.procedureName}.`"
     />
 
