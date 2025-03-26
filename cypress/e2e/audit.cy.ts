@@ -206,9 +206,7 @@ describe("Audit", () => {
       cy.get(".notes-item:last-of-type")
         .contains("button", "Annoter l’audit")
         .click();
-      cy.getByLabel("Remarques et recommandations générales")
-        .clear()
-        .type("Annotations de l’audit");
+      cy.get("[role='textbox'").clear().type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
       cy.get(".notes-item:last-of-type")
@@ -463,9 +461,9 @@ describe("Audit", () => {
       cy.contains('button[role="tab"]', "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme").click();
 
-      cy.focused().should("have.attr", "rows");
+      cy.focused().should("have.attr", "role", "textbox");
 
-      cy.getByLabel(/^Erreur et recommandation$/)
+      cy.get(".criterium-container .tiptap[role='textbox']")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
