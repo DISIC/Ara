@@ -112,7 +112,7 @@ const title = "Erreur et recommandation";
       class="fr-mb-4w"
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
-      :editable="!isOffline"
+      :disabled="isOffline"
       @update:model-value="$emit('update:comment', $event)"
     />
 
