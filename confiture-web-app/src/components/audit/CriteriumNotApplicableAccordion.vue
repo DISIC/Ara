@@ -28,11 +28,3 @@ const title = "Commentaire";
     />
   </LazyAccordion>
 </template>
-
-<style scoped>
-.markdown-notice {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-</style>
