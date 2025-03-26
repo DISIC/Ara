@@ -273,7 +273,12 @@ const isDevMode = useDevMode();
 
 <template>
   <PageMeta
-    title="Déclaration d’accessibilité"
+    v-if="auditStore.currentAudit"
+    :title="`${
+      auditStore.currentAudit.initiator ? 'Modification' : 'Saisie'
+    } de la déclaration d’accessibilité de ${
+      auditStore.currentAudit?.procedureName
+    }`"
     description="Saisissez les informations requises pour établir la déclaration d’accessibilité."
   />
 
