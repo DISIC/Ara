@@ -20,6 +20,7 @@ import { Markdown } from "tiptap-markdown";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import TiptapButton from "./TiptapButton.vue";
+import { useUniqueId } from "../../composables/useUniqueId";
 
 export interface Props {
   modelValue?: string | null;
@@ -36,6 +37,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(["update:modelValue"]);
+
+const uniqueId = useUniqueId();
 
 // Define needed heading levels
 const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -204,7 +207,11 @@ defineExpose({
       'tiptap-container--disabled': disabled
     }"
   >
-    <p v-if="editable" id="tiptap-description" class="fr-sr-only">
+    <p
+      v-if="editable"
+      :id="`tiptap-description-${uniqueId}`"
+      class="fr-sr-only"
+    >
       Éditeur de texte riche
     </p>
     <ul v-if="editable" class="tiptap-buttons">
