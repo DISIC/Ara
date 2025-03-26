@@ -104,7 +104,7 @@ const title = "Erreur et recommandation";
     @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
-    <p :id="`criterum-comment-field-${id}`" class="fr-label">
+    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
     </p>
     <Tiptap
