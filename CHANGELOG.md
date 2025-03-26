@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 26/03/2025
+
+### Corrections 🐛
+
+- Corrige les accordéons qui fermaient les accordéons parents lorsqu’on souhaitait les fermer ([#1017](https://github.com/DISIC/Ara/pull/1017))
+
 ## 20/03/2025
 
 ### Corrections 🐛
