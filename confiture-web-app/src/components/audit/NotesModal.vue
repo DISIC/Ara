@@ -109,7 +109,7 @@ function handleDeleteFile(file: AuditFile) {
                 v-model="notes"
                 class="fr-mb-4w"
                 labelled-by="audit-notes"
-                :editable="!isOffline"
+                :disabled="isOffline"
                 @update:model-value="handleNotesChange"
               />
 

@@ -25,11 +25,13 @@ export interface Props {
   modelValue?: string | null;
   editable?: boolean;
   labelledBy?: string | null;
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: "",
   editable: true,
+  disabled: false,
   labelledBy: null
 });
 
@@ -170,7 +172,7 @@ const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
   },
-  editable: props.editable,
+  editable: props.editable && !props.disabled,
   content: getContent(),
   extensions,
   onUpdate({ editor }) {
@@ -179,12 +181,9 @@ const editor = useEditor({
   }
 }) as ShallowRef<Editor>;
 
-watch(
-  () => props.editable,
-  (editable) => {
-    editor.value.setEditable(editable);
-  }
-);
+watch([() => props.editable, () => props.disabled], (editable, disabled) => {
+  editor.value?.setEditable(editable && !disabled);
+});
 
 onBeforeUnmount(() => {
   editor.value?.destroy();
@@ -200,11 +199,13 @@ defineExpose({
 <template>
   <div
     class="tiptap-container"
-    :class="{ 'tiptap-container--not-editable': !editable }"
+    :class="{
+      'tiptap-container--not-editable': !editable,
+      'tiptap-container--disabled': disabled
+    }"
   >
     <p v-if="editable" id="tiptap-description" class="fr-sr-only">
-      Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
-      utiliser les raccourcis clavier.
+      Éditeur de texte riche
     </p>
     <ul v-if="editable" class="tiptap-buttons">
       <li>
@@ -215,7 +216,7 @@ defineExpose({
               switch-off-label="Retirer le gras"
               icon="bold"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleBold()"
+              :disabled="!editor?.can().toggleBold() || disabled"
               :pressed="editor?.isActive('bold')"
               @click="editor.chain().focus().toggleBold().run()"
             />
@@ -226,7 +227,7 @@ defineExpose({
               switch-off-label="Retirer l’italique"
               icon="italic"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleItalic()"
+              :disabled="!editor?.can().toggleItalic() || disabled"
               :pressed="editor?.isActive('italic')"
               @click="editor.chain().focus().toggleItalic().run()"
             />
@@ -237,7 +238,7 @@ defineExpose({
               switch-off-label="Ne pas barrer le texte"
               icon="strikethrough"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleStrike()"
+              :disabled="!editor?.can().toggleStrike() || disabled"
               :pressed="editor?.isActive('strike')"
               @click="editor.chain().focus().toggleStrike().run()"
             />
@@ -249,7 +250,8 @@ defineExpose({
               :icon="`h-${i + 1}`"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleHeading({ level: hLevel as Level })
+                !editor?.can().toggleHeading({ level: hLevel as Level }) ||
+                disabled
               "
               :pressed="editor?.isActive('heading', { level: hLevel })"
               @click="
@@ -271,7 +273,7 @@ defineExpose({
               switch-off-label="Éditer le lien"
               icon="link"
               :is-toggle="true"
-              :disabled="!editor?.can().setLink({ href: 'test' })"
+              :disabled="!editor?.can().setLink({ href: 'test' }) || disabled"
               :pressed="editor?.isActive('link')"
               @click="setLink"
             />
@@ -287,8 +289,9 @@ defineExpose({
               icon="list-unordered"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleBulletList() &&
-                !editor?.can().toggleOrderedList()
+                (!editor?.can().toggleBulletList() &&
+                  !editor?.can().toggleOrderedList()) ||
+                disabled
               "
               :pressed="editor?.isActive('bulletList')"
               @click="editor.chain().focus().toggleBulletList().run()"
@@ -301,8 +304,9 @@ defineExpose({
               icon="list-ordered"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleBulletList() &&
-                !editor?.can().toggleOrderedList()
+                (!editor?.can().toggleBulletList() &&
+                  !editor?.can().toggleOrderedList()) ||
+                disabled
               "
               :pressed="editor?.isActive('orderedList')"
               @click="editor.chain().focus().toggleOrderedList().run()"
@@ -318,7 +322,7 @@ defineExpose({
               switch-off-label="Ne pas définir comme citation"
               icon="quote-line"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleBlockquote()"
+              :disabled="!editor?.can().toggleBlockquote() || disabled"
               :pressed="editor?.isActive('blockquote')"
               @click="editor.chain().focus().toggleBlockquote().run()"
             />
@@ -329,7 +333,7 @@ defineExpose({
               switch-off-label="Ne pas définir comme passage de code"
               icon="code-view"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleCode()"
+              :disabled="!editor?.can().toggleCode() || disabled"
               :pressed="editor?.isActive('code')"
               @click="editor.chain().focus().toggleCode().run()"
             />
@@ -340,7 +344,7 @@ defineExpose({
               switch-off-label="Ne pas définir comme bloc de code"
               icon="code-block"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleCodeBlock()"
+              :disabled="!editor?.can().toggleCodeBlock() || disabled"
               :pressed="editor?.isActive('codeBlock')"
               @click="editor.chain().focus().toggleCodeBlock().run()"
             />
@@ -380,6 +384,10 @@ defineExpose({
   .tiptap {
     min-height: 0;
   }
+}
+
+.tiptap-container--disabled:hover {
+  cursor: not-allowed;
 }
 
 .tiptap {

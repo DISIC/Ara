@@ -26,7 +26,7 @@ const title = "Points d’amélioration";
     <Tiptap
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
-      :editable="!isOffline"
+      :disabled="isOffline"
       @update:model-value="$emit('update:comment', $event)"
     />
   </LazyAccordion>
