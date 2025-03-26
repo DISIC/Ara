@@ -373,7 +373,6 @@ defineExpose({
   position: relative;
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
 
@@ -399,6 +398,7 @@ defineExpose({
 
 .tiptap {
   min-height: 10rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .tiptap img {
@@ -413,8 +413,8 @@ defineExpose({
 
 .tiptap:focus,
 .tiptap:focus-visible {
-  outline-width: 3px !important;
-  outline-offset: 0 !important;
+  outline-width: 2px !important;
+  outline-offset: -2px !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -493,11 +493,7 @@ defineExpose({
   background-color: inherit;
   top: 0;
   z-index: 1;
-  margin-block-end: 0.5rem;
-  padding-block: 0.25rem;
-  width: calc(100% + 1.5rem);
-  transform: translateX(-0.75rem);
-  padding-inline: 0.75rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .titptap-buttons::-webkit-scrollbar {
