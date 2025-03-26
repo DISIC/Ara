@@ -19,8 +19,8 @@ import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
-import TiptapButton from "./TiptapButton.vue";
 import { useUniqueId } from "../../composables/useUniqueId";
+import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
   modelValue?: string | null;
@@ -179,13 +179,14 @@ const editor = useEditor({
   content: getContent(),
   extensions,
   onUpdate({ editor }) {
+    // FIXME: only trigger emit when content actually changed
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
 
-watch([() => props.editable, () => props.disabled], (editable, disabled) => {
-  editor.value?.setEditable(editable && !disabled);
+watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
+  editor.value.setEditable(editable && !disabled);
 });
 
 onBeforeUnmount(() => {
@@ -394,6 +395,10 @@ defineExpose({
 
 .tiptap-container--disabled:hover {
   cursor: not-allowed;
+}
+
+.tiptap-container--disabled .tiptap * {
+  color: var(--text-disabled-grey);
 }
 
 .tiptap {
