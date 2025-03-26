@@ -210,12 +210,6 @@ const title = "Erreur et recommandation";
 </template>
 
 <style scoped>
-.markdown-notice {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .user-impact-label {
   display: flex;
   align-items: center;
