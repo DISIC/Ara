@@ -252,13 +252,38 @@ onMounted(() => {
       class="indicator-left-side fr-col-12 fr-col-sm-5 fr-col-md-3"
       :class="{ 'with-border': showLeftSideBorders }"
     >
-      <AuditProgressBar
-        v-if="showAuditProgressBar"
-        :value="resultStore.auditProgress"
-        label="Progression de l’audit"
-        :size="4"
-        class="progress-bar"
-      />
+      <div v-if="showAuditProgressBar" class="progress-bar-wrapper">
+        <button
+          class="fr-mr-3v progress-bar"
+          aria-describedby="progress-bar-tooltip"
+          type="button"
+          data-fr-js-tooltip-referent="true"
+        >
+          <AuditProgressBar
+            :value="resultStore.auditProgress"
+            label="Progression de l’audit"
+            :size="8"
+          />
+          <div class="progress-bar-hover" />
+        </button>
+        <span
+          id="progress-bar-tooltip"
+          class="fr-tooltip fr-placement fr-text--sm"
+          role="tooltip"
+          data-fr-js-tooltip="true"
+        >
+          La progression de l'audit se base sur les critères évalués de chaque
+          <strong>page de votre échantillon</strong>. Évaluez les critères de
+          toutes les pages pour terminer votre audit.
+          <br class="fr-mb-1w" />
+          <span class="fr-text--xs">
+            À noter : les critères des
+            <strong>éléments transverses</strong> sont optionnels. Ils sont pris
+            en compte dans le calcul du taux mais pas dans la progression de
+            l’audit.
+          </span>
+        </span>
+      </div>
 
       <div
         v-else-if="auditStore.currentAudit?.publicationDate"
@@ -556,9 +581,11 @@ onMounted(() => {
   background: var(--background-default-grey);
   min-height: 4rem;
 }
+
 .audit-main-indicator {
-  margin-left: 2rem;
+  margin-left: 0.375rem;
 }
+
 @media (width < 36rem) {
   .audit-main-indicator {
     margin-left: 0;
@@ -611,8 +638,26 @@ onMounted(() => {
   border-color: var(--border-default-grey);
 }
 
-.progress-bar {
+.progress-bar-wrapper {
   flex-grow: 1;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  text-align: initial;
+
+  &:hover .progress-bar-hover {
+    opacity: 1;
+  }
+}
+
+.progress-bar-hover {
+  position: absolute;
+  inset: -0.5rem;
+  background-color: var(--background-alt-grey);
+  opacity: 0;
+  z-index: -1;
 }
 
 /* Display / Hide items from the menu in the toolbar or in the dropdown */
