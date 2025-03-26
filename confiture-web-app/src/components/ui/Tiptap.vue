@@ -458,6 +458,15 @@ defineExpose({
   width: var(--icon-size);
 }
 
+/* Update DSFR ::marker styles ("1.1.", "1.2." to "1.", "2.") */
+.tiptap ol {
+  counter-reset: list-item;
+}
+
+.tiptap li::marker {
+  --ol-content: list-item 1;
+}
+
 .tiptap blockquote p {
   font-size: 1.25rem;
   font-weight: 700;
