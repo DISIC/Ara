@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
+import { useWindowWidth } from "../../../composables/useWindowWidth";
 import { useAuditStore } from "../../../store";
 import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
@@ -27,6 +28,8 @@ const props = defineProps<{
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
+
+const windowWidth = useWindowWidth();
 
 const isNotStarted = computed(
   () => props.audit.status === AuditStatus.NOT_STARTED
@@ -293,6 +296,7 @@ function copyStatementLink(uniqueId: string) {
       <Dropdown
         ref="optionsDropdownRef"
         title="Options"
+        :align-left="windowWidth < 880"
         :button-props="{
           class: 'fr-btn--tertiary',
           ariaLabel: `Options de l’audit ${audit.procedureName}`
@@ -334,7 +338,8 @@ function copyStatementLink(uniqueId: string) {
                 params: { uniqueId: audit.editUniqueId }
               }"
             >
-              Modifier les paramètres de l’audit
+              Modifier les paramètres
+              <template v-if="windowWidth > 880">de l’audit</template>
             </RouterLink>
           </li>
 

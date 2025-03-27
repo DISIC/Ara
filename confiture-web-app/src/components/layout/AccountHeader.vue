@@ -79,7 +79,7 @@ const width = useWindowWidth();
   margin: 0 auto;
 
   @media (width < 48rem) {
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 }
 

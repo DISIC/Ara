@@ -93,12 +93,10 @@ const csvExportSizeEstimation = computed(() => {
 }
 
 .grid-step-title {
-  grid-column: 1 / -1;
-  grid-row: 1;
-
   /* FIXME: DSFR default badges dont align. Those with icons does. */
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
