@@ -44,6 +44,7 @@ enum AuditType {
 
 model Audit {
   id Int @id @default(autoincrement())
+  referencial              String        @default("RGAA version 4.1")
 
   // Audit creation step
   auditType                AuditType
