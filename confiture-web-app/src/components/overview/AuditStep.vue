@@ -114,7 +114,7 @@ const auditIsInProgress = computed(() => {
 
           <div class="card-info">
             <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
-            <p class="fr-text--xs fr-mb-0">RGAA version 4.1</p>
+            <p class="fr-text--xs fr-mb-0">{{ audit.referencial }}</p>
           </div>
         </div>
         <span aria-hidden="true" class="audit-step-chart-separator" />

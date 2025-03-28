@@ -239,7 +239,7 @@ const siteUrl = computed(() => {
             L’audit de conformité réalisé par
             <strong>{{ report.data.context.auditorOrganisation }}</strong>
             révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des
-            critères du RGAA version 4 sont respectés.
+            critères du {{ report.data.context.referencial }} sont respectés.
           </p>
 
           <template
