@@ -149,7 +149,7 @@ async function cancelEdition() {
           <template #trailing>
             <button
               type="button"
-              class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+              class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mt-1w"
               @click="addElements"
             >
               Ajouter <span class="fr-sr-only">l’éléments transverse</span>
@@ -210,7 +210,17 @@ async function cancelEdition() {
   }
 }
 
-.elements-field :deep(input) {
-  max-width: 30rem;
+.elements-field {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 1rem;
+
+  &:deep(label) {
+    grid-column: span 2;
+  }
+
+  &:deep(input) {
+    max-width: 30rem;
+  }
 }
 </style>
