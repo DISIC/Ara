@@ -68,7 +68,7 @@ export class AuditService {
 
         creationDate: new Date(),
 
-        referencial: "RGAA version 4.1",
+        referencial: "RGAA version 4.1.2",
 
         procedureName: data.procedureName,
 
