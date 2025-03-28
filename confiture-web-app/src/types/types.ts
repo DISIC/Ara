@@ -47,6 +47,7 @@ export interface Audit {
   pages: AuditPage[];
   auditorEmail: string;
   auditorName: string | null;
+  referencial: string;
 
   // A11y declaration edition
   technologies: string[];
