@@ -4,7 +4,7 @@ import { marked } from "marked";
 import rgaa from "../../criteres.json";
 import { CriteriumResultStatus } from "../../types";
 import { formatStatus, isTiptapDocumentEmpty } from "../../utils";
-import Tiptap from "../ui/Tiptap.vue";
+import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 
 defineProps<{
   topic: number;
@@ -46,10 +46,9 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
       {{ formatStatus(status) }}
     </p>
 
-    <Tiptap
-      v-if="!isTiptapDocumentEmpty(comment)"
-      :model-value="comment"
-      :editable="false"
+    <TiptapRenderer
+      v-if="comment && !isTiptapDocumentEmpty(comment)"
+      :document="comment"
     />
   </div>
 </template>

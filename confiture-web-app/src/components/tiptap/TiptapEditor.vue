@@ -1,25 +1,10 @@
 <script lang="ts" setup>
-import {
-  Extensions,
-  mergeAttributes,
-  textblockTypeInputRule
-} from "@tiptap/core";
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import DropCursor from "@tiptap/extension-dropcursor";
-import { Heading, type Level } from "@tiptap/extension-heading";
-import Link from "@tiptap/extension-link";
-import Typography from "@tiptap/extension-typography";
-import StarterKit from "@tiptap/starter-kit";
+import { type Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import css from "highlight.js/lib/languages/css";
-import js from "highlight.js/lib/languages/javascript";
-import ts from "highlight.js/lib/languages/typescript";
-import html from "highlight.js/lib/languages/xml";
-import { common, createLowlight } from "lowlight";
-import { Markdown } from "tiptap-markdown";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
+import { displayedHeadings, tiptapExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -39,17 +24,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(["update:modelValue"]);
 
 const uniqueId = useUniqueId();
-
-// Define needed heading levels
-const displayedHeadings = [4, 5, 6] as Array<Level>;
-
-// LowLight languages
-const lowlight = createLowlight(common);
-
-lowlight.register("html", html);
-lowlight.register("css", css);
-lowlight.register("js", js);
-lowlight.register("ts", ts);
 
 function getContent() {
   let jsonContent = null;
@@ -102,82 +76,13 @@ if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
 }
 
-const extensions: Extensions = [
-  Heading.extend({
-    // prevent all marks from being applied to headings
-    marks: "",
-    // Shift heading levels when typing markdown
-    // Example: "## Foobar" would render a `h5`
-    addInputRules() {
-      return this.options.levels.map((level) => {
-        return textblockTypeInputRule({
-          find: new RegExp(
-            `^(#{${Math.min(...this.options.levels) - 3},${level - 3}})\\s$`
-          ),
-          type: this.type,
-          getAttributes: {
-            level
-          }
-        });
-      });
-    }
-  }).configure({
-    levels: displayedHeadings
-  }),
-  StarterKit.configure({
-    codeBlock: false,
-    dropcursor: false,
-    heading: false
-  }),
-  CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-  Link.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        class: {
-          default: null,
-          renderHTML: () => {
-            return { class: null }; // reset class when copy pasting for example
-          }
-        },
-        title: {
-          default: null,
-          renderHTML: (attributes) => {
-            return {
-              title: attributes.title
-            };
-          }
-        }
-      };
-    },
-    renderHTML({ HTMLAttributes }) {
-      return ["a", mergeAttributes(HTMLAttributes), 0];
-    }
-  }).configure({
-    openOnClick: false,
-    defaultProtocol: "https"
-  }),
-  Typography.configure({
-    openDoubleQuote: "« ",
-    closeDoubleQuote: " »"
-  }),
-  Markdown
-];
-
-if (props.editable) {
-  extensions.push(
-    // Improve visibility of selected dragged block
-    DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
-  );
-}
-
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
   },
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions,
+  extensions: tiptapExtensions,
   onUpdate({ editor }) {
     // FIXME: only trigger emit when content actually changed
     // The content has changed.
@@ -365,11 +270,9 @@ defineExpose({
 </template>
 
 <style>
-@import url("highlight.js/styles/github.css") screen and
-  (prefers-color-scheme: light);
-@import url("highlight.js/styles/github-dark.css") screen and
-  (prefers-color-scheme: dark);
+@import url("./tiptap.css");
 
+/* Container */
 .tiptap-container {
   position: relative;
   background-color: var(--background-alt-grey);
@@ -401,87 +304,18 @@ defineExpose({
   color: var(--text-disabled-grey);
 }
 
-.tiptap {
-  min-height: 10rem;
-  padding: 0.5rem 0.75rem;
+.tiptap-selection,
+.ProseMirror-selectednode {
+  outline-style: dotted;
+  outline-width: 2px;
+  outline-color: var(--dsfr-outline);
 }
 
-.tiptap img {
-  cursor: pointer;
-  display: block;
-  height: auto;
-  max-width: 100%;
-  border-radius: 0.25rem;
-  margin: 0.5rem 0 2rem;
-  padding: 0.5rem;
+.ProseMirror-widget {
+  opacity: 0.5;
 }
 
-.tiptap:focus,
-.tiptap:focus-visible {
-  outline-width: 2px !important;
-  outline-offset: -2px !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .tiptap img:hover {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  }
-}
-
-.tiptap p {
-  vertical-align: middle;
-}
-
-.tiptap pre {
-  padding: 0.75rem;
-}
-
-.tiptap code {
-  font-size: 85%;
-}
-
-.tiptap :not(pre) code {
-  padding: 0.2em 0.4em;
-}
-
-.tiptap pre,
-.tiptap code {
-  background-color: var(--background-contrast-overlap-grey);
-  border-radius: 0.25rem;
-}
-
-.tiptap blockquote::before {
-  --icon-size: 2rem;
-  color: var(--artwork-minor-blue-france);
-  content: "";
-  margin-bottom: 0.5rem;
-  background-color: currentColor;
-  display: inline-block;
-  height: var(--icon-size);
-  mask-image: url("@gouvfr/dsfr/dist/icons/editor/fr--quote-line.svg");
-  mask-size: 100% 100%;
-  width: var(--icon-size);
-}
-
-/* Update DSFR ::marker styles ("1.1.", "1.2." to "1.", "2.") */
-.tiptap ol {
-  counter-reset: list-item;
-}
-
-.tiptap li::marker {
-  --ol-content: list-item 1;
-}
-
-.tiptap blockquote p {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 2rem;
-}
-
-.tiptap li > p {
-  margin-bottom: 0.25em;
-}
-
+/* Buttons */
 .tiptap-buttons,
 .tiptap-buttons ul {
   list-style: none;
@@ -502,7 +336,6 @@ defineExpose({
 }
 
 .titptap-buttons::-webkit-scrollbar {
-  /* WebKit */
   width: 0;
   height: 0;
 }
@@ -558,28 +391,6 @@ defineExpose({
   background-color: var(--background-alt-grey-hover);
 }
 
-.tiptap-selection,
-.ProseMirror-selectednode {
-  outline-style: dotted;
-  outline-width: 2px;
-  outline-color: var(--dsfr-outline);
-}
-
-.ProseMirror-widget {
-  opacity: 0.5;
-}
-
-/* Extra icons */
-.fr-icon-strikethrough::before,
-.fr-icon-strikethrough::after {
-  mask-image: url("../../assets/images/strikethrough.svg");
-}
-
-.fr-icon-code-block::before,
-.fr-icon-code-block::after {
-  mask-image: url("../../assets/images/code-block.svg");
-}
-
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -587,5 +398,13 @@ defineExpose({
 
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"]::before {
   --icon-size: 1.5rem;
+}
+
+.fr-icon-strikethrough::before {
+  mask-image: url("../../assets/images/strikethrough.svg");
+}
+
+.fr-icon-code-block::before {
+  mask-image: url("../../assets/images/code-block.svg");
 }
 </style>

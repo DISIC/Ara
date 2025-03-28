@@ -10,7 +10,7 @@ import {
   getUploadUrl,
   isTiptapDocumentEmpty
 } from "../../utils";
-import Tiptap from "../ui/Tiptap.vue";
+import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 
 defineProps<{
   error: ReportCriteriumResult;
@@ -63,11 +63,12 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
     </ul>
 
     <!-- Error -->
-    <Tiptap
-      v-if="!isTiptapDocumentEmpty(error.notCompliantComment)"
-      :class="{ 'fr-mb-3w': chunk(error.exampleImages, 2).length }"
-      :model-value="error.notCompliantComment"
-      :editable="false"
+    <TiptapRenderer
+      v-if="
+        error.notCompliantComment &&
+        !isTiptapDocumentEmpty(error.notCompliantComment)
+      "
+      :document="error.notCompliantComment"
     />
 
     <p v-else>

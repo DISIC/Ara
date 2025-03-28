@@ -8,7 +8,7 @@ import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
-import Tiptap from "../ui/Tiptap.vue";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 export interface Props {
@@ -107,7 +107,7 @@ const title = "Erreur et recommandation";
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
     </p>
-    <Tiptap
+    <TiptapEditor
       ref="commentEditorRef"
       class="fr-mb-4w"
       :model-value="comment"
