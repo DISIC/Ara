@@ -160,3 +160,17 @@ input[type="file"]::file-selector-button {
 
 /* input[type="file"]::-ms-browse, */
 /* input[type="file"]::file-selector-button, */
+
+/* Styles pour les champs de saisie */
+.fr-input,
+input.fr-input,
+textarea.fr-input {
+  border: none !important;
+  box-shadow: inset 0 0 0 1px var(--border-plain-grey) !important;
+}
+
+/* Styles spécifiques pour les textareas */
+textarea.fr-input {
+  border: none !important;
+  box-shadow: inset 0 0 0 1px var(--border-plain-grey) !important;
+}
