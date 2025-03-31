@@ -82,7 +82,10 @@ defineExpose({
     :hint="hint"
     type="text"
     v-bind="$attrs"
-    @keydown.enter="addTags"
+    @keydown.enter="
+      $event.preventDefault();
+      addTags();
+    "
   >
     <template #trailing>
       <button
