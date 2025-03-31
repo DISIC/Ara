@@ -404,6 +404,9 @@ describe("Account", () => {
       cy.contains("button", "Copier le lien de l’audit").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
+          // @ts-ignore
+          // TODO remove `@ts-ignore` when the following issue is fixed:
+          // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
           `http://localhost:3000/audits/${audit.editId}/generation`
         );
         cy.contains(
@@ -417,6 +420,9 @@ describe("Account", () => {
       cy.contains("button", "Copier le lien du rapport").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
+          // @ts-ignore
+          // TODO remove `@ts-ignore` when the following issue is fixed:
+          // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
           `http://localhost:3000/rapport/${audit.reportId}`
         );
         cy.contains(
