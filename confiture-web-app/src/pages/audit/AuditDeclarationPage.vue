@@ -6,6 +6,7 @@ import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSele
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import DsfrField from "../../components/ui/DsfrField.vue";
+import TagListField from "../../components/ui/TagListField.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
@@ -26,42 +27,7 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-// Technologies
-
-const tempTechnologies = ref("");
-const validatedTechnologies = ref<string[]>([]);
-const validatedTechnologiesRefs = ref<HTMLButtonElement[]>([]);
-const validateTechnologiesRef = ref<HTMLButtonElement>();
-
-/**
- * Create technologies tags.
- */
-async function validateTechnologies() {
-  const tech = tempTechnologies.value.split(",").filter(Boolean);
-  tech.forEach((t) => {
-    validatedTechnologies.value.push(t.trim());
-  });
-
-  tempTechnologies.value = "";
-}
-
-/**
- * Remove technology tag and focus next one or validate button.
- */
-async function removeTechnology(index: number) {
-  validatedTechnologies.value = validatedTechnologies.value.filter((_, i) => {
-    return i !== index;
-  });
-
-  await nextTick();
-
-  const nextTechnologyButton = validatedTechnologiesRefs.value[index];
-  if (nextTechnologyButton) {
-    nextTechnologyButton.focus();
-  } else {
-    validateTechnologiesRef.value?.focus();
-  }
-}
+const technologies = ref<string[]>([]);
 
 // Tools
 
@@ -143,7 +109,7 @@ watch(
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
-    validatedTechnologies.value = audit.technologies.length
+    technologies.value = audit.technologies.length
       ? structuredClone(toRaw(audit.technologies))
       : [];
 
@@ -199,7 +165,7 @@ function handleSubmit() {
     contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
-    technologies: validatedTechnologies.value,
+    technologies: technologies.value,
     environments: environments.value,
     tools: tools.value,
 
@@ -239,7 +205,7 @@ function DEBUG_fillFields() {
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
-  validatedTechnologies.value = ["HTML", "CSS"];
+  technologies.value = ["HTML", "CSS"];
 
   defaultTools.value = [availableTools[2].name];
   validatedTools.value = ["Firefox Devtools", "AXE Webextension"];
@@ -400,39 +366,15 @@ const isDevMode = useDevMode();
 
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-    <DsfrField
-      id="temp-technologies"
-      v-model="tempTechnologies"
+    <TagListField
+      v-model="technologies"
       label="Ajouter des technologies"
       hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
-      type="text"
-      :required="!validatedTechnologies.length"
-      @keydown.enter.prevent="validateTechnologies"
-    />
-
-    <ul class="fr-tags-group">
-      <li v-for="(techno, i) in validatedTechnologies" :key="i">
-        <!-- TODO: generate unique ids for each techno, using i is bugged. See how it's done in TransverseElementsList.vue -->
-        <button
-          ref="validatedTechnologiesRefs"
-          class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
-          type="button"
-          @click="removeTechnology(i)"
-        >
-          <span class="fr-sr-only">Retirer</span>
-          {{ techno }}
-        </button>
-      </li>
-    </ul>
-
-    <button
-      ref="validateTechnologiesRef"
-      class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
-      type="button"
-      @click="validateTechnologies"
     >
-      Valider les technologies
-    </button>
+      <template #addLabel>
+        Ajouter <span class="fr-sr-only">les technologies</span>
+      </template>
+    </TagListField>
 
     <div class="fr-form-group">
       <fieldset class="fr-fieldset fr-mb-4w">
