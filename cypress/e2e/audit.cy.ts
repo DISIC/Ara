@@ -1,6 +1,7 @@
 import * as auditJson from "../fixtures/audit.json";
 import * as statementJson from "../fixtures/statement.json";
 import { TabSlug } from "../../confiture-web-app/src/enums";
+import { slugify } from "../../confiture-web-app/src/utils";
 
 describe("Audit", () => {
   it("User can create an audit", () => {
@@ -114,6 +115,16 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
       cy.get("h1").contains("Audit de mon gros site");
+    });
+  });
+
+  it("User can display the audit at a given tab directly thanks to a URL slug", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      const slug = slugify(auditJson.pages[2].name);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
+      cy.get(`.tabs button[data-slug="${slug}"]`).should("exist")
+          .invoke('attr', 'aria-selected')
+          .should('eq', 'true');
     });
   });
 
