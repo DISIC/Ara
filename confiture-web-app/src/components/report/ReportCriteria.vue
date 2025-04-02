@@ -16,7 +16,6 @@ defineProps<{
 // Set active side menu link
 const route = useRoute();
 
-/** Functions */
 function isActive(id: string) {
   return route.hash && route.hash === id;
 }
