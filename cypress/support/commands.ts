@@ -99,6 +99,7 @@ interface CreateTestAuditOptions {
   isPristine?: boolean;
   hasNoImprovementsComments?: boolean;
   auditorEmail?: string;
+  fillStatement?: boolean;
 }
 
 /**
@@ -110,6 +111,7 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     isPristine: options?.isPristine,
     noImprovements: options?.hasNoImprovementsComments,
     auditorEmail: options?.auditorEmail,
+    fillStatement: options?.fillStatement,
   }).its("body");
 });
 

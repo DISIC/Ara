@@ -71,6 +71,7 @@ export class DebugController {
       isPristine: boolean;
       noImprovements: boolean;
       auditorEmail?: string;
+      fillStatement?: boolean;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -135,7 +136,29 @@ export class DebugController {
               }
             ]
           }
-        }
+        },
+
+        ...(body.fillStatement && {
+          initiator: "Mairie de Poueton-les-Bains",
+          auditorOrganisation: "2 devs, 1 Odette",
+          procedureUrl: "https://example.com",
+          contactEmail: "help@example.com",
+          contactFormUrl: "https://example.com/contact",
+          technologies: ["HTML", "CSS", "JavaScript"],
+          tools: ["Axe devtools", "Lighthouse"],
+          environments: {
+            createMany: {
+              data: [
+                {
+                  platform: "Ordinateur",
+                  operatingSystem: "MacOS",
+                  assistiveTechnology: "VoiceOver",
+                  browser: "Safari"
+                }
+              ]
+            }
+          }
+        })
       },
       include: {
         transverseElementsPage: true
