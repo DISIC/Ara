@@ -204,7 +204,7 @@ function resetFilters() {
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <section class="fr-mb-8w">
         <h3
-          :id="`${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`"
+          :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
           class="fr-h3 fr-mb-2w page-title"
         >
           {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}

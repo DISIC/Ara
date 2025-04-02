@@ -45,7 +45,7 @@ const improvementsCount = computed(() => {
       </h2>
       <section v-if="transverseImprovements.topics.length > 0" class="fr-mb-8w">
         <h3
-          :id="`${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`"
+          :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
           class="fr-h3 fr-mb-2w page-title"
         >
           {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
