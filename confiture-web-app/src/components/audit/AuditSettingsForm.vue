@@ -110,7 +110,7 @@ const backLinkLabel = computed(() => {
   <BackLink
     :label="backLinkLabel"
     :to="{
-      name: previousRoute.route?.name || 'audit-overview',
+      name: previousRoute.route?.name || 'audit-generation',
       params: previousRoute.route?.params
     }"
   />
