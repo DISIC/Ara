@@ -2,12 +2,6 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
-## 02/04/2025
-
-### Corrections 🐛
-
-- Corrige le calcul du nombre de critères non applicables par page dans le rapport ([#1029](https://github.com/DISIC/Ara/pull/1029))
-
 ## 26/03/2025
 
 ### Corrections 🐛
