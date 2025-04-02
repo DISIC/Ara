@@ -1,5 +1,7 @@
+import { TabSlug } from "../../confiture-web-app/src/enums";
 import * as auditJson from "../fixtures/audit.json";
 import * as statementJson from "../fixtures/statement.json";
+import { testTabReachByURL, testTabsWithPrevNext } from "./common";
 
 // FIXME: weird behaviour with page reloads (caused by "fake tabs"?)
 describe("Report", () => {
@@ -168,6 +170,36 @@ describe("Report", () => {
       ).then((els) => {
         expect(els).to.have.length(315);
       });
+    });
+  });
+
+  it("User can display the audit at a given tab directly thanks to a URL slug", () => {
+    cy.createTestAudit().then(({ reportId }) => {
+      const slug = TabSlug.REPORT_ERRORS_SLUG;
+      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
+      testTabReachByURL(slug);
+    });
+  });
+
+  it("User can go back to previous/next tab with navigator back and previous buttons", () => {
+    cy.createTestAudit().then(({ reportId }) => {
+      const slug = TabSlug.REPORT_ERRORS_SLUG;
+      const nextSlug = TabSlug.REPORT_IMPROVEMENTS_SLUG;
+      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
+      testTabsWithPrevNext(slug, nextSlug);
+    });
+  });
+
+  it("User can reach topics titles with anchors", () => {
+    cy.createTestAudit().then(({ reportId }) => {
+      const slug = TabSlug.REPORT_ERRORS_SLUG;
+      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
+      cy.get(".fr-sidemenu__link")
+        .should("exist")
+        .each(($el, index) => {
+          cy.wrap($el).click();
+          cy.get(".page-title").eq(index).should("exist").isWithinViewport();
+        });
     });
   });
 });

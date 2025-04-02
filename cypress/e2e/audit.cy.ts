@@ -1,7 +1,8 @@
-import * as auditJson from "../fixtures/audit.json";
-import * as statementJson from "../fixtures/statement.json";
 import { TabSlug } from "../../confiture-web-app/src/enums";
 import { slugify } from "../../confiture-web-app/src/utils";
+import * as auditJson from "../fixtures/audit.json";
+import * as statementJson from "../fixtures/statement.json";
+import { testTabReachByURL, testTabsWithPrevNext } from "./common";
 
 describe("Audit", () => {
   it("User can create an audit", () => {
@@ -122,10 +123,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
-      cy.get(`.tabs button[data-slug="${slug}"]`)
-        .should("exist")
-        .invoke("attr", "aria-selected")
-        .should("eq", "true");
+      testTabReachByURL(slug);
     });
   });
 
@@ -133,32 +131,8 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       const nextSlug = slugify(auditJson.pages[3].name);
-
       cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
-
-      cy.get(`.tabs button[aria-selected="true"]`)
-        .should("exist")
-        .parent()
-        .next()
-        .find("button")
-        .click();
-      cy.get(`.tabs button[aria-selected="true"]`)
-        .invoke("attr", "data-slug")
-        .should("eq", `${nextSlug}`);
-
-      cy.go("back");
-
-      cy.get(`.tabs button[data-slug="${slug}"]`)
-        .should("exist")
-        .invoke("attr", "aria-selected")
-        .should("eq", "true");
-
-      cy.go("forward");
-
-      cy.get(`.tabs button[data-slug="${nextSlug}"]`)
-        .should("exist")
-        .invoke("attr", "aria-selected")
-        .should("eq", "true");
+      testTabsWithPrevNext(slug, nextSlug);
     });
   });
 
