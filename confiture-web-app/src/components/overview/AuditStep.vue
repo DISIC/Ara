@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAuditStats } from "../../composables/useAuditStats";
+import { REFERENTIAL } from "../../enums";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
 import { formatDate, getCriteriaCount, pluralize } from "../../utils";
@@ -114,7 +115,7 @@ const auditIsInProgress = computed(() => {
 
           <div class="card-info">
             <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
-            <p class="fr-text--xs fr-mb-0">{{ audit.referencial }}</p>
+            <p class="fr-text--xs fr-mb-0">{{ REFERENTIAL }}</p>
           </div>
         </div>
         <span aria-hidden="true" class="audit-step-chart-separator" />

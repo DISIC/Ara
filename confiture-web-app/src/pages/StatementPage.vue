@@ -6,6 +6,7 @@ import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
+import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
 import { AuditStatus } from "../types";
 import { formatDate, getAuditStatus } from "../utils";
@@ -239,7 +240,7 @@ const siteUrl = computed(() => {
             L’audit de conformité réalisé par
             <strong>{{ report.data.context.auditorOrganisation }}</strong>
             révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des
-            critères du {{ report.data.context.referencial }} sont respectés.
+            critères du {{ REFERENTIAL }} sont respectés.
           </p>
 
           <template

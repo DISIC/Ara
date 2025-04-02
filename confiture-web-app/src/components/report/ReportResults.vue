@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
+import { REFERENTIAL } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
@@ -25,7 +26,7 @@ const stats = computed(() => {
             title: "Taux global de conformité",
             description: auditInProgress.value
               ? "(Disponible à la fin de l’audit)"
-              : report.data.context.referencial,
+              : REFERENTIAL,
             value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
             unit: "%",

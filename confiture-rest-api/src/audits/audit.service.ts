@@ -68,8 +68,6 @@ export class AuditService {
 
         creationDate: new Date(),
 
-        referencial: "RGAA version 4.1.2",
-
         procedureName: data.procedureName,
 
         auditType: data.auditType,
@@ -875,7 +873,6 @@ export class AuditService {
           assistiveTechnology: e.assistiveTechnology,
           browser: e.browser
         })),
-        referencial: audit.referencial,
         samples: sortBy(
           [audit.transverseElementsPage, ...audit.pages].map((p, i) => ({
             name: p.name,
