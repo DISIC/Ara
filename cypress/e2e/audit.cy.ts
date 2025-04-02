@@ -122,9 +122,10 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
-      cy.get(`.tabs button[data-slug="${slug}"]`).should("exist")
-          .invoke('attr', 'aria-selected')
-          .should('eq', 'true');
+      cy.get(`.tabs button[data-slug="${slug}"]`)
+        .should("exist")
+        .invoke("attr", "aria-selected")
+        .should("eq", "true");
     });
   });
 
@@ -137,31 +138,35 @@ describe("Audit", () => {
 
       cy.get(`.tabs button[aria-selected="true"]`)
         .should("exist")
-        .parent().next().find("button").click();
+        .parent()
+        .next()
+        .find("button")
+        .click();
       cy.get(`.tabs button[aria-selected="true"]`)
-        .invoke('attr', 'data-slug')
-        .should('eq', `${nextSlug}`);
+        .invoke("attr", "data-slug")
+        .should("eq", `${nextSlug}`);
 
-      cy.go('back');
+      cy.go("back");
 
       cy.get(`.tabs button[data-slug="${slug}"]`)
         .should("exist")
-        .invoke('attr', 'aria-selected')
-        .should('eq', 'true');
+        .invoke("attr", "aria-selected")
+        .should("eq", "true");
 
-      cy.go('forward');
+      cy.go("forward");
 
       cy.get(`.tabs button[data-slug="${nextSlug}"]`)
         .should("exist")
-        .invoke('attr', 'aria-selected')
-        .should('eq', 'true');
+        .invoke("attr", "aria-selected")
+        .should("eq", "true");
     });
   });
 
   it("User can reach topics titles with anchors", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
-      cy.get(".topic-filter-anchor").should("exist")
+      cy.get(".topic-filter-anchor")
+        .should("exist")
         .each(($el, index) => {
           cy.wrap($el).click();
           cy.get(`#${index + 1}`).isWithinViewport();
