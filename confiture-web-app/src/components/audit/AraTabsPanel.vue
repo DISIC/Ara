@@ -1,13 +1,10 @@
 <script setup lang="ts">
-/** Types */
 interface AraTabsPanelSlots {
   default: () => void;
 }
 
-/** Slots */
 defineSlots<AraTabsPanelSlots>();
 
-/** Props */
 const { panelId, labelledBy } = defineProps<{
   panelId: string;
   labelledBy: string;

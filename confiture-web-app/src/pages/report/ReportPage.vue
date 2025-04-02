@@ -17,26 +17,19 @@ import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
 
-/** Props */
 const props = defineProps<{
   tabSlug: string; // given by router (props: true). TODO check why needed here and not on AuditGenerationPage
   uniqueId: string;
 }>();
 
-/** Variables */
 const uniqueId = props.uniqueId;
 
-/** Stores */
 const report = useReportStore();
 
-/** Routing */
 const router = useRouter();
 
-/** Refs */
 const showCopyAlert = ref(false);
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
-
-/** Computed properties */
 
 const hasNotes = computed(() => {
   return !!report.data?.notes || report.data?.notesFiles.length;
@@ -110,7 +103,6 @@ const siteUrl = computed(() => {
   return null;
 });
 
-/** Functions */
 async function copyReportUrl() {
   const url =
     window.location.origin +
@@ -129,12 +121,8 @@ function onOnboardingClose() {
   localStorage.setItem("confiture:seen-onboarding", "true");
 }
 
-/** Lifecycle hooks */
-
-/** Note: here useWrappedFetch uses onMounted callback */
+// Note: here useWrappedFetch uses onMounted callback
 useWrappedFetch(() => report.fetchReport(uniqueId), false);
-
-/** Watchers */
 
 watch(
   () => report.data,

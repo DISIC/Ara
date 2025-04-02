@@ -13,7 +13,6 @@ import { getReportErrors } from "./getReportErrors";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportErrorCriterium from "./ReportErrorCriterium.vue";
 
-/** Store */
 const report = useReportStore();
 
 // Filters

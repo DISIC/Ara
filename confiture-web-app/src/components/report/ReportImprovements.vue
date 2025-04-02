@@ -8,7 +8,6 @@ import { getReportImprovements } from "./getReportImprovements";
 import ReportCriteria from "./ReportCriteria.vue";
 import ReportImprovementCriterium from "./ReportImprovementCriterium.vue";
 
-/** Store */
 const report = useReportStore();
 
 const transverseImprovements = computed(() => {

@@ -446,8 +446,6 @@ router.afterEach(async (to, from) => {
   }
 });
 
-/** Functions */
-
 function isTabNavigation(
   to: RouteLocationNormalized,
   from: RouteLocationNormalized

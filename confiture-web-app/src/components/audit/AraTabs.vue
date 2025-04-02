@@ -15,7 +15,6 @@ import { useUniqueId } from "../../composables/useUniqueId";
 import { TabData } from "../../types";
 import { slugify } from "../../utils";
 
-/** Types */
 interface TabsRouteParams {
   name: string;
   params: {
@@ -23,22 +22,20 @@ interface TabsRouteParams {
   };
 }
 
-/**
- * Props
- * - tabs: array of tab data objects
- * - route: route parameters common to all tabs
- * - stickyTop: CSS top value (e.g. "0", "4px" or "1rem"). Default is "0";
- * - panelScrollBehavior:
- * 		- "sameCriteria" tries to scroll page to the same
- * 			criteria as previous tab (e.g. for Audit)
- *    - "tabsTop" always scrolls to push the tabs panel at the top
- *      of the screen (e.g. for Report)
- */
 const props = withDefaults(
   defineProps<{
+    /** Array of tab data objects */
     tabs: TabData[];
+    /** Route parameters common to all tabs */
     route: TabsRouteParams;
+    /** CSS top value (e.g. "0", "4px" or "1rem"). Default is "0" */
     stickyTop?: string;
+    /**
+     * - "sameCriteria" tries to scroll page to the same
+     *   criteria as previous tab (e.g. for Audit)
+     * - "tabsTop" always scrolls to push the tabs panel at the top
+     *   of the screen (e.g. for Report)
+     */
     panelScrollBehavior?: "tabsTop" | "sameCriteria";
   }>(),
   {
@@ -87,7 +84,6 @@ if (new Set(tabSlugsArray).size !== tabSlugsArray.length) {
   );
 }
 
-/** Refs */
 const selectedTabIndex = ref<number>(0);
 const selectedTabSlug = ref<string>("");
 const stickyTop = ref(props.stickyTop);
@@ -95,24 +91,18 @@ const tabButtonsRef = ref<HTMLButtonElement[]>();
 const panelBottomMarkerRef = ref<HTMLDivElement>();
 const panelMinHeight = ref<string>("0");
 
-/** Composables */
 const uniqueId = useUniqueId();
 
-/** Routing */
 const router = useRouter();
 const routerRoute = useRoute();
 
-/** Event: "selectedTabChange" */
 const emit = defineEmits<{
   (e: "selectedTabChange", selectedTabIndex: number): void;
 }>();
 
-/** Computed properties */
 const selectedTab = computed(() => {
   return props.tabs[selectedTabIndex.value];
 });
-
-/** Functions */
 
 function tabId(i: number) {
   return "tab-" + uniqueId.value + "-" + i;
@@ -129,7 +119,7 @@ function panelId(i: number) {
  *       it will be updated **after route update**
  *       See watchEffect
  *
- * @param {number} i New index to focus
+ * @param i New index to focus
  */
 function selectTab(i: number) {
   if (i === selectedTabIndex.value) {
@@ -166,8 +156,6 @@ function selectLastTab() {
   selectTab(props.tabs.length - 1);
 }
 
-/** Lifecycle hooks */
-
 onMounted(() => {
   // Dynamic panel minimum height.
   // Allows tabs to stick to the top of the screen
@@ -185,7 +173,6 @@ onMounted(() => {
   });
 });
 
-/** Watchers */
 watchEffect(() => {
   // stickyTop can change on window resize
   stickyTop.value = props.stickyTop;
@@ -383,10 +370,8 @@ li {
   border: 1px solid var(--border-default-grey);
   border-top: none;
   padding: 2rem;
-  /**
-	 * Allow tabs to stick to the top of the screen
-	 * even if content is not high enough:
-	 */
+  /* Allow tabs to stick to the top of the screen
+	 * even if content is not high enough: */
   min-height: var(--min-height);
 }
 </style>

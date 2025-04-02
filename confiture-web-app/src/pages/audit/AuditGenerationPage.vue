@@ -20,12 +20,9 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditType, CriteriumResultStatus, TabData } from "../../types";
 import { pluralize } from "../../utils";
 
-/** Props */
 const props = defineProps<{
   uniqueId: string;
 }>();
-
-/** Refs */
 
 const showFilters = ref(true);
 
@@ -38,12 +35,10 @@ const stickyIndicator = ref();
 
 const stickyTop = ref("0px");
 
-/** Stores */
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
 const filterStore = useFiltersStore();
 
-/** Composables */
 const {
   complianceLevel,
   compliantCriteriaCount,
@@ -51,8 +46,6 @@ const {
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
-
-/** Computed properties */
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
@@ -198,8 +191,6 @@ const tabsData = computed((): TabData[] => {
   ];
 });
 
-/** Functions */
-
 /**
  * Updates audit store `currentPageId` given a tab index.
  * Usefull for synchronising filters with current page (on tab change)
@@ -225,9 +216,7 @@ function toggleFilters(doShow: boolean) {
   showFilters.value = doShow;
 }
 
-/** Lifecycle hooks */
-
-/** Note: here useWrappedFetch uses onMounted callback */
+// Note: here useWrappedFetch uses onMounted callback
 useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(props.uniqueId);
@@ -240,12 +229,9 @@ useWrappedFetch(async () => {
   });
 }, false);
 
-/** Navigation guards */
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
 });
-
-/** Watchers */
 
 watch(
   () => auditStore.currentAudit?.pages,
