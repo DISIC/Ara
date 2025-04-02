@@ -248,7 +248,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.technologies);
 
-      cy.contains("button", "Valider les technologies").click();
+      cy.contains("button", "Ajouter les technologies").click();
 
       // Tools
       cy.contains("Web Developer Toolbar").click();
@@ -257,7 +257,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.tools);
 
-      cy.contains("button", "Valider les outils").click();
+      cy.contains("button", "Ajouter les outils").click();
 
       // Environments
       cy.contains("Combinaison 1").click();
