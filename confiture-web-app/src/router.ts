@@ -386,14 +386,11 @@ const router = createRouter({
     if (isTabNavigation(to, from)) {
       const tabs = document.querySelector(".tabs-wrapper") as HTMLElement;
       if (!tabs) {
-        console.warn(
-          'When navigating between tabs with the "tabSlug" route parameter, \
-					there should be an Element with class "tabs-wrapper"'
-        );
+        // When navigating between tabs with the "tabSlug" route parameter,
+        // there should be an Element with class "tabs-wrapper"
+        console.warn("No tabs?!");
       } else {
-        if (isTabNavigation(to, from)) {
-          horizontalScrollToNewTab(to.params.tabSlug as string);
-        }
+        horizontalScrollToNewTab(to.params.tabSlug as string);
         const behavior = tabs.dataset.panelScrollBehavior;
         if (behavior === "tabsTop") {
           return scrollToTabPanelTop(tabs);
@@ -465,6 +462,8 @@ function isTabNavigation(
 function horizontalScrollToNewTab(tabSlug: string) {
   const tabs = document.querySelector(".tabs-wrapper") as HTMLElement;
   if (!tabs) {
+    // When navigating between tabs with the "tabSlug" route parameter,
+    // there should be an Element with class "tabs-wrapper"
     console.warn("No tabs?");
     return;
   }
@@ -477,12 +476,12 @@ function horizontalScrollToNewTab(tabSlug: string) {
 }
 
 function scrollToTop() {
-  console.info(`⬆ scroll to top`);
+  // console.info(`⬆ scroll to top`);
   return { top: 0 };
 }
 
 function scrollToHash(hash: string) {
-  console.info(`⇣ scroll to hash(${hash})`);
+  // console.info(`⇣ scroll to hash(${hash})`);
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, () => {
       const hashEl = document.querySelector(
@@ -502,13 +501,11 @@ function scrollToHash(hash: string) {
 }
 
 async function scrollToSavedPosition(savedPosition: ScrollPosition) {
-  const { left, top } = savedPosition;
-
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async () => {
       const htmlEl = document.getElementsByTagName("html")[0];
       if (htmlEl.scrollHeight > htmlEl.clientHeight) {
-        console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
+        // console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
         resolve(savedPosition);
         stop();
       }
@@ -517,7 +514,7 @@ async function scrollToSavedPosition(savedPosition: ScrollPosition) {
 }
 
 function scrollToTabPanelTop(tabs: HTMLElement) {
-  console.info(`⬆ scroll to tabs panel top`);
+  // console.info(`⬆ scroll to tabs panel top`);
 
   const panel = tabs.nextElementSibling as HTMLElement;
   const tabComputedStyle = window.getComputedStyle(tabs);
@@ -546,7 +543,7 @@ function scrollToTabPanelTop(tabs: HTMLElement) {
  * @todo TODO: scroll to a smart position (same criteria as previous tabSlug?)
  */
 async function scrollToElement(el: HTMLElement) {
-  console.info(`⇣ scroll to element ${el.className || el.id}`);
+  // console.info(`⇣ scroll to element ${el.className || el.id}`);
 
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async (entries) => {
