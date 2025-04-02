@@ -20,17 +20,17 @@ const auditIsReady = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w report-step-heading">
+    <div class="fr-mb-2w step-card-heading">
       <span
         v-if="auditIsReady"
         id="report-step-status"
-        class="fr-icon--lg fr-icon-checkbox-circle-fill report-step-check"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill step-card-check"
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
       <component
         :is="headingLevel"
-        class="fr-h3 fr-mb-0 report-step-title"
+        class="fr-h3 fr-mb-0 step-card-title"
         aria-describedby="report-step-status"
       >
         Rapport d’audit
@@ -85,25 +85,6 @@ const auditIsReady = computed(() => {
 </template>
 
 <style scoped>
-.report-step-heading {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  grid-column: 1 / -1;
-}
-
-.report-step-title {
-  /* FIXME: DSFR default badges dont align. Those with icons does. */
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.report-step-check {
-  color: var(--text-default-success);
-}
-
 .report-step-description {
   grid-column: 1 / -1;
   grid-row: 2;
