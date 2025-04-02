@@ -5,6 +5,6 @@ import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 </script>
 
 <template>
-  <PageMeta title="Notes de versions" />
+  <PageMeta title="Notes de version" />
   <MarkdownRenderer :markdown="changelogMarkdown" />
 </template>

@@ -291,7 +291,7 @@ const router = createRouter({
       name: "changelog",
       component: ChangelogPage,
       meta: {
-        name: "Notes de versions"
+        name: "Notes de version"
       }
     },
     // Feedback page
