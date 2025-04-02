@@ -158,6 +158,17 @@ describe("Audit", () => {
     });
   });
 
+  it("User can reach topics titles with anchors", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
+      cy.get(".topic-filter-anchor").should("exist")
+        .each(($el, index) => {
+          cy.wrap($el).click();
+          cy.get(`#${index + 1}`).isWithinViewport();
+        });
+    });
+  });
+
   it("User can edit pages", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
