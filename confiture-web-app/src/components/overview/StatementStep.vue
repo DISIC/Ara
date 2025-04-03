@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
+import router from "../../router";
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import CopyBlock from "../ui/CopyBlock.vue";
+import CopyIcon from "../icons/CopyIcon.vue";
 import StepCard from "./StepCard.vue";
 
 const props = defineProps<{
@@ -16,9 +17,33 @@ const resultsStore = useResultsStore();
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
 });
+
 const auditIsPublishable = computed(() => {
   return !!props.audit.initiator;
 });
+
+const statementUrl = computed(
+  () =>
+    window.location.origin +
+    router.resolve({
+      name: "audit-declaration",
+      params: { uniqueId: props.audit.editUniqueId }
+    }).fullPath
+);
+
+const showCopyAlert = ref(false);
+const copyButtonRef = ref<HTMLButtonElement>();
+
+function copyStatementUrl() {
+  navigator.clipboard.writeText(statementUrl.value).then(() => {
+    showCopyAlert.value = true;
+  });
+}
+
+function onStatementAlertClose() {
+  copyButtonRef.value?.focus();
+  showCopyAlert.value = false;
+}
 </script>
 
 <template>
@@ -38,6 +63,15 @@ const auditIsPublishable = computed(() => {
       >
         Déclaration d’accessibilité
       </component>
+      <RouterLink
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line statement-step-settings-link"
+        :to="{
+          name: 'audit-declaration',
+          params: { uniqueId: audit.editUniqueId }
+        }"
+      >
+        Modifier
+      </RouterLink>
     </div>
 
     <p class="statement-step-description">
@@ -54,12 +88,9 @@ const auditIsPublishable = computed(() => {
     </p>
 
     <ul
-      :class="[
-        'fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions',
-        { 'fr-mb-3w': auditIsPublishable }
-      ]"
+      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions"
     >
-      <li>
+      <li class="fr-mb-2w fr-mb-md-0">
         <RouterLink
           :to="
             auditIsPublishable
@@ -75,7 +106,7 @@ const auditIsPublishable = computed(() => {
                 }
           "
           :target="auditIsPublishable ? '_blank' : null"
-          class="fr-btn fr-btn--icon-left fr-mb-md-0"
+          class="fr-btn fr-btn--icon-left fr-mb-0"
           :class="{
             'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
             'fr-icon-edit-line no-external-icon': !auditIsPublishable
@@ -93,63 +124,72 @@ const auditIsPublishable = computed(() => {
         </RouterLink>
       </li>
       <li v-if="auditIsPublishable">
-        <RouterLink
-          :to="{
-            name: 'audit-declaration',
-            params: { uniqueId: audit.editUniqueId }
-          }"
-          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-md-0"
+        <button
+          ref="copyButtonRef"
+          class="fr-btn fr-btn--secondary fr-mb-0"
+          @click="copyStatementUrl"
         >
-          Modifier
-        </RouterLink>
+          <CopyIcon class="fr-mr-2v" />
+          Copier le lien de partage
+          <span class="fr-sr-only">de la déclaration</span>
+        </button>
       </li>
     </ul>
 
-    <template v-if="auditIsPublishable">
-      <CopyBlock
-        class="fr-m-0 statement-step-copy-block"
-        :button-class="'fr-btn--secondary'"
-        :to="{
-          name: 'a11y-statement',
-          params: {
-            uniqueId: audit.consultUniqueId
-          }
-        }"
-        label="Lien de partage"
-        title="Lien de partage de la déclaration d’accessibilité"
-        success-message="Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier."
-      />
-    </template>
+    <div role="alert" aria-live="polite" class="statement-step-alert">
+      <div
+        v-if="showCopyAlert"
+        class="fr-alert fr-alert--success fr-alert--sm fr-mt-2w"
+      >
+        <p>
+          Le lien vers la déclaration d’accessibilité a bien été copié dans le
+          presse-papier.
+        </p>
+        <button class="fr-link--close fr-link" @click="onStatementAlertClose">
+          Masquer le message
+        </button>
+      </div>
+    </div>
   </StepCard>
 </template>
 
 <style scoped>
+.statement-step-settings-link {
+  margin-inline-start: auto;
+
+  @media (width < 36rem) {
+    margin-inline-start: initial;
+  }
+}
+
 .statement-step-description {
   grid-column: 1 / -1;
   grid-row: 2;
 }
 
+/* FIXME: overrides fr-btns-group style */
 .statement-step-actions {
   grid-column: 1 / -1;
-}
 
-/* FIXME: overrides fr-btns-group style */
-.statement-step-actions > li:first-child {
-  width: 50%;
-}
+  li:first-child {
+    width: 50%;
 
-.statement-step-actions > li > a {
-  width: 100%;
-}
-
-.statement-step-copy-block {
-  grid-column: 1 / -1;
-  grid-row: 4;
-}
-
-@media (width < 48rem) {
-  .statement-step-actions > li:first-child {
-    width: 100%;
+    @media (width < 48rem) {
+      width: 100%;
+    }
   }
+
+  li:last-child {
+    min-width: 18rem;
+  }
+
+  li > a,
+  li > button {
+    width: calc(100% - 1rem);
+  }
+}
+
+.statement-step-alert {
+  grid-column: 1 / -1;
 }
 </style>
