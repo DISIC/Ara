@@ -8,8 +8,8 @@ import { formatUserImpact } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import Tiptap from "../ui/Tiptap.vue";
 import LazyAccordion from "./LazyAccordion.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
 
 export interface Props {
   id: string;
@@ -73,7 +73,7 @@ function onFileRequestFinished() {
 }
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentFieldRef = ref<HTMLTextAreaElement>();
+const commentEditorRef = ref<InstanceType<typeof Tiptap>>();
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -89,7 +89,7 @@ function lazyAccordionOpened() {
     return;
   }
 
-  commentFieldRef.value?.focus();
+  commentEditorRef.value?.focusEditor();
   hasJustBeenSetAsNotCompliant = false;
 }
 
@@ -104,25 +104,17 @@ const title = "Erreur et recommandation";
     @opened="lazyAccordionOpened"
   >
     <!-- COMMENT -->
-    <div class="fr-input-group fr-mb-1w">
-      <label class="fr-label" :for="`criterum-comment-field-${id}`">
-        {{ title }}
-      </label>
-      <textarea
-        :id="`criterum-comment-field-${id}`"
-        ref="commentFieldRef"
-        :value="comment ?? ''"
-        class="fr-input"
-        rows="5"
-        :disabled="isOffline"
-        :aria-describedby="`markdown-notice-${id}`"
-        @input="
-          $emit('update:comment', ($event.target as HTMLTextAreaElement).value)
-        "
-      ></textarea>
-    </div>
-
-    <MarkdownHelpButton :id="`markdown-notice-${id}`" class="fr-mb-4w" />
+    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
+      {{ title }}
+    </p>
+    <Tiptap
+      ref="commentEditorRef"
+      class="fr-mb-4w"
+      :model-value="comment"
+      :labelled-by="`criterum-comment-field-${id}`"
+      :disabled="isOffline"
+      @update:model-value="$emit('update:comment', $event)"
+    />
 
     <!-- FILE -->
     <FileUpload
@@ -216,12 +208,6 @@ const title = "Erreur et recommandation";
 </template>
 
 <style scoped>
-.markdown-notice {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .user-impact-label {
   display: flex;
   align-items: center;

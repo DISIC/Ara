@@ -16,23 +16,29 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { onBeforeUnmount, ShallowRef } from "vue";
+import { Markdown } from "tiptap-markdown";
+import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
+import { useUniqueId } from "../../composables/useUniqueId";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
   modelValue?: string | null;
   editable?: boolean;
   labelledBy?: string | null;
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: "",
   editable: true,
+  disabled: false,
   labelledBy: null
 });
 
 const emit = defineEmits(["update:modelValue"]);
+
+const uniqueId = useUniqueId();
 
 // Define needed heading levels
 const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -84,12 +90,13 @@ function setLink() {
 }
 
 // Editor attributes to create an accessible textarea
-const editorAttributes: any = {
-  "aria-describedby": "tiptap-description",
-  rows: "10",
-  "aria-multiline": "true",
-  role: "textbox"
-};
+const editorAttributes: any = props.editable
+  ? {
+      "aria-describedby": "tiptap-description",
+      "aria-multiline": "true",
+      role: "textbox"
+    }
+  : undefined;
 
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
@@ -153,7 +160,8 @@ const extensions: Extensions = [
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
-  })
+  }),
+  Markdown
 ];
 
 if (props.editable) {
@@ -167,28 +175,45 @@ const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
   },
-  editable: props.editable,
+  editable: props.editable && !props.disabled,
   content: getContent(),
   extensions,
   onUpdate({ editor }) {
+    // FIXME: only trigger emit when content actually changed
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
 
+watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
+  editor.value.setEditable(editable && !disabled);
+});
+
 onBeforeUnmount(() => {
   editor.value?.destroy();
+});
+
+defineExpose({
+  focusEditor: () => {
+    editor.value.commands.focus();
+  }
 });
 </script>
 
 <template>
   <div
     class="tiptap-container"
-    :class="editable ? 'tiptap-container--editable' : null"
+    :class="{
+      'tiptap-container--not-editable': !editable,
+      'tiptap-container--disabled': disabled
+    }"
   >
-    <p id="tiptap-description" class="fr-sr-only">
-      Éditeur de texte riche, vous pouvez utiliser le format Markdown ou bien
-      utiliser les raccourcis clavier.
+    <p
+      v-if="editable"
+      :id="`tiptap-description-${uniqueId}`"
+      class="fr-sr-only"
+    >
+      Éditeur de texte riche
     </p>
     <ul v-if="editable" class="tiptap-buttons">
       <li>
@@ -199,7 +224,7 @@ onBeforeUnmount(() => {
               switch-off-label="Retirer le gras"
               icon="bold"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleBold()"
+              :disabled="!editor?.can().toggleBold() || disabled"
               :pressed="editor?.isActive('bold')"
               @click="editor.chain().focus().toggleBold().run()"
             />
@@ -210,7 +235,7 @@ onBeforeUnmount(() => {
               switch-off-label="Retirer l’italique"
               icon="italic"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleItalic()"
+              :disabled="!editor?.can().toggleItalic() || disabled"
               :pressed="editor?.isActive('italic')"
               @click="editor.chain().focus().toggleItalic().run()"
             />
@@ -221,7 +246,7 @@ onBeforeUnmount(() => {
               switch-off-label="Ne pas barrer le texte"
               icon="strikethrough"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleStrike()"
+              :disabled="!editor?.can().toggleStrike() || disabled"
               :pressed="editor?.isActive('strike')"
               @click="editor.chain().focus().toggleStrike().run()"
             />
@@ -233,7 +258,8 @@ onBeforeUnmount(() => {
               :icon="`h-${i + 1}`"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleHeading({ level: hLevel as Level })
+                !editor?.can().toggleHeading({ level: hLevel as Level }) ||
+                disabled
               "
               :pressed="editor?.isActive('heading', { level: hLevel })"
               @click="
@@ -255,7 +281,7 @@ onBeforeUnmount(() => {
               switch-off-label="Éditer le lien"
               icon="link"
               :is-toggle="true"
-              :disabled="!editor?.can().setLink({ href: 'test' })"
+              :disabled="!editor?.can().setLink({ href: 'test' }) || disabled"
               :pressed="editor?.isActive('link')"
               @click="setLink"
             />
@@ -271,8 +297,9 @@ onBeforeUnmount(() => {
               icon="list-unordered"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleBulletList() &&
-                !editor?.can().toggleOrderedList()
+                (!editor?.can().toggleBulletList() &&
+                  !editor?.can().toggleOrderedList()) ||
+                disabled
               "
               :pressed="editor?.isActive('bulletList')"
               @click="editor.chain().focus().toggleBulletList().run()"
@@ -285,8 +312,9 @@ onBeforeUnmount(() => {
               icon="list-ordered"
               :is-toggle="true"
               :disabled="
-                !editor?.can().toggleBulletList() &&
-                !editor?.can().toggleOrderedList()
+                (!editor?.can().toggleBulletList() &&
+                  !editor?.can().toggleOrderedList()) ||
+                disabled
               "
               :pressed="editor?.isActive('orderedList')"
               @click="editor.chain().focus().toggleOrderedList().run()"
@@ -302,7 +330,7 @@ onBeforeUnmount(() => {
               switch-off-label="Ne pas définir comme citation"
               icon="quote-line"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleBlockquote()"
+              :disabled="!editor?.can().toggleBlockquote() || disabled"
               :pressed="editor?.isActive('blockquote')"
               @click="editor.chain().focus().toggleBlockquote().run()"
             />
@@ -313,7 +341,7 @@ onBeforeUnmount(() => {
               switch-off-label="Ne pas définir comme passage de code"
               icon="code-view"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleCode()"
+              :disabled="!editor?.can().toggleCode() || disabled"
               :pressed="editor?.isActive('code')"
               @click="editor.chain().focus().toggleCode().run()"
             />
@@ -324,7 +352,7 @@ onBeforeUnmount(() => {
               switch-off-label="Ne pas définir comme bloc de code"
               icon="code-block"
               :is-toggle="true"
-              :disabled="!editor?.can().toggleCodeBlock()"
+              :disabled="!editor?.can().toggleCodeBlock() || disabled"
               :pressed="editor?.isActive('codeBlock')"
               @click="editor.chain().focus().toggleCodeBlock().run()"
             />
@@ -346,10 +374,36 @@ onBeforeUnmount(() => {
   position: relative;
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 0.5rem 0.75rem;
   border: 0 solid var(--border-plain-grey);
   border-bottom-width: 1px;
-  min-height: 30rem;
+
+  /* Override bg color in dark mode to avoid same color as wrapper */
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--background-contrast-grey);
+  }
+}
+
+.tiptap-container--not-editable {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+
+  .tiptap {
+    min-height: 0;
+  }
+}
+
+.tiptap-container--disabled:hover {
+  cursor: not-allowed;
+}
+
+.tiptap-container--disabled .tiptap * {
+  color: var(--text-disabled-grey);
+}
+
+.tiptap {
+  min-height: 10rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .tiptap img {
@@ -364,8 +418,8 @@ onBeforeUnmount(() => {
 
 .tiptap:focus,
 .tiptap:focus-visible {
-  outline-width: 3px !important;
-  outline-offset: 0 !important;
+  outline-width: 2px !important;
+  outline-offset: -2px !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -409,6 +463,15 @@ onBeforeUnmount(() => {
   width: var(--icon-size);
 }
 
+/* Update DSFR ::marker styles ("1.1.", "1.2." to "1.", "2.") */
+.tiptap ol {
+  counter-reset: list-item;
+}
+
+.tiptap li::marker {
+  --ol-content: list-item 1;
+}
+
 .tiptap blockquote p {
   font-size: 1.25rem;
   font-weight: 700;
@@ -432,14 +495,10 @@ onBeforeUnmount(() => {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   position: sticky;
+  background-color: inherit;
   top: 0;
   z-index: 1;
-  background-color: var(--background-alt-grey);
-  margin-block-end: 0.5rem;
-  padding-block: 0.25rem;
-  width: calc(100% + 1.5rem);
-  transform: translateX(-0.75rem);
-  padding-inline: 0.75rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .titptap-buttons::-webkit-scrollbar {
