@@ -170,7 +170,7 @@ function copyStatementLink(uniqueId: string) {
     </RouterLink>
 
     <!-- Creation date -->
-    <p class="fr-mb-0 audit-date">
+    <p class="fr-mb-0">
       <span class="fr-sr-only-md">Date de création : </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
@@ -178,7 +178,7 @@ function copyStatementLink(uniqueId: string) {
     </p>
 
     <!-- Type -->
-    <p class="fr-mb-0 audit-type">
+    <p class="fr-mb-0">
       <span class="fr-sr-only">Type </span>
       {{ getCriteriaCount(audit.auditType) }} critères
     </p>
@@ -226,7 +226,7 @@ function copyStatementLink(uniqueId: string) {
       <p v-else class="fr-m-0">
         Non-applicable
         <button
-          class="fr-btn--tooltip fr-btn audit-compliance-level-tooltip"
+          class="fr-btn--tooltip fr-btn"
           :aria-describedby="`compliance-tooltip-${zIndex}`"
         >
           Information contextuelle
@@ -432,42 +432,10 @@ function copyStatementLink(uniqueId: string) {
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
-  position: relative;
-  transition: background 0.25s ease;
 
   @media (width < 55rem) {
     grid-template-columns: 1fr;
   }
-}
-
-.grid:hover,
-.grid:focus-within {
-  background: var(--background-raised-grey-hover);
-}
-
-.audit-name {
-  background-image: none;
-  z-index: 1;
-}
-
-.audit-name:focus {
-  outline: none;
-}
-.audit-name:focus-visible::before {
-  outline: 2px solid var(--dsfr-outline);
-}
-
-.audit-name::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-}
-
-.audit-status,
-.audit-date,
-.audit-type {
-  pointer-events: none;
-  z-index: 1;
 }
 
 .audit-compliance-level {
@@ -478,16 +446,10 @@ function copyStatementLink(uniqueId: string) {
   }
 }
 
-.audit-compliance-level-tooltip {
-  position: relative;
-  z-index: 1;
-}
-
 /* Make button take full column width */
 .audit-main-action {
   justify-content: center;
   width: initial;
-  z-index: 1;
 }
 
 .main-action-icon {
@@ -495,6 +457,6 @@ function copyStatementLink(uniqueId: string) {
 }
 
 .delete-button {
-  color: var(--error-425-625);
+  color: var(--background-action-high-error);
 }
 </style>
