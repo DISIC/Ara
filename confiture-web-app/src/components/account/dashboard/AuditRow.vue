@@ -164,7 +164,7 @@ function copyStatementLink(uniqueId: string) {
     <!-- Name -->
     <RouterLink
       :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
-      class="audit-name"
+      class="fr-link audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
@@ -435,6 +435,17 @@ function copyStatementLink(uniqueId: string) {
 
   @media (width < 55rem) {
     grid-template-columns: 1fr;
+  }
+}
+
+.audit-name {
+  background-image: none;
+  color: inherit;
+  justify-self: start;
+
+  &:hover {
+    color: var(--text-action-high-blue-france);
+    text-decoration: underline;
   }
 }
 
