@@ -73,7 +73,7 @@ function onReportAlertClose() {
     <ul
       class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left report-step-actions"
     >
-      <li>
+      <li class="fr-mb-2w fr-mb-md-0">
         <RouterLink
           :to="{
             name: 'report',
@@ -123,20 +123,24 @@ function onReportAlertClose() {
   grid-row: 2;
 }
 
-.report-step-copy-block {
-  grid-column: 1 / -1;
-  grid-row: 4;
-}
-
 .report-step-actions {
   grid-column: 1 / -1;
 
   li:first-child {
     width: 50%;
+
+    @media (width < 48rem) {
+      width: 100%;
+    }
   }
 
-  li > a {
-    width: 100%;
+  li:last-child {
+    min-width: 18rem;
+  }
+
+  li > a,
+  li > button {
+    width: calc(100% - 1rem);
   }
 }
 
