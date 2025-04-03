@@ -166,14 +166,17 @@ function copyStatementLink(uniqueId: string) {
   <div class="fr-p-2w grid">
     <!-- Name -->
     <RouterLink
-      :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
-      class="audit-name"
+      :to="{
+        name: 'audit-generation',
+        params: { uniqueId: audit.editUniqueId }
+      }"
+      class="fr-link audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
     </RouterLink>
 
     <!-- Creation date -->
-    <p class="fr-mb-0 audit-date">
+    <p class="fr-mb-0">
       <span class="fr-sr-only-md">Date de création : </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
@@ -181,7 +184,7 @@ function copyStatementLink(uniqueId: string) {
     </p>
 
     <!-- Type -->
-    <p class="fr-mb-0 audit-type">
+    <p class="fr-mb-0">
       <span class="fr-sr-only">Type </span>
       {{ getCriteriaCount(audit.auditType) }} critères
     </p>
@@ -229,7 +232,7 @@ function copyStatementLink(uniqueId: string) {
       <p v-else class="fr-m-0">
         Non-applicable
         <button
-          class="fr-btn--tooltip fr-btn audit-compliance-level-tooltip"
+          class="fr-btn--tooltip fr-btn"
           :aria-describedby="`compliance-tooltip-${zIndex}`"
         >
           Information contextuelle
@@ -437,42 +440,21 @@ function copyStatementLink(uniqueId: string) {
   grid-gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
-  position: relative;
-  transition: background 0.25s ease;
 
   @media (width < 55rem) {
     grid-template-columns: 1fr;
   }
 }
 
-.grid:hover,
-.grid:focus-within {
-  background: var(--background-raised-grey-hover);
-}
-
 .audit-name {
   background-image: none;
-  z-index: 1;
-}
+  color: inherit;
+  justify-self: start;
 
-.audit-name:focus {
-  outline: none;
-}
-.audit-name:focus-visible::before {
-  outline: 2px solid var(--dsfr-outline);
-}
-
-.audit-name::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-}
-
-.audit-status,
-.audit-date,
-.audit-type {
-  pointer-events: none;
-  z-index: 1;
+  &:hover {
+    color: var(--text-action-high-blue-france);
+    text-decoration: underline;
+  }
 }
 
 .audit-compliance-level {
@@ -483,16 +465,10 @@ function copyStatementLink(uniqueId: string) {
   }
 }
 
-.audit-compliance-level-tooltip {
-  position: relative;
-  z-index: 1;
-}
-
 /* Make button take full column width */
 .audit-main-action {
   justify-content: center;
   width: initial;
-  z-index: 1;
 }
 
 .main-action-icon {
@@ -500,6 +476,6 @@ function copyStatementLink(uniqueId: string) {
 }
 
 .delete-button {
-  color: var(--error-425-625);
+  color: var(--background-action-high-error);
 }
 </style>
