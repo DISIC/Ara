@@ -64,7 +64,7 @@ function onStatementAlertClose() {
         Déclaration d’accessibilité
       </component>
       <RouterLink
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line statement-step-settings-link"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line statement-step-settings-link"
         :to="{
           name: 'audit-declaration',
           params: { uniqueId: audit.editUniqueId }
