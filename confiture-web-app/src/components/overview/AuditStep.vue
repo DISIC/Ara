@@ -37,17 +37,17 @@ const auditIsInProgress = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w audit-step-heading">
+    <div class="fr-mb-2w step-card-heading">
       <span
         v-if="auditIsReady"
         id="audit-step-status"
-        class="fr-icon--lg fr-icon-checkbox-circle-fill audit-step-check"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill step-card-check"
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
 
       <h2
-        class="fr-h3 fr-mb-0 audit-step-title"
+        class="fr-h3 fr-mb-0 step-card-title"
         aria-describedby="audit-step-status"
       >
         Audit
@@ -213,26 +213,12 @@ const auditIsInProgress = computed(() => {
 </template>
 
 <style scoped>
-.audit-step-heading {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  grid-column: 1 / -1;
-}
-
-.audit-step-title {
-  /* FIXME: DSFR default badges dont align. Those with icons does. */
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.audit-step-check {
-  color: var(--text-default-success);
-}
-
 .audit-step-settings-link {
   margin-inline-start: auto;
+
+  @media (width < 36rem) {
+    margin-inline-start: initial;
+  }
 }
 
 .audit-step-date {
