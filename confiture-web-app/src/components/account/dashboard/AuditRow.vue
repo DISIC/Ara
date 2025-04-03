@@ -163,7 +163,10 @@ function copyStatementLink(uniqueId: string) {
   <div class="fr-p-2w grid">
     <!-- Name -->
     <RouterLink
-      :to="{ name: 'audit-overview', params: { uniqueId: audit.editUniqueId } }"
+      :to="{
+        name: 'audit-generation',
+        params: { uniqueId: audit.editUniqueId }
+      }"
       class="fr-link audit-name"
     >
       <strong>{{ audit.procedureName }}</strong>
