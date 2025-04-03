@@ -103,7 +103,7 @@ function submitSettings(data: {
 
 <template>
   <PageMeta
-    title="Paramètres de l’audit"
+    :title="`Paramètres de ${auditStore.currentAudit?.procedureName}`"
     description="Vous pouvez modifier les paramètres d'un audit comme le type d'audit, l'échantillon des pages à auditer, le nom de votre audit et vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
   />
 

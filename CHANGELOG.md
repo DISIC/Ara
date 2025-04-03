@@ -1,4 +1,4 @@
-# Notes de versions
+# Notes de version
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
@@ -514,7 +514,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Autres changements ⚙️
 
 - Ajoute une page "Feuille de route" ([#426](https://github.com/DISIC/Ara/pull/426))
-- Ajoute une page "Notes de versions" ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page "Notes de version" ([#426](https://github.com/DISIC/Ara/pull/426))
 
 ## 16/06/2023
 

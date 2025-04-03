@@ -41,7 +41,7 @@ const bottomLinks = [
                 <RouterLink
                   class="fr-footer__top-link"
                   :to="{ name: 'changelog' }"
-                  >Notes de versions</RouterLink
+                  >Notes de version</RouterLink
                 >
               </li>
               <li>

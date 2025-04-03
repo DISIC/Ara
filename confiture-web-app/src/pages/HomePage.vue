@@ -60,7 +60,7 @@ const steps = [
 
 <template>
   <PageMeta
-    title="Ara - Réaliser des audits d’accessibilité"
+    title="Accueil"
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
   />
 
