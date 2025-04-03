@@ -873,7 +873,6 @@ export class AuditService {
           assistiveTechnology: e.assistiveTechnology,
           browser: e.browser
         })),
-        referencial: "RGAA Version 4.1",
         samples: sortBy(
           [audit.transverseElementsPage, ...audit.pages].map((p, i) => ({
             name: p.name,

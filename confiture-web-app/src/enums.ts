@@ -32,3 +32,5 @@ export enum FileErrorMessage {
   UPLOAD_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier. Veuillez réessayer.",
   DELETE_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier. Veuillez réessayer."
 }
+
+export const REFERENTIAL = "RGAA version 4.1.2";

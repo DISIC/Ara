@@ -3,6 +3,7 @@ import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
+import { REFERENTIAL } from "../enums";
 import { history } from "../router";
 import { useAccountStore } from "../store";
 
@@ -91,7 +92,7 @@ const steps = [
     </p>
     <p>
       Basé sur la dernière version du référentiel général d’amélioration de
-      l’accessibilité (RGAA 4.1) vous pouvez&nbsp;:
+      l’accessibilité ({{ REFERENTIAL }}) vous pouvez&nbsp;:
     </p>
     <ul>
       <li>Faire un état des lieux (audit partiel de 25 ou 50 critères)</li>

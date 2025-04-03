@@ -11,6 +11,7 @@ import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { REFERENTIAL } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
@@ -238,7 +239,7 @@ const siteUrl = computed(() => {
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-1v">
-        Référentiel : <strong>{{ report.data.context.referencial }}</strong>
+        Référentiel : <strong>{{ REFERENTIAL }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
         Auditeur ou auditrice :
