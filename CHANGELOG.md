@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Corrige l’affichage du contenu des infobulles lorsque le CSS est désactivé ([#1025](https://github.com/DISIC/Ara/pull/1025))
 - Ajoute des bordures aux champs de saisie pour améliorer leur accessibilité ([#1038](https://github.com/DISIC/Ara/pull/1038))
 
 ## 02/04/2025
