@@ -1,4 +1,5 @@
 import { Component } from "vue";
+import { RouterScrollBehavior } from "vue-router";
 
 import { components } from "./confiture-api";
 
@@ -122,36 +123,8 @@ export enum StoreName {
 }
 
 // Routing
-export declare type ScrollPosition =
-  | ScrollPositionCoordinates
-  | ScrollPositionElement;
-
-/**
- * Scroll position similar to
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/ScrollToOptions | `ScrollToOptions`}.
- * Note that not all browsers support `behavior`.
- */
-declare type ScrollPositionCoordinates = {
-  behavior?: ScrollOptions["behavior"];
-  left?: number;
-  top?: number;
-};
-
-declare interface ScrollPositionElement extends ScrollToOptions {
-  /**
-   * A valid CSS selector. Note some characters must be escaped in id selectors (https://mathiasbynens.be/notes/css-escapes).
-   * @example
-   * Here are a few examples:
-   *
-   * - `.title`
-   * - `.content:first-child`
-   * - `#marker`
-   * - `#marker\~with\~symbols`
-   * - `#marker.with.dot`: selects `class="with dot" id="marker"`, not `id="marker.with.dot"`
-   *
-   */
-  el: string | Element;
-}
+export type ScrollBehaviorResult = ReturnType<RouterScrollBehavior>;
+export type ScrollPosition = Awaited<ScrollBehaviorResult>;
 
 /**
  * Tab data interface used in AraTabs
@@ -164,7 +137,7 @@ declare interface ScrollPositionElement extends ScrollToOptions {
 export interface TabData {
   label: string;
   id?: number;
-  icon?: Component | undefined;
+  icon?: Component;
   component: object;
-  componentParams: object | undefined;
+  componentParams?: object;
 }

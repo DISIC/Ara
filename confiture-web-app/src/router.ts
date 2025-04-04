@@ -35,7 +35,7 @@ import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
-import { ScrollPosition } from "./types";
+import { ScrollBehaviorResult, ScrollPosition } from "./types";
 import { getScrollBehavior } from "./utils";
 
 declare module "vue-router" {
@@ -478,7 +478,7 @@ function scrollToTop() {
   return { top: 0 };
 }
 
-function scrollToHash(hash: string) {
+function scrollToHash(hash: string): ScrollBehaviorResult {
   // console.info(`⇣ scroll to hash(${hash})`);
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, () => {
@@ -495,10 +495,12 @@ function scrollToHash(hash: string) {
         stop();
       }
     });
-  }) as Promise<ScrollPosition>;
+  });
 }
 
-async function scrollToSavedPosition(savedPosition: ScrollPosition) {
+function scrollToSavedPosition(
+  savedPosition: ScrollPosition
+): ScrollBehaviorResult {
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async () => {
       const htmlEl = document.getElementsByTagName("html")[0];
@@ -508,10 +510,10 @@ async function scrollToSavedPosition(savedPosition: ScrollPosition) {
         stop();
       }
     });
-  }) as Promise<ScrollPosition>;
+  });
 }
 
-function scrollToTabPanelTop(tabs: HTMLElement) {
+function scrollToTabPanelTop(tabs: HTMLElement): ScrollBehaviorResult {
   // console.info(`⬆ scroll to tabs panel top`);
 
   const panel = tabs.nextElementSibling as HTMLElement;
@@ -534,13 +536,13 @@ function scrollToTabPanelTop(tabs: HTMLElement) {
         stop();
       }
     });
-  }) as Promise<ScrollPosition>;
+  });
 }
 
 /**
  * @todo TODO: scroll to a smart position (same criteria as previous tabSlug?)
  */
-async function scrollToElement(el: HTMLElement) {
+function scrollToElement(el: HTMLElement): ScrollBehaviorResult {
   // console.info(`⇣ scroll to element ${el.className || el.id}`);
 
   return new Promise((resolve) => {
@@ -556,7 +558,7 @@ async function scrollToElement(el: HTMLElement) {
         stop();
       }
     });
-  }) as Promise<ScrollPosition>;
+  });
 }
 
 export default router;

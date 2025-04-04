@@ -52,28 +52,28 @@ const tabsData = computed((): TabData[] => {
   tabs.push({
     label: StaticTabLabel.REPORT_RESULTS_TAB_LABEL,
     component: ReportResults
-  } as TabData);
+  });
 
   // Notes
   if (hasNotes.value) {
     tabs.push({
       label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
       component: ReportNotes
-    } as TabData);
+    });
   }
 
   // Errors
   tabs.push({
     label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
     component: ReportErrors
-  } as TabData);
+  });
 
   // Improvements
   if (hasCompliantOrNotApplicableComments.value) {
     tabs.push({
       label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
       component: ReportImprovements
-    } as TabData);
+    });
   }
 
   return tabs;
