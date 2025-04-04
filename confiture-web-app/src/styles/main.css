@@ -86,3 +86,8 @@ from DSFR links with `target="_blank"` */
 .fr-input[type="search"] {
   border-color: var(--border-action-high-blue-france) !important;
 }
+
+/* Make links in DSFR callout same size as text */
+.fr-callout__text a {
+  font-size: inherit !important;
+}
