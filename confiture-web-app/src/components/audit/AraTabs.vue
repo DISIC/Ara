@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, onMounted, ref, watchEffect } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
@@ -173,33 +173,42 @@ onMounted(() => {
   });
 });
 
-watchEffect(() => {
-  // stickyTop can change on window resize
-  stickyTop.value = props.stickyTop;
-
-  // tabSlug changes on route change
-  selectedTabSlug.value = routerRoute.params.tabSlug as string;
-
-  // if slug not found go to Error page (404).
-  const tabIndex = tabSlugIndexes[selectedTabSlug.value];
-  if (tabIndex === undefined) {
-    router.replace({
-      name: "Error",
-      params: { pathMatch: routerRoute.path.substring(1).split("/") },
-      query: routerRoute.query,
-      hash: routerRoute.hash,
-      state: {
-        errorStatus: 404
-      }
-    });
-    return;
+watch(
+  () => props.stickyTop,
+  (newValue) => {
+    // stickyTop can change on window resize
+    stickyTop.value = newValue;
   }
+);
 
-  selectedTabIndex.value = tabIndex;
+watch(
+  () => routerRoute.params.tabSlug,
+  (newValue) => {
+    // tabSlug changes on route change
+    selectedTabSlug.value = newValue as string;
 
-  // other components may be interested by the current selected tab index
-  emit("selectedTabChange", selectedTabIndex.value);
-});
+    // if slug not found go to Error page (404).
+    const tabIndex = tabSlugIndexes[selectedTabSlug.value];
+    if (tabIndex === undefined) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: routerRoute.path.substring(1).split("/") },
+        query: routerRoute.query,
+        hash: routerRoute.hash,
+        state: {
+          errorStatus: 404
+        }
+      });
+      return;
+    }
+
+    selectedTabIndex.value = tabIndex;
+
+    // other components may be interested by the current selected tab index
+    emit("selectedTabChange", selectedTabIndex.value);
+  },
+  { immediate: true }
+);
 </script>
 
 <!--
