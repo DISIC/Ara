@@ -379,8 +379,9 @@ defineExpose({
   position: relative;
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  border: 0 solid var(--border-plain-grey);
-  border-bottom-width: 1px;
+  border: 1px solid var(--border-plain-grey);
+  border-bottom: 0;
+  box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
 
   /* Override bg color in dark mode to avoid same color as wrapper */
   @media (prefers-color-scheme: dark) {
@@ -392,6 +393,7 @@ defineExpose({
   padding: 0;
   background-color: transparent;
   border: none;
+  box-shadow: none;
 }
 
 .tiptap-container--disabled:hover {
@@ -511,6 +513,7 @@ defineExpose({
   top: 0;
   z-index: 1;
   padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .titptap-buttons::-webkit-scrollbar {
