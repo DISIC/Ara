@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 09/04/2025
+
+### Autres changements ⚙️
+
+- Permet la fermeture du bandeau de retour utilisateur ([#1042](https://github.com/DISIC/Ara/pull/1042))
+
 ## 03/04/2025
 
 ### Corrections 🐛
