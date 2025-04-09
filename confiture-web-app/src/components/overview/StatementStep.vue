@@ -26,8 +26,8 @@ const statementUrl = computed(
   () =>
     window.location.origin +
     router.resolve({
-      name: "audit-declaration",
-      params: { uniqueId: props.audit.editUniqueId }
+      name: "a11y-statement",
+      params: { uniqueId: props.audit.consultUniqueId }
     }).fullPath
 );
 
@@ -64,6 +64,7 @@ function onStatementAlertClose() {
         Déclaration d’accessibilité
       </component>
       <RouterLink
+        v-if="auditIsPublishable"
         class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line statement-step-settings-link"
         :to="{
           name: 'audit-declaration',
