@@ -75,8 +75,8 @@ from DSFR links with `target="_blank"` */
 .fr-input,
 .fr-textarea,
 .fr-select {
-  border: 1px solid var(--border-plain-grey) !important;
-  border-bottom: 0 !important;
+  border-top: 1px solid var(--border-plain-grey) !important;
+  border-inline: 1px solid var(--border-plain-grey) !important;
 }
 
 .fr-input--error {
