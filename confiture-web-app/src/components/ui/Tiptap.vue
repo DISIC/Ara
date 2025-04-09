@@ -27,13 +27,15 @@ export interface Props {
   editable?: boolean;
   labelledBy?: string | null;
   disabled?: boolean;
+  editorSize?: "sm" | "lg";
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: "",
   editable: true,
   disabled: false,
-  labelledBy: null
+  labelledBy: null,
+  editorSize: "sm"
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -94,9 +96,12 @@ const editorAttributes: any = props.editable
   ? {
       "aria-describedby": "tiptap-description",
       "aria-multiline": "true",
-      role: "textbox"
+      role: "textbox",
+      class: `tiptap--${props.editorSize}`
     }
-  : undefined;
+  : {
+      class: "tiptap--not-editable"
+    };
 
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
@@ -387,10 +392,6 @@ defineExpose({
   padding: 0;
   background-color: transparent;
   border: none;
-
-  .tiptap {
-    min-height: 0;
-  }
 }
 
 .tiptap-container--disabled:hover {
@@ -402,8 +403,19 @@ defineExpose({
 }
 
 .tiptap {
-  min-height: 10rem;
   padding: 0.5rem 0.75rem;
+
+  &.tiptap--not-editable {
+    min-height: 0;
+  }
+
+  &.tiptap--sm {
+    min-height: 10rem;
+  }
+
+  &.tiptap--lg {
+    min-height: 24rem;
+  }
 }
 
 .tiptap img {

@@ -110,6 +110,7 @@ function handleDeleteFile(file: AuditFile) {
                 class="fr-mb-4w"
                 labelled-by="audit-notes"
                 :disabled="isOffline"
+                editor-size="lg"
                 @update:model-value="handleNotesChange"
               />
 
