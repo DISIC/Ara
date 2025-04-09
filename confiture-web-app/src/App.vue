@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
@@ -36,6 +36,29 @@ onMounted(() => {
     accountStore.refreshToken();
   }
 });
+
+// Feedback notice display
+const feedbackLocalStorageKey = "ara:hide-feedback-notice";
+const showFeedbackNotice = ref(!localStorage.getItem(feedbackLocalStorageKey));
+
+function closeFeedbackNotice() {
+  showFeedbackNotice.value = false;
+  localStorage.setItem(feedbackLocalStorageKey, "true");
+
+  // Focus page h1 and set attributes if needed
+  const pageHeading: HTMLHeadingElement | null =
+    document.querySelector("main h1");
+
+  const pageHeadingIsFocusable =
+    pageHeading?.hasAttribute("tabindex") &&
+    pageHeading.getAttribute("tabindex") === "-1";
+
+  if (!pageHeadingIsFocusable) {
+    pageHeading?.setAttribute("tabindex", "-1");
+  }
+
+  pageHeading?.focus();
+}
 </script>
 
 <template>
@@ -62,7 +85,7 @@ onMounted(() => {
 
   <SiteHeader />
 
-  <div class="fr-notice fr-notice--info">
+  <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
     <div class="fr-container">
       <div class="fr-notice__body">
         <p>
@@ -75,6 +98,13 @@ onMounted(() => {
             >.
           </span>
         </p>
+        <button
+          title="Masquer le message"
+          class="fr-btn--close fr-btn"
+          @click="closeFeedbackNotice"
+        >
+          Masquer le message
+        </button>
       </div>
     </div>
   </div>
