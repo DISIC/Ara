@@ -4,6 +4,10 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ## 09/04/2025
 
+### Corrections 🐛
+
+- Corrige le calcul du nombre de critères non applicables par page dans le rapport ([#1039](https://github.com/DISIC/Ara/pull/1039))
+
 ### Autres changements ⚙️
 
 - Permet la fermeture du bandeau de retour utilisateur ([#1042](https://github.com/DISIC/Ara/pull/1042))
@@ -14,12 +18,6 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 - Corrige l’affichage du contenu des infobulles lorsque le CSS est désactivé ([#1025](https://github.com/DISIC/Ara/pull/1025))
 - Ajoute des bordures aux champs de saisie pour améliorer leur accessibilité ([#1038](https://github.com/DISIC/Ara/pull/1038))
-
-## 02/04/2025
-
-### Corrections 🐛
-
-- Corrige le calcul du nombre de critères non applicables par page dans le rapport ([#1029](https://github.com/DISIC/Ara/pull/1029))
 
 ## 26/03/2025
 
