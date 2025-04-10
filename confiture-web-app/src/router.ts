@@ -374,7 +374,7 @@ const router = createRouter({
       if (isTabNavigation(to, from)) {
         horizontalScrollToNewTab(to.params.tabSlug as string);
       }
-      return scrollToSavedPosition(savedPosition);
+      return scrollToPosition(savedPosition);
     }
 
     if (to.hash) {
@@ -473,20 +473,26 @@ function horizontalScrollToNewTab(tabSlug: string) {
   tabButton?.scrollIntoView({ behavior: getScrollBehavior() });
 }
 
+/**
+ * Scrolls to the top of the screen
+ */
 function scrollToTop() {
-  // console.info(`⬆ scroll to top`);
   return { top: 0 };
 }
 
+/**
+ * Scrolls to a given hash (without leading '#').
+ * There must be an HTML element with `id=hash` in the current page.
+ */
 function scrollToHash(hash: string): ScrollBehaviorResult {
-  // console.info(`⇣ scroll to hash(${hash})`);
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, () => {
       const hashEl = document.querySelector(
         "#" + CSS.escape(hash.substring(1))
       ) as HTMLElement;
       if (hashEl) {
-        // Force hash focus: usefull when hash element is not n the DOM on page load
+        // Force hash focus
+        // (usefull when hash element is not in the DOM on page load)
         hashEl.focus();
         const scrollMargin = parseFloat(
           window.getComputedStyle(hashEl).scrollMargin
@@ -498,27 +504,29 @@ function scrollToHash(hash: string): ScrollBehaviorResult {
   });
 }
 
-function scrollToSavedPosition(
-  savedPosition: ScrollPosition
+function scrollToPosition(
+  scrollPosition: ScrollPosition
 ): ScrollBehaviorResult {
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async () => {
       const htmlEl = document.getElementsByTagName("html")[0];
       if (htmlEl.scrollHeight > htmlEl.clientHeight) {
-        // console.info(`⇣ scroll to savedPosition {left: ${left}, top: ${top}}`);
-        resolve(savedPosition);
+        resolve(scrollPosition);
         stop();
       }
     });
   });
 }
 
+/**
+ * Scrolls to the top of a given tab panel
+ */
 function scrollToTabPanelTop(tabs: HTMLElement): ScrollBehaviorResult {
-  // console.info(`⬆ scroll to tabs panel top`);
-
   const panel = tabs.nextElementSibling as HTMLElement;
   const tabComputedStyle = window.getComputedStyle(tabs);
 
+  // Can be a smooth scroll if tabs are below the top of the screen,
+  // Otherwise it's an instant scroll.
   const behavior =
     tabs.getBoundingClientRect().top > 0 ? getScrollBehavior() : "instant";
 
@@ -540,11 +548,11 @@ function scrollToTabPanelTop(tabs: HTMLElement): ScrollBehaviorResult {
 }
 
 /**
+ * Scrolls to the top of a given HTML element
+ *
  * @todo TODO: scroll to a smart position (same criteria as previous tabSlug?)
  */
 function scrollToElement(el: HTMLElement): ScrollBehaviorResult {
-  // console.info(`⇣ scroll to element ${el.className || el.id}`);
-
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async (entries) => {
       const scrollMargin = parseFloat(window.getComputedStyle(el).top);
