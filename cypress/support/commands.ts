@@ -143,7 +143,7 @@ Cypress.Commands.add(
 Cypress.Commands.addQuery(
   "isWithinViewport" as keyof Cypress.Chainable<any>,
   () => {
-    const viewportWidth = Cypress.config("viewportWidth"); // see "bug" below
+    const viewportWidth = Cypress.config("viewportWidth");
     const viewportHeight = Cypress.config("viewportHeight");
     const innerFn = (subject) => {
       // Cypress retries this function on failure
