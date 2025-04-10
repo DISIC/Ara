@@ -3,8 +3,8 @@ import { marked } from "marked";
 
 import rgaa from "../../criteres.json";
 import { CriteriumResultStatus } from "../../types";
-import { formatStatus } from "../../utils";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import { formatStatus, isTiptapDocumentEmpty } from "../../utils";
+import Tiptap from "../ui/Tiptap.vue";
 
 defineProps<{
   topic: number;
@@ -46,6 +46,10 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
       {{ formatStatus(status) }}
     </p>
 
-    <MarkdownRenderer v-if="comment" :markdown="comment" />
+    <Tiptap
+      v-if="!isTiptapDocumentEmpty(comment)"
+      :model-value="comment"
+      :editable="false"
+    />
   </div>
 </template>

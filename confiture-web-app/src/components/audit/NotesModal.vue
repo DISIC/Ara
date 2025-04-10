@@ -10,7 +10,7 @@ import { AuditFile, StoreName } from "../../types";
 import { handleFileDeleteError, handleFileUploadError } from "../../utils";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
-import MarkdownHelpButton from "./MarkdownHelpButton.vue";
+import Tiptap from "../ui/Tiptap.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
@@ -102,24 +102,18 @@ function handleDeleteFile(file: AuditFile) {
                   <SaveIndicator :store-name="StoreName.AUDIT_STORE" />
                 </div>
               </div>
-              <div class="fr-input-group fr-mb-1v">
-                <label class="fr-label" for="audit-notes">
-                  Remarques et recommandations générales
-                </label>
-                <textarea
-                  id="audit-notes"
-                  v-model="notes"
-                  class="fr-input"
-                  rows="10"
-                  :disabled="isOffline"
-                  aria-describedby="notes-markdown"
-                  @input="handleNotesChange"
-                ></textarea>
-              </div>
-              <MarkdownHelpButton
-                :id="`markdown-notice-notes`"
+              <p id="audit-notes" class="fr-label">
+                Remarques et recommandations générales
+              </p>
+              <Tiptap
+                v-model="notes"
                 class="fr-mb-4w"
+                labelled-by="audit-notes"
+                :disabled="isOffline"
+                editor-size="lg"
+                @update:model-value="handleNotesChange"
               />
+
               <!-- FILE -->
               <FileUpload
                 ref="fileUpload"
