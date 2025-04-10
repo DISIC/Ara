@@ -86,7 +86,6 @@ if (new Set(tabSlugsArray).size !== tabSlugsArray.length) {
 
 const selectedTabIndex = ref<number>(0);
 const selectedTabSlug = ref<string>("");
-const stickyTop = ref(props.stickyTop);
 const tabButtonsRef = ref<HTMLButtonElement[]>();
 const panelBottomMarkerRef = ref<HTMLDivElement>();
 const panelMinHeight = ref<string>("0");
@@ -165,21 +164,13 @@ onMounted(() => {
   )[0] as HTMLElement;
   const bodyEl = document.getElementsByTagName("body")[0] as HTMLElement;
   useResizeObserver(bodyEl, () => {
-    panelMinHeight.value = `calc( 100vh - (${stickyTop.value}) - ${
+    panelMinHeight.value = `calc( 100vh - (${props.stickyTop}) - ${
       tabsEl.clientHeight +
       (bodyEl.getBoundingClientRect().bottom -
         panelBottomMarkerRef.value!.getBoundingClientRect().top)
     }px )`;
   });
 });
-
-watch(
-  () => props.stickyTop,
-  (newValue) => {
-    // stickyTop can change on window resize
-    stickyTop.value = newValue;
-  }
-);
 
 watch(
   () => routerRoute.params.tabSlug,
