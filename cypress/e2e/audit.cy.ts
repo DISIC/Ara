@@ -143,7 +143,7 @@ describe("Audit", () => {
         .should("exist")
         .each(($el, index) => {
           cy.wrap($el).click();
-          cy.get(`#${index + 1}`).isWithinViewport();
+          cy.get(`#topic_${index + 1}`).isWithinViewport();
         });
     });
   });

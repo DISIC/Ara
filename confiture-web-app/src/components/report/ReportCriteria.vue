@@ -68,13 +68,15 @@ function isActive(id: string) {
                 :key="page.name"
                 class="fr-sidemenu__item"
                 :class="{
-                  'fr-sidemenu__item--active': isActive(`#${page.id}`)
+                  'fr-sidemenu__item--active': isActive(`#page_${page.id}`)
                 }"
               >
                 <RouterLink
                   class="fr-sidemenu__link"
-                  :to="{ hash: `#${page.id}` }"
-                  :aria-current="isActive(`#${page.id}`) ? 'true' : undefined"
+                  :to="{ hash: `#page_${page.id}` }"
+                  :aria-current="
+                    isActive(`#page_${page.id}`) ? 'true' : undefined
+                  "
                 >
                   {{ page.name }}
                 </RouterLink>

@@ -260,7 +260,7 @@ const notApplicableCount = computed(
             :style="{ '--topic-filter-value': topic.value + '%' }"
           >
             <RouterLink
-              :to="{ hash: `#${topic.number}` }"
+              :to="{ hash: `#topic_${topic.number}` }"
               class="fr-py-1w fr-px-1w fr-mb-2v topic-filter-anchor"
             >
               <span>{{ topic.number }}.</span>

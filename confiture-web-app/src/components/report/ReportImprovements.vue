@@ -81,7 +81,7 @@ const improvementsCount = computed(() => {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesImprovements.length - 1 }"
       >
-        <h3 :id="`${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h3>
         <a

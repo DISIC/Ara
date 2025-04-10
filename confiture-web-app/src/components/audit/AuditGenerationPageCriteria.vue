@@ -95,7 +95,7 @@ const showTransverseAlert = ref(
     >
       <div class="fr-mb-3w topic-header">
         <h3
-          :id="topic.number"
+          :id="`topic_${topic.number}`"
           ref="topicNameRefs"
           class="fr-m-0 topic-heading"
           tabindex="-1"
