@@ -355,43 +355,47 @@ const isDevMode = useDevMode();
         class="narrow-field"
       />
 
-      <p>
+      <p class="fr-mb-2w">
         Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
-      <DsfrField
-        id="contact-email"
-        v-model="contactEmail"
-        label="Adresse e-mail"
-        hint="Exemple : contact@ministere.gouv.fr"
-        type="email"
-        :error="
-          hasNoContactInfo
-            ? 'Vous devez renseigner au moins 1 moyen de contact'
-            : undefined
-        "
-        class="narrow-field"
-      />
+      <div class="fr-ml-md-4w">
+        <DsfrField
+          id="contact-email"
+          v-model="contactEmail"
+          label="Adresse e-mail"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="email"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              : undefined
+          "
+          class="fr-mb-3v narrow-field"
+        />
 
-      <DsfrField
-        id="contact-form-url"
-        v-model="contactFormUrl"
-        label="Formulaire de contact en ligne"
-        hint="Exemple : contact@ministere.gouv.fr"
-        type="text"
-        :pattern="URL_REGEX"
-        placeholder="https://"
-        :error="
-          hasNoContactInfo
-            ? 'Vous devez renseigner au moins 1 moyen de contact'
-            : undefined
-        "
-      >
-        <template #hint>
-          Saisissez une URL valide, commençant par <code>https://</code> ou
-          <code>http://</code>
-        </template>
-      </DsfrField>
+        <p class="fr-mb-3v"><em>Ou</em></p>
+
+        <DsfrField
+          id="contact-form-url"
+          v-model="contactFormUrl"
+          label="Formulaire de contact en ligne"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="text"
+          :pattern="URL_REGEX"
+          placeholder="https://"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              : undefined
+          "
+        >
+          <template #hint>
+            Saisissez une URL valide, commençant par <code>https://</code> ou
+            <code>http://</code>
+          </template>
+        </DsfrField>
+      </div>
     </fieldset>
 
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
