@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
@@ -155,21 +155,17 @@ function selectLastTab() {
   selectTab(props.tabs.length - 1);
 }
 
-onMounted(() => {
-  // Dynamic panel minimum height.
-  // Allows tabs to stick to the top of the screen
-  // even if content is not high enough
-  const tabsEl = document.getElementsByClassName(
-    "tabs-wrapper"
-  )[0] as HTMLElement;
-  const bodyEl = document.getElementsByTagName("body")[0] as HTMLElement;
-  useResizeObserver(bodyEl, () => {
-    panelMinHeight.value = `calc( 100vh - (${props.stickyTop}) - ${
-      tabsEl.clientHeight +
-      (bodyEl.getBoundingClientRect().bottom -
-        panelBottomMarkerRef.value!.getBoundingClientRect().top)
-    }px )`;
-  });
+// Dynamic panel minimum height.
+// Allows tabs to stick to the top of the screen
+// even if content is not high enough
+const tabsWrapperRef = ref<HTMLElement>();
+const bodyEl = document.getElementsByTagName("body")[0] as HTMLElement;
+useResizeObserver(bodyEl, () => {
+  panelMinHeight.value = `calc( 100vh - (${props.stickyTop}) - ${
+    (tabsWrapperRef.value?.clientHeight || 0) +
+    (bodyEl.getBoundingClientRect().bottom -
+      panelBottomMarkerRef.value!.getBoundingClientRect().top)
+  }px )`;
 });
 
 watch(
@@ -209,6 +205,7 @@ watch(
 
 <template>
   <div
+    ref="tabsWrapperRef"
     class="tabs-wrapper"
     :data-panel-scroll-behavior="panelScrollBehavior"
     :style="{ '--tabs-top-offset': stickyTop }"
