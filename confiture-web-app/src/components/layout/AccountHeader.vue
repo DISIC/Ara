@@ -71,6 +71,13 @@ const width = useWindowWidth();
 </template>
 
 <style scoped>
+.account-header {
+  /* Replicate .fr-header drop shadow */
+  filter: drop-shadow(var(--raised-shadow));
+  z-index: calc(var(--ground) + 750);
+  background-color: var(--background-raised-grey);
+}
+
 .content {
   display: flex;
   align-items: center;
