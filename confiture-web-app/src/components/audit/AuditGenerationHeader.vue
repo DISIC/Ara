@@ -290,7 +290,7 @@ onMounted(() => {
 
     <div class="fr-col-12 fr-col-sm-7 fr-col-md-9 sub-header">
       <SaveIndicator
-        v-if="route.name === 'audit-generation-full'"
+        v-if="route.name === 'audit-generation'"
         class="audit-main-indicator"
       />
       <ul class="top-actions fr-my-0 fr-p-0" role="list">

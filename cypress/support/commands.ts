@@ -67,8 +67,6 @@ declare global {
         authToken: string;
         uid: string;
       }>;
-
-      isWithinViewport(): Chainable<Element>;
     }
   }
 }
@@ -140,23 +138,6 @@ Cypress.Commands.add(
 
     cy.get("@userCredentials");
   },
-);
-
-Cypress.Commands.addQuery(
-  "isWithinViewport" as keyof Cypress.Chainable<any>,
-  () => {
-    const viewportWidth = Cypress.config("viewportWidth");
-    const viewportHeight = Cypress.config("viewportHeight");
-    const innerFn = (subject) => {
-      // Cypress retries this function on failure
-      const { top, left, bottom, right } = subject[0].getBoundingClientRect();
-      expect(top).to.be.at.least(0);
-      expect(left).to.be.at.least(0);
-      expect(right).to.be.at.most(viewportWidth);
-      expect(bottom).to.be.at.most(viewportHeight);
-    };
-    return innerFn;
-  }
 );
 
 export {};

@@ -2,12 +2,16 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-import { REFERENTIAL, TabSlug } from "../../enums";
+import { REFERENTIAL } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
 import { StatDonutTheme } from "../StatDonut.vue";
 import SummaryCard from "../SummaryCard.vue";
+
+defineEmits<{
+  (e: "toTab", payload: string): void;
+}>();
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -206,16 +210,14 @@ const transverseNotCompliantCount = computed(() => {
           concernent des éléments transverses à toutes les pages de
           l’échantillon.
         </p>
+        <!-- FIXME: make this link work -->
         <RouterLink
           :to="{
-            name: 'report-full',
-            params: {
-              uniqueId,
-              tabSlug: TabSlug.REPORT_ERRORS_SLUG
-            },
-            hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+            name: 'report',
+            params: { uniqueId, tab: slugify('Détails des non-conformités') }
           }"
           class="fr-link fr-link--sm"
+          @click="$emit('toTab', 'Détails des non-conformités')"
           >Voir
           {{
             pluralize(

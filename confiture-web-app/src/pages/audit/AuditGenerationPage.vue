@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { useResizeObserver } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
-import { onBeforeRouteLeave } from "vue-router";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
-import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import PageMeta from "../../components/PageMeta";
 import { StatDonutTheme } from "../../components/StatDonut.vue";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -15,50 +13,31 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { REFERENTIAL, StaticTabLabel } from "../../enums";
+import { REFERENTIAL } from "../../enums";
 import {
   useAccountStore,
   useAuditStore,
   useFiltersStore,
   useResultsStore
 } from "../../store";
-import { AuditType, CriteriumResultStatus, TabData } from "../../types";
+import { AuditPage, AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
 
-const props = defineProps<{
-  uniqueId: string;
-}>();
+const route = useRoute();
 
-const showFilters = ref(true);
-
-// Observe the height of the sticky indicator and sync the `top` CSS property with it.
-const auditGenerationHeaderRef = ref<InstanceType<
-  typeof AuditGenerationHeader
-> | null>(null);
-
-const stickyIndicator = ref();
-
-const stickyTop = ref("0px");
-
-const accountStore = useAccountStore();
+const uniqueId = computed(() => route.params.uniqueId as string);
 const auditStore = useAuditStore();
-const resultsStore = useResultsStore();
-const filterStore = useFiltersStore();
 
-const {
-  complianceLevel,
-  compliantCriteriaCount,
-  applicableCriteriaCount,
-  notCompliantCriteriaCount,
-  blockingCriteriaCount
-} = useAuditStats();
-
-const isLoggedInAndOwnAudit = computed(() => {
-  return (
-    auditStore.currentAudit &&
-    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+useWrappedFetch(async () => {
+  resultsStore.$reset();
+  await auditStore.fetchAuditIfNeeded(uniqueId.value);
+  await resultsStore.fetchResults(uniqueId.value);
+  await auditStore.updateCurrentPageId(
+    auditStore.currentAudit?.transverseElementsPage.id || null
   );
-});
+}, true);
+
+const resultsStore = useResultsStore();
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
@@ -104,6 +83,24 @@ const topics = computed(() => {
 
 const auditIsInProgress = computed(() => resultsStore.auditProgress < 1);
 
+function updateCurrentPageId(i: number) {
+  auditStore.updateCurrentPageId(
+    i === 0
+      ? auditStore.currentAudit?.transverseElementsPage.id ?? null
+      : auditStore.currentAudit?.pages
+        ? auditStore.currentAudit?.pages.at(i - 1)?.id ?? null
+        : null
+  );
+}
+
+const {
+  complianceLevel,
+  compliantCriteriaCount,
+  applicableCriteriaCount,
+  notCompliantCriteriaCount,
+  blockingCriteriaCount
+} = useAuditStats();
+
 const headerInfos = computed(() => [
   ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
@@ -141,11 +138,55 @@ const headerInfos = computed(() => [
   }
 ]);
 
+onBeforeRouteLeave(() => {
+  auditStore.showAuditEmailAlert = false;
+});
+
+const showFilters = ref(true);
+
+function toggleFilters(value: boolean) {
+  showFilters.value = value;
+}
+
+const filterStore = useFiltersStore();
 const filterResultsCount = computed(() =>
   filterStore.filteredTopics
     .map((t) => t.criteria.length)
     .reduce((total, length) => (total += length), 0)
 );
+
+watch(
+  () => auditStore.currentAudit?.pages,
+  (curr, prev) => {
+    if (curr && !prev) {
+      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
+    }
+  }
+);
+
+// Observe the height of the sticky indicator and sync the `top` CSS property with it.
+const auditGenerationHeader = ref<InstanceType<
+  typeof AuditGenerationHeader
+> | null>(null);
+
+const stickyTop = ref<string>("0");
+let resizeObserver: ResizeObserver | null = null;
+
+// Because auditGenerationHeader ref is inside a "v-if",
+// Vue will not instantiate the ref immediately.
+// We need to watch it before observing nested stickyIndicator
+watch(auditGenerationHeader, async () => {
+  const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
+  resizeObserver = new ResizeObserver((entries) => {
+    stickyTop.value = entries[0].target.clientHeight + "px";
+  });
+  stickyIndicator && resizeObserver.observe(stickyIndicator);
+});
+
+onBeforeUnmount(() => {
+  const stickyIndicator = auditGenerationHeader.value?.stickyIndicator;
+  stickyIndicator && resizeObserver?.unobserve(stickyIndicator);
+});
 
 const pageTitle = computed(() => {
   // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
@@ -155,7 +196,7 @@ const pageTitle = computed(() => {
     const tabName = ` - Page en cours « ${
       auditStore.currentAudit.pages.find(
         (p) => p.id === auditStore.currentPageId
-      )?.name ?? StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
+      )?.name ?? "Éléments transverses"
     } »`;
 
     title += tabName;
@@ -176,84 +217,29 @@ const pageTitle = computed(() => {
   return "";
 });
 
+type TabData = { label: string; data: AuditPage };
+
 const tabsData = computed((): TabData[] => {
   const transversePage = auditStore.currentAudit?.transverseElementsPage;
   return [
     ...(transversePage
-      ? [
-          {
-            label: transversePage?.name,
-            icon: LayoutIcon,
-            component: AuditGenerationPageCriteria,
-            componentParams: {
-              page: transversePage,
-              auditUniqueId: props.uniqueId
-            }
-          }
-        ]
+      ? [{ label: transversePage?.name, data: transversePage }]
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      id: p.id,
-      component: AuditGenerationPageCriteria,
-      componentParams: {
-        page: p,
-        auditUniqueId: props.uniqueId
-      }
+      data: p
     })) ?? [])
   ];
 });
 
-/**
- * Updates audit store `currentPageId` given a tab index.
- * Usefull for synchronising filters with current page (on tab change)
- *
- * @param {number} tabIndex
- */
-function onSelectedTabChange(tabIndex: number) {
-  auditStore.updateCurrentPageId(
-    tabIndex === 0
-      ? auditStore.currentAudit?.transverseElementsPage.id ?? null
-      : auditStore.currentAudit?.pages
-        ? auditStore.currentAudit?.pages.at(tabIndex - 1)?.id ?? null
-        : null
+const accountStore = useAccountStore();
+
+const isLoggedInAndOwnAudit = computed(() => {
+  return (
+    auditStore.currentAudit &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
   );
-}
-
-/**
- * Toggles filters
- *
- * @param {boolean} doShow if true, shows filters, otherwise hides them
- */
-function toggleFilters(doShow: boolean) {
-  showFilters.value = doShow;
-}
-
-// Note: here useWrappedFetch uses onMounted callback
-useWrappedFetch(async () => {
-  resultsStore.$reset();
-  await auditStore.fetchAuditIfNeeded(props.uniqueId);
-  await resultsStore.fetchResults(props.uniqueId);
-  stickyIndicator.value = auditGenerationHeaderRef.value!.stickyIndicator;
-  useResizeObserver(stickyIndicator.value, () => {
-    stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
-      stickyIndicator!.value.clientHeight
-    }px)`;
-  });
-}, false);
-
-onBeforeRouteLeave(() => {
-  auditStore.showAuditEmailAlert = false;
 });
-
-watch(
-  () => auditStore.currentAudit?.pages,
-  (curr, prev) => {
-    if (curr && !prev) {
-      auditStore.currentPageId = auditStore.currentAudit!.pages[0].id;
-    }
-  }
-);
 </script>
 
 <template>
@@ -278,7 +264,7 @@ watch(
     />
 
     <AuditGenerationHeader
-      ref="auditGenerationHeaderRef"
+      ref="auditGenerationHeader"
       :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
       :audit-publication-date="auditStore.currentAudit.publicationDate"
@@ -309,12 +295,16 @@ watch(
         :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`"
       >
         <AraTabs
-          panel-scroll-behavior="sameCriteria"
-          :route="{ name: 'audit-generation-full', params: { uniqueId } }"
-          :sticky-top="stickyTop"
           :tabs="tabsData"
-          @selected-tab-change="onSelectedTabChange"
+          :sticky-top="stickyTop"
+          @change="updateCurrentPageId"
         >
+          <template #panel="{ data }">
+            <AuditGenerationPageCriteria
+              :page="data"
+              :audit-unique-id="uniqueId"
+            />
+          </template>
         </AraTabs>
       </div>
     </div>

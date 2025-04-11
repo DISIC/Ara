@@ -68,11 +68,7 @@ const noResults = computed(() => {
       class="fr-mb-6w"
     >
       <div class="fr-mb-3w topic-header">
-        <h3
-          :id="`topic_${topic.number}`"
-          class="fr-m-0 topic-heading"
-          tabindex="-1"
-        >
+        <h3 :id="topic.number" class="fr-m-0 topic-heading" tabindex="-1">
           {{ topic.number }}. {{ topic.topic }}
         </h3>
         <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
