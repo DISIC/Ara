@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 
 import { AuditType } from "../../types";
-import { getCriteriaCount, pluralize } from "../../utils";
+import { getCriteriaCount } from "../../utils";
 
 const props = defineProps<{
   value: AuditType;
@@ -49,7 +49,7 @@ const descriptionId = computed(() => {
       />
       <label
         :class="`fr-label ${
-          detailed ? 'fr-h4 fr-mb-3v' : 'fr-text--xl fr-text--bold fr-mb-0'
+          detailed ? 'fr-h4 fr-mb-3w' : 'fr-text--xl fr-text--bold fr-mb-0'
         } radio-label`"
         :for="`audit-type-${value}`"
       >
@@ -57,15 +57,13 @@ const descriptionId = computed(() => {
       </label>
     </div>
     <div v-if="detailed" class="fr-pl-3w">
-      <p :id="`goal-${value}`" class="fr-text--sm fr-mb-1w list-heading">
-        {{ pluralize("Objectif", "Objectifs", goals.length) }}
-      </p>
-      <ul class="fr-m-0 fr-p-0">
+      <ul class="fr-m-0 fr-mb-2w fr-p-0">
         <li
           v-for="(goal, i) in goals"
           :id="`goal-${i}-${value}`"
           :key="goal"
-          class="fr-mb-1w list-item"
+          class="list-item"
+          :class="{ 'fr-mb-1w': i !== goals.length - 1 }"
         >
           <span
             class="fr-icon-check-line fr-icon--sm list-item-icon"
@@ -77,15 +75,8 @@ const descriptionId = computed(() => {
       <p class="fr-text--sm prerequisite fr-mb-3v">
         Nécessite de très bonnes connaissances techniques et du RGAA
       </p>
-      <a
-        :href="documentationLink"
-        class="fr-link fr-link--sm radio-link"
-        target="_blank"
-      >
-        Liste des {{ getCriteriaCount(value) }} critères
-      </a>
     </div>
-    <p v-else class="fr-text--xs fr-pl-3w fr-m-0 audit-type-name">
+    <p v-else class="fr-text--xs fr-pl-3w fr-m-0">
       {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
     </p>
   </div>
@@ -145,11 +136,6 @@ const descriptionId = computed(() => {
 
 .prerequisite {
   font-weight: 500;
-  color: var(--text-mention-grey);
-}
-
-.audit-type-name {
-  color: var(--text-mention-grey);
 }
 
 /* Override DSFR radio input position to align with a larger label */

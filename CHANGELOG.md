@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Correction du contraste des cartes de types d’audit ([#1056](https://github.com/DISIC/Ara/pull/1056))
 - Plusieurs améliorations sur la navigation entre les différents onglets pendant l’audit et dans le rapport ([#950](https://github.com/DISIC/Ara/pull/950)) :
   - Les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutées dans l’historique de navigation ;
   - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
