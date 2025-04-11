@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
-import AraTabs from "../../components/audit/AraTabs.vue";
 import PageMeta from "../../components/PageMeta";
 import OnboardingModal from "../../components/report/OnboardingModal.vue";
 import ReportErrors from "../../components/report/ReportErrors.vue";
@@ -12,24 +11,17 @@ import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { REFERENTIAL, StaticTabLabel } from "../../enums";
+import { REFERENTIAL } from "../../enums";
 import { useReportStore } from "../../store";
-import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
+import { AuditStatus, CriteriumResultStatus } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
-
-const props = defineProps<{
-  tabSlug: string; // given by router (props: true). TODO check why needed here and not on AuditGenerationPage
-  uniqueId: string;
-}>();
-
-const uniqueId = props.uniqueId;
 
 const report = useReportStore();
 
-const router = useRouter();
+const route = useRoute();
+const uniqueId = route.params.uniqueId as string;
 
-const showCopyAlert = ref(false);
-const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
+useWrappedFetch(() => report.fetchReport(uniqueId));
 
 const hasNotes = computed(() => {
   return !!report.data?.notes || report.data?.notesFiles.length;
@@ -45,39 +37,76 @@ const hasCompliantOrNotApplicableComments = computed(() => {
   });
 });
 
-const tabsData = computed((): TabData[] => {
-  const tabs: TabData[] = [];
+const tabs = computed(() => [
+  { title: "Résultats", component: ReportResults },
+  ...(hasNotes.value ? [{ title: "Notes", component: ReportNotes }] : []),
+  { title: "Détails des non-conformités", component: ReportErrors },
+  ...(hasCompliantOrNotApplicableComments.value
+    ? [{ title: "Points d’amélioration", component: ReportImprovements }]
+    : [])
+]);
 
-  // Results
-  tabs.push({
-    label: StaticTabLabel.REPORT_RESULTS_TAB_LABEL,
-    component: ReportResults
+const showCopyAlert = ref(false);
+
+async function copyReportUrl() {
+  const url =
+    window.location.origin +
+    router.resolve({ name: "report", params: { uniqueId } }).fullPath;
+
+  navigator.clipboard.writeText(url).then(() => {
+    showCopyAlert.value = true;
   });
+}
 
-  // Notes
-  if (hasNotes.value) {
-    tabs.push({
-      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
-      component: ReportNotes
-    });
+function hideReportAlert() {
+  showCopyAlert.value = false;
+}
+
+const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
+
+watch(
+  () => report.data,
+  (report) => {
+    if (report) {
+      if (
+        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
+        localStorage.getItem("confiture:seen-onboarding") !== "true"
+      ) {
+        onboardingModalRef.value?.show();
+      }
+    }
   }
+);
 
-  // Errors
-  tabs.push({
-    label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
-    component: ReportErrors
-  });
+function onOnboardingClose() {
+  localStorage.setItem("confiture:seen-onboarding", "true");
+}
 
-  // Improvements
-  if (hasCompliantOrNotApplicableComments.value) {
-    tabs.push({
-      label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
-      component: ReportImprovements
-    });
-  }
-
-  return tabs;
+const targetTab = ref(route.params.tab as string | undefined);
+const targetTabIndex = computed(() => {
+  let index = tabs.value.findIndex(
+    (t) => slugify(t.title).toLowerCase() === targetTab.value?.toLowerCase()
+  );
+  return index === -1 ? 0 : index;
 });
+const router = useRouter();
+
+function handleTabChange(tabTitle: string) {
+  // change the URL in the browser adress bar without triggering vue-router navigation
+  history.pushState(
+    {},
+    "null",
+    router.resolve({
+      name: "report",
+      params: {
+        uniqueId,
+        tab: slugify(tabTitle)
+      }
+    }).fullPath
+  );
+
+  targetTab.value = slugify(tabTitle);
+}
 
 const csvExportUrl = computed(() => `/api/reports/${uniqueId}/exports/csv`);
 
@@ -102,41 +131,6 @@ const siteUrl = computed(() => {
 
   return null;
 });
-
-async function copyReportUrl() {
-  const url =
-    window.location.origin +
-    router.resolve({ name: "report", params: { uniqueId } }).fullPath;
-
-  navigator.clipboard.writeText(url).then(() => {
-    showCopyAlert.value = true;
-  });
-}
-
-function hideReportAlert() {
-  showCopyAlert.value = false;
-}
-
-function onOnboardingClose() {
-  localStorage.setItem("confiture:seen-onboarding", "true");
-}
-
-// Note: here useWrappedFetch uses onMounted callback
-useWrappedFetch(() => report.fetchReport(uniqueId), false);
-
-watch(
-  () => report.data,
-  (report) => {
-    if (report) {
-      if (
-        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:seen-onboarding") !== "true"
-      ) {
-        onboardingModalRef.value?.show();
-      }
-    }
-  }
-);
 </script>
 
 <template>
@@ -144,7 +138,7 @@ watch(
     v-if="
       report.data && getAuditStatus(report.data) === AuditStatus.IN_PROGRESS
     "
-    class="fr-pt-1w"
+    class="fr-pt-1w in-progress-alert"
   >
     <div class="fr-alert fr-alert--warning fr-mb-6w">
       <p class="fr-alert__title">Audit en cours</p>
@@ -264,14 +258,39 @@ watch(
       </p>
     </div>
 
-    <!-- sticky-top="-0.1px" to prevent "one line background flickering"
-			when scrolling the page -->
-    <AraTabs
-      :route="{ name: 'report-full', params: { uniqueId } }"
-      sticky-top="-0.1px"
-      :tabs="tabsData"
-    >
-    </AraTabs>
+    <div class="fr-tabs">
+      <ul class="fr-tabs__list" role="tablist" aria-label="Sections du rapport">
+        <li v-for="(tab, i) in tabs" :key="tab.title" role="presentation">
+          <button
+            :id="`tabpanel-${slugify(tab.title)}`"
+            class="fr-tabs__tab"
+            tabindex="0"
+            role="tab"
+            :aria-selected="i === targetTabIndex"
+            :aria-controls="`tabpanel-${slugify(tab.title)}-panel`"
+          >
+            {{ tab.title }}
+            <span v-if="i === targetTabIndex" class="fr-sr-only"
+              >&nbsp;Actif</span
+            >
+          </button>
+        </li>
+      </ul>
+      <div
+        v-for="(tab, i) in tabs"
+        :id="`tabpanel-${slugify(tab.title)}-panel`"
+        :key="tab.title"
+        class="fr-tabs__panel"
+        :class="{ 'fr-tabs__panel--selected': i === targetTabIndex }"
+        role="tabpanel"
+        :aria-labelledby="`tabpanel-${slugify(tab.title)}`"
+        tabindex="0"
+        v-on="{ 'dsfr.disclose': () => handleTabChange(tab.title) }"
+      >
+        <ReportResults v-if="i === 0" @to-tab="handleTabChange" />
+        <component :is="tab.component" v-else />
+      </div>
+    </div>
   </template>
 
   <TopLink />
@@ -293,5 +312,12 @@ watch(
 
 .dates {
   color: var(--text-mention-grey);
+}
+
+.in-progress-alert {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-default-grey);
+  z-index: 3;
 }
 </style>
