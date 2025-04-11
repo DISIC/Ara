@@ -64,7 +64,11 @@ const isLoggedInAndOwnAudit = computed(() => {
 <template>
   <template v-if="audit">
     <PageMeta
-      :title="`Synthèse ${audit.procedureName}`"
+      :title="
+        isLoggedInAndOwnAudit
+          ? `Livrables de ${audit.procedureName}`
+          : `Tableau de bord de ${audit.procedureName}`
+      "
       description="Suivez l'avancement de votre travail et accédez à votre audit et vos livrables. Commencez par réaliser votre audit avant compléter la déclaration d'accessibilité. Livrez ensuite le rapport d'audit et la déclaration d'accessibilité. Le rapport d'audit est généré automatiquement à partir de l'audit. La déclaration d'accessibilité est pré-complétée automatiquement à partir de l'audit."
     />
 

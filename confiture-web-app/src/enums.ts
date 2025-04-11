@@ -59,3 +59,5 @@ export const FirstTab = {
   AUDIT_SLUG: slugify(StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL),
   REPORT_SLUG: slugify(StaticTabLabel.REPORT_RESULTS_TAB_LABEL)
 };
+
+export const REFERENTIAL = "RGAA version 4.1.2";

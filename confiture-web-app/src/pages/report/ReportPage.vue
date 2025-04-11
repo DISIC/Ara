@@ -12,7 +12,7 @@ import ReportResults from "../../components/report/ReportResults.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { StaticTabLabel } from "../../enums";
+import { REFERENTIAL, StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
 import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
@@ -199,7 +199,7 @@ watch(
 
   <template v-if="report.data">
     <PageMeta
-      title="Rapport d’audit accessibilité"
+      :title="`Rapport d’audit accessibilité de ${report.data.procedureName}`"
       :description="`Découvrez la synthèse de l'audit de ${report.data?.procedureName}.`"
     />
 
@@ -245,7 +245,7 @@ watch(
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-1v">
-        Référentiel : <strong>{{ report.data.context.referencial }}</strong>
+        Référentiel : <strong>{{ REFERENTIAL }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
         Auditeur ou auditrice :

@@ -786,7 +786,7 @@ export class AuditService {
       // remove untested transverse criterion
       const withoutUntestedTrans = criteria.filter(
         (c) =>
-          !(isTransverse(c, audit.transverseElementsPageId) && isNotTested(c))
+          !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
       );
 
       return (
@@ -804,7 +804,7 @@ export class AuditService {
         // remove untested transverse criterion
         const withoutUntestedTrans = criteria.filter(
           (c) =>
-            !isTransverse(c, audit.transverseElementsPageId) && isNotTested(c)
+            !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
         );
 
         return withoutUntestedTrans.every((c) => isNotApplicable(c));
@@ -873,7 +873,6 @@ export class AuditService {
           assistiveTechnology: e.assistiveTechnology,
           browser: e.browser
         })),
-        referencial: "RGAA Version 4.1",
         samples: sortBy(
           [audit.transverseElementsPage, ...audit.pages].map((p, i) => ({
             name: p.name,
@@ -1359,7 +1358,7 @@ export class AuditService {
           // remove untested transverse criterion
           const withoutUntestedTrans = criteria.filter(
             (c) =>
-              !(isTransverse(c, a.transverseElementsPageId) && isNotTested(c))
+              !isTransverse(c, a.transverseElementsPageId) || !isNotTested(c)
           );
 
           return (

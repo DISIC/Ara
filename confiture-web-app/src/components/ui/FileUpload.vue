@@ -153,6 +153,7 @@ function onFileRequestFinished() {
         v-if="errorMessage || localErrorMessage"
         :id="`file-upload-error-format-${id}`"
         class="fr-error-text fr-mt-0"
+        role="alert"
       >
         {{ errorMessage ? errorMessage : localErrorMessage }}
       </p>

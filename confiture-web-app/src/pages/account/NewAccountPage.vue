@@ -11,6 +11,12 @@ import { useAccountStore } from "../../store/account";
 const currentStep = ref(0);
 const userEmail = ref<string>();
 
+const pageTitles = [
+  "Créer votre compte",
+  "Créer votre compte, consulter votre boite de réception",
+  "Créer votre compte, votre compte a été créé avec succès"
+];
+
 const store = useAccountStore();
 
 const ac = new AbortController();
@@ -43,7 +49,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <PageMeta title="Créer votre compte Ara" />
+  <PageMeta :title="pageTitles[currentStep]" />
   <NewAccountForm v-if="currentStep === 0" @submit="handleSubmit" />
   <EmailSent
     v-else-if="currentStep === 1"

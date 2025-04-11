@@ -15,7 +15,7 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { StaticTabLabel } from "../../enums";
+import { REFERENTIAL, StaticTabLabel } from "../../enums";
 import {
   useAccountStore,
   useAuditStore,
@@ -111,7 +111,7 @@ const headerInfos = computed(() => [
           title: "Taux global de conformité",
           description: auditIsInProgress.value
             ? "(Disponible à la fin de l’audit)"
-            : "RGAA version 4.1",
+            : REFERENTIAL,
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
           total: 100,
           unit: "%",

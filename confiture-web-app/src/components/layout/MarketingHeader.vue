@@ -128,7 +128,7 @@ function closeNewsSubMenu() {
                         :to="{ name: 'changelog' }"
                         @click="closeNewsSubMenu"
                       >
-                        Notes de versions
+                        Notes de version
                       </RouterLink>
                     </li>
                     <li>
