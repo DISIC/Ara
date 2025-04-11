@@ -11,6 +11,17 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+/**
+ * Hack to ignore error "(uncaught:exception) Error: ResizeObserver loop limit exceeded"
+ * See:
+ * - https://github.com/vuejs/vue-cli/issues/7431
+ * - https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+ */
+Cypress.on(
+  "uncaught:exception",
+  (err) => !err.message.includes("ResizeObserver loop limit exceeded")
+);
+
 // Import commands.js using ES2015 syntax:
 import "./commands";
 

@@ -3,6 +3,7 @@ import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
+import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
@@ -111,8 +112,11 @@ const backLinkLabel = computed(() => {
   <BackLink
     :label="backLinkLabel"
     :to="{
-      name: previousRoute.route?.name || 'audit-overview',
-      params: { uniqueId: route.params.uniqueId }
+      name: previousRoute.route?.name || 'audit-generation',
+      params: {
+        ...previousRoute.route?.params,
+        uniqueId: route.params.uniqueId
+      }
     }"
   />
 
@@ -189,15 +193,12 @@ const backLinkLabel = computed(() => {
         Enregistrer les modifications
       </button>
 
-      <RouterLink
+      <button
         class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
-        :to="{
-          name: 'audit-generation',
-          params: { uniqueId: route.params.uniqueId }
-        }"
+        @click="router.back()"
       >
         Annuler
-      </RouterLink>
+      </button>
     </div>
 
     <div class="top-link">

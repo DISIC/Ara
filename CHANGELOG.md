@@ -2,6 +2,16 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 11/04/2025
+
+### Corrections 🐛
+
+- Plusieurs améliorations sur la navigation entre les différents onglets pendant l’audit et dans le rapport ([#950](https://github.com/DISIC/Ara/pull/950)) :
+  - Les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutées dans l’historique de navigation ;
+  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
+  - l’onglet actif reste toujours visible, même sur petit écran et avec une navigation au clavier.
+- Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport
+
 ## 09/04/2025
 
 ### Corrections 🐛
@@ -519,7 +529,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Autres changements ⚙️
 
 - Ajoute une page "Feuille de route" ([#426](https://github.com/DISIC/Ara/pull/426))
-- Ajoute une page "Notes de version" ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page "Notes de versions" ([#426](https://github.com/DISIC/Ara/pull/426))
 
 ## 16/06/2023
 
