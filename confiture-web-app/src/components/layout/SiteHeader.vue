@@ -16,7 +16,7 @@ const route = useRoute();
  * - if the user is connected
  */
 const headerComponent = computed(() => {
-  if (route.name === "report-full" || route.name === "a11y-statement") {
+  if (route.name === "report" || route.name === "a11y-statement") {
     return DeliverableHeader;
   }
 

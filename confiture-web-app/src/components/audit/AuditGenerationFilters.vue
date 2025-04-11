@@ -255,8 +255,8 @@ const notApplicableCount = computed(
             class="topic-filter-item"
             :style="{ '--topic-filter-value': topic.value + '%' }"
           >
-            <RouterLink
-              :to="{ hash: `#topic_${topic.number}` }"
+            <a
+              :href="`#${topic.number}`"
               class="fr-py-1w fr-px-1w fr-mb-2v topic-filter-anchor"
             >
               <span>{{ topic.number }}.</span>
@@ -265,7 +265,7 @@ const notApplicableCount = computed(
                 >{{ topic.value }}%</span
               >
               <div class="topic-filter-progress" />
-            </RouterLink>
+            </a>
           </li>
         </ol>
       </nav>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import { pluralize } from "../../utils";
 import { getReportImprovements } from "./getReportImprovements";
@@ -37,18 +36,17 @@ const improvementsCount = computed(() => {
       improvementsCount
     )}`"
     :pages-data="pagesImprovements"
+    tab-slug="improvements"
     :transverse-data="transverseImprovements"
   >
     <template #transverse-data>
-      <h2 class="fr-sr-only">
-        {{ StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL }}
-      </h2>
+      <h2 class="fr-sr-only">Points d’amélioration</h2>
       <section v-if="transverseImprovements.topics.length > 0" class="fr-mb-8w">
         <h3
-          :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
+          id="improvements_elements-transverses"
           class="fr-h3 fr-mb-2w page-title"
         >
-          {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
+          Éléments transverses
         </h3>
 
         <ul
@@ -90,7 +88,7 @@ const improvementsCount = computed(() => {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesImprovements.length - 1 }"
       >
-        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`improvements_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h3>
         <a
@@ -128,3 +126,9 @@ const improvementsCount = computed(() => {
     </template>
   </ReportCriteria>
 </template>
+
+<style>
+.page-title {
+  color: var(--text-active-blue-france);
+}
+</style>
