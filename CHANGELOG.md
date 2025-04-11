@@ -2,6 +2,50 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 26/03/2025
+
+### Corrections 🐛
+
+- Corrige les accordéons qui fermaient les accordéons parents lorsqu’on souhaitait les fermer ([#1017](https://github.com/DISIC/Ara/pull/1017))
+
+## 20/03/2025
+
+### Corrections 🐛
+
+- Corrige l’affichage sans CSS du composant pour l’ajout de technologies, d’outils d’assistance ou d’éléments transverses ([#1014](https://github.com/DISIC/Ara/pull/1014))
+
+## 19/03/2025
+
+### Corrections 🐛
+
+- Ajoute un titre manquant sur l’onglet des notes sur le rapport ([#1002](https://github.com/DISIC/Ara/pull/1002))
+
+## 12/03/2025
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute une liste éditable des éléments audités dans l'onglet transverse ([#964](https://github.com/DISIC/Ara/pull/964))
+
+### Autres changements ⚙️
+
+- Revoit la navigation entre les pages de l’audit ([#937](https://github.com/DISIC/Ara/pull/937))
+
+### Corrections 🐛
+
+- Corrige la hiérarchie des titres dans les onglets du rapport ([#975](https://github.com/DISIC/Ara/pull/975))
+- Ajoute un attribut `lang="en"` aux noms d’outils, de navigateurs et de technologies d’assistance dans la déclaration d’accessibilité ([#974](https://github.com/DISIC/Ara/pull/974))
+- Cache de manière accessible l’emoji de la bannière de bienvenue ([#973](https://github.com/DISIC/Ara/pull/973))
+
+## 05/03/2025
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute les cas particuliers et les notes techniques aux critères de l’audit ([#947](https://github.com/DISIC/Ara/pull/947))
+
+### Autres changements ⚙️
+
+- Amélioration de la visibilité des ancres dans la barre latérale de l’audit ([#957](https://github.com/DISIC/Ara/pull/957))
+
 ## 07/02/2025
 
 ### Nouvelles fonctionnalités 🚀

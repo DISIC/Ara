@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 import { useAuditStore, useFiltersStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
+import TransverseElementsList from "./TransverseElementsList.vue";
 
 defineProps<{
   page: AuditPage;
@@ -24,7 +25,7 @@ const noResults = computed(() => {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.'
+        'Veuillez décocher le filtre "Masquer les critères évalués" pour afficher de nouveau les critères.'
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
@@ -42,50 +43,23 @@ const noResults = computed(() => {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer critères évalués" pour afficher de nouveau les critères.'
+        'Veuillez décocher le filtre "Masquer les critères évalués" pour afficher de nouveau les critères.'
     };
   }
 });
-
-// TODO: remove this alert in 3 months (16/10/2024)
-const topicNameRefs = ref<HTMLHeadingElement[]>();
-
-async function hideTransverseAlert() {
-  showTransverseAlert.value = false;
-  localStorage.setItem("ara:hide-transverse-alert", "true");
-  topicNameRefs.value?.[0].focus();
-}
-
-const showTransverseAlert = ref(
-  localStorage.getItem("ara:hide-transverse-alert") !== "true"
-);
 </script>
 
 <template>
   <!-- TODO: handle empty state -->
   <h2 class="fr-sr-only">{{ page.name }}</h2>
 
-  <div v-if="showTransverseAlert" class="fr-alert fr-alert--info fr-mb-4w">
-    <p class="fr-alert__title">Nouveauté : gestion des éléments transverses</p>
-    <p>
-      L'interrupteur "Sur toutes les pages" est remplacé par l'onglet "Éléments
-      transverses", qui vous permet d’évaluer les éléments communs à toutes les
-      pages : en-tête, pied de page...
-    </p>
-    <button
-      class="fr-btn--close fr-btn"
-      title="Masquer le message"
-      @click="hideTransverseAlert"
-    >
-      Masquer le message
-    </button>
-  </div>
-
-  <div v-if="page.id !== transversePageId" class="fr-mb-2w page-url">
+  <div v-if="page.id !== transversePageId" class="fr-mb-3w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
   </div>
+
+  <TransverseElementsList v-else class="fr-mb-3w transverse-elements" />
 
   <template v-if="store.filteredTopics.length">
     <section
@@ -96,7 +70,6 @@ const showTransverseAlert = ref(
       <div class="fr-mb-3w topic-header">
         <h3
           :id="`topic_${topic.number}`"
-          ref="topicNameRefs"
           class="fr-m-0 topic-heading"
           tabindex="-1"
         >
@@ -154,6 +127,11 @@ const showTransverseAlert = ref(
 
 .page-url {
   text-align: right;
+}
+
+.page-url,
+.transervse-elements {
+  min-height: 2.75rem;
 }
 
 .topic-header {

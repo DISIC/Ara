@@ -36,7 +36,7 @@ const auditIsInProgress = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-3w audit-step-heading">
+    <div class="fr-mb-2w audit-step-heading">
       <span
         v-if="auditIsReady"
         id="audit-step-status"

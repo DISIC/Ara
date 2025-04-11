@@ -2,6 +2,8 @@
 import { marked } from "marked";
 
 import methodologies from "../../methodologies.json";
+import { pluralize } from "../../utils";
+import CriteriumAppendix from "./CriteriumAppendix.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
@@ -37,37 +39,45 @@ const methodologiesHtml = Object.values(
   >
     <template v-for="(test, i) in testsHtml" :key="i">
       <div class="criterium-test">
-        <div>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</div>
+        <strong>{{ topicNumber }}.{{ criterium.number }}.{{ i + 1 }}</strong>
         <div v-html="test" />
       </div>
 
-      <div
-        class="fr-accordion"
+      <LazyAccordion
+        :title="`Méthodologie du test ${topicNumber}.${criterium.number}.${
+          i + 1
+        }`"
         :class="{ 'fr-mb-4w': i !== testsHtml.length - 1 }"
       >
-        <span class="fr-accordion__title">
-          <button
-            class="fr-accordion__btn"
-            aria-expanded="false"
-            :aria-controls="`criterium-tests-accordion-${topicNumber}-${
-              criterium.number
-            }-${i + 1}`"
-          >
-            Méthodologie du test {{ topicNumber }}.{{ criterium.number }}.{{
-              i + 1
-            }}
-          </button>
-        </span>
-        <div
-          :id="`criterium-tests-accordion-${topicNumber}-${criterium.number}-${
-            i + 1
-          }`"
-          class="fr-collapse criterium-test-methodology"
-        >
-          <div v-html="methodologiesHtml[i]" />
-        </div>
-      </div>
+        <div class="criterium-test-methodology" v-html="methodologiesHtml[i]" />
+      </LazyAccordion>
     </template>
+
+    <!-- Particular cases -->
+    <CriteriumAppendix
+      v-if="criterium.particularCases?.length"
+      :title="
+        pluralize(
+          'Cas particulier',
+          'Cas particuliers',
+          criterium.particularCases.length
+        )
+      "
+      :appendices="criterium.particularCases"
+    />
+
+    <!-- Technical notes -->
+    <CriteriumAppendix
+      v-if="criterium.technicalNote?.length"
+      :title="
+        pluralize(
+          'Note technique',
+          'Notes techniques',
+          criterium.technicalNote.length
+        )
+      "
+      :appendices="criterium.technicalNote"
+    />
   </LazyAccordion>
 </template>
 

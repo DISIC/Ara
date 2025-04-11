@@ -66,7 +66,7 @@ describe("Audit", () => {
     // Submit new audit form
     cy.contains("Valider les paramètres").click();
 
-    // Check user is redirect to audit overview page
+    // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
   });
 
@@ -333,7 +333,7 @@ describe("Audit", () => {
   it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.getByLabel("Rechercher par mots clés")
+      cy.getByLabel("Recherche par mots clés")
         .clear()
         .type("alternative")
         .type("{enter}");
@@ -412,10 +412,10 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
       cy.contains("Tous les critères évalués ont été masqués");
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
 
       cy.get("li.criterium-container fieldset input:checked")
         .first()
@@ -431,7 +431,7 @@ describe("Audit", () => {
         .first()
         .click({ force: true });
 
-      cy.contains("Masquer critères évalués").click();
+      cy.contains("Masquer les critères évalués").click();
       cy.get("li.criterium-container").should("have.length", 1);
 
       cy.contains('button[role="tab"]', "Éléments transverses").click();
@@ -458,9 +458,9 @@ describe("Audit", () => {
         .click({ force: true });
 
       cy.contains(/Audit terminé le \d{2}\/\d{2}\/\d{4}/);
-      cy.contains("Bravo ! Il semblerait que vous ayez terminé votre audit 💪");
+      cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
-      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+      cy.contains("a", "Accéder aux livrables").click();
 
       cy.contains(/Terminé le \d{1,2} [A-zÀ-ú]{3,9} \d{4}/);
       cy.contains("a", "Accéder");
@@ -557,7 +557,7 @@ describe("Audit", () => {
       cy.contains("Conforme (323)").click();
       cy.contains("Non applicable (315)").click();
       cy.contains("Masquer les tests et références").click();
-      cy.getByLabel(" Rechercher par mots clés")
+      cy.getByLabel("Recherche par mots clés")
         .clear()
         .type("alternative")
         .type("{enter}");
@@ -572,8 +572,32 @@ describe("Audit", () => {
         expect(els).to.have.length(106);
       });
 
-      cy.focused().should("have.attr", "placeholder", "Rechercher");
+      cy.focused().should("have.attr", "placeholder", "Rechercher un critère");
       cy.contains("button", "Réinitialiser").should("not.exist");
+    });
+  });
+
+  it("User can add transverse elements", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.contains("Lister les éléments transverses").click();
+      cy.getByLabel("Nom de l’élément transverse").type(
+        "FoooElements, BarElements, ThingElements"
+      );
+      cy.contains("Ajouter").click();
+
+      cy.contains("button", "FoooElements").should("exist");
+      cy.contains("button", "BarElements").should("exist");
+      cy.contains("button", "ThingElements").should("exist");
+
+      cy.contains("BarElements").click();
+
+      cy.contains("Enregistrer").click();
+
+      cy.contains("FoooElements").should("exist");
+      cy.contains("BarElements").should("not.exist");
+      cy.contains("ThingElements").should("exist");
     });
   });
 });

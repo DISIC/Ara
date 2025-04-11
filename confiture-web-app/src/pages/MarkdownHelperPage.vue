@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 
-const titlesExample = `### Titre h3 (commencer à partir de ce niveau)
-#### Titre h4
+const titlesExample = `#### Titre h4 (commencer à partir de ce niveau)
 ##### Titre h5
 ###### Titre h6`;
 const italicExample = `_italique_`;
@@ -98,9 +97,9 @@ const linkExample = `L’outil Ara est réalisé par [DesignGouv](https://design
     </p>
     <div class="fr-callout">
       <p class="fr-callout__text">
-        La page du rapport comporte déjà un titre h1 et h2. Afin de garder une
-        cohérence dans le rendu de la page, veuillez commencer votre titrage à
-        partir du niveau h3.
+        La page du rapport comporte déjà des titres h1, h2 et h3. Afin de garder
+        une cohérence dans le rendu de la page, veuillez commencer votre titrage
+        à partir du niveau h4.
       </p>
     </div>
     <p class="fr-mb-3v">Exemples :</p>

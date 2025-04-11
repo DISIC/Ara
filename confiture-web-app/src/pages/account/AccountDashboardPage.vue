@@ -12,7 +12,14 @@ import { AuditStatus } from "../../types";
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();
 
+// Reset password alert
 const showResetPasswordAlert = ref<boolean>(!!history.state.passwordReset);
+
+async function closeResetPasswordAlert() {
+  showResetPasswordAlert.value = false;
+  await nextTick();
+  mainHeadingRef.value?.focus();
+}
 
 // Account alert
 const mainHeadingRef = ref<HTMLHeadingElement>();
@@ -60,14 +67,19 @@ onMounted(() => {
     v-if="showResetPasswordAlert"
     class="fr-alert fr-alert--success fr-mb-4w"
   >
-    <h3 class="fr-alert__title">
+    <p class="fr-alert__title">
       Votre mot de passe a été mis à jour avec succès
-    </h3>
+    </p>
+    <button class="fr-link--close fr-link" @click="closeResetPasswordAlert">
+      Masquer le message
+    </button>
   </div>
 
   <!-- Welcome alert -->
   <div v-if="showAuditsAlert" class="fr-alert fr-alert--info fr-mb-4w">
-    <h3 class="fr-alert__title">Bienvenue dans votre espace 👋</h3>
+    <p class="fr-alert__title">
+      Bienvenue dans votre espace <span aria-hidden="true">👋</span>
+    </p>
     <p class="fr-mb-3v">
       Vous trouverez ici tous les audits associés à votre adresse e-mail :
       <strong>{{ accountStore.account?.email }}</strong>

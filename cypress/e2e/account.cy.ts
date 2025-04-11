@@ -287,7 +287,7 @@ describe("Account", () => {
         "Continuer l’audit",
         "Continuer l’audit",
         "Commencer l’audit",
-        "Voir le rapport pour l’audit",
+        "Accéder à l’audit",
       ];
 
       cy.get(".audit-main-action").each(($el, i) => {
@@ -348,7 +348,7 @@ describe("Account", () => {
 
       cy.contains("button", "Valider les paramètres").click();
 
-      cy.contains("h1", "Audit de mon petit site");
+      cy.contains("h1", "Livrables");
 
       // Create new audit but in only 2 steps (step 3 auto-filled)
       cy.contains("a", "Mes audits").click();
@@ -384,7 +384,7 @@ describe("Account", () => {
 
       cy.contains("button", "Valider les paramètres").click();
 
-      cy.contains("h1", "Audit de mon petit site");
+      cy.contains("h1", "Livrables");
     });
 
     it("User can duplicate audit", () => {

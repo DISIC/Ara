@@ -165,7 +165,9 @@ function submitAuditSettings() {
       }
 
       return router.push({
-        name: "audit-overview",
+        name: accountStore.account?.email
+          ? "audit-generation"
+          : "audit-overview",
         params: { uniqueId: audit.editUniqueId }
       });
     })

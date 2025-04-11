@@ -16,13 +16,14 @@ import {
   OperatingSystem,
   Platform
 } from "../../enums";
-import { useAuditStore } from "../../store";
+import { useAccountStore, useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
+const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 // Technologies
@@ -76,14 +77,14 @@ const tools = computed(() => {
 });
 
 const availableTools = [
-  "Web Developer Toolbar",
-  "Colour Contrast Analyser",
-  "HeadingsMap",
-  "ArcToolkit",
-  "WCAG Contrast checker",
-  "Inspecteur de composants",
-  "Assistant RGAA",
-  "Validateur HTML du W3C"
+  { name: "Web Developer Toolbar", lang: "en" },
+  { name: "Colour Contrast Analyser", lang: "en" },
+  { name: "HeadingsMap", lang: "en" },
+  { name: "ArcToolkit", lang: "en" },
+  { name: "WCAG Contrast checker", lang: "en" },
+  { name: "Inspecteur de composants" },
+  { name: "Assistant RGAA" },
+  { name: "Validateur HTML du W3C" }
 ];
 
 /**
@@ -149,10 +150,14 @@ watch(
 
     defaultTools.value = audit.tools.length
       ? // Cannot use filtered audit.tools because the checkbox array v-model binding wont work with different object refs
-        availableTools.filter((tool) => audit.tools.includes(tool))
+        availableTools
+          .map((t) => t.name)
+          .filter((tool) => audit.tools.includes(tool))
       : [];
     validatedTools.value = audit.tools.length
-      ? audit.tools.filter((tool) => !availableTools.includes(tool))
+      ? audit.tools.filter(
+          (tool) => !availableTools.map((t) => t.name).includes(tool)
+        )
       : [];
 
     environments.value = structuredClone(toRaw(audit.environments)) ?? [];
@@ -237,7 +242,7 @@ function DEBUG_fillFields() {
 
   validatedTechnologies.value = ["HTML", "CSS"];
 
-  defaultTools.value = [availableTools[2]];
+  defaultTools.value = [availableTools[2].name];
   validatedTools.value = ["Firefox Devtools", "AXE Webextension"];
 
   environments.value = [
@@ -273,7 +278,11 @@ const isDevMode = useDevMode();
   />
 
   <BackLink
-    label="Aller au tableau de bord de l'audit"
+    :label="
+      accountStore.account?.email
+        ? 'Retourner à mes livrables'
+        : 'Retourner au tableau de bord de l’audit'
+    "
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
@@ -395,13 +404,14 @@ const isDevMode = useDevMode();
 
     <ul class="fr-tags-group">
       <li v-for="(techno, i) in validatedTechnologies" :key="i">
+        <!-- TODO: generate unique ids for each techno, using i is bugged. See how it's done in TransverseElementsList.vue -->
         <button
           ref="validatedTechnologiesRefs"
-          class="fr-tag fr-tag--dismiss"
+          class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
           type="button"
-          :aria-label="`Retirer ${techno}`"
           @click="removeTechnology(i)"
         >
+          <span class="fr-sr-only">Retirer</span>
           {{ techno }}
         </button>
       </li>
@@ -433,10 +443,10 @@ const isDevMode = useDevMode();
               :id="`tool-${i}`"
               v-model="defaultTools"
               type="checkbox"
-              :value="tool"
+              :value="tool.name"
             />
-            <label class="fr-label" :for="`tool-${i}`">
-              {{ tool }}
+            <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
+              {{ tool.name }}
             </label>
           </div>
         </div>
@@ -459,9 +469,9 @@ const isDevMode = useDevMode();
           ref="validatedToolsRefs"
           class="fr-tag fr-tag--dismiss"
           type="button"
-          :aria-label="`Retirer ${tool}`"
           @click="removeTool(i)"
         >
+          <span class="fr-sr-only">Retirer</span>
           {{ tool }}
         </button>
       </li>
@@ -601,5 +611,14 @@ const isDevMode = useDevMode();
 .top-link {
   display: flex;
   justify-content: end;
+}
+
+.light-blue-button-tags {
+  flex-direction: row-reverse;
+  gap: 0.25rem;
+
+  &::before {
+    margin: 0;
+  }
 }
 </style>

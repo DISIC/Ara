@@ -16,7 +16,12 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
 import { StaticTabLabel } from "../../enums";
-import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import {
+  useAccountStore,
+  useAuditStore,
+  useFiltersStore,
+  useResultsStore
+} from "../../store";
 import { AuditType, CriteriumResultStatus, TabData } from "../../types";
 import { pluralize } from "../../utils";
 
@@ -35,6 +40,7 @@ const stickyIndicator = ref();
 
 const stickyTop = ref("0px");
 
+const accountStore = useAccountStore();
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
 const filterStore = useFiltersStore();
@@ -46,6 +52,13 @@ const {
   notCompliantCriteriaCount,
   blockingCriteriaCount
 } = useAuditStats();
+
+const isLoggedInAndOwnAudit = computed(() => {
+  return (
+    auditStore.currentAudit &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account?.email
+  );
+});
 
 /** Available topic filters and their global progression. */
 const topics = computed(() => {
@@ -252,8 +265,16 @@ watch(
     />
 
     <BackLink
-      label="Aller au tableau de bord de l’audit"
-      :to="{ name: 'audit-overview', params: { uniqueId } }"
+      :label="
+        isLoggedInAndOwnAudit
+          ? 'Retourner à mes audits'
+          : 'Retourner au tableau de bord de l’audit'
+      "
+      :to="
+        isLoggedInAndOwnAudit
+          ? { name: 'account-dashboard' }
+          : { name: 'audit-overview', params: { uniqueId } }
+      "
     />
 
     <AuditGenerationHeader
