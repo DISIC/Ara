@@ -182,7 +182,7 @@ const tabsData = computed((): TabData[] => {
     ...(transversePage
       ? [
           {
-            label: transversePage?.name,
+            label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
             icon: LayoutIcon,
             component: AuditGenerationPageCriteria,
             componentParams: {
