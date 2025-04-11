@@ -250,12 +250,15 @@ async function goToPreviousStep() {
     ref="leaveModalRef"
     title="Le paramétrage de l’audit n’est pas terminé"
     icon="fr-icon-warning-line"
-    confirm="Quitter le paramétrage"
-    cancel="Annuler"
+    confirm="Abandonner le paramétrage de l’audit"
+    cancel="Poursuivre le paramétrage de l’audit"
     @confirm="confirmLeave"
     @cancel="cancelLeave"
   >
-    <p>Aucune des informations saisies ne sera enregistrée.</p>
+    <p>
+      Aucune des informations saisies ne sera enregistrée. Souhaitez-vous
+      vraiment abandonner le paramétrage de l’audit ?
+    </p>
   </LeaveModal>
 </template>
 
