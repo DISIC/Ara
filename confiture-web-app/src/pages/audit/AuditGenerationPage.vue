@@ -148,15 +148,15 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
+  // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
   if (auditStore.currentAudit) {
     let title = auditStore.currentAudit.procedureName;
 
-    const tabName = ` - Page en cours « ${
+    const tabName = ` - Page en cours « ${
       auditStore.currentAudit.pages.find(
         (p) => p.id === auditStore.currentPageId
       )?.name ?? StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
-    } »`;
+    } »`;
 
     title += tabName;
 
@@ -165,7 +165,7 @@ const pageTitle = computed(() => {
         "résultat",
         "résultats",
         filterResultsCount.value
-      )} pour « ${filterStore.search} »`;
+      )} pour « ${filterStore.search} »`;
 
       title += results;
     }
