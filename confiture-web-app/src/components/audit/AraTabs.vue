@@ -1,62 +1,201 @@
 <!--
-  This component is only used to replicate DSFR tabs with sticky functionality.
-  For tabs that have no sticky needs, please use `fr-tabs` instead of this component.
+  This component is used to replicate DSFR tabs with:
+	- sticky functionality
+	- routing behaviour, one nested route per tab
+  For "regular" tabs, please use `fr-tabs` instead of this component.
   https://www.systeme-de-design.gouv.fr/elements-d-interface/composants/onglet
  -->
 
-<script setup lang="ts" generic="T">
-import { ref, watch } from "vue";
+<script setup lang="ts">
+import { useResizeObserver } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import LayoutIcon from "../icons/LayoutIcon.vue";
+import { TabData } from "../../types";
+import { slugify } from "../../utils";
 
-const props = defineProps<{
-  tabs: { label: string; data: T }[];
-  stickyTop: string;
-}>();
+interface TabsRouteParams {
+  name: string;
+  params: {
+    uniqueId: string;
+  };
+}
 
-defineSlots<{
-  panel(props: { i: number; data: T }): void;
-}>();
+const props = withDefaults(
+  defineProps<{
+    /** Array of tab data objects */
+    tabs: TabData[];
+    /** Route parameters common to all tabs */
+    route: TabsRouteParams;
+    /** CSS top value (e.g. "0", "4px" or "1rem"). Default is "0" */
+    stickyTop?: string;
+    /**
+     * - "sameCriteria" tries to scroll page to the same
+     *   criteria as previous tab (e.g. for Audit)
+     * - "tabsTop" always scrolls to push the tabs panel at the top
+     *   of the screen (e.g. for Report)
+     */
+    panelScrollBehavior?: "tabsTop" | "sameCriteria";
+  }>(),
+  {
+    stickyTop: "0",
+    panelScrollBehavior: "tabsTop"
+  }
+);
 
-const emit = defineEmits<{
-  (e: "change", currentTab: number): void;
-}>();
+const tabSlugsArray: string[] = [];
+const tabSlugIndexes: { [slug: string]: number } = {};
+const tabSlugs: { [slug: string]: TabData } = {};
+
+props.tabs.forEach((t, i) => {
+  let slug = slugify(t.label);
+  // Avoid duplicates
+  let otherTab: TabData;
+  let otherSlug: string;
+  if (slug in tabSlugs) {
+    // Duplicate found: the tab with the highest id will get its slug
+    // modified as "[slug]-[id]".
+    // That way, reordering tabs will keep the same modified slugs)
+    // Note: ids need to be declared for each of the duplicate tabs
+    otherTab = tabSlugs[slug];
+    if (otherTab.id && t.id) {
+      if (otherTab.id > t.id) {
+        otherSlug = slug + `-${otherTab.id}`;
+        tabSlugs[otherSlug] = otherTab;
+        tabSlugIndexes[otherSlug] = tabSlugIndexes[slug];
+        tabSlugsArray[tabSlugIndexes[slug]] = otherSlug;
+      } else {
+        slug += `-${t.id}`;
+      }
+    }
+  }
+  tabSlugs[slug] = t;
+  tabSlugIndexes[slug] = i;
+  tabSlugsArray[i] = slug;
+});
+
+// Test if each tab slug is unique
+if (new Set(tabSlugsArray).size !== tabSlugsArray.length) {
+  throw new Error(
+    `\n\n❌ Tab slugs need to be unique. You can pass an id in the TabData object,
+		it will be appended to the slug.\n\nCurrent tag slugs are:\n
+		${tabSlugsArray.join("  |  ")}`
+  );
+}
+
+const selectedTabIndex = ref<number>(0);
+const selectedTabSlug = ref<string>("");
+const tabButtonsRef = ref<HTMLButtonElement[]>();
+const panelBottomMarkerRef = ref<HTMLDivElement>();
+const panelMinHeight = ref<string>("0");
 
 const uniqueId = useUniqueId();
-const tabId = (i: number) => "tab-" + uniqueId.value + "-" + i;
-const panelId = (i: number) => "panel-" + uniqueId.value + "-" + i;
 
-const currentTab = ref(0);
-const tabControlRefs = ref<HTMLButtonElement[]>();
+const router = useRouter();
+const routerRoute = useRoute();
 
-const selectNextTab = () => {
-  currentTab.value = (currentTab.value + 1) % props.tabs.length;
-  tabControlRefs.value?.at(currentTab.value)?.focus();
-};
+const emit = defineEmits<{
+  (e: "selectedTabChange", selectedTabIndex: number): void;
+}>();
 
-const selectPreviousTab = () => {
-  if (currentTab.value === 0) {
-    currentTab.value = props.tabs.length - 1;
-  } else {
-    currentTab.value -= 1;
-  }
-  tabControlRefs.value?.at(currentTab.value)?.focus();
-};
-
-const selectFirstTab = () => {
-  currentTab.value = 0;
-  tabControlRefs.value?.at(currentTab.value)?.focus();
-};
-
-const selectLastTab = () => {
-  currentTab.value = props.tabs.length - 1;
-  tabControlRefs.value?.at(currentTab.value)?.focus();
-};
-
-watch(currentTab, (currentTab) => {
-  emit("change", currentTab);
+const selectedTab = computed(() => {
+  return props.tabs[selectedTabIndex.value];
 });
+
+function tabId(i: number) {
+  return "tab-" + uniqueId.value + "-" + i;
+}
+
+function panelId(i: number) {
+  return "panel-" + uniqueId.value + "-" + i;
+}
+
+/**
+ * Selects the tab at index i
+ *
+ * Note: `selectedTabIndex` ref is not updated here,
+ *       it will be updated **after route update**
+ *       See watchEffect
+ *
+ * @param i New index to focus
+ */
+function selectTab(i: number) {
+  if (i === selectedTabIndex.value) {
+    return;
+  }
+
+  // Focus the new tab element
+  tabButtonsRef.value?.at(i)?.focus();
+
+  // Change route
+  router.push({
+    ...props.route,
+    params: {
+      ...props.route.params,
+      tabSlug: tabSlugsArray[i]
+    }
+  });
+}
+
+function selectNextTab() {
+  selectTab((selectedTabIndex.value + 1) % props.tabs.length);
+}
+
+function selectPreviousTab() {
+  const len = props.tabs.length;
+  selectTab((selectedTabIndex.value - 1 + len) % len);
+}
+
+function selectFirstTab() {
+  selectTab(0);
+}
+
+function selectLastTab() {
+  selectTab(props.tabs.length - 1);
+}
+
+// Dynamic panel minimum height.
+// Allows tabs to stick to the top of the screen
+// even if content is not high enough
+const tabsWrapperRef = ref<HTMLElement>();
+const bodyEl = document.getElementsByTagName("body")[0] as HTMLElement;
+useResizeObserver(bodyEl, () => {
+  panelMinHeight.value = `calc( 100vh - (${props.stickyTop}) - ${
+    (tabsWrapperRef.value?.clientHeight || 0) +
+    (bodyEl.getBoundingClientRect().bottom -
+      panelBottomMarkerRef.value!.getBoundingClientRect().top)
+  }px )`;
+});
+
+watch(
+  () => routerRoute.params.tabSlug,
+  (newValue) => {
+    // tabSlug changes on route change
+    selectedTabSlug.value = newValue as string;
+
+    // if slug not found go to Error page (404).
+    const tabIndex = tabSlugIndexes[selectedTabSlug.value];
+    if (tabIndex === undefined) {
+      router.replace({
+        name: "Error",
+        params: { pathMatch: routerRoute.path.substring(1).split("/") },
+        query: routerRoute.query,
+        hash: routerRoute.hash,
+        state: {
+          errorStatus: 404
+        }
+      });
+      return;
+    }
+
+    selectedTabIndex.value = tabIndex;
+
+    // other components may be interested by the current selected tab index
+    emit("selectedTabChange", selectedTabIndex.value);
+  },
+  { immediate: true }
+);
 </script>
 
 <!--
@@ -65,40 +204,57 @@ watch(currentTab, (currentTab) => {
 -->
 
 <template>
-  <div class="tabs-wrapper" :style="{ '--tabs-top-offset': stickyTop }">
+  <div
+    ref="tabsWrapperRef"
+    class="tabs-wrapper"
+    :data-panel-scroll-behavior="panelScrollBehavior"
+    :style="{ '--tabs-top-offset': stickyTop }"
+  >
     <ul role="tablist" class="tabs">
       <li v-for="(tab, i) in tabs" :key="i" role="presentation">
         <button
           :id="tabId(i)"
-          ref="tabControlRefs"
+          ref="tabButtonsRef"
           role="tab"
+          :data-slug="tabSlugsArray[i]"
           :aria-controls="panelId(i)"
-          :aria-selected="i === currentTab ? 'true' : 'false'"
-          :tabindex="i === currentTab ? undefined : '-1'"
-          @click="currentTab = i"
+          :aria-selected="i === selectedTabIndex ? 'true' : 'false'"
+          :tabindex="i === selectedTabIndex ? undefined : '-1'"
+          @click="selectTab(i)"
           @keydown.right.down.prevent="selectNextTab"
           @keydown.left.up.prevent="selectPreviousTab"
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
-          <LayoutIcon v-if="i === 0" class="fr-mr-2v" />{{ tab.label }}
+          <component
+            :is="props.tabs[i].icon"
+            v-if="props.tabs[i].icon && i === 0"
+            class="fr-mr-2v"
+          ></component
+          >{{ tab.label }}
         </button>
       </li>
     </ul>
   </div>
-  <div class="panel-container">
-    <template v-for="(tab, i) in tabs" :key="i">
-      <div
-        :id="panelId(i)"
-        :aria-labelledby="tabId(i)"
-        :class="{ visible: i === currentTab }"
-        role="tabpanel"
-        tabindex="0"
+  <div class="panel-container" :style="{ '--min-height': panelMinHeight }">
+    <RouterView v-slot="{ Component }">
+      <!-- Component should be AraTabsPanel (see router) -->
+      <component
+        :is="Component"
+        :panel-id="panelId(selectedTabIndex)"
+        :labelled-by="tabId(selectedTabIndex)"
+        :component-params="selectedTab.componentParams"
       >
-        <slot v-if="i === currentTab" name="panel" :data="tab.data" :i="i" />
-      </div>
-    </template>
+        <!-- Slot inside AraTabsPanel -->
+        <component
+          :is="selectedTab.component"
+          v-bind="selectedTab.componentParams"
+        >
+        </component>
+      </component>
+    </RouterView>
   </div>
+  <div ref="panelBottomMarkerRef"></div>
 </template>
 
 <style scoped>
@@ -211,5 +367,8 @@ li {
   border: 1px solid var(--border-default-grey);
   border-top: none;
   padding: 2rem;
+  /* Allow tabs to stick to the top of the screen
+	 * even if content is not high enough: */
+  min-height: var(--min-height);
 }
 </style>

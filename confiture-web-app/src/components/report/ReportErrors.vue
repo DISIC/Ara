@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
+import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import {
   CriterionResultUserImpact,
@@ -109,7 +110,6 @@ function resetFilters() {
     :pages-data="pagesErrors"
     :transverse-data="transverseErrors"
     :show-filters="true"
-    tab-slug="errors"
   >
     <template #filter>
       <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
@@ -205,12 +205,11 @@ function resetFilters() {
       <template v-if="transverseErrors.topics.length">
         <section class="fr-mb-8w">
           <h3
-            id="errors_elements-transverses"
+            :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
             class="fr-h3 fr-mb-2w page-title"
           >
-            Éléments transverses
+            {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
           </h3>
-
           <ul
             v-if="report.data.transverseElements.length"
             class="fr-tags-group fr-mb-5v"
@@ -242,7 +241,7 @@ function resetFilters() {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h3 :id="`errors_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-2w page-title">
           {{ page.name }}
         </h3>
         <a
@@ -277,9 +276,3 @@ function resetFilters() {
     </template>
   </ReportCriteria>
 </template>
-
-<style>
-.page-title {
-  color: var(--text-active-blue-france);
-}
-</style>

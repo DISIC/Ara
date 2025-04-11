@@ -25,6 +25,7 @@
     "@tiptap/vue-3": "^2.5.9",
     "@unhead/vue": "^1.5.3",
     "@vitejs/plugin-vue": "^4.4.1",
+    "@vueuse/core": "^12.8.2",
     "dompurify": "^2.4.1",
     "highlight.js": "^11.10.0",
     "jwt-decode": "^3.1.2",
