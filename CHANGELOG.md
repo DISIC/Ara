@@ -11,6 +11,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
   - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
   - l’onglet actif reste toujours visible, même sur petit écran et avec une navigation au clavier.
 - Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport
+- Correction du contraste des cartes de types d’audit ([#1056](https://github.com/DISIC/Ara/pull/1056))
 
 ## 09/04/2025
 
