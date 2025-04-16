@@ -3,13 +3,14 @@ import { computed, ref } from "vue";
 import { RouteLocationRaw } from "vue-router";
 
 import router from "../../router";
+import CopyIcon from "../icons/CopyIcon.vue";
 
 const props = defineProps<{
-  label: string;
-  title: string;
+  linkHiddenLabel: string;
+  copyButtonHiddenLabel: string;
   to: RouteLocationRaw;
+  showCopyButton: boolean;
   successMessage: string;
-  buttonClass?: string;
 }>();
 
 const showCopyAlert = ref(false);
@@ -18,7 +19,7 @@ const fullUrl = computed(
   () => window.location.origin + router.resolve(props.to).fullPath
 );
 
-async function copyLink() {
+async function copyUrl() {
   navigator.clipboard.writeText(fullUrl.value).then(() => {
     showCopyAlert.value = true;
   });
@@ -26,48 +27,49 @@ async function copyLink() {
 
 const copyButtonRef = ref<HTMLButtonElement>();
 
-function onClose() {
+function onAlertClose() {
   copyButtonRef.value?.focus();
   showCopyAlert.value = false;
 }
 </script>
 
 <template>
-  <div class="copy-block-wrapper">
-    <p class="fr-text fr-text--bold fr-mb-3v">{{ label }}</p>
-
-    <div class="fr-px-4w fr-py-3w copy-block">
-      <p class="fr-m-0">
+  <div class="copy-block">
+    <ul
+      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left copy-block-actions"
+    >
+      <li class="fr-mb-2w fr-mb-md-0">
         <RouterLink
-          class="fr-link copy-block-link"
           :to="to"
-          :title="title"
           target="_blank"
+          class="fr-btn fr-btn--tertiary fr-mb-0"
         >
-          {{ fullUrl }}
-          <span class="fr-sr-only">(Nouvelle fenêtre)</span>
+          Consulter
+          <span class="fr-sr-only"
+            >{{ linkHiddenLabel }} (nouvelle fenêtre)</span
+          >
         </RouterLink>
-      </p>
-      <button
-        ref="copyButtonRef"
-        class="fr-btn fr-icon-file-line fr-btn--icon-left fr-m-0 copy-block-action"
-        :class="buttonClass"
-        :title="`Copier le ${title}`"
-        @click="copyLink"
-      >
-        Copier le lien
-      </button>
-    </div>
+      </li>
+      <li v-if="showCopyButton">
+        <button
+          ref="copyButtonRef"
+          class="fr-btn fr-btn--secondary fr-mb-0"
+          @click="copyUrl"
+        >
+          <CopyIcon class="fr-mr-2v" />
+          Copier le lien de partage
+          <span class="fr-sr-only">{{ copyButtonHiddenLabel }}</span>
+        </button>
+      </li>
+    </ul>
 
-    <div role="alert" aria-live="polite">
+    <div role="alert" aria-live="polite" class="copy-block-alert">
       <div
         v-if="showCopyAlert"
         class="fr-alert fr-alert--success fr-alert--sm fr-mt-2w"
       >
-        <p>
-          {{ successMessage }}
-        </p>
-        <button class="fr-link--close fr-link" @click="onClose">
+        <p>{{ successMessage }}</p>
+        <button class="fr-link fr-link--close" @click="onAlertClose">
           Masquer le message
         </button>
       </div>
@@ -76,31 +78,33 @@ function onClose() {
 </template>
 
 <style scoped>
-.copy-block-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
 .copy-block {
-  background-color: var(--background-contrast-grey);
-  display: flex;
-  gap: 1.25rem;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.copy-block-link {
-  word-break: break-all;
-}
+.copy-block-actions {
+  grid-column: 1 / -1;
 
-.copy-block-action {
-  flex-shrink: 0;
-}
+  li:first-child {
+    width: 50%;
 
-@media (width < 36rem) {
-  .copy-block {
-    align-items: start;
-    flex-direction: column;
+    @media (width < 48rem) {
+      width: 100%;
+    }
   }
+
+  li:last-child {
+    min-width: 18rem;
+  }
+
+  li > a,
+  li > button {
+    width: calc(100% - 1rem);
+  }
+}
+
+.copy-block-alert {
+  grid-column: 1 / -1;
 }
 </style>
