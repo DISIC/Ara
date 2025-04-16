@@ -289,7 +289,6 @@ function copyStatementLink(uniqueId: string) {
         params: { uniqueId: audit.editUniqueId }
       }"
       class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line no-external-icon"
-      target="_blank"
     >
       Livrables
     </RouterLink>
