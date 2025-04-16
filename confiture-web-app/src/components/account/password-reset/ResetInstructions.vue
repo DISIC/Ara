@@ -5,7 +5,6 @@ defineProps<{ email: string }>();
 
 const emit = defineEmits<{
   (e: "resend-email"): void;
-  (e: "update-email"): void;
 }>();
 
 // Send reset email password
@@ -70,13 +69,6 @@ defineExpose({
         </button>
       </div>
     </div>
-    <h2 class="fr-text--sm fr-mb-1w">L’adresse e-mail saisie est erronée ?</h2>
-    <button
-      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      @click="$emit('update-email')"
-    >
-      Modifier mon adresse e-mail
-    </button>
   </div>
 </template>
 
