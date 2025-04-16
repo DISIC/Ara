@@ -123,7 +123,7 @@ const backLinkLabel = computed(() => {
   <form class="content" @submit.prevent="onSubmit">
     <h1 class="fr-mb-6w">Paramètres de l’audit</h1>
     <p class="fr-text--sm fr-mb-4w notice">
-      Sauf mentions contraires, tous les champs sont obligatoires
+      Sauf mentions contraires, tous les champs sont obligatoires.
     </p>
 
     <DsfrField
