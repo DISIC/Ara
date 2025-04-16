@@ -33,10 +33,7 @@ const selectedMobileEnvironments = ref<string[]>(
 );
 
 /** List of custom environments */
-const customEnvironments = ref([
-  ...getCustomEnvironments(props.modelValue),
-  ...(props.modelValue.length === 0 ? [] : [])
-]);
+const customEnvironments = ref(getCustomEnvironments(props.modelValue));
 
 watch(
   [customEnvironments, selectedDesktopEnvironments, selectedMobileEnvironments],
