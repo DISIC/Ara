@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
-import router from "../../router";
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import CopyIcon from "../icons/CopyIcon.vue";
+import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
 
 const props = defineProps<{
@@ -21,29 +20,6 @@ const auditIsReady = computed(() => {
 const auditIsPublishable = computed(() => {
   return !!props.audit.initiator;
 });
-
-const statementUrl = computed(
-  () =>
-    window.location.origin +
-    router.resolve({
-      name: "a11y-statement",
-      params: { uniqueId: props.audit.consultUniqueId }
-    }).fullPath
-);
-
-const showCopyAlert = ref(false);
-const copyButtonRef = ref<HTMLButtonElement>();
-
-function copyStatementUrl() {
-  navigator.clipboard.writeText(statementUrl.value).then(() => {
-    showCopyAlert.value = true;
-  });
-}
-
-function onStatementAlertClose() {
-  copyButtonRef.value?.focus();
-  showCopyAlert.value = false;
-}
 </script>
 
 <template>
@@ -88,69 +64,40 @@ function onStatementAlertClose() {
       </template>
     </p>
 
+    <CopyBlock
+      v-if="auditIsPublishable"
+      class="statement-step-copy"
+      :to="{
+        name: 'a11y-statement',
+        params: {
+          uniqueId: audit.consultUniqueId
+        }
+      }"
+      :show-copy-button="auditIsPublishable"
+      success-message="Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier."
+      link-hidden-label="la déclaration d’accessibilité"
+      copy-button-hidden-label="de la déclaration d’accessibilité"
+    />
+
     <ul
-      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions"
+      v-else
+      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-main-cta"
     >
       <li class="fr-mb-2w fr-mb-md-0">
         <RouterLink
-          :to="
-            auditIsPublishable
-              ? {
-                  name: 'a11y-statement',
-                  params: {
-                    uniqueId: audit.consultUniqueId
-                  }
-                }
-              : {
-                  name: 'audit-declaration',
-                  params: { uniqueId: audit.editUniqueId }
-                }
-          "
-          :target="auditIsPublishable ? '_blank' : null"
-          class="fr-btn fr-btn--icon-left fr-mb-0"
-          :class="{
-            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
-            'fr-icon-edit-line no-external-icon': !auditIsPublishable
+          :to="{
+            name: 'audit-declaration',
+            params: { uniqueId: audit.editUniqueId }
           }"
-          :title="
-            auditIsPublishable
-              ? 'Consulter la déclaration - nouvelle fenêtre'
-              : null
-          "
+          class="fr-btn fr-btn--icon-left fr-icon-edit-line no-external-icon fr-mb-0"
+          :class="{
+            'fr-btn--tertiary': !auditIsReady
+          }"
         >
-          {{ auditIsPublishable ? "Consulter" : "Compléter" }}
-          <span v-if="auditIsPublishable" class="fr-sr-only"
-            >(nouvelle fenêtre)</span
-          >
+          Compléter
         </RouterLink>
       </li>
-      <li v-if="auditIsPublishable">
-        <button
-          ref="copyButtonRef"
-          class="fr-btn fr-btn--secondary fr-mb-0"
-          @click="copyStatementUrl"
-        >
-          <CopyIcon class="fr-mr-2v" />
-          Copier le lien de partage
-          <span class="fr-sr-only">de la déclaration</span>
-        </button>
-      </li>
     </ul>
-
-    <div role="alert" aria-live="polite" class="statement-step-alert">
-      <div
-        v-if="showCopyAlert"
-        class="fr-alert fr-alert--success fr-alert--sm fr-mt-2w"
-      >
-        <p>
-          Le lien vers la déclaration d’accessibilité a bien été copié dans le
-          presse-papier.
-        </p>
-        <button class="fr-link--close fr-link" @click="onStatementAlertClose">
-          Masquer le message
-        </button>
-      </div>
-    </div>
   </StepCard>
 </template>
 
@@ -168,29 +115,21 @@ function onStatementAlertClose() {
   grid-row: 2;
 }
 
-/* FIXME: overrides fr-btns-group style */
-.statement-step-actions {
-  grid-column: 1 / -1;
+.statement-step-main-cta {
+  @media (width < 48rem) {
+    grid-column: 1 / -1;
+  }
 
   li:first-child {
-    width: 50%;
+    width: 100%;
 
-    @media (width < 48rem) {
-      width: 100%;
+    > a {
+      width: calc(100% - 1rem);
     }
-  }
-
-  li:last-child {
-    min-width: 18rem;
-  }
-
-  li > a,
-  li > button {
-    width: calc(100% - 1rem);
   }
 }
 
-.statement-step-alert {
+.statement-step-copy {
   grid-column: 1 / -1;
 }
 </style>
