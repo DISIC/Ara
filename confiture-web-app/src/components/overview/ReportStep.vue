@@ -46,41 +46,17 @@ const auditIsReady = computed(() => {
           : "Terminez l’audit avant de livrer le rapport d’audit."
       }}
     </p>
-    <ul
-      :class="[
-        'fr-btns-group fr-btns-group--icon-left',
-        { 'fr-mb-3w': auditIsReady }
-      ]"
-    >
-      <li>
-        <RouterLink
-          :to="{
-            name: 'report',
-            params: { uniqueId: audit.consultUniqueId }
-          }"
-          target="_blank"
-          class="fr-btn fr-btn--tertiary fr-mb-0"
-          title="Consulter le rapport - nouvelle fenêtre"
-        >
-          Consulter
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
-        </RouterLink>
-      </li>
-    </ul>
-
-    <template v-if="auditIsReady">
-      <CopyBlock
-        class="fr-m-0 report-step-copy-block"
-        :to="{
-          name: 'report',
-          params: { uniqueId: audit.consultUniqueId }
-        }"
-        label="Lien de partage"
-        title="Lien de partage du rapport d’audit"
-        success-message="Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
-        button-class="fr-btn--secondary"
-      />
-    </template>
+    <CopyBlock
+      class="report-step-copy"
+      :to="{
+        name: 'report',
+        params: { uniqueId: audit.consultUniqueId }
+      }"
+      :show-copy-button="auditIsReady"
+      success-message="Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
+      link-hidden-label="le rapport"
+      copy-button-hidden-label="du rapport"
+    />
   </StepCard>
 </template>
 
@@ -90,8 +66,7 @@ const auditIsReady = computed(() => {
   grid-row: 2;
 }
 
-.report-step-copy-block {
+.report-step-copy {
   grid-column: 1 / -1;
-  grid-row: 4;
 }
 </style>
