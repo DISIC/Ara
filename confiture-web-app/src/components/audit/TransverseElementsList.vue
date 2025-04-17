@@ -4,24 +4,18 @@ import { nextTick, ref, watch } from "vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { useAuditStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
-
-let nextUid = 1;
-function getUid() {
-  return nextUid++;
-}
+import TagListField from "../ui/TagListField.vue";
 
 const auditStore = useAuditStore();
 
 const editing = ref(false);
-const inputValue = ref("");
-// [uid, tag]
-const tags = ref<[number, string][]>([]);
+const tags = ref<string[]>([]);
 
 watch(
   () => auditStore.currentAudit?.transverseElements,
   (transverseElements) => {
     if (transverseElements) {
-      tags.value = transverseElements.map((element) => [getUid(), element]);
+      tags.value = [...transverseElements];
     }
   },
   {
@@ -31,7 +25,6 @@ watch(
 
 const editButtonRef = ref<HTMLButtonElement[]>();
 const inputRef = ref<InstanceType<typeof DsfrField>>();
-const tagButtonsRefs = ref<HTMLButtonElement[]>([]);
 const submitButtonRef = ref<HTMLButtonElement>();
 
 async function startEdition() {
@@ -40,45 +33,24 @@ async function startEdition() {
   inputRef.value?.inputRef?.focus();
 }
 
-function addElements() {
-  const tech = inputValue.value.split(",").filter(Boolean);
-  tech.forEach((t) => {
-    tags.value.push([getUid(), t.trim()]);
-  });
-
-  inputValue.value = "";
-}
-
-async function removeElement(at: number) {
-  tags.value = tags.value.filter((_, i) => {
-    return i !== at;
-  });
-
-  await nextTick();
-
-  const nextToolButton = tagButtonsRefs.value.at(at);
-  if (nextToolButton) {
-    nextToolButton.focus();
-  } else {
-    submitButtonRef.value?.focus();
-  }
-}
-
 const notify = useNotifications();
 
+const tagListFieldRef = ref<InstanceType<typeof TagListField>>();
+
 async function submitForm() {
-  addElements();
+  // Force event emission to update the tags list before proceeding
+  tagListFieldRef.value?.flush();
+
   editing.value = false;
 
   if (!auditStore.currentAudit) return;
 
   const uniqueId = auditStore.currentAudit?.editUniqueId;
-  const transverseElements = tags.value.map(([, element]) => element);
 
   auditStore
     .updateAudit(uniqueId, {
       ...auditStore.currentAudit,
-      transverseElements
+      transverseElements: tags.value
     })
     .then(() => {
       editButtonRef.value?.at(0)?.focus();
@@ -96,10 +68,7 @@ async function submitForm() {
 async function cancelEdition() {
   editing.value = false;
   if (auditStore.currentAudit) {
-    tags.value = auditStore.currentAudit.transverseElements.map((element) => [
-      getUid(),
-      element
-    ]);
+    tags.value = [...auditStore.currentAudit.transverseElements];
   }
   await nextTick();
   editButtonRef.value?.at(0)?.focus();
@@ -118,7 +87,7 @@ async function cancelEdition() {
       </button>
       <div>
         <ul class="fr-tags-group">
-          <li v-for="([uid, tag], i) in tags" :key="uid">
+          <li v-for="(tag, i) in tags" :key="i">
             <p class="fr-tag">{{ tag }}</p>
 
             <button
@@ -136,39 +105,17 @@ async function cancelEdition() {
 
     <template v-else>
       <form @submit.prevent>
-        <DsfrField
-          id="transverse-elements-list"
-          ref="inputRef"
-          v-model="inputValue"
-          class="fr-mb-3v elements-field"
+        <TagListField
+          ref="tagListFieldRef"
+          v-model="tags"
           label="Nom de l’élément transverse"
           hint="Exemples : En-tête, pied de page, bandeau cookies, etc."
-          type="text"
-          @keydown.enter="addElements"
+          class="elements-field"
         >
-          <template #trailing>
-            <button
-              type="button"
-              class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mt-1w"
-              @click="addElements"
-            >
-              Ajouter <span class="fr-sr-only">l’éléments transverse</span>
-            </button>
+          <template #addLabel>
+            Ajouter <span class="fr-sr-only">l’éléments transverse</span>
           </template>
-        </DsfrField>
-        <ul class="fr-tags-group fr-mb-5v">
-          <li v-for="([uid, tag], i) in tags" :key="uid">
-            <button
-              ref="tagButtonsRefs"
-              class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
-              type="button"
-              @click="removeElement(i)"
-            >
-              <span class="fr-sr-only">Retirer</span>
-              {{ tag }}
-            </button>
-          </li>
-        </ul>
+        </TagListField>
         <ul class="fr-btns-group fr-btns-group--inline-md">
           <li>
             <button
