@@ -184,7 +184,6 @@ const editor = useEditor({
   content: getContent(),
   extensions,
   onUpdate({ editor }) {
-    // FIXME: only trigger emit when content actually changed
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
@@ -477,13 +476,39 @@ defineExpose({
   width: var(--icon-size);
 }
 
-/* Update DSFR ::marker styles ("1.1.", "1.2." to "1.", "2.") */
-.tiptap ol {
-  counter-reset: list-item;
-}
+/* Update DSFR ol ::marker styles:
+  Nested <ol>
+  1.
+    1.1
+      1.1.1
+    1.2
+  2.
 
-.tiptap li::marker {
-  --ol-content: list-item 1;
+  <ol> nested in <ul>
+  - 
+    1.
+    2.
+      1.
+      2.
+  - 
+*/
+.tiptap {
+  ol,
+  ul {
+    counter-reset: section;
+  }
+
+  ol li {
+    --ol-content: counters(section, ".") ". ";
+
+    counter-increment: section;
+  }
+
+  ul > li > ol li {
+    --ol-content: counter(section) ". ";
+
+    counter-increment: section;
+  }
 }
 
 .tiptap blockquote p {

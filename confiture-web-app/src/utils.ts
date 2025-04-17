@@ -286,7 +286,7 @@ export async function handleFileDeleteError(
   return FileErrorMessage.DELETE_UNKNOWN;
 }
 
-/** Check if a tiptap document string correspond to an empty document. */
+/** Check if a tiptap document string corresponds to an empty document. */
 export function isTiptapDocumentEmpty(
   jsonString: string | null | undefined
 ): boolean {
