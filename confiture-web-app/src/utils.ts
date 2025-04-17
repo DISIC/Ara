@@ -306,3 +306,10 @@ export function isTiptapDocumentEmpty(
 
   return false;
 }
+
+export function getScrollBehavior(): ScrollBehavior {
+  // Use smooth scrolling only if user does not dislike animations
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "instant"
+    : "smooth";
+}

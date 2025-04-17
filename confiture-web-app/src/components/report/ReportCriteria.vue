@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
+import { StaticTabLabel, TabSlug } from "../../enums";
 import type { ReportError } from "./getReportErrors";
 import { ReportImprovement } from "./getReportImprovements";
 
 defineProps<{
   count: string;
   pagesData: ReportError[] | ReportImprovement[];
-  tabSlug: string;
   transverseData: ReportError | ReportImprovement;
   showFilters?: boolean;
   topNotice?: string;
@@ -23,18 +23,18 @@ function isActive(id: string) {
 
 <template>
   <div class="main">
-    <div class="sidebar">
+    <div class="sidebar filters-wrapper">
       <nav class="fr-sidemenu fr-mb-3w" aria-label="Liste des pages">
         <div class="fr-sidemenu__inner">
           <button
             class="fr-sidemenu__btn"
             hidden
-            :aria-controls="`report-${tabSlug}_sidemenu-wrapper`"
+            :aria-controls="`report_sidemenu-wrapper`"
             aria-expanded="false"
           >
             Pages
           </button>
-          <div :id="`report-${tabSlug}_sidemenu-wrapper`" class="fr-collapse">
+          <div :id="`report_sidemenu-wrapper`" class="fr-collapse">
             <div class="fr-sidemenu__title fr-mb-2w">Pages</div>
             <ul class="fr-sidemenu__list">
               <li
@@ -43,21 +43,24 @@ function isActive(id: string) {
                   'fr-sidemenu__item',
                   {
                     'fr-sidemenu__item--active':
-                      !route.hash || isActive('#elements-transverses')
+                      !route.hash ||
+                      isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                   }
                 ]"
               >
-                <a
+                <RouterLink
+                  :to="{ hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}` }"
                   class="fr-sidemenu__link"
-                  :href="`#${tabSlug}_elements-transverses`"
                   :aria-current="
                     route.hash
-                      ? isActive(`#${tabSlug}_elements-transverses`)
+                      ? isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                         ? 'true'
                         : undefined
-                      : 'true'
+                      : undefined
                   "
-                  >Éléments transverses</a
+                  >{{
+                    StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
+                  }}</RouterLink
                 >
               </li>
               <li
@@ -65,28 +68,25 @@ function isActive(id: string) {
                 :key="page.name"
                 class="fr-sidemenu__item"
                 :class="{
-                  'fr-sidemenu__item--active': isActive(
-                    `#${tabSlug}_${page.id}`
-                  )
+                  'fr-sidemenu__item--active': isActive(`#page_${page.id}`)
                 }"
               >
-                <a
+                <RouterLink
                   class="fr-sidemenu__link"
-                  :href="`#${tabSlug}_${page.id}`"
+                  :to="{ hash: `#page_${page.id}` }"
                   :aria-current="
-                    isActive(`#${tabSlug}_${page.id}`) ? 'true' : undefined
+                    isActive(`#page_${page.id}`) ? 'true' : undefined
                   "
                 >
                   {{ page.name }}
-                </a>
+                </RouterLink>
               </li>
             </ul>
           </div>
         </div>
       </nav>
-      <slot name="filter" />
+      <slot name="filter"></slot>
     </div>
-
     <div>
       <div class="fr-mb-5w">
         <p v-if="topNotice" class="fr-text--sm fr-mb-3w improvements-notice">
@@ -118,8 +118,9 @@ function isActive(id: string) {
   box-shadow: inset -1px 0 0 0 var(--border-default-grey);
 }
 
-.page-title {
+:deep(.page-title) {
   color: var(--text-active-blue-france);
+  scroll-margin: 4rem;
 }
 
 .fr-sidemenu__inner {
@@ -139,5 +140,23 @@ function isActive(id: string) {
 .count,
 .improvements-notice {
   color: var(--text-mention-grey);
+}
+
+.filters-wrapper {
+  --filters-top-offset: 4.5rem;
+  position: sticky;
+  top: var(--filters-top-offset, 0);
+  max-height: calc(100vh - var(--filters-top-offset, 0));
+  max-height: calc(100dvh - var(--filters-top-offset, 0));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (width < 48rem) {
+  .filters-wrapper {
+    position: static;
+    max-height: none;
+    overflow-y: initial;
+  }
 }
 </style>
