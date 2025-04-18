@@ -27,8 +27,8 @@ const isImage = computed(() => {
 
 const title = computed(() => {
   return isImage.value
-    ? "Voulez-vous supprimer cette image ?"
-    : "Voulez-vous supprimer ce fichier ?";
+    ? "Voulez-vous supprimer cette image ?"
+    : "Voulez-vous supprimer ce fichier ?";
 });
 
 const description = computed(() => {

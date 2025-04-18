@@ -33,25 +33,25 @@ const steps = computed(() => [
   },
   {
     title: "Je mets en ligne la déclaration d’accessibilité",
-    subTitle: "Par quoi commencer ?",
+    subTitle: "Par quoi commencer ?",
     text: "Vous pouvez dès maintenant mettre la déclaration d’accessibilité fournie avec ce rapport sur votre site.",
     illustration: `url(${uploadIllustration})`
   },
   {
     title: "Je corrige les erreurs relevées",
-    subTitle: "Ensuite ?",
+    subTitle: "Ensuite ?",
     text: "Prioriser, corriger, tester. Vous trouverez dans ce rapport toutes les informations nécessaires pour vous aider dans chacune de ces tâches.",
     illustration: `url(${hammerIllustration})`
   },
   {
-    subTitle: "Et après ?",
+    subTitle: "Et après ?",
     title: "Je réalise un contre-audit",
     text: "Une fois les erreurs corrigées, il sera temps de réaliser un contre-audit pour connaitre le nouveau taux d’accessibilité de votre site.",
     illustration: `url(${magnifierIllustration})`
   },
   {
     title: "Je peux trouver de l’aide",
-    subTitle: "Et si jamais ?",
+    subTitle: "Et si jamais ?",
     text: "L’<strong>auditeur</strong> ou l’<strong>auditrice</strong> qui a réalisé cet audit peut vous aider, n’hésitez pas à lui écrire. Vous pouvez aussi trouver de l’aide à tout moment depuis la <strong>page Aide</strong>.",
     illustration: `url(${handsIllustration})`
   }
