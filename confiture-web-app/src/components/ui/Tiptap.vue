@@ -167,7 +167,7 @@ const extensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown,
+  Markdown.configure({ linkify: true }),
   Image
 ];
 
