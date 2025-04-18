@@ -7,6 +7,7 @@ import {
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
+import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
@@ -166,7 +167,8 @@ const extensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown
+  Markdown,
+  Image
 ];
 
 if (props.editable) {
@@ -419,14 +421,15 @@ defineExpose({
   }
 }
 
+/* TODO: include commented properties only in editable mode */
 .tiptap img {
-  cursor: pointer;
+  /* cursor: pointer; */
   display: block;
   height: auto;
   max-width: 100%;
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
 }
 
 .tiptap:focus,
@@ -435,11 +438,12 @@ defineExpose({
   outline-offset: -2px !important;
 }
 
-@media (hover: hover) and (pointer: fine) {
+/* TODO: include only in editable mode */
+/*@media (hover: hover) and (pointer: fine) {
   .tiptap img:hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
-}
+}*/
 
 .tiptap p {
   vertical-align: middle;
@@ -598,12 +602,13 @@ defineExpose({
   background-color: var(--background-alt-grey-hover);
 }
 
-.tiptap-selection,
+/* TODO: include only in editable mode */
+/* .tiptap-selection,
 .ProseMirror-selectednode {
   outline-style: dotted;
   outline-width: 2px;
   outline-color: var(--dsfr-outline);
-}
+} */
 
 .ProseMirror-widget {
   opacity: 0.5;
