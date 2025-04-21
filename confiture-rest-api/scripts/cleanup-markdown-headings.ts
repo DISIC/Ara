@@ -73,11 +73,9 @@ function realignCommentHeadings(markdown: string | null | undefined): string {
   return result;
 }
 
-function isMisaligned(markdown: string | null | undefined): boolean {
-  if (!markdown) {
-    return false;
-  }
-
+function getHeadingCounts(
+  markdown: string
+): [number, number, number, number, number, number] {
   const h1 = (markdown.match(/^# ./gm) || []).length;
   const h2 = (markdown.match(/^## ./gm) || []).length;
   const h3 = (markdown.match(/^### ./gm) || []).length;
@@ -85,9 +83,26 @@ function isMisaligned(markdown: string | null | undefined): boolean {
   const h5 = (markdown.match(/^##### ./gm) || []).length;
   const h6 = (markdown.match(/^###### ./gm) || []).length;
 
-  const counts = [h1, h2, h3, h4, h5, h6];
+  const counts = [h1, h2, h3, h4, h5, h6] as [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
 
-  return !(
+  return counts;
+}
+
+function isMisaligned(markdown: string | null | undefined): boolean {
+  if (!markdown) {
+    return false;
+  }
+
+  const counts = getHeadingCounts(markdown);
+
+  const r = !(
     !counts[0] &&
     !counts[1] &&
     !counts[2] &&
@@ -96,10 +111,24 @@ function isMisaligned(markdown: string | null | undefined): boolean {
       (counts[3] && counts[4] && !counts[5]) ||
       (counts[3] && counts[4] && counts[5]))
   );
+
+  return r;
 }
 
 async function main() {
-  const prisma = new PrismaClient();
+  const connectionPool = [
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient(),
+    new PrismaClient()
+  ];
+  const prisma = connectionPool[0];
 
   console.log("Fetching results...");
 
@@ -152,18 +181,18 @@ async function main() {
 
   console.log("🚀 ~ main ~ migratedResults:", migratedResults.length);
 
-  const batches = chunk(migratedResults, 10);
+  const batches = chunk(migratedResults, connectionPool.length);
 
   for (let i = 0; i < batches.length; i++) {
     console.log("Sending batch", i, "/", batches.length);
     const batch = batches[i];
-    await prisma.$transaction(
-      batch.map((result) =>
-        prisma.criterionResult.update({
+    await Promise.all(
+      batch.map((result, i) => {
+        return connectionPool[i].criterionResult.update({
           where: { id: result.id },
           data: result
-        })
-      )
+        });
+      })
     );
   }
 
@@ -193,15 +222,19 @@ async function main() {
       };
     });
 
-  for (let i = 0; i < migratedAudits.length; i++) {
-    if (i % 1 === 0) {
-      console.log("Sending audit update", i, "/", migratedAudits.length);
-    }
-    const migratedAudit = migratedAudits[i];
-    await prisma.audit.update({
-      where: { id: migratedAudit.id },
-      data: migratedAudit
-    });
+  const auditBatches = chunk(migratedAudits, connectionPool.length);
+
+  for (let i = 0; i < auditBatches.length; i++) {
+    console.log("Sending note batch", i, "/", auditBatches.length);
+    const batch = auditBatches[i];
+    await Promise.all(
+      batch.map((audit, i) => {
+        return connectionPool[i].audit.update({
+          where: { id: audit.id },
+          data: audit
+        });
+      })
+    );
   }
 }
 
