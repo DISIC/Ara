@@ -73,6 +73,31 @@ function realignCommentHeadings(markdown: string | null | undefined): string {
   return result;
 }
 
+function isMisaligned(markdown: string | null | undefined): boolean {
+  if (!markdown) {
+    return false;
+  }
+
+  const h1 = (markdown.match(/^# ./gm) || []).length;
+  const h2 = (markdown.match(/^## ./gm) || []).length;
+  const h3 = (markdown.match(/^### ./gm) || []).length;
+  const h4 = (markdown.match(/^#### ./gm) || []).length;
+  const h5 = (markdown.match(/^##### ./gm) || []).length;
+  const h6 = (markdown.match(/^###### ./gm) || []).length;
+
+  const counts = [h1, h2, h3, h4, h5, h6];
+
+  return !(
+    !counts[0] &&
+    !counts[1] &&
+    !counts[2] &&
+    ((!counts[3] && !counts[4] && !counts[5]) ||
+      (counts[3] && !counts[4] && !counts[5]) ||
+      (counts[3] && counts[4] && !counts[5]) ||
+      (counts[3] && counts[4] && counts[5]))
+  );
+}
+
 async function main() {
   const prisma = new PrismaClient();
 
@@ -108,14 +133,24 @@ async function main() {
 
   console.log(rawResults.length, "results to update");
 
-  const migratedResults = rawResults.map((r) => {
-    return {
-      id: r.id,
-      compliantComment: realignCommentHeadings(r.compliantComment),
-      notCompliantComment: realignCommentHeadings(r.notCompliantComment),
-      notApplicableComment: realignCommentHeadings(r.notApplicableComment)
-    };
-  });
+  const migratedResults = rawResults
+    // only keep results that need to be realigned
+    .filter(
+      (r) =>
+        isMisaligned(r.compliantComment) ||
+        isMisaligned(r.notCompliantComment) ||
+        isMisaligned(r.notApplicableComment)
+    )
+    .map((r) => {
+      return {
+        id: r.id,
+        compliantComment: realignCommentHeadings(r.compliantComment),
+        notCompliantComment: realignCommentHeadings(r.notCompliantComment),
+        notApplicableComment: realignCommentHeadings(r.notApplicableComment)
+      };
+    });
+
+  console.log("🚀 ~ main ~ migratedResults:", migratedResults.length);
 
   const batches = chunk(migratedResults, 10);
 
@@ -148,12 +183,15 @@ async function main() {
 
   console.log(audits.length, "notes to update");
 
-  const migratedAudits = audits.map((audit) => {
-    return {
-      id: audit.id,
-      notes: realignCommentHeadings(audit.notes)
-    };
-  });
+  const migratedAudits = audits
+    // only keep notes that need to be realigned
+    .filter((audit) => isMisaligned(audit.notes))
+    .map((audit) => {
+      return {
+        id: audit.id,
+        notes: realignCommentHeadings(audit.notes)
+      };
+    });
 
   for (let i = 0; i < migratedAudits.length; i++) {
     if (i % 1 === 0) {
