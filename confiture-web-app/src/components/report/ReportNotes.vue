@@ -2,8 +2,9 @@
 import { computed } from "vue";
 
 import { useReportStore } from "../../store";
+import { isTiptapDocumentEmpty } from "../../utils";
 import FileUpload from "../ui/FileUpload.vue";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import Tiptap from "../ui/Tiptap.vue";
 
 const report = useReportStore();
 
@@ -12,7 +13,11 @@ const files = computed(() => report.data?.notesFiles);
 
 <template>
   <h2 class="fr-sr-only">Notes</h2>
-  <MarkdownRenderer :markdown="report.data?.notes!" />
+  <Tiptap
+    v-if="!isTiptapDocumentEmpty(report.data?.notes)"
+    :model-value="report.data?.notes"
+    :editable="false"
+  />
   <h3 v-if="files?.length" class="fr-text--sm">Pièces jointes</h3>
   <FileUpload
     v-if="files"

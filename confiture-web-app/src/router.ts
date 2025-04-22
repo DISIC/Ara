@@ -25,7 +25,6 @@ import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import HomePage from "./pages/HomePage.vue";
-import MarkdownHelperPage from "./pages/MarkdownHelperPage.vue";
 import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
 import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
@@ -351,15 +350,6 @@ const router = createRouter({
       component: FeedbackPage,
       meta: {
         name: "Donner mon avis"
-      }
-    },
-    // Markdown helper
-    {
-      path: "/syntaxe-markdown",
-      name: "markdown-syntax",
-      component: MarkdownHelperPage,
-      meta: {
-        name: "Syntaxe Markdown"
       }
     },
     // Error pages

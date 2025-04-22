@@ -4,8 +4,13 @@ import { marked } from "marked";
 
 import rgaa from "../../criteres.json";
 import { CriterionResultUserImpact, ReportCriteriumResult } from "../../types";
-import { formatStatus, formatUserImpact, getUploadUrl } from "../../utils";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import {
+  formatStatus,
+  formatUserImpact,
+  getUploadUrl,
+  isTiptapDocumentEmpty
+} from "../../utils";
+import Tiptap from "../ui/Tiptap.vue";
 
 defineProps<{
   error: ReportCriteriumResult;
@@ -58,10 +63,11 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
     </ul>
 
     <!-- Error -->
-    <MarkdownRenderer
-      v-if="error.notCompliantComment"
+    <Tiptap
+      v-if="!isTiptapDocumentEmpty(error.notCompliantComment)"
       :class="{ 'fr-mb-3w': chunk(error.exampleImages, 2).length }"
-      :markdown="error.notCompliantComment"
+      :model-value="error.notCompliantComment"
+      :editable="false"
     />
 
     <p v-else>

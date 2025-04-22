@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 22/04/2025
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute un éditeur riche pour les commentaires de critères et les notes d'audit ([#1018](https://github.com/DISIC/Ara/pull/1018))
+
 ## 14/04/2025
 
 ### Corrections 🐛
