@@ -28,6 +28,8 @@ const currentStep = ref(verificationToken.value ? 2 : skipFirstStep ? null : 0);
 const notify = useNotifications();
 
 const resetInstructionsRef = ref<InstanceType<typeof ResetInstructions>>();
+const requestPasswordResetRef =
+  ref<InstanceType<typeof RequestPasswordReset>>();
 
 const accountEmail = ref<string>();
 
@@ -61,6 +63,12 @@ async function resendEmail() {
     );
     captureWithPayloads(e);
   }
+}
+
+async function updateEmail() {
+  currentStep.value = 0;
+  await nextTick();
+  requestPasswordResetRef.value?.focusEmailField();
 }
 
 async function resetPassword(newPassword: string) {
@@ -104,12 +112,17 @@ const pageTitles = [
 
 <template>
   <PageMeta :title="currentStep ? pageTitles[currentStep] : pageTitles[0]" />
-  <RequestPasswordReset v-if="currentStep === 0" @submit="onRequestSubmit" />
+  <RequestPasswordReset
+    v-if="currentStep === 0"
+    ref="requestPasswordResetRef"
+    @submit="onRequestSubmit"
+  />
   <ResetInstructions
     v-if="currentStep === 1"
     ref="resetInstructionsRef"
     :email="accountEmail!"
     @resend-email="resendEmail"
+    @update-email="updateEmail"
   />
   <template v-if="currentStep === 2">
     <div v-if="verificationTokenIsExpired" class="wrapper">
