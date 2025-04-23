@@ -8,9 +8,9 @@ import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { AuditFile, StoreName } from "../../types";
 import { handleFileDeleteError, handleFileUploadError } from "../../utils";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
-import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
@@ -110,6 +110,7 @@ function handleDeleteFile(file: AuditFile) {
                 class="fr-mb-4w"
                 labelled-by="audit-notes"
                 :disabled="isOffline"
+                editor-size="lg"
                 @update:model-value="handleNotesChange"
               />
 

@@ -69,6 +69,7 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
         !isTiptapDocumentEmpty(error.notCompliantComment)
       "
       :document="error.notCompliantComment"
+      :class="{ 'fr-mb-3w': chunk(error.exampleImages, 2).length }"
     />
 
     <p v-else>

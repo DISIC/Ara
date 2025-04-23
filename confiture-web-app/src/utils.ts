@@ -286,7 +286,7 @@ export async function handleFileDeleteError(
   return FileErrorMessage.DELETE_UNKNOWN;
 }
 
-/** Check if a tiptap document string correspond to an empty document. */
+/** Check if a tiptap document string corresponds to an empty document. */
 export function isTiptapDocumentEmpty(
   jsonString: string | null | undefined
 ): boolean {
@@ -305,4 +305,11 @@ export function isTiptapDocumentEmpty(
   }
 
   return false;
+}
+
+export function getScrollBehavior(): ScrollBehavior {
+  // Use smooth scrolling only if user does not dislike animations
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "instant"
+    : "smooth";
 }

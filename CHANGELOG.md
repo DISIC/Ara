@@ -1,6 +1,52 @@
-# Notes de versions
+# Notes de version
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
+
+## 23/04/2025
+
+### Corrections 🐛
+
+- Ajoute des mentions sur les champs optionnels de la déclaration d’accessibilité et des paramètres de l’audit ([#1054](https://github.com/DISIC/Ara/pull/1054))
+
+## 22/04/2025
+
+### Nouvelles fonctionnalités 🚀
+
+- Ajoute un éditeur riche pour les commentaires de critères et les notes d'audit ([#1018](https://github.com/DISIC/Ara/pull/1018))
+
+## 14/04/2025
+
+### Corrections 🐛
+
+- Plusieurs améliorations sur la navigation entre les différents onglets pendant l’audit et dans le rapport ([#950](https://github.com/DISIC/Ara/pull/950)) :
+  - Les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutées dans l’historique de navigation ;
+  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
+  - l’onglet actif reste toujours visible, même sur petit écran et avec une navigation au clavier.
+- Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport
+- Correction du contraste des cartes de types d’audit ([#1056](https://github.com/DISIC/Ara/pull/1056))
+
+## 09/04/2025
+
+### Corrections 🐛
+
+- Corrige le calcul du nombre de critères non applicables par page dans le rapport ([#1039](https://github.com/DISIC/Ara/pull/1039))
+
+### Autres changements ⚙️
+
+- Permet la fermeture du bandeau de retour utilisateur ([#1042](https://github.com/DISIC/Ara/pull/1042))
+
+## 03/04/2025
+
+### Corrections 🐛
+
+- Corrige l’affichage du contenu des infobulles lorsque le CSS est désactivé ([#1025](https://github.com/DISIC/Ara/pull/1025))
+- Ajoute des bordures aux champs de saisie pour améliorer leur accessibilité ([#1038](https://github.com/DISIC/Ara/pull/1038))
+
+## 26/03/2025
+
+### Corrections 🐛
+
+- Corrige les accordéons qui fermaient les accordéons parents lorsqu’on souhaitait les fermer ([#1017](https://github.com/DISIC/Ara/pull/1017))
 
 ## 20/03/2025
 

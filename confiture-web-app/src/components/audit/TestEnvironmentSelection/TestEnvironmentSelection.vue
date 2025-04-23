@@ -33,19 +33,7 @@ const selectedMobileEnvironments = ref<string[]>(
 );
 
 /** List of custom environments */
-const customEnvironments = ref([
-  ...getCustomEnvironments(props.modelValue),
-  ...(props.modelValue.length === 0
-    ? [
-        {
-          platform: "",
-          operatingSystem: "",
-          assistiveTechnology: "",
-          browser: ""
-        }
-      ]
-    : [])
-]);
+const customEnvironments = ref(getCustomEnvironments(props.modelValue));
 
 watch(
   [customEnvironments, selectedDesktopEnvironments, selectedMobileEnvironments],
@@ -67,6 +55,7 @@ watch(
 );
 
 const envPlatformRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+const addEnvironmentButtonRef = ref<HTMLButtonElement>();
 
 /**
  * Create a new environment and focus its platform field.
@@ -84,7 +73,7 @@ async function addEnvironment() {
 }
 
 /**
- * Delete environment at index and focus previous or first platform field.
+ * Delete environment at index and focus previous platform field or add button.
  * @param {number} i
  */
 async function deleteEnvironment(i: number) {
@@ -92,7 +81,12 @@ async function deleteEnvironment(i: number) {
   await nextTick();
   const previousInput =
     i === 0 ? envPlatformRefs.value[0] : envPlatformRefs.value[i - 1];
-  previousInput.inputRef?.focus();
+
+  if (previousInput) {
+    previousInput.inputRef?.focus();
+  } else {
+    addEnvironmentButtonRef.value?.focus();
+  }
 }
 
 /**
@@ -160,7 +154,7 @@ function combineEnvironments(
 
 <template>
   <div class="narrow-content">
-    <h2 class="fr-h4">Les environnements de test</h2>
+    <h2 class="fr-h4">Environnements de test</h2>
     <p>
       Nous vous proposons par défaut les combinaisons d’environnements de test
       prévus au RGAA. Il appartient à l’auditeur ou l’auditrice, en concertation
@@ -194,11 +188,9 @@ function combineEnvironments(
     />
   </div>
 
-  <h3 class="fr-text--lg fr-mb-2w">
-    Ajouter un environnement de test personnalisé
-  </h3>
+  <h3 class="fr-text--lg fr-mb-5v">Environnements de test personnalisés</h3>
 
-  <div class="custom-environment">
+  <div v-if="customEnvironments.length" class="fr-mb-3w custom-environment">
     <fieldset
       v-for="(env, i) in customEnvironments"
       :key="i"
@@ -210,7 +202,6 @@ function combineEnvironments(
       <button
         class="fr-btn fr-btn--tertiary-no-outline env-delete-button"
         type="button"
-        :disabled="customEnvironments.length === 1"
         @click="deleteEnvironment(i)"
       >
         Supprimer
@@ -259,11 +250,12 @@ function combineEnvironments(
   </div>
 
   <button
-    class="fr-btn fr-btn--tertiary-no-outline fr-mt-2w fr-mb-5w"
+    ref="addEnvironmentButtonRef"
     type="button"
+    class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mb-6w"
     @click="addEnvironment"
   >
-    Ajouter un environnement
+    Ajouter un environnement de test
   </button>
 </template>
 

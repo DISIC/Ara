@@ -86,6 +86,7 @@ export const tiptapExtensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown,
+  Markdown.configure({ linkify: true }),
+  Image,
   DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];

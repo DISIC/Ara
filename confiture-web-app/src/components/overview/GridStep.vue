@@ -33,17 +33,17 @@ const csvExportSizeEstimation = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w grid-step-heading">
+    <div class="fr-mb-2w step-card-heading">
       <span
         v-if="auditIsReady"
         id="grid-step-status"
-        class="fr-icon--lg fr-icon-checkbox-circle-fill grid-step-check"
+        class="fr-icon--lg fr-icon-checkbox-circle-fill step-card-check"
       >
         <span class="fr-sr-only">Étape terminée</span>
       </span>
       <component
         :is="headingLevel"
-        class="fr-h3 fr-mb-0 grid-step-title"
+        class="fr-h3 fr-mb-0 step-card-title"
         aria-describedby="grid-step-status"
       >
         Grille d’audit
@@ -85,27 +85,6 @@ const csvExportSizeEstimation = computed(() => {
 </template>
 
 <style scoped>
-.grid-step-heading {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  grid-column: 1 / -1;
-}
-
-.grid-step-title {
-  grid-column: 1 / -1;
-  grid-row: 1;
-
-  /* FIXME: DSFR default badges dont align. Those with icons does. */
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.grid-step-check {
-  color: var(--text-default-success);
-}
-
 .grid-step-description {
   grid-column: 1 / -1;
   grid-row: 2;

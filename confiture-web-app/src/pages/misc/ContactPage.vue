@@ -29,35 +29,45 @@ const reportStore = useReportStore();
         <span class="fr-sr-only">(nouvelle fenêtre)</span></a
       >.
     </p>
-    <p>
+    <p :class="{ 'fr-mb-5w': !reportStore.data }">
       Vous pouvez nous contacter par e-mail à l’adresse :
       <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
-    <div v-if="reportStore.data" class="fr-callout">
+    <div v-if="reportStore.data" class="fr-callout fr-mb-5w">
       <p class="fr-callout__text">
         Pour toute question relative au rapport d’audit, veuillez contacter
         l’auditeur ou l’auditrice qui a réalisé cet audit.
       </p>
     </div>
 
-    <h2>Vos contributions sont les bienvenues !</h2>
+    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues !</h2>
 
-    <p>Vous pouvez contribuer à l’amélioration de ce site :</p>
+    <div class="fr-callout">
+      <p class="fr-callout__text">
+        N’hésitez pas à nous faire part de vos retours depuis ce
+        <RouterLink class="fr-link" :to="{ name: 'feedback' }"
+          >court formulaire</RouterLink
+        >
+      </p>
+    </div>
+
+    <p>Vous pouvez également :</p>
     <ul>
       <li>
-        En nous écrivant à :
+        Nous écrire par e-mail à :
         <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>
-        En créant une issue sur le
+        Créer une issue sur le
         <a
           class="fr-link"
           target="_blank"
           rel="noreferrer noopener"
           href="https://github.com/DISIC/Ara"
-          >dépôt <span class="fr-sr-only">(nouvelle fenêtre)</span></a
-        >. <br />Le
+          >dépôt <span class="fr-sr-only">(nouvelle fenêtre)</span>
+        </a>
+        (le
         <a
           class="fr-link"
           target="_blank"
@@ -66,7 +76,7 @@ const reportStore = useReportStore();
           >guide de contribution
           <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
-        est disponible à la racine du dépôt.
+        est disponible à la racine du dépôt).
       </li>
     </ul>
   </section>

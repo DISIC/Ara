@@ -4,7 +4,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import { displayedHeadings, tiptapExtensions } from "./tiptap-extensions";
+import { tiptapExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -12,13 +12,15 @@ export interface Props {
   editable?: boolean;
   labelledBy?: string | null;
   disabled?: boolean;
+  editorSize?: "sm" | "lg";
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: "",
   editable: true,
   disabled: false,
-  labelledBy: null
+  labelledBy: null,
+  editorSize: "sm"
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -68,7 +70,8 @@ const editorAttributes: any = props.editable
   ? {
       "aria-describedby": "tiptap-description",
       "aria-multiline": "true",
-      role: "textbox"
+      role: "textbox",
+      class: `tiptap--${props.editorSize}`
     }
   : undefined;
 
@@ -277,14 +280,70 @@ defineExpose({
   position: relative;
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
-  border: 0 solid var(--border-plain-grey);
-  border-bottom-width: 1px;
+  border: 1px solid var(--border-plain-grey);
+  border-bottom: 0;
+  box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
 
   /* Override bg color in dark mode to avoid same color as wrapper */
   @media (prefers-color-scheme: dark) {
     background-color: var(--background-contrast-grey);
   }
 }
+
+.tiptap-container--not-editable {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.tiptap-container--disabled:hover {
+  cursor: not-allowed;
+}
+
+.tiptap-container--disabled .tiptap * {
+  color: var(--text-disabled-grey);
+}
+
+.tiptap {
+  padding: 0.5rem 0.75rem;
+
+  &.tiptap--not-editable {
+    min-height: 0;
+  }
+
+  &.tiptap--sm {
+    min-height: 10rem;
+  }
+
+  &.tiptap--lg {
+    min-height: 24rem;
+  }
+}
+
+/* TODO: include commented properties only in editable mode */
+.tiptap img {
+  /* cursor: pointer; */
+  display: block;
+  height: auto;
+  max-width: 100%;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0 2rem;
+  /* padding: 0.5rem; */
+}
+
+.tiptap:focus,
+.tiptap:focus-visible {
+  outline-width: 2px !important;
+  outline-offset: -2px !important;
+}
+
+/* TODO: include only in editable mode */
+/*@media (hover: hover) and (pointer: fine) {
+  .tiptap img:hover {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+}*/
 
 .tiptap-container--not-editable {
   padding: 0;
@@ -311,8 +370,68 @@ defineExpose({
   outline-color: var(--dsfr-outline);
 }
 
-.ProseMirror-widget {
-  opacity: 0.5;
+.tiptap pre,
+.tiptap code {
+  background-color: var(--background-contrast-overlap-grey);
+  border-radius: 0.25rem;
+}
+
+.tiptap blockquote::before {
+  --icon-size: 2rem;
+  color: var(--artwork-minor-blue-france);
+  content: "";
+  margin-bottom: 0.5rem;
+  background-color: currentColor;
+  display: inline-block;
+  height: var(--icon-size);
+  mask-image: url("@gouvfr/dsfr/dist/icons/editor/fr--quote-line.svg");
+  mask-size: 100% 100%;
+  width: var(--icon-size);
+}
+
+/* Update DSFR ol ::marker styles:
+  Nested <ol>
+  1.
+    1.1
+      1.1.1
+    1.2
+  2.
+
+  <ol> nested in <ul>
+  - 
+    1.
+    2.
+      1.
+      2.
+  - 
+*/
+.tiptap {
+  ol,
+  ul {
+    counter-reset: section;
+  }
+
+  ol li {
+    --ol-content: counters(section, ".") ". ";
+
+    counter-increment: section;
+  }
+
+  ul > li > ol li {
+    --ol-content: counter(section) ". ";
+
+    counter-increment: section;
+  }
+}
+
+.tiptap blockquote p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 2rem;
+}
+
+.tiptap li > p {
+  margin-bottom: 0.25em;
 }
 
 /* Buttons */
@@ -333,6 +452,7 @@ defineExpose({
   top: 0;
   z-index: 1;
   padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .titptap-buttons::-webkit-scrollbar {
@@ -389,6 +509,29 @@ defineExpose({
 
 .tiptap-buttons .fr-btn--tertiary[aria-pressed="true"]:hover {
   background-color: var(--background-alt-grey-hover);
+}
+
+/* TODO: include only in editable mode */
+/* .tiptap-selection,
+.ProseMirror-selectednode {
+  outline-style: dotted;
+  outline-width: 2px;
+  outline-color: var(--dsfr-outline);
+} */
+
+.ProseMirror-widget {
+  opacity: 0.5;
+}
+
+/* Extra icons */
+.fr-icon-strikethrough::before,
+.fr-icon-strikethrough::after {
+  mask-image: url("../../assets/images/strikethrough.svg");
+}
+
+.fr-icon-code-block::before,
+.fr-icon-code-block::after {
+  mask-image: url("../../assets/images/code-block.svg");
 }
 
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {

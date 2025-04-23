@@ -35,41 +35,25 @@ defineExpose({ inputRef });
         <slot name="hint">{{ hint }}</slot>
       </span>
     </label>
-    <div class="input-container">
-      <input
-        :id="inputId"
-        ref="inputRef"
-        :class="['fr-input', { 'fr-input--error': isError }]"
-        :type="type"
-        :aria-describedby="isError ? errorId : undefined"
-        :required="required"
-        :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
-        :title="title"
-        :autocomplete="autocomplete"
-        :value="modelValue"
-        @input="
-          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-        "
-      />
-      <slot name="trailing" />
-    </div>
+    <input
+      :id="inputId"
+      ref="inputRef"
+      :class="['fr-input', { 'fr-input--error': isError }]"
+      :type="type"
+      :aria-describedby="isError ? errorId : undefined"
+      :required="required"
+      :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
+      :title="title"
+      :autocomplete="autocomplete"
+      :value="modelValue"
+      @input="
+        $emit('update:modelValue', ($event.target as HTMLInputElement).value)
+      "
+    />
+    <slot name="trailing" />
 
     <p v-if="isError" :id="errorId" class="fr-error-text">
       {{ error }}
     </p>
   </div>
 </template>
-
-<style scoped>
-.input-container {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 1rem;
-
-  input {
-    width: unset;
-    flex: 1;
-  }
-}
-</style>

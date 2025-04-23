@@ -3,6 +3,7 @@ import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
+import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
@@ -111,13 +112,19 @@ const backLinkLabel = computed(() => {
   <BackLink
     :label="backLinkLabel"
     :to="{
-      name: previousRoute.route?.name || 'audit-overview',
-      params: { uniqueId: route.params.uniqueId }
+      name: previousRoute.route?.name || 'audit-generation',
+      params: {
+        ...previousRoute.route?.params,
+        uniqueId: route.params.uniqueId
+      }
     }"
   />
 
   <form class="content" @submit.prevent="onSubmit">
     <h1 class="fr-mb-6w">Paramètres de l’audit</h1>
+    <p class="fr-text--sm fr-mb-4w notice">
+      Sauf mentions contraires, tous les champs sont obligatoires.
+    </p>
 
     <DsfrField
       id="procedure-name"
@@ -189,15 +196,12 @@ const backLinkLabel = computed(() => {
         Enregistrer les modifications
       </button>
 
-      <RouterLink
+      <button
         class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
-        :to="{
-          name: 'audit-generation',
-          params: { uniqueId: route.params.uniqueId }
-        }"
+        @click="router.back()"
       >
         Annuler
-      </RouterLink>
+      </button>
     </div>
 
     <div class="top-link">
@@ -210,6 +214,10 @@ const backLinkLabel = computed(() => {
 .content {
   max-width: 49.5rem;
   margin: 0 auto;
+}
+
+.notice {
+  color: var(--text-mention-grey);
 }
 
 .audits {

@@ -101,11 +101,6 @@ class TopicResultDistribution extends ResultDistribution {
 
 class ReportContext {
   /**
-   * @example "RGAA Version 4.1"
-   */
-  referencial: string;
-
-  /**
    * @example "Pierre Poljak"
    */
   auditorName: string;

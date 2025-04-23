@@ -102,10 +102,16 @@ onMounted(() => {
     onRequestSubmit(store.account.email);
   }
 });
+
+const pageTitles = [
+  "Réinitialiser votre mot de passe",
+  "Réinitialiser votre mot de passe, consulter votre boite de réception",
+  "Réinitialiser votre mot de passe, changer votre mot de passe"
+];
 </script>
 
 <template>
-  <PageMeta title="Réinitialiser le mot de passe" />
+  <PageMeta :title="currentStep ? pageTitles[currentStep] : pageTitles[0]" />
   <RequestPasswordReset
     v-if="currentStep === 0"
     ref="requestPasswordResetRef"

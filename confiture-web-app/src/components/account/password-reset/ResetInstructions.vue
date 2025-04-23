@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import { nextTick, ref } from "vue";
 
+import { useAccountStore } from "../../../store";
+
 defineProps<{ email: string }>();
 
 const emit = defineEmits<{
   (e: "resend-email"): void;
   (e: "update-email"): void;
 }>();
+
+const accountStore = useAccountStore();
 
 // Send reset email password
 const instructionsHeadingRef = ref<HTMLHeadingElement>();
@@ -70,13 +74,17 @@ defineExpose({
         </button>
       </div>
     </div>
-    <h2 class="fr-text--sm fr-mb-1w">L’adresse e-mail saisie est erronée ?</h2>
-    <button
-      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      @click="$emit('update-email')"
-    >
-      Modifier mon adresse e-mail
-    </button>
+    <template v-if="!accountStore.account?.email">
+      <h2 class="fr-text--sm fr-mb-1w">
+        L’adresse e-mail saisie est erronée ?
+      </h2>
+      <button
+        class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+        @click="$emit('update-email')"
+      >
+        Modifier mon adresse e-mail
+      </button>
+    </template>
   </div>
 </template>
 

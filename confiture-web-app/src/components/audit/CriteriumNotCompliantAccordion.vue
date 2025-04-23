@@ -5,10 +5,10 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
-import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 export interface Props {
@@ -73,7 +73,7 @@ function onFileRequestFinished() {
 }
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentEditorRef = ref<InstanceType<typeof Tiptap>>();
+const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -151,38 +151,36 @@ const title = "Erreur et recommandation";
             Informations sur l’impact usager
           </button>
 
-          <Teleport to="body">
-            <div
-              id="tooltip"
-              class="fr-tooltip fr-placement"
-              role="tooltip"
-              data-fr-js-tooltip="true"
-            >
-              <p class="fr-text--xs fr-mb-1w">
-                <strong>Bloquant</strong> : empêche complètement l’accès ou
-                l’utilisation.<br />
-                <span class="user-impact-example"
-                  >Ex : il est impossible de soumettre un formulaire au
-                  clavier.</span
-                >
-              </p>
-              <p class="fr-text--xs fr-mb-1w">
-                <strong>Majeur</strong> : rend l’accès ou l’utilisation
-                difficile.<br />
-                <span class="user-impact-example"
-                  >Ex : les champs ne sont pas regroupés.</span
-                >
-              </p>
-              <p class="fr-text--xs fr-mb-0">
-                <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès
-                ou l’utilisation.<br />
-                <span class="user-impact-example"
-                  >Ex : des retours à la ligne sont utilisés pour espacer des
-                  textes.</span
-                >
-              </p>
-            </div>
-          </Teleport>
+          <div
+            id="tooltip"
+            class="fr-tooltip fr-placement"
+            role="tooltip"
+            data-fr-js-tooltip="true"
+          >
+            <p class="fr-text--xs fr-mb-1w">
+              <strong>Bloquant</strong> : empêche complètement l’accès ou
+              l’utilisation.<br />
+              <span class="user-impact-example"
+                >Ex : il est impossible de soumettre un formulaire au
+                clavier.</span
+              >
+            </p>
+            <p class="fr-text--xs fr-mb-1w">
+              <strong>Majeur</strong> : rend l’accès ou l’utilisation
+              difficile.<br />
+              <span class="user-impact-example"
+                >Ex : les champs ne sont pas regroupés.</span
+              >
+            </p>
+            <p class="fr-text--xs fr-mb-0">
+              <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
+              l’utilisation.<br />
+              <span class="user-impact-example"
+                >Ex : des retours à la ligne sont utilisés pour espacer des
+                textes.</span
+              >
+            </p>
+          </div>
         </div>
       </template>
     </RadioGroup>

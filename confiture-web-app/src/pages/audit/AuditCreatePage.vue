@@ -195,7 +195,9 @@ async function goToPreviousStep() {
 
 <template>
   <PageMeta
-    title="Démarrer un audit"
+    :title="`Démarrer un audit, étape ${currentStep + 1} sur ${steps.length}, ${
+      steps[currentStep]
+    }`"
     description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
   />
 
@@ -248,15 +250,12 @@ async function goToPreviousStep() {
     ref="leaveModalRef"
     title="Le paramétrage de l’audit n’est pas terminé"
     icon="fr-icon-warning-line"
-    confirm="Abandonner le paramétrage de l’audit"
-    cancel="Poursuivre le paramétrage de l’audit"
+    confirm="Quitter le paramétrage"
+    cancel="Annuler"
     @confirm="confirmLeave"
     @cancel="cancelLeave"
   >
-    <p>
-      Aucune des informations saisies ne sera enregistrée. Souhaitez-vous
-      vraiment abandonner le paramétrage de l’audit ?
-    </p>
+    <p>Aucune des informations saisies ne sera enregistrée.</p>
   </LeaveModal>
 </template>
 
