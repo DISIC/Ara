@@ -335,11 +335,8 @@ const isDevMode = useDevMode();
       v-model="technologies"
       label="Ajouter des technologies"
       hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
-    >
-      <template #addLabel>
-        Ajouter <span class="fr-sr-only">les technologies</span>
-      </template>
-    </TagListField>
+      add-label="les technologies"
+    />
 
     <div class="fr-form-group">
       <fieldset class="fr-fieldset fr-mb-4w">
@@ -372,11 +369,8 @@ const isDevMode = useDevMode();
       v-model="customTools"
       label="Ajouter des outils d’assistance"
       hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
-    >
-      <template #addLabel>
-        Ajouter <span class="fr-sr-only">les outils d’assistance</span>
-      </template>
-    </TagListField>
+      add-label="les outils d’assistance"
+    />
 
     <TestEnvironmentSelection v-model="environments" />
 

@@ -111,11 +111,8 @@ async function cancelEdition() {
           label="Nom de l’élément transverse"
           hint="Exemples : En-tête, pied de page, bandeau cookies, etc."
           class="elements-field"
-        >
-          <template #addLabel>
-            Ajouter <span class="fr-sr-only">l’éléments transverse</span>
-          </template>
-        </TagListField>
+          add-label="les éléments transverses"
+        />
         <ul class="fr-btns-group fr-btns-group--inline-md">
           <li>
             <button

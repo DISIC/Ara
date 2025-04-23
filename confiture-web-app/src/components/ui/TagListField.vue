@@ -7,6 +7,7 @@ const props = defineProps<{
   modelValue: string[];
   label: string;
   hint: string;
+  addLabel: string;
 }>();
 
 const emit = defineEmits<{
@@ -77,23 +78,20 @@ defineExpose({
     id="transverse-elements-list"
     ref="inputRef"
     v-model="inputValue"
-    class="fr-mb-3v"
+    class="fr-mb-3v field"
     :label="label"
     :hint="hint"
     type="text"
     v-bind="$attrs"
-    @keydown.enter="
-      $event.preventDefault();
-      addTags();
-    "
+    @keydown.enter.prevent="addTags"
   >
     <template #trailing>
       <button
         type="button"
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mt-1w"
         @click="addTags"
       >
-        <slot name="addLabel" />
+        Ajouter <span class="fr-sr-only">{{ addLabel }}</span>
       </button>
     </template>
   </DsfrField>
@@ -111,3 +109,19 @@ defineExpose({
     </li>
   </ul>
 </template>
+
+<style scoped>
+.field {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 1rem;
+
+  &:deep(label) {
+    grid-column: span 2;
+  }
+
+  &:deep(input) {
+    max-width: 30rem;
+  }
+}
+</style>
