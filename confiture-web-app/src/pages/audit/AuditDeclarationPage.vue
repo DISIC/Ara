@@ -368,7 +368,7 @@ const isDevMode = useDevMode();
           type="email"
           :error="
             hasNoContactInfo
-              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              ? 'Vous devez renseigner au moins un moyen de contact'
               : undefined
           "
           class="fr-mb-3v narrow-field"
@@ -386,7 +386,7 @@ const isDevMode = useDevMode();
           placeholder="https://"
           :error="
             hasNoContactInfo
-              ? 'Vous devez renseigner au moins 1 moyen de contact'
+              ? 'Vous devez renseigner au moins un moyen de contact'
               : undefined
           "
         >
