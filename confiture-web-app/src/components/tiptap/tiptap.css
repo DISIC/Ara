@@ -1,0 +1,112 @@
+@import url("highlight.js/styles/github.css") screen and
+  (prefers-color-scheme: light);
+@import url("highlight.js/styles/github-dark.css") screen and
+  (prefers-color-scheme: dark);
+
+.tiptap {
+  min-height: 10rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.tiptap img {
+  cursor: pointer;
+  display: block;
+  height: auto;
+  max-width: 100%;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0 2rem;
+  padding: 0.5rem;
+}
+
+.tiptap:focus,
+.tiptap:focus-visible {
+  outline-width: 2px !important;
+  outline-offset: -2px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tiptap img:hover {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+}
+
+.tiptap p {
+  vertical-align: middle;
+}
+
+.tiptap pre code {
+  display: block;
+  padding: 0.75rem;
+}
+
+.tiptap code {
+  font-size: 85%;
+}
+
+.tiptap :not(pre) code {
+  padding: 0.2em 0.4em;
+}
+
+.tiptap pre,
+.tiptap code {
+  background-color: var(--background-contrast-overlap-grey);
+  border-radius: 0.25rem;
+}
+
+.tiptap blockquote::before {
+  --icon-size: 2rem;
+  color: var(--artwork-minor-blue-france);
+  content: "";
+  margin-bottom: 0.5rem;
+  background-color: currentColor;
+  display: inline-block;
+  height: var(--icon-size);
+  mask-image: url("@gouvfr/dsfr/dist/icons/editor/fr--quote-line.svg");
+  mask-size: 100% 100%;
+  width: var(--icon-size);
+}
+
+/* Update DSFR ol ::marker styles:
+  Nested <ol>
+  1.
+    1.1
+      1.1.1
+    1.2
+  2.
+
+  <ol> nested in <ul>
+  - 
+    1.
+    2.
+      1.
+      2.
+  - 
+*/
+.tiptap {
+  ol,
+  ul {
+    counter-reset: section;
+  }
+
+  ol li {
+    --ol-content: counters(section, ".") ". ";
+
+    counter-increment: section;
+  }
+
+  ul > li > ol li {
+    --ol-content: counter(section) ". ";
+
+    counter-increment: section;
+  }
+}
+
+.tiptap blockquote p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 2rem;
+}
+
+.tiptap li > p {
+  margin-bottom: 0.25em;
+}
