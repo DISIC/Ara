@@ -6,6 +6,7 @@ import {
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
+import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";

@@ -25,7 +25,7 @@ const contentRef = ref<HTMLDivElement>();
 
 onMounted(() => {
   contentRef.value?.querySelectorAll("pre code").forEach((el) => {
-    hljs.highlightElement(el);
+    hljs.highlightElement(el as HTMLElement);
   });
 });
 </script>
