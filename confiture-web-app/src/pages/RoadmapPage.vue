@@ -6,8 +6,8 @@ import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 
 const menuItems = [
-  { name: "roadmap", label: "Feuille de route" },
-  { name: "changelog", label: "Notes de version" }
+  { name: "roadmap", label: "Feuille de route" }
+  // { name: "changelog", label: "Notes de version" }
 ];
 
 const route = useRoute();
@@ -19,7 +19,7 @@ function isCurrentPage(routeName: string): boolean {
 
 <template>
   <PageMeta title="Feuille de route" />
-  <div class="main">
+  <div class="wrapper">
     <nav class="fr-sidemenu" aria-labelledby="fr-sidemenu-title">
       <div class="fr-sidemenu__inner">
         <button
@@ -55,20 +55,24 @@ function isCurrentPage(routeName: string): boolean {
         </div>
       </div>
     </nav>
-    <MarkdownRenderer :markdown="roadmapMarkdown" />
+    <MarkdownRenderer class="content" :markdown="roadmapMarkdown" />
   </div>
 </template>
 
 <style>
-.main {
+.wrapper {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);
   gap: 2rem;
 }
 
 @media (width < 48rem) {
-  .main {
+  .wrapper {
     grid-template-columns: 1fr;
   }
+}
+
+.content .mention-grey {
+  color: var(--text-mention-grey);
 }
 </style>
