@@ -10,7 +10,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0 1rem;
-  flex-grow: 1;
   max-width: 49.5rem;
 
   &:deep(.step-card-heading) {

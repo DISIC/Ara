@@ -16,6 +16,7 @@ const resultsStore = useResultsStore();
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
 });
+
 const auditIsPublishable = computed(() => {
   return !!props.audit.initiator;
 });
@@ -38,6 +39,16 @@ const auditIsPublishable = computed(() => {
       >
         Déclaration d’accessibilité
       </component>
+      <RouterLink
+        v-if="auditIsPublishable"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line statement-step-settings-link"
+        :to="{
+          name: 'audit-declaration',
+          params: { uniqueId: audit.editUniqueId }
+        }"
+      >
+        Modifier
+      </RouterLink>
     </div>
 
     <p class="statement-step-description">
@@ -53,103 +64,72 @@ const auditIsPublishable = computed(() => {
       </template>
     </p>
 
+    <CopyBlock
+      v-if="auditIsPublishable"
+      class="statement-step-copy"
+      :to="{
+        name: 'a11y-statement',
+        params: {
+          uniqueId: audit.consultUniqueId
+        }
+      }"
+      :show-copy-button="auditIsPublishable"
+      success-message="Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier."
+      link-hidden-label="la déclaration d’accessibilité"
+      copy-button-hidden-label="de la déclaration d’accessibilité"
+    />
+
     <ul
-      :class="[
-        'fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-actions',
-        { 'fr-mb-3w': auditIsPublishable }
-      ]"
+      v-else
+      class="fr-btns-group fr-btns-group--inline-md fr-btns-group--icon-left statement-step-main-cta"
     >
-      <li>
-        <RouterLink
-          :to="
-            auditIsPublishable
-              ? {
-                  name: 'a11y-statement',
-                  params: {
-                    uniqueId: audit.consultUniqueId
-                  }
-                }
-              : {
-                  name: 'audit-declaration',
-                  params: { uniqueId: audit.editUniqueId }
-                }
-          "
-          :target="auditIsPublishable ? '_blank' : null"
-          class="fr-btn fr-btn--icon-left fr-mb-md-0"
-          :class="{
-            'fr-btn--tertiary': !auditIsReady || auditIsPublishable,
-            'fr-icon-edit-line no-external-icon': !auditIsPublishable
-          }"
-          :title="
-            auditIsPublishable
-              ? 'Consulter la déclaration - nouvelle fenêtre'
-              : null
-          "
-        >
-          {{ auditIsPublishable ? "Consulter" : "Compléter" }}
-          <span v-if="auditIsPublishable" class="fr-sr-only"
-            >(nouvelle fenêtre)</span
-          >
-        </RouterLink>
-      </li>
-      <li v-if="auditIsPublishable">
+      <li class="fr-mb-2w fr-mb-md-0">
         <RouterLink
           :to="{
             name: 'audit-declaration',
             params: { uniqueId: audit.editUniqueId }
           }"
-          class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-line fr-mb-md-0"
+          class="fr-btn fr-btn--icon-left fr-icon-edit-line no-external-icon fr-mb-0"
+          :class="{
+            'fr-btn--tertiary': !auditIsReady
+          }"
         >
-          Modifier
+          Compléter
         </RouterLink>
       </li>
     </ul>
-
-    <template v-if="auditIsPublishable">
-      <CopyBlock
-        class="fr-m-0 statement-step-copy-block"
-        :button-class="'fr-btn--secondary'"
-        :to="{
-          name: 'a11y-statement',
-          params: {
-            uniqueId: audit.consultUniqueId
-          }
-        }"
-        label="Lien de partage"
-        title="Lien de partage de la déclaration d’accessibilité"
-        success-message="Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier."
-      />
-    </template>
   </StepCard>
 </template>
 
 <style scoped>
+.statement-step-settings-link {
+  margin-inline-start: auto;
+
+  @media (width < 36rem) {
+    margin-inline-start: initial;
+  }
+}
+
 .statement-step-description {
   grid-column: 1 / -1;
   grid-row: 2;
 }
 
-.statement-step-actions {
-  grid-column: 1 / -1;
-}
-
-/* FIXME: overrides fr-btns-group style */
-.statement-step-actions > li:first-child {
-  width: 50%;
-}
-
-.statement-step-actions > li > a {
-  width: 100%;
-}
-
-.statement-step-copy-block {
-  grid-column: 1 / -1;
-  grid-row: 4;
-}
-
-@media (width < 48rem) {
-  .statement-step-actions > li:first-child {
-    width: 100%;
+.statement-step-main-cta {
+  @media (width < 48rem) {
+    grid-column: 1 / -1;
   }
+
+  li:first-child {
+    width: 100%;
+
+    > a {
+      width: calc(100% - 1rem);
+    }
+  }
+}
+
+.statement-step-copy {
+  grid-column: 1 / -1;
 }
 </style>

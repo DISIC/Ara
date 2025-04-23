@@ -103,6 +103,8 @@ const siteUrl = computed(() => {
   return null;
 });
 
+const copyReportButtonRef = ref<HTMLButtonElement>();
+
 async function copyReportUrl() {
   const url =
     window.location.origin +
@@ -115,6 +117,7 @@ async function copyReportUrl() {
 
 function hideReportAlert() {
   showCopyAlert.value = false;
+  copyReportButtonRef.value?.focus();
 }
 
 function onOnboardingClose() {
@@ -159,10 +162,9 @@ watch(
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div class="heading-actions">
       <button
+        ref="copyReportButtonRef"
         class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
-        title="Copier le lien du rapport"
         @click="copyReportUrl"
-        @blur="hideReportAlert"
       >
         Copier le lien du rapport
       </button>
@@ -194,6 +196,9 @@ watch(
       class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
     >
       <p>Le lien vers le rapport a bien été copié dans le presse-papier.</p>
+      <button class="fr-link fr-link--close" @click="hideReportAlert">
+        Masquer le message
+      </button>
     </div>
   </div>
 
