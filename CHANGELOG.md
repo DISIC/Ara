@@ -6,6 +6,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 
 ### Corrections 🐛
 
+- Supprime les liens non-explicites pour accéder à la déclaration et au rapport d’audit sur la synthèse ([#1044](https://github.com/DISIC/Ara/pull/1044))
 - Ajoute des mentions sur les champs optionnels de la déclaration d’accessibilité et des paramètres de l’audit ([#1054](https://github.com/DISIC/Ara/pull/1054))
 
 ## 22/04/2025
