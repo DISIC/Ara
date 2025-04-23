@@ -291,6 +291,7 @@ describe("Audit", () => {
 
       // Environments
       cy.contains("Combinaison 1").click();
+      cy.contains("button", "Ajouter un environnement de test").click();
       cy.getByLabel("Appareil").clear().type("Ordinateur");
       cy.getByLabel("Logiciel d’exploitation").clear().type("Windows");
       cy.getByLabel("Technologie d’assistance").clear().type("JAWS");

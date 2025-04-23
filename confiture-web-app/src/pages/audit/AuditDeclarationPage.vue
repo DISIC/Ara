@@ -295,7 +295,7 @@ const isDevMode = useDevMode();
     class="content"
     @submit.prevent="handleSubmit"
   >
-    <h1 class="fr-mb-3w">Déclaration d’accessibilité</h1>
+    <h1 class="fr-mb-6w">Déclaration d’accessibilité</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
@@ -355,43 +355,47 @@ const isDevMode = useDevMode();
         class="narrow-field"
       />
 
-      <p>
+      <p class="fr-mb-2w">
         Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
-      <DsfrField
-        id="contact-email"
-        v-model="contactEmail"
-        label="Adresse e-mail"
-        hint="Exemple : contact@ministere.gouv.fr"
-        type="email"
-        :error="
-          hasNoContactInfo
-            ? 'Vous devez renseigner au moins 1 moyen de contact'
-            : undefined
-        "
-        class="narrow-field"
-      />
+      <div class="fr-ml-md-4w">
+        <DsfrField
+          id="contact-email"
+          v-model="contactEmail"
+          label="Adresse e-mail"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="email"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins un moyen de contact'
+              : undefined
+          "
+          class="fr-mb-3v narrow-field"
+        />
 
-      <DsfrField
-        id="contact-form-url"
-        v-model="contactFormUrl"
-        label="Formulaire de contact en ligne"
-        hint="Exemple : contact@ministere.gouv.fr"
-        type="text"
-        :pattern="URL_REGEX"
-        placeholder="https://"
-        :error="
-          hasNoContactInfo
-            ? 'Vous devez renseigner au moins 1 moyen de contact'
-            : undefined
-        "
-      >
-        <template #hint>
-          Saisissez une URL valide, commençant par <code>https://</code> ou
-          <code>http://</code>
-        </template>
-      </DsfrField>
+        <p class="fr-mb-3v"><em>Ou</em></p>
+
+        <DsfrField
+          id="contact-form-url"
+          v-model="contactFormUrl"
+          label="Formulaire de contact en ligne"
+          hint="Exemple : contact@ministere.gouv.fr"
+          type="text"
+          :pattern="URL_REGEX"
+          placeholder="https://"
+          :error="
+            hasNoContactInfo
+              ? 'Vous devez renseigner au moins un moyen de contact'
+              : undefined
+          "
+        >
+          <template #hint>
+            Saisissez une URL valide, commençant par <code>https://</code> ou
+            <code>http://</code>
+          </template>
+        </DsfrField>
+      </div>
     </fieldset>
 
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
@@ -432,12 +436,12 @@ const isDevMode = useDevMode();
 
     <div class="fr-form-group">
       <fieldset class="fr-fieldset fr-mb-4w">
-        <legend class="fr-fieldset__legend fr-text--regular">
+        <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
           <h2 class="fr-h4 fr-mb-0">
             Outils d’assistance utilisés pour vérifier l’accessibilité
           </h2>
         </legend>
-        <div class="fr-fieldset__content fr-mt-2w">
+        <div class="fr-fieldset__content">
           <div
             v-for="(tool, i) in availableTools"
             :key="i"
