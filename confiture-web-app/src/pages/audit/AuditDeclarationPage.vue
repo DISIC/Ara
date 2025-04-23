@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, toRaw, watch } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSelection/TestEnvironmentSelection.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import DsfrField from "../../components/ui/DsfrField.vue";
+import TagListField from "../../components/ui/TagListField.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
@@ -26,56 +27,16 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-// Technologies
+const technologies = ref<string[]>([]);
 
-const tempTechnologies = ref("");
-const validatedTechnologies = ref<string[]>([]);
-const validatedTechnologiesRefs = ref<HTMLButtonElement[]>([]);
-const validateTechnologiesRef = ref<HTMLButtonElement>();
-
-/**
- * Create technologies tags.
- */
-async function validateTechnologies() {
-  const tech = tempTechnologies.value.split(",").filter(Boolean);
-  tech.forEach((t) => {
-    validatedTechnologies.value.push(t.trim());
-  });
-
-  tempTechnologies.value = "";
-}
-
-/**
- * Remove technology tag and focus next one or validate button.
- */
-async function removeTechnology(index: number) {
-  validatedTechnologies.value = validatedTechnologies.value.filter((_, i) => {
-    return i !== index;
-  });
-
-  await nextTick();
-
-  const nextTechnologyButton = validatedTechnologiesRefs.value[index];
-  if (nextTechnologyButton) {
-    nextTechnologyButton.focus();
-  } else {
-    validateTechnologiesRef.value?.focus();
-  }
-}
-
-// Tools
-
-const tempTools = ref("");
-const validatedTools = ref<string[]>([]);
-const validatedToolsRefs = ref<HTMLButtonElement[]>([]);
-const validateToolsRef = ref<HTMLButtonElement>();
-
+const customTools = ref<string[]>([]);
 const defaultTools = ref<string[]>([]);
+
 const tools = computed(() => {
-  return [...defaultTools.value, ...validatedTools.value].filter(Boolean);
+  return [...defaultTools.value, ...customTools.value].filter(Boolean);
 });
 
-const availableTools = [
+const AVAILABLE_DEFAULT_TOOLS = [
   { name: "Web Developer Toolbar", lang: "en" },
   { name: "Colour Contrast Analyser", lang: "en" },
   { name: "HeadingsMap", lang: "en" },
@@ -85,36 +46,6 @@ const availableTools = [
   { name: "Assistant RGAA" },
   { name: "Validateur HTML du W3C" }
 ];
-
-/**
- * Create tools tags.
- */
-async function validateTools() {
-  const tech = tempTools.value.split(",").filter(Boolean);
-  tech.forEach((t) => {
-    validatedTools.value.push(t.trim());
-  });
-
-  tempTools.value = "";
-}
-
-/**
- * Remove tool tag and focus next one or validate button.
- */
-async function removeTool(index: number) {
-  validatedTools.value = validatedTools.value.filter((_, i) => {
-    return i !== index;
-  });
-
-  await nextTick();
-
-  const nextToolButton = validatedToolsRefs.value[index];
-  if (nextToolButton) {
-    nextToolButton.focus();
-  } else {
-    validateToolsRef.value?.focus();
-  }
-}
 
 const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 
@@ -143,19 +74,19 @@ watch(
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
-    validatedTechnologies.value = audit.technologies.length
+    technologies.value = audit.technologies.length
       ? structuredClone(toRaw(audit.technologies))
       : [];
 
     defaultTools.value = audit.tools.length
       ? // Cannot use filtered audit.tools because the checkbox array v-model binding wont work with different object refs
-        availableTools
-          .map((t) => t.name)
-          .filter((tool) => audit.tools.includes(tool))
+        AVAILABLE_DEFAULT_TOOLS.map((t) => t.name).filter((tool) =>
+          audit.tools.includes(tool)
+        )
       : [];
-    validatedTools.value = audit.tools.length
+    customTools.value = audit.tools.length
       ? audit.tools.filter(
-          (tool) => !availableTools.map((t) => t.name).includes(tool)
+          (tool) => !AVAILABLE_DEFAULT_TOOLS.map((t) => t.name).includes(tool)
         )
       : [];
 
@@ -199,7 +130,7 @@ function handleSubmit() {
     contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
-    technologies: validatedTechnologies.value,
+    technologies: technologies.value,
     environments: environments.value,
     tools: tools.value,
 
@@ -239,10 +170,10 @@ function DEBUG_fillFields() {
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
-  validatedTechnologies.value = ["HTML", "CSS"];
+  technologies.value = ["HTML", "CSS"];
 
-  defaultTools.value = [availableTools[2].name];
-  validatedTools.value = ["Firefox Devtools", "AXE Webextension"];
+  defaultTools.value = [AVAILABLE_DEFAULT_TOOLS[2].name];
+  customTools.value = ["Firefox Devtools", "AXE Webextension"];
 
   environments.value = [
     {
@@ -400,39 +331,12 @@ const isDevMode = useDevMode();
 
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-    <DsfrField
-      id="temp-technologies"
-      v-model="tempTechnologies"
+    <TagListField
+      v-model="technologies"
       label="Ajouter des technologies"
       hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
-      type="text"
-      :required="!validatedTechnologies.length"
-      @keydown.enter.prevent="validateTechnologies"
+      add-label="les technologies"
     />
-
-    <ul class="fr-tags-group">
-      <li v-for="(techno, i) in validatedTechnologies" :key="i">
-        <!-- TODO: generate unique ids for each techno, using i is bugged. See how it's done in TransverseElementsList.vue -->
-        <button
-          ref="validatedTechnologiesRefs"
-          class="fr-tag fr-icon-close-line fr-tag--icon-left light-blue-button-tags"
-          type="button"
-          @click="removeTechnology(i)"
-        >
-          <span class="fr-sr-only">Retirer</span>
-          {{ techno }}
-        </button>
-      </li>
-    </ul>
-
-    <button
-      ref="validateTechnologiesRef"
-      class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
-      type="button"
-      @click="validateTechnologies"
-    >
-      Valider les technologies
-    </button>
 
     <div class="fr-form-group">
       <fieldset class="fr-fieldset fr-mb-4w">
@@ -443,7 +347,7 @@ const isDevMode = useDevMode();
         </legend>
         <div class="fr-fieldset__content">
           <div
-            v-for="(tool, i) in availableTools"
+            v-for="(tool, i) in AVAILABLE_DEFAULT_TOOLS"
             :key="i"
             class="fr-checkbox-group"
           >
@@ -461,38 +365,12 @@ const isDevMode = useDevMode();
       </fieldset>
     </div>
 
-    <DsfrField
-      id="temp-tools"
-      v-model="tempTools"
+    <TagListField
+      v-model="customTools"
       label="Ajouter des outils d’assistance"
       hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
-      type="text"
-      :required="!validatedTools.length && !defaultTools.length"
-      @keydown.enter.prevent="validateTools"
+      add-label="les outils d’assistance"
     />
-
-    <ul class="fr-tags-group">
-      <li v-for="(tool, i) in validatedTools" :key="i">
-        <button
-          ref="validatedToolsRefs"
-          class="fr-tag fr-tag--dismiss"
-          type="button"
-          @click="removeTool(i)"
-        >
-          <span class="fr-sr-only">Retirer</span>
-          {{ tool }}
-        </button>
-      </li>
-    </ul>
-
-    <button
-      ref="validateToolsRef"
-      class="fr-btn fr-btn--tertiary-no-outline fr-mb-6w"
-      type="button"
-      @click="validateTools"
-    >
-      Valider les outils
-    </button>
 
     <TestEnvironmentSelection v-model="environments" />
 
