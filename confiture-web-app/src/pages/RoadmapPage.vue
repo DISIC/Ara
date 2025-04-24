@@ -6,8 +6,8 @@ import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 
 const menuItems = [
-  { name: "roadmap", label: "Feuille de route" }
-  // { name: "changelog", label: "Notes de version" }
+  { name: "roadmap", label: "Feuille de route" },
+  { name: "changelog", label: "Notes de version" }
 ];
 
 const route = useRoute();
@@ -59,7 +59,7 @@ function isCurrentPage(routeName: string): boolean {
   </div>
 </template>
 
-<style>
+<style scoped>
 .wrapper {
   display: grid;
   grid-template-columns: 20rem minmax(0, 1fr);
@@ -72,7 +72,7 @@ function isCurrentPage(routeName: string): boolean {
   }
 }
 
-.content .mention-grey {
+.content :deep(.mention-grey) {
   color: var(--text-mention-grey);
 }
 </style>
