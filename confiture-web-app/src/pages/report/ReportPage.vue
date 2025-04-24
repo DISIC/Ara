@@ -15,7 +15,13 @@ import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { REFERENTIAL, StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
-import { formatBytes, formatDate, getAuditStatus, slugify } from "../../utils";
+import {
+  formatBytes,
+  formatDate,
+  getAuditStatus,
+  isTiptapDocumentEmpty,
+  slugify
+} from "../../utils";
 
 const props = defineProps<{
   tabSlug: string; // given by router (props: true). TODO check why needed here and not on AuditGenerationPage
@@ -32,7 +38,9 @@ const showCopyAlert = ref(false);
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
 
 const hasNotes = computed(() => {
-  return !!report.data?.notes || report.data?.notesFiles.length;
+  return (
+    !isTiptapDocumentEmpty(report.data?.notes) || report.data?.notesFiles.length
+  );
 });
 
 const hasCompliantOrNotApplicableComments = computed(() => {
