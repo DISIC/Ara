@@ -1,6 +1,6 @@
 <h1 class="fr-mb-4w">Notes de version</h1>
 
-<p class="fr-text--lg fr-mb-5w">Cette page vous permet de suivre l’évolution du produit de manière transparente et continue.Tous les changements importants d'Ara sont listés ici, avec leur date, leur type (correction, nouvelle fonctionnalité, autres changements) et le lien vers la PR correspondante.</p>
+<p class="fr-text--lg fr-mb-5w">Cette page vous permet de suivre l’évolution du produit de manière transparente et continue. Tous les changements importants d'Ara sont listés ici, avec leur date, leur type (correction, nouvelle fonctionnalité, autres changements) et le lien vers la PR correspondante.</p>
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 

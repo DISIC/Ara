@@ -9,7 +9,6 @@
 <p class="fr-text--sm fr-mb-1w mention-grey">Fonctionnalités en cours de conception ou de développement. Bientôt en production.</p>
 
 - Améliorer la saisie des commentaires ou recommandations.
-  - Ajout d’un éditeur de texte à chaque champ de saisie.
   - Possibilité d’ajouter une ou plusieurs images dans chaque champ de saisie.
   - Permettre le glisser déposer d’image.
 
@@ -17,7 +16,7 @@
 
 <p class="fr-text--sm fr-mb-1w mention-grey">Fonctionnalités prochainement en conception ou en développement.</p>
 
-- La notion d’anomalie arrive. Une anomalie comprend un champ de saisie, une ou plusieurs images, un impact et un degrès de facilité.
+- La notion d’anomalie arrive. Une anomalie comprend un champ de saisie, une ou plusieurs images, un impact et un degrés de facilité.
 - Pouvoir associer plusieurs anomalies à un critère.
 - Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des critères).
 - Refonte du rapport pour mettre en avant la liste des anomalies relevées.
