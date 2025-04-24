@@ -24,6 +24,7 @@ const title = "Points d’amélioration";
       {{ title }}
     </p>
     <TiptapEditor
+      :key="id"
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
       :disabled="isOffline"
