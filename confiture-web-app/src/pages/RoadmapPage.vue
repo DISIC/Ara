@@ -3,13 +3,19 @@ import roadmapMarkdown from "../assets/ROADMAP.md?raw";
 import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import NewsSidebar from "../components/ui/NewsSidebar.vue";
+import TopLink from "../components/ui/TopLink.vue";
 </script>
 
 <template>
   <PageMeta title="Feuille de route" />
   <div class="wrapper">
     <NewsSidebar />
-    <MarkdownRenderer class="content" :markdown="roadmapMarkdown" />
+    <div>
+      <MarkdownRenderer class="content" :markdown="roadmapMarkdown" />
+      <div class="top-link">
+        <TopLink />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -28,5 +34,9 @@ import NewsSidebar from "../components/ui/NewsSidebar.vue";
 
 .content :deep(.mention-grey) {
   color: var(--text-mention-grey);
+}
+
+.top-link {
+  text-align: end;
 }
 </style>

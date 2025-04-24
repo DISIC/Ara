@@ -3,13 +3,19 @@ import changelogMarkdown from "../assets/CHANGELOG.md?raw";
 import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import NewsSidebar from "../components/ui/NewsSidebar.vue";
+import TopLink from "../components/ui/TopLink.vue";
 </script>
 
 <template>
   <PageMeta title="Notes de version" />
   <div class="wrapper">
     <NewsSidebar />
-    <MarkdownRenderer class="content" :markdown="changelogMarkdown" />
+    <div>
+      <MarkdownRenderer class="content" :markdown="changelogMarkdown" />
+      <div class="top-link">
+        <TopLink />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,5 +30,9 @@ import NewsSidebar from "../components/ui/NewsSidebar.vue";
   .wrapper {
     grid-template-columns: 1fr;
   }
+}
+
+.top-link {
+  text-align: end;
 }
 </style>
