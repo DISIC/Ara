@@ -108,6 +108,7 @@ const title = "Erreur et recommandation";
       {{ title }}
     </p>
     <TiptapEditor
+      :key="id"
       ref="commentEditorRef"
       class="fr-mb-4w"
       :model-value="comment"
