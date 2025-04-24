@@ -18,7 +18,7 @@ const props = defineProps<{
   modelValue: any;
 }>();
 
-defineSlots<{ label(): void }>;
+defineSlots<{ label(): void }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;

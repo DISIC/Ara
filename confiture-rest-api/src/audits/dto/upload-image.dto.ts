@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
 import { IsInt, IsNumber, IsPositive, Max, Min } from "class-validator";
+
 import { IsRgaaCriterium } from "./update-results.dto";
 
 /*

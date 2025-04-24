@@ -12,6 +12,7 @@ import {
   AuditType,
   AuditTypeString,
   CriterionResultUserImpact,
+  CriteriumResult,
   CriteriumResultStatus
 } from "./types";
 
@@ -91,12 +92,15 @@ export function getAuditStatus(report: AuditReport): string {
   const transversePageId = report.context.samples[0].id;
 
   if (
-    report.results.filter((r) => r.pageId !== transversePageId).length !==
+    report.results.filter((r: CriteriumResult) => r.pageId !== transversePageId)
+      .length !==
       getCriteriaCount(report.auditType) *
         (report.context.samples.length - 1) ||
     report?.results
-      .filter((r) => r.pageId !== transversePageId)
-      .some((r) => r.status === CriteriumResultStatus.NOT_TESTED)
+      .filter((r: CriteriumResult) => r.pageId !== transversePageId)
+      .some(
+        (r: CriteriumResult) => r.status === CriteriumResultStatus.NOT_TESTED
+      )
   ) {
     return AuditStatus.IN_PROGRESS;
   }
@@ -159,7 +163,7 @@ export async function captureWithPayloads(
               null,
               2
             );
-          } catch (e) {
+          } catch {
             // noop, we dont do anything if it's not JSON
           }
         })
@@ -172,7 +176,7 @@ export async function captureWithPayloads(
         payloads["Response Raw"] = data;
         try {
           payloads["Response JSON"] = JSON.stringify(JSON.parse(data), null, 2);
-        } catch (e) {
+        } catch {
           // noop, we dont do anything if it's not JSON
         }
       })

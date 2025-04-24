@@ -423,7 +423,6 @@ export const useResultsStore = defineStore("results", {
       const updates =
         this.allResults?.map((r) => ({
           ...r,
-          /* eslint-disable @typescript-eslint/no-non-null-assertion */
           status: sample([
             CriteriumResultStatus.COMPLIANT,
             CriteriumResultStatus.NOT_COMPLIANT,
@@ -433,7 +432,6 @@ export const useResultsStore = defineStore("results", {
           notCompliantComment: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
           userImpact: sample(CriterionResultUserImpact)!
-          /* eslint-enable @typescript-eslint/no-non-null-assertion */
         })) ?? [];
 
       await this.updateResults(uniqueId, updates);

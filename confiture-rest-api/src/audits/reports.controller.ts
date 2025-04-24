@@ -12,9 +12,9 @@ import {
   ApiTags
 } from "@nestjs/swagger";
 
-import { AuditReportDto } from "./dto/audit-report.dto";
 import { AuditService } from "./audit.service";
 import { AuditExportService } from "./audit-export.service";
+import { AuditReportDto } from "./dto/audit-report.dto";
 
 @Controller("reports")
 @ApiTags("Audits")

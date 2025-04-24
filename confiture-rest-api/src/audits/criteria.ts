@@ -1,4 +1,5 @@
 import { AuditType } from "@prisma/client";
+
 import * as rgaa from "../rgaa.json";
 
 interface CriteriumId {
