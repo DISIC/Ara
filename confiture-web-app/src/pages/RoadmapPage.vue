@@ -32,8 +32,33 @@ import TopLink from "../components/ui/TopLink.vue";
   }
 }
 
-.content :deep(.mention-grey) {
-  color: var(--text-mention-grey);
+.content {
+  &:deep(h1) {
+    margin-block-end: 2rem;
+  }
+
+  &:deep(h2) {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-block: 2.25rem 0.75rem;
+  }
+
+  &:deep(h2 [aria-hidden]) {
+    margin-inline-end: 0.5rem;
+  }
+
+  &:deep(.intro) {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-block-end: 1.5rem;
+  }
+
+  &:deep(.mention) {
+    color: var(--text-mention-grey);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    margin-block-end: 0.5rem;
+  }
 }
 
 .top-link {

@@ -32,6 +32,35 @@ import TopLink from "../components/ui/TopLink.vue";
   }
 }
 
+.content {
+  &:deep(h1) {
+    margin-block-end: 2rem;
+  }
+
+  &:deep(h3) {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-block: 2.25rem 1rem;
+  }
+
+  &:deep(h4) {
+    font-size: 1.25rem;
+    line-height: 2rem;
+    margin-block-start: 0.75rem;
+    margin-block-end: 0.5rem;
+  }
+
+  &:deep(.intro) {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-block-end: 2.5rem;
+  }
+
+  &:deep(h4 [aria-hidden]) {
+    margin-inline-end: 0.25rem;
+  }
+}
+
 .top-link {
   text-align: end;
 }
