@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 24/04/2025
+
+### Corrections 🐛
+
+- Corrige les erreurs et recommendations des éléments transverses affichés au format JSON ([#1080](https://github.com/DISIC/Ara/pull/1080))
+
 ## 23/04/2025
 
 ### Corrections 🐛
