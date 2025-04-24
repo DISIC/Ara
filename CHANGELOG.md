@@ -7,6 +7,7 @@ Tous les changements notables de Ara sont documentés ici avec leur date, leur c
 ### Corrections 🐛
 
 - Corrige les erreurs et recommendations des éléments transverses affichés au format JSON ([#1080](https://github.com/DISIC/Ara/pull/1080))
+- Corrige le commentaire des critères dupliqué entre les pages ([#1086](https://github.com/DISIC/Ara/pull/1086))
 
 ## 23/04/2025
 
