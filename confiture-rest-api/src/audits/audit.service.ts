@@ -7,20 +7,20 @@ import {
   Prisma,
   StoredFile
 } from "@prisma/client";
+import { omit, orderBy, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
+import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
+import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
-import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
-import { FileStorageService } from "./file-storage.service";
+import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
-import { PatchAuditDto } from "./dto/patch-audit.dto";
-import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
+import { FileStorageService } from "./file-storage.service";
 
 const AUDIT_EDIT_INCLUDE = {
   recipients: true,

@@ -13,13 +13,13 @@ import {
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { MailService } from "../mail/mail.service";
-import { AuthRequired } from "./auth-required.decorator";
 import {
   AuthService,
   InvalidVerificationTokenError,
   TokenRegenerationError,
   UsernameAlreadyExistsError
 } from "./auth.service";
+import { AuthRequired } from "./auth-required.decorator";
 import { UpdateEmailDto } from "./dto/update-email.dto";
 import { VerifyEmailUpdateDto } from "./dto/verify-email-update.dto";
 import { AuthenticationJwtPayload } from "./jwt-payloads";
