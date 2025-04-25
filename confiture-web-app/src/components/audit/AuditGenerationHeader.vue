@@ -33,9 +33,8 @@ defineProps<{
   auditEditionDate: string | null;
   keyInfos: {
     title: string;
-    description?: string;
+    description: string;
     value: number;
-    total: number;
     unit?: string;
     theme?: StatDonutTheme;
     disabled?: boolean;
@@ -433,7 +432,6 @@ onMounted(() => {
           :title="keyInfos[0].title"
           :description="keyInfos[0].description"
           :value="keyInfos[0].value"
-          :total="keyInfos[0].total"
           :unit="keyInfos[0].unit"
           :theme="keyInfos[0].theme"
           :disabled="keyInfos[0].disabled"
@@ -448,7 +446,6 @@ onMounted(() => {
           :title="info.title"
           :description="info.description"
           :value="info.value"
-          :total="info.total"
           :unit="info.unit"
           :theme="info.theme"
         />

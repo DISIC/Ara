@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-export type StatDonutTheme = "blue" | "red" | "green" | "grey";
+export type StatDonutTheme = "blue" | "red" | "green";
 
 defineProps<{
   value: number;

@@ -110,10 +110,9 @@ const headerInfos = computed(() => [
         {
           title: "Taux global de conformité",
           description: auditIsInProgress.value
-            ? "(Disponible à la fin de l’audit)"
+            ? "Disponible à la fin de l’audit"
             : REFERENTIAL,
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
-          total: 100,
           unit: "%",
           theme: auditIsInProgress.value
             ? ("grey" as StatDonutTheme)
@@ -123,20 +122,23 @@ const headerInfos = computed(() => [
       ]
     : []),
   {
-    title: "Critères<br/> non conformes",
+    title: "Critères non conformes",
     description: `Dont ${blockingCriteriaCount.value} ${pluralize(
       "bloquant",
       "bloquants",
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: applicableCriteriaCount.value,
     theme: "red" as StatDonutTheme
   },
   {
-    title: "Critères<br/> conformes",
+    title: "Critères conformes",
+    description: `Sur ${applicableCriteriaCount.value} ${pluralize(
+      "critère applicable",
+      "critères applicables",
+      applicableCriteriaCount.value
+    )}`,
     value: compliantCriteriaCount.value,
-    total: applicableCriteriaCount.value,
     theme: "green" as StatDonutTheme
   }
 ]);

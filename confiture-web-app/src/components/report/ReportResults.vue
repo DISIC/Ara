@@ -21,7 +21,7 @@ const stats = computed(() => {
           {
             title: "Taux global de conformité",
             description: auditInProgress.value
-              ? "(Disponible à la fin de l’audit)"
+              ? "Disponible à la fin de l’audit"
               : REFERENTIAL,
             value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
@@ -34,7 +34,7 @@ const stats = computed(() => {
       : []),
 
     {
-      title: "Critères<br/> non conformes",
+      title: "Critères non conformes",
       description: `Dont ${report.data?.criteriaCount.blocking} ${pluralize(
         "bloquant",
         "bloquants",
@@ -46,7 +46,12 @@ const stats = computed(() => {
       theme: "red" as StatDonutTheme
     },
     {
-      title: "Critères<br/> conformes",
+      title: "Critères conformes",
+      description: `Sur ${report.data?.criteriaCount.applicable} ${pluralize(
+        "critère applicable",
+        "critères applicables",
+        report.data!.criteriaCount.applicable
+      )}`,
       value: report.data?.criteriaCount.compliant,
       total: report.data?.criteriaCount.applicable,
       theme: "green" as StatDonutTheme
@@ -114,9 +119,8 @@ const transverseNotCompliantCount = computed(() => {
           :title="stat.title"
           :description="stat.description"
           :value="stat.value!"
-          :total="stat.total!"
           :unit="stat.unit"
-          :theme="stat.disabled ? 'grey' : stat.theme"
+          :theme="stat.theme"
           :disabled="stat.disabled"
         >
           <template v-if="stat.hasDetails" #accordion-title>
