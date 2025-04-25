@@ -14,31 +14,31 @@ describe("Common", () => {
         cy.contains(`que 51% des critères`);
 
         cy.visit(`http://localhost:3000/rapport/${reportId}`);
-        cy.get("[role='tabpanel'] .card-donut.theme-blue").should(
+        cy.get("[role='tabpanel'] .card-metric.card-metric--blue").should(
           "contain.text",
-          "51 %",
+          "51%",
         );
-        cy.get("[role='tabpanel'] .card-donut.theme-red").should(
+        cy.get("[role='tabpanel'] .card-metric.card-metric--red").should(
           "contain.text",
           "35",
         );
-        cy.get("[role='tabpanel'] .card-donut.theme-green").should(
+        cy.get("[role='tabpanel'] .card-metric.card-metric--green").should(
           "contain.text",
           "36",
         );
 
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-        cy.get(".card-donut.theme-blue").should("contain.text", "51 %");
-        cy.get(".card-donut.theme-red").should("contain.text", "35");
-        cy.get(".card-donut.theme-green").should("contain.text", "36");
+        cy.get(".card-metric.card-metric--blue").should("contain.text", "51%");
+        cy.get(".card-metric.card-metric--red").should("contain.text", "35");
+        cy.get(".card-metric.card-metric--green").should("contain.text", "36");
 
         cy.contains("button", username).click();
         cy.contains("button", "Me déconnecter").click();
 
         cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
-        cy.get(".card-donut.theme-blue").should("contain.text", "51 %");
-        cy.get(".card-donut.theme-red").should("contain.text", "35");
-        cy.get(".card-donut").last().should("contain.text", "35");
+        cy.get(".card-metric.card-metric--blue").should("contain.text", "51%");
+        cy.get(".card-metric.card-metric--red").should("contain.text", "35");
+        cy.get(".card-metric.card-metric--green").should("contain.text", "36");
       });
     });
   });
