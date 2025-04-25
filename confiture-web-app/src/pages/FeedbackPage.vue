@@ -33,14 +33,18 @@ const availableJobs = [
   "Autre"
 ];
 
-const easyToUse = ref<CreateFeedbackRequestData["easyToUse"]>();
-const easyToUnderstand = ref<CreateFeedbackRequestData["easyToUnderstand"]>();
-const feedback = ref("");
-const suggestions = ref("");
-const contact = ref();
-const name = ref("");
-const email = ref("");
-const occupations = ref<string[]>([]);
+const easyToUse = ref<CreateFeedbackRequestData["easyToUse"]>("Oui");
+const easyToUnderstand =
+  ref<CreateFeedbackRequestData["easyToUnderstand"]>("Oui");
+const feedback = ref("TEST DEV, SUPPRIMER");
+const suggestions = ref("TEST DEV, SUPPRIMER");
+const contact = ref("yes");
+const name = ref("TEST DEV, SUPPRIMER");
+const email = ref("TEST-DEV-SUPPRIMER@example.com");
+const occupations = ref<string[]>([
+  "Designer (ou lead)",
+  "Chef / Cheffe de projet (product manager)"
+]);
 
 const showSuccess = ref(false);
 
