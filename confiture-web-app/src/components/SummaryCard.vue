@@ -6,11 +6,12 @@ import { StatDonutTheme } from "./StatDonut.vue";
 
 defineProps<{
   title: string;
-  description: string;
+  description?: string;
   value: number;
   unit?: string;
   theme?: StatDonutTheme;
   disabled?: boolean;
+  minimal?: boolean;
 }>();
 
 const slots = useSlots();
@@ -21,7 +22,9 @@ const uniqueId = useUniqueId();
 </script>
 
 <template>
-  <div :class="['card', { 'card--disabled': disabled }]">
+  <div
+    :class="['card', { 'card--disabled': disabled, 'card--minimal': minimal }]"
+  >
     <p
       :class="`fr-m-0 card-metric card-metric--${theme}`"
       :aria-hidden="disabled ? true : undefined"
@@ -31,9 +34,12 @@ const uniqueId = useUniqueId();
         {{ value }}<span v-if="unit" class="card-unit">{{ unit }}</span>
       </span>
     </p>
-    <div class="card-info">
-      <p class="fr-text--bold fr-mb-1w card-title">{{ title }}</p>
-      <p class="fr-text--xs fr-m-0 card-description">
+    <div :class="['card-info', { 'fr-py-3v fr-pl-2w': minimal }]">
+      <p class="fr-text--bold fr-mb-0 card-title">{{ title }}</p>
+      <p
+        v-if="description"
+        class="fr-text--xs fr-mb-0 fr-mt-1w card-description"
+      >
         {{ description }}
       </p>
     </div>
@@ -72,6 +78,22 @@ const uniqueId = useUniqueId();
   }
 }
 
+.card--minimal {
+  grid-template-columns: 4rem auto;
+
+  .card-metric {
+    font-size: 1.75rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-unit {
+    font-size: 1rem;
+  }
+}
+
 .card-metric {
   background-color: var(--card-metric-bg-color);
   color: var(--card-metric-color);
@@ -103,6 +125,7 @@ const uniqueId = useUniqueId();
 
 .card-unit {
   font-size: 1.5rem;
+  line-height: 1;
 }
 
 .card-info {
@@ -130,6 +153,7 @@ const uniqueId = useUniqueId();
 }
 
 .card-details {
+  /* border-inline: 1px solid var(--border-default-grey); */
   grid-column: 1 / span 2;
 }
 </style>
