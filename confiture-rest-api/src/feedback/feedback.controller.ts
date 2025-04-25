@@ -9,7 +9,7 @@ export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   /**
-   * Save the feedback data to the linked Airtable base.
+   * Save the feedback data to the linked Grist database.
    */
   @Post()
   @ApiCreatedResponse({

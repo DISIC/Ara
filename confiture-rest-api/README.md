@@ -25,7 +25,7 @@ cp .env.example .env
 Remplir les variables d’environnement requises dans le `.env` :
 
 - `MAILER_USER` et `MAILER_PASSWORD` peuvent être générées via [https://ethereal.email/](https://ethereal.email/) en cliquant sur "Create Ethereal account".
-- `AIRTABLE_*`, `S3_*` et `AWS_*` doivent être demandées en privé.
+- `GRIST_*`, `S3_*` et `AWS_*` doivent être demandées en privé.
 - `JWT_SECRET` peut être laissé à sa valeur par défaut.
 
 Lancer la base de données :

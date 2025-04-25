@@ -20,9 +20,9 @@ export const configValidationSchema = Joi.object({
         "http://localhost:3000"
       );
     }),
-  AIRTABLE_BASE_ID: Joi.string().required(),
-  AIRTABLE_TABLE_ID: Joi.string().required(),
-  AIRTABLE_ACCESS_TOKEN: Joi.string().required(),
+  GRIST_API_KEY: Joi.string().required(),
+  GRIST_DOC_ID: Joi.string().required(),
+  GRIST_TABLE_ID: Joi.string().required(),
 
   S3_ENDPOINT: Joi.string()
     .uri({ scheme: ["https"] })
