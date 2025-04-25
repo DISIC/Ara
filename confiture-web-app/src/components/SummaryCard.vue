@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed, useSlots } from "vue";
-
-import { useUniqueId } from "../composables/useUniqueId";
 import { StatDonutTheme } from "./StatDonut.vue";
 
 defineProps<{
@@ -13,12 +10,6 @@ defineProps<{
   disabled?: boolean;
   minimal?: boolean;
 }>();
-
-const slots = useSlots();
-const showDetails = computed(
-  () => slots["accordion-title"] && slots["accordion-content"]
-);
-const uniqueId = useUniqueId();
 </script>
 
 <template>
@@ -43,20 +34,6 @@ const uniqueId = useUniqueId();
         {{ description }}
       </p>
     </div>
-    <section v-if="showDetails" class="fr-accordion card-details">
-      <div class="fr-accordion__title">
-        <button
-          class="fr-accordion__btn"
-          aria-expanded="false"
-          :aria-controls="`accordion-${uniqueId}`"
-        >
-          <slot name="accordion-title"></slot>
-        </button>
-      </div>
-      <div :id="`accordion-${uniqueId}`" class="fr-collapse">
-        <slot name="accordion-content" />
-      </div>
-    </section>
   </div>
 </template>
 
@@ -132,7 +109,7 @@ const uniqueId = useUniqueId();
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2rem 0.75rem 2rem 1.5rem;
+  padding: 1.5rem 0.75rem 1.5rem 1.5rem;
 
   @media (width < 62rem) {
     padding: 0.75rem 1rem;
@@ -150,10 +127,5 @@ const uniqueId = useUniqueId();
 
 .card-description {
   color: var(--text-mention-grey);
-}
-
-.card-details {
-  /* border-inline: 1px solid var(--border-default-grey); */
-  grid-column: 1 / span 2;
 }
 </style>
