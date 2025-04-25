@@ -19,8 +19,7 @@ import {
   slugify
 } from "../../utils";
 import CopyIcon from "../icons/CopyIcon.vue";
-import { StatDonutTheme } from "../StatDonut.vue";
-import SummaryCard from "../SummaryCard.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
@@ -36,7 +35,7 @@ defineProps<{
     description: string;
     value: number;
     unit?: string;
-    theme?: StatDonutTheme;
+    theme?: SummaryCardThemes;
     disabled?: boolean;
   }[];
   editUniqueId?: string;

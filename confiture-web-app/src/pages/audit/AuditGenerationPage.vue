@@ -9,7 +9,7 @@ import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import PageMeta from "../../components/PageMeta";
-import { StatDonutTheme } from "../../components/StatDonut.vue";
+import { SummaryCardThemes } from "../../components/SummaryCard.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -114,9 +114,7 @@ const headerInfos = computed(() => [
             : REFERENTIAL,
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
           unit: "%",
-          theme: auditIsInProgress.value
-            ? ("grey" as StatDonutTheme)
-            : ("blue" as StatDonutTheme),
+          theme: SummaryCardThemes.Blue,
           disabled: auditIsInProgress.value
         }
       ]
@@ -129,7 +127,7 @@ const headerInfos = computed(() => [
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    theme: "red" as StatDonutTheme
+    theme: SummaryCardThemes.Red
   },
   {
     title: "Critères conformes",
@@ -139,7 +137,7 @@ const headerInfos = computed(() => [
       applicableCriteriaCount.value
     )}`,
     value: compliantCriteriaCount.value,
-    theme: "green" as StatDonutTheme
+    theme: SummaryCardThemes.Green
   }
 ]);
 

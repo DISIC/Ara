@@ -1,12 +1,18 @@
-<script setup lang="ts">
-import { StatDonutTheme } from "./StatDonut.vue";
+<script lang="ts">
+export enum SummaryCardThemes {
+  Blue = "blue",
+  Red = "red",
+  Green = "green"
+}
+</script>
 
+<script setup lang="ts">
 defineProps<{
   title: string;
   description?: string;
   value: number;
   unit?: string;
-  theme?: StatDonutTheme;
+  theme?: SummaryCardThemes;
   disabled?: boolean;
   minimal?: boolean;
 }>();

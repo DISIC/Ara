@@ -7,7 +7,7 @@ import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
 import { formatDate, getCriteriaCount } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
-import SummaryCard from "../SummaryCard.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import StepCard from "./StepCard.vue";
 
 defineProps<{
@@ -105,21 +105,21 @@ const auditIsInProgress = computed(() => {
         title="Taux global de conformité"
         :value="complianceLevel"
         unit="%"
-        theme="blue"
+        :theme="SummaryCardThemes.Blue"
         minimal
       />
 
       <SummaryCard
         title="Critères non conformes"
         :value="notCompliantCriteriaCount"
-        theme="red"
+        :theme="SummaryCardThemes.Red"
         minimal
       />
 
       <SummaryCard
         title="Critères confomes"
         :value="compliantCriteriaCount"
-        theme="green"
+        :theme="SummaryCardThemes.Green"
         minimal
       />
     </div>

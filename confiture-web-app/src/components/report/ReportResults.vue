@@ -7,8 +7,7 @@ import { REFERENTIAL, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
-import { StatDonutTheme } from "../StatDonut.vue";
-import SummaryCard from "../SummaryCard.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
@@ -30,7 +29,7 @@ const stats = computed(() => {
             total: 100,
             unit: "%",
             hasDetails: true,
-            theme: "blue" as StatDonutTheme,
+            theme: SummaryCardThemes.Blue,
             disabled: auditInProgress.value
           }
         ]
@@ -46,7 +45,7 @@ const stats = computed(() => {
       value: report.data?.criteriaCount.notCompliant,
       total: report.data?.criteriaCount.applicable,
       danger: true,
-      theme: "red" as StatDonutTheme
+      theme: SummaryCardThemes.Red
     },
     {
       title: "Critères conformes",
@@ -57,7 +56,7 @@ const stats = computed(() => {
       )}`,
       value: report.data?.criteriaCount.compliant,
       total: report.data?.criteriaCount.applicable,
-      theme: "green" as StatDonutTheme
+      theme: SummaryCardThemes.Green
     }
   ];
 });

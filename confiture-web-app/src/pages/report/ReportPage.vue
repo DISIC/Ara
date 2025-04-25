@@ -139,12 +139,12 @@ watch(
   () => report.data,
   (report) => {
     if (report) {
-      if (
-        getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
-        localStorage.getItem("confiture:seen-onboarding") !== "true"
-      ) {
-        onboardingModalRef.value?.show();
-      }
+      // if (
+      //   getAuditStatus(report) !== AuditStatus.IN_PROGRESS &&
+      //   localStorage.getItem("confiture:seen-onboarding") !== "true"
+      // ) {
+      onboardingModalRef.value?.show();
+      // }
     }
   }
 );
