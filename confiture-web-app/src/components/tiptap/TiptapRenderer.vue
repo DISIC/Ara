@@ -18,6 +18,9 @@ const parsedDocument = computed(() => {
 });
 
 const editor = useEditor({
+  editorProps: {
+    attributes: { class: `tiptap--rendered` }
+  },
   editable: false,
   content: parsedDocument.value,
   extensions: tiptapExtensions
