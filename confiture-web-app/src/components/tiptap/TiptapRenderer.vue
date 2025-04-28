@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { generateHTML } from "@tiptap/core";
+import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import hljs from "highlight.js";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, ShallowRef } from "vue";
 
 import { tiptapExtensions } from "./tiptap-extensions";
 
@@ -17,9 +17,11 @@ const parsedDocument = computed(() => {
   }
 });
 
-const html = computed(() => {
-  return generateHTML(parsedDocument.value, tiptapExtensions);
-});
+const editor = useEditor({
+  editable: false,
+  content: parsedDocument.value,
+  extensions: tiptapExtensions
+}) as ShallowRef<Editor>;
 
 const contentRef = ref<HTMLDivElement>();
 
@@ -31,7 +33,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="contentRef" class="tiptap" v-html="html" />
+  <div ref="contentRef">
+    <editor-content :editor="editor" />
+  </div>
 </template>
 
 <style>
