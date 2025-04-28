@@ -11,8 +11,8 @@ export function testTabsWithPrevNext(slug: string, nextSlug: string) {
     .parent()
     .next()
     .find("button")
-    .click()
-    .isWithinViewport();
+    .click();
+  cy.isWithinViewport();
   cy.get(`.tabs button[aria-selected="true"]`)
     .invoke("attr", "data-slug")
     .should("eq", `${nextSlug}`);

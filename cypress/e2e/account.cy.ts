@@ -25,7 +25,7 @@ describe("Account", () => {
             "POST",
             "http://localhost:3000/api/debug/verification-token",
             {
-              username: email,
+              username: email
             }
           )
             .its("body")
@@ -46,18 +46,18 @@ describe("Account", () => {
             "POST",
             "http://localhost:3000/api/debug/verification-token",
             {
-              username: email,
+              username: email
             }
           )
             .its("body")
             .then((verificationToken) => {
               cy.request("POST", "/api/auth/verify", {
-                token: verificationToken,
+                token: verificationToken
               });
             });
 
           cy.contains("h1", "Votre compte a été créé avec succès", {
-            timeout: 8000,
+            timeout: 8000
           });
 
           cy.contains("a", "Aller à la page de connexion").click();
@@ -100,7 +100,7 @@ describe("Account", () => {
     });
 
     it("User can update their user profile infos", () => {
-      cy.createTestAccount({ login: true }).then(({ username, password }) => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
         cy.visit("http://localhost:3000/compte");
         cy.contains("button", username).click();
         cy.contains("a", "Mon compte").click();
@@ -137,8 +137,10 @@ describe("Account", () => {
 
         cy.contains("Le mot de passe saisi est incorrect.");
 
-        cy.getByLabel("Adresse e-mail").clear().type(username);
-        cy.getByLabel("Mot de passe").clear().type(newPassword);
+        cy.getByLabel("Adresse e-mail").clear();
+        cy.type(username);
+        cy.getByLabel("Mot de passe").clear();
+        cy.type(newPassword);
         cy.contains("button", "Se connecter").click();
 
         cy.contains("h1", "Mes audits");
@@ -177,7 +179,8 @@ describe("Account", () => {
           cy.contains("Le mot de passe saisi est incorrect.");
 
           // Login with new password
-          cy.getByLabel("Mot de passe").clear().type(newPassword);
+          cy.getByLabel("Mot de passe").clear();
+          cy.type(newPassword);
           cy.contains("button", "Se connecter").click();
           cy.contains("h1", "Mes audits");
         });
@@ -185,7 +188,7 @@ describe("Account", () => {
     });
 
     it("User can reset their password (logged in)", () => {
-      cy.createTestAccount({ login: true }).then(({ username, password }) => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
         cy.visit("http://localhost:3000/compte/parametres");
         cy.contains("Changer de mot de passe").click();
         cy.contains("Mot de passe oublié ?").click();
@@ -287,7 +290,7 @@ describe("Account", () => {
         "Continuer l’audit",
         "Continuer l’audit",
         "Commencer l’audit",
-        "Accéder à l’audit",
+        "Accéder à l’audit"
       ];
 
       cy.get(".audit-main-action").each(($el, i) => {
@@ -308,8 +311,8 @@ describe("Account", () => {
           .contains(field)
           .parent()
           .find("input")
-          .clear()
-          .type(content);
+          .clear();
+        cy.type(content);
       }
 
       // Create a new audit but auditor email field should not be present
@@ -395,7 +398,7 @@ describe("Account", () => {
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
       cy.contains("Audit Audit de mon petit site (2) dupliqué avec succès", {
-        timeout: 50_000,
+        timeout: 50_000
       });
     });
 
@@ -404,7 +407,7 @@ describe("Account", () => {
       cy.contains("button", "Copier le lien de l’audit").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
-          // @ts-ignore
+          // @ts-expect-error because of a cypress issue
           // TODO remove `@ts-ignore` when the following issue is fixed:
           // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
           `http://localhost:3000/audits/${audit.editId}/generation`
@@ -420,7 +423,7 @@ describe("Account", () => {
       cy.contains("button", "Copier le lien du rapport").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
-          // @ts-ignore
+          // @ts-expect-error because of a cypress issue
           // TODO remove `@ts-ignore` when the following issue is fixed:
           // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
           `http://localhost:3000/rapport/${audit.reportId}`
