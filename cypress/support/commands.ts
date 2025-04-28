@@ -36,43 +36,6 @@
 //   }
 // }
 
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      /**
-       * Custom command to select DOM element based on label
-       * @example cy.getByLabel('Title')
-       */
-      getByLabel(value: string | RegExp): Chainable;
-      /**
-       * Command to assert the content of the clipboard
-       * @example cy.assertClipboardValue('Pouet')
-       */
-      assertClipboardValue(value: string): Chainable;
-
-      /**
-       * Create a test audit with auto generated IDs
-       * @example cy.createTestAudit(true, true)
-       */
-      createTestAudit(
-        options?: CreateTestAuditOptions,
-      ): Chainable<{ editId: string; reportId: string }>;
-
-      /**
-       * Create a test account and return its username and password
-       */
-      createTestAccount(options?: CreateTestAccountOptions): Chainable<{
-        username: string;
-        password: string;
-        authToken: string;
-        uid: string;
-      }>;
-
-      isWithinViewport(): Chainable<Element>;
-    }
-  }
-}
-
 Cypress.Commands.add(
   "getByLabel",
   { prevSubject: "optional" },
@@ -84,7 +47,7 @@ Cypress.Commands.add(
       .then((id) => {
         cy.get("#" + id);
       });
-  },
+  }
 );
 
 Cypress.Commands.add("assertClipboardValue", (value: string) => {
@@ -96,14 +59,6 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
   });
 });
 
-interface CreateTestAuditOptions {
-  isComplete?: boolean;
-  isPristine?: boolean;
-  hasNoImprovementsComments?: boolean;
-  auditorEmail?: string;
-  fillStatement?: boolean;
-}
-
 /**
  * Create a test audit with specific options by calling debug API endpoints.
  */
@@ -113,13 +68,9 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     isPristine: options?.isPristine,
     noImprovements: options?.hasNoImprovementsComments,
     auditorEmail: options?.auditorEmail,
-    fillStatement: options?.fillStatement,
+    fillStatement: options?.fillStatement
   }).its("body");
 });
-
-interface CreateTestAccountOptions {
-  login?: boolean;
-}
 
 /**
  * Create a test account with specific options by calling debug API endpoints.
@@ -133,13 +84,13 @@ Cypress.Commands.add(
       .then(({ authToken }) => {
         if (options?.login) {
           cy.window().then((win) =>
-            win.localStorage.setItem("confiture:authToken", authToken),
+            win.localStorage.setItem("confiture:authToken", authToken)
           );
         }
       });
 
     cy.get("@userCredentials");
-  },
+  }
 );
 
 Cypress.Commands.addQuery(
