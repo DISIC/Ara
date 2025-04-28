@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
 import sentryVitePlugin from "@sentry/vite-plugin";
+import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite";
 
 const uploadSourceMapsToSentry =
   process.env.SENTRY_ORG &&
