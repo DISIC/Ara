@@ -2,6 +2,12 @@
 
 Tous les changements notables de Ara sont documentés ici avec leur date, leur catégorie (nouvelle fonctionnalité, correction de bug ou autre changement) et leur pull request (PR) associée.
 
+## 28/04/2025
+
+### Corrections 🐛
+
+- Corrige l’affichage des commentaires dans le rapport ([#1091](https://github.com/DISIC/Ara/pull/1091))
+
 ## 24/04/2025
 
 ### Corrections 🐛
