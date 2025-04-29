@@ -33,6 +33,7 @@ function getContent() {
     try {
       jsonContent = JSON.parse(props.modelValue);
     } catch {
+      // not json, most likely markdown
       jsonContent = props.modelValue;
     }
   }
