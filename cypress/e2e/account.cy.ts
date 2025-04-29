@@ -137,10 +137,8 @@ describe("Account", () => {
 
         cy.contains("Le mot de passe saisi est incorrect.");
 
-        cy.getByLabel("Adresse e-mail").clear();
-        cy.type(username);
-        cy.getByLabel("Mot de passe").clear();
-        cy.type(newPassword);
+        cy.getByLabel("Adresse e-mail").clearAndType(username);
+        cy.getByLabel("Mot de passe").clearAndType(newPassword);
         cy.contains("button", "Se connecter").click();
 
         cy.contains("h1", "Mes audits");
@@ -179,8 +177,7 @@ describe("Account", () => {
           cy.contains("Le mot de passe saisi est incorrect.");
 
           // Login with new password
-          cy.getByLabel("Mot de passe").clear();
-          cy.type(newPassword);
+          cy.getByLabel("Mot de passe").clearAndType(newPassword);
           cy.contains("button", "Se connecter").click();
           cy.contains("h1", "Mes audits");
         });
@@ -311,8 +308,7 @@ describe("Account", () => {
           .contains(field)
           .parent()
           .find("input")
-          .clear();
-        cy.type(content);
+          .clearAndType(content);
       }
 
       // Create a new audit but auditor email field should not be present

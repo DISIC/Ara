@@ -36,6 +36,16 @@ export default ts.config([
       // avoid duplicate stuff
       "no-duplicate-imports": "error",
 
+      "no-irregular-whitespace": [
+        "error",
+        {
+          skipStrings: true,
+          skipComments: true,
+          skipRegExps: true,
+          skipTemplates: true
+        }
+      ],
+
       // sort imports & exports
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
