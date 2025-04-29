@@ -93,12 +93,21 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  "clearAndType" as keyof Cypress.Chainable<any>,
+  {
+    prevSubject: true
+  },
+  (subject: HTMLElement, text: string) =>
+    cy.wrap(subject).type(`{selectall}{backspace}${text}`)
+);
+
 Cypress.Commands.addQuery(
   "isWithinViewport" as keyof Cypress.Chainable<any>,
   () => {
     const viewportWidth = Cypress.config("viewportWidth");
     const viewportHeight = Cypress.config("viewportHeight");
-    const innerFn = (subject) => {
+    const innerFn = (subject: HTMLElement) => {
       // Cypress retries this function on failure
       const { top, left, bottom, right } = subject[0].getBoundingClientRect();
       expect(top).to.be.at.least(0);

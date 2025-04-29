@@ -41,6 +41,11 @@ declare namespace Cypress {
       uid: string;
     }>;
 
+    /**
+     * Clear field and type a string
+     */
+    clearAndType(text: string, options?: Partial<ClearOptions>): Chainable;
+
     isWithinViewport(): Chainable<Element>;
   }
 }
