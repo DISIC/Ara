@@ -29,9 +29,11 @@ const noResults = computed(() => {
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
-      title: "Aucun résultat ne correspond à votre recherche",
-      description:
-        'Veuillez sélectionner un filtre "Critères" comportant au moins un critère.'
+      title: "Aucun critères ne correspond à vos filtres",
+      description: [
+        "Consultez les autres pages de l’échantillon",
+        "Modifiez les filtres"
+      ]
     };
   } else if (store.hasNoResultsFromSearch && !store.hideEvaluatedCriteria) {
     return {
@@ -97,10 +99,13 @@ const noResults = computed(() => {
 
   <div aria-live="polite" role="alert">
     <section v-if="!store.filteredTopics.length">
-      <h2 class="fr-h6 fr-mb-1w">
+      <h2 class="fr-h6 fr-mb-3v">
         {{ noResults.title }}
       </h2>
-      <p>{{ noResults.description }}</p>
+      <ul v-if="Array.isArray(noResults.description)">
+        <li v-for="el in noResults.description">{{ el }}</li>
+      </ul>
+      <p v-else>{{ noResults.description }}</p>
 
       <template
         v-if="
