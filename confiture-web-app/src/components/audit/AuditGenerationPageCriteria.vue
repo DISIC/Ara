@@ -103,7 +103,7 @@ const noResults = computed(() => {
         {{ noResults.title }}
       </h2>
       <ul v-if="Array.isArray(noResults.description)">
-        <li v-for="el in noResults.description">{{ el }}</li>
+        <li v-for="(el, i) in noResults.description" :key="i">{{ el }}</li>
       </ul>
       <p v-else>{{ noResults.description }}</p>
 
