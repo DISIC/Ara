@@ -388,11 +388,17 @@ defineExpose({
 }
 
 .tiptap-buttons .fr-btn--tertiary[aria-pressed="true"] {
-  background-color: var(--background-alt-grey-active);
+  box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
+  color: var(--text-active-grey);
 }
 
-.tiptap-buttons .fr-btn--tertiary[aria-pressed="true"]:hover {
-  background-color: var(--background-alt-grey-hover);
+/* Override DSFR colors to ensure enough contrast */
+.tiptap-buttons .fr-btn--tertiary:hover {
+  background-color: #e4e4e4;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #363636;
+  }
 }
 
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {
