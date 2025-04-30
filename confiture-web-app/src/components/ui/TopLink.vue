@@ -5,12 +5,12 @@ defineProps<{
 </script>
 
 <template>
-  <a
+  <RouterLink
+    :to="`#${target ?? 'header'}`"
     class="top-link fr-link fr-icon-arrow-up-fill fr-link--icon-left"
-    :href="`#${target ?? 'header'}`"
   >
     Haut de page
-  </a>
+  </RouterLink>
 </template>
 
 <style scoped>
