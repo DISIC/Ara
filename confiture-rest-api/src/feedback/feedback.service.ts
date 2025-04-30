@@ -50,8 +50,8 @@ export class FeedbackService {
             Suggestions: feedback.suggestions,
             Nom: feedback.name,
             Contact: feedback.email,
-            // TODO: Remove join() when "Expertises" is "Choice List" type
-            Expertises: feedback.occupations.join(","),
+            // For some reason, "L" is required for ChoiceList column type
+            Expertises: ["L", ...feedback.occupations],
             Source: "Formulaire de satisfaction"
           }
         }
