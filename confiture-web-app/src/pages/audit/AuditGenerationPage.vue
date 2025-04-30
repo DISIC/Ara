@@ -120,7 +120,11 @@ const headerInfos = computed(() => [
       ]
     : []),
   {
-    title: "Critères non conformes",
+    title: pluralize(
+      "Critère non conforme",
+      "Critères non conformes",
+      notCompliantCriteriaCount.value
+    ),
     description: `Dont ${blockingCriteriaCount.value} ${pluralize(
       "bloquant",
       "bloquants",
@@ -130,7 +134,11 @@ const headerInfos = computed(() => [
     theme: SummaryCardThemes.Red
   },
   {
-    title: "Critères conformes",
+    title: pluralize(
+      "Critère conforme",
+      "Critères conformes",
+      compliantCriteriaCount.value
+    ),
     description: `Sur ${applicableCriteriaCount.value} ${pluralize(
       "critère applicable",
       "critères applicables",
