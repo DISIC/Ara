@@ -119,7 +119,6 @@ function handleSubmit() {
   }
 
   const data: UpdateAuditRequestData = {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ...auditStore.currentAudit!,
 
     initiator: auditInitiator.value,
