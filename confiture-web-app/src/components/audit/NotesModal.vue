@@ -8,9 +8,9 @@ import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { AuditFile, StoreName } from "../../types";
 import { handleFileDeleteError, handleFileUploadError } from "../../utils";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
-import Tiptap from "../ui/Tiptap.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
@@ -105,7 +105,7 @@ function handleDeleteFile(file: AuditFile) {
               <p id="audit-notes" class="fr-label">
                 Remarques et recommandations générales
               </p>
-              <Tiptap
+              <TiptapEditor
                 v-model="notes"
                 class="fr-mb-4w"
                 labelled-by="audit-notes"

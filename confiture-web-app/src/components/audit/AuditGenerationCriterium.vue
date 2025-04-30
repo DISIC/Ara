@@ -20,7 +20,7 @@ import {
   handleFileDeleteError,
   handleFileUploadError
 } from "../../utils";
-import MarkdownRenderer from "../ui/MarkdownRenderer.vue";
+import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
@@ -336,10 +336,10 @@ const showTransverseStatus = computed(() => {
         </button>
       </div>
 
-      <MarkdownRenderer
+      <TiptapRenderer
         v-if="showTransverseComment && transverseComment"
+        :document="transverseComment"
         class="fr-mt-5w"
-        :markdown="transverseComment"
       />
     </div>
 

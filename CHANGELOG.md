@@ -4,6 +4,20 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 28/04/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des commentaires dans le rapport ([#1091](https://github.com/DISIC/Ara/pull/1091))
+
+## 24/04/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige les erreurs et recommendations des éléments transverses affichés au format JSON ([#1080](https://github.com/DISIC/Ara/pull/1080))
+- Corrige le commentaire des critères dupliqué entre les pages ([#1086](https://github.com/DISIC/Ara/pull/1086))
+- Corrige la condition d'affichage de l'onglet des notes dans le rapport ([#1088](https://github.com/DISIC/Ara/pull/1088))
+
 ### 23/04/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

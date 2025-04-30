@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useIsOffline } from "../../composables/useIsOffline";
-import Tiptap from "../ui/Tiptap.vue";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 defineProps<{
@@ -23,7 +23,8 @@ const title = "Points d’amélioration";
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
     </p>
-    <Tiptap
+    <TiptapEditor
+      :key="id"
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
       :disabled="isOffline"

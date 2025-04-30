@@ -5,10 +5,10 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
-import Tiptap from "../ui/Tiptap.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 export interface Props {
@@ -73,7 +73,7 @@ function onFileRequestFinished() {
 }
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentEditorRef = ref<InstanceType<typeof Tiptap>>();
+const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -107,7 +107,8 @@ const title = "Erreur et recommandation";
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
     </p>
-    <Tiptap
+    <TiptapEditor
+      :key="id"
       ref="commentEditorRef"
       class="fr-mb-4w"
       :model-value="comment"
