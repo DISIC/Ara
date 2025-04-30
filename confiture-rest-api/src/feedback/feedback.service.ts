@@ -51,8 +51,9 @@ export class FeedbackService {
             Nom: feedback.name,
             Contact: feedback.email,
             // For some reason, "L" is required for ChoiceList column type
-            Expertises: ["L", ...feedback.occupations],
-            Source: "Formulaire de satisfaction"
+            Expertises: ["L", ...(feedback.occupations || [])],
+            Source: "Formulaire de satisfaction",
+            Date: new Date().toISOString()
           }
         }
       ]
