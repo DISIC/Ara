@@ -4,13 +4,13 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
-## 28/04/2025
+### 28/04/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige l’affichage des commentaires dans le rapport ([#1091](https://github.com/DISIC/Ara/pull/1091))
 
-## 24/04/2025
+### 24/04/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
