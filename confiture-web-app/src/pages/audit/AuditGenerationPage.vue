@@ -108,7 +108,7 @@ const headerInfos = computed(() => [
   ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
         {
-          title: "Taux global de conformité",
+          title: "Taux global<br /> de conformité",
           description: auditIsInProgress.value
             ? "Disponible à la fin de l’audit"
             : REFERENTIAL,

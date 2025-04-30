@@ -32,7 +32,7 @@ defineProps<{
       </span>
     </p>
     <div :class="['card-info', { 'fr-py-3v fr-pl-2w': minimal }]">
-      <p class="fr-text--bold fr-mb-0 card-title">{{ title }}</p>
+      <p class="fr-text--bold fr-mb-0 card-title" v-html="title" />
       <p
         v-if="description"
         class="fr-text--xs fr-mb-0 fr-mt-1w card-description"
@@ -129,6 +129,10 @@ defineProps<{
 
   @media (width < 62rem) {
     font-size: 1.125rem;
+
+    &:deep(br) {
+      display: none;
+    }
   }
 }
 
