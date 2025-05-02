@@ -156,7 +156,7 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // X résultats pour « [search] » - [tabName] - Audit de [procedureName]
+  // X résultats pour « [search] » - [tabName] - Audit de [procedureName]
   const titleParts = [];
   const curAudit = auditStore.currentAudit;
   if (!curAudit) {
@@ -167,7 +167,7 @@ const pageTitle = computed(() => {
       "résultat",
       "résultats",
       filterResultsCount.value
-    )} pour « ${filterStore.search} »`;
+    )} pour « ${filterStore.search} »`;
 
     titleParts.push(results);
   }
