@@ -148,32 +148,31 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // [audit name] - Page en cours « XXX » - X résultats pour « XXX »
-  if (auditStore.currentAudit) {
-    let title = auditStore.currentAudit.procedureName;
+  // X résultats pour « [search] » - [tabName] - Audit de [procedureName]
+  const titleParts = [];
+  const curAudit = auditStore.currentAudit;
+  if (!curAudit) {
+    return "…";
+  }
+  if (filterStore.search) {
+    const results = `${filterResultsCount.value} ${pluralize(
+      "résultat",
+      "résultats",
+      filterResultsCount.value
+    )} pour « ${filterStore.search} »`;
 
-    const tabName = ` - Page en cours « ${
-      auditStore.currentAudit.pages.find(
-        (p) => p.id === auditStore.currentPageId
-      )?.name ?? StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
-    } »`;
+    titleParts.push(results);
+  }
+  if (curAudit) {
+    const tabName =
+      curAudit.pages.find((p) => p.id === auditStore.currentPageId)?.name ??
+      StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL;
+    const procedureName = auditStore.currentAudit.procedureName;
 
-    title += tabName;
-
-    if (filterStore.search) {
-      const results = ` - ${filterResultsCount.value} ${pluralize(
-        "résultat",
-        "résultats",
-        filterResultsCount.value
-      )} pour « ${filterStore.search} »`;
-
-      title += results;
-    }
-
-    return title;
+    titleParts.push(tabName, "Audit de " + procedureName);
   }
 
-  return "";
+  return titleParts.join(" - ");
 });
 
 const tabsData = computed((): TabData[] => {
