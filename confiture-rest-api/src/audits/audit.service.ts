@@ -1324,9 +1324,13 @@ export class AuditService {
       ];
 
       const pagesResults = a.pages.flatMap((p) => p.results);
-
+      const actualResults = pagesResults.filter((r) =>
+        CRITERIA_BY_AUDIT_TYPE[a.auditType].find(
+          (e) => e.topic === r.topic && e.criterium === r.criterium
+        )
+      );
       const progress =
-        pagesResults.filter(
+        actualResults.filter(
           (r) => r.status !== CriterionResultStatus.NOT_TESTED
         ).length /
         (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
@@ -1377,9 +1381,9 @@ export class AuditService {
       const statementIsPublished = !!a.initiator;
 
       const auditIsComplete =
-        pagesResults.length ===
+        actualResults.length ===
           CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length &&
-        pagesResults.every((r) => r.status !== "NOT_TESTED");
+        actualResults.every((r) => r.status !== "NOT_TESTED");
 
       return {
         ...pick(
