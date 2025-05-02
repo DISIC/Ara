@@ -367,6 +367,7 @@ defineExpose({
   position: relative;
   vertical-align: middle;
   width: 1px;
+  z-index: -1;
 }
 
 .tiptap-buttons .fr-btn--tertiary {
