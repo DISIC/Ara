@@ -55,7 +55,7 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
-      "Le focus se déplacera dans le champ « Erreur et recommandation »",
+      "Le focus se déplacera dans le champ « Erreur et recommandation »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: RadioColor.RED
   },
@@ -201,7 +201,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
           notify(
             "info",
-            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
               ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
               : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",

@@ -6,7 +6,7 @@ const accountStore = useAccountStore();
 </script>
 
 <template>
-  <PageMeta title="Audit manquant ?" />
+  <PageMeta title="Audit manquant ?" />
   <div class="fr-mb-4w">
     <RouterLink
       :to="{ name: 'account-dashboard' }"
