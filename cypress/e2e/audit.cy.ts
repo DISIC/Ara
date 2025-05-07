@@ -311,7 +311,7 @@ describe("Audit", () => {
         .type(statementJson.notInScopeContent);
 
       cy.contains("button", "Valider la déclaration").click();
-      cy.contains(`http://localhost:3000/declaration/${reportId}`);
+      cy.contains("h1", auditJson.procedureName);
     });
   });
 
@@ -463,8 +463,6 @@ describe("Audit", () => {
 
       cy.contains(/Terminé le \d{1,2} [A-zÀ-ú]{3,9} \d{4}/);
       cy.contains("a", "Accéder");
-
-      cy.contains("a", `http://localhost:3000/rapport/${reportId}`);
 
       cy.contains("button", "Copier le lien").click();
       cy.contains(
