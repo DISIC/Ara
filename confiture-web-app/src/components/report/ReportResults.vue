@@ -2,15 +2,17 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
+import { useUniqueId } from "../../composables/useUniqueId";
 import { REFERENTIAL, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
-import { StatDonutTheme } from "../StatDonut.vue";
-import SummaryCard from "../SummaryCard.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
+
+const accordionUniqueId = useUniqueId();
 
 const report = useReportStore();
 
@@ -21,20 +23,20 @@ const stats = computed(() => {
           {
             title: "Taux global de conformité",
             description: auditInProgress.value
-              ? "(Disponible à la fin de l’audit)"
+              ? "Disponible à la fin de l’audit"
               : REFERENTIAL,
             value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
             unit: "%",
             hasDetails: true,
-            theme: "blue" as StatDonutTheme,
+            theme: SummaryCardThemes.Blue,
             disabled: auditInProgress.value
           }
         ]
       : []),
 
     {
-      title: "Critères<br/> non conformes",
+      title: "Critères non conformes",
       description: `Dont ${report.data?.criteriaCount.blocking} ${pluralize(
         "bloquant",
         "bloquants",
@@ -43,13 +45,18 @@ const stats = computed(() => {
       value: report.data?.criteriaCount.notCompliant,
       total: report.data?.criteriaCount.applicable,
       danger: true,
-      theme: "red" as StatDonutTheme
+      theme: SummaryCardThemes.Red
     },
     {
-      title: "Critères<br/> conformes",
+      title: "Critères conformes",
+      description: `Sur ${report.data?.criteriaCount.applicable} ${pluralize(
+        "critère applicable",
+        "critères applicables",
+        report.data!.criteriaCount.applicable
+      )}`,
       value: report.data?.criteriaCount.compliant,
       total: report.data?.criteriaCount.applicable,
-      theme: "green" as StatDonutTheme
+      theme: SummaryCardThemes.Green
     }
   ];
 });
@@ -104,41 +111,44 @@ const transverseNotCompliantCount = computed(() => {
 <template>
   <template v-if="report.data">
     <h2>Synthèse des résultats</h2>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div
+
+    <div class="report-metrics">
+      <SummaryCard
         v-for="stat in stats"
         :key="stat.title"
-        :class="`fr-col-12 fr-col-lg-${12 / stats.length}`"
-      >
-        <SummaryCard
-          :title="stat.title"
-          :description="stat.description"
-          :value="stat.value!"
-          :total="stat.total!"
-          :unit="stat.unit"
-          :theme="stat.disabled ? 'grey' : stat.theme"
-          :disabled="stat.disabled"
-        >
-          <template v-if="stat.hasDetails" #accordion-title>
+        :title="stat.title"
+        :description="stat.description"
+        :value="stat.value!"
+        :unit="stat.unit"
+        :theme="stat.theme"
+        :disabled="stat.disabled"
+      />
+      <section class="fr-accordion report-card-details-accordion">
+        <div class="fr-accordion__title">
+          <button
+            class="fr-accordion__btn"
+            aria-expanded="false"
+            :aria-controls="`accordion-${accordionUniqueId}`"
+          >
             En savoir plus sur le calcul du taux
-          </template>
-          <template v-if="stat.hasDetails" #accordion-content>
-            <p>
-              Le taux global de conformité au RGAA est calculé de la manière
-              suivante :
-            </p>
+          </button>
+        </div>
+        <div :id="`accordion-${accordionUniqueId}`" class="fr-collapse">
+          <p>
+            Le taux global de conformité au RGAA est calculé de la manière
+            suivante :
+          </p>
 
-            <p class="fr-text--bold">C / (C + NC)</p>
+          <p class="fr-text--bold">C / (C + NC)</p>
 
-            <p class="fr-m-0">
-              <span class="fr-text--bold">C</span> = nombre de critères
-              conformes<br />
-              <span class="fr-text--bold">NC</span> = nombre de critères non
-              conformes
-            </p>
-          </template>
-        </SummaryCard>
-      </div>
+          <p class="fr-m-0">
+            <span class="fr-text--bold">C</span> = nombre de critères
+            conformes<br />
+            <span class="fr-text--bold">NC</span> = nombre de critères non
+            conformes
+          </p>
+        </div>
+      </section>
     </div>
 
     <div class="wrapper">
@@ -290,5 +300,26 @@ const transverseNotCompliantCount = computed(() => {
 <style scoped>
 .wrapper {
   max-width: 46rem;
+}
+
+.report-metrics {
+  display: grid;
+  grid-template-columns: repeat(v-bind("stats.length"), 1fr);
+  gap: 0 1rem;
+
+  @media (width < 62rem) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.report-card-details-accordion {
+  margin-top: -1px;
+  border-inline: 1px solid var(--border-default-grey);
+
+  @media (width < 62rem) {
+    grid-row: 2;
+    margin-top: calc(-1rem - 1px);
+  }
 }
 </style>

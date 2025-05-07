@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 07/05/2025
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Améliore la lisibilité des cartes de statistiques de l’audit ([#1090](https://github.com/DISIC/Ara/pull/1090))
+
 ### 28/04/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

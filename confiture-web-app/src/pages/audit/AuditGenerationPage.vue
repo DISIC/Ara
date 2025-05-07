@@ -9,7 +9,7 @@ import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import PageMeta from "../../components/PageMeta";
-import { StatDonutTheme } from "../../components/StatDonut.vue";
+import { SummaryCardThemes } from "../../components/SummaryCard.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -108,36 +108,44 @@ const headerInfos = computed(() => [
   ...(auditStore.currentAudit?.auditType === AuditType.FULL
     ? [
         {
-          title: "Taux global de conformité",
+          title: "Taux global<br /> de conformité",
           description: auditIsInProgress.value
-            ? "(Disponible à la fin de l’audit)"
+            ? "Disponible à la fin de l’audit"
             : REFERENTIAL,
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
-          total: 100,
           unit: "%",
-          theme: auditIsInProgress.value
-            ? ("grey" as StatDonutTheme)
-            : ("blue" as StatDonutTheme),
+          theme: SummaryCardThemes.Blue,
           disabled: auditIsInProgress.value
         }
       ]
     : []),
   {
-    title: "Critères<br/> non conformes",
+    title: pluralize(
+      "Critère non conforme",
+      "Critères non conformes",
+      notCompliantCriteriaCount.value
+    ),
     description: `Dont ${blockingCriteriaCount.value} ${pluralize(
       "bloquant",
       "bloquants",
       blockingCriteriaCount.value
     )} pour l’usager`,
     value: notCompliantCriteriaCount.value,
-    total: applicableCriteriaCount.value,
-    theme: "red" as StatDonutTheme
+    theme: SummaryCardThemes.Red
   },
   {
-    title: "Critères<br/> conformes",
+    title: pluralize(
+      "Critère conforme",
+      "Critères conformes",
+      compliantCriteriaCount.value
+    ),
+    description: `Sur ${applicableCriteriaCount.value} ${pluralize(
+      "critère applicable",
+      "critères applicables",
+      applicableCriteriaCount.value
+    )}`,
     value: compliantCriteriaCount.value,
-    total: applicableCriteriaCount.value,
-    theme: "green" as StatDonutTheme
+    theme: SummaryCardThemes.Green
   }
 ]);
 

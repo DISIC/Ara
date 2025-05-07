@@ -3,12 +3,11 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAuditStats } from "../../composables/useAuditStats";
-import { REFERENTIAL } from "../../enums";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
-import { formatDate, getCriteriaCount, pluralize } from "../../utils";
+import { formatDate, getCriteriaCount } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
-import StatDonut from "../StatDonut.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import StepCard from "./StepCard.vue";
 
 defineProps<{
@@ -19,12 +18,8 @@ const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
 
-const {
-  complianceLevel,
-  notApplicableCriteriaCount,
-  notCompliantCriteriaCount,
-  errorsCount
-} = useAuditStats();
+const { complianceLevel, compliantCriteriaCount, notCompliantCriteriaCount } =
+  useAuditStats();
 
 const auditIsReady = computed(() => {
   return resultsStore.auditProgress === 1;
@@ -100,76 +95,33 @@ const auditIsInProgress = computed(() => {
 
     <div
       v-if="auditIsReady"
-      class="fr-mb-3w audit-step-charts"
-      :class="{ 'audit-step-charts--full': audit.auditType === AuditType.FULL }"
+      :class="[
+        'fr-mb-3w audit-step-charts',
+        { 'audit-step-charts--full': audit.auditType === AuditType.FULL }
+      ]"
     >
-      <template v-if="audit.auditType === AuditType.FULL">
-        <div class="audit-step-chart">
-          <StatDonut
-            :value="complianceLevel"
-            :total="100"
-            unit="%"
-            theme="blue"
-            size="sm"
-          />
+      <SummaryCard
+        v-if="audit.auditType === AuditType.FULL"
+        title="Taux global de conformité"
+        :value="complianceLevel"
+        unit="%"
+        :theme="SummaryCardThemes.Blue"
+        minimal
+      />
 
-          <div class="card-info">
-            <p class="fr-text--bold fr-mb-1v">Taux global de conformité</p>
-            <p class="fr-text--xs fr-mb-0">{{ REFERENTIAL }}</p>
-          </div>
-        </div>
-        <span aria-hidden="true" class="audit-step-chart-separator" />
-      </template>
-      <div class="audit-step-chart">
-        <StatDonut
-          :value="notCompliantCriteriaCount"
-          :total="getCriteriaCount(audit.auditType)"
-          theme="red"
-          size="sm"
-        />
+      <SummaryCard
+        title="Critères non conformes"
+        :value="notCompliantCriteriaCount"
+        :theme="SummaryCardThemes.Red"
+        minimal
+      />
 
-        <div class="card-info">
-          <p class="fr-text--bold fr-mb-1v">
-            {{
-              `${pluralize(
-                "Critère",
-                "Critères",
-                errorsCount.total
-              )} non ${pluralize("conforme", "conformes", errorsCount.total)}`
-            }}
-          </p>
-          <p class="fr-text--xs fr-mb-0">
-            {{
-              `${errorsCount.blocking} ${pluralize(
-                "bloquant",
-                "bloquants",
-                errorsCount.blocking
-              )}`
-            }}
-          </p>
-        </div>
-      </div>
-      <span aria-hidden="true" class="audit-step-chart-separator" />
-      <div class="audit-step-chart">
-        <StatDonut
-          :value="notApplicableCriteriaCount"
-          :total="getCriteriaCount(audit.auditType)"
-          size="sm"
-        />
-
-        <div class="card-info">
-          <p class="fr-text--bold fr-mb-1v">
-            {{ pluralize("Critère", "Critères", notApplicableCriteriaCount) }}
-            non
-            {{
-              pluralize("applicable", "applicables", notApplicableCriteriaCount)
-            }}
-          </p>
-          <p class="fr-text--xs fr-mb-0">
-            Sur {{ getCriteriaCount(audit.auditType) }} critères
-          </p>
-        </div>
-      </div>
+      <SummaryCard
+        title="Critères confomes"
+        :value="compliantCriteriaCount"
+        :theme="SummaryCardThemes.Green"
+        minimal
+      />
     </div>
 
     <AuditProgressBar
@@ -235,12 +187,13 @@ const auditIsInProgress = computed(() => {
 .audit-step-charts {
   grid-column: 1 / -1;
   grid-row: 3;
+  gap: 1.25rem;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .audit-step-charts--full {
-  grid-template-columns: 1fr auto 1fr auto 1fr;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .audit-step-chart {

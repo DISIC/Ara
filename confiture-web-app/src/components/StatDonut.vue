@@ -1,23 +1,13 @@
 <script lang="ts" setup>
-export type StatDonutTheme = "blue" | "red" | "green" | "grey";
-
 defineProps<{
   value: number;
   total: number;
   unit?: string;
-  theme?: StatDonutTheme;
-  size?: "sm";
 }>();
 </script>
 
 <template>
-  <div
-    class="card-donut"
-    :class="[
-      theme ? `theme-${theme}` : null,
-      { 'card-donut--sm': size === 'sm' }
-    ]"
-  >
+  <div class="card-donut">
     <div class="fr-m-0 card-hole">
       <p class="fr-m-0 card-hole-content">
         {{ value }}
@@ -39,36 +29,8 @@ defineProps<{
   align-items: center;
   justify-content: center;
   background: conic-gradient(
-    var(--border-plain-grey) 0deg var(--pie-deg),
-    var(--border-disabled-grey) var(--pie-deg) 360deg
-  );
-}
-
-.theme-blue {
-  background: conic-gradient(
     var(--background-active-blue-france) 0deg var(--pie-deg),
     var(--background-contrast-info) var(--pie-deg) 360deg
-  );
-}
-
-.theme-red {
-  background: conic-gradient(
-    var(--red-marianne-main-472) 0deg var(--pie-deg),
-    var(--background-action-low-pink-macaron) var(--pie-deg) 360deg
-  );
-}
-
-.theme-green {
-  background: conic-gradient(
-    var(--border-plain-success) 0deg var(--pie-deg),
-    var(--background-contrast-green-emeraude) var(--pie-deg) 360deg
-  );
-}
-
-.theme-grey {
-  background: conic-gradient(
-    var(--background-disabled-grey) 0deg var(--pie-deg),
-    var(--background-disabled-grey) var(--pie-deg) 360deg
   );
 }
 
@@ -94,18 +56,5 @@ defineProps<{
 
 .card-unit {
   font-size: 1.375rem;
-}
-
-.card-donut--sm {
-  width: 4.125rem;
-  height: 4.125rem;
-}
-
-.card-donut--sm .card-hole-content {
-  font-size: 1.375rem;
-}
-
-.card-donut--sm .card-unit {
-  font-size: 0.75rem;
 }
 </style>

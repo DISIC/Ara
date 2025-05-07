@@ -19,8 +19,7 @@ import {
   slugify
 } from "../../utils";
 import CopyIcon from "../icons/CopyIcon.vue";
-import { StatDonutTheme } from "../StatDonut.vue";
-import SummaryCard from "../SummaryCard.vue";
+import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
@@ -33,11 +32,10 @@ defineProps<{
   auditEditionDate: string | null;
   keyInfos: {
     title: string;
-    description?: string;
+    description: string;
     value: number;
-    total: number;
     unit?: string;
-    theme?: StatDonutTheme;
+    theme?: SummaryCardThemes;
     disabled?: boolean;
   }[];
   editUniqueId?: string;
@@ -422,38 +420,17 @@ onMounted(() => {
     </div>
   </div>
 
-  <div
-    :class="`fr-container--fluid ${
-      auditPublicationDate ? 'fr-mb-4w' : 'fr-mb-3w'
-    }`"
-  >
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`">
-        <SummaryCard
-          :title="keyInfos[0].title"
-          :description="keyInfos[0].description"
-          :value="keyInfos[0].value"
-          :total="keyInfos[0].total"
-          :unit="keyInfos[0].unit"
-          :theme="keyInfos[0].theme"
-          :disabled="keyInfos[0].disabled"
-        />
-      </div>
-      <div
-        v-for="info in keyInfos.slice(1)"
-        :key="info.title"
-        :class="`fr-col-12 fr-col-md-${12 / keyInfos.length}`"
-      >
-        <SummaryCard
-          :title="info.title"
-          :description="info.description"
-          :value="info.value"
-          :total="info.total"
-          :unit="info.unit"
-          :theme="info.theme"
-        />
-      </div>
-    </div>
+  <div class="metrics fr-mb-4w">
+    <SummaryCard
+      v-for="info in keyInfos"
+      :key="info.title"
+      :title="info.title"
+      :description="info.description"
+      :value="info.value"
+      :unit="info.unit"
+      :theme="info.theme"
+      :disabled="info.disabled"
+    />
   </div>
 
   <div ref="scrollSentinelRef" />
@@ -644,6 +621,17 @@ onMounted(() => {
   }
   .notes-item:not(.mobile-dropdown-item) {
     display: none;
+  }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(v-bind("keyInfos.length"), 1fr);
+  gap: 0 1rem;
+
+  @media (width < 62rem) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 </style>
