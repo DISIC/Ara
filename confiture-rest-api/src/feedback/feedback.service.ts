@@ -14,29 +14,29 @@ export class FeedbackService {
     private readonly prisma: PrismaService
   ) {}
 
-  private async sendDataToAirtable(data: any) {
+  private async sendDataToGrist(data: any) {
     const response = await got
       .post(
-        `https://api.airtable.com/v0/${this.config.get(
-          "AIRTABLE_BASE_ID"
-        )}/${this.config.get("AIRTABLE_TABLE_ID")}`,
+        `https://grist.numerique.gouv.fr/api/docs/${this.config.get(
+          "GRIST_DOC_ID"
+        )}/tables/${this.config.get("GRIST_TABLE_ID")}/records`,
         {
           json: data,
           headers: {
-            Authorization: `Bearer ${this.config.get("AIRTABLE_ACCESS_TOKEN")}`
+            Authorization: `Bearer ${this.config.get("GRIST_API_KEY")}`
           }
         }
       )
       .json<{ records: { id: string }[] }>()
       .catch((err) => {
         if (err instanceof HTTPError) {
-          console.log("Failed to submit to airtable");
+          console.log("Failed to submit to Grist");
           console.log(err.response.body);
         }
         throw err;
       });
 
-    console.log("Added feedback to Airtable : %s", response.records[0].id);
+    console.log("Added feedback to Grist: %s", response.records[0].id);
   }
 
   async saveFeedback(feedback: NewFeedbackDto) {
@@ -44,19 +44,21 @@ export class FeedbackService {
       records: [
         {
           fields: {
-            "Facile à utiliser": feedback.easyToUse,
-            "Facile à comprendre": feedback.easyToUnderstand,
-            "Remarques générales": feedback.feedback,
+            Facile_a_utiliser: feedback.easyToUse,
+            Facile_a_comprendre: feedback.easyToUnderstand,
+            Remarques_generales: feedback.feedback,
             Suggestions: feedback.suggestions,
             Nom: feedback.name,
             Contact: feedback.email,
-            Expertises: feedback.occupations,
-            Source: "Formulaire de satisfaction"
+            // For some reason, "L" is required for ChoiceList column type
+            Expertises: ["L", ...(feedback.occupations || [])],
+            Source: "Formulaire de satisfaction",
+            Date: new Date().toISOString()
           }
         }
       ]
     };
-    await this.sendDataToAirtable(data);
+    await this.sendDataToGrist(data);
   }
 
   /** Generate a single use token to be given to the API along account deletion feedback. */
@@ -78,13 +80,13 @@ export class FeedbackService {
       records: [
         {
           fields: {
-            "Remarques générales": feedback,
+            Remarques_generales: feedback,
             Source: "Avis suppression de compte"
           }
         }
       ]
     };
-    await this.sendDataToAirtable(data);
+    await this.sendDataToGrist(data);
     await this.consumeFeedbackToken(jti);
   }
 
