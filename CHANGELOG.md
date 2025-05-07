@@ -6,6 +6,10 @@
 
 ### 07/05/2025
 
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le faible contraste des boutons de l’éditeur riche ([#1097](https://github.com/DISIC/Ara/pull/1097))
+
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Améliore la lisibilité des cartes de statistiques de l’audit ([#1090](https://github.com/DISIC/Ara/pull/1090))
