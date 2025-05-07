@@ -29,7 +29,7 @@ const noResults = computed(() => {
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
-      title: "Aucun critères ne correspond à vos filtres",
+      title: "Aucun critère ne correspond à vos filtres",
       description: [
         "Consultez les autres pages de l’échantillon",
         "Modifiez les filtres"
