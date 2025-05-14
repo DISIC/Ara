@@ -7,7 +7,7 @@ const reportStore = useReportStore();
 
 <template>
   <PageMeta
-    title="Contactez-nous ou contribuez !"
+    title="Contactez-nous ou contribuez !"
     description="Contactez-nous ou contribuez à l’amélioration d’Ara"
   />
 
@@ -30,7 +30,7 @@ const reportStore = useReportStore();
       >.
     </p>
     <p :class="{ 'fr-mb-5w': !reportStore.data }">
-      Vous pouvez nous contacter par e-mail à l’adresse :
+      Vous pouvez nous contacter par e-mail à l’adresse :
       <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
@@ -41,7 +41,7 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues !</h2>
+    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues !</h2>
 
     <div class="fr-callout">
       <p class="fr-callout__text">
@@ -52,10 +52,10 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <p>Vous pouvez également :</p>
+    <p>Vous pouvez également :</p>
     <ul>
       <li>
-        Nous écrire par e-mail à :
+        Nous écrire par e-mail à :
         <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>

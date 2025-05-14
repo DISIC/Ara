@@ -28,7 +28,7 @@ export class NewFeedbackDto {
   easyToUnderstand: string;
 
   /**
-   * @example "Très pratique !"
+   * @example "Très pratique !"
    */
   @IsString()
   feedback: string;

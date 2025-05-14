@@ -46,9 +46,9 @@ defineExpose({
     </h1>
     <p class="fr-mb-6w">
       Un lien de réinitialisation vient de vous être envoyé à l’adresse e-mail
-      suivante : <strong>{{ email }}</strong>
+      suivante : <strong>{{ email }}</strong>
     </p>
-    <h2 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h2>
+    <h2 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h2>
     <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
@@ -76,7 +76,7 @@ defineExpose({
     </div>
     <template v-if="!accountStore.account?.email">
       <h2 class="fr-text--sm fr-mb-1w">
-        L’adresse e-mail saisie est erronée ?
+        L’adresse e-mail saisie est erronée ?
       </h2>
       <button
         class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"

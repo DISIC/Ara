@@ -177,7 +177,7 @@ function copyStatementLink(uniqueId: string) {
 
     <!-- Creation date -->
     <p class="fr-mb-0">
-      <span class="fr-sr-only-md">Date de création : </span>
+      <span class="fr-sr-only-md">Date de création : </span>
       <time :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -311,7 +311,7 @@ function copyStatementLink(uniqueId: string) {
                   name: 'report',
                   params: { uniqueId: audit.consultUniqueId }
                 }"
-                target="_blank"
+                target="_blank "
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0 no-external-icon"
                 >Voir le rapport
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>

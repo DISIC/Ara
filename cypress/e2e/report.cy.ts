@@ -9,7 +9,7 @@ describe("Report", () => {
     cy.createTestAudit().then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains(
-        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé.",
+        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé."
       );
     });
   });
@@ -19,7 +19,7 @@ describe("Report", () => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.get(".header").contains(auditJson.procedureName);
       cy.contains(
-        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé.",
+        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé."
       ).should("not.exist");
     });
   });
@@ -31,7 +31,7 @@ describe("Report", () => {
       cy.get(".header").contains(`URL du site : ${statementJson.procedureUrl}`);
       cy.get(".header").contains("Type d’audit : 106 critères");
       cy.get(".header").contains(
-        `Auditeur ou auditrice : ${auditJson.auditorName}`,
+        `Auditeur ou auditrice : ${auditJson.auditorName}`
       );
     });
   });
@@ -42,7 +42,7 @@ describe("Report", () => {
       cy.contains("button", "Copier le lien du rapport").click();
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
       cy.contains(
-        "Le lien vers le rapport a bien été copié dans le presse-papier.",
+        "Le lien vers le rapport a bien été copié dans le presse-papier."
       );
     });
   });
@@ -63,11 +63,11 @@ describe("Report", () => {
       cy.get("#repartition-des-criteres-par-pages + .fr-table tbody tr").then(
         (els) => {
           expect(els).to.have.length(8);
-        },
+        }
       );
 
       cy.contains(
-        "35 critères non conformes concernent des éléments transverses à toutes les pages de l’échantillon.",
+        "35 critères non conformes concernent des éléments transverses à toutes les pages de l’échantillon."
       );
     });
   });
@@ -87,11 +87,9 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
-      cy.get(".fr-sidemenu__item").then(
-        (els) => {
-          expect(els).to.have.length(9);
-        },
-      );
+      cy.get(".fr-sidemenu__item").then((els) => {
+        expect(els).to.have.length(9);
+      });
     });
   });
 
@@ -99,9 +97,7 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
-      cy.get(
-        ".fr-sidemenu__item",
-      ).then((els) => {
+      cy.get(".fr-sidemenu__item").then((els) => {
         expect(els).to.have.length(9);
       });
     });
@@ -112,18 +108,14 @@ describe("Report", () => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.contains("315 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(315);
       });
 
       // Check & uncheck easy to fix
       cy.contains("Uniquement les erreurs faciles à corriger").click();
       cy.contains("45 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(45);
       });
       cy.contains("Uniquement les erreurs faciles à corriger").click();
@@ -131,43 +123,33 @@ describe("Report", () => {
       // Uncheck minor impact
       cy.contains("Mineur (81)").click();
       cy.contains("234 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(234);
       });
 
       // Uncheck major impact
       cy.contains("Majeur (81)").click();
       cy.contains("153 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(153);
       });
 
       // Uncheck blocking impact
       cy.contains("Bloquant (81)").click();
       cy.contains("72 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(72);
       });
 
       // Uncheck not specified impact
       cy.contains("Impact non renseigné (72)").click();
       cy.contains("0 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).should("not.exist");
+      cy.get(".criterium-title").should("not.exist");
 
       // Reset filters
       cy.contains("button", "Réinitialiser les filtres").click();
       cy.contains("315 non-conformités");
-      cy.get(
-        ".criterium-title",
-      ).then((els) => {
+      cy.get(".criterium-title").then((els) => {
         expect(els).to.have.length(315);
       });
     });

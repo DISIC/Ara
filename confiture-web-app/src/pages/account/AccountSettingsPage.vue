@@ -33,7 +33,7 @@ import TopLink from "../../components/ui/TopLink.vue";
           données vous concernant, ainsi que d’un droit d’accès, de
           rectification, de portabilité et d’effacement de vos données. Vous
           pouvez exercer vos droits en nous écrivant par e-mail à l’adresse
-          suivante : <strong>ara@design.numerique.gouv.fr</strong>
+          suivante : <strong>ara@design.numerique.gouv.fr</strong>
         </p>
         <hr />
 

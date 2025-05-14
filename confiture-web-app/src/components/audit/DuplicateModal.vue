@@ -69,7 +69,7 @@ function handleClose() {
                 </h1>
                 <p>
                   La copie de votre audit reprendra l’intégralité des éléments
-                  de l’audit initial : l’échantillon des pages à auditer, l’état
+                  de l’audit initial : l’échantillon des pages à auditer, l’état
                   de conformité des critères, la description des erreurs et
                   recommandations, etc.
                 </p>
@@ -78,7 +78,7 @@ function handleClose() {
                   ref="duplicateAuditNameRef"
                   v-model="duplicateAuditName"
                   label="Nom de la copie"
-                  :hint="`Exemple : contre-audit ${
+                  :hint="`Exemple : contre-audit ${
                     originalAuditName ?? 'site DesignGouv'
                   }`"
                   type="text"
