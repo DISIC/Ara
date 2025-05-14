@@ -54,7 +54,10 @@ function closeNewsSubMenu() {
             <div class="fr-header__tools-links">
               <ul class="fr-btns-group">
                 <li>
-                  <RouterLink class="fr-btn" :to="{ name: 'login' }">
+                  <RouterLink
+                    class="fr-btn fr-btn--tertiary-no-outline"
+                    :to="{ name: 'login' }"
+                  >
                     Se connecter
                   </RouterLink>
                 </li>
