@@ -19,8 +19,8 @@ const links: SiteMapLink[] = [
         { label: "Mon compte", name: "account-settings" }
       ]
     : [{ label: "Accueil", name: "home" }]),
-  { label: "Notes de version", name: "changelog" },
   { label: "Feuille de route", name: "roadmap" },
+  { label: "Notes de version", name: "changelog" },
   { label: "Donner mon avis", name: "feedback" },
   { label: "Plan du site", name: "site-map" },
   { label: "Accessibilité", name: "accessibility" },

@@ -40,15 +40,15 @@ const bottomLinks = [
               <li>
                 <RouterLink
                   class="fr-footer__top-link"
-                  :to="{ name: 'changelog' }"
-                  >Notes de version</RouterLink
+                  :to="{ name: 'roadmap' }"
+                  >Feuille de route</RouterLink
                 >
               </li>
               <li>
                 <RouterLink
                   class="fr-footer__top-link"
-                  :to="{ name: 'roadmap' }"
-                  >Feuille de route</RouterLink
+                  :to="{ name: 'changelog' }"
+                  >Notes de version</RouterLink
                 >
               </li>
             </ul>
