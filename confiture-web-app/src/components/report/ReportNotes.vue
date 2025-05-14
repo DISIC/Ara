@@ -12,7 +12,7 @@ const files = computed(() => report.data?.notesFiles);
 </script>
 
 <template>
-  <h2 class="fr-sr-only">Notes</h2>
+  <h2 class="fr-sr-only">Observations</h2>
   <TiptapRenderer
     v-if="report.data?.notes && !isTiptapDocumentEmpty(report.data?.notes)"
     :document="report.data?.notes"
