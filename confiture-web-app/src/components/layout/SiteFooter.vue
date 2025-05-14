@@ -11,7 +11,7 @@ const bottomLinks = [
     routeName: "site-map"
   },
   {
-    label: "Accessibilité : non conforme",
+    label: "Accessibilité : non conforme",
     routeName: "accessibility"
   },
   {
@@ -138,7 +138,7 @@ const bottomLinks = [
       </div>
       <div class="fr-footer__partners">
         <p class="fr-footer__partners-title fr-mb-1w">
-          Conçu avec le soutien de notre partenaire :
+          Conçu avec le soutien de notre partenaire :
         </p>
         <div class="fr-footer__partners-logos">
           <div class="fr-footer__partners-main">
@@ -150,7 +150,7 @@ const bottomLinks = [
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
+                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
               />
             </a>
           </div>

@@ -115,7 +115,7 @@ const steps = [
       </RouterLink>
     </div>
 
-    <h2 class="fr-h5">Quelles étapes m’attendent ?</h2>
+    <h2 class="fr-h5">Quelles étapes m’attendent ?</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div v-for="step in steps" :key="step.title" class="fr-col">
         <div class="fr-p-4w step-wrapper">

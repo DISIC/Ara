@@ -155,7 +155,7 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-1v">
-        URL du site :
+        URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -164,7 +164,7 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-9w">
-        Rapport d’audit :
+        Rapport d’audit :
         <RouterLink
           class="fr-link"
           target="_blank"
@@ -188,7 +188,7 @@ const siteUrl = computed(() => {
           <li>
             Dès la page d’accueil et sur toutes les pages de votre site,
             afficher la mention “<strong
-              >Accessibilité : {{ getA11yLevel() }} conforme</strong
+              >Accessibilité : {{ getA11yLevel() }} conforme</strong
             >”. Cette mention peut être par exemple, un lien dans le pied de
             page vers la page contenant votre déclaration.
           </li>
@@ -215,8 +215,8 @@ const siteUrl = computed(() => {
             <strong>{{ report.data.procedureInitiator }}</strong> s’engage à
             rendre ses sites internet, intranet, extranet et ses progiciels
             accessibles (et ses applications mobiles et mobilier urbain
-            numérique) conformément à l’article 47 de la loi n°2005-102 du 11
-            février 2005.
+            numérique) conformément à l’article 47 de la loi
+            n<sup>o</sup> 2005-102 du 11 février 2005.
           </p>
 
           <p class="fr-mb-9v fr-mb-md-6w">
@@ -309,7 +309,7 @@ const siteUrl = computed(() => {
             <p>
               Les vérifications de restitution de contenus ont été réalisées sur
               la base de la combinaison fournie par la base de référence du
-              RGAA, avec les versions suivantes :
+              RGAA, avec les versions suivantes :
             </p>
             <ul class="fr-mb-2w fr-mb-md-3w">
               <li v-for="(env, i) in report.data.context.environments" :key="i">
@@ -352,7 +352,7 @@ const siteUrl = computed(() => {
             <li v-if="report.data.contactEmail">
               Contacter
               <strong
-                >{{ report.data.procedureInitiator }} :
+                >{{ report.data.procedureInitiator }} :
                 {{ report.data.contactEmail }}</strong
               >
             </li>
@@ -367,7 +367,7 @@ const siteUrl = computed(() => {
             demande de saisine au Défenseur des droits.
           </p>
 
-          <p>Plusieurs moyens sont à votre disposition :</p>
+          <p>Plusieurs moyens sont à votre disposition :</p>
           <ul>
             <li>
               <a
@@ -389,7 +389,7 @@ const siteUrl = computed(() => {
             </li>
             <li>
               Envoyer un courrier par la poste (gratuit, ne pas mettre de
-              timbre) à :<br />
+              timbre) à :<br />
               <span class="fr-mt-1w mailing-address"
                 >Défenseur des droits<br />
                 Libre réponse 71120<br />

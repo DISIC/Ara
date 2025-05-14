@@ -47,7 +47,7 @@ const systemStore = useSystemStore();
 
 const dropdownTitle = computed(() => {
   if (isLoading.value) {
-    return "Enregistrement...";
+    return "Enregistrement…";
   }
   if (!systemStore.isOnline) {
     return "Enregistrement impossible";
@@ -58,7 +58,7 @@ const dropdownTitle = computed(() => {
 
 const dropdownMainText = computed(() => {
   if (isLoading.value) {
-    return "Modifications en cours d’enregistrement...";
+    return "Modifications en cours d’enregistrement…";
   }
   if (!systemStore.isOnline) {
     return "L’enregistrement de vos modifications est impossible hors connexion. Veuillez vérifier votre connexion internet.";
@@ -93,7 +93,7 @@ function formatInterval(seconds: number) {
   } else {
     const hours = Math.floor(seconds / (60 * 60));
     const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
-    return `il y a ${hours} h ${minutes} m`;
+    return `il y a ${hours} h ${minutes} m`;
   }
 }
 
@@ -115,7 +115,7 @@ watch(
   () => store.value.lastRequestFailed,
   () => {
     if (store.value.lastRequestFailed) {
-      saveText.value = "Information : vos saisies sont à nouveau enregistrées.";
+      saveText.value = "Information : vos saisies sont à nouveau enregistrées.";
 
       setTimeout(() => {
         saveText.value = "";

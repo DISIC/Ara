@@ -61,7 +61,7 @@ function validateNewEmailField() {
   // Empty email
   if (newEmail.value.trim().length === 0) {
     newEmailError.value =
-      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
+      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
     newEmailFieldRef.value?.inputRef?.focus();
     return false;
   }
@@ -69,7 +69,7 @@ function validateNewEmailField() {
   // Invalid email format
   if (!validateEmail(newEmail.value)) {
     newEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
     newEmailFieldRef.value?.inputRef?.focus();
     return false;
   }
@@ -195,7 +195,7 @@ async function cancelEmailUpdate() {
 <template>
   <h2 class="fr-h6">Adresse e-mail</h2>
   <p>
-    Votre adresse email : <strong>{{ accountStore.account?.email }}</strong>
+    Votre adresse email : <strong>{{ accountStore.account?.email }}</strong>
   </p>
 
   <!-- Success alert -->
@@ -218,11 +218,11 @@ async function cancelEmailUpdate() {
     >
       <p>
         Un lien pour confirmer votre nouvelle adresse e-mail vient de vous être
-        envoyé à l’adresse suivante : <strong>{{ newEmail }}</strong>
+        envoyé à l’adresse suivante : <strong>{{ newEmail }}</strong>
       </p>
     </div>
 
-    <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h3>
+    <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h3>
     <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
@@ -249,7 +249,7 @@ async function cancelEmailUpdate() {
     </div>
 
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
-      L’adresse e-mail saisie est erronée ?
+      L’adresse e-mail saisie est erronée ?
     </h3>
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
@@ -291,7 +291,7 @@ async function cancelEmailUpdate() {
       v-model="newEmail"
       class="fr-mt-3v"
       label="Nouvelle adresse e-mail"
-      hint="Format attendu : nom@domaine.fr"
+      hint="Format attendu : nom@domaine.fr"
       type="email"
       :error="newEmailError"
       required

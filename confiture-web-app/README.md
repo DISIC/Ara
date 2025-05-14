@@ -11,13 +11,13 @@ La partie style utilise le [DSFR (Système de Design de l'État)](https://www.sy
 
 ## Installation
 
-Installer les dépendances :
+Installer les dépendances :
 
 ```sh
 yarn install
 ```
 
-Générer les fichiers requis du RGAA (critères et tests et méthodologies) :
+Générer les fichiers requis du RGAA (critères et tests et méthodologies) :
 
 ```sh
 yarn generate:rgaa
@@ -25,7 +25,7 @@ yarn generate:rgaa
 
 ## Développement
 
-Lancer le [serveur local sur le port 3000](http://localhost:3000) :
+Lancer le [serveur local sur le port 3000](http://localhost:3000) :
 
 ```sh
 yarn dev
@@ -35,7 +35,7 @@ yarn dev
 
 ### Media queries "Desktop first"
 
-Utiliser les media queries en "desktop first" et avec la notation suivante avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture) :
+Utiliser les media queries en "desktop first" et avec la notation suivante avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture) :
 
 ```css
 @media (width < 62rem) {
@@ -45,7 +45,7 @@ Utiliser les media queries en "desktop first" et avec la notation suivante avec 
 
 ### Ordre des classes CSS
 
-Ordonner les classes CSS de la manière suivante : `<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`. Exemple :
+Ordonner les classes CSS de la manière suivante : `<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`. Exemple :
 
 ```html
 <button class="fr-btn fr-btn--secondary fr-mt-4w submit-button">...</button>
@@ -57,7 +57,7 @@ Ordonner les classes CSS de la manière suivante : `<1. classes du composant DSF
 
 ### Types de l’API
 
-Lors des interactions avec le backend, utiliser les types générés dans `src/types/confiture-api.ts`. Pour générer ce fichier, utiliser la commande `yarn copytypes` depuis le dossier racine du projet. Exemple :
+Lors des interactions avec le backend, utiliser les types générés dans `src/types/confiture-api.ts`. Pour générer ce fichier, utiliser la commande `yarn copytypes` depuis le dossier racine du projet. Exemple :
 
 ```typescript
 import { paths } from "./confiture-api";
@@ -72,13 +72,13 @@ const data = (await ky
 
 ### Nommage des attributs `id`
 
-Utiliser des valeurs d’attributs HTML `id` compréhensibles afin de facilement savoir à quoi elles font référence. Exemple :
+Utiliser des valeurs d’attributs HTML `id` compréhensibles afin de facilement savoir à quoi elles font référence. Exemple :
 
 ```html
 <li :id="`error-${errorId}`">...</li>
 ```
 
-Au lieu de :
+Au lieu de :
 
 ```html
 <li :id="errorId">...</li>

@@ -75,7 +75,7 @@ onMounted(async () => {
 
       <p class="fr-text--sm fr-mb-6w">
         Si vous avez besoin d’une aide pour la création de votre compte, merci
-        de nous contacter par e-mail à l’adresse suivante :
+        de nous contacter par e-mail à l’adresse suivante :
         <strong>ara@design.numerique.gouv.fr</strong>.
       </p>
 
@@ -103,7 +103,7 @@ onMounted(async () => {
 
       <p class="fr-mb-6w">
         La prochaine fois que vous vous connectez à votre compte, assurez-vous
-        que vous utilisez l’adresse e-mail :
+        que vous utilisez l’adresse e-mail :
         <strong>{{ newEmail }}</strong
         >.
       </p>

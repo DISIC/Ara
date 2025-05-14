@@ -81,10 +81,10 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 
     /*
       Differentiate between the various environments of the app
-      example values :
-      - "local" : Local development
-      - "preview" : Pre-production application
-      - "production" : Production application
+      example values:
+      - "local": Local development
+      - "preview": Pre-production application
+      - "production": Production application
     */
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
 

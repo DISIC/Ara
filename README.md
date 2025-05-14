@@ -15,12 +15,12 @@ Générer et consulter les rapports de ces audits et les déclarations d'accessi
 
 ### Environnement de développement
 
-Le front-end est automatiquement déployé sur Netlify :
+Le front-end est automatiquement déployé sur Netlify :
 
 - La branche principale `main` est déployée sur [https://ara-production-81d0da406fda.herokuapp.com/](https://ara-production-81d0da406fda.herokuapp.com/).
 - Les branches des PR sont déployées sur [ pipeline-xxxxxx-xxxxxx.herokuapp.com ](pipeline-xxxxxx-xxxxxx.herokuapp.com) (où XXX est un identifiant aléatoire généré par Heroku).
 
-Pour réinitialiser la base de données :
+Pour réinitialiser la base de données :
 
 ```sh
 DATABASE_URL="<url_de_la_base_de_donnees_de_developpement>" yarn prisma migrate reset
@@ -30,7 +30,7 @@ DATABASE_URL="<url_de_la_base_de_donnees_de_developpement>" yarn prisma migrate 
 
 ⚠️ Avant de déployer sur l’environnement de production, s’assurer que son adresse IP est whitelistée sur OVH.
 
-Pour lancer les migrations de la base de données sur OVH :
+Pour lancer les migrations de la base de données sur OVH :
 
 ```sh
 DATABASE_URL="<url_de_la_base_de_donnees_de_production>" yarn prisma migrate deploy

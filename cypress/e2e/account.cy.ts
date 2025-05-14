@@ -261,7 +261,7 @@ describe("Account", () => {
         // Submit feedback form
         cy.getByLabel(
           "Pourriez-vous nous donner la raison de votre départ ?"
-        ).type("Quoi ? Ça n’est pas un outil d’audit automatique ?!");
+        ).type("Quoi ? Ça n’est pas un outil d’audit automatique ⁈");
         cy.contains("button", "Envoyer mon avis").click();
         cy.contains("Votre avis a bien été envoyé");
       });

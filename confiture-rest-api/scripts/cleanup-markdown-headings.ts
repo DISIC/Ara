@@ -130,7 +130,7 @@ async function main() {
   ];
   const prisma = connectionPool[0];
 
-  console.log("Fetching results...");
+  console.log("Fetching results…");
 
   const rawResults = await prisma.criterionResult.findMany({
     where: {
@@ -196,7 +196,7 @@ async function main() {
     );
   }
 
-  console.log("Fetching notes...");
+  console.log("Fetching notes…");
 
   const audits = await prisma.audit.findMany({
     where: {

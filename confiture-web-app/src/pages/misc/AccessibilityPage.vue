@@ -16,7 +16,8 @@ import PageMeta from "../../components/PageMeta";
       La <strong>direction interministérielle du numérique (DINUM)</strong>
       s’engage à rendre ses sites internet, intranet, extranet et ses progiciels
       accessibles (et ses applications mobiles et mobilier urbain numérique)
-      conformément à l’article 47 de la loi n°2005-102 du 11 février 2005.
+      conformément à l’article 47 de la loi n<sup>o</sup> 2005-102 du 11 février
+      2005.
     </p>
     <p>
       Cette déclaration d’accessibilité s’applique à
@@ -51,7 +52,7 @@ import PageMeta from "../../components/PageMeta";
       en droit de faire parvenir vos doléances ou une demande de saisine au
       Défenseur des droits.
     </p>
-    <p>Plusieurs moyens sont à votre disposition :</p>
+    <p>Plusieurs moyens sont à votre disposition :</p>
 
     <ul>
       <li>
@@ -76,7 +77,7 @@ import PageMeta from "../../components/PageMeta";
         avec leurs informations de contact directs
       </li>
       <li>
-        un numéro de téléphone : le +33 (0) 9 69 39 00 00 du lundi au vendredi
+        un numéro de téléphone : le +33 (0) 9 69 39 00 00 du lundi au vendredi
         de 8h30 à 19h30 (coût d’un appel local)
       </li>
       <li>

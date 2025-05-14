@@ -1,7 +1,7 @@
 import { renderMailTemplate } from "./render-mjml-template";
 
 export function subject(): string {
-  return `Ara : mot de passe mis à jour avec succès `;
+  return `Ara : mot de passe mis à jour avec succès `;
 }
 
 export function html(): string {
@@ -14,6 +14,6 @@ export function plain(): string {
 
     Le mot de passe de votre compte Ara a bien été modifié.
 
-    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
+    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
   `;
 }

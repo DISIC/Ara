@@ -28,10 +28,10 @@ async function closeResendSuccessAlert() {
     <h1 tabindex="-1" class="fr-h3">Consulter votre boite de réception</h1>
     <p class="fr-mb-6w">
       Un mail contenant un lien pour vérifier votre e-mail vient de vous être
-      envoyé à l’adresse : <strong>{{ userEmail }}</strong>
+      envoyé à l’adresse : <strong>{{ userEmail }}</strong>
     </p>
 
-    <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
+    <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
     <p class="fr-text--sm">
       Pensez à vérifier que vous n’avez pas reçu le mail dans vos courriers
       indésirable. Sinon veuillez demander l’envoi d’un nouveau mail à l’aide du
@@ -59,7 +59,7 @@ async function closeResendSuccessAlert() {
     </div>
 
     <p class="fr-mb-1w">
-      <strong>L’adresse e-mail saisie est erronée ?</strong>
+      <strong>L’adresse e-mail saisie est erronée ?</strong>
     </p>
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"

@@ -11,7 +11,7 @@ defineProps<{
     <div class="fr-m-0 card-hole">
       <p class="fr-m-0 card-hole-content">
         {{ value }}
-        <span v-if="unit" class="fr-mb-0 card-unit">{{ unit }}</span>
+        <span v-if="unit" class="fr-mb-0 card-unit"> {{ unit }}</span>
       </p>
     </div>
   </div>

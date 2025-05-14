@@ -8,7 +8,7 @@ COPY confiture-rest-api /tmp/confiture-rest-api
 USER root
 
 # For some reason, installing nodejs with the following command fixes the compatibility issues when we install the desired version later
-# From : https://github.com/nodejs/node/issues/41058#issuecomment-998966573
+# From: https://github.com/nodejs/node/issues/41058#issuecomment-998966573
 RUN apk -UvX http://dl-4.alpinelinux.org/alpine/edge/main add -u nodejs
 
 ENV NODE_VERSION 22.13.0

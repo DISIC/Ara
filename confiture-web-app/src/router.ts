@@ -389,7 +389,7 @@ const router = createRouter({
       if (!tabs) {
         // When navigating between tabs with the "tabSlug" route parameter,
         // there should be an Element with class "tabs-wrapper"
-        console.warn("No tabs?!");
+        console.warn("No tabs⁈");
       } else {
         horizontalScrollToNewTab(to.params.tabSlug as string);
         const behavior = tabs.dataset.panelScrollBehavior;

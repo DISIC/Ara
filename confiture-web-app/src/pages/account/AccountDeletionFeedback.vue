@@ -77,7 +77,7 @@ async function closeSuccessAlert() {
     <form @submit.prevent="submitFeedback">
       <div class="fr-input-group">
         <label class="fr-label" for="feedback">
-          Pourriez-vous nous donner la raison de votre départ ?
+          Pourriez-vous nous donner la raison de votre départ ?
         </label>
         <textarea
           id="feedback"

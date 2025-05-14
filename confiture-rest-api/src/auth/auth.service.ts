@@ -122,7 +122,7 @@ export class AuthService {
     })) as AccountVerificationJwtPayload;
     const { sub: uid, jti } = payload;
 
-    // Addition checks : user exists, user needs verification, token is the last one
+    // Addition checks: user exists, user needs verification, token is the last one
     {
       const user = await this.prisma.user.findUnique({ where: { uid } });
 
@@ -350,7 +350,7 @@ export class AuthService {
     })) as NewEmailVerificationJwtPayload;
     const { sub: uid, jti, email } = payload;
 
-    // Addition checks : user exists, user needs email update verification, token is the last one
+    // Addition checks: user exists, user needs email update verification, token is the last one
     {
       const user = await this.prisma.user.findUnique({ where: { uid } });
 

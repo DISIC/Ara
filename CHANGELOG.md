@@ -46,8 +46,8 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Plusieurs améliorations sur la navigation entre les différents onglets pendant l’audit et dans le rapport ([#950](https://github.com/DISIC/Ara/pull/950)) :
-  - Les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutées dans l’historique de navigation ;
-  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
+  - Les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutées dans l’historique de navigation ;
+  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran ;
   - l’onglet actif reste toujours visible, même sur petit écran et avec une navigation au clavier.
 - Corrige la mauvaise position verticale dans la page après utilisation des ancres « Pages » du rapport
 - Correction du contraste des cartes de types d’audit ([#1056](https://github.com/DISIC/Ara/pull/1056))
@@ -257,7 +257,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Modifie la gestion des éléments transverses : l’interrupteur "Sur toutes les pages" est remplacé par l’onglet "Éléments transverses" qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
+- Modifie la gestion des éléments transverses : l’interrupteur "Sur toutes les pages" est remplacé par l’onglet "Éléments transverses" qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
 
 ### 09/10/2024
 
@@ -376,7 +376,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Améliore la navigation entre les différents espaces du site : audit, compte utilisateur et livrables ([#683](https://github.com/DISIC/Ara/pull/683))
+- Améliore la navigation entre les différents espaces du site : audit, compte utilisateur et livrables ([#683](https://github.com/DISIC/Ara/pull/683))
 
 ### 05/04/2024
 
@@ -729,7 +729,7 @@
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Mise à jour du DSFR en version `1.9.0` ([#326](https://github.com/DISIC/Ara/pull/326))
-- Mise à jour de l’adresse email de contact : ara@design.numerique.gouv.fr ([#328](https://github.com/DISIC/Ara/pull/328))
+- Mise à jour de l’adresse email de contact : ara@design.numerique.gouv.fr ([#328](https://github.com/DISIC/Ara/pull/328))
 
 ### 08/03/2023
 
@@ -743,7 +743,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Un seul des 2 moyens de contact est obligatoire : email ou URL vers un formulaire ([#313](https://github.com/DISIC/Ara/pull/313))
+- Un seul des 2 moyens de contact est obligatoire : email ou URL vers un formulaire ([#313](https://github.com/DISIC/Ara/pull/313))
 
 ### 17/02/2023
 
@@ -867,7 +867,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Formate les éléments suivant dans le rapport avec Markdown ([#227](https://github.com/DISIC/Ara/pull/227)) :
+- Formate les éléments suivant dans le rapport avec Markdown ([#227](https://github.com/DISIC/Ara/pull/227)) :
   - Description d'une erreur de conformité
   - Recommandation sur un critère
   - Non-conformités

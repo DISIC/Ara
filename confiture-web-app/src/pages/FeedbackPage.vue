@@ -124,7 +124,7 @@ const previousPageName =
       <fieldset class="fr-fieldset fr-fieldset--inline">
         <legend class="fr-fieldset__legend fr-text--regular">
           <h2 class="fr-text--md fr-text--bold fr-mb-3w">
-            Ce site est-il facile à utiliser ?
+            Ce site est-il facile à utiliser ?
           </h2>
         </legend>
         <div
@@ -156,7 +156,7 @@ const previousPageName =
       <fieldset class="fr-fieldset fr-fieldset--inline">
         <legend class="fr-fieldset__legend fr-text--regular">
           <h2 class="fr-text--md fr-text--bold fr-mb-3w">
-            Le langage employé est-il facile à comprendre ?
+            Le langage employé est-il facile à comprendre ?
           </h2>
         </legend>
         <div
@@ -187,7 +187,7 @@ const previousPageName =
     <section class="fr-input-group fr-mb-4w narrow-content">
       <label class="fr-label" for="general-feedback">
         <h2 class="fr-text--md fr-text--bold fr-mb-1v">
-          Quelles sont vos remarques générales ?
+          Quelles sont vos remarques générales ?
         </h2>
         <span class="fr-hint-text"
           >Vous pouvez détailler les problèmes que vous avez rencontrés ou
@@ -205,7 +205,7 @@ const previousPageName =
     <section class="fr-input-group fr-mb-4w narrow-content">
       <label class="fr-label" for="changes">
         <h2 class="fr-text--md fr-text--bold fr-mb-1v">
-          Que changeriez-vous ou ajouteriez-vous ?
+          Que changeriez-vous ou ajouteriez-vous ?
         </h2>
 
         <span class="fr-hint-text">
@@ -221,7 +221,7 @@ const previousPageName =
           <legend class="fr-fieldset__legend fr-text--regular">
             <h2 class="fr-text--md fr-text--bold fr-mb-1v">
               Si besoin, accepteriez-vous d’être contacté par l’équipe de
-              conception ?
+              conception ?
             </h2>
             <span class="fr-hint-text"
               >Nous pourrions vous soliciter pour des tests utilisateur ou pour
@@ -311,7 +311,7 @@ const previousPageName =
       d’opposition et d’un droit à la limitation du traitement de données vous
       concernant, ainsi que d’un droit d’accès, de rectification, de portabilité
       et d’effacement de vos données. Vous pouvez exercer vos droits en nous
-      écrivant par e-mail à l’adresse suivante :
+      écrivant par e-mail à l’adresse suivante :
       contact@design.numerique.gouv.fr.
     </p>
     <button class="fr-btn fr-mb-5w" type="submit">Envoyer mon avis</button>

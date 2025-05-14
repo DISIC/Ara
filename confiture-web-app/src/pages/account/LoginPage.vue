@@ -47,7 +47,7 @@ function validateEmailField() {
   // Invalid email format
   if (!validateEmail(userEmail.value)) {
     userEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
     userEmailField.value?.inputRef?.focus();
     return false;
   }
@@ -139,7 +139,7 @@ async function handleSubmit() {
         ref="userEmailField"
         v-model="userEmail"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         autocomplete="email"
@@ -166,7 +166,7 @@ async function handleSubmit() {
     <div>
       <hr class="fr-mt-3w" />
 
-      <h2 class="fr-h5">Vous n’avez pas de compte ?</h2>
+      <h2 class="fr-h5">Vous n’avez pas de compte ?</h2>
 
       <div class="fr-btns-group fr-mb-3w">
         <RouterLink

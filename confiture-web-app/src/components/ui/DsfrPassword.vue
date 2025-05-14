@@ -101,7 +101,7 @@ defineExpose({ inputRef, toggleRef });
         }"
         class="fr-link"
       >
-        Mot de passe oublié ?
+        Mot de passe oublié ?
       </RouterLink>
     </p>
   </div>

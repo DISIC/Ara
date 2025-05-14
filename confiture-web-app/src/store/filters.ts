@@ -65,7 +65,7 @@ export const useFiltersStore = defineStore("filters", {
       /**
        * Filter based on search on:
        * - topic title ("Images")
-       * - criteria title ("Dans chaque page web, l’ouverture...")
+       * - criteria title ("Dans chaque page web, l’ouverture…")
        * - audit type (fast, complementary, full)
        * - result (compliant, not compliant, not applicable)
        */
