@@ -264,7 +264,6 @@ function copyStatementLink(uniqueId: string) {
         params: { uniqueId: audit.editUniqueId }
       }"
       class="fr-btn fr-btn--secondary no-external-icon audit-main-action"
-      :target="isInProgress || isNotStarted ? null : '_blank'"
     >
       <EditDocumentIcon class="fr-mr-2v main-action-icon" />
       {{
