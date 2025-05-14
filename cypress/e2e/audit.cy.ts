@@ -70,28 +70,15 @@ describe("Audit", () => {
     cy.get("h1").contains(auditJson.procedureName);
   });
 
-  it("User can go to settings page from audit (small viewport)", () => {
+  it("User can go to settings page from audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("Actions").click();
-      cy.contains("Accéder aux paramètres").click();
+      cy.contains("Options").click();
+      cy.contains("Modifier les paramètres de l’audit").click();
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
-      );
-    });
-  });
-
-  it("User can go to settings page from audit (large viewport)", () => {
-    cy.createTestAudit().then(({ editId }) => {
-      cy.viewport(1400, 800);
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("a", "Paramètres").click();
-      cy.get("h1").contains("Paramètres de l’audit");
-      cy.url().should(
-        "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
+        `http://localhost:3000/audits/${editId}/parametres`,
       );
     });
   });
@@ -102,7 +89,7 @@ describe("Audit", () => {
 
       cy.getByLabel("Nom du site ou du service audité").should(
         "have.value",
-        "Audit de mon petit site"
+        "Audit de mon petit site",
       );
 
       cy.getByLabel("Nom du site ou du service audité")
@@ -113,7 +100,7 @@ describe("Audit", () => {
 
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -168,7 +155,7 @@ describe("Audit", () => {
           expectedPages.forEach((expectedPageName, i) => {
             cy.wrap(els[i]).should("have.value", expectedPageName);
           });
-        }
+        },
       );
 
       cy.contains("button", "Supprimer").click();
@@ -195,7 +182,7 @@ describe("Audit", () => {
       cy.contains("Enregistrer les modifications").click();
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
       );
 
       cy.get("[role='tablist'] button").then((els) => {
@@ -220,7 +207,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Actions").click();
+      cy.contains("Options").click();
       cy.contains("Supprimer l’audit").click();
 
       cy.contains("Vous allez supprimer l’audit");
@@ -235,14 +222,14 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.get(".notes-item:last-of-type")
-        .contains("button", "Annoter l’audit")
+      cy.get(".notes-desktop-link")
+        .contains("button", "Ajouter des observations")
         .click();
       cy.get("[role='textbox'").clear().type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
-      cy.get(".notes-item:last-of-type")
-        .contains("button", "Annoter l’audit")
+      cy.get(".notes-desktop-link")
+        .contains("button", "Ajouter des observations")
         .click();
       cy.contains("Annotations de l’audit");
     });
@@ -305,7 +292,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
+        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
       )
         .clear()
         .type(statementJson.notInScopeContent);
@@ -318,7 +305,7 @@ describe("Audit", () => {
   it("User can copy an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("button", "Actions").click();
+      cy.contains("button", "Options").click();
       cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
@@ -384,7 +371,7 @@ describe("Audit", () => {
           .should(
             "satisfy",
             (el) =>
-              el[0].classList.contains("green") || el.at(-1).contains("grey")
+              el[0].classList.contains("green") || el.at(-1).contains("grey"),
           );
       });
 
@@ -401,7 +388,7 @@ describe("Audit", () => {
             (el) =>
               el[0].classList.contains("green") ||
               el[1].contains("red") ||
-              el.at(-1).contains("grey")
+              el.at(-1).contains("grey"),
           );
       });
     });
@@ -466,7 +453,7 @@ describe("Audit", () => {
 
       cy.contains("button", "Copier le lien").click();
       cy.contains(
-        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
+        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier.",
       );
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
     });
@@ -480,7 +467,7 @@ describe("Audit", () => {
 
       cy.get(".page-url + section fieldset input:checked + label").should(
         "have.class",
-        "grey"
+        "grey",
       );
     });
   });
@@ -512,7 +499,7 @@ describe("Audit", () => {
         .eq(2)
         .find(".criterium-transverse-notice")
         .contains(
-          "Vous avez évalué ce critère Non conforme pour les éléments transverses."
+          "Vous avez évalué ce critère Non conforme pour les éléments transverses.",
         );
 
       cy.get(".criterium-container")
@@ -540,7 +527,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Actions").click();
+      cy.contains("Options").click();
       cy.contains("Exporter l’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
@@ -580,9 +567,9 @@ describe("Audit", () => {
 
       cy.contains("Lister les éléments transverses").click();
       cy.getByLabel("Nom de l’élément transverse").type(
-        "FoooElements, BarElements, ThingElements"
+        "FoooElements, BarElements, ThingElements",
       );
-      cy.contains("Ajouter").click();
+      cy.get(".transverse-elements").contains("Ajouter").click();
 
       cy.contains("button", "FoooElements").should("exist");
       cy.contains("button", "BarElements").should("exist");

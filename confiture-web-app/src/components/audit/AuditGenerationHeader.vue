@@ -333,7 +333,7 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres de l'audit
+                  Modifier les paramètres de l’audit
                 </RouterLink>
               </li>
               <li class="dropdown-item">
