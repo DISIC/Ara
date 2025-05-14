@@ -143,7 +143,7 @@ describe("Report", () => {
 
       // Uncheck not specified impact
       cy.contains("Impact non renseigné (72)").click();
-      cy.contains("0 non-conformités");
+      cy.contains("0 non-conformité");
       cy.get(".criterium-title").should("not.exist");
 
       // Reset filters
