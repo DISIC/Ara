@@ -38,7 +38,7 @@ export enum FileErrorMessage {
 export enum StaticTabLabel {
   AUDIT_COMMON_ELEMENTS_TAB_LABEL = "Éléments transverses",
   REPORT_RESULTS_TAB_LABEL = "Résultats",
-  REPORT_NOTES_TAB_LABEL = "Notes",
+  REPORT_NOTES_TAB_LABEL = "Observations",
   REPORT_ERRORS_TAB_LABEL = "Détails des non-conformités",
   REPORT_IMPROVEMENTS_TAB_LABEL = "Points d’amélioration"
 }
