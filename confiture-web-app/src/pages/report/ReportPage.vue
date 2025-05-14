@@ -62,14 +62,6 @@ const tabsData = computed((): TabData[] => {
     component: ReportResults
   });
 
-  // Notes
-  if (hasNotes.value) {
-    tabs.push({
-      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
-      component: ReportNotes
-    });
-  }
-
   // Errors
   tabs.push({
     label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
@@ -81,6 +73,14 @@ const tabsData = computed((): TabData[] => {
     tabs.push({
       label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
       component: ReportImprovements
+    });
+  }
+
+  // Notes
+  if (hasNotes.value) {
+    tabs.push({
+      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
+      component: ReportNotes
     });
   }
 
