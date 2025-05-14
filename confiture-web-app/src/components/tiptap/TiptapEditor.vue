@@ -371,12 +371,7 @@ defineExpose({
 }
 
 .tiptap-buttons .fr-btn--tertiary {
-  color: var(--text-mention-grey);
   box-shadow: none;
-}
-
-[data-fr-theme="dark"] .tiptap-buttons .fr-btn--tertiary {
-  color: var(--text-default-grey);
 }
 
 .tiptap-buttons .fr-btn--tertiary:not([aria-pressed="true"]) {
@@ -392,18 +387,37 @@ defineExpose({
   background-color: var(--background-alt-grey-active);
 }
 
-.tiptap-buttons .fr-btn--tertiary[aria-pressed="true"] {
-  box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
-  color: var(--text-active-grey);
+/* Light mode button styles */
+[data-fr-theme="light"] {
+  .tiptap-buttons .fr-btn--tertiary {
+    color: var(--text-mention-grey);
+
+    &:hover {
+      background-color: #e4e4e4;
+    }
+
+    &[aria-pressed="true"] {
+      box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
+      color: var(--text-active-grey);
+    }
+  }
 }
 
-/* Override DSFR colors to ensure enough contrast */
-[data-fr-theme="light"] .tiptap-buttons .fr-btn--tertiary:hover {
-  background-color: #e4e4e4;
-}
+/* Dark mode button styles */
+[data-fr-theme="dark"] {
+  .tiptap-buttons .fr-btn--tertiary {
+    color: var(--text-mention-grey);
 
-[data-fr-theme="dark"] .tiptap-buttons .fr-btn--tertiary:hover {
-  background-color: #363636;
+    &:hover {
+      background-color: #363636;
+      color: var(--text-default-grey);
+    }
+
+    &[aria-pressed="true"] {
+      box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
+      color: var(--text-active-grey);
+    }
+  }
 }
 
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {
