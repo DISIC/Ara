@@ -375,6 +375,10 @@ defineExpose({
   box-shadow: none;
 }
 
+[data-fr-theme="dark"] .tiptap-buttons .fr-btn--tertiary {
+  color: var(--text-default-grey);
+}
+
 .tiptap-buttons .fr-btn--tertiary:not([aria-pressed="true"]) {
   --hover-tint: var(--background-alt-grey-hover);
 }
@@ -394,12 +398,12 @@ defineExpose({
 }
 
 /* Override DSFR colors to ensure enough contrast */
-.tiptap-buttons .fr-btn--tertiary:hover {
+[data-fr-theme="light"] .tiptap-buttons .fr-btn--tertiary:hover {
   background-color: #e4e4e4;
+}
 
-  @media (prefers-color-scheme: dark) {
-    background-color: #363636;
-  }
+[data-fr-theme="dark"] .tiptap-buttons .fr-btn--tertiary:hover {
+  background-color: #363636;
 }
 
 .tiptap-buttons .fr-btn--icon-left[class*="fr-icon-image-add-line"] {
