@@ -91,3 +91,16 @@ from DSFR links with `target="_blank"` */
 .fr-callout__text a {
   font-size: inherit !important;
 }
+
+/* Override some DSFR colors in dark mode for better contrast */
+[data-fr-theme="dark"] {
+  .fr-btn--secondary:hover,
+  .fr-btn--tertiary:hover,
+  .fr-btn--tertiary-no-outline:hover {
+    background-color: var(--grey-925-125) !important;
+  }
+
+  .fr-tag[type="button"]:hover {
+    color: #bbbbff;
+  }
+}
