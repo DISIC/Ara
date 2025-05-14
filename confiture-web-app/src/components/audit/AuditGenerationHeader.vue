@@ -437,14 +437,6 @@ onMounted(() => {
   z-index: 3;
 }
 
-.heading {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .top-actions {
   display: flex;
   align-items: center;
@@ -463,28 +455,11 @@ onMounted(() => {
 }
 
 .delete-button {
-  color: var(--error-425-625);
+  color: var(--text-default-error);
 }
 
 .notes-desktop-link {
   display: none;
-}
-
-.info {
-  border: 1px solid var(--border-default-grey);
-  min-height: 100%;
-}
-
-.info-value {
-  text-transform: capitalize;
-}
-
-.info-label {
-  color: var(--text-mention-grey);
-}
-
-.info-sub-text {
-  text-transform: none;
 }
 
 .offline-alert {
