@@ -56,11 +56,10 @@ from DSFR links with `target="_blank"` */
 [data-fr-theme="light"] {
   --danger-bg-base-color: #a22418;
   --danger-bg-hover-color: #cc372b;
-  --danger-text-hover-color: var(--grey-950-125);
+  --danger-text-hover-color: var(--text-inverted-grey);
   --danger-secondary-text-base-color: var(--text-default-error);
 }
 
-/* FIXME: primary hover colors dont meet 4.5 contrast ratio */
 [data-fr-theme="dark"] {
   --danger-bg-base-color: var(--background-action-high-error);
   --danger-bg-hover-color: var(--grey-950-125);
