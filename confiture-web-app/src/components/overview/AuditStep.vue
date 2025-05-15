@@ -102,7 +102,7 @@ const auditIsInProgress = computed(() => {
     >
       <SummaryCard
         v-if="audit.auditType === AuditType.FULL"
-        title="Taux global de conformité"
+        title="Taux global<br /> de conformité"
         :value="complianceLevel"
         unit="%"
         :theme="SummaryCardThemes.Blue"
@@ -110,14 +110,14 @@ const auditIsInProgress = computed(() => {
       />
 
       <SummaryCard
-        title="Critères non conformes"
+        title="Critères<br /> non conformes"
         :value="notCompliantCriteriaCount"
         :theme="SummaryCardThemes.Red"
         minimal
       />
 
       <SummaryCard
-        title="Critères confomes"
+        title="Critères<br /> confomes"
         :value="compliantCriteriaCount"
         :theme="SummaryCardThemes.Green"
         minimal

@@ -23,7 +23,7 @@ defineProps<{
     :class="['card', { 'card--disabled': disabled, 'card--minimal': minimal }]"
   >
     <p
-      :class="`fr-m-0 fr-px-3w card-metric card-metric--${theme}`"
+      :class="`fr-m-0 card-metric card-metric--${theme}`"
       :aria-hidden="disabled ? true : undefined"
     >
       <template v-if="disabled">–</template>
@@ -45,8 +45,13 @@ defineProps<{
 
 <style scoped>
 .card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
   border: 1px solid var(--border-default-grey);
+
+  @media (width < 62rem) {
+    grid-template-columns: 7rem 1fr;
+  }
 }
 
 .card--disabled {
@@ -61,7 +66,7 @@ defineProps<{
 }
 
 .card--minimal {
-  grid-template-columns: 4rem auto;
+  grid-template-columns: 4.5rem auto;
 
   .card-metric {
     font-size: 1.75rem;
@@ -116,6 +121,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-basis: 100%;
   padding: 1.5rem 0.75rem 1.5rem 1.5rem;
 
   @media (width < 62rem) {
