@@ -312,8 +312,8 @@ function copyStatementLink(uniqueId: string) {
                   params: { uniqueId: audit.consultUniqueId }
                 }"
                 target="_blank"
-                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-eye-line fr-m-0 no-external-icon"
-                >Voir le rapport
+                class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                >Consulter le rapport
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>

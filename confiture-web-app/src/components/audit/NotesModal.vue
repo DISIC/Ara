@@ -97,13 +97,21 @@ function handleDeleteFile(file: AuditFile) {
                 </button>
                 <div class="title-container">
                   <h1 id="notes-modal-title" class="fr-modal__title">
-                    Annotations de l’audit
+                    Observations
                   </h1>
                   <SaveIndicator :store-name="StoreName.AUDIT_STORE" />
                 </div>
+                <p class="fr-text--xs fr-m-0">
+                  Vos observations seront affichées dans le rapport d’audit.
+                </p>
               </div>
-              <p id="audit-notes" class="fr-label">
-                Remarques et recommandations générales
+              <p id="audit-notes" class="fr-label fr-mb-1w">
+                Points à signaler ne concernant pas l’accessibilité du site
+                audité
+                <span class="fr-hint-text fr-mt-1v"
+                  >Exemple : temps de chargement excessif sur certaines pages,
+                  incohérences dans l'usage des couleurs, bug</span
+                >
               </p>
               <TiptapEditor
                 v-model="notes"
@@ -138,24 +146,32 @@ function handleDeleteFile(file: AuditFile) {
   padding-left: 3rem;
   padding-right: 3rem;
 }
+
 .sidebar-header {
   display: flex;
   flex-direction: row-reverse;
   flex-wrap: wrap;
-  column-gap: 1rem;
   align-items: center;
+  justify-content: start;
+  gap: 0.5rem 1rem;
   margin: 2rem 0 1.5rem 0;
-  padding: 0.75rem 0;
+  padding-top: 0.75rem;
   position: sticky;
   top: 0;
   z-index: 9;
   background-color: var(--background-lifted-grey);
 }
+
 .sidebar-header h1 {
   margin-bottom: 0;
   padding-right: 1rem;
   margin-right: 1rem;
 }
+
+.sidebar-header p {
+  color: var(--text-mention-grey);
+}
+
 .title-container {
   flex-basis: 100%;
   flex-grow: 1;
