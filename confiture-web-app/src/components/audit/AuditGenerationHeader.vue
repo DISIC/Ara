@@ -381,7 +381,7 @@ onMounted(() => {
               <li aria-hidden="true" class="dropdown-separator"></li>
               <li class="dropdown-item">
                 <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
@@ -496,10 +496,6 @@ onMounted(() => {
 .download-meta {
   flex-basis: 100%;
   color: var(--text-mention-grey);
-}
-
-.delete-button {
-  color: var(--error-425-625);
 }
 
 .info {

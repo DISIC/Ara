@@ -179,7 +179,7 @@ async function hideAccountDeletionForm() {
   <button
     v-else
     ref="showButtonRef"
-    class="fr-btn fr-btn--tertiary-no-outline danger-button-outline"
+    class="fr-btn fr-btn--tertiary-no-outline danger-button--secondary"
     @click="showAccountDeletionForm"
   >
     Supprimer mon compte

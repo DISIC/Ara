@@ -396,7 +396,7 @@ function copyStatementLink(uniqueId: string) {
           <li aria-hidden="true" class="dropdown-separator"></li>
           <li class="dropdown-item">
             <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 delete-button"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
               @click="deleteModal?.show()"
             >
               Supprimer l’audit
@@ -471,9 +471,5 @@ function copyStatementLink(uniqueId: string) {
 
 .main-action-icon {
   flex: 0 0 auto;
-}
-
-.delete-button {
-  color: var(--background-action-high-error);
 }
 </style>
