@@ -218,6 +218,25 @@ describe("Audit", () => {
     });
   });
 
+  it("User can copy audit link", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.contains("button", "Options").click();
+      cy.contains("button", "Copier le lien de l’audit").click();
+      // cy.get("@audit").then((audit) => {
+      cy.assertClipboardValue(
+        // @ts-ignore
+        // TODO remove `@ts-ignore` when the following issue is fixed:
+        // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
+        `http://localhost:3000/audits/${editId}/generation`,
+      );
+      cy.contains(
+        "Le lien vers l’audit a bien été copié dans le presse-papier.",
+      );
+    });
+  });
+
   it("User can update notes", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
