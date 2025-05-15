@@ -28,7 +28,7 @@ defineProps<{
     >
       <template v-if="disabled">–</template>
       <span v-else>
-        {{ value }}<span v-if="unit" class="card-unit">{{ unit }}</span>
+        {{ value }}<span v-if="unit" class="card-unit">&nbsp;{{ unit }}</span>
       </span>
     </p>
     <div :class="['card-info', { 'fr-py-3v fr-pl-2w': minimal }]">
