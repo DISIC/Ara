@@ -121,8 +121,8 @@ const headerInfos = computed(() => [
     : []),
   {
     title: pluralize(
-      "Critère non conforme",
-      "Critères non conformes",
+      "Critère<br /> non conforme",
+      "Critères<br /> non conformes",
       notCompliantCriteriaCount.value
     ),
     description: `Dont ${blockingCriteriaCount.value} ${pluralize(
@@ -135,8 +135,8 @@ const headerInfos = computed(() => [
   },
   {
     title: pluralize(
-      "Critère conforme",
-      "Critères conformes",
+      "Critère<br /> conforme",
+      "Critères<br /> conformes",
       compliantCriteriaCount.value
     ),
     description: `Sur ${applicableCriteriaCount.value} ${pluralize(
