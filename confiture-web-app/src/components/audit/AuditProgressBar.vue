@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { useUniqueId } from "../../composables/useUniqueId";
+
 const props = defineProps<{
   value: number;
   label: string;
   size: number; // value in px
   inline?: boolean;
+  tooltipLabel?: string;
 }>();
+
+const uniqueId = useUniqueId();
 
 const progressPercentage = computed(() => {
   const percentage = props.value * 100;
@@ -24,13 +29,39 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
 </script>
 
 <template>
-  <div :class="['audit-progress', { 'audit-progress--inline': inline }]">
+  <div
+    :class="[
+      'audit-progress',
+      {
+        'audit-progress--inline': inline,
+        'audit-progress--with-tooltip':
+          tooltipLabel && $slots['tooltip-content']
+      }
+    ]"
+  >
     <span :class="['audit-progress-label', { 'fr-sr-only': inline }]">
       {{ label }}
     </span>
+    <template v-if="tooltipLabel && $slots['tooltip-content']">
+      <button
+        class="fr-btn--tooltip fr-btn"
+        type="button"
+        :aria-describedby="`progress-bar-tooltip-${uniqueId}`"
+      >
+        {{ tooltipLabel }}
+      </button>
+      <span
+        :id="`progress-bar-tooltip-${uniqueId}`"
+        class="fr-tooltip fr-placement fr-text--sm"
+        role="tooltip"
+        aria-hidden="true"
+      >
+        <slot name="tooltip-content" />
+      </span>
+    </template>
     <span
       :class="[
-        ' fr-text--action-high-grey fr-m-0 audit-progress-percentage',
+        ' fr-text--action-high-grey fr-mb-0 audit-progress-percentage',
         {
           'fr-text--xs': !inline
         }
@@ -43,34 +74,38 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
 </template>
 
 <style scoped>
-.audit-progress-bar {
-  background-color: var(--background-contrast-grey);
-  position: relative;
-  grid-column: 1 / -1;
-}
-
 .audit-progress {
   background: none;
-  display: grid;
-  gap: v-bind(progressBarSize) 1rem;
-  grid-template-columns: 1fr 4ch;
-  grid-template-rows: auto v-bind(progressBarSize);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  gap: v-bind(progressBarSize) 0.125rem;
 }
 
 .audit-progress--inline {
-  grid-template-rows: v-bind(progressBarSize);
-  gap: 0 0.5rem;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
 
   .audit-progress-bar {
     height: v-bind(progressBarSize);
-    grid-column: 1 / span 1;
   }
+}
+.audit-progress-label {
+  font-weight: 500;
+}
 
-  .audit-progress-percentage {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-  }
+.audit-progress-percentage {
+  color: var(--text-mention-grey);
+  margin-inline-start: auto;
+}
+
+.audit-progress-bar {
+  background-color: var(--background-contrast-grey);
+  position: relative;
+  height: v-bind(progressBarSize);
+  flex-basis: 100%;
 }
 
 .audit-progress-bar::after {
@@ -82,15 +117,5 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
   bottom: 0;
   transition: width 1s ease;
   width: v-bind(progressBarValue);
-}
-
-.audit-progress-label {
-  font-weight: 500;
-}
-
-.audit-progress-percentage {
-  color: var(--text-mention-grey);
-  align-self: end;
-  text-align: end;
 }
 </style>
