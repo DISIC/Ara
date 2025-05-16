@@ -266,9 +266,24 @@ onMounted(() => {
         v-if="showAuditProgressBar"
         :value="resultStore.auditProgress"
         label="Progression de l’audit"
-        :size="4"
+        tooltip-label="Informations sur la progression de l’audit"
+        :size="8"
         class="progress-bar"
-      />
+      >
+        <template #tooltip-content>
+          <p class="fr-text--sm">
+            La progression de l'audit se base sur les critères évalués de chaque
+            <strong>page de votre échantillon</strong>. Évaluez les critères de
+            toutes les pages pour terminer votre audit
+          </p>
+          <p class="fr-text--xs fr-mb-0">
+            À noter : les critères des
+            <strong>éléments transverses</strong> sont optionnels. Ils sont pris
+            en compte dans le calcul du taux mais pas dans la progression de
+            l’audit.
+          </p>
+        </template>
+      </AuditProgressBar>
 
       <div
         v-else-if="auditStore.currentAudit?.publicationDate"
@@ -533,7 +548,7 @@ onMounted(() => {
   border-bottom: 1px solid transparent;
   border-right: 1px solid var(--border-default-grey);
   transition: border-color 0.2s ease;
-  padding-right: 0.75rem;
+  padding-right: 1.5rem;
 }
 
 @media (width < 48rem) {
