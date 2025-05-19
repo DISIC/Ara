@@ -13,9 +13,8 @@ async function main() {
   const document = SwaggerModule.createDocument(app, config);
 
   const ast = await openapiTS(document as OpenAPI3);
-  const fileContent = "/* eslint-disable */\n" + ast;
   const resolvedPath = resolve(__dirname, "../confiture-api.ts");
-  await writeFile(resolvedPath, fileContent, {
+  await writeFile(resolvedPath, ast, {
     encoding: "utf-8"
   });
   console.log("✅ Typings saved to", resolvedPath);
