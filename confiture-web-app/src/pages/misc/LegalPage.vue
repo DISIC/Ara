@@ -35,9 +35,9 @@ import PageMeta from "../../components/PageMeta";
       DINUM<br />
       20 avenue de Ségur<br />
       75007 Paris<br />
-      Tel. accueil : 01.71.21.01.70<br />
-      SIRET : 12000101100010 (secrétariat général du gouvernement)<br />
-      SIREN : 120 001 011
+      Tel. accueil : 01.71.21.01.70<br />
+      SIRET : 12000101100010 (secrétariat général du gouvernement)<br />
+      SIREN : 120 001 011
     </p>
 
     <h2>Directrice de publication</h2>
@@ -59,14 +59,14 @@ import PageMeta from "../../components/PageMeta";
     <h2>Hébergement du site</h2>
 
     <p>
-      Ce site est hébergé sur une plateforme labellisée SecNumCloud par OVH :
+      Ce site est hébergé sur une plateforme labellisée SecNumCloud par OVH :
     </p>
 
     <ul>
       <li>RCS Roubaix – Tourcoing 424 761 419 00045</li>
       <li>Code APE 6202A</li>
-      <li>N° TVA : FR 22 424 761 419</li>
-      <li>Siège social : 2 rue Kellermann</li>
+      <li>N<sup>o</sup> TVA : FR 22 424 761 419</li>
+      <li>Siège social : 2 rue Kellermann</li>
       <li>59100 Roubaix</li>
       <li>France</li>
     </ul>

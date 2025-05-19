@@ -115,7 +115,7 @@ const noResults = computed(() => {
           !store.hasNoResultsFromComplianceLevel
         "
       >
-        <p><strong>Suggestions :</strong></p>
+        <p><strong>Suggestions :</strong></p>
         <ul>
           <li>Vérifiez l’orthographe des termes de recherche</li>
           <li>Essayez un autre mot</li>

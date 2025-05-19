@@ -213,7 +213,7 @@ function combineEnvironments(
         v-model="env.platform"
         class="fr-m-0"
         label="Appareil"
-        hint="Exemples : mobile, borne interactive"
+        hint="Exemples : mobile, borne interactive"
         type="text"
         :required="customEnvironments.length > 1"
       />
@@ -223,7 +223,7 @@ function combineEnvironments(
         v-model="env.operatingSystem"
         class="fr-m-0"
         label="Logiciel d’exploitation"
-        hint="Exemple : macOS"
+        hint="Exemple : macOS"
         type="text"
         :required="customEnvironments.length > 1"
       />
@@ -233,7 +233,7 @@ function combineEnvironments(
         v-model="env.assistiveTechnology"
         class="fr-m-0"
         label="Technologie d’assistance"
-        hint="Exemple : VoiceOver"
+        hint="Exemple : VoiceOver"
         type="text"
         :required="customEnvironments.length > 1"
       />
@@ -242,7 +242,7 @@ function combineEnvironments(
         :id="`env-browser-${i}`"
         v-model="env.browser"
         label="Navigateur"
-        hint="Exemple : Safari"
+        hint="Exemple : Safari"
         type="text"
         :required="customEnvironments.length > 1"
       />

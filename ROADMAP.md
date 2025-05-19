@@ -2,7 +2,7 @@
 
 <p class="intro">Cette page présente les améliorations à venir du produit pour vous offrir une vision claire de son orientation. La feuille de route est mise à jour régulièrement pour vous fournir une vision précise des travaux menés par l'équipe.</p>
 
-<p class="fr-highlight fr-mb-5w">En juillet 2024, nous avons rencontré 16 personnes auditrices en accessibilité numérique débutantes ou confirmées. Ces tests nous ont permis d’identifier des pistes d’améliorations, des points de blocages et ont été une aide précieuse dans la priorisation des tâches en cours et à venir. Merci à celles et ceux qui ont joué le jeu !</p>
+<p class="fr-highlight fr-mb-5w">En juillet 2024, nous avons rencontré 16 personnes auditrices en accessibilité numérique débutantes ou confirmées. Ces tests nous ont permis d’identifier des pistes d’améliorations, des points de blocages et ont été une aide précieuse dans la priorisation des tâches en cours et à venir. Merci à celles et ceux qui ont joué le jeu !</p>
 
 ## <span aria-hidden="true">🛠️</span> En cours
 

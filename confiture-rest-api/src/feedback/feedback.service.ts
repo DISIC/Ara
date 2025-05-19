@@ -36,7 +36,7 @@ export class FeedbackService {
         throw err;
       });
 
-    console.log("Added feedback to Grist: %s", response.records[0].id);
+    console.log("Added feedback to Grist: %s", response.records[0].id);
   }
 
   async saveFeedback(feedback: NewFeedbackDto) {

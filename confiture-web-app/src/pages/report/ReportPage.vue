@@ -246,7 +246,7 @@ watch(
       </p>
 
       <p class="fr-mb-1v">
-        URL du site :
+        URL du site :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -254,18 +254,18 @@ watch(
         <template v-else>Non renseignée</template>
       </p>
       <p class="fr-mb-1v">
-        Type d’audit :
+        Type d’audit :
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-1v">
-        Référentiel : <strong>{{ REFERENTIAL }}</strong>
+        Référentiel : <strong>{{ REFERENTIAL }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
-        Auditeur ou auditrice :
+        Auditeur ou auditrice :
         <strong>{{ report.data.context.auditorName }}</strong>
       </p>
       <p v-if="report.data.procedureInitiator">
-        Déclaration d’accessibilité :
+        Déclaration d’accessibilité :
         <RouterLink
           :to="{ name: 'a11y-statement', params: { uniqueId } }"
           class="fr-link"

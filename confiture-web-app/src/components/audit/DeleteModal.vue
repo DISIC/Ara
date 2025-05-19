@@ -47,7 +47,7 @@ defineExpose({
               <p>
                 Cet audit sera définitivement supprimé. Le rapport de cet audit
                 restera accessible mais toutes vos informations personnelles
-                seront supprimées : prénom et nom.
+                seront supprimées : prénom et nom.
               </p>
             </div>
             <div class="fr-modal__footer">

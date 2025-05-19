@@ -33,25 +33,25 @@ const errorInstruction =
     404: `
 Si vous avez tapé l’adresse web dans le navigateur, vérifiez qu’elle est correcte. La page n’est peut-être plus disponible.
 
-Dans ce cas, pour continuer votre visite vous pouvez consulter notre page d’accueil ou nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
+Dans ce cas, pour continuer votre visite vous pouvez consulter notre page d’accueil ou nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
     `,
     408: `
-Vous pouvez :
+Vous pouvez :
 - Vérifier votre connexion internet
 - Recharger la page dans quelques instants, le site peut être temporairement indisponible ou enregistrer trop de connexion simultanément
 - Si votre ordinateur ou votre réseau est protégé par un pare-feu ou un proxy, assurez-vous que votre navigateur soit autorisé à accéder à internet
 
-Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
+Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
     `,
     500: `
 Essayez de rafraîchir la page ou bien ressayez plus tard.
 
-Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
+Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
     `,
     503: `
 Merci de réessayer plus tard, vous serez bientôt en mesure de réutiliser le service.
 
-Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
+Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
     `
   }[statusCode] ??
   // TODO: get real wording

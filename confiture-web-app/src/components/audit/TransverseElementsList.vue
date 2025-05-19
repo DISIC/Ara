@@ -109,7 +109,7 @@ async function cancelEdition() {
           ref="tagListFieldRef"
           v-model="tags"
           label="Nom de l’élément transverse"
-          hint="Exemples : En-tête, pied de page, bandeau cookies, etc."
+          hint="Exemples : En-tête, pied de page, bandeau cookies, etc."
           class="elements-field"
           add-label="les éléments transverses"
         />

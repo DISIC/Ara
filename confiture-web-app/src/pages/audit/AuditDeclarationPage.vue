@@ -237,7 +237,7 @@ const isDevMode = useDevMode();
       id="initiator"
       v-model="auditInitiator"
       label="Entité qui a demandé l’audit"
-      hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
+      hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
       type="text"
       required
     />
@@ -287,7 +287,7 @@ const isDevMode = useDevMode();
       />
 
       <p class="fr-mb-2w">
-        Vous devez renseigner au moins un des deux moyens de contact suivant :
+        Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
       <div class="fr-ml-md-4w">
@@ -295,7 +295,7 @@ const isDevMode = useDevMode();
           id="contact-email"
           v-model="contactEmail"
           label="Adresse e-mail"
-          hint="Exemple : contact@ministere.gouv.fr"
+          hint="Exemple : contact@ministere.gouv.fr"
           type="email"
           :error="
             hasNoContactInfo
@@ -311,7 +311,7 @@ const isDevMode = useDevMode();
           id="contact-form-url"
           v-model="contactFormUrl"
           label="Formulaire de contact en ligne"
-          hint="Exemple : contact@ministere.gouv.fr"
+          hint="Exemple : contact@ministere.gouv.fr"
           type="text"
           :pattern="URL_REGEX"
           placeholder="https://"
@@ -334,7 +334,7 @@ const isDevMode = useDevMode();
     <TagListField
       v-model="technologies"
       label="Ajouter des technologies"
-      hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
+      hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
       add-label="les technologies"
     />
 
@@ -421,7 +421,7 @@ const isDevMode = useDevMode();
         Contenus non soumis à l’obligation d’accessibilité, contenus tiers
         (optionnel)
         <span class="fr-hint-text">
-          Exemple : Cartes interactives, fil d’actualité réseaux social, lecteur
+          Exemple : Cartes interactives, fil d’actualité réseaux social, lecteur
           vidéo, etc
         </span>
       </label>

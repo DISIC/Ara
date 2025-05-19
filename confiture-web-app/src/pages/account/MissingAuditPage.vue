@@ -6,7 +6,7 @@ const accountStore = useAccountStore();
 </script>
 
 <template>
-  <PageMeta title="Audit manquant ?" />
+  <PageMeta title="Audit manquant ?" />
   <div class="fr-mb-4w">
     <RouterLink
       :to="{ name: 'account-dashboard' }"
@@ -17,17 +17,17 @@ const accountStore = useAccountStore();
   </div>
 
   <div class="wrapper fr-mb-6w">
-    <h1>Un audit manque dans votre espace ?</h1>
+    <h1>Un audit manque dans votre espace ?</h1>
     <p>
       Vérifiez que l'adresse e-mail associée à votre audit est identique à celle
       utilisée pour votre compte. Si ce n’est pas le cas, remplacez l’adresse
-      e-mail associée à votre audit par l’adresse utilisée pour votre compte :
+      e-mail associée à votre audit par l’adresse utilisée pour votre compte :
       <strong>{{ accountStore.account?.email }}</strong
       >.
     </p>
 
     <p class="fr-text--lg">
-      <strong>Modifier l’adresse e-mail associée à un audit :</strong>
+      <strong>Modifier l’adresse e-mail associée à un audit :</strong>
     </p>
 
     <ol>
@@ -47,9 +47,9 @@ const accountStore = useAccountStore();
   </div>
 
   <div class="fr-py-6w fr-px-2w banner">
-    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez toujours un problème ?</h2>
+    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez toujours un problème ?</h2>
     <p class="fr-mb-0">
-      Contactez notre support par e-mail à l’adresse :
+      Contactez notre support par e-mail à l’adresse :
       <strong>ara@design.numerique.gouv.fr</strong>
     </p>
   </div>

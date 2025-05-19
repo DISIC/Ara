@@ -35,7 +35,7 @@ function validateEmailField() {
   // Empty email
   if (userEmail.value.trim().length === 0) {
     userEmailError.value =
-      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
+      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
     userEmailField.value?.inputRef?.focus();
     return false;
   }
@@ -43,7 +43,7 @@ function validateEmailField() {
   // Invalid email format
   if (!validateEmail(userEmail.value)) {
     userEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
     userEmailField.value?.inputRef?.focus();
     return false;
   }
@@ -103,7 +103,7 @@ async function handleSubmit() {
         ) {
           // Invalid email format
           userEmailError.value =
-            "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+            "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
           userEmailField.value?.inputRef?.focus();
         } else {
           // Unkown error
@@ -145,7 +145,7 @@ function fillFields() {
         v-model="userEmail"
         class="fr-mb-2w"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         :error="userEmailError"

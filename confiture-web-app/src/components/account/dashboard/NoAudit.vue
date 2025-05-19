@@ -7,7 +7,7 @@ defineProps<{ label: string }>();
     <span class="fr-text--md fr-text--bold fr-mb-1v">{{ label }}</span>
 
     <RouterLink :to="{ name: 'missing-audit' }" class="fr-text--sm fr-mb-0">
-      Vous ne retrouvez pas un audit ?
+      Vous ne retrouvez pas un audit ?
     </RouterLink>
   </p>
 </template>

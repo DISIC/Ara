@@ -81,12 +81,12 @@ onMounted(() => {
       Bienvenue dans votre espace <span aria-hidden="true">👋</span>
     </p>
     <p class="fr-mb-3v">
-      Vous trouverez ici tous les audits associés à votre adresse e-mail :
+      Vous trouverez ici tous les audits associés à votre adresse e-mail :
       <strong>{{ accountStore.account?.email }}</strong>
     </p>
     <p>
       <RouterLink class="fr-link" :to="{ name: 'missing-audit' }">
-        Un de vos audits manque dans votre espace ?
+        Un de vos audits manque dans votre espace ?
       </RouterLink>
     </p>
     <button
