@@ -159,9 +159,13 @@ const pageTitle = computed(() => {
   // X résultats pour « [search] » - [tabName] - Audit de [procedureName]
   const titleParts = [];
   const curAudit = auditStore.currentAudit;
+
+  // No audit in store? (Should never happen?)
   if (!curAudit) {
     return "…";
   }
+
+  // 1. Search results
   if (filterStore.search) {
     const results = `${filterResultsCount.value} ${pluralize(
       "résultat",
@@ -171,14 +175,19 @@ const pageTitle = computed(() => {
 
     titleParts.push(results);
   }
-  if (curAudit) {
-    const tabName =
-      curAudit.pages.find((p) => p.id === auditStore.currentPageId)?.name ??
-      StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL;
-    const procedureName = auditStore.currentAudit.procedureName;
 
-    titleParts.push(tabName, "Audit de " + procedureName);
-  }
+  // 2. Tab name
+  const pageName = curAudit.pages.find(
+    (p) => p.id === auditStore.currentPageId
+  )?.name;
+  const tabName = pageName
+    ? "Page " + pageName
+    : StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL;
+
+  // 3. Procedure name
+  const procedureName = auditStore.currentAudit.procedureName;
+
+  titleParts.push(tabName, "Audit de " + procedureName);
 
   return titleParts.join(" - ");
 });
