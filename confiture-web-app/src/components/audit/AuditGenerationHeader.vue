@@ -274,7 +274,7 @@ onMounted(() => {
           <p class="fr-text--sm">
             La progression de l'audit se base sur les critères évalués de chaque
             <strong>page de votre échantillon</strong>. Évaluez les critères de
-            toutes les pages pour terminer votre audit
+            toutes les pages pour terminer votre audit.
           </p>
           <p class="fr-text--xs fr-mb-0">
             À noter : les critères des
