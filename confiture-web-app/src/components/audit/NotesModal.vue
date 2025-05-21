@@ -109,7 +109,7 @@ function handleDeleteFile(file: AuditFile) {
                 Points à signaler ne concernant pas l’accessibilité du site
                 audité
                 <span class="fr-hint-text fr-mt-1v"
-                  >Exemple : temps de chargement excessif sur certaines pages,
+                  >Exemple : temps de chargement excessif sur certaines pages,
                   incohérences dans l'usage des couleurs, bug</span
                 >
               </p>

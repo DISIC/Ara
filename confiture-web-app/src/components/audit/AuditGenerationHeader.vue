@@ -190,7 +190,7 @@ function copyAuditLink(uniqueId: string) {
     notify(
       "success",
       undefined,
-      `Le lien vers l’audit a bien été copié dans le presse-papier.`
+      "Le lien vers l’audit a bien été copié dans le presse-papier."
     );
   });
 }
@@ -335,7 +335,7 @@ onMounted(() => {
                   :disabled="isOffline"
                 >
                   Consulter le rapport
-                  <span class="fr-sr-only">(Nouvelle fenêtre)</span>
+                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
