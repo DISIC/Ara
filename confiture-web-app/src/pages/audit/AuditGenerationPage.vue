@@ -177,9 +177,8 @@ const pageTitle = computed(() => {
   }
 
   // 2. Tab name
-  const pageName = curAudit.pages.find(
-    (p) => p.id === auditStore.currentPageId
-  )?.name;
+  const pageName = curAudit.pages.find((p) => p.id === auditStore.currentPageId)
+    ?.name;
   const tabName = pageName
     ? "Page " + pageName
     : StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL;
@@ -187,7 +186,7 @@ const pageTitle = computed(() => {
   // 3. Procedure name
   const procedureName = auditStore.currentAudit.procedureName;
 
-  titleParts.push(tabName, "Audit de " + procedureName);
+  titleParts.push(tabName, "Audit " + procedureName);
 
   return titleParts.join(" - ");
 });
@@ -229,9 +228,9 @@ const tabsData = computed((): TabData[] => {
 function onSelectedTabChange(tabIndex: number) {
   auditStore.updateCurrentPageId(
     tabIndex === 0
-      ? (auditStore.currentAudit?.transverseElementsPage.id ?? null)
+      ? auditStore.currentAudit?.transverseElementsPage.id ?? null
       : auditStore.currentAudit?.pages
-        ? (auditStore.currentAudit?.pages.at(tabIndex - 1)?.id ?? null)
+        ? auditStore.currentAudit?.pages.at(tabIndex - 1)?.id ?? null
         : null
   );
 }
