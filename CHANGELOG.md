@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 21/05/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le contraste de certains éléments du DSFR en hover ([#1105](https://github.com/DISIC/Ara/pull/1105))
+
 ### 07/05/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
