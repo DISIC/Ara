@@ -529,9 +529,11 @@ onMounted(() => {
   background: var(--background-default-grey);
   min-height: 4rem;
 }
+
 .audit-main-indicator {
-  margin-left: 2rem;
+  margin-left: 0.75rem;
 }
+
 @media (width < 36rem) {
   .audit-main-indicator {
     margin-left: 0;
