@@ -507,7 +507,7 @@ onMounted(() => {
 }
 
 .audit-main-indicator {
-  margin-left: 2rem;
+  margin-left: 0.75rem;
 }
 
 @media (width < 36rem) {

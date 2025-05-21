@@ -2,9 +2,11 @@
 import { debounce } from "lodash-es";
 import { computed, ref, watch } from "vue";
 
+import { useUniqueId } from "../../composables/useUniqueId";
 import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
 import { StoreName } from "../../types";
-import Dropdown from "../ui/Dropdown.vue";
+
+const uniqueId = useUniqueId();
 
 /* Change the saving status in a way that it wont "flicker" */
 
@@ -45,46 +47,34 @@ watch(
 
 const systemStore = useSystemStore();
 
-const dropdownTitle = computed(() => {
+const saveContent = computed(() => {
   if (isLoading.value) {
-    return "Enregistrement…";
+    return {
+      status: "Enregistrement...",
+      description: "Modifications en cours d’enregistrement...",
+      class: "save-indicator-icon--loading"
+    };
   }
+
   if (!systemStore.isOnline) {
-    return "Enregistrement impossible";
+    return {
+      status: "Enregistrement impossible",
+      description:
+        "L’enregistrement de vos modifications est impossible hors connexion. Veuillez vérifier votre connexion internet.",
+      class: "save-indicator-icon--error"
+    };
   }
 
-  return "Enregistré";
-});
-
-const dropdownMainText = computed(() => {
-  if (isLoading.value) {
-    return "Modifications en cours d’enregistrement…";
-  }
-  if (!systemStore.isOnline) {
-    return "L’enregistrement de vos modifications est impossible hors connexion. Veuillez vérifier votre connexion internet.";
-  }
-  return "Ara enregistre automatiquement votre travail";
-});
-
-const dropdownIcon = computed(() => {
-  if (isLoading.value) {
-    return "fr-icon-refresh-line";
-  }
-  if (!systemStore.isOnline) {
-    return "fr-icon-warning-line";
-  }
-
-  return "fr-icon-success-line";
+  return {
+    status: "Enregistré",
+    description: "Ara enregistre automatiquement votre travail",
+    class: "save-indicator-icon--default"
+  };
 });
 
 /* Display the time since last successful save */
-
 const relativeLastSaveDate = ref<string>();
 
-/**
- *
- * @param seconds
- */
 function formatInterval(seconds: number) {
   if (seconds < 60) {
     return `il y a ${seconds} secondes`;
@@ -127,26 +117,26 @@ watch(
 </script>
 
 <template>
-  <div class="dropdown-container">
-    <Dropdown
-      :title="dropdownTitle"
-      align-left
-      icon-left
-      :button-props="{
-        class: `fr-btn--tertiary-no-outline ${dropdownIcon}`,
-        style: !systemStore.isOnline
-          ? 'color: var(--text-default-error);'
-          : undefined
-      }"
+  <div class="save-indicator">
+    <button
+      :class="[`fr-btn--tooltip fr-btn fr-btn--sm ${saveContent.class}`]"
+      type="button"
+      :aria-describedby="`save-indicator-${uniqueId}`"
     >
-      <p class="fr-text--sm fr-mb-1v">
-        {{ dropdownMainText }}
-      </p>
-
-      <p v-if="relativeLastSaveDate" class="fr-text--xs fr-m-0">
+      Informations sur l’enregistrement
+    </button>
+    <span
+      :id="`save-indicator-${uniqueId}`"
+      class="fr-tooltip fr-placement fr-text--sm"
+      role="tooltip"
+      aria-hidden="true"
+    >
+      {{ saveContent.description }}
+      <small class="fr-text--xs fr-m-0 save-indicator-relative-time">
         Dernier enregistrement {{ relativeLastSaveDate }}
-      </p>
-    </Dropdown>
+      </small>
+    </span>
+    <p class="fr-m-0 save-indicator-label">{{ saveContent.status }}</p>
 
     <p class="fr-sr-only" aria-live="polite" role="alert">
       {{ saveText }}
@@ -155,10 +145,38 @@ watch(
 </template>
 
 <style scoped>
-.dropdown-container {
-  min-width: 10rem;
+.save-indicator {
+  align-items: center;
+  display: flex;
+  gap: 0.125rem;
 }
-:deep(.fr-btn--tertiary-no-outline) {
-  padding: 0;
+
+.save-indicator-icon--default::before {
+  mask-image: url("../../assets/images/cloud-check.svg");
+}
+
+.save-indicator-icon--loading::before {
+  mask-image: url("../../assets/images/upload-cloud-2-line.svg");
+}
+
+.save-indicator-icon--error::before {
+  mask-image: url("../../assets/images/cloud-off-line.svg");
+}
+
+.save-indicator-icon--error {
+  color: var(--text-default-error);
+
+  & ~ .save-indicator-label {
+    color: var(--text-default-error);
+  }
+}
+
+.save-indicator-label {
+  color: var(--text-mention-grey);
+}
+
+.save-indicator-relative-time {
+  display: block;
+  color: var(--text-mention-grey);
 }
 </style>
