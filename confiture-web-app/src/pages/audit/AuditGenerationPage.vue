@@ -156,7 +156,7 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // X résultats pour « [search] » - [tabName] - Audit de [procedureName]
+  // X résultats pour « [search] » - [tabName] - Audit [procedureName]
   const titleParts = [];
   const curAudit = auditStore.currentAudit;
 

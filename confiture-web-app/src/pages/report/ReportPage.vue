@@ -39,9 +39,9 @@ const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
 const tabsRef = ref<InstanceType<typeof AraTabs>>();
 
 const pageTitle = computed(() => {
-  // [tabName] - Rapport d’audit de [procedureName]
+  // [tabName] - Rapport d’audit [procedureName]
   const tabName = tabsRef.value?.getSelectedTabLabel();
-  return tabName + " - Rapport d’audit de " + report.data?.procedureName;
+  return tabName + " - Rapport d’audit " + report.data?.procedureName;
 });
 
 const hasNotes = computed(() => {
