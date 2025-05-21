@@ -5,11 +5,11 @@ import { computed, ref, watch } from "vue";
 import { useUniqueId } from "../../composables/useUniqueId";
 import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
 import { StoreName } from "../../types";
+import { formatDate, pluralize } from "../../utils";
 
 const uniqueId = useUniqueId();
 
 /* Change the saving status in a way that it wont "flicker" */
-
 export interface Props {
   storeName?: StoreName;
 }
@@ -43,8 +43,7 @@ watch(
   }
 );
 
-/* Show an alert when the app is offline */
-
+/* Update tooltip content conditionally */
 const systemStore = useSystemStore();
 
 const saveContent = computed(() => {
@@ -77,13 +76,21 @@ const relativeLastSaveDate = ref<string>();
 
 function formatInterval(seconds: number) {
   if (seconds < 60) {
-    return `il y a ${seconds} secondes`;
+    return `il y a quelques secondes`;
   } else if (seconds < 60 * 60) {
     return `il y a ${Math.floor(seconds / 60)} min`;
-  } else {
+  } else if (seconds < 60 * 60 * 24) {
     const hours = Math.floor(seconds / (60 * 60));
     const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
-    return `il y a ${hours} h ${minutes} m`;
+    return minutes > 0 ? `il y a ${hours} h ${minutes} m` : `il y a ${hours} h`;
+  } else if (seconds < 60 * 60 * 24 * 7) {
+    const days = Math.floor(seconds / (60 * 60 * 24));
+    return `il y a ${days} ${pluralize("jour", "jours", days)}`;
+  } else if (store.value.lastRequestSuccessEnd) {
+    const date = new Date(store.value.lastRequestSuccessEnd);
+    return `le ${formatDate(date.toString())}`;
+  } else {
+    return "il y a plusieurs jours";
   }
 }
 
