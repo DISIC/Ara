@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { type Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, onMounted, ShallowRef, watch } from "vue";
+import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
 import { displayedHeadings, tiptapExtensions } from "./tiptap-extensions";
