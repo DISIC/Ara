@@ -231,7 +231,7 @@ onMounted(() => {
   </h1>
   <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
 
-  <div ref="stickyIndicator" class="sticky-indicator fr-grid-row fr-mb-3w">
+  <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">
     <div
       v-if="!systemStore.isOnline"
       id="offlineAlert"
@@ -247,7 +247,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="indicator-left-side fr-col-12 fr-col-sm-5 fr-col-md-3"
+      class="fr-col-12 fr-col-sm-5 fr-col-md-3 indicator-left-side"
       :class="{ 'with-border': showLeftSideBorders }"
     >
       <AuditProgressBar
@@ -291,64 +291,24 @@ onMounted(() => {
         v-if="route.name === 'audit-generation-full'"
         class="audit-main-indicator"
       />
-      <ul class="top-actions fr-my-0 fr-p-0" role="list">
-        <li class="fr-p-0 settings-item">
-          <RouterLink
-            class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
-            :to="{
-              name: 'audit-settings',
-              params: { uniqueId: editUniqueId }
-            }"
-          >
-            Paramètres
-          </RouterLink>
-        </li>
-
+      <ul class="fr-my-0 fr-p-0 top-actions" role="list">
         <li class="fr-p-0">
           <Dropdown
             ref="optionsDropdownRef"
-            title="Actions"
+            title="Options"
             :disabled="isOffline"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <li class="dropdown-item notes-item mobile-dropdown-item">
+              <li class="fr-hidden-lg dropdown-item">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-draft-line"
                   :disabled="isOffline"
                   @click="openNotesModal"
                 >
-                  Annoter l’audit
+                  Ajouter des observations
                 </button>
               </li>
-              <li
-                aria-hidden="true"
-                class="dropdown-separator mobile-dropdown-item"
-              />
-              <li class="dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline"
-                  @click="duplicateModal?.show()"
-                >
-                  <CopyIcon class="fr-mr-2v" />
-                  Dupliquer l’audit
-                </button>
-              </li>
-              <li class="fr-p-0 settings-item mobile-dropdown-item">
-                <RouterLink
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
-                  :to="{
-                    name: 'audit-settings',
-                    params: { uniqueId: editUniqueId }
-                  }"
-                >
-                  Accéder aux paramètres
-                </RouterLink>
-              </li>
-              <li
-                aria-hidden="true"
-                class="dropdown-separator mobile-dropdown-item"
-              />
-              <li class="fr-p-0 report-item mobile-dropdown-item">
+              <li class="fr-p-0 dropdown-item">
                 <component
                   :is="isOffline ? 'button' : 'RouterLink'"
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left"
@@ -365,6 +325,26 @@ onMounted(() => {
                   <span class="fr-sr-only">(Nouvelle fenêtre)</span>
                 </component>
               </li>
+              <li class="fr-p-0 dropdown-item">
+                <RouterLink
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+                  :to="{
+                    name: 'audit-settings',
+                    params: { uniqueId: editUniqueId }
+                  }"
+                >
+                  Modifier les paramètres de l'audit
+                </RouterLink>
+              </li>
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline"
+                  @click="duplicateModal?.show()"
+                >
+                  <CopyIcon class="fr-mr-2v" />
+                  Dupliquer l’audit
+                </button>
+              </li>
               <li aria-hidden="true" class="dropdown-separator" />
               <li class="dropdown-item">
                 <a
@@ -378,7 +358,7 @@ onMounted(() => {
                   </span>
                 </a>
               </li>
-              <li aria-hidden="true" class="dropdown-separator"></li>
+              <li aria-hidden="true" class="dropdown-separator" />
               <li class="dropdown-item">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
@@ -391,29 +371,13 @@ onMounted(() => {
           </Dropdown>
         </li>
 
-        <li class="fr-p-0 report-item">
-          <component
-            :is="isOffline ? 'button' : 'RouterLink'"
-            class="fr-btn fr-btn--secondary fr-btn--icon-left"
-            :to="{
-              name: 'report',
-              params: { uniqueId: auditStore.currentAudit?.consultUniqueId }
-            }"
-            target="_blank"
-            :disabled="isOffline"
-          >
-            Consulter le rapport
-            <span class="fr-sr-only">(Nouvelle fenêtre)</span>
-          </component>
-        </li>
-
-        <li class="fr-p-0 notes-item">
+        <li class="fr-unhidden-lg fr-p-0 notes-desktop-link">
           <button
             class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
             :disabled="isOffline"
             @click="openNotesModal"
           >
-            Annoter l’audit
+            Ajouter des observations
           </button>
         </li>
       </ul>
@@ -498,6 +462,14 @@ onMounted(() => {
   color: var(--text-mention-grey);
 }
 
+.delete-button {
+  color: var(--error-425-625);
+}
+
+.notes-desktop-link {
+  display: none;
+}
+
 .info {
   border: 1px solid var(--border-default-grey);
   min-height: 100%;
@@ -529,9 +501,11 @@ onMounted(() => {
   background: var(--background-default-grey);
   min-height: 4rem;
 }
+
 .audit-main-indicator {
   margin-left: 2rem;
 }
+
 @media (width < 36rem) {
   .audit-main-indicator {
     margin-left: 0;
@@ -546,15 +520,6 @@ onMounted(() => {
 
 .audit-status-icon {
   color: var(--text-default-success);
-}
-
-.separator {
-  width: 1px;
-  background-color: var(--border-default-grey);
-}
-
-.sticky-grid {
-  flex: 1;
 }
 
 .indicator-left-side {
@@ -586,38 +551,6 @@ onMounted(() => {
 
 .progress-bar {
   flex-grow: 1;
-}
-
-/* Display / Hide items from the menu in the toolbar or in the dropdown */
-.mobile-dropdown-item {
-  display: none;
-}
-
-@media (width < 83rem) {
-  .report-item.mobile-dropdown-item {
-    display: block;
-  }
-  .report-item:not(.mobile-dropdown-item) {
-    display: none;
-  }
-}
-
-@media (width < 64rem) {
-  .settings-item.mobile-dropdown-item {
-    display: block;
-  }
-  .settings-item:not(.mobile-dropdown-item) {
-    display: none;
-  }
-}
-
-@media (width < 50rem) {
-  .notes-item.mobile-dropdown-item {
-    display: block;
-  }
-  .notes-item:not(.mobile-dropdown-item) {
-    display: none;
-  }
 }
 
 .metrics {
