@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige le contraste de certains éléments du DSFR en hover ([#1105](https://github.com/DISIC/Ara/pull/1105))
+- Améliore le titre des pages ([#1110](https://github.com/DISIC/Ara/pull/1100))
 
 ### 07/05/2025
 
