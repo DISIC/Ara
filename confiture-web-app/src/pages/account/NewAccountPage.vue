@@ -13,8 +13,8 @@ const userEmail = ref<string>();
 
 const pageTitles = [
   "Créer votre compte",
-  "Créer votre compte, consulter votre boite de réception",
-  "Créer votre compte, votre compte a été créé avec succès"
+  "Consulter votre boite de réception - Créer votre compte",
+  "Votre compte a été créé avec succès - Créer votre compte"
 ];
 
 const store = useAccountStore();
