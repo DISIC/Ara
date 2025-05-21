@@ -66,7 +66,7 @@ const saveContent = computed(() => {
 
   return {
     status: "Enregistré",
-    description: "Ara enregistre automatiquement votre travail",
+    description: "Ara enregistre automatiquement votre travail.",
     class: "save-indicator-icon--default"
   };
 });
@@ -82,7 +82,9 @@ function formatInterval(seconds: number) {
   } else if (seconds < 60 * 60 * 24) {
     const hours = Math.floor(seconds / (60 * 60));
     const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
-    return minutes > 0 ? `il y a ${hours} h ${minutes} m` : `il y a ${hours} h`;
+    return minutes > 0
+      ? `il y a ${hours} h ${minutes} min`
+      : `il y a ${hours} h`;
   } else if (seconds < 60 * 60 * 24 * 7) {
     const days = Math.floor(seconds / (60 * 60 * 24));
     return `il y a ${days} ${pluralize("jour", "jours", days)}`;
@@ -140,7 +142,7 @@ watch(
     >
       {{ saveContent.description }}
       <small class="fr-text--xs fr-m-0 save-indicator-relative-time">
-        Dernier enregistrement {{ relativeLastSaveDate }}
+        Dernier enregistrement {{ relativeLastSaveDate }}.
       </small>
     </span>
     <p class="fr-m-0 save-indicator-label">{{ saveContent.status }}</p>
