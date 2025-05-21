@@ -487,10 +487,6 @@ onMounted(() => {
   color: var(--text-mention-grey);
 }
 
-.delete-button {
-  color: var(--text-default-error);
-}
-
 .notes-desktop-link {
   display: none;
 }
