@@ -128,19 +128,19 @@ function closeNewsSubMenu() {
                     <li>
                       <RouterLink
                         class="fr-nav__link"
-                        :to="{ name: 'changelog' }"
+                        :to="{ name: 'roadmap' }"
                         @click="closeNewsSubMenu"
                       >
-                        Notes de version
+                        Feuille de route
                       </RouterLink>
                     </li>
                     <li>
                       <RouterLink
                         class="fr-nav__link"
-                        :to="{ name: 'roadmap' }"
+                        :to="{ name: 'changelog' }"
                         @click="closeNewsSubMenu"
                       >
-                        Feuille de route
+                        Notes de version
                       </RouterLink>
                     </li>
                   </ul>
