@@ -270,13 +270,23 @@ defineExpose({
         </ul>
       </li>
     </ul>
+
+    <!-- Visually show the editor when CSS is disabled -->
+    <hr class="hide-if-no-css" aria-hidden="true" />
+    <p class="hide-if-no-css" aria-hidden="true">Erreur et recommandation</p>
     <editor-content :editor="editor" />
+    <hr class="hide-if-no-css" aria-hidden="true" />
   </div>
 </template>
 
 <style>
 @import url("./tiptap.css");
 @import url("./tiptap-hljs.css");
+
+/* Only show when CSS is disabled */
+.hide-if-no-css {
+  display: none;
+}
 
 /* Container */
 .tiptap-container {
