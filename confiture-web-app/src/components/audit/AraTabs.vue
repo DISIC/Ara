@@ -15,6 +15,10 @@ import { useUniqueId } from "../../composables/useUniqueId";
 import { TabData } from "../../types";
 import { slugify } from "../../utils";
 
+defineExpose({
+  getSelectedTabLabel: () => selectedTab.value?.label
+});
+
 interface TabsRouteParams {
   name: string;
   params: {
