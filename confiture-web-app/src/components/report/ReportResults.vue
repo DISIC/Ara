@@ -21,7 +21,7 @@ const stats = computed(() => {
     ...(report.data?.auditType === AuditType.FULL
       ? [
           {
-            title: "Taux global de conformité",
+            title: "Taux global<br /> de conformité",
             description: auditInProgress.value
               ? "Disponible à la fin de l’audit"
               : REFERENTIAL,
@@ -36,7 +36,7 @@ const stats = computed(() => {
       : []),
 
     {
-      title: "Critères non conformes",
+      title: "Critères<br /> non conformes",
       description: `Dont ${report.data?.criteriaCount.blocking} ${pluralize(
         "bloquant",
         "bloquants",
@@ -48,7 +48,7 @@ const stats = computed(() => {
       theme: SummaryCardThemes.Red
     },
     {
-      title: "Critères conformes",
+      title: "Critères<br /> conformes",
       description: `Sur ${report.data?.criteriaCount.applicable} ${pluralize(
         "critère applicable",
         "critères applicables",
