@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import got, { HTTPError } from "got";
-import { NewFeedbackDto } from "./dto/new-feedback.dto";
 import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma.service";
+import got, { HTTPError } from "got";
 import { nanoid } from "nanoid";
+import { PrismaService } from "src/prisma.service";
+
+import { NewFeedbackDto } from "./dto/new-feedback.dto";
 
 @Injectable()
 export class FeedbackService {
@@ -104,7 +105,7 @@ export class FeedbackService {
       });
 
       return payload.jti;
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException("Invalid feedback token");
     }
   }

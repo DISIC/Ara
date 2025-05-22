@@ -1,15 +1,16 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { FeedbackModule } from "./feedback/feedback.module";
+
 import { AuditsModule } from "./audits/audits.module";
-import { HealthCheckController } from "./health-check.controller";
-import { configValidationSchema } from "./config-validation-schema";
-import { MailModule } from "./mail/mail.module";
 import { AuthModule } from "./auth/auth.module";
-import { ProfileModule } from "./profile/profile.module";
 import { UserMiddleware } from "./auth/user.middleware";
+import { configValidationSchema } from "./config-validation-schema";
 import { DebugController } from "./debug.controller";
+import { FeedbackModule } from "./feedback/feedback.module";
+import { HealthCheckController } from "./health-check.controller";
+import { MailModule } from "./mail/mail.module";
 import { PrismaService } from "./prisma.service";
+import { ProfileModule } from "./profile/profile.module";
 
 @Module({
   imports: [
