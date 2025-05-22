@@ -49,8 +49,8 @@ const systemStore = useSystemStore();
 const saveContent = computed(() => {
   if (isLoading.value) {
     return {
-      status: "Enregistrement...",
-      description: "Modifications en cours d’enregistrement...",
+      status: "Enregistrement…",
+      description: "Modifications en cours d’enregistrement…",
       class: "save-indicator-icon--loading"
     };
   }
