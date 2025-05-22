@@ -276,6 +276,7 @@ defineExpose({
 
 <style>
 @import url("./tiptap.css");
+@import url("./tiptap-hljs.css");
 
 /* Container */
 .tiptap-container {
@@ -285,11 +286,11 @@ defineExpose({
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
+}
 
-  /* Override bg color in dark mode to avoid same color as wrapper */
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--background-contrast-grey);
-  }
+/* Override bg color in dark mode to avoid same color as wrapper */
+[data-fr-theme="dark"] .tiptap-container {
+  background-color: var(--background-contrast-grey);
 }
 
 .tiptap-container--not-editable {
