@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 22/05/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des blocs de code dans l’éditeur quand le thème (clair ou sombre) du site est différent du thème système ([#1117](https://github.com/DISIC/Ara/pull/1117))
+
 ### 21/05/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
