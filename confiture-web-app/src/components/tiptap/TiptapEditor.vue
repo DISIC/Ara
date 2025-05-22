@@ -274,19 +274,35 @@ defineExpose({
       </li>
     </ul>
 
-    <!-- Visually show the editor when CSS is disabled -->
-    <hr class="hide-if-no-css" aria-hidden="true" />
-    <p class="hide-if-no-css" aria-hidden="true">Erreur et recommandation</p>
-    <editor-content :editor="editor" />
-    <hr class="hide-if-no-css" aria-hidden="true" />
+    <!-- Visually show the editor with a border and a label when CSS is disabled -->
+    <p class="tiptap-no-css-label" aria-hidden="true">
+      Erreur et recommandation
+    </p>
+    <table
+      role="presentation"
+      border="1"
+      width="100%"
+      class="tiptap-no-css-table"
+    >
+      <tr>
+        <td>
+          <editor-content :editor="editor" />
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
 <style>
 @import url("./tiptap.css");
 
-/* Only show when CSS is disabled */
-.hide-if-no-css {
+/* Handle case when CSS is disabled */
+.tiptap-no-css-table,
+.tiptap-no-css-table td {
+  border: none;
+}
+
+.tiptap-no-css-label {
   display: none;
 }
 
