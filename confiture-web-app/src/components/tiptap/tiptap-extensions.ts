@@ -102,6 +102,7 @@ export function getTiptapExtensions(
       ? [
           Placeholder.configure({
             placeholder: params.placeholder,
+            showOnlyWhenEditable: true,
             emptyEditorClass: "tiptap-container--empty"
           })
         ]
