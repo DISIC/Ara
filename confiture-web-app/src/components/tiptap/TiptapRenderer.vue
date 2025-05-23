@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import hljs from "highlight.js";
 import { computed, onMounted, ref, ShallowRef } from "vue";
 
-import { tiptapExtensions } from "./tiptap-extensions";
+import { getTiptapExtensions } from "./tiptap-extensions";
 
 const props = defineProps<{
   document: string;
@@ -23,7 +23,7 @@ const editor = useEditor({
   },
   editable: false,
   content: parsedDocument.value,
-  extensions: tiptapExtensions
+  extensions: getTiptapExtensions()
 }) as ShallowRef<Editor>;
 
 const contentRef = ref<HTMLDivElement>();

@@ -105,12 +105,14 @@ function handleDeleteFile(file: AuditFile) {
               <p id="audit-notes" class="fr-label">
                 Remarques et recommandations générales
               </p>
+              <!-- TODO: placeholder wording -->
               <TiptapEditor
                 v-model="notes"
                 class="fr-mb-4w"
                 labelled-by="audit-notes"
                 :disabled="isOffline"
                 editor-size="lg"
+                placeholder="lalala"
                 @update:model-value="handleNotesChange"
               />
 
