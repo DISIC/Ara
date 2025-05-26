@@ -57,27 +57,20 @@ export const tiptapExtensions: Extensions = [
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Link.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        class: {
-          default: null,
-          renderHTML: () => {
-            return { class: null }; // reset class when copy pasting for example
-          }
-        },
-        title: {
-          default: null,
-          renderHTML: (attributes) => {
-            return {
-              title: attributes.title
-            };
-          }
-        }
-      };
-    },
+    content: "inline*",
     renderHTML({ HTMLAttributes }) {
-      return ["a", mergeAttributes(HTMLAttributes), 0];
+      return [
+        "a",
+        mergeAttributes(HTMLAttributes),
+        ["span", {}, 0],
+        [
+          "span",
+          {
+            class: "fr-sr-only"
+          },
+          " (nouvelle fenêtre)"
+        ]
+      ];
     }
   }).configure({
     openOnClick: false,
