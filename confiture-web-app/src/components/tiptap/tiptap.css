@@ -29,6 +29,10 @@
   }
 }
 
+.tiptap:not(.tiptap--rendered) [href] {
+  cursor: text;
+}
+
 .tiptap p {
   vertical-align: middle;
 }
