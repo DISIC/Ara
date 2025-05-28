@@ -1,7 +1,8 @@
 .tiptap {
-  min-height: 10rem;
+  min-height: var(--tiptap-editor-height, 10rem);
   padding: 0.5rem 0.75rem;
 }
+
 .tiptap--rendered {
   min-height: inherit;
 }

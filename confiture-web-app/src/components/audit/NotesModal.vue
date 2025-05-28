@@ -119,6 +119,7 @@ function handleDeleteFile(file: AuditFile) {
                 labelled-by="audit-notes"
                 :disabled="isOffline"
                 editor-size="lg"
+                style="--tiptap-editor-height: 16.5rem"
                 @update:model-value="handleNotesChange"
               />
 
