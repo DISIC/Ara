@@ -4,7 +4,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import { displayedHeadings, getTiptapExtensions } from "./tiptap-extensions";
+import { displayedHeadings, tiptapExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -13,7 +13,6 @@ export interface Props {
   labelledBy?: string | null;
   disabled?: boolean;
   editorSize?: "sm" | "lg";
-  placeholder?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,9 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
-  editorSize: "sm",
-  // TODO: placeholder wording
-  placeholder: "Pouet"
+  editorSize: "sm"
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -91,7 +88,7 @@ const editor = useEditor({
   },
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: getTiptapExtensions({ placeholder: props.placeholder }),
+  extensions: tiptapExtensions,
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -335,16 +332,6 @@ defineExpose({
 
 .tiptap-container--disabled .tiptap * {
   color: var(--text-disabled-grey);
-}
-
-/* Placeholder style */
-p.tiptap-container--empty:first-child::before {
-  color: var(--text-mention-grey);
-  font-style: italic;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
 }
 
 .tiptap-selection,
