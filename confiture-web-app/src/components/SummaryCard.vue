@@ -20,15 +20,22 @@ defineProps<{
 
 <template>
   <div
-    :class="['card', { 'card--disabled': disabled, 'card--minimal': minimal }]"
+    :class="[
+      'card',
+      {
+        'card--disabled': disabled,
+        'card--minimal': minimal,
+        'card--with-unit': !!unit
+      }
+    ]"
   >
     <p
-      :class="`fr-m-0 fr-px-3w card-metric card-metric--${theme}`"
+      :class="`fr-m-0 card-metric card-metric--${theme}`"
       :aria-hidden="disabled ? true : undefined"
     >
       <template v-if="disabled">–</template>
       <span v-else>
-        {{ value }}<span v-if="unit" class="card-unit">{{ unit }}</span>
+        {{ value }}<span v-if="unit" class="card-unit">&nbsp;{{ unit }}</span>
       </span>
     </p>
     <div :class="['card-info', { 'fr-py-3v fr-pl-2w': minimal }]">
@@ -45,8 +52,21 @@ defineProps<{
 
 <style scoped>
 .card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
   border: 1px solid var(--border-default-grey);
+
+  @media (width < 62rem) {
+    grid-template-columns: 7rem 1fr;
+  }
+}
+
+.card--with-unit {
+  grid-template-columns: 8.25rem 1fr;
+
+  @media (width < 62rem) {
+    grid-template-columns: 7rem 1fr;
+  }
 }
 
 .card--disabled {
@@ -61,7 +81,7 @@ defineProps<{
 }
 
 .card--minimal {
-  grid-template-columns: 4rem auto;
+  grid-template-columns: 4.5rem auto;
 
   .card-metric {
     font-size: 1.75rem;
@@ -84,7 +104,6 @@ defineProps<{
   justify-content: center;
   font-size: 3.375rem;
   font-weight: bold;
-  font-variant-numeric: tabular-nums;
   line-height: 1;
 
   @media (width < 62rem) {
@@ -116,6 +135,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-basis: 100%;
   padding: 1.5rem 0.75rem 1.5rem 1.5rem;
 
   @media (width < 62rem) {
