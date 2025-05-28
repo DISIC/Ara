@@ -47,7 +47,7 @@
 
 .tiptap pre,
 .tiptap code {
-  background-color: var(--background-contrast-overlap-grey);
+  background-color: var(--highlight-a11y-color-background);
   border-radius: 0.25rem;
 }
 
