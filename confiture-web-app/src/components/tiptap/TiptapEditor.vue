@@ -270,13 +270,39 @@ defineExpose({
         </ul>
       </li>
     </ul>
-    <editor-content :editor="editor" />
+
+    <!-- Visually show the editor with a border and a label when CSS is disabled -->
+    <p class="tiptap__fake-label" aria-hidden="true">
+      Erreur et recommandation
+    </p>
+    <table
+      role="presentation"
+      border="1"
+      width="100%"
+      class="tiptap__fake-table"
+    >
+      <tr>
+        <td>
+          <editor-content :editor="editor" />
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
 <style>
 @import url("./tiptap.css");
 @import url("./tiptap-hljs.css");
+
+/* Handle case when CSS is disabled */
+.tiptap__fake-label {
+  display: none;
+}
+
+.tiptap__fake-table,
+.tiptap__fake-table td {
+  border: none;
+}
 
 /* Container */
 .tiptap-container {

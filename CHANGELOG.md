@@ -4,6 +4,16 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 28/05/2025
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Modifie le thème visuel des blocs de code de l’éditeur pour assurer un bon contraste des couleurs ([#1124](https://github.com/DISIC/Ara/pull/1124))
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage de l’éditeur lorsque les CSS sont désactivées ([#1120](https://github.com/DISIC/Ara/pull/1120))
+
 ### 22/05/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
