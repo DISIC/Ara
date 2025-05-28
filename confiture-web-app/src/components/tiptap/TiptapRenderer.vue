@@ -23,7 +23,7 @@ const editor = useEditor({
   },
   editable: false,
   content: parsedDocument.value,
-  extensions: tiptapExtensions()
+  extensions: tiptapExtensions
 }) as ShallowRef<Editor>;
 
 const contentRef = ref<HTMLDivElement>();
