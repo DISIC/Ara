@@ -20,7 +20,14 @@ defineProps<{
 
 <template>
   <div
-    :class="['card', { 'card--disabled': disabled, 'card--minimal': minimal }]"
+    :class="[
+      'card',
+      {
+        'card--disabled': disabled,
+        'card--minimal': minimal,
+        'card--with-unit': !!unit
+      }
+    ]"
   >
     <p
       :class="`fr-m-0 card-metric card-metric--${theme}`"
@@ -46,8 +53,16 @@ defineProps<{
 <style scoped>
 .card {
   display: grid;
-  grid-template-columns: 8.25rem 1fr;
+  grid-template-columns: 7.5rem 1fr;
   border: 1px solid var(--border-default-grey);
+
+  @media (width < 62rem) {
+    grid-template-columns: 7rem 1fr;
+  }
+}
+
+.card--with-unit {
+  grid-template-columns: 8.25rem 1fr;
 
   @media (width < 62rem) {
     grid-template-columns: 7rem 1fr;
@@ -89,7 +104,6 @@ defineProps<{
   justify-content: center;
   font-size: 3.375rem;
   font-weight: bold;
-  /*font-variant-numeric: tabular-nums;*/
   line-height: 1;
 
   @media (width < 62rem) {
