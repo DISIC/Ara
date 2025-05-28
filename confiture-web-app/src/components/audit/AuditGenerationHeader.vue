@@ -548,7 +548,7 @@ onMounted(() => {
   border-bottom: 1px solid transparent;
   border-right: 1px solid var(--border-default-grey);
   transition: border-color 0.2s ease;
-  padding-right: 1.5rem;
+  padding-right: 0.75rem;
 }
 
 @media (width < 48rem) {
