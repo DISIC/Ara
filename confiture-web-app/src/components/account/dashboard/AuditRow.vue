@@ -213,7 +213,7 @@ function copyStatementLink(uniqueId: string) {
           {{
             isInProgress || isNotStarted
               ? "Audit en cours"
-              : `${audit.complianceLevel}%`
+              : `${audit.complianceLevel} %`
           }}
         </p>
         <p

@@ -13,6 +13,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
+- Corrige l’accessibilité de la barre de progression de l’audit et de l’indicateur d’enregistrement ([#1115](https://github.com/DISIC/Ara/pull/1115))
 - Corrige l’affichage de l’éditeur lorsque les CSS sont désactivées ([#1120](https://github.com/DISIC/Ara/pull/1120))
 
 ### 22/05/2025
