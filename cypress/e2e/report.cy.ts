@@ -40,7 +40,7 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Copier le lien du rapport").click();
-      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
+      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
       cy.contains(
         "Le lien vers le rapport a bien été copié dans le presse-papier."
       );

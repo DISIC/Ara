@@ -8,6 +8,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
+- Mise à jour du menu principal de la page "Audit" et de la modale des observations (anciennement "Notes") ([#1110](https://github.com/DISIC/Ara/pull/1110))
 - Modifie le thème visuel des blocs de code de l’éditeur pour assurer un bon contraste des couleurs ([#1124](https://github.com/DISIC/Ara/pull/1124))
 
 #### <span aria-hidden="true">🐛</span> Corrections
