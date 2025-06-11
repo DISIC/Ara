@@ -7,6 +7,7 @@ import {
   CriteriumResultStatus,
   ReportCriteriumResult
 } from "../../types";
+import { isTiptapDocumentEmpty } from "../../utils";
 
 export type ReportImprovement = {
   id: number;
@@ -38,9 +39,9 @@ export function getReportImprovements(
       report.data?.results.filter((r) => {
         return (
           (r.status === CriteriumResultStatus.COMPLIANT &&
-            r.compliantComment) ||
+            !isTiptapDocumentEmpty(r.compliantComment)) ||
           (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
-            r.notApplicableComment)
+            !isTiptapDocumentEmpty(r.notApplicableComment))
         );
       }),
       "pageId"

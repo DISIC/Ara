@@ -53,9 +53,10 @@ const hasNotes = computed(() => {
 const hasCompliantOrNotApplicableComments = computed(() => {
   return report.data?.results.some((r) => {
     return (
-      (r.status === CriteriumResultStatus.COMPLIANT && r.compliantComment) ||
+      (r.status === CriteriumResultStatus.COMPLIANT &&
+        !isTiptapDocumentEmpty(r.compliantComment)) ||
       (r.status === CriteriumResultStatus.NOT_APPLICABLE &&
-        r.notApplicableComment)
+        !isTiptapDocumentEmpty(r.notApplicableComment))
     );
   });
 });
