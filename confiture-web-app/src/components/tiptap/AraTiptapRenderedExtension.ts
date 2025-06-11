@@ -2,7 +2,7 @@ import { Extension, Node } from "@tiptap/core";
 import { Plugin, PluginKey, Transaction } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
-export interface AraTiptapExtensionOptions {
+export interface AraTiptapRenderedExtensionOptions {
   uniqueId: string;
 }
 
@@ -63,14 +63,15 @@ const accessibleLinkPlugin = new Plugin({
 });
 
 /**
- * Extension AraTiptapExtension
+ * Extension AraTiptapRenderedExtension
  *
- * Tiptap extension for Ara specificities when editor is editable:
+ * Tiptap extension for Ara specificities when editor is not editable:
  * - make links openning in a new window accessible
  */
-export const AraTiptapExtension = Extension.create<AraTiptapExtensionOptions>({
-  name: "ara",
-  addProseMirrorPlugins() {
-    return [accessibleLinkPlugin];
-  }
-});
+export const AraTiptapRenderedExtension =
+  Extension.create<AraTiptapRenderedExtensionOptions>({
+    name: "ara",
+    addProseMirrorPlugins() {
+      return [accessibleLinkPlugin];
+    }
+  });

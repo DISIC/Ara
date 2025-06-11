@@ -12,7 +12,7 @@ import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
-import { AraTiptapExtension } from "./AraTiptapExtension";
+import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -123,5 +123,5 @@ export const tiptapRenderedExtensions: Extensions = [
       target: "_blank"
     }
   }),
-  ...[AraTiptapExtension]
+  ...[AraTiptapRenderedExtension]
 ];
