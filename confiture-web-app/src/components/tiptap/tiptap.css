@@ -33,10 +33,6 @@
   cursor: text;
 }
 
-.tiptap p {
-  vertical-align: middle;
-}
-
 .tiptap pre code {
   display: block;
   padding: 0.75rem;
