@@ -1,5 +1,5 @@
-import { Extension, Node } from "@tiptap/core";
-import { Plugin, PluginKey, Transaction } from "@tiptap/pm/state";
+import { Extension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
 export interface AraTiptapRenderedExtensionOptions {
