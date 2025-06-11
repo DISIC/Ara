@@ -270,12 +270,39 @@ defineExpose({
         </ul>
       </li>
     </ul>
-    <editor-content :editor="editor" />
+
+    <!-- Visually show the editor with a border and a label when CSS is disabled -->
+    <p class="tiptap__fake-label" aria-hidden="true">
+      Erreur et recommandation
+    </p>
+    <table
+      role="presentation"
+      border="1"
+      width="100%"
+      class="tiptap__fake-table"
+    >
+      <tr>
+        <td>
+          <editor-content :editor="editor" />
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
 <style>
 @import url("./tiptap.css");
+@import url("./tiptap-hljs.css");
+
+/* Handle case when CSS is disabled */
+.tiptap__fake-label {
+  display: none;
+}
+
+.tiptap__fake-table,
+.tiptap__fake-table td {
+  border: none;
+}
 
 /* Container */
 .tiptap-container {
@@ -285,11 +312,11 @@ defineExpose({
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
+}
 
-  /* Override bg color in dark mode to avoid same color as wrapper */
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--background-contrast-grey);
-  }
+/* Override bg color in dark mode to avoid same color as wrapper */
+[data-fr-theme="dark"] .tiptap-container {
+  background-color: var(--background-contrast-grey);
 }
 
 .tiptap-container--not-editable {
@@ -371,7 +398,6 @@ defineExpose({
 }
 
 .tiptap-buttons .fr-btn--tertiary {
-  color: var(--text-mention-grey);
   box-shadow: none;
 }
 
@@ -388,17 +414,36 @@ defineExpose({
   background-color: var(--background-alt-grey-active);
 }
 
-.tiptap-buttons .fr-btn--tertiary[aria-pressed="true"] {
-  box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
-  color: var(--text-active-grey);
+/* Light mode button styles */
+[data-fr-theme="light"] {
+  .tiptap-buttons .fr-btn--tertiary {
+    color: var(--text-mention-grey);
+
+    &:hover {
+      background-color: #e4e4e4;
+    }
+
+    &[aria-pressed="true"] {
+      box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
+      color: var(--text-active-grey);
+    }
+  }
 }
 
-/* Override DSFR colors to ensure enough contrast */
-.tiptap-buttons .fr-btn--tertiary:hover {
-  background-color: #e4e4e4;
+/* Dark mode button styles */
+[data-fr-theme="dark"] {
+  .tiptap-buttons .fr-btn--tertiary {
+    color: var(--text-mention-grey);
 
-  @media (prefers-color-scheme: dark) {
-    background-color: #363636;
+    &:hover {
+      background-color: #363636;
+      color: var(--text-default-grey);
+    }
+
+    &[aria-pressed="true"] {
+      box-shadow: inset 0 -2px 0 0 var(--border-action-high-grey);
+      color: var(--text-active-grey);
+    }
   }
 }
 

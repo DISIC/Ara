@@ -241,8 +241,9 @@ const siteUrl = computed(() => {
           <p class="fr-mb-9v fr-mb-md-6w">
             L’audit de conformité réalisé par
             <strong>{{ report.data.context.auditorOrganisation }}</strong>
-            révèle que <strong>{{ report.data.accessibilityRate }}%</strong> des
-            critères du {{ REFERENTIAL }} sont respectés.
+            révèle que
+            <strong>{{ report.data.accessibilityRate }} %</strong> des critères
+            du {{ REFERENTIAL }} sont respectés.
           </p>
 
           <template

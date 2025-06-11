@@ -52,23 +52,38 @@ from DSFR links with `target="_blank"` */
   content: none !important;
 }
 
-/* DSFR-style primary button with "danger" variant */
+/* DSFR-style "danger" variant for buttons */
+[data-fr-theme="light"] {
+  --danger-bg-base-color: #a22418;
+  --danger-bg-hover-color: #cc372b;
+  --danger-text-hover-color: var(--text-inverted-grey);
+  --danger-secondary-text-base-color: var(--text-default-error);
+}
+
+[data-fr-theme="dark"] {
+  --danger-bg-base-color: var(--background-action-high-error);
+  --danger-bg-hover-color: var(--grey-950-125);
+  --danger-text-hover-color: #f55e4b;
+  --danger-secondary-text-base-color: var(--background-action-high-error);
+}
+
 .danger-button {
-  background-color: var(--background-action-high-error) !important;
+  background-color: var(--danger-bg-base-color) !important;
   color: var(--grey-950-125) !important;
+
+  &:hover {
+    background-color: var(--danger-bg-hover-color) !important;
+    color: var(--danger-text-hover-color) !important;
+  }
 }
 
-.danger-button:hover {
-  background-color: var(--background-action-high-error-hover) !important;
-}
+.danger-button--secondary {
+  background-color: transparent !important;
+  color: var(--danger-secondary-text-base-color) !important;
 
-.danger-button:focus {
-  background-color: var(--background-action-high-error-active) !important;
-}
-
-/* DSFR-style outline button with "danger" variant */
-.danger-button-outline {
-  color: var(--background-action-high-error) !important;
+  &:hover {
+    background-color: var(--hover-tint) !important;
+  }
 }
 
 /* Override DSFR inputs, textareas and selects borders */
@@ -90,4 +105,17 @@ from DSFR links with `target="_blank"` */
 /* Make links in DSFR callout same size as text */
 .fr-callout__text a {
   font-size: inherit !important;
+}
+
+/* Override some DSFR colors in dark mode for better contrast */
+[data-fr-theme="dark"] {
+  .fr-btn--secondary:hover,
+  .fr-btn--tertiary:hover,
+  .fr-btn--tertiary-no-outline:hover {
+    background-color: var(--grey-925-125) !important;
+  }
+
+  .fr-tag[type="button"]:hover {
+    color: #bbbbff;
+  }
 }

@@ -43,4 +43,5 @@ onMounted(() => {
 
 <style>
 @import url("./tiptap.css");
+@import url("./tiptap-hljs.css");
 </style>

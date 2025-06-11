@@ -54,7 +54,10 @@ function closeNewsSubMenu() {
             <div class="fr-header__tools-links">
               <ul class="fr-btns-group">
                 <li>
-                  <RouterLink class="fr-btn" :to="{ name: 'login' }">
+                  <RouterLink
+                    class="fr-btn fr-btn--tertiary-no-outline"
+                    :to="{ name: 'login' }"
+                  >
                     Se connecter
                   </RouterLink>
                 </li>
@@ -125,19 +128,19 @@ function closeNewsSubMenu() {
                     <li>
                       <RouterLink
                         class="fr-nav__link"
-                        :to="{ name: 'changelog' }"
+                        :to="{ name: 'roadmap' }"
                         @click="closeNewsSubMenu"
                       >
-                        Notes de version
+                        Feuille de route
                       </RouterLink>
                     </li>
                     <li>
                       <RouterLink
                         class="fr-nav__link"
-                        :to="{ name: 'roadmap' }"
+                        :to="{ name: 'changelog' }"
                         @click="closeNewsSubMenu"
                       >
-                        Feuille de route
+                        Notes de version
                       </RouterLink>
                     </li>
                   </ul>

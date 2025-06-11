@@ -36,6 +36,13 @@ const router = useRouter();
 
 const showCopyAlert = ref(false);
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
+const tabsRef = ref<InstanceType<typeof AraTabs>>();
+
+const pageTitle = computed(() => {
+  // [tabName] - Rapport d’audit [procedureName]
+  const tabName = tabsRef.value?.getSelectedTabLabel();
+  return tabName + " - Rapport d’audit " + report.data?.procedureName;
+});
 
 const hasNotes = computed(() => {
   return (
@@ -62,14 +69,6 @@ const tabsData = computed((): TabData[] => {
     component: ReportResults
   });
 
-  // Notes
-  if (hasNotes.value) {
-    tabs.push({
-      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
-      component: ReportNotes
-    });
-  }
-
   // Errors
   tabs.push({
     label: StaticTabLabel.REPORT_ERRORS_TAB_LABEL,
@@ -81,6 +80,14 @@ const tabsData = computed((): TabData[] => {
     tabs.push({
       label: StaticTabLabel.REPORT_IMPROVEMENTS_TAB_LABEL,
       component: ReportImprovements
+    });
+  }
+
+  // Notes
+  if (hasNotes.value) {
+    tabs.push({
+      label: StaticTabLabel.REPORT_NOTES_TAB_LABEL,
+      component: ReportNotes
     });
   }
 
@@ -212,7 +219,7 @@ watch(
 
   <template v-if="report.data">
     <PageMeta
-      :title="`Rapport d’audit accessibilité de ${report.data.procedureName}`"
+      :title="pageTitle"
       :description="`Découvrez la synthèse de l'audit de ${report.data?.procedureName}.`"
     />
 
@@ -280,6 +287,7 @@ watch(
     <!-- sticky-top="-0.1px" to prevent "one line background flickering"
 			when scrolling the page -->
     <AraTabs
+      ref="tabsRef"
       :route="{ name: 'report-full', params: { uniqueId } }"
       sticky-top="-0.1px"
       :tabs="tabsData"

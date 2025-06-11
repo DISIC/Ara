@@ -105,8 +105,8 @@ onMounted(() => {
 
 const pageTitles = [
   "Réinitialiser votre mot de passe",
-  "Réinitialiser votre mot de passe, consulter votre boite de réception",
-  "Réinitialiser votre mot de passe, changer votre mot de passe"
+  "Consulter votre boite de réception - Réinitialiser votre mot de passe",
+  "Changer votre mot de passe - Réinitialiser votre mot de passe"
 ];
 </script>
 

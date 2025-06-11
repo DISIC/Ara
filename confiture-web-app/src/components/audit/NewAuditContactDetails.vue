@@ -35,7 +35,8 @@ function goToPreviousStep() {
 const isDevMode = useDevMode();
 
 function fillSettings() {
-  emailValue.value = "etienne-dupont@example.com";
+  emailValue.value =
+    accountStore.account?.email ?? "etienne-dupont@example.com";
   nameValue.value = "Etienne Dupont";
 }
 </script>

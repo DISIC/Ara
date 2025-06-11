@@ -4,6 +4,31 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 28/05/2025
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Mise à jour du menu principal de la page "Audit" et de la modale des observations (anciennement "Notes") ([#1110](https://github.com/DISIC/Ara/pull/1110))
+- Modifie le thème visuel des blocs de code de l’éditeur pour assurer un bon contraste des couleurs ([#1124](https://github.com/DISIC/Ara/pull/1124))
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’accessibilité de la barre de progression de l’audit et de l’indicateur d’enregistrement ([#1115](https://github.com/DISIC/Ara/pull/1115))
+- Corrige l’affichage de l’éditeur lorsque les CSS sont désactivées ([#1120](https://github.com/DISIC/Ara/pull/1120))
+
+### 22/05/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des blocs de code dans l’éditeur quand le thème (clair ou sombre) du site est différent du thème système ([#1117](https://github.com/DISIC/Ara/pull/1117))
+
+### 21/05/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le contraste de certains éléments du DSFR en hover ([#1105](https://github.com/DISIC/Ara/pull/1105))
+- Améliore le titre des pages ([#1110](https://github.com/DISIC/Ara/pull/1100))
+
 ### 07/05/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
