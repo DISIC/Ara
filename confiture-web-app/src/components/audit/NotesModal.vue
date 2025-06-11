@@ -101,7 +101,7 @@ function handleDeleteFile(file: AuditFile) {
                   </h1>
                   <SaveIndicator :store-name="StoreName.AUDIT_STORE" />
                 </div>
-                <p class="fr-text--xs fr-m-0">
+                <p class="fr-text--xs fr-m-0 description">
                   Vos observations seront affichées dans le rapport d’audit.
                 </p>
               </div>
@@ -161,6 +161,21 @@ function handleDeleteFile(file: AuditFile) {
   top: 0;
   z-index: 9;
   background-color: var(--background-lifted-grey);
+}
+
+@media (min-width: 36em) {
+  .sidebar-header {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: unset;
+    justify-content: unset;
+
+    .title-container {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
 }
 
 .sidebar-header h1 {
