@@ -36,7 +36,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="contentRef">
+  <div ref="contentRef" class="tiptap-renderer">
     <editor-content :editor="editor" />
   </div>
 </template>
