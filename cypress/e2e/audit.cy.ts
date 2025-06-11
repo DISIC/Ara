@@ -13,8 +13,7 @@ describe("Audit", () => {
         .contains(field)
         .parent()
         .find("input")
-        .clear()
-        .type(content);
+        .clearAndType(content);
     }
 
     cy.visit("http://localhost:3000");
@@ -92,9 +91,9 @@ describe("Audit", () => {
         "Audit de mon petit site",
       );
 
-      cy.getByLabel("Nom du site ou du service audité")
-        .clear()
-        .type("Audit de mon gros site");
+      cy.getByLabel("Nom du site ou du service audité").clearAndType(
+        "Audit de mon gros site"
+      );
 
       cy.contains("Enregistrer les modifications").click();
 
@@ -150,7 +149,7 @@ describe("Audit", () => {
             "Article",
             "Connexion",
             "Documentation",
-            "FAQ",
+            "FAQ"
           ];
           expectedPages.forEach((expectedPageName, i) => {
             cy.wrap(els[i]).should("have.value", expectedPageName);
@@ -162,10 +161,10 @@ describe("Audit", () => {
       cy.contains("button", "Supprimer").click();
       cy.contains("button", "Supprimer").click();
 
-      cy.getByLabel("Nom de la page").clear().type("Accueil du blog");
-      cy.getByLabel("URL de la page")
-        .clear()
-        .type("https://example.com/blog/accueil");
+      cy.getByLabel("Nom de la page").clearAndType("Accueil du blog");
+      cy.getByLabel("URL de la page").clearAndType(
+        "https://example.com/blog/accueil"
+      );
 
       cy.get("#page-order-1").select("0");
 
@@ -194,7 +193,7 @@ describe("Audit", () => {
           "Accueil du blog",
           "Connexion",
           "Documentation",
-          "Paramètres",
+          "Paramètres"
         ];
         expectedPages.forEach((expectedPageName, i) => {
           cy.wrap(els[i]).should("have.text", expectedPageName);
@@ -244,7 +243,7 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get("[role='textbox'").clear().type("Annotations de l’audit");
+      cy.get("[role='textbox'").clearAndType("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
       cy.get(".notes-desktop-link")
@@ -255,66 +254,64 @@ describe("Audit", () => {
   });
 
   it("User can fill a11y statement", () => {
-    cy.createTestAudit().then(({ editId, reportId }) => {
+    cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("Compléter").invoke("removeAttr", "target").click();
 
       // General infos
-      cy.getByLabel("Entité qui a demandé l’audit")
-        .clear()
-        .type(statementJson.auditInitiator);
-      cy.getByLabel("Entité qui a réalisé l’audit")
-        .clear()
-        .type(statementJson.auditorOrganisation);
-      cy.getByLabel("URL de la page d’accueil du site audité")
-        .clear()
-        .type(statementJson.procedureUrl);
+      cy.getByLabel("Entité qui a demandé l’audit").clearAndType(
+        statementJson.auditInitiator
+      );
+      cy.getByLabel("Entité qui a réalisé l’audit").clearAndType(
+        statementJson.auditorOrganisation
+      );
+      cy.getByLabel("URL de la page d’accueil du site audité").clearAndType(
+        statementJson.procedureUrl
+      );
 
       // Contact
-      cy.getByLabel("Nom et prénom du contact (optionnel)")
-        .clear()
-        .type(statementJson.contactName);
-      cy.getByLabel("Adresse e-mail").clear().type(statementJson.contactEmail);
-      cy.getByLabel("Formulaire de contact en ligne")
-        .clear()
-        .type(statementJson.contactFormUrl);
+      cy.getByLabel("Nom et prénom du contact (optionnel)").clearAndType(
+        statementJson.contactName
+      );
+      cy.getByLabel("Adresse e-mail").clearAndType(statementJson.contactEmail);
+      cy.getByLabel("Formulaire de contact en ligne").clearAndType(
+        statementJson.contactFormUrl
+      );
 
       // Technologies
-      cy.getByLabel("Ajouter des technologies")
-        .clear()
-        .type(statementJson.technologies);
+      cy.getByLabel("Ajouter des technologies").clearAndType(
+        statementJson.technologies
+      );
 
       cy.contains("button", "Ajouter les technologies").click();
 
       // Tools
       cy.contains("Web Developer Toolbar").click();
       cy.contains("WCAG Contrast checker").click();
-      cy.getByLabel("Ajouter des outils d’assistance")
-        .clear()
-        .type(statementJson.tools);
+      cy.getByLabel("Ajouter des outils d’assistance").clearAndType(
+        statementJson.tools
+      );
 
       cy.contains("button", "Ajouter les outils").click();
 
       // Environments
       cy.contains("Combinaison 1").click();
       cy.contains("button", "Ajouter un environnement de test").click();
-      cy.getByLabel("Appareil").clear().type("Ordinateur");
-      cy.getByLabel("Logiciel d’exploitation").clear().type("Windows");
-      cy.getByLabel("Technologie d’assistance").clear().type("JAWS");
-      cy.getByLabel("Navigateur").clear().type("Edge");
+      cy.getByLabel("Appareil").clearAndType("Ordinateur");
+      cy.getByLabel("Logiciel d’exploitation").clearAndType("Windows");
+      cy.getByLabel("Technologie d’assistance").clearAndType("JAWS");
+      cy.getByLabel("Navigateur").clearAndType("Edge");
 
       // Not accessible content
-      cy.getByLabel("Non-conformités (optionnel)")
-        .clear()
-        .type(statementJson.notCompliantContent);
-      cy.getByLabel("Dérogations pour charge disproportionnée (optionnel)")
-        .clear()
-        .type(statementJson.derogatedContent);
+      cy.getByLabel("Non-conformités (optionnel)").clearAndType(
+        statementJson.notCompliantContent
+      );
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
-      )
-        .clear()
-        .type(statementJson.notInScopeContent);
+        "Dérogations pour charge disproportionnée (optionnel)"
+      ).clearAndType(statementJson.derogatedContent);
+      cy.getByLabel(
+        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
+      ).clearAndType(statementJson.notInScopeContent);
 
       cy.contains("button", "Valider la déclaration").click();
       cy.contains("h1", auditJson.procedureName);
@@ -338,10 +335,9 @@ describe("Audit", () => {
   it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.getByLabel("Recherche par mots clés")
-        .clear()
-        .type("alternative")
-        .type("{enter}");
+      cy.getByLabel("Recherche par mots clés").clearAndType(
+        "alternative{enter}"
+      );
 
       cy.contains("9 résultats");
       cy.get("li.criterium-container").then((els) => {
@@ -500,9 +496,12 @@ describe("Audit", () => {
 
       cy.focused().should("have.attr", "role", "textbox");
 
-      cy.get(".criterium-container .tiptap[role='textbox']")
-        .clear({ force: true })
-        .type("Il n’y a pas de alt sur l’image du hero");
+      cy.get(".criterium-container .tiptap[role='textbox']").clear({
+        force: true
+      });
+      cy.get(".criterium-container .tiptap[role='textbox']").type(
+        "Il n’y a pas de alt sur l’image du hero"
+      );
 
       cy.get(".criterium-container label").contains("majeur").click();
       cy.get(".criterium-container").contains("Facile à corriger").click();
@@ -560,10 +559,9 @@ describe("Audit", () => {
       cy.contains("Conforme (323)").click();
       cy.contains("Non applicable (315)").click();
       cy.contains("Masquer les tests et références").click();
-      cy.getByLabel("Recherche par mots clés")
-        .clear()
-        .type("alternative")
-        .type("{enter}");
+      cy.getByLabel("Recherche par mots clés").clearAndType(
+        "alternative{enter}"
+      );
 
       cy.get("li.criterium-container").then((els) => {
         expect(els).to.have.length(6);
