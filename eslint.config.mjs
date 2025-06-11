@@ -81,7 +81,18 @@ export default ts.config([
     },
     rules: {
       "vue/multi-word-component-names": "off",
-      "vue/no-v-html": "off"
+      "vue/no-v-html": "off",
+      "vue/no-irregular-whitespace": [
+        "error",
+        {
+          skipStrings: true,
+          skipComments: true,
+          skipRegExps: true,
+          skipTemplates: true,
+          skipHTMLAttributeValues: true,
+          skipHTMLTextContents: true
+        }
+      ]
     }
   },
   {
