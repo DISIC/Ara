@@ -110,6 +110,7 @@ watch(
           ref="notApplicableSwitchRefs"
           :page-id="page.id"
           :topic-number="topic.number"
+          :topic-title="topic.topic"
         />
       </div>
       <template
