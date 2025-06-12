@@ -484,10 +484,7 @@ describe("Audit", () => {
       cy.contains('button[role="tab"]', "Connexion").click();
       cy.contains(" Non applicable sur la page").click();
 
-      cy.get(".page-url + section fieldset input:checked + label").should(
-        "have.class",
-        "grey",
-      );
+      cy.get(".topic-heading").should("have.class", "topic-heading--hidden");
     });
   });
 
