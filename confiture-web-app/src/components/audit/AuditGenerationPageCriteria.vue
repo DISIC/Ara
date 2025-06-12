@@ -181,7 +181,11 @@ watch(
   align-items: center;
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  gap: 1rem;
+
+  @media (width < 62rem) {
+    flex-wrap: wrap;
+  }
 }
 
 .topic-heading {
