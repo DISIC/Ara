@@ -9,6 +9,7 @@ import { CriteriumResultStatus } from "../../types";
 const props = defineProps<{
   pageId: number;
   topicNumber: number;
+  topicTitle: string;
 }>();
 
 defineExpose({ focusInput });
@@ -71,6 +72,7 @@ function focusInput() {
       :disabled="isOffline"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
+      <span class="fr-sr-only">Rendre la thématique {{ topicTitle }}</span>
       Non applicable
       {{
         pageId === transverseElementsPageId
