@@ -11,6 +11,8 @@ const props = defineProps<{
   topicNumber: number;
 }>();
 
+defineExpose({ focusInput });
+
 const isOffline = useIsOffline();
 
 const resultsStore = useResultsStore();
@@ -50,12 +52,19 @@ watch(switchValue, (switchValue) => {
     resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
   }
 });
+
+const inputRef = ref<HTMLInputElement>();
+
+function focusInput() {
+  inputRef.value?.focus();
+}
 </script>
 
 <template>
   <div class="fr-toggle fr-toggle--label-left">
     <input
       :id="`topic-switch-${topicNumber}`"
+      ref="inputRef"
       v-model="switchValue"
       type="checkbox"
       class="fr-toggle__input"

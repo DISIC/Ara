@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
-import { AuditPage, CriteriumResultStatus } from "../../types";
+import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
@@ -51,11 +51,25 @@ const noResults = computed(() => {
   }
 });
 
-function topicIsNotApplicable(topic: number) {
-  return resultsStore
-    .getTopicResults(props.page.id, topic)
-    .every((r) => r.status === CriteriumResultStatus.NOT_APPLICABLE);
-}
+const notApplicableSwitchRefs = ref<InstanceType<typeof NotApplicableSwitch>[]>(
+  []
+);
+
+// Focus topic NA switch when setting last topic criterion as NA
+watch(
+  () =>
+    resultsStore.topicIsNotApplicable(
+      props.page.id,
+      resultsStore.lastUpdatedTopic
+    ),
+  (newValue) => {
+    if (newValue) {
+      notApplicableSwitchRefs.value[
+        resultsStore.lastUpdatedTopic - 1
+      ].focusInput();
+    }
+  }
+);
 </script>
 
 <template>
@@ -82,16 +96,25 @@ function topicIsNotApplicable(topic: number) {
           :class="[
             'fr-m-0 topic-heading',
             {
-              'topic-heading--hidden': topicIsNotApplicable(topic.number)
+              'topic-heading--hidden': resultsStore.topicIsNotApplicable(
+                page.id,
+                topic.number
+              )
             }
           ]"
           tabindex="-1"
         >
           {{ topic.number }}. {{ topic.topic }}
         </h3>
-        <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
+        <NotApplicableSwitch
+          ref="notApplicableSwitchRefs"
+          :page-id="page.id"
+          :topic-number="topic.number"
+        />
       </div>
-      <template v-if="!topicIsNotApplicable(topic.number)">
+      <template
+        v-if="!resultsStore.topicIsNotApplicable(page.id, topic.number)"
+      >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
             v-for="criterium in topic.criteria"
