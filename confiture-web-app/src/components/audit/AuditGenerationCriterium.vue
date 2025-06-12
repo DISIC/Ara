@@ -218,6 +218,9 @@ function updateResultStatus(status: CriteriumResultStatus) {
         });
       }
     })
+    .then(() => {
+      store.lastUpdatedTopic = result.value.topic;
+    })
     .catch(handleUpdateResultError);
 }
 

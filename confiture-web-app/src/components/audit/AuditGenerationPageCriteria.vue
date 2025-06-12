@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
-import { useAuditStore, useFiltersStore } from "../../store";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
 import TransverseElementsList from "./TransverseElementsList.vue";
 
-defineProps<{
+const props = defineProps<{
   page: AuditPage;
   auditUniqueId: string;
 }>();
 
 const store = useFiltersStore();
 const auditStore = useAuditStore();
+const resultsStore = useResultsStore();
 
 const transversePageId = computed(() => {
   return auditStore.currentAudit?.transverseElementsPage.id;
@@ -49,6 +50,26 @@ const noResults = computed(() => {
     };
   }
 });
+
+const notApplicableSwitchRefs = ref<InstanceType<typeof NotApplicableSwitch>[]>(
+  []
+);
+
+// Focus topic NA switch when setting last topic criterion as NA
+watch(
+  () =>
+    resultsStore.topicIsNotApplicable(
+      props.page.id,
+      resultsStore.lastUpdatedTopic
+    ),
+  (newValue) => {
+    if (newValue) {
+      notApplicableSwitchRefs.value[
+        resultsStore.lastUpdatedTopic - 1
+      ].focusInput();
+    }
+  }
+);
 </script>
 
 <template>
@@ -72,28 +93,45 @@ const noResults = computed(() => {
       <div class="fr-mb-3w topic-header">
         <h3
           :id="`topic_${topic.number}`"
-          class="fr-m-0 topic-heading"
+          :class="[
+            'fr-m-0 topic-heading',
+            {
+              'topic-heading--hidden': resultsStore.topicIsNotApplicable(
+                page.id,
+                topic.number
+              )
+            }
+          ]"
           tabindex="-1"
         >
           {{ topic.number }}. {{ topic.topic }}
         </h3>
-        <NotApplicableSwitch :page-id="page.id" :topic-number="topic.number" />
-      </div>
-      <ol class="fr-p-0 fr-m-0">
-        <AuditGenerationCriterium
-          v-for="criterium in topic.criteria"
-          :key="criterium.criterium.number"
-          :page="page"
-          class="fr-mb-3w"
-          :criterium="criterium.criterium"
+        <NotApplicableSwitch
+          ref="notApplicableSwitchRefs"
+          :page-id="page.id"
           :topic-number="topic.number"
-          :audit-unique-id="auditUniqueId"
+          :topic-title="topic.topic"
         />
-      </ol>
-
-      <div class="fr-grid-row fr-grid-row--right">
-        <TopLink target="audit-tabs" />
       </div>
+      <template
+        v-if="!resultsStore.topicIsNotApplicable(page.id, topic.number)"
+      >
+        <ol class="fr-p-0 fr-m-0">
+          <AuditGenerationCriterium
+            v-for="criterium in topic.criteria"
+            :key="criterium.criterium.number"
+            :page="page"
+            class="fr-mb-3w"
+            :criterium="criterium.criterium"
+            :topic-number="topic.number"
+            :audit-unique-id="auditUniqueId"
+          />
+        </ol>
+
+        <div class="fr-grid-row fr-grid-row--right">
+          <TopLink target="audit-tabs" />
+        </div>
+      </template>
     </section>
   </template>
 
@@ -143,11 +181,19 @@ const noResults = computed(() => {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  gap: 1rem;
+
+  @media (width < 62rem) {
+    flex-wrap: wrap;
+  }
 }
 
 .topic-heading {
   color: var(--text-action-high-blue-france);
   scroll-margin: 7.5rem;
+
+  &.topic-heading--hidden {
+    color: var(--grey-625-425);
+  }
 }
 </style>

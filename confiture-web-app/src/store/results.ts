@@ -54,6 +54,8 @@ interface ResultsStoreState {
    */
   lastRequestSuccessEnd: number | null;
   lastRequestFailed: boolean;
+
+  lastUpdatedTopic: number;
 }
 
 export const useResultsStore = defineStore("results", {
@@ -64,7 +66,8 @@ export const useResultsStore = defineStore("results", {
       previousStatuses: {},
       currentRequestCount: 0,
       lastRequestSuccessEnd: null,
-      lastRequestFailed: false
+      lastRequestFailed: false,
+      lastUpdatedTopic: 1
     };
   },
 
@@ -175,6 +178,17 @@ export const useResultsStore = defineStore("results", {
       ).length;
 
       return testedCriteria / total;
+    },
+
+    /**
+     * @returns true if all topic's criteria are NA for a given page.
+     */
+    topicIsNotApplicable() {
+      return (pageId: number, topic: number) => {
+        return this.getTopicResults(pageId, topic).every(
+          (r) => r.status === CriteriumResultStatus.NOT_APPLICABLE
+        );
+      };
     }
   },
 
