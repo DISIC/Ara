@@ -298,7 +298,7 @@ const showTransverseStatus = computed(() => {
     <!-- TRANSVERSE STATUS -->
     <div
       v-if="showTransverseStatus"
-      class="fr-ml-5w fr-mb-4w fr-px-1w"
+      class="fr-ml-0 fr-ml-md-5w fr-mb-4w fr-px-1w"
       :class="{ 'criterium-transverse-is-open': showTransverseComment }"
     >
       <div class="criterium-transverse-notice">
@@ -322,7 +322,7 @@ const showTransverseStatus = computed(() => {
 
         <button
           v-if="transverseComment"
-          class="fr-link fr-link--sm"
+          class="fr-link fr-link--sm criterium-transverse-button"
           @click="toggleTransverseComment"
         >
           {{ showTransverseComment ? "Masquer" : "Voir" }}
@@ -413,6 +413,14 @@ const showTransverseStatus = computed(() => {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 0.75rem;
+
+  @media (width < 36rem) {
+    grid-template-columns: 1rem 1fr;
+
+    .criterium-transverse-button {
+      grid-column: 2;
+    }
+  }
 }
 
 .criterium-main-section {
