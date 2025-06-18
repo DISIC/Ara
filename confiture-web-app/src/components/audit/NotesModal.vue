@@ -163,21 +163,6 @@ function handleDeleteFile(file: AuditFile) {
   background-color: var(--background-lifted-grey);
 }
 
-@media (min-width: 36em) {
-  .sidebar-header {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    align-items: unset;
-    justify-content: unset;
-
-    .title-container {
-      grid-column: 1;
-      grid-row: 1;
-    }
-  }
-}
-
 .sidebar-header h1 {
   margin-bottom: 0;
   padding-right: 1rem;
@@ -197,14 +182,28 @@ textarea {
   resize: vertical;
 }
 
-@media (min-width: 36em) {
+@media (min-width: 36rem) {
   .title-container {
     display: flex;
     flex-basis: auto;
     align-items: center;
   }
+
   .sidebar-header h1 {
     border-right: 1px solid var(--border-default-grey);
+  }
+
+  .sidebar-header {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: unset;
+    justify-content: unset;
+
+    .title-container {
+      grid-column: 1;
+      grid-row: 1;
+    }
   }
 }
 </style>
