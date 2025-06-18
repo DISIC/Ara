@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 18/06/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige la mise en page de la modale "Observations" ([#1133](https://github.com/DISIC/Ara/pull/1133))
+
 ### 28/05/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
