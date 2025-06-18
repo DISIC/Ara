@@ -9,7 +9,10 @@ import { CriteriumResultStatus } from "../../types";
 const props = defineProps<{
   pageId: number;
   topicNumber: number;
+  topicTitle: string;
 }>();
+
+defineExpose({ focusInput });
 
 const isOffline = useIsOffline();
 
@@ -50,18 +53,26 @@ watch(switchValue, (switchValue) => {
     resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
   }
 });
+
+const inputRef = ref<HTMLInputElement>();
+
+function focusInput() {
+  inputRef.value?.focus();
+}
 </script>
 
 <template>
   <div class="fr-toggle fr-toggle--label-left">
     <input
       :id="`topic-switch-${topicNumber}`"
+      ref="inputRef"
       v-model="switchValue"
       type="checkbox"
       class="fr-toggle__input"
       :disabled="isOffline"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
+      <span class="fr-sr-only">Thématique {{ topicTitle }}</span>
       Non applicable
       {{
         pageId === transverseElementsPageId

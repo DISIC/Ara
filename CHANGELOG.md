@@ -4,20 +4,17 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
-<<<<<<< 1136-message-de-lindicateur-denregistrement-incohérent
-### 17/06/2025
+### 18/06/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Cache les critères d’une thématique définie comme "Non applicable" ([#1135](https://github.com/DISIC/Ara/pull/1135))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Cache le temps relative du dernier enregistrement s’il n’y en a pas ([#1138](https://github.com/DISIC/Ara/pull/1138))
-=======
-### 18/06/2025
-
-#### <span aria-hidden="true">🐛</span> Corrections
-
 - Corrige la mise en page de la modale "Observations" ([#1133](https://github.com/DISIC/Ara/pull/1133))
 - Cache l'onglet Point d'amélioration correctement lorsque les commentaires sont vides ([#1130](https://github.com/DISIC/Ara/pull/1130))
->>>>>>> main
 
 ### 28/05/2025
 
