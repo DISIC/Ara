@@ -21,6 +21,11 @@
         --highlight-a11y-color-text-purple: hsla(282, 100%, 41%, 1);
         --highlight-a11y-color-text-red: hsla(2, 80%, 47%, 1);
         --highlight-a11y-color-text-yellow: hsla(43, 74%, 30%, 1);
+
+        /* Set different bg color for renderer only on light mode */
+        .tiptap--rendered {
+          --highlight-a11y-color-background: var(--background-alt-grey);
+        }
       }
 
       &[data-fr-theme="dark"] {
