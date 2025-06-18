@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige la mise en page de la modale "Observations" ([#1133](https://github.com/DISIC/Ara/pull/1133))
+- Cache l'onglet Point d'amélioration correctement lorsque les commentaires sont vides ([#1130](https://github.com/DISIC/Ara/pull/1130))
 
 ### 28/05/2025
 
