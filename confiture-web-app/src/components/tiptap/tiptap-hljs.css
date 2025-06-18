@@ -23,7 +23,7 @@
         --highlight-a11y-color-text-yellow: hsla(43, 74%, 30%, 1);
 
         /* Set different bg color for renderer only on light mode */
-        .tiptap-renderer {
+        .tiptap--rendered {
           --highlight-a11y-color-background: var(--background-alt-grey);
         }
       }
