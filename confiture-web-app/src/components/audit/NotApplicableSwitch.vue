@@ -72,7 +72,7 @@ function focusInput() {
       :disabled="isOffline"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
-      <span class="fr-sr-only">Rendre la thématique {{ topicTitle }}</span>
+      <span class="fr-sr-only">Thématique {{ topicTitle }}</span>
       Non applicable
       {{
         pageId === transverseElementsPageId
