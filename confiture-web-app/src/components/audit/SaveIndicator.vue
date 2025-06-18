@@ -141,7 +141,10 @@ watch(
       aria-hidden="true"
     >
       {{ saveContent.description }}
-      <small class="fr-text--xs fr-m-0 save-indicator-relative-time">
+      <small
+        v-if="relativeLastSaveDate"
+        class="fr-text--xs fr-m-0 save-indicator-relative-time"
+      >
         Dernier enregistrement {{ relativeLastSaveDate }}.
       </small>
     </span>
