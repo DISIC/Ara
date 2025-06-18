@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 17/06/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Cache le temps relative du dernier enregistrement s’il n’y en a pas ([#1138](https://github.com/DISIC/Ara/pull/1138))
+
 ### 28/05/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
