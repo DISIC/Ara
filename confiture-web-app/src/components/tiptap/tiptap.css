@@ -29,8 +29,8 @@
   }
 }
 
-.tiptap p {
-  vertical-align: middle;
+.tiptap:not(.tiptap--rendered) [href] {
+  cursor: text;
 }
 
 .tiptap pre code {

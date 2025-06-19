@@ -4,7 +4,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import { displayedHeadings, tiptapExtensions } from "./tiptap-extensions";
+import { displayedHeadings, tiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -88,7 +88,7 @@ const editor = useEditor({
   },
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: tiptapExtensions,
+  extensions: tiptapEditorExtensions,
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
