@@ -11,11 +11,16 @@ const props = defineProps<{
   goals: string[];
   documentationLink: string;
   detailed?: boolean;
+  isError?: boolean;
 }>();
 
 defineEmits(["update:modelValue"]);
 
 const inputRef = ref<HTMLInputElement>();
+
+defineExpose({
+  inputRef
+});
 
 // String used to describe input with goals and requirements
 const descriptionId = computed(() => {
@@ -28,7 +33,7 @@ const descriptionId = computed(() => {
 </script>
 
 <template>
-  <div :class="['fr-p-3w wrapper', { checked: checked }]">
+  <div :class="['fr-p-3w wrapper', { checked: checked, 'is-error': isError }]">
     <!-- Allow click on the whole radio square -->
     <div class="radio-layer" @click="$emit('update:modelValue', value)" />
 
@@ -48,9 +53,10 @@ const descriptionId = computed(() => {
         "
       />
       <label
-        :class="`fr-label ${
+        class="fr-label radio-label"
+        :class="
           detailed ? 'fr-h4 fr-mb-3w' : 'fr-text--xl fr-text--bold fr-mb-0'
-        } radio-label`"
+        "
         :for="`audit-type-${value}`"
       >
         {{ getCriteriaCount(value) }} critères
@@ -101,6 +107,10 @@ const descriptionId = computed(() => {
   position: absolute;
   inset: 0;
   cursor: pointer;
+}
+
+.is-error .radio-label {
+  color: var(--text-default-error);
 }
 
 .radio-input {

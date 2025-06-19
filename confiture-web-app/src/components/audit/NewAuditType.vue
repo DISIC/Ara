@@ -43,7 +43,33 @@ const partialAudits = [
 const auditType = ref(props.auditType);
 const procedureName = ref(props.procedureName);
 
+// validation
+const procedureNameError = ref<string>();
+const auditTypeError = ref<string>();
+const procedureNameField = ref<InstanceType<typeof DsfrField>>();
+const auditTypeRadio = ref<InstanceType<typeof AuditTypeRadio>>();
+function validateForm() {
+  procedureNameError.value = undefined;
+  auditTypeError.value = undefined;
+
+  if (!procedureName.value.trim()) {
+    procedureNameError.value =
+      "Champ obligatoire. Saisissez le nom du site ou du service à auditer.";
+    procedureNameField.value?.inputRef?.focus();
+  }
+
+  if (!auditType.value) {
+    auditTypeError.value = "Sélectionnez un type d’audit.";
+    auditTypeRadio.value?.inputRef?.focus();
+  }
+
+  return !procedureNameError.value && !auditTypeError.value;
+}
+
 function submitAuditType() {
+  if (!validateForm()) {
+    return;
+  }
   emit("submit", {
     auditType: auditType.value as AuditType,
     procedureName: procedureName.value
@@ -62,7 +88,7 @@ function fillSettings() {
 </script>
 
 <template>
-  <form @submit.prevent="submitAuditType">
+  <form novalidate @submit.prevent="submitAuditType">
     <div v-if="isDevMode" class="fr-mb-4w">
       <button class="fr-btn" type="button" @click="fillSettings">
         [DEV] Remplir les paramètres
@@ -74,47 +100,62 @@ function fillSettings() {
       type d’audit doit être selectionné.
     </p>
 
-    <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
-    <p class="fr-mb-2w">
-      Cet audit permet de mesurer la conformité au RGAA d’un site internet, il a
-      une <strong>valeur légale</strong>.
-    </p>
-    <AuditTypeRadio
-      v-model="auditType"
-      class="fr-mb-3w audit-type"
-      :value="fullAudit.value"
-      :checked="auditType === fullAudit.value"
-      :goals="fullAudit.goals"
-      :documentation-link="fullAudit.documentation"
-      detailed
-    />
-
-    <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
-    <p class="fr-mb-2w">
-      Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
-      n’ont <strong>pas de valeur légale</strong>.
-    </p>
-    <div class="fr-mb-4w partial-audits">
+    <!-- FIXME: make into a fielset + legend ? -->
+    <div
+      class="fr-mb-4w fr-input-group"
+      :class="{ 'fr-input-group--error': !!auditTypeError }"
+    >
+      <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
+      <p class="fr-mb-2w">
+        Cet audit permet de mesurer la conformité au RGAA d’un site internet, il
+        a une <strong>valeur légale</strong>.
+      </p>
       <AuditTypeRadio
-        v-for="type in partialAudits"
-        :key="type.value"
+        ref="auditTypeRadio"
         v-model="auditType"
-        class="audit-type"
-        :value="type.value"
-        :checked="auditType === type.value"
-        :goals="type.goals"
-        :documentation-link="type.documentation"
+        class="fr-mb-3w audit-type"
+        :value="fullAudit.value"
+        :checked="auditType === fullAudit.value"
+        :goals="fullAudit.goals"
+        :documentation-link="fullAudit.documentation"
         detailed
+        :is-error="!!auditTypeError"
       />
+
+      <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
+      <p class="fr-mb-2w">
+        Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
+        n’ont <strong>pas de valeur légale</strong>.
+      </p>
+      <div class="partial-audits">
+        <AuditTypeRadio
+          v-for="type in partialAudits"
+          :key="type.value"
+          v-model="auditType"
+          class="audit-type"
+          :value="type.value"
+          :checked="auditType === type.value"
+          :goals="type.goals"
+          :documentation-link="type.documentation"
+          detailed
+          :is-error="!!auditTypeError"
+        />
+      </div>
+
+      <p v-if="auditTypeError" id="audit-type-error" class="fr-error-text">
+        {{ auditTypeError }}
+      </p>
     </div>
 
     <DsfrField
       id="procedure-name"
+      ref="procedureNameField"
       v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
       hint="Exemples : Service-Public, Demande de permis de conduire."
       required
+      :error="procedureNameError"
     />
 
     <div class="actions">
