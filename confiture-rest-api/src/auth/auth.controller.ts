@@ -18,10 +18,10 @@ import {
 import { AuditService } from "../audits/audit.service";
 import { FeedbackService } from "../feedback/feedback.service";
 import { MailService } from "../mail/mail.service";
-import { AuthRequired } from "./auth-required.decorator";
 import { AuthService, SigninError } from "./auth.service";
-import { DeleteAccountResponseDto } from "./dto/delete-account-response.dto";
+import { AuthRequired } from "./auth-required.decorator";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
+import { DeleteAccountResponseDto } from "./dto/delete-account-response.dto";
 import { SigninDto } from "./dto/signin.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { AuthenticationJwtPayload } from "./jwt-payloads";

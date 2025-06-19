@@ -1,7 +1,8 @@
-import { MailService } from "src/mail/mail.service";
-import { AuthService, TokenRegenerationError } from "./auth.service";
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { MailService } from "src/mail/mail.service";
+
+import { AuthService, TokenRegenerationError } from "./auth.service";
 import { RequestPasswordResetDto } from "./dto/request-password-reset.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 

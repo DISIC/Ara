@@ -6,7 +6,6 @@
  * (ex: "1.2.3") with the associated methodology in Markdown.
  */
 
-/* eslint-disable */
 const child_process = require("node:child_process");
 const util = require("node:util");
 const path = require("path");

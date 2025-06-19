@@ -1,9 +1,9 @@
 import {
-  S3Client,
-  PutObjectCommand,
+  CopyObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
-  CopyObjectCommand
+  PutObjectCommand,
+  S3Client
 } from "@aws-sdk/client-s3";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
