@@ -1,0 +1,85 @@
+<script setup lang="ts">
+const props = defineProps<{
+  modelValue?: boolean;
+  label: string;
+  id: string;
+  hint?: string;
+  iconSrc: string;
+}>();
+
+const emit = defineEmits(["update:modelValue"]);
+
+function emitValue() {
+  emit("update:modelValue", !props.modelValue);
+}
+</script>
+
+<template>
+  <div
+    :class="['checkbox-wrapper', { 'checkbox-wrapper--checked': modelValue }]"
+  >
+    <!-- Allow click on whole checkbox to check/uncheck -->
+    <div class="checkbox-layer" @click="emitValue" />
+    <div class="fr-checkbox-group fr-p-2w checkbox-input">
+      <input
+        :id="id"
+        :checked="modelValue"
+        type="checkbox"
+        @change="emitValue"
+      />
+      <label class="fr-label" :for="id">
+        {{ label }}
+        <span v-if="hint" class="fr-hint-text">{{ hint }}</span>
+      </label>
+    </div>
+    <div class="fr-p-2w checkbox-icon">
+      <img :src="iconSrc" alt="" />
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.checkbox-wrapper {
+  border: 1px solid var(--border-default-grey);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+
+  &:hover {
+    background-color: var(--grey-975-100);
+  }
+
+  &:active {
+    background-color: var(--background-default-grey-active);
+  }
+
+  &.checkbox-wrapper--checked {
+    border-color: var(--border-active-blue-france);
+  }
+}
+
+.checkbox-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.checkbox-icon {
+  display: block;
+  position: relative;
+
+  &::before {
+    content: "";
+    width: 1px;
+    height: calc(100% - 0.5rem); /* 100% - (2 * 4px) */
+    background-color: var(--border-default-grey);
+    right: calc(100%);
+    top: 0.25rem;
+    position: absolute;
+  }
+}
+</style>

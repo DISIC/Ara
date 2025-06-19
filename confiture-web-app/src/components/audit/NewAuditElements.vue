@@ -1,5 +1,13 @@
 <script lang="ts" setup>
+import { ref } from "vue";
+
+// TODO: handle dark mode illustrations: https://www.systeme-de-design.gouv.fr/fondamentaux/pictogramme
+import elementForm from "../../assets/images/element-form.svg";
+import elementFrame from "../../assets/images/element-frame.svg";
+import elementMultimedia from "../../assets/images/element-multimedia.svg";
+import elementTable from "../../assets/images/element-table.svg";
 import { useAccountStore } from "../../store";
+import DsfrRichCheckbox from "../ui/DsfrRichCheckbox.vue";
 
 const emit = defineEmits<{
   (e: "previous"): void;
@@ -15,6 +23,23 @@ function goToPreviousStep() {
 function submitAuditElements() {
   emit("submit", { pages: [] });
 }
+
+const elements = ref([
+  {
+    label: "Multimédia",
+    hint: "Vidéo, audio ou animation",
+    icon: elementMultimedia,
+    value: true
+  },
+  { label: "Tableau", icon: elementTable, value: true },
+  { label: "Formulaire", icon: elementForm, value: true },
+  {
+    label: "Cadre",
+    hint: "Balise <iframe> ou <frame>",
+    icon: elementFrame,
+    value: true
+  }
+]);
 </script>
 
 <template>
@@ -27,6 +52,18 @@ function submitAuditElements() {
         sur toutes les pages de votre échantillon. Vous pourrez modifier votre
         choix à tout moment.
       </p>
+
+      <div class="checkboxes">
+        <DsfrRichCheckbox
+          v-for="(el, i) in elements"
+          id="test"
+          :key="i"
+          v-model="el.value"
+          :label="el.label"
+          :hint="el.hint"
+          :icon-src="el.icon"
+        />
+      </div>
     </div>
 
     <div class="actions">
@@ -69,6 +106,12 @@ function submitAuditElements() {
 
 .notice {
   color: var(--text-mention-grey);
+}
+
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .actions {
