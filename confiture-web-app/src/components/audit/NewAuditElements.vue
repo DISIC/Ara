@@ -7,11 +7,33 @@ import elementFrame from "../../assets/images/element-frame.svg";
 import elementMultimedia from "../../assets/images/element-multimedia.svg";
 import elementTable from "../../assets/images/element-table.svg";
 import { useAccountStore } from "../../store";
+import { PageElements } from "../../types";
 import DsfrRichCheckbox from "../ui/DsfrRichCheckbox.vue";
+
+const staticElements = [
+  {
+    label: "Multimédia",
+    hint: "Vidéo, audio ou animation",
+    icon: elementMultimedia,
+    key: "multimedia"
+  },
+  { label: "Tableau", icon: elementTable, key: "table" },
+  { label: "Formulaire", icon: elementForm, key: "form" },
+  {
+    label: "Cadre",
+    hint: "Balise <iframe> ou <frame>",
+    icon: elementFrame,
+    key: "frame"
+  }
+];
+
+const props = defineProps<{
+  pageElements: PageElements;
+}>();
 
 const emit = defineEmits<{
   (e: "previous"): void;
-  (e: "submit", payload: { pages: [] }): void;
+  (e: "submit", payload: { pageElements: PageElements }): void;
 }>();
 
 const accountStore = useAccountStore();
@@ -21,25 +43,22 @@ function goToPreviousStep() {
 }
 
 function submitAuditElements() {
-  emit("submit", { pages: [] });
+  emit("submit", {
+    pageElements: pageElements.value.reduce(
+      (acc, val) => ({ ...acc, [val.key]: val.value }),
+      {}
+    )
+  });
 }
 
-const elements = ref([
-  {
-    label: "Multimédia",
-    hint: "Vidéo, audio ou animation",
-    icon: elementMultimedia,
-    value: true
-  },
-  { label: "Tableau", icon: elementTable, value: true },
-  { label: "Formulaire", icon: elementForm, value: true },
-  {
-    label: "Cadre",
-    hint: "Balise <iframe> ou <frame>",
-    icon: elementFrame,
-    value: true
-  }
-]);
+const pageElements = ref(
+  Object.entries(props.pageElements).map(([, value], i) => {
+    return {
+      ...staticElements[i],
+      value
+    };
+  })
+);
 </script>
 
 <template>
@@ -55,7 +74,7 @@ const elements = ref([
 
       <div class="checkboxes">
         <DsfrRichCheckbox
-          v-for="(el, i) in elements"
+          v-for="(el, i) in pageElements"
           id="test"
           :key="i"
           v-model="el.value"
