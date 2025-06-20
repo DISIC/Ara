@@ -18,6 +18,13 @@ export interface AuditPage {
   url: string;
 }
 
+export interface PageElements {
+  multimedia?: boolean;
+  table?: boolean;
+  form?: boolean;
+  frame?: boolean;
+}
+
 export enum AuditType {
   FAST = "FAST",
   COMPLEMENTARY = "COMPLEMENTARY",
@@ -75,6 +82,7 @@ export interface CreateAuditRequestData {
   auditType: AuditType | null;
   procedureName: string;
   pages: Omit<AuditPage, "id" | "order">[];
+  pageElements: PageElements;
   auditorEmail: string;
   auditorName: string | null;
 }

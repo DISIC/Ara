@@ -86,6 +86,7 @@ const audit = ref<CreateAuditRequestData>({
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
+  pageElements: { multimedia: true, table: true, form: true, frame: true },
   auditorEmail: accountStore.account?.email ?? "",
   auditorName: accountStore.account?.name ?? ""
 });
@@ -241,6 +242,7 @@ async function goToPreviousStep() {
     />
     <NewAuditElements
       v-else-if="currentStep === 2"
+      :page-elements="audit.pageElements"
       @previous="goToPreviousStep"
       @submit="submitStep"
     />
