@@ -5,11 +5,17 @@
     "confiture-web-app"
   ],
   "devDependencies": {
+    "@antfu/eslint-config": "^4.15.0",
     "cypress": "^13.6.1",
+    "eslint": "^9.29.0",
+    "eslint-plugin-format": "^1.0.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
   },
+  "prepare": "husky install",
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build",
