@@ -39,7 +39,7 @@ Utiliser les media queries en "desktop first" et avec la notation suivante avec 
 
 ```css
 @media (width < 62rem) {
-  ...
+  /* ... */
 }
 ```
 

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { defineSlots } from "vue";
-
 import { useUniqueId } from "../../composables/useUniqueId";
 import { RadioColor } from "./Radio.vue";
 
@@ -18,7 +16,7 @@ const props = defineProps<{
   modelValue: any;
 }>();
 
-defineSlots<{ label(): void }>;
+defineSlots<{ label(): void }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;

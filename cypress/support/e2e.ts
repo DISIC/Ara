@@ -16,10 +16,15 @@
  * See:
  * - https://github.com/vuejs/vue-cli/issues/7431
  * - https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+ *
+ * TODO Understand the issue… and if it’s not a real issue
  */
 Cypress.on(
   "uncaught:exception",
-  (err) => !err.message.includes("ResizeObserver loop limit exceeded")
+  (err) => {
+    return (!err.message.includes("ResizeObserver loop limit exceeded") &&
+      !err.message.includes("ResizeObserver loop completed with undelivered notifications"));
+  }
 );
 
 // Import commands.js using ES2015 syntax:

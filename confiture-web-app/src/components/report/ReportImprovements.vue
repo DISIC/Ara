@@ -47,10 +47,7 @@ const improvementsCount = computed(() => {
         <h3
           :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
           class="fr-h3 fr-mb-2w page-title"
-        >
-          {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
-        </h3>
-
+        >{{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}</h3>
         <ul
           v-if="report.data.transverseElements.length"
           class="fr-tags-group fr-mb-5v"
@@ -75,7 +72,7 @@ const improvementsCount = computed(() => {
             <hr
               v-if="
                 i !== transverseImprovements.topics.length - 1 ||
-                j !== topic.improvements.length - 1
+                  j !== topic.improvements.length - 1
               "
               class="fr-mt-4w fr-pb-4w"
             />
@@ -118,7 +115,7 @@ const improvementsCount = computed(() => {
             <hr
               v-if="
                 j !== page.topics.length - 1 ||
-                k !== topic.improvements.length - 1
+                  k !== topic.improvements.length - 1
               "
               class="fr-mt-4w fr-pb-4w"
             />
@@ -126,5 +123,6 @@ const improvementsCount = computed(() => {
         </div>
       </section>
     </template>
+
   </ReportCriteria>
 </template>

@@ -133,8 +133,7 @@ function onFileRequestFinished() {
           class="upload-btn fr-btn fr-btn--tertiary"
           tabindex="0"
           :for="`file-upload-${id}`"
-          >Choisir un fichier</label
-        >
+        >Choisir un fichier</label>
         <input
           :id="`file-upload-${id}`"
           ref="fileInputRef"
@@ -178,8 +177,7 @@ function onFileRequestFinished() {
         >
         </span>
         <div class="file-link">
-          <span>{{ getFileName(auditFile) }}</span
-          ><br />
+          <span>{{ getFileName(auditFile) }}</span><br />
           <span class="fr-hint-text">{{ getFileDetails(auditFile) }}</span>
         </div>
         <ul class="fr-btns-group fr-btns-group--inline">

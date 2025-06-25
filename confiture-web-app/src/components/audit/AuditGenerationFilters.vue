@@ -111,8 +111,8 @@ const notApplicableCount = computed(
     <button
       v-if="
         filterStore.search ||
-        filterStore.hideEvaluatedCriteria ||
-        filterStore.complianceLevels.length
+          filterStore.hideEvaluatedCriteria ||
+          filterStore.complianceLevels.length
       "
       class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-4w"
       @click="onGlobalReset"
@@ -122,9 +122,7 @@ const notApplicableCount = computed(
 
     <form @submit.prevent="submit">
       <div class="fr-search-bar" role="search">
-        <label class="fr-label" for="filters-search"
-          >Recherche par mots clés</label
-        >
+        <label class="fr-label" for="filters-search">Recherche par mots clés</label>
         <input
           id="filters-search"
           ref="searchInputRef"
@@ -171,7 +169,7 @@ const notApplicableCount = computed(
       <button
         v-if="
           filterStore.hideEvaluatedCriteria &&
-          filterStore.newEvaluatedCriteria.length
+            filterStore.newEvaluatedCriteria.length
         "
         class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mt-2w"
         @click="filterStore.updateEvaluatedCriteria"
@@ -261,9 +259,7 @@ const notApplicableCount = computed(
             >
               <span>{{ topic.number }}.</span>
               <span>{{ topic.title }}</span>
-              <span class="fr-text--sm fr-m-0 topic-filter-value"
-                >{{ topic.value }}%</span
-              >
+              <span class="fr-text--sm fr-m-0 topic-filter-value">{{ topic.value }}%</span>
               <div class="topic-filter-progress" />
             </RouterLink>
           </li>

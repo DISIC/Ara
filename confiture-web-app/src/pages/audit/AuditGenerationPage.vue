@@ -354,9 +354,7 @@ watch(
 
 .fr-col-md-11 {
   flex-grow: 1 !important;
-  max-width: calc(
-    100% - calc(var(--filters-column-width) + var(--gap))
-  ) !important; /* Sidebar width + gap */
+  max-width: calc(100% - calc(var(--filters-column-width) + var(--gap))) !important; /* Sidebar width + gap */
   width: auto !important;
 }
 

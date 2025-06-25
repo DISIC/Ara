@@ -307,7 +307,8 @@ export class AuditsController {
     }
   }
 
-  /** Fully duplicate an audit. This includes
+  /**
+   * Fully duplicate an audit. This includes
    * - the audit metadata (procedure name, auditor name, etc)
    * - the audited pages
    * - the RGAA results (status, comment, user impact)

@@ -28,7 +28,8 @@ const abridgedFormatter = new Intl.DateTimeFormat("fr-FR", {
 });
 
 /**
- * Format a string intro a readable date ("17 août 2022")
+ * Format a date string into a readable date ("17 août 2022")
+ * @param {string} dateString
  * @param {boolean} short - abridged version: "17/08/2022"
  */
 export function formatDate(dateString: string, short?: boolean): string {

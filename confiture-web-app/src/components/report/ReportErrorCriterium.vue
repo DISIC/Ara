@@ -66,7 +66,7 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
     <TiptapRenderer
       v-if="
         error.notCompliantComment &&
-        !isTiptapDocumentEmpty(error.notCompliantComment)
+          !isTiptapDocumentEmpty(error.notCompliantComment)
       "
       :document="error.notCompliantComment"
     />

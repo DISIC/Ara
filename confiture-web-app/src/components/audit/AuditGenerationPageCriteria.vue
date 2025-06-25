@@ -26,7 +26,7 @@ const noResults = computed(() => {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer les critères évalués" pour afficher de nouveau les critères.'
+        "Veuillez décocher le filtre \"Masquer les critères évalués\" pour afficher de nouveau les critères."
     };
   } else if (store.hasNoResultsFromComplianceLevel) {
     return {
@@ -46,7 +46,7 @@ const noResults = computed(() => {
     return {
       title: "Tous les critères évalués ont été masqués",
       description:
-        'Veuillez décocher le filtre "Masquer les critères évalués" pour afficher de nouveau les critères.'
+        "Veuillez décocher le filtre \"Masquer les critères évalués\" pour afficher de nouveau les critères."
     };
   }
 });
@@ -148,9 +148,9 @@ watch(
       <template
         v-if="
           store.hasNoResultsFromSearch &&
-          !store.hideEvaluatedCriteria &&
-          !store.hasNoResultsFromEvaluated &&
-          !store.hasNoResultsFromComplianceLevel
+            !store.hideEvaluatedCriteria &&
+            !store.hasNoResultsFromEvaluated &&
+            !store.hasNoResultsFromComplianceLevel
         "
       >
         <p><strong>Suggestions :</strong></p>

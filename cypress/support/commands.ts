@@ -82,9 +82,9 @@ Cypress.Commands.add(
       .contains("label", label)
       .invoke("attr", "for")
       .then((id) => {
-        cy.get("#" + id);
+        cy.get(`#${id}`);
       });
-  },
+  }
 );
 
 Cypress.Commands.add("assertClipboardValue", (value: string) => {
@@ -113,7 +113,7 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     isPristine: options?.isPristine,
     noImprovements: options?.hasNoImprovementsComments,
     auditorEmail: options?.auditorEmail,
-    fillStatement: options?.fillStatement,
+    fillStatement: options?.fillStatement
   }).its("body");
 });
 
@@ -133,13 +133,13 @@ Cypress.Commands.add(
       .then(({ authToken }) => {
         if (options?.login) {
           cy.window().then((win) =>
-            win.localStorage.setItem("confiture:authToken", authToken),
+            win.localStorage.setItem("confiture:authToken", authToken)
           );
         }
       });
 
     cy.get("@userCredentials");
-  },
+  }
 );
 
 Cypress.Commands.addQuery(

@@ -12,16 +12,16 @@ assignees: ''
 
 ## Description du problème
 
-- [Description détaillée du problème, localisation et impact sur l'usager.] 
+- [Description détaillée du problème, localisation et impact sur l'usager.]
 
-## Scénario pour reproduire le bug 
+## Scénario pour reproduire le bug
 
-- [Liste des actions à réaliser pour reproduire le bug] 
+- [Liste des actions à réaliser pour reproduire le bug]
 
 ## Correction à apporter
 
 - [Description du comportement attendu]
 
---- 
+---
 
-🔮  Pensez à lancer et/ou mettre à jour les tests end-to-end si nécessaire avant passage en prod.
+🔮 Pensez à lancer et/ou mettre à jour les tests end-to-end si nécessaire avant passage en prod.
