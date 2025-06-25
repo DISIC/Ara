@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 26/06/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Améliore l’accessibilité des liens affichés dans le rapport d’audit (ceux ajoutés par l’utilisateur dans les éditeurs riches lors de l’audit) ([#1132](https://github.com/DISIC/Ara/pull/1132))
+
 ### 18/06/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
