@@ -41,14 +41,14 @@ const bottomLinks = [
                 <RouterLink
                   class="fr-footer__top-link"
                   :to="{ name: 'roadmap' }"
-                  >Feuille de route</RouterLink
+                >Feuille de route</RouterLink
                 >
               </li>
               <li>
                 <RouterLink
                   class="fr-footer__top-link"
                   :to="{ name: 'changelog' }"
-                  >Notes de version</RouterLink
+                >Notes de version</RouterLink
                 >
               </li>
             </ul>
@@ -90,10 +90,10 @@ const bottomLinks = [
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
-              >FIPHFP<span class="fr-sr-only">
-                Fonds pour l’insertion des personnes handicapées dans la
-                Fonction publique (nouvelle fenêtre)
-              </span></a
+            >FIPHFP<span class="fr-sr-only">
+              Fonds pour l’insertion des personnes handicapées dans la
+              Fonction publique (nouvelle fenêtre)
+            </span></a
             >.
           </p>
           <ul class="fr-footer__content-list">
@@ -102,7 +102,7 @@ const bottomLinks = [
                 class="fr-footer__content-link"
                 href="https://info.gouv.fr"
                 target="_blank"
-                >info.gouv.fr
+              >info.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
@@ -111,7 +111,7 @@ const bottomLinks = [
                 class="fr-footer__content-link"
                 href="https://service-public.fr"
                 target="_blank"
-                >service-public.fr
+              >service-public.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
@@ -120,7 +120,7 @@ const bottomLinks = [
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
-                >legifrance.gouv.fr
+              >legifrance.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
@@ -129,7 +129,7 @@ const bottomLinks = [
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
-                >data.gouv.fr
+              >data.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a
               >
             </li>
@@ -186,7 +186,7 @@ const bottomLinks = [
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
-              >licence etalab-2.0
+            >licence etalab-2.0
               <span class="fr-sr-only">(nouvelle fenêtre)</span></a
             >
           </p>

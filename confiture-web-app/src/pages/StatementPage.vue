@@ -137,7 +137,7 @@ const siteUrl = computed(() => {
       <p
         v-if="
           getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
-          report.data.creationDate
+            report.data.creationDate
         "
         class="fr-text--light fr-mb-4w dates"
       >
@@ -188,7 +188,7 @@ const siteUrl = computed(() => {
           <li>
             Dès la page d’accueil et sur toutes les pages de votre site,
             afficher la mention “<strong
-              >Accessibilité : {{ getA11yLevel() }} conforme</strong
+            >Accessibilité : {{ getA11yLevel() }} conforme</strong
             >”. Cette mention peut être par exemple, un lien dans le pied de
             page vers la page contenant votre déclaration.
           </li>
@@ -228,7 +228,7 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
             <strong
-              >{{ report.data.procedureName }}
+            >{{ report.data.procedureName }}
               <a target="_blank" :href="report.data.procedureUrl">
                 {{ report.data.procedureUrl }}
               </a></strong
@@ -249,8 +249,8 @@ const siteUrl = computed(() => {
           <template
             v-if="
               report.data.notCompliantContent ||
-              report.data.derogatedContent ||
-              report.data.notInScopeContent
+                report.data.derogatedContent ||
+                report.data.notInScopeContent
             "
           >
             <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
@@ -290,7 +290,7 @@ const siteUrl = computed(() => {
             <strong>{{ formatDate(report.data.publishDate) }}</strong
             >.
             <template v-if="report.data.updateDate"
-              >Elle a été mise à jour le
+            >Elle a été mise à jour le
               <strong>{{ formatDate(report.data.updateDate) }}</strong
               >.</template
             >
@@ -353,7 +353,7 @@ const siteUrl = computed(() => {
             <li v-if="report.data.contactEmail">
               Contacter
               <strong
-                >{{ report.data.procedureInitiator }} :
+              >{{ report.data.procedureInitiator }} :
                 {{ report.data.contactEmail }}</strong
               >
             </li>
@@ -392,7 +392,7 @@ const siteUrl = computed(() => {
               Envoyer un courrier par la poste (gratuit, ne pas mettre de
               timbre) à :<br />
               <span class="fr-mt-1w mailing-address"
-                >Défenseur des droits<br />
+              >Défenseur des droits<br />
                 Libre réponse 71120<br />
                 75342 Paris CEDEX 07</span
               >

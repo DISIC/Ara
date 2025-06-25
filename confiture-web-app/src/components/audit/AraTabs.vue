@@ -1,7 +1,7 @@
 <!--
   This component is used to replicate DSFR tabs with:
-	- sticky functionality
-	- routing behaviour, one nested route per tab
+  - sticky functionality
+  - routing behaviour, one nested route per tab
   For "regular" tabs, please use `fr-tabs` instead of this component.
   https://www.systeme-de-design.gouv.fr/elements-d-interface/composants/onglet
  -->
@@ -65,7 +65,7 @@ props.tabs.forEach((t, i) => {
     otherTab = tabSlugs[slug];
     if (otherTab.id && t.id) {
       if (otherTab.id > t.id) {
-        otherSlug = slug + `-${otherTab.id}`;
+        otherSlug = `${slug}-${otherTab.id}`;
         tabSlugs[otherSlug] = otherTab;
         tabSlugIndexes[otherSlug] = tabSlugIndexes[slug];
         tabSlugsArray[tabSlugIndexes[slug]] = otherSlug;
@@ -83,8 +83,8 @@ props.tabs.forEach((t, i) => {
 if (new Set(tabSlugsArray).size !== tabSlugsArray.length) {
   throw new Error(
     `\n\n❌ Tab slugs need to be unique. You can pass an id in the TabData object,
-		it will be appended to the slug.\n\nCurrent tag slugs are:\n
-		${tabSlugsArray.join("  |  ")}`
+it will be appended to the slug.\n\nCurrent tag slugs are:\n
+${tabSlugsArray.join("  |  ")}`
   );
 }
 
@@ -108,11 +108,11 @@ const selectedTab = computed(() => {
 });
 
 function tabId(i: number) {
-  return "tab-" + uniqueId.value + "-" + i;
+  return `tab-${uniqueId.value}-${i}`;
 }
 
 function panelId(i: number) {
-  return "panel-" + uniqueId.value + "-" + i;
+  return `panel-${uniqueId.value}-${i}`;
 }
 
 /**
@@ -372,7 +372,7 @@ li {
   border-top: none;
   padding: 2rem;
   /* Allow tabs to stick to the top of the screen
-	 * even if content is not high enough: */
+   * even if content is not high enough: */
   min-height: var(--min-height);
 }
 </style>

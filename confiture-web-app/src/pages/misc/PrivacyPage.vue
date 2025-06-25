@@ -135,7 +135,7 @@ import PageMeta from "../../components/PageMeta";
       Pour vous aider dans votre démarche, vous trouverez un modèle de demande
       élaboré par la CNIL ici :
       <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces"
-        >www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a
+      >www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a
       >.
     </p>
     <p>

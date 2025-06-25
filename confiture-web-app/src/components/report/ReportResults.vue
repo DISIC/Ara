@@ -226,7 +226,7 @@ const transverseNotCompliantCount = computed(() => {
             hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
           }"
           class="fr-link fr-link--sm"
-          >Voir
+        >Voir
           {{
             pluralize(
               "le critère non conforme transverse",

@@ -133,7 +133,7 @@ function onFileRequestFinished() {
           class="upload-btn fr-btn fr-btn--tertiary"
           tabindex="0"
           :for="`file-upload-${id}`"
-          >Choisir un fichier</label
+        >Choisir un fichier</label
         >
         <input
           :id="`file-upload-${id}`"

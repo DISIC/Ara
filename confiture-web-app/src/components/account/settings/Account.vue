@@ -122,10 +122,10 @@ async function hideAccountDeletionForm() {
         :class="{ 'fr-input-group--error': validationError }"
       >
         <label class="fr-label" for="confirm-sentence"
-          >Pour confirmer la suppression de votre compte veuillez saisir :
+        >Pour confirmer la suppression de votre compte veuillez saisir :
           {{ VALIDATION_STRING }}
           <span class="fr-hint-text"
-            >Attention à ne pas utiliser de majuscule ou ajouter d’espace au
+          >Attention à ne pas utiliser de majuscule ou ajouter d’espace au
             début ou à la fin de votre saisie.
           </span>
         </label>

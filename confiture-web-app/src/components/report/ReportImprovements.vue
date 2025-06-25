@@ -75,7 +75,7 @@ const improvementsCount = computed(() => {
             <hr
               v-if="
                 i !== transverseImprovements.topics.length - 1 ||
-                j !== topic.improvements.length - 1
+                  j !== topic.improvements.length - 1
               "
               class="fr-mt-4w fr-pb-4w"
             />
@@ -118,7 +118,7 @@ const improvementsCount = computed(() => {
             <hr
               v-if="
                 j !== page.topics.length - 1 ||
-                k !== topic.improvements.length - 1
+                  k !== topic.improvements.length - 1
               "
               class="fr-mt-4w fr-pb-4w"
             />

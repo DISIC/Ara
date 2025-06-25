@@ -87,7 +87,7 @@ const steps = [
       <abbr
         title="référentiel général d’amélioration de
           l’accessibilité"
-        >RGAA</abbr
+      >RGAA</abbr
       >.
     </p>
     <p>

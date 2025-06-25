@@ -201,14 +201,14 @@ function copyStatementLink(uniqueId: string) {
             isInProgress || isNotStarted
               ? null
               : {
-                  'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                  'fr-badge--new': audit.complianceLevel >= 50,
-                  'fr-badge--error': audit.complianceLevel < 50
-                }
+                'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                'fr-badge--new': audit.complianceLevel >= 50,
+                'fr-badge--error': audit.complianceLevel < 50
+              }
           "
         >
           <span v-if="!isInProgress" class="fr-sr-only"
-            >Taux de conformité
+          >Taux de conformité
           </span>
           {{
             isInProgress || isNotStarted
@@ -277,7 +277,7 @@ function copyStatementLink(uniqueId: string) {
         {{ audit.procedureName }}</span
       >
       <span v-else class="fr-sr-only"
-        >pour l’audit {{ audit.procedureName }}</span
+      >pour l’audit {{ audit.procedureName }}</span
       >
     </RouterLink>
 
@@ -313,7 +313,7 @@ function copyStatementLink(uniqueId: string) {
                 }"
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                >Consulter le rapport
+              >Consulter le rapport
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>

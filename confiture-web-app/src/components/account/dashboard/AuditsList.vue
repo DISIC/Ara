@@ -25,8 +25,8 @@ defineProps<{
         status === AuditStatus.IN_PROGRESS
           ? `En cours (${audits.length})`
           : `${pluralize("Terminé", "Terminés", audits.length)} (${
-              audits.length
-            })`
+            audits.length
+          })`
       }}
     </h2>
 
