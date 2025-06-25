@@ -1,8 +1,4 @@
-import {
-  Extensions,
-  mergeAttributes,
-  textblockTypeInputRule
-} from "@tiptap/core";
+import { Extensions, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
@@ -17,6 +13,8 @@ import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
 
+import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
+
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
 
@@ -28,7 +26,45 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
-export const tiptapExtensions: Extensions = [
+const extendedLink = Link.extend({
+  addAttributes() {
+    // Default attributes are useful when pasting links in editor for example.
+    return {
+      ...this.parent?.(),
+      // "class" is always reset
+      class: {
+        default: null,
+        renderHTML: () => {
+          return {
+            class: null
+          };
+        }
+      },
+      // "rel" is always reset to "noopener noreferrer"
+      rel: {
+        default: null,
+        renderHTML: () => {
+          return {
+            rel: "noopener noreferrer"
+          };
+        }
+      },
+      // "target" is reset to:
+      // - null (removed) when editing
+      // - "_blank" when rendered
+      target: {
+        default: null,
+        renderHTML: () => {
+          return {
+            target: this.options.HTMLAttributes.target
+          };
+        }
+      }
+    };
+  }
+});
+
+const commonExtensions: Extensions = [
   Heading.extend({
     // prevent all marks from being applied to headings
     marks: "",
@@ -56,33 +92,6 @@ export const tiptapExtensions: Extensions = [
     heading: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
-  Link.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        class: {
-          default: null,
-          renderHTML: () => {
-            return { class: null }; // reset class when copy pasting for example
-          }
-        },
-        title: {
-          default: null,
-          renderHTML: (attributes) => {
-            return {
-              title: attributes.title
-            };
-          }
-        }
-      };
-    },
-    renderHTML({ HTMLAttributes }) {
-      return ["a", mergeAttributes(HTMLAttributes), 0];
-    }
-  }).configure({
-    openOnClick: false,
-    defaultProtocol: "https"
-  }),
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
@@ -90,4 +99,30 @@ export const tiptapExtensions: Extensions = [
   Markdown.configure({ linkify: true }),
   Image,
   DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
+];
+
+export const tiptapEditorExtensions: Extensions = [
+  ...commonExtensions,
+  extendedLink.configure({
+    openOnClick: false,
+    defaultProtocol: "https",
+    shouldAutoLink: () => true,
+    HTMLAttributes: {
+      // Links do not open when editing, so not "new window"…
+      // Advantage: no extra icon when editing
+      target: null
+    }
+  })
+];
+
+export const tiptapRenderedExtensions: Extensions = [
+  ...commonExtensions,
+  extendedLink.configure({
+    openOnClick: true,
+    HTMLAttributes: {
+      // Links open in a new window when displaying the editor in read-only mode
+      target: "_blank"
+    }
+  }),
+  ...[AraTiptapRenderedExtension]
 ];
