@@ -20,15 +20,13 @@ defineProps<{
         'fr-badge--green-emeraude': status === AuditStatus.COMPLETED,
         'fr-badge--purple-glycine': status === AuditStatus.IN_PROGRESS
       }"
-    >
-      {{
-        status === AuditStatus.IN_PROGRESS
-          ? `En cours (${audits.length})`
-          : `${pluralize("Terminé", "Terminés", audits.length)} (${
-              audits.length
-            })`
-      }}
-    </h2>
+    >{{
+      status === AuditStatus.IN_PROGRESS
+        ? `En cours (${audits.length})`
+        : `${pluralize("Terminé", "Terminés", audits.length)} (${
+          audits.length
+        })`
+    }}</h2>
 
     <template v-if="audits.length">
       <div class="fr-mb-1w headers">

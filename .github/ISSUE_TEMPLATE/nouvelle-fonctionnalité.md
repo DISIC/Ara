@@ -7,15 +7,15 @@ assignees: ''
 
 ---
 
-## Description du problème 
+## Description du problème
 
 - [Description détaillée du problème, localisation et impact sur l’usager.]
-- [Inclure toutes les informations ou données pertinentes.] 
+- [Inclure toutes les informations ou données pertinentes.]
 
 ## Pistes de solutions
 
 - [Premières idées ou recommandations pour résoudre le problème.]
 
---- 
+---
 
-🔮  Pensez à lancer et/ou mettre à jour les tests end-to-end si nécessaire avant passage en prod.
+🔮 Pensez à lancer et/ou mettre à jour les tests end-to-end si nécessaire avant passage en prod.

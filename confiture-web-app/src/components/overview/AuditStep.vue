@@ -70,8 +70,7 @@ const auditIsInProgress = computed(() => {
         Commencé le
         <time :datetime="audit.creationDate.toString()">{{
           formatDate(audit.creationDate)
-        }}</time></template
-      >
+        }}</time></template>
 
       <template v-else-if="auditIsReady && audit.publicationDate">
         Terminé le
@@ -82,8 +81,7 @@ const auditIsInProgress = computed(() => {
           - Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
-          }}</time></template
-        >
+          }}</time></template>
       </template>
       <template v-else-if="audit.creationDate">
         Créé le

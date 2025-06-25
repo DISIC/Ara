@@ -104,8 +104,7 @@ onMounted(async () => {
       <p class="fr-mb-6w">
         La prochaine fois que vous vous connectez à votre compte, assurez-vous
         que vous utilisez l’adresse e-mail :
-        <strong>{{ newEmail }}</strong
-        >.
+        <strong>{{ newEmail }}</strong>.
       </p>
 
       <RouterLink

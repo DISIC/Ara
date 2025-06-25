@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type Level } from "@tiptap/extension-heading";
+import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, watch } from "vue";
 
@@ -43,6 +43,7 @@ function getContent() {
 
 function setLink() {
   const previousUrl = editor.value.getAttributes("link").href;
+  // eslint-disable-next-line no-alert
   const url = window.prompt("Adresse du lien", previousUrl);
 
   // cancelled
@@ -71,8 +72,8 @@ const editorAttributes: any = props.editable
   ? {
       "aria-describedby": "tiptap-description",
       "aria-multiline": "true",
-      role: "textbox",
-      class: `tiptap--${props.editorSize}`
+      "role": "textbox",
+      "class": `tiptap--${props.editorSize}`
     }
   : {
       class: "tiptap--not-editable"
@@ -169,7 +170,7 @@ defineExpose({
               :is-toggle="true"
               :disabled="
                 !editor?.can().toggleHeading({ level: hLevel as Level }) ||
-                disabled
+                  disabled
               "
               :pressed="editor?.isActive('heading', { level: hLevel })"
               @click="
@@ -209,7 +210,7 @@ defineExpose({
               :disabled="
                 (!editor?.can().toggleBulletList() &&
                   !editor?.can().toggleOrderedList()) ||
-                disabled
+                  disabled
               "
               :pressed="editor?.isActive('bulletList')"
               @click="editor.chain().focus().toggleBulletList().run()"
@@ -224,7 +225,7 @@ defineExpose({
               :disabled="
                 (!editor?.can().toggleBulletList() &&
                   !editor?.can().toggleOrderedList()) ||
-                disabled
+                  disabled
               "
               :pressed="editor?.isActive('orderedList')"
               @click="editor.chain().focus().toggleOrderedList().run()"
@@ -283,7 +284,7 @@ defineExpose({
     >
       <tr>
         <td>
-          <editor-content :editor="editor" />
+          <EditorContent :editor="editor" />
         </td>
       </tr>
     </table>

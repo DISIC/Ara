@@ -201,15 +201,13 @@ function copyStatementLink(uniqueId: string) {
             isInProgress || isNotStarted
               ? null
               : {
-                  'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                  'fr-badge--new': audit.complianceLevel >= 50,
-                  'fr-badge--error': audit.complianceLevel < 50
-                }
+                'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                'fr-badge--new': audit.complianceLevel >= 50,
+                'fr-badge--error': audit.complianceLevel < 50
+              }
           "
         >
-          <span v-if="!isInProgress" class="fr-sr-only"
-            >Taux de conformité
-          </span>
+          <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité</span>
           {{
             isInProgress || isNotStarted
               ? "Audit en cours"
@@ -274,11 +272,8 @@ function copyStatementLink(uniqueId: string) {
             : "Accéder à l’audit"
       }}
       <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
-        {{ audit.procedureName }}</span
-      >
-      <span v-else class="fr-sr-only"
-        >pour l’audit {{ audit.procedureName }}</span
-      >
+        {{ audit.procedureName }}</span>
+      <span v-else class="fr-sr-only">pour l’audit {{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Secondary action -->
@@ -313,7 +308,7 @@ function copyStatementLink(uniqueId: string) {
                 }"
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-                >Consulter le rapport
+              >Consulter le rapport
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>
               </RouterLink>
             </li>
@@ -365,9 +360,7 @@ function copyStatementLink(uniqueId: string) {
               @click="copyReportLink(audit.consultUniqueId)"
             >
               Copier le lien du rapport
-              <span class="fr-sr-only">
-                de l’audit {{ audit.procedureName }}</span
-              >
+              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
 

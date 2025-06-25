@@ -293,23 +293,18 @@ onMounted(() => {
           class="fr-icon-success-line fr-icon--sm audit-status-icon"
           aria-hidden="true"
         ></span>
-        <strong
-          >Audit
+        <strong>Audit
           {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }}
           le
           <time
-            :datetime="
-              auditStore.currentAudit?.editionDate
-                ? auditStore.currentAudit?.editionDate
-                : auditStore.currentAudit?.publicationDate
+            :datetime=" auditStore.currentAudit?.editionDate
+              ? auditStore.currentAudit?.editionDate
+              : auditStore.currentAudit?.publicationDate
             "
-            >{{
-              auditStore.currentAudit?.editionDate
-                ? formatDate(auditStore.currentAudit?.editionDate, true)
-                : formatDate(auditStore.currentAudit?.publicationDate, true)
-            }}</time
-          ></strong
-        >
+          >{{ auditStore.currentAudit?.editionDate
+            ? formatDate(auditStore.currentAudit?.editionDate, true)
+            : formatDate(auditStore.currentAudit?.publicationDate, true)
+          }}</time></strong>
       </div>
     </div>
 
@@ -362,9 +357,7 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg"
-                    >de l’audit</span
-                  >
+                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg">de l’audit</span>
                 </RouterLink>
               </li>
               <li class="dropdown-item">
@@ -386,8 +379,7 @@ onMounted(() => {
                 >
                   Copier le lien de l’audit
                   <span class="fr-sr-only">
-                    {{ auditStore.currentAudit?.procedureName }}</span
-                  >
+                    {{ auditStore.currentAudit?.procedureName }}</span>
                   <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Ce lien permet de modifier l’audit
                   </span>

@@ -318,8 +318,7 @@ const showTransverseStatus = computed(() => {
                   transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
               }
             ]"
-            >{{ formatStatus(transverseStatus!) }}</strong
-          >
+          >{{ formatStatus(transverseStatus!) }}</strong>
           pour les éléments transverses.
         </p>
 

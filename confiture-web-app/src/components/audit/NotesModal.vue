@@ -92,9 +92,7 @@ function handleDeleteFile(file: AuditFile) {
                   class="fr-btn--close fr-btn fr-text--md"
                   aria-controls="notes-modal"
                   type="button"
-                >
-                  Fermer
-                </button>
+                >Fermer</button>
                 <div class="title-container">
                   <h1 id="notes-modal-title" class="fr-modal__title">
                     Observations
@@ -108,10 +106,8 @@ function handleDeleteFile(file: AuditFile) {
               <p id="audit-notes" class="fr-label fr-mb-1w">
                 Points à signaler ne concernant pas l’accessibilité du site
                 audité
-                <span class="fr-hint-text fr-mt-1v"
-                  >Exemple : temps de chargement excessif sur certaines pages,
-                  incohérences dans l'usage des couleurs, bug</span
-                >
+                <span class="fr-hint-text fr-mt-1v">Exemple : temps de chargement excessif sur certaines pages,
+                  incohérences dans l'usage des couleurs, bug</span>
               </p>
               <TiptapEditor
                 v-model="notes"
