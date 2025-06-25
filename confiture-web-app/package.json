@@ -6,9 +6,8 @@
     "dev": "vite",
     "build": "yarn generate:rgaa && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "lint": "eslint '{src,scripts}/**/*.{ts,vue}'",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "generate:rgaa": "node scripts/build-rgaa-files.js",
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
@@ -46,17 +45,9 @@
     "@types/lodash-es": "^4.17.6",
     "@types/marked": "^4.0.8",
     "@types/node": "^22.10.0",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.55.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-simple-import-sort": "^12.0.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
-    "eslint-plugin-vue": "^9.18.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vue-tsc": "^1.8.22"
+    "vue-tsc": "^2.2.10"
   },
   "engines": {
     "node": "^22.13.0",
