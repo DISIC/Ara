@@ -7,7 +7,7 @@ import {
   ValidateNested
 } from "class-validator";
 
-import { CreateAuditDto } from "./create-audit.dto";
+import { BaseAuditDto } from "./create-audit.dto";
 
 class UpdateAuditEnvironment {
   /**
@@ -49,7 +49,7 @@ class UpdateAuditEnvironment {
 //   email: string;
 // }
 
-export class UpdateAuditDto extends CreateAuditDto {
+export class UpdateAuditDto extends BaseAuditDto {
   /**
    * @example "https://procedure.government.com"
    */
