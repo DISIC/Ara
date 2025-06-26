@@ -90,7 +90,7 @@ RUN addgroup -g 1000 node \
   && npm --version
 
 
-ENV YARN_VERSION 1.22.19
+ENV YARN_VERSION 4.9.2
 
 RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && for key in \
