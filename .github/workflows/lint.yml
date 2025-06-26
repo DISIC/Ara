@@ -29,10 +29,5 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Lint front-end
+      - name: Lint entire project
         run: yarn lint
-        working-directory: confiture-web-app/
-
-      - name: Lint back-end
-        run: yarn eslint "src/**/*.ts"
-        working-directory: confiture-rest-api/

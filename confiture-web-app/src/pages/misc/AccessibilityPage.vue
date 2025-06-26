@@ -61,7 +61,7 @@ import PageMeta from "../../components/PageMeta";
           href="https://www.defenseurdesdroits.fr/nous-contacter"
           target="_blank"
           el="noreferrer noopener"
-          >formulaire de contact
+        >formulaire de contact
           <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
       </li>
@@ -71,7 +71,7 @@ import PageMeta from "../../components/PageMeta";
           href="https://www.defenseurdesdroits.fr/fr/saisir/delegues"
           el="noreferrer noopener"
           target="_blank"
-          >liste des délégués de votre région
+        >liste des délégués de votre région
           <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
         avec leurs informations de contact directs
@@ -85,7 +85,7 @@ import PageMeta from "../../components/PageMeta";
           href="https://lannuaire.service-public.fr/autorites-independantes/1867f065-c823-4362-8d0f-8ca6b011a10f"
           rel="noreferrer noopener"
           target="_blank"
-          >annuaire de l’administration
+        >annuaire de l’administration
           <span class="fr-sr-only">(nouvelle fenêtre)</span></a
         >
       </li>

@@ -2,6 +2,10 @@
   "name": "confiture-rest-api",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "^22.13.0",
+    "yarn": "^1.22.19"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -9,7 +13,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"src/**/*.ts\" --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "migrate:dev": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
     "postinstall": "yarn generate-api-types",
@@ -56,13 +61,6 @@
     "@types/node": "^22.10.0",
     "@types/nodemailer": "^6.4.4",
     "@types/sharp": "^0.31.1",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.55.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-simple-import-sort": "^12.1.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
     "openapi-typescript": "^6.7.6",
     "prettier": "^3.1.1",
     "source-map-support": "^0.5.20",
@@ -70,9 +68,5 @@
     "ts-node": "^10.0.0",
     "tsconfig-paths": "^3.10.1",
     "typescript": "^4.3.5"
-  },
-  "engines": {
-    "node": "^22.13.0",
-    "yarn": "^1.22.19"
   }
 }

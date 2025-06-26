@@ -5,16 +5,28 @@
     "confiture-web-app"
   ],
   "devDependencies": {
+    "@antfu/eslint-config": "^4.15.0",
     "cypress": "^13.6.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "eslint": "^9.29.0",
+    "eslint-plugin-format": "^1.0.1",
+    "lint-staged": "^15.2.0",
+    "simple-git-hooks": "^2.13.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint"
   },
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "heroku-postbuild": "yarn workspaces run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
-    "postinstall": "yarn copytypes"
+    "postinstall": "yarn copytypes",
+    "prepare": "yarn simple-git-hooks"
   },
   "dependencies": {
     "pm2": "^5.4.0"

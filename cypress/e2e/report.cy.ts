@@ -75,7 +75,7 @@ describe("Report", () => {
   it("User can’t see improvements tab if there are no improvements with comment", () => {
     cy.createTestAudit({
       isComplete: true,
-      hasNoImprovementsComments: true,
+      hasNoImprovementsComments: true
     }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.get(".header").contains(auditJson.procedureName);

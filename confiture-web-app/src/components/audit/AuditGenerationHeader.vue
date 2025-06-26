@@ -293,22 +293,18 @@ onMounted(() => {
           class="fr-icon-success-line fr-icon--sm audit-status-icon"
           aria-hidden="true"
         ></span>
-        <strong
-          >Audit
+        <strong>Audit
           {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }}
           le
           <time
-            :datetime="
-              auditStore.currentAudit?.editionDate
-                ? auditStore.currentAudit?.editionDate
-                : auditStore.currentAudit?.publicationDate
+            :datetime=" auditStore.currentAudit?.editionDate
+              ? auditStore.currentAudit?.editionDate
+              : auditStore.currentAudit?.publicationDate
             "
-            >{{
-              auditStore.currentAudit?.editionDate
-                ? formatDate(auditStore.currentAudit?.editionDate, true)
-                : formatDate(auditStore.currentAudit?.publicationDate, true)
-            }}</time
-          ></strong
+          >{{ auditStore.currentAudit?.editionDate
+            ? formatDate(auditStore.currentAudit?.editionDate, true)
+            : formatDate(auditStore.currentAudit?.publicationDate, true)
+          }}</time></strong
         >
       </div>
     </div>
@@ -363,7 +359,7 @@ onMounted(() => {
                   }"
                 >
                   Modifier les paramètres <span class="fr-hidden fr-unhidden-lg"
-                    >de l’audit</span
+                  >de l’audit</span
                   >
                 </RouterLink>
               </li>

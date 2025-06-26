@@ -46,7 +46,7 @@ function onAlertClose() {
         >
           Consulter
           <span class="fr-sr-only"
-            >{{ linkHiddenLabel }} (nouvelle fenêtre)</span
+          >{{ linkHiddenLabel }} (nouvelle fenêtre)</span
           >
         </RouterLink>
       </li>
