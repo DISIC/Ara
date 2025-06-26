@@ -48,7 +48,7 @@ const accountStore = useAccountStore();
 const notify = useNotifications();
 
 async function handleSubmit() {
-  if (!validate(userPassword, userEmail)) {
+  if (!validate(userEmail, userPassword)) {
     // Invalid form
     return;
   }
