@@ -24,7 +24,12 @@ const inputId = props.id + "-input";
 const errorId = props.id + "-error-message";
 
 const inputRef = ref<HTMLInputElement>();
-defineExpose({ inputRef });
+defineExpose({
+  inputRef,
+  focus() {
+    inputRef.value?.focus();
+  }
+});
 </script>
 
 <template>
