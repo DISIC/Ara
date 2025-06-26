@@ -1,5 +1,7 @@
 import { ComponentPublicInstance, ref } from "vue";
 
+import { validateEmail } from "../utils";
+
 export interface FocusableElement {
   focus(): void;
 }
@@ -50,4 +52,8 @@ export function REQUIRED(msg: string): ValidationRule {
 
 export function LENGTH(minLength: number, msg: string): ValidationRule {
   return (value) => value.trim().length < minLength && msg;
+}
+
+export function EMAIL(msg: string): ValidationRule {
+  return (value) => !validateEmail(value) && msg;
 }
