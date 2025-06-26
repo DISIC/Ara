@@ -12,7 +12,7 @@
   "scripts": {
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
-    "heroku-postbuild": "yarn workspaces run build",
+    "heroku-postbuild": "yarn workspaces foreach --all run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
     "postinstall": "yarn copytypes"
   },
