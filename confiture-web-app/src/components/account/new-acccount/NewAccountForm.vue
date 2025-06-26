@@ -140,17 +140,9 @@ function fillFields() {
         @update:model-value="userPassword.value.value = $event"
       />
 
-      <ul
-        class="fr-btns-group fr-btns-group--right fr-btns-group--inline-sm fr-btns-group--inline-reverse"
-      >
-        <li>
-          <button class="fr-btn" type="submit">Valider</button>
-        </li>
-        <!-- TODO: what does this do ?? -->
-        <!-- <li>
-          <button class="fr-btn fr-btn--secondary">Annuler</button>
-        </li> -->
-      </ul>
+      <div class="fr-btns-group">
+        <button class="fr-btn fr-mb-0" type="submit">Valider</button>
+      </div>
     </form>
   </div>
 </template>
