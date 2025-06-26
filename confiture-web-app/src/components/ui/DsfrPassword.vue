@@ -33,7 +33,13 @@ const requirementsId = props.id + "-password-requirements";
 
 const inputRef = ref<HTMLInputElement>();
 const toggleRef = ref<HTMLInputElement>();
-defineExpose({ inputRef, toggleRef });
+defineExpose({
+  inputRef,
+  toggleRef,
+  focus() {
+    inputRef.value?.focus();
+  }
+});
 </script>
 
 <template>

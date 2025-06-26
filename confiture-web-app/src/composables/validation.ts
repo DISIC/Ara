@@ -41,7 +41,7 @@ export function useFormField(defaultValue: string, rules?: ValidationRule[]) {
 }
 
 export function validate(...fields: ReturnType<typeof useFormField>[]) {
-  return !fields.map((it) => it.validate).some((it) => !it);
+  return !fields.map((it) => it.validate()).some((it) => !it);
 }
 
 /* Validation rules */
