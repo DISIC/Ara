@@ -33,8 +33,7 @@
     "pm2": "^5.4.0"
   },
   "engines": {
-    "node": "^22.14.0",
-    "yarn": "^1.22.19"
+    "node": "^22.14.0"
   },
   "packageManager": "yarn@4.9.2"
 }
