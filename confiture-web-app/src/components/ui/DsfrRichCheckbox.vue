@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DsfrArtwork from "./DsfrArtwork.vue";
+
 const props = defineProps<{
   modelValue?: boolean;
   label: string;
@@ -33,7 +35,7 @@ function emitValue() {
       </label>
     </div>
     <div class="fr-p-2w checkbox-icon">
-      <img :src="iconSrc" alt="" />
+      <DsfrArtwork :file-path="iconSrc" />
     </div>
   </div>
 </template>

@@ -55,6 +55,7 @@ export interface Audit {
   procedureName: string;
   transverseElementsPage: AuditPage;
   pages: AuditPage[];
+  pageElements: PageElements;
   auditorEmail: string;
   auditorName: string | null;
 
