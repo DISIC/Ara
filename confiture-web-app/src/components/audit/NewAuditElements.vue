@@ -137,6 +137,7 @@ const pageElements = ref(
   display: flex;
   justify-content: end;
   gap: 1rem;
+  flex-wrap: wrap;
 
   .action-previous {
     margin-inline-end: auto;
