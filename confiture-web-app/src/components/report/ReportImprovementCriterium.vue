@@ -17,8 +17,9 @@ function getCriterium(topicNumber: number, criteriumNumber: number) {
   // FIXME: "any everywhere" : The criteria properties of each topic do not have the same signature. See: https://github.com/microsoft/TypeScript/issues/33591#issuecomment-786443978
   const criterium = (rgaa.topics as any)
     .find((t: any) => t.number === topicNumber)
-    ?.criteria.find((c: any) => c.criterium.number === criteriumNumber)
-    .criterium;
+    ?.criteria.find(
+      (c: any) => c.criterium.number === criteriumNumber
+    ).criterium;
 
   return criterium;
 }
