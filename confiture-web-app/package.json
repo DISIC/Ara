@@ -60,7 +60,7 @@
     "eslint-plugin-vue": "^9.18.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vue-tsc": "^1.8.22"
+    "vue-tsc": "^2.2.10"
   },
   "engines": {
     "node": "^22.13.0"
