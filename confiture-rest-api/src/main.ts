@@ -10,7 +10,7 @@ import { AppModule } from "./app.module";
 function configureSwagger(app: INestApplication) {
   const config = new DocumentBuilder().setTitle("Ara API").build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("/swagger", app, document);
+  SwaggerModule.setup("/api/swagger", app, document);
 }
 
 async function bootstrap() {
