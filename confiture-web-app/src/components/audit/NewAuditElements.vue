@@ -64,7 +64,7 @@ const pageElements = ref(
 <template>
   <form @submit.prevent="submitAuditElements">
     <div class="fr-mb-6w wrapper">
-      <p class="fr-mb-1w">Le site ou service à auditer contient :</p>
+      <p class="fr-mb-1w">Le site ou service à auditer contient</p>
 
       <p class="fr-text--xs fr-mb-2w notice">
         Votre sélection rendra certaines thématiques de l’audit non applicables
