@@ -10,6 +10,16 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Lint + fix entire project",
+      "type": "shell",
+      "command": "yarn run lint --fix",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
