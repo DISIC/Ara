@@ -88,7 +88,7 @@ const pageElements = ref(
     <div class="actions">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-arrow-left-s-line action-previous"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line action-previous"
         @click="goToPreviousStep"
       >
         Étape précédente
