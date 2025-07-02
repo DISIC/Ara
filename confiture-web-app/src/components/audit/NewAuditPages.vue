@@ -88,7 +88,7 @@ function fillSettings() {
     <div class="actions">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-arrow-left-s-line"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line"
         @click="goToPreviousStep"
       >
         Étape précédente
