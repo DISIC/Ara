@@ -74,7 +74,7 @@ const pageElements = ref(
       <div class="checkboxes">
         <DsfrRichCheckbox
           v-for="(el, i) in pageElements"
-          id="test"
+          :id="`element-${el.key}`"
           :key="i"
           v-model="el.value"
           :label="el.label"
