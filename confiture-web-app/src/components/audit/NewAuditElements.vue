@@ -68,8 +68,7 @@ const pageElements = ref(
 
       <p class="fr-text--xs fr-mb-2w notice">
         Votre sélection rendra certaines thématiques de l’audit non applicables
-        sur toutes les pages de votre échantillon. Vous pourrez modifier votre
-        choix à tout moment.
+        sur toutes les pages de votre échantillon.
       </p>
 
       <div class="checkboxes">
