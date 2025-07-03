@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    // ESLint support
+    "dbaeumer.vscode-eslint",
+
+    // Github actions
+    "github.vscode-github-actions",
+
+    // Containers support (docker, podman, etc.)
+    "ms-azuretools.vscode-containers",
+
+    // Display a red square for irregular whitespace characters
+    // like non-breakable spaces (nbsp)
+    "possan.nbsp-vscode",
+
+    // TOML support
+    "tamasfe.even-better-toml",
+
+    // Vue.js support
+    "vue.volar"
+  ]
+}
