@@ -1,8 +1,7 @@
 <script lang="ts" setup>
+import elementForm from "@gouvfr/dsfr/dist/artwork/pictograms/document/document.svg";
 import { ref } from "vue";
 
-// TODO: handle dark mode illustrations: https://www.systeme-de-design.gouv.fr/fondamentaux/pictogramme
-import elementForm from "../../assets/images/element-form.svg";
 import elementFrame from "../../assets/images/element-frame.svg";
 import elementMultimedia from "../../assets/images/element-multimedia.svg";
 import elementTable from "../../assets/images/element-table.svg";
