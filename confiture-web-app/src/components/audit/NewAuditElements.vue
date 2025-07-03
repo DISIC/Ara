@@ -21,7 +21,7 @@ const staticElements = [
   { label: "Formulaire", icon: elementForm, key: "form" },
   {
     label: "Cadre",
-    hint: "Balise <iframe> ou <frame>",
+    hint: "Balise <code>&lt;iframe&gt;</code> ou <code>&lt;frame&gt;</code>",
     icon: elementFrame,
     key: "frame"
   }
@@ -71,17 +71,17 @@ const pageElements = ref(
         sur toutes les pages de votre échantillon.
       </p>
 
-      <div class="checkboxes">
-        <DsfrRichCheckbox
-          v-for="(el, i) in pageElements"
-          :id="`element-${el.key}`"
-          :key="i"
-          v-model="el.value"
-          :label="el.label"
-          :hint="el.hint"
-          :icon-src="el.icon"
-        />
-      </div>
+      <ul class="fr-p-0 fr-m-0 checkboxes">
+        <li v-for="(el, i) in pageElements" :key="i">
+          <DsfrRichCheckbox
+            :id="`element-${el.key}`"
+            v-model="el.value"
+            :label="el.label"
+            :hint="el.hint"
+            :icon-src="el.icon"
+          />
+        </li>
+      </ul>
     </div>
 
     <div class="actions">
@@ -130,6 +130,7 @@ const pageElements = ref(
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  list-style: none;
 }
 
 .actions {

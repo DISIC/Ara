@@ -31,7 +31,7 @@ function emitValue() {
       />
       <label class="fr-label" :for="id">
         {{ label }}
-        <span v-if="hint" class="fr-hint-text">{{ hint }}</span>
+        <span v-if="hint" class="fr-hint-text" v-html="hint" />
       </label>
     </div>
     <div class="fr-p-2w checkbox-icon">
