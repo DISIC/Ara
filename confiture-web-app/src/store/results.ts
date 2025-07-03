@@ -1,7 +1,8 @@
 import ky from "ky";
-import { has, sample, setWith, unset } from "lodash-es";
+import { get, has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { LINKED_CRITERIA } from "../criteria";
 import {
   AuditFile,
   CriterionResultUserImpact,
@@ -223,6 +224,31 @@ export const useResultsStore = defineStore("results", {
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
       if (!this.data) {
         return;
+      }
+
+      // TODO: handle linked criteria previous results (when reverting)
+      // update linked criteria if any
+      const topicAndCriterium: number = Number(
+        `${[updates[0].topic]}.${[updates[0].criterium]}`
+      );
+
+      if (
+        has(LINKED_CRITERIA, topicAndCriterium) &&
+        updates.length === 1 &&
+        updates[0].status === CriteriumResultStatus.NOT_APPLICABLE
+      ) {
+        const linkedUpdates: CriteriumResult[] = get(
+          LINKED_CRITERIA,
+          topicAndCriterium
+        ).map((update) => {
+          return {
+            ...updates[0],
+            topic: Number(String(update).split(".")[0]),
+            criterium: Number(String(update).split(".")[1])
+          };
+        });
+
+        updates.push(...linkedUpdates);
       }
 
       const previousResults: CriteriumResult[] = [];
