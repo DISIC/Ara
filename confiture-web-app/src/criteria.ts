@@ -85,3 +85,24 @@ export const CRITERIA_BY_AUDIT_TYPE: Record<AuditType, CriteriumId[]> = {
   [AuditType.FAST]: FAST_CRITERIA,
   [AuditType.COMPLEMENTARY]: COMPLEMENTARY_CRITERIA
 };
+
+export const LINKED_CRITERIA = {
+  1.1: [1.3],
+  1.6: [1.7],
+  2.1: [2.2],
+  4.1: [4.2],
+  4.3: [4.4],
+  4.5: [4.6],
+  4.8: [4.9],
+  5.1: [5.2],
+  5.4: [5.5],
+  8.3: [8.4],
+  8.5: [8.6],
+  8.7: [8.8],
+  10.9: [10.1],
+  11.1: [11.2],
+  11.5: [11.6, 11.7],
+  12.3: [12.4],
+  13.3: [13.4],
+  13.5: [13.6]
+};
