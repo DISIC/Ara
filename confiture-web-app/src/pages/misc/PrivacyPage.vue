@@ -134,9 +134,7 @@ import PageMeta from "../../components/PageMeta";
     <p>
       Pour vous aider dans votre démarche, vous trouverez un modèle de demande
       élaboré par la CNIL ici :
-      <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces"
-        >www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a
-      >.
+      <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces">www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a>.
     </p>
     <p>
       Nous nous engageons à vous répondre dans un délai raisonnable qui ne

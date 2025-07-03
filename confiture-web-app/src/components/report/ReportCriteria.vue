@@ -58,10 +58,9 @@ function isActive(id: string) {
                         : undefined
                       : undefined
                   "
-                  >{{
-                    StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
-                  }}</RouterLink
-                >
+                >{{
+                  StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
+                }}</RouterLink>
               </li>
               <li
                 v-for="page in pagesData"

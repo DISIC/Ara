@@ -25,9 +25,8 @@ import PageMeta from "../../components/PageMeta";
         href="https://design.numerique.gouv.fr"
         rel="noreferrer noopener"
         target="_blank"
-        >Design des services numériques
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a
-      >
+      >Design des services numériques
+        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
       de la Direction interministérielle du numérique, un service du Premier
       ministre.
     </p>
@@ -50,9 +49,8 @@ import PageMeta from "../../components/PageMeta";
         href="https://design.numerique.gouv.fr"
         rel="noreferrer noopener"
         target="_blank"
-        >Design des services numériques
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a
-      >
+      >Design des services numériques
+        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
       et utilise le système de design de l’État.
     </p>
 
@@ -78,8 +76,7 @@ import PageMeta from "../../components/PageMeta";
         href="https://github.com/DISIC/Ara/"
         rel="noreferrer noopener"
         target="_blank"
-        >Github <span class="fr-sr-only">(nouvelle fenêtre)</span></a
-      >.
+      >Github <span class="fr-sr-only">(nouvelle fenêtre)</span></a>.
     </p>
 
     <h2>Propriété intellectuelle et liens</h2>

@@ -100,7 +100,7 @@ const previousPageName =
   <div aria-live="polite" aria-atomic="true" role="alert">
     <template v-if="showSuccess">
       <p class="fr-h3 success-title">
-        <img class="fr-mr-2w" :src="greenCheck" alt="" />
+        <img class="fr-mr-2w" :src="greenCheck" alt="">
         Votre avis a bien été envoyé
       </p>
       <p>
@@ -140,12 +140,12 @@ const previousPageName =
               name="easyToUse"
               :value="answer.label"
               required
-            />
+            >
             <label class="fr-label" :for="`easy-to-use-${answer.slug}`">
               {{ answer.label }}
             </label>
             <div class="fr-radio-rich__img">
-              <img class="fr-p-2w" :src="answer.emoji" alt="" />
+              <img class="fr-p-2w" :src="answer.emoji" alt="">
             </div>
           </div>
         </div>
@@ -172,12 +172,12 @@ const previousPageName =
               name="easyToUnderstand"
               :value="answer.label"
               required
-            />
+            >
             <label class="fr-label" :for="`easy-to-understand-${answer.slug}`">
               {{ answer.label }}
             </label>
             <div class="fr-radio-rich__img">
-              <img class="fr-p-2w" :src="answer.emoji" alt="" />
+              <img class="fr-p-2w" :src="answer.emoji" alt="">
             </div>
           </div>
         </div>
@@ -189,10 +189,8 @@ const previousPageName =
         <h2 class="fr-text--md fr-text--bold fr-mb-1v">
           Quelles sont vos remarques générales ?
         </h2>
-        <span class="fr-hint-text"
-          >Vous pouvez détailler les problèmes que vous avez rencontrés ou
-          simplement nous dire ce qui vous plaît ou vous déplait</span
-        >
+        <span class="fr-hint-text">Vous pouvez détailler les problèmes que vous avez rencontrés ou
+          simplement nous dire ce qui vous plaît ou vous déplait</span>
       </label>
       <textarea
         id="general-feedback"
@@ -212,7 +210,7 @@ const previousPageName =
           Vous pouvez exprimer vos besoins ou proposer vos idées d’amélioration
         </span>
       </label>
-      <textarea id="changes" v-model="suggestions" class="fr-input" required />
+      <textarea id="changes" v-model="suggestions" class="fr-input" required></textarea>
     </section>
 
     <section>
@@ -223,10 +221,8 @@ const previousPageName =
               Si besoin, accepteriez-vous d’être contacté par l’équipe de
               conception ?
             </h2>
-            <span class="fr-hint-text"
-              >Nous pourrions vous soliciter pour des tests utilisateur ou pour
-              échanger sur vos besoins</span
-            >
+            <span class="fr-hint-text">Nous pourrions vous soliciter pour des
+              tests utilisateur ou pour échanger sur vos besoins</span>
           </legend>
           <div class="fr-fieldset__content">
             <div class="fr-radio-group">
@@ -237,7 +233,7 @@ const previousPageName =
                 name="contact"
                 value="yes"
                 required
-              />
+              >
               <label class="fr-label" for="contact-yes">Oui</label>
             </div>
             <div class="fr-radio-group">
@@ -248,7 +244,7 @@ const previousPageName =
                 name="contact"
                 value="no"
                 required
-              />
+              >
               <label class="fr-label" for="contact-no">Non</label>
             </div>
           </div>
@@ -293,7 +289,7 @@ const previousPageName =
                   type="checkbox"
                   :name="`job-${job}`"
                   :value="job"
-                />
+                >
                 <label class="fr-label" :for="`job-${job}`">{{ job }}</label>
               </div>
             </div>
@@ -321,8 +317,7 @@ const previousPageName =
     v-if="!showSuccess"
     class="fr-link fr-icon-arrow-up-fill fr-link--icon-left"
     href="#header"
-    >Haut de page</a
-  >
+  >Haut de page</a>
 </template>
 
 <style scoped>

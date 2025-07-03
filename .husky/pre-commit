@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "✨ Linting and fixing commited files…"
-yarn lint-staged
-echo "✅ Everything looks good!"
-

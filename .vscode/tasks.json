@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lint entire project",
+      "type": "shell",
+      "command": "yarn run lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Lint + fix entire project",
+      "type": "shell",
+      "command": "yarn run lint --fix",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

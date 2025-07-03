@@ -114,9 +114,7 @@ import system from "@gouvfr/dsfr/dist/artwork/system.svg";
                         />
                         <label class="fr-label" for="fr-radios-theme-system">
                           Système
-                          <span class="fr-hint-text"
-                            >Utilise les paramètres système.</span
-                          >
+                          <span class="fr-hint-text">Utilise les paramètres système.</span>
                         </label>
                         <div class="fr-radio-rich__img">
                           <svg

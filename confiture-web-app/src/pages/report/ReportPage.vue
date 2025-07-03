@@ -236,7 +236,7 @@ watch(
       <p
         v-if="
           getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
-          report.data.creationDate
+            report.data.creationDate
         "
         class="fr-text--light fr-mb-4w dates"
       >
@@ -286,7 +286,7 @@ watch(
     </div>
 
     <!-- sticky-top="-0.1px" to prevent "one line background flickering"
-			when scrolling the page -->
+      when scrolling the page -->
     <AraTabs
       ref="tabsRef"
       :route="{ name: 'report-full', params: { uniqueId } }"

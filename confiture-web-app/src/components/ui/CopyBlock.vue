@@ -45,9 +45,7 @@ function onAlertClose() {
           class="fr-btn fr-btn--tertiary fr-mb-0"
         >
           Consulter
-          <span class="fr-sr-only"
-            >{{ linkHiddenLabel }} (nouvelle fenêtre)</span
-          >
+          <span class="fr-sr-only">{{ linkHiddenLabel }} (nouvelle fenêtre)</span>
         </RouterLink>
       </li>
       <li v-if="showCopyButton">

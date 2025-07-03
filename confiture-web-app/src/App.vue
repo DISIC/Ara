@@ -94,17 +94,14 @@ function closeFeedbackNotice() {
             à nous faire part de vos retours depuis ce
             <RouterLink :to="{ name: 'feedback' }" target="_blank">
               court formulaire
-              <span class="fr-sr-only">(nouvelle fenêtre)</span> </RouterLink
-            >.
+              <span class="fr-sr-only">(nouvelle fenêtre)</span></RouterLink>.
           </span>
         </p>
         <button
           title="Masquer le message"
           class="fr-btn--close fr-btn"
           @click="closeFeedbackNotice"
-        >
-          Masquer le message
-        </button>
+        >Masquer le message</button>
       </div>
     </div>
   </div>

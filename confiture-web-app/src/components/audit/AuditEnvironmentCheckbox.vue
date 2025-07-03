@@ -55,8 +55,7 @@ function onInput() {
       <label
         class="fr-label fr-text--xl fr-text--bold fr-mb-0 label"
         :for="slugify(`suggested-env-${title}-${platform}`)"
-        >{{ title }}</label
-      >
+      >{{ title }}</label>
     </div>
 
     <div

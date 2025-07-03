@@ -53,8 +53,7 @@ async function closeResendSuccessAlert() {
         class="fr-btn--close fr-btn"
         title="Masquer le message"
         @click="closeResendSuccessAlert"
-      >
-        Masquer le message
+      >Masquer le message
       </button>
     </div>
 
