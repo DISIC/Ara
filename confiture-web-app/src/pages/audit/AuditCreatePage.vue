@@ -242,7 +242,7 @@ async function goToPreviousStep() {
     />
     <NewAuditElements
       v-else-if="currentStep === 2"
-      :page-elements="audit.pageElements"
+      :page-elements="audit.pageElements!"
       @previous="goToPreviousStep"
       @submit="submitStep"
     />

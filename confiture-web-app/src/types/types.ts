@@ -55,7 +55,6 @@ export interface Audit {
   procedureName: string;
   transverseElementsPage: AuditPage;
   pages: AuditPage[];
-  pageElements: PageElements;
   auditorEmail: string;
   auditorName: string | null;
 
@@ -83,7 +82,7 @@ export interface CreateAuditRequestData {
   auditType: AuditType | null;
   procedureName: string;
   pages: Omit<AuditPage, "id" | "order">[];
-  pageElements: PageElements;
+  pageElements?: PageElements;
   auditorEmail: string;
   auditorName: string | null;
 }
