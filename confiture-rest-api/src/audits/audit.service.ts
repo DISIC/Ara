@@ -57,11 +57,11 @@ export class AuditService {
     private readonly fileStorageService: FileStorageService
   ) {}
 
-  createAudit(data: CreateAuditDto) {
+  async createAudit(data: CreateAuditDto) {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
-    return this.prisma.audit.create({
+    const newAudit = await this.prisma.audit.create({
       data: {
         editUniqueId,
         consultUniqueId,
@@ -99,6 +99,40 @@ export class AuditService {
       },
       include: AUDIT_EDIT_INCLUDE
     });
+
+    if (Object.values(data.pageElements).every((el) => el)) {
+      return newAudit;
+    }
+
+    /* Prefill not applicable results */
+    const pageIds = [
+      newAudit.transverseElementsPageId,
+      ...newAudit.pages.map((p) => p.id)
+    ];
+    const topicNumbers = [
+      ...(data.pageElements.frame ? [] : [2]),
+      ...(data.pageElements.multimedia ? [] : [4]),
+      ...(data.pageElements.table ? [] : [5]),
+      ...(data.pageElements.form ? [] : [11])
+    ];
+    const criteria = CRITERIA_BY_AUDIT_TYPE[newAudit.auditType].filter(
+      ({ topic }) => topicNumbers.includes(topic)
+    );
+
+    const results = pageIds.flatMap((pageId) =>
+      criteria.map(({ topic, criterium }) => ({
+        pageId,
+        criterium,
+        topic,
+        status: CriterionResultStatus.NOT_APPLICABLE
+      }))
+    );
+
+    await this.prisma.criterionResult.createMany({
+      data: results
+    });
+
+    return newAudit;
   }
 
   findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
