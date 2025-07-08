@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "generate:rgaa": "node scripts/build-rgaa-files.js",
+    "show-all-ts-errors": "vue-tsc --noEmit",
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
   "dependencies": {
