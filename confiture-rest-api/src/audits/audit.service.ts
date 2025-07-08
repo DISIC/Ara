@@ -343,7 +343,10 @@ export class AuditService {
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === "P2025") {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
         return;
       }
       throw e;
@@ -364,7 +367,10 @@ export class AuditService {
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === "P2025") {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
         return;
       }
       throw e;
@@ -639,7 +645,10 @@ export class AuditService {
 
       return true;
     } catch (e) {
-      if (e?.code === "P2025") {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
         return false;
       }
       throw e;
@@ -663,7 +672,10 @@ export class AuditService {
       });
       return true;
     } catch (e) {
-      if (e?.code === "P2025") {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
         return false;
       }
       throw e;
@@ -715,7 +727,10 @@ export class AuditService {
         include: AUDIT_EDIT_INCLUDE
       });
     } catch (e) {
-      if (e?.code === "P2025") {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
         return;
       }
       throw e;
