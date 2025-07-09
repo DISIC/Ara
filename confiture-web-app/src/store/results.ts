@@ -240,10 +240,12 @@ export const useResultsStore = defineStore("results", {
           LINKED_CRITERIA,
           topicAndCriterium
         ).map((update) => {
+          const [topic, criterium] = String(update).split(".").map(Number);
+
           return {
             ...updates[0],
-            topic: Number(String(update).split(".")[0]),
-            criterium: Number(String(update).split(".")[1])
+            topic,
+            criterium
           };
         });
 
