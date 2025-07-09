@@ -343,7 +343,7 @@ describe("Account", () => {
       fillPageField(8, "URL de la page", auditJson.pages[7].url);
 
       cy.contains("button", "Étape suivante").click();
-      
+
       cy.contains("button", "Ignorer cette étape").click();
 
       cy.getByLabel("Prénom et nom (optionnel)").type(auditJson.auditorName);
@@ -385,7 +385,7 @@ describe("Account", () => {
       fillPageField(8, "URL de la page", auditJson.pages[7].url);
 
       cy.contains("button", "Étape suivante").click();
-      
+
       cy.contains("button", "Valider les paramètres").click();
 
       cy.contains("h1", "Audit");

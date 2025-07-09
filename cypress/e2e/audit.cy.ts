@@ -53,7 +53,7 @@ describe("Audit", () => {
     cy.contains("button", "Étape suivante").click();
 
     cy.contains("button", "Ignorer cette étape").click();
-      
+
     // Fill auditor informations
     cy.contains("Adresse e-mail")
       .parent()
@@ -118,11 +118,11 @@ describe("Audit", () => {
     fillPageField(8, "URL de la page", auditJson.pages[7].url);
 
     cy.contains("button", "Étape suivante").click();
-    
-    cy.get('.checkboxes .checkbox-wrapper').last().click()
-    
+
+    cy.get(".checkboxes .checkbox-wrapper").last().click();
+
     cy.contains("button", "Étape suivante").click();
-      
+
     // Fill auditor informations
     cy.contains("Adresse e-mail")
       .parent()
@@ -140,14 +140,14 @@ describe("Audit", () => {
     // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
 
-    cy.contains('a', 'Continuer').click()
+    cy.contains("a", "Continuer").click();
 
     // Check NA criteria: 2 criteria on 9 pages = 18
-    cy.contains('Non applicable (18)')
+    cy.contains("Non applicable (18)");
 
     // Check topic "Cadres" completion is 100%
-    cy.get('.topic-filter-item').eq(1).contains('Cadres')
-    cy.get('.topic-filter-item').eq(1).contains('100%')
+    cy.get(".topic-filter-item").eq(1).contains("Cadres");
+    cy.get(".topic-filter-item").eq(1).contains("100%");
   });
 
   it("User can go to settings page from audit", () => {
