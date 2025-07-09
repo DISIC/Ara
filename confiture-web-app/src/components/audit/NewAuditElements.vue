@@ -65,11 +65,6 @@ const pageElements = ref(
     <div class="fr-mb-6w wrapper">
       <p class="fr-mb-1w">Le site ou service à auditer contient</p>
 
-      <p class="fr-text--xs fr-mb-2w notice">
-        Votre sélection rendra certaines thématiques de l’audit non applicables
-        sur toutes les pages de votre échantillon.
-      </p>
-
       <ul class="fr-p-0 fr-m-0 checkboxes">
         <li v-for="(el, i) in pageElements" :key="i">
           <DsfrRichCheckbox
@@ -119,10 +114,6 @@ const pageElements = ref(
 .wrapper {
   max-width: 30rem;
   margin: 0 auto;
-}
-
-.notice {
-  color: var(--text-mention-grey);
 }
 
 .checkboxes {
