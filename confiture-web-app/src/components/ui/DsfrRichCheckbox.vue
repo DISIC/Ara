@@ -34,8 +34,8 @@ function emitValue() {
         <span v-if="hint" class="fr-hint-text" v-html="hint" />
       </label>
     </div>
-    <div class="fr-p-2w checkbox-icon">
-      <DsfrArtwork :file-path="iconSrc" />
+    <div class="fr-p-2w checkbox-artwork-wrapper">
+      <DsfrArtwork :file-path="iconSrc" class="checkbox-artwork" />
     </div>
   </div>
 </template>
@@ -70,8 +70,8 @@ function emitValue() {
   z-index: 1;
 }
 
-.checkbox-icon {
-  display: block;
+.checkbox-artwork-wrapper {
+  display: flex;
   position: relative;
 
   &::before {
@@ -83,5 +83,11 @@ function emitValue() {
     top: 0.25rem;
     position: absolute;
   }
+}
+
+.checkbox-artwork {
+  --checkbox-artwork-width: 3.5rem;
+  height: var(--checkbox-artwork-width);
+  width: var(--checkbox-artwork-width);
 }
 </style>
