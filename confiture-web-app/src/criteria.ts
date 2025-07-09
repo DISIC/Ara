@@ -86,7 +86,7 @@ export const CRITERIA_BY_AUDIT_TYPE: Record<AuditType, CriteriumId[]> = {
   [AuditType.COMPLEMENTARY]: COMPLEMENTARY_CRITERIA
 };
 
-export const LINKED_CRITERIA = {
+export const LINKED_CRITERIA: Record<string, number[]> = {
   1.1: [1.3],
   1.6: [1.7],
   2.1: [2.2],
