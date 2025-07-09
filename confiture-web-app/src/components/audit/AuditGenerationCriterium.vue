@@ -268,7 +268,7 @@ const showTransverseStatus = computed(() => {
 
 // Check status of linked parent criterium
 const parentCriterium = computed(() => {
-  for (let key in LINKED_CRITERIA) {
+  for (const key in LINKED_CRITERIA) {
     if (
       get(LINKED_CRITERIA, key).includes(
         Number(`${props.topicNumber}.${props.criterium.number}`)

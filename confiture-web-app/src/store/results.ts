@@ -228,9 +228,8 @@ export const useResultsStore = defineStore("results", {
 
       // TODO: handle linked criteria previous results (when reverting)
       // update linked criteria if any
-      const topicAndCriterium: number = Number(
-        `${[updates[0].topic]}.${[updates[0].criterium]}`
-      );
+      const topicAndCriterium: string =
+        `${updates[0].topic}.${updates[0].criterium}`;
 
       if (
         has(LINKED_CRITERIA, topicAndCriterium) &&
