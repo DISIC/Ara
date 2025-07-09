@@ -7,7 +7,7 @@ import { testTabReachByURL, testTabsWithPrevNext } from "./common";
 describe("Audit", () => {
   it("User can create an audit", () => {
     function fillPageField(pageIndex: number, field: string, content: string) {
-      cy.contains("Page " + pageIndex)
+      cy.contains(`Page ${pageIndex}`)
         .parent()
         .parent()
         .contains(field)
@@ -78,7 +78,7 @@ describe("Audit", () => {
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/parametres`,
+        `http://localhost:3000/audits/${editId}/parametres`
       );
     });
   });
@@ -89,7 +89,7 @@ describe("Audit", () => {
 
       cy.getByLabel("Nom du site ou du service audité").should(
         "have.value",
-        "Audit de mon petit site",
+        "Audit de mon petit site"
       );
 
       cy.getByLabel("Nom du site ou du service audité")
@@ -100,7 +100,7 @@ describe("Audit", () => {
 
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -150,12 +150,12 @@ describe("Audit", () => {
             "Article",
             "Connexion",
             "Documentation",
-            "FAQ",
+            "FAQ"
           ];
           expectedPages.forEach((expectedPageName, i) => {
             cy.wrap(els[i]).should("have.value", expectedPageName);
           });
-        },
+        }
       );
 
       cy.contains("button", "Supprimer").click();
@@ -182,7 +182,7 @@ describe("Audit", () => {
       cy.contains("Enregistrer les modifications").click();
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
       cy.get("[role='tablist'] button").then((els) => {
@@ -194,7 +194,7 @@ describe("Audit", () => {
           "Accueil du blog",
           "Connexion",
           "Documentation",
-          "Paramètres",
+          "Paramètres"
         ];
         expectedPages.forEach((expectedPageName, i) => {
           cy.wrap(els[i]).should("have.text", expectedPageName);
@@ -229,10 +229,10 @@ describe("Audit", () => {
         // @ts-ignore
         // TODO remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-        `http://localhost:3000/audits/${editId}/generation`,
+        `http://localhost:3000/audits/${editId}/generation`
       );
       cy.contains(
-        "Le lien vers l’audit a bien été copié dans le presse-papier.",
+        "Le lien vers l’audit a bien été copié dans le presse-papier."
       );
     });
   });
@@ -311,7 +311,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)",
+        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
       )
         .clear()
         .type(statementJson.notInScopeContent);
@@ -390,7 +390,7 @@ describe("Audit", () => {
           .should(
             "satisfy",
             (el) =>
-              el[0].classList.contains("green") || el.at(-1).contains("grey"),
+              el[0].classList.contains("green") || el.at(-1).contains("grey")
           );
       });
 
@@ -407,7 +407,7 @@ describe("Audit", () => {
             (el) =>
               el[0].classList.contains("green") ||
               el[1].contains("red") ||
-              el.at(-1).contains("grey"),
+              el.at(-1).contains("grey")
           );
       });
     });
@@ -430,7 +430,7 @@ describe("Audit", () => {
         .eq(0)
         .click({ force: true });
 
-      cy.contains('button[role="tab"]', "Article").click();
+      cy.contains("button[role=\"tab\"]", "Article").click();
 
       cy.get("li.criterium-container fieldset input:checked")
         .first()
@@ -439,7 +439,7 @@ describe("Audit", () => {
       cy.contains("Masquer les critères évalués").click();
       cy.get("li.criterium-container").should("have.length", 1);
 
-      cy.contains('button[role="tab"]', "Éléments transverses").click();
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click();
       cy.get("li.criterium-container").should("have.length", 2);
 
       cy.get("li.criterium-container fieldset input")
@@ -456,7 +456,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains('button[role="tab"]', "Accueil").click();
+      cy.contains("button[role=\"tab\"]", "Accueil").click();
 
       cy.get("li.criterium-container fieldset input")
         .first()
@@ -472,7 +472,7 @@ describe("Audit", () => {
 
       cy.contains("button", "Copier le lien").click();
       cy.contains(
-        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier.",
+        "Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
       );
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
     });
@@ -481,7 +481,7 @@ describe("Audit", () => {
   it("User can set a topic as NA", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains('button[role="tab"]', "Connexion").click();
+      cy.contains("button[role=\"tab\"]", "Connexion").click();
       cy.contains(" Non applicable sur la page").click();
 
       cy.get(".topic-heading").should("have.class", "topic-heading--hidden");
@@ -492,7 +492,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains('button[role="tab"]', "FAQ").click();
+      cy.contains("button[role=\"tab\"]", "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme").click();
 
       cy.focused().should("have.attr", "role", "textbox");
@@ -510,12 +510,12 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains('button[role="tab"]', "Documentation").click();
+      cy.contains("button[role=\"tab\"]", "Documentation").click();
       cy.get(".criterium-container")
         .eq(2)
         .find(".criterium-transverse-notice")
         .contains(
-          "Vous avez évalué ce critère Non conforme pour les éléments transverses.",
+          "Vous avez évalué ce critère Non conforme pour les éléments transverses."
         );
 
       cy.get(".criterium-container")
@@ -583,7 +583,7 @@ describe("Audit", () => {
 
       cy.contains("Lister les éléments transverses").click();
       cy.getByLabel("Nom de l’élément transverse").type(
-        "FoooElements, BarElements, ThingElements",
+        "FoooElements, BarElements, ThingElements"
       );
       cy.get(".transverse-elements").contains("Ajouter").click();
 

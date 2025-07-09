@@ -137,7 +137,7 @@ const siteUrl = computed(() => {
       <p
         v-if="
           getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
-          report.data.creationDate
+            report.data.creationDate
         "
         class="fr-text--light fr-mb-4w dates"
       >
@@ -187,9 +187,7 @@ const siteUrl = computed(() => {
           </li>
           <li>
             Dès la page d’accueil et sur toutes les pages de votre site,
-            afficher la mention “<strong
-              >Accessibilité : {{ getA11yLevel() }} conforme</strong
-            >”. Cette mention peut être par exemple, un lien dans le pied de
+            afficher la mention “<strong>Accessibilité : {{ getA11yLevel() }} conforme</strong>”. Cette mention peut être par exemple, un lien dans le pied de
             page vers la page contenant votre déclaration.
           </li>
         </ol>
@@ -221,18 +219,15 @@ const siteUrl = computed(() => {
 
           <p class="fr-mb-9v fr-mb-md-6w">
             Cette déclaration d’accessibilité s’applique à
-            <strong>{{ report.data.procedureUrl }}</strong
-            >.
+            <strong>{{ report.data.procedureUrl }}</strong>.
           </p>
 
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
-            <strong
-              >{{ report.data.procedureName }}
+            <strong>{{ report.data.procedureName }}
               <a target="_blank" :href="report.data.procedureUrl">
                 {{ report.data.procedureUrl }}
-              </a></strong
-            >
+              </a></strong>
             est <strong>{{ getA11yLevel() }} conforme</strong> avec le
             référentiel général d’amélioration de l’accessibilité (RGAA).
           </p>
@@ -249,8 +244,8 @@ const siteUrl = computed(() => {
           <template
             v-if="
               report.data.notCompliantContent ||
-              report.data.derogatedContent ||
-              report.data.notInScopeContent
+                report.data.derogatedContent ||
+                report.data.notInScopeContent
             "
           >
             <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
@@ -287,13 +282,9 @@ const siteUrl = computed(() => {
           </h4>
           <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
             Cette déclaration a été établie le
-            <strong>{{ formatDate(report.data.publishDate) }}</strong
-            >.
-            <template v-if="report.data.updateDate"
-              >Elle a été mise à jour le
-              <strong>{{ formatDate(report.data.updateDate) }}</strong
-              >.</template
-            >
+            <strong>{{ formatDate(report.data.publishDate) }}</strong>.
+            <template v-if="report.data.updateDate">Elle a été mise à jour le
+              <strong>{{ formatDate(report.data.updateDate) }}</strong>.</template>
           </p>
 
           <h5 class="fr-h3">
@@ -352,10 +343,8 @@ const siteUrl = computed(() => {
             </li>
             <li v-if="report.data.contactEmail">
               Contacter
-              <strong
-                >{{ report.data.procedureInitiator }} :
-                {{ report.data.contactEmail }}</strong
-              >
+              <strong>{{ report.data.procedureInitiator }} :
+                {{ report.data.contactEmail }}</strong>
             </li>
           </ul>
 
@@ -391,11 +380,9 @@ const siteUrl = computed(() => {
             <li>
               Envoyer un courrier par la poste (gratuit, ne pas mettre de
               timbre) à :<br />
-              <span class="fr-mt-1w mailing-address"
-                >Défenseur des droits<br />
+              <span class="fr-mt-1w mailing-address">Défenseur des droits<br />
                 Libre réponse 71120<br />
-                75342 Paris CEDEX 07</span
-              >
+                75342 Paris CEDEX 07</span>
             </li>
           </ul>
         </div>

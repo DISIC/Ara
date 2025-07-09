@@ -1,0 +1,12 @@
+// Root tsconfig.json
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "files": [],
+  "references": [
+    { "path": "./confiture-rest-api" },
+    { "path": "./confiture-web-app" },
+    { "path": "./cypress" }
+  ]
+}

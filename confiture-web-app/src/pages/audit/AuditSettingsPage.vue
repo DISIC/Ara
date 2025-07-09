@@ -69,7 +69,6 @@ function submitSettings(data: {
   isSubmitting.value = true;
   auditStore
     .updateAudit(auditUniqueId, {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ...auditStore.currentAudit!,
       ...data
     })

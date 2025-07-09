@@ -225,7 +225,7 @@ function resetFilters() {
               <hr
                 v-if="
                   i !== transverseErrors.topics.length - 1 ||
-                  j !== topic.errors.length - 1
+                    j !== topic.errors.length - 1
                 "
                 class="fr-mt-4w fr-pb-4w"
               />

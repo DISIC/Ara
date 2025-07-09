@@ -33,9 +33,11 @@ export class UpdateEmailController {
     private readonly email: MailService
   ) {}
 
-  /** Update the user's email adress. The change is not effective immediately.
+  /**
+   * Update the user's email adress. The change is not effective immediately.
    * The new email adress must first be verified using the
-   * `account/verify-email-update` route. */
+   * `account/verify-email-update` route.
+   */
   @Put("account/email")
   @ApiOkResponse({
     description:

@@ -25,7 +25,7 @@ describe("Account", () => {
             "POST",
             "http://localhost:3000/api/debug/verification-token",
             {
-              username: email,
+              username: email
             }
           )
             .its("body")
@@ -46,18 +46,18 @@ describe("Account", () => {
             "POST",
             "http://localhost:3000/api/debug/verification-token",
             {
-              username: email,
+              username: email
             }
           )
             .its("body")
             .then((verificationToken) => {
               cy.request("POST", "/api/auth/verify", {
-                token: verificationToken,
+                token: verificationToken
               });
             });
 
           cy.contains("h1", "Votre compte a été créé avec succès", {
-            timeout: 8000,
+            timeout: 8000
           });
 
           cy.contains("a", "Aller à la page de connexion").click();
@@ -287,7 +287,7 @@ describe("Account", () => {
         "Continuer l’audit",
         "Continuer l’audit",
         "Commencer l’audit",
-        "Accéder à l’audit",
+        "Accéder à l’audit"
       ];
 
       cy.get(".audit-main-action").each(($el, i) => {
@@ -302,7 +302,7 @@ describe("Account", () => {
         field: string,
         content: string
       ) {
-        cy.contains("Page " + pageIndex)
+        cy.contains(`Page ${pageIndex}`)
           .parent()
           .parent()
           .contains(field)
@@ -348,7 +348,7 @@ describe("Account", () => {
 
       cy.contains("button", "Valider les paramètres").click();
 
-      cy.contains("h1", "Audit");
+      cy.contains("h1", auditJson.procedureName);
 
       // Create new audit but in only 2 steps (step 3 auto-filled)
       cy.contains("a", "Mes audits").click();
@@ -395,7 +395,7 @@ describe("Account", () => {
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
       cy.contains("Audit Audit de mon petit site (2) dupliqué avec succès", {
-        timeout: 50_000,
+        timeout: 50_000
       });
     });
 

@@ -4,7 +4,7 @@ describe("Common", () => {
       cy.createTestAudit({
         auditorEmail: username,
         isComplete: true,
-        fillStatement: true,
+        fillStatement: true
       }).then(({ editId, reportId }) => {
         // TODO: include OnboardingModal donut when fixed
         cy.visit("http://localhost:3000/compte");
@@ -16,15 +16,15 @@ describe("Common", () => {
         cy.visit(`http://localhost:3000/rapport/${reportId}`);
         cy.get("[role='tabpanel'] .card-metric.card-metric--blue").should(
           "contain.text",
-          "51 %",
+          "51 %"
         );
         cy.get("[role='tabpanel'] .card-metric.card-metric--red").should(
           "contain.text",
-          "35",
+          "35"
         );
         cy.get("[role='tabpanel'] .card-metric.card-metric--green").should(
           "contain.text",
-          "36",
+          "36"
         );
 
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);

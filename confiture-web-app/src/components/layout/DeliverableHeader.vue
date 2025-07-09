@@ -19,8 +19,7 @@
                 Ara
                 <span
                   class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon"
-                  >BÊTA</span
-                >
+                >BÊTA</span>
               </p>
               <p class="fr-header__service-tagline">
                 Réalisez vos audits d’accessibilité numérique

@@ -22,8 +22,7 @@ const accountStore = useAccountStore();
       Vérifiez que l'adresse e-mail associée à votre audit est identique à celle
       utilisée pour votre compte. Si ce n’est pas le cas, remplacez l’adresse
       e-mail associée à votre audit par l’adresse utilisée pour votre compte :
-      <strong>{{ accountStore.account?.email }}</strong
-      >.
+      <strong>{{ accountStore.account?.email }}</strong>.
     </p>
 
     <p class="fr-text--lg">
