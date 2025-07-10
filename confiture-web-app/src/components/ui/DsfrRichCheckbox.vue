@@ -90,4 +90,14 @@ function emitValue() {
   height: var(--checkbox-artwork-width);
   width: var(--checkbox-artwork-width);
 }
+
+/* Override some values to center and adjust spacing between label and checkbox */
+.fr-checkbox-group input[type="checkbox"] + label {
+  margin-left: 2.2rem !important;
+
+  &::before {
+    left: -2.2rem !important;
+    top: unset !important;
+  }
+}
 </style>

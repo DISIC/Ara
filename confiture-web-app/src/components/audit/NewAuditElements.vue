@@ -63,7 +63,7 @@ const pageElements = ref(
 <template>
   <form @submit.prevent="submitAuditElements">
     <div class="fr-mb-6w wrapper">
-      <p class="fr-mb-1w">Le site ou service à auditer contient</p>
+      <p class="fr-mb-2w">Le site ou service à auditer contient</p>
 
       <ul class="fr-p-0 fr-m-0 checkboxes">
         <li v-for="(el, i) in pageElements" :key="i">
@@ -112,7 +112,7 @@ const pageElements = ref(
 
 <style scoped>
 .wrapper {
-  max-width: 30rem;
+  max-width: 24rem;
   margin: 0 auto;
 }
 
