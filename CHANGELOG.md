@@ -4,7 +4,13 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 10/07/2025
+
 ### 26/06/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Ajoute la possibilité d’indiquer la présence ou l’absence d’éléments dans la page pour rendre une ou plusieurs thématiques non-applicables ([#1147](https://github.com/DISIC/Ara/pull/1147))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
