@@ -2,9 +2,11 @@ import { AuditType } from "@prisma/client";
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsIn,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   ValidateNested
@@ -31,7 +33,7 @@ export class CreateAuditPage {
   url: string;
 }
 
-export class CreateAuditDto {
+export class BaseAuditDto {
   /**
    * @example "FULL"
    */
@@ -62,4 +64,25 @@ export class CreateAuditDto {
   @IsEmail()
   @IsOptional()
   auditorEmail?: string;
+}
+
+class PageElements {
+  @IsBoolean()
+  multimedia: boolean;
+
+  @IsBoolean()
+  form: boolean;
+
+  @IsBoolean()
+  table: boolean;
+
+  @IsBoolean()
+  frame: boolean;
+}
+
+export class CreateAuditDto extends BaseAuditDto {
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PageElements)
+  pageElements: PageElements;
 }

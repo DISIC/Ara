@@ -36,6 +36,7 @@ export default defineConfig({
     port: 3000
   },
   preview: {
-    port: process.env.PORT ? Number(process.env.PORT) : undefined
+    port: process.env.PORT ? Number(process.env.PORT) : undefined,
+    allowedHosts: [".herokuapp.com"]
   }
 });

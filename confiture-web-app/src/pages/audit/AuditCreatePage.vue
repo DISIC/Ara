@@ -4,6 +4,7 @@ import { onBeforeRouteLeave } from "vue-router";
 
 import LeaveModal from "../../components/audit/LeaveModal.vue";
 import NewAuditContactDetails from "../../components/audit/NewAuditContactDetails.vue";
+import NewAuditElements from "../../components/audit/NewAuditElements.vue";
 import NewAuditPages from "../../components/audit/NewAuditPages.vue";
 import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
@@ -73,6 +74,7 @@ const currentStep = ref(0);
 const steps = [
   "Choisissez un type d’audit",
   "Renseignez l’échantillon des pages à auditer",
+  "Indiquez la présence d’éléments spécifiques",
   ...(accountStore.account && accountStore.account.name
     ? []
     : ["Indiquez vos coordonnées"])
@@ -84,6 +86,7 @@ const audit = ref<CreateAuditRequestData>({
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
+  pageElements: { multimedia: true, table: true, form: true, frame: true },
   auditorEmail: accountStore.account?.email ?? "",
   auditorName: accountStore.account?.name ?? ""
 });
@@ -237,8 +240,14 @@ async function goToPreviousStep() {
       @submit="submitStep"
       @change="pagesArePristine = false"
     />
-    <NewAuditContactDetails
+    <NewAuditElements
       v-else-if="currentStep === 2"
+      :page-elements="audit.pageElements!"
+      @previous="goToPreviousStep"
+      @submit="submitStep"
+    />
+    <NewAuditContactDetails
+      v-else-if="currentStep === 3"
       :email="audit.auditorEmail"
       :name="audit.auditorName"
       @previous="goToPreviousStep"

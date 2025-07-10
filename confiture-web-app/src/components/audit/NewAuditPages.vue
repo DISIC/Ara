@@ -2,7 +2,6 @@
 import { nextTick, ref, watch } from "vue";
 
 import { useDevMode } from "../../composables/useDevMode";
-import { useAccountStore } from "../../store";
 import { AuditPage, AuditType } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
 
@@ -16,8 +15,6 @@ const emit = defineEmits<{
   (e: "submit", payload: { pages: Omit<AuditPage, "id" | "order">[] }): void;
   (e: "change"): void;
 }>();
-
-const accountStore = useAccountStore();
 
 const pages = ref(props.pages);
 
@@ -91,20 +88,13 @@ function fillSettings() {
     <div class="actions">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-arrow-left-s-line"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line"
         @click="goToPreviousStep"
       >
         Étape précédente
       </button>
+
       <button
-        v-if="accountStore.account && accountStore.account.name"
-        type="submit"
-        class="fr-btn fr-btn--icon-left fr-icon-check-line"
-      >
-        Valider les paramètres
-      </button>
-      <button
-        v-else
         type="submit"
         class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
       >
