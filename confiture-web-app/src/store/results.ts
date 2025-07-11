@@ -281,7 +281,11 @@ export const useResultsStore = defineStore("results", {
             const [topic, criterium] = String(c).split(".").map(Number);
 
             const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
-            if (u) {
+            const currentStatus = this.getCriteriumResult(updates[0].pageId, topic, criterium)?.status;
+
+            const addUpdate = u && (u.status === currentStatus || currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
+
+            if (addUpdate) {
               linkedUpdates.push(u);
             }
           });
