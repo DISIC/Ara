@@ -15,11 +15,7 @@ Les espaces de travail (_workspaces_) sont :
 
 #### Gestionnaire de paquets (_Package manager_)
 
-Le gestionnaire de paquets utilisé est [Yarn 1 (Classic)]() mais nous devrions migrer sur [Yarn Modern](https://yarnpkg.com) prochainement.
-Voir :
-
-- [Why should you upgrade to Yarn Modern?](https://yarnpkg.com/getting-started/qa#why-should-you-upgrade-to-yarn-modern)
-- [Mise à jour de Yarn · Issue #1142 · DISIC/Ara](https://github.com/DISIC/Ara/issues/1142)
+Le gestionnaire de paquets utilisé est [Yarn 1 (Classic)](https://classic.yarnpkg.com/).
 
 #### ESLint, l’utilitaire de _lint_ et de formatage du code
 
