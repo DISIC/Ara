@@ -43,6 +43,17 @@ interface ResultsStoreState {
   };
 
   /**
+   * Store previous status of linked criteria to allow rollback.
+   */
+  previousLinkedCriteria: {
+    [key: PageId]: {
+      [key: TopicNumber]: {
+        [key: CriteriumNumber]: CriteriumResult;
+      };
+    };
+  };
+
+  /**
    * Number of update requests actually loading.
    *
    * When 0, nothing is loading.
@@ -65,6 +76,7 @@ export const useResultsStore = defineStore("results", {
       auditId: null,
       data: null,
       previousStatuses: {},
+      previousLinkedCriteria: {},
       currentRequestCount: 0,
       lastRequestSuccessEnd: null,
       lastRequestFailed: false,
@@ -226,28 +238,54 @@ export const useResultsStore = defineStore("results", {
         return;
       }
 
-      // TODO: handle linked criteria previous results (when reverting)
       // update linked criteria if any
       const topicAndCriterium: string =
         `${updates[0].topic}.${updates[0].criterium}`;
 
       if (
         has(LINKED_CRITERIA, topicAndCriterium) &&
-        updates.length === 1 &&
-        updates[0].status === CriteriumResultStatus.NOT_APPLICABLE
-      ) {
-        const linkedUpdates: CriteriumResult[] = get(
+        updates.length === 1) {
+        let linkedUpdates: CriteriumResult[] = [];
+
+        const linkedCriteria = get(
           LINKED_CRITERIA,
           topicAndCriterium
-        ).map((update) => {
-          const [topic, criterium] = String(update).split(".").map(Number);
+        );
 
-          return {
-            ...updates[0],
-            topic,
-            criterium
-          };
-        });
+        if (updates[0].status === CriteriumResultStatus.NOT_APPLICABLE) {
+          // save previous status of linked criteria
+          linkedCriteria.forEach(c => {
+            const [topic, criterium] = String(c).split(".").map(Number);
+
+            setWith(
+              this.previousLinkedCriteria,
+              [updates[0].pageId, topic, criterium],
+              this.getCriteriumResult(updates[0].pageId, topic, criterium),
+              Object
+            );
+          });
+
+          // apply status to linked criteria
+          linkedUpdates = linkedCriteria.map((update) => {
+            const [topic, criterium] = String(update).split(".").map(Number);
+
+            return {
+              ...updates[0],
+              topic,
+              criterium
+            };
+          });
+        } else if (this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+          // rollback old status on linked criteria
+          linkedCriteria.forEach((c) => {
+            const [topic, criterium] = String(c).split(".").map(Number);
+
+            const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
+            if (u) {
+              linkedUpdates.push(u);
+            }
+          });
+        }
 
         updates.push(...linkedUpdates);
       }
