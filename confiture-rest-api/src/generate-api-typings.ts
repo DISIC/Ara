@@ -1,8 +1,8 @@
+import { writeFile } from "fs/promises";
+import { resolve } from "path";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { writeFile } from "fs/promises";
 import openapiTS, { OpenAPI3 } from "openapi-typescript";
-import { resolve } from "path";
 
 import { AppModule } from "./app.module";
 

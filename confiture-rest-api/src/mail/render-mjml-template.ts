@@ -1,7 +1,7 @@
-import Handlebars from "handlebars";
-import mjml2html from "mjml";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import Handlebars from "handlebars";
+import mjml2html from "mjml";
 
 /**
  * @param templateName Name of the MJML template to be compiled

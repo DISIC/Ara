@@ -1,6 +1,6 @@
+import type { Request } from "express";
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import type { Request } from "express";
 
 /**
  * Extract the authentication token and verifies it.
