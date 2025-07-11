@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { FeedbackService } from "./feedback.service";
-import { FeedbackController } from "./feedback.controller";
-import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma.service";
+import { FeedbackController } from "./feedback.controller";
+import { FeedbackService } from "./feedback.service";
 
 @Module({
   // FIXME: put PrismaService into a global module so the service is not instanciated multiple times

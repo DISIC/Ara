@@ -52,7 +52,6 @@ export default antfu({
       "antfu/top-level-function": "off", // TODO Check this rule
       "jsdoc/check-alignment": "off", // TODO Check this rule
       "node/prefer-global/process": "off", // TODO Check this rule
-      "perfectionist/sort-imports": "off", // TODO Check this rule
       "style/arrow-parens": "off",
       "style/indent-binary-ops": "off", // TODO Check this rule
       "style/brace-style": "off", // TODO Check this rule

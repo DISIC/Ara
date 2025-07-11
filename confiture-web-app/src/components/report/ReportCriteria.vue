@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-
-import { StaticTabLabel, TabSlug } from "../../enums";
 import type { ReportError } from "./getReportErrors";
+
+import { useRoute } from "vue-router";
+import { StaticTabLabel, TabSlug } from "../../enums";
 import { ReportImprovement } from "./getReportImprovements";
 
 defineProps<{
