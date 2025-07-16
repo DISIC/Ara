@@ -1,9 +1,9 @@
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import type { NestExpressApplication } from "@nestjs/platform-express";
-import morgan from "morgan";
 import proxy from "express-http-proxy";
+import morgan from "morgan";
 
 import { AppModule } from "./app.module";
 

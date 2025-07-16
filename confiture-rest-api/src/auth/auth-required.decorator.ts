@@ -1,6 +1,6 @@
 import { UseGuards, applyDecorators } from "@nestjs/common";
-import { AuthGuard } from "./auth.guard";
 import { ApiBearerAuth, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { AuthGuard } from "./auth.guard";
 
 export function AuthRequired() {
   return applyDecorators(

@@ -5,15 +5,15 @@ import { createTransport, getTestMessageUrl, Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { PrismaService } from "../prisma.service";
-import * as auditCreationEmail from "./audit-creation-email";
-import * as accountVerificationEmail from "./account-verification-email";
 import * as accountConfirmationEmail from "./account-confirmation-email";
-import * as passwordUpdateConfirmationEmail from "./password-update-confirmation-email";
-import * as updateEmailVerificationEmail from "./update-email-verification-email";
-import * as updateEmailConfirmationEmail from "./update-email-confirmation-email";
-import * as requestPasswordResetEmail from "./request-password-reset-email";
-import { EmailConfig } from "./email-config.interface";
+import * as accountVerificationEmail from "./account-verification-email";
+import * as auditCreationEmail from "./audit-creation-email";
 import { AuditCreationEmailData } from "./audit-creation-email";
+import { EmailConfig } from "./email-config.interface";
+import * as passwordUpdateConfirmationEmail from "./password-update-confirmation-email";
+import * as requestPasswordResetEmail from "./request-password-reset-email";
+import * as updateEmailConfirmationEmail from "./update-email-confirmation-email";
+import * as updateEmailVerificationEmail from "./update-email-verification-email";
 
 const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.AUDIT_CREATION]: auditCreationEmail,

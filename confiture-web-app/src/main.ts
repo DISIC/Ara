@@ -1,19 +1,19 @@
-import "./styles/main.css";
-import "@gouvfr/dsfr/dist/dsfr.min.css";
-import "@gouvfr/dsfr/dist/dsfr.module.min.js";
-import "@gouvfr/dsfr/dist/utility/icons/icons.css";
-
 import { BrowserTracing } from "@sentry/tracing";
 import * as Sentry from "@sentry/vue";
 import { createHead } from "@unhead/vue";
 import { marked } from "marked";
+
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-
 import App from "./App.vue";
 // @ts-expect-error the matomo plugin is a js file without type declarations
 import Matomo from "./matomo.js";
 import router from "./router";
+import "./styles/main.css";
+
+import "@gouvfr/dsfr/dist/dsfr.min.css";
+import "@gouvfr/dsfr/dist/dsfr.module.min.js";
+import "@gouvfr/dsfr/dist/utility/icons/icons.css";
 
 // markdown configuration
 {
