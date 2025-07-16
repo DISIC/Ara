@@ -680,4 +680,21 @@ describe("Audit", () => {
       cy.contains("ThingElements").should("exist");
     });
   });
+
+  it("User can automatically set as NA some linked criteria", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      // check that linked criteria are also NA
+      cy.get(".criterium-container").contains("Non applicable").click();
+      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(2).should("be.checked");
+      cy.get(".criterium-container").eq(2).contains("Vous avez évalué le critère 1.1 Non applicable");
+
+      // check that linked criteria get their previous status back
+      cy.get(".criterium-container").contains("Conforme").click();
+      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(2).should("not.be.checked");
+      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(1).should("be.checked");
+      cy.get(".criterium-container").eq(2).contains("Vous avez évalué le critère 1.1 Non applicable").should("not.exist");
+    });
+  });
 });
