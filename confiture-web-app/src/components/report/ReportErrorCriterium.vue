@@ -69,6 +69,7 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
           !isTiptapDocumentEmpty(error.notCompliantComment)
       "
       :document="error.notCompliantComment"
+      :key= "error.topic + '.' + error.criterium"
     />
 
     <p v-else>
