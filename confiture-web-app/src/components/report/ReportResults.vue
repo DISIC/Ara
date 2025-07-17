@@ -123,7 +123,7 @@ const transverseNotCompliantCount = computed(() => {
         :theme="stat.theme"
         :disabled="stat.disabled"
       />
-      <section class="fr-accordion report-card-details-accordion">
+      <section class="fr-accordion report-card-details-accordion" v-if="report.data.auditType === AuditType.FULL">
         <div class="fr-accordion__title">
           <button
             class="fr-accordion__btn"
