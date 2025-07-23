@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 23/07/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Cache l'accordéon "En savoir plus sur le calcul du taux" pour les audits partiels ([#1164](https://github.com/DISIC/Ara/pull/1164))
+
 ### 10/07/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
