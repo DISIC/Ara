@@ -8,6 +8,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
+- Les filtres du rapport d’audit ne désassocient plus les critères de leurs bons textes d’erreur & recommandation ([#1164](https://github.com/DISIC/Ara/pull/1161))
 - Cache l'accordéon "En savoir plus sur le calcul du taux" pour les audits partiels ([#1164](https://github.com/DISIC/Ara/pull/1164))
 
 ### 10/07/2025
