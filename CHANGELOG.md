@@ -9,7 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Les filtres du rapport d’audit ne désassocient plus les critères de leurs bons textes d’erreur & recommandation ([#1164](https://github.com/DISIC/Ara/pull/1161))
-- Cache l'accordéon "En savoir plus sur le calcul du taux" pour les audits partiels ([#1164](https://github.com/DISIC/Ara/pull/1164))
+- Cache l'accordéon « En savoir plus sur le calcul du taux » pour les audits partiels ([#1164](https://github.com/DISIC/Ara/pull/1164))
 
 ### 10/07/2025
 
@@ -27,19 +27,19 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Cache les critères d’une thématique définie comme "Non applicable" ([#1135](https://github.com/DISIC/Ara/pull/1135))
+- Cache les critères d’une thématique définie comme « Non applicable » ([#1135](https://github.com/DISIC/Ara/pull/1135))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - N’affiche pas la date du dernier enregistrement dans l’infobulle du nuage si cette information n’existe pas ([#1138](https://github.com/DISIC/Ara/pull/1138))
-- Corrige la mise en page de la modale "Observations" ([#1133](https://github.com/DISIC/Ara/pull/1133))
+- Corrige la mise en page de la modale « Observations » ([#1133](https://github.com/DISIC/Ara/pull/1133))
 - Cache l'onglet Point d'amélioration correctement lorsque les commentaires sont vides ([#1130](https://github.com/DISIC/Ara/pull/1130))
 
 ### 28/05/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Mise à jour du menu principal de la page "Audit" et de la modale des observations (anciennement "Notes") ([#1110](https://github.com/DISIC/Ara/pull/1110))
+- Mise à jour du menu principal de la page « Audit » et de la modale des observations (anciennement « Notes") ([#1110](https://github.com/DISIC/Ara/pull/1110))
 - Modifie le thème visuel des blocs de code de l’éditeur pour assurer un bon contraste des couleurs ([#1124](https://github.com/DISIC/Ara/pull/1124))
 
 #### <span aria-hidden="true">🐛</span> Corrections
@@ -192,14 +192,14 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Affiche le taux de progression de l’audit sur la page "Mes audits" ([#914](https://github.com/DISIC/Ara/pull/914))
+- Affiche le taux de progression de l’audit sur la page « Mes audits » ([#914](https://github.com/DISIC/Ara/pull/914))
 - Ne demande pas son adresse email à un utilisateur déjà connecté lors de la réinitialisation de mot de passe ([#926](https://github.com/DISIC/Ara/pull/926))
 
 ### 16/01/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Supprime la page "Contexte" ([#924](https://github.com/DISIC/Ara/pull/924))
+- Supprime la page « Contexte » ([#924](https://github.com/DISIC/Ara/pull/924))
 
 ### 10/01/2025
 
@@ -220,7 +220,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Corrige la position des infobulle "Non-applicable" sur la liste des audits ([#904](https://github.com/DISIC/Ara/pull/904))
+- Corrige la position des infobulle « Non-applicable » sur la liste des audits ([#904](https://github.com/DISIC/Ara/pull/904))
 
 ### 12/12/2024
 
@@ -238,7 +238,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Corrige le lien et l’icône des audits "non commencés" dans la liste des audits du compte ([#886](https://github.com/DISIC/Ara/pull/886))
+- Corrige le lien et l’icône des audits « non commencés » dans la liste des audits du compte ([#886](https://github.com/DISIC/Ara/pull/886))
 
 ### 06/12/2024
 
@@ -250,7 +250,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Affiche seulement les pages avec des commentaires C ou NA dans l’onglet du rapport "Points d’amélioration" ([#884](https://github.com/DISIC/Ara/pull/884))
+- Affiche seulement les pages avec des commentaires C ou NA dans l’onglet du rapport « Points d’amélioration » ([#884](https://github.com/DISIC/Ara/pull/884))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -260,12 +260,12 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Change le texte du bouton principal des audits à 0% dans la liste des audits de "Continuer l’audit" à "Commencer l’audit" ([#843](https://github.com/DISIC/Ara/pull/843))
+- Change le texte du bouton principal des audits à 0% dans la liste des audits de « Continuer l’audit » à « Commencer l’audit » ([#843](https://github.com/DISIC/Ara/pull/843))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige le problème des filtres des critères qui décalait l’ordre des pages de l’échantillon sur la page d’audit ([#877](https://github.com/DISIC/Ara/pull/877))
-- Corrige la "fausse" mise à jour des paramètres de l’audit quand on quitte la page sans sauvegarder ([#875](https://github.com/DISIC/Ara/pull/875))
+- Corrige la « fausse » mise à jour des paramètres de l’audit quand on quitte la page sans sauvegarder ([#875](https://github.com/DISIC/Ara/pull/875))
 
 ### 21/11/2024
 
@@ -313,34 +313,34 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Modifie la gestion des éléments transverses : l’interrupteur "Sur toutes les pages" est remplacé par l’onglet "Éléments transverses" qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
+- Modifie la gestion des éléments transverses : l’interrupteur « Sur toutes les pages » est remplacé par l’onglet « Éléments transverses » qui permet d’évaluer les éléments communs à toutes les pages : en-tête, pied de page... ([#758](https://github.com/DISIC/Ara/pull/758))
 
 ### 09/10/2024
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige la mise à jour de l’ordre des pages quand les 2 pages ne sont pas adjacentes ([#809](https://github.com/DISIC/Ara/pull/809))
-- Corrige l’application de l'attribut `autocomplete` sur le champ "email" du formulaire de connexion ([#808](https://github.com/DISIC/Ara/pull/808))
+- Corrige l’application de l'attribut `autocomplete` sur le champ « email » du formulaire de connexion ([#808](https://github.com/DISIC/Ara/pull/808))
 
 ### 05/09/2024
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajoute une modale de confirmation lors de la suppression d’une pièce jointe sur un critère "Non conforme" ([#788](https://github.com/DISIC/Ara/pull/788))
-- Met automatiquement le focus sur le champs "Erreur et recommandation" lorsque qu’un critère est défini comme "Non conforme" ([#766](https://github.com/DISIC/Ara/pull/766))
+- Ajoute une modale de confirmation lors de la suppression d’une pièce jointe sur un critère « Non conforme » ([#788](https://github.com/DISIC/Ara/pull/788))
+- Met automatiquement le focus sur le champs « Erreur et recommandation » lorsque qu’un critère est défini comme « Non conforme » ([#766](https://github.com/DISIC/Ara/pull/766))
 
 ### 24/07/2024
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Ajoute une information pour préciser la nature des contenus dans l’onglet "Points d’améliorations" ([#764](https://github.com/DISIC/Ara/pull/764))
+- Ajoute une information pour préciser la nature des contenus dans l’onglet « Points d’améliorations » ([#764](https://github.com/DISIC/Ara/pull/764))
 - Simplifie l’ajout d’environnements de test personnalisés ([#765](https://github.com/DISIC/Ara/pull/765))
 
 ### 11/07/2024
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Le lien d’ancre "Haut de page" entre les thématiques de l’audit renvoie vers désormais vers le haut des onglets plutôt que l’en-tête du site ([#750](https://github.com/DISIC/Ara/pull/750))
+- Le lien d’ancre « Haut de page » entre les thématiques de l’audit renvoie vers désormais vers le haut des onglets plutôt que l’en-tête du site ([#750](https://github.com/DISIC/Ara/pull/750))
 
 ### 10/07/2024
 
@@ -352,7 +352,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajoute les critères conformes et non applicables au rapport dans l’onglet "Points d’améliorations" ([#732](https://github.com/DISIC/Ara/pull/732))
+- Ajoute les critères conformes et non applicables au rapport dans l’onglet « Points d’améliorations » ([#732](https://github.com/DISIC/Ara/pull/732))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -375,7 +375,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Fusionne les champs "Recommandation" et "Description de l'erreur" ([#720](https://github.com/DISIC/Ara/pull/720))
+- Fusionne les champs « Recommandation » et « Description de l'erreur » ([#720](https://github.com/DISIC/Ara/pull/720))
 
 ### 06/06/2024
 
@@ -438,7 +438,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajoute la possibilité de filtrer les critères par statut "Non testé" lors de la réalisation de l’audit ([#693](https://github.com/DISIC/Ara/pull/693))
+- Ajoute la possibilité de filtrer les critères par statut « Non testé » lors de la réalisation de l’audit ([#693](https://github.com/DISIC/Ara/pull/693))
 
 ### 07/03/2024
 
@@ -455,7 +455,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Ajoute des liens d’accès dans le menu déroulant d’un audit sur la page "Mes audits" ([#658](https://github.com/DISIC/Ara/pull/658))
+- Ajoute des liens d’accès dans le menu déroulant d’un audit sur la page « Mes audits » ([#658](https://github.com/DISIC/Ara/pull/658))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -465,7 +465,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Corrige l’affichage du bandeau "Audit en cours" qui parfois n’était pas visible ([#659](https://github.com/DISIC/Ara/pull/659))
+- Corrige l’affichage du bandeau « Audit en cours » qui parfois n’était pas visible ([#659](https://github.com/DISIC/Ara/pull/659))
 
 ### 31/01/2024
 
@@ -588,7 +588,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Si l’URL du site n’est pas renseignée, utilise l’URL de la première page auditée ([#487](https://github.com/DISIC/Ara/pull/487))
-- Corrige le problème de disparition d’onglet lorsqu’on utilise les ancres depuis l’onglet "Notes" lors de la génération ([#483](https://github.com/DISIC/Ara/pull/483))
+- Corrige le problème de disparition d’onglet lorsqu’on utilise les ancres depuis l’onglet « Notes » lors de la génération ([#483](https://github.com/DISIC/Ara/pull/483))
 
 ### 08/09/2023
 
@@ -622,14 +622,14 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajout d’un paramètre "Facile à corriger" sur les non-conformités ([#436](https://github.com/DISIC/Ara/pull/436))
+- Ajout d’un paramètre « Facile à corriger » sur les non-conformités ([#436](https://github.com/DISIC/Ara/pull/436))
 
 ### 22/06/2023
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Ajoute une page "Feuille de route" ([#426](https://github.com/DISIC/Ara/pull/426))
-- Ajoute une page "Notes de versions" ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page « Feuille de route » ([#426](https://github.com/DISIC/Ara/pull/426))
+- Ajoute une page « Notes de versions » ([#426](https://github.com/DISIC/Ara/pull/426))
 
 ### 16/06/2023
 
@@ -661,7 +661,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige l'ordre des erreurs dans le détail des résultats sur le rapport
-- Corrige le placement de la mention "Validation possible à la fin de l'audit"
+- Corrige le placement de la mention « Validation possible à la fin de l'audit"
 - Corrige l'affichage des non-conformités transverses dans le rapport
 
 ### 31/05/2023
@@ -704,25 +704,25 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Corrige l'application de l'état transverse d'un critère via le switch "Sur toutes les pages" qui était parfois ignoré.
+- Corrige l'application de l'état transverse d'un critère via le switch « Sur toutes les pages » qui était parfois ignoré.
 
 ### 10/05/2023
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige une erreur qui survenait lorsqu'un champ de formulaire de type URL contenait un espace ([#386](https://github.com/DISIC/Ara/pull/386))
-- Corrige l'ordre des erreurs dans l'onglet "Détail des résultats" du rapport d'audit ([#389](https://github.com/DISIC/Ara/pull/389))
+- Corrige l'ordre des erreurs dans l'onglet « Détail des résultats » du rapport d'audit ([#389](https://github.com/DISIC/Ara/pull/389))
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Les accordéons "Description de la ou des erreurs" et "Recommandation de correction" sont remplacés par un unique accordéon "Description et recommandation" ([#390](https://github.com/DISIC/Ara/pull/390))
+- Les accordéons « Description de la ou des erreurs » et « Recommandation de correction » sont remplacés par un unique accordéon « Description et recommandation » ([#390](https://github.com/DISIC/Ara/pull/390))
 
 ### 05/05/2023
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige les onglets cassés lors de l'utilisation d'ancres ([#372](https://github.com/DISIC/Ara/pull/372))
-- Corrige le filtre "Masquer les critères évalués" qui ne fonctionnait pas sur les audits rapides et complémentaires ([#373](https://github.com/DISIC/Ara/pull/373))
+- Corrige le filtre « Masquer les critères évalués » qui ne fonctionnait pas sur les audits rapides et complémentaires ([#373](https://github.com/DISIC/Ara/pull/373))
 
 ### 04/05/2023
 
@@ -746,7 +746,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajout d'une aide à la saisie en Markdown accessible en cliquant sur le bouton "Markdown pris en compte" en dessous des champs texte concernés ([#350](https://github.com/DISIC/Ara/pull/350))
+- Ajout d'une aide à la saisie en Markdown accessible en cliquant sur le bouton « Markdown pris en compte » en dessous des champs texte concernés ([#350](https://github.com/DISIC/Ara/pull/350))
 
 ### 05/04/2023
 
@@ -757,7 +757,7 @@
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Mise à jour du titre de la page de génération d’audit ([#345](https://github.com/DISIC/Ara/pull/345))
-- Ajout du métier "Auditeur / Auditrice accessibilité" dans le formulaire de retour ([#346](https://github.com/DISIC/Ara/pull/346))
+- Ajout du métier « Auditeur / Auditrice accessibilité » dans le formulaire de retour ([#346](https://github.com/DISIC/Ara/pull/346))
 
 ### 30/03/2023
 
@@ -827,7 +827,7 @@
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Ajout d’une page _Données personnelles_ ([#291](https://github.com/DISIC/Ara/pull/291))
-- Suppression de la mention "optionnel" sur la description et la recommandation de correction des critères non conformes ([#292](https://github.com/DISIC/Ara/pull/292))
+- Suppression de la mention « optionnel » sur la description et la recommandation de correction des critères non conformes ([#292](https://github.com/DISIC/Ara/pull/292))
 
 ### 02/02/2023
 
@@ -930,7 +930,7 @@
   - Contenu dérogé
   - Contenus non soumis à l’obligation d’accessibilité
 - Ajout d'une explication sur le calcul du taux de conformité sur le rapport ([#232](https://github.com/DISIC/Ara/pull/232))
-- Cache les sections "Contenus non accessibles" vides dans le rapport
+- Cache les sections « Contenus non accessibles » vides dans le rapport
 - Ajoute un message d'information sur la page de rapport d'un audit en cours ([#236](https://github.com/DISIC/Ara/pull/236)).
 
 #### <span aria-hidden="true">🐛</span> Corrections
