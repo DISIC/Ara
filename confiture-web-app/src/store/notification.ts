@@ -15,7 +15,7 @@ interface NotificationStoreState {
   } | null;
 }
 
-export interface NotificationOptions {
+interface NotificationOptions {
   action?: { label: string; cb: () => void };
   link?: { label: string; to: RouteLocationRaw };
 }
