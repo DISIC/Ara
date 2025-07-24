@@ -255,7 +255,7 @@ export const useResultsStore = defineStore("results", {
         if (updates[0].status === CriteriumResultStatus.NOT_APPLICABLE) {
           // save previous status of linked criteria
           linkedCriteria.forEach(c => {
-            const [topic, criterium] = String(c).split(".").map(Number);
+            const [topic, criterium] = c.split(".").map(Number);
 
             setWith(
               this.previousLinkedCriteria,
@@ -267,7 +267,7 @@ export const useResultsStore = defineStore("results", {
 
           // apply status to linked criteria
           linkedUpdates = linkedCriteria.map((update) => {
-            const [topic, criterium] = String(update).split(".").map(Number);
+            const [topic, criterium] = update.split(".").map(Number);
 
             return {
               ...updates[0],
@@ -278,7 +278,7 @@ export const useResultsStore = defineStore("results", {
         } else if (this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status === CriteriumResultStatus.NOT_APPLICABLE) {
           // rollback old status on linked criteria
           linkedCriteria.forEach((c) => {
-            const [topic, criterium] = String(c).split(".").map(Number);
+            const [topic, criterium] = c.split(".").map(Number);
 
             const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
             const currentStatus = this.getCriteriumResult(updates[0].pageId, topic, criterium)?.status;

@@ -271,7 +271,7 @@ const parentCriterium = computed(() => {
   for (const key in LINKED_CRITERIA) {
     if (
       get(LINKED_CRITERIA, key).includes(
-        Number(`${props.topicNumber}.${props.criterium.number}`)
+        `${props.topicNumber}.${props.criterium.number}`
       ) &&
       store.getCriteriumResult(
         props.page.id,
