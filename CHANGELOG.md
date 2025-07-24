@@ -39,7 +39,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Mise à jour du menu principal de la page « Audit » et de la modale des observations (anciennement « Notes") ([#1110](https://github.com/DISIC/Ara/pull/1110))
+- Mise à jour du menu principal de la page « Audit » et de la modale des observations (anciennement « Notes ») ([#1110](https://github.com/DISIC/Ara/pull/1110))
 - Modifie le thème visuel des blocs de code de l’éditeur pour assurer un bon contraste des couleurs ([#1124](https://github.com/DISIC/Ara/pull/1124))
 
 #### <span aria-hidden="true">🐛</span> Corrections
@@ -661,7 +661,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige l'ordre des erreurs dans le détail des résultats sur le rapport
-- Corrige le placement de la mention « Validation possible à la fin de l'audit"
+- Corrige le placement de la mention « Validation possible à la fin de l'audit »
 - Corrige l'affichage des non-conformités transverses dans le rapport
 
 ### 31/05/2023
