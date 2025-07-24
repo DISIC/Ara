@@ -11,7 +11,7 @@ USER root
 # From: https://github.com/nodejs/node/issues/41058#issuecomment-998966573
 RUN apk -UvX http://dl-4.alpinelinux.org/alpine/edge/main add -u nodejs
 
-ENV NODE_VERSION 22.13.0
+ENV NODE_VERSION 22.14.0
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \
