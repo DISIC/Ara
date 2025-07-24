@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiCreatedResponse } from "@nestjs/swagger";
-import { FeedbackService } from "./feedback.service";
-import { NewFeedbackDto } from "./dto/new-feedback.dto";
 import { AccountDeletionFeedbackDto } from "./dto/account-deletion-feedback.dto";
+import { NewFeedbackDto } from "./dto/new-feedback.dto";
+import { FeedbackService } from "./feedback.service";
 
 @Controller("feedback")
 export class FeedbackController {
