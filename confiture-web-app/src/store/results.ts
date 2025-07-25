@@ -238,61 +238,7 @@ export const useResultsStore = defineStore("results", {
         return;
       }
 
-      // update linked criteria if any
-      const topicAndCriterium: string =
-        `${updates[0].topic}.${updates[0].criterium}`;
-
-      if (
-        has(LINKED_CRITERIA, topicAndCriterium) &&
-        updates.length === 1) {
-        let linkedUpdates: CriteriumResult[] = [];
-
-        const linkedCriteria = get(
-          LINKED_CRITERIA,
-          topicAndCriterium
-        );
-
-        if (updates[0].status === CriteriumResultStatus.NOT_APPLICABLE) {
-          // save previous status of linked criteria
-          linkedCriteria.forEach(c => {
-            const [topic, criterium] = c.split(".").map(Number);
-
-            setWith(
-              this.previousLinkedCriteria,
-              [updates[0].pageId, topic, criterium],
-              this.getCriteriumResult(updates[0].pageId, topic, criterium),
-              Object
-            );
-          });
-
-          // apply status to linked criteria
-          linkedUpdates = linkedCriteria.map((update) => {
-            const [topic, criterium] = update.split(".").map(Number);
-
-            return {
-              ...updates[0],
-              topic,
-              criterium
-            };
-          });
-        } else if (this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status === CriteriumResultStatus.NOT_APPLICABLE) {
-          // rollback old status on linked criteria
-          linkedCriteria.forEach((c) => {
-            const [topic, criterium] = c.split(".").map(Number);
-
-            const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
-            const currentStatus = this.getCriteriumResult(updates[0].pageId, topic, criterium)?.status;
-
-            const addUpdate = u && (u.status === currentStatus || currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
-
-            if (addUpdate) {
-              linkedUpdates.push(u);
-            }
-          });
-        }
-
-        updates.push(...linkedUpdates);
-      }
+      this.updateLinkedCriteria(updates);
 
       const previousResults: CriteriumResult[] = [];
 
@@ -354,6 +300,71 @@ export const useResultsStore = defineStore("results", {
         .finally(() => {
           this.decreaseCurrentRequestCount();
         });
+    },
+
+    async updateLinkedCriteria(updates: CriteriumResult[]) {
+      // update linked criteria if any
+      const topicAndCriterium: string =
+        `${updates[0].topic}.${updates[0].criterium}`;
+
+      if (
+        !(has(LINKED_CRITERIA, topicAndCriterium) &&
+        updates.length === 1 &&
+        // checks if result status has been updated
+        updates[0].status !== this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status)
+      ) {
+        // nothing to do
+        return;
+      }
+
+      let linkedUpdates: CriteriumResult[] = [];
+
+      const linkedCriteria = get(
+        LINKED_CRITERIA,
+        topicAndCriterium
+      );
+
+      if (updates[0].status === CriteriumResultStatus.NOT_APPLICABLE) {
+        // save previous status of linked criteria
+        linkedCriteria.forEach(c => {
+          const [topic, criterium] = c.split(".").map(Number);
+
+          setWith(
+            this.previousLinkedCriteria,
+            [updates[0].pageId, topic, criterium],
+            this.getCriteriumResult(updates[0].pageId, topic, criterium),
+            Object
+          );
+        });
+
+        // apply status to linked criteria
+        linkedUpdates = linkedCriteria.map((update) => {
+          const [topic, criterium] = update.split(".").map(Number);
+
+          return {
+            ...this.getCriteriumResult(updates[0].pageId, topic, criterium)!,
+            status: CriteriumResultStatus.NOT_APPLICABLE,
+            topic,
+            criterium
+          };
+        });
+      } else if (this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+        // rollback old status on linked criteria
+        linkedCriteria.forEach((c) => {
+          const [topic, criterium] = c.split(".").map(Number);
+
+          const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
+          const currentStatus = this.getCriteriumResult(updates[0].pageId, topic, criterium)?.status;
+
+          const addUpdate = u && (u.status === currentStatus || currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
+
+          if (addUpdate) {
+            linkedUpdates.push(u);
+          }
+        });
+      }
+
+      updates.push(...linkedUpdates);
     },
 
     /**
