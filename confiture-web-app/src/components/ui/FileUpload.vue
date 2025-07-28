@@ -16,7 +16,7 @@ export interface Props {
   maxFileSize?: string;
   multiple?: boolean;
   readonly?: boolean;
-  title?: string;
+  title?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   maxFileSize: "2 Mo",
   multiple: false,
   readonly: false,
-  title: "Ajouter un fichier"
+  title: null
 });
 
 const emit = defineEmits<{
@@ -38,6 +38,7 @@ const emit = defineEmits<{
 defineExpose({ onFileRequestFinished });
 
 const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
+const isDraggedOver: Ref<boolean> = ref(false);
 
 const id = useUniqueId();
 const isOffline = useIsOffline();
@@ -70,6 +71,37 @@ const acceptedFormatsAttr = computed(() => {
   }
 });
 
+const computedErrorMessage = computed(() => {
+  if (props.errorMessage) {
+    return props.errorMessage;
+  } else if (localErrorMessage.value) {
+    return localErrorMessage.value;
+  } else {
+    return null;
+  }
+});
+
+const title = computed(() => {
+  if (props.title) {
+    return props.title;
+  } else if (props.multiple) {
+    return "Ajouter des fichiers";
+  } else {
+    return "Ajouter un fichier";
+  }
+});
+
+function cancelUpload() {
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
+  resetMessage();
+}
+
+function resetMessage() {
+  localErrorMessage.value = null;
+}
+
 function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
@@ -78,7 +110,6 @@ function handleFileChange() {
       return;
     }
     emit("upload-file", file);
-    fileInputRef.value.value = "";
   }
 }
 
@@ -114,51 +145,45 @@ function onFileRequestFinished() {
 <template>
   <div>
     <div class="upload-wrapper">
-      <div v-if="!readonly" class="fr-upload-group">
-        <p
-          :id="`file-upload-description-${id}`"
-          class="fr-label fr-upload-group__desc"
-        >
+      <!-- TODO: handle multiple files upload -->
+      <!-- :multiple="multiple ?? undefined" -->
+      <div
+        v-if="!readonly" class="fr-upload-group" :class="{ 'fr-upload-group--disabled': isOffline }"
+      >
+        <label class="fr-label" :for="`file-upload-${id}`">
           {{ title }}
-        </p>
-        <p class="fr-text--regular fr-hint-text fr-my-2v">
-          Taille maximale par fichier&#8239;: {{ maxFileSize }}.
-          <span v-html="acceptedFormatsHtml"></span>
-          <template v-if="multiple">. Plusieurs fichiers possibles.</template>
-        </p>
-
-        <!-- TODO: handle multiple files upload -->
-        <!-- :multiple="multiple ?? undefined" -->
-        <label
-          class="upload-btn fr-btn fr-btn--tertiary"
-          tabindex="0"
-          :for="`file-upload-${id}`"
-        >Choisir un fichier</label>
+          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+            <span v-html="acceptedFormatsHtml"></span>.
+          </span>
+        </label>
         <input
           :id="`file-upload-${id}`"
           ref="fileInputRef"
-          class="fr-sr-only"
-          tabindex="-1"
+          class="fr-upload"
           type="file"
+          name="file-upload"
           :accept="acceptedFormatsAttr"
+          :aria-describedby="`file-upload-messages-${id}`"
+          :class="{ 'file-upload--dragged-over': isDraggedOver }"
           :disabled="isOffline"
-          :aria-describedby="`file-upload-description-${id} file-upload-error-format-${id} file-upload-error-size-${id}`"
+          @input="resetMessage"
+          @cancel="cancelUpload"
           @change="handleFileChange"
-        />
-        <p class="fr-text--sm fr-mt-3v fr-mb-2v">{{ selectedFiles }}</p>
+          @dragover="isDraggedOver = true"
+          @dragleave="isDraggedOver = false"
+          @drop="isDraggedOver = false"
+        >
+        <div :id="`file-upload-messages-${id}`" class="fr-messages-group" aria-live="assertive" aria-atomic="true">
+          <p
+            class="fr-message"
+            :class="{ 'fr-message--error': computedErrorMessage }"
+          >{{ computedErrorMessage }}</p>
+        </div>
       </div>
-
-      <p
-        v-if="errorMessage || localErrorMessage"
-        :id="`file-upload-error-format-${id}`"
-        class="fr-error-text fr-mt-0"
-        role="alert"
-      >
-        {{ errorMessage ? errorMessage : localErrorMessage }}
-      </p>
     </div>
 
-    <!-- Audit files -->
+    <!-- Uploaded files -->
+    <p class="fr-mt-3w fr-mb-0">{{ selectedFiles }}</p>
     <ul class="files">
       <li v-for="auditFile in auditFiles" :key="auditFile.key">
         <img
@@ -225,17 +250,6 @@ function onFileRequestFinished() {
 </template>
 
 <style scoped>
-.fr-upload-group__desc {
-  margin: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .upload-btn:not(:disabled):hover {
-    background-color: var(--hover-tint);
-    cursor: pointer;
-  }
-}
-
 .files {
   padding: 0;
   list-style: bullet;
@@ -285,5 +299,14 @@ function onFileRequestFinished() {
 
 .file-thumbnail__default::before {
   --icon-size: 2.5rem;
+}
+.fr-upload-group .fr-label + .fr-upload {
+  margin-top: 0.5rem;
+  padding-block: 0.5rem;
+}
+.file-upload--dragged-over {
+  outline-style: dotted;
+  outline-width: 3px;
+  outline-color: var(--dsfr-outline);
 }
 </style>
