@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   boldTitle: false,
   errorMessage: null,
   errorMessageTitle: null,
-  maxFileSize: "2 Mo",
+  maxFileSize: "2 Mo",
   multiple: false,
   readonly: false,
   title: null
