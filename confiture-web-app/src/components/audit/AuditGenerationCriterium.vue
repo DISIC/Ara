@@ -269,14 +269,16 @@ const showTransverseStatus = computed(() => {
 // Check status of linked parent criterium
 const parentCriterium = computed(() => {
   for (const key in LINKED_CRITERIA) {
-    if (LINKED_CRITERIA[key].includes(`${props.topicNumber}.${props.criterium.number}`)) {
-      const [parentTopic, parentCriterium] = key.split(".").map(Number);
-      const parentResult =
-        store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+    if (!LINKED_CRITERIA[key].includes(`${props.topicNumber}.${props.criterium.number}`)) {
+      return null;
+    }
 
-      if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
-        return key;
-      }
+    const [parentTopic, parentCriterium] = key.split(".").map(Number);
+    const parentResult =
+    store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+
+    if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+      return key;
     }
   }
 
