@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { debounce, get } from "lodash-es";
+import { debounce } from "lodash-es";
 import { marked } from "marked";
 import { computed, Ref, ref } from "vue";
 
@@ -269,17 +269,14 @@ const showTransverseStatus = computed(() => {
 // Check status of linked parent criterium
 const parentCriterium = computed(() => {
   for (const key in LINKED_CRITERIA) {
-    if (
-      get(LINKED_CRITERIA, key).includes(
-        `${props.topicNumber}.${props.criterium.number}`
-      ) &&
-      store.getCriteriumResult(
-        props.page.id,
-        Number(key.split(".")[0]),
-        Number(key.split(".")[1])
-      )?.status === CriteriumResultStatus.NOT_APPLICABLE
-    ) {
-      return key;
+    if (LINKED_CRITERIA[key].includes(`${props.topicNumber}.${props.criterium.number}`)) {
+      const [parentTopic, parentCriterium] = key.split(".").map(Number);
+      const parentResult =
+        store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+
+      if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+        return key;
+      }
     }
   }
 

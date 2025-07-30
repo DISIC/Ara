@@ -1,5 +1,5 @@
 import ky from "ky";
-import { get, has, sample, setWith, unset } from "lodash-es";
+import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
 
 import { LINKED_CRITERIA } from "../criteria";
@@ -304,14 +304,16 @@ export const useResultsStore = defineStore("results", {
 
     async updateLinkedCriteria(updates: CriteriumResult[]) {
       // update linked criteria if any
+      const updatedCritResult = updates[0];
+      const currentCritStatus = this.getCriteriumResult(updatedCritResult.pageId, updatedCritResult.topic, updatedCritResult.criterium)?.status;
       const topicAndCriterium: string =
-        `${updates[0].topic}.${updates[0].criterium}`;
+        `${updatedCritResult.topic}.${updatedCritResult.criterium}`;
 
       if (
         !(has(LINKED_CRITERIA, topicAndCriterium) &&
         updates.length === 1 &&
         // checks if result status has been updated
-        updates[0].status !== this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status)
+        updatedCritResult.status !== currentCritStatus)
       ) {
         // nothing to do
         return;
@@ -319,20 +321,17 @@ export const useResultsStore = defineStore("results", {
 
       let linkedUpdates: CriteriumResult[] = [];
 
-      const linkedCriteria = get(
-        LINKED_CRITERIA,
-        topicAndCriterium
-      );
+      const linkedCriteria = LINKED_CRITERIA[topicAndCriterium];
 
-      if (updates[0].status === CriteriumResultStatus.NOT_APPLICABLE) {
+      if (updatedCritResult.status === CriteriumResultStatus.NOT_APPLICABLE) {
         // save previous status of linked criteria
         linkedCriteria.forEach(c => {
           const [topic, criterium] = c.split(".").map(Number);
 
           setWith(
             this.previousLinkedCriteria,
-            [updates[0].pageId, topic, criterium],
-            this.getCriteriumResult(updates[0].pageId, topic, criterium),
+            [updatedCritResult.pageId, topic, criterium],
+            this.getCriteriumResult(updatedCritResult.pageId, topic, criterium),
             Object
           );
         });
@@ -342,19 +341,19 @@ export const useResultsStore = defineStore("results", {
           const [topic, criterium] = update.split(".").map(Number);
 
           return {
-            ...this.getCriteriumResult(updates[0].pageId, topic, criterium)!,
+            ...this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)!,
             status: CriteriumResultStatus.NOT_APPLICABLE,
             topic,
             criterium
           };
         });
-      } else if (this.getCriteriumResult(updates[0].pageId, updates[0].topic, updates[0].criterium)?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+      } else if (currentCritStatus === CriteriumResultStatus.NOT_APPLICABLE) {
         // rollback old status on linked criteria
         linkedCriteria.forEach((c) => {
           const [topic, criterium] = c.split(".").map(Number);
 
-          const u = this.previousLinkedCriteria[updates[0].pageId]?.[topic]?.[criterium];
-          const currentStatus = this.getCriteriumResult(updates[0].pageId, topic, criterium)?.status;
+          const u = this.previousLinkedCriteria[updatedCritResult.pageId]?.[topic]?.[criterium];
+          const currentStatus = this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)?.status;
 
           const addUpdate = u && (u.status === currentStatus || currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
 
