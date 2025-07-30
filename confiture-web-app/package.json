@@ -12,7 +12,7 @@
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
   "dependencies": {
-    "@gouvfr/dsfr": "1.13.0",
+    "@gouvfr/dsfr": "1.14.0",
     "@sentry/tracing": "^7.37.2",
     "@sentry/vite-plugin": "^0.3.0",
     "@sentry/vue": "^7.37.2",
@@ -50,7 +50,7 @@
     "vue-tsc": "^2.2.10"
   },
   "engines": {
-    "node": "^22.13.0",
+    "node": "^22.14.0",
     "yarn": "^1.22.19"
   }
 }

@@ -1040,10 +1040,10 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@gouvfr/dsfr@1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.13.0.tgz#5f9661d3093acea8fd4fa9154ad948f051ad5998"
-  integrity sha512-I6JLYfE63dogk5qOx69gMfW/bKsm+daFgfx2QX75isbKBy5khlJdVxOD0A6ohvywvUJlEcZTmVK8rNHeVvGmgw==
+"@gouvfr/dsfr@1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.14.0.tgz#cf753fae982f5b6a746bc9d31a471eb0c66ce428"
+  integrity sha512-lF02JujHsr4J39gnC7y+qe0LLnh01cb6JwbMIKK2YcNjzvmfb26C0uW0+gyugD41wjFQQcIFWz07g6ynqxjNzA==
 
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"

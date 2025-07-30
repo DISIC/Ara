@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 30/07/2025
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Mise à jour du DSFR en version `1.14.0` ([#1167](https://github.com/DISIC/Ara/pull/1167))
+
 ### 23/07/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
