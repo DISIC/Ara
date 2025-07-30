@@ -4,7 +4,7 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
-### 25/07/2025
+### 30/07/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
