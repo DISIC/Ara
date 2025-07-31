@@ -270,12 +270,12 @@ const showTransverseStatus = computed(() => {
 const parentCriterium = computed(() => {
   for (const key in LINKED_CRITERIA) {
     if (!LINKED_CRITERIA[key].includes(`${props.topicNumber}.${props.criterium.number}`)) {
-      return null;
+      continue;
     }
 
     const [parentTopic, parentCriterium] = key.split(".").map(Number);
     const parentResult =
-    store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+      store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
 
     if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
       return key;
