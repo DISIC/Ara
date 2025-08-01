@@ -1,4 +1,5 @@
 FROM node:22.14 AS builder
+ENV YARN_VERSION=4.9.2
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN
@@ -8,16 +9,17 @@ ARG VITE_SENTRY_RELEASE
 WORKDIR /app
 RUN mkdir -p confiture-web-app/src/assets
 RUN mkdir -p confiture-web-app/src/types
-COPY package.json yarn.lock CHANGELOG.md ROADMAP.md .
+COPY package.json yarn.lock .yarnrc.yml CHANGELOG.md ROADMAP.md ./
 COPY confiture-web-app/package.json confiture-web-app/
 COPY confiture-rest-api/ confiture-rest-api/
-RUN yarn install --frozen-lockfile --non-interactive --production=false
+RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
+RUN yarn install --immutable
 RUN ls confiture-web-app/src/types
 
 
 WORKDIR /app/confiture-web-app
 COPY confiture-web-app/ .
-RUN VITE_MATOMO_ENABLE=1 SENTRY_ORG=${SENTRY_ORG} SENTRY_PROJECT=${SENTRY_PROJECT} SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} VITE_SENTRY_DSN=${VITE_SENTRY_DSN} VITE_SENTRY_ENVIRONMENT=${VITE_SENTRY_ENVIRONMENT} VITE_SENTRY_RELEASE=${VITE_SENTRY_RELEASE} yarn build
+RUN VITE_MATOMO_ENABLE=1 SENTRY_ORG=${SENTRY_ORG} SENTRY_PROJECT=${SENTRY_PROJECT} SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} VITE_SENTRY_DSN=${VITE_SENTRY_DSN} VITE_SENTRY_ENVIRONMENT=${VITE_SENTRY_ENVIRONMENT} VITE_SENTRY_RELEASE=${VITE_SENTRY_RELEASE} yarn workspace confiture-web-app run build
 
 FROM ghcr.io/disic/designgouv-confiture/nginx:1.22.1-r0 AS production
 ARG VERSION=1.0

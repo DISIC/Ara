@@ -27,7 +27,7 @@ jobs:
           node-version: 22.14.0
 
       - name: Install dependencies
-        run: yarn install
+        run: corepack enable && corepack prepare yarn@4.9.2 --activate && yarn install
 
       - name: Lint entire project
         run: yarn lint
