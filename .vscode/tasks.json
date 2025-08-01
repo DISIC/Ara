@@ -5,20 +5,22 @@
       "label": "Lint entire project",
       "type": "shell",
       "command": "yarn run lint",
-      "problemMatcher": ["$eslint-stylish"],
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       }
     },
     {
       "label": "Lint + fix entire project",
       "type": "shell",
       "command": "yarn run lint --fix",
-      "problemMatcher": ["$eslint-stylish"],
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       }
     },
     {
@@ -85,31 +87,8 @@
         "Typescript: show errors for Web App",
         "Typescript: show errors for Cypress"
       ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Lint entire project",
-      "type": "shell",
-      "command": "yarn run lint",
-      "problemMatcher": [
-        "$eslint-stylish"
-      ],
       "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "Lint + fix entire project",
-      "type": "shell",
-      "command": "yarn run lint --fix",
-      "problemMatcher": [
-        "$eslint-stylish",
-        "$tsc"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       }
     }
   ]
