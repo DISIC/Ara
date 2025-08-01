@@ -232,7 +232,7 @@ const siteUrl = computed(() => {
             référentiel général d’amélioration de l’accessibilité (RGAA).
           </p>
 
-          <h4 class="fr-h2">Résultats des tests</h4>
+          <h5 class="fr-h2">Résultats des tests</h5>
           <p class="fr-mb-9v fr-mb-md-6w">
             L’audit de conformité réalisé par
             <strong>{{ report.data.context.auditorOrganisation }}</strong>
