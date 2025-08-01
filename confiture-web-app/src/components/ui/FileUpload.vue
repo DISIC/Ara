@@ -38,7 +38,7 @@ const emit = defineEmits<{
 defineExpose({ onFileRequestFinished });
 
 const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
-const isDraggedOver: Ref<boolean> = ref(false);
+const isDraggedOver = ref(false);
 
 const id = useUniqueId();
 const isOffline = useIsOffline();
@@ -71,15 +71,8 @@ const acceptedFormatsAttr = computed(() => {
   }
 });
 
-const computedErrorMessage = computed(() => {
-  if (props.errorMessage) {
-    return props.errorMessage;
-  } else if (localErrorMessage.value) {
-    return localErrorMessage.value;
-  } else {
-    return null;
-  }
-});
+const computedErrorMessage = computed(() =>
+  props.errorMessage ?? localErrorMessage.value ?? null);
 
 const title = computed(() => {
   if (props.title) {
@@ -175,6 +168,7 @@ function onFileRequestFinished() {
         >
         <div :id="`file-upload-messages-${id}`" class="fr-messages-group" aria-live="assertive" aria-atomic="true">
           <p
+            v-if="computedErrorMessage"
             class="fr-message"
             :class="{ 'fr-message--error': computedErrorMessage }"
           >{{ computedErrorMessage }}</p>
@@ -289,6 +283,7 @@ function onFileRequestFinished() {
   max-width: 100%;
   object-fit: contain;
 }
+
 .file-thumbnail__default {
   display: flex;
   justify-content: center;
@@ -300,10 +295,12 @@ function onFileRequestFinished() {
 .file-thumbnail__default::before {
   --icon-size: 2.5rem;
 }
+
 .fr-upload-group .fr-label + .fr-upload {
-  margin-top: 0.5rem;
+  margin-block-start: 0.5rem;
   padding-block: 0.5rem;
 }
+
 .file-upload--dragged-over {
   outline-style: dotted;
   outline-width: 3px;
