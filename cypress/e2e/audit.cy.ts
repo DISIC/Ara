@@ -533,6 +533,8 @@ describe("Audit", () => {
   });
 
   it("User can finish the audit", () => {
+    const monthes = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    const monthesRe = "(?:" + monthes.join("|") + ")";
     cy.createTestAudit().then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -547,7 +549,7 @@ describe("Audit", () => {
 
       cy.contains("a", "Accéder aux livrables").click();
 
-      cy.contains(/Terminé le \d{1,2} [A-zÀ-ú]{3,9} \d{4}/);
+      cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
       cy.contains("a", "Accéder");
 
       cy.contains("button", "Copier le lien").click();

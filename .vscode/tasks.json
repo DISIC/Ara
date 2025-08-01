@@ -5,20 +5,90 @@
       "label": "Lint entire project",
       "type": "shell",
       "command": "yarn run lint",
-      "problemMatcher": ["$eslint-stylish"],
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       }
     },
     {
       "label": "Lint + fix entire project",
       "type": "shell",
       "command": "yarn run lint --fix",
-      "problemMatcher": ["$eslint-stylish"],
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
+      }
+    },
+    {
+      "label": "Typescript: show errors for Rest API",
+      "type": "shell",
+      "command": "yarn run show-all-ts-errors",
+      "hide": true,
+      "options": {
+        "cwd": "${workspaceFolder}/confiture-rest-api"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "base": "$tsc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/confiture-rest-api"
+        ]
+      }
+    },
+    {
+      "label": "Typescript: show errors for Web App",
+      "type": "shell",
+      "command": "yarn run show-all-ts-errors",
+      "hide": true,
+      "options": {
+        "cwd": "${workspaceFolder}/confiture-web-app"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "base": "$tsc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/confiture-web-app"
+        ]
+      }
+    },
+    {
+      "label": "Typescript: show errors for Cypress",
+      "type": "shell",
+      "command": "yarn run tests:show-all-ts-errors",
+      "hide": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "base": "$tsc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/"
+        ]
+      }
+    },
+    {
+      "label": "Typescript: show all errors",
+      "dependsOn": [
+        "Typescript: show errors for Rest API",
+        "Typescript: show errors for Web App",
+        "Typescript: show errors for Cypress"
+      ],
+      "group": {
+        "kind": "build"
       }
     }
   ]
