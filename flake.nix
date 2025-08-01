@@ -65,7 +65,7 @@
           eslint
 
           # Package manager
-          yarn
+          yarn-berry
         ];
 
         shellHook = ''
