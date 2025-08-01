@@ -6,6 +6,11 @@
 
 ### 30/07/2025
 
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Mise à jour d’un niveau de titre dans la page de déclaration d’accessibilité ([#1173](https://github.com/DISIC/Ara/pull/1173))
+### 30/07/2025
+
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Mise à jour du DSFR en version `1.14.0` ([#1167](https://github.com/DISIC/Ara/pull/1167))
