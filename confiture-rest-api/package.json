@@ -2,13 +2,9 @@
   "name": "confiture-rest-api",
   "version": "0.0.1",
   "private": true,
-  "engines": {
-    "node": "^22.14.0",
-    "yarn": "^1.22.19"
-  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "run prebuild && nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -18,7 +14,7 @@
     "show-all-ts-errors": "tsc --noEmit",
     "migrate:dev": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
-    "postinstall": "yarn generate-api-types",
+    "postinstall": "run generate-api-types",
     "generate-api-types": "prisma generate && rimraf dist && GENERATE_TYPES=1 nest start --entryFile generate-api-typings.js"
   },
   "dependencies": {
@@ -69,5 +65,8 @@
     "ts-node": "^10.0.0",
     "tsconfig-paths": "^3.10.1",
     "typescript": "^4.3.5"
+  },
+  "engines": {
+    "node": "^22.14.0"
   }
 }

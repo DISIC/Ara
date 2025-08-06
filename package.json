@@ -24,7 +24,7 @@
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
-    "heroku-postbuild": "yarn workspaces run build",
+    "heroku-postbuild": "yarn workspaces foreach --all run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
     "postinstall": "yarn copytypes",
     "prepare": "yarn simple-git-hooks"
@@ -33,7 +33,7 @@
     "pm2": "^5.4.0"
   },
   "engines": {
-    "node": "^22.14.0",
-    "yarn": "^1.22.19"
-  }
+    "node": "^22.14.0"
+  },
+  "packageManager": "yarn@4.9.2"
 }
