@@ -5,6 +5,7 @@ import { computed, Ref, ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
+import { LINKED_CRITERIA } from "../../criteria";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
@@ -264,6 +265,25 @@ const showTransverseStatus = computed(() => {
     transverseStatus.value !== CriteriumResultStatus.NOT_TESTED
   );
 });
+
+// Check status of linked parent criterium
+const parentCriterium = computed(() => {
+  for (const key in LINKED_CRITERIA) {
+    if (!LINKED_CRITERIA[key].includes(`${props.topicNumber}.${props.criterium.number}`)) {
+      continue;
+    }
+
+    const [parentTopic, parentCriterium] = key.split(".").map(Number);
+    const parentResult =
+      store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+
+    if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
+      return key;
+    }
+  }
+
+  return null;
+});
 </script>
 
 <template>
@@ -296,6 +316,20 @@ const showTransverseStatus = computed(() => {
           Statut du critère {{ topicNumber }}.{{ criterium.number }}
         </template>
       </RadioGroup>
+    </div>
+
+    <!-- LINKED CRITERIA STATUS -->
+    <div
+      v-if="parentCriterium"
+      class="fr-ml-md-5w fr-mb-1w fr-px-1w criterium-linked-notice"
+    >
+      <span class="fr-icon-information-line fr-icon--sm" aria-hidden="true" />
+      <p class="fr-text--sm fr-m-0">
+        Vous avez évalué le critère {{ parentCriterium }}
+        <strong class="fr-badge fr-badge--sm fr-badge--no-icon'">
+          {{ formatStatus(CriteriumResultStatus.NOT_APPLICABLE) }}
+        </strong>
+      </p>
     </div>
 
     <!-- TRANSVERSE STATUS -->
@@ -404,6 +438,11 @@ const showTransverseStatus = computed(() => {
 
 .criterium-container::marker {
   content: none;
+}
+
+.criterium-linked-notice {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .criterium-transverse-is-open {
