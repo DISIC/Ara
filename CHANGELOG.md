@@ -4,12 +4,17 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 06/08/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Certains critères passent automatiquement au statut « non applicable » si un critère lié est définit comme tel #823 ([#1151](https://github.com/DISIC/Ara/pull/1151))
+
 ### 30/07/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Mise à jour d’un niveau de titre dans la page de déclaration d’accessibilité ([#1173](https://github.com/DISIC/Ara/pull/1173))
-### 30/07/2025
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
@@ -26,7 +31,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajoute la possibilité d’indiquer la présence ou l’absence d’éléments dans la page pour rendre une ou plusieurs thématiques non-applicables ([#1147](https://github.com/DISIC/Ara/pull/1147))
+- Ajoute la possibilité d’indiquer la présence ou l’absence d’éléments dans la page pour rendre une ou plusieurs thématiques non applicables ([#1147](https://github.com/DISIC/Ara/pull/1147))
 
 ### 26/06/2025
 
@@ -38,7 +43,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Cache les critères d’une thématique définie comme « Non applicable » ([#1135](https://github.com/DISIC/Ara/pull/1135))
+- Cache les critères d’une thématique définie comme « non applicable » ([#1135](https://github.com/DISIC/Ara/pull/1135))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -99,7 +104,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Supprime les liens non-explicites pour accéder à la déclaration et au rapport d’audit sur la synthèse ([#1044](https://github.com/DISIC/Ara/pull/1044))
+- Supprime les liens non explicites pour accéder à la déclaration et au rapport d’audit sur la synthèse ([#1044](https://github.com/DISIC/Ara/pull/1044))
 - Ajoute des mentions sur les champs optionnels de la déclaration d’accessibilité et des paramètres de l’audit ([#1054](https://github.com/DISIC/Ara/pull/1054))
 
 ### 22/04/2025
@@ -231,7 +236,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Corrige la position des infobulle « Non-applicable » sur la liste des audits ([#904](https://github.com/DISIC/Ara/pull/904))
+- Corrige la position des infobulle « Non applicable » sur la liste des audits ([#904](https://github.com/DISIC/Ara/pull/904))
 
 ### 12/12/2024
 
@@ -856,7 +861,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajout de la possibilité d'ajouter des images d'exemples aux critères non-conformes ([#237](https://github.com/DISIC/Ara/pull/237/))
+- Ajout de la possibilité d'ajouter des images d'exemples aux critères non conformes ([#237](https://github.com/DISIC/Ara/pull/237/))
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
