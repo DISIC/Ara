@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 07/08/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Il est désormais possible d’ajouter des fichiers supérieurs à 1 Mo (la limite est de 2 Mo) ([#1173](https://github.com/DISIC/Ara/pull/1173))
+
 ### 06/08/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
