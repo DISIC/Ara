@@ -157,6 +157,10 @@ export class AuditsController {
         .addFileTypeValidator({
           fileType: "image"
         })
+        // **Important note:**
+        // In production max upload size could be set by several config parameters (Nginx, Kubernetes, etc.).
+        // Currently, `nginx.ingress.kubernetes.io/proxy-body-size = "2m"` is the one effective in
+        // [DesignGouv-Confiture-GitOps/frontend/values-dinum.yaml](https://github.com/DISIC/DesignGouv-Confiture-GitOps/blob/main/frontend/values-dinum.yaml)
         .addMaxSizeValidator({
           maxSize: 2000000
         })
@@ -188,6 +192,10 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
       new ParseFilePipeBuilder()
+        // **Important note:**
+        // In production max upload size could be set by several config parameters (Nginx, Kubernetes, etc.).
+        // Currently, `nginx.ingress.kubernetes.io/proxy-body-size = "2m"` is the one effective in
+        // [DesignGouv-Confiture-GitOps/frontend/values-dinum.yaml](https://github.com/DISIC/DesignGouv-Confiture-GitOps/blob/main/frontend/values-dinum.yaml)
         .addMaxSizeValidator({
           maxSize: 2000000
         })
