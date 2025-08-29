@@ -271,17 +271,18 @@ onMounted(() => {
         class="progress-bar"
       >
         <template #tooltip-content>
-          <p class="fr-text--sm">
+          <span class="fr-text--sm">
             La progression de l'audit se base sur les critères évalués de chaque
             <strong>page de votre échantillon</strong>. Évaluez les critères de
             toutes les pages pour terminer votre audit.
-          </p>
-          <p class="fr-text--xs fr-mb-0">
+          </span>
+          <br />
+          <span class="fr-text--xs fr-mb-0">
             À noter : les critères des
             <strong>éléments transverses</strong> sont optionnels. Ils sont pris
             en compte dans le calcul du taux mais pas dans la progression de
             l’audit.
-          </p>
+          </span>
         </template>
       </AuditProgressBar>
 
