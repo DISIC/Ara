@@ -124,7 +124,7 @@ function handleDeleteFile(file: AuditFile) {
                 ref="fileUpload"
                 class="fr-mb-4w"
                 :audit-files="files"
-                :disabled="isOffline"
+                :disabled="isOffline ? true : null"
                 :error-message="errorMessage"
                 :multiple="true"
                 @upload-file="handleUploadFile"

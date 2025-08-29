@@ -83,7 +83,7 @@ function handleClose() {
                   }`"
                   type="text"
                   required
-                  :disabled="isLoading"
+                  :disabled="isLoading ? true : null"
                 />
               </div>
               <div class="fr-modal__footer">

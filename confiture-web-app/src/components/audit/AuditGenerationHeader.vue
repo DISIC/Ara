@@ -343,7 +343,7 @@ onMounted(() => {
                     }
                   }"
                   target="_blank"
-                  :disabled="isOffline"
+                  :disabled="isOffline ? true : null"
                 >
                   Consulter le rapport
                   <span class="fr-sr-only">(nouvelle fenêtre)</span>
