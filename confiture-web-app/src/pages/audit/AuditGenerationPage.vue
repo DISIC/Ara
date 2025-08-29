@@ -27,6 +27,7 @@ import { pluralize } from "../../utils";
 
 const props = defineProps<{
   uniqueId: string;
+  tabSlug: string;
 }>();
 
 const showFilters = ref(true);
