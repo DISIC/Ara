@@ -24,7 +24,7 @@
       }
     },
     {
-      "label": "Typescript: show errors for Rest API",
+      "label": "TypeScript: show errors for Rest API",
       "type": "shell",
       "command": "yarn run show-all-ts-errors",
       "hide": true,
@@ -44,7 +44,7 @@
       }
     },
     {
-      "label": "Typescript: show errors for Web App",
+      "label": "TypeScript: show errors for Web App",
       "type": "shell",
       "command": "yarn run show-all-ts-errors",
       "hide": true,
@@ -64,7 +64,7 @@
       }
     },
     {
-      "label": "Typescript: show errors for Cypress",
+      "label": "TypeScript: show errors for Cypress",
       "type": "shell",
       "command": "yarn run tests:show-all-ts-errors",
       "hide": true,
@@ -81,11 +81,11 @@
       }
     },
     {
-      "label": "Typescript: show all errors",
+      "label": "TypeScript: show all errors",
       "dependsOn": [
-        "Typescript: show errors for Rest API",
-        "Typescript: show errors for Web App",
-        "Typescript: show errors for Cypress"
+        "TypeScript: show errors for Rest API",
+        "TypeScript: show errors for Web App",
+        "TypeScript: show errors for Cypress"
       ],
       "group": {
         "kind": "build"
