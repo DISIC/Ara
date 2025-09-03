@@ -2,19 +2,19 @@
 
 Le projet est une API [Nest.js](https://nestjs.com/) et utilise une base de données [PostgreSQL](https://www.postgresql.org/) avec [Prisma](https://www.prisma.io/).
 
-## Prérequis
+## Installation du backend
 
-- [Node.js](https://nodejs.org) en version `22.14.0`
-- [Yarn 4 (Modern)](https://yarnpkg.com/) version `4.9.2`
-- [Docker](https://www.docker.com)
-
-## Installation
+> [!NOTE]
+> Si vous avez lancé `yarn install` à la racine du projet, les dépendances ont déjà été installées.
 
 Installer les dépendances :
 
 ```sh
 yarn install
 ```
+
+> [!IMPORTANT]
+> Les étapes suivantes sont à faire dans tous les cas.
 
 Créer le fichier de variables d’environnement :
 
@@ -52,5 +52,14 @@ Lancer le serveur local :
 ```sh
 yarn start:dev
 ```
+
+> [!TIP]
+> On peut aussi utiliser
+>
+> ```sh
+> yarn dev:back
+> ```
+>
+> depuis la racine du projet.
 
 La documentation de l’API est disponible sur Swagger (requiert d’avoir lancé le serveur local) : [http://localhost:4000/swagger](http://localhost:4000/swagger)

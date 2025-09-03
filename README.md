@@ -6,7 +6,7 @@ Ara est une plateforme web basée sur le référentiel général d'amélioration
 - générer automatiquement les rapports de ces audits ainsi que les déclarations d'accessibilité.
 
 > [!WARNING]
-> Ara n’audite pas automatiquement votre site
+> Ara n’audite pas automatiquement votre site.
 
 ## Organisation du code
 
@@ -22,6 +22,8 @@ Les espaces de travail (_workspaces_) sont :
   [Node.js](https://nodejs.org) version `22.14.0`
 - Gestionnaire de paquets (_Package manager_) :\
   [Yarn 4 (Modern)](https://yarnpkg.com/) version `4.9.2`
+- Conteneurisation :\
+  [Docker](https://www.docker.com)
 
 ## Installation
 
@@ -35,14 +37,8 @@ Une seule commande pour :
 yarn install
 ```
 
-Puis suivre les étapes du backend :
-
-1. créer le fichier `.env` avec les variables d’environnement
-2. lancer du docker de base de données PostgreSQL
-3. lancer la migration de la base de données
-
 > [!IMPORTANT]
-> Le détail de ces étapes se trouve dans la [documentation du backend](./confiture-rest-api/README.md).
+> Il faut aussi suivre [les étapes d’installation du backend](./confiture-rest-api/README.md#installation-du-backend).
 
 ## Développement
 
@@ -59,7 +55,7 @@ yarn dev
 > Les logs du backend et du frontend sont alors affichés dans la même session shell.
 
 > [!TIP]
-> Appuyer sur la touche **"o"** (_open_) pour ouvrir Ara en local dans un navigateur
+> Appuyer sur la touche **"o"** (_open_) pour ouvrir Ara en local dans un navigateur.
 
 ## ESLint, l’utilitaire de _lint_ et de formatage du code
 
@@ -71,7 +67,7 @@ Voir aussi la configuration de ce projet : [eslint.config.mjs](https://github.c
 Une vue de l’ensemble des règles de _lint_ est disponible en exécutant à la racine du projet :
 
 ```sh
-yarn-dlx @eslint/config-inspector
+yarn dlx @eslint/config-inspector
 ```
 
 On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet :
