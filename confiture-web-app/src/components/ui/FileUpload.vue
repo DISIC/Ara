@@ -204,7 +204,7 @@ function onFileRequestFinished() {
             <a
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
               :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               target="_blank"
               :title="
                 'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
@@ -219,7 +219,6 @@ function onFileRequestFinished() {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
               download
               :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
               :title="'Télécharger ' + getFullFileName(auditFile)"
             >
               Télécharger
