@@ -130,7 +130,6 @@ function handleDeleteFile(file: NotesFile) {
                     ? getUploadUrl(f.thumbnailKey)
                     : undefined
                 }))"
-                :disabled="isOffline"
                 :error-message="errorMessage"
                 :multiple="true"
                 @upload-file="handleUploadFile"

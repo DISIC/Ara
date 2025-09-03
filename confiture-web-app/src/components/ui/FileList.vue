@@ -77,7 +77,7 @@ function getFullFileName(file: FileListFile) {
             <a
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
               :href="file.url"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               target="_blank"
               :title="
                 `Voir ${getFullFileName(file)} – nouvelle fenêtre`
@@ -92,7 +92,7 @@ function getFullFileName(file: FileListFile) {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
               download
               :href="file.url"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               :title="`Télécharger ${getFullFileName(file)}`"
             >
               Télécharger
