@@ -2,7 +2,6 @@
 import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
 import { AuditFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact } from "../../utils";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
@@ -11,28 +10,23 @@ import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-export interface Props {
+defineProps<{
   id: string;
   comment: string | null;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: AuditFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
-}
+  onUpload: (file: File) => void;
+  onDelete: (file: AuditFile) => void;
+}>();
 
-withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
-
-const emit = defineEmits<{
+defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: AuditFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished, disclose });
+defineExpose({ disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -57,20 +51,6 @@ const userImpacts: Array<{
 ];
 
 const isOffline = useIsOffline();
-
-const fileUpload = ref<InstanceType<typeof FileUpload>>();
-
-function handleUploadFile(image: File) {
-  emit("upload-file", image);
-}
-
-function handleDeleteFile(image: AuditFile) {
-  emit("delete-file", image);
-}
-
-function onFileRequestFinished() {
-  fileUpload.value?.onFileRequestFinished();
-}
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
@@ -119,16 +99,13 @@ const title = "Erreur et recommandation";
 
     <!-- FILE -->
     <FileUpload
-      ref="fileUpload"
       class="fr-mb-4w"
       :accepted-formats="['jpg', 'jpeg', 'png']"
       :audit-files="exampleImages"
-      :disabled="isOffline ? true : null"
       :multiple="true"
-      :error-message="errorMessage"
       title="Ajouter des images d’exemple"
-      @delete-file="handleDeleteFile"
-      @upload-file="handleUploadFile"
+      :on-upload="onUpload"
+      :on-delete="onDelete"
     />
 
     <!-- USER IMPACT -->
