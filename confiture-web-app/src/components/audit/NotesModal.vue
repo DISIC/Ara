@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { AuditFile, StoreName } from "../../types";
-import { handleFileDeleteError, handleFileUploadError } from "../../utils";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
@@ -23,14 +22,14 @@ const emit = defineEmits<{
 }>();
 
 defineExpose({
-  show: () => modal.value?.show(),
-  hide: () => modal.value?.hide()
+  show,
+  hide
 });
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const fileUpload = ref<InstanceType<typeof FileUpload>>();
 
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const route = useRoute();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
@@ -43,34 +42,24 @@ const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
-function handleUploadFile(file: File) {
-  auditStore
-    .uploadAuditFile(uniqueId.value, file)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+function show() {
+  modal.value?.show();
+}
+function hide() {
+  modal.value?.hide();
 }
 
-function handleDeleteFile(file: AuditFile) {
-  auditStore
-    .deleteAuditFile(uniqueId.value, file.id)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+function onClosed() {
+  fileUpload.value?.cleanMessages(true);
+  emit("closed");
+}
+
+async function handleUploadFile(file: File) {
+  await fileHandler.uploadGlobalFile(uniqueId.value, file);
+}
+
+async function handleDeleteFile(auditFile: AuditFile) {
+  await fileHandler.deleteGlobalAuditFile(uniqueId.value, auditFile);
 }
 </script>
 
@@ -80,7 +69,7 @@ function handleDeleteFile(file: AuditFile) {
     ref="modal"
     aria-labelledby="notes-modal-title"
     :is-sidebar="true"
-    @closed="$emit('closed')"
+    @closed="onClosed"
   >
     <form class="fr-container fr-container--fluid" @submit.prevent>
       <div class="fr-grid-row">
@@ -123,11 +112,10 @@ function handleDeleteFile(file: AuditFile) {
                 ref="fileUpload"
                 class="fr-mb-4w"
                 :audit-files="files"
-                :disabled="isOffline ? true : null"
-                :error-message="errorMessage"
+                :is-in-modal="true"
                 :multiple="true"
-                @upload-file="handleUploadFile"
-                @delete-file="handleDeleteFile"
+                :on-upload="handleUploadFile"
+                :on-delete="handleDeleteFile"
               />
             </div>
           </div>
