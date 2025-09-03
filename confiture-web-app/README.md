@@ -4,12 +4,10 @@ Le projet a été créé avec [Vite.js](https://vitejs.dev/). Le framework front
 
 La partie style utilise le [DSFR (Système de Design de l'État)](https://www.systeme-de-design.gouv.fr/) et du CSS sans pré-processeur.
 
-## Prérequis
+## Installation du front
 
-- [Node.js](https://nodejs.org) en version `22.14.0`
-- [Yarn 1 (Classic)](https://classic.yarnpkg.com/)
-
-## Installation
+> [!NOTE]
+> Si vous avez lancé `yarn install` à la racine du projet, ces étapes ont déjà été lancées au moment du `postinstall`
 
 Installer les dépendances :
 
@@ -30,6 +28,15 @@ Lancer le [serveur local sur le port 3000](http://localhost:3000) :
 ```sh
 yarn dev
 ```
+
+> [!TIP]
+> On peut aussi utiliser
+>
+> ```sh
+> yarn dev:front
+> ```
+>
+> depuis la racine du projet.
 
 ## Guidelines
 

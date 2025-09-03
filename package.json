@@ -26,8 +26,11 @@
     "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
     "heroku-postbuild": "yarn workspaces foreach --all run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
-    "postinstall": "yarn copytypes",
-    "prepare": "yarn simple-git-hooks"
+    "postinstall": "yarn copytypes && yarn workspace confiture-web-app run generate:rgaa",
+    "prepare": "yarn simple-git-hooks",
+    "dev:back": "yarn workspace confiture-rest-api run start:dev",
+    "dev:front": "yarn workspace confiture-web-app run dev",
+    "dev": "yarn dev:back & yarn dev:front"
   },
   "dependencies": {
     "pm2": "^5.4.0"
