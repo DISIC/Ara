@@ -8,6 +8,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "stylelint": "stylelint src/**/*.{css,vue}",
+    "stylelint:fix": "stylelint --fix src/**/*.{css,vue}",
     "generate:rgaa": "node scripts/build-rgaa-files.js",
     "show-all-ts-errors": "vue-tsc --noEmit",
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
@@ -40,6 +42,7 @@
     "marked": "^4.2.4",
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
+    "stylelint": "^16.23.1",
     "tiptap-markdown": "^0.8.10",
     "vite": "^4.5.0",
     "vue": "^3.3.8",
@@ -50,7 +53,10 @@
     "@types/lodash-es": "^4.17.6",
     "@types/marked": "^4.0.8",
     "@types/node": "^22.10.0",
+    "postcss-html": "^1.8.0",
     "prettier": "^3.0.3",
+    "stylelint-config-recommended": "^17.0.0",
+    "stylelint-config-standard-vue": "^1.0.0",
     "typescript": "^5.2.2",
     "vue-tsc": "^2.2.10"
   },
