@@ -63,7 +63,7 @@ yarn dev
 
 ## ESLint, l’utilitaire de _lint_ et de formatage du code
 
-**ESLint** est utilisé à la fois pour l’analyse statique du code et le formatage stylistique (indentation, etc.)
+**ESLint** est utilisé à la fois pour l’analyse statique du code et le formatage stylistique (indentation, etc.).
 Pour les fichiers non pris en charge par ESLint (CSS, HTML, Markdown, etc), ESLint utilise **Prettier** en tant qu’outil de formatage externe.
 Nous utilisons [la configuration ESLint d’Anthony Fu](https://github.com/antfu/eslint-config) comme base.
 Voir aussi la configuration de ce projet : [eslint.config.mjs](https://github.com/DISIC/Ara/blob/main/eslint.config.mjs)
