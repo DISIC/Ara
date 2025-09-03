@@ -15,11 +15,13 @@ const {
   onConfirm,
   onCancel,
   onReveal,
-  focusOnConceal
+  getFocusOnConceal
 } = useModal();
 
 onConfirm(() => {
-  genericModalRef.value?.hide({ focusElement: focusOnConceal.value || null });
+  genericModalRef.value?.hide({
+    getFocusElement: getFocusOnConceal.value || null
+  });
 });
 
 onCancel(() => {

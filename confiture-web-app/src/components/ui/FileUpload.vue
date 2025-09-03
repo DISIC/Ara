@@ -1,44 +1,50 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId } from "vue";
-
+import { computed, nextTick, ref, useId, useTemplateRef } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
+
+import { useNotifications } from "../../composables/useNotifications";
+import { getFileMessage } from "../../enums";
+import { sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
-export interface Props {
+interface Props {
   acceptedFormats?: Array<string>;
-  auditFiles: FileListFile[];
-  errorMessage?: FileErrorMessage | null;
-  maxFileSize?: string;
+  flFiles: FileListFile[];
+  maxFileSize?: number;
   multiple?: boolean;
+  isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
+  onUpload?: (file: File, triggerButton?: EventTarget | null) => void;
+  onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   acceptedFormats: undefined,
   boldTitle: false,
-  errorMessage: null,
-  errorMessageTitle: null,
-  maxFileSize: "2 Mo",
+  maxFileSize: 2000000,
   multiple: false,
+  isInModal: false,
   readonly: false,
   title: null
 });
 
-const emit = defineEmits<{
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: FileListFile): void;
-}>();
+const fileInputRef = ref<HTMLInputElement>();
+const fileListRef = useTemplateRef("fileListRef");
 
-defineExpose({ onFileRequestFinished });
+defineExpose({
+  reset,
+  fileInputRef
+});
 
-const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
+const message = ref<string>("");
 const isDraggedOver = ref(false);
 
 const id = useId();
 const isOffline = useIsOffline();
-const fileInputRef = ref<HTMLInputElement>();
+const notify = useNotifications();
+
+const maxFileSizeHumanReadable = computed(() => (props.maxFileSize / 1000000) + " Mo");
 
 const acceptedFormatsHtml = computed(() => {
   if (!props.acceptedFormats) {
@@ -56,9 +62,6 @@ const acceptedFormatsAttr = computed(() => {
   }
 });
 
-const computedErrorMessage = computed(() =>
-  props.errorMessage ?? localErrorMessage.value ?? null);
-
 const title = computed(() => {
   if (props.title) {
     return props.title;
@@ -69,36 +72,44 @@ const title = computed(() => {
   }
 });
 
-function cancelUpload() {
+function reset() {
   if (fileInputRef.value) {
     fileInputRef.value.value = "";
   }
-  resetMessage();
+  message.value = "";
+  fileListRef.value?.resetInlineConfirm();
 }
 
-function resetMessage() {
-  localErrorMessage.value = null;
-}
-
-function handleFileChange() {
+async function handleFileChange() {
+  await nextTick();
+  // Errors that can be detected locally without requesting the server
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
-    if (file.size > 2000000) {
-      localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
+    if (file.size > props.maxFileSize) {
+      notify("error", getFileMessage("UPLOAD_ERROR_SIZE", file.name));
       return;
     }
-    emit("upload-file", file);
+    if (props.onUpload) {
+      try {
+        await props.onUpload(file);
+        // Annouce upload success to screen reader
+        await nextTick();
+        await sleep(300);
+        message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+      } catch {
+        console.error("Upload failed: ", file.name);
+      }
+    }
   }
-}
-
-function onFileRequestFinished() {
-  localErrorMessage.value = null;
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
 }
 </script>
 
 <template>
-  <div>
-    <div class="upload-wrapper">
+  <div class="upload-wrapper">
+    <div :id="`upload-input-wrapper-${id}`" class="upload-input-wrapper">
       <!-- TODO: handle multiple files upload -->
       <!-- :multiple="multiple ?? undefined" -->
       <div
@@ -108,7 +119,7 @@ function onFileRequestFinished() {
       >
         <label class="fr-label" :for="`file-upload-${id}`">
           {{ title }}
-          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSizeHumanReadable }}.
             <span v-html="acceptedFormatsHtml"></span>.
           </span>
         </label>
@@ -119,31 +130,31 @@ function onFileRequestFinished() {
           type="file"
           name="file-upload"
           :accept="acceptedFormatsAttr"
-          :aria-describedby="`file-upload-messages-${id}`"
+          :aria-describedby="message ? `file-upload-message-${id}` : undefined"
           :class="{ 'file-upload--dragged-over': isDraggedOver }"
-          :disabled="isOffline"
-          @input="resetMessage"
-          @cancel="cancelUpload"
+          :disabled="isOffline ? true : undefined"
+          @click="() => fileListRef?.resetInlineConfirm()"
           @change="handleFileChange"
           @dragover="isDraggedOver = true"
           @dragleave="isDraggedOver = false"
           @drop="isDraggedOver = false"
         >
-        <div :id="`file-upload-messages-${id}`" class="fr-messages-group" aria-live="assertive" aria-atomic="true">
-          <p
-            v-if="computedErrorMessage"
-            class="fr-message"
-            :class="{ 'fr-message--error': computedErrorMessage }"
-          >{{ computedErrorMessage }}</p>
-        </div>
+        <p
+          :id="`file-upload-message-${id}`"
+          class="fr-sr-only"
+          aria-live="polite"
+          role="alert"
+        >{{ message }}</p>
       </div>
     </div>
 
     <!-- Uploaded files -->
     <FileList
+      ref="fileListRef"
+      :files="flFiles"
+      :is-in-modal="isInModal"
+      :on-delete="onDelete"
       :readonly="readonly"
-      :files="auditFiles"
-      @delete="$emit('delete-file', auditFiles.find(f => f.key === $event)!)"
     />
   </div>
 </template>
@@ -156,5 +167,14 @@ function onFileRequestFinished() {
 
 .file-upload--dragged-over {
   outline: var(--dsfr-outline) dotted 3px;
+}
+
+.fr-message {
+  white-space: pre;
+}
+
+.upload-input-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
 }
 </style>

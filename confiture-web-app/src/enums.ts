@@ -27,13 +27,14 @@ export enum Browsers {
 }
 
 export enum FileMessage {
-  DELETE_ERROR_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier <strong>[FILE]</strong>. Veuillez réessayer.",
-  DELETE_SUCCESS = "<strong>[FILE]</strong> a été correctement supprimé.",
-  UPLOAD_ERROR_FORMAT = "Format de fichier non supporté (<strong>[FILE]</strong>)</span>.",
-  UPLOAD_ERROR_SIZE = "<strong>[FILE]</strong> dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
-  UPLOAD_ERROR_TIMEOUT = "Le téléchargement du fichier <strong>[FILE]</strong> a pris trop de temps et a été interrompu. Veuillez vérifier votre connexion Internet et réessayer.",
-  UPLOAD_ERROR_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier <strong>[FILE]</strong>. Veuillez réessayer.",
-  UPLOAD_SUCCESS = "<strong>[FILE]</strong> a été correctement ajouté."
+  DELETE_ERROR_TIMEOUT = "La suppression du fichier [FILE] a pris trop de temps et a été interrompu. Vérifiez votre connexion Internet et réessayez.",
+  DELETE_ERROR_UNKNOWN = "Suppression impossible, erreur inconnue. Réessayez.",
+  DELETE_SUCCESS = "Le fichier [FILE] a été correctement supprimé.",
+  UPLOAD_ERROR_FORMAT = "Format de fichier non supporté ([FILE]).",
+  UPLOAD_ERROR_SIZE = "Fichier trop lourd. Choisissez un fichier inférieur à 2 Mo.",
+  UPLOAD_ERROR_TIMEOUT = "Le téléchargement du fichier [FILE] a pris trop de temps et a été interrompu. Vérifiez votre connexion Internet et réessayez.",
+  UPLOAD_ERROR_UNKNOWN = "Téléchargement du fichier impossible. Réessayez.",
+  UPLOAD_SUCCESS = "Le fichier [FILE] a été correctement ajouté."
 }
 
 export function getFileMessage(fileMessage: keyof typeof FileMessage, fileName: string): string {

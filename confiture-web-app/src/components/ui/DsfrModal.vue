@@ -22,7 +22,7 @@ const emit = defineEmits<{
 // element will be focused on conceal.
 // Using a function allows to spot the HTML element to focus at the last moment,
 // after the modal is actually concealed and DOM may have been updated.
-const focusOnConceal = shallowRef<(() => HTMLElement) | null>();
+const getFocusOnConceal = shallowRef<(() => HTMLElement | null) | null>();
 
 const modal = shallowRef<HTMLDialogElement>();
 
@@ -36,17 +36,17 @@ function show() {
   dsfr(modal.value).modal.disclose();
 }
 
-function hide(options: { focusElement: (() => HTMLElement) | null }
-= { focusElement: null }) {
-  focusOnConceal.value = options.focusElement;
+function hide(options: { getFocusElement: (() => HTMLElement | null) | null }
+  = { getFocusElement: () => null }) {
+  getFocusOnConceal.value = options.getFocusElement;
   dsfr(modal.value).modal.conceal(false, true);
 }
 
 function onConceal() {
   setTimeout(() => {
     let elementToFocus;
-    if (focusOnConceal.value) {
-      elementToFocus = focusOnConceal.value();
+    if (getFocusOnConceal.value) {
+      elementToFocus = getFocusOnConceal.value();
     }
     if (elementToFocus && elementToFocus.isConnected) {
       elementToFocus.focus();

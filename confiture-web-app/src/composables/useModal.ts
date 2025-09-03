@@ -9,12 +9,10 @@ const title = shallowRef("");
 const message = shallowRef("");
 const confirmLabel = shallowRef("");
 const cancelLabel = shallowRef("");
-const focusOnConceal = shallowRef<(() => HTMLElement) | null>(null);
-
-const listenedToAllOK = shallowRef(false);
+const getFocusOnConceal = shallowRef<(() => HTMLElement | null) | null>(null);
 
 const { reveal, confirm, cancel, onReveal, onConfirm, onCancel }
-    = useConfirmDialog();
+  = useConfirmDialog();
 
 export function useModal() {
   async function showConfirm(options: {
@@ -22,13 +20,13 @@ export function useModal() {
     message: string;
     cancelLabel?: string;
     confirmLabel?: string;
-    focusOnConceal?: (() => HTMLElement) | null;
+    getFocusOnConceal?: (() => HTMLElement | null) | null;
   }): Promise<{ data?: any; isCanceled: boolean }> {
     title.value = options.title;
     message.value = options.message;
     confirmLabel.value = options.confirmLabel || "Confirmer";
     cancelLabel.value = options.cancelLabel || "Annuler";
-    focusOnConceal.value = options.focusOnConceal || null;
+    getFocusOnConceal.value = options.getFocusOnConceal || null;
     return await reveal();
   }
 
@@ -49,6 +47,6 @@ export function useModal() {
     onConfirm,
     onCancel,
 
-    focusOnConceal
+    getFocusOnConceal
   };
 }

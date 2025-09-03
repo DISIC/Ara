@@ -1,12 +1,14 @@
 import { HTTPError, TimeoutError } from "ky";
 import { getFileMessage } from "../enums";
 import { useAuditStore, useResultsStore } from "../store";
-import { AuditFile } from "../types";
+import { ExampleImageFile, NotesFile } from "../types";
 import { captureWithPayloads } from "../utils";
+import { useNotifications } from "./useNotifications";
 
 export function useFileHandler() {
-  const store = useResultsStore();
+  const resultsStore = useResultsStore();
   const auditStore = useAuditStore();
+  const notify = useNotifications();
 
   /**
    * Uploads a file linked to a criterium (currently only images)
@@ -16,27 +18,18 @@ export function useFileHandler() {
    * 3) Creates an new StoredFile entity and store it in the database
    *
    * See back-end: AuditService#saveExampleImage
-   *
-   * @param auditUniqueId
-   * @param pageId
-   * @param topicNumber
-   * @param criteriumNumber
-   * @param {File} file File being uploaded
-   * @returns void
    */
   async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
     try {
-      const uploadRes = await store.uploadExampleImage(
+      const uploadRes = await resultsStore.uploadExampleImage(
         auditUniqueId,
         pageId,
         topicNumber,
         criteriumNumber,
         file
       );
-      // TODO success message here?
-      return uploadRes;
     } catch (error) {
-      store.lastRequestFailed = true;
+      resultsStore.lastRequestFailed = true;
       if (error instanceof Error) {
         throw await handleFileUploadError(error, file.name);
       } else {
@@ -48,32 +41,23 @@ export function useFileHandler() {
   /**
    * Deletes an image linked to a criterium
    *
-   * 1) Gets the associated thumbnail and image URLs from the given AuditFile (image)
+   * 1) Gets the associated thumbnail and image URLs from the given ExampleImageFile (image)
    * 2) Removes the image + the thumbnail from the S3 bucket
    * 3) Removes the StoredFile entity from the database
    *
    * See back-end: AuditService#deleteAuditFile
-   *
-   * @param auditUniqueId
-   * @param pageId
-   * @param topicNumber
-   * @param criteriumNumber
-   * @param auditFile
-   *
-   * @returns void
    */
-  async function deleteCriteriumAuditFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, auditFile: AuditFile) {
+  async function deleteCriteriumAuditFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, auditFile: ExampleImageFile) {
     try {
-      const deleteRes = await store.deleteExampleImage(
+      await resultsStore.deleteExampleImage(
         auditUniqueId,
         pageId,
         topicNumber,
         criteriumNumber,
         auditFile.id
       );
-      return deleteRes;
     } catch (error) {
-      store.lastRequestFailed = true;
+      resultsStore.lastRequestFailed = true;
       if (error instanceof Error) {
         throw handleFileDeleteError(error, auditFile.originalFilename);
       } else {
@@ -96,7 +80,7 @@ export function useFileHandler() {
     }
   }
 
-  async function deleteGlobalAuditFile(auditUniqueId: string, auditFile: AuditFile) {
+  async function deleteGlobalAuditFile(auditUniqueId: string, auditFile: NotesFile) {
     try {
       await auditStore.deleteAuditFile(auditUniqueId, auditFile.id);
     } catch (error) {
@@ -142,9 +126,10 @@ export function useFileHandler() {
       }
     } else {
       console.error("An unexpected error occurred", error);
-      errorMessage = null;
+      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+      captureWithPayloads(error);
     }
-
+    notify("error", errorMessage);
     return errorMessage;
   }
 
@@ -152,12 +137,18 @@ export function useFileHandler() {
     error: Error,
     fileName: string
   ): string | null {
-    if (!(error instanceof HTTPError)) {
-      console.error(error);
-      return null;
+    let errorMessage: string | null = null;
+
+    if (error instanceof TimeoutError) {
+      errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", fileName);
+    } else {
+      console.error("An unexpected error occurred", error);
+      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", fileName);
+      captureWithPayloads(error);
     }
 
-    return getFileMessage("DELETE_ERROR_UNKNOWN", fileName);
+    notify("error", "Erreur", errorMessage);
+    return errorMessage;
   }
 
   return {

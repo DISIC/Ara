@@ -1,38 +1,41 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { provide, ref, useTemplateRef } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
-import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
+import { ExampleImageFile, CriterionResultUserImpact, getFocusWhenListEmptyKey } from "../../types";
 import { formatUserImpact, getUploadUrl } from "../../utils";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
+import { FileListFile } from "../ui/FileList.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-export interface Props {
+defineProps<{
   id: string;
   comment: string | null;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
+  onUpload: (file: File) => void;
+  onDelete: (flFile: FileListFile) => void;
+}>();
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return userImpactRadioGroupRef.value
+    ? userImpactRadioGroupRef.value.$el
+    : null;
 }
 
-withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
-
-const emit = defineEmits<{
+defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished, disclose });
+defineExpose({ disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -58,21 +61,8 @@ const userImpacts: Array<{
 
 const isOffline = useIsOffline();
 
-const fileUpload = ref<InstanceType<typeof FileUpload>>();
-
-function handleUploadFile(image: File) {
-  emit("upload-file", image);
-}
-
-function handleDeleteFile(image: ExampleImageFile) {
-  emit("delete-file", image);
-}
-
-function onFileRequestFinished() {
-  fileUpload.value?.onFileRequestFinished();
-}
-
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
 const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
@@ -119,27 +109,27 @@ const title = "Erreur et recommandation";
 
     <!-- FILE -->
     <FileUpload
-      ref="fileUpload"
-      class="fr-mb-4w"
+      class="file-upload fr-mb-4w"
       :accepted-formats="['jpg', 'jpeg', 'png']"
-      :audit-files="exampleImages.map(f => ({
-        ...f,
-        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
+      :fl-files="exampleImages.map(f => ({
         filename: f.originalFilename,
+        key: f.key,
+        mimetype: f.mimetype,
+        size: f.size,
+        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
       }))"
       :multiple="true"
-      :error-message="errorMessage"
       title="Ajouter des images d’exemple"
-      @delete-file="handleDeleteFile(
-        exampleImages.find(f => f.key === $event.key)!
-      )"
-      @upload-file="handleUploadFile"
+      :on-delete="onDelete"
+      :on-upload="onUpload"
     />
 
     <!-- USER IMPACT -->
     <RadioGroup
+      ref="userImpactRadioGroupRef"
       class="fr-mb-4w"
+      tabindex="-1"
       :model-value="userImpact"
       :items="userImpacts"
       :default-value="null"
