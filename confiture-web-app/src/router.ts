@@ -529,7 +529,7 @@ function scrollToTabPanelTop(tabs: HTMLElement): ScrollBehaviorResult {
   // Can be a smooth scroll if tabs are below the top of the screen,
   // Otherwise it's an instant scroll.
   const behavior =
-    tabs.getBoundingClientRect().top > 0 ? getScrollBehavior() : "instant";
+    tabs.getBoundingClientRect().top > 0 ? getScrollBehavior() : "instant" as ScrollBehavior;
 
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, async (entries) => {
