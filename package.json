@@ -10,17 +10,20 @@
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.2.0",
-    "simple-git-hooks": "^2.13.0"
+    "postcss-html": "^1.8.0",
+    "simple-git-hooks": "^2.13.0",
+    "stylelint": "^16.23.1",
+    "stylelint-config-recommended": "^17.0.0",
+    "stylelint-config-standard-vue": "^1.0.0"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn lint-staged"
-  },
-  "lint-staged": {
-    "*": "eslint"
+    "pre-commit": "yarn lint-staged && yarn stylelint"
   },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "lint:styles": "stylelint confiture-web-app/src/**/*.{css,vue}",
+    "lint:styles:fix": "stylelint --fix confiture-web-app/src/**/*.{css,vue}",
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
