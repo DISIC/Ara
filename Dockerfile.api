@@ -106,7 +106,7 @@ RUN mv /tmp/* .
 RUN mv /tmp/.yarnrc.yml ./
 
 # Disable generating types for frontend on install
-# RUN npm pkg delete scripts.postinstall
+RUN npm pkg delete scripts.postinstall
 
 RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
 
