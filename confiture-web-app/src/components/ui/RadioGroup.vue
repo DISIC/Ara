@@ -74,7 +74,7 @@ function handleChange(value: string) {
   color: var(--text-color);
   position: relative;
   border-radius: 1.875rem;
-  border: 1px solid currentColor;
+  border: 1px solid currentcolor;
   display: inline-flex;
   gap: 0.5rem;
   text-transform: capitalize;
@@ -119,7 +119,7 @@ input:checked + .label.red {
 .label::before {
   width: 1rem;
   height: 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid currentcolor;
   left: 0.5rem;
 }
 
@@ -132,7 +132,7 @@ input:checked + .label.red {
 }
 
 input:checked + .label::after {
-  background-color: currentColor;
+  background-color: currentcolor;
   outline: 0.25rem solid transparent;
   outline-offset: -0.25rem;
 }
