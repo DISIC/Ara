@@ -307,6 +307,8 @@ defineExpose({
 
 /* Container */
 .tiptap-container {
+  --tiptap-editor-height: 16.5rem;
+
   position: relative;
   background-color: var(--background-alt-grey);
   border-radius: 0.5rem 0.5rem 0 0;
@@ -337,9 +339,7 @@ defineExpose({
 
 .tiptap-selection,
 .ProseMirror-selectednode {
-  outline-style: dotted;
-  outline-width: 2px;
-  outline-color: var(--dsfr-outline);
+  outline: var(--dsfr-outline) dotted 2px;
 }
 
 .ProseMirror-widget {
@@ -386,7 +386,7 @@ defineExpose({
 }
 
 .tiptap-buttons > li + li::before {
-  box-shadow: inset 0 0 0 1px #ddd;
+  box-shadow: inset 0 0 0 1px #dddddd;
   box-shadow: inset 0 0 0 1px var(--border-default-grey);
   content: "";
   display: inline-block;

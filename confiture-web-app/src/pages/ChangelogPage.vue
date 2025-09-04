@@ -46,8 +46,7 @@ import TopLink from "../components/ui/TopLink.vue";
   &:deep(h4) {
     font-size: 1.25rem;
     line-height: 2rem;
-    margin-block-start: 0.75rem;
-    margin-block-end: 0.5rem;
+    margin-block: 0.75rem 0.5rem;
   }
 
   &:deep(.intro) {

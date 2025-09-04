@@ -87,6 +87,7 @@ function emitValue() {
 
 .checkbox-artwork {
   --checkbox-artwork-width: 3.5rem;
+
   height: var(--checkbox-artwork-width);
   width: var(--checkbox-artwork-width);
 }

@@ -82,6 +82,22 @@ On peut _linter_ et corriger les erreurs corrigeables automatiquement avec :
 yarn lint --fix
 ```
 
+## Stylelint, le linter pour les styles
+
+**Stylelint** est utilisé pour linter le code CSS présent dans les fichiers `.css` et `.vue` du projet frontend.
+
+On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet :
+
+```sh
+yarn lint:styles
+```
+
+On peut _linter_ et corriger les erreurs corrigeables automatiquement avec :
+
+```sh
+yarn lint:styles --fix
+```
+
 ## Éditeur de code VSCodium / VS Code
 
 Sont disponibles sur ce projet :

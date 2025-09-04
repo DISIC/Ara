@@ -81,6 +81,8 @@
       2.
   -
 */
+
+/* stylelint-disable-next-line no-duplicate-selectors */
 .tiptap {
   ol,
   ul {
