@@ -112,7 +112,7 @@ RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
 
 # Install from root working directory (all workspaces taken into account)
 # so that the yarn.lock should match the copied one (--immutable is important)
-RUN yarn install --immutable
+RUN yarn install --immutable || (cat /tmp/xfs-*/build.log && false)
 WORKDIR /home/dinum_backend/confiture-rest-api
 RUN yarn workspace confiture-rest-api run build
 
