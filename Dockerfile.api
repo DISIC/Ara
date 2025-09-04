@@ -114,6 +114,7 @@ RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
 # so that the yarn.lock should match the copied one (--immutable is important)
 # Note: postinstall needs to be executed (automatically done)
 RUN yarn install --immutable
+
 WORKDIR /home/dinum_backend/confiture-rest-api
 RUN yarn workspace confiture-rest-api run build
 
