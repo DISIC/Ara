@@ -17,6 +17,9 @@ USER root
 # From: https://github.com/nodejs/node/issues/41058#issuecomment-998966573
 RUN apk -UvX http://dl-4.alpinelinux.org/alpine/edge/main add -u nodejs
 
+# Needed for RGAA files (see "postinstall" script)
+RUN apk update && apk add git
+
 ENV NODE_VERSION=22.14.0 YARN_VERSION=4.9.2
 
 RUN addgroup -g 1000 node \
@@ -105,14 +108,13 @@ WORKDIR /home/dinum_backend
 RUN mv /tmp/* .
 RUN mv /tmp/.yarnrc.yml ./
 
-# Disable generating types for frontend on install
-# RUN npm pkg delete scripts.postinstall
-
 RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
 
 # Install from root working directory (all workspaces taken into account)
 # so that the yarn.lock should match the copied one (--immutable is important)
-RUN yarn install --immutable || (cat /tmp/xfs-*/build.log && false)
+# Note: postinstall needs to be executed (automatically done)
+RUN yarn install --immutable
+
 WORKDIR /home/dinum_backend/confiture-rest-api
 RUN yarn workspace confiture-rest-api run build
 
