@@ -11,6 +11,7 @@ RUN mkdir -p confiture-web-app/src/assets
 RUN mkdir -p confiture-web-app/src/types
 COPY package.json yarn.lock .yarnrc.yml CHANGELOG.md ROADMAP.md ./
 COPY confiture-web-app/package.json confiture-web-app/
+COPY confiture-web-app/scripts/build-rgaa-files.js confiture-web-app/scripts/
 COPY confiture-rest-api/ confiture-rest-api/
 RUN corepack enable && corepack prepare yarn@${YARN_VERSION} --activate
 RUN yarn install --immutable
