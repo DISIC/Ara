@@ -135,7 +135,7 @@ describe("Account", () => {
         cy.getByLabel("Mot de passe").type(password);
         cy.contains("button", "Se connecter").click();
 
-        cy.contains("Le mot de passe saisi est incorrect.");
+        cy.contains("L’adresse e-mail ou le mot de passe saisi est incorrect. Vérifiez vos saisies.");
 
         cy.getByLabel("Adresse e-mail").clear().type(username);
         cy.getByLabel("Mot de passe").clear().type(newPassword);
@@ -174,7 +174,7 @@ describe("Account", () => {
           // Try login with old password
           cy.getByLabel("Mot de passe").type(password);
           cy.contains("button", "Se connecter").click();
-          cy.contains("Le mot de passe saisi est incorrect.");
+          cy.contains("L’adresse e-mail ou le mot de passe saisi est incorrect. Vérifiez vos saisies.");
 
           // Login with new password
           cy.getByLabel("Mot de passe").clear().type(newPassword);
