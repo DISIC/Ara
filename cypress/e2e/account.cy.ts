@@ -392,7 +392,7 @@ describe("Account", () => {
     });
 
     it("User can duplicate audit", () => {
-      cy.contains("button", "Options").click();
+      cy.contains("button", "Actions").click();
       cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
@@ -404,7 +404,7 @@ describe("Account", () => {
     });
 
     it("User can copy audit link", () => {
-      cy.contains("button", "Options").click();
+      cy.contains("button", "Actions").click();
       cy.contains("button", "Copier le lien de l’audit").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
@@ -420,7 +420,7 @@ describe("Account", () => {
     });
 
     it("User can copy report link", () => {
-      cy.contains("button", "Options").click();
+      cy.contains("button", "Actions").click();
       cy.contains("button", "Copier le lien du rapport").click();
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
@@ -438,14 +438,14 @@ describe("Account", () => {
     it("User can download audit", () => {
       cy.exec("rm -rf cypress/downloads");
 
-      cy.contains("Options").click();
+      cy.contains("Actions").click();
       cy.contains("Télécharger l’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
 
     it("User can delete audit", () => {
-      cy.contains("Options").click();
+      cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
       cy.get("dialog").contains("Supprimer l’audit").click();
