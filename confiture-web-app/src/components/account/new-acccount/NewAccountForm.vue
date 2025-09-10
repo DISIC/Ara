@@ -20,23 +20,16 @@ const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;
 }>();
 
-// const userEmail = ref("");
-// const userEmailField = ref<InstanceType<typeof DsfrField>>();
-// const userEmailError = ref<string>();
-
-// const userPassword = ref("");
-// const userPasswordField = ref<InstanceType<typeof DsfrPassword>>();
-// const userPasswordError = ref<string>();
 const togglePasswordRef = ref<HTMLInputElement>();
 
-const userEmail = useFormField((history.state.email as string) ?? "", [
+const userEmail = useFormField<string>((history.state.email as string) ?? "", [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
   EMAIL(
     "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
   )
 ]);
 
-const userPassword = useFormField("", [
+const userPassword = useFormField<string>("", [
   REQUIRED("Champ obligatoire. Saisissez un mot de passe."),
   LENGTH(
     12,

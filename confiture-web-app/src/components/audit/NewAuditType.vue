@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-
 import { useDevMode } from "../../composables/useDevMode";
+import { REQUIRED, useFormField, validate } from "../../composables/validation";
 import { AuditType } from "../../types";
 import DsfrField from "../ui/DsfrField.vue";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
@@ -40,39 +39,24 @@ const partialAudits = [
   }
 ];
 
-const auditType = ref(props.auditType);
-const procedureName = ref(props.procedureName);
+const procedureName = useFormField(props.auditType ?? "", [
+  REQUIRED(
+    "Champ obligatoire. Saisissez le nom du site ou du service à auditer"
+  )
+]);
 
-// validation
-const procedureNameError = ref<string>();
-const auditTypeError = ref<string>();
-const procedureNameField = ref<InstanceType<typeof DsfrField>>();
-const auditTypeRadio = ref<InstanceType<typeof AuditTypeRadio>>();
-function validateForm() {
-  procedureNameError.value = undefined;
-  auditTypeError.value = undefined;
-
-  if (!procedureName.value.trim()) {
-    procedureNameError.value =
-      "Champ obligatoire. Saisissez le nom du site ou du service à auditer.";
-    procedureNameField.value?.inputRef?.focus();
-  }
-
-  if (!auditType.value) {
-    auditTypeError.value = "Sélectionnez un type d’audit.";
-    auditTypeRadio.value?.inputRef?.focus();
-  }
-
-  return !procedureNameError.value && !auditTypeError.value;
-}
+const auditType = useFormField<string | null>(props.auditType ?? null, [
+  REQUIRED("Sélectionnez un type d’audit.")
+]);
 
 function submitAuditType() {
-  if (!validateForm()) {
+  if (!validate(auditType, procedureName)) {
     return;
   }
+
   emit("submit", {
-    auditType: auditType.value as AuditType,
-    procedureName: procedureName.value
+    auditType: auditType.value.value as AuditType,
+    procedureName: procedureName.value.value
   });
 }
 
@@ -82,8 +66,8 @@ defineExpose({ procedureName, auditType });
 const isDevMode = useDevMode();
 
 function fillSettings() {
-  auditType.value = AuditType.FULL;
-  procedureName.value = "Ma procédure";
+  auditType.value.value = AuditType.FULL;
+  procedureName.value.value = "Ma procédure";
 }
 </script>
 
@@ -103,7 +87,7 @@ function fillSettings() {
     <!-- FIXME: make into a fielset + legend ? -->
     <div
       class="fr-mb-4w fr-input-group"
-      :class="{ 'fr-input-group--error': !!auditTypeError }"
+      :class="{ 'fr-input-group--error': !!auditType.error.value }"
     >
       <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
       <p class="fr-mb-2w">
@@ -111,15 +95,16 @@ function fillSettings() {
         a une <strong>valeur légale</strong>.
       </p>
       <AuditTypeRadio
-        ref="auditTypeRadio"
-        v-model="auditType"
+        :ref="auditType.refFn"
+        :model-value="auditType.value.value"
         class="fr-mb-3w audit-type"
         :value="fullAudit.value"
-        :checked="auditType === fullAudit.value"
+        :checked="auditType.value.value === fullAudit.value"
         :goals="fullAudit.goals"
         :documentation-link="fullAudit.documentation"
         detailed
-        :is-error="!!auditTypeError"
+        :is-error="!!auditType.error.value"
+        @update:model-value="auditType.value.value = $event"
       />
 
       <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
@@ -131,31 +116,37 @@ function fillSettings() {
         <AuditTypeRadio
           v-for="type in partialAudits"
           :key="type.value"
-          v-model="auditType"
+          :model-value="auditType.value.value"
           class="audit-type"
           :value="type.value"
-          :checked="auditType === type.value"
+          :checked="auditType.value.value === type.value"
           :goals="type.goals"
           :documentation-link="type.documentation"
           detailed
-          :is-error="!!auditTypeError"
+          :is-error="!!auditType.error.value"
+          @update:model-value="auditType.value.value = $event"
         />
       </div>
 
-      <p v-if="auditTypeError" id="audit-type-error" class="fr-error-text">
-        {{ auditTypeError }}
+      <p
+        v-if="auditType.error.value"
+        id="audit-type-error"
+        class="fr-error-text"
+      >
+        {{ auditType.error.value }}
       </p>
     </div>
 
     <DsfrField
       id="procedure-name"
-      ref="procedureNameField"
-      v-model="procedureName"
+      :ref="procedureName.refFn"
+      :model-value="procedureName.value.value"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
       hint="Exemples : Service-Public, Demande de permis de conduire."
       required
-      :error="procedureNameError"
+      :error="procedureName.error.value"
+      @update:model-value="procedureName.value.value = $event"
     />
 
     <div class="actions">
