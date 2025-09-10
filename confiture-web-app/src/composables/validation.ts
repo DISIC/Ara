@@ -6,11 +6,11 @@ export interface FocusableElement {
   focus(): void;
 }
 
-type ValidationRule = (fieldValue: string) => string | false;
+type ValidationRule<T> = (fieldValue: T) => string | false;
 
-export function useFormField(defaultValue: string, rules?: ValidationRule[]) {
+export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
   const fieldInputRef = ref<FocusableElement | null>();
-  const fieldValue = ref<string>(defaultValue);
+  const fieldValue = ref<T>(defaultValue);
   const fieldError = ref<string>();
 
   function validate() {
@@ -19,7 +19,7 @@ export function useFormField(defaultValue: string, rules?: ValidationRule[]) {
     if (!rules) return true;
 
     for (let i = 0; i < rules.length && !fieldError.value; i++) {
-      fieldError.value = rules[i](fieldValue.value) || undefined;
+      fieldError.value = rules[i](fieldValue.value as T) || undefined;
     }
 
     if (fieldError.value) {
@@ -49,14 +49,14 @@ export function validate(...fields: ReturnType<typeof useFormField>[]) {
 
 /* Validation rules */
 
-export function REQUIRED(msg: string): ValidationRule {
-  return (value) => !value.trim() && msg;
+export function REQUIRED(msg: string): ValidationRule<string | null> {
+  return (value) => !value?.trim() && msg;
 }
 
-export function LENGTH(minLength: number, msg: string): ValidationRule {
-  return (value) => value.trim().length < minLength && msg;
+export function LENGTH(minLength: number, msg: string): ValidationRule<string> {
+  return (value) => value?.trim().length < minLength && msg;
 }
 
-export function EMAIL(msg: string): ValidationRule {
-  return (value) => !validateEmail(value) && msg;
+export function EMAIL(msg: string): ValidationRule<string> {
+  return (value) => !!value && !validateEmail(value) && msg;
 }

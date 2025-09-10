@@ -19,7 +19,10 @@ defineEmits(["update:modelValue"]);
 const inputRef = ref<HTMLInputElement>();
 
 defineExpose({
-  inputRef
+  inputRef,
+  focus() {
+    inputRef.value?.focus();
+  }
 });
 
 // String used to describe input with goals and requirements

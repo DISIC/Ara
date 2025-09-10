@@ -17,14 +17,14 @@ import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads } from "../../utils";
 
-const userEmail = useFormField((history.state.email as string) ?? "", [
+const userEmail = useFormField<string>((history.state.email as string) ?? "", [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
   EMAIL(
     "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
   )
 ]);
 
-const userPassword = useFormField("", [
+const userPassword = useFormField<string>("", [
   REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")
 ]);
 
