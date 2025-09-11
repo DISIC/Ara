@@ -7,6 +7,7 @@ const modal = ref<InstanceType<typeof DsfrModal>>();
 
 defineProps<{
   id: string;
+  procedureName: string;
 }>();
 
 defineEmits(["closed", "confirm"]);
@@ -42,12 +43,10 @@ defineExpose({
                   class="fr-icon-warning-line fr-fi--lg"
                   aria-hidden="true"
                 />
-                Vous allez supprimer l’audit
+                Supprimer l’audit « {{ procedureName }} »
               </h1>
               <p>
-                Cet audit sera définitivement supprimé. Le rapport de cet audit
-                restera accessible mais toutes vos informations personnelles
-                seront supprimées : prénom et nom.
+                L’audit sera définitivement supprimé. Le rapport de cet audit restera accessible, mais vos données personnelles seront supprimées.
               </p>
             </div>
             <div class="fr-modal__footer">

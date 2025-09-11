@@ -452,8 +452,10 @@ onMounted(() => {
   />
 
   <DeleteModal
+    v-if="auditStore.currentAudit"
     :id="uniqueId"
     ref="deleteModal"
+    :procedure-name="auditStore.currentAudit.procedureName"
     @confirm="confirmDelete"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();

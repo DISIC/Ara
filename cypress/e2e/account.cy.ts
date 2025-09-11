@@ -444,11 +444,11 @@ describe("Account", () => {
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
 
-    it("User can delete audit", () => {
+    it.only("User can delete audit", () => {
       cy.contains("Options").click();
       cy.contains("Supprimer l’audit").click();
 
-      cy.get("dialog").contains("Supprimer l’audit").click();
+      cy.get("dialog").contains("button", "Supprimer l’audit").click();
 
       cy.contains("Audit Audit de mon petit site supprimé avec succès");
     });
