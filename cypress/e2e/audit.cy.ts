@@ -155,7 +155,7 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres de l’audit").click();
-      cy.get("h1").contains("Paramétrer un audit");
+      cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
         `http://localhost:3000/audits/${editId}/parametres`
