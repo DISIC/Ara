@@ -34,7 +34,7 @@ const accountStore = useAccountStore();
         Ouvrez votre audit à l’aide des liens qui vous ont été envoyés par
         e-mail
       </li>
-      <li>Cliquez sur le menu “Options” situé en haut à droite de la page</li>
+      <li>Cliquez sur le menu “Actions” situé en haut à droite de la page</li>
       <li>Cliquez sur “Modifier les paramètres”</li>
       <li>
         En bas de page, saisissez l’adresse e-mail associée à votre compte Ara
