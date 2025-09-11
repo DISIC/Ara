@@ -1,8 +1,8 @@
 <mjml>
   <mj-head>
-    <mj-title>Ara : compte créé avec succès</mj-title>
+    <mj-title>Votre compte a bien été créé</mj-title>
     <mj-attributes>
-      <mj-preview>Ara : compte créé avec succès</mj-preview>
+      <mj-preview>Votre compte a bien été créé</mj-preview>
       <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
@@ -14,11 +14,15 @@
     <mj-section>
       <mj-column>
         <mj-text font-size="20px" font-weight="700" padding-bottom="8px">
-          Votre compte a été créé avec succès
+          Votre compte a bien été créé
         </mj-text>
         <mj-text>
-          Votre compte Ara a bien été créé.
+          Bienvenue sur Ara !
         </mj-text>
+        <mj-text padding-bottom="24px">
+          Connectez-vous pour accéder à votre espace.
+        </mj-text>
+        <mj-button href="{{loginLink}}" mj-class="blue-button">Se connecter</mj-button>
       </mj-column>
     </mj-section>
 

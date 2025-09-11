@@ -8,7 +8,7 @@ export interface AuditCreationEmailData {
 }
 
 export function subject(data: AuditCreationEmailData): string {
-  return `Accéder à votre audit : « ${data.procedureName} »`;
+  return `Accéder l’audit : « ${data.procedureName} »`;
 }
 
 export function html(data: AuditCreationEmailData): string {
@@ -17,7 +17,7 @@ export function html(data: AuditCreationEmailData): string {
 
 export function plain(data: AuditCreationEmailData): string {
   return `
-    Accéder à votre audit et rapport
+    Accéder à l’audit
 
     Vous venez de créer l’audit « ${data.procedureName} ».
     Pour accéder à votre audit ${
@@ -28,6 +28,6 @@ export function plain(data: AuditCreationEmailData): string {
 
     ${data.overviewUrl}
 
-    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
+    Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
   `;
 }

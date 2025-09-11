@@ -131,6 +131,7 @@ const backLinkLabel = computed(() => {
       v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service audité"
+      hint="Exemples : Service-Public, Demande de permis de conduire"
       required
       @update:model-value="emit('change')"
     />
@@ -175,7 +176,7 @@ const backLinkLabel = computed(() => {
         id="procedure-auditor-name"
         v-model="auditorName"
         label="Prénom et nom (optionnel)"
-        hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question."
         @update:model-value="emit('change')"
       />
 
@@ -184,7 +185,7 @@ const backLinkLabel = computed(() => {
         v-model="auditorEmail"
         class="fr-mb-0"
         label="Adresse e-mail"
-        hint="Permet de vous envoyer les liens de l’audit et du rapport d’audit."
+        hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         @update:model-value="emit('change')"

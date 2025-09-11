@@ -416,6 +416,7 @@ function copyStatementLink(uniqueId: string) {
   <DeleteModal
     :id="audit.editUniqueId"
     ref="deleteModal"
+    :procedure-name="audit.procedureName"
     @confirm="deleteAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
