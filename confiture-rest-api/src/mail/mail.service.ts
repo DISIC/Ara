@@ -113,11 +113,23 @@ export class MailService {
   }
 
   sendAccountConfirmationEmail(username: string) {
-    return this.sendMail(username, EmailType.ACCOUNT_CONFIRMATION, null);
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
+
+    const loginLink = `${baseUrl}/compte/connexion`;
+
+    return this.sendMail(username, EmailType.ACCOUNT_CONFIRMATION, {
+      loginLink
+    });
   }
 
   sendPasswordUpdateConfirmation(email: string) {
-    return this.sendMail(email, EmailType.PASSWORD_UPDATE_CONFIRMATION, null);
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
+
+    const loginLink = `${baseUrl}/compte/connexion`;
+
+    return this.sendMail(email, EmailType.PASSWORD_UPDATE_CONFIRMATION, {
+      loginLink
+    });
   }
 
   sendNewEmailVerificationEmail(email: string, token: string) {

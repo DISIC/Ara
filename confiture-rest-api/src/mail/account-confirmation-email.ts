@@ -1,19 +1,23 @@
 import { renderMailTemplate } from "./render-mjml-template";
 
+export interface AccountConfirmationEmailData {
+  loginLink: string;
+}
+
 export function subject(): string {
-  return `Ara : compte créé avec succès`;
+  return `Votre compte a bien été créé`;
 }
 
-export function html(): string {
-  return renderMailTemplate("account-confirmation", null);
+export function html(data: AccountConfirmationEmailData): string {
+  return renderMailTemplate("account-confirmation", data);
 }
 
-export function plain(): string {
+export function plain(data: AccountConfirmationEmailData): string {
   return `
     Bonjour,
 
-    Votre compte Ara a été créé avec succès.
+    Bienvenue sur Ara !
 
-    Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
+    Connectez-vous pour accéder à votre espace : ${data.loginLink}.
   `;
 }

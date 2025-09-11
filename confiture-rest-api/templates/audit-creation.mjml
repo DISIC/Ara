@@ -1,8 +1,8 @@
 <mjml>
   <mj-head>
-    <mj-title>Création d’un nouvel audit : {{ procedureName }}</mj-title>
+    <mj-title>Accéder à l’audit « {{ procedureName }} »</mj-title>
     <mj-attributes>
-      <mj-preview>Création d’un nouvel audit : {{ procedureName }}</mj-preview>
+      <mj-preview>Accéder à l’audit « {{ procedureName }} »</mj-preview>
       <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
