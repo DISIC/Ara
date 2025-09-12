@@ -113,7 +113,7 @@ async function handleSubmit() {
       {{
         showPasswordResetAlert
           ? "Votre mot de passe a été mis à jour avec succès"
-          : "Votre compte a été créé avec succès"
+          : "Votre compte a bien été créé"
       }}
     </h3>
     <p>Connectez-vous pour accédez à votre espace.</p>
