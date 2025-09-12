@@ -110,10 +110,7 @@ async function hideAccountDeletionForm() {
     <div ref="alertRef" class="fr-alert fr-alert--error fr-mb-3w" tabindex="-1">
       <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
       <p>
-        Toutes les données associées à votre compte seront définitivement
-        supprimées. Les audits et rapports que vous avez créés ne seront pas
-        supprimés, cependant, votre nom, prénom et adresse e-mail ne seront plus
-        mentionnés dans ces audits et rapports.
+        Toutes les données liées à votre compte seront définitivement supprimées.<br />Les audits et rapports que vous avez créés resteront accessibles, mais vos données personnelles ne seront plus mentionnées.
       </p>
     </div>
     <form class="wrapper" novalidate @submit.prevent="deleteAccount">

@@ -14,21 +14,29 @@ const reportStore = useReportStore();
   <section class="fr-mx-auto content">
     <h1>Contact</h1>
     <p>
-      Ara est un outil propulsé par
+      Ara est un service en ligne conçu et developpé par
       <a
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
-      >DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a>, le pôle design des services numériques de la
+      >DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la
       <a
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
-      >direction interministérielle du numérique
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>.
+      >direction interministérielle du numérique (DINUM)
+        <span class="fr-sr-only">(nouvelle fenêtre)</span></a> avec le soutien du
+      <a
+        class="fr-link"
+        href="https://www.fiphfp.fr/"
+        target="_blank"
+      >FIPHFP<span class="fr-sr-only">
+        Fonds pour l’insertion des personnes handicapées dans la
+        Fonction publique (nouvelle fenêtre)
+      </span></a>.
     </p>
     <p :class="{ 'fr-mb-5w': !reportStore.data }">
-      Vous pouvez nous contacter par e-mail à l’adresse :
+      Contactez-nous par e-mail :
       <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
@@ -51,7 +59,7 @@ const reportStore = useReportStore();
     <p>Vous pouvez également :</p>
     <ul>
       <li>
-        Nous écrire par e-mail à :
+        Nous écrire par e-mail :
         <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>

@@ -25,18 +25,18 @@ async function closeResendSuccessAlert() {
 
 <template>
   <div class="wrapper">
-    <h1 tabindex="-1" class="fr-h3">Consulter votre boite de réception</h1>
+    <h1 tabindex="-1" class="fr-h3">Consultez votre boite de réception</h1>
     <p class="fr-mb-6w">
-      Un mail contenant un lien pour vérifier votre e-mail vient de vous être
-      envoyé à l’adresse : <strong>{{ userEmail }}</strong>
+      Un lien pour confirmer votre adresse e-mail vient de vous être envoyé par e-mail à l’adresse : <strong>{{ userEmail }}</strong>
     </p>
 
     <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
-    <p class="fr-text--sm">
-      Pensez à vérifier que vous n’avez pas reçu le mail dans vos courriers
-      indésirable. Sinon veuillez demander l’envoi d’un nouveau mail à l’aide du
-      bouton ci-dessous.
-    </p>
+
+    <ul>
+      <li>Vérifiez votre dossier « courrier indésirable » (spams).</li>
+      <li>Sinon, demandez l'envoi d'un nouvel e-mail en cliquant sur le bouton ci-dessous :</li>
+    </ul>
+
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mb-2w"
       @click="resendEmail"

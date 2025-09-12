@@ -12,7 +12,7 @@ describe("Account", () => {
         cy.getByLabel("Adresse e-mail").type(email);
         cy.getByLabel("Mot de passe").type("pouetpouetpouet");
         cy.contains("button", "Valider").click();
-        cy.contains("h1", "Consulter votre boite de réception");
+        cy.contains("h1", "Consultez votre boite de réception");
         cy.contains(
           `Un mail contenant un lien pour vérifier votre e-mail vient de vous être envoyé à l’adresse : ${email}`
         );
