@@ -9,7 +9,7 @@ defineProps<{ userEmail: string }>();
     <div class="fr-mb-3w title">
       <img class="fr-mr-2w check-icon" :src="greenCheck" alt="" />
       <h1 class="fr-h3 fr-m-0" tabindex="-1">
-        Votre compte a été créé avec succès
+        Votre compte a bien été créé
       </h1>
     </div>
 
