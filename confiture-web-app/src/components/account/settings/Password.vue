@@ -3,12 +3,10 @@ import { HTTPError } from "ky";
 import { nextTick, ref } from "vue";
 
 import { useNotifications } from "../../../composables/useNotifications";
+import { LENGTH, REQUIRED, useFormField, validate } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
-
-const currentPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
-const newPasswordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
 
 // Toggle display
 const showButtonRef = ref<HTMLButtonElement>();
@@ -19,57 +17,54 @@ async function showUpdatePasswordForm() {
   displaySuccessAlert.value = false;
   displayUpdatePasswordForm.value = true;
   await nextTick();
-  currentPasswordFieldRef.value?.inputRef?.focus();
+  currentPassword.focusRef.value?.focus();
 }
 
 async function hideUpdatePasswordForm() {
   displayUpdatePasswordForm.value = false;
-  currentPassword.value = "";
-  newPassword.value = "";
-  currentPasswordError.value = "";
-  newPasswordError.value = "";
+  currentPassword.value.value = "";
+  newPassword.value.value = "";
+  currentPassword.error.value = "";
+  newPassword.error.value = "";
   await nextTick();
   showButtonRef.value?.focus();
 }
 
 // Form submission
-const currentPassword = ref("");
-const newPassword = ref("");
+const currentPassword = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")]);
+const newPassword = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum."), LENGTH(12, "Mot de passd invlide. Saisissez un nouveau mot de passe contenant 12 caractères minimum.")]);
 
 const displaySuccessAlert = ref(false);
-
 const successAlertRef = ref<HTMLDivElement>();
-
-const currentPasswordError = ref("");
-const newPasswordError = ref("");
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
 async function updatePassword() {
-  currentPasswordError.value = "";
-  newPasswordError.value = "";
+  if (!validate(currentPassword, newPassword)) {
+    return;
+  }
 
   accountStore
-    .updatePassword(currentPassword.value, newPassword.value)
+    .updatePassword(currentPassword.value.value, newPassword.value.value)
     .then(() => {
       displayUpdatePasswordForm.value = false;
       displaySuccessAlert.value = true;
-      currentPassword.value = "";
-      newPassword.value = "";
+      currentPassword.value.value = "";
+      newPassword.value.value = "";
     })
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
         // Wrong password
-        currentPasswordError.value = "Le mot de passe saisi est incorrect.";
+        currentPassword.error.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        currentPasswordFieldRef.value?.inputRef?.focus();
+        currentPassword.focusRef.value?.focus();
       } else if (err instanceof HTTPError && err.response.status === 400) {
         // Same password
-        newPasswordError.value =
+        newPassword.error.value =
           "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
         await nextTick();
-        newPasswordFieldRef.value?.inputRef?.focus();
+        newPassword.focusRef.value?.focus();
       } else {
         // Unexpected network error
         notify(
@@ -94,33 +89,36 @@ async function hideSuccessAlert() {
   <form
     v-if="displayUpdatePasswordForm"
     class="wrapper"
+    novalidate
     @submit.prevent="updatePassword"
   >
     <!-- Current password -->
     <DsfrPassword
       id="current-password"
-      ref="currentPasswordFieldRef"
-      v-model="currentPassword"
+      :ref="currentPassword.refFn"
+      :model-value="currentPassword.value.value"
+      :error="currentPassword.error.value"
       class="fr-mb-3w"
-      :error="currentPasswordError"
       label="Mot de passe actuel"
       required
       autocomplete="current-password"
       show-forgotten-password-link
       skip-forgotten-password-first-step
+      @update:model-value="currentPassword.value.value = $event"
     />
 
     <!-- New password -->
     <DsfrPassword
       id="new-password"
-      ref="newPasswordFieldRef"
-      v-model="newPassword"
-      :error="newPasswordError"
+      :ref="newPassword.refFn"
+      :model-value="newPassword.value.value"
+      :error="newPassword.error.value"
       label="Nouveau mot de passe"
       required
       autocomplete="new-password"
       :min-length="12"
       :requirements="['12 caractères minimum']"
+      @update:model-value="newPassword.value.value = $event"
     />
 
     <!-- Actions -->
