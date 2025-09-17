@@ -64,3 +64,7 @@ export function EMAIL(msg: string): ValidationRule<string> {
 export function URL(msg: string): ValidationRule<string> {
   return (value) => !!value && !URL_REGEX.test(value) && msg;
 }
+
+export function EQUAL(target: string, msg: string): ValidationRule<string> {
+  return value => !!value && value !== target && msg;
+}

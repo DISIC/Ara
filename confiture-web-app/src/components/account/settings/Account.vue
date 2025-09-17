@@ -4,8 +4,10 @@ import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
+import { EQUAL, REQUIRED, useFormField, validate } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
+import DsfrField from "../../ui/DsfrField.vue";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const router = useRouter();
@@ -14,69 +16,27 @@ const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
 
-const validation = ref("");
-const password = ref("");
+const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase “${VALIDATION_STRING}”.`), EQUAL(VALIDATION_STRING, `La phrase saisie est incorrect. Saisissez la phrase “${VALIDATION_STRING}”.`)]);
+const password = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe")]);
 
 const displayAccountDeletionForm = ref(false);
 
-// Form submission
-const validationFieldRef = ref<HTMLInputElement>();
-const passwordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
-const validationError = ref<string>();
-const passwordError = ref<string>();
-
-function validateValidationField() {
-  validationError.value = undefined;
-
-  // Empty validation sentence
-  if (!validation.value.length) {
-    validationError.value =
-      "Champ obligatoire. Veuillez saisir la phrase de confirmation";
-    validationFieldRef.value?.focus();
-    return false;
-  }
-
-  // Wrong validation sentence
-  if (validation.value !== VALIDATION_STRING) {
-    validationError.value =
-      "La phrase saisie est incorrect. Veuillez vérifier votre saisie.";
-    validationFieldRef.value?.focus();
-    return;
-  }
-
-  return true;
-}
-
-function validatePasswordField() {
-  passwordError.value = undefined;
-
-  // Empty password
-  if (!password.value.length) {
-    passwordError.value =
-      "Champ obligatoire. Veuillez saisir votre mot de passe";
-    passwordFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
 async function deleteAccount() {
-  if (![validatePasswordField(), validateValidationField()].every((i) => i)) {
+  if (!validate(validation, password)) {
     // Invalid form
     return;
   }
 
   accountStore
-    .deleteAccount(password.value)
+    .deleteAccount(password.value.value)
     .then(() => {
       router.push({ name: "account-deletion-feedback" });
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        passwordError.value = "Le mot de passe saisi est incorrect.";
+        password.error.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        passwordFieldRef.value?.inputRef?.focus();
+        password.focusRef.value?.focus();
       } else {
         notify(
           "error",
@@ -117,41 +77,28 @@ async function hideAccountDeletionForm() {
       </p>
     </div>
     <form class="wrapper" novalidate @submit.prevent="deleteAccount">
-      <div
-        class="fr-input-group"
-        :class="{ 'fr-input-group--error': validationError }"
-      >
-        <label class="fr-label" for="confirm-sentence">Pour confirmer la suppression de votre compte veuillez saisir :
-          {{ VALIDATION_STRING }}
-          <span class="fr-hint-text">Attention à ne pas utiliser de majuscule ou ajouter d’espace au
-            début ou à la fin de votre saisie.
-          </span>
-        </label>
-        <input
-          id="confirm-sentence"
-          ref="validationFieldRef"
-          v-model="validation"
-          class="fr-input"
-          :class="{ 'fr-input--error': validationError }"
-          :aria-describedby="validationError ? 'validation-error' : undefined"
-          type="text"
-          required
-        />
-        <p v-if="validationError" id="validation-error" class="fr-error-text">
-          {{ validationError }}
-        </p>
-      </div>
+      <DsfrField
+        id="confirm-sentence" :ref="validation.refFn"
+        :model-value="validation.value.value"
+        :error="validation.error.value"
+        type="text"
+        required
+        :label="`Pour confirmer la suppression de votre compte veuillez saisir : ${VALIDATION_STRING}`"
+        hint="Attention à ne pas utiliser de majuscule ou ajouter d’espace au début ou à la fin de votre saisie."
+        @update:model-value="validation.value.value = $event"
+      />
 
       <DsfrPassword
         id="account-password"
-        ref="passwordFieldRef"
-        v-model="password"
-        :error="passwordError"
+        :ref="password.refFn"
+        :model-value="password.value.value"
+        :error="password.error.value"
         label="Mot de passe"
         required
         autocomplete="current-password"
         show-forgotten-password-link
         skip-forgotten-password-first-step
+        @update:model-value="password.value.value = $event"
       />
 
       <ul
