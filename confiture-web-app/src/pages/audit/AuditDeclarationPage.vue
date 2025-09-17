@@ -12,6 +12,12 @@ import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import {
+  REQUIRED,
+  URL,
+  useFormField,
+  validate
+} from "../../composables/validation";
+import {
   AssistiveTechnology,
   Browsers,
   OperatingSystem,
@@ -51,9 +57,24 @@ const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 
 // Other data
 
-const auditInitiator = ref("");
-const auditorOrganisation = ref("");
-const procedureUrl = ref("");
+// const auditInitiator = ref("");
+const auditInitiator = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez l’entité ayant demandé l’audit.")
+]);
+
+const auditorOrganisation = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez l’entité ayant réalisé l’audit.")
+]);
+
+const procedureUrl = useFormField("" as string, [
+  REQUIRED(
+    "Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité."
+  ),
+  URL(
+    'URL invalide. Saisissez une URL valide commeçant par "https://" ou "http://"'
+  )
+]);
+
 const contactName = ref("");
 const contactEmail = ref("");
 const contactFormUrl = ref("");
@@ -67,9 +88,9 @@ watch(
     if (!audit) {
       return;
     }
-    auditInitiator.value = audit.initiator ?? "";
-    auditorOrganisation.value = audit.auditorOrganisation ?? "";
-    procedureUrl.value = audit.procedureUrl ?? "";
+    auditInitiator.value.value = audit.initiator ?? "";
+    auditorOrganisation.value.value = audit.auditorOrganisation ?? "";
+    procedureUrl.value.value = audit.procedureUrl ?? "";
     contactName.value = audit.contactName ?? "";
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
@@ -105,13 +126,17 @@ const notify = useNotifications();
 const router = useRouter();
 
 const contactEmailRef = ref<HTMLInputElement>();
-const hasValidated = ref(false);
+const hasSubmitted = ref(false);
 const hasNoContactInfo = computed(() => {
-  return hasValidated.value && !contactEmail.value && !contactFormUrl.value;
+  return hasSubmitted.value && !contactEmail.value && !contactFormUrl.value;
 });
 
 function handleSubmit() {
-  hasValidated.value = true;
+  hasSubmitted.value = true;
+
+  if (!validate(auditInitiator, auditorOrganisation, procedureUrl)) {
+    return;
+  }
 
   if (!contactEmail.value && !contactFormUrl.value) {
     contactEmailRef.value?.focus();
@@ -121,9 +146,9 @@ function handleSubmit() {
   const data: UpdateAuditRequestData = {
     ...auditStore.currentAudit!,
 
-    initiator: auditInitiator.value,
-    auditorOrganisation: auditorOrganisation.value,
-    procedureUrl: procedureUrl.value.trim(),
+    initiator: auditInitiator.value.value,
+    auditorOrganisation: auditorOrganisation.value.value,
+    procedureUrl: procedureUrl.value.value.trim(),
 
     contactEmail: formatEmail(contactEmail.value) || null,
     contactFormUrl: contactFormUrl.value.trim() || null,
@@ -163,9 +188,9 @@ const auditIsPublishable = computed(() => {
  * Dev function to avoid filling all fields manually
  */
 function DEBUG_fillFields() {
-  auditInitiator.value = "Mairie de Tours";
-  auditorOrganisation.value = "Web Audit Services Corp.";
-  procedureUrl.value = "https://example.com";
+  auditInitiator.value.value = "Mairie de Tours";
+  auditorOrganisation.value.value = "Web Audit Services Corp.";
+  procedureUrl.value.value = "https://example.com";
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
@@ -223,6 +248,7 @@ const isDevMode = useDevMode();
   <form
     v-if="auditStore.currentAudit"
     class="content"
+    novalidate
     @submit.prevent="handleSubmit"
   >
     <h1 class="fr-mb-6w">Déclaration d’accessibilité</h1>
@@ -234,29 +260,38 @@ const isDevMode = useDevMode();
 
     <DsfrField
       id="initiator"
-      v-model="auditInitiator"
+      :ref="auditInitiator.refFn"
+      :model-value="auditInitiator.value.value"
+      :error="auditInitiator.error.value"
       label="Entité qui a demandé l’audit"
       hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
       type="text"
       required
+      @update:model-value="auditInitiator.value.value = $event"
     />
 
     <DsfrField
       id="auditorOrganisation"
-      v-model="auditorOrganisation"
+      :ref="auditorOrganisation.refFn"
+      :model-value="auditorOrganisation.value.value"
+      :error="auditorOrganisation.error.value"
       label="Entité qui a réalisé l’audit"
       hint="L’entité qui a demandé et réalisé l’audit peut être identique dans le cas d’un audit réalisé en interne."
       type="text"
       required
+      @update:model-value="auditorOrganisation.value.value = $event"
     />
 
     <DsfrField
       id="procedure-url"
-      v-model="procedureUrl"
+      :ref="procedureUrl.refFn"
+      :model-value="procedureUrl.value.value"
+      :error="procedureUrl.error.value"
       label="URL de la page d’accueil du site audité"
       type="text"
       :pattern="URL_REGEX"
       required
+      @update:model-value="procedureUrl.value.value = $event"
     >
       <template #hint>
         Saisissez une URL valide, commençant par

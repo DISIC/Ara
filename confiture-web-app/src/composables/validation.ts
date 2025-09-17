@@ -1,6 +1,6 @@
 import { ComponentPublicInstance, ref } from "vue";
 
-import { validateEmail } from "../utils";
+import { URL_REGEX, validateEmail } from "../utils";
 
 export interface FocusableElement {
   focus(): void;
@@ -59,4 +59,8 @@ export function LENGTH(minLength: number, msg: string): ValidationRule<string> {
 
 export function EMAIL(msg: string): ValidationRule<string> {
   return (value) => !!value && !validateEmail(value) && msg;
+}
+
+export function URL(msg: string): ValidationRule<string> {
+  return (value) => !!value && !URL_REGEX.test(value) && msg;
 }
