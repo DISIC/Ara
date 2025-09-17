@@ -36,7 +36,7 @@ const descriptionId = computed(() => {
 </script>
 
 <template>
-  <div :class="['fr-p-3w wrapper', { checked: checked, 'is-error': isError }]">
+  <div :class="['fr-p-3w wrapper', { 'checked': checked, 'is-error': isError }]">
     <!-- Allow click on the whole radio square -->
     <div class="radio-layer" @click="$emit('update:modelValue', value)" />
 

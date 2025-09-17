@@ -30,7 +30,6 @@ import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
 import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
-import PouetPage from "./pages/PouetPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
@@ -352,11 +351,6 @@ const router = createRouter({
       meta: {
         name: "Donner mon avis"
       }
-    },
-    // TODO: remove this
-    {
-      path: "/pouet",
-      component: PouetPage
     },
     // Error pages
     {
