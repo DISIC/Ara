@@ -1,42 +1,47 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { EMAIL, REQUIRED, useFormField, validate } from "../../../composables/validation";
+import DsfrField from "../../ui/DsfrField.vue";
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "submit", email: string): void;
 }>();
 
-const email = ref("");
-const emailFieldRef = ref<HTMLInputElement>();
+const email = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
+  EMAIL("Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr")
+]);
 
 defineExpose({
   focusEmailField: () => {
-    emailFieldRef.value?.focus();
+    email.focusRef.value?.focus();
   }
 });
+
+function onSubmit() {
+  if (validate(email)) {
+    emit("submit", email.value.value);
+  }
+}
 </script>
 
 <template>
-  <form class="wrapper" @submit.prevent="$emit('submit', email)">
+  <form class="wrapper" novalidate @submit.prevent="onSubmit">
     <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
     <p class="fr-mb-2w">
       Veuillez saisir l’adresse e-mail associée à votre compte. Vous recevrez un
       e-mail pour réinitialiser votre mot de passe.
     </p>
 
-    <div class="fr-input-group">
-      <label class="fr-label" for="reset-password-email">
-        Adresse e-mail
-        <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-      </label>
-      <input
-        id="reset-password-email"
-        ref="emailFieldRef"
-        v-model="email"
-        class="fr-input"
-        type="email"
-        required
-      />
-    </div>
+    <DsfrField
+      id="reset-password-email"
+      :ref="email.refFn"
+      label="Adresse e-mail" hint="Format attendu : nom@domaine.fr"
+      type="email"
+      required
+      :model-value="email.value.value"
+      :error="email.error.value"
+      @update:model-value="email.value.value = $event"
+    />
 
     <ul
       class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left"
