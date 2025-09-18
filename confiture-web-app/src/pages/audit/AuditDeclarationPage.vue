@@ -367,7 +367,6 @@ const isDevMode = useDevMode();
     <TagListField
       v-model="customTools"
       label="Ajouter des outils d’assistance"
-      hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
       add-label="les outils d’assistance"
     />
 
