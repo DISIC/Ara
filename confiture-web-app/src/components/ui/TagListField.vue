@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
 
+import { useUniqueId } from "../../composables/useUniqueId";
 import DsfrField from "./DsfrField.vue";
 
 const props = defineProps<{
   modelValue: string[];
   label: string;
-  hint: string;
+  hint?: string;
   addLabel: string;
 }>();
 
@@ -71,11 +72,13 @@ defineExpose({
     addTags();
   }
 });
+
+const listId = useUniqueId();
 </script>
 
 <template>
   <DsfrField
-    id="transverse-elements-list"
+    :id="`transverse-elements-list-${listId}`"
     ref="inputRef"
     v-model="inputValue"
     class="fr-mb-3v field"
