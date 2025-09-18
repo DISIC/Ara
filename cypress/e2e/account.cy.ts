@@ -14,7 +14,7 @@ describe("Account", () => {
         cy.contains("button", "Valider").click();
         cy.contains("h1", "Consultez votre boite de réception");
         cy.contains(
-          `Un lien pour confirmer votre adresse e-mail vient de vous être envoyé par e-mail à l’adresse : ${email}`
+          `Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse : ${email}`
         );
       });
 
@@ -152,7 +152,7 @@ describe("Account", () => {
         cy.getByLabel("Adresse e-mail").type(username);
         cy.contains("button", "Valider").click();
         cy.contains(
-          `Un lien pour réinitialiser votre mot de passevient de vous être envoyé par e-mail à l’adresse : ${username}`
+          `Un lien pour réinitialiser votre mot de passe vient de vous être envoyé par e-mail à l’adresse : ${username}`
         );
 
         cy.request(
@@ -191,7 +191,7 @@ describe("Account", () => {
         cy.contains("Mot de passe oublié ?").click();
 
         cy.contains(
-          `Un lien pour réinitialiser votre mot de passevient de vous être envoyé par e-mail à l’adresse : ${username}`
+          `Un lien pour réinitialiser votre mot de passe vient de vous être envoyé par e-mail à l’adresse : ${username}`
         );
 
         cy.request(
