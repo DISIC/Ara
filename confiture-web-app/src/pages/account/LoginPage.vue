@@ -11,6 +11,9 @@ import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads, validateEmail } from "../../utils";
 
+const showGenericLoginError = ref(false);
+const genericErrorRef = ref<HTMLDivElement>();
+
 const userEmail = ref((history.state.email as string) ?? "");
 const userEmailError = ref<string>();
 const userEmailField = ref<InstanceType<typeof DsfrField>>();
@@ -82,17 +85,10 @@ async function handleSubmit() {
     })
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
-        const body = await err.response.json();
-        if (body.message === "unknown_user") {
-          // Unknown user
-          userEmailError.value =
-            "Cette adresse e-mail n’est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
-          userEmailField.value?.inputRef?.focus();
-        } else {
-          // Wrong password
-          userPasswordError.value = "Le mot de passe saisi est incorrect.";
-          userPasswordRef.value?.inputRef?.focus();
-        }
+        // Unknown user or wrong password
+        showGenericLoginError.value = true;
+        await nextTick();
+        genericErrorRef.value?.focus();
       } else {
         // Unknown error
         notify(
@@ -133,6 +129,10 @@ async function handleSubmit() {
   <div class="wrapper">
     <form novalidate @submit.prevent="handleSubmit">
       <h1 class="fr-h3">Connexion à Ara</h1>
+
+      <div v-if="showGenericLoginError" ref="genericErrorRef" tabindex="-1" class="fr-alert fr-alert--sm fr-alert--error fr-mb-3w">
+        <p>L’adresse e-mail ou le mot de passe saisi est incorrect. Vérifiez vos saisies.</p>
+      </div>
 
       <DsfrField
         id="user-email"

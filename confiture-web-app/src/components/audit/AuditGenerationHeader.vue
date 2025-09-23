@@ -317,7 +317,7 @@ onMounted(() => {
         <li class="fr-p-0">
           <Dropdown
             ref="optionsDropdownRef"
-            title="Options"
+            title="Actions"
             :disabled="isOffline"
           >
             <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
