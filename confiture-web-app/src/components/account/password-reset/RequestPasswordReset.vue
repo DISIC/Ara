@@ -19,11 +19,10 @@ defineExpose({
   <form class="wrapper" @submit.prevent="$emit('submit', email)">
     <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
     <p class="fr-mb-2w">
-      Veuillez saisir l’adresse e-mail associée à votre compte. Vous recevrez un
-      e-mail pour réinitialiser votre mot de passe.
+      Saisissez l’adresse e-mail liée à votre compte. Vous recevrez un e-mail pour réinitialiser votre mot de passe.
     </p>
 
-    <div class="fr-input-group">
+    <div class="fr-input-group field-wrapper">
       <label class="fr-label" for="reset-password-email">
         Adresse e-mail
         <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
@@ -54,8 +53,7 @@ defineExpose({
 </template>
 
 <style scoped>
-.wrapper {
+.field-wrapper {
   max-width: 25rem;
-  margin: 0 auto;
 }
 </style>

@@ -389,10 +389,7 @@ const isDevMode = useDevMode();
     <h3 class="fr-h6 fr-mb-2w">Dérogations</h3>
 
     <p>
-      Les contenus dérogés doivent faire l’objet d’une discussion entre
-      l’auditeur et le responsable du site audité. C’est le responsable du site
-      audité qui accepte de prendre le risque juridique de mentionner des
-      contenus dérogés.
+      Les contenus dérogés doivent être discutés entre l’auditeur ou l’auditrice et le responsable du site audité. C’est le responsable du site qui accepte de prendre le risque juridique de mentionner ces contenus.
     </p>
 
     <div class="fr-input-group">

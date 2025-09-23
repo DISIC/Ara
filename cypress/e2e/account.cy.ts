@@ -12,10 +12,11 @@ describe("Account", () => {
         cy.getByLabel("Adresse e-mail").type(email);
         cy.getByLabel("Mot de passe").type("pouetpouetpouet");
         cy.contains("button", "Valider").click();
-        cy.contains("h1", "Consulter votre boite de réception");
+        cy.contains("h1", "Consultez votre boite de réception");
         cy.contains(
-          `Un mail contenant un lien pour vérifier votre e-mail vient de vous être envoyé à l’adresse : ${email}`
+          "Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse"
         );
+        cy.contains(email);
       });
 
       it("(verification link)", () => {
@@ -34,7 +35,7 @@ describe("Account", () => {
               cy.visit(verificationLink);
             });
 
-          cy.contains("Votre compte a été créé avec succès");
+          cy.contains("Votre compte a bien été créé");
           cy.getByLabel("Adresse e-mail").should("have.value", email);
         });
       });
@@ -56,12 +57,12 @@ describe("Account", () => {
               });
             });
 
-          cy.contains("h1", "Votre compte a été créé avec succès", {
+          cy.contains("h1", "Votre compte a bien été créé", {
             timeout: 8000
           });
 
           cy.contains("a", "Aller à la page de connexion").click();
-          cy.contains("Votre compte a été créé avec succès");
+          cy.contains("Votre compte a bien été créé");
           cy.getByLabel("Adresse e-mail").should("have.value", email);
         });
       });
@@ -152,8 +153,9 @@ describe("Account", () => {
         cy.getByLabel("Adresse e-mail").type(username);
         cy.contains("button", "Valider").click();
         cy.contains(
-          `Un lien de réinitialisation vient de vous être envoyé à l’adresse e-mail suivante : ${username}`
+          `Un lien pour réinitialiser votre mot de passe vient de vous être envoyé par e-mail à l’adresse :`
         );
+        cy.contains(username);
 
         cy.request(
           "POST",
@@ -191,8 +193,9 @@ describe("Account", () => {
         cy.contains("Mot de passe oublié ?").click();
 
         cy.contains(
-          `Un lien de réinitialisation vient de vous être envoyé à l’adresse e-mail suivante : ${username}`
+          "Un lien pour réinitialiser votre mot de passe vient de vous être envoyé par e-mail à l’adresse :"
         );
+        cy.contains(username);
 
         cy.request(
           "POST",
