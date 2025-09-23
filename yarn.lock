@@ -12998,6 +12998,7 @@ __metadata:
     lint-staged: "npm:^15.2.0"
     pm2: "npm:^5.4.0"
     simple-git-hooks: "npm:^2.13.0"
+    typescript: "npm:^4.3.5"
   languageName: unknown
   linkType: soft
 

@@ -26,13 +26,18 @@ export enum Browsers {
   EDGE = "Microsoft Edge"
 }
 
-/* UPLOAD_FORMAT should never happen… */
-export enum FileErrorMessage {
-  UPLOAD_SIZE = "Votre fichier dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
-  UPLOAD_FORMAT = "Format de fichier non supporté.",
-  UPLOAD_FORMAT_EXAMPLE = "Format de fichier non supporté. Veuillez choisir un fichier jpg, jpeg ou png.",
-  UPLOAD_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier. Veuillez réessayer.",
-  DELETE_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier. Veuillez réessayer."
+export enum FileMessage {
+  DELETE_ERROR_UNKNOWN = "Une erreur inconnue empêche la suppression du fichier <strong>[FILE]</strong>. Veuillez réessayer.",
+  DELETE_SUCCESS = "<strong>[FILE]</strong> a été correctement supprimé.",
+  UPLOAD_ERROR_FORMAT = "Format de fichier non supporté (<strong>[FILE]</strong>)</span>.",
+  UPLOAD_ERROR_SIZE = "<strong>[FILE]</strong> dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
+  UPLOAD_ERROR_TIMEOUT = "Le téléchargement du fichier <strong>[FILE]</strong> a pris trop de temps et a été interrompu. Veuillez vérifier votre connexion Internet et réessayer.",
+  UPLOAD_ERROR_UNKNOWN = "Une erreur inconnue empêche le téléchargement du fichier <strong>[FILE]</strong>. Veuillez réessayer.",
+  UPLOAD_SUCCESS = "<strong>[FILE]</strong> a été correctement ajouté."
+}
+
+export function getFileMessage(fileMessage: keyof typeof FileMessage, fileName: string): string {
+  return FileMessage[fileMessage].replace("[FILE]", fileName);
 }
 
 export enum StaticTabLabel {

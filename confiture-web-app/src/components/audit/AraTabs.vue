@@ -221,7 +221,7 @@ watch(
           ref="tabButtonsRef"
           role="tab"
           :data-slug="tabSlugsArray[i]"
-          :aria-controls="panelId(i)"
+          :aria-controls="i === selectedTabIndex ? panelId(i) : undefined"
           :aria-selected="i === selectedTabIndex ? 'true' : 'false'"
           :tabindex="i === selectedTabIndex ? undefined : '-1'"
           @click="selectTab(i)"
@@ -246,7 +246,6 @@ watch(
         :is="Component"
         :panel-id="panelId(selectedTabIndex)"
         :labelled-by="tabId(selectedTabIndex)"
-        :component-params="selectedTab.componentParams"
       >
         <!-- Slot inside AraTabsPanel -->
         <component

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
-import { FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditFile,
@@ -17,9 +17,7 @@ import {
   CriteriumResultStatus
 } from "../../types";
 import {
-  formatStatus,
-  handleFileDeleteError,
-  handleFileUploadError
+  formatStatus
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -28,10 +26,10 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import DeleteFileModal from "./DeleteFileModal.vue";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const filtersStore = useFiltersStore();
 
 const props = defineProps<{
@@ -120,61 +118,27 @@ function toggleTransverseComment() {
 
 const notify = useNotifications();
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
 function handleUploadExample(file: File) {
-  store
-    .uploadExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      file
-    )
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      store.lastRequestFailed = true;
-    })
-    .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
-    });
+  return fileHandler.uploadCriteriumFile(
+    props.auditUniqueId,
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number,
+    file
+  );
 }
 
-const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
-const fileToDelete = ref<AuditFile>();
-
-function openDeleteFileModal(image: AuditFile) {
-  deleteFileModalRef.value?.show();
-  fileToDelete.value = image;
-}
-
-function handleDeleteExample() {
-  if (!fileToDelete.value) return;
-
-  store
-    .deleteExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      fileToDelete.value.id
-    )
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
-      deleteFileModalRef.value?.hide();
-    });
+function handleFileDeleteAfterConfirm(auditFile: AuditFile) {
+  fileHandler.deleteCriteriumAuditFile(
+    props.auditUniqueId,
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number,
+    auditFile
+  );
 }
 
 function handleUpdateResultError(err: any) {
@@ -402,19 +366,11 @@ const parentCriterium = computed(() => {
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
-      :error-message="errorMessage"
+      :on-upload="handleUploadExample"
+      :on-delete="handleFileDeleteAfterConfirm"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:user-impact="updateResultImpact($event)"
-      @upload-file="handleUploadExample"
-      @delete-file="openDeleteFileModal"
       @update:quick-win="updateQuickWin"
-    />
-
-    <DeleteFileModal
-      ref="deleteFileModalRef"
-      :mime-type="fileToDelete?.mimetype"
-      @confirm="handleDeleteExample"
-      @cancel="deleteFileModalRef?.hide()"
+      @update:user-impact="updateResultImpact($event)"
     />
 
     <!-- TESTS + METHODO -->

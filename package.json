@@ -10,7 +10,8 @@
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.2.0",
-    "simple-git-hooks": "^2.13.0"
+    "simple-git-hooks": "^2.13.0",
+    "typescript": "^4.3.5"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged"
