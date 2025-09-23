@@ -78,7 +78,7 @@ defineProps<{
 .headers {
   display: grid;
   grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
-  grid-gap: 1rem;
+  gap: 1rem;
 
   @media (width < 55rem) {
     display: none;

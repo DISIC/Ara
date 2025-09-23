@@ -8,6 +8,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "stylelint": "stylelint src/**/*.{css,vue}",
+    "stylelint:fix": "stylelint --fix src/**/*.{css,vue}",
     "generate:rgaa": "node scripts/build-rgaa-files.js",
     "show-all-ts-errors": "vue-tsc --noEmit",
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"

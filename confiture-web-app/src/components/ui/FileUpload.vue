@@ -268,12 +268,13 @@ function onFileRequestFinished() {
 .file-link {
   flex-basis: 33%;
   flex-grow: 1;
-  word-break: break-word;
+  word-break: normal;
 }
 
 .file-thumbnail,
 .file-thumbnail__default {
   --thumbnail-size: 3rem;
+
   color: var(--artwork-motif-grey);
   background-color: var(--background-alt-blue-france);
   width: var(--thumbnail-size);
@@ -302,8 +303,6 @@ function onFileRequestFinished() {
 }
 
 .file-upload--dragged-over {
-  outline-style: dotted;
-  outline-width: 3px;
-  outline-color: var(--dsfr-outline);
+  outline: var(--dsfr-outline) dotted 3px;
 }
 </style>
