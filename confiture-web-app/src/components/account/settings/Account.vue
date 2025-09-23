@@ -73,7 +73,7 @@ async function hideAccountDeletionForm() {
         Toutes les données liées à votre compte seront définitivement supprimées.<br />Les audits et rapports que vous avez créés resteront accessibles, mais vos données personnelles ne seront plus mentionnées.
       </p>
     </div>
-    <form class="wrapper" novalidate @submit.prevent="deleteAccount">
+    <form novalidate @submit.prevent="deleteAccount">
       <DsfrField
         id="confirm-sentence" :ref="validation.refFn"
         :model-value="validation.value.value"
@@ -127,9 +127,3 @@ async function hideAccountDeletionForm() {
     Supprimer mon compte
   </button>
 </template>
-
-<style scoped>
-.wrapper {
-  max-width: 24rem;
-}
-</style>
