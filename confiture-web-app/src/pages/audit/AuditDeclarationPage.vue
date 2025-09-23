@@ -194,7 +194,7 @@ function DEBUG_fillFields() {
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
-  // technologies.value = ["HTML", "CSS"];
+  technologies.value = ["HTML", "CSS"];
 
   defaultTools.value = [AVAILABLE_DEFAULT_TOOLS[2].name];
   customTools.value = ["Firefox Devtools", "AXE Webextension"];
