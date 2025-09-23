@@ -173,7 +173,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
       >
         <template #hint>
           L’URL de la page doit commencer par <code>https://</code> ou
-          <code>http://</code>
+          <code>http://</code>.
         </template>
       </DsfrField>
     </fieldset>

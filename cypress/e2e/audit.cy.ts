@@ -290,7 +290,7 @@ describe("Audit", () => {
       cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
-      cy.contains("Vous allez supprimer l’audit");
+      cy.contains("Supprimer l’audit « Audit de mon petit site »");
       cy.get("dialog").contains("button", "Supprimer l’audit").click();
 
       cy.url().should("eq", "http://localhost:3000/");
@@ -391,7 +391,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
+        "Contenus non soumis à l’obligation d’accessibilité et contenus tiers (optionnel)"
       )
         .clear()
         .type(statementJson.notInScopeContent);

@@ -105,8 +105,8 @@ describe("Account", () => {
         cy.contains("button", username).click();
         cy.contains("a", "Mon compte").click();
 
-        cy.getByLabel("Prénom et nom").type("John Doe");
-        cy.getByLabel("Nom de la structure").type("ACME");
+        cy.getByLabel("Prénom et nom (optionnel)").type("John Doe");
+        cy.getByLabel("Nom de votre structure (optionnel)").type("ACME");
         cy.contains("Mettre à jour").click();
 
         cy.contains("Profil mis à jour avec succès");
@@ -250,7 +250,7 @@ describe("Account", () => {
         // Delete account form
         cy.contains("button", "Supprimer mon compte").click();
         cy.getByLabel(
-          "Pour confirmer la suppression de votre compte veuillez saisir : je confirme vouloir supprimer mon compte"
+          "Saisissez la phrase suivante pour confirmer la suppression de votre compte : je confirme vouloir supprimer mon compte"
         ).type("je confirme vouloir supprimer mon compte");
         cy.getByLabel("Mot de passe").type(password);
         cy.contains("button", "Supprimer mon compte").click();
