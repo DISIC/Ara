@@ -27,12 +27,12 @@ async function closeResendSuccessAlert() {
   <div class="wrapper">
     <h1 tabindex="-1" class="fr-h3">Consultez votre boite de réception</h1>
     <p class="fr-mb-6w">
-      Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse : <strong>{{ userEmail }}</strong>
+      Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse :<br /><strong>{{ userEmail }}</strong>
     </p>
 
-    <p class="fr-mb-1w"><strong>Aucun e-mail reçu ?</strong></p>
+    <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu ?</h2>
 
-    <ul>
+    <ul class="fr-text--sm">
       <li>Vérifiez votre dossier « courrier indésirable » (spams).</li>
       <li>Sinon, demandez l’envoi d'un nouvel e-mail en cliquant sur le bouton ci-dessous :</li>
     </ul>
@@ -57,9 +57,9 @@ async function closeResendSuccessAlert() {
       </button>
     </div>
 
-    <p class="fr-mb-1w">
-      <strong>L’adresse e-mail saisie est erronée ?</strong>
-    </p>
+    <h2 class="fr-text--md fr-mb-1w">
+      L’adresse e-mail saisie est erronée ?
+    </h2>
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       @click="$emit('back')"
@@ -71,7 +71,7 @@ async function closeResendSuccessAlert() {
 
 <style scoped>
 .wrapper {
-  max-width: 37.5rem;
+  max-width: 49.5rem;
   margin: 0 auto;
 }
 </style>
