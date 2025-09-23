@@ -236,7 +236,7 @@ const isDevMode = useDevMode();
       id="initiator"
       v-model="auditInitiator"
       label="Entité qui a demandé l’audit"
-      hint="Exemple : Ministère de l’intérieur, Mairie de Toulouse, etc"
+      hint="Exemples : Ministère de l’intérieur, Mairie de Toulouse"
       type="text"
       required
     />
@@ -245,7 +245,7 @@ const isDevMode = useDevMode();
       id="auditorOrganisation"
       v-model="auditorOrganisation"
       label="Entité qui a réalisé l’audit"
-      hint="L’entité qui a demandé et réalisé l’audit peut être identique dans le cas d’un audit réalisé en interne."
+      hint="L'audit peut être demandé et réalisé par la même entité."
       type="text"
       required
     />
@@ -259,8 +259,7 @@ const isDevMode = useDevMode();
       required
     >
       <template #hint>
-        Saisissez une URL valide, commençant par
-        <code>https://</code> ou <code>http://</code>
+        Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
       </template>
     </DsfrField>
 
@@ -293,8 +292,8 @@ const isDevMode = useDevMode();
         <DsfrField
           id="contact-email"
           v-model="contactEmail"
-          label="Adresse e-mail"
-          hint="Exemple : contact@ministere.gouv.fr"
+          label="Adresse e-mail de contact"
+          hint="Format attendu : nom@domaine.fr"
           type="email"
           :error="
             hasNoContactInfo
@@ -321,8 +320,7 @@ const isDevMode = useDevMode();
           "
         >
           <template #hint>
-            Saisissez une URL valide, commençant par <code>https://</code> ou
-            <code>http://</code>
+            Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
           </template>
         </DsfrField>
       </div>
@@ -333,7 +331,7 @@ const isDevMode = useDevMode();
     <TagListField
       v-model="technologies"
       label="Ajouter des technologies"
-      hint="Insérez une virgule pour séparer les technologies. Appuyez sur ENTRÉE ou cliquez sur “Valider les technologies” pour les valider. Exemple de technologies : HTML, CSS, Javascript, etc."
+      hint="Exemples : HTML, CSS, Javascript"
       add-label="les technologies"
     />
 
@@ -367,7 +365,6 @@ const isDevMode = useDevMode();
     <TagListField
       v-model="customTools"
       label="Ajouter des outils d’assistance"
-      hint="Insérez une virgule pour séparer les outils d’assistance. Appuyez sur ENTRÉE ou cliquez sur “Valider les outils” pour les valider."
       add-label="les outils d’assistance"
     />
 
@@ -379,9 +376,7 @@ const isDevMode = useDevMode();
       <label class="fr-label" for="notCompliantContent">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
-          Il s’agit d’un résumé des contenus et fonctionnalités non conformes
-          identifiés sur le site. Ils doivent être rédigés dans un langage
-          simple et compréhensible par toutes et tous.
+          Listez les contenus et fonctionnalités non conformes sur le site, en utilisant un langage simple et clair.<br />Indiquez les alternatives si disponibles.
         </span>
       </label>
       <textarea
@@ -404,8 +399,7 @@ const isDevMode = useDevMode();
       <label class="fr-label" for="derogatedContent">
         Dérogations pour charge disproportionnée (optionnel)
         <span class="fr-hint-text">
-          Il s’agit des contenus qu’il serait trop coûteux de rendre
-          accessibles.
+          Listez les contenus et fonctionnalités trop coûteuse ou difficile à rendre accessible.<br />Indiquez les alternatives si disponibles.
         </span>
       </label>
       <textarea
@@ -417,11 +411,9 @@ const isDevMode = useDevMode();
 
     <div class="fr-input-group">
       <label class="fr-label" for="notInScopeContent">
-        Contenus non soumis à l’obligation d’accessibilité, contenus tiers
-        (optionnel)
+        Contenus non soumis à l’obligation d’accessibilité et contenus tiers (optionnel)
         <span class="fr-hint-text">
-          Exemple : Cartes interactives, fil d’actualité réseaux social, lecteur
-          vidéo, etc
+          Listez les contenus et fonctionnalités non accessibles qui ne sont pas soumis à la législation.<br />Indiquez les alternatives si disponibles.
         </span>
       </label>
       <textarea

@@ -63,8 +63,8 @@ function cancelUpdate() {
 <template>
   <div class="wrapper">
     <h2 class="fr-h6">Profil</h2>
-    <DsfrField id="name" ref="nameField" v-model="name" label="Prénom et nom" />
-    <DsfrField id="org-name" v-model="orgName" label="Nom de la structure" />
+    <DsfrField id="name" ref="nameField" v-model="name" label="Prénom et nom (optionnel)" hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question." />
+    <DsfrField id="org-name" v-model="orgName" label="Nom de votre structure (optionnel)" hint="Le nom de votre structure apparaîtra dans les déclarations d’accessibilité que vous remplirez." />
     <ul
       v-if="showActions"
       class="fr-btns-group fr-btns-group--inline fr-btns-group--right"
