@@ -194,7 +194,7 @@ function DEBUG_fillFields() {
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
-  technologies.value = ["HTML", "CSS"];
+  // technologies.value = ["HTML", "CSS"];
 
   defaultTools.value = [AVAILABLE_DEFAULT_TOOLS[2].name];
   customTools.value = ["Firefox Devtools", "AXE Webextension"];
@@ -317,14 +317,13 @@ const isDevMode = useDevMode();
         v-model="contactName"
         label="Nom et prénom du contact (optionnel)"
         type="text"
-        class="narrow-field"
       />
 
       <p class="fr-mb-2w">
         Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
-      <div class="fr-ml-md-4w">
+      <div class="fr-input-group" :class="{ 'fr-input-group--error': hasNoContactInfo }">
         <DsfrField
           id="contact-email"
           v-model="contactEmail"
@@ -333,13 +332,11 @@ const isDevMode = useDevMode();
           type="email"
           :error="
             hasNoContactInfo
-              ? 'Vous devez renseigner au moins un moyen de contact'
+              ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
               : undefined
           "
-          class="fr-mb-3v narrow-field"
+          class="fr-mb-3v"
         />
-
-        <p class="fr-mb-3v"><em>Ou</em></p>
 
         <DsfrField
           id="contact-form-url"
@@ -351,7 +348,7 @@ const isDevMode = useDevMode();
           placeholder="https://"
           :error="
             hasNoContactInfo
-              ? 'Vous devez renseigner au moins un moyen de contact'
+              ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
               : undefined
           "
         >
