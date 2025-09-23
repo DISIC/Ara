@@ -206,7 +206,7 @@ const previousPageName =
         </h2>
 
         <span class="fr-hint-text">
-          Indiquez vos besoins ou proposez-nous des idées d'amélioration.
+          Indiquez vos besoins ou proposez-nous vos idées d'amélioration.
         </span>
       </label>
       <textarea id="changes" v-model="suggestions" class="fr-input" required></textarea>

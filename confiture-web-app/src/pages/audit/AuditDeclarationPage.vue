@@ -259,8 +259,7 @@ const isDevMode = useDevMode();
       required
     >
       <template #hint>
-        Saisissez une URL valide, commençant par
-        <code>https://</code> ou <code>http://</code>.
+        Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>.
       </template>
     </DsfrField>
 
@@ -321,8 +320,7 @@ const isDevMode = useDevMode();
           "
         >
           <template #hint>
-            Saisissez une URL valide, commençant par <code>https://</code> ou
-            <code>http://</code>.
+            Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>.
           </template>
         </DsfrField>
       </div>
