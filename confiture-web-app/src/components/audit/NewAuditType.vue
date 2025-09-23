@@ -143,7 +143,7 @@ function fillSettings() {
       :model-value="procedureName.value.value"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
-      hint="Exemples : Service-Public, Demande de permis de conduire."
+      hint="Exemples : Service-Public, Demande de permis de conduire"
       required
       :error="procedureName.error.value"
       @update:model-value="procedureName.value.value = $event"

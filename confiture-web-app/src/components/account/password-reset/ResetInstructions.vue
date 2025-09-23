@@ -42,18 +42,16 @@ defineExpose({
 <template>
   <div class="wrapper">
     <h1 ref="instructionsHeadingRef" class="fr-h3" tabindex="-1">
-      Consulter votre boite de réception
+      Consultez votre boite de réception
     </h1>
     <p class="fr-mb-6w">
-      Un lien de réinitialisation vient de vous être envoyé à l’adresse e-mail
-      suivante : <strong>{{ email }}</strong>
+      Un lien pour réinitialiser votre mot de passe vient de vous être envoyé par e-mail à l’adresse :<br /><strong>{{ email }}</strong>
     </p>
-    <h2 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu ?</h2>
-    <p class="fr-text--sm fr-mb-1w">
-      Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
-      indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
-      du bouton ci-dessous.
-    </p>
+    <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu ?</h2>
+    <ul class="fr-text--sm">
+      <li>Vérifiez votre dossier « courrier indésirable » (spams).</li>
+      <li>Sinon, demandez l’envoi d’un nouvel e-mail en cliquant sur le bouton ci-dessous :</li>
+    </ul>
     <button
       ref="resendEmailButtonRef"
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mb-2w"
@@ -75,7 +73,7 @@ defineExpose({
       </div>
     </div>
     <template v-if="!accountStore.account?.email">
-      <h2 class="fr-text--sm fr-mb-1w">
+      <h2 class="fr-text--md fr-mb-1w">
         L’adresse e-mail saisie est erronée ?
       </h2>
       <button

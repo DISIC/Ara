@@ -19,6 +19,6 @@ Pour finaliser le changement d’adresse e-mail associée à votre compte Ara, n
 
 ${data.verificationLink}
 
-Si vous avez des questions ou besoin d’aide, contactez notre support par e-mail à l’adresse : ara@design.numerique.gouv.fr.
+Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
 `;
 }

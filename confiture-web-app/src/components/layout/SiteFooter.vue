@@ -66,21 +66,17 @@ const bottomLinks = [
         </div>
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
-            Ce site est réalisé par
-            <a
+            Ara est un service en ligne conçu et developpé par <a
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
-            >
-              DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a>, le pôle Design des services numériques de la
-            <a
+            >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
               class="fr-link fr-text--sm"
               href="https://www.numerique.gouv.fr/dinum/"
               rel="noreferrer noopener"
               target="_blank"
             >
-              direction interministérielle du numérique
-              <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>,
             avec le soutien du
             <a
               class="fr-link fr-text--sm"

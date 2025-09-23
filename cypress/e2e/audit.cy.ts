@@ -153,7 +153,7 @@ describe("Audit", () => {
   it("User can go to settings page from audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("Options").click();
+      cy.contains("Actions").click();
       cy.contains("Modifier les paramètres de l’audit").click();
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
@@ -287,10 +287,10 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Options").click();
+      cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
-      cy.contains("Vous allez supprimer l’audit");
+      cy.contains("Supprimer l’audit « Audit de mon petit site »");
       cy.get("dialog").contains("button", "Supprimer l’audit").click();
 
       cy.url().should("eq", "http://localhost:3000/");
@@ -302,7 +302,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("button", "Options").click();
+      cy.contains("button", "Actions").click();
       cy.contains("button", "Copier le lien de l’audit").click();
       // cy.get("@audit").then((audit) => {
       cy.assertClipboardValue(
@@ -391,7 +391,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité, contenus tiers (optionnel)"
+        "Contenus non soumis à l’obligation d’accessibilité et contenus tiers (optionnel)"
       )
         .clear()
         .type(statementJson.notInScopeContent);
@@ -404,7 +404,7 @@ describe("Audit", () => {
   it("User can copy an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("button", "Options").click();
+      cy.contains("button", "Actions").click();
       cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
@@ -625,7 +625,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("Options").click();
+      cy.contains("Actions").click();
       cy.contains("Exporter l’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");

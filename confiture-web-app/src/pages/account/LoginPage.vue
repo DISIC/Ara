@@ -17,6 +17,9 @@ import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads } from "../../utils";
 
+const showGenericLoginError = ref(false);
+const genericErrorRef = ref<HTMLDivElement>();
+
 const userEmail = useFormField<string>((history.state.email as string) ?? "", [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
   EMAIL(
@@ -54,17 +57,10 @@ async function handleSubmit() {
     })
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
-        const body = await err.response.json();
-        if (body.message === "unknown_user") {
-          // Unknown user
-          userEmail.error.value =
-            "Cette adresse e-mail n’est associée à aucun compte. Veuillez vérifier la saisie de votre adresse e-mail.";
-          userEmail.focusRef.value?.focus();
-        } else {
-          // Wrong password
-          userPassword.value.value = "Le mot de passe saisi est incorrect.";
-          userPassword.focusRef.value?.focus();
-        }
+        // Unknown user or wrong password
+        showGenericLoginError.value = true;
+        await nextTick();
+        genericErrorRef.value?.focus();
       } else {
         // Unknown error
         notify(
@@ -89,7 +85,7 @@ async function handleSubmit() {
       {{
         showPasswordResetAlert
           ? "Votre mot de passe a été mis à jour avec succès"
-          : "Votre compte a été créé avec succès"
+          : "Votre compte a bien été créé"
       }}
     </h3>
     <p>Connectez-vous pour accédez à votre espace.</p>
@@ -105,6 +101,10 @@ async function handleSubmit() {
   <div class="wrapper">
     <form novalidate @submit.prevent="handleSubmit">
       <h1 class="fr-h3">Connexion à Ara</h1>
+
+      <div v-if="showGenericLoginError" ref="genericErrorRef" tabindex="-1" class="fr-alert fr-alert--sm fr-alert--error fr-mb-3w">
+        <p>L’adresse e-mail ou le mot de passe saisi est incorrect. Vérifiez vos saisies.</p>
+      </div>
 
       <DsfrField
         id="user-email"

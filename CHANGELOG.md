@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 23/09/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le problème qui empêchait de passer certains critères liés sur les audits 25 ou 50 critères ([#1184](https://github.com/DISIC/Ara/pull/1184))
+
 ### 07/08/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

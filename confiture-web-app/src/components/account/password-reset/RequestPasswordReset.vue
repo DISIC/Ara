@@ -28,8 +28,7 @@ function onSubmit() {
   <form class="wrapper" novalidate @submit.prevent="onSubmit">
     <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
     <p class="fr-mb-2w">
-      Veuillez saisir l’adresse e-mail associée à votre compte. Vous recevrez un
-      e-mail pour réinitialiser votre mot de passe.
+      Saisissez l’adresse e-mail liée à votre compte. Vous recevrez un e-mail pour réinitialiser votre mot de passe.
     </p>
 
     <DsfrField
@@ -41,6 +40,7 @@ function onSubmit() {
       :model-value="email.value.value"
       :error="email.error.value"
       @update:model-value="email.value.value = $event"
+      class="field-wrapper"
     />
 
     <ul
@@ -59,8 +59,7 @@ function onSubmit() {
 </template>
 
 <style scoped>
-.wrapper {
+.field-wrapper {
   max-width: 25rem;
-  margin: 0 auto;
 }
 </style>

@@ -172,7 +172,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         :pattern="URL_REGEX"
       >
         <template #hint>
-          L’URL de la page doit commencer par <code>https://</code> ou
+          Saisissez une URL commençant par <code>https://</code> ou
           <code>http://</code>
         </template>
       </DsfrField>

@@ -70,10 +70,7 @@ async function hideAccountDeletionForm() {
     <div ref="alertRef" class="fr-alert fr-alert--error fr-mb-3w" tabindex="-1">
       <h3 class="fr-alert__title">Vous allez supprimer votre compte</h3>
       <p>
-        Toutes les données associées à votre compte seront définitivement
-        supprimées. Les audits et rapports que vous avez créés ne seront pas
-        supprimés, cependant, votre nom, prénom et adresse e-mail ne seront plus
-        mentionnés dans ces audits et rapports.
+        Toutes les données liées à votre compte seront définitivement supprimées.<br />Les audits et rapports que vous avez créés resteront accessibles, mais vos données personnelles ne seront plus mentionnées.
       </p>
     </div>
     <form class="wrapper" novalidate @submit.prevent="deleteAccount">
@@ -83,8 +80,8 @@ async function hideAccountDeletionForm() {
         :error="validation.error.value"
         type="text"
         required
-        :label="`Pour confirmer la suppression de votre compte veuillez saisir : ${VALIDATION_STRING}`"
-        hint="Attention à ne pas utiliser de majuscule ou ajouter d’espace au début ou à la fin de votre saisie."
+        :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte : ${VALIDATION_STRING}`"
+        hint="N’utilisez pas de majuscules, ni d’espace au début ou à la fin de votre saisie."
         @update:model-value="validation.value.value = $event"
       />
 

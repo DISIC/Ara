@@ -2,9 +2,10 @@ import ky from "ky";
 import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
 
-import { LINKED_CRITERIA } from "../criteria";
+import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditFile,
+  AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus
@@ -303,6 +304,8 @@ export const useResultsStore = defineStore("results", {
     },
 
     async updateLinkedCriteria(updates: CriteriumResult[]) {
+      const auditStore = useAuditStore();
+
       // update linked criteria if any
       const updatedCritResult = updates[0];
       const currentCritStatus = this.getCriteriumResult(updatedCritResult.pageId, updatedCritResult.topic, updatedCritResult.criterium)?.status;
@@ -337,16 +340,18 @@ export const useResultsStore = defineStore("results", {
         });
 
         // apply status to linked criteria
-        linkedUpdates = linkedCriteria.map((update) => {
-          const [topic, criterium] = update.split(".").map(Number);
+        if (auditStore.currentAudit) {
+          linkedUpdates = linkedCriteria.filter(c => this.isInCriteriaList(c, auditStore.currentAudit!.auditType)).map((update) => {
+            const [topic, criterium] = update.split(".").map(Number);
 
-          return {
-            ...this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)!,
-            status: CriteriumResultStatus.NOT_APPLICABLE,
-            topic,
-            criterium
-          };
-        });
+            return {
+              ...this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)!,
+              status: CriteriumResultStatus.NOT_APPLICABLE,
+              topic,
+              criterium
+            };
+          });
+        }
       } else if (currentCritStatus === CriteriumResultStatus.NOT_APPLICABLE) {
         // rollback old status on linked criteria
         linkedCriteria.forEach((c) => {
@@ -506,6 +511,14 @@ export const useResultsStore = defineStore("results", {
         const key = getLastRequestTimestampStorageKey(this.auditId!);
         localStorage.setItem(key, this.lastRequestSuccessEnd.toString());
       }
+    },
+
+    /**
+     * Check if criterium is included in the criterium list depending on audit type
+     */
+    isInCriteriaList(topicAndCriterium: string, auditType: AuditType): boolean {
+      const [topic, criterium] = topicAndCriterium.split(".").map(Number);
+      return CRITERIA_BY_AUDIT_TYPE[auditType].some(cr => cr.topic === topic && cr.criterium === criterium);
     },
 
     /**

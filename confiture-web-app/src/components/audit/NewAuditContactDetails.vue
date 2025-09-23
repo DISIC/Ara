@@ -82,8 +82,7 @@ function fillSettings() {
         @update:model-value="email.value.value = $event"
       >
         <template #hint>
-          Permet de vous envoyer les liens de l’audit et du rapport d’audit.<br />Au
-          format : prenom@domaine.fr
+          Permet de vous envoyer le lien d'accès à l’audit et aux livrables.<br />Format attendu : nom@domaine.fr
         </template>
       </DsfrField>
 
@@ -93,7 +92,7 @@ function fillSettings() {
         v-model="nameValue"
         class="fr-mb-6w"
         label="Prénom et nom (optionnel)"
-        hint="Sera affiché dans le rappport de l’audit pour aider le demandeur de l’audit à vous identifier s’il a des questions ou besoin d’aide."
+        hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question."
       />
     </div>
 

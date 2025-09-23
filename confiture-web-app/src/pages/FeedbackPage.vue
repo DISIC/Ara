@@ -189,8 +189,7 @@ const previousPageName =
         <h2 class="fr-text--md fr-text--bold fr-mb-1v">
           Quelles sont vos remarques générales ?
         </h2>
-        <span class="fr-hint-text">Vous pouvez détailler les problèmes que vous avez rencontrés ou
-          simplement nous dire ce qui vous plaît ou vous déplait</span>
+        <span class="fr-hint-text">Indiquez ce que vous aimez, n'aimez pas ou les problèmes rencontrés.</span>
       </label>
       <textarea
         id="general-feedback"
@@ -207,7 +206,7 @@ const previousPageName =
         </h2>
 
         <span class="fr-hint-text">
-          Vous pouvez exprimer vos besoins ou proposer vos idées d’amélioration
+          Indiquez vos besoins ou proposez-nous vos idées d'amélioration.
         </span>
       </label>
       <textarea id="changes" v-model="suggestions" class="fr-input" required></textarea>
@@ -218,8 +217,7 @@ const previousPageName =
         <fieldset class="fr-fieldset">
           <legend class="fr-fieldset__legend fr-text--regular">
             <h2 class="fr-text--md fr-text--bold fr-mb-1v">
-              Si besoin, accepteriez-vous d’être contacté par l’équipe de
-              conception ?
+              Si besoin, acceptez-vous d’être contacté par l’équipe de conception ?
             </h2>
             <span class="fr-hint-text">Nous pourrions vous soliciter pour des
               tests utilisateur ou pour échanger sur vos besoins</span>
@@ -257,8 +255,7 @@ const previousPageName =
           v-model="name"
           class="narrow-content"
           type="text"
-          label="Je m’appelle"
-          hint="Au format : Prénom Nom"
+          label="Prénom et nom"
           required
         />
 
@@ -267,15 +264,16 @@ const previousPageName =
           v-model="email"
           class="narrow-content"
           type="email"
-          label="Mon adresse e-mail"
-          hint="Au format : prenom@domaine.fr"
+          label="Adresse e-mail"
+          hint="Format attendu : nom@domaine.fr"
           required
         />
 
         <div class="fr-form-group narrow-content">
           <fieldset class="fr-fieldset">
             <legend class="fr-fieldset__legend fr-text--regular">
-              Je suis
+              Fonction(s)
+              <span class="fr-hint-text">Sélectionnez une ou plusieurs fonctions que vous exercez.</span>
             </legend>
             <div class="fr-fieldset__content">
               <div

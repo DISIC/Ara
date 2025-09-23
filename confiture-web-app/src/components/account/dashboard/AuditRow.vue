@@ -291,11 +291,11 @@ function copyStatementLink(uniqueId: string) {
     <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
-        title="Options"
+        title="Actions"
         :align-left="windowWidth < 880"
         :button-props="{
           class: 'fr-btn--tertiary',
-          ariaLabel: `Options de l’audit ${audit.procedureName}`
+          ariaLabel: `Actions de l’audit ${audit.procedureName}`
         }"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
@@ -416,6 +416,7 @@ function copyStatementLink(uniqueId: string) {
   <DeleteModal
     :id="audit.editUniqueId"
     ref="deleteModal"
+    :procedure-name="audit.procedureName"
     @confirm="deleteAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
