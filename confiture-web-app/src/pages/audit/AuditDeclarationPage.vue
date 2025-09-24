@@ -44,6 +44,10 @@ const tools = computed(() => {
   return [...defaultTools.value, ...customTools.value].filter(Boolean);
 });
 
+const hasNoTools = computed(() => {
+  return hasSubmitted.value && tools.value.length === 0;
+});
+
 const AVAILABLE_DEFAULT_TOOLS = [
   { name: "Web Developer Toolbar", lang: "en" },
   { name: "Colour Contrast Analyser", lang: "en" },
@@ -59,7 +63,6 @@ const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 
 // Other data
 
-// const auditInitiator = ref("");
 const auditInitiator = useFormField("" as string, [
   REQUIRED("Champ obligatoire. Saisissez l’entité ayant demandé l’audit.")
 ]);
@@ -377,38 +380,41 @@ const isDevMode = useDevMode();
       @update:model-value="technologies.value.value = $event"
     />
 
-    <div class="fr-form-group">
-      <fieldset class="fr-fieldset fr-mb-4w">
-        <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
-          <h2 class="fr-h4 fr-mb-0">
-            Outils d’assistance utilisés pour vérifier l’accessibilité
-          </h2>
-        </legend>
-        <div class="fr-fieldset__content">
-          <div
-            v-for="(tool, i) in AVAILABLE_DEFAULT_TOOLS"
-            :key="i"
-            class="fr-checkbox-group"
-          >
-            <input
-              :id="`tool-${i}`"
-              v-model="defaultTools"
-              type="checkbox"
-              :value="tool.name"
-            />
-            <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
-              {{ tool.name }}
-            </label>
+    <div class="fr-input-group" :class="{ 'fr-input-group--error': hasNoTools }">
+      <div class="fr-form-group">
+        <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': hasNoTools }">
+          <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
+            <h2 class="fr-h4 fr-mb-0">
+              Outils d’assistance utilisés pour vérifier l’accessibilité
+            </h2>
+          </legend>
+          <div class="fr-fieldset__content">
+            <div
+              v-for="(tool, i) in AVAILABLE_DEFAULT_TOOLS"
+              :key="i"
+              class="fr-checkbox-group"
+            >
+              <input
+                :id="`tool-${i}`"
+                v-model="defaultTools"
+                type="checkbox"
+                :value="tool.name"
+              />
+              <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
+                {{ tool.name }}
+              </label>
+            </div>
           </div>
-        </div>
-      </fieldset>
-    </div>
+        </fieldset>
+      </div>
 
-    <TagListField
-      v-model="customTools"
-      label="Ajouter des outils d’assistance"
-      add-label="les outils d’assistance"
-    />
+      <TagListField
+        v-model="customTools"
+        label="Ajouter des outils d’assistance"
+        add-label="les outils d’assistance"
+        :error="hasNoTools ? 'Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.' : undefined"
+      />
+    </div>
 
     <TestEnvironmentSelection v-model="environments" />
 
