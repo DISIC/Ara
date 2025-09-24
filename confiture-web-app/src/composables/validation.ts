@@ -68,3 +68,7 @@ export function URL(msg: string): ValidationRule<string> {
 export function EQUAL(target: string, msg: string): ValidationRule<string> {
   return value => !!value && value !== target && msg;
 }
+
+export function ARRAY_LENGTH(minLength: number, msg: string): ValidationRule<any[]> {
+  return value => !!value && value.length < minLength && msg;
+}

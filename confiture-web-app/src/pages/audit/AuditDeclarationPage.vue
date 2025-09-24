@@ -12,6 +12,7 @@ import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import {
+  ARRAY_LENGTH,
   REQUIRED,
   URL,
   useFormField,
@@ -33,7 +34,8 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-const technologies = ref<string[]>([]);
+// const technologies = ref<string[]>([]);
+const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "ljsdlfj")]);
 
 const customTools = ref<string[]>([]);
 const defaultTools = ref<string[]>([]);
@@ -95,7 +97,7 @@ watch(
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
-    technologies.value = audit.technologies.length
+    technologies.value.value = audit.technologies.length
       ? structuredClone(toRaw(audit.technologies))
       : [];
 
@@ -134,7 +136,12 @@ const hasNoContactInfo = computed(() => {
 function handleSubmit() {
   hasSubmitted.value = true;
 
-  if (!validate(auditInitiator, auditorOrganisation, procedureUrl)) {
+  if (!validate(
+    auditInitiator,
+    auditorOrganisation,
+    procedureUrl,
+    technologies
+  )) {
     return;
   }
 
@@ -154,7 +161,7 @@ function handleSubmit() {
     contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
-    technologies: technologies.value,
+    technologies: technologies.value.value,
     environments: environments.value,
     tools: tools.value,
 
@@ -194,7 +201,7 @@ function DEBUG_fillFields() {
   contactEmail.value = "philipinne-jolivet@example.com";
   contactFormUrl.value = "https://example.com/contact";
 
-  technologies.value = ["HTML", "CSS"];
+  technologies.value.value = ["HTML", "CSS"];
 
   defaultTools.value = [AVAILABLE_DEFAULT_TOOLS[2].name];
   customTools.value = ["Firefox Devtools", "AXE Webextension"];
@@ -361,10 +368,13 @@ const isDevMode = useDevMode();
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
     <TagListField
-      v-model="technologies"
+      :ref="technologies.refFn"
+      :model-value="technologies.value.value"
+      :error="technologies.error.value"
       label="Ajouter des technologies"
       hint="Exemples : HTML, CSS, Javascript"
       add-label="les technologies"
+      @update:model-value="technologies.value.value = $event"
     />
 
     <div class="fr-form-group">
