@@ -39,8 +39,8 @@ function onSubmit() {
       required
       :model-value="email.value.value"
       :error="email.error.value"
-      @update:model-value="email.value.value = $event"
       class="field-wrapper"
+      @update:model-value="email.value.value = $event"
     />
 
     <ul

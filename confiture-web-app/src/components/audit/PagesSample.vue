@@ -32,8 +32,12 @@ const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 const pageUrlFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 const pages = ref(props.modelValue);
-const pageNameErrors = ref<Array<string | undefined>>(props.modelValue.map(() => undefined));
-const pageUrlErrors = ref<Array<string | undefined>>(props.modelValue.map(() => undefined));
+const pageNameErrors = ref<Array<string | undefined>>(
+  props.modelValue.map(() => undefined)
+);
+const pageUrlErrors = ref<Array<string | undefined>>(
+  props.modelValue.map(() => undefined)
+);
 
 watch(
   () => props.modelValue,
