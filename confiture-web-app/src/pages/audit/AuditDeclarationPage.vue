@@ -83,8 +83,8 @@ const procedureUrl = useFormField("" as string, [
 
 const contactName = ref("");
 
-const contactEmail = useFormField("" as string, [EMAIL("email banane !")]);
-const contactFormUrl = useFormField("" as string, [URL("url banane !")]);
+const contactEmail = useFormField("" as string, [EMAIL("")]);
+const contactFormUrl = useFormField("" as string, [URL("")]);
 
 const notCompliantContent = ref("");
 const derogatedContent = ref("");
