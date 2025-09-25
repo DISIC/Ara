@@ -335,14 +335,14 @@ onMounted(() => {
                 <component
                   :is="isOffline ? 'button' : 'RouterLink'"
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left"
-                  :to="{
+                  :to="isOffline ? undefined : {
                     name: 'report',
                     params: {
                       uniqueId: auditStore.currentAudit?.consultUniqueId
                     }
                   }"
                   target="_blank"
-                  :disabled="isOffline"
+                  :disabled="isOffline ? true : undefined"
                 >
                   Consulter le rapport
                   <span class="fr-sr-only">(nouvelle fenêtre)</span>
