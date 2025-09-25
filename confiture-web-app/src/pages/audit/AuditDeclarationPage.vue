@@ -13,6 +13,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import {
   ARRAY_LENGTH,
+  EMAIL,
   REQUIRED,
   URL,
   useFormField,
@@ -81,8 +82,10 @@ const procedureUrl = useFormField("" as string, [
 ]);
 
 const contactName = ref("");
-const contactEmail = ref("");
-const contactFormUrl = ref("");
+
+const contactEmail = useFormField("" as string, [EMAIL("email banane !")]);
+const contactFormUrl = useFormField("" as string, [URL("url banane !")]);
+
 const notCompliantContent = ref("");
 const derogatedContent = ref("");
 const notInScopeContent = ref("");
@@ -97,8 +100,8 @@ watch(
     auditorOrganisation.value.value = audit.auditorOrganisation ?? "";
     procedureUrl.value.value = audit.procedureUrl ?? "";
     contactName.value = audit.contactName ?? "";
-    contactEmail.value = audit.contactEmail ?? "";
-    contactFormUrl.value = audit.contactFormUrl ?? "";
+    contactEmail.value.value = audit.contactEmail ?? "";
+    contactFormUrl.value.value = audit.contactFormUrl ?? "";
 
     technologies.value.value = audit.technologies.length
       ? structuredClone(toRaw(audit.technologies))
@@ -131,26 +134,49 @@ const notify = useNotifications();
 const router = useRouter();
 
 const contactSectionRef = ref<HTMLFieldSetElement>();
-const contactEmailRef = ref<HTMLInputElement>();
 const toolsSectionRef = ref<HTMLDivElement>();
 const hasSubmitted = ref(false);
 const hasNoContactInfo = computed(() => {
-  return hasSubmitted.value && !contactEmail.value && !contactFormUrl.value;
+  return hasSubmitted.value && !contactEmail.value.value
+         && !contactFormUrl.value.value;
 });
 
 const testEnvironmentSelectionRef =
   ref<InstanceType<typeof TestEnvironmentSelection>>();
 
+function validateContactInfo() {
+  if (hasNoContactInfo.value) {
+    contactSectionRef.value?.focus();
+    return false;
+  }
+  return true;
+}
+
+function validateTools() {
+  if (hasNoTools.value) {
+    toolsSectionRef.value?.focus();
+    return false;
+  }
+  return true;
+}
+
 function handleSubmit() {
   hasSubmitted.value = true;
 
   // TODO: validate everything together
-  const isValid = [testEnvironmentSelectionRef.value?.validate(), validate(
-    auditInitiator,
-    auditorOrganisation,
-    procedureUrl,
-    technologies
-  )].every(Boolean);
+  const isValid = [
+    testEnvironmentSelectionRef.value?.validate(),
+    validateTools(),
+    validate(
+      auditInitiator,
+      auditorOrganisation,
+      procedureUrl,
+      contactEmail,
+      contactFormUrl,
+      technologies
+    ),
+    validateContactInfo()
+  ].every(Boolean);
 
   if (!isValid) {
     return;
@@ -173,8 +199,8 @@ function handleSubmit() {
     auditorOrganisation: auditorOrganisation.value.value,
     procedureUrl: procedureUrl.value.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value) || null,
-    contactFormUrl: contactFormUrl.value.trim() || null,
+    contactEmail: formatEmail(contactEmail.value.value) || null,
+    contactFormUrl: contactFormUrl.value.value.trim() || null,
     contactName: contactName.value,
 
     technologies: technologies.value.value,
@@ -214,8 +240,8 @@ function DEBUG_fillFields() {
   auditInitiator.value.value = "Mairie de Tours";
   auditorOrganisation.value.value = "Web Audit Services Corp.";
   procedureUrl.value.value = "https://example.com";
-  contactEmail.value = "philipinne-jolivet@example.com";
-  contactFormUrl.value = "https://example.com/contact";
+  contactEmail.value.value = "philipinne-jolivet@example.com";
+  contactFormUrl.value.value = "https://example.com/contact";
 
   technologies.value.value = ["HTML", "CSS"];
 
@@ -355,35 +381,38 @@ const isDevMode = useDevMode();
       >
         <DsfrField
           id="contact-email"
-          v-model="contactEmail"
+          :ref="contactEmail.refFn"
+          :model-value="contactEmail.value.value"
           label="Adresse e-mail de contact"
           hint="Format attendu : nom@domaine.fr"
           type="email"
           :error="
             hasNoContactInfo
               ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
-              : undefined
+              : contactEmail.error.value
           "
-          hide-error
+          :hide-error="hasNoContactInfo"
           class="fr-mb-3v"
+          @update:model-value="contactEmail.value.value = $event"
         />
 
         <p class="fr-mb-3v"><em>Ou</em></p>
 
         <DsfrField
           id="contact-form-url"
-          v-model="contactFormUrl"
+          :ref="contactFormUrl.refFn"
+          :model-value="contactFormUrl.value.value"
           label="Formulaire de contact en ligne"
           hint="Exemple : contact@ministere.gouv.fr"
-          type="text"
-          :pattern="URL_REGEX"
+          type="url"
           placeholder="https://"
           :error="
             hasNoContactInfo
               ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
-              : undefined
+              : contactFormUrl.error.value
           "
-          hide-error
+          :hide-error="hasNoContactInfo"
+          @update:model-value="contactFormUrl.value.value = $event"
         >
           <template #hint>
             Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
