@@ -76,7 +76,7 @@ const procedureUrl = useFormField("" as string, [
     "Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité."
   ),
   URL(
-    "URL invalide. Saisissez une URL valide commeçant par \"https://\" ou \"http://\""
+    "URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\""
   )
 ]);
 
