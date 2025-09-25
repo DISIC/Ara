@@ -35,7 +35,7 @@ const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
 // const technologies = ref<string[]>([]);
-const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "ljsdlfj")]);
+const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "Indiquez les technologies utilisées sur le site.")]);
 
 const customTools = ref<string[]>([]);
 const defaultTools = ref<string[]>([]);
@@ -130,26 +130,39 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
+const contactSectionRef = ref<HTMLFieldSetElement>();
 const contactEmailRef = ref<HTMLInputElement>();
+const toolsSectionRef = ref<HTMLDivElement>();
 const hasSubmitted = ref(false);
 const hasNoContactInfo = computed(() => {
   return hasSubmitted.value && !contactEmail.value && !contactFormUrl.value;
 });
 
+const testEnvironmentSelectionRef =
+  ref<InstanceType<typeof TestEnvironmentSelection>>();
+
 function handleSubmit() {
   hasSubmitted.value = true;
 
-  if (!validate(
+  // TODO: validate everything together
+  const isValid = [testEnvironmentSelectionRef.value?.validate(), validate(
     auditInitiator,
     auditorOrganisation,
     procedureUrl,
     technologies
-  )) {
+  )].every(Boolean);
+
+  if (!isValid) {
     return;
   }
 
-  if (!contactEmail.value && !contactFormUrl.value) {
-    contactEmailRef.value?.focus();
+  if (hasNoContactInfo.value) {
+    contactSectionRef.value?.focus();
+    return;
+  }
+
+  if (hasNoTools.value) {
+    toolsSectionRef.value?.focus();
     return;
   }
 
@@ -309,7 +322,7 @@ const isDevMode = useDevMode();
     </DsfrField>
 
     <fieldset
-      class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
+      class="fr-fieldset  fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
     >
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
@@ -328,11 +341,18 @@ const isDevMode = useDevMode();
         type="text"
       />
 
-      <p class="fr-mb-2w">
+      <p id="contact-section-subtitle" class="fr-mb-2w">
         Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
-      <div class="fr-input-group" :class="{ 'fr-input-group--error': hasNoContactInfo }">
+      <div
+        ref="contactSectionRef"
+        tabindex="-1"
+        role="region"
+        aria-labelledby="contact-section-subtitle"
+        aria-describedby="contact-section-error"
+        class="fr-input-group" :class="{ 'fr-input-group--error': hasNoContactInfo }"
+      >
         <DsfrField
           id="contact-email"
           v-model="contactEmail"
@@ -344,8 +364,11 @@ const isDevMode = useDevMode();
               ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
               : undefined
           "
+          hide-error
           class="fr-mb-3v"
         />
+
+        <p class="fr-mb-3v"><em>Ou</em></p>
 
         <DsfrField
           id="contact-form-url"
@@ -360,11 +383,15 @@ const isDevMode = useDevMode();
               ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
               : undefined
           "
+          hide-error
         >
           <template #hint>
             Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
           </template>
         </DsfrField>
+        <p v-if="hasNoContactInfo" id="contact-section-error" class="fr-error-text fr-mt-0">
+          Champ obligatoire. Saisissez au moins un des deux moyens de contact.
+        </p>
       </div>
     </fieldset>
 
@@ -380,11 +407,11 @@ const isDevMode = useDevMode();
       @update:model-value="technologies.value.value = $event"
     />
 
-    <div class="fr-input-group" :class="{ 'fr-input-group--error': hasNoTools }">
+    <div ref="toolsSectionRef" tabindex="-1" role="region" aria-labelledby="tools-section-title" aria-describedby="tools-section-error" class="fr-input-group" :class="{ 'fr-input-group--error': hasNoTools }">
       <div class="fr-form-group">
         <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': hasNoTools }">
           <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
-            <h2 class="fr-h4 fr-mb-0">
+            <h2 id="tools-section-title" class="fr-h4 fr-mb-0">
               Outils d’assistance utilisés pour vérifier l’accessibilité
             </h2>
           </legend>
@@ -412,11 +439,14 @@ const isDevMode = useDevMode();
         v-model="customTools"
         label="Ajouter des outils d’assistance"
         add-label="les outils d’assistance"
-        :error="hasNoTools ? 'Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.' : undefined"
       />
+
+      <p v-if="hasNoTools" id="tools-section-error" class="fr-error-text fr-mt-0">
+        Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.
+      </p>
     </div>
 
-    <TestEnvironmentSelection v-model="environments" />
+    <TestEnvironmentSelection ref="testEnvironmentSelectionRef" v-model="environments" />
 
     <h2 class="fr-h4">Contenus non accessibles</h2>
 

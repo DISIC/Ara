@@ -2,6 +2,7 @@
 import { uniqWith } from "lodash-es";
 import { nextTick, ref, watch } from "vue";
 
+import { useUniqueId } from "../../../composables/useUniqueId";
 import { Platform } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
 import DsfrField from "../../ui/DsfrField.vue";
@@ -21,6 +22,10 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", payload: Omit<AuditEnvironment, "id">[]): void;
 }>();
+
+defineExpose({
+  validate
+});
 
 /** List of selected desktop environement combinations */
 const selectedDesktopEnvironments = ref<string[]>(
@@ -150,109 +155,141 @@ function combineEnvironments(
     }
   );
 }
+
+const sectionError = ref<string>();
+const testEnvironmentRef = ref<HTMLDivElement>();
+
+function validate() {
+  sectionError.value = undefined;
+
+  if (props.modelValue.length === 0) {
+    sectionError.value = "Indiquez les environnements de test.";
+    testEnvironmentRef.value?.focus();
+    return false;
+  }
+
+  return true;
+}
+
+const uniqueId = useUniqueId();
+const errorId = "error-" + uniqueId.value;
 </script>
 
 <template>
-  <div class="narrow-content">
-    <h2 class="fr-h4">Environnements de test</h2>
-    <p>
-      Nous vous proposons par défaut les combinaisons d’environnements de test prévus par le RGAA. Il revient à l’auditeur ou à l’auditrice, en concertation avec les responsables du site, de définir les environnements en fonction du contexte d’usage du site.<br />Vous pouvez ajouter d’autres environnements de test.
+  <div
+    ref="testEnvironmentRef"
+    class="fr-input-group fr-mb-6w"
+    :class="{ 'fr-input-group--error': sectionError }"
+    role="region"
+    :aria-describedby="sectionError ? errorId : undefined"
+    aria-labelledby="test-environment-section-title"
+    tabindex="-1"
+  >
+    <div class="narrow-content">
+      <h2 id="test-environment-section-title" class="fr-h4">Environnements de test</h2>
+      <p>
+        Nous vous proposons par défaut les combinaisons d’environnements de test prévus par le RGAA. Il revient à l’auditeur ou à l’auditrice, en concertation avec les responsables du site, de définir les environnements en fonction du contexte d’usage du site.<br />Vous pouvez ajouter d’autres environnements de test.
+      </p>
+    </div>
+
+    <div class="fr-mb-3w suggested-environments">
+      <AuditEnvironmentCheckbox
+        v-for="env in desktopCombinations"
+        :key="env.title"
+        v-model="selectedDesktopEnvironments"
+        :value="env.title"
+        :platform="Platform.DESKTOP"
+        :title="env.title"
+        :combinations="env.environments"
+      />
+    </div>
+
+    <div class="fr-mb-4w suggested-environments">
+      <AuditEnvironmentCheckbox
+        v-for="env in mobileCombinations"
+        :key="env.title"
+        v-model="selectedMobileEnvironments"
+        :value="env.title"
+        :platform="Platform.MOBILE"
+        :title="env.title"
+        :combinations="env.environments"
+      />
+    </div>
+
+    <h3 class="fr-text--lg fr-mb-5v">Environnements de test personnalisés</h3>
+
+    <div v-if="customEnvironments.length" class="fr-mb-3w custom-environment">
+      <fieldset
+        v-for="(env, i) in customEnvironments"
+        :key="i"
+        class="fr-p-3w fr-m-0 env-card"
+      >
+        <legend class="env-legend">
+          <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
+        </legend>
+        <button
+          class="fr-btn fr-btn--tertiary-no-outline env-delete-button"
+          type="button"
+          @click="deleteEnvironment(i)"
+        >
+          Supprimer
+        </button>
+
+        <DsfrField
+          :id="`env-device-${i}`"
+          ref="envPlatformRefs"
+          v-model="env.platform"
+          class="fr-m-0"
+          label="Appareil"
+          hint="Exemples : mobile, borne interactive"
+          type="text"
+          :required="customEnvironments.length > 1"
+        />
+
+        <DsfrField
+          :id="`env-os-${i}`"
+          v-model="env.operatingSystem"
+          class="fr-m-0"
+          label="Logiciel d’exploitation"
+          hint="Exemple : macOS"
+          type="text"
+          :required="customEnvironments.length > 1"
+        />
+
+        <DsfrField
+          :id="`env-at-${i}`"
+          v-model="env.assistiveTechnology"
+          class="fr-m-0"
+          label="Technologie d’assistance"
+          hint="Exemple : VoiceOver"
+          type="text"
+          :required="customEnvironments.length > 1"
+        />
+
+        <DsfrField
+          :id="`env-browser-${i}`"
+          v-model="env.browser"
+          label="Navigateur"
+          hint="Exemple : Safari"
+          type="text"
+          :required="customEnvironments.length > 1"
+        />
+      </fieldset>
+    </div>
+
+    <button
+      ref="addEnvironmentButtonRef"
+      type="button"
+      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line"
+      @click="addEnvironment"
+    >
+      Ajouter un environnement de test
+    </button>
+
+    <p v-if="sectionError" :id="errorId" class="fr-error-text">
+      {{ sectionError }}
     </p>
   </div>
-
-  <div class="fr-mb-3w suggested-environments">
-    <AuditEnvironmentCheckbox
-      v-for="env in desktopCombinations"
-      :key="env.title"
-      v-model="selectedDesktopEnvironments"
-      :value="env.title"
-      :platform="Platform.DESKTOP"
-      :title="env.title"
-      :combinations="env.environments"
-    />
-  </div>
-
-  <div class="fr-mb-4w suggested-environments">
-    <AuditEnvironmentCheckbox
-      v-for="env in mobileCombinations"
-      :key="env.title"
-      v-model="selectedMobileEnvironments"
-      :value="env.title"
-      :platform="Platform.MOBILE"
-      :title="env.title"
-      :combinations="env.environments"
-    />
-  </div>
-
-  <h3 class="fr-text--lg fr-mb-5v">Environnements de test personnalisés</h3>
-
-  <div v-if="customEnvironments.length" class="fr-mb-3w custom-environment">
-    <fieldset
-      v-for="(env, i) in customEnvironments"
-      :key="i"
-      class="fr-p-3w fr-m-0 env-card"
-    >
-      <legend class="env-legend">
-        <h3 class="fr-h6 fr-mb-0">Environnement {{ i + 1 }}</h3>
-      </legend>
-      <button
-        class="fr-btn fr-btn--tertiary-no-outline env-delete-button"
-        type="button"
-        @click="deleteEnvironment(i)"
-      >
-        Supprimer
-      </button>
-
-      <DsfrField
-        :id="`env-device-${i}`"
-        ref="envPlatformRefs"
-        v-model="env.platform"
-        class="fr-m-0"
-        label="Appareil"
-        hint="Exemples : mobile, borne interactive"
-        type="text"
-        :required="customEnvironments.length > 1"
-      />
-
-      <DsfrField
-        :id="`env-os-${i}`"
-        v-model="env.operatingSystem"
-        class="fr-m-0"
-        label="Logiciel d’exploitation"
-        hint="Exemple : macOS"
-        type="text"
-        :required="customEnvironments.length > 1"
-      />
-
-      <DsfrField
-        :id="`env-at-${i}`"
-        v-model="env.assistiveTechnology"
-        class="fr-m-0"
-        label="Technologie d’assistance"
-        hint="Exemple : VoiceOver"
-        type="text"
-        :required="customEnvironments.length > 1"
-      />
-
-      <DsfrField
-        :id="`env-browser-${i}`"
-        v-model="env.browser"
-        label="Navigateur"
-        hint="Exemple : Safari"
-        type="text"
-        :required="customEnvironments.length > 1"
-      />
-    </fieldset>
-  </div>
-
-  <button
-    ref="addEnvironmentButtonRef"
-    type="button"
-    class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mb-6w"
-    @click="addEnvironment"
-  >
-    Ajouter un environnement de test
-  </button>
 </template>
 
 <style scoped>

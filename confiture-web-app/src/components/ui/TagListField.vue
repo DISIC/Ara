@@ -103,7 +103,7 @@ const listId = useUniqueId();
       </button>
     </template>
   </DsfrField>
-  <ul class="fr-tags-group fr-mb-5v">
+  <ul v-if="tags.length" class="fr-tags-group fr-mb-5v">
     <li v-for="([uid, tag], i) in tags" :key="uid">
       <button
         ref="tagButtonsRefs"

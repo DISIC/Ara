@@ -10,6 +10,7 @@ const props = defineProps<{
   pattern?: RegExp;
   title?: string;
   error?: string;
+  hideError?: boolean;
   id: string;
   autocomplete?: string;
 }>();
@@ -45,7 +46,7 @@ defineExpose({
       ref="inputRef"
       :class="['fr-input', { 'fr-input--error': isError }]"
       :type="type"
-      :aria-describedby="isError ? errorId : undefined"
+      :aria-describedby="(isError && hideError) ? errorId : undefined"
       :required="required"
       :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
       :title="title"
@@ -57,7 +58,7 @@ defineExpose({
     />
     <slot name="trailing" />
 
-    <p v-if="isError" :id="errorId" class="fr-error-text">
+    <p v-if="isError && !hideError" :id="errorId" class="fr-error-text">
       {{ error }}
     </p>
   </div>
