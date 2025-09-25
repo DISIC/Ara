@@ -3,6 +3,7 @@ import { uniqWith } from "lodash-es";
 import { nextTick, ref, watch } from "vue";
 
 import { useUniqueId } from "../../../composables/useUniqueId";
+import { REQUIRED } from "../../../composables/validation";
 import { Platform } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
 import DsfrField from "../../ui/DsfrField.vue";
@@ -60,6 +61,9 @@ watch(
 );
 
 const envPlatformRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+const envOsRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+const envAtRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+const envBrowserRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 const addEnvironmentButtonRef = ref<HTMLButtonElement>();
 
 /**
@@ -159,16 +163,62 @@ function combineEnvironments(
 const sectionError = ref<string>();
 const testEnvironmentRef = ref<HTMLDivElement>();
 
+const envPlatformErrors =
+  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
+const envOperatingSystemErrors =
+ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
+const envAssistiveTechnologyErrors =
+  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
+const envBrowserErrors =
+  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
+
 function validate() {
+  let isValid = true;
   sectionError.value = undefined;
 
   if (props.modelValue.length === 0) {
     sectionError.value = "Indiquez les environnements de test.";
     testEnvironmentRef.value?.focus();
-    return false;
+    isValid = false;
   }
 
-  return true;
+  const platformIsRequired = REQUIRED("Champ obligatoire. Saisissez l’appareil");
+  const osIsRequired = REQUIRED("Champ obligatoire. Saisissez le logiciel d’exploitation.");
+  const atIsRequired = REQUIRED("Champ obligatoire. Saisissez la technologie d’assistance.");
+  const browserIsRequired = REQUIRED("Champ obligatoire. Saisissez le navigateur.");
+
+  for (let i = customEnvironments.value.length - 1; i >= 0; i--) {
+    const { platform, operatingSystem, assistiveTechnology, browser }
+      = customEnvironments.value[i];
+
+    envPlatformErrors.value[i] = platformIsRequired(platform) || undefined;
+    envOperatingSystemErrors.value[i] =
+      osIsRequired(operatingSystem) || undefined;
+    envAssistiveTechnologyErrors.value[i] =
+      atIsRequired(assistiveTechnology) || undefined;
+    envBrowserErrors.value[i] = browserIsRequired(browser) || undefined;
+
+    if (envBrowserErrors.value[i]) {
+      envBrowserRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+
+    if (envAssistiveTechnologyErrors.value[i]) {
+      envAtRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+
+    if (envOperatingSystemErrors.value[i]) {
+      envOsRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+    if (envPlatformErrors.value[i]) {
+      envPlatformRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+  }
+
+  return isValid;
 }
 
 const uniqueId = useUniqueId();
@@ -244,35 +294,42 @@ const errorId = "error-" + uniqueId.value;
           hint="Exemples : mobile, borne interactive"
           type="text"
           :required="customEnvironments.length > 1"
+          :error="envPlatformErrors[i]"
         />
 
         <DsfrField
           :id="`env-os-${i}`"
+          ref="envOsRefs"
           v-model="env.operatingSystem"
           class="fr-m-0"
           label="Logiciel d’exploitation"
           hint="Exemple : macOS"
           type="text"
           :required="customEnvironments.length > 1"
+          :error="envOperatingSystemErrors[i]"
         />
 
         <DsfrField
           :id="`env-at-${i}`"
+          ref="envAtRefs"
           v-model="env.assistiveTechnology"
           class="fr-m-0"
           label="Technologie d’assistance"
           hint="Exemple : VoiceOver"
           type="text"
           :required="customEnvironments.length > 1"
+          :error="envAssistiveTechnologyErrors[i]"
         />
 
         <DsfrField
           :id="`env-browser-${i}`"
+          ref="envBrowserRefs"
           v-model="env.browser"
           label="Navigateur"
           hint="Exemple : Safari"
           type="text"
           :required="customEnvironments.length > 1"
+          :error="envBrowserErrors[i]"
         />
       </fieldset>
     </div>

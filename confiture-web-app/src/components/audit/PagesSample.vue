@@ -2,10 +2,10 @@
 import { nextTick, ref, watch } from "vue";
 
 import { useNotifications } from "../../composables/useNotifications";
+import { REQUIRED, URL } from "../../composables/validation";
 import { AuditPage } from "../../types";
 import { URL_REGEX } from "../../utils";
 import DsfrField from "../ui/DsfrField.vue";
-import { REQUIRED, URL } from "../../composables/validation";
 
 const props = defineProps<{
   modelValue: Omit<AuditPage, "id" | "order">[];
@@ -29,18 +29,18 @@ const notify = useNotifications();
 
 const positionSuccessMessage = ref("");
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
-const pageUrlFieldRefs = ref<InstanceType<typeof DsfrField>[]>([])
+const pageUrlFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 const pages = ref(props.modelValue);
-const pageNameErrors = ref<Array<string|undefined>>(props.modelValue.map(() => undefined))
-const pageUrlErrors = ref<Array<string|undefined>>(props.modelValue.map(() => undefined))
+const pageNameErrors = ref<Array<string | undefined>>(props.modelValue.map(() => undefined));
+const pageUrlErrors = ref<Array<string | undefined>>(props.modelValue.map(() => undefined));
 
 watch(
   () => props.modelValue,
   (newValue) => {
     pages.value = newValue;
-    pageNameErrors.value = newValue.map(() => undefined)
-    pageUrlErrors.value = newValue.map(() => undefined)
+    pageNameErrors.value = newValue.map(() => undefined);
+    pageUrlErrors.value = newValue.map(() => undefined);
   }
 );
 
@@ -113,32 +113,29 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 
 /** Validate page fields and focus the first invalid one if any. */
 function validate(): boolean {
-  pageNameErrors.value[0] = "Champ obligatoire. Saisissez le nom de la page."
-  pageNameFieldRefs.value.at(0)?.focus()
+  const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page.");
+  const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page.");
+  const urlIsValid = URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\".");
 
-  const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page.")
-  const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page.")
-  const urlIsValid = URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\".")
+  let isValid = true;
 
-  let isValid = true
-  
   for (let i = pages.value.length - 1; i >= 0; i--) {
-    const {name, url} = pages.value[i];
-    
-    pageNameErrors.value[i] = nameIsRequired(name) || undefined
-    pageUrlErrors.value[i] = urlIsRequired(url) || urlIsValid(url) || undefined
+    const { name, url } = pages.value[i];
+
+    pageNameErrors.value[i] = nameIsRequired(name) || undefined;
+    pageUrlErrors.value[i] = urlIsRequired(url) || urlIsValid(url) || undefined;
 
     if (pageUrlErrors.value[i]) {
-      pageUrlFieldRefs.value.at(i)?.focus()
-      isValid = false
+      pageUrlFieldRefs.value.at(i)?.focus();
+      isValid = false;
     }
 
     if (pageNameErrors.value[i]) {
-      pageNameFieldRefs.value.at(i)?.focus()
-      isValid = false
+      pageNameFieldRefs.value.at(i)?.focus();
+      isValid = false;
     }
   }
-  return isValid
+  return isValid;
 }
 </script>
 
