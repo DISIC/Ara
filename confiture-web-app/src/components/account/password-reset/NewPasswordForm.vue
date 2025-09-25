@@ -1,41 +1,19 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-
+import { LENGTH, REQUIRED, useFormField, validate } from "../../../composables/validation";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const emit = defineEmits<{
   (e: "submit", newPassword: string): void;
 }>();
 
-const password = ref("");
-const passwordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
-const passwordError = ref<string>();
-
-function validatePasswordField() {
-  passwordError.value = undefined;
-
-  // Empty password
-  if (password.value.length === 0) {
-    passwordError.value =
-      "Champ obligatoire. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    passwordFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  // Invalid password requirement
-  if (password.value.length < 12) {
-    passwordError.value =
-      "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    passwordFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
+const password = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum."),
+  LENGTH(12, "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.")
+]);
 
 function submitPassword() {
-  if (validatePasswordField()) {
-    emit("submit", password.value);
+  if (validate(password)) {
+    emit("submit", password.value.value);
   }
 }
 </script>
@@ -50,15 +28,16 @@ function submitPassword() {
 
     <DsfrPassword
       id="user-password-input"
-      ref="passwordFieldRef"
-      v-model="password"
+      :ref="password.refFn"
+      :model-value="password.value.value"
+      :error="password.error.value"
       class="fr-mb-3w"
-      :error="passwordError"
       label="Mot de passe"
       required
       autocomplete="new-password"
       :min-length="12"
       :requirements="['12 caractères minimum']"
+      @update:model-value="password.value.value = $event"
     />
 
     <ul

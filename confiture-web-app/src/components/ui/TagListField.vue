@@ -9,6 +9,7 @@ const props = defineProps<{
   label: string;
   hint?: string;
   addLabel: string;
+  error?: string;
 }>();
 
 const emit = defineEmits<{
@@ -70,6 +71,9 @@ async function removeTag(at: number) {
 defineExpose({
   flush() {
     addTags();
+  },
+  focus() {
+    inputRef.value?.focus();
   }
 });
 
@@ -86,6 +90,7 @@ const listId = useUniqueId();
     :hint="hint"
     type="text"
     v-bind="$attrs"
+    :error="error"
     @keydown.enter.prevent="addTags"
   >
     <template #trailing>
@@ -98,7 +103,7 @@ const listId = useUniqueId();
       </button>
     </template>
   </DsfrField>
-  <ul class="fr-tags-group fr-mb-5v">
+  <ul v-if="tags.length" class="fr-tags-group fr-mb-5v">
     <li v-for="([uid, tag], i) in tags" :key="uid">
       <button
         ref="tagButtonsRefs"

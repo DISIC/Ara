@@ -7,20 +7,29 @@ import PageMeta from "../../components/PageMeta";
 import DsfrField from "../../components/ui/DsfrField.vue";
 import DsfrPassword from "../../components/ui/DsfrPassword.vue";
 import { useNotifications } from "../../composables/useNotifications";
+import {
+  EMAIL,
+  REQUIRED,
+  useFormField,
+  validate
+} from "../../composables/validation";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
-import { captureWithPayloads, validateEmail } from "../../utils";
+import { captureWithPayloads } from "../../utils";
 
 const showGenericLoginError = ref(false);
 const genericErrorRef = ref<HTMLDivElement>();
 
-const userEmail = ref((history.state.email as string) ?? "");
-const userEmailError = ref<string>();
-const userEmailField = ref<InstanceType<typeof DsfrField>>();
+const userEmail = useFormField<string>((history.state.email as string) ?? "", [
+  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
+  EMAIL(
+    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
+  )
+]);
 
-const userPassword = ref("");
-const userPasswordError = ref<string>();
-const userPasswordRef = ref<InstanceType<typeof DsfrPassword>>();
+const userPassword = useFormField<string>("", [
+  REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")
+]);
 
 const showCreatedAccountAlert = ref(!!history.state.email);
 const showPasswordResetAlert = ref(history.state.passwordReset);
@@ -29,57 +38,20 @@ async function closeAlert() {
   showCreatedAccountAlert.value = false;
   showPasswordResetAlert.value = false;
   await nextTick();
-  userEmailField.value?.inputRef?.focus();
+  userEmail.focusRef.value?.focus();
 }
 
 const store = useAccountStore();
 const router = useRouter();
 const notify = useNotifications();
 
-function validateEmailField() {
-  userEmailError.value = undefined;
-
-  // Empty email
-  if (!userEmail.value.trim()) {
-    userEmailError.value =
-      "Champ obligatoire. Veuillez saisir l'adresse e-mail associée à votre compte";
-    userEmailField.value?.inputRef?.focus();
-    return false;
-  }
-
-  // Invalid email format
-  if (!validateEmail(userEmail.value)) {
-    userEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
-    userEmailField.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
-function validatePasswordField() {
-  userPasswordError.value = undefined;
-
-  // Empty password
-  if (!userPassword.value.length) {
-    userPasswordError.value =
-      "Champ obligatoire. Veuillez saisir votre mot de passe";
-    userPasswordRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
 async function handleSubmit() {
-  if (![validatePasswordField(), validateEmailField()].every((i) => i)) {
-    // Invalid form
+  if (!validate(userEmail, userPassword)) {
     return;
   }
 
   store
-    .login(userEmail.value, userPassword.value)
+    .login(userEmail.value.value, userPassword.value.value)
     .then(() => {
       router.push({ name: "account-dashboard" });
     })
@@ -136,26 +108,28 @@ async function handleSubmit() {
 
       <DsfrField
         id="user-email"
-        ref="userEmailField"
-        v-model="userEmail"
+        :ref="userEmail.refFn"
+        :model-value="userEmail.value.value"
         label="Adresse e-mail"
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         autocomplete="email"
-        :error="userEmailError"
+        :error="userEmail.error.value"
+        @update:model-value="userEmail.value.value = $event"
       />
 
       <DsfrPassword
         id="user-password"
-        ref="userPasswordRef"
-        v-model="userPassword"
+        :ref="userPassword.refFn"
+        :model-value="userPassword.value.value"
         class="fr-my-3w"
-        :error="userPasswordError"
+        :error="userPassword.error.value"
         label="Mot de passe"
         required
         autocomplete="current-password"
         show-forgotten-password-link
+        @update:model-value="userPassword.value.value = $event"
       />
 
       <div class="fr-btns-group">
