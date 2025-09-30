@@ -41,7 +41,7 @@ const partialAudits = [
 
 const procedureName = useFormField(props.auditType ?? "", [
   REQUIRED(
-    "Champ obligatoire. Saisissez le nom du site ou du service à auditer"
+    "Champ obligatoire. Saisissez le nom du site ou du service à auditer."
   )
 ]);
 

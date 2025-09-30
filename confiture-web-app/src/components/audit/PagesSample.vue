@@ -117,8 +117,8 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 
 /** Validate page fields and focus the first invalid one if any. */
 function validate(): boolean {
-  const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page.");
-  const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page.");
+  const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.");
+  const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer.");
   const urlIsValid = URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\".");
 
   let isValid = true;
