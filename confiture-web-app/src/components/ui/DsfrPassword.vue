@@ -43,62 +43,64 @@ defineExpose({
 </script>
 
 <template>
-  <div :class="['fr-password', { 'fr-input-group--error': isError }]">
-    <label class="fr-label" :for="inputId">
-      {{ label }}
-      <span v-if="hint || $slots.hint" class="fr-hint-text">
-        <slot name="hint">{{ hint }}</slot>
-      </span>
-    </label>
-    <div class="fr-input-wrap">
-      <input
-        :id="inputId"
-        ref="inputRef"
-        :class="['fr-password__input fr-input', { 'fr-input--error': isError }]"
-        :aria-describedby="isError ? errorId : requirementsId"
-        :autocomplete="autocomplete"
-        type="password"
-        :required="required"
-        :minlength="minLength"
-        :value="modelValue"
-        @input="
-          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-        "
-      />
-    </div>
-
-    <p v-if="isError" :id="errorId" class="fr-error-text">
-      {{ error }}
-    </p>
-
-    <div
-      v-else-if="requirements?.length"
-      :id="requirementsId"
-      class="fr-messages-group"
-      aria-live="assertive"
-    >
-      <p class="fr-message">Votre mot de passe doit contenir :</p>
-      <p
-        v-for="requirement in requirements"
-        :key="requirement"
-        class="fr-message fr-message--info"
-      >
-        {{ requirement }}
-      </p>
-    </div>
-
-    <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
-      <input
-        :id="toggleId"
-        ref="toggleRef"
-        aria-label="Afficher le mot de passe"
-        type="checkbox"
-      />
-      <label class="fr-password__checkbox fr-label" :for="toggleId">
-        Afficher
+  <div>
+    <div :class="['fr-password', { 'fr-input-group--error': isError }]">
+      <label class="fr-label" :for="inputId">
+        {{ label }}
+        <span v-if="hint || $slots.hint" class="fr-hint-text">
+          <slot name="hint">{{ hint }}</slot>
+        </span>
       </label>
-    </div>
+      <div class="fr-input-wrap">
+        <input
+          :id="inputId"
+          ref="inputRef"
+          :class="['fr-password__input fr-input', { 'fr-input--error': isError }]"
+          :aria-describedby="isError ? errorId : requirementsId"
+          :autocomplete="autocomplete"
+          type="password"
+          :required="required"
+          :minlength="minLength"
+          :value="modelValue"
+          @input="
+            $emit('update:modelValue', ($event.target as HTMLInputElement).value)
+          "
+        />
+      </div>
 
+      <p v-if="isError" :id="errorId" class="fr-error-text fr-m-0">
+        {{ error }}
+      </p>
+
+      <div
+        v-else-if="requirements?.length"
+        :id="requirementsId"
+        class="fr-messages-group"
+        aria-live="assertive"
+      >
+        <p class="fr-message">Votre mot de passe doit contenir :</p>
+        <p
+          v-for="requirement in requirements"
+          :key="requirement"
+          class="fr-message fr-message--info"
+        >
+          {{ requirement }}
+        </p>
+      </div>
+
+      <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
+        <input
+          :id="toggleId"
+          ref="toggleRef"
+          aria-label="Afficher le mot de passe"
+          type="checkbox"
+        />
+        <label class="fr-password__checkbox fr-label" :for="toggleId">
+          Afficher
+        </label>
+      </div>
+
+    </div>
     <p v-if="showForgottenPasswordLink" class="fr-m-0">
       <RouterLink
         :to="{
