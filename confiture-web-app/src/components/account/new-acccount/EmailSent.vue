@@ -32,9 +32,9 @@ async function closeResendSuccessAlert() {
 
     <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu ?</h2>
 
-    <ul class="fr-text--sm">
+    <ul class="fr-text--sm fr-mb-1w">
       <li>Vérifiez votre dossier « courrier indésirable » (spams).</li>
-      <li>Sinon, demandez l’envoi d'un nouvel e-mail en cliquant sur le bouton ci-dessous :</li>
+      <li>Sinon, demandez l’envoi d'un nouvel e-mail.</li>
     </ul>
 
     <button
