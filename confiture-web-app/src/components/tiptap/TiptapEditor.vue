@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, ShallowRef, watch } from "vue";
+import { onBeforeUnmount, ShallowRef, useId, watch } from "vue";
 
-import { useUniqueId } from "../../composables/useUniqueId";
 import { displayedHeadings, tiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
@@ -25,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(["update:modelValue"]);
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 function getContent() {
   let jsonContent = null;

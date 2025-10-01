@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, useId, watch } from "vue";
 import { useRoute } from "vue-router";
-
-import { useUniqueId } from "../../composables/useUniqueId";
 
 defineProps<{
   title: string;
@@ -12,7 +10,7 @@ defineProps<{
   disabled?: boolean;
 }>();
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 const showContent = ref(false);
 const buttonRef = ref<HTMLButtonElement>();
