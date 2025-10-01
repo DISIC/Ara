@@ -121,20 +121,17 @@ defineExpose({ show, hide });
   max-height: 60rem;
 }
 
-@media (min-width: 56rem) {
-  .sidebar :deep(.sidebar-col) {
-    flex: 0 0 56rem;
-    max-width: revert;
-    width: revert;
-  }
+.sidebar :deep(.sidebar-col) {
+  flex: 0 0 56rem;
 }
 
-@media (max-width: 57rem) {
+@media (width < 57rem) {
   .sidebar :deep(.sidebar-col) {
     margin-top: 1rem;
   }
 }
-@media (max-width: 56rem) {
+
+@media (width < 55rem) {
   .sidebar :deep(.sidebar-col) {
     flex: 0 0 100%;
     max-width: 100%;

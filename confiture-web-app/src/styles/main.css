@@ -65,6 +65,17 @@ from DSFR links with `target="_blank"` */
   --danger-bg-hover-color: var(--grey-950-125);
   --danger-text-hover-color: #f55e4b;
   --danger-secondary-text-base-color: var(--background-action-high-error);
+
+  /* Override some DSFR colors in dark mode for better contrast */
+  .fr-btn--secondary:hover,
+  .fr-btn--tertiary:hover,
+  .fr-btn--tertiary-no-outline:hover {
+    background-color: var(--grey-925-125) !important;
+  }
+
+  .fr-tag[type="button"]:hover {
+    color: #bbbbff;
+  }
 }
 
 .danger-button {
@@ -105,17 +116,4 @@ from DSFR links with `target="_blank"` */
 /* Make links in DSFR callout same size as text */
 .fr-callout__text a {
   font-size: inherit !important;
-}
-
-/* Override some DSFR colors in dark mode for better contrast */
-[data-fr-theme="dark"] {
-  .fr-btn--secondary:hover,
-  .fr-btn--tertiary:hover,
-  .fr-btn--tertiary-no-outline:hover {
-    background-color: var(--grey-925-125) !important;
-  }
-
-  .fr-tag[type="button"]:hover {
-    color: #bbbbff;
-  }
 }

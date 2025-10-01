@@ -281,11 +281,9 @@ watch(
 
 .tabs {
   margin: 0;
-
   display: flex;
   gap: 0.25rem;
   list-style: none;
-
   padding: 0;
   overflow-x: auto;
 }
@@ -299,6 +297,7 @@ li {
   --title-spacing: 0;
   --underline-img: none;
   --hover-tint: var(--hover);
+
   align-items: center;
   display: inline-flex;
   flex-direction: row;
@@ -311,7 +310,6 @@ li {
   padding: 0.5rem 1rem;
   position: relative;
   white-space: nowrap;
-  width: -moz-fit-content;
   width: fit-content;
   z-index: 1;
 }
@@ -333,9 +331,9 @@ li {
   --idle: transparent;
   --hover: var(--background-default-grey-hover);
   --active: var(--background-default-grey-active);
+
   background-color: var(--background-default-grey);
   color: var(--text-active-blue-france);
-
   border: 1px solid var(--border-default-grey);
   border-bottom-color: transparent;
   position: relative;
@@ -356,6 +354,7 @@ li {
   --idle: transparent;
   --hover: var(--background-action-low-blue-france-hover);
   --active: var(--background-action-low-blue-france-active);
+
   background-color: var(--background-action-low-blue-france);
   color: var(--text-action-high-grey);
   border: 1px solid transparent;
@@ -370,6 +369,7 @@ li {
   border: 1px solid var(--border-default-grey);
   border-top: none;
   padding: 2rem;
+
   /* Allow tabs to stick to the top of the screen
    * even if content is not high enough: */
   min-height: var(--min-height);

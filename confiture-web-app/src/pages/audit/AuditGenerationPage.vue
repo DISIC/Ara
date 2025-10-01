@@ -270,6 +270,14 @@ watch(
     }
   }
 );
+
+// Reset filter store only when current audit changes
+watch(
+  () => auditStore.currentAuditId,
+  () => {
+    filterStore.$reset();
+  }
+);
 </script>
 
 <template>
@@ -349,6 +357,7 @@ watch(
     --gap: 1rem;
   }
 }
+
 .fr-col-md-1 {
   flex: 0 0 var(--filters-column-width) !important;
 }

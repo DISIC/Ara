@@ -228,6 +228,7 @@ function validate(): boolean {
 
 .page-legend {
   float: left;
+
   /* FIXME: hack to align */
   margin-top: 0.375rem;
 }

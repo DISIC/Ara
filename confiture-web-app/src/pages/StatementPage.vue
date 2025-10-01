@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+import CopyIcon from "../components/icons/CopyIcon.vue";
 import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import { useNotifications } from "../composables/useNotifications";
@@ -201,9 +202,10 @@ const siteUrl = computed(() => {
         </p>
 
         <button
-          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill fr-mb-4w"
+          class="fr-btn fr-btn--secondary fr-mb-4w"
           @click="copyA11yStatementHTML"
         >
+          <CopyIcon class="fr-mr-2v" />
           Copier le code HTML de la déclaration
         </button>
 
