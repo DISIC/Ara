@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, useId, watch } from "vue";
 
-import { useUniqueId } from "../../composables/useUniqueId";
 import DsfrField from "./DsfrField.vue";
 
 const props = defineProps<{
@@ -73,7 +72,7 @@ defineExpose({
   }
 });
 
-const listId = useUniqueId();
+const listId = useId();
 </script>
 
 <template>
