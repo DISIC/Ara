@@ -83,8 +83,20 @@ const procedureUrl = useFormField("" as string, [
 
 const contactName = ref("");
 
-const contactEmail = useFormField("" as string, [EMAIL("")]);
-const contactFormUrl = useFormField("" as string, [URL("")]);
+const contactEmail = useFormField("" as string, [EMAIL("Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr")]);
+const contactFormUrl = useFormField("" as string, [URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\"")]);
+const contactInfoSectionError = ref<string>();
+const contactSectionRef = ref<HTMLFieldSetElement>();
+
+function validateContactInfoSection() {
+  contactInfoSectionError.value = undefined;
+  if (!contactEmail.value.value && !contactFormUrl.value.value) {
+    contactInfoSectionError.value = "Champ obligatoire. Saisissez au moins un des deux moyens de contact.";
+    contactSectionRef.value?.focus();
+    return false;
+  }
+  return true;
+}
 
 const notCompliantContent = ref("");
 const derogatedContent = ref("");
@@ -133,24 +145,11 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const contactSectionRef = ref<HTMLFieldSetElement>();
 const toolsSectionRef = ref<HTMLDivElement>();
 const hasSubmitted = ref(false);
-const hasNoContactInfo = computed(() => {
-  return hasSubmitted.value && !contactEmail.value.value
-         && !contactFormUrl.value.value;
-});
 
 const testEnvironmentSelectionRef =
   ref<InstanceType<typeof TestEnvironmentSelection>>();
-
-function validateContactInfo() {
-  if (hasNoContactInfo.value) {
-    contactSectionRef.value?.focus();
-    return false;
-  }
-  return true;
-}
 
 function validateTools() {
   if (hasNoTools.value) {
@@ -175,15 +174,10 @@ function handleSubmit() {
       contactFormUrl,
       technologies
     ),
-    validateContactInfo()
+    validateContactInfoSection()
   ].every(Boolean);
 
   if (!isValid) {
-    return;
-  }
-
-  if (hasNoContactInfo.value) {
-    contactSectionRef.value?.focus();
     return;
   }
 
@@ -377,7 +371,7 @@ const isDevMode = useDevMode();
         role="region"
         aria-labelledby="contact-section-subtitle"
         aria-describedby="contact-section-error"
-        class="fr-input-group" :class="{ 'fr-input-group--error': hasNoContactInfo }"
+        class="fr-input-group" :class="{ 'fr-input-group--error': contactInfoSectionError }"
       >
         <DsfrField
           id="contact-email"
@@ -387,11 +381,9 @@ const isDevMode = useDevMode();
           hint="Format attendu : nom@domaine.fr"
           type="email"
           :error="
-            hasNoContactInfo
-              ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
-              : contactEmail.error.value
+            contactInfoSectionError || contactEmail.error.value
           "
-          :hide-error="hasNoContactInfo"
+          :hide-error="!!contactInfoSectionError"
           class="fr-mb-3v"
           @update:model-value="contactEmail.value.value = $event"
         />
@@ -407,19 +399,17 @@ const isDevMode = useDevMode();
           type="url"
           placeholder="https://"
           :error="
-            hasNoContactInfo
-              ? 'Champ obligatoire. Saisissez au moins un des deux moyens de contact.'
-              : contactFormUrl.error.value
+            contactInfoSectionError || contactFormUrl.error.value
           "
-          :hide-error="hasNoContactInfo"
+          :hide-error="!!contactInfoSectionError"
           @update:model-value="contactFormUrl.value.value = $event"
         >
           <template #hint>
             Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
           </template>
         </DsfrField>
-        <p v-if="hasNoContactInfo" id="contact-section-error" class="fr-error-text fr-mt-0">
-          Champ obligatoire. Saisissez au moins un des deux moyens de contact.
+        <p v-if="contactInfoSectionError" id="contact-section-error" class="fr-error-text fr-mt-0">
+          {{ contactInfoSectionError }}
         </p>
       </div>
     </fieldset>
