@@ -31,3 +31,6 @@ jobs:
 
       - name: Lint entire project
         run: yarn lint
+
+      - name: Lint frontend styles
+        run: yarn lint:styles

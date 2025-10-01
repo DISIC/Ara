@@ -85,13 +85,13 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
 
 .audit-progress--inline {
   gap: 0.5rem;
-  flex-direction: row-reverse;
-  flex-wrap: nowrap;
+  flex-flow: row-reverse nowrap;
 
   .audit-progress-bar {
     height: v-bind(progressBarSize);
   }
 }
+
 .audit-progress-label {
   font-weight: 500;
 }

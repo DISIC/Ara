@@ -357,6 +357,7 @@ watch(
     --gap: 1rem;
   }
 }
+
 .fr-col-md-1 {
   flex: 0 0 var(--filters-column-width) !important;
 }

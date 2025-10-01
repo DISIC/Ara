@@ -180,8 +180,7 @@ watch(currentStep, () => {
   grid-template-rows: 1fr auto auto 1fr;
   grid-template-columns: repeat(2, auto);
   grid-auto-flow: row;
-  column-gap: 76px;
-  row-gap: 1rem;
+  gap: 1rem 4.75rem;
 }
 
 .stat-donut {
