@@ -270,6 +270,14 @@ watch(
     }
   }
 );
+
+// Reset filter store only when current audit changes
+watch(
+  () => auditStore.currentAuditId,
+  () => {
+    filterStore.$reset();
+  }
+);
 </script>
 
 <template>
