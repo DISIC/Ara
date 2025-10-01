@@ -8,10 +8,11 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
+import { scrollToHash } from "../../router";
 import { TabData } from "../../types";
 import { slugify } from "../../utils";
 
@@ -197,6 +198,10 @@ watch(
 
     // other components may be interested by the current selected tab index
     emit("selectedTabChange", selectedTabIndex.value);
+
+    nextTick().then(() => {
+      scrollToHash(routerRoute.hash);
+    });
   },
   { immediate: true }
 );

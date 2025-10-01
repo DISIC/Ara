@@ -379,7 +379,8 @@ const router = createRouter({
     }
 
     if (to.hash) {
-      return scrollToHash(to.hash);
+      console.log("bleteintr");
+      return getScrollToHashBehaviour(to.hash);
     }
 
     // When navigating between tabs, scroll to display tabs
@@ -441,6 +442,7 @@ router.afterEach(async (to, from) => {
 
     if (!to.hash && !isTabNavigation(to, from)) {
       document.body.setAttribute("tabindex", "-1");
+      console.log("isterntr");
       document.body.focus();
       document.body.removeAttribute("tabindex");
     }
@@ -485,7 +487,7 @@ function scrollToTop() {
  * Scrolls to a given hash (without leading '#').
  * There must be an HTML element with `id=hash` in the current page.
  */
-function scrollToHash(hash: string): ScrollBehaviorResult {
+export function getScrollToHashBehaviour(hash: string): ScrollBehaviorResult {
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, () => {
       const hashEl = document.querySelector(
@@ -503,6 +505,20 @@ function scrollToHash(hash: string): ScrollBehaviorResult {
       }
     });
   });
+}
+
+export function scrollToHash(hash: string) {
+  const hashEl = document.querySelector(
+    "#" + CSS.escape(hash.substring(1))
+  ) as HTMLElement;
+  if (hashEl) {
+    // force the focus on the element ta make the focus order make sense when user starts tabbing
+    const initalTabIndex = hashEl.getAttribute("tabindex");
+    hashEl.setAttribute("tabindex", "-1");
+    hashEl.focus();
+    initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
+    hashEl.scrollIntoView();
+  }
 }
 
 function scrollToPosition(
