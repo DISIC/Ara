@@ -45,9 +45,18 @@ const tools = computed(() => {
   return [...defaultTools.value, ...customTools.value].filter(Boolean);
 });
 
-const hasNoTools = computed(() => {
-  return hasSubmitted.value && tools.value.length === 0;
-});
+const toolsSectionRef = ref<HTMLDivElement>();
+const toolsSectionError = ref<string>();
+
+function validateTools() {
+  toolsSectionError.value = undefined;
+  if (tools.value.length === 0) {
+    toolsSectionError.value = "Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.";
+    toolsSectionRef.value?.focus();
+    return false;
+  }
+  return true;
+}
 
 const AVAILABLE_DEFAULT_TOOLS = [
   { name: "Web Developer Toolbar", lang: "en" },
@@ -145,19 +154,10 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const toolsSectionRef = ref<HTMLDivElement>();
 const hasSubmitted = ref(false);
 
 const testEnvironmentSelectionRef =
   ref<InstanceType<typeof TestEnvironmentSelection>>();
-
-function validateTools() {
-  if (hasNoTools.value) {
-    toolsSectionRef.value?.focus();
-    return false;
-  }
-  return true;
-}
 
 function handleSubmit() {
   hasSubmitted.value = true;
@@ -174,15 +174,11 @@ function handleSubmit() {
       contactFormUrl,
       technologies
     ),
-    validateContactInfoSection()
+    validateContactInfoSection(),
+    validateTools()
   ].every(Boolean);
 
   if (!isValid) {
-    return;
-  }
-
-  if (hasNoTools.value) {
-    toolsSectionRef.value?.focus();
     return;
   }
 
@@ -426,9 +422,17 @@ const isDevMode = useDevMode();
       @update:model-value="technologies.value.value = $event"
     />
 
-    <div ref="toolsSectionRef" tabindex="-1" role="region" aria-labelledby="tools-section-title" aria-describedby="tools-section-error" class="fr-input-group" :class="{ 'fr-input-group--error': hasNoTools }">
+    <div
+      ref="toolsSectionRef"
+      tabindex="-1"
+      role="region"
+      aria-labelledby="tools-section-title"
+      aria-describedby="tools-section-error"
+      class="fr-input-group"
+      :class="{ 'fr-input-group--error': toolsSectionError }"
+    >
       <div class="fr-form-group">
-        <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': hasNoTools }">
+        <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': toolsSectionError }">
           <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
             <h2 id="tools-section-title" class="fr-h4 fr-mb-0">
               Outils d’assistance utilisés pour vérifier l’accessibilité
@@ -460,8 +464,8 @@ const isDevMode = useDevMode();
         add-label="les outils d’assistance"
       />
 
-      <p v-if="hasNoTools" id="tools-section-error" class="fr-error-text fr-mt-0">
-        Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.
+      <p v-if="toolsSectionError" id="tools-section-error" class="fr-error-text fr-mt-0">
+        {{ toolsSectionError }}
       </p>
     </div>
 
