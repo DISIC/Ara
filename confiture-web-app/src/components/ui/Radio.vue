@@ -47,7 +47,7 @@ defineEmits(["update:modelValue"]);
   color: var(--text-color);
   position: relative;
   border-radius: 1.875rem;
-  border: 1px solid currentColor;
+  border: 1px solid currentcolor;
   display: inline-flex;
   padding: 0.25rem 0.5rem 0.25rem 2rem;
   gap: 0.5rem;
@@ -93,7 +93,7 @@ input:checked + .label.red {
 .label::before {
   width: 1rem;
   height: 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid currentcolor;
   left: 0.5rem;
 }
 
@@ -106,6 +106,6 @@ input:checked + .label.red {
 }
 
 input:checked + .label::after {
-  background-color: currentColor;
+  background-color: currentcolor;
 }
 </style>

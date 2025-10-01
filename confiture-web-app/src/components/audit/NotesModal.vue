@@ -94,7 +94,7 @@ function handleDeleteFile(file: AuditFile) {
                   type="button"
                 >Fermer</button>
                 <div class="title-container">
-                  <h1 id="notes-modal-title" class="fr-modal__title">
+                  <h1 id="notes-modal-title" class="fr-modal__title fr-pr-2w fr-mr-2w fr-mb-0">
                     Observations
                   </h1>
                   <SaveIndicator :store-name="StoreName.AUDIT_STORE" />
@@ -115,7 +115,6 @@ function handleDeleteFile(file: AuditFile) {
                 labelled-by="audit-notes"
                 :disabled="isOffline"
                 editor-size="lg"
-                style="--tiptap-editor-height: 16.5rem"
                 @update:model-value="handleNotesChange"
               />
 
@@ -145,11 +144,11 @@ function handleDeleteFile(file: AuditFile) {
 }
 
 .sidebar-header {
-  display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: start;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: unset;
+  justify-content: unset;
   gap: 0.5rem 1rem;
   margin: 2rem 0 1.5rem 0;
   padding-top: 0.75rem;
@@ -157,48 +156,39 @@ function handleDeleteFile(file: AuditFile) {
   top: 0;
   z-index: 9;
   background-color: var(--background-lifted-grey);
-}
 
-.sidebar-header h1 {
-  margin-bottom: 0;
-  padding-right: 1rem;
-  margin-right: 1rem;
-}
-
-.sidebar-header p {
-  color: var(--text-mention-grey);
-}
-
-.title-container {
-  flex-basis: 100%;
-  flex-grow: 1;
-}
-
-textarea {
-  resize: vertical;
-}
-
-@media (min-width: 36rem) {
   .title-container {
     display: flex;
     flex-basis: auto;
     align-items: center;
-  }
+    grid-column: 1;
+    grid-row: 1;
 
-  .sidebar-header h1 {
-    border-right: 1px solid var(--border-default-grey);
-  }
+    h1 {
+      border-right: 1px solid var(--border-default-grey);
+    }
 
+    p {
+      color: var(--text-mention-grey);
+    }
+  }
+}
+
+@media (width < 36rem) {
   .sidebar-header {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    align-items: unset;
-    justify-content: unset;
+    display: flex;
+    flex-flow: row-reverse wrap;
+    align-items: center;
+    justify-content: start;
 
     .title-container {
-      grid-column: 1;
-      grid-row: 1;
+      display: initial;
+      flex-basis: 100%;
+      flex-grow: 1;
+
+      h1 {
+        border-right: none;
+      }
     }
   }
 }
