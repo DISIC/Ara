@@ -9,6 +9,8 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Réinitialise correctement les filtres quand on change d’audit ([#1204](https://github.com/DISIC/Ara/pull/1204))
+- Corrige le placement du focus après avoir fermé l’alerte de confirmation de renvoi de mail
+[#1213](https://github.com/DISIC/Ara/pull/1213)
 
 ### 23/09/2025
 
