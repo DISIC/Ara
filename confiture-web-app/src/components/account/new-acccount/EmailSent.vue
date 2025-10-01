@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 
 import { useAccountStore } from "../../../store/account";
 
@@ -9,7 +9,7 @@ defineEmits(["back"]);
 
 const authStore = useAccountStore();
 
-const resendEmailButton = ref<HTMLButtonElement>();
+const resendEmailButton = useTemplateRef("resendEmailButton");
 const showResendSuccessAlert = ref(false);
 
 async function resendEmail() {
@@ -38,6 +38,7 @@ async function closeResendSuccessAlert() {
     </ul>
 
     <button
+      ref="resendEmailButton"
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-mb-2w"
       @click="resendEmail"
     >
