@@ -200,7 +200,8 @@ watch(
     if (routerRoute.hash) {
       nextTick().then(() => {
         scrollToHash(routerRoute.hash);
-      }); }
+      });
+    }
   },
   { immediate: true }
 );
