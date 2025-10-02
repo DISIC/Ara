@@ -12,9 +12,8 @@ import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useUniqueId } from "../../composables/useUniqueId";
-import { scrollToHash } from "../../router";
 import { TabData } from "../../types";
-import { slugify } from "../../utils";
+import { slugify, scrollToHash } from "../../utils";
 
 defineExpose({
   getSelectedTabLabel: () => selectedTab.value?.label

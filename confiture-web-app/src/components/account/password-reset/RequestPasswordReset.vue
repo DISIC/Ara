@@ -17,7 +17,7 @@ defineExpose({
 
 <template>
   <form class="wrapper" @submit.prevent="$emit('submit', email)">
-    <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
+    <h1 class="frw-h3">Réinitialiser votre mot de passe</h1>
     <p class="fr-mb-2w">
       Saisissez l’adresse e-mail liée à votre compte. Vous recevrez un e-mail pour réinitialiser votre mot de passe.
     </p>
