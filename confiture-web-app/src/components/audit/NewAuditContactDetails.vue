@@ -2,6 +2,12 @@
 import { ref } from "vue";
 
 import { useDevMode } from "../../composables/useDevMode";
+import {
+  EMAIL,
+  REQUIRED,
+  useFormField,
+  validate
+} from "../../composables/validation";
 import { useAccountStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
 
@@ -17,12 +23,21 @@ const emit = defineEmits<{
 
 const accountStore = useAccountStore();
 
-const emailValue = ref(props.email ?? "");
 const nameValue = ref(props.name ?? "");
 
+const email = useFormField(props.email ?? "", [
+  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
+  EMAIL(
+    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
+  )
+]);
+
 function submitAuditContactDetails() {
+  if (!validate(email)) {
+    return;
+  }
   emit("submit", {
-    auditorEmail: emailValue.value,
+    auditorEmail: email.value.value,
     auditorName: nameValue.value
   });
 }
@@ -35,14 +50,14 @@ function goToPreviousStep() {
 const isDevMode = useDevMode();
 
 function fillSettings() {
-  emailValue.value =
+  email.value.value =
     accountStore.account?.email ?? "etienne-dupont@example.com";
   nameValue.value = "Etienne Dupont";
 }
 </script>
 
 <template>
-  <form @submit.prevent="submitAuditContactDetails">
+  <form novalidate @submit.prevent="submitAuditContactDetails">
     <div class="content">
       <div v-if="isDevMode" class="fr-mb-4w">
         <button class="fr-btn" type="button" @click="fillSettings">
@@ -57,11 +72,14 @@ function fillSettings() {
       <DsfrField
         v-if="!accountStore.account"
         id="procedure-auditor-email"
-        v-model="emailValue"
+        :ref="email.refFn"
+        :model-value="email.value.value"
         class="fr-mb-2w"
         label="Adresse e-mail"
         type="email"
         required
+        :error="email.error.value"
+        @update:model-value="email.value.value = $event"
       >
         <template #hint>
           Permet de vous envoyer le lien d'accès à l’audit et aux livrables.<br />Format attendu : nom@domaine.fr

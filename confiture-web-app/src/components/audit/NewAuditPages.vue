@@ -33,6 +33,9 @@ async function addPage() {
 }
 
 function submitAuditPages() {
+  if (!pagesSampleRef.value?.validate()) {
+    return;
+  }
   emit("submit", { pages: pages.value });
 }
 
@@ -56,7 +59,7 @@ function fillSettings() {
 </script>
 
 <template>
-  <form @submit.prevent="submitAuditPages">
+  <form novalidate @submit.prevent="submitAuditPages">
     <div v-if="isDevMode" class="fr-mb-4w">
       <button class="fr-btn" type="button" @click="fillSettings">
         [DEV] Remplir les paramètres

@@ -4,12 +4,15 @@ import { ref } from "vue";
 
 import { useDevMode } from "../../../composables/useDevMode";
 import { useNotifications } from "../../../composables/useNotifications";
-import { useAccountStore } from "../../../store/account";
 import {
-  captureWithPayloads,
-  formatEmail,
-  validateEmail
-} from "../../../utils";
+  EMAIL,
+  LENGTH,
+  REQUIRED,
+  useFormField,
+  validate
+} from "../../../composables/validation";
+import { useAccountStore } from "../../../store/account";
+import { captureWithPayloads, formatEmail } from "../../../utils";
 import DsfrField from "../../ui/DsfrField.vue";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
 
@@ -17,72 +20,36 @@ const emit = defineEmits<{
   (e: "submit", payload: { username: string }): void;
 }>();
 
-const userEmail = ref("");
-const userEmailField = ref<InstanceType<typeof DsfrField>>();
-const userEmailError = ref<string>();
-
-const userPassword = ref("");
-const userPasswordField = ref<InstanceType<typeof DsfrPassword>>();
-const userPasswordError = ref<string>();
 const togglePasswordRef = ref<HTMLInputElement>();
+
+const userEmail = useFormField<string>((history.state.email as string) ?? "", [
+  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
+  EMAIL(
+    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
+  )
+]);
+
+const userPassword = useFormField<string>("", [
+  REQUIRED("Champ obligatoire. Saisissez un mot de passe."),
+  LENGTH(
+    12,
+    "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum."
+  )
+]);
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-function validateEmailField() {
-  userEmailError.value = undefined;
-
-  // Empty email
-  if (userEmail.value.trim().length === 0) {
-    userEmailError.value =
-      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
-    userEmailField.value?.inputRef?.focus();
-    return false;
-  }
-
-  // Invalid email format
-  if (!validateEmail(userEmail.value)) {
-    userEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
-    userEmailField.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
-function validatePasswordField() {
-  userPasswordError.value = undefined;
-
-  // Empty password
-  if (userPassword.value.length === 0) {
-    userPasswordError.value =
-      "Champ obligatoire. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    userPasswordField.value?.inputRef?.focus();
-    return false;
-  }
-
-  // Invalid password requirement
-  if (userPassword.value.length < 12) {
-    userPasswordError.value =
-      "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.";
-    userPasswordField.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
 async function handleSubmit() {
-  if (![validateEmailField(), validatePasswordField()].every((i) => i)) {
+  if (!validate(userEmail, userPassword)) {
     // Invalid form
     return;
   }
 
   await accountStore
-    .createAccount(formatEmail(userEmail.value), userPassword.value)
+    .createAccount(formatEmail(userEmail.value.value), userPassword.value.value)
     .then(() => {
-      emit("submit", { username: userEmail.value });
+      emit("submit", { username: userEmail.value.value });
 
       if (togglePasswordRef.value) {
         togglePasswordRef.value.value = "false";
@@ -94,17 +61,17 @@ async function handleSubmit() {
 
         if (err.response.status === 409) {
           // Email already used
-          userEmailError.value =
+          userEmail.error.value =
             "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter.";
-          userEmailField.value?.inputRef?.focus();
+          userEmail.focusRef.value?.focus();
         } else if (
           err.response.status === 400 &&
           body.message.includes("username must be an email")
         ) {
           // Invalid email format
-          userEmailError.value =
+          userEmail.error.value =
             "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
-          userEmailField.value?.inputRef?.focus();
+          userEmail.focusRef.value?.focus();
         } else {
           // Unkown error
           notify(
@@ -122,8 +89,8 @@ const isDevMode = useDevMode();
 
 function fillFields() {
   const randomNumber = Math.floor(Math.random() * 1_000_000);
-  userEmail.value = `email-${randomNumber}@example.com`;
-  userPassword.value = "123blabla!!!Pouet";
+  userEmail.value.value = `email-${randomNumber}@example.com`;
+  userPassword.value.value = "123blabla!!!Pouet";
 }
 </script>
 
@@ -141,40 +108,34 @@ function fillFields() {
 
       <DsfrField
         id="user-email"
-        ref="userEmailField"
-        v-model="userEmail"
+        :ref="userEmail.refFn"
+        :model-value="userEmail.value.value"
         class="fr-mb-2w"
         label="Adresse e-mail"
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
-        :error="userEmailError"
+        :error="userEmail.error.value"
+        @update:model-value="userEmail.value.value = $event"
       />
 
       <DsfrPassword
         id="user-password"
-        ref="userPasswordField"
-        v-model="userPassword"
+        :ref="userPassword.refFn"
+        :model-value="userPassword.value.value"
         class="fr-mb-3w"
         label="Mot de passe"
-        :error="userPasswordError"
+        :error="userPassword.error.value"
         autocomplete="new-password"
         minlength="12"
         required
         :requirements="['12 caractères minimum']"
+        @update:model-value="userPassword.value.value = $event"
       />
 
-      <ul
-        class="fr-btns-group fr-btns-group--right fr-btns-group--inline-sm fr-btns-group--inline-reverse"
-      >
-        <li>
-          <button class="fr-btn" type="submit">Valider</button>
-        </li>
-        <!-- TODO: what does this do ?? -->
-        <!-- <li>
-          <button class="fr-btn fr-btn--secondary">Annuler</button>
-        </li> -->
-      </ul>
+      <div class="fr-btns-group">
+        <button class="fr-btn fr-mb-0" type="submit">Valider</button>
+      </div>
     </form>
   </div>
 </template>

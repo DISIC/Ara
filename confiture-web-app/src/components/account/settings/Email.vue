@@ -4,31 +4,32 @@ import { nextTick, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
+import {
+  EMAIL,
+  REQUIRED,
+  useFormField,
+  validate
+} from "../../../composables/validation";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
-import {
-  captureWithPayloads,
-  formatEmail,
-  validateEmail
-} from "../../../utils";
+import { captureWithPayloads, formatEmail } from "../../../utils";
 import DsfrField from "../../ui/DsfrField.vue";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-// Form submission
-const passwordFieldRef = ref<InstanceType<typeof DsfrPassword>>();
-const newEmailFieldRef = ref<InstanceType<typeof DsfrField>>();
 const confirmAlert = ref<HTMLDivElement>();
 
-// Field errors
-const passwordError = ref<string>();
-const newEmailError = ref<string>();
-
-// Field values
-const password = ref("");
-const newEmail = ref("");
+const password = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")
+]);
+const newEmail = useFormField("" as string, [
+  REQUIRED("Champ obligatoire. Saisissez votre nouvelle adresse e-mail."),
+  EMAIL(
+    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr."
+  )
+]);
 
 const displayPendingEmailVerification = ref(false);
 
@@ -50,60 +51,24 @@ async function hidePending() {
   displayPendingEmailVerification.value = false;
   ac.value?.abort();
   await nextTick();
-  passwordFieldRef.value?.inputRef?.focus();
+  password.focusRef.value?.focus();
 }
 
 const ac = ref<AbortController>();
 
-function validateNewEmailField() {
-  newEmailError.value = undefined;
-
-  // Empty email
-  if (newEmail.value.trim().length === 0) {
-    newEmailError.value =
-      "Champ obligatoire. Veuillez choisir une adresse e-mail au format : nom@domaine.fr";
-    newEmailFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  // Invalid email format
-  if (!validateEmail(newEmail.value)) {
-    newEmailError.value =
-      "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
-    newEmailFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
-function validatePasswordField() {
-  passwordError.value = undefined;
-
-  // Empty password
-  if (password.value.length === 0) {
-    passwordError.value =
-      "Champ obligatoire. Veuillez saisir votre mot de passe";
-    passwordFieldRef.value?.inputRef?.focus();
-    return false;
-  }
-
-  return true;
-}
-
 async function updateEmail() {
-  if (![validateNewEmailField(), validatePasswordField()].every((i) => i)) {
+  if (!validate(password, newEmail)) {
     // Invalid form
     return;
   }
 
   accountStore
-    .updateEmail(formatEmail(newEmail.value), password.value)
+    .updateEmail(formatEmail(newEmail.value.value), password.value.value)
     .then(showPending)
     .then(() => {
       ac.value = new AbortController();
       return accountStore
-        .waitForEmailUpdateVerification(newEmail.value, ac.value.signal)
+        .waitForEmailUpdateVerification(newEmail.value.value, ac.value.signal)
         .then(() => {
           displayPendingEmailVerification.value = false;
           displayEmailUpdateSuccess.value = true;
@@ -116,14 +81,14 @@ async function updateEmail() {
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        passwordError.value = "Le mot de passe saisi est incorrect.";
+        password.error.value = "Le mot de passe saisi est incorrect.";
         await nextTick();
-        passwordFieldRef.value?.inputRef?.focus();
+        password.focusRef.value?.focus();
       } else if (e instanceof HTTPError && e.response.status === 409) {
-        newEmailError.value =
+        newEmail.error.value =
           "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
         await nextTick();
-        newEmailFieldRef.value?.inputRef?.focus();
+        newEmail.focusRef.value?.focus();
       } else {
         notify(
           "error",
@@ -161,7 +126,7 @@ const displayUpdateEmailForm = ref(false);
 async function showUpdateEmailForm() {
   displayUpdateEmailForm.value = true;
   await nextTick();
-  passwordFieldRef.value?.inputRef?.focus();
+  password.focusRef.value?.focus();
 }
 
 async function hideUpdateEmailForm() {
@@ -184,8 +149,8 @@ async function cancelEmailUpdate() {
   } finally {
     displayPendingEmailVerification.value = false;
     displayUpdateEmailForm.value = false;
-    password.value = "";
-    newEmail.value = "";
+    password.value.value = "";
+    newEmail.value.value = "";
     await nextTick();
     showButtonRef.value?.focus();
   }
@@ -218,7 +183,7 @@ async function cancelEmailUpdate() {
     >
       <p>
         Un lien pour confirmer votre nouvelle adresse e-mail vient de vous être
-        envoyé à l’adresse suivante : <strong>{{ newEmail }}</strong>
+        envoyé à l’adresse suivante : <strong>{{ newEmail.value }}</strong>
       </p>
     </div>
 
@@ -274,27 +239,29 @@ async function cancelEmailUpdate() {
   >
     <DsfrPassword
       id="email-password"
-      ref="passwordFieldRef"
-      v-model="password"
+      :ref="password.refFn"
+      :model-value="password.value.value"
+      :error="password.error.value"
       class="fr-mb-3w"
-      :error="passwordError"
       label="Mot de passe"
       required
       autocomplete="current-password"
       show-forgotten-password-link
       skip-forgotten-password-first-step
+      @update:model-value="password.value.value = $event"
     />
 
     <DsfrField
       id="new-email"
-      ref="newEmailFieldRef"
-      v-model="newEmail"
+      :ref="newEmail.refFn"
+      :model-value="newEmail.value.value"
+      :error="newEmail.error.value"
       class="fr-mt-3v"
       label="Nouvelle adresse e-mail"
       hint="Format attendu : nom@domaine.fr"
       type="email"
-      :error="newEmailError"
       required
+      @update:model-value="newEmail.value.value = $event"
     />
 
     <ul

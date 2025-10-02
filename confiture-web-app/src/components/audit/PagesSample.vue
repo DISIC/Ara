@@ -2,6 +2,7 @@
 import { nextTick, ref, watch } from "vue";
 
 import { useNotifications } from "../../composables/useNotifications";
+import { REQUIRED, URL } from "../../composables/validation";
 import { AuditPage } from "../../types";
 import { URL_REGEX } from "../../utils";
 import DsfrField from "../ui/DsfrField.vue";
@@ -20,20 +21,30 @@ defineExpose({
     pageNameFieldRefs.value[
       pageNameFieldRefs.value.length - 1
     ].inputRef?.focus();
-  }
+  },
+  validate
 });
 
 const notify = useNotifications();
 
 const positionSuccessMessage = ref("");
 const pageNameFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
+const pageUrlFieldRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 
 const pages = ref(props.modelValue);
+const pageNameErrors = ref<Array<string | undefined>>(
+  props.modelValue.map(() => undefined)
+);
+const pageUrlErrors = ref<Array<string | undefined>>(
+  props.modelValue.map(() => undefined)
+);
 
 watch(
   () => props.modelValue,
   (newValue) => {
     pages.value = newValue;
+    pageNameErrors.value = newValue.map(() => undefined);
+    pageUrlErrors.value = newValue.map(() => undefined);
   }
 );
 
@@ -103,6 +114,33 @@ function updatePageOrder(startIndex: number, endIndex: number) {
     endIndex + 1
   } sur ${pages.value.length}`;
 }
+
+/** Validate page fields and focus the first invalid one if any. */
+function validate(): boolean {
+  const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.");
+  const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer.");
+  const urlIsValid = URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\".");
+
+  let isValid = true;
+
+  for (let i = pages.value.length - 1; i >= 0; i--) {
+    const { name, url } = pages.value[i];
+
+    pageNameErrors.value[i] = nameIsRequired(name) || undefined;
+    pageUrlErrors.value[i] = urlIsRequired(url) || urlIsValid(url) || undefined;
+
+    if (pageUrlErrors.value[i]) {
+      pageUrlFieldRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+
+    if (pageNameErrors.value[i]) {
+      pageNameFieldRefs.value.at(i)?.focus();
+      isValid = false;
+    }
+  }
+  return isValid;
+}
 </script>
 
 <template>
@@ -161,15 +199,18 @@ function updatePageOrder(startIndex: number, endIndex: number) {
         v-model="page.name"
         label="Nom de la page"
         class="fr-mt-7w"
+        :error="pageNameErrors[i]"
       />
 
       <DsfrField
         :id="`page-url-${i + 1}`"
+        ref="pageUrlFieldRefs"
         v-model="page.url"
         label="URL de la page"
         type="text"
         required
         :pattern="URL_REGEX"
+        :error="pageUrlErrors[i]"
       >
         <template #hint>
           Saisissez une URL commençant par <code>https://</code> ou
