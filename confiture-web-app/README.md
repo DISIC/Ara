@@ -90,3 +90,49 @@ Au lieu de :
 ```html
 <li :id="errorId">...</li>
 ```
+
+### Validation des formulaires
+
+Les formulaires sont validés avec une validation custom (≠ validation native) grâce à un composable (`useFormField()`) et des règles de validation (`REQUIRED()`, `EMAIL()`...). Cela permet de facilement récupérer la référence de l’élément HTML, la valeur du champs et le message d’erreur.
+
+Une fois les champs branchés au composable, il est possible d’appeler la fonction `validate()` (par exemple au submit du formulaire) qui va retourner un boolean : `false` dans le cas d’une erreur, `true` sinon. Cette fonction va également positionner le focus sur le premier champ en erreur. Il est donc important de mettre la liste des champs à valider dans le bon ordre du formulaire au sein de la fonction `validate()`.
+
+Pour utiliser ce système :
+
+- le formulaire doit avoir l’attribut `novalidate` qui désactive la validation native.
+- le modèle doit être branché avec les attributs `model-value` et `@update:model-value`.
+- la valeur du champs doit être récupérée avec `email.value.value` (2 clefs `value` imbriquées).
+
+Voici un exemple de formulaire :
+
+```html
+<script lang="ts" setup>
+  import DsfrField from "./components/ui/DsfrField.vue";
+  import { EMAIL, REQUIRED, useFormField, validate } from "./composables/validation";
+
+  const email = useFormField("" as string, [REQUIRED("Ce champs est obligatoire"), EMAIL("Format email invalide")]);
+
+  function onSubmit() {
+    if (!validate(email)) {
+      // invalid form
+      return;
+    }
+    doSomething(email.value.value);
+  }
+</script>
+
+<template>
+  <form novalidate @submit.prevent="onSubmit">
+    <DsfrField
+      :ref="email.refFn"
+      id="email-field"
+      label="Votre email"
+      :model-value="email.value.value"
+      @update:model-value="email.value.value = $event"
+      :error="email.error.value"
+    />
+  </form>
+</template>
+```
+
+Cas particuliers : certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.

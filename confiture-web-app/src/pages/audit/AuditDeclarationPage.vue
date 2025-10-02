@@ -162,7 +162,6 @@ const testEnvironmentSelectionRef =
 function handleSubmit() {
   hasSubmitted.value = true;
 
-  // TODO: validate everything together
   const isValid = [
     testEnvironmentSelectionRef.value?.validate(),
     validateTools(),
@@ -338,7 +337,7 @@ const isDevMode = useDevMode();
     </DsfrField>
 
     <fieldset
-      class="fr-fieldset  fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
+      class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
     >
       <legend>
         <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>

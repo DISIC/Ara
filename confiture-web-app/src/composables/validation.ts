@@ -40,6 +40,16 @@ export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
   };
 }
 
+/**
+ * For each form field object given as parameters, validate the field value
+ * and set the error property if any.
+ *
+ * Also move the focus to the first invalid field if any.
+ *
+ * @param fields Objects returned by `useFormField`. Items should be sortedr by order
+ *               of appearance in the form
+ * @returns True if every fields are valid, false otherwise.
+ */
 export function validate(...fields: ReturnType<typeof useFormField>[]) {
   return !fields
     .reverse()

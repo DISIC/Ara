@@ -34,7 +34,8 @@ function onSubmit() {
     <DsfrField
       id="reset-password-email"
       :ref="email.refFn"
-      label="Adresse e-mail" hint="Format attendu : nom@domaine.fr"
+      label="Adresse e-mail"
+      hint="Format attendu : nom@domaine.fr"
       type="email"
       required
       :model-value="email.value.value"
