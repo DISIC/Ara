@@ -379,7 +379,7 @@ const router = createRouter({
     }
 
     if (to.hash) {
-      return scrollToHash(to.hash);
+      return getScrollToHashBehaviour(to.hash);
     }
 
     // When navigating between tabs, scroll to display tabs
@@ -485,7 +485,7 @@ function scrollToTop() {
  * Scrolls to a given hash (without leading '#').
  * There must be an HTML element with `id=hash` in the current page.
  */
-function scrollToHash(hash: string): ScrollBehaviorResult {
+function getScrollToHashBehaviour(hash: string): ScrollBehaviorResult {
   return new Promise((resolve) => {
     const { stop } = useResizeObserver(document.body, () => {
       const hashEl = document.querySelector(

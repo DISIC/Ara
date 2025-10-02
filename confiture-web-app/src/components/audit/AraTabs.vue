@@ -8,11 +8,11 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, ref, watch, useId } from "vue";
+import { computed, nextTick, ref, watch, useId } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { TabData } from "../../types";
-import { slugify } from "../../utils";
+import { slugify, scrollToHash } from "../../utils";
 
 defineExpose({
   getSelectedTabLabel: () => selectedTab.value?.label
@@ -196,6 +196,10 @@ watch(
 
     // other components may be interested by the current selected tab index
     emit("selectedTabChange", selectedTabIndex.value);
+
+    nextTick().then(() => {
+      scrollToHash(routerRoute.hash);
+    });
   },
   { immediate: true }
 );

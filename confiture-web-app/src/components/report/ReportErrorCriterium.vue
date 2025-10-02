@@ -2,6 +2,7 @@
 import { chunk } from "lodash-es";
 import { marked } from "marked";
 
+import { computed } from "vue";
 import rgaa from "../../criteres.json";
 import { CriterionResultUserImpact, ReportCriteriumResult } from "../../types";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 
-defineProps<{
+const { error } = defineProps<{
   error: ReportCriteriumResult;
 }>();
 
@@ -30,13 +31,18 @@ function getCriterium(topicNumber: number, criteriumNumber: number) {
 function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
   return marked.parseInline(getCriterium(topicNumber, criteriumNumber).title);
 }
+
+const sectionId = computed(() => `${error.pageId}_${error.topic}_${error.criterium}`);
 </script>
 
 <template>
   <div>
-    <p class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
+    <p :id="sectionId" class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
       {{ error.topic }}.{{ error.criterium }}&nbsp;
       <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
+      <a :href="'#' + sectionId" class="fr-btn fr-icon-links-line fr-btn--tertiary-no-outline fr-btn--sm">
+        <span class="fr-sr-only">ancre vers le critère {{ error.topic }}.{{ error.criterium }}</span>
+      </a>
     </p>
 
     <ul class="fr-badges-group fr-mb-2w">
@@ -109,10 +115,14 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
   </div>
 </template>
 
-<style>
+<style scoped>
 .example-image {
   max-height: 12.5rem;
   max-width: calc(100% - 1.5rem); /* Full width minus externa icon size */
   width: auto;
+}
+
+.criterium-title {
+  scroll-margin: 4rem;
 }
 </style>
