@@ -317,7 +317,7 @@ export function getScrollBehavior(): ScrollBehavior {
 
 export function scrollToHash(hash: string) {
   const hashEl = document.querySelector(
-    "#" + CSS.escape(hash.substring(1))
+    CSS.escape(hash.substring(1))
   ) as HTMLElement;
   if (hashEl) {
     // force the focus on the element to make the focus order make sense when user starts tabbing

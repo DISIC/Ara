@@ -197,9 +197,10 @@ watch(
     // other components may be interested by the current selected tab index
     emit("selectedTabChange", selectedTabIndex.value);
 
-    nextTick().then(() => {
-      scrollToHash(routerRoute.hash);
-    });
+    if (routerRoute.hash) {
+      nextTick().then(() => {
+        scrollToHash(routerRoute.hash);
+      }); }
   },
   { immediate: true }
 );
