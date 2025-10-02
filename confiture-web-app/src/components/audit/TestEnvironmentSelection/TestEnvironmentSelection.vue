@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { uniqWith } from "lodash-es";
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, useId, watch } from "vue";
 
-import { useUniqueId } from "../../../composables/useUniqueId";
 import { REQUIRED } from "../../../composables/validation";
 import { Platform } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
@@ -221,8 +220,8 @@ function validate() {
   return isValid;
 }
 
-const uniqueId = useUniqueId();
-const errorId = "error-" + uniqueId.value;
+const uniqueId = useId();
+const errorId = "error-" + uniqueId;
 </script>
 
 <template>
