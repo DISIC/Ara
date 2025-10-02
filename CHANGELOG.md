@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 02/10/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+-  Ajoute des ancres vers les anomalies du rapport ([#1216](https://github.com/DISIC/Ara/pull/1216))
+
 ### 01/10/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
