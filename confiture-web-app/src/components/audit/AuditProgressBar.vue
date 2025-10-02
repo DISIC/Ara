@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
-import { useUniqueId } from "../../composables/useUniqueId";
+import { computed, useId } from "vue";
 
 const props = defineProps<{
   value: number;
@@ -11,7 +9,7 @@ const props = defineProps<{
   tooltipLabel?: string;
 }>();
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 const progressPercentage = computed(() => {
   const percentage = props.value * 100;

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, Ref, ref } from "vue";
+import { computed, Ref, ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useUniqueId } from "../../composables/useUniqueId";
 import { FileErrorMessage } from "../../enums";
 import { AuditFile, NotesFile } from "../../types";
 import { formatBytes, getUploadUrl } from "../../utils";
@@ -40,7 +39,7 @@ defineExpose({ onFileRequestFinished });
 const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
 const isDraggedOver = ref(false);
 
-const id = useUniqueId();
+const id = useId();
 const isOffline = useIsOffline();
 const fileInputRef = ref<HTMLInputElement>();
 

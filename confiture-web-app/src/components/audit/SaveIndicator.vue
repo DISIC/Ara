@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
-import { computed, ref, watch } from "vue";
+import { computed, ref, useId, watch } from "vue";
 
-import { useUniqueId } from "../../composables/useUniqueId";
 import { useAuditStore, useResultsStore, useSystemStore } from "../../store";
 import { StoreName } from "../../types";
 import { formatDate, pluralize } from "../../utils";
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 /* Change the saving status in a way that it wont "flicker" */
 export interface Props {
