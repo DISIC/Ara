@@ -314,3 +314,17 @@ export function getScrollBehavior(): ScrollBehavior {
     ? "instant"
     : "smooth";
 }
+
+export function scrollToHash(hash: string) {
+  const hashEl = document.querySelector(
+    "#" + CSS.escape(hash.substring(1))
+  ) as HTMLElement;
+  if (hashEl) {
+    // force the focus on the element to make the focus order make sense when user starts tabbing
+    const initalTabIndex = hashEl.getAttribute("tabindex");
+    hashEl.setAttribute("tabindex", "-1");
+    hashEl.focus();
+    initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
+    hashEl.scrollIntoView();
+  }
+}
