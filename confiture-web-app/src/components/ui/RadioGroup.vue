@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useUniqueId } from "../../composables/useUniqueId";
+import { useId } from "vue";
 import { RadioColor } from "./Radio.vue";
 
 const props = defineProps<{
@@ -22,7 +22,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;
 }>();
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 function handleChange(value: string) {
   if (value === props.modelValue) {

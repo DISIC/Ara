@@ -8,10 +8,9 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref, watch, useId } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useUniqueId } from "../../composables/useUniqueId";
 import { TabData } from "../../types";
 import { slugify, scrollToHash } from "../../utils";
 
@@ -94,7 +93,7 @@ const tabButtonsRef = ref<HTMLButtonElement[]>();
 const panelBottomMarkerRef = ref<HTMLDivElement>();
 const panelMinHeight = ref<string>("0");
 
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 const router = useRouter();
 const routerRoute = useRoute();
@@ -108,11 +107,11 @@ const selectedTab = computed(() => {
 });
 
 function tabId(i: number) {
-  return `tab-${uniqueId.value}-${i}`;
+  return `tab-${uniqueId}-${i}`;
 }
 
 function panelId(i: number) {
-  return `panel-${uniqueId.value}-${i}`;
+  return `panel-${uniqueId}-${i}`;
 }
 
 /**

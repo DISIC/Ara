@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, useId } from "vue";
 import { useRoute } from "vue-router";
 
-import { useUniqueId } from "../../composables/useUniqueId";
 import { REFERENTIAL, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import { AuditStatus, AuditType } from "../../types";
@@ -12,7 +11,7 @@ import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 
-const accordionUniqueId = useUniqueId();
+const accordionUniqueId = useId();
 
 const report = useReportStore();
 

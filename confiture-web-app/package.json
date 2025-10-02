@@ -31,7 +31,7 @@
     "@tiptap/starter-kit": "^2.5.9",
     "@tiptap/vue-3": "^2.5.9",
     "@unhead/vue": "^1.5.3",
-    "@vitejs/plugin-vue": "^4.4.1",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vueuse/core": "^12.8.2",
     "dompurify": "^2.4.1",
     "highlight.js": "^11.10.0",
@@ -43,8 +43,8 @@
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
     "tiptap-markdown": "^0.8.10",
-    "vite": "^4.5.0",
-    "vue": "^3.3.8",
+    "vite": "^7.1.7",
+    "vue": "^3.5.22",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
@@ -54,7 +54,7 @@
     "@types/node": "^22.10.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.1.0"
   },
   "engines": {
     "node": "^22.14.0"

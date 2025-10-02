@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-
-import { useUniqueId } from "../../composables/useUniqueId";
+import { ref, useId } from "vue";
 
 defineProps<{
   /** Label of the accordion toggle button. */
@@ -17,7 +15,7 @@ defineExpose({ accordionRef });
 const emit = defineEmits(["opened"]);
 
 const showContent = ref(false);
-const uniqueId = useUniqueId();
+const uniqueId = useId();
 
 function onConceal(e: Event) {
   showContent.value = false;
