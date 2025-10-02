@@ -10,6 +10,10 @@
 
 -  Ajoute des ancres vers les anomalies du rapport ([#1216](https://github.com/DISIC/Ara/pull/1216))
 
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige les paramètres de l’audit parfois désynchronisé ([#1217](https://github.com/DISIC/Ara/pull/1217))
+
 ### 01/10/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
