@@ -1,12 +1,11 @@
 import { ComponentPublicInstance, ref } from "vue";
-
 import { URL_REGEX, validateEmail } from "../utils";
 
 export interface FocusableElement {
   focus(): void;
 }
 
-type ValidationRule<T> = (fieldValue: T) => string | false;
+export type ValidationRule<T> = (fieldValue: T) => string | false;
 
 export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
   const fieldInputRef = ref<FocusableElement | null>();
@@ -39,6 +38,8 @@ export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
     validate
   };
 }
+
+export type ValidatedField = ReturnType<typeof useFormField>;
 
 /**
  * For each form field object given as parameters, validate the field value

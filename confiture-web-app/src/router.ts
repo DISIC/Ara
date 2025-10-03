@@ -34,6 +34,7 @@ import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import TiptapPage from "./pages/TiptapPage.vue";
+import ValidationTestPage from "./pages/ValidationTestPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
 import { ScrollBehaviorResult, ScrollPosition } from "./types";
 import { getScrollBehavior } from "./utils";
@@ -67,6 +68,10 @@ const router = createRouter({
       meta: {
         name: "Accueil"
       }
+    },
+    {
+      path: "/validation",
+      component: ValidationTestPage
     },
     {
       path: "/plan-du-site",
