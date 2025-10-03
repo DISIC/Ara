@@ -7,7 +7,7 @@ import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { useAuditStore } from "../../store";
+import { useAuditStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType } from "../../types";
 
 const router = useRouter();
@@ -15,6 +15,7 @@ const route = useRoute();
 const auditUniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 const notify = useNotifications();
+const resultsStore = useResultsStore();
 
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(auditUniqueId));
 
@@ -67,6 +68,10 @@ function submitSettings(data: {
   auditorEmail: string;
 }) {
   isSubmitting.value = true;
+
+  const auditTypeChanged =
+    data.auditType !== auditStore.currentAudit?.auditType;
+
   auditStore
     .updateAudit(auditUniqueId, {
       ...auditStore.currentAudit!,
@@ -78,6 +83,10 @@ function submitSettings(data: {
         undefined,
         "Les paramètres de votre audit ont été mis à jour avec succès"
       );
+
+      if (auditTypeChanged) {
+        resultsStore.$reset();
+      }
 
       if (leaveModalDestination.value) {
         router.push(leaveModalDestination.value);
