@@ -11,7 +11,7 @@ import PageMeta from "../components/PageMeta";
 import DsfrField from "../components/ui/DsfrField.vue";
 import { useNotifications } from "../composables/useNotifications";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
-import { EMAIL, REQUIRED, useFormField, validate } from "../composables/validation";
+import { ARRAY_LENGTH, EMAIL, REQUIRED, useFormField, validate } from "../composables/validation";
 import { paths } from "../types/confiture-api";
 import { captureWithPayloads } from "../utils";
 
@@ -41,7 +41,17 @@ const suggestions = useFormField("" as string, [REQUIRED("Champ obligatoire. Ind
 const contact = ref();
 const name = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre prénom et nom.")]);
 const email = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."), EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")]);
-const occupations = ref<string[]>([]);
+const occupations = useFormField<string[]>([], [ARRAY_LENGTH(1, "Sélection obligatoire. Indiquez votre ou vos fonctions.")]);
+
+function handleOccupationsChange(it: string, value: boolean) {
+  if (value && !occupations.value.value.includes(it)) {
+    occupations.value.value.push(it);
+  }
+
+  if (!value && occupations.value.value.includes(it)) {
+    occupations.value.value = occupations.value.value.filter(v => v !== it);
+  }
+}
 
 const showSuccess = ref(false);
 
@@ -50,7 +60,7 @@ const notify = useNotifications();
  * Submit form and display success notice
  */
 function submitFeedback() {
-  if (!validate(easyToUse, easyToUnderstand, feedback, suggestions, ...(contact.value === "yes" ? [name, email] : []))) {
+  if (!validate(easyToUse, easyToUnderstand, feedback, suggestions, ...(contact.value === "yes" ? [name, email, occupations] : []))) {
     return;
   }
 
@@ -65,7 +75,7 @@ function submitFeedback() {
       occupations:
         // FIXME: the @nestjs/swagger CLI plugin generating the API types doesnt seem to pick up on the each option
         // see: https://github.com/nestjs/swagger/issues/2027
-        occupations.value as unknown as CreateFeedbackRequestData["occupations"]
+        occupations.value.value as unknown as CreateFeedbackRequestData["occupations"]
     })
   };
 
@@ -285,30 +295,41 @@ const previousPageName =
           @update:model-value="email.value.value = $event"
         />
 
-        <div class="fr-form-group narrow-content">
-          <fieldset class="fr-fieldset">
-            <legend class="fr-fieldset__legend fr-text--regular">
-              Fonction(s)
-              <span class="fr-hint-text">Sélectionnez une ou plusieurs fonctions que vous exercez.</span>
-            </legend>
-            <div class="fr-fieldset__content">
-              <div
-                v-for="job in availableJobs"
-                :key="job"
-                class="fr-checkbox-group"
+        <fieldset
+          :ref="occupations.focusRef"
+          tabindex="-1"
+          aria-describedby="occupations-error"
+          class="fr-fieldset narrow-content"
+          :class="{ 'fr-fieldset--error': occupations.error.value }"
+        >
+          <legend class="fr-fieldset__legend fr-text--regular">
+            Fonction(s)
+            <span class="fr-hint-text">Sélectionnez une ou plusieurs fonctions que vous exercez.</span>
+          </legend>
+          <div class="fr-fieldset__content">
+            <div
+              v-for="job in availableJobs"
+              :key="job"
+              class="fr-checkbox-group"
+            >
+              <input
+                :id="`job-${job}`"
+                type="checkbox"
+                :name="`job-${job}`"
+                :value="job"
+                :checked="occupations.value.value.includes(job)"
+                @change="handleOccupationsChange(
+                  job,
+                  ($event.target as HTMLInputElement).checked)
+                "
               >
-                <input
-                  :id="`job-${job}`"
-                  v-model="occupations"
-                  type="checkbox"
-                  :name="`job-${job}`"
-                  :value="job"
-                >
-                <label class="fr-label" :for="`job-${job}`">{{ job }}</label>
-              </div>
+              <label class="fr-label" :for="`job-${job}`">{{ job }}</label>
             </div>
-          </fieldset>
-        </div>
+          </div>
+          <div v-if="occupations.error.value" id="occupations-error" class="fr-messages-group">
+            <p class="fr-message fr-message--error">{{ occupations.error.value }}</p>
+          </div>
+        </fieldset>
       </template>
     </div>
 
