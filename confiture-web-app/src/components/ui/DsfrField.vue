@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 
-const props = defineProps<{
+export interface DsfrFielProps {
   modelValue?: string;
   label: string;
   hint?: string;
@@ -13,7 +13,9 @@ const props = defineProps<{
   hideError?: boolean;
   id: string;
   autocomplete?: string;
-}>();
+}
+
+const props = defineProps<DsfrFielProps>();
 
 defineEmits<{
   (e: "update:modelValue", payload: string): void;
