@@ -26,9 +26,7 @@ const password = useFormField("" as string, [
 ]);
 const newEmail = useFormField("" as string, [
   REQUIRED("Champ obligatoire. Saisissez votre nouvelle adresse e-mail."),
-  EMAIL(
-    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr."
-  )
+  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
 ]);
 
 const displayPendingEmailVerification = ref(false);

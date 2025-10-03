@@ -56,7 +56,7 @@ async function updatePassword() {
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
         // Wrong password
-        currentPassword.error.value = "Le mot de passe saisi est incorrect.";
+        currentPassword.error.value = "Saisie incorrecte. Vérifiez votre saisie.";
         await nextTick();
         currentPassword.focusRef.value?.focus();
       } else if (err instanceof HTTPError && err.response.status === 400) {

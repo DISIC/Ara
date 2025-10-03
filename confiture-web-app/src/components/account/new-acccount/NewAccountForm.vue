@@ -24,9 +24,7 @@ const togglePasswordRef = ref<HTMLInputElement>();
 
 const userEmail = useFormField<string>((history.state.email as string) ?? "", [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL(
-    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
-  )
+  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
 ]);
 
 const userPassword = useFormField<string>("", [
@@ -62,7 +60,7 @@ async function handleSubmit() {
         if (err.response.status === 409) {
           // Email already used
           userEmail.error.value =
-            "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter.";
+            "Cette adresse e-mail est déjà associée à un compte. Connectez-vous.";
           userEmail.focusRef.value?.focus();
         } else if (
           err.response.status === 400 &&
@@ -70,7 +68,7 @@ async function handleSubmit() {
         ) {
           // Invalid email format
           userEmail.error.value =
-            "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr";
+            "Format incorrect. Utilisez le format : nom@domaine.fr.";
           userEmail.focusRef.value?.focus();
         } else {
           // Unkown error
