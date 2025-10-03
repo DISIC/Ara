@@ -127,7 +127,7 @@ function fillFields() {
         label="Mot de passe"
         :error="userPassword.error.value"
         autocomplete="new-password"
-        minlength="12"
+        :min-length="12"
         required
         :requirements="['12 caractères minimum']"
         @update:model-value="userPassword.value.value = $event"

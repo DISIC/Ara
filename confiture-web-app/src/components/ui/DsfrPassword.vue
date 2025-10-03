@@ -40,6 +40,22 @@ defineExpose({
     inputRef.value?.focus();
   }
 });
+
+const requirementClass = computed(() => {
+  if (
+    props.minLength
+    && props.modelValue
+    && props.modelValue.length >= props.minLength
+  ) {
+    return "fr-message--valid";
+  }
+
+  if (isError.value && props.requirements?.length) {
+    return "fr-message--error";
+  }
+
+  return "fr-message--info";
+});
 </script>
 
 <template>
@@ -68,7 +84,7 @@ defineExpose({
         />
       </div>
 
-      <p v-if="isError" :id="errorId" class="fr-error-text fr-m-0">
+      <p v-if="isError && !requirements?.length" :id="errorId" class="fr-error-text fr-m-0">
         {{ error }}
       </p>
 
@@ -82,7 +98,7 @@ defineExpose({
         <p
           v-for="requirement in requirements"
           :key="requirement"
-          class="fr-message fr-message--info"
+          :class="`fr-message ${requirementClass}`"
         >
           {{ requirement }}
         </p>
