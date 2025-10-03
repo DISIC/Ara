@@ -85,15 +85,13 @@ const procedureUrl = useFormField("" as string, [
   REQUIRED(
     "Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité."
   ),
-  URL(
-    "URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\""
-  )
+  URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".")
 ]);
 
 const contactName = ref("");
 
-const contactEmail = useFormField("" as string, [EMAIL("Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr")]);
-const contactFormUrl = useFormField("" as string, [URL("URL invalide. Saisissez une URL valide commençant par \"https://\" ou \"http://\"")]);
+const contactEmail = useFormField("" as string, [EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")]);
+const contactFormUrl = useFormField("" as string, [URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".")]);
 const contactInfoSectionError = ref<string>();
 const contactSectionRef = ref<HTMLFieldSetElement>();
 
