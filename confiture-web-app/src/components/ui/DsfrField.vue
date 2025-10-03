@@ -13,6 +13,7 @@ const props = defineProps<{
   hideError?: boolean;
   id: string;
   autocomplete?: string;
+  isTextArea?: boolean;
 }>();
 
 defineEmits<{
@@ -41,7 +42,8 @@ defineExpose({
         <slot name="hint">{{ hint }}</slot>
       </span>
     </label>
-    <input
+    <component
+      :is="isTextArea ? 'textarea' : 'input'"
       :id="inputId"
       ref="inputRef"
       :class="['fr-input', { 'fr-input--error': isError }]"
