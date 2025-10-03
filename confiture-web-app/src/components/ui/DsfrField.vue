@@ -46,7 +46,7 @@ defineExpose({
       ref="inputRef"
       :class="['fr-input', { 'fr-input--error': isError }]"
       :type="type"
-      :aria-describedby="(isError && hideError) ? errorId : undefined"
+      :aria-describedby="(isError && !hideError) ? errorId : undefined"
       :required="required"
       :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
       :title="title"
