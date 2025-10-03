@@ -19,7 +19,6 @@ interface AuditStoreState {
   currentPageId: number | null;
   showAuditEmailAlert: boolean;
 
-  // currentAuditId: string | null;
   entities: Record<string, Audit>;
   listing: AccountAudit[];
 
@@ -43,7 +42,6 @@ export const useAuditStore = defineStore("audit", {
     currentPageId: null,
     showAuditEmailAlert: false,
 
-    // currentAuditId: null,
     entities: {},
     listing: [],
     currentRequestCount: 0,
