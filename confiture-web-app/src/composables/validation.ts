@@ -45,17 +45,34 @@ export type ValidatedField = ReturnType<typeof useFormField>;
  * For each form field object given as parameters, validate the field value
  * and set the error property if any.
  *
- * Also move the focus to the first invalid field if any.
+ * Also move the focus to the first invalid field in the document if any.
  *
- * @param fields Objects returned by `useFormField`. Items should be sortedr by order
- *               of appearance in the form
+ * @param fields Objects returned by `useFormField`.
  * @returns True if every fields are valid, false otherwise.
  */
 export function validate(...fields: ReturnType<typeof useFormField>[]) {
-  return !fields
-    .reverse()
-    .map((it) => it.validate())
-    .some((it) => !it);
+  // field.validate() focuses the element if it is invalid,
+  // we collect the focused elements
+  const focusableInvalidElements: HTMLElement[] = [];
+  fields.forEach(field => {
+    if (!field.validate()) {
+      focusableInvalidElements.push(document.activeElement as HTMLElement);
+    }
+  });
+
+  // if there are errors, sort the elements by their position in the document
+  // and focus the first one
+  if (focusableInvalidElements.length) {
+    focusableInvalidElements.sort((a, b) => {
+      const position = a.compareDocumentPosition(b);
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+      return 0;
+    });
+    focusableInvalidElements.at(0)?.focus();
+  }
+
+  return !focusableInvalidElements.length;
 }
 
 /* Validation rules */

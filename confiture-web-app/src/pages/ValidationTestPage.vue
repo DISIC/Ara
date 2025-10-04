@@ -4,8 +4,9 @@ import DsfrFieldWithValidation from "../components/ui/DsfrFieldWithValidation.vu
 import FormWithValidation from "../components/ui/form-with-validation/FormWithValidation.vue";
 import { EMAIL, LENGTH, REQUIRED } from "../composables/validation";
 
-const name = ref("");
+const name = ref("John MacManPerson");
 const email = ref("");
+const thirdField = ref("");
 
 const showEmail = ref(true);
 
@@ -26,9 +27,12 @@ function handleSubmit() {
       ]"
     />
 
-    <div>
-      <label for="show-email-checkbox">Montrer le champs email</label>
-      <input id="show-email-checkbox" v-model="showEmail" type="checkbox" />
+    <div class="fr-checkbox-group">
+      <input id="show-email-checkbox" v-model="showEmail" type="checkbox">
+      <label class="fr-label" for="show-email-checkbox">
+        Montrer le champs email
+        <span class="fr-hint-text">Ajouter ou retirer le champs ne pose aucun problème</span>
+      </label>
     </div>
 
     <DsfrFieldWithValidation
@@ -36,15 +40,21 @@ function handleSubmit() {
       id="email-field"
       v-model="email"
       label="Votre adresse email"
-      hint="Ce champs peut être ajouté ou retiré du formulaire sans problème"
       :validation="[
         REQUIRED('Ce champs est obligatoire'),
         EMAIL('Précisez votre adrnesse email au format blablabla')
       ]"
     />
 
+    <DsfrFieldWithValidation
+      id="third-field"
+      v-model="thirdField"
+      label="Troisième champs"
+      :validation="[
+        REQUIRED('Ce champs est obligatoire')
+      ]"
+    />
+
     <button type="submit">Valider</button>
   </FormWithValidation>
-  {{ name }}
-  {{ email }}
 </template>
