@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, onBeforeUnmount, watch } from "vue";
 import { useFormField, ValidationRule } from "../../composables/validation";
-import DsfrField, { type DsfrFielProps } from "./DsfrField.vue";
+import DsfrField, { type DsfrFielProps } from "../ui/DsfrField.vue";
 import { addFieldKey, removeFieldKey } from "./form-with-validation/form-injection-keys";
 
 type DsfrFielWithValidationPrors = Omit<DsfrFielProps, "error" | "modelValue"> & {
