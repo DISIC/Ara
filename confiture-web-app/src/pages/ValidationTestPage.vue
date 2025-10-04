@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import DsfrFieldWithValidation from "../components/ui/DsfrFieldWithValidation.vue";
-import FormWithValidation from "../components/ui/form-with-validation/FormWithValidation.vue";
+import DsfrFieldWithValidation from "../components/validation/DsfrFieldWithValidation.vue";
+import FormWithValidation from "../components/validation/form-with-validation/FormWithValidation.vue";
 import { EMAIL, LENGTH, REQUIRED } from "../composables/validation";
 
 const name = ref("John MacManPerson");
