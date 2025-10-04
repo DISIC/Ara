@@ -27,6 +27,11 @@ function removeField(field: ValidatedField) {
 
 provide(addFieldKey, addField);
 provide(removeFieldKey, removeField);
+
+defineExpose({
+  addField,
+  removeField
+});
 </script>
 
 <template>
