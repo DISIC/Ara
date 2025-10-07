@@ -4,6 +4,16 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 07/10/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+-  Corrige l’affichage des pictogrammes de l’étape 3 de création d’audit [#1226](https://github.com/DISIC/Ara/pull/1226)
+
+### 03/10/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
 - Corrige crash lors du changement du type d’audit alors que les résultats étaient déjà chargés ([#1220](https://github.com/DISIC/Ara/pull/1220))
 
 ### 02/10/2025
