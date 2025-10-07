@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import elementForm from "@gouvfr/dsfr/dist/artwork/pictograms/document/document.svg";
+import elementForm from "@gouvfr/dsfr/dist/artwork/pictograms/document/document.svg?no-inline";
 import { ref } from "vue";
 
-import elementFrame from "../../assets/images/element-frame.svg";
-import elementMultimedia from "../../assets/images/element-multimedia.svg";
-import elementTable from "../../assets/images/element-table.svg";
+import elementFrame from "../../assets/images/element-frame.svg?no-inline";
+import elementMultimedia from "../../assets/images/element-multimedia.svg?no-inline";
+import elementTable from "../../assets/images/element-table.svg?no-inline";
 import { useAccountStore } from "../../store";
 import { PageElements } from "../../types";
 import DsfrRichCheckbox from "../ui/DsfrRichCheckbox.vue";
