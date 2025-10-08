@@ -152,20 +152,18 @@ async function handleFileChange() {
 
 async function handleFileDelete(
   auditFile: AuditFile,
-  element: HTMLButtonElement,
   range: number
 ) {
   cleanMessages(true);
   if (props.isInModal) {
     handleFileDeleteInlineReveal(range);
   } else {
-    handleFileDeleteWithModal(auditFile, element);
+    handleFileDeleteWithModal(auditFile);
   }
 }
 
 async function handleFileDeleteWithModal(
-  auditFile: AuditFile,
-  element: HTMLButtonElement
+  auditFile: AuditFile
 ) {
   const { isCanceled } = await modal.showConfirm({
     title: getDeleteModalTitle(auditFile),
@@ -376,9 +374,7 @@ function getDeleteModalConfirmLabel(auditFile: AuditFile) {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
               :disabled="isOffline ? true : undefined"
               :title="'Supprimer ' + getFullFileName(auditFile)"
-              @click="handleFileDelete(auditFile,
-                                       $event.target as HTMLButtonElement,
-                                       i)"
+              @click="handleFileDelete(auditFile, i)"
             >
               Supprimer
               <span class="fr-sr-only">{{ getFullFileName(auditFile) }}</span>
