@@ -51,9 +51,15 @@ const noResults = computed(() => {
   }
 });
 
-const notApplicableSwitchRefs = ref<InstanceType<typeof NotApplicableSwitch>[]>(
-  []
-);
+const notApplicableSwitchRefs =
+  ref<Record<number, InstanceType<typeof NotApplicableSwitch> | null>>({});
+
+// put ref in notApplicableSwitchRefs record based on given topic number
+const refFn =
+  (topicNumber: number) =>
+    (el: any) =>
+      notApplicableSwitchRefs.value[topicNumber] =
+    el as InstanceType<typeof NotApplicableSwitch>;
 
 // Focus topic NA switch when setting last topic criterion as NA
 watch(
@@ -65,8 +71,8 @@ watch(
   (newValue) => {
     if (newValue) {
       notApplicableSwitchRefs.value[
-        resultsStore.lastUpdatedTopic - 1
-      ].focusInput();
+        resultsStore.lastUpdatedTopic
+      ]?.focusInput();
     }
   }
 );
@@ -107,7 +113,7 @@ watch(
           {{ topic.number }}. {{ topic.topic }}
         </h3>
         <NotApplicableSwitch
-          ref="notApplicableSwitchRefs"
+          :ref="refFn(topic.number)"
           :page-id="page.id"
           :topic-number="topic.number"
           :topic-title="topic.topic"
