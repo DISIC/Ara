@@ -5,7 +5,7 @@ import { AuditFile } from "../types";
 import { captureWithPayloads } from "../utils";
 
 export function useFileHandler() {
-  const store = useResultsStore();
+  const resultsStore = useResultsStore();
   const auditStore = useAuditStore();
 
   /**
@@ -26,7 +26,7 @@ export function useFileHandler() {
    */
   async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
     try {
-      const uploadRes = await store.uploadExampleImage(
+      const uploadRes = await resultsStore.uploadExampleImage(
         auditUniqueId,
         pageId,
         topicNumber,
@@ -36,7 +36,7 @@ export function useFileHandler() {
       // TODO success message here?
       return uploadRes;
     } catch (error) {
-      store.lastRequestFailed = true;
+      resultsStore.lastRequestFailed = true;
       if (error instanceof Error) {
         throw await handleFileUploadError(error, file.name);
       } else {
@@ -64,7 +64,7 @@ export function useFileHandler() {
    */
   async function deleteCriteriumAuditFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, auditFile: AuditFile) {
     try {
-      const deleteRes = await store.deleteExampleImage(
+      const deleteRes = await resultsStore.deleteExampleImage(
         auditUniqueId,
         pageId,
         topicNumber,
@@ -73,7 +73,7 @@ export function useFileHandler() {
       );
       return deleteRes;
     } catch (error) {
-      store.lastRequestFailed = true;
+      resultsStore.lastRequestFailed = true;
       if (error instanceof Error) {
         throw handleFileDeleteError(error, auditFile.originalFilename);
       } else {

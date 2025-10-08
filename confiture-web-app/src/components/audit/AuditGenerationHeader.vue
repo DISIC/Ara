@@ -58,7 +58,7 @@ const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 const isDuplicationLoading = ref(false);
 
 const auditStore = useAuditStore();
-const resultStore = useResultsStore();
+const resultsStore = useResultsStore();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
@@ -71,7 +71,7 @@ function confirmDuplicate(name: string) {
     .duplicateAudit(uniqueId.value, name)
     .then((newAuditId) => {
       auditStore.$reset();
-      resultStore.$reset();
+      resultsStore.$reset();
 
       isDuplicationLoading.value = false;
 
@@ -106,7 +106,7 @@ function confirmDelete() {
   auditStore
     .deleteAudit(uniqueId.value)
     .then(() => {
-      resultStore.$reset();
+      resultsStore.$reset();
 
       notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
 
@@ -165,8 +165,6 @@ const updateAuditNotes = async (notes: string) => {
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
-
-const resultsStore = useResultsStore();
 
 const csvExportUrl = computed(
   () => `/api/audits/${uniqueId.value}/exports/csv`
@@ -264,7 +262,7 @@ onMounted(() => {
     >
       <AuditProgressBar
         v-if="showAuditProgressBar"
-        :value="resultStore.auditProgress"
+        :value="resultsStore.auditProgress"
         label="Progression de l’audit"
         tooltip-label="Informations sur la progression de l’audit"
         :size="8"

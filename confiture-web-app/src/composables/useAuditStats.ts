@@ -9,11 +9,11 @@ import {
 
 export function useAuditStats() {
   const auditStore = useAuditStore();
-  const store = useResultsStore();
+  const resultsStore = useResultsStore();
 
   const groupedCriteria = computed(() => {
     return (
-      store.allResults?.reduce<Record<string, CriteriumResult[]>>((acc, c) => {
+      resultsStore.allResults?.reduce<Record<string, CriteriumResult[]>>((acc, c) => {
         const key = `${c.topic}.${c.criterium}`;
         if (acc[key]) {
           acc[key].push(c);
@@ -87,12 +87,12 @@ export function useAuditStats() {
 
   const errorsCount = computed(() => {
     const total =
-      store.allResults?.filter((r) => {
+      resultsStore.allResults?.filter((r) => {
         return r.status === CriteriumResultStatus.NOT_COMPLIANT;
       }).length || 0;
 
     const blocking =
-      store.allResults?.filter((r) => {
+      resultsStore.allResults?.filter((r) => {
         return (
           r.status === CriteriumResultStatus.NOT_COMPLIANT &&
           r.userImpact === CriterionResultUserImpact.BLOCKING

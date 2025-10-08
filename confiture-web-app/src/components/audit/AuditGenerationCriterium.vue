@@ -27,7 +27,7 @@ import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.v
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 
-const store = useResultsStore();
+const resultsStore = useResultsStore();
 const auditStore = useAuditStore();
 const fileHandler = useFileHandler();
 const filtersStore = useFiltersStore();
@@ -67,7 +67,7 @@ const statuses: Array<{
 
 const result = computed(
   () =>
-    store.getCriteriumResult(
+    resultsStore.getCriteriumResult(
       props.page.id,
       props.topicNumber,
       props.criterium.number
@@ -79,8 +79,8 @@ const transversePageId = computed(() => {
 });
 
 const transverseStatus = computed((): CriteriumResultStatus | null => {
-  if (store.data && transversePageId.value) {
-    return store.data?.[transversePageId.value][props.topicNumber][
+  if (resultsStore.data && transversePageId.value) {
+    return resultsStore.data?.[transversePageId.value][props.topicNumber][
       props.criterium.number
     ].status;
   }
@@ -89,9 +89,9 @@ const transverseStatus = computed((): CriteriumResultStatus | null => {
 });
 
 const transverseComment = computed((): string | null => {
-  if (store.data && transversePageId.value) {
+  if (resultsStore.data && transversePageId.value) {
     const result =
-      store.data?.[transversePageId.value][props.topicNumber][
+      resultsStore.data?.[transversePageId.value][props.topicNumber][
         props.criterium.number
       ];
 
@@ -152,7 +152,7 @@ function handleUpdateResultError(err: any) {
 }
 
 function updateResultStatus(status: CriteriumResultStatus) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
       if (status === CriteriumResultStatus.NOT_COMPLIANT) {
@@ -160,7 +160,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
       }
 
       if (
-        store.everyCriteriumAreTested &&
+        resultsStore.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
       ) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
@@ -184,7 +184,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
       }
     })
     .then(() => {
-      store.lastUpdatedTopic = result.value.topic;
+      resultsStore.lastUpdatedTopic = result.value.topic;
     })
     .catch(handleUpdateResultError);
 }
@@ -193,7 +193,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
 const updateResultComment = debounce(
   async (comment: string, key: keyof CriteriumResult) => {
     try {
-      await store.updateResults(props.auditUniqueId, [
+      await resultsStore.updateResults(props.auditUniqueId, [
         { ...result.value, [key]: comment }
       ]);
     } catch (error) {
@@ -204,13 +204,13 @@ const updateResultComment = debounce(
 );
 
 function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
     .catch(handleUpdateResultError);
 }
 
 function updateQuickWin(quickWin: boolean) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
     .catch(handleUpdateResultError);
 }
@@ -238,8 +238,11 @@ const parentCriterium = computed(() => {
     }
 
     const [parentTopic, parentCriterium] = key.split(".").map(Number);
-    const parentResult =
-      store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+    const parentResult = resultsStore.getCriteriumResult(
+      props.page.id,
+      parentTopic,
+      parentCriterium
+    );
 
     if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
       return key;
