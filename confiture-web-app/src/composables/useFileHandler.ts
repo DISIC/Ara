@@ -33,7 +33,6 @@ export function useFileHandler() {
         criteriumNumber,
         file
       );
-      // TODO success message here?
       return uploadRes;
     } catch (error) {
       resultsStore.lastRequestFailed = true;
