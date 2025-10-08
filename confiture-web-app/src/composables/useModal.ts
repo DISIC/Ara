@@ -11,8 +11,6 @@ const confirmLabel = shallowRef("");
 const cancelLabel = shallowRef("");
 const focusOnConceal = shallowRef<(() => HTMLElement) | null>(null);
 
-const listenedToAllOK = shallowRef(false);
-
 const { reveal, confirm, cancel, onReveal, onConfirm, onCancel }
     = useConfirmDialog();
 
