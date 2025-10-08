@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige les paramètres de l’audit parfois désynchronisé ([#1217](https://github.com/DISIC/Ara/pull/1217))
+-  Corrige bug de focus lorsqu’une thématique est définies non-applicable ([#1219](https://github.com/DISIC/Ara/pull/1219)) 
 
 ### 07/10/2025
 
