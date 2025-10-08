@@ -60,17 +60,16 @@ export function validate(...fields: ReturnType<typeof useFormField>[]) {
     }
   });
 
-  // if there are errors, sort the elements by their position in the document
-  // and focus the first one
+  // if there are errors, find the first element in the document and focus it
   if (focusableInvalidElements.length) {
-    // FIXME: no need to sort the array, we just need to find the one element
-    focusableInvalidElements.sort((a, b) => {
-      const position = a.compareDocumentPosition(b);
-      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
-      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
-      return 0;
-    });
-    focusableInvalidElements.at(0)?.focus();
+    let firstElementInDocument: HTMLElement = focusableInvalidElements.at(0)!;
+    for (let i = 0; i < focusableInvalidElements.length; i++) {
+      const el = focusableInvalidElements[i];
+      if (firstElementInDocument.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING) {
+        firstElementInDocument = el;
+      }
+    }
+    firstElementInDocument.focus();
   }
 
   return !focusableInvalidElements.length;
