@@ -5,7 +5,6 @@ import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
-import { FileErrorMessage } from "./enums";
 import {
   AuditReport,
   AuditStatus,
@@ -246,47 +245,6 @@ export function getUploadUrl(key: string): string {
   return `/uploads/${key}`;
 }
 
-export async function handleFileUploadError(
-  error: Error
-): Promise<FileErrorMessage | null> {
-  let errorType: FileErrorMessage | null = null;
-  if (!(error instanceof HTTPError)) {
-    return null;
-  }
-  if (error.response.status === 413) {
-    errorType = FileErrorMessage.UPLOAD_SIZE;
-  }
-
-  // Unprocessable Entity
-  if (error.response.status === 422) {
-    const body = await error.response.json();
-
-    if (body.message.includes("expected type")) {
-      errorType = FileErrorMessage.UPLOAD_FORMAT;
-    } else if (body.message.includes("expected size")) {
-      errorType = FileErrorMessage.UPLOAD_SIZE;
-    } else {
-      errorType = FileErrorMessage.UPLOAD_UNKNOWN;
-      captureWithPayloads(error);
-    }
-  } else {
-    errorType = FileErrorMessage.UPLOAD_UNKNOWN;
-    captureWithPayloads(error);
-  }
-
-  return errorType;
-}
-
-export async function handleFileDeleteError(
-  error: Error
-): Promise<FileErrorMessage | null> {
-  if (!(error instanceof HTTPError)) {
-    return null;
-  }
-
-  return FileErrorMessage.DELETE_UNKNOWN;
-}
-
 /** Check if a tiptap document string corresponds to an empty document. */
 export function isTiptapDocumentEmpty(
   jsonString: string | null | undefined
@@ -310,6 +268,9 @@ export function isTiptapDocumentEmpty(
 
 export function getScrollBehavior(): ScrollBehavior {
   // Use smooth scrolling only if user does not dislike animations
+  // @ts-ignore
+  // TODO remove `@ts-ignore` when the following issue is fixed in TS 4.x or when migrating to TS 5.1.
+  // See [ScrollBehavior definition is missing 'instant' for window.scrollTo · Issue #47441 · microsoft/TypeScript](https://github.com/microsoft/TypeScript/issues/47441)
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ? "instant"
     : "smooth";
@@ -327,4 +288,8 @@ export function scrollToHash(hash: string) {
     initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

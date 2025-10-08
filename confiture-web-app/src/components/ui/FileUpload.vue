@@ -1,56 +1,72 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId } from "vue";
-
+import { computed, nextTick, Ref, ref, useId } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
-import { AuditFile, NotesFile } from "../../types";
-import { formatBytes, getUploadUrl } from "../../utils";
+import { useModal } from "../../composables/useModal";
+import { getFileMessage } from "../../enums";
+import { AuditFile } from "../../types";
+import { formatBytes, getUploadUrl, sleep } from "../../utils";
 
-type ComponentFile = NotesFile | AuditFile;
-
-export interface Props {
+interface Props {
   acceptedFormats?: Array<string>;
-  auditFiles: ComponentFile[];
-  errorMessage?: FileErrorMessage | null;
-  maxFileSize?: string;
+  auditFiles: AuditFile[];
+  maxFileSize?: number;
   multiple?: boolean;
+  isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
+  onUpload?: (file: File, triggerButton?: EventTarget | null) => void;
+  onDelete?: (file: AuditFile, triggerButton?: EventTarget | null) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   acceptedFormats: undefined,
   boldTitle: false,
-  errorMessage: null,
-  errorMessageTitle: null,
-  maxFileSize: "2 Mo",
+  maxFileSize: 2000000,
   multiple: false,
+  isInModal: false,
   readonly: false,
   title: null
 });
 
-const emit = defineEmits<{
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: AuditFile): void;
-}>();
+defineExpose({
+  cleanMessages
+});
 
-defineExpose({ onFileRequestFinished });
+type MessageObj = {
+  htmlContent: string | null;
+  isSuccess: boolean | null;
+};
 
-const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
+const message: Ref<MessageObj> = ref(
+  <MessageObj>{ htmlContent: null, isSuccess: null }
+);
 const isDraggedOver = ref(false);
+const inlineConfirmPendingRange: Ref<number | undefined> = ref(undefined);
 
 const id = useId();
 const isOffline = useIsOffline();
-const fileInputRef = ref<HTMLInputElement>();
+const modal = useModal();
 
-const selectedFiles = computed(() => {
+const fileInputRef = ref<HTMLInputElement>();
+const messageRef = ref<HTMLParagraphElement>();
+const deleteBtnRefs = ref<HTMLButtonElement[]>([]);
+const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
+
+const maxFileSizeHumanReadable = computed(() => (props.maxFileSize / 1000000) + " Mo");
+
+const isEmpty = computed(() => props.auditFiles.length <= 0);
+
+const allFiles = computed(() => {
+  if (props.readonly) {
+    return undefined;
+  }
   const len = props.auditFiles.length;
   if (len === 0) {
-    return "Aucun fichier ajouté.";
+    return "Aucun fichier ajouté";
   } else if (len === 1) {
-    return `${len} fichier ajouté.`;
+    return `${len} fichier déjà ajouté`;
   } else {
-    return `${len} fichiers ajoutés.`;
+    return `${len} fichiers déjà ajoutés`;
   }
 });
 
@@ -70,9 +86,6 @@ const acceptedFormatsAttr = computed(() => {
   }
 });
 
-const computedErrorMessage = computed(() =>
-  props.errorMessage ?? localErrorMessage.value ?? null);
-
 const title = computed(() => {
   if (props.title) {
     return props.title;
@@ -83,102 +96,238 @@ const title = computed(() => {
   }
 });
 
-function cancelUpload() {
-  if (fileInputRef.value) {
+const getRawMessage = computed(() => {
+  const tmp = document.createElement("div");
+  if (message.value.htmlContent) {
+    tmp.innerHTML = message.value.htmlContent;
+  }
+  return tmp.textContent || "";
+});
+
+async function displayMessage(msg: MessageObj) {
+  await nextTick();
+  message.value = msg;
+  await sleep(300);
+  messageRef.value?.focus();
+}
+
+function cleanMessages(resetFileInput: boolean = false) {
+  if (resetFileInput && fileInputRef.value) {
     fileInputRef.value.value = "";
   }
-  resetMessage();
+  message.value = { htmlContent: null, isSuccess: null };
+  inlineConfirmPendingRange.value = undefined;
 }
 
-function resetMessage() {
-  localErrorMessage.value = null;
-}
-
-function handleFileChange() {
+async function handleFileChange() {
+  await nextTick();
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
-    if (file.size > 2000000) {
-      localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
+    if (file.size > props.maxFileSize) {
+      displayMessage({
+        htmlContent: getFileMessage("UPLOAD_ERROR_SIZE", file.name),
+        isSuccess: false
+      });
       return;
     }
-    emit("upload-file", file);
+    if (props.onUpload) {
+      try {
+        await props.onUpload(file);
+        displayMessage({
+          htmlContent: getFileMessage("UPLOAD_SUCCESS", file.name),
+          isSuccess: true
+        });
+      } catch (error: unknown) {
+        if (typeof (error) === "string") {
+          displayMessage({
+            htmlContent: error,
+            isSuccess: false
+          });
+        }
+      }
+    }
+  }
+  cleanMessages(true);
+}
+
+async function handleFileDelete(
+  auditFile: AuditFile,
+  range: number
+) {
+  cleanMessages(true);
+  if (props.isInModal) {
+    handleFileDeleteInlineReveal(range);
+  } else {
+    handleFileDeleteWithModal(auditFile);
   }
 }
 
-function deleteFile(file: AuditFile) {
-  emit("delete-file", file);
+async function handleFileDeleteWithModal(
+  auditFile: AuditFile
+) {
+  const { isCanceled } = await modal.showConfirm({
+    title: getDeleteModalTitle(auditFile),
+    message: getDeleteModalMessage(auditFile),
+    confirmLabel: getDeleteModalConfirmLabel(auditFile),
+    focusOnConceal: () => fileInputRef.value!
+  });
+  if (!isCanceled) {
+    return await deleteFile(auditFile);
+  }
+  // Note: when deletion is cancelled from the modal dialog, focus automatically
+  // returns to the button that opened the modal dialog.
 }
 
-function getFileName(auditFile: ComponentFile) {
+async function handleFileDeleteInlineReveal(
+  range: number
+) {
+  inlineConfirmPendingRange.value = range;
+  await nextTick();
+  const confirmBtn = deleteConfirmBtnRefs.value[0];
+  confirmBtn?.focus();
+}
+
+async function inlineDeleteConfirm(auditFile: AuditFile) {
+  inlineConfirmPendingRange.value = undefined;
+  const promise = await deleteFile(auditFile);
+  return promise;
+}
+
+function inlineDeleteCancel(range: number) {
+  const deleteBtn = deleteBtnRefs.value[range];
+  deleteBtn.focus();
+  inlineConfirmPendingRange.value = undefined;
+}
+
+async function deleteFile(
+  auditFile: AuditFile
+) {
+  if (!props.onDelete) {
+    return;
+  }
+
+  try {
+    await props.onDelete(auditFile);
+    displayMessage({
+      htmlContent: getFileMessage("DELETE_SUCCESS", auditFile.originalFilename),
+      isSuccess: true
+    });
+  } catch (error) {
+    if (typeof (error) === "string") {
+      displayMessage({
+        htmlContent: error,
+        isSuccess: false
+      });
+    }
+  }
+}
+
+function getFileName(auditFile: AuditFile) {
   return auditFile.originalFilename;
 }
 
-function getFullFileName(auditFile: ComponentFile) {
-  return getFileName(auditFile) + " (" + getFileDetails(auditFile) + ")";
-}
-
-function getFileDetails(auditFile: ComponentFile) {
+function getFileDetails(auditFile: AuditFile) {
   const name = auditFile.originalFilename;
   const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
   return extension + " – " + formatBytes(auditFile.size);
 }
 
-function isViewable(auditFile: ComponentFile) {
+function getFullFileName(auditFile: AuditFile) {
+  return getFileName(auditFile) + " (" + getFileDetails(auditFile) + ")";
+}
+
+function isImage(auditFile: AuditFile) {
   return (
-    auditFile.mimetype.startsWith("image") || auditFile.mimetype.includes("pdf")
+    auditFile.mimetype.startsWith("image")
   );
 }
 
-function onFileRequestFinished() {
-  localErrorMessage.value = null;
+function isViewable(auditFile: AuditFile) {
+  return (
+    isImage(auditFile) || auditFile.mimetype.includes("pdf")
+  );
 }
+
+function getDeleteModalTitle(auditFile: AuditFile) {
+  return isImage(auditFile)
+    ? `Voulez-vous supprimer l’image <strong>${getFileName(auditFile)}</strong> ?`
+    : `Voulez-vous supprimer le fichier <strong>${getFileName(auditFile)})</strong> ?`;
+};
+
+/**
+ * Gets the Delete Modal body message (HTML format)
+ *
+ * @param {AuditFile} auditFile The Auditfile being deleted
+ * @returns {string} message in HTML format
+ */
+function getDeleteModalMessage(auditFile: AuditFile): string {
+  return isImage(auditFile)
+    ? `<p>L’image <strong>${getFileName(auditFile)}</strong> sera définitivement supprimée de votre audit.</p>`
+    : `<p>Le fichier <strong>${getFileName(auditFile)}</strong> sera définitivement supprimé de votre audit.</p>`;
+};
+
+function getDeleteModalConfirmLabel(auditFile: AuditFile) {
+  return isImage(auditFile) ? `Supprimer l’image<span class="fr-sr-only"> ${getFileName(auditFile)}</span>` : `Supprimer le fichier<span class="fr-sr-only"> ${getFileName(auditFile)}</span>`;
+};
 </script>
 
 <template>
   <div>
     <div class="upload-wrapper">
-      <!-- TODO: handle multiple files upload -->
-      <!-- :multiple="multiple ?? undefined" -->
-      <div
-        v-if="!readonly" class="fr-upload-group" :class="{ 'fr-upload-group--disabled': isOffline }"
-      >
-        <label class="fr-label" :for="`file-upload-${id}`">
-          {{ title }}
-          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSize }}.
-            <span v-html="acceptedFormatsHtml"></span>.
-          </span>
-        </label>
-        <input
-          :id="`file-upload-${id}`"
-          ref="fileInputRef"
-          class="fr-upload"
-          type="file"
-          name="file-upload"
-          :accept="acceptedFormatsAttr"
-          :aria-describedby="`file-upload-messages-${id}`"
-          :class="{ 'file-upload--dragged-over': isDraggedOver }"
-          :disabled="isOffline"
-          @input="resetMessage"
-          @cancel="cancelUpload"
-          @change="handleFileChange"
-          @dragover="isDraggedOver = true"
-          @dragleave="isDraggedOver = false"
-          @drop="isDraggedOver = false"
+      <div v-if="message.htmlContent" :id="`file-messages-${id}`" class="fr-messages-group">
+        <p
+          ref="messageRef"
+          class="fr-message"
+          tabindex="0"
+          :aria-label="getRawMessage"
+          :class="{
+            'fr-message--error': (message.isSuccess === false),
+            'fr-message--valid': (message.isSuccess === true)
+          }" v-html="message.htmlContent"
+        ></p>
+      </div>
+      <div :id="`upload-wrapper-${id}`">
+        <!-- TODO: handle multiple files upload -->
+        <!-- :multiple="multiple ?? undefined" -->
+        <div
+          v-if="!readonly" class="fr-upload-group" :class="{ 'fr-upload-group--disabled': isOffline }"
         >
-        <div :id="`file-upload-messages-${id}`" class="fr-messages-group" aria-live="assertive" aria-atomic="true">
-          <p
-            v-if="computedErrorMessage"
-            class="fr-message"
-            :class="{ 'fr-message--error': computedErrorMessage }"
-          >{{ computedErrorMessage }}</p>
+          <label class="fr-label" :for="`file-upload-${id}`">
+            {{ title }}
+            <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSizeHumanReadable }}.
+              <span v-html="acceptedFormatsHtml"></span>.
+            </span>
+          </label>
+          <input
+            :id="`file-upload-${id}`"
+            ref="fileInputRef"
+            class="fr-upload"
+            type="file"
+            name="file-upload"
+            :accept="acceptedFormatsAttr"
+            :aria-describedby="message.htmlContent ? `file-messages-${id}` : undefined"
+            :class="{ 'file-upload--dragged-over': isDraggedOver }"
+            :disabled="isOffline ? true : undefined"
+            @click="() => cleanMessages()"
+            @change="handleFileChange"
+            @dragover="isDraggedOver = true"
+            @dragleave="isDraggedOver = false"
+            @drop="isDraggedOver = false"
+          >
         </div>
       </div>
     </div>
 
     <!-- Uploaded files -->
-    <p class="fr-mt-3w fr-mb-0">{{ selectedFiles }}</p>
-    <ul class="files">
-      <li v-for="auditFile in auditFiles" :key="auditFile.key">
+    <p v-if="!readonly" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
+    <ul
+      v-if="!isEmpty"
+      class="files"
+      role="list"
+      :aria-label="allFiles"
+      :aria-describedby="message.htmlContent ? `file-messages-${id}` : undefined"
+    >
+      <li v-for="(auditFile, i) in auditFiles" :key="auditFile.key">
         <img
           v-if="auditFile.thumbnailKey"
           class="fr-icon--lg file-thumbnail"
@@ -203,14 +352,14 @@ function onFileRequestFinished() {
             <a
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
               :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               target="_blank"
               :title="
                 'Voir ' + getFullFileName(auditFile) + ' - nouvelle fenêtre'
               "
             >
               Voir
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+              <span class="fr-sr-only">{{ getFullFileName(auditFile) }}</span>
             </a>
           </li>
           <li>
@@ -218,25 +367,48 @@ function onFileRequestFinished() {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
               download
               :href="getUploadUrl(auditFile.key)"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               :title="'Télécharger ' + getFullFileName(auditFile)"
             >
               Télécharger
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+              <span class="fr-sr-only">{{ getFullFileName(auditFile) }}</span>
             </a>
           </li>
           <li v-if="!readonly">
             <button
+              ref="deleteBtnRefs"
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               :title="'Supprimer ' + getFullFileName(auditFile)"
-              @click="deleteFile(auditFile as AuditFile)"
+              @click="handleFileDelete(auditFile, i)"
             >
               Supprimer
-              <span class="sr-only">{{ getFullFileName(auditFile) }}</span>
+              <span class="fr-sr-only">{{ getFullFileName(auditFile) }}</span>
             </button>
           </li>
         </ul>
+        <form v-if="inlineConfirmPendingRange === i" class="files__confirm-inline">
+          <fieldset class="fr-fieldset">
+            <legend class="fr-fieldset__legend" v-html="getDeleteModalTitle(auditFile)"></legend>
+            <div class="fr-fieldset__element fr-fieldset__element--inline@sm">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
+                <button
+                  ref="deleteConfirmBtnRefs"
+                  class="fr-btn danger-button"
+                  type="button"
+                  @click="inlineDeleteConfirm(auditFile)"
+                  v-html="getDeleteModalConfirmLabel(auditFile)"
+                ></button>
+                <button
+                  class="fr-btn fr-btn--secondary" type="button"
+                  @click="inlineDeleteCancel(i)"
+                >
+                  Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(auditFile) }}</span>
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
       </li>
     </ul>
   </div>
@@ -303,5 +475,18 @@ function onFileRequestFinished() {
 
 .file-upload--dragged-over {
   outline: var(--dsfr-outline) dotted 3px;
+}
+
+.files__confirm-inline {
+  width: 100%;
+}
+
+.fr-message {
+  white-space: pre;
+}
+
+.upload-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
 }
 </style>

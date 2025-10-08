@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
-import { FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditFile,
@@ -17,9 +17,7 @@ import {
   CriteriumResultStatus
 } from "../../types";
 import {
-  formatStatus,
-  handleFileDeleteError,
-  handleFileUploadError
+  formatStatus
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -28,10 +26,10 @@ import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import DeleteFileModal from "./DeleteFileModal.vue";
 
-const store = useResultsStore();
+const resultsStore = useResultsStore();
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const filtersStore = useFiltersStore();
 
 const props = defineProps<{
@@ -69,7 +67,7 @@ const statuses: Array<{
 
 const result = computed(
   () =>
-    store.getCriteriumResult(
+    resultsStore.getCriteriumResult(
       props.page.id,
       props.topicNumber,
       props.criterium.number
@@ -81,8 +79,8 @@ const transversePageId = computed(() => {
 });
 
 const transverseStatus = computed((): CriteriumResultStatus | null => {
-  if (store.data && transversePageId.value) {
-    return store.data?.[transversePageId.value][props.topicNumber][
+  if (resultsStore.data && transversePageId.value) {
+    return resultsStore.data?.[transversePageId.value][props.topicNumber][
       props.criterium.number
     ].status;
   }
@@ -91,9 +89,9 @@ const transverseStatus = computed((): CriteriumResultStatus | null => {
 });
 
 const transverseComment = computed((): string | null => {
-  if (store.data && transversePageId.value) {
+  if (resultsStore.data && transversePageId.value) {
     const result =
-      store.data?.[transversePageId.value][props.topicNumber][
+      resultsStore.data?.[transversePageId.value][props.topicNumber][
         props.criterium.number
       ];
 
@@ -120,61 +118,27 @@ function toggleTransverseComment() {
 
 const notify = useNotifications();
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
 function handleUploadExample(file: File) {
-  store
-    .uploadExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      file
-    )
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      store.lastRequestFailed = true;
-    })
-    .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
-    });
+  return fileHandler.uploadCriteriumFile(
+    props.auditUniqueId,
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number,
+    file
+  );
 }
 
-const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
-const fileToDelete = ref<AuditFile>();
-
-function openDeleteFileModal(image: AuditFile) {
-  deleteFileModalRef.value?.show();
-  fileToDelete.value = image;
-}
-
-function handleDeleteExample() {
-  if (!fileToDelete.value) return;
-
-  store
-    .deleteExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      fileToDelete.value.id
-    )
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
-      deleteFileModalRef.value?.hide();
-    });
+function handleFileDeleteAfterConfirm(auditFile: AuditFile) {
+  fileHandler.deleteCriteriumAuditFile(
+    props.auditUniqueId,
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number,
+    auditFile
+  );
 }
 
 function handleUpdateResultError(err: any) {
@@ -188,7 +152,7 @@ function handleUpdateResultError(err: any) {
 }
 
 function updateResultStatus(status: CriteriumResultStatus) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
       if (status === CriteriumResultStatus.NOT_COMPLIANT) {
@@ -196,7 +160,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
       }
 
       if (
-        store.everyCriteriumAreTested &&
+        resultsStore.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
       ) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
@@ -220,7 +184,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
       }
     })
     .then(() => {
-      store.lastUpdatedTopic = result.value.topic;
+      resultsStore.lastUpdatedTopic = result.value.topic;
     })
     .catch(handleUpdateResultError);
 }
@@ -229,7 +193,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
 const updateResultComment = debounce(
   async (comment: string, key: keyof CriteriumResult) => {
     try {
-      await store.updateResults(props.auditUniqueId, [
+      await resultsStore.updateResults(props.auditUniqueId, [
         { ...result.value, [key]: comment }
       ]);
     } catch (error) {
@@ -240,13 +204,13 @@ const updateResultComment = debounce(
 );
 
 function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
     .catch(handleUpdateResultError);
 }
 
 function updateQuickWin(quickWin: boolean) {
-  store
+  resultsStore
     .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
     .catch(handleUpdateResultError);
 }
@@ -274,8 +238,11 @@ const parentCriterium = computed(() => {
     }
 
     const [parentTopic, parentCriterium] = key.split(".").map(Number);
-    const parentResult =
-      store.getCriteriumResult(props.page.id, parentTopic, parentCriterium);
+    const parentResult = resultsStore.getCriteriumResult(
+      props.page.id,
+      parentTopic,
+      parentCriterium
+    );
 
     if (parentResult?.status === CriteriumResultStatus.NOT_APPLICABLE) {
       return key;
@@ -402,19 +369,11 @@ const parentCriterium = computed(() => {
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
-      :error-message="errorMessage"
+      :on-upload="handleUploadExample"
+      :on-delete="handleFileDeleteAfterConfirm"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:user-impact="updateResultImpact($event)"
-      @upload-file="handleUploadExample"
-      @delete-file="openDeleteFileModal"
       @update:quick-win="updateQuickWin"
-    />
-
-    <DeleteFileModal
-      ref="deleteFileModalRef"
-      :mime-type="fileToDelete?.mimetype"
-      @confirm="handleDeleteExample"
-      @cancel="deleteFileModalRef?.hide()"
+      @update:user-impact="updateResultImpact($event)"
     />
 
     <!-- TESTS + METHODO -->

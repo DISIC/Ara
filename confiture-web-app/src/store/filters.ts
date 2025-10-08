@@ -25,7 +25,7 @@ export const useFiltersStore = defineStore("filters", {
   getters: {
     /** Filter topics by topic name and by search. */
     filteredTopics() {
-      const resultStore = useResultsStore();
+      const resultsStore = useResultsStore();
       const auditStore = useAuditStore();
       const auditType = auditStore.currentAudit?.auditType ?? AuditType.FULL;
 
@@ -36,7 +36,7 @@ export const useFiltersStore = defineStore("filters", {
        * - already evaluated criteria
        * - which are not in newEvaluatedCriteria
        */
-      if (this.hideEvaluatedCriteria && resultStore.data) {
+      if (this.hideEvaluatedCriteria && resultsStore.data) {
         filteredTopics = filteredTopics.map((t) => {
           return {
             ...t,
@@ -45,7 +45,7 @@ export const useFiltersStore = defineStore("filters", {
                 return {
                   ...c,
                   status:
-                    resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
+                    resultsStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
                       c.criterium.number
                     ]?.status
                 };
@@ -77,7 +77,7 @@ export const useFiltersStore = defineStore("filters", {
               return {
                 ...c,
                 status:
-                  resultStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
+                  resultsStore.data?.[auditStore.currentPageId!]?.[t.number]?.[
                     c.criterium.number
                   ]?.status
               };
@@ -130,9 +130,9 @@ export const useFiltersStore = defineStore("filters", {
       }
 
       const auditStore = useAuditStore();
-      const resultStore = useResultsStore();
+      const resultsStore = useResultsStore();
 
-      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+      const pageResults = resultsStore.data?.[auditStore.currentPageId!];
 
       return Object.values(pageResults!)
         .map((topic) => {
@@ -149,9 +149,9 @@ export const useFiltersStore = defineStore("filters", {
       }
 
       const auditStore = useAuditStore();
-      const resultStore = useResultsStore();
+      const resultsStore = useResultsStore();
 
-      const pageResults = resultStore.data?.[auditStore.currentPageId!];
+      const pageResults = resultsStore.data?.[auditStore.currentPageId!];
 
       return Object.values(pageResults!)
         .map((topic) => {
