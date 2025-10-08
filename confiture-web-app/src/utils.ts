@@ -268,6 +268,9 @@ export function isTiptapDocumentEmpty(
 
 export function getScrollBehavior(): ScrollBehavior {
   // Use smooth scrolling only if user does not dislike animations
+  // @ts-ignore
+  // TODO remove `@ts-ignore` when the following issue is fixed in TS 4.x or when migrating to TS 5.1.
+  // See [ScrollBehavior definition is missing 'instant' for window.scrollTo · Issue #47441 · microsoft/TypeScript](https://github.com/microsoft/TypeScript/issues/47441)
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ? "instant"
     : "smooth";
