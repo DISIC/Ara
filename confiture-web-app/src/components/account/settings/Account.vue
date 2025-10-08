@@ -16,7 +16,7 @@ const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
 
-const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase “${VALIDATION_STRING}”.`), EQUAL(VALIDATION_STRING, `La phrase saisie est incorrect. Saisissez la phrase “${VALIDATION_STRING}”.`)]);
+const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase “${VALIDATION_STRING}”.`), EQUAL(VALIDATION_STRING, "Saisie incorecte. Vérifiez votre saisie.")]);
 const password = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe")]);
 
 const displayAccountDeletionForm = ref(false);
@@ -34,7 +34,7 @@ async function deleteAccount() {
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        password.error.value = "Le mot de passe saisi est incorrect.";
+        password.error.value = "Saisie incorrecte. Vérifiez votre saisie.";
         await nextTick();
         password.focusRef.value?.focus();
       } else {
