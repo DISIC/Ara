@@ -254,10 +254,16 @@ function getDeleteModalTitle(auditFile: AuditFile) {
     : `Voulez-vous supprimer le fichier <strong>${getFileName(auditFile)})</strong> ?`;
 };
 
-function getDeleteModalMessage(auditFile: AuditFile) {
+/**
+ * Gets the Delete Modal body message (HTML format)
+ *
+ * @param {AuditFile} auditFile The Auditfile being deleted
+ * @returns {string} message in HTML format
+ */
+function getDeleteModalMessage(auditFile: AuditFile): string {
   return isImage(auditFile)
-    ? `L’image <strong>${getFileName(auditFile)}</strong> sera définitivement supprimée de votre audit.`
-    : `Le fichier <strong>${getFileName(auditFile)}</strong> sera définitivement supprimé de votre audit.`;
+    ? `<p>L’image <strong>${getFileName(auditFile)}</strong> sera définitivement supprimée de votre audit.</p>`
+    : `<p>Le fichier <strong>${getFileName(auditFile)}</strong> sera définitivement supprimé de votre audit.</p>`;
 };
 
 function getDeleteModalConfirmLabel(auditFile: AuditFile) {

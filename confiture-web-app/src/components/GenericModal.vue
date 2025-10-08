@@ -52,7 +52,7 @@ onReveal(() => {
             </div>
             <div class="fr-modal__content">
               <h1 id="generic-modal-title" class="fr-modal__title" v-html="title"></h1>
-              <p v-html="message"></p>
+              <div v-html="message"></div>
             </div>
             <div class="fr-modal__footer">
               <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
