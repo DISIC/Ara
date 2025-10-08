@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 08/10/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige les paramètres de l’audit parfois désynchronisé ([#1217](https://github.com/DISIC/Ara/pull/1217))
+
 ### 07/10/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

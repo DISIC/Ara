@@ -2,6 +2,7 @@ import ky from "ky";
 import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { useRoute } from "vue-router";
 import {
   Audit,
   AuditFile,
@@ -18,7 +19,6 @@ interface AuditStoreState {
   currentPageId: number | null;
   showAuditEmailAlert: boolean;
 
-  currentAuditId: string | null;
   entities: Record<string, Audit>;
   listing: AccountAudit[];
 
@@ -42,7 +42,6 @@ export const useAuditStore = defineStore("audit", {
     currentPageId: null,
     showAuditEmailAlert: false,
 
-    currentAuditId: null,
     entities: {},
     listing: [],
     currentRequestCount: 0,
@@ -71,7 +70,6 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async fetchAudit(editUniqueId: string) {
-      this.currentAuditId = editUniqueId;
       const data = (await ky
         .get(`/api/audits/${editUniqueId}`)
         .json()) as Audit;
@@ -80,7 +78,6 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async fetchAuditIfNeeded(editUniqueId: string) {
-      this.currentAuditId = editUniqueId;
       if (this.entities[editUniqueId]) {
         return;
       }
@@ -131,9 +128,6 @@ export const useAuditStore = defineStore("audit", {
       this.listing = this.listing.filter(
         (audit) => audit.editUniqueId !== uniqueId
       );
-      if (this.currentAuditId === uniqueId) {
-        this.currentAuditId = null;
-      }
     },
 
     async uploadAuditFile(uniqueId: string, file: File) {
@@ -255,11 +249,17 @@ export const useAuditStore = defineStore("audit", {
     }
   },
   getters: {
-    currentAudit(state) {
-      if (!state.currentAuditId) {
+    currentAuditId() {
+      const route = useRoute();
+      const auditUniqueId = route.params.uniqueId as string | undefined;
+
+      return auditUniqueId;
+    },
+    currentAudit(state): Audit | null {
+      if (!this.currentAuditId) {
         return null;
       }
-      return state.entities[state.currentAuditId];
+      return state.entities[this.currentAuditId];
     },
 
     isLoading(): boolean {
