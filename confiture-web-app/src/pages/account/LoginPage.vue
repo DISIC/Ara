@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { HTTPError } from "ky";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
-import DsfrField from "../../components/ui/DsfrField.vue";
 import DsfrPassword from "../../components/ui/DsfrPassword.vue";
+import DsfrFieldWithValidation from "../../components/validation/DsfrFieldWithValidation.vue";
+import FieldValidation from "../../components/validation/FieldValidation.vue";
+import FormWithValidation from "../../components/validation/form-with-validation/FormWithValidation.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import {
   EMAIL,
-  REQUIRED,
-  useFormField,
-  validate
+  REQUIRED
 } from "../../composables/validation";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
@@ -20,23 +20,19 @@ import { captureWithPayloads } from "../../utils";
 const showGenericLoginError = ref(false);
 const genericErrorRef = ref<HTMLDivElement>();
 
-const userEmail = useFormField<string>((history.state.email as string) ?? "", [
-  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
-]);
-
-const userPassword = useFormField<string>("", [
-  REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")
-]);
+const userEmail = ref("");
+const userPassword = ref("");
 
 const showCreatedAccountAlert = ref(!!history.state.email);
 const showPasswordResetAlert = ref(history.state.passwordReset);
+
+const emailFieldRef = useTemplateRef("emailField");
 
 async function closeAlert() {
   showCreatedAccountAlert.value = false;
   showPasswordResetAlert.value = false;
   await nextTick();
-  userEmail.focusRef.value?.focus();
+  emailFieldRef.value?.focus();
 }
 
 const store = useAccountStore();
@@ -44,12 +40,8 @@ const router = useRouter();
 const notify = useNotifications();
 
 async function handleSubmit() {
-  if (!validate(userEmail, userPassword)) {
-    return;
-  }
-
   store
-    .login(userEmail.value.value, userPassword.value.value)
+    .login(userEmail.value, userPassword.value)
     .then(() => {
       router.push({ name: "account-dashboard" });
     })
@@ -97,43 +89,48 @@ async function handleSubmit() {
   </div>
 
   <div class="wrapper">
-    <form novalidate @submit.prevent="handleSubmit">
+    <FormWithValidation @submit="handleSubmit">
       <h1 class="fr-h3">Connexion à Ara</h1>
 
       <div v-if="showGenericLoginError" ref="genericErrorRef" tabindex="-1" class="fr-alert fr-alert--sm fr-alert--error fr-mb-3w">
         <p>L’adresse e-mail ou le mot de passe saisi est incorrect. Vérifiez vos saisies.</p>
       </div>
 
-      <DsfrField
+      <DsfrFieldWithValidation
         id="user-email"
-        :ref="userEmail.refFn"
-        :model-value="userEmail.value.value"
+        ref="emailField"
+        v-model="userEmail"
         label="Adresse e-mail"
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         autocomplete="email"
-        :error="userEmail.error.value"
-        @update:model-value="userEmail.value.value = $event"
+        :validation="[REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
+                      EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
       />
 
-      <DsfrPassword
-        id="user-password"
-        :ref="userPassword.refFn"
-        :model-value="userPassword.value.value"
-        class="fr-my-3w"
-        :error="userPassword.error.value"
-        label="Mot de passe"
-        required
-        autocomplete="current-password"
-        show-forgotten-password-link
-        @update:model-value="userPassword.value.value = $event"
-      />
+      <FieldValidation
+        v-slot="{ error, focusRef }"
+        :value="userPassword"
+        :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
+      >
+        <DsfrPassword
+          id="user-password"
+          :ref="focusRef"
+          v-model="userPassword"
+          class="fr-my-3w"
+          label="Mot de passe"
+          required
+          autocomplete="current-password"
+          show-forgotten-password-link
+          :error="error"
+        />
+      </FieldValidation>
 
       <div class="fr-btns-group">
         <button class="fr-btn fr-mb-0">Se connecter</button>
       </div>
-    </form>
+    </FormWithValidation>
 
     <div>
       <hr class="fr-mt-3w" />
@@ -148,8 +145,7 @@ async function handleSubmit() {
           Créer un compte
         </RouterLink>
       </div>
-    </div>
-  </div>
+    </div></div>
 </template>
 
 <style scoped>

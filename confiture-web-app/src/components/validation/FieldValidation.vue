@@ -32,6 +32,12 @@ onBeforeUnmount(() => {
     removeFieldFromForm(fieldValidation);
   }
 });
+
+defineExpose({
+  focus() {
+    fieldValidation.focusRef.value?.focus();
+  }
+});
 </script>
 
 <template>
