@@ -10,10 +10,10 @@ type DsfrFielWithValidationPrors = {
 
 const props = defineProps<DsfrFielWithValidationPrors>();
 
-const fielValidation = useFormField<T>(props.value, props.validation);
+const fieldValidation = useFormField<T>(props.value, props.validation);
 
 watch(() => props.value, newValue => {
-  fielValidation.value.value = newValue;
+  fieldValidation.value.value = newValue;
 });
 
 const addFieldToForm = inject(addFieldKey);
@@ -22,21 +22,21 @@ const removeFieldFromForm = inject(removeFieldKey);
 if (!addFieldToForm) {
   console.warn("Cannot add validated field to form. Make sure <FormWithValidation> is a parent component.");
 } else {
-  addFieldToForm(fielValidation);
+  addFieldToForm(fieldValidation);
 }
 
 onBeforeUnmount(() => {
   if (!removeFieldFromForm) {
-    console.warn("Cannot add validated field to form. Make sure <FormWithValidation> is a parent component.");
+    console.warn("Cannot remove validated field to form. Make sure <FormWithValidation> is a parent component.");
   } else {
-    removeFieldFromForm(fielValidation);
+    removeFieldFromForm(fieldValidation);
   }
 });
 </script>
 
 <template>
   <slot
-    :focus-ref="fielValidation.focusRef"
-    :error="fielValidation.error.value"
+    :focus-ref="fieldValidation.focusRef"
+    :error="fieldValidation.error.value"
   />
 </template>

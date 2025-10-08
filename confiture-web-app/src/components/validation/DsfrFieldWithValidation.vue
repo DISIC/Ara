@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ValidationRule } from "../../composables/validation";
-import DsfrField, { type DsfrFielProps } from "../ui/DsfrField.vue";
+import DsfrField, { type DsfrFieldProps } from "../ui/DsfrField.vue";
 import FieldValidation from "./FieldValidation.vue";
 
-type DsfrFielWithValidationPrors = Omit<DsfrFielProps, "error" | "modelValue"> & {
+type DsfrFieldWithValidationProps = Omit<DsfrFieldProps, "error" | "modelValue"> & {
   validation: ValidationRule<string>[];
 };
 
-const { validation, ...props } = defineProps<DsfrFielWithValidationPrors>();
+const { validation, ...props } = defineProps<DsfrFieldWithValidationProps>();
 const model = defineModel<string>({ default: "" });
 </script>
 

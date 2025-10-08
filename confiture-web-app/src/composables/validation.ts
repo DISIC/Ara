@@ -63,6 +63,7 @@ export function validate(...fields: ReturnType<typeof useFormField>[]) {
   // if there are errors, sort the elements by their position in the document
   // and focus the first one
   if (focusableInvalidElements.length) {
+    // FIXME: no need to sort the array, we just need to find the one element
     focusableInvalidElements.sort((a, b) => {
       const position = a.compareDocumentPosition(b);
       if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;

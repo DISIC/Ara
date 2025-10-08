@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 
-export interface DsfrFielProps {
+export interface DsfrFieldProps {
   modelValue?: string;
   label: string;
   hint?: string;
@@ -16,7 +16,7 @@ export interface DsfrFielProps {
   isTextArea?: boolean;
 }
 
-const props = defineProps<DsfrFielProps>();
+const props = defineProps<DsfrFieldProps>();
 
 defineEmits<{
   (e: "update:modelValue", payload: string): void;
