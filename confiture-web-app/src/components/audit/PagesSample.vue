@@ -119,7 +119,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 function validate(): boolean {
   const nameIsRequired = REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.");
   const urlIsRequired = REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer.");
-  const urlIsValid = URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".");
+  const urlIsValid = URL("Format incorrect. Saisissez une URL commençant par https:// ou http://.");
 
   let isValid = true;
 

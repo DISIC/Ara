@@ -35,8 +35,7 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-// const technologies = ref<string[]>([]);
-const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "Indiquez les technologies utilisées sur le site.")]);
+const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "Information obligatoire. Indiquez les technologies utilisées sur le site.")]);
 
 const customTools = ref<string[]>([]);
 const defaultTools = ref<string[]>([]);
@@ -51,7 +50,7 @@ const toolsSectionError = ref<string>();
 function validateTools() {
   toolsSectionError.value = undefined;
   if (tools.value.length === 0) {
-    toolsSectionError.value = "Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.";
+    toolsSectionError.value = "Information obligatoire. Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.";
     toolsSectionRef.value?.focus();
     return false;
   }
@@ -85,13 +84,13 @@ const procedureUrl = useFormField("" as string, [
   REQUIRED(
     "Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité."
   ),
-  URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".")
+  URL("Format incorrect. Saisissez une URL commençant par https:// ou http://.")
 ]);
 
 const contactName = ref("");
 
 const contactEmail = useFormField("" as string, [EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")]);
-const contactFormUrl = useFormField("" as string, [URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".")]);
+const contactFormUrl = useFormField("" as string, [URL("Format incorrect. Saisissez une URL commençant par https:// ou http://.")]);
 const contactInfoSectionError = ref<string>();
 const contactSectionRef = ref<HTMLFieldSetElement>();
 

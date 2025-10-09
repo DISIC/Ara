@@ -176,7 +176,7 @@ function validate() {
   sectionError.value = undefined;
 
   if (props.modelValue.length === 0) {
-    sectionError.value = "Indiquez les environnements de test.";
+    sectionError.value = "Information obligatoire. Indiquez les environnements de test.";
     testEnvironmentRef.value?.focus();
     isValid = false;
   }
