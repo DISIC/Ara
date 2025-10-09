@@ -10,7 +10,7 @@ import PageMeta from "../../components/PageMeta";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Déclaration d’accessibilité</h1>
     <p><strong>la Direction Interministérielle du Numérique</strong> s’engage à rendre ses sites internet, intranet, extranet et ses progiciels accessibles (et ses applications mobiles et mobilier urbain numérique) conformément à l’article 47 de la loi n<sup>o</sup>&nbsp;2005-102 du 11&nbsp;février 2005.</p>
-    <p>Cette déclaration d’accessibilité s’applique à <strong>https://ara.numerique.gouv.fr/</strong>.</p>
+    <p>Cette déclaration d’accessibilité s’applique à <a href="https://ara.numerique.gouv.fr">Ara</a>.</p>
     <h2>État de conformité</h2>
     <p><strong>Ara</strong> est <strong>totalement conforme</strong> avec le référentiel général d’amélioration de l’accessibilité (RGAA).</p>
     <h3>Résultats des tests</h3>
@@ -59,14 +59,14 @@ import PageMeta from "../../components/PageMeta";
       <li>Paramètre de l'audit <strong>https://ara.numerique.gouv.fr/audits/xxx/parametres</strong></li>
     </ul>
     <h2>Retour d’information et contact</h2>
-    <p>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter l’équipe en charge d’Ara <strong>ara@design.numerique.gouv.fr</strong>.</p>
+    <p>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter l’équipe en charge d’Ara à l’adresse suivante&nbsp;: <strong>ara@design.numerique.gouv.fr</strong>.</p>
     <h2>Voies de recours</h2>
     <p>Si vous constatez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une fonctionnalité du site, que vous nous le signalez et que vous ne parvenez pas à obtenir une réponse de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au Défenseur des droits.</p>
     <p>Plusieurs moyens sont à votre disposition&nbsp;:</p>
     <ul>
-      <li><a href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine" target="_blank" > Écrire un message au Défenseur des droits <span>(nouvelle fenêtre)</span></a></li>
-      <li><a href="https://www.defenseurdesdroits.fr/carte-des-delegues" target="_blank" > Contacter le délégué du Défenseur des droits dans votre région <span>(nouvelle fenêtre)</span></a></li>
-      <li> Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) à&nbsp;:<br><span>Défenseur des droits<br> Libre réponse 71120<br> 75342 Paris CEDEX 07</span></li>
+      <li><a href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine" target="_blank">Écrire un message au Défenseur des droits <span>(nouvelle fenêtre)</span></a></li>
+      <li><a href="https://www.defenseurdesdroits.fr/carte-des-delegues" target="_blank">Contacter le délégué du Défenseur des droits dans votre région <span>(nouvelle fenêtre)</span></a></li>
+      <li>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) à&nbsp;:<br><span>Défenseur des droits<br> Libre réponse 71120<br> 75342 Paris CEDEX 07</span></li>
     </ul>
   </section>
 </template>
