@@ -18,6 +18,10 @@ defineExpose({
     field.value?.focus();
   }
 });
+
+defineOptions({
+  inheritAttrs: false
+});
 </script>
 
 <template>
@@ -28,7 +32,7 @@ defineExpose({
     :value="model"
   >
     <DsfrField
-      v-bind="props"
+      v-bind="{ ...props, ...$attrs }"
       :ref="focusRef"
       v-model="model"
       :error="error"
