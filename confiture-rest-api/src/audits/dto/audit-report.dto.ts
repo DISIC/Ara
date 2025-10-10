@@ -24,7 +24,7 @@ export class AuditReportDto {
   derogatedContent?: string;
   notInScopeContent?: string;
   notes?: string;
-  notesFiles: NotesFile[];
+  notesFiles: ReportNotesFile[];
 
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;
@@ -174,7 +174,7 @@ class ReportCriterionResult {
    * @example "There is an accessibility error there. You should do this and that."
    */
   notCompliantComment: string | null;
-  exampleImages: ExampleImage[];
+  exampleImages: ReportExampleImage[];
   /**
    * @example "MAJOR"
    */
@@ -186,7 +186,7 @@ class ReportCriterionResult {
   quickWin: boolean;
 }
 
-class ExampleImage {
+class ReportExampleImage {
   /** @example "mon-image.jpg" */
   filename: string;
   /** @example "audit/xxxx/my-image.jpg" */
@@ -195,7 +195,7 @@ class ExampleImage {
   thumbnailKey: string;
 }
 
-class NotesFile {
+class ReportNotesFile {
   originalFilename: string;
   key: string;
   thumbnailKey: string;

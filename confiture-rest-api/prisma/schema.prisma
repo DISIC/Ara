@@ -139,7 +139,7 @@ model CriterionResult {
 
   notCompliantComment String?                    @map("errorDescription")
   userImpact          CriterionResultUserImpact?
-  exampleImages       StoredFile[]
+  exampleImages       ExampleImageFile[]
   quickWin            Boolean                    @default(false)
 
   notApplicableComment String?
@@ -175,7 +175,7 @@ model AuditTrace {
   Audit                Audit?
 }
 
-model StoredFile {
+model ExampleImageFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
@@ -194,6 +194,8 @@ model StoredFile {
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// @DtoEntityHidden
   criterionResultId Int?
+
+  @@map("StoredFile")
 }
 
 model AuditFile {

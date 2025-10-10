@@ -5,7 +5,7 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact,
   Prisma,
-  StoredFile
+  ExampleImageFile
 } from "@prisma/client";
 import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
@@ -179,7 +179,7 @@ export class AuditService {
     uniqueId: string
   ): Promise<
     Omit<
-      CriterionResult & { exampleImages: StoredFile[] },
+      CriterionResult & { exampleImages: ExampleImageFile[] },
       "id" | "auditUniqueId"
     >[]
   > {
@@ -485,7 +485,7 @@ export class AuditService {
       )
     ]);
 
-    const storedFile = await this.prisma.storedFile.create({
+    const storedFile = await this.prisma.exampleImageFile.create({
       data: {
         criterionResult: {
           connect: {
@@ -515,7 +515,7 @@ export class AuditService {
     editUniqueId: string,
     exampleId: number
   ): Promise<boolean> {
-    const storedFilePromise = this.prisma.storedFile.findUnique({
+    const storedFilePromise = this.prisma.exampleImageFile.findUnique({
       where: {
         id: exampleId
       }
@@ -540,7 +540,7 @@ export class AuditService {
       storedFile.thumbnailKey
     );
 
-    await this.prisma.storedFile.delete({
+    await this.prisma.exampleImageFile.delete({
       where: {
         id: exampleId
       }
@@ -640,7 +640,7 @@ export class AuditService {
    */
   async hardDeleteAudit(uniqueId: string): Promise<boolean> {
     try {
-      const storedFiles = await this.prisma.storedFile.findMany({
+      const storedFiles = await this.prisma.exampleImageFile.findMany({
         where: {
           criterionResult: {
             page: {
@@ -1152,7 +1152,7 @@ export class AuditService {
     */
     const imagesCreateData: {
       [pageId: string]: {
-        [resultId: string]: Prisma.StoredFileCreateInput;
+        [resultId: string]: Prisma.ExampleImageFileCreateInput;
       };
     } = {};
 

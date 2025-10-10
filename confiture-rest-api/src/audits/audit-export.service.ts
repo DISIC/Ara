@@ -5,7 +5,7 @@ import {
   AuditedPage,
   CriterionResult,
   CriterionResultStatus,
-  StoredFile
+  ExampleImageFile
 } from "@prisma/client";
 import { groupBy } from "lodash";
 import * as XLSX from "xlsx";
@@ -31,7 +31,7 @@ export class AuditExportService {
       pages: AuditedPage[];
     },
     results: Omit<
-      CriterionResult & { exampleImages: StoredFile[] },
+      CriterionResult & { exampleImages: ExampleImageFile[] },
       "id" | "auditUniqueId"
     >[]
   ) {
