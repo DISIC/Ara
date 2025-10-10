@@ -72,7 +72,7 @@ model Audit {
   derogatedContent    String?
   notInScopeContent   String?
   notes               String?
-  notesFiles          AuditFile[]
+  notesFiles          NotesFile[]
 
   // Misc
   recipients      Recipent[] // unused for now
@@ -175,6 +175,7 @@ model AuditTrace {
   Audit                Audit?
 }
 
+/// Image files attached to specific criterium result when not compliant.
 model ExampleImageFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
@@ -198,7 +199,8 @@ model ExampleImageFile {
   @@map("StoredFile")
 }
 
-model AuditFile {
+/// File attached to audit notes.
+model NotesFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
@@ -217,6 +219,8 @@ model AuditFile {
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   /// @DtoEntityHidden
   auditUniqueId String?
+
+  @@map("AuditFile")
 }
 
 enum EmailStatus {

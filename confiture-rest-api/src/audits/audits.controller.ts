@@ -226,7 +226,7 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Param("fileId", new ParseIntPipe()) fileId: number
   ) {
-    const deleted = await this.auditService.deleteAuditFile(
+    const deleted = await this.auditService.deleteNotesFile(
       uniqueId,
       Number(fileId)
     );

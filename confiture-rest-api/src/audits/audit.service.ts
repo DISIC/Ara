@@ -579,7 +579,7 @@ export class AuditService {
       await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
     }
 
-    const storedFile = await this.prisma.auditFile.create({
+    const storedFile = await this.prisma.notesFile.create({
       data: {
         audit: {
           connect: {
@@ -602,11 +602,11 @@ export class AuditService {
   /**
    * Returns true if stored filed was found and deleted. False if not found.
    */
-  async deleteAuditFile(
+  async deleteNotesFile(
     editUniqueId: string,
     fileId: number
   ): Promise<boolean> {
-    const storedFilePromise = this.prisma.auditFile.findUnique({
+    const storedFilePromise = this.prisma.notesFile.findUnique({
       where: {
         id: fileId
       }
@@ -625,7 +625,7 @@ export class AuditService {
     }
     await this.fileStorageService.deleteMultipleFiles(...filesToDelete);
 
-    await this.prisma.auditFile.delete({
+    await this.prisma.notesFile.delete({
       where: {
         id: fileId
       }
@@ -649,7 +649,7 @@ export class AuditService {
           }
         }
       });
-      const notesFiles = await this.prisma.auditFile.findMany({
+      const notesFiles = await this.prisma.notesFile.findMany({
         where: {
           auditUniqueId: uniqueId
         }
