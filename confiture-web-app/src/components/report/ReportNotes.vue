@@ -2,13 +2,20 @@
 import { computed } from "vue";
 
 import { useReportStore } from "../../store";
-import { isTiptapDocumentEmpty } from "../../utils";
+import { isTiptapDocumentEmpty, getUploadUrl } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
-import FileUpload from "../ui/FileUpload.vue";
+import FileList from "../ui/FileList.vue";
 
 const report = useReportStore();
 
-const files = computed(() => report.data?.notesFiles);
+const files = computed(() => report.data?.notesFiles.map(f => ({
+  size: f.size,
+  thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
+  filename: f.originalFilename,
+  mimetype: f.mimetype,
+  url: getUploadUrl(f.key),
+  key: f.key
+})));
 </script>
 
 <template>
@@ -18,14 +25,14 @@ const files = computed(() => report.data?.notesFiles);
     :document="report.data?.notes"
   />
 
-  <h3 v-if="files?.length" class="fr-text--sm">Pièces jointes</h3>
-  <FileUpload
-    v-if="files"
-    class="fr-mb-4w"
-    :readonly="true"
-    :audit-files="files"
-    :multiple="true"
-  />
+  <template v-if="files?.length">
+    <h3 class="fr-text--sm">Pièces jointes</h3>
+    <FileList
+      class="fr-mb-4w"
+      readonly
+      :files="files"
+    />
+  </template>
 </template>
 <style scoped>
 h3 {
