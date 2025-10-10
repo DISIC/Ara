@@ -138,7 +138,6 @@ function onFileRequestFinished() {
     </div>
 
     <!-- Uploaded files -->
-    <!-- TODO: move all the transformations somewhere else -->
     <FileList
       :readonly="readonly"
       :files="auditFiles"
