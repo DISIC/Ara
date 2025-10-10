@@ -2,7 +2,7 @@ import ky from "ky";
 import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
-import { useRoute } from "vue-router";
+import router from "../router";
 import {
   Audit,
   AuditFile,
@@ -250,9 +250,8 @@ export const useAuditStore = defineStore("audit", {
   },
   getters: {
     currentAuditId() {
-      const route = useRoute();
+      const route = router.resolve(window.location.pathname);
       const auditUniqueId = route.params.uniqueId as string | undefined;
-
       return auditUniqueId;
     },
     currentAudit(state): Audit | null {
