@@ -175,7 +175,7 @@ model AuditTrace {
   Audit                Audit?
 }
 
-/// Image files attached to specific criterium result when not compliant.
+/// Image file attached to specific criterium result when not compliant.
 model ExampleImageFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
