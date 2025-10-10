@@ -485,7 +485,7 @@ export class AuditService {
       )
     ]);
 
-    const storedFile = await this.prisma.exampleImageFile.create({
+    const exampleImageFile = await this.prisma.exampleImageFile.create({
       data: {
         criterionResult: {
           connect: {
@@ -505,7 +505,7 @@ export class AuditService {
       }
     });
 
-    return storedFile;
+    return exampleImageFile;
   }
 
   /**
@@ -515,29 +515,29 @@ export class AuditService {
     editUniqueId: string,
     exampleId: number
   ): Promise<boolean> {
-    const storedFilePromise = this.prisma.exampleImageFile.findUnique({
+    const exampleImageFilePromise = this.prisma.exampleImageFile.findUnique({
       where: {
         id: exampleId
       }
     });
 
-    const storedFile = await storedFilePromise;
+    const exampleImageFile = await exampleImageFilePromise;
 
-    const page = await storedFilePromise.criterionResult().page();
+    const page = await exampleImageFilePromise.criterionResult().page();
 
     // Checks whether its a user page or transverse page
     const audit =
       page.url === ""
-        ? await storedFilePromise.criterionResult().page().auditTransverse()
-        : await storedFilePromise.criterionResult().page().audit();
+        ? await exampleImageFilePromise.criterionResult().page().auditTransverse()
+        : await exampleImageFilePromise.criterionResult().page().audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
     }
 
     await this.fileStorageService.deleteMultipleFiles(
-      storedFile.key,
-      storedFile.thumbnailKey
+      exampleImageFile.key,
+      exampleImageFile.thumbnailKey
     );
 
     await this.prisma.exampleImageFile.delete({
@@ -579,7 +579,7 @@ export class AuditService {
       await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
     }
 
-    const storedFile = await this.prisma.notesFile.create({
+    const noteFile = await this.prisma.notesFile.create({
       data: {
         audit: {
           connect: {
@@ -596,7 +596,7 @@ export class AuditService {
       }
     });
 
-    return storedFile;
+    return noteFile;
   }
 
   /**
@@ -606,22 +606,22 @@ export class AuditService {
     editUniqueId: string,
     fileId: number
   ): Promise<boolean> {
-    const storedFilePromise = this.prisma.notesFile.findUnique({
+    const noteFilePromise = this.prisma.notesFile.findUnique({
       where: {
         id: fileId
       }
     });
 
-    const storedFile = await storedFilePromise;
-    const audit = await storedFilePromise.audit();
+    const notesFile = await noteFilePromise;
+    const audit = await noteFilePromise.audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
       return false;
     }
 
-    const filesToDelete = [storedFile.key];
-    if (storedFile.thumbnailKey) {
-      filesToDelete.push(storedFile.thumbnailKey);
+    const filesToDelete = [notesFile.key];
+    if (notesFile.thumbnailKey) {
+      filesToDelete.push(notesFile.thumbnailKey);
     }
     await this.fileStorageService.deleteMultipleFiles(...filesToDelete);
 
@@ -640,7 +640,7 @@ export class AuditService {
    */
   async hardDeleteAudit(uniqueId: string): Promise<boolean> {
     try {
-      const storedFiles = await this.prisma.exampleImageFile.findMany({
+      const exampleImageFiles = await this.prisma.exampleImageFile.findMany({
         where: {
           criterionResult: {
             page: {
@@ -656,9 +656,9 @@ export class AuditService {
       });
 
       const keysToDelete = [];
-      if (storedFiles.length > 0) {
+      if (exampleImageFiles.length > 0) {
         keysToDelete.push(
-          ...storedFiles.map((file) => [file.key, file.thumbnailKey]).flat()
+          ...exampleImageFiles.map((file) => [file.key, file.thumbnailKey]).flat()
         );
       }
       if (notesFiles.length > 0) {
