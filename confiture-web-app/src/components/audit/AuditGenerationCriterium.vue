@@ -9,12 +9,12 @@ import { LINKED_CRITERIA } from "../../criteria";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
-  AuditFile,
   AuditPage,
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  ExampleImageFile
 } from "../../types";
 import {
   formatStatus,
@@ -146,9 +146,9 @@ function handleUploadExample(file: File) {
 }
 
 const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
-const fileToDelete = ref<AuditFile>();
+const fileToDelete = ref<ExampleImageFile>();
 
-function openDeleteFileModal(image: AuditFile) {
+function openDeleteFileModal(image: ExampleImageFile) {
   deleteFileModalRef.value?.show();
   fileToDelete.value = image;
 }

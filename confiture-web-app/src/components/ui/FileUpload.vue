@@ -3,15 +3,11 @@ import { computed, Ref, ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
-import { AuditFile, NotesFile } from "../../types";
-import { getUploadUrl } from "../../utils";
-import FileList from "./FileList.vue";
-
-type ComponentFile = NotesFile | AuditFile;
+import FileList, { FileListFile } from "./FileList.vue";
 
 export interface Props {
   acceptedFormats?: Array<string>;
-  auditFiles: ComponentFile[];
+  auditFiles: FileListFile[];
   errorMessage?: FileErrorMessage | null;
   maxFileSize?: string;
   multiple?: boolean;
@@ -32,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: AuditFile): void;
+  (e: "delete-file", payload: FileListFile): void;
 }>();
 
 defineExpose({ onFileRequestFinished });
@@ -95,10 +91,6 @@ function handleFileChange() {
   }
 }
 
-function deleteFile(file: AuditFile) {
-  emit("delete-file", file);
-}
-
 function onFileRequestFinished() {
   localErrorMessage.value = null;
 }
@@ -146,16 +138,10 @@ function onFileRequestFinished() {
     </div>
 
     <!-- Uploaded files -->
-    <!-- TODO: move all the transformations somewhere else -->
     <FileList
       :readonly="readonly"
-      :files="auditFiles.map(f => ({
-        ...f,
-        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
-        filename: f.originalFilename,
-        url: getUploadUrl(f.key)
-      }))"
-      @delete="deleteFile(auditFiles.find(f => f.key === $event) as AuditFile)"
+      :files="auditFiles"
+      @delete="$emit('delete-file', auditFiles.find(f => f.key === $event)!)"
     />
   </div>
 </template>

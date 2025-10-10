@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { formatBytes, pluralize } from "../../utils";
 
-interface FileListFile {
+export interface FileListFile {
   filename: string;
   size: number;
   mimetype: string;

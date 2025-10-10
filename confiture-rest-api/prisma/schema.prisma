@@ -72,7 +72,7 @@ model Audit {
   derogatedContent    String?
   notInScopeContent   String?
   notes               String?
-  notesFiles          AuditFile[]
+  notesFiles          NotesFile[]
 
   // Misc
   recipients      Recipent[] // unused for now
@@ -139,7 +139,7 @@ model CriterionResult {
 
   notCompliantComment String?                    @map("errorDescription")
   userImpact          CriterionResultUserImpact?
-  exampleImages       StoredFile[]
+  exampleImages       ExampleImageFile[]
   quickWin            Boolean                    @default(false)
 
   notApplicableComment String?
@@ -175,7 +175,8 @@ model AuditTrace {
   Audit                Audit?
 }
 
-model StoredFile {
+/// Image file attached to specific criterium result when not compliant.
+model ExampleImageFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
@@ -194,9 +195,12 @@ model StoredFile {
   criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// @DtoEntityHidden
   criterionResultId Int?
+
+  @@map("StoredFile")
 }
 
-model AuditFile {
+/// File attached to audit notes.
+model NotesFile {
   id               Int    @id @default(autoincrement())
   originalFilename String
 
@@ -215,6 +219,8 @@ model AuditFile {
   audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
   /// @DtoEntityHidden
   auditUniqueId String?
+
+  @@map("AuditFile")
 }
 
 enum EmailStatus {
