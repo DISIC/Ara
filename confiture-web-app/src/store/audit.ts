@@ -5,7 +5,7 @@ import { defineStore } from "pinia";
 import router from "../router";
 import {
   Audit,
-  AuditFile,
+  NotesFile,
   CreateAuditRequestData,
   UpdateAuditRequestData
 } from "../types";
@@ -143,7 +143,7 @@ export const useAuditStore = defineStore("audit", {
         .json()
         .finally(() => {
           this.decreaseCurrentRequestCount();
-        })) as AuditFile;
+        })) as NotesFile;
 
       const notesFiles = this.entities[uniqueId].notesFiles || [];
       notesFiles.push(notesFile);

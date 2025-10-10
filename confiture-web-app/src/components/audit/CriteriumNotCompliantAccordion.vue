@@ -3,8 +3,8 @@ import { ref } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
-import { AuditFile, CriterionResultUserImpact } from "../../types";
-import { formatUserImpact } from "../../utils";
+import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
+import { formatUserImpact, getUploadUrl } from "../../utils";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -15,7 +15,7 @@ export interface Props {
   id: string;
   comment: string | null;
   errorMessage?: FileErrorMessage | null;
-  exampleImages: AuditFile[];
+  exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
 }
@@ -28,7 +28,7 @@ const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
   (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: AuditFile): void;
+  (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
@@ -64,7 +64,7 @@ function handleUploadFile(image: File) {
   emit("upload-file", image);
 }
 
-function handleDeleteFile(image: AuditFile) {
+function handleDeleteFile(image: ExampleImageFile) {
   emit("delete-file", image);
 }
 
@@ -122,12 +122,19 @@ const title = "Erreur et recommandation";
       ref="fileUpload"
       class="fr-mb-4w"
       :accepted-formats="['jpg', 'jpeg', 'png']"
-      :audit-files="exampleImages"
+      :audit-files="exampleImages.map(f => ({
+        ...f,
+        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
+        filename: f.originalFilename,
+        url: getUploadUrl(f.key)
+      }))"
       :disabled="isOffline"
       :multiple="true"
       :error-message="errorMessage"
       title="Ajouter des images d’exemple"
-      @delete-file="handleDeleteFile"
+      @delete-file="handleDeleteFile(
+        exampleImages.find(f => f.key === $event.key)!
+      )"
       @upload-file="handleUploadFile"
     />
 

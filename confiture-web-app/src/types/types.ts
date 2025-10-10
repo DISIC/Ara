@@ -72,7 +72,7 @@ export interface Audit {
   derogatedContent: string | null;
   notInScopeContent: string | null;
   notes: string | null;
-  notesFiles: AuditFile[];
+  notesFiles: NotesFile[];
 
   transverseElements: string[];
 }
@@ -106,9 +106,11 @@ export enum CriterionResultUserImpact {
   BLOCKING = "BLOCKING"
 }
 
-export type AuditFile = components["schemas"]["AuditFile"];
+/** File attached to audit notes. */
+export type NotesFile = components["schemas"]["AuditFile"];
 
-export type NotesFile = components["schemas"]["NotesFile"];
+/** Image files attached to specific criterium result when not compliant. */
+export type ExampleImageFile = components["schemas"]["ExampleImageFile"];
 
 export interface CriteriumResult {
   // ID
@@ -123,7 +125,7 @@ export interface CriteriumResult {
   notCompliantComment: string | null;
   userImpact: CriterionResultUserImpact | null;
   notApplicableComment: string | null;
-  exampleImages: AuditFile[];
+  exampleImages: ExampleImageFile[];
   quickWin: boolean;
 }
 
