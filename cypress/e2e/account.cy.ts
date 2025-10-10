@@ -76,7 +76,7 @@ describe("Account", () => {
         cy.getByLabel("Mot de passe").type("blablablablablabla");
         cy.contains("button", "Valider").click();
         cy.contains(
-          "Un compte est déjà associé à cette adresse e-mail. Veuillez choisir une autre adresse e-mail. Si vous êtes le propriétaire de cette adresse e-mail vous pouvez vous connecter."
+          "Cette adresse e-mail est déjà associée à un compte. Connectez-vous."
         );
         cy.getByLabel("Adresse e-mail").should("have.focus");
       });
