@@ -11,7 +11,7 @@ const bottomLinks = [
     routeName: "site-map"
   },
   {
-    label: "Accessibilité : non conforme",
+    label: "Accessibilité : totalement conforme",
     routeName: "accessibility"
   },
   {
