@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { formatBytes } from "../../utils";
+import { formatBytes, pluralize } from "../../utils";
 
-export interface FileListFile {
+interface FileListFile {
   filename: string;
   size: number;
   mimetype: string;
@@ -23,10 +23,8 @@ const selectedFiles = computed(() => {
   const len = files.length;
   if (len === 0) {
     return "Aucun fichier ajouté.";
-  } else if (len === 1) {
-    return `${len} fichier ajouté.`;
   } else {
-    return `${len} fichiers ajoutés.`;
+    return pluralize(len + " fichier ajouté", len + " fichiers ajoutés", len);
   }
 });
 
