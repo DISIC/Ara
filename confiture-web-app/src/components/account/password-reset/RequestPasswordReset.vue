@@ -8,7 +8,7 @@ const emit = defineEmits<{
 
 const email = useFormField("" as string, [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL("Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr")
+  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
 ]);
 
 defineExpose({

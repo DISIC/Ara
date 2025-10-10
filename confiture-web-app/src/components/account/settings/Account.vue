@@ -16,8 +16,8 @@ const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
 
-const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase “${VALIDATION_STRING}”.`), EQUAL(VALIDATION_STRING, "Saisie incorecte. Vérifiez votre saisie.")]);
-const password = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe")]);
+const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase « ${VALIDATION_STRING} ».`), EQUAL(VALIDATION_STRING, "Saisie incorecte. Vérifiez votre saisie.")]);
+const password = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")]);
 
 const displayAccountDeletionForm = ref(false);
 

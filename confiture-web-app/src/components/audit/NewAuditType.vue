@@ -46,7 +46,7 @@ const procedureName = useFormField(props.auditType ?? "", [
 ]);
 
 const auditType = useFormField<string | null>(props.auditType ?? null, [
-  REQUIRED("Sélectionnez un type d’audit.")
+  REQUIRED("Sélection obligatoire. Choissisez un type d’audit.")
 ]);
 
 function submitAuditType() {
