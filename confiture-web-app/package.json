@@ -1,7 +1,7 @@
 {
   "name": "confiture-web-app",
+  "version": "0.0.2",
   "private": true,
-  "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "yarn generate:rgaa && vue-tsc --noEmit && vite build",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "1.14.0",
-    "@sentry/tracing": "^7.37.2",
-    "@sentry/vite-plugin": "^0.3.0",
-    "@sentry/vue": "^7.37.2",
+    "@sentry/tracing": "^7.120.4",
+    "@sentry/vite-plugin": "^4.4.0",
+    "@sentry/vue": "^10.19.0",
     "@tiptap/core": "^2.23.0",
     "@tiptap/extension-code-block": "^2.23.0",
     "@tiptap/extension-code-block-lowlight": "^2.5.9",
@@ -43,7 +43,7 @@
     "pinia": "^2.0.28",
     "slugify": "^1.6.5",
     "tiptap-markdown": "^0.8.10",
-    "vite": "^7.1.7",
+    "vite": "^7.1.9",
     "vue": "^3.5.22",
     "vue-router": "^4.2.5"
   },
@@ -52,8 +52,6 @@
     "@types/lodash-es": "^4.17.6",
     "@types/marked": "^4.0.8",
     "@types/node": "^22.10.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2",
     "vue-tsc": "^3.1.0"
   },
   "engines": {
