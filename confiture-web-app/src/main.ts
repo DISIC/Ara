@@ -1,4 +1,3 @@
-import { BrowserTracing } from "@sentry/tracing";
 import * as Sentry from "@sentry/vue";
 import { createHead } from "@unhead/vue";
 import { marked } from "marked";
@@ -58,17 +57,15 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     app,
     dsn: import.meta.env.VITE_SENTRY_DSN,
     integrations: [
-      new BrowserTracing({
-        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-        tracePropagationTargets: [window.location.hostname, /^\//]
-      }),
-      new Sentry.Replay({
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration({
         // anonymization settings
         maskAllText: true,
         maskAllInputs: true,
         blockAllMedia: true
       })
     ],
+    tracePropagationTargets: [window.location.hostname, /^\//],
 
     // Set to a value between 0 and 1.0 to enable performance monitoring
     // 0.5 means half the events will be transferred
