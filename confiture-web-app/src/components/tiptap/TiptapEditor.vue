@@ -290,10 +290,10 @@ defineExpose({
               @click="handleAddImageClick"
             />
             <input
-              id="tiptap-browse-input"
               ref="browseInput"
               type="file"
               class="fr-hidden"
+              accept="image/*"
               hidden
               multiple
               @change="handleBrowseInputChange"
