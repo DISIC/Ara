@@ -1,4 +1,4 @@
-import sentryVitePlugin from "@sentry/vite-plugin";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
 
@@ -19,11 +19,15 @@ export default defineConfig({
     ...(uploadSourceMapsToSentry
       ? [
           sentryVitePlugin({
-            include: "./dist",
             org: process.env.SENTRY_ORG,
             project: process.env.SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
-            release: process.env.VITE_SENTRY_RELEASE
+            release: {
+              name: process.env.VITE_SENTRY_RELEASE
+            },
+            sourcemaps: {
+              assets: "./dist" // replaces the old `include` option
+            }
           })
         ]
       : [])

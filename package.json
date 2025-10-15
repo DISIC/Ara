@@ -5,16 +5,18 @@
     "confiture-web-app"
   ],
   "devDependencies": {
-    "@antfu/eslint-config": "^4.15.0",
+    "@antfu/eslint-config": "^5.4.1",
     "cypress": "^13.6.1",
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.2.0",
     "postcss-html": "^1.8.0",
+    "prettier": "^3.6.2",
     "simple-git-hooks": "^2.13.0",
     "stylelint": "^16.23.1",
     "stylelint-config-recommended": "^17.0.0",
-    "stylelint-config-standard-vue": "^1.0.0"
+    "stylelint-config-standard-vue": "^1.0.0",
+    "typescript": "^5.9.3"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged"
@@ -33,7 +35,8 @@
     "prepare": "yarn simple-git-hooks",
     "dev:back": "yarn workspace confiture-rest-api run start:dev",
     "dev:front": "yarn workspace confiture-web-app run dev",
-    "dev": "yarn dev:back & yarn dev:front"
+    "dev": "yarn dev:back & yarn dev:front",
+    "g:show-all-ts-errors": "cd $INIT_CWD && tsc --noEmit"
   },
   "dependencies": {
     "pm2": "^5.4.0"
