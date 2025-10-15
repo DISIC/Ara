@@ -671,7 +671,7 @@ export class AuditService {
       }
 
       await Promise.all([
-        await this.prisma.audit.delete({
+        this.prisma.audit.delete({
           where: { editUniqueId: uniqueId }
         }),
         this.fileStorageService.deleteMultipleFiles(...keysToDelete)
