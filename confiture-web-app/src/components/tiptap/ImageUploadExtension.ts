@@ -385,19 +385,6 @@ export const ImageUploadTiptapExtension =
         PlaceholderPlugin
       ];
     }
-
-    // // Deactivate vertical cursor?
-    // extendNodeSchema() {
-    //   return {
-    //     disableDropCursor: (
-    //       view: EditorView,
-    //       position: { pos: number; inside: number }
-    //     ) => {
-    //       const $pos = view.state.doc.resolve(position.pos);
-    //       return isPosInsideInlineContent(view, $pos);
-    //     }
-    //   };
-    // }
   });
 
 export function insertFilesAtSelection(
