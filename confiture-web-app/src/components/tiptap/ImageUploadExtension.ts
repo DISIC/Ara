@@ -14,8 +14,8 @@ const FILE_SIZE_LIMIT = 2_000_000;
 /**
  * Function to upload a file inside the editor
  *
- * @param {File} file File to upload
- * @returns {Promise<string>} a promise to the URL of the uploaded image
+ * @param file File to upload
+ * @returns a promise to the URL of the uploaded image
  */
 async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
