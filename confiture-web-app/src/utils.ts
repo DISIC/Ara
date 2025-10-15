@@ -248,13 +248,16 @@ export function getUploadUrl(key: string): string {
 
 export async function handleFileUploadError(
   error: Error
-): Promise<FileErrorMessage | null> {
-  let errorType: FileErrorMessage | null = null;
+): Promise<FileErrorMessage> {
+  let errorType: FileErrorMessage;
+
   if (!(error instanceof HTTPError)) {
-    return null;
+    captureWithPayloads(error);
+    return FileErrorMessage.UPLOAD_UNKNOWN;
   }
+
   if (error.response.status === 413) {
-    errorType = FileErrorMessage.UPLOAD_SIZE;
+    return FileErrorMessage.UPLOAD_SIZE;
   }
 
   // Unprocessable Entity

@@ -1,6 +1,3 @@
-// TODO: use toasts instead
-/* eslint-disable no-alert */
-
 import { Editor, Extension } from "@tiptap/core";
 import { Slice } from "@tiptap/pm/model";
 import { EditorState, Plugin, Selection, Transaction } from "@tiptap/pm/state";
@@ -8,6 +5,7 @@ import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
 import ky from "ky";
+import { useNotifications } from "../../composables/useNotifications";
 import { FileErrorMessage } from "../../enums";
 import { getUploadUrl, handleFileUploadError } from "../../utils";
 
@@ -222,9 +220,10 @@ function handleFileImport(
   file: File,
   options?: { replaceSelection: boolean }
 ): boolean {
+  const notify = useNotifications();
+
   if (file.size > FILE_SIZE_LIMIT) {
-    // FIXME: use a notification
-    window.alert(FileErrorMessage.UPLOAD_SIZE);
+    notify("error", undefined, FileErrorMessage.UPLOAD_SIZE);
     return true;
   }
 
@@ -233,14 +232,12 @@ function handleFileImport(
 
   const _URL = window.URL || window.webkitURL;
   const localURL = _URL.createObjectURL(file);
-  // const container: HTMLParagraphElement = document.createElement("p");
   let element: HTMLImageElement | HTMLVideoElement;
+
   if (file.type.startsWith("image")) {
     element = document.createElement("img");
-    // container.appendChild(element);
     element.onerror = () => {
-      // FIXME: use a notification
-      window.alert(FileErrorMessage.UPLOAD_FORMAT);
+      notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
     };
     element.onload = () => {
       URL.revokeObjectURL(element.src);
@@ -278,15 +275,8 @@ function handleFileImport(
       view.focus();
     };
     element.src = localURL;
-  } else if (file.type.startsWith("video")) {
-    // FIXME: Handle videos
-    // element = document.createElement("video");
-    // …
-    // FIXME: use a notification
-    window.alert(FileErrorMessage.UPLOAD_FORMAT);
   } else {
-    // FIXME: use a notification
-    window.alert(FileErrorMessage.UPLOAD_FORMAT);
+    notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
   }
 
   return true;
@@ -301,6 +291,8 @@ function uploadAndReplacePlaceholder(
   id: any,
   element: HTMLImageElement | HTMLVideoElement
 ) {
+  const notify = useNotifications();
+
   uploadImage(file).then(
     (imgUrl: string) => {
       const placeholder = findPlaceholderDecoration(view.state, id);
@@ -324,8 +316,6 @@ function uploadAndReplacePlaceholder(
       tr.replaceWith(pos, pos, node);
       tr.setMeta(PlaceholderPlugin, { element, remove: { id } });
 
-      // Selects the image
-      // tr.setSelection(new NodeSelection(tr.doc.resolve(pos)));
       view.dispatch(tr);
     },
     async (reason: Error) => {
@@ -333,8 +323,7 @@ function uploadAndReplacePlaceholder(
       view.dispatch(
         view.state.tr.setMeta(PlaceholderPlugin, { element, remove: { id } })
       );
-      // FIXME: use a notification
-      window.alert(await handleFileUploadError(reason));
+      notify("error", undefined, await handleFileUploadError(reason));
     }
   );
 }
@@ -359,6 +348,8 @@ function findPlaceholderDecoration(
  * @returns {Promise<File | null>} the created File or null if any error
  */
 function createFileFromImageUrl(url: string): Promise<File | null> {
+  const notify = useNotifications();
+
   let mimeType: string | undefined = undefined;
   return fetch(url)
     .then((res: Response) => {
@@ -369,7 +360,7 @@ function createFileFromImageUrl(url: string): Promise<File | null> {
       return new File([buf], "external", { type: mimeType });
     })
     .catch(() => {
-      window.alert(FileErrorMessage.FETCH_ERROR);
+      notify("error", undefined, FileErrorMessage.FETCH_ERROR);
       return null;
     });
 }
@@ -394,40 +385,6 @@ export const ImageUploadTiptapExtension =
         PlaceholderPlugin
       ];
     }
-    // //Compare JSONContent before and after update
-    // onUpdate() {
-    //   const editor = this.editor;
-    //   const currentImages: JSONContent[] = [];
-    //   editor.getJSON().content?.forEach((item: JSONContent) => {
-    //     if (item.type === "image") {
-    //       currentImages.push(item?.attrs?.src);
-    //     }
-    //   });
-    //   const deletedImages = previousImages.filter(
-    //     (url) => !currentImages.includes(url)
-    //   );
-    //   for (const url of deletedImages) {
-    //     const uniqueId = this.options.uniqueId;
-    //     const baseUri = "/uploads/";
-    //     // Not an uploaded file?
-    //     if (url.indexOf(baseUri) !== 0) {
-    //       continue;
-    //     }
-    //     const key = url.slice(baseUri.length);
-    //     if (!key) {
-    //       // No key in URL?
-    //       //TODO display error
-    //     }
-    //     const auditStore = useAuditStore();
-    //     auditStore.deleteAuditFileByKey(uniqueId, key!).then(
-    //       () => {},
-    //       async (reason: any) => {
-    //         window.alert(await handleFileDeleteError(reason));
-    //       }
-    //     );
-    //   }
-    //   previousImages = currentImages;
-    // }
 
     // // Deactivate vertical cursor?
     // extendNodeSchema() {
