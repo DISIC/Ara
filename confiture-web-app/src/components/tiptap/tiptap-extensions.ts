@@ -14,6 +14,7 @@ import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
 
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
+import { ImageUploadTiptapExtension } from "./ImageUploadExtension";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -112,7 +113,8 @@ export const tiptapEditorExtensions: Extensions = [
       // Advantage: no extra icon when editing
       target: null
     }
-  })
+  }),
+  ImageUploadTiptapExtension
 ];
 
 export const tiptapRenderedExtensions: Extensions = [

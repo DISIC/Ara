@@ -206,6 +206,23 @@ export class AuditsController {
     return await this.auditService.saveNotesFile(uniqueId, file);
   }
 
+  @Post("/editor/images")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiCreatedResponse({ type: String, description: "Key of uploaded image" })
+  uploadEditorImage(@UploadedFile(
+    new ParseFilePipeBuilder()
+      .addMaxSizeValidator({
+        maxSize: 2_000_000
+      })
+      .build({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+      })
+  )
+    file: Express.Multer.File
+  ): Promise<string> {
+    return this.auditService.uploadEditorImage(file);
+  }
+
   @Delete("/:uniqueId/results/examples/:exampleId")
   async deleteExampleImage(
     @Param("uniqueId") uniqueId: string,
