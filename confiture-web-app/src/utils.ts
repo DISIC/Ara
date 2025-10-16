@@ -308,7 +308,7 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  if (!parsedJson.content?.at(0)?.content) {
+  if (!parsedJson.content?.at(0)?.content && !(parsedJson.content?.at(0)?.type === "image")) {
     return true;
   }
 
