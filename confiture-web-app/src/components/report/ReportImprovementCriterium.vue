@@ -32,7 +32,7 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 <template>
   <div>
     <p class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
-      {{ topic }}.{{ criterium }}&nbsp;
+      {{ topic }}.{{ criterium }}&nbsp;–
       <span v-html="getCriteriumTitle(topic, criterium)" />
     </p>
 

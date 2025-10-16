@@ -5,6 +5,7 @@
 
 .tiptap--rendered {
   min-height: inherit;
+  padding-inline: 0;
 }
 
 .tiptap img {
