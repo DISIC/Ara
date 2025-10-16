@@ -23,7 +23,7 @@ async function uploadImage(file: File): Promise<string> {
   formData.set("file", file, encodeURI(file.name));
 
   const imageUploadKey = (await ky
-    .post(`/api/audits/editor/images`, { body: formData })
+    .post(`/api/audits/editor/images`, { body: formData, timeout: 15_000 })
     .text()) as string;
 
   const url = getUploadUrl(imageUploadKey);
