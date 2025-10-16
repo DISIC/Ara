@@ -18,8 +18,7 @@ import {
 } from "../../types";
 import {
   formatStatus,
-  handleFileDeleteError,
-  handleFileUploadError
+  handleFileDeleteError
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -124,27 +123,6 @@ const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
-function handleUploadExample(file: File) {
-  store
-    .uploadExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      file
-    )
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      store.lastRequestFailed = true;
-    })
-    .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
-    });
-}
-
 const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
 const fileToDelete = ref<ExampleImageFile>();
 
@@ -172,7 +150,6 @@ function handleDeleteExample() {
       auditStore.lastRequestFailed = true;
     })
     .finally(() => {
-      criteriumNotCompliantAccordion.value?.onFileRequestFinished();
       deleteFileModalRef.value?.hide();
     });
 }
@@ -405,7 +382,6 @@ const parentCriterium = computed(() => {
       :error-message="errorMessage"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:user-impact="updateResultImpact($event)"
-      @upload-file="handleUploadExample"
       @delete-file="openDeleteFileModal"
       @update:quick-win="updateQuickWin"
     />

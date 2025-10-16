@@ -1,7 +1,7 @@
 import { captureException, Scope } from "@sentry/vue";
 import { JSONContent } from "@tiptap/vue-3";
 import jwtDecode from "jwt-decode";
-import { HTTPError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
@@ -248,13 +248,20 @@ export function getUploadUrl(key: string): string {
 
 export async function handleFileUploadError(
   error: Error
-): Promise<FileErrorMessage | null> {
-  let errorType: FileErrorMessage | null = null;
-  if (!(error instanceof HTTPError)) {
-    return null;
+): Promise<FileErrorMessage> {
+  let errorType: FileErrorMessage;
+
+  if (error instanceof TimeoutError) {
+    return FileErrorMessage.UPLOAD_TIMEOUT;
   }
+
+  if (!(error instanceof HTTPError)) {
+    captureWithPayloads(error);
+    return FileErrorMessage.UPLOAD_UNKNOWN;
+  }
+
   if (error.response.status === 413) {
-    errorType = FileErrorMessage.UPLOAD_SIZE;
+    return FileErrorMessage.UPLOAD_SIZE;
   }
 
   // Unprocessable Entity
@@ -301,7 +308,7 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  if (!parsedJson.content?.at(0)?.content) {
+  if (!parsedJson.content?.at(0)?.content && !(parsedJson.content?.at(0)?.type === "image")) {
     return true;
   }
 

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, ShallowRef, useId, watch } from "vue";
+import { onBeforeUnmount, ShallowRef, useId, useTemplateRef, watch } from "vue";
 
+import { insertFilesAtSelection } from "./ImageUploadExtension";
 import { displayedHeadings, tiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
@@ -94,6 +95,20 @@ const editor = useEditor({
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
+
+const browseInput = useTemplateRef("browseInput");
+function handleAddImageClick() {
+  if (browseInput.value) {
+    browseInput.value.value = "";
+  }
+  browseInput.value?.click();
+}
+
+function handleBrowseInputChange(e: Event) {
+  const inputElement = e?.target as HTMLInputElement;
+  const files = inputElement.files!;
+  insertFilesAtSelection(editor.value, files);
+}
 
 watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
   editor.value.setEditable(editable && !disabled);
@@ -267,6 +282,23 @@ defineExpose({
               @click="editor.chain().focus().toggleCodeBlock().run()"
             />
           </li>
+          <li>
+            <TiptapButton
+              label="Insérer une image"
+              icon="image-add-line"
+              :label-visible="true"
+              @click="handleAddImageClick"
+            />
+            <input
+              ref="browseInput"
+              type="file"
+              class="fr-hidden"
+              accept="image/*"
+              hidden
+              multiple
+              @change="handleBrowseInputChange"
+            />
+          </li>
         </ul>
       </li>
     </ul>
@@ -343,6 +375,10 @@ defineExpose({
 
 .ProseMirror-widget {
   opacity: 0.5;
+}
+
+.ProseMirror-gapcursor::after {
+  border-top-color: var(--grey-0-1000) !important;
 }
 
 /* Buttons */

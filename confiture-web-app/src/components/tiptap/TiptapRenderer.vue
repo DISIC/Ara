@@ -44,4 +44,8 @@ onMounted(() => {
 <style>
 @import url("./tiptap.css");
 @import url("./tiptap-hljs.css");
+
+.tiptap--rendered .ProseMirror-selectednode {
+  outline: none;
+}
 </style>

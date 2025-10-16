@@ -599,6 +599,16 @@ export class AuditService {
     return noteFile;
   }
 
+  async uploadEditorImage(file: Express.Multer.File) {
+    const randomPrefix = nanoid();
+
+    const key = `editor/${randomPrefix}/${file.originalname}`;
+
+    await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
+
+    return key;
+  }
+
   /**
    * Returns true if stored filed was found and deleted. False if not found.
    */
