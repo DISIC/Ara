@@ -377,6 +377,10 @@ defineExpose({
   opacity: 0.5;
 }
 
+.ProseMirror-gapcursor::after {
+  border-top-color: var(--grey-0-1000) !important;
+}
+
 /* Buttons */
 .tiptap-buttons,
 .tiptap-buttons ul {
