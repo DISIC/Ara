@@ -18,6 +18,12 @@
   padding: 0.5rem;
 }
 
+.tiptap--rendered img {
+  cursor: initial;
+  padding: 0;
+  border-radius: 0;
+}
+
 .tiptap:focus,
 .tiptap:focus-visible {
   outline-width: 2px !important;
@@ -25,7 +31,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tiptap img:hover {
+  .tiptap:not(.tiptap--rendered) img:hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
 }
