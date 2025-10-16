@@ -1,7 +1,7 @@
 import { captureException, Scope } from "@sentry/vue";
 import { JSONContent } from "@tiptap/vue-3";
 import jwtDecode from "jwt-decode";
-import { HTTPError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
@@ -250,6 +250,10 @@ export async function handleFileUploadError(
   error: Error
 ): Promise<FileErrorMessage> {
   let errorType: FileErrorMessage;
+
+  if (error instanceof TimeoutError) {
+    return FileErrorMessage.UPLOAD_TIMEOUT;
+  }
 
   if (!(error instanceof HTTPError)) {
     captureWithPayloads(error);
