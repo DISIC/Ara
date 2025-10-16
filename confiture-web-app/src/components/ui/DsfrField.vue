@@ -14,6 +14,7 @@ const props = defineProps<{
   id: string;
   autocomplete?: string;
   isTextArea?: boolean;
+  disabled?: boolean;
 }>();
 
 defineEmits<{
@@ -49,6 +50,7 @@ defineExpose({
       :class="['fr-input', { 'fr-input--error': isError }]"
       :type="type"
       :aria-describedby="(isError && !hideError) ? errorId : undefined"
+      :disabled="disabled"
       :required="required"
       :pattern="pattern ? pattern.toString().slice(1, -1) : undefined"
       :title="title"

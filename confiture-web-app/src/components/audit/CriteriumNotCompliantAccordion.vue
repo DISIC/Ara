@@ -128,7 +128,6 @@ const title = "Erreur et recommandation";
         filename: f.originalFilename,
         url: getUploadUrl(f.key)
       }))"
-      :disabled="isOffline"
       :multiple="true"
       :error-message="errorMessage"
       title="Ajouter des images d’exemple"

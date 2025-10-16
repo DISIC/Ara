@@ -48,14 +48,14 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
       >
         {{ tooltipLabel }}
       </button>
-      <span
+      <div
         :id="`progress-bar-tooltip-${uniqueId}`"
         class="fr-tooltip fr-placement fr-text--sm"
         role="tooltip"
         aria-hidden="true"
       >
         <slot name="tooltip-content" />
-      </span>
+      </div>
     </template>
     <span
       :class="[
