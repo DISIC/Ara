@@ -69,7 +69,7 @@ function setLink() {
 // Editor attributes to create an accessible textarea
 const editorAttributes: any = props.editable
   ? {
-      "aria-describedby": `tiptap-description-${uniqueId.value}`,
+      "aria-describedby": `tiptap-description-${uniqueId}`,
       "aria-multiline": "true",
       "role": "textbox",
       "class": `tiptap--${props.editorSize}`
