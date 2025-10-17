@@ -9,7 +9,7 @@ import PageMeta from "../../components/PageMeta";
   />
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Déclaration d’accessibilité</h1>
-    <p><strong>la Direction Interministérielle du Numérique</strong> s’engage à rendre ses sites internet, intranet, extranet et ses progiciels accessibles (et ses applications mobiles et mobilier urbain numérique) conformément à l’article 47 de la loi n<sup>o</sup>&nbsp;2005-102 du 11&nbsp;février 2005.</p>
+    <p><strong>La Direction Interministérielle du Numérique</strong> s’engage à rendre ses sites internet, intranet, extranet et ses progiciels accessibles (et ses applications mobiles et mobilier urbain numérique) conformément à l’article 47 de la loi n<sup>o</sup>&nbsp;2005-102 du 11&nbsp;février 2005.</p>
     <p>Cette déclaration d’accessibilité s’applique à <a href="https://ara.numerique.gouv.fr">Ara</a>.</p>
     <h2>État de conformité</h2>
     <p><strong>Ara</strong> est <strong>totalement conforme</strong> avec le référentiel général d’amélioration de l’accessibilité (RGAA).</p>
