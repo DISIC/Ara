@@ -37,15 +37,15 @@ const sectionId = computed(() => `${error.pageId}_${error.topic}_${error.criteri
 
 <template>
   <div>
-    <p :id="sectionId" class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
-      {{ error.topic }}.{{ error.criterium }}&nbsp;
+    <p :id="sectionId" class="fr-text--lg fr-text--bold criterium-title fr-mb-2w">
+      {{ error.topic }}.{{ error.criterium }}&nbsp;–
       <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
       <a :href="'#' + sectionId" class="fr-btn fr-icon-links-line fr-btn--tertiary-no-outline fr-btn--sm">
         <span class="fr-sr-only">ancre vers le critère {{ error.topic }}.{{ error.criterium }}</span>
       </a>
     </p>
 
-    <ul class="fr-badges-group fr-mb-2w">
+    <ul class="fr-badges-group fr-mb-3w">
       <li>
         <p class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon">
           {{ formatStatus(error.status) }}

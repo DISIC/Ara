@@ -31,13 +31,13 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 
 <template>
   <div>
-    <p class="fr-text--lg fr-text--bold criterium-title fr-mb-3v">
-      {{ topic }}.{{ criterium }}&nbsp;
+    <p class="fr-text--lg fr-text--bold criterium-title fr-mb-2w">
+      {{ topic }}.{{ criterium }}&nbsp;–
       <span v-html="getCriteriumTitle(topic, criterium)" />
     </p>
 
     <p
-      class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-3v"
+      class="fr-badge fr-badge--sm fr-badge--no-icon fr-mb-3w"
       :class="
         status === CriteriumResultStatus.COMPLIANT
           ? 'fr-badge--success'
