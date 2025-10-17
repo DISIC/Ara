@@ -308,11 +308,10 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  if (!parsedJson.content?.at(0)?.content && !(parsedJson.content?.at(0)?.type === "image")) {
-    return true;
-  }
+  const containsImage = jsonString.includes("\"type\":\"image\"");
+  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
 
-  return false;
+  return !containsImage && !containsText;
 }
 
 export function getScrollBehavior(): ScrollBehavior {
