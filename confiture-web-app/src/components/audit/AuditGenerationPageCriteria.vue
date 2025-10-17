@@ -59,7 +59,7 @@ const refFn =
   (topicNumber: number) =>
     (el: any) =>
       notApplicableSwitchRefs.value[topicNumber] =
-    el as InstanceType<typeof NotApplicableSwitch>;
+        el as InstanceType<typeof NotApplicableSwitch>;
 
 // Focus topic NA switch when setting last topic criterion as NA
 watch(

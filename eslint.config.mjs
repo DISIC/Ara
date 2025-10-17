@@ -57,7 +57,8 @@ export default antfu({
       "style/brace-style": "off", // TODO Check this rule
       "style/comma-dangle": ["error", "never"], // TODO Check this rule
       "style/lines-between-class-members": "off", // TODO Check this rule
-      "style/operator-linebreak": "off" // TODO Check this rule
+      "style/operator-linebreak": "off", // TODO Check this rule
+      "style/function-call-spacing": "error"
     }
   },
 
