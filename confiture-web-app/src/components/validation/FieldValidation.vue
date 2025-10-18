@@ -36,6 +36,12 @@ onBeforeUnmount(() => {
 defineExpose({
   focus() {
     fieldValidation.focusRef.value?.focus();
+  },
+  setError(errMsg: string | undefined, focus: boolean = false) {
+    fieldValidation.error.value = errMsg;
+    if (focus) {
+      fieldValidation.focusRef.value?.focus();
+    }
   }
 });
 </script>
