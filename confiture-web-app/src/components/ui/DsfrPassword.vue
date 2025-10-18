@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 
-const props = defineProps<{
+export interface DsfrPasswordProps {
   modelValue?: string;
   label: string;
   hint?: string;
@@ -18,7 +18,9 @@ const props = defineProps<{
    * the currently signedin email
    */
   skipForgottenPasswordFirstStep?: boolean;
-}>();
+}
+
+const props = defineProps<DsfrPasswordProps>();
 
 defineEmits<{
   (e: "update:modelValue", payload: string): void;
