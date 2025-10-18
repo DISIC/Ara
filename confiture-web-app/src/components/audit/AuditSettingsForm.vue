@@ -3,7 +3,7 @@ import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
-import { EMAIL, REQUIRED, useFormField, validate } from "../../composables/validation";
+import { EMAIL, REQUIRED } from "../../composables/validation";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
@@ -11,6 +11,8 @@ import { formatEmail } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
 import TopLink from "../ui/TopLink.vue";
+import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
+import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 import PagesSample from "./PagesSample.vue";
 
@@ -65,14 +67,9 @@ const previousRoute = usePreviousRoute();
 const accountStore = useAccountStore();
 
 const auditType = ref(props.audit?.auditType);
-const procedureName = useFormField(props.audit?.procedureName || "", [REQUIRED("Champ obligatoire. Saisissez le nom du site ou du service à auditer.")]);
+const procedureName = ref(props.audit?.procedureName || "");
 const pages = ref(structuredClone(toRaw(props.audit?.pages)));
-const auditorEmail = useFormField(props.audit?.auditorEmail || "", [
-  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL(
-    "Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr"
-  )
-]);
+const auditorEmail = ref(props.audit?.auditorEmail || "");
 const auditorName = ref(props.audit?.auditorName ?? "");
 
 const pagesSampleRef = ref<InstanceType<typeof PagesSample>>();
@@ -86,21 +83,15 @@ async function addPage() {
 }
 
 function onSubmit() {
-  const isValid = [
-    validate(auditorEmail),
-    pagesSampleRef.value?.validate(),
-    validate(procedureName)
-  ].every(Boolean);
-  if (!isValid) {
-    return;
-  }
+  // TODO: validate page sample
+  // pagesSampleRef.value?.validate(),
 
   emit("submit", {
     auditType: auditType.value!,
-    procedureName: procedureName.value.value,
+    procedureName: procedureName.value,
     pages: pages.value.map((p) => ({ ...p, url: p.url })),
     auditorName: auditorName.value,
-    auditorEmail: formatEmail(auditorEmail.value.value)
+    auditorEmail: formatEmail(auditorEmail.value)
   });
 }
 
@@ -135,22 +126,21 @@ const backLinkLabel = computed(() => {
     }"
   />
 
-  <form class="content" novalidate @submit.prevent="onSubmit">
+  <FormWithValidation class="content" @submit="onSubmit">
     <h1 class="fr-mb-6w">Paramètres de l’audit</h1>
     <p class="fr-text--sm fr-mb-4w notice">
       Sauf mentions contraires, tous les champs sont obligatoires.
     </p>
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="procedure-name"
-      :ref="procedureName.refFn"
+      v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service audité"
       hint="Exemples : Service-Public, Demande de permis de conduire"
       required
-      :model-value="procedureName.value.value"
-      :error="procedureName.error.value"
-      @update:model-value="emit('change'); procedureName.value.value = $event"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
+      @update:model-value="emit('change')"
     />
 
     <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
@@ -197,17 +187,19 @@ const backLinkLabel = computed(() => {
         @update:model-value="emit('change')"
       />
 
-      <DsfrField
+      <DsfrFieldWithValidation
         id="procedure-auditor-email"
-        :ref="auditorEmail.refFn"
-        :model-value="auditorEmail.value.value"
+        v-model="auditorEmail"
         class="fr-mb-0"
         label="Adresse e-mail"
         hint="Format attendu : nom@domaine.fr"
         type="email"
         required
-        :error="auditorEmail.error.value"
-        @update:model-value="emit('change'); auditorEmail.value.value = $event"
+        :validation="[
+          REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
+          EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr')
+        ]"
+        @update:model-value="emit('change')"
       />
     </fieldset>
 
@@ -227,7 +219,7 @@ const backLinkLabel = computed(() => {
     <div class="top-link">
       <TopLink class="fr-ml-auto" />
     </div>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>
