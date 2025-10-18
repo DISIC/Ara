@@ -16,6 +16,9 @@ const field = useTemplateRef("field");
 defineExpose({
   focus() {
     field.value?.focus();
+  },
+  setError(errMsg: string | undefined, focus: boolean = false) {
+    field.value?.setError(errMsg, focus);
   }
 });
 
