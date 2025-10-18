@@ -24,7 +24,7 @@ import {
 } from "../../utils";
 
 const props = defineProps<{
-  tabSlug: string; // given by router (props: true). TODO check why needed here and not on AuditGenerationPage
+  tabSlug: string; // given by router (props: true)
   uniqueId: string;
 }>();
 

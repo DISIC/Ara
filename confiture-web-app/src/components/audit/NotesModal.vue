@@ -6,8 +6,8 @@ import { useRoute } from "vue-router";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
-import { AuditFile, StoreName } from "../../types";
-import { handleFileDeleteError, handleFileUploadError } from "../../utils";
+import { NotesFile, StoreName } from "../../types";
+import { getUploadUrl, handleFileDeleteError, handleFileUploadError } from "../../utils";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
@@ -58,7 +58,7 @@ function handleUploadFile(file: File) {
     });
 }
 
-function handleDeleteFile(file: AuditFile) {
+function handleDeleteFile(file: NotesFile) {
   auditStore
     .deleteAuditFile(uniqueId.value, file.id)
     .then(() => {
@@ -122,12 +122,20 @@ function handleDeleteFile(file: AuditFile) {
               <FileUpload
                 ref="fileUpload"
                 class="fr-mb-4w"
-                :audit-files="files"
-                :disabled="isOffline"
+                :audit-files="files.map(f => ({
+                  ...f,
+                  filename: f.originalFilename,
+                  url: getUploadUrl(f.key),
+                  thumbnailUrl: f.thumbnailKey
+                    ? getUploadUrl(f.thumbnailKey)
+                    : undefined
+                }))"
                 :error-message="errorMessage"
                 :multiple="true"
                 @upload-file="handleUploadFile"
-                @delete-file="handleDeleteFile"
+                @delete-file="handleDeleteFile(
+                  files.find(f => f.key === $event.key)!
+                )"
               />
             </div>
           </div>

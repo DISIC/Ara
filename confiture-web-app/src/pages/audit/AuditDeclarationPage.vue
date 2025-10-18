@@ -275,7 +275,7 @@ const isDevMode = useDevMode();
       required
       :validation="[
         REQUIRED('Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité.'),
-        URL('Format incorrect. Saisissez une URL commençant par “https://” ou “http://”.')
+        URL('Format incorrect. Saisissez une URL commençant par https:// ou http://')
       ]"
     >
       <template #hint>
@@ -344,7 +344,7 @@ const isDevMode = useDevMode();
 
           <FieldValidation
             v-slot="{ error, focusRef }"
-            :validation="[URL('Format incorrect. Saisissez une URL commençant par “https://” ou “http://”.')]"
+            :validation="[URL('Format incorrect. Saisissez une URL commençant par https:// ou http://e')]"
             :value="contactFormUrl"
           >
             <DsfrField

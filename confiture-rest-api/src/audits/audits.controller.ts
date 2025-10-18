@@ -30,7 +30,7 @@ import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 import { User } from "src/auth/user.decorator";
 import { Audit } from "src/generated/nestjs-dto/audit.entity";
 import { CriterionResult } from "src/generated/nestjs-dto/criterionResult.entity";
-import { StoredFile } from "src/generated/nestjs-dto/storedFile.entity";
+import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
@@ -149,7 +149,7 @@ export class AuditsController {
 
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
-  @ApiCreatedResponse({ type: StoredFile })
+  @ApiCreatedResponse({ type: ExampleImageFile })
   async uploadExampleImage(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
@@ -226,7 +226,7 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Param("fileId", new ParseIntPipe()) fileId: number
   ) {
-    const deleted = await this.auditService.deleteAuditFile(
+    const deleted = await this.auditService.deleteNotesFile(
       uniqueId,
       Number(fileId)
     );

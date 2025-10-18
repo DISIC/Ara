@@ -81,7 +81,7 @@ function fillSettings() {
       v-slot="{ error, focusRef }"
       :value="auditType"
       :validation="[
-        REQUIRED('Sélectionnez un type d’audit.')
+        REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
       ]"
     >
       <!-- FIXME: make into a fielset + legend ? -->

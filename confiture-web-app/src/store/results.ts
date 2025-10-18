@@ -4,11 +4,11 @@ import { defineStore } from "pinia";
 
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
-  AuditFile,
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  ExampleImageFile
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -461,7 +461,7 @@ export const useResultsStore = defineStore("results", {
         .json()
         .finally(() => {
           this.decreaseCurrentRequestCount();
-        })) as AuditFile;
+        })) as ExampleImageFile;
 
       const result = this.data![pageId][topic][criterium];
 

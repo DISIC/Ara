@@ -66,12 +66,12 @@ async function copyA11yStatementHTML() {
     .replaceAll("</h5>", "</h3>")
 
     // Remove class attributes
-    .replaceAll(/class="[a-zA-Z0-9:;.\s()\-,]*"/g, "")
+    .replaceAll(/\s*class="[a-zA-Z0-9:;.\s()\-,]*"/g, "")
     // Remove comments
     .replaceAll(/(<!--.*?-->)|(<!--[\S\s]+?-->)|(<!--[\S\s]*?$)/g, "")
 
     // Remove Vue.js data attributes
-    .replaceAll(/data-v-.*?=""/g, "")
+    .replaceAll(/\s*data-v-.*?=""/g, "")
 
     // Insert line breaks, indentation and remove extra whitespaces
     .replaceAll(tagsWithSpacesRegex, "<$<tagName>>")

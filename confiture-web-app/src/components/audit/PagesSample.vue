@@ -115,7 +115,7 @@ function updatePageOrder(startIndex: number, endIndex: number) {
 }
 
 const nameValidation = [REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.")];
-const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer."), URL("Format incorrect. Saisissez une URL commençant par \"https://\" ou \"http://\".")];
+const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer."), URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")];
 </script>
 
 <template>
