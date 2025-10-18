@@ -1,42 +1,39 @@
 <script lang="ts" setup>
 import { HTTPError } from "ky";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
-import { EQUAL, REQUIRED, useFormField, validate } from "../../../composables/validation";
+import { EQUAL, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
-import DsfrField from "../../ui/DsfrField.vue";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
+import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
+import FieldValidation from "../../validation/FieldValidation.vue";
+import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const router = useRouter();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
+const confirmPhraseValidation = [REQUIRED(`Champ obligatoire. Saisissez la phrase « ${VALIDATION_STRING} ».`), EQUAL(VALIDATION_STRING, "Saisie incorecte. Vérifiez votre saisie.")];
+const confirmPhrase = ref("");
 
-const validation = useFormField("" as string, [REQUIRED(`Champ obligatoire. Saisissez la phrase « ${VALIDATION_STRING} ».`), EQUAL(VALIDATION_STRING, "Saisie incorecte. Vérifiez votre saisie.")]);
-const password = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")]);
+const passwordField = useTemplateRef("password-field");
+const password = ref("");
 
 const displayAccountDeletionForm = ref(false);
 
 async function deleteAccount() {
-  if (!validate(validation, password)) {
-    // Invalid form
-    return;
-  }
-
   accountStore
-    .deleteAccount(password.value.value)
+    .deleteAccount(password.value)
     .then(() => {
       router.push({ name: "account-deletion-feedback" });
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        password.error.value = "Saisie incorrecte. Vérifiez votre saisie.";
-        await nextTick();
-        password.focusRef.value?.focus();
+        passwordField.value?.setError("Saisie incorrecte. Vérifiez votre saisie.", true);
       } else {
         notify(
           "error",
@@ -73,30 +70,35 @@ async function hideAccountDeletionForm() {
         Toutes les données liées à votre compte seront définitivement supprimées.<br />Les audits et rapports que vous avez créés resteront accessibles, mais vos données personnelles ne seront plus mentionnées.
       </p>
     </div>
-    <form novalidate @submit.prevent="deleteAccount">
-      <DsfrField
-        id="confirm-sentence" :ref="validation.refFn"
-        :model-value="validation.value.value"
-        :error="validation.error.value"
+    <FormWithValidation @submit="deleteAccount">
+      <DsfrFieldWithValidation
+        id="confirm-sentence"
+        v-model="confirmPhrase"
         type="text"
         required
         :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte : ${VALIDATION_STRING}`"
         hint="N’utilisez pas de majuscules, ni d’espace au début ou à la fin de votre saisie."
-        @update:model-value="validation.value.value = $event"
+        :validation="confirmPhraseValidation"
       />
 
-      <DsfrPassword
-        id="account-password"
-        :ref="password.refFn"
-        :model-value="password.value.value"
-        :error="password.error.value"
-        label="Mot de passe"
-        required
-        autocomplete="current-password"
-        show-forgotten-password-link
-        skip-forgotten-password-first-step
-        @update:model-value="password.value.value = $event"
-      />
+      <FieldValidation
+        ref="password-field"
+        v-slot="{ error, focusRef }"
+        :value="password"
+        :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
+      >
+        <DsfrPassword
+          id="account-password"
+          :ref="focusRef"
+          v-model="password"
+          :error="error"
+          label="Mot de passe"
+          required
+          autocomplete="current-password"
+          show-forgotten-password-link
+          skip-forgotten-password-first-step
+        />
+      </FieldValidation>
 
       <ul
         class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"
@@ -116,7 +118,7 @@ async function hideAccountDeletionForm() {
           </button>
         </li>
       </ul>
-    </form>
+    </FormWithValidation>
   </template>
   <button
     v-else
