@@ -4,6 +4,7 @@ import { nextTick, ref, watch } from "vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { AuditPage, AuditType } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
+import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
 
 const props = defineProps<{
   auditType: AuditType | null;
@@ -33,9 +34,6 @@ async function addPage() {
 }
 
 function submitAuditPages() {
-  if (!pagesSampleRef.value?.validate()) {
-    return;
-  }
   emit("submit", { pages: pages.value });
 }
 
@@ -59,7 +57,7 @@ function fillSettings() {
 </script>
 
 <template>
-  <form novalidate @submit.prevent="submitAuditPages">
+  <FormWithValidation @submit="submitAuditPages">
     <div v-if="isDevMode" class="fr-mb-4w">
       <button class="fr-btn" type="button" @click="fillSettings">
         [DEV] Remplir les paramètres
@@ -104,7 +102,7 @@ function fillSettings() {
         Étape suivante
       </button>
     </div>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>

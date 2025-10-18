@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { HTTPError } from "ky";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, useTemplateRef } from "vue";
 
 import { useNotifications } from "../../../composables/useNotifications";
-import { LENGTH, REQUIRED, useFormField, validate } from "../../../composables/validation";
+import { LENGTH, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
 import DsfrPassword from "../../ui/DsfrPassword.vue";
+import FieldValidation from "../../validation/FieldValidation.vue";
+import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 // Toggle display
 const showButtonRef = ref<HTMLButtonElement>();
@@ -17,22 +19,25 @@ async function showUpdatePasswordForm() {
   displaySuccessAlert.value = false;
   displayUpdatePasswordForm.value = true;
   await nextTick();
-  currentPassword.focusRef.value?.focus();
+  currentPasswordField.value?.focus();
 }
 
 async function hideUpdatePasswordForm() {
   displayUpdatePasswordForm.value = false;
-  currentPassword.value.value = "";
-  newPassword.value.value = "";
-  currentPassword.error.value = "";
-  newPassword.error.value = "";
+  currentPassword.value = "";
+  newPassword.value = "";
+  currentPasswordField.value?.setError(undefined);
+  newPasswordField.value?.setError(undefined);
   await nextTick();
   showButtonRef.value?.focus();
 }
 
 // Form submission
-const currentPassword = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")]);
-const newPassword = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum."), LENGTH(12, "Mot de passd invlide. Saisissez un nouveau mot de passe contenant 12 caractères minimum.")]);
+const currentPassword = ref("");
+const newPassword = ref("");
+
+const currentPasswordField = useTemplateRef("current-password-field");
+const newPasswordField = useTemplateRef("new-password-field");
 
 const displaySuccessAlert = ref(false);
 const successAlertRef = ref<HTMLDivElement>();
@@ -41,30 +46,21 @@ const accountStore = useAccountStore();
 const notify = useNotifications();
 
 async function updatePassword() {
-  if (!validate(currentPassword, newPassword)) {
-    return;
-  }
-
   accountStore
-    .updatePassword(currentPassword.value.value, newPassword.value.value)
+    .updatePassword(currentPassword.value, newPassword.value)
     .then(() => {
       displayUpdatePasswordForm.value = false;
       displaySuccessAlert.value = true;
-      currentPassword.value.value = "";
-      newPassword.value.value = "";
+      currentPassword.value = "";
+      newPassword.value = "";
     })
     .catch(async (err) => {
       if (err instanceof HTTPError && err.response.status === 401) {
         // Wrong password
-        currentPassword.error.value = "Saisie incorrecte. Vérifiez votre saisie.";
-        await nextTick();
-        currentPassword.focusRef.value?.focus();
+        currentPasswordField.value?.setError("Saisie incorrecte. Vérifiez votre saisie.", true);
       } else if (err instanceof HTTPError && err.response.status === 400) {
         // Same password
-        newPassword.error.value =
-          "Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.";
-        await nextTick();
-        newPassword.focusRef.value?.focus();
+        newPasswordField.value?.setError("Le mot de passe saisi est identique au mot de passe actuel. Veuillez choisir un nouveau mot de passe.", true);
       } else {
         // Unexpected network error
         notify(
@@ -86,40 +82,51 @@ async function hideSuccessAlert() {
 
 <template>
   <h2 class="fr-h6">Mot de passe</h2>
-  <form
+  <FormWithValidation
     v-if="displayUpdatePasswordForm"
     class="wrapper"
-    novalidate
-    @submit.prevent="updatePassword"
+    @submit="updatePassword"
   >
     <!-- Current password -->
-    <DsfrPassword
-      id="current-password"
-      :ref="currentPassword.refFn"
-      :model-value="currentPassword.value.value"
-      :error="currentPassword.error.value"
-      class="fr-mb-3w"
-      label="Mot de passe actuel"
-      required
-      autocomplete="current-password"
-      show-forgotten-password-link
-      skip-forgotten-password-first-step
-      @update:model-value="currentPassword.value.value = $event"
-    />
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      ref="current-password-field"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
+      :value="currentPassword"
+    >
+      <DsfrPassword
+        id="current-password"
+        :ref="focusRef"
+        v-model="currentPassword"
+        class="fr-mb-3w"
+        label="Mot de passe actuel"
+        required
+        autocomplete="current-password"
+        show-forgotten-password-link
+        skip-forgotten-password-first-step
+        :error="error"
+      />
+    </FieldValidation>
 
     <!-- New password -->
-    <DsfrPassword
-      id="new-password"
-      :ref="newPassword.refFn"
-      :model-value="newPassword.value.value"
-      :error="newPassword.error.value"
-      label="Nouveau mot de passe"
-      required
-      autocomplete="new-password"
-      :min-length="12"
-      :requirements="['12 caractères minimum']"
-      @update:model-value="newPassword.value.value = $event"
-    />
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      ref="new-password-field"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum.'), LENGTH(12, 'Mot de passd invlide. Saisissez un nouveau mot de passe contenant 12 caractères minimum.')]"
+      :value="newPassword"
+    >
+      <DsfrPassword
+        id="new-password"
+        :ref="focusRef"
+        v-model="newPassword"
+        :error="error"
+        label="Nouveau mot de passe"
+        required
+        autocomplete="new-password"
+        :min-length="12"
+        :requirements="['12 caractères minimum']"
+      />
+    </FieldValidation>
 
     <!-- Actions -->
     <ul
@@ -140,7 +147,7 @@ async function hideSuccessAlert() {
         </button>
       </li>
     </ul>
-  </form>
+  </FormWithValidation>
   <button
     v-else
     ref="showButtonRef"

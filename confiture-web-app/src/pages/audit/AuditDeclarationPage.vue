@@ -8,6 +8,9 @@ import BackLink from "../../components/ui/BackLink.vue";
 import DsfrField from "../../components/ui/DsfrField.vue";
 import TagListField from "../../components/ui/TagListField.vue";
 import TopLink from "../../components/ui/TopLink.vue";
+import DsfrFieldWithValidation from "../../components/validation/DsfrFieldWithValidation.vue";
+import FieldValidation from "../../components/validation/FieldValidation.vue";
+import FormWithValidation from "../../components/validation/form-with-validation/FormWithValidation.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -16,8 +19,7 @@ import {
   EMAIL,
   REQUIRED,
   URL,
-  useFormField,
-  validate
+  ValidationRule
 } from "../../composables/validation";
 import {
   AssistiveTechnology,
@@ -35,7 +37,7 @@ const auditStore = useAuditStore();
 const accountStore = useAccountStore();
 useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
 
-const technologies = useFormField([] as string[], [ARRAY_LENGTH(1, "Information obligatoire. Indiquez les technologies utilisées sur le site.")]);
+const technologies = ref<string[]>([]);
 
 const customTools = ref<string[]>([]);
 const defaultTools = ref<string[]>([]);
@@ -43,19 +45,6 @@ const defaultTools = ref<string[]>([]);
 const tools = computed(() => {
   return [...defaultTools.value, ...customTools.value].filter(Boolean);
 });
-
-const toolsSectionRef = ref<HTMLDivElement>();
-const toolsSectionError = ref<string>();
-
-function validateTools() {
-  toolsSectionError.value = undefined;
-  if (tools.value.length === 0) {
-    toolsSectionError.value = "Information obligatoire. Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.";
-    toolsSectionRef.value?.focus();
-    return false;
-  }
-  return true;
-}
 
 const AVAILABLE_DEFAULT_TOOLS = [
   { name: "Web Developer Toolbar", lang: "en" },
@@ -72,37 +61,16 @@ const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 
 // Other data
 
-const auditInitiator = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez l’entité ayant demandé l’audit.")
-]);
-
-const auditorOrganisation = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez l’entité ayant réalisé l’audit.")
-]);
-
-const procedureUrl = useFormField("" as string, [
-  REQUIRED(
-    "Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité."
-  ),
-  URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")
-]);
-
+const auditInitiator = ref("");
+const auditorOrganisation = ref("");
+const procedureUrl = ref("");
 const contactName = ref("");
 
-const contactEmail = useFormField("" as string, [EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")]);
-const contactFormUrl = useFormField("" as string, [URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")]);
-const contactInfoSectionError = ref<string>();
-const contactSectionRef = ref<HTMLFieldSetElement>();
+const contactEmail = ref("");
+const contactFormUrl = ref("");
 
-function validateContactInfoSection() {
-  contactInfoSectionError.value = undefined;
-  if (!contactEmail.value.value && !contactFormUrl.value.value) {
-    contactInfoSectionError.value = "Champ obligatoire. Saisissez au moins un des deux moyens de contact.";
-    contactSectionRef.value?.focus();
-    return false;
-  }
-  return true;
-}
+const contactValidationRule: ValidationRule<[string, string]> =
+  ([email, formUrl]) => !email && !formUrl && "Champ obligatoire. Saisissez au moins un des deux moyens de contact.";
 
 const notCompliantContent = ref("");
 const derogatedContent = ref("");
@@ -114,14 +82,14 @@ watch(
     if (!audit) {
       return;
     }
-    auditInitiator.value.value = audit.initiator ?? "";
-    auditorOrganisation.value.value = audit.auditorOrganisation ?? "";
-    procedureUrl.value.value = audit.procedureUrl ?? "";
+    auditInitiator.value = audit.initiator ?? "";
+    auditorOrganisation.value = audit.auditorOrganisation ?? "";
+    procedureUrl.value = audit.procedureUrl ?? "";
     contactName.value = audit.contactName ?? "";
-    contactEmail.value.value = audit.contactEmail ?? "";
-    contactFormUrl.value.value = audit.contactFormUrl ?? "";
+    contactEmail.value = audit.contactEmail ?? "";
+    contactFormUrl.value = audit.contactFormUrl ?? "";
 
-    technologies.value.value = audit.technologies.length
+    technologies.value = audit.technologies.length
       ? structuredClone(toRaw(audit.technologies))
       : [];
 
@@ -151,45 +119,27 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const hasSubmitted = ref(false);
-
 const testEnvironmentSelectionRef =
   ref<InstanceType<typeof TestEnvironmentSelection>>();
 
 function handleSubmit() {
-  hasSubmitted.value = true;
-
-  const isValid = [
-    testEnvironmentSelectionRef.value?.validate(),
-    validateTools(),
-    validate(
-      auditInitiator,
-      auditorOrganisation,
-      procedureUrl,
-      contactEmail,
-      contactFormUrl,
-      technologies
-    ),
-    validateContactInfoSection(),
-    validateTools()
-  ].every(Boolean);
-
-  if (!isValid) {
+  // TODO: validate using FormWithValidation
+  if (!testEnvironmentSelectionRef.value?.validate()) {
     return;
   }
 
   const data: UpdateAuditRequestData = {
     ...auditStore.currentAudit!,
 
-    initiator: auditInitiator.value.value,
-    auditorOrganisation: auditorOrganisation.value.value,
-    procedureUrl: procedureUrl.value.value.trim(),
+    initiator: auditInitiator.value,
+    auditorOrganisation: auditorOrganisation.value,
+    procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value.value) || null,
-    contactFormUrl: contactFormUrl.value.value.trim() || null,
+    contactEmail: formatEmail(contactEmail.value) || null,
+    contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
-    technologies: technologies.value.value,
+    technologies: technologies.value,
     environments: environments.value,
     tools: tools.value,
 
@@ -223,13 +173,13 @@ const auditIsPublishable = computed(() => {
  * Dev function to avoid filling all fields manually
  */
 function DEBUG_fillFields() {
-  auditInitiator.value.value = "Mairie de Tours";
-  auditorOrganisation.value.value = "Web Audit Services Corp.";
-  procedureUrl.value.value = "https://example.com";
-  contactEmail.value.value = "philipinne-jolivet@example.com";
-  contactFormUrl.value.value = "https://example.com/contact";
+  auditInitiator.value = "Mairie de Tours";
+  auditorOrganisation.value = "Web Audit Services Corp.";
+  procedureUrl.value = "https://example.com";
+  contactEmail.value = "philipinne-jolivet@example.com";
+  contactFormUrl.value = "https://example.com/contact";
 
-  technologies.value.value = ["HTML", "CSS"];
+  technologies.value = ["HTML", "CSS"];
 
   defaultTools.value = [AVAILABLE_DEFAULT_TOOLS[2].name];
   customTools.value = ["Firefox Devtools", "AXE Webextension"];
@@ -280,11 +230,10 @@ const isDevMode = useDevMode();
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
-  <form
+  <FormWithValidation
     v-if="auditStore.currentAudit"
     class="content"
-    novalidate
-    @submit.prevent="handleSubmit"
+    @submit="handleSubmit"
   >
     <h1 class="fr-mb-6w">Déclaration d’accessibilité</h1>
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
@@ -293,45 +242,46 @@ const isDevMode = useDevMode();
 
     <h2 class="fr-h4">Informations générales</h2>
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="initiator"
-      :ref="auditInitiator.refFn"
-      :model-value="auditInitiator.value.value"
-      :error="auditInitiator.error.value"
+      v-model="auditInitiator"
       label="Entité qui a demandé l’audit"
       hint="Exemples : Ministère de l’intérieur, Mairie de Toulouse"
       type="text"
       required
-      @update:model-value="auditInitiator.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez l’entité ayant demandé l’audit.')
+      ]"
     />
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="auditorOrganisation"
-      :ref="auditorOrganisation.refFn"
-      :model-value="auditorOrganisation.value.value"
-      :error="auditorOrganisation.error.value"
+      v-model="auditorOrganisation"
       label="Entité qui a réalisé l’audit"
       hint="L'audit peut être demandé et réalisé par la même entité."
       type="text"
       required
-      @update:model-value="auditorOrganisation.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez l’entité ayant réalisé l’audit.')
+      ]"
     />
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="procedure-url"
-      :ref="procedureUrl.refFn"
-      :model-value="procedureUrl.value.value"
-      :error="procedureUrl.error.value"
+      v-model="procedureUrl"
       label="URL de la page d’accueil du site audité"
       type="text"
       :pattern="URL_REGEX"
       required
-      @update:model-value="procedureUrl.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez l’URL de la page d’accueil du site audité.'),
+        URL('Format incorrect. Saisissez une URL commençant par https:// ou http://')
+      ]"
     >
       <template #hint>
         Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
       </template>
-    </DsfrField>
+    </DsfrFieldWithValidation>
 
     <fieldset
       class="fr-fieldset fr-p-0 fr-mx-0 fr-mt-6w fr-mb-6w contact-fieldset"
@@ -357,114 +307,142 @@ const isDevMode = useDevMode();
         Vous devez renseigner au moins un des deux moyens de contact suivant :
       </p>
 
-      <div
-        ref="contactSectionRef"
-        tabindex="-1"
-        role="region"
-        aria-labelledby="contact-section-subtitle"
-        aria-describedby="contact-section-error"
-        class="fr-input-group" :class="{ 'fr-input-group--error': contactInfoSectionError }"
+      <FieldValidation
+        v-slot="{ error: sectionError, focusRef: sectionRef }"
+        :validation="[contactValidationRule]"
+        :value="[contactEmail, contactFormUrl]"
       >
-        <DsfrField
-          id="contact-email"
-          :ref="contactEmail.refFn"
-          :model-value="contactEmail.value.value"
-          label="Adresse e-mail de contact"
-          hint="Format attendu : nom@domaine.fr"
-          type="email"
-          :error="
-            contactInfoSectionError || contactEmail.error.value
-          "
-          :hide-error="!!contactInfoSectionError"
-          class="fr-mb-3v"
-          @update:model-value="contactEmail.value.value = $event"
-        />
-
-        <p class="fr-mb-3v"><em>Ou</em></p>
-
-        <DsfrField
-          id="contact-form-url"
-          :ref="contactFormUrl.refFn"
-          :model-value="contactFormUrl.value.value"
-          label="Formulaire de contact en ligne"
-          hint="Exemple : contact@ministere.gouv.fr"
-          type="url"
-          placeholder="https://"
-          :error="
-            contactInfoSectionError || contactFormUrl.error.value
-          "
-          :hide-error="!!contactInfoSectionError"
-          @update:model-value="contactFormUrl.value.value = $event"
+        <div
+          :ref="sectionRef"
+          tabindex="-1"
+          role="region"
+          aria-labelledby="contact-section-subtitle"
+          aria-describedby="contact-section-error"
+          class="fr-input-group" :class="{ 'fr-input-group--error': !!sectionError }"
         >
-          <template #hint>
-            Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
-          </template>
-        </DsfrField>
-        <p v-if="contactInfoSectionError" id="contact-section-error" class="fr-error-text fr-mt-0">
-          {{ contactInfoSectionError }}
-        </p>
-      </div>
+          <FieldValidation
+            v-slot="{ error, focusRef }"
+            :validation="[EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
+            :value="contactEmail"
+          >
+            <DsfrField
+              id="contact-email"
+              :ref="focusRef"
+              v-model="contactEmail"
+              label="Adresse e-mail de contact"
+              hint="Format attendu : nom@domaine.fr"
+              type="email"
+              :error="
+                sectionError || error
+              "
+              :hide-error="!!sectionError"
+              class="fr-mb-3v"
+            />
+          </FieldValidation>
+
+          <p class="fr-mb-3v"><em>Ou</em></p>
+
+          <FieldValidation
+            v-slot="{ error, focusRef }"
+            :validation="[URL('Format incorrect. Saisissez une URL commençant par https:// ou http://e')]"
+            :value="contactFormUrl"
+          >
+            <DsfrField
+              id="contact-form-url"
+              :ref="focusRef"
+              v-model="contactFormUrl"
+              label="Formulaire de contact en ligne"
+              hint="Exemple : contact@ministere.gouv.fr"
+              type="url"
+              placeholder="https://"
+              :error="
+                sectionError || error
+              "
+              :hide-error="!!sectionError"
+            >
+              <template #hint>
+                Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
+              </template>
+            </DsfrField>
+          </FieldValidation>
+          <p v-if="sectionError" id="contact-section-error" class="fr-error-text fr-mt-0">
+            {{ sectionError }}
+          </p>
+        </div>
+      </FieldValidation>
     </fieldset>
 
     <h2 class="fr-h4">Technologies utilisées sur le site</h2>
 
-    <TagListField
-      :ref="technologies.refFn"
-      :model-value="technologies.value.value"
-      :error="technologies.error.value"
-      label="Ajouter des technologies"
-      hint="Exemples : HTML, CSS, Javascript"
-      add-label="les technologies"
-      @update:model-value="technologies.value.value = $event"
-    />
-
-    <div
-      ref="toolsSectionRef"
-      tabindex="-1"
-      role="region"
-      aria-labelledby="tools-section-title"
-      aria-describedby="tools-section-error"
-      class="fr-input-group"
-      :class="{ 'fr-input-group--error': toolsSectionError }"
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      :value="technologies"
+      :validation="[ARRAY_LENGTH(1, 'Indiquez les technologies utilisées sur le site.')]"
     >
-      <div class="fr-form-group">
-        <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': toolsSectionError }">
-          <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
-            <h2 id="tools-section-title" class="fr-h4 fr-mb-0">
-              Outils d’assistance utilisés pour vérifier l’accessibilité
-            </h2>
-          </legend>
-          <div class="fr-fieldset__content">
-            <div
-              v-for="(tool, i) in AVAILABLE_DEFAULT_TOOLS"
-              :key="i"
-              class="fr-checkbox-group"
-            >
-              <input
-                :id="`tool-${i}`"
-                v-model="defaultTools"
-                type="checkbox"
-                :value="tool.name"
-              />
-              <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
-                {{ tool.name }}
-              </label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-
       <TagListField
-        v-model="customTools"
-        label="Ajouter des outils d’assistance"
-        add-label="les outils d’assistance"
+        :ref="focusRef"
+        v-model="technologies"
+        :error="error"
+        label="Ajouter des technologies"
+        hint="Exemples : HTML, CSS, Javascript"
+        add-label="les technologies"
       />
+    </FieldValidation>
 
-      <p v-if="toolsSectionError" id="tools-section-error" class="fr-error-text fr-mt-0">
-        {{ toolsSectionError }}
-      </p>
-    </div>
+    <FieldValidation
+      v-slot="{ error: sectionError, focusRef: sectionRef }"
+      :value="tools"
+      :validation="[ARRAY_LENGTH(1, 'Indiquez les outils d’assistance utilisés pour vérifier l’accessibilité.')]"
+    >
+      <div
+        :ref="sectionRef"
+        tabindex="-1"
+        role="region"
+        aria-labelledby="tools-section-title"
+        aria-describedby="tools-section-error"
+        class="fr-input-group"
+        :class="{ 'fr-input-group--error': sectionError }"
+      >
+        <div class="fr-form-group">
+          <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': sectionError }">
+            <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
+              <h2 id="tools-section-title" class="fr-h4 fr-mb-0">
+                Outils d’assistance utilisés pour vérifier l’accessibilité
+              </h2>
+            </legend>
+            <div class="fr-fieldset__content">
+              <div
+                v-for="(tool, i) in AVAILABLE_DEFAULT_TOOLS"
+                :key="i"
+                class="fr-checkbox-group"
+              >
+                <input
+                  :id="`tool-${i}`"
+                  v-model="defaultTools"
+                  type="checkbox"
+                  :value="tool.name"
+                />
+                <label class="fr-label" :for="`tool-${i}`" :lang="tool.lang">
+                  {{ tool.name }}
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
 
+        <TagListField
+          v-model="customTools"
+          label="Ajouter des outils d’assistance"
+          add-label="les outils d’assistance"
+        />
+
+        <p v-if="sectionError" id="tools-section-error" class="fr-error-text fr-mt-0">
+          {{ sectionError }}
+        </p>
+      </div>
+    </FieldValidation>
+
+    <!-- TODO: validate using fieldvalidation ? -->
     <TestEnvironmentSelection ref="testEnvironmentSelectionRef" v-model="environments" />
 
     <h2 class="fr-h4">Contenus non accessibles</h2>
@@ -550,7 +528,7 @@ const isDevMode = useDevMode();
     <div class="top-link">
       <TopLink class="fr-ml-auto" />
     </div>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>

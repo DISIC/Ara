@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useDevMode } from "../../composables/useDevMode";
-import { REQUIRED, useFormField, validate } from "../../composables/validation";
+import { REQUIRED } from "../../composables/validation";
 import { AuditType } from "../../types";
-import DsfrField from "../ui/DsfrField.vue";
+import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
+import FieldValidation from "../validation/FieldValidation.vue";
+import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
 import AuditTypeRadio from "./AuditTypeRadio.vue";
 
 const props = defineProps<{
@@ -39,24 +42,14 @@ const partialAudits = [
   }
 ];
 
-const procedureName = useFormField(props.auditType ?? "", [
-  REQUIRED(
-    "Champ obligatoire. Saisissez le nom du site ou du service à auditer."
-  )
-]);
+const procedureName = ref(props.auditType ?? "");
 
-const auditType = useFormField<string | null>(props.auditType ?? null, [
-  REQUIRED("Sélection obligatoire. Choissisez un type d’audit.")
-]);
+const auditType = ref(props.auditType ?? null);
 
 function submitAuditType() {
-  if (!validate(auditType, procedureName)) {
-    return;
-  }
-
   emit("submit", {
-    auditType: auditType.value.value as AuditType,
-    procedureName: procedureName.value.value
+    auditType: auditType.value as AuditType,
+    procedureName: procedureName.value
   });
 }
 
@@ -66,13 +59,13 @@ defineExpose({ procedureName, auditType });
 const isDevMode = useDevMode();
 
 function fillSettings() {
-  auditType.value.value = AuditType.FULL;
-  procedureName.value.value = "Ma procédure";
+  auditType.value = AuditType.FULL;
+  procedureName.value = "Ma procédure";
 }
 </script>
 
 <template>
-  <form novalidate @submit.prevent="submitAuditType">
+  <FormWithValidation @submit="submitAuditType">
     <div v-if="isDevMode" class="fr-mb-4w">
       <button class="fr-btn" type="button" @click="fillSettings">
         [DEV] Remplir les paramètres
@@ -84,69 +77,74 @@ function fillSettings() {
       type d’audit doit être selectionné.
     </p>
 
-    <!-- FIXME: make into a fielset + legend ? -->
-    <div
-      class="fr-mb-4w fr-input-group"
-      :class="{ 'fr-input-group--error': !!auditType.error.value }"
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      :value="auditType"
+      :validation="[
+        REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
+      ]"
     >
-      <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
-      <p class="fr-mb-2w">
-        Cet audit permet de mesurer la conformité au RGAA d’un site internet, il
-        a une <strong>valeur légale</strong>.
-      </p>
-      <AuditTypeRadio
-        :ref="auditType.refFn"
-        :model-value="auditType.value.value"
-        class="fr-mb-3w audit-type"
-        :value="fullAudit.value"
-        :checked="auditType.value.value === fullAudit.value"
-        :goals="fullAudit.goals"
-        :documentation-link="fullAudit.documentation"
-        detailed
-        :is-error="!!auditType.error.value"
-        @update:model-value="auditType.value.value = $event"
-      />
-
-      <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
-      <p class="fr-mb-2w">
-        Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
-        n’ont <strong>pas de valeur légale</strong>.
-      </p>
-      <div class="partial-audits">
-        <AuditTypeRadio
-          v-for="type in partialAudits"
-          :key="type.value"
-          :model-value="auditType.value.value"
-          class="audit-type"
-          :value="type.value"
-          :checked="auditType.value.value === type.value"
-          :goals="type.goals"
-          :documentation-link="type.documentation"
-          detailed
-          :is-error="!!auditType.error.value"
-          @update:model-value="auditType.value.value = $event"
-        />
-      </div>
-
-      <p
-        v-if="auditType.error.value"
-        id="audit-type-error"
-        class="fr-error-text"
+      <!-- FIXME: make into a fielset + legend ? -->
+      <div
+        class="fr-mb-4w fr-input-group"
+        :class="{ 'fr-input-group--error': !!error }"
       >
-        {{ auditType.error.value }}
-      </p>
-    </div>
+        <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
+        <p class="fr-mb-2w">
+          Cet audit permet de mesurer la conformité au RGAA d’un site internet, il
+          a une <strong>valeur légale</strong>.
+        </p>
 
-    <DsfrField
+        <AuditTypeRadio
+          :ref="focusRef"
+          v-model="auditType"
+          class="fr-mb-3w audit-type"
+          :value="fullAudit.value"
+          :checked="auditType === fullAudit.value"
+          :goals="fullAudit.goals"
+          :documentation-link="fullAudit.documentation"
+          detailed
+          :is-error="!!error"
+        />
+
+        <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
+        <p class="fr-mb-2w">
+          Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
+          n’ont <strong>pas de valeur légale</strong>.
+        </p>
+        <div class="partial-audits">
+          <AuditTypeRadio
+            v-for="type in partialAudits"
+            :key="type.value"
+            :model-value="auditType"
+            class="audit-type"
+            :value="type.value"
+            :checked="auditType === type.value"
+            :goals="type.goals"
+            :documentation-link="type.documentation"
+            detailed
+            :is-error="!!error"
+            @update:model-value="auditType = $event"
+          />
+        </div>
+
+        <p
+          v-if="error"
+          id="audit-type-error"
+          class="fr-error-text"
+        >
+          {{ error }}
+        </p>
+      </div>
+    </FieldValidation>
+
+    <DsfrFieldWithValidation
       id="procedure-name"
-      :ref="procedureName.refFn"
-      :model-value="procedureName.value.value"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
       hint="Exemples : Service-Public, Demande de permis de conduire"
       required
-      :error="procedureName.error.value"
-      @update:model-value="procedureName.value.value = $event"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
     />
 
     <div class="actions">
@@ -157,7 +155,7 @@ function fillSettings() {
         Étape suivante
       </button>
     </div>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>
