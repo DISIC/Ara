@@ -36,6 +36,9 @@ defineOptions({
       :ref="focusRef"
       v-model="model"
       :error="error"
-    />
+    >
+      <template v-if="$slots.hint" #hint><slot name="hint" /></template>
+      <template v-if="$slots.trailing" #trailing><slot name="trailing" /></template>
+    </DsfrField>
   </FieldValidation>
 </template>
