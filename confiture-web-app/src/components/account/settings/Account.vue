@@ -7,9 +7,8 @@ import { useNotifications } from "../../../composables/useNotifications";
 import { EQUAL, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
-import DsfrPassword from "../../ui/DsfrPassword.vue";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
-import FieldValidation from "../../validation/FieldValidation.vue";
+import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const router = useRouter();
@@ -81,24 +80,18 @@ async function hideAccountDeletionForm() {
         :validation="confirmPhraseValidation"
       />
 
-      <FieldValidation
+      <DsfrPasswordWithValidation
+        id="account-password"
         ref="password-field"
-        v-slot="{ error, focusRef }"
-        :value="password"
+
+        v-model="password"
         :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-      >
-        <DsfrPassword
-          id="account-password"
-          :ref="focusRef"
-          v-model="password"
-          :error="error"
-          label="Mot de passe"
-          required
-          autocomplete="current-password"
-          show-forgotten-password-link
-          skip-forgotten-password-first-step
-        />
-      </FieldValidation>
+        label="Mot de passe"
+        required
+        autocomplete="current-password"
+        show-forgotten-password-link
+        skip-forgotten-password-first-step
+      />
 
       <ul
         class="fr-btns-group fr-btns-group--inline fr-btns-group--right fr-mt-3w"

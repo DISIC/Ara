@@ -4,9 +4,8 @@ import { nextTick, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
-import DsfrPassword from "../../components/ui/DsfrPassword.vue";
 import DsfrFieldWithValidation from "../../components/validation/DsfrFieldWithValidation.vue";
-import FieldValidation from "../../components/validation/FieldValidation.vue";
+import DsfrPasswordWithValidation from "../../components/validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../components/validation/form-with-validation/FormWithValidation.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import {
@@ -109,23 +108,16 @@ async function handleSubmit() {
                       EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
       />
 
-      <FieldValidation
-        v-slot="{ error, focusRef }"
-        :value="userPassword"
+      <DsfrPasswordWithValidation
+        id="user-password"
+        v-model="userPassword"
+        class="fr-my-3w"
+        label="Mot de passe"
+        required
+        autocomplete="current-password"
+        show-forgotten-password-link
         :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-      >
-        <DsfrPassword
-          id="user-password"
-          :ref="focusRef"
-          v-model="userPassword"
-          class="fr-my-3w"
-          label="Mot de passe"
-          required
-          autocomplete="current-password"
-          show-forgotten-password-link
-          :error="error"
-        />
-      </FieldValidation>
+      />
 
       <div class="fr-btns-group">
         <button class="fr-btn fr-mb-0">Se connecter</button>

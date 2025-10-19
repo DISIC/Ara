@@ -8,9 +8,8 @@ import { EMAIL, REQUIRED } from "../../../composables/validation";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads, formatEmail } from "../../../utils";
-import DsfrPassword from "../../ui/DsfrPassword.vue";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
-import FieldValidation from "../../validation/FieldValidation.vue";
+import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const accountStore = useAccountStore();
@@ -219,25 +218,19 @@ async function cancelEmailUpdate() {
     class="wrapper"
     @submit="updateEmail"
   >
-    <FieldValidation
-      v-slot="{ error, focusRef }"
+
+    <DsfrPasswordWithValidation
+      id="email-password"
       ref="password-field"
-      :value="password"
+      v-model="password"
+      class="fr-mb-3w"
+      label="Mot de passe"
+      required
+      autocomplete="current-password"
+      show-forgotten-password-link
+      skip-forgotten-password-first-step
       :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-    >
-      <DsfrPassword
-        id="email-password"
-        :ref="focusRef"
-        v-model="password"
-        :error="error"
-        class="fr-mb-3w"
-        label="Mot de passe"
-        required
-        autocomplete="current-password"
-        show-forgotten-password-link
-        skip-forgotten-password-first-step
-      />
-    </FieldValidation>
+    />
 
     <DsfrFieldWithValidation
       id="new-email"

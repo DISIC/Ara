@@ -6,8 +6,7 @@ import { useNotifications } from "../../../composables/useNotifications";
 import { LENGTH, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
-import DsfrPassword from "../../ui/DsfrPassword.vue";
-import FieldValidation from "../../validation/FieldValidation.vue";
+import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 // Toggle display
@@ -88,45 +87,33 @@ async function hideSuccessAlert() {
     @submit="updatePassword"
   >
     <!-- Current password -->
-    <FieldValidation
-      v-slot="{ error, focusRef }"
+    <DsfrPasswordWithValidation
+      id="current-password"
       ref="current-password-field"
+      v-model="currentPassword"
+      class="fr-mb-3w"
+      label="Mot de passe actuel"
+      required
+      autocomplete="current-password"
+      show-forgotten-password-link
+      skip-forgotten-password-first-step
       :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-      :value="currentPassword"
-    >
-      <DsfrPassword
-        id="current-password"
-        :ref="focusRef"
-        v-model="currentPassword"
-        class="fr-mb-3w"
-        label="Mot de passe actuel"
-        required
-        autocomplete="current-password"
-        show-forgotten-password-link
-        skip-forgotten-password-first-step
-        :error="error"
-      />
-    </FieldValidation>
+    />
 
     <!-- New password -->
-    <FieldValidation
-      v-slot="{ error, focusRef }"
+
+    <DsfrPasswordWithValidation
+      id="new-password"
       ref="new-password-field"
+      v-model="newPassword"
+
       :validation="[REQUIRED('Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum.'), LENGTH(12, 'Mot de passd invlide. Saisissez un nouveau mot de passe contenant 12 caractères minimum.')]"
-      :value="newPassword"
-    >
-      <DsfrPassword
-        id="new-password"
-        :ref="focusRef"
-        v-model="newPassword"
-        :error="error"
-        label="Nouveau mot de passe"
-        required
-        autocomplete="new-password"
-        :min-length="12"
-        :requirements="['12 caractères minimum']"
-      />
-    </FieldValidation>
+      label="Nouveau mot de passe"
+      required
+      autocomplete="new-password"
+      :min-length="12"
+      :requirements="['12 caractères minimum']"
+    />
 
     <!-- Actions -->
     <ul
