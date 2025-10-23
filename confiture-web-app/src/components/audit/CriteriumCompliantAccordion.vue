@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
   comment: string | null;
 }>();
@@ -14,7 +15,9 @@ defineEmits<{
 
 const isOffline = useIsOffline();
 
-const title = "Points d’amélioration";
+const title = computed(() => {
+  return `Points d’amélioration (${Number(!!props.comment)})`;
+});
 </script>
 
 <template>
