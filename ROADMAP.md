@@ -16,7 +16,7 @@
 
 <p class="mention">Fonctionnalités prochainement en conception ou en développement.</p>
 
-- La notion d’anomalie arrive. Une anomalie comprend un champ de saisie, une ou plusieurs images, un impact et un degrés de facilité.
+- La notion d’anomalie arrive. Une anomalie comprend un champ de saisie, une ou plusieurs images, un impact et un degré de facilité.
 - Pouvoir associer plusieurs anomalies à un critère.
 - Pouvoir réaliser un audit en relevant des anomalies (en plus de la liste des critères).
 - Refonte du rapport pour mettre en avant la liste des anomalies relevées.
