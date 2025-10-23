@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
@@ -15,16 +14,17 @@ defineEmits<{
 
 const isOffline = useIsOffline();
 
-const title = computed(() => {
-  return `Points d’amélioration (${Number(!!props.comment)})`;
-});
+const title = "Points d’amélioration";
 </script>
 
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)" :title="title">
+    <template #title>
+      {{ title }} (<strong v-if="!!props.comment">1</strong><template v-else>0</template>)
+    </template>
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
+      {{ title }} ({{ Number(!!props.comment) }})
     </p>
     <TiptapEditor
       :key="id"

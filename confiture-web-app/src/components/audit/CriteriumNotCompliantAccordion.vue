@@ -100,9 +100,7 @@ const isFilledIn = computed(() => {
     || !!props.userImpact;
 });
 
-const title = computed(() => {
-  return `Erreur et recommandation (${Number(isFilledIn.value)})`;
-});
+const title = "Erreur et recommandation";
 </script>
 
 <template>
@@ -112,9 +110,12 @@ const title = computed(() => {
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
+    <template #title>
+      {{ title }} (<strong v-if="isFilledIn">1</strong><template v-else>0</template>)
+    </template>
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
+      {{ title }} ({{ Number(isFilledIn) }})
     </p>
     <TiptapEditor
       :key="id"
