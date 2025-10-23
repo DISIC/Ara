@@ -218,6 +218,7 @@ const backLinkLabel = computed(() => {
 
       <button
         class="fr-btn fr-btn--tertiary-no-outline fr-ml-2w"
+        type="button"
         @click="router.back()"
       >
         Annuler
