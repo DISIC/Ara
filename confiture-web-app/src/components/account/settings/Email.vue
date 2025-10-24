@@ -1,33 +1,27 @@
 <script lang="ts" setup>
 import { HTTPError } from "ky";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, useTemplateRef } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
-import {
-  EMAIL,
-  REQUIRED,
-  useFormField,
-  validate
-} from "../../../composables/validation";
+import { EMAIL, REQUIRED } from "../../../composables/validation";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads, formatEmail } from "../../../utils";
-import DsfrField from "../../ui/DsfrField.vue";
-import DsfrPassword from "../../ui/DsfrPassword.vue";
+import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
+import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
+import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
 const confirmAlert = ref<HTMLDivElement>();
 
-const password = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez votre mot de passe.")
-]);
-const newEmail = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez votre nouvelle adresse e-mail."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
-]);
+const password = ref("");
+const newEmail = ref("");
+
+const passwordField = useTemplateRef("password-field");
+const newEmailField = useTemplateRef("new-email-field");
 
 const displayPendingEmailVerification = ref(false);
 
@@ -49,24 +43,19 @@ async function hidePending() {
   displayPendingEmailVerification.value = false;
   ac.value?.abort();
   await nextTick();
-  password.focusRef.value?.focus();
+  passwordField.value?.focus();
 }
 
 const ac = ref<AbortController>();
 
 async function updateEmail() {
-  if (!validate(password, newEmail)) {
-    // Invalid form
-    return;
-  }
-
   accountStore
-    .updateEmail(formatEmail(newEmail.value.value), password.value.value)
+    .updateEmail(formatEmail(newEmail.value), password.value)
     .then(showPending)
     .then(() => {
       ac.value = new AbortController();
       return accountStore
-        .waitForEmailUpdateVerification(newEmail.value.value, ac.value.signal)
+        .waitForEmailUpdateVerification(newEmail.value, ac.value.signal)
         .then(() => {
           displayPendingEmailVerification.value = false;
           displayEmailUpdateSuccess.value = true;
@@ -79,14 +68,9 @@ async function updateEmail() {
     })
     .catch(async (e) => {
       if (e instanceof HTTPError && e.response.status === 401) {
-        password.error.value = "Le mot de passe saisi est incorrect.";
-        await nextTick();
-        password.focusRef.value?.focus();
+        passwordField.value?.setError("Le mot de passe saisi est incorrect.", true);
       } else if (e instanceof HTTPError && e.response.status === 409) {
-        newEmail.error.value =
-          "La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.";
-        await nextTick();
-        newEmail.focusRef.value?.focus();
+        newEmailField.value?.setError("La nouvelle adresse e-mail saisie est identique à celle utilisée pour votre compte. Veuillez choisir une autre adresse e-mail.", true);
       } else {
         notify(
           "error",
@@ -124,7 +108,7 @@ const displayUpdateEmailForm = ref(false);
 async function showUpdateEmailForm() {
   displayUpdateEmailForm.value = true;
   await nextTick();
-  password.focusRef.value?.focus();
+  passwordField.value?.focus();
 }
 
 async function hideUpdateEmailForm() {
@@ -147,8 +131,8 @@ async function cancelEmailUpdate() {
   } finally {
     displayPendingEmailVerification.value = false;
     displayUpdateEmailForm.value = false;
-    password.value.value = "";
-    newEmail.value.value = "";
+    password.value = "";
+    newEmail.value = "";
     await nextTick();
     showButtonRef.value?.focus();
   }
@@ -181,7 +165,7 @@ async function cancelEmailUpdate() {
     >
       <p>
         Un lien pour confirmer votre nouvelle adresse e-mail vient de vous être
-        envoyé à l’adresse suivante : <strong>{{ newEmail.value }}</strong>
+        envoyé à l’adresse suivante : <strong>{{ newEmail }}</strong>
       </p>
     </div>
 
@@ -229,37 +213,38 @@ async function cancelEmailUpdate() {
   </div>
 
   <!-- Update email form -->
-  <form
+  <FormWithValidation
     v-if="displayUpdateEmailForm && !displayPendingEmailVerification"
     class="wrapper"
-    novalidate
-    @submit.prevent="updateEmail"
+    @submit="updateEmail"
   >
-    <DsfrPassword
+
+    <DsfrPasswordWithValidation
       id="email-password"
-      :ref="password.refFn"
-      :model-value="password.value.value"
-      :error="password.error.value"
+      ref="password-field"
+      v-model="password"
       class="fr-mb-3w"
       label="Mot de passe"
       required
       autocomplete="current-password"
       show-forgotten-password-link
       skip-forgotten-password-first-step
-      @update:model-value="password.value.value = $event"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
     />
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="new-email"
-      :ref="newEmail.refFn"
-      :model-value="newEmail.value.value"
-      :error="newEmail.error.value"
+      ref="new-email-field"
+      v-model="newEmail"
       class="fr-mt-3v"
       label="Nouvelle adresse e-mail"
       hint="Format attendu : nom@domaine.fr"
       type="email"
       required
-      @update:model-value="newEmail.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez votre nouvelle adresse e-mail.'),
+        EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
+      ]"
     />
 
     <ul
@@ -268,6 +253,7 @@ async function cancelEmailUpdate() {
       <li>
         <button
           class="fr-btn fr-btn--secondary fr-mb-0"
+          type="button"
           @click="hideUpdateEmailForm"
         >
           Annuler
@@ -279,7 +265,7 @@ async function cancelEmailUpdate() {
         </button>
       </li>
     </ul>
-  </form>
+  </FormWithValidation>
 
   <button
     v-else-if="!displayPendingEmailVerification"

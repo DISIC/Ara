@@ -93,45 +93,52 @@ Au lieu de :
 
 ### Validation des formulaires
 
-Les formulaires sont validés avec une validation custom (≠ validation native) grâce à un composable (`useFormField()`) et des règles de validation (`REQUIRED()`, `EMAIL()`...). Cela permet de facilement récupérer la référence de l’élément HTML, la valeur du champs et le message d’erreur.
+Les formulaires sont validés avec une validation custom (≠ validation native) grâce à des composants dédiés (`<FormWithValidation>`, `<FieldValidation>`) et des règles de validation (`REQUIRED()`, `EMAIL()`...).
 
-Une fois les champs branchés au composable, il est possible d’appeler la fonction `validate()` (par exemple au submit du formulaire) qui va retourner un boolean : `false` dans le cas d’une erreur, `true` sinon. Cette fonction va également positionner le focus sur le premier champ en erreur. Il est donc important de mettre la liste des champs à valider dans le bon ordre du formulaire au sein de la fonction `validate()`.
+#### Utilisation
 
-Pour utiliser ce système :
+Déclarer un formulaire avec `<FormWithValidation>`, tout les champs contenus dans ce composants seront automatiquement validés et le focus déplacé sur le premier champs en erreur le cas échéant. Si tout les champs sont valides à la soumission du formulaire, `<FormWithValidation>` émet un événement `@submit`.
 
-- le formulaire doit avoir l’attribut `novalidate` qui désactive la validation native.
-- le modèle doit être branché avec les attributs `model-value` et `@update:model-value`.
-- la valeur du champs doit être récupérée avec `email.value.value` (2 clefs `value` imbriquées).
+Chaque champs validé doit être contenu dans un composant `<FielValidation>`, qui reçoit en props la valeur du champs (`:value`) et les règles de validation (`:validation`). Le composant expose via des props de slots l’erreur de validation du champs et une ref à bind sur l’élément ou composant focusable du champs.
 
-Voici un exemple de formulaire :
+#### Composants
+
+Il extiste des variantes des composants de champs fréquement utilisés (`<DsfrField>` et `<DsfrPassword>`) qui ne nécéssitent pas l’utilisation du wrapper `<FieldValidation>` (voir l’exemple ci-dessous).
+
+#### Exemple de formulaire
 
 ```html
 <script lang="ts" setup>
-  import DsfrField from "./components/ui/DsfrField.vue";
-  import { EMAIL, REQUIRED, useFormField, validate } from "./composables/validation";
+  import { EMAIL, REQUIRED } from "./composables/validation";
 
-  const email = useFormField("" as string, [REQUIRED("Ce champs est obligatoire"), EMAIL("Format email invalide")]);
+  const email = ref("");
+  const password = ref("");
 
   function onSubmit() {
-    if (!validate(email)) {
-      // invalid form
-      return;
-    }
-    doSomething(email.value.value);
+    doSomething(email.value, password.value);
   }
 </script>
 
 <template>
-  <form novalidate @submit.prevent="onSubmit">
-    <DsfrField
-      :ref="email.refFn"
-      id="email-field"
-      label="Votre email"
-      :model-value="email.value.value"
-      @update:model-value="email.value.value = $event"
-      :error="email.error.value"
+  <FormWithValidation @submit="onSubmit">
+    <!-- Usage avec <FieldValidation> -->
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      :value="email"
+      :validation="[REQUIRED('Ce champs est obligatoire'), EMAIL('Format email invalide')]"
+    >
+      <DsfrField :ref="focusRef" v-model="email" :error="error" label="Votre email" />
+    </FieldValidation>
+
+    <!-- Shortcut component. Also exists for DsfrFiel -->
+    <DsfrPasswordWithValidation
+      v-model="userPassword"
+      label="Mot de passe"
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
     />
-  </form>
+
+    <button type="submit">Valider</button>
+  </FormWithValidation>
 </template>
 ```
 

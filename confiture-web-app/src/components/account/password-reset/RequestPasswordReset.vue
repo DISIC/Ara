@@ -1,47 +1,43 @@
 <script lang="ts" setup>
-import { EMAIL, REQUIRED, useFormField, validate } from "../../../composables/validation";
-import DsfrField from "../../ui/DsfrField.vue";
+import { ref, useTemplateRef } from "vue";
+import { EMAIL, REQUIRED } from "../../../composables/validation";
+import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
+import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const emit = defineEmits<{
   (e: "submit", email: string): void;
 }>();
 
-const email = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
-]);
+const email = ref("");
+const emailField = useTemplateRef("email-field");
 
 defineExpose({
   focusEmailField: () => {
-    email.focusRef.value?.focus();
+    emailField.value?.focus();
   }
 });
-
-function onSubmit() {
-  if (validate(email)) {
-    emit("submit", email.value.value);
-  }
-}
 </script>
 
 <template>
-  <form class="wrapper" novalidate @submit.prevent="onSubmit">
+  <FormWithValidation class="wrapper" @submit="$emit('submit', email)">
     <h1 class="fr-h3">Réinitialiser votre mot de passe</h1>
     <p class="fr-mb-2w">
       Saisissez l’adresse e-mail liée à votre compte. Vous recevrez un e-mail pour réinitialiser votre mot de passe.
     </p>
 
-    <DsfrField
+    <DsfrFieldWithValidation
       id="reset-password-email"
-      :ref="email.refFn"
+      ref="email-field"
+      v-model="email"
       label="Adresse e-mail"
       hint="Format attendu : nom@domaine.fr"
       type="email"
       required
-      :model-value="email.value.value"
-      :error="email.error.value"
       class="field-wrapper"
-      @update:model-value="email.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
+        EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
+      ]"
     />
 
     <ul
@@ -56,7 +52,7 @@ function onSubmit() {
         <button type="submit" class="fr-btn">Valider</button>
       </li>
     </ul>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>

@@ -1,43 +1,36 @@
 <script lang="ts" setup>
-import { LENGTH, REQUIRED, useFormField, validate } from "../../../composables/validation";
-import DsfrPassword from "../../ui/DsfrPassword.vue";
+import { ref } from "vue";
+import { LENGTH, REQUIRED } from "../../../composables/validation";
+import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
+import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
 const emit = defineEmits<{
   (e: "submit", newPassword: string): void;
 }>();
 
-const password = useFormField("" as string, [
-  REQUIRED("Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum."),
-  LENGTH(12, "Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.")
-]);
-
-function submitPassword() {
-  if (validate(password)) {
-    emit("submit", password.value.value);
-  }
-}
+const password = ref("");
 </script>
 
 <template>
-  <form
+  <FormWithValidation
     class="new-password-wrapper"
-    novalidate
-    @submit.prevent="submitPassword"
+    @submit="$emit('submit', password)"
   >
     <h1 class="fr-h3">Changer de mot de passe</h1>
 
-    <DsfrPassword
+    <DsfrPasswordWithValidation
       id="user-password-input"
-      :ref="password.refFn"
-      :model-value="password.value.value"
-      :error="password.error.value"
+      v-model="password"
       class="fr-mb-3w"
       label="Mot de passe"
       required
       autocomplete="new-password"
       :min-length="12"
       :requirements="['12 caractères minimum']"
-      @update:model-value="password.value.value = $event"
+      :validation="[
+        REQUIRED('Champ obligatoire. Saisissez votre nouveau mot de passe. Il doit contenir 12 caractères minimum.'),
+        LENGTH(12, 'Le nombre de caractères du mot de passe n’est pas suffisant. Veuillez choisir un mot de passe de 12 caractères minimum.')
+      ]"
     />
 
     <ul
@@ -52,7 +45,7 @@ function submitPassword() {
         <button type="submit" class="fr-btn">Changer de mot de passe</button>
       </li>
     </ul>
-  </form>
+  </FormWithValidation>
 </template>
 
 <style scoped>

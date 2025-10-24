@@ -8,10 +8,12 @@ import emojiNo from "../assets/images/emoji-no.svg";
 import emojiYes from "../assets/images/emoji-yes.svg";
 import greenCheck from "../assets/images/green-check.svg";
 import PageMeta from "../components/PageMeta";
-import DsfrField from "../components/ui/DsfrField.vue";
+import DsfrFieldWithValidation from "../components/validation/DsfrFieldWithValidation.vue";
+import FieldValidation from "../components/validation/FieldValidation.vue";
+import FormWithValidation from "../components/validation/form-with-validation/FormWithValidation.vue";
 import { useNotifications } from "../composables/useNotifications";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
-import { ARRAY_LENGTH, EMAIL, REQUIRED, useFormField, validate } from "../composables/validation";
+import { ARRAY_LENGTH, EMAIL, REQUIRED } from "../composables/validation";
 import { paths } from "../types/confiture-api";
 import { captureWithPayloads } from "../utils";
 
@@ -34,22 +36,22 @@ const availableJobs = [
   "Autre"
 ];
 
-const easyToUse = useFormField<CreateFeedbackRequestData["easyToUse"] | null>(null, [REQUIRED("Sélection obligatoire. Indiquez si le site est facile à utiliser.")]);
-const easyToUnderstand = useFormField<CreateFeedbackRequestData["easyToUnderstand"] | null>(null, [REQUIRED("Sélection obligatoire. Indiquez si le langage employé sur le site est facile à comprendre.")]);
-const feedback = useFormField("" as string, [REQUIRED("Champ obligatoire. Indiquez vos remarques générales.")]);
-const suggestions = useFormField("" as string, [REQUIRED("Champ obligatoire. Indiquez ce que vous ajouteriez ou changeriez.")]);
+const easyToUse = ref<CreateFeedbackRequestData["easyToUse"] | null>(null);
+const easyToUnderstand = ref<CreateFeedbackRequestData["easyToUnderstand"] | null>(null);
+const feedback = ref("");
+const suggestions = ref("");
 const contact = ref();
-const name = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre prénom et nom.")]);
-const email = useFormField("" as string, [REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."), EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")]);
-const occupations = useFormField<string[]>([], [ARRAY_LENGTH(1, "Sélection obligatoire. Indiquez votre ou vos fonctions.")]);
+const name = ref("");
+const email = ref("");
+const occupations = ref<string[]>([]);
 
 function handleOccupationsChange(it: string, value: boolean) {
-  if (value && !occupations.value.value.includes(it)) {
-    occupations.value.value.push(it);
+  if (value && !occupations.value.includes(it)) {
+    occupations.value.push(it);
   }
 
-  if (!value && occupations.value.value.includes(it)) {
-    occupations.value.value = occupations.value.value.filter(v => v !== it);
+  if (!value && occupations.value.includes(it)) {
+    occupations.value = occupations.value.filter(v => v !== it);
   }
 }
 
@@ -60,22 +62,18 @@ const notify = useNotifications();
  * Submit form and display success notice
  */
 function submitFeedback() {
-  if (!validate(easyToUse, easyToUnderstand, feedback, suggestions, ...(contact.value === "yes" ? [name, email, occupations] : []))) {
-    return;
-  }
-
   const body: CreateFeedbackRequestData = {
-    easyToUse: easyToUse.value.value!,
-    easyToUnderstand: easyToUnderstand.value.value!,
-    feedback: feedback.value.value,
-    suggestions: suggestions.value.value,
+    easyToUse: easyToUse.value!,
+    easyToUnderstand: easyToUnderstand.value!,
+    feedback: feedback.value,
+    suggestions: suggestions.value,
     ...(contact.value === "yes" && {
-      email: email.value.value,
-      name: name.value.value,
+      email: email.value,
+      name: name.value,
       occupations:
         // FIXME: the @nestjs/swagger CLI plugin generating the API types doesnt seem to pick up on the each option
         // see: https://github.com/nestjs/swagger/issues/2027
-        occupations.value.value as unknown as CreateFeedbackRequestData["occupations"]
+        occupations.value as unknown as CreateFeedbackRequestData["occupations"]
     })
   };
 
@@ -129,110 +127,115 @@ const previousPageName =
       </RouterLink>
     </template>
   </div>
-  <form v-if="!showSuccess" novalidate class="content" @submit.prevent="submitFeedback">
+
+  <FormWithValidation v-if="!showSuccess" class="content" @submit="submitFeedback">
     <p class="fr-text--sm fr-mb-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires
     </p>
 
-    <fieldset
-      :ref="easyToUse.refFn"
-      tabindex="-1"
-      aria-describedby="easy-to-use-error"
-      class="fr-fieldset fr-fieldset--inline"
-      :class="{ 'fr-fieldset--error': easyToUse.error.value }"
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      :value="easyToUse"
+      :validation="[REQUIRED('Sélection obligatoire. Indiquez si le site est facile à utiliser.')]"
     >
-      <legend class="fr-fieldset__legend fr-text--regular">
-        Ce site est-il facile à utiliser ?
-      </legend>
-      <div
-        v-for="answer in availableRadioAnswers"
-        :key="answer.slug"
-        class="fr-fieldset__element fr-fieldset__element--inline"
+      <fieldset
+        :ref="focusRef"
+        tabindex="-1"
+        aria-describedby="easy-to-use-error"
+        class="fr-fieldset fr-fieldset--inline"
+        :class="{ 'fr-fieldset--error': error }"
       >
-        <div class="fr-radio-group fr-radio-rich">
-          <input
-            :id="`easy-to-use-${answer.slug}`"
-            :model-value="easyToUse.value.value"
-            :error="easyToUse.error.value"
-            type="radio"
-            name="easyToUse"
-            :value="answer.label"
-            @input="easyToUse.value.value = answer.label as CreateFeedbackRequestData['easyToUse']"
-          >
-          <label class="fr-label" :for="`easy-to-use-${answer.slug}`">
-            {{ answer.label }}
-          </label>
-          <div class="fr-radio-rich__img">
-            <img class="fr-p-2w" :src="answer.emoji" alt="">
+        <legend class="fr-fieldset__legend fr-text--regular">
+          Ce site est-il facile à utiliser ?
+        </legend>
+        <div
+          v-for="answer in availableRadioAnswers"
+          :key="answer.slug"
+          class="fr-fieldset__element fr-fieldset__element--inline"
+        >
+          <div class="fr-radio-group fr-radio-rich">
+            <input
+              :id="`easy-to-use-${answer.slug}`"
+              v-model="easyToUse"
+              type="radio"
+              name="easyToUse"
+              :value="answer.label"
+            >
+            <label class="fr-label" :for="`easy-to-use-${answer.slug}`">
+              {{ answer.label }}
+            </label>
+            <div class="fr-radio-rich__img">
+              <img class="fr-p-2w" :src="answer.emoji" alt="">
+            </div>
           </div>
         </div>
-      </div>
-      <div v-if="easyToUse.error.value" id="easy-to-use-error" class="fr-messages-group">
-        <p class="fr-message fr-message--error">{{ easyToUse.error.value }}</p>
-      </div>
-    </fieldset>
+        <div v-if="error" id="easy-to-use-error" class="fr-messages-group">
+          <p class="fr-message fr-message--error">{{ error }}</p>
+        </div>
+      </fieldset>
+    </FieldValidation>
 
-    <fieldset
-      :ref="easyToUnderstand.refFn"
-      tabindex="-1"
-      aria-describedby="easy-to-understand-error"
-      class="fr-fieldset fr-fieldset--inline"
-      :class="{ 'fr-fieldset--error': easyToUnderstand.error.value }"
+    <FieldValidation
+      v-slot="{ error, focusRef }"
+      :value="easyToUnderstand"
+      :validation="[REQUIRED('Sélection obligatoire. Indiquez si le langage employé sur le site est facile à comprendre.')]"
     >
-      <legend class="fr-fieldset__legend fr-text--regular">
-        Le langage employé est-il facile à comprendre ?
-      </legend>
-      <div
-        v-for="answer in availableRadioAnswers"
-        :key="answer.slug"
-        class="fr-fieldset__element fr-fieldset__element--inline"
+      <fieldset
+        :ref="focusRef"
+        tabindex="-1"
+        aria-describedby="easy-to-understand-error"
+        class="fr-fieldset fr-fieldset--inline"
+        :class="{ 'fr-fieldset--error': error }"
       >
-        <div class="fr-radio-group fr-radio-rich">
-          <input
-            :id="`easy-to-understand-${answer.slug}`"
-            :model-value="easyToUnderstand.value.value"
-            :error="easyToUnderstand.error.value"
-            type="radio"
-            name="easyToUnderstand"
-            :value="answer.label"
-            @input="easyToUnderstand.value.value = answer.label as CreateFeedbackRequestData['easyToUnderstand']"
-          >
-          <label class="fr-label" :for="`easy-to-understand-${answer.slug}`">
-            {{ answer.label }}
-          </label>
-          <div class="fr-radio-rich__img">
-            <img class="fr-p-2w" :src="answer.emoji" alt="">
+        <legend class="fr-fieldset__legend fr-text--regular">
+          Le langage employé est-il facile à comprendre ?
+        </legend>
+        <div
+          v-for="answer in availableRadioAnswers"
+          :key="answer.slug"
+          class="fr-fieldset__element fr-fieldset__element--inline"
+        >
+          <div class="fr-radio-group fr-radio-rich">
+            <input
+              :id="`easy-to-understand-${answer.slug}`"
+              v-model="easyToUnderstand"
+              type="radio"
+              name="easyToUnderstand"
+              :value="answer.label"
+            >
+            <label class="fr-label" :for="`easy-to-understand-${answer.slug}`">
+              {{ answer.label }}
+            </label>
+            <div class="fr-radio-rich__img">
+              <img class="fr-p-2w" :src="answer.emoji" alt="">
+            </div>
           </div>
         </div>
-      </div>
-      <div v-if="easyToUnderstand.error.value" id="easy-to-understand-error" class="fr-messages-group">
-        <p class="fr-message fr-message--error">{{ easyToUnderstand.error.value }}</p>
-      </div>
-    </fieldset>
+        <div v-if="error" id="easy-to-understand-error" class="fr-messages-group">
+          <p class="fr-message fr-message--error">{{ error }}</p>
+        </div>
+      </fieldset>
+    </FieldValidation>
 
     <div class="fr-input-group fr-mb-4w narrow-content">
-      <DsfrField
+      <DsfrFieldWithValidation
         id="general-feedback"
-        :ref="feedback.refFn"
+        v-model="feedback"
         label="Quelles sont vos remarques générales ?"
         hint="Indiquez ce que vous aimez, n'aimez pas ou les problèmes rencontrés."
-        :model-value="feedback.value.value"
-        :error="feedback.error.value"
         is-text-area
-        @update:model-value="feedback.value.value = $event"
+        :validation="[REQUIRED('Champ obligatoire. Indiquez vos remarques générales.')]"
       />
     </div>
 
     <div class="fr-input-group fr-mb-4w narrow-content">
-      <DsfrField
+      <DsfrFieldWithValidation
         id="changes"
-        :ref="suggestions.refFn"
+        v-model="suggestions"
         label="Que changeriez-vous ou ajouteriez-vous ?"
         hint="Indiquez vos besoins ou proposez-nous vos idées d'amélioration."
-        :model-value="suggestions.value.value"
-        :error="suggestions.error.value"
         is-text-area
-        @update:model-value="suggestions.value.value = $event"
+        :validation="[REQUIRED('Champ obligatoire. Indiquez ce que vous ajouteriez ou changeriez.')]"
       />
     </div>
 
@@ -272,64 +275,69 @@ const previousPageName =
       </div>
 
       <template v-if="contact === 'yes'">
-        <DsfrField
+        <DsfrFieldWithValidation
           id="name"
-          :ref="name.refFn"
-          :model-value="name.value.value"
+          v-model="name"
           class="narrow-content"
           type="text"
           label="Prénom et nom"
-          :error="name.error.value"
-          @update:model-value="name.value.value = $event"
+          :validation="[REQUIRED('Champ obligatoire. Saisissez votre prénom et nom.')]"
         />
 
-        <DsfrField
+        <DsfrFieldWithValidation
           id="email"
-          :ref="email.refFn"
-          :model-value="email.value.value"
+          v-model="email"
           class="narrow-content"
           type="email"
           label="Adresse e-mail"
           hint="Format attendu : nom@domaine.fr"
-          :error="email.error.value"
-          @update:model-value="email.value.value = $event"
+          :validation="[
+            REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
+            EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
+          ]"
         />
 
-        <fieldset
-          :ref="occupations.focusRef"
-          tabindex="-1"
-          aria-describedby="occupations-error"
-          class="fr-fieldset narrow-content"
-          :class="{ 'fr-fieldset--error': occupations.error.value }"
+        <FieldValidation
+          v-slot="{ error, focusRef }"
+          :validation="[ARRAY_LENGTH(1, 'Sélection obligatoire. Indiquez votre ou vos fonctions.')]"
+          :value="occupations"
         >
-          <legend class="fr-fieldset__legend fr-text--regular">
-            Fonction(s)
-            <span class="fr-hint-text">Sélectionnez une ou plusieurs fonctions que vous exercez.</span>
-          </legend>
-          <div class="fr-fieldset__content">
-            <div
-              v-for="job in availableJobs"
-              :key="job"
-              class="fr-checkbox-group"
-            >
-              <input
-                :id="`job-${job}`"
-                type="checkbox"
-                :name="`job-${job}`"
-                :value="job"
-                :checked="occupations.value.value.includes(job)"
-                @change="handleOccupationsChange(
-                  job,
-                  ($event.target as HTMLInputElement).checked)
-                "
+          <fieldset
+            :ref="focusRef"
+            tabindex="-1"
+            aria-describedby="occupations-error"
+            class="fr-fieldset narrow-content"
+            :class="{ 'fr-fieldset--error': error }"
+          >
+            <legend class="fr-fieldset__legend fr-text--regular">
+              Fonction(s)
+              <span class="fr-hint-text">Sélectionnez une ou plusieurs fonctions que vous exercez.</span>
+            </legend>
+            <div class="fr-fieldset__content">
+              <div
+                v-for="job in availableJobs"
+                :key="job"
+                class="fr-checkbox-group"
               >
-              <label class="fr-label" :for="`job-${job}`">{{ job }}</label>
+                <input
+                  :id="`job-${job}`"
+                  type="checkbox"
+                  :name="`job-${job}`"
+                  :value="job"
+                  :checked="occupations.includes(job)"
+                  @change="handleOccupationsChange(
+                    job,
+                    ($event.target as HTMLInputElement).checked)
+                  "
+                >
+                <label class="fr-label" :for="`job-${job}`">{{ job }}</label>
+              </div>
             </div>
-          </div>
-          <div v-if="occupations.error.value" id="occupations-error" class="fr-messages-group">
-            <p class="fr-message fr-message--error">{{ occupations.error.value }}</p>
-          </div>
-        </fieldset>
+            <div v-if="error" id="occupations-error" class="fr-messages-group">
+              <p class="fr-message fr-message--error">{{ error }}</p>
+            </div>
+          </fieldset>
+        </FieldValidation>
       </template>
     </div>
 
@@ -346,7 +354,7 @@ const previousPageName =
       contact@design.numerique.gouv.fr.
     </p>
     <button class="fr-btn fr-mb-5w" type="submit">Envoyer mon avis</button>
-  </form>
+  </FormWithValidation>
 
   <a
     v-if="!showSuccess"

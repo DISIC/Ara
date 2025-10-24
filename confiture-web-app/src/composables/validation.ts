@@ -1,12 +1,11 @@
 import { ComponentPublicInstance, ref } from "vue";
-
 import { URL_REGEX, validateEmail } from "../utils";
 
 export interface FocusableElement {
   focus(): void;
 }
 
-type ValidationRule<T> = (fieldValue: T) => string | false;
+export type ValidationRule<T> = (fieldValue: T) => string | false;
 
 export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
   const fieldInputRef = ref<FocusableElement | null>();
@@ -40,21 +39,40 @@ export function useFormField<T>(defaultValue: T, rules?: ValidationRule<T>[]) {
   };
 }
 
+export type ValidatedField = ReturnType<typeof useFormField>;
+
 /**
  * For each form field object given as parameters, validate the field value
  * and set the error property if any.
  *
- * Also move the focus to the first invalid field if any.
+ * Also move the focus to the first invalid field in the document if any.
  *
- * @param fields Objects returned by `useFormField`. Items should be sortedr by order
- *               of appearance in the form
+ * @param fields Objects returned by `useFormField`.
  * @returns True if every fields are valid, false otherwise.
  */
 export function validate(...fields: ReturnType<typeof useFormField>[]) {
-  return !fields
-    .reverse()
-    .map((it) => it.validate())
-    .some((it) => !it);
+  // field.validate() focuses the element if it is invalid,
+  // we collect the focused elements
+  const focusableInvalidElements: HTMLElement[] = [];
+  fields.forEach(field => {
+    if (!field.validate()) {
+      focusableInvalidElements.push(document.activeElement as HTMLElement);
+    }
+  });
+
+  // if there are errors, find the first element in the document and focus it
+  if (focusableInvalidElements.length) {
+    let firstElementInDocument: HTMLElement = focusableInvalidElements.at(0)!;
+    for (let i = 0; i < focusableInvalidElements.length; i++) {
+      const el = focusableInvalidElements[i];
+      if (firstElementInDocument.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING) {
+        firstElementInDocument = el;
+      }
+    }
+    firstElementInDocument.focus();
+  }
+
+  return !focusableInvalidElements.length;
 }
 
 /* Validation rules */
