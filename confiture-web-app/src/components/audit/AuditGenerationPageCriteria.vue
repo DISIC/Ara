@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
@@ -78,6 +78,15 @@ function showNaTopicCriteria(value: boolean, topic: number) {
     hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
   }
 }
+
+// Hide not applicable topics on load
+onMounted(() => {
+  store.filteredTopics.forEach(t => {
+    if (resultsStore.topicIsNotApplicable(props.page.id, t.number)) {
+      hiddenTopics.value.push(t.number);
+    }
+  });
+});
 </script>
 
 <template>
