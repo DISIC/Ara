@@ -232,6 +232,7 @@ onMounted(() => {
 
 .na-toggle {
   grid-area: na;
+  justify-self: start;
 }
 
 .toggle-topic-button {
