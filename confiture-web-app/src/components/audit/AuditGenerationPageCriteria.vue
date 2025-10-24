@@ -76,6 +76,17 @@ watch(
     }
   }
 );
+
+// Hide or show topic criteria
+const hiddenTopics = ref<number[]>([]);
+
+function toggleTopic(topic: number) {
+  if (hiddenTopics.value.includes(topic)) {
+    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
+  } else {
+    hiddenTopics.value.push(topic);
+  }
+}
 </script>
 
 <template>
@@ -95,12 +106,13 @@ watch(
       v-for="topic in store.filteredTopics"
       :key="topic.number"
       class="fr-mb-6w"
+      style="container-type: inline-size"
     >
       <div class="fr-mb-3w topic-header">
         <h3
           :id="`topic_${topic.number}`"
           :class="[
-            'fr-m-0 topic-heading',
+            'fr-my-0 fr-mr-auto topic-heading',
             {
               'topic-heading--hidden': resultsStore.topicIsNotApplicable(
                 page.id,
@@ -114,13 +126,21 @@ watch(
         </h3>
         <NotApplicableSwitch
           :ref="refFn(topic.number)"
+          class="na-toggle"
           :page-id="page.id"
           :topic-number="topic.number"
           :topic-title="topic.topic"
         />
+        <button
+          class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
+          :class="hiddenTopics.includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
+          @click="toggleTopic(topic.number)"
+        >
+          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique
+        </button>
       </div>
       <template
-        v-if="!resultsStore.topicIsNotApplicable(page.id, topic.number)"
+        v-if="!hiddenTopics.includes(topic.number)"
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
@@ -176,30 +196,41 @@ watch(
 
 .page-url {
   text-align: right;
-}
-
-.page-url,
-.transervse-elements {
   min-height: 2.75rem;
 }
 
 .topic-header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   gap: 1rem;
+  justify-content: end;
+  align-items: center;
+  grid-template-areas: "title na toggle";
 
-  @media (width < 62rem) {
-    flex-wrap: wrap;
+  @container (width < 48rem) {
+    justify-content: start;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "title toggle"
+      "na na";
   }
 }
 
 .topic-heading {
   color: var(--text-action-high-blue-france);
   scroll-margin: 7.5rem;
+  grid-area: title;
 
   &.topic-heading--hidden {
     color: var(--grey-625-425);
   }
+}
+
+.na-toggle {
+  grid-area: na;
+}
+
+.toggle-topic-button {
+  grid-area: toggle;
 }
 </style>

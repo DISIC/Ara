@@ -82,3 +82,10 @@ function focusInput() {
     </label>
   </div>
 </template>
+
+<style scoped>
+/* Override fr-toggle margin between label and toggle */
+.fr-toggle--label-left .fr-toggle__label::before {
+  margin-left: 0.5rem !important;
+}
+</style>
