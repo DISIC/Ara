@@ -154,8 +154,8 @@ const descriptionId = computed(() => {
 /* Override DSFR radio input position to align with a larger label */
 .fr-radio-group--sm input[type="radio"] + label {
   background-position:
-    calc(-0.125rem + 1px) calc(0.5rem - 1px),
-    calc(-0.125rem + 1px) calc(0.5rem - 1px) !important;
+    0 0.5rem,
+    0 0.5rem !important;
 }
 
 .fr-radio-group--sm input[type="radio"] + label::before {
