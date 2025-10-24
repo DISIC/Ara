@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
@@ -61,22 +61,6 @@ const refFn =
       notApplicableSwitchRefs.value[topicNumber] =
         el as InstanceType<typeof NotApplicableSwitch>;
 
-// Focus topic NA switch when setting last topic criterion as NA
-watch(
-  () =>
-    resultsStore.topicIsNotApplicable(
-      props.page.id,
-      resultsStore.lastUpdatedTopic
-    ),
-  (newValue) => {
-    if (newValue) {
-      notApplicableSwitchRefs.value[
-        resultsStore.lastUpdatedTopic
-      ]?.focusInput();
-    }
-  }
-);
-
 // Hide or show topic criteria
 const hiddenTopics = ref<number[]>([]);
 
@@ -85,6 +69,13 @@ function toggleTopic(topic: number) {
     hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
   } else {
     hiddenTopics.value.push(topic);
+  }
+}
+
+// Show topic criteria when user unchecks NA switch if they are already hidden
+function showNaTopicCriteria(value: boolean, topic: number) {
+  if (!value) {
+    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
   }
 }
 </script>
@@ -105,8 +96,7 @@ function toggleTopic(topic: number) {
     <section
       v-for="topic in store.filteredTopics"
       :key="topic.number"
-      class="fr-mb-6w"
-      style="container-type: inline-size"
+      class="fr-mb-6w topic-section"
     >
       <div class="fr-mb-3w topic-header">
         <h3
@@ -130,6 +120,7 @@ function toggleTopic(topic: number) {
           :page-id="page.id"
           :topic-number="topic.number"
           :topic-title="topic.topic"
+          @toggle="showNaTopicCriteria($event, topic.number)"
         />
         <button
           class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
@@ -197,6 +188,10 @@ function toggleTopic(topic: number) {
 .page-url {
   text-align: right;
   min-height: 2.75rem;
+}
+
+.topic-section {
+  container-type: inline-size;
 }
 
 .topic-header {

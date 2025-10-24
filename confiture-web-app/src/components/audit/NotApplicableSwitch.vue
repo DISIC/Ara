@@ -12,6 +12,10 @@ const props = defineProps<{
   topicTitle: string;
 }>();
 
+defineEmits<{
+  toggle: [value: boolean];
+}>();
+
 defineExpose({ focusInput });
 
 const isOffline = useIsOffline();
@@ -70,6 +74,7 @@ function focusInput() {
       type="checkbox"
       class="fr-toggle__input"
       :disabled="isOffline"
+      @change="$emit('toggle', switchValue)"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
       <span class="fr-sr-only">Thématique {{ topicTitle }}</span>
