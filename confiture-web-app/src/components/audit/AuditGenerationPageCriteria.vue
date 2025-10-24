@@ -72,7 +72,7 @@ function toggleTopic(topic: number) {
   }
 }
 
-// Show topic criteria when user unchecks NA switch if they are already hidden
+// Unhide criteria when turning NA switch off
 function showNaTopicCriteria(value: boolean, topic: number) {
   if (!value) {
     hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
@@ -136,7 +136,7 @@ onMounted(() => {
           :class="hiddenTopics.includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
           @click="toggleTopic(topic.number)"
         >
-          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique
+          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique « {{ topic.number }} {{ topic.topic }} »
         </button>
       </div>
       <template
