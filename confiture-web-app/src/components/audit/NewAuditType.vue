@@ -42,7 +42,7 @@ const partialAudits = [
   }
 ];
 
-const procedureName = ref(props.auditType ?? "");
+const procedureName = ref(props.procedureName ?? "");
 
 const auditType = ref(props.auditType ?? null);
 
@@ -140,6 +140,7 @@ function fillSettings() {
 
     <DsfrFieldWithValidation
       id="procedure-name"
+      v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
       hint="Exemples : Service-Public, Demande de permis de conduire"
