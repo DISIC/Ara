@@ -88,6 +88,7 @@ function fillSettings() {
         v-if="!accountStore.account?.name"
         id="procedure-auditor-name"
         v-model="nameValue"
+        autocomplete="name"
         class="fr-mb-6w"
         label="Prénom et nom (optionnel)"
         hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question."
