@@ -19,7 +19,7 @@ import { captureWithPayloads } from "../../utils";
 const showGenericLoginError = ref(false);
 const genericErrorRef = ref<HTMLDivElement>();
 
-const userEmail = ref("");
+const userEmail = ref(history.state.email as string ?? "");
 const userPassword = ref("");
 
 const showCreatedAccountAlert = ref(!!history.state.email);
