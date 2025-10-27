@@ -170,6 +170,7 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
 
       <DsfrFieldWithValidation
         :id="`page-name-${i + 1}`"
+        ref="pageNameFieldRefs"
         v-model="page.name"
         label="Nom de la page"
         class="fr-mt-7w"
