@@ -50,5 +50,6 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
 }
