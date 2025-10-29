@@ -136,7 +136,7 @@ onMounted(() => {
           :class="hiddenTopics.includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
           @click="toggleTopic(topic.number)"
         >
-          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique « {{ topic.number }} {{ topic.topic }} »
+          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
         </button>
       </div>
       <template
