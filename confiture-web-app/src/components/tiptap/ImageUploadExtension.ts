@@ -317,6 +317,18 @@ function uploadAndReplacePlaceholder(
       tr.setMeta(PlaceholderPlugin, { element, remove: { id } });
 
       view.dispatch(tr);
+
+      // Vocally announce upload success
+      const img = document.querySelector(`[src='${imgUrl}']`);
+      const closest = img?.closest(".fr-collapse");
+      const message = closest?.querySelector("[data-image-success-message]");
+
+      if (message) {
+        message.textContent = "L’image a été correctement insérée";
+        setTimeout(() => {
+          message.textContent = "";
+        }, 3000);
+      }
     },
     async (reason: Error) => {
       // On failure, just clean up the placeholder
