@@ -23,6 +23,7 @@ const title = "Points d’amélioration";
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
     </p>
+    <p data-image-success-message class="fr-sr-only" aria-live="polite"></p>
     <TiptapEditor
       :key="id"
       :model-value="comment"
