@@ -98,7 +98,27 @@ const commonExtensions: Extensions = [
     closeDoubleQuote: " »"
   }),
   Markdown.configure({ linkify: true }),
-  Image,
+  Image.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        width: {
+          renderHTML: (attrs) => {
+            return {
+              width: attrs.width
+            };
+          }
+        },
+        height: {
+          renderHTML: (attrs) => {
+            return {
+              height: attrs.height
+            };
+          }
+        }
+      };
+    }
+  }),
   DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
