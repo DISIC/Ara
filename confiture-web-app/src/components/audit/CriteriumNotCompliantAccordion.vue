@@ -97,12 +97,14 @@ const title = "Erreur et recommandation";
       {{ title }}
     </p>
     <p data-image-success-message class="fr-sr-only" aria-live="polite"></p>
+    <p :id="`criterium-comment-field-description-${id}`" class="fr-text--xs fr-mb-1w editor-description">Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction. Taille maximale par image : 2 Mo. Tout format d’image accepté.</p>
     <TiptapEditor
       :key="id"
       ref="commentEditorRef"
       class="fr-mb-4w"
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
+      :described-by="`criterium-comment-field-description-${id}`"
       :disabled="isOffline"
       @update:model-value="$emit('update:comment', $event)"
     />
@@ -204,5 +206,9 @@ const title = "Erreur et recommandation";
 
 .user-impact-example {
   font-style: italic;
+}
+
+.editor-description {
+  color: var(--text-mention-grey);
 }
 </style>
