@@ -309,9 +309,10 @@ function uploadAndReplacePlaceholder(
       const state = view.state;
       const tr = state.tr;
       const node = state.schema.nodes.image.create({
+        src: imgUrl,
+        alt: file.name === "external" ? "Image importée" : file.name,
         width: placeholder?.spec.width,
-        height: placeholder?.spec.height,
-        src: imgUrl
+        height: placeholder?.spec.height
       });
       tr.replaceWith(pos, pos, node);
       tr.setMeta(PlaceholderPlugin, { element, remove: { id } });
