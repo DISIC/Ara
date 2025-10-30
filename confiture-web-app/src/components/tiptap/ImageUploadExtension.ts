@@ -408,6 +408,13 @@ export function insertFilesAtSelection(
   const tr: Transaction = state.tr;
   const pos = state.selection.from;
 
+  const notify = useNotifications();
+
+  if (files.length > 5) {
+    notify("error", undefined, FileErrorMessage.UPLAOD_MAX_FILES_COUNT);
+    return;
+  }
+
   view.focus();
   tr.deleteSelection();
 
