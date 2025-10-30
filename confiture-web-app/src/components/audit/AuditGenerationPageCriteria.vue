@@ -124,10 +124,10 @@ watch(
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
-            v-for="criterium in topic.criteria"
+            v-for="(criterium, i) in topic.criteria"
             :key="criterium.criterium.number"
             :page="page"
-            class="fr-mb-3w"
+            :class="{ 'fr-mb-3w': i !== topic.criteria.length - 1 }"
             :criterium="criterium.criterium"
             :topic-number="topic.number"
             :audit-unique-id="auditUniqueId"

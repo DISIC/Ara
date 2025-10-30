@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, useTemplateRef } from "vue";
 
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
@@ -27,11 +27,22 @@ const userImpactFilters = ref<Array<ReportUserImpact>>(
   defaultUserImpactFillters
 );
 
-const disabledResetFilters = computed(
+const showResetFiltersButton = computed(
   () =>
     userImpactFilters.value.length === defaultUserImpactFillters.length &&
     !quickWinFilter.value
 );
+
+const quickWinFilter = ref(false);
+
+async function resetFilters() {
+  userImpactFilters.value = defaultUserImpactFillters;
+  quickWinFilter.value = false;
+  await nextTick();
+  filterTitleRef.value?.focus();
+}
+
+const filterTitleRef = useTemplateRef("filterTitleRef");
 
 const minorUserImpactErrorCount = computed(
   () =>
@@ -69,6 +80,7 @@ const unknownUserImpactErrorCount = computed(
     ).length
 );
 
+// Errors
 const transverseErrors = computed(() => {
   return getReportErrors(
     report,
@@ -90,13 +102,6 @@ const errorsCount = computed(() => {
     .map((page: any) => page.topics.map((topic: any) => topic.errors))
     .flat(2).length;
 });
-
-const quickWinFilter = ref(false);
-
-function resetFilters() {
-  userImpactFilters.value = defaultUserImpactFillters;
-  quickWinFilter.value = false;
-}
 </script>
 
 <template>
@@ -112,10 +117,10 @@ function resetFilters() {
     :show-filters="true"
   >
     <template #filter>
-      <div class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
+      <div ref="filterTitleRef" tabindex="-1" class="fr-text--bold fr-text--xl fr-mb-2w filter-title">Filtres</div>
       <button
+        v-if="!showResetFiltersButton"
         class="fr-btn fr-btn--tertiary-no-outline fr-icon-refresh-line fr-btn--icon-right fr-mb-3w"
-        :disabled="disabledResetFilters"
         @click="resetFilters"
       >
         Réinitialiser les filtres
@@ -206,13 +211,13 @@ function resetFilters() {
         <section class="fr-mb-8w">
           <h3
             :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
-            class="fr-h3 fr-mb-2w page-title"
+            :class="`fr-h3 ${report.data.transverseElements.length ? 'fr-mb-1w' : 'fr-mb-4w'} page-title`"
           >
             {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
           </h3>
           <ul
             v-if="report.data.transverseElements.length"
-            class="fr-tags-group fr-mb-5v"
+            class="fr-tags-group fr-mb-4w"
           >
             <li v-for="(tag, i) in report.data.transverseElements" :key="i">
               <p class="fr-tag">{{ tag }}</p>
@@ -241,7 +246,7 @@ function resetFilters() {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-2w page-title">
+        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-1w page-title">
           {{ page.name }}
         </h3>
         <a
