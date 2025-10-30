@@ -243,7 +243,6 @@ function handleFileImport(
     notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
   };
   element.onload = () => {
-    URL.revokeObjectURL(element.src);
     element.setAttribute("width", element.width.toString());
     element.setAttribute("height", element.height.toString());
     const state: EditorState = view.state;
@@ -274,7 +273,7 @@ function handleFileImport(
     });
     tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
     view.dispatch(tr);
-    uploadAndReplacePlaceholder(view, file, id, element);
+    uploadAndReplacePlaceholder(view, file, id, element, localURL);
     view.focus();
   };
   element.src = localURL;
@@ -289,7 +288,8 @@ function uploadAndReplacePlaceholder(
   view: EditorView,
   file: File,
   id: any,
-  element: HTMLImageElement | HTMLVideoElement
+  element: HTMLImageElement | HTMLVideoElement,
+  localURL: string
 ) {
   const notify = useNotifications();
 
@@ -314,12 +314,16 @@ function uploadAndReplacePlaceholder(
         width: placeholder?.spec.width,
         height: placeholder?.spec.height
       });
+      URL.revokeObjectURL(localURL);
       tr.replaceWith(pos, pos, node);
       tr.setMeta(PlaceholderPlugin, { element, remove: { id } });
 
       view.dispatch(tr);
 
       const imgElement = view.nodeDOM(pos) as HTMLImageElement;
+      imgElement.dataset.loading = "true";
+      imgElement.style = `background-image: url("${localURL}")`;
+      imgElement.addEventListener("load", handleImageLoad);
 
       // Announce upload success to screen readers
       const closest = imgElement.closest(".fr-collapse");
@@ -344,6 +348,13 @@ function uploadAndReplacePlaceholder(
     }
   );
 }
+
+function handleImageLoad(e: Event) {
+  const imgElement = e.target as HTMLImageElement;
+  imgElement.removeEventListener("load", handleImageLoad);
+  delete imgElement.dataset.loading;
+  imgElement.style.removeProperty("background-image");
+};
 
 /**
  * Finds the given placeholder (by id) within the given editor state.
@@ -416,7 +427,7 @@ export function insertFilesAtSelection(
   const notify = useNotifications();
 
   if (files.length > 5) {
-    notify("error", undefined, FileErrorMessage.UPLAOD_MAX_FILES_COUNT);
+    notify("error", undefined, FileErrorMessage.UPLOAD_MAX_FILES_COUNT);
     return;
   }
 

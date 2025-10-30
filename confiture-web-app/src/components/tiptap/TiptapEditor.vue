@@ -371,8 +371,9 @@ defineExpose({
   outline: var(--dsfr-outline) dotted 2px;
 }
 
-.ProseMirror-widget {
-  opacity: 0.5;
+img.ProseMirror-widget {
+  opacity: 0.3;
+  color: color-mix(in srgb, currentcolor 0%, transparent);
 }
 
 .ProseMirror-gapcursor::after {
