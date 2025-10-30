@@ -102,6 +102,14 @@ const commonExtensions: Extensions = [
 ];
 
 const commonImageAttrs = {
+  loading: {
+    parseHTML: (element: HTMLElement) => element.getAttribute("loading"),
+    renderHTML: () => {
+      return {
+        loading: "lazy"
+      };
+    }
+  },
   width: {
     renderHTML: (attrs: Attributes) => {
       return {
