@@ -1,4 +1,4 @@
-import { Extensions, textblockTypeInputRule } from "@tiptap/core";
+import { Attributes, Extensions, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
@@ -98,10 +98,25 @@ const commonExtensions: Extensions = [
     closeDoubleQuote: " »"
   }),
   Markdown.configure({ linkify: true }),
-  Image,
   DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
+const commonImageAttrs = {
+  width: {
+    renderHTML: (attrs: Attributes) => {
+      return {
+        width: attrs.width
+      };
+    }
+  },
+  height: {
+    renderHTML: (attrs: Attributes) => {
+      return {
+        height: attrs.height
+      };
+    }
+  }
+};
 export const tiptapEditorExtensions: Extensions = [
   ...commonExtensions,
   extendedLink.configure({
@@ -114,6 +129,22 @@ export const tiptapEditorExtensions: Extensions = [
       target: null
     }
   }),
+  Image.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        ...commonImageAttrs,
+        alt: {
+          renderHTML: (attrs) => {
+            return {
+              // In editor, alt is given by the uploaded file or "external"
+              alt: attrs.alt
+            };
+          }
+        }
+      };
+    }
+  }),
   ImageUploadTiptapExtension
 ];
 
@@ -124,6 +155,22 @@ export const tiptapRenderedExtensions: Extensions = [
     HTMLAttributes: {
       // Links open in a new window when displaying the editor in read-only mode
       target: "_blank"
+    }
+  }),
+  Image.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        ...commonImageAttrs,
+        alt: {
+          renderHTML: () => {
+            return {
+              // All images are decorative when rendered
+              alt: ""
+            };
+          }
+        }
+      };
     }
   }),
   ...[AraTiptapRenderedExtension]
