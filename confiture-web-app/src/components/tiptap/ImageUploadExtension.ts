@@ -222,6 +222,11 @@ function handleFileImport(
 ): boolean {
   const notify = useNotifications();
 
+  if (!file.type.startsWith("image")) {
+    notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
+    return true;
+  }
+
   if (file.size > FILE_SIZE_LIMIT) {
     notify("error", undefined, FileErrorMessage.UPLOAD_SIZE);
     return true;
@@ -232,52 +237,47 @@ function handleFileImport(
 
   const _URL = window.URL || window.webkitURL;
   const localURL = _URL.createObjectURL(file);
-  let element: HTMLImageElement | HTMLVideoElement;
+  const element = document.createElement("img");
 
-  if (file.type.startsWith("image")) {
-    element = document.createElement("img");
-    element.onerror = () => {
-      notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
-    };
-    element.onload = () => {
-      URL.revokeObjectURL(element.src);
-      element.setAttribute("width", element.width.toString());
-      element.setAttribute("height", element.height.toString());
-      const state: EditorState = view.state;
-      const tr: Transaction = state.tr;
-
-      if (options?.replaceSelection && !state.selection.empty) {
-        tr.deleteSelection();
-
-        // Delete the paragraph if it becomes empty
-        if (tr.doc.resolve(pos).parent.textContent === "") {
-          tr.deleteRange(pos - 1, pos + 1);
-        }
-      }
-
-      const $pos = tr.doc.resolve(pos);
-      if (canSplit(state.tr.doc, pos)) {
-        if (pos === $pos.start()) {
-          pos -= 1;
-        } else {
-          if (pos < $pos.end()) {
-            tr.split(pos);
-          }
-          pos += 1;
-        }
-      }
-      tr.setMeta(PlaceholderPlugin, {
-        add: { id, container: null, element, pos }
-      });
-      tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
-      view.dispatch(tr);
-      uploadAndReplacePlaceholder(view, file, id, element);
-      view.focus();
-    };
-    element.src = localURL;
-  } else {
+  element.onerror = () => {
     notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
-  }
+  };
+  element.onload = () => {
+    URL.revokeObjectURL(element.src);
+    element.setAttribute("width", element.width.toString());
+    element.setAttribute("height", element.height.toString());
+    const state: EditorState = view.state;
+    const tr: Transaction = state.tr;
+
+    if (options?.replaceSelection && !state.selection.empty) {
+      tr.deleteSelection();
+
+      // Delete the paragraph if it becomes empty
+      if (tr.doc.resolve(pos).parent.textContent === "") {
+        tr.deleteRange(pos - 1, pos + 1);
+      }
+    }
+
+    const $pos = tr.doc.resolve(pos);
+    if (canSplit(state.tr.doc, pos)) {
+      if (pos === $pos.start()) {
+        pos -= 1;
+      } else {
+        if (pos < $pos.end()) {
+          tr.split(pos);
+        }
+        pos += 1;
+      }
+    }
+    tr.setMeta(PlaceholderPlugin, {
+      add: { id, container: null, element, pos }
+    });
+    tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
+    view.dispatch(tr);
+    uploadAndReplacePlaceholder(view, file, id, element);
+    view.focus();
+  };
+  element.src = localURL;
 
   return true;
 }
