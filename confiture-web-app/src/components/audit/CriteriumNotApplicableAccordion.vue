@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
+import NewFeatureNotification, { imageUploadEditorLocalStorageKey } from "./NewFeatureNotification.vue";
 
 defineProps<{ id: string; comment: string | null }>();
 
@@ -12,10 +14,24 @@ defineEmits<{
 const isOffline = useIsOffline();
 
 const title = "Commentaire";
+
+// Handle alert to announce images in editor
+// TODO: remove this in january 2026
+const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
+const showNewFeatureNotification =
+  ref(!localStorage.getItem(imageUploadEditorLocalStorageKey));
+
+function closeNotification() {
+  showNewFeatureNotification.value = false;
+  commentEditorRef.value?.focusEditor();
+}
 </script>
 
 <template>
   <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
+    <!-- TODO: remove this in january 2026  -->
+    <NewFeatureNotification v-if="showNewFeatureNotification" class="fr-mb-5v" @close="closeNotification" />
+
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
@@ -24,6 +40,7 @@ const title = "Commentaire";
     <p :id="`criterium-comment-field-description-${id}`" class="fr-text--xs fr-mb-1w editor-description">Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction. Taille maximale par image : 2 Mo. Tout format d’image accepté.</p>
     <TiptapEditor
       :key="id"
+      ref="commentEditorRef"
       :model-value="comment"
       :labelled-by="`criterum-comment-field-${id}`"
       :described-by="`criterium-comment-field-description-${id}`"

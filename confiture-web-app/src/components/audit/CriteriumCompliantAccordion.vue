@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
+import NewFeatureNotification, { imageUploadEditorLocalStorageKey } from "./NewFeatureNotification.vue";
 
 defineProps<{
   id: string;
@@ -15,10 +17,24 @@ defineEmits<{
 const isOffline = useIsOffline();
 
 const title = "Points d’amélioration";
+
+// Handle alert to announce images in editor
+// TODO: remove this in january 2026
+const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
+const showNewFeatureNotification =
+  ref(!localStorage.getItem(imageUploadEditorLocalStorageKey));
+
+function closeNotification() {
+  showNewFeatureNotification.value = false;
+  commentEditorRef.value?.focusEditor();
+}
 </script>
 
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)" :title="title">
+    <!-- TODO: remove this in january 2026  -->
+    <NewFeatureNotification v-if="showNewFeatureNotification" class="fr-mb-5v" @close="closeNotification" />
+
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
