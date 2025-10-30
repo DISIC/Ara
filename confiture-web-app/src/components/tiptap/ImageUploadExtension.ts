@@ -310,7 +310,7 @@ function uploadAndReplacePlaceholder(
       const tr = state.tr;
       const node = state.schema.nodes.image.create({
         src: imgUrl,
-        alt: file.name === "external" ? "Image importée" : file.name,
+        alt: file.name === "external" ? "Image insérée" : file.name,
         width: placeholder?.spec.width,
         height: placeholder?.spec.height
       });
