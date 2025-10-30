@@ -10,6 +10,7 @@ import FileList from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
+import NewFeatureNotification, { imageUploadEditorLocalStorageKey } from "./NewFeatureNotification.vue";
 
 export interface Props {
   id: string;
@@ -83,6 +84,16 @@ function lazyAccordionOpened() {
 }
 
 const title = "Erreur et recommandation";
+
+// Handle alert to announce images in editor
+// TODO: remove this in january 2026
+const showNewFeatureNotification =
+  ref(!localStorage.getItem(imageUploadEditorLocalStorageKey));
+
+function closeNotification() {
+  showNewFeatureNotification.value = false;
+  commentEditorRef.value?.focusEditor();
+}
 </script>
 
 <template>
@@ -92,6 +103,9 @@ const title = "Erreur et recommandation";
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
+    <!-- TODO: remove this in january 2026  -->
+    <NewFeatureNotification v-if="showNewFeatureNotification" class="fr-mb-5v" @close="closeNotification" />
+
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
       {{ title }}
