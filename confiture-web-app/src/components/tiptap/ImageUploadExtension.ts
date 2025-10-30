@@ -319,13 +319,17 @@ function uploadAndReplacePlaceholder(
 
       view.dispatch(tr);
 
-      // Vocally announce upload success
-      const img = document.querySelector(`[src='${imgUrl}']`);
-      const closest = img?.closest(".fr-collapse");
-      const message = closest?.querySelector("[data-image-success-message]");
+      const imgElement = view.nodeDOM(pos) as HTMLImageElement;
 
+      // Announce upload success to screen readers
+      const closest = imgElement.closest(".fr-collapse");
+      const message = closest?.querySelector("[data-image-success-message]");
       if (message) {
-        message.textContent = "L’image a été correctement insérée";
+        // "external" is the file name in Firefox when using drag-and-drop
+        // directly from an external website (with permissive CORS)
+        message.textContent = file.name === "external" ?
+          "L’image a été correctement insérée"
+          : `L’image « ${file.name} » a été correctement insérée`;
         setTimeout(() => {
           message.textContent = "";
         }, 3000);
