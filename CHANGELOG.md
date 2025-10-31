@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 31/10/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Ajoute un bouton pour afficher ou cacher manuellement l’ensemble des critères d’une thématique donnée ([#1251](https://github.com/DISIC/Ara/pull/1251))
+
 ### 08/10/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
