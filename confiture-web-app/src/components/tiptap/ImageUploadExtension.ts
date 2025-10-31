@@ -6,10 +6,8 @@ import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
 import ky from "ky";
 import { useNotifications } from "../../composables/useNotifications";
-import { FileErrorMessage } from "../../enums";
+import { FILE_SIZE_LIMIT, FileErrorMessage } from "../../enums";
 import { getUploadUrl, handleFileUploadError } from "../../utils";
-
-const FILE_SIZE_LIMIT = 2_000_000;
 
 /**
  * Function to upload a file inside the editor
