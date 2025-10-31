@@ -293,7 +293,6 @@ defineExpose({
               class="fr-hidden"
               accept="image/*"
               hidden
-              multiple
               @change="handleBrowseInputChange"
             />
           </li>
