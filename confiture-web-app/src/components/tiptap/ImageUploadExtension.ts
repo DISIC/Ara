@@ -6,7 +6,7 @@ import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
 import ky from "ky";
 import { useNotifications } from "../../composables/useNotifications";
-import { FileErrorMessage } from "../../enums";
+import { FileErrorMessage, MAX_UPLOAD_FILES_COUNT } from "../../enums";
 import { getUploadUrl, handleFileUploadError } from "../../utils";
 
 const FILE_SIZE_LIMIT = 2_000_000;
@@ -199,6 +199,11 @@ function handleFilesImport(
   files: FileList,
   options?: { replaceSelection: boolean }
 ): boolean {
+  if (files.length > MAX_UPLOAD_FILES_COUNT) {
+    const notify = useNotifications();
+    notify("error", undefined, FileErrorMessage.UPLOAD_MAX_FILES_COUNT);
+    return false;
+  }
   // FIXME: sometimes placeholders order differs from final images order
   for (let i = 0, il = files.length, file: File; i < il; i++) {
     file = files.item(i)!;
@@ -421,18 +426,7 @@ export function insertFilesAtSelection(
 ) {
   const view: EditorView = editor.view;
   const state: EditorState = view.state;
-  const tr: Transaction = state.tr;
   const pos = state.selection.from;
-
-  const notify = useNotifications();
-
-  if (files.length > 5) {
-    notify("error", undefined, FileErrorMessage.UPLOAD_MAX_FILES_COUNT);
-    return;
-  }
-
-  view.focus();
-  tr.deleteSelection();
 
   return handleFilesImport(view, pos, files, {
     replaceSelection: true
