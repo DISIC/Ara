@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -20,7 +20,7 @@ export interface Props {
   userImpact: CriterionResultUserImpact | null;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
@@ -93,6 +93,13 @@ function lazyAccordionOpened() {
   hasJustBeenSetAsNotCompliant = false;
 }
 
+const isFilledIn = computed(() => {
+  return !!props.comment
+    || props.exampleImages.length
+    || props.quickWin
+    || !!props.userImpact;
+});
+
 const title = "Erreur et recommandation";
 </script>
 
@@ -103,9 +110,12 @@ const title = "Erreur et recommandation";
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
+    <template #title>
+      {{ title }} (<strong v-if="isFilledIn">1</strong><template v-else>0</template>)
+    </template>
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
+      {{ title }} ({{ Number(isFilledIn) }})
     </p>
     <TiptapEditor
       :key="id"

@@ -3,7 +3,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
   comment: string | null;
 }>();
@@ -19,9 +19,12 @@ const title = "Points d’amélioration";
 
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)" :title="title">
+    <template #title>
+      {{ title }} (<strong v-if="!!props.comment">1</strong><template v-else>0</template>)
+    </template>
     <!-- COMMENT -->
     <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
+      {{ title }} ({{ Number(!!props.comment) }})
     </p>
     <TiptapEditor
       :key="id"
