@@ -26,6 +26,8 @@ export enum Browsers {
   EDGE = "Microsoft Edge"
 }
 
+export const MAX_UPLOAD_FILES_COUNT = 1;
+
 /* UPLOAD_FORMAT should never happen… */
 export enum FileErrorMessage {
   UPLOAD_SIZE = "Votre fichier dépasse la limite de 2 Mo. Veuillez choisir un fichier plus léger.",
