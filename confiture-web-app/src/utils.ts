@@ -257,7 +257,7 @@ export async function handleFileUploadError(
 
   if (!(error instanceof HTTPError)) {
     captureWithPayloads(error);
-    return FileErrorMessage.UPLOAD_UNKNOWN;
+    return FileErrorMessage.UNKNOWN_ERROR;
   }
 
   if (error.response.status === 413) {
@@ -273,11 +273,11 @@ export async function handleFileUploadError(
     } else if (body.message.includes("expected size")) {
       errorType = FileErrorMessage.UPLOAD_SIZE;
     } else {
-      errorType = FileErrorMessage.UPLOAD_UNKNOWN;
+      errorType = FileErrorMessage.UNKNOWN_ERROR;
       captureWithPayloads(error);
     }
   } else {
-    errorType = FileErrorMessage.UPLOAD_UNKNOWN;
+    errorType = FileErrorMessage.UNKNOWN_ERROR;
     captureWithPayloads(error);
   }
 
@@ -291,7 +291,7 @@ export async function handleFileDeleteError(
     return null;
   }
 
-  return FileErrorMessage.DELETE_UNKNOWN;
+  return FileErrorMessage.UNKNOWN_ERROR;
 }
 
 /** Check if a tiptap document string corresponds to an empty document. */
