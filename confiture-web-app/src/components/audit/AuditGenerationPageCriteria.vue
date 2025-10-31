@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
@@ -61,21 +61,32 @@ const refFn =
       notApplicableSwitchRefs.value[topicNumber] =
         el as InstanceType<typeof NotApplicableSwitch>;
 
-// Focus topic NA switch when setting last topic criterion as NA
-watch(
-  () =>
-    resultsStore.topicIsNotApplicable(
-      props.page.id,
-      resultsStore.lastUpdatedTopic
-    ),
-  (newValue) => {
-    if (newValue) {
-      notApplicableSwitchRefs.value[
-        resultsStore.lastUpdatedTopic
-      ]?.focusInput();
-    }
+// Hide or show topic criteria
+const hiddenTopics = ref<number[]>([]);
+
+function toggleTopic(topic: number) {
+  if (hiddenTopics.value.includes(topic)) {
+    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
+  } else {
+    hiddenTopics.value.push(topic);
   }
-);
+}
+
+// Unhide criteria when turning NA switch off
+function showNaTopicCriteria(value: boolean, topic: number) {
+  if (!value) {
+    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
+  }
+}
+
+// Hide not applicable topics on load
+onMounted(() => {
+  store.filteredTopics.forEach(t => {
+    if (resultsStore.topicIsNotApplicable(props.page.id, t.number)) {
+      hiddenTopics.value.push(t.number);
+    }
+  });
+});
 </script>
 
 <template>
@@ -94,13 +105,13 @@ watch(
     <section
       v-for="topic in store.filteredTopics"
       :key="topic.number"
-      class="fr-mb-6w"
+      class="fr-mb-6w topic-section"
     >
       <div class="fr-mb-3w topic-header">
         <h3
           :id="`topic_${topic.number}`"
           :class="[
-            'fr-m-0 topic-heading',
+            'fr-my-0 fr-mr-auto topic-heading',
             {
               'topic-heading--hidden': resultsStore.topicIsNotApplicable(
                 page.id,
@@ -114,13 +125,22 @@ watch(
         </h3>
         <NotApplicableSwitch
           :ref="refFn(topic.number)"
+          class="na-toggle"
           :page-id="page.id"
           :topic-number="topic.number"
           :topic-title="topic.topic"
+          @toggle="showNaTopicCriteria($event, topic.number)"
         />
+        <button
+          class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
+          :class="hiddenTopics.includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
+          @click="toggleTopic(topic.number)"
+        >
+          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
+        </button>
       </div>
       <template
-        v-if="!resultsStore.topicIsNotApplicable(page.id, topic.number)"
+        v-if="!hiddenTopics.includes(topic.number)"
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
@@ -176,30 +196,46 @@ watch(
 
 .page-url {
   text-align: right;
-}
-
-.page-url,
-.transervse-elements {
   min-height: 2.75rem;
 }
 
-.topic-header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+.topic-section {
+  container-type: inline-size;
+}
 
-  @media (width < 62rem) {
-    flex-wrap: wrap;
+.topic-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  justify-content: end;
+  align-items: center;
+  grid-template-areas: "title na toggle";
+
+  @container (width < 48rem) {
+    justify-content: start;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "title toggle"
+      "na na";
   }
 }
 
 .topic-heading {
   color: var(--text-action-high-blue-france);
   scroll-margin: 7.5rem;
+  grid-area: title;
 
   &.topic-heading--hidden {
     color: var(--grey-625-425);
   }
+}
+
+.na-toggle {
+  grid-area: na;
+  justify-self: start;
+}
+
+.toggle-topic-button {
+  grid-area: toggle;
 }
 </style>

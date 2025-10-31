@@ -699,4 +699,21 @@ describe("Audit", () => {
       cy.get(".criterium-container").eq(2).contains("Vous avez évalué le critère 1.1 Non applicable").should("not.exist");
     });
   });
+
+  it("User can show or hide topic criteria", () => {
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      // Check total criteria count
+      cy.get(".criterium-container").should("have.length", 106);
+
+      // Hide topic 1 criteria (-9)
+      cy.get("button.toggle-topic-button").first().click();
+      cy.get(".criterium-container").should("have.length", 97);
+
+      // Show topic 1 criteria (+9)
+      cy.get("button.toggle-topic-button").first().click();
+      cy.get(".criterium-container").should("have.length", 106);
+    });
+  });
 });
