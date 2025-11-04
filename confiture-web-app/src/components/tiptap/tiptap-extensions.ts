@@ -6,15 +6,16 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
+import { VueNodeViewRenderer } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
-
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import { ImageUploadTiptapExtension } from "./ImageUploadExtension";
+import TiptapImage from "./TiptapImage.vue";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -149,8 +150,14 @@ export const tiptapEditorExtensions: Extensions = [
               alt: attrs.alt
             };
           }
+        },
+        localURL: {
+          parseHTML: (element: HTMLElement) => element.getAttribute("localURL")
         }
       };
+    },
+    addNodeView() {
+      return VueNodeViewRenderer(TiptapImage);
     }
   }),
   ImageUploadTiptapExtension

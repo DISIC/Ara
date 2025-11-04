@@ -315,7 +315,8 @@ function uploadAndReplacePlaceholder(
         src: imgUrl,
         alt: file.name === "external" ? "Image insérée" : file.name,
         width: placeholder?.spec.width,
-        height: placeholder?.spec.height
+        height: placeholder?.spec.height,
+        localURL
       });
       URL.revokeObjectURL(localURL);
       tr.replaceWith(pos, pos, node);
@@ -323,12 +324,9 @@ function uploadAndReplacePlaceholder(
 
       view.dispatch(tr);
 
-      const imgElement = view.nodeDOM(pos) as HTMLImageElement;
-      imgElement.dataset.loading = "true";
-      imgElement.style = `background-image: url("${localURL}")`;
-      imgElement.addEventListener("load", handleImageLoad);
-
       // Announce upload success to screen readers
+      // TODO: move that code to Node View (+dispatch event)
+      const imgElement = view.nodeDOM(pos) as HTMLImageElement;
       const closest = imgElement.closest(".fr-collapse");
       const message = closest?.querySelector("[data-image-success-message]");
       if (message) {
@@ -351,13 +349,6 @@ function uploadAndReplacePlaceholder(
     }
   );
 }
-
-function handleImageLoad(e: Event) {
-  const imgElement = e.target as HTMLImageElement;
-  imgElement.removeEventListener("load", handleImageLoad);
-  delete imgElement.dataset.loading;
-  imgElement.style.removeProperty("background-image");
-};
 
 /**
  * Finds the given placeholder (by id) within the given editor state.
