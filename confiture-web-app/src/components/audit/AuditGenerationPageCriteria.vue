@@ -155,7 +155,7 @@ onMounted(() => {
         </ol>
 
         <div class="fr-grid-row fr-grid-row--right">
-          <TopLink target="audit-tabs" />
+          <TopLink target="audit-tabs" top-margin="1.5rem" />
         </div>
       </template>
     </section>
