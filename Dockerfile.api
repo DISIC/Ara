@@ -2,6 +2,11 @@ FROM ghcr.io/disic/designgouv-confiture/base:3.16.2
 
 ARG VERSION=1.0
 
+# Used by sentry:sourcemaps script in backend package.json
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+ARG SENTRY_AUTH_TOKEN
+
 # Include all workspaces so that we can install them all from root folder
 # See "yarn install --immutable" further down
 # Associated issues:

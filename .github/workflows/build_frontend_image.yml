@@ -45,9 +45,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}"
-            "VITE_SENTRY_ENVIRONMENT=${{ secrets.VITE_SENTRY_ENVIRONMENT }}"
-            "SENTRY_ORG=${{ secrets.SENTRY_ORG }}"
-            "SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}"
+            "VITE_SENTRY_DSN=${{ vars.FRONTEND_SENTRY_DSN }}"
+            "VITE_SENTRY_ENVIRONMENT=${{ vars.SENTRY_ENVIRONMENT }}"
+            "SENTRY_ORG=${{ vars.SENTRY_ORG }}"
+            "SENTRY_PROJECT=${{ vars.FRONTEND_SENTRY_PROJECT }}"
             "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
             "VITE_SENTRY_RELEASE=${{ github.sha }}}}"
