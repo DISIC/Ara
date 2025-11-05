@@ -1,3 +1,7 @@
+// FIX urgh i dont wanna fight eslint insisting this should be the last import when i need it to be first
+/* eslint-disable perfectionist/sort-imports */
+import "./instruments";
+
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
