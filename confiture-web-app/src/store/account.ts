@@ -10,7 +10,7 @@ import {
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
-interface AccountStoreState {
+export interface AccountStoreState {
   authToken: null | string;
   accountDeletionFeedbackToken: null | string;
 }

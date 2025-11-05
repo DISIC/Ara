@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/vue";
 import { createHead } from "@unhead/vue";
 import { marked } from "marked";
 
@@ -8,8 +7,9 @@ import App from "./App.vue";
 // @ts-expect-error the matomo plugin is a js file without type declarations
 import Matomo from "./matomo.js";
 import router from "./router";
-import "./styles/main.css";
 
+import { setupSentry } from "./sentry";
+import "./styles/main.css";
 import "@gouvfr/dsfr/dist/dsfr.min.css";
 import "@gouvfr/dsfr/dist/dsfr.module.min.js";
 import "@gouvfr/dsfr/dist/utility/icons/icons.css";
@@ -51,42 +51,6 @@ if (import.meta.env.VITE_MATOMO_ENABLE) {
   });
 }
 
-// setup Sentry error logging
-if (import.meta.env.VITE_SENTRY_DSN) {
-  Sentry.init({
-    app,
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        // anonymization settings
-        maskAllText: true,
-        maskAllInputs: true,
-        blockAllMedia: true
-      })
-    ],
-    tracePropagationTargets: [window.location.hostname, /^\//],
-
-    // Set to a value between 0 and 1.0 to enable performance monitoring
-    // 0.5 means half the events will be transferred
-    tracesSampleRate: 0,
-
-    // When an error happen save a replay of what happened similar to birdeatsbug
-    // See https://docs.sentry.io/platforms/javascript/guides/react/session-replay/#replay-captures-on-errors-only
-    replaysOnErrorSampleRate:
-      import.meta.env.VITE_SENTRY_ENVIRONMENT === "production" ? 1 : 0,
-
-    /*
-      Differentiate between the various environments of the app
-      example values:
-      - "local": Local development
-      - "preview": Pre-production application
-      - "production": Production application
-    */
-    environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "unknown",
-
-    release: import.meta.env.VITE_SENTRY_RELEASE
-  });
-}
+setupSentry(app, pinia);
 
 app.mount("#app");
