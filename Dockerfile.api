@@ -117,6 +117,7 @@ RUN yarn install --immutable
 
 WORKDIR /home/dinum_backend/confiture-rest-api
 RUN yarn workspace confiture-rest-api run build
+RUN yarn workspace confiture-rest-api run sentry:sourcemaps
 
 # set correct permissions
 RUN cp /root/.profile /home/dinum_backend/.profile
