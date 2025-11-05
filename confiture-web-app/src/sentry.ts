@@ -21,7 +21,7 @@ export function setupSentry(app: App, pinia: Pinia) {
         blockAllMedia: true
       })
     ],
-    tracePropagationTargets: [window.location.hostname, /^\//],
+    tracePropagationTargets: [window.location.hostname],
 
     // Set to a value between 0 and 1.0 to enable performance monitoring
     // 0.5 means half the events will be transferred
