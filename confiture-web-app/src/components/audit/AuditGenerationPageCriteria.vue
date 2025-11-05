@@ -61,21 +61,42 @@ const refFn =
       notApplicableSwitchRefs.value[topicNumber] =
         el as InstanceType<typeof NotApplicableSwitch>;
 
+const transverseElementsPageId =
+  ref(auditStore.currentAudit?.transverseElementsPage.id);
+
 // Hide or show topic criteria
-const hiddenTopics = ref<number[]>([]);
+/**
+ * {
+ *  '12345': [1, 2],
+ *  '12346': [1, 3, 12]
+ * }
+ */
+const hiddenTopics = ref<Record<string, number[]>>({
+  ...(transverseElementsPageId.value
+    ? { [transverseElementsPageId.value]: [] }
+    : {}
+  ),
+  ...Object.fromEntries(
+    new Map(auditStore.currentAudit?.pages.map(p => [p.id, []]))
+  )
+});
 
 function toggleTopic(topic: number) {
-  if (hiddenTopics.value.includes(topic)) {
-    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
+  if (hiddenTopics.value[props.page.id]?.includes(topic)) {
+    hiddenTopics.value[props.page.id] =
+      hiddenTopics.value[props.page.id]?.filter(t => t !== topic);
   } else {
-    hiddenTopics.value.push(topic);
+    hiddenTopics.value[props.page.id]?.push(topic);
   }
 }
 
-// Unhide criteria when turning NA switch off
+// Toggle criteria display when toggling NA switch
 function showNaTopicCriteria(value: boolean, topic: number) {
-  if (!value) {
-    hiddenTopics.value = hiddenTopics.value.filter(t => t !== topic);
+  if (value) {
+    hiddenTopics.value[props.page.id].push(topic);
+  } else {
+    hiddenTopics.value[props.page.id] =
+      hiddenTopics.value[props.page.id].filter(t => t !== topic);
   }
 }
 
@@ -83,7 +104,10 @@ function showNaTopicCriteria(value: boolean, topic: number) {
 onMounted(() => {
   store.filteredTopics.forEach(t => {
     if (resultsStore.topicIsNotApplicable(props.page.id, t.number)) {
-      hiddenTopics.value.push(t.number);
+      hiddenTopics.value[props.page.id].push(t.number);
+      auditStore.currentAudit?.pages.forEach(p => {
+        hiddenTopics.value[p.id].push(t.number);
+      });
     }
   });
 });
@@ -133,14 +157,14 @@ onMounted(() => {
         />
         <button
           class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
-          :class="hiddenTopics.includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
+          :class="hiddenTopics[page.id].includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
           @click="toggleTopic(topic.number)"
         >
-          {{ hiddenTopics.includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
+          {{ hiddenTopics[page.id].includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
         </button>
       </div>
       <template
-        v-if="!hiddenTopics.includes(topic.number)"
+        v-if="!hiddenTopics[page.id].includes(topic.number)"
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
