@@ -318,7 +318,7 @@ const isDevMode = useDevMode();
           role="region"
           aria-labelledby="contact-section-subtitle"
           aria-describedby="contact-section-error"
-          class="fr-input-group" :class="{ 'fr-input-group--error': !!sectionError }"
+          class="fr-input-group fr-pl-4w contact-optionnal-fields" :class="{ 'fr-input-group--error': !!sectionError }"
         >
           <FieldValidation
             v-slot="{ error, focusRef }"
@@ -539,6 +539,11 @@ const isDevMode = useDevMode();
 
 .contact-fieldset {
   display: block;
+}
+
+/* Hack to visually merge the left error red line of field and section */
+.contact-optionnal-fields::before {
+  left: calc(2rem - 0.75rem);
 }
 
 .narrow-field {
