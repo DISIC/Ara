@@ -240,7 +240,7 @@ const isDevMode = useDevMode();
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
-    <h2 class="fr-h4">Informations générales</h2>
+    <h2 class="fr-h4 fr-mb-2w">Informations générales</h2>
 
     <DsfrFieldWithValidation
       id="initiator"
@@ -252,6 +252,7 @@ const isDevMode = useDevMode();
       :validation="[
         REQUIRED('Champ obligatoire. Saisissez l’entité ayant demandé l’audit.')
       ]"
+      class="fr-mb-2w"
     />
 
     <DsfrFieldWithValidation
@@ -264,6 +265,7 @@ const isDevMode = useDevMode();
       :validation="[
         REQUIRED('Champ obligatoire. Saisissez l’entité ayant réalisé l’audit.')
       ]"
+      class="fr-mb-2w"
     />
 
     <DsfrFieldWithValidation
@@ -290,7 +292,7 @@ const isDevMode = useDevMode();
         <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
       </legend>
 
-      <p>
+      <p class="fr-mb-2w">
         Ces informations permettent aux usagers qui rencontrent des difficultés
         pour accéder à du contenu ou à un service d’être orienté vers une
         solution adaptée.
@@ -301,6 +303,7 @@ const isDevMode = useDevMode();
         v-model="contactName"
         label="Nom et prénom du contact (optionnel)"
         type="text"
+        class="fr-mb-2w"
       />
 
       <p id="contact-section-subtitle" class="fr-mb-2w">
@@ -318,7 +321,7 @@ const isDevMode = useDevMode();
           role="region"
           aria-labelledby="contact-section-subtitle"
           aria-describedby="contact-section-error"
-          class="fr-input-group" :class="{ 'fr-input-group--error': !!sectionError }"
+          class="fr-input-group fr-pl-4w contact-optionnal-fields" :class="{ 'fr-input-group--error': !!sectionError }"
         >
           <FieldValidation
             v-slot="{ error, focusRef }"
@@ -372,7 +375,7 @@ const isDevMode = useDevMode();
       </FieldValidation>
     </fieldset>
 
-    <h2 class="fr-h4">Technologies utilisées sur le site</h2>
+    <h2 class="fr-h4 fr-mb-2w">Technologies utilisées sur le site</h2>
 
     <FieldValidation
       v-slot="{ error, focusRef }"
@@ -400,11 +403,11 @@ const isDevMode = useDevMode();
         role="region"
         aria-labelledby="tools-section-title"
         aria-describedby="tools-section-error"
-        class="fr-input-group"
+        class="fr-input-group fr-my-6w"
         :class="{ 'fr-input-group--error': sectionError }"
       >
         <div class="fr-form-group">
-          <fieldset class="fr-fieldset" :class="{ 'fr-fieldset--error': sectionError }">
+          <fieldset class="fr-fieldset fr-mb-3v" :class="{ 'fr-fieldset--error': sectionError }">
             <legend class="fr-fieldset__legend fr-text--regular fr-mb-3w">
               <h2 id="tools-section-title" class="fr-h4 fr-mb-0">
                 Outils d’assistance utilisés pour vérifier l’accessibilité
@@ -445,7 +448,7 @@ const isDevMode = useDevMode();
     <!-- TODO: validate using fieldvalidation ? -->
     <TestEnvironmentSelection ref="testEnvironmentSelectionRef" v-model="environments" />
 
-    <h2 class="fr-h4">Contenus non accessibles</h2>
+    <h2 class="fr-h4 fr-mb-2w">Contenus non accessibles</h2>
 
     <div class="fr-input-group fr-mb-2w">
       <label class="fr-label" for="notCompliantContent">
@@ -463,11 +466,11 @@ const isDevMode = useDevMode();
 
     <h3 class="fr-h6 fr-mb-2w">Dérogations</h3>
 
-    <p>
+    <p class="fr-mb-2w">
       Les contenus dérogés doivent être discutés entre l’auditeur ou l’auditrice et le responsable du site audité. C’est le responsable du site qui accepte de prendre le risque juridique de mentionner ces contenus.
     </p>
 
-    <div class="fr-input-group">
+    <div class="fr-input-group fr-mb-2w">
       <label class="fr-label" for="derogatedContent">
         Dérogations pour charge disproportionnée (optionnel)
         <span class="fr-hint-text">
@@ -505,7 +508,7 @@ const isDevMode = useDevMode();
       </button>
     </div>
 
-    <div class="fr-mt-4w actions">
+    <div class="fr-mt-6w actions">
       <button class="fr-btn" type="submit">
         {{
           auditIsPublishable
@@ -526,7 +529,7 @@ const isDevMode = useDevMode();
     </div>
 
     <div class="top-link">
-      <TopLink class="fr-ml-auto" />
+      <TopLink class="fr-ml-auto" top-margin="3rem" />
     </div>
   </FormWithValidation>
 </template>
@@ -539,6 +542,11 @@ const isDevMode = useDevMode();
 
 .contact-fieldset {
   display: block;
+}
+
+/* Hack to visually merge the left error red line of field and section */
+.contact-optionnal-fields::before {
+  left: calc(2rem - 0.75rem);
 }
 
 .narrow-field {
