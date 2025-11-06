@@ -25,13 +25,18 @@ defineExpose({
   }
 });
 
-// String used to describe input with goals and requirements
+// String used to describe input with goals, requirement and error if any
 const descriptionId = computed(() => {
-  return (
-    `goal-${props.value}` +
-    `${props.goals.map((g, i) => ` goal-${i}-${props.value}`).join(" ")}` +
-    ` requirements-${props.value} requirement-${props.value}`
-  );
+  let desc = `goal-${props.value}`
+    + ` ${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
+    + " audit-type-prerequisite"
+  ;
+
+  if (props.isError) {
+    desc += ` audit-type-error`;
+  }
+
+  return desc;
 });
 </script>
 
@@ -81,7 +86,7 @@ const descriptionId = computed(() => {
           {{ goal }}
         </li>
       </ul>
-      <p class="fr-text--sm prerequisite fr-mb-3v">
+      <p id="audit-type-prerequisite" class="fr-text--sm prerequisite fr-mb-3v">
         Nécessite de très bonnes connaissances techniques et du RGAA
       </p>
     </div>
