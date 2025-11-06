@@ -235,7 +235,7 @@ const errorId = "error-" + uniqueId;
     tabindex="-1"
   >
     <div class="narrow-content">
-      <h2 id="test-environment-section-title" class="fr-h4">Environnements de test</h2>
+      <h2 id="test-environment-section-title" class="fr-h4 fr-mb-2w">Environnements de test</h2>
       <p>
         Nous vous proposons par défaut les combinaisons d’environnements de test prévus par le RGAA. Il revient à l’auditeur ou à l’auditrice, en concertation avec les responsables du site, de définir les environnements en fonction du contexte d’usage du site.<br />Vous pouvez ajouter d’autres environnements de test.
       </p>
@@ -253,7 +253,7 @@ const errorId = "error-" + uniqueId;
       />
     </div>
 
-    <div class="fr-mb-4w suggested-environments">
+    <div class="fr-mb-3w suggested-environments">
       <AuditEnvironmentCheckbox
         v-for="env in mobileCombinations"
         :key="env.title"
