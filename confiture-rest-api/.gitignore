@@ -39,3 +39,6 @@ src/generated
 
 # Generated API typings
 confiture-api.ts
+
+# Sentry Config File
+.sentryclirc

@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { APP_FILTER } from "@nestjs/core";
+import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { AuditsModule } from "./audits/audits.module";
 import { AuthModule } from "./auth/auth.module";
 import { UserMiddleware } from "./auth/user.middleware";
@@ -23,9 +25,13 @@ import { ProfileModule } from "./profile/profile.module";
     AuditsModule,
     MailModule,
     AuthModule,
-    ProfileModule
+    ProfileModule,
+    SentryModule.forRoot()
   ],
-  providers: process.env.DEBUG_ENDPOINTS ? [PrismaService] : [],
+  providers: [...(process.env.DEBUG_ENDPOINTS ? [PrismaService] : []), {
+    provide: APP_FILTER,
+    useClass: SentryGlobalFilter
+  }],
   controllers: [
     HealthCheckController,
     // enable debug enpoints only when the DEBUG_ENDPOINTS variable is set
