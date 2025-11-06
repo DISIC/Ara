@@ -5,7 +5,7 @@ export class AuditListingItemDto {
   procedureName: string;
   editUniqueId: string;
   consultUniqueId: string;
-  creationDate: Date;
+  creationDate?: Date;
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;
   complianceLevel: number;

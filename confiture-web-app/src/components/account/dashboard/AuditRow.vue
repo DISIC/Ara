@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { RouterLink } from "vue-router";
 
+import { RouterLink } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useWindowWidth } from "../../../composables/useWindowWidth";
 import { useAuditStore } from "../../../store";
@@ -178,9 +178,10 @@ function copyStatementLink(uniqueId: string) {
     <!-- Creation date -->
     <p class="fr-mb-0">
       <span class="fr-sr-only-md">Date de création : </span>
-      <time :datetime="audit.creationDate.toString()">
+      <time v-if="audit.creationDate" :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
+      <template v-else>Inconnu</template>
     </p>
 
     <!-- Type -->
