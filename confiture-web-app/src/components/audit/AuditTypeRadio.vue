@@ -27,16 +27,18 @@ defineExpose({
 
 // String used to describe input with goals, requirement and error if any
 const descriptionId = computed(() => {
-  let desc = `goal-${props.value}`
-    + ` ${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
-    + " audit-type-prerequisite"
-  ;
+  let description;
 
-  if (props.isError) {
-    desc += ` audit-type-error`;
+  if (props.detailed) {
+    description = `${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
+      + " audit-type-prerequisite"
+      + `${props.isError ? " audit-type-error" : ""}`
+    ;
+  } else {
+    description = `audit-type-name-${props.value}`;
   }
 
-  return desc;
+  return description;
 });
 </script>
 
@@ -90,7 +92,7 @@ const descriptionId = computed(() => {
         Nécessite de très bonnes connaissances techniques et du RGAA
       </p>
     </div>
-    <p v-else class="fr-text--xs fr-pl-3w fr-m-0">
+    <p v-else :id="`audit-type-name-${value}`" class="fr-text--xs fr-pl-3w fr-m-0">
       {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
     </p>
   </div>
