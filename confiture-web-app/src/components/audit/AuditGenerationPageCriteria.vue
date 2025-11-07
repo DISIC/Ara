@@ -81,20 +81,11 @@ const hiddenTopics = ref<Record<string, Set<number>>>({
   )
 });
 
-function toggleTopic(topic: number) {
-  if (hiddenTopics.value[props.page.id]?.has(topic)) {
-    hiddenTopics.value[props.page.id].delete(topic);
-  } else {
-    hiddenTopics.value[props.page.id]?.add(topic);
-  }
-}
-
-// Toggle criteria display when toggling NA switch
-function showNaTopicCriteria(value: boolean, topic: number) {
+function toggleTopic(value: boolean, topic: number) {
   if (value) {
-    hiddenTopics.value[props.page.id].add(topic);
-  } else {
     hiddenTopics.value[props.page.id].delete(topic);
+  } else {
+    hiddenTopics.value[props.page.id].add(topic);
   }
 }
 
@@ -151,12 +142,15 @@ onMounted(() => {
           :page-id="page.id"
           :topic-number="topic.number"
           :topic-title="topic.topic"
-          @toggle="showNaTopicCriteria($event, topic.number)"
+          @toggle="toggleTopic(!$event, topic.number)"
         />
         <button
           class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
           :class="hiddenTopics[page.id].has(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
-          @click="toggleTopic(topic.number)"
+          @click="toggleTopic(
+            hiddenTopics[page.id].has(topic.number),
+            topic.number
+          )"
         >
           {{ hiddenTopics[page.id].has(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
         </button>
