@@ -2,7 +2,7 @@
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
 import { onMounted, ref } from "vue";
 
-defineProps(nodeViewProps);
+const props = defineProps(nodeViewProps);
 
 const imgRef = ref<HTMLImageElement>();
 
@@ -15,6 +15,9 @@ function handleImageLoad(e: Event) {
   imgElement.removeEventListener("load", handleImageLoad);
   delete imgElement.dataset.loading;
   imgElement.style.removeProperty("background-image");
+  props.updateAttributes({
+    localURL: null
+  });
 };
 </script>
 
@@ -22,8 +25,8 @@ function handleImageLoad(e: Event) {
   <node-view-wrapper class="vue-component">
     <img
       ref="imgRef" v-bind="node.attrs"
-      :style="`background-image: url('${node.attrs.localURL}')`"
-      data-loading="true"
+      :style="node.attrs.localURL ? `background-image: url('${node.attrs.localURL}')` : null"
+      :data-loading="node.attrs.localURL ? true : null"
     >
   </node-view-wrapper>
 </template>

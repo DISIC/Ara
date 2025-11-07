@@ -3,8 +3,8 @@ import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, useId, useTemplateRef, watch } from "vue";
 
-import { insertFilesAtSelection } from "./ImageUploadExtension";
-import { displayedHeadings, tiptapEditorExtensions } from "./tiptap-extensions";
+import { insertFilesAtSelection } from "./image/ImageUploadExtension";
+import { displayedHeadings, getTiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -25,7 +25,10 @@ const props = withDefaults(defineProps<Props>(), {
   editorSize: "sm"
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits<{
+  (event: "image:uploaded", value: string): void;
+  (event: "update:modelValue", value: string): void;
+}>();
 
 const uniqueId = useId();
 
@@ -88,13 +91,34 @@ if (props.describedBy) {
   editorAttributes["aria-describedby"] = props.describedBy;
 }
 
+// Announce upload success to screen readers
+const onImageUploadComplete = (fileName: string) => {
+  emit("image:uploaded", fileName);
+
+  // TODO: move this code in a component wrapping this one
+  const closest = browseInput.value?.closest(".fr-collapse");
+  const message = closest?.querySelector("[data-image-success-message]");
+  if (message) {
+    // "external" is the file name in Firefox when using drag-and-drop
+    // directly from an external website (with permissive CORS)
+    message.textContent = fileName === "external" ?
+      "L’image a été correctement insérée"
+      : `L’image « ${fileName} » a été correctement insérée`;
+    setTimeout(() => {
+      message.textContent = "";
+    }, 3000);
+  }
+};
+
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
   },
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: tiptapEditorExtensions,
+  extensions: getTiptapEditorExtensions({
+    onImageUploadComplete: onImageUploadComplete
+  }),
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -368,6 +392,7 @@ defineExpose({
 .tiptap-selection,
 .ProseMirror-selectednode {
   outline: var(--dsfr-outline) dotted 2px;
+  max-width: max-content;
 }
 
 img.ProseMirror-widget {
