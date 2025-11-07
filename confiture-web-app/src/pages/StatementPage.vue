@@ -21,20 +21,6 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 
 const notify = useNotifications();
 
-async function copyA11yStatementUrl() {
-  const url = `${window.location.origin}/declaration/${uniqueId}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    showCopyAlert.value = true;
-
-    notify(
-      "success",
-      undefined,
-      "Le lien vers la déclaration a bien été copié dans le presse-papier."
-    );
-  });
-}
-
 function getA11yLevel() {
   if (report.data!.accessibilityRate === 100) {
     return "totalement";
@@ -46,7 +32,6 @@ function getA11yLevel() {
 }
 
 const statementContainerRef = ref<HTMLDivElement>();
-const showCopyAlert = ref(false);
 
 async function copyA11yStatementHTML() {
   const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g; // "<XX  >"
@@ -114,15 +99,7 @@ const siteUrl = computed(() => {
       :title="`Publier la déclaration d’accessibilité de ${report.data.procedureName}`"
     />
 
-    <div class="fr-mb-4w heading">
-      <h1 class="fr-m-0">Publier la déclaration d’accessibilité</h1>
-      <button
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
-        @click="copyA11yStatementUrl"
-      >
-        Copier le lien de la déclaration
-      </button>
-    </div>
+    <h1 class="fr-mb-4w">Publier la déclaration d’accessibilité</h1>
 
     <div v-if="!statementIsPublished" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
@@ -394,18 +371,6 @@ const siteUrl = computed(() => {
 </template>
 
 <style scoped>
-.heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.info-container {
-  max-width: 49.5rem;
-}
-
 .content {
   max-width: 58rem;
 }
