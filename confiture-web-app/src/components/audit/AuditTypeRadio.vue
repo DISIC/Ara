@@ -31,7 +31,7 @@ const descriptionId = computed(() => {
 
   if (props.detailed) {
     description = `${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
-      + " audit-type-prerequisite"
+      + ` audit-type-prerequisite-${props.value}"`
       + `${props.isError ? " audit-type-error" : ""}`
     ;
   } else {
@@ -88,7 +88,7 @@ const descriptionId = computed(() => {
           {{ goal }}
         </li>
       </ul>
-      <p id="audit-type-prerequisite" class="fr-text--sm prerequisite fr-mb-3v">
+      <p :id="`audit-type-prerequisite-${value}`" class="fr-text--sm prerequisite fr-mb-3v">
         Nécessite de très bonnes connaissances techniques et du RGAA
       </p>
     </div>
