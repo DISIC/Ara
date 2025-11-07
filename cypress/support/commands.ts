@@ -40,6 +40,41 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
+       * Custom child command to simulate a paste event with an image
+       * @example cy.get(".tiptap").pasteImage({filePath: "../fixture/img.jpg", fileName: 'ImageName.jpg'})
+       */
+      pasteImage(value: { filePath: string; fileName: string }): Chainable<JQuery<HTMLElement>>;
+    }
+  }
+}
+
+// Add a child command to simulate a paste event with an image
+// @ts-ignore
+Cypress.Commands.add("pasteImage", { prevSubject: "element" }, (subject, options) => {
+  cy.fixture(options.filePath, "base64").then(imageBase64 => {
+    // Convert base64 to blob
+    const blob = Cypress.Blob.base64StringToBlob(imageBase64, "image/jpg");
+
+    // Create a file from that blob
+    const file = new File([blob], options.fileName, { type: "image/jpg" });
+
+    // Create a fake ClipboardEvent with a DataTransfer object containing the file
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    const pasteEvent = new ClipboardEvent("paste", {
+      clipboardData: dataTransfer,
+      bubbles: true,
+      cancelable: true
+    });
+
+    cy.wrap(subject).invoke("get", 0).invoke("dispatchEvent", pasteEvent);
+  });
+});
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      /**
        * Custom command to select DOM element based on label
        * @example cy.getByLabel('Title')
        */
