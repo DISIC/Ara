@@ -67,36 +67,34 @@ const transverseElementsPageId =
 // Hide or show topic criteria
 /**
  * {
- *  '12345': [1, 2],
- *  '12346': [1, 3, 12]
+ *  '12345': Set [1, 2],
+ *  '12346': Set [1, 3, 12]
  * }
  */
-const hiddenTopics = ref<Record<string, number[]>>({
+const hiddenTopics = ref<Record<string, Set<number>>>({
   ...(transverseElementsPageId.value
-    ? { [transverseElementsPageId.value]: [] }
+    ? { [transverseElementsPageId.value]: new Set([]) }
     : {}
   ),
   ...Object.fromEntries(
-    new Map(auditStore.currentAudit?.pages.map(p => [p.id, []]))
+    new Map(auditStore.currentAudit?.pages.map(p => [p.id, new Set([])]))
   )
 });
 
 function toggleTopic(topic: number) {
-  if (hiddenTopics.value[props.page.id]?.includes(topic)) {
-    hiddenTopics.value[props.page.id] =
-      hiddenTopics.value[props.page.id]?.filter(t => t !== topic);
+  if (hiddenTopics.value[props.page.id]?.has(topic)) {
+    hiddenTopics.value[props.page.id].delete(topic);
   } else {
-    hiddenTopics.value[props.page.id]?.push(topic);
+    hiddenTopics.value[props.page.id]?.add(topic);
   }
 }
 
 // Toggle criteria display when toggling NA switch
 function showNaTopicCriteria(value: boolean, topic: number) {
   if (value) {
-    hiddenTopics.value[props.page.id].push(topic);
+    hiddenTopics.value[props.page.id].add(topic);
   } else {
-    hiddenTopics.value[props.page.id] =
-      hiddenTopics.value[props.page.id].filter(t => t !== topic);
+    hiddenTopics.value[props.page.id].delete(topic);
   }
 }
 
@@ -104,9 +102,9 @@ function showNaTopicCriteria(value: boolean, topic: number) {
 onMounted(() => {
   store.filteredTopics.forEach(t => {
     if (resultsStore.topicIsNotApplicable(props.page.id, t.number)) {
-      hiddenTopics.value[props.page.id].push(t.number);
+      hiddenTopics.value[props.page.id].add(t.number);
       auditStore.currentAudit?.pages.forEach(p => {
-        hiddenTopics.value[p.id].push(t.number);
+        hiddenTopics.value[p.id].add(t.number);
       });
     }
   });
@@ -157,14 +155,14 @@ onMounted(() => {
         />
         <button
           class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
-          :class="hiddenTopics[page.id].includes(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
+          :class="hiddenTopics[page.id].has(topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
           @click="toggleTopic(topic.number)"
         >
-          {{ hiddenTopics[page.id].includes(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
+          {{ hiddenTopics[page.id].has(topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
         </button>
       </div>
       <template
-        v-if="!hiddenTopics[page.id].includes(topic.number)"
+        v-if="!hiddenTopics[page.id].has(topic.number)"
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium
