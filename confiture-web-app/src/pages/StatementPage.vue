@@ -111,11 +111,11 @@ const siteUrl = computed(() => {
 <template>
   <template v-if="report.data">
     <PageMeta
-      :title="`Déclaration d'accessibilité de ${report.data.procedureName}`"
+      :title="`Publier la déclaration d’accessibilité de ${report.data.procedureName}`"
     />
 
     <div class="fr-mb-4w heading">
-      <h1 class="fr-m-0">Déclaration d’accessibilité</h1>
+      <h1 class="fr-m-0">Publier la déclaration d’accessibilité</h1>
       <button
         class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
         @click="copyA11yStatementUrl"
@@ -193,7 +193,7 @@ const siteUrl = computed(() => {
           </li>
         </ol>
 
-        <h2>Document à intégrer sur le site audité</h2>
+        <h2>Code de la déclaration</h2>
 
         <p>
           Cette déclaration d’accessibilité adopte un format obligatoire donné
