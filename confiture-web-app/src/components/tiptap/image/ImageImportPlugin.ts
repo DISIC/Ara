@@ -177,7 +177,6 @@ export class ImageImportPlugin extends Plugin {
       this.notify("error", undefined, FileErrorMessage.UPLOAD_MAX_FILES_COUNT);
       return;
     }
-    // FIXME: sometimes placeholders order differs from final images order
     for (let i = 0, il = files.length, file; i < il; i++) {
       file = files.item(i);
       if (file) {
@@ -190,6 +189,17 @@ export class ImageImportPlugin extends Plugin {
   /**
    * Handles a single image import
    *
+   * STEP 1:
+   * Creates an image placeholder (ProseMirror widget Decoration) where the
+   * image is inserted. This placeholder `src` looks like
+   * "blob:https://ara.numerique.gouv.fr/3f9e8516-48fc-4099-ba3f-ea23b5b1fd95"
+   * It’s a blob URL corresponding to the local file provided by the browser
+   * (dragged and dropped, or pasted, or inserted from system)
+   * See [blob: URLs - URIs | MDN](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob)
+   *
+   * STEP 2:
+   * See #uploadAndReplacePlaceHolder
+   *
    * Fails (and notify with an error) when:
    * 1. the given file is not an image
    * 2. its size exceeds the maximum size allowed (see FILE_SIZE_LIMIT)
@@ -201,11 +211,13 @@ export class ImageImportPlugin extends Plugin {
     file: File,
     options?: { replaceSelection: boolean }
   ): void {
+    // Check image format
     if (!file.type.startsWith("image")) {
       this.notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
       return;
     }
 
+    // Check max size
     if (file.size > FILE_SIZE_LIMIT) {
       this.notify("error", undefined, FileErrorMessage.UPLOAD_SIZE);
       return;
@@ -214,11 +226,13 @@ export class ImageImportPlugin extends Plugin {
     // A fresh object to act as the ID for this upload
     const id = {};
 
+    // Create a placeholder element with the blob URL
     const _URL = window.URL || window.webkitURL;
     const localURL = _URL.createObjectURL(file);
     const element = document.createElement("img");
 
     element.onerror = () => {
+      // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
       this.notify("error", undefined, FileErrorMessage.UNKNOWN_ERROR);
     };
@@ -228,6 +242,7 @@ export class ImageImportPlugin extends Plugin {
       const state: EditorState = view.state;
       const tr: Transaction = state.tr;
 
+      // Image may replace current selected content
       if (options?.replaceSelection && !state.selection.empty) {
         tr.deleteSelection();
 
@@ -237,6 +252,7 @@ export class ImageImportPlugin extends Plugin {
         }
       }
 
+      // Image may split current content
       const $pos = tr.doc.resolve(pos);
       if (canSplit(state.tr.doc, pos)) {
         if (pos === $pos.start()) {
@@ -248,19 +264,36 @@ export class ImageImportPlugin extends Plugin {
           pos += 1;
         }
       }
+
+      // Add a placeholder within the current transaction
       tr.setMeta(this.placeholderPlugin, {
         add: { id, container: null, element, pos }
       });
+
+      // Updates the transaction's current selection to a valid position
+      // (nearest position forward)
       tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
       view.dispatch(tr);
       this.uploadAndReplacePlaceholder(view, file, id, element, localURL);
+
+      // Focus editor view in case it was not already focused. Can happen:
+      // - when inserting the image with the "Insert image" button"
+      // - or when dropping the image while the editor is not focused
       view.focus();
     };
     element.src = localURL;
   }
 
   /**
-   * Uploads and then replaces the placeholder with a TiptapImage node view
+   * Uploads the given image file and then:
+   * - if the upload is successful:
+   *   1. calls onImageUploadComplete hook
+   *   3. if the placeholder has been deleted in the meantime, stops here
+   *   2. otherwise replaces the placeholder with an actual image node
+   *      rendered as a TiptapImage node view (smooth CSS transition)
+   * - otherwise if upload fails:
+   *   1. cleans up the possible placeholder.
+   *   2. notifies with an error
    */
   private uploadAndReplacePlaceholder(
     view: EditorView,
@@ -272,6 +305,7 @@ export class ImageImportPlugin extends Plugin {
     this.uploadImage(file).then(
       (imgUrl: string) => {
         this.options.onImageUploadComplete?.(file.name);
+
         const placeholder = this.findPlaceholderDecoration(view.state, id);
         const pos: number | undefined = placeholder?.from;
 
@@ -281,8 +315,9 @@ export class ImageImportPlugin extends Plugin {
           return;
         }
 
-        // Otherwise, insert it at the placeholder's position, and remove
-        // the placeholder
+        // Otherwise, replace the placeholder with a new image node
+        // Tip: the local blob URL is used as a background image
+        //      to ease the transition
         const state = view.state;
         const tr = state.tr;
         const node = state.schema.nodes.image.create({
@@ -299,7 +334,7 @@ export class ImageImportPlugin extends Plugin {
         view.dispatch(tr);
       },
       async (reason: Error) => {
-        // On failure, just clean up the placeholder
+        // On failure, clean up the placeholder
         view.dispatch(
           view.state.tr.setMeta(this.placeholderPlugin, { element, remove: { id } })
         );
