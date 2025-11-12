@@ -744,4 +744,30 @@ describe("Audit", () => {
       cy.get(".tiptap--rendered img").should("have.length", 3);
     });
   });
+
+  it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.get(".criterium-container").contains("Non conforme").click();
+      cy.wait("@updateResults");
+
+      // 3. Copy-paste HTML content with 2 images
+      cy.log("** Paste 1 image from clipboard **");
+      cy.get(".criterium-container .tiptap").pasteHTML("../fixtures/contentExample.html");
+
+      // Editor content has changed => results updated
+      cy.wait("@updateResults");
+
+      // Go to report page to check text + images count (0)
+      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
+      // - 1 h4
+      cy.get(".tiptap--rendered h4").should("have.length", 1);
+      // - 2 li
+      cy.get(".tiptap--rendered li").should("have.length", 2);
+      // - 0 img
+      cy.get(".tiptap--rendered img").should("have.length", 0);
+    });
+  });
 });
