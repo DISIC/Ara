@@ -54,7 +54,6 @@ declare global {
 }
 
 // Add a child command to simulate a paste event with an image
-// @ts-ignore
 Cypress.Commands.add("pasteImage", { prevSubject: "element" }, (subject, options) => {
   cy.fixture(options.filePath, "base64").then(imageBase64 => {
     // Convert base64 to blob
@@ -77,7 +76,6 @@ Cypress.Commands.add("pasteImage", { prevSubject: "element" }, (subject, options
 });
 
 // Add a child command to simulate a paste event with HTML text
-// @ts-ignore
 Cypress.Commands.add("pasteHTML", { prevSubject: "element" }, (subject, filePath) => {
   cy.fixture(filePath).then(html => {
     // Create a fake ClipboardEvent with a DataTransfer object containing the file
