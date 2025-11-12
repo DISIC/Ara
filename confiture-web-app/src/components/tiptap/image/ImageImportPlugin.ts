@@ -54,6 +54,8 @@ export class ImageImportPlugin extends Plugin {
       props: {
         handleDrop: (view, event, slice, moved) =>
           this.handleDrop(view, event, slice, moved),
+        transformPastedHTML: (html, view) =>
+          this.transformPasted(html, view),
         handlePaste: (view, event, slice) =>
           this.handlePaste(view, event, slice)
       }
@@ -61,6 +63,33 @@ export class ImageImportPlugin extends Plugin {
   }
 
   private notify = useNotifications();
+
+  /**
+   * Transforms the given HTML text, before it is parsed, for example to clean it up
+   * Here we strip the images out of the HTML content (pasted or dropped)
+   *
+   * If images are actually stripped out, notifies it with an error
+   *
+   * @returns the transformed HTML text (without <img> content)
+   */
+  private transformPasted(html: string, view: EditorView): string {
+    if (!html) {
+      return html;
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Remove all <img> elements
+    const imgs = doc.querySelectorAll("img");
+    if (imgs.length === 1) {
+      this.notify("error", undefined, FileErrorMessage.UPLOAD_FROM_HTML_ERROR);
+    } else if (imgs.length > 1) {
+      this.notify("error", undefined, FileErrorMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
+    }
+    imgs.forEach(img => img.remove());
+    return doc.body.innerHTML;
+  }
 
   /**
    * handleDrop: called when something is dropped on the editor.
