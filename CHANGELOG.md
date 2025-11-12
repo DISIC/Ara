@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 12/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Désynchronise l’ouverture et la fermeture des critères d’une thématique avec le bouton "Non-applicable sur la page" ([#1270](https://github.com/DISIC/Ara/pull/1270))
+
 ### 31/10/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
