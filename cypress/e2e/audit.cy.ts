@@ -706,7 +706,7 @@ describe("Audit", () => {
       cy.get(".criterium-container").contains("Non conforme").click();
       cy.wait("@updateResults");
 
-      // Insert an image into the editor with the button
+      // 1. Insert an image into the editor with the button
       cy.log("** Insert 1 image with the button **");
       cy.contains("Insérer une image").click();
       cy.get(".criterium-container input[type='file']")
@@ -715,14 +715,15 @@ describe("Audit", () => {
       // Editor content has changed => results updated
       cy.wait(["@uploadImage", "@updateResults"]);
 
-      // Drag and drop an image into the editor
-      cy.log("** Drag and drop 1 image **");
+      // 2. Drag and drop a local image
+      cy.log("** Drag and drop 1 local image **");
       cy.get(".criterium-container .tiptap")
         .selectFile("cypress/fixtures/ara-bleu.jpg", { action: "drag-drop" });
 
       // Editor content has changed => results updated
       cy.wait(["@uploadImage", "@updateResults"]);
 
+      // 3. Copy-paste a local image
       cy.log("** Paste 1 image from clipboard **");
       const fileName = "groupe-ara.jpg";
       cy.get(".criterium-container .tiptap").pasteImage({ filePath: `../fixtures/${fileName}`, fileName });
