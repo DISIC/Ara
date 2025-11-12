@@ -136,7 +136,7 @@ function handleAddImageClick() {
 function handleBrowseInputChange(e: Event) {
   const inputElement = e?.target as HTMLInputElement;
   const files = inputElement.files!;
-  insertFilesAtSelection(editor.value, files);
+  insertFilesAtSelection(editor.value, Array.from(files));
 }
 
 watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {

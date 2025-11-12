@@ -125,7 +125,7 @@ export class ImageImportPlugin extends Plugin {
 
   /**
    * handleDataTransfer: called by handleDrop and handlePaste
-   * @returns true if given dataTransfer is a set of files or a single URL, otherwise false
+   * @returns true if given dataTransfer is a set of files or URIs, otherwise false
    */
   private handleDataTransfer(
     view: EditorView,
@@ -133,29 +133,30 @@ export class ImageImportPlugin extends Plugin {
     pos: number,
     options?: { replaceSelection: boolean }
   ): boolean {
-    if (dataTransfer.files.length === 0) {
-      // Handle a single URL (ex: when an external image is dragged from another window)
-      // TODO: multiple URLs
-      // See: "text/uri-list" and
-      // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
-      const url = dataTransfer.getData("URL");
-      if (url) {
-        createFileFromUrl(url).then((file) => {
-          if (file) {
-            this.handleImageImport(view, pos, file, options);
-          }
-        }).catch((e: Error) =>
-          this.notify("error", undefined, FileErrorMessage.FETCH_ERROR)
-        );
-        return true;
-      } else {
-        return false;
-      }
+    // Browser may pass a list of files (e.g. in Chrome)
+    if (dataTransfer.files?.length > 0) {
+      // Actually do something with the files in dataTransfer
+      this.handleImagesImport(view, pos, Array.from(dataTransfer.files), options);
+      return true;
     }
 
-    // Actually do something with the files in dataTransfer
-    this.handleImagesImport(view, pos, dataTransfer.files, options);
-    return true;
+    // Or browser may pass a list of URIs
+    const uriItems = Array.from(dataTransfer.items).filter((item) => {
+      return (item.kind === "string" && item.type.match("^text/uri-list"));
+    });
+    if (uriItems.length > 0) {
+      // Handle image imports asynchronously
+      this.getFilesFromUriItems(uriItems, (files) => {
+        if (files.length < 1) {
+          this.notify("error", undefined, FileErrorMessage.FETCH_ERROR);
+        }
+        this.handleImagesImport(view, pos, files, options);
+      });
+      return true;
+    }
+
+    // Tiptap will handle other formats (e.g. HTML content)
+    return false;
   }
 
   /**
@@ -170,7 +171,7 @@ export class ImageImportPlugin extends Plugin {
   public handleImagesImport(
     view: EditorView,
     pos: number,
-    files: FileList,
+    files: File[],
     options?: { replaceSelection: boolean }
   ): void {
     if (files.length > MAX_UPLOAD_FILES_COUNT) {
@@ -178,7 +179,7 @@ export class ImageImportPlugin extends Plugin {
       return;
     }
     for (let i = 0, il = files.length, file; i < il; i++) {
-      file = files.item(i);
+      file = files[i];
       if (file) {
         this.handleImageImport(view, pos, file, options);
       }
@@ -359,6 +360,33 @@ export class ImageImportPlugin extends Plugin {
     const url = getUploadUrl(imageUploadKey);
 
     return url;
+  }
+
+  private getFilesFromUriItems(
+    uriItems: DataTransferItem[],
+    onComplete: (files: File[]) => void
+  ) {
+    const getFilePromises = uriItems.map(
+      (uriItem) =>
+        new Promise<File | null>((resolve) => {
+          uriItem.getAsString((url) => {
+            createFileFromUrl(url)
+              .then((file) => {
+                resolve(file ?? null);
+              })
+              .catch((err) => {
+                console.error(`Error creating file from URL: ${url}`, err);
+                resolve(null);
+              });
+          });
+        })
+    );
+
+    Promise.all(getFilePromises).then((results) => {
+      // Filter out nulls to ensure passing only File objects in callback
+      const files = results.filter((file): file is File => file !== null);
+      onComplete(files);
+    });
   }
 
   /**

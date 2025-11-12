@@ -42,7 +42,7 @@ export const ImageUploadExtension =
  */
 export function insertFilesAtSelection(
   editor: Editor,
-  files: FileList
+  files: File[]
 ) {
   const view: EditorView = editor.view;
   const state: EditorState = view.state;
