@@ -21,7 +21,8 @@ function handleImageLoad(e: Event) {
 <template>
   <node-view-wrapper class="vue-component">
     <img
-      ref="imgRef" v-bind="node.attrs"
+      ref="imgRef"
+      v-bind="node.attrs"
       :style="node.attrs.localURL ? `background-image: url('${node.attrs.localURL}')` : null"
       :data-loading="node.attrs.localURL ? true : null"
       @load.once="handleImageLoad"
