@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
 const props = defineProps(nodeViewProps);
 
 const imgRef = ref<HTMLImageElement>();
-
-onMounted(() => {
-  imgRef.value?.addEventListener("load", handleImageLoad);
-});
 
 function handleImageLoad(e: Event) {
   const imgElement = e.target as HTMLImageElement;
@@ -28,6 +24,7 @@ function handleImageLoad(e: Event) {
       ref="imgRef" v-bind="node.attrs"
       :style="node.attrs.localURL ? `background-image: url('${node.attrs.localURL}')` : null"
       :data-loading="node.attrs.localURL ? true : null"
+      @load.once="handleImageLoad"
     >
   </node-view-wrapper>
 </template>
