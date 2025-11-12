@@ -1,12 +1,16 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   target?: string;
-}>();
+  topMargin?: string;
+}>(), {
+  target: "header",
+  topMargin: "2.5rem"
+});
 </script>
 
 <template>
   <RouterLink
-    :to="`#${target ?? 'header'}`"
+    :to="`#${target}`"
     class="top-link fr-link fr-icon-arrow-up-fill fr-link--icon-left"
   >
     Haut de page
@@ -16,6 +20,6 @@ defineProps<{
 <style scoped>
 .top-link {
   display: inline-block;
-  margin-top: 2.5rem;
+  margin-top: v-bind(topMargin);
 }
 </style>
