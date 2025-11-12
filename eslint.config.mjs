@@ -137,6 +137,14 @@ export default antfu({
       //   svg: "always",
       //   math: "always"
       // }],
+      "vue/max-attributes-per-line": ["error", {
+        singleline: {
+          max: 100
+        },
+        multiline: {
+          max: 1
+        }
+      }],
       "vue/max-len": ["error", {
         code: 80,
         ignoreComments: true,
