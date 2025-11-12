@@ -102,7 +102,9 @@ function onFileRequestFinished() {
       <!-- TODO: handle multiple files upload -->
       <!-- :multiple="multiple ?? undefined" -->
       <div
-        v-if="!readonly" class="fr-upload-group" :class="{ 'fr-upload-group--disabled': isOffline }"
+        v-if="!readonly"
+        class="fr-upload-group"
+        :class="{ 'fr-upload-group--disabled': isOffline }"
       >
         <label class="fr-label" :for="`file-upload-${id}`">
           {{ title }}

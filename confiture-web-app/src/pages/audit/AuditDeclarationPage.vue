@@ -321,7 +321,8 @@ const isDevMode = useDevMode();
           role="region"
           aria-labelledby="contact-section-subtitle"
           aria-describedby="contact-section-error"
-          class="fr-input-group fr-pl-4w contact-optionnal-fields" :class="{ 'fr-input-group--error': !!sectionError }"
+          class="fr-input-group fr-pl-4w contact-optionnal-fields"
+          :class="{ 'fr-input-group--error': !!sectionError }"
         >
           <FieldValidation
             v-slot="{ error, focusRef }"
