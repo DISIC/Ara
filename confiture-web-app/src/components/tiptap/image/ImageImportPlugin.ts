@@ -105,10 +105,7 @@ export class ImageImportPlugin extends Plugin {
     clipboardEvent: ClipboardEvent,
     _slice: Slice | undefined
   ): boolean {
-    if (
-      !clipboardEvent.clipboardData ||
-      !(clipboardEvent.clipboardData?.files?.length > 0)
-    ) {
+    if (!clipboardEvent.clipboardData) {
       return false;
     }
 
@@ -155,7 +152,7 @@ export class ImageImportPlugin extends Plugin {
       return true;
     }
 
-    // Tiptap will handle other formats (e.g. HTML content)
+    // Tiptap will handle other formats (e.g. HTML text)
     return false;
   }
 
@@ -328,7 +325,6 @@ export class ImageImportPlugin extends Plugin {
           height: placeholder?.spec.height,
           localURL
         });
-        URL.revokeObjectURL(localURL);
         tr.replaceWith(pos, pos, node);
         tr.setMeta(this.placeholderPlugin, { element, remove: { id } });
 

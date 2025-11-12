@@ -18,6 +18,7 @@ function handleImageLoad(e: Event) {
   props.updateAttributes({
     localURL: null
   });
+  URL.revokeObjectURL(props.node.attrs.localURL);
 };
 </script>
 
