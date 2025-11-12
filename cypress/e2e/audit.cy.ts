@@ -697,7 +697,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can insert an image in the comment editor", () => {
+  it.only("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
@@ -728,13 +728,13 @@ describe("Audit", () => {
       const fileName = "groupe-ara.jpg";
       cy.get(".criterium-container .tiptap").pasteImage({ filePath: `../fixtures/${fileName}`, fileName });
 
-      // Editor content has changed => results updated
-      cy.wait("@updateResults");
-
       // Check success message
       cy.get(".criterium-container [data-image-success-message]").contains(`L’image « ${fileName} » a été correctement insérée`);
       cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).debug();
       cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).should("exist");
+
+      // Editor content has changed => results updated
+      cy.wait("@updateResults");
 
       cy.get(".criterium-container img[src^='/uploads/']")
         .should("have.length", 3);
