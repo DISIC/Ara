@@ -8,7 +8,6 @@ const imgRef = ref<HTMLImageElement>();
 
 function handleImageLoad(e: Event) {
   const imgElement = e.target as HTMLImageElement;
-  imgElement.removeEventListener("load", handleImageLoad);
   delete imgElement.dataset.loading;
   imgElement.style.removeProperty("background-image");
   props.updateAttributes({
