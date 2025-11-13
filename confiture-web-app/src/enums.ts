@@ -35,6 +35,8 @@ export enum FileErrorMessage {
   UPLOAD_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   UPLOAD_MAX_FILES_COUNT = "Importation échouée. Ajoutez une seule image à la fois.",
   FETCH_ERROR = "Importation échouée. Importez l’image depuis votre ordinateur.",
+  UPLOAD_FROM_HTML_ERROR = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
+  UPLOAD_MULTIPLE_FROM_HTML_ERROR = "Importation des images échouée. Importez les images depuis votre ordinateur.",
   UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
 };
 

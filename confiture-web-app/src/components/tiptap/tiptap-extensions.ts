@@ -6,15 +6,16 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
+import { VueNodeViewRenderer } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { Markdown } from "tiptap-markdown";
-
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
-import { ImageUploadTiptapExtension } from "./ImageUploadExtension";
+import TiptapImage from "./image//TiptapImage.vue";
+import { ImageUploadExtension } from "./image/ImageUploadExtension";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -125,36 +126,48 @@ const commonImageAttrs = {
     }
   }
 };
-export const tiptapEditorExtensions: Extensions = [
-  ...commonExtensions,
-  extendedLink.configure({
-    openOnClick: false,
-    defaultProtocol: "https",
-    shouldAutoLink: () => true,
-    HTMLAttributes: {
+
+export function getTiptapEditorExtensions(options: {
+  onImageUploadComplete: (fileName: string) => void;
+}) {
+  const { onImageUploadComplete } = options;
+  return [
+    ...commonExtensions,
+    extendedLink.configure({
+      openOnClick: false,
+      defaultProtocol: "https",
+      shouldAutoLink: () => true,
+      HTMLAttributes: {
       // Links do not open when editing, so not "new window"…
       // Advantage: no extra icon when editing
-      target: null
-    }
-  }),
-  Image.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        ...commonImageAttrs,
-        alt: {
-          renderHTML: (attrs) => {
-            return {
+        target: null
+      }
+    }),
+    Image.extend({
+      addAttributes() {
+        return {
+          ...this.parent?.(),
+          ...commonImageAttrs,
+          alt: {
+            renderHTML: (attrs) => {
+              return {
               // In editor, alt is given by the uploaded file or "external"
-              alt: attrs.alt
-            };
+                alt: attrs.alt
+              };
+            }
+          },
+          localURL: {
+            parseHTML: (element: HTMLElement) => element.getAttribute("localURL")
           }
-        }
-      };
-    }
-  }),
-  ImageUploadTiptapExtension
-];
+        };
+      },
+      addNodeView() {
+        return VueNodeViewRenderer(TiptapImage);
+      }
+    }),
+    ImageUploadExtension.configure({ onImageUploadComplete })
+  ];
+}
 
 export const tiptapRenderedExtensions: Extensions = [
   ...commonExtensions,

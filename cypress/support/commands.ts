@@ -44,12 +44,16 @@ declare global {
        * @example cy.get(".tiptap").pasteImage({filePath: "../fixture/img.jpg", fileName: 'ImageName.jpg'})
        */
       pasteImage(value: { filePath: string; fileName: string }): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Custom child command to simulate a paste event with HTML text
+       * @example cy.get(".tiptap").pasteImage({filePath: "../fixture/img.jpg", fileName: 'ImageName.jpg'})
+       */
+      pasteHTML(filePath: string): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
 
 // Add a child command to simulate a paste event with an image
-// @ts-ignore
 Cypress.Commands.add("pasteImage", { prevSubject: "element" }, (subject, options) => {
   cy.fixture(options.filePath, "base64").then(imageBase64 => {
     // Convert base64 to blob
@@ -61,6 +65,22 @@ Cypress.Commands.add("pasteImage", { prevSubject: "element" }, (subject, options
     // Create a fake ClipboardEvent with a DataTransfer object containing the file
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(file);
+    const pasteEvent = new ClipboardEvent("paste", {
+      clipboardData: dataTransfer,
+      bubbles: true,
+      cancelable: true
+    });
+
+    cy.wrap(subject).invoke("get", 0).invoke("dispatchEvent", pasteEvent);
+  });
+});
+
+// Add a child command to simulate a paste event with HTML text
+Cypress.Commands.add("pasteHTML", { prevSubject: "element" }, (subject, filePath) => {
+  cy.fixture(filePath).then(html => {
+    // Create a fake ClipboardEvent with a DataTransfer object containing the file
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/html", html);
     const pasteEvent = new ClipboardEvent("paste", {
       clipboardData: dataTransfer,
       bubbles: true,

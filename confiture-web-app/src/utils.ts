@@ -334,3 +334,20 @@ export function scrollToHash(hash: string) {
     hashEl.scrollIntoView();
   }
 }
+
+/**
+ * Creates a File object from a given URL
+ *
+ * @returns {Promise<File | null>} the created File or null if any error
+ */
+export async function createFileFromUrl(url: string): Promise<File | null> {
+  let mimeType: string | undefined = undefined;
+  return await fetch(url)
+    .then((res: Response) => {
+      mimeType = res.headers.get("content-type") || undefined;
+      return res.arrayBuffer();
+    })
+    .then((buf: ArrayBuffer) => {
+      return new File([buf], "external", { type: mimeType });
+    });
+}
