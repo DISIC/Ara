@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, ShallowRef, useId, useTemplateRef, watch } from "vue";
+import { onBeforeUnmount, ShallowRef, useTemplateRef, watch } from "vue";
 
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
 import { displayedHeadings, getTiptapEditorExtensions } from "./tiptap-extensions";
@@ -29,8 +29,6 @@ const emit = defineEmits<{
   (event: "image:uploaded", value: string): void;
   (event: "update:modelValue", value: string): void;
 }>();
-
-const uniqueId = useId();
 
 function getContent() {
   let jsonContent = null;
