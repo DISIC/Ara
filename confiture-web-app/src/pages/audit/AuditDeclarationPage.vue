@@ -119,15 +119,7 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const testEnvironmentSelectionRef =
-  ref<InstanceType<typeof TestEnvironmentSelection>>();
-
 function handleSubmit() {
-  // TODO: validate using FormWithValidation
-  if (!testEnvironmentSelectionRef.value?.validate()) {
-    return;
-  }
-
   const data: UpdateAuditRequestData = {
     ...auditStore.currentAudit!,
 
@@ -446,8 +438,7 @@ const isDevMode = useDevMode();
       </div>
     </FieldValidation>
 
-    <!-- TODO: validate using fieldvalidation ? -->
-    <TestEnvironmentSelection ref="testEnvironmentSelectionRef" v-model="environments" />
+    <TestEnvironmentSelection v-model="environments" />
 
     <h2 class="fr-h4 fr-mb-2w">Contenus non accessibles</h2>
 

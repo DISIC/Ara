@@ -6,6 +6,7 @@ import { ARRAY_LENGTH, REQUIRED } from "../../../composables/validation";
 import { Platform } from "../../../enums";
 import { AuditEnvironment } from "../../../types";
 import DsfrField from "../../ui/DsfrField.vue";
+import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
 import FieldValidation from "../../validation/FieldValidation.vue";
 import AuditEnvironmentCheckbox from "../AuditEnvironmentCheckbox.vue";
 import {
@@ -23,10 +24,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", payload: Omit<AuditEnvironment, "id">[]): void;
 }>();
-
-defineExpose({
-  validate
-});
 
 /** List of selected desktop environement combinations */
 const selectedDesktopEnvironments = ref<string[]>(
@@ -61,9 +58,6 @@ watch(
 );
 
 const envPlatformRefs = ref<InstanceType<typeof DsfrField>[]>([]);
-const envOsRefs = ref<InstanceType<typeof DsfrField>[]>([]);
-const envAtRefs = ref<InstanceType<typeof DsfrField>[]>([]);
-const envBrowserRefs = ref<InstanceType<typeof DsfrField>[]>([]);
 const addEnvironmentButtonRef = ref<HTMLButtonElement>();
 
 /**
@@ -160,59 +154,10 @@ function combineEnvironments(
   );
 }
 
-const sectionError = ref<string>();
-const testEnvironmentRef = ref<HTMLDivElement>();
-
-const envPlatformErrors =
-  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
-const envOperatingSystemErrors =
-  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
-const envAssistiveTechnologyErrors =
-  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
-const envBrowserErrors =
-  ref<Array<string | undefined>>(customEnvironments.value.map(() => undefined));
-
-function validate() {
-  let isValid = true;
-
-  const platformIsRequired = REQUIRED("Champ obligatoire. Saisissez l’appareil");
-  const osIsRequired = REQUIRED("Champ obligatoire. Saisissez le logiciel d’exploitation.");
-  const atIsRequired = REQUIRED("Champ obligatoire. Saisissez la technologie d’assistance.");
-  const browserIsRequired = REQUIRED("Champ obligatoire. Saisissez le navigateur.");
-
-  for (let i = customEnvironments.value.length - 1; i >= 0; i--) {
-    const { platform, operatingSystem, assistiveTechnology, browser }
-      = customEnvironments.value[i];
-
-    envPlatformErrors.value[i] = platformIsRequired(platform) || undefined;
-    envOperatingSystemErrors.value[i] =
-      osIsRequired(operatingSystem) || undefined;
-    envAssistiveTechnologyErrors.value[i] =
-      atIsRequired(assistiveTechnology) || undefined;
-    envBrowserErrors.value[i] = browserIsRequired(browser) || undefined;
-
-    if (envBrowserErrors.value[i]) {
-      envBrowserRefs.value.at(i)?.focus();
-      isValid = false;
-    }
-
-    if (envAssistiveTechnologyErrors.value[i]) {
-      envAtRefs.value.at(i)?.focus();
-      isValid = false;
-    }
-
-    if (envOperatingSystemErrors.value[i]) {
-      envOsRefs.value.at(i)?.focus();
-      isValid = false;
-    }
-    if (envPlatformErrors.value[i]) {
-      envPlatformRefs.value.at(i)?.focus();
-      isValid = false;
-    }
-  }
-
-  return isValid;
-}
+const platformValidation = [REQUIRED("Champ obligatoire. Saisissez l’appareil")];
+const osValidation = [REQUIRED("Champ obligatoire. Saisissez le logiciel d’exploitation.")];
+const atValidation = [REQUIRED("Champ obligatoire. Saisissez la technologie d’assistance.")];
+const browserValidation = [REQUIRED("Champ obligatoire. Saisissez le navigateur.")];
 
 const uniqueId = useId();
 const errorId = "error-" + uniqueId;
@@ -283,51 +228,48 @@ const errorId = "error-" + uniqueId;
             Supprimer
           </button>
 
-          <DsfrField
+          <DsfrFieldWithValidation
             :id="`env-device-${i}`"
             ref="envPlatformRefs"
             v-model="env.platform"
+            :validation="platformValidation"
             class="fr-m-0"
             label="Appareil"
             hint="Exemples : mobile, borne interactive"
             type="text"
             :required="customEnvironments.length > 1"
-            :error="envPlatformErrors[i]"
           />
 
-          <DsfrField
+          <DsfrFieldWithValidation
             :id="`env-os-${i}`"
-            ref="envOsRefs"
             v-model="env.operatingSystem"
+            :validation="osValidation"
             class="fr-m-0"
             label="Logiciel d’exploitation"
             hint="Exemple : macOS"
             type="text"
             :required="customEnvironments.length > 1"
-            :error="envOperatingSystemErrors[i]"
           />
 
-          <DsfrField
+          <DsfrFieldWithValidation
             :id="`env-at-${i}`"
-            ref="envAtRefs"
             v-model="env.assistiveTechnology"
+            :validation="atValidation"
             class="fr-m-0"
             label="Technologie d’assistance"
             hint="Exemple : VoiceOver"
             type="text"
             :required="customEnvironments.length > 1"
-            :error="envAssistiveTechnologyErrors[i]"
           />
 
-          <DsfrField
+          <DsfrFieldWithValidation
             :id="`env-browser-${i}`"
-            ref="envBrowserRefs"
             v-model="env.browser"
+            :validation="browserValidation"
             label="Navigateur"
             hint="Exemple : Safari"
             type="text"
             :required="customEnvironments.length > 1"
-            :error="envBrowserErrors[i]"
           />
         </fieldset>
       </div>
