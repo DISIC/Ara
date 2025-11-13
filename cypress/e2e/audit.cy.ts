@@ -746,7 +746,7 @@ describe("Audit", () => {
       cy.get(".criterium-container .tiptap").pasteImage({ filePath: `../fixtures/${fileName}`, fileName });
 
       // Check success message
-      cy.get(".criterium-container [data-image-success-message]").contains(`L’image « ${fileName} » a été correctement insérée`);
+      cy.get(".criterium-container [aria-live='polite']").contains(`L’image « ${fileName} » a été correctement insérée`);
       cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).debug();
       cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).should("exist");
 
