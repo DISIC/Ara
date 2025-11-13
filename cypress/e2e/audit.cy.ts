@@ -716,4 +716,55 @@ describe("Audit", () => {
       cy.get(".criterium-container").should("have.length", 106);
     });
   });
+
+  it("User can upload images in the comment editor", () => {
+    cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.get(".criterium-container").contains("Non conforme").click();
+
+      cy.get(".criterium-container .tiptap[role='textbox']")
+        .clear({ force: true })
+        .type("Il n’y a pas de alt sur l’image du hero");
+
+      // drag a file into the editor
+      cy.log("**drag files**");
+      cy.get(".criterium-container .tiptap[role='textbox']")
+        .selectFile("cypress/fixtures/ara-bleu.jpg", { action: "drag-drop" });
+
+      cy.wait(["@uploadImage", "@updateResults"]);
+
+      // select a single file using the file input (normally triggered by "Insérer une image" button),
+
+      cy.log("**select single files**");
+      cy.contains("Insérer une image").click();
+      cy.get(".criterium-container input[type='file']")
+        // .selectFile("cypress/fixtures/ara-vole.jpg", { force: true });
+        .selectFile("cypress/fixtures/ara-bleu.jpg", { force: true });
+
+      cy.get(".criterium-container img[src^='/uploads/']")
+        .should("have.length", 2);
+
+      cy.wait(["@uploadImage", "@updateResults"]);
+
+      // select multiple files
+      cy.log("**select multiple files**");
+      cy.get(".criterium-container input[type='file']")
+      //  .selectFile(["cypress/fixtures/groupe-ara.jpg", "cypress/fixtures/aras-rouges.jpg"], { force: true });
+        .selectFile(["cypress/fixtures/ara-bleu.jpg", "cypress/fixtures/ara-bleu.jpg"], { force: true });
+
+      cy.get(".criterium-container img[src^='/uploads/']")
+        .should("have.length", 4);
+
+      cy.wait(["@uploadImage", "@uploadImage"]);
+
+      cy.wait("@updateResults");
+
+      // visit report to check images count
+      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
+      cy.get(".tiptap--rendered img").should("have.length", 4);
+    });
+  });
 });
