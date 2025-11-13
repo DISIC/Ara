@@ -209,7 +209,10 @@ export const useResultsStore = defineStore("results", {
   actions: {
     async fetchResults(uniqueId: string) {
       const response = (await ky
-        .get(`/api/audits/${uniqueId}/results`)
+        .get(`/api/audits/${uniqueId}/results`, {
+          // large audits can take a while to fetch on slow connections
+          timeout: 15_000
+        })
         .json()) as CriteriumResult[];
 
       const data: ResultsStoreState["data"] = {};
