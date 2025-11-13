@@ -11,6 +11,7 @@ export interface Props {
   modelValue?: string | null;
   editable?: boolean;
   labelledBy?: string | null;
+  describedBy?: string | null;
   disabled?: boolean;
   editorSize?: "sm" | "lg";
 }
@@ -20,6 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
+  describedBy: null,
   editorSize: "sm"
 });
 
@@ -70,7 +72,6 @@ function setLink() {
 // Editor attributes to create an accessible textarea
 const editorAttributes: any = props.editable
   ? {
-      "aria-describedby": `tiptap-description-${uniqueId}`,
       "aria-multiline": "true",
       "role": "textbox",
       "class": `tiptap--${props.editorSize}`
@@ -81,6 +82,10 @@ const editorAttributes: any = props.editable
 
 if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
+}
+
+if (props.describedBy) {
+  editorAttributes["aria-describedby"] = props.describedBy;
 }
 
 const editor = useEditor({
@@ -133,13 +138,6 @@ defineExpose({
       'tiptap-container--disabled': disabled
     }"
   >
-    <p
-      v-if="editable"
-      :id="`tiptap-description-${uniqueId}`"
-      class="fr-sr-only"
-    >
-      Éditeur de texte riche
-    </p>
     <ul v-if="editable" class="tiptap-buttons">
       <li>
         <ul>
