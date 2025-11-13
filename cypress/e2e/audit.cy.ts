@@ -306,9 +306,6 @@ describe("Audit", () => {
       cy.contains("button", "Copier le lien de l’audit").click();
       // cy.get("@audit").then((audit) => {
       cy.assertClipboardValue(
-        // @ts-ignore
-        // TODO remove `@ts-ignore` when the following issue is fixed:
-        // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
         `http://localhost:3000/audits/${editId}/generation`
       );
       cy.contains(
@@ -717,54 +714,50 @@ describe("Audit", () => {
     });
   });
 
-  it("User can upload images in the comment editor", () => {
+  it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.get(".criterium-container").contains("Non conforme").click();
-
-      cy.get(".criterium-container .tiptap[role='textbox']")
-        .clear({ force: true })
-        .type("Il n’y a pas de alt sur l’image du hero");
-
-      // drag a file into the editor
-      cy.log("**drag files**");
-      cy.get(".criterium-container .tiptap[role='textbox']")
-        .selectFile("cypress/fixtures/ara-bleu.jpg", { action: "drag-drop" });
-
-      cy.wait(["@uploadImage", "@updateResults"]);
-
-      // select a single file using the file input (normally triggered by "Insérer une image" button),
-
-      cy.log("**select single files**");
-      cy.contains("Insérer une image").click();
-      cy.get(".criterium-container input[type='file']")
-        // .selectFile("cypress/fixtures/ara-vole.jpg", { force: true });
-        .selectFile("cypress/fixtures/ara-bleu.jpg", { force: true });
-
-      cy.get(".criterium-container img[src^='/uploads/']")
-        .should("have.length", 2);
-
-      cy.wait(["@uploadImage", "@updateResults"]);
-
-      // select multiple files
-      cy.log("**select multiple files**");
-      cy.get(".criterium-container input[type='file']")
-      //  .selectFile(["cypress/fixtures/groupe-ara.jpg", "cypress/fixtures/aras-rouges.jpg"], { force: true });
-        .selectFile(["cypress/fixtures/ara-bleu.jpg", "cypress/fixtures/ara-bleu.jpg"], { force: true });
-
-      cy.get(".criterium-container img[src^='/uploads/']")
-        .should("have.length", 4);
-
-      cy.wait(["@uploadImage", "@uploadImage"]);
-
       cy.wait("@updateResults");
 
-      // visit report to check images count
+      // Insert an image into the editor with the button
+      cy.log("** Insert 1 image with the button **");
+      cy.contains("Insérer une image").click();
+      cy.get(".criterium-container input[type='file']")
+        .selectFile("cypress/fixtures/aras-rouges.jpg", { force: true });
+
+      // Editor content has changed => results updated
+      cy.wait(["@uploadImage", "@updateResults"]);
+
+      // Drag and drop an image into the editor
+      cy.log("** Drag and drop 1 image **");
+      cy.get(".criterium-container .tiptap")
+        .selectFile("cypress/fixtures/ara-bleu.jpg", { action: "drag-drop" });
+
+      // Editor content has changed => results updated
+      cy.wait(["@uploadImage", "@updateResults"]);
+
+      cy.log("** Paste 1 image from clipboard **");
+      const fileName = "groupe-ara.jpg";
+      cy.get(".criterium-container .tiptap").pasteImage({ filePath: `../fixtures/${fileName}`, fileName });
+
+      // Editor content has changed => results updated
+      cy.wait("@updateResults");
+
+      // Check success message
+      cy.get(".criterium-container [data-image-success-message]").contains(`L’image « ${fileName} » a été correctement insérée`);
+      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).debug();
+      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).should("exist");
+
+      cy.get(".criterium-container img[src^='/uploads/']")
+        .should("have.length", 3);
+
+      // Go to report page to check images count (3)
       cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
-      cy.get(".tiptap--rendered img").should("have.length", 4);
+      cy.get(".tiptap--rendered img").should("have.length", 3);
     });
   });
 });
