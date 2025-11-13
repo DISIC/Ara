@@ -13,6 +13,7 @@ defineProps<{
   modelValue: string | null;
   label: string;
   description: string;
+  showLabel?: boolean;
 }>();
 
 defineEmits(["update:comment"]);
@@ -56,7 +57,7 @@ function announceUploadSuccess(fileName: string) {
 <template>
   <NewFeatureNotification v-if="showNewFeatureNotification" class="fr-mb-5v" @close="closeNotification" />
 
-  <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label fr-sr-only">
+  <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label" :class="showLabel ? 'fr-mb-1v' : 'fr-sr-only'">
     {{ label }}
   </p>
   <p class="fr-sr-only" aria-live="polite">{{ uploadSuccess }}</p>

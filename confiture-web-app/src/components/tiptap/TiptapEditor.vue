@@ -13,7 +13,6 @@ export interface Props {
   labelledBy?: string | null;
   describedBy?: string | null;
   disabled?: boolean;
-  editorSize?: "sm" | "lg";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,8 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
-  describedBy: null,
-  editorSize: "sm"
+  describedBy: null
 });
 
 const emit = defineEmits<{
@@ -74,8 +72,7 @@ function setLink() {
 const editorAttributes: any = props.editable
   ? {
       "aria-multiline": "true",
-      "role": "textbox",
-      "class": `tiptap--${props.editorSize}`
+      "role": "textbox"
     }
   : {
       class: "tiptap--not-editable"
