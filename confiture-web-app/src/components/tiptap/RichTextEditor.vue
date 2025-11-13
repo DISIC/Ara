@@ -2,7 +2,7 @@
 import { ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import NewFeatureNotification, { imageUploadEditorLocalStorageKey } from "../audit/NewFeatureNotification.vue";
+import NewFeatureNotification from "../audit/NewFeatureNotification.vue";
 import TiptapEditor from "./TiptapEditor.vue";
 
 defineOptions({
@@ -28,13 +28,8 @@ const isOffline = useIsOffline();
 const uniqueId = useId();
 
 const richTextEditorRef = ref<InstanceType<typeof TiptapEditor>>();
-// Handle alert to announce images in editor
-// TODO: remove this in february 2026
-const showNewFeatureNotification =
-  ref(!localStorage.getItem(imageUploadEditorLocalStorageKey));
 
 function closeNotification() {
-  showNewFeatureNotification.value = false;
   richTextEditorRef.value?.focusEditor();
 }
 
@@ -55,7 +50,7 @@ function announceUploadSuccess(fileName: string) {
 </script>
 
 <template>
-  <NewFeatureNotification v-if="showNewFeatureNotification" class="fr-mb-5v" @close="closeNotification" />
+  <NewFeatureNotification class="fr-mb-5v" @close="closeNotification" />
 
   <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label" :class="showLabel ? 'fr-mb-1v' : 'fr-sr-only'">
     {{ label }}
