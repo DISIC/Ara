@@ -36,6 +36,21 @@ function closeNotification() {
   showNewFeatureNotification.value = false;
   richTextEditorRef.value?.focusEditor();
 }
+
+const uploadSuccess = ref("");
+
+// Announce upload success to screen readers
+function announceUploadSuccess(fileName: string) {
+  if (fileName === "external") {
+    uploadSuccess.value = "L’image a été correctement insérée";
+  } else {
+    uploadSuccess.value = `L’image « ${fileName} » a été correctement insérée`;
+  }
+
+  setTimeout(() => {
+    uploadSuccess.value = "";
+  }, 3000);
+}
 </script>
 
 <template>
@@ -44,7 +59,7 @@ function closeNotification() {
   <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label fr-sr-only">
     {{ label }}
   </p>
-  <p data-image-success-message class="fr-sr-only" aria-live="polite"></p>
+  <p class="fr-sr-only" aria-live="polite">{{ uploadSuccess }}</p>
   <p :id="`rich-text-editor-description-${uniqueId}`" class="fr-text--xs fr-mb-1w editor-description">{{ description }}</p>
   <TiptapEditor
     v-bind="$attrs"
@@ -56,6 +71,7 @@ function closeNotification() {
     :described-by="`rich-text-editor-description-${uniqueId}`"
     :disabled="isOffline"
     @update:model-value="$emit('update:comment', $event)"
+    @image:uploaded="announceUploadSuccess"
   />
 </template>
 

@@ -89,25 +89,6 @@ if (props.describedBy) {
   editorAttributes["aria-describedby"] = props.describedBy;
 }
 
-// Announce upload success to screen readers
-const onImageUploadComplete = (fileName: string) => {
-  emit("image:uploaded", fileName);
-
-  // TODO: move this code in a component wrapping this one
-  const closest = browseInput.value?.closest(".fr-collapse");
-  const message = closest?.querySelector("[data-image-success-message]");
-  if (message) {
-    // "external" is the file name in Firefox when using drag-and-drop
-    // directly from an external website (with permissive CORS)
-    message.textContent = fileName === "external" ?
-      "L’image a été correctement insérée"
-      : `L’image « ${fileName} » a été correctement insérée`;
-    setTimeout(() => {
-      message.textContent = "";
-    }, 3000);
-  }
-};
-
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
@@ -115,7 +96,7 @@ const editor = useEditor({
   editable: props.editable && !props.disabled,
   content: getContent(),
   extensions: getTiptapEditorExtensions({
-    onImageUploadComplete: onImageUploadComplete
+    onImageUploadComplete: fileName => emit("image:uploaded", fileName)
   }),
   onUpdate({ editor }) {
     // The content has changed.
