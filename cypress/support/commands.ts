@@ -159,4 +159,22 @@ Cypress.Commands.addQuery(
   }
 );
 
+// Override cy.log so that it calls "log" task in headless mode.
+// See "log" task in cypress.config.
+Cypress.Commands.overwrite("log", function (log, ...args) {
+  const indent = "\t"; // You can adjust the number of tabs or spaces here
+  const formattedArgs = args.map((arg) =>
+    typeof arg === "string" ? indent + arg : indent + JSON.stringify(arg)
+  );
+  if (Cypress.browser.isHeadless) {
+    return cy.task("log", formattedArgs, { log: false }).then(() => {
+      return log(...args);
+    });
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(...formattedArgs);
+    return log(...args);
+  }
+});
+
 export {};
