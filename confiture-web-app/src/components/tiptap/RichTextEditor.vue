@@ -56,7 +56,11 @@ function announceUploadSuccess(fileName: string) {
     {{ label }}
   </p>
   <p class="fr-sr-only" aria-live="polite">{{ uploadSuccess }}</p>
-  <p :id="`rich-text-editor-description-${uniqueId}`" class="fr-text--xs fr-mb-1w editor-description">{{ description }}</p>
+  <p :id="`rich-text-editor-description-${uniqueId}`" class="fr-text--xs fr-mb-1w editor-description">
+    {{ description }}
+    <br />
+    Taille maximale par image : 2 Mo. Une seule image peut être ajoutée à la fois.
+  </p>
   <TiptapEditor
     v-bind="$attrs"
     :key="uniqueId"

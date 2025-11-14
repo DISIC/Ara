@@ -97,7 +97,7 @@ const title = "Erreur et recommandation";
       :model-value="comment"
       :label="title"
       class="fr-mb-4w"
-      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction. Taille maximale par image : 2 Mo. Tout format d’image accepté."
+      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
       @update:model-value="$emit('update:comment', $event)"
     />
 
