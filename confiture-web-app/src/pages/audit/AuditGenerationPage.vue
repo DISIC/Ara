@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 import AraTabs from "../../components/audit/AraTabs.vue";
@@ -251,6 +251,8 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(props.uniqueId);
   await resultsStore.fetchResults(props.uniqueId);
+  // wait for rerender before getting ref
+  await nextTick();
   stickyIndicator.value = auditGenerationHeaderRef.value!.stickyIndicator;
   useResizeObserver(stickyIndicator.value, () => {
     stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
