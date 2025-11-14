@@ -21,6 +21,7 @@ function handleImageLoad(e: Event) {
   <node-view-wrapper class="vue-component">
     <img
       ref="imgRef"
+      data-drag-handle
       v-bind="node.attrs"
       :style="node.attrs.localURL ? `background-image: url('${node.attrs.localURL}')` : null"
       :data-loading="node.attrs.localURL ? true : null"
