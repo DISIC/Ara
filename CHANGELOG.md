@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 14/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige la validation de la section environnement de la déclaration ([#1300](https://github.com/DISIC/Ara/pull/1300))
+
 ### 12/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
