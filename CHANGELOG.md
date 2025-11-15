@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 18/11/2025 
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige un bug provoquant l’affichage d’une page d’erreur parfois lorsque l’on quitte la page d’un audit ([#1306](https://github.com/DISIC/Ara/pull/1306))
+
 ## 14/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
