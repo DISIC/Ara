@@ -42,6 +42,11 @@ interface ImageImportPluginOptions {
  * - prevents drag and drop from external websites that block it with CORS
  * - only one image on the same lin (images are block nodes, not inline)
  *
+ * HTML content:
+ * - the HTML content is cleaned up before actually pasted or dropped:
+ *   all images are stripped out
+ * - if images are actually stripped out, notifies it with an error
+ *
  * Ideas for the future:
  * - accept all kinds of formats (ex: PDF)
  * - allow multiple files at the same time
@@ -54,8 +59,6 @@ export class ImageImportPlugin extends Plugin {
       props: {
         handleDrop: (view, event, slice, moved) =>
           this.handleDrop(view, event, slice, moved),
-        transformPastedHTML: (html, view) =>
-          this.transformPasted(html, view),
         handlePaste: (view, event, slice) =>
           this.handlePaste(view, event, slice)
       }
@@ -63,33 +66,6 @@ export class ImageImportPlugin extends Plugin {
   }
 
   private notify = useNotifications();
-
-  /**
-   * Transforms the given HTML text, before it is parsed, for example to clean it up
-   * Here we strip the images out of the HTML content (pasted or dropped)
-   *
-   * If images are actually stripped out, notifies it with an error
-   *
-   * @returns the transformed HTML text (without <img> content)
-   */
-  private transformPasted(html: string, view: EditorView): string {
-    if (!html) {
-      return html;
-    }
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    // Remove all <img> elements
-    const imgs = doc.querySelectorAll("img");
-    if (imgs.length === 1) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_FROM_HTML_ERROR);
-    } else if (imgs.length > 1) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
-    }
-    imgs.forEach(img => img.remove());
-    return doc.body.innerHTML;
-  }
 
   /**
    * handleDrop: called when something is dropped on the editor.
@@ -166,8 +142,10 @@ export class ImageImportPlugin extends Plugin {
       return true;
     }
 
-    // Or browser may pass a list of URIs
-    const uriItems = Array.from(dataTransfer.items).filter((item) => {
+    const dataTransferItems = Array.from(dataTransfer.items);
+
+    // Browser may pass a list of URIs
+    const uriItems = dataTransferItems.filter((item) => {
       return (item.kind === "string" && item.type.match("^text/uri-list"));
     });
     if (uriItems.length > 0) {
@@ -175,8 +153,22 @@ export class ImageImportPlugin extends Plugin {
       this.getFilesFromUriItems(uriItems, (files) => {
         if (files.length < 1) {
           this.notify("error", undefined, FileErrorMessage.FETCH_ERROR);
+        } else {
+          this.handleImagesImport(view, pos, files, options);
         }
-        this.handleImagesImport(view, pos, files, options);
+      });
+      return true;
+    }
+
+    // Browser may pass a list of HTML content items
+    const htmlItems = dataTransferItems.filter((item) => {
+      return (item.kind === "string" && item.type.match("^text/html"));
+    });
+    if (htmlItems.length > 0) {
+      htmlItems.forEach(htmlItem => {
+        htmlItem.getAsString((html) =>
+          view.pasteHTML(this.removeImgsFromHTML(html))
+        );
       });
       return true;
     }
@@ -387,6 +379,13 @@ export class ImageImportPlugin extends Plugin {
     return url;
   }
 
+  /**
+   * Given a list of DataTransferItem elements, invokes the given onComplete
+   * callback with the successfully created files.
+   *
+   * The files that could not be created (fetch error?) are dropped, i.e. not
+   * in the `files` array passed to the onComplete callback
+   */
   private getFilesFromUriItems(
     uriItems: DataTransferItem[],
     onComplete: (files: File[]) => void
@@ -412,6 +411,26 @@ export class ImageImportPlugin extends Plugin {
       const files = results.filter((file): file is File => file !== null);
       onComplete(files);
     });
+  }
+
+  private removeImgsFromHTML(html: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const imgs = Array.from(doc.querySelectorAll("img"));
+    const urls = imgs.map((img) => img.src);
+
+    // TODO: import images that can be imported
+
+    // Remove all <img> elements
+    imgs.forEach(img => img.remove());
+    if (imgs.length === 1) {
+      this.notify("error", undefined, FileErrorMessage.UPLOAD_FROM_HTML_ERROR);
+    } else if (imgs.length > 1) {
+      this.notify("error", undefined, FileErrorMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
+    }
+
+    return doc.body.innerHTML;
   }
 
   /**
