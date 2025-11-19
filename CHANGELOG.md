@@ -6,6 +6,10 @@
 
 ## 19/11/2025
 
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image » ([#1270](https://github.com/DISIC/Ara/pull/1236))
+
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Ordonne les audits sur le tableau de bord et met ceux avec une date inconnue à la fin de la liste ([#1304](https://github.com/DISIC/Ara/pull/1304))
