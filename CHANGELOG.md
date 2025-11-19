@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 19/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Ordonne les audits sur le tableau de bord et met ceux avec une date inconnue à la fin de la liste ([#1304](https://github.com/DISIC/Ara/pull/1304))
+
 ## 14/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
