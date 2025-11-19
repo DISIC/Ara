@@ -251,14 +251,19 @@ useWrappedFetch(async () => {
   resultsStore.$reset();
   await auditStore.fetchAuditIfNeeded(props.uniqueId);
   await resultsStore.fetchResults(props.uniqueId);
+
   // wait for rerender before getting ref
   await nextTick();
-  stickyIndicator.value = auditGenerationHeaderRef.value!.stickyIndicator;
-  useResizeObserver(stickyIndicator.value, () => {
-    stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
-      stickyIndicator!.value.clientHeight
-    }px)`;
-  });
+  stickyIndicator.value = auditGenerationHeaderRef.value?.stickyIndicator;
+
+  // if the user navigated away during fetching, it’s possible the stickyIndicator is not in the DOM anymore
+  if (stickyIndicator.value) {
+    useResizeObserver(stickyIndicator.value, () => {
+      stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
+        stickyIndicator!.value.clientHeight
+      }px)`;
+    });
+  }
 }, false);
 
 onBeforeRouteLeave(() => {
