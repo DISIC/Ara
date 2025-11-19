@@ -17,6 +17,7 @@ const title = "Points d’amélioration";
 <template>
   <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
     <RichTextEditor
+      type="criterium"
       :model-value="comment"
       :label="title"
       description="Vous pouvez ajouter une remarque si nécessaire."

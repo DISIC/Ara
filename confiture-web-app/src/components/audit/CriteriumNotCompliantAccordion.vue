@@ -94,6 +94,7 @@ const title = "Erreur et recommandation";
   >
     <RichTextEditor
       ref="commentEditorRef"
+      type="criterium"
       :model-value="comment"
       :label="title"
       class="fr-mb-4w"

@@ -106,7 +106,7 @@ function handleDeleteFile(file: NotesFile) {
 
               <RichTextEditor
                 v-model="notes"
-                show-label
+                type="notes"
                 label="Points à signaler ne concernant pas l’accessibilité du site audité"
                 description="Exemple : temps de chargement excessif sur certaines pages, incohérences dans l'usage des couleurs, bug"
                 @update:model-value="handleNotesChange"

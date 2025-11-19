@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, useId } from "vue";
+import { computed, ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import NewFeatureNotification from "../audit/NewFeatureNotification.vue";
@@ -9,11 +9,11 @@ defineOptions({
   inheritAttrs: false
 });
 
-defineProps<{
+const props = defineProps<{
   modelValue: string | null;
   label: string;
   description: string;
-  showLabel?: boolean;
+  type: "criterium" | "notes";
 }>();
 
 defineEmits(["update:comment"]);
@@ -28,6 +28,14 @@ const isOffline = useIsOffline();
 const uniqueId = useId();
 
 const richTextEditorRef = ref<InstanceType<typeof TiptapEditor>>();
+
+const showLabel = computed(() => props.type === "notes");
+const newFeatureTitle = "ajoutez vos images dans les zones de texte";
+
+const newFeatureDescription = computed(() => props.type === "criterium"
+  ? `<p>L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
+<p class="fr-mt-3w"><em>À noter : les images ajoutées lors de vos précédents audits via le composant « Ajouter une image d’exemple » sont conservées sous la zone de texte.</em></p>`
+  : `<p>Vous pouvez maintenant ajouter des images dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>`);
 
 function closeNotification() {
   richTextEditorRef.value?.focusEditor();
@@ -50,7 +58,12 @@ function announceUploadSuccess(fileName: string) {
 </script>
 
 <template>
-  <NewFeatureNotification class="fr-mb-5v" @close="closeNotification" />
+  <NewFeatureNotification
+    class="fr-mb-5v"
+    :title="newFeatureTitle"
+    :description="newFeatureDescription"
+    @close="closeNotification"
+  />
 
   <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label" :class="showLabel ? 'fr-mb-1v' : 'fr-sr-only'">
     {{ label }}

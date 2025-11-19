@@ -5,6 +5,11 @@ export const imageUploadEditorLocalStorageKey = "ara:hide-image-upload-editor-al
 <script setup lang="ts">
 import { ref } from "vue";
 
+defineProps<{
+  title: string;
+  description: string;
+}>();
+
 const emit = defineEmits<{
   close: [];
 }>();
@@ -24,8 +29,8 @@ function closeNotification() {
 
 <template>
   <div v-if="showNewFeatureNotification" class="fr-alert fr-alert--info fr-pb-2w notification">
-    <h3 class="fr-alert__title">Nouveauté : ajoutez vos images dans les zones de texte</h3>
-    <p>L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
+    <h3 class="fr-alert__title">Nouveauté : {{ title }}</h3>
+    <div v-html="description"></div>
     <button class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm notification-action" @click="closeNotification">Ne plus afficher</button>
   </div>
 </template>
