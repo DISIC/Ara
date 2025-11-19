@@ -101,6 +101,8 @@ const requirementClass = computed(() => {
           v-for="requirement in requirements"
           :key="requirement"
           :class="`fr-message ${requirementClass}`"
+          data-fr-valid="validé"
+          data-fr-error="en erreur"
         >
           {{ requirement }}
         </p>
