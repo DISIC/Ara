@@ -1,7 +1,7 @@
 import { captureException, Scope } from "@sentry/vue";
 import { JSONContent } from "@tiptap/vue-3";
 import jwtDecode from "jwt-decode";
-import { HTTPError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
@@ -248,13 +248,20 @@ export function getUploadUrl(key: string): string {
 
 export async function handleFileUploadError(
   error: Error
-): Promise<FileErrorMessage | null> {
-  let errorType: FileErrorMessage | null = null;
-  if (!(error instanceof HTTPError)) {
-    return null;
+): Promise<FileErrorMessage> {
+  let errorType: FileErrorMessage;
+
+  if (error instanceof TimeoutError) {
+    return FileErrorMessage.UPLOAD_TIMEOUT;
   }
+
+  if (!(error instanceof HTTPError)) {
+    captureWithPayloads(error);
+    return FileErrorMessage.UNKNOWN_ERROR;
+  }
+
   if (error.response.status === 413) {
-    errorType = FileErrorMessage.UPLOAD_SIZE;
+    return FileErrorMessage.UPLOAD_SIZE;
   }
 
   // Unprocessable Entity
@@ -266,11 +273,11 @@ export async function handleFileUploadError(
     } else if (body.message.includes("expected size")) {
       errorType = FileErrorMessage.UPLOAD_SIZE;
     } else {
-      errorType = FileErrorMessage.UPLOAD_UNKNOWN;
+      errorType = FileErrorMessage.UNKNOWN_ERROR;
       captureWithPayloads(error);
     }
   } else {
-    errorType = FileErrorMessage.UPLOAD_UNKNOWN;
+    errorType = FileErrorMessage.UNKNOWN_ERROR;
     captureWithPayloads(error);
   }
 
@@ -284,7 +291,7 @@ export async function handleFileDeleteError(
     return null;
   }
 
-  return FileErrorMessage.DELETE_UNKNOWN;
+  return FileErrorMessage.UNKNOWN_ERROR;
 }
 
 /** Check if a tiptap document string corresponds to an empty document. */
@@ -301,11 +308,10 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  if (!parsedJson.content?.at(0)?.content) {
-    return true;
-  }
+  const containsImage = jsonString.includes("\"type\":\"image\"");
+  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
 
-  return false;
+  return !containsImage && !containsText;
 }
 
 export function getScrollBehavior(): ScrollBehavior {
@@ -327,4 +333,21 @@ export function scrollToHash(hash: string) {
     initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
+}
+
+/**
+ * Creates a File object from a given URL
+ *
+ * @returns {Promise<File | null>} the created File or null if any error
+ */
+export async function createFileFromUrl(url: string): Promise<File | null> {
+  let mimeType: string | undefined = undefined;
+  return await fetch(url)
+    .then((res: Response) => {
+      mimeType = res.headers.get("content-type") || undefined;
+      return res.arrayBuffer();
+    })
+    .then((buf: ArrayBuffer) => {
+      return new File([buf], "external", { type: mimeType });
+    });
 }

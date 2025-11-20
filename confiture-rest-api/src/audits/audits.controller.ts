@@ -206,6 +206,27 @@ export class AuditsController {
     return await this.auditService.saveNotesFile(uniqueId, file);
   }
 
+  @Post("/editor/images")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiCreatedResponse({ type: String, description: "Key of uploaded image" })
+  uploadEditorImage(@UploadedFile(
+    new ParseFilePipeBuilder()
+      .addMaxSizeValidator({
+        // **Important note:**
+        // In production max upload size could be set by several config parameters (Nginx, Kubernetes, etc.).
+        // Currently, `nginx.ingress.kubernetes.io/proxy-body-size = "2m"` is the one effective in
+        // [DesignGouv-Confiture-GitOps/frontend/values-dinum.yaml](https://github.com/DISIC/DesignGouv-Confiture-GitOps/blob/main/frontend/values-dinum.yaml)
+        maxSize: 2_000_000
+      })
+      .build({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+      })
+  )
+    file: Express.Multer.File
+  ): Promise<string> {
+    return this.auditService.uploadEditorImage(file);
+  }
+
   @Delete("/:uniqueId/results/examples/:exampleId")
   async deleteExampleImage(
     @Param("uniqueId") uniqueId: string,

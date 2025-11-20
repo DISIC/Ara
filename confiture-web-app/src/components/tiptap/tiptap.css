@@ -18,6 +18,33 @@
   padding: 0.5rem;
 }
 
+.tiptap img:not(.ProseMirror-widget) {
+  background-size: calc(100% - 1rem);
+  background-position: 0.5rem 0.5rem;
+  background-repeat: no-repeat;
+  object-position: -99999px 99999px;
+  transition:
+    opacity 1s ease 0.1s,
+    color 1s ease 0.1s;
+}
+
+.tiptap img:not(.ProseMirror-widget)[data-loading="true"] {
+  opacity: 0.3;
+  color: color-mix(in srgb, currentColor 0%, transparent);
+}
+
+.tiptap img:not(.ProseMirror-widget):not([data-loading="true"]) {
+  object-position: center center;
+  opacity: 1;
+  color: revert;
+}
+
+.tiptap--rendered img {
+  cursor: initial;
+  padding: 0;
+  border-radius: 0;
+}
+
 .tiptap:focus,
 .tiptap:focus-visible {
   outline-width: 2px !important;
@@ -25,7 +52,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tiptap img:hover {
+  .tiptap:not(.tiptap--rendered) img:hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
 }

@@ -8,7 +8,7 @@ import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { NotesFile, StoreName } from "../../types";
 import { getUploadUrl, handleFileDeleteError, handleFileUploadError } from "../../utils";
-import TiptapEditor from "../tiptap/TiptapEditor.vue";
+import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import SaveIndicator from "./SaveIndicator.vue";
@@ -103,18 +103,12 @@ function handleDeleteFile(file: NotesFile) {
                   Vos observations seront affichées dans le rapport d’audit.
                 </p>
               </div>
-              <p id="audit-notes" class="fr-label fr-mb-1w">
-                Points à signaler ne concernant pas l’accessibilité du site
-                audité
-                <span class="fr-hint-text fr-mt-1v">Exemple : temps de chargement excessif sur certaines pages,
-                  incohérences dans l'usage des couleurs, bug</span>
-              </p>
-              <TiptapEditor
+
+              <RichTextEditor
                 v-model="notes"
-                class="fr-mb-4w"
-                labelled-by="audit-notes"
-                :disabled="isOffline"
-                editor-size="lg"
+                type="notes"
+                label="Points à signaler ne concernant pas l’accessibilité du site audité"
+                description="Exemple : temps de chargement excessif sur certaines pages, incohérences dans l'usage des couleurs, bug"
                 @update:model-value="handleNotesChange"
               />
 

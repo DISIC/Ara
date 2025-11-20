@@ -5,8 +5,8 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
 import { formatUserImpact, getUploadUrl } from "../../utils";
-import TiptapEditor from "../tiptap/TiptapEditor.vue";
-import FileUpload from "../ui/FileUpload.vue";
+import RichTextEditor from "../tiptap/RichTextEditor.vue";
+import FileList from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
@@ -27,12 +27,11 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "upload-file", payload: File): void;
   (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
-defineExpose({ onFileRequestFinished, disclose });
+defineExpose({ disclose });
 
 const userImpacts: Array<{
   label: string;
@@ -58,22 +57,12 @@ const userImpacts: Array<{
 
 const isOffline = useIsOffline();
 
-const fileUpload = ref<InstanceType<typeof FileUpload>>();
-
-function handleUploadFile(image: File) {
-  emit("upload-file", image);
-}
-
 function handleDeleteFile(image: ExampleImageFile) {
   emit("delete-file", image);
 }
 
-function onFileRequestFinished() {
-  fileUpload.value?.onFileRequestFinished();
-}
-
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
+const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -103,38 +92,31 @@ const title = "Erreur et recommandation";
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
-    <!-- COMMENT -->
-    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
-    </p>
-    <TiptapEditor
-      :key="id"
+    <RichTextEditor
       ref="commentEditorRef"
-      class="fr-mb-4w"
+      type="criterium"
       :model-value="comment"
-      :labelled-by="`criterum-comment-field-${id}`"
-      :disabled="isOffline"
+      :label="title"
+      class="fr-mb-4w"
+      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
       @update:model-value="$emit('update:comment', $event)"
     />
 
-    <!-- FILE -->
-    <FileUpload
+    <!-- FILES -->
+    <FileList
+      v-if="exampleImages.length"
       ref="fileUpload"
       class="fr-mb-4w"
-      :accepted-formats="['jpg', 'jpeg', 'png']"
-      :audit-files="exampleImages.map(f => ({
+      :files="exampleImages.map(f => ({
         ...f,
         thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         filename: f.originalFilename,
         url: getUploadUrl(f.key)
       }))"
-      :multiple="true"
-      :error-message="errorMessage"
       title="Ajouter des images d’exemple"
-      @delete-file="handleDeleteFile(
-        exampleImages.find(f => f.key === $event.key)!
+      @delete="handleDeleteFile(
+        exampleImages.find(f => f.key === $event)!
       )"
-      @upload-file="handleUploadFile"
     />
 
     <!-- USER IMPACT -->
