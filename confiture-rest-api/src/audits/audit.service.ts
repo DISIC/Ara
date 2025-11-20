@@ -4,10 +4,10 @@ import {
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  Prisma,
-  ExampleImageFile
+  ExampleImageFile,
+  Prisma
 } from "@prisma/client";
-import { omit, orderBy, pick, sortBy, setWith, uniqBy, partition } from "lodash";
+import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
@@ -262,77 +262,63 @@ export class AuditService {
       const updatedPages = orderedPages.filter((p) => p.id);
       const newPages = orderedPages.filter((p) => !p.id);
 
-      const [audit] = await this.prisma.$transaction([
-        this.prisma.audit.update({
-          where: { editUniqueId: uniqueId },
-          data: {
-            procedureName: data.procedureName,
-            procedureUrl: data.procedureUrl,
+      const previousAudit = await this.prisma.audit.findUnique({
+        where: {
+          editUniqueId: uniqueId
+        },
+        include: AUDIT_EDIT_INCLUDE
+      });
 
-            initiator: data.initiator,
+      const audit = await this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: {
+          procedureName: data.procedureName,
+          procedureUrl: data.procedureUrl,
 
-            auditorEmail: data.auditorEmail,
-            auditorName: data.auditorName,
-            auditorOrganisation: data.auditorOrganisation,
+          initiator: data.initiator,
 
-            contactName: data.contactName,
-            contactEmail: data.contactEmail,
-            contactFormUrl: data.contactFormUrl,
+          auditorEmail: data.auditorEmail,
+          auditorName: data.auditorName,
+          auditorOrganisation: data.auditorOrganisation,
 
-            technologies: data.technologies,
+          contactName: data.contactName,
+          contactEmail: data.contactEmail,
+          contactFormUrl: data.contactFormUrl,
 
-            tools: data.tools,
+          technologies: data.technologies,
 
-            // recipients: {
-            //   deleteMany: {
-            //     email: {
-            //       notIn: data.recipients.map((r) => r.email),
-            //     },
-            //   },
+          tools: data.tools,
 
-            //   // create or update recipients
-            //   upsert: data.recipients.map((recipient) => ({
-            //     where: {
-            //       email_auditUniqueId: {
-            //         auditUniqueId: uniqueId,
-            //         email: recipient.email,
-            //       },
-            //     },
-            //     create: recipient,
-            //     update: recipient,
-            //   })),
-            // },
+          auditType: data.auditType,
 
-            auditType: data.auditType,
-
-            environments: {
-              deleteMany: {
-                OR: [
-                  {
-                    platform: {
-                      notIn: data.environments.map((e) => e.platform)
-                    }
-                  },
-                  {
-                    operatingSystem: {
-                      notIn: data.environments.map((e) => e.operatingSystem)
-                    }
-                  },
-                  {
-                    assistiveTechnology: {
-                      notIn: data.environments.map((e) => e.assistiveTechnology)
-                    }
-                  },
-                  {
-                    browser: {
-                      notIn: data.environments.map((e) => e.browser)
-                    }
+          environments: {
+            deleteMany: {
+              OR: [
+                {
+                  platform: {
+                    notIn: data.environments.map((e) => e.platform)
                   }
-                ]
-              },
-              upsert: data.environments.map((environment) => ({
-                where: {
-                  platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
+                },
+                {
+                  operatingSystem: {
+                    notIn: data.environments.map((e) => e.operatingSystem)
+                  }
+                },
+                {
+                  assistiveTechnology: {
+                    notIn: data.environments.map((e) => e.assistiveTechnology)
+                  }
+                },
+                {
+                  browser: {
+                    notIn: data.environments.map((e) => e.browser)
+                  }
+                }
+              ]
+            },
+            upsert: data.environments.map((environment) => ({
+              where: {
+                platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
                     {
                       auditUniqueId: uniqueId,
                       platform: environment.platform,
@@ -340,43 +326,54 @@ export class AuditService {
                       assistiveTechnology: environment.assistiveTechnology,
                       browser: environment.browser
                     }
-                },
-                create: environment,
-                update: environment
-              }))
-            },
-            pages: {
-              deleteMany: {
-                id: {
-                  notIn: updatedPages.map((p) => p.id)
-                }
               },
-              update: updatedPages.map((p) => ({
-                where: { id: p.id },
-                data: {
-                  order: p.order,
-                  name: p.name,
-                  url: p.url
-                }
-              })),
-              createMany: {
-                data: newPages.map((p) => ({
-                  order: p.order,
-                  name: p.name,
-                  url: p.url
-                }))
+              create: environment,
+              update: environment
+            }))
+          },
+          pages: {
+            deleteMany: {
+              id: {
+                notIn: updatedPages.map((p) => p.id)
               }
             },
-            notCompliantContent: data.notCompliantContent,
-            derogatedContent: data.derogatedContent,
-            notInScopeContent: data.notInScopeContent,
-            notes: data.notes,
-            transverseElements: data.transverseElements
+            update: updatedPages.map((p) => ({
+              where: { id: p.id },
+              data: {
+                order: p.order,
+                name: p.name,
+                url: p.url
+              }
+            })),
+            createMany: {
+              data: newPages.map((p) => ({
+                order: p.order,
+                name: p.name,
+                url: p.url
+              }))
+            }
           },
-          include: AUDIT_EDIT_INCLUDE
-        }),
-        this.updateAuditEditDate(uniqueId)
-      ]);
+          notCompliantContent: data.notCompliantContent,
+          derogatedContent: data.derogatedContent,
+          notInScopeContent: data.notInScopeContent,
+          notes: data.notes,
+          transverseElements: data.transverseElements
+        },
+        include: AUDIT_EDIT_INCLUDE
+      });
+
+      // check the diffenences between the audit aften and before the update
+      const changerProperties =
+        _
+          .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
+          .map(entries => entries[0]);
+
+      // update audit edition date only if a property other than below has been changed
+      const ignoredChanges = ["auditorName", "procedureName"];
+      if (!changerProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
+        await this.updateAuditEditDate(uniqueId);
+      }
+
       return audit;
     } catch (e) {
       // Audit does not exist
