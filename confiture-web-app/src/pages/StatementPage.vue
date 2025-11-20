@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import CopyIcon from "../components/icons/CopyIcon.vue";
 import PageMeta from "../components/PageMeta";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
+import TopLink from "../components/ui/TopLink.vue";
 import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
@@ -364,6 +365,10 @@ const siteUrl = computed(() => {
             </li>
           </ul>
         </div>
+
+        <div class="top-link">
+          <TopLink top-margin="3rem" />
+        </div>
       </div>
     </template>
   </template>
@@ -385,5 +390,9 @@ const siteUrl = computed(() => {
 .mailing-address {
   display: inline-block;
   font-style: italic;
+}
+
+.top-link {
+  text-align: end;
 }
 </style>
