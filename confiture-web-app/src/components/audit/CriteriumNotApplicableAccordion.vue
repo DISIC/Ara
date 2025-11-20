@@ -14,16 +14,17 @@ defineEmits<{
   (e: "update:comment", payload: string): void;
 }>();
 
+const baseTitle = "Commentaire";
 const title = computed(() => {
-  return `Commentaire (${Number(!isTiptapDocumentEmpty(props.comment))})`;
+  return `${baseTitle} (${Number(!isTiptapDocumentEmpty(props.comment))})`;
 });
 </script>
 
 <template>
-  <!-- <template #title>
-    {{ title }} (<strong v-if="isFilledIn">1</strong><template v-else>0</template>)
-  </template> -->
   <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
+    <template #title>
+      {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)"> (1)</strong><template v-else> (0)</template>
+    </template>
     <RichTextEditor
       type="criterium"
       :model-value="comment"

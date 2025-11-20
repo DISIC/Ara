@@ -89,8 +89,9 @@ const isFilledIn = computed(() => {
     || !!props.userImpact;
 });
 
+const baseTitle = "Erreur et recommandation";
 const title = computed(() => {
-  return `Erreur et recommandation (${Number(isFilledIn.value)})`;
+  return `${baseTitle} (${Number(isFilledIn.value)})`;
 });
 </script>
 
@@ -101,6 +102,9 @@ const title = computed(() => {
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
+    <template #title>
+      {{ baseTitle }}<strong v-if="isFilledIn"> (1)</strong><template v-else> (0)</template>
+    </template>
     <RichTextEditor
       ref="commentEditorRef"
       type="criterium"
