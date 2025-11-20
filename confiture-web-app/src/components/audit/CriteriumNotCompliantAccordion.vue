@@ -89,9 +89,7 @@ const isFilledIn = computed(() => {
     || !!props.userImpact;
 });
 
-const title = computed(() => {
-  return `Erreur et recommandation (${Number(isFilledIn.value)})`;
-});
+const title = "Erreur et recommandation";
 </script>
 
 <template>

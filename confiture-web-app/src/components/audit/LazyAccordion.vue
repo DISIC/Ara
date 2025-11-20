@@ -44,7 +44,8 @@ function onDisclose() {
           aria-expanded="false"
           :aria-controls="`accordion-${uniqueId}`"
         >
-          {{ title }}
+          <slot v-if="$slots.title" name="title"></slot>
+          <template v-else>{{ title }}</template>
         </button>
       </span>
       <div
