@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
-import { formatUserImpact, getUploadUrl } from "../../utils";
+import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -83,13 +83,15 @@ function lazyAccordionOpened() {
 }
 
 const isFilledIn = computed(() => {
-  return !!props.comment
+  return !isTiptapDocumentEmpty(props.comment)
     || props.exampleImages.length
     || props.quickWin
     || !!props.userImpact;
 });
 
-const title = "Erreur et recommandation";
+const title = computed(() => {
+  return `Erreur et recommandation (${Number(isFilledIn.value)})`;
+});
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
@@ -14,7 +15,7 @@ defineEmits<{
 }>();
 
 const title = computed(() => {
-  return `Points d’amélioration (${Number(!!props.comment)})`;
+  return `Points d’amélioration (${Number(!isTiptapDocumentEmpty(props.comment))})`;
 });
 </script>
 
