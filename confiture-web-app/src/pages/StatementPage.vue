@@ -96,10 +96,10 @@ const siteUrl = computed(() => {
 <template>
   <template v-if="report.data">
     <PageMeta
-      :title="`Publier la déclaration d’accessibilité de ${report.data.procedureName}`"
+      :title="`Déclaration d’accessibilité à publier de ${report.data.procedureName}`"
     />
 
-    <h1 class="fr-mb-4w">Publier la déclaration d’accessibilité</h1>
+    <h1 class="fr-mb-4w">Déclaration d’accessibilité à publier</h1>
 
     <div v-if="!statementIsPublished" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
@@ -133,7 +133,7 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-1v">
-        URL du site :
+        URL du site audité :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -142,13 +142,12 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-9w">
-        Rapport d’audit :
         <RouterLink
           class="fr-link"
           target="_blank"
           :to="{ name: 'report', params: { uniqueId } }"
         >
-          accéder au rapport d’audit
+          Accéder au rapport d’audit
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
@@ -170,7 +169,7 @@ const siteUrl = computed(() => {
           </li>
         </ol>
 
-        <h2>Code de la déclaration</h2>
+        <h2>Contenu à intégrer sur le site audité</h2>
 
         <p>
           Cette déclaration d’accessibilité adopte un format obligatoire donné
