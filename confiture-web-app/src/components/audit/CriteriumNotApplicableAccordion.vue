@@ -21,7 +21,7 @@ const title = computed(() => {
 </script>
 
 <template>
-  <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
+  <LazyAccordion disclose-color="var(--background-default-grey)">
     <template #title>
       {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)"> (1)</strong><template v-else> (0)</template>
     </template>

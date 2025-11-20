@@ -98,7 +98,6 @@ const title = computed(() => {
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    :title="title"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >

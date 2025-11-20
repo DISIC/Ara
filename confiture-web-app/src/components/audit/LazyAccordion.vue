@@ -3,7 +3,7 @@ import { ref, useId } from "vue";
 
 defineProps<{
   /** Label of the accordion toggle button. */
-  title: string;
+  title?: string;
   /** When the accordion is disclosed, change the background color. */
   discloseColor?: string;
 }>();
