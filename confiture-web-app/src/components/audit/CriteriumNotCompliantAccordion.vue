@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -20,7 +20,7 @@ export interface Props {
   userImpact: CriterionResultUserImpact | null;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
@@ -82,7 +82,16 @@ function lazyAccordionOpened() {
   hasJustBeenSetAsNotCompliant = false;
 }
 
-const title = "Erreur et recommandation";
+const isFilledIn = computed(() => {
+  return !!props.comment
+    || props.exampleImages.length
+    || props.quickWin
+    || !!props.userImpact;
+});
+
+const title = computed(() => {
+  return `Erreur et recommandation (${Number(isFilledIn.value)})`;
+});
 </script>
 
 <template>

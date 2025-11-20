@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
   comment: string | null;
 }>();
@@ -11,7 +13,9 @@ defineEmits<{
   (e: "update:comment", payload: string): void;
 }>();
 
-const title = "Commentaire";
+const title = computed(() => {
+  return `Commentaire (${Number(!!props.comment)})`;
+});
 </script>
 
 <template>
