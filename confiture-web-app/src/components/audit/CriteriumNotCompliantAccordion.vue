@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
-import { formatUserImpact, getUploadUrl } from "../../utils";
+import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -20,7 +20,7 @@ export interface Props {
   userImpact: CriterionResultUserImpact | null;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
@@ -82,16 +82,28 @@ function lazyAccordionOpened() {
   hasJustBeenSetAsNotCompliant = false;
 }
 
-const title = "Erreur et recommandation";
+const isFilledIn = computed(() => {
+  return !isTiptapDocumentEmpty(props.comment)
+    || props.exampleImages.length
+    || props.quickWin
+    || !!props.userImpact;
+});
+
+const baseTitle = "Erreur et recommandation";
+const title = computed(() => {
+  return `${baseTitle} (${Number(isFilledIn.value)})`;
+});
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    :title="title"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
+    <template #title>
+      {{ baseTitle }}<strong v-if="isFilledIn"> (1)</strong><template v-else> (0)</template>
+    </template>
     <RichTextEditor
       ref="commentEditorRef"
       type="criterium"
