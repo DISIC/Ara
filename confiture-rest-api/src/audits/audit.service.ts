@@ -800,29 +800,28 @@ export class AuditService {
       return;
     }
 
-    const results = await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          OR: [
-            {
-              auditUniqueId: audit.editUniqueId
-            },
-            {
-              auditTransverse: {
-                editUniqueId: audit.editUniqueId
-              }
-            }
-          ]
+    const results = await Promise.all([
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: audit.editUniqueId
+          },
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
-        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
-          criterium: c.criterium,
-          topic: c.topic
-        }))
-      },
-      include: {
-        exampleImages: true
-      }
-    });
+        include: {
+          exampleImages: true
+        }
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          pageId: audit.transverseElementsPageId,
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      })
+    ]).then(results => results.flat());
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
       (acc, c) => {
