@@ -66,7 +66,7 @@ const bottomLinks = [
         </div>
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
-            Ara est un service en ligne conçu et developpé par <a
+            Ara est un service en ligne conçu et développé par <a
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
