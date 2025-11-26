@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
+import { isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
   comment: string | null;
 }>();
@@ -11,11 +14,17 @@ defineEmits<{
   (e: "update:comment", payload: string): void;
 }>();
 
-const title = "Commentaire";
+const baseTitle = "Commentaire";
+const title = computed(() => {
+  return `${baseTitle} (${Number(!isTiptapDocumentEmpty(props.comment))})`;
+});
 </script>
 
 <template>
-  <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
+  <LazyAccordion disclose-color="var(--background-default-grey)">
+    <template #title>
+      {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)"> (1)</strong><template v-else> (0)</template>
+    </template>
     <RichTextEditor
       type="criterium"
       :model-value="comment"

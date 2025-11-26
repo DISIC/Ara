@@ -3,7 +3,7 @@ import { ref, useId } from "vue";
 
 defineProps<{
   /** Label of the accordion toggle button. */
-  title: string;
+  title?: string;
   /** When the accordion is disclosed, change the background color. */
   discloseColor?: string;
 }>();
@@ -44,7 +44,8 @@ function onDisclose() {
           aria-expanded="false"
           :aria-controls="`accordion-${uniqueId}`"
         >
-          {{ title }}
+          <slot v-if="$slots.title" name="title"></slot>
+          <template v-else>{{ title }}</template>
         </button>
       </span>
       <div
