@@ -14,7 +14,7 @@ const reportStore = useReportStore();
   <section class="fr-mx-auto content">
     <h1>Contact</h1>
     <p>
-      Ara est un service en ligne conçu et developpé par <a
+      Ara est un service en ligne conçu et développé par <a
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
