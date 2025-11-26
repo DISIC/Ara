@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 26/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le libellé des titres de la page de déclaration d’accessibilité ([#1280](https://github.com/DISIC/Ara/pull/1280))
+
 ## 19/11/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
