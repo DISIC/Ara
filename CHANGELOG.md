@@ -10,6 +10,10 @@
 
 - Corrige le libellé des titres de la page de déclaration d’accessibilité ([#1280](https://github.com/DISIC/Ara/pull/1280))
 
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Améliore le temps de chargement du rapport pour les audits contenant de nombreuses pages ([#1313](https://github.com/DISIC/Ara/pull/1313))
+
 ## 19/11/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
