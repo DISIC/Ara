@@ -155,6 +155,7 @@ export function useFileHandler() {
     uploadCriteriumFile,
     deleteCriteriumAuditFile,
     uploadGlobalFile,
-    deleteGlobalAuditFile
+    deleteGlobalAuditFile,
+    handleFileUploadError
   };
 }

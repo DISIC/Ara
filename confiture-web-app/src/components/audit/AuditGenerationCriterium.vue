@@ -15,9 +15,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus
 } from "../../types";
-import {
-  formatStatus
-} from "../../utils";
+import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";

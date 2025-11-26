@@ -7,7 +7,7 @@ import {
   Prisma,
   ExampleImageFile
 } from "@prisma/client";
-import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
+import { omit, orderBy, pick, sortBy, setWith, uniqBy, partition } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
@@ -597,6 +597,16 @@ export class AuditService {
     });
 
     return noteFile;
+  }
+
+  async uploadEditorImage(file: Express.Multer.File) {
+    const randomPrefix = nanoid();
+
+    const key = `editor/${randomPrefix}/${file.originalname}`;
+
+    await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
+
+    return key;
   }
 
   /**
@@ -1465,6 +1475,13 @@ export class AuditService {
       };
     });
 
-    return orderBy(unorderedAudits, (a) => a.creationDate, ["desc"]);
+    // Separate audits with/without creationDate and order them
+    const partitionedAudits = partition(unorderedAudits, (a) => a.creationDate);
+    const orderedAudits = [
+      ...orderBy(partitionedAudits[0], (a) => a.creationDate, ["desc"]),
+      ...partitionedAudits[1]
+    ];
+
+    return orderedAudits;
   }
 }

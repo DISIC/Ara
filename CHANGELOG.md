@@ -4,6 +4,23 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 26/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige le libellé des titres de la page de déclaration d’accessibilité ([#1280](https://github.com/DISIC/Ara/pull/1280))
+
+## 19/11/2025
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image » ([#1270](https://github.com/DISIC/Ara/pull/1236))
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Ordonne les audits sur le tableau de bord et met ceux avec une date inconnue à la fin de la liste ([#1304](https://github.com/DISIC/Ara/pull/1304))
+- Corrige un bug provoquant l’affichage d’une page d’erreur parfois lorsque l’on quitte la page d’un audit ([#1306](https://github.com/DISIC/Ara/pull/1306))
+
 ## 14/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
