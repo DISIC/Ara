@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige le libellé des titres de la page de déclaration d’accessibilité ([#1280](https://github.com/DISIC/Ara/pull/1280))
+- Corrige des erreurs lors de l’ouverture d’un audit déjà chargé [#1315](https://github.com/DISIC/Ara/pull/1315)
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 

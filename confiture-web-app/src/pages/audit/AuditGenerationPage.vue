@@ -285,7 +285,7 @@ filterStore.$reset();
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div v-if="auditStore.currentAudit && resultsStore.data" class="page-wrapper">
+  <div v-if="auditStore.currentAudit && resultsStore.auditId === uniqueId" class="page-wrapper">
     <PageMeta
       :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
