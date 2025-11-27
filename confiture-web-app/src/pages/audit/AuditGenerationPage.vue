@@ -249,8 +249,11 @@ function toggleFilters(doShow: boolean) {
 // Note: here useWrappedFetch uses onMounted callback
 useWrappedFetch(async () => {
   resultsStore.$reset();
-  await auditStore.fetchAuditIfNeeded(props.uniqueId);
-  await resultsStore.fetchResults(props.uniqueId);
+
+  await Promise.all([
+    auditStore.fetchAuditIfNeeded(props.uniqueId),
+    resultsStore.fetchResults(props.uniqueId)
+  ]);
 
   // wait for rerender before getting ref
   await nextTick();
