@@ -227,8 +227,10 @@ const isDevMode = useDevMode();
     class="content"
     @submit="handleSubmit"
   >
-    <h1 class="fr-mb-6w">Déclaration d’accessibilité</h1>
-    <p class="fr-text--sm fr-mb-4w mandatory-notice">
+    <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
+    <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
+    <p class="fr-text--sm fr-mb-4w dates">Rédigée le XX septembre XXXX – Mise à jour le XX septembre XXXX</p>
+    <p class="fr-text--xs fr-mb-2w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
@@ -545,7 +547,8 @@ const isDevMode = useDevMode();
   max-width: 25rem;
 }
 
-.mandatory-notice {
+.mandatory-notice,
+.dates {
   color: var(--text-mention-grey);
 }
 
