@@ -85,7 +85,7 @@ export class AuditService {
         pages: {
           createMany: {
             data: data.pages.map((p, i) => {
-              return { ...p, order: i + 1 };
+              return { ...p, order: i };
             })
           }
         },
@@ -369,7 +369,7 @@ export class AuditService {
           .map(entries => entries[0]);
 
       // update audit edition date only if a property other than below has been changed
-      const ignoredChanges = ["auditorName", "procedureName"];
+      const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
       if (!changerProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
         await this.updateAuditEditDate(uniqueId);
       }
