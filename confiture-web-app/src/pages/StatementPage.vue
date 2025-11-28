@@ -100,7 +100,7 @@ const siteUrl = computed(() => {
       :title="`Déclaration d’accessibilité à publier de ${report.data.procedureName}`"
     />
 
-    <h1 class="fr-mb-4w">Déclaration d’accessibilité à publier</h1>
+    <h1 class="fr-mb-3v">Déclaration d’accessibilité à publier</h1>
 
     <div v-if="!statementIsPublished" class="fr-alert fr-alert--info">
       <p class="fr-alert__title">Déclaration d’accessibilité indisponible</p>
@@ -118,14 +118,14 @@ const siteUrl = computed(() => {
           getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
             report.data.creationDate
         "
-        class="fr-text--light fr-mb-4w dates"
+        class="fr-text--sm fr-mb-4w dates"
       >
         Commencé le {{ formatDate(report.data.creationDate) }}
       </p>
 
       <p
         v-else-if="report.data.publishDate"
-        class="fr-text--light fr-mb-4w dates"
+        class="fr-text--sm fr-mb-4w dates"
       >
         Publié le {{ formatDate(report.data.publishDate) }}
         <template v-if="report.data.updateDate">
@@ -378,6 +378,10 @@ const siteUrl = computed(() => {
 <style scoped>
 .content {
   max-width: 58rem;
+}
+
+.dates {
+  color: var(--text-mention-grey);
 }
 
 .statement-container {

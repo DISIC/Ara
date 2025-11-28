@@ -32,7 +32,7 @@ const auditIsInProgress = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w step-card-heading">
+    <div class="step-card-heading">
       <span
         v-if="auditIsReady"
         id="audit-step-status"
@@ -65,7 +65,7 @@ const auditIsInProgress = computed(() => {
       </RouterLink>
     </div>
 
-    <p class="fr-text--sm fr-mb-2w audit-step-date">
+    <p class="fr-text--sm fr-mb-3w audit-step-date">
       <template v-if="auditIsInProgress && audit.creationDate">
         Commencé le
         <time :datetime="audit.creationDate.toString()">{{
@@ -163,6 +163,10 @@ const auditIsInProgress = computed(() => {
 </template>
 
 <style scoped>
+.step-card-heading {
+  margin-block-end: 0.125rem;
+}
+
 .audit-step-settings-link {
   margin-inline-start: auto;
 
