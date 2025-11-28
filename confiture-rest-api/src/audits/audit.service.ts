@@ -367,7 +367,7 @@ export class AuditService {
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
       if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
-        await this.updateAuditEditDate(uniqueId);
+        return (await this.updateAuditEditDate(uniqueId)) ?? audit;
       }
 
       return audit;
@@ -447,9 +447,9 @@ export class AuditService {
       .flat();
 
     await this.prisma.$transaction([
-      ...promises,
-      this.updateAuditEditDate(uniqueId)
+      ...promises
     ]);
+    await this.updateAuditEditDate(uniqueId);
   }
 
   async saveExampleImage(
@@ -778,11 +778,19 @@ export class AuditService {
     }
   }
 
-  private updateAuditEditDate(uniqueId: string) {
-    return this.prisma.audit.updateMany({
-      where: { editUniqueId: uniqueId, publicationDate: { not: null } },
-      data: { editionDate: new Date() }
-    });
+  /**
+   * Update an audit editionDate, only when it has a publication date.
+   * @returns the update audit if it is updated, undefined otherwise
+   */
+  private async updateAuditEditDate(uniqueId: string) {
+    const audit = await this.prisma.audit.findUnique({ where: { editUniqueId: uniqueId }, select: { publicationDate: true } });
+    if (audit.publicationDate) {
+      return this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { editionDate: new Date() },
+        include: AUDIT_EDIT_INCLUDE
+      });
+    }
   }
 
   async getAuditReportData(
