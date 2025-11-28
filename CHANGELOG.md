@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige une erreur qui dupliquait les commentaires des critères entre les pages ([#1320](https://github.com/DISIC/Ara/pull/1320))
+- Ne mets pas à jour la date de mise à jour de l’audit quand seules certaines propriétés sont modifiées [#1312](https://github.com/DISIC/Ara/pull/1312)
 
 ## 26/11/2025
 
