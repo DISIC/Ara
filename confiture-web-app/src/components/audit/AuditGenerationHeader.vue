@@ -280,22 +280,19 @@ onMounted(() => {
         v-else-if="auditStore.currentAudit?.publicationDate"
         class="audit-status"
       >
-        <span
-          class="fr-icon-success-line fr-icon--sm audit-status-icon"
-          aria-hidden="true"
-        ></span>
-        <strong>Audit
-          {{ auditStore.currentAudit?.editionDate ? "modifié" : "terminé" }}
-          le
-          <time
-            :datetime=" auditStore.currentAudit?.editionDate
-              ? auditStore.currentAudit?.editionDate
-              : auditStore.currentAudit?.publicationDate
-            "
-          >{{ auditStore.currentAudit?.editionDate
-            ? formatDate(auditStore.currentAudit?.editionDate, true)
-            : formatDate(auditStore.currentAudit?.publicationDate, true)
-          }}</time></strong>
+        <span class="fr-icon-success-line fr-icon--sm audit-status-icon" aria-hidden="true" />
+        <strong class="audit-status-publish">
+          Terminé le
+          <time :datetime="auditStore.currentAudit?.publicationDate">
+            {{ formatDate(auditStore.currentAudit?.publicationDate) }}
+          </time>
+        </strong>
+        <span v-if="auditStore.currentAudit?.editionDate" class="fr-text--xs fr-mb-0 audit-status-modify">
+          Mis à jour le
+          <time :datetime="auditStore.currentAudit?.editionDate">
+            {{ formatDate(auditStore.currentAudit?.editionDate) }}
+          </time>
+        </span>
       </div>
     </div>
 
@@ -517,13 +514,24 @@ onMounted(() => {
 }
 
 .audit-status {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
+  display: grid;
+  grid-template-areas:
+    "icon publish"
+    "empty modify";
+  gap: 0 0.375rem;
 }
 
 .audit-status-icon {
   color: var(--text-default-success);
+  grid-area: icon;
+}
+
+.audit-status-publish {
+  grid-area: publish;
+}
+
+.audit-status-modify {
+  grid-area: modify;
 }
 
 .indicator-left-side {

@@ -237,16 +237,16 @@ watch(
         "
         class="fr-text--sm fr-mb-4w dates"
       >
-        Commencé le {{ formatDate(report.data.creationDate) }}
+        Audit créé le {{ formatDate(report.data.creationDate) }}
       </p>
 
       <p
         v-else-if="report.data.publishDate"
         class="fr-text--sm fr-mb-4w dates"
       >
-        Publié le {{ formatDate(report.data.publishDate) }}
+        Audit terminé le {{ formatDate(report.data.publishDate) }}
         <template v-if="report.data.updateDate">
-          - Mis à jour le {{ formatDate(report.data.updateDate) }}
+          – Mis à jour le {{ formatDate(report.data.updateDate) }}
         </template>
       </p>
 

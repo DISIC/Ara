@@ -78,7 +78,7 @@ const auditIsInProgress = computed(() => {
           formatDate(audit.publicationDate)
         }}</time>
         <template v-if="audit.editionDate">
-          - Mis à jour le
+          – Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
           }}</time></template>
