@@ -166,15 +166,12 @@ watch(
     class="fr-pt-1w"
   >
     <div class="fr-alert fr-alert--warning fr-mb-6w">
-      <p class="fr-alert__title">Audit en cours</p>
-      <p>
-        Les résultats de ce rapport sont provisoires tant que l’audit n'est pas
-        terminé.
-      </p>
+      <p class="fr-alert__title">Résultats du rapport provisoires</p>
+      <p>L’auditrice ou l’auditeur n’a pas terminé son audit.</p>
     </div>
   </div>
 
-  <div class="fr-mb-4w heading">
+  <div class="fr-mb-3v heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div class="heading-actions">
       <button
@@ -230,7 +227,7 @@ watch(
       @close="onOnboardingClose"
     />
 
-    <div class="fr-mb-6w fr-mb-md-12w header">
+    <div class="fr-mb-8w">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
       <p
@@ -238,14 +235,14 @@ watch(
           getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
             report.data.creationDate
         "
-        class="fr-text--light fr-mb-4w dates"
+        class="fr-text--sm fr-mb-4w dates"
       >
         Commencé le {{ formatDate(report.data.creationDate) }}
       </p>
 
       <p
         v-else-if="report.data.publishDate"
-        class="fr-text--light fr-mb-4w dates"
+        class="fr-text--sm fr-mb-4w dates"
       >
         Publié le {{ formatDate(report.data.publishDate) }}
         <template v-if="report.data.updateDate">
