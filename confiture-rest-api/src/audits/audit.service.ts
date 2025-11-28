@@ -362,15 +362,15 @@ export class AuditService {
         include: AUDIT_EDIT_INCLUDE
       });
 
-      // check the diffenences between the audit aften and before the update
-      const changerProperties =
+      // check the diffenences between the audit after and before the update
+      const changedProperties =
         _
           .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
           .map(entries => entries[0]);
 
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
-      if (!changerProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
+      if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
         await this.updateAuditEditDate(uniqueId);
       }
 
