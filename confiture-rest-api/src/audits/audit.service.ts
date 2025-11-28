@@ -183,7 +183,7 @@ export class AuditService {
       "id" | "auditUniqueId"
     >[]
   > {
-    const [audit, pages, existingResults] = await Promise.all([
+    const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUnique({
         include: {
           transverseElementsPage: true
@@ -198,18 +198,21 @@ export class AuditService {
       this.prisma.criterionResult.findMany({
         where: {
           page: {
-            OR: [
-              {
-                audit: {
-                  editUniqueId: uniqueId
-                }
-              },
-              {
-                auditTransverse: {
-                  editUniqueId: uniqueId
-                }
-              }
-            ]
+            audit: {
+              editUniqueId: uniqueId
+            }
+          }
+        },
+        include: {
+          exampleImages: true
+        }
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditTransverse: {
+              editUniqueId: uniqueId
+            }
           }
         },
         include: {
@@ -217,6 +220,7 @@ export class AuditService {
         }
       })
     ]);
+    const existingResults = [...results, ...transverseResults];
 
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
