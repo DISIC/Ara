@@ -2,6 +2,7 @@
 import { computed, ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useAuditStore } from "../../store";
 import NewFeatureNotification from "../audit/NewFeatureNotification.vue";
 import TiptapEditor from "./TiptapEditor.vue";
 
@@ -24,6 +25,7 @@ defineExpose({
   }
 });
 
+const auditStore = useAuditStore();
 const isOffline = useIsOffline();
 const uniqueId = useId();
 
@@ -76,7 +78,7 @@ function announceUploadSuccess(fileName: string) {
   </p>
   <TiptapEditor
     v-bind="$attrs"
-    :key="uniqueId"
+    :key="`${uniqueId}-${auditStore.currentPageId}`"
     ref="richTextEditorRef"
     class="fr-mb-4w"
     :model-value="modelValue"

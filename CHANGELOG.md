@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+## 28/11/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige une erreur qui dupliquait les commentaires des critères entre les pages ([#1320](https://github.com/DISIC/Ara/pull/1320))
+
 ## 26/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
