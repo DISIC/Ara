@@ -1303,6 +1303,8 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: undefined,
+        statementPublicationDate: undefined,
+        statementEditionDate: undefined,
 
         environments: {
           createMany: {
