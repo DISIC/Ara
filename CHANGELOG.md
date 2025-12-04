@@ -4,13 +4,13 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
-## 28/11/2025
+### 28/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Corrige une erreur qui dupliquait les commentaires des critères entre les pages ([#1320](https://github.com/DISIC/Ara/pull/1320))
 
-## 26/11/2025
+### 26/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -21,7 +21,7 @@
 
 - Améliore le temps de chargement du rapport pour les audits contenant de nombreuses pages ([#1313](https://github.com/DISIC/Ara/pull/1313))
 
-## 19/11/2025
+### 19/11/2025
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
@@ -32,7 +32,7 @@
 - Ordonne les audits sur le tableau de bord et met ceux avec une date inconnue à la fin de la liste ([#1304](https://github.com/DISIC/Ara/pull/1304))
 - Corrige un bug provoquant l’affichage d’une page d’erreur parfois lorsque l’on quitte la page d’un audit ([#1306](https://github.com/DISIC/Ara/pull/1306))
 
-## 14/11/2025
+### 14/11/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
