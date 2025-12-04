@@ -15,7 +15,8 @@ export interface FileListFile {
   url: string;
 }
 
-const { files, isInModal, readonly, onDelete } = defineProps<{
+const { deleteOnly, files, isInModal, readonly, onDelete } = defineProps<{
+  deleteOnly?: boolean;
   files: FileListFile[];
   isInModal?: boolean;
   readonly?: boolean;
@@ -54,6 +55,9 @@ const allFiles = computed(() => {
 });
 
 const isEmpty = computed(() => files.length <= 0);
+const displayAllFiles = computed(() => {
+  return !readonly && !(isEmpty.value && deleteOnly);
+});
 
 async function handleFileDeleteInlineReveal(
   range: number
@@ -215,7 +219,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 
 <template>
   <div>
-    <p v-if="!readonly" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
+    <p v-if="displayAllFiles" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
     <ul
       v-if="!isEmpty"
       class="files"

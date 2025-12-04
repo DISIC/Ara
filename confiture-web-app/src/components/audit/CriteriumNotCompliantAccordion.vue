@@ -121,7 +121,6 @@ const title = computed(() => {
 
     <!-- FILES -->
     <FileList
-      v-if="exampleImages.length"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
         filename: f.originalFilename,
@@ -131,6 +130,7 @@ const title = computed(() => {
         thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
       }))"
+      :delete-only="true"
       :multiple="true"
       title="Ajouter des images d’exemple"
       :on-delete="onDelete"
