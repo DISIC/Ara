@@ -25,7 +25,7 @@ const auditIsPublishable = computed(() => {
 
 <template>
   <StepCard>
-    <div class="step-card-heading statement-step-heading">
+    <div :class="`step-card-heading ${auditIsPublishable ? 'statement-step-heading' : 'fr-mb-2w'}`">
       <span
         v-if="auditIsPublishable"
         id="statement-step-status"
@@ -127,7 +127,6 @@ const auditIsPublishable = computed(() => {
 
 .statement-step-description {
   grid-column: 1 / -1;
-  grid-row: 3;
 }
 
 .statement-step-main-cta {
