@@ -2,6 +2,7 @@
 import { useHead } from "@unhead/vue";
 import { onMounted, ref } from "vue";
 
+import GenericModal from "./components/GenericModal.vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
@@ -82,6 +83,8 @@ function closeFeedbackNotice() {
       </ul>
     </nav>
   </div>
+
+  <GenericModal />
 
   <SiteHeader />
 

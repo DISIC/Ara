@@ -1,28 +1,36 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { provide, ref, useTemplateRef, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
-import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
+
+import { ExampleImageFile, CriterionResultUserImpact, getFocusWhenListEmptyKey } from "../../types";
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
-import FileList from "../ui/FileList.vue";
+import TiptapEditor from "../tiptap/TiptapEditor.vue";
+import FileList, { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-export interface Props {
+const props = defineProps<{
   id: string;
+  pageId: number;
+  topicNumber: number;
+  criteriumNumber: number;
   comment: string | null;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
-}
+  onDelete: (flFile: FileListFile) => void;
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return userImpactRadioGroupRef.value
+    ? userImpactRadioGroupRef.value.$el
+    : null;
+}
 
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
@@ -57,12 +65,9 @@ const userImpacts: Array<{
 
 const isOffline = useIsOffline();
 
-function handleDeleteFile(image: ExampleImageFile) {
-  emit("delete-file", image);
-}
-
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
+const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
+const commentEditorRef = ref<InstanceType<typeof TiptapEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -116,24 +121,26 @@ const title = computed(() => {
 
     <!-- FILES -->
     <FileList
-      v-if="exampleImages.length"
-      ref="fileUpload"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
-        ...f,
-        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         filename: f.originalFilename,
+        key: f.key,
+        mimetype: f.mimetype,
+        size: f.size,
+        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
       }))"
+      :delete-only="true"
+      :multiple="true"
       title="Ajouter des images d’exemple"
-      @delete="handleDeleteFile(
-        exampleImages.find(f => f.key === $event)!
-      )"
+      :on-delete="onDelete"
     />
 
     <!-- USER IMPACT -->
     <RadioGroup
+      ref="userImpactRadioGroupRef"
       class="fr-mb-4w"
+      tabindex="-1"
       :model-value="userImpact"
       :items="userImpacts"
       :default-value="null"
