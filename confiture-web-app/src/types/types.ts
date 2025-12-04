@@ -73,6 +73,8 @@ export interface Audit {
   notInScopeContent: string | null;
   notes: string | null;
   notesFiles: NotesFile[];
+  statementPublicationDate: string | null;
+  statementEditionDate: string | null;
 
   transverseElements: string[];
 }
