@@ -458,11 +458,16 @@ export class AuditService {
     await this.prisma.$transaction([
       ...promises,
       this.updateAuditEditDate(uniqueId)
-      // this.updateStatementDate(uniqueId)
     ]);
 
-    // FIXME: why can't it fit in the array above?
-    this.updateStatementDate(uniqueId);
+    // Only update statement edition date if there is a publication date
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    if (audit.statementPublicationDate) {
+      this.updateStatementDate(uniqueId);
+    }
   }
 
   async saveExampleImage(
