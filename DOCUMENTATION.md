@@ -52,3 +52,39 @@ Un audit est considéré...
 - **En cours** si tous les critères ne sont pas testés (hors éléments transverses).
 - **Terminé** si tous les critères sont testés (hors éléments transverses) et qu’il a une date de publication.
 - **Modifié** si tous les critères sont testés (hors éléments transverses), qu’il a une date de publication et une date d’édition.
+
+## Dates
+
+### Création de l'audit
+
+Date à laquelle le paramétrage initial de l’audit est validé :
+
+- Soumission du formulaire de paramétrage d'un audit.
+
+### Publication de l'audit
+
+Date à laquelle le dernier critère d'un audit est évalué :
+
+- Évaluation (C, NC ou NA) du dernier critère "Non testé" d'un audit.
+
+### Modification de l'audit
+
+Date à laquelle un audit terminé est modifié :
+
+- Soumission du formulaire de paramétrage d'un audit.
+- Modification du statut, commentaire d'un critère d'un audit.
+- Modification des notes d'un audit.
+- Soumission du formulaire de déclaration d'accessibilité.
+
+### Publication de la déclaration d'accessibilité
+
+Date à laquelle la déclaration d'accessibilité est publiée pour la première fois :
+
+- Soumission du formulaire de déclaration d'accessibilité.
+
+### Modification de la déclaration d'accessibilité
+
+Date à laquelle une déclaration d'accessibilité déjà publiée est modifiée :
+
+- Lors de la soumission du formulaire de déclaration d'accessibilité.
+- Lors de la mise à jour de l'audit (paramètres, statut d'un critère...).
