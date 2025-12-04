@@ -32,7 +32,7 @@ import {
 } from "../../enums";
 import { useAccountStore, useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
-import { formatEmail, URL_REGEX } from "../../utils";
+import { formatEmail, URL_REGEX, formatDate } from "../../utils";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -278,7 +278,9 @@ function confirmLeave() {
   >
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
-    <p class="fr-text--sm fr-mb-4w dates">Rédigée le XX septembre XXXX – Mise à jour le XX septembre XXXX</p>
+    <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-mb-4w dates">
+      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate"> - Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
+    </p>
     <p class="fr-text--xs fr-mb-2w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>

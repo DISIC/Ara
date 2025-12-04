@@ -3,6 +3,7 @@ import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
+import { formatDate } from "../../utils";
 import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
 
@@ -18,13 +19,13 @@ const auditIsReady = computed(() => {
 });
 
 const auditIsPublishable = computed(() => {
-  return !!props.audit.initiator;
+  return !!props.audit.statementPublicationDate;
 });
 </script>
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w step-card-heading">
+    <div class="step-card-heading statement-step-heading">
       <span
         v-if="auditIsPublishable"
         id="statement-step-status"
@@ -50,6 +51,10 @@ const auditIsPublishable = computed(() => {
         Modifier
       </RouterLink>
     </div>
+
+    <p v-if="auditIsPublishable" class="fr-text--sm fr-mb-5v statement-step-date">
+      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate"> - Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
+    </p>
 
     <p class="statement-step-description">
       <template v-if="auditIsPublishable">
@@ -102,6 +107,10 @@ const auditIsPublishable = computed(() => {
 </template>
 
 <style scoped>
+.statement-step-heading {
+  margin-block-end: 0.125rem;
+}
+
 .statement-step-settings-link {
   margin-inline-start: auto;
 
@@ -110,9 +119,15 @@ const auditIsPublishable = computed(() => {
   }
 }
 
-.statement-step-description {
+.statement-step-date {
   grid-column: 1 / -1;
   grid-row: 2;
+  color: var(--text-mention-grey);
+}
+
+.statement-step-description {
+  grid-column: 1 / -1;
+  grid-row: 3;
 }
 
 .statement-step-main-cta {

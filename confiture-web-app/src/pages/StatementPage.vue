@@ -10,8 +10,7 @@ import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
-import { AuditStatus } from "../types";
-import { formatDate, getAuditStatus } from "../utils";
+import { formatDate } from "../utils";
 
 const report = useReportStore();
 
@@ -113,24 +112,8 @@ const siteUrl = computed(() => {
     <template v-else>
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
-      <p
-        v-if="
-          getAuditStatus(report.data) === AuditStatus.IN_PROGRESS &&
-            report.data.creationDate
-        "
-        class="fr-text--sm fr-mb-4w dates"
-      >
-        Commencé le {{ formatDate(report.data.creationDate) }}
-      </p>
-
-      <p
-        v-else-if="report.data.publishDate"
-        class="fr-text--sm fr-mb-4w dates"
-      >
-        Publié le {{ formatDate(report.data.publishDate) }}
-        <template v-if="report.data.updateDate">
-          - Mis à jour le {{ formatDate(report.data.updateDate) }}
-        </template>
+      <p v-if="report.data.statementPublicationDate" class="fr-text--sm fr-mb-4w dates">
+        Rédigée le {{ formatDate(report.data.statementPublicationDate) }}<template v-if="report.data.statementEditionDate"> - Mise à jour le {{ formatDate(report.data.statementEditionDate) }}</template>
       </p>
 
       <p class="fr-mb-1v">
@@ -260,13 +243,13 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">
             Établissement de cette déclaration d’accessibilité
           </h4>
-          <p v-if="report.data.publishDate" class="fr-mb-2w fr-mb-md-3w">
-            Cette déclaration a été établie le
-            <strong>{{ formatDate(report.data.publishDate) }}</strong>.
-            <template v-if="report.data.updateDate">Elle a été mise à jour le
-              <strong>{{ formatDate(report.data.updateDate) }}</strong>.</template>
+          <p v-if="report.data.statementPublicationDate" class="fr-mb-2w fr-mb-md-3w">
+            Cette déclaration a été établie le {{ formatDate(report.data.statementPublicationDate) }}.
+            <template v-if="report.data.statementEditionDate">
+              Elle a été mise à jour le {{ formatDate(report.data.statementEditionDate) }}.
+            </template>
           </p>
-
+          <!-- Cette déclaration a été établie le XX mois XXXX. Elle a été mise à jour le XX mois XXXX. -->
           <h5 class="fr-h3">
             Technologies utilisées pour la réalisation de l’audit
           </h5>
