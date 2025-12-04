@@ -373,6 +373,12 @@ export class AuditService {
         }),
         this.updateAuditEditDate(uniqueId)
       ]);
+
+      // Updating audit accessibility statement
+      if (data.initiator) {
+        this.updateStatementDate(uniqueId);
+      }
+
       return audit;
     } catch (e) {
       // Audit does not exist
@@ -452,7 +458,11 @@ export class AuditService {
     await this.prisma.$transaction([
       ...promises,
       this.updateAuditEditDate(uniqueId)
+      // this.updateStatementDate(uniqueId)
     ]);
+
+    // FIXME: why can't it fit in the array above?
+    this.updateStatementDate(uniqueId);
   }
 
   async saveExampleImage(
@@ -785,6 +795,20 @@ export class AuditService {
     return this.prisma.audit.updateMany({
       where: { editUniqueId: uniqueId, publicationDate: { not: null } },
       data: { editionDate: new Date() }
+    });
+  }
+
+  // Either update statement publication or edition date
+  private async updateStatementDate(uniqueId: string) {
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    return this.prisma.audit.updateMany({
+      where: { editUniqueId: uniqueId },
+      data: audit.statementPublicationDate
+        ? { statementEditionDate: new Date() }
+        : { statementPublicationDate: new Date() }
     });
   }
 
