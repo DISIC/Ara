@@ -26,15 +26,22 @@ export enum Browsers {
   EDGE = "Microsoft Edge"
 }
 
+export const MAX_UPLOAD_FILES_COUNT = 1;
+export const FILE_SIZE_LIMIT = 2_000_000;
+
 export enum FileMessage {
-  DELETE_ERROR_TIMEOUT = "La suppression du fichier [FILE] a pris trop de temps et a été interrompu. Vérifiez votre connexion Internet et réessayez.",
-  DELETE_ERROR_UNKNOWN = "Suppression impossible, erreur inconnue. Réessayez.",
+  DELETE_ERROR_TIMEOUT = "Supression interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   DELETE_SUCCESS = "Le fichier [FILE] a été correctement supprimé.",
-  UPLOAD_ERROR_FORMAT = "Format de fichier non supporté ([FILE]).",
+  FETCH_ERROR = "Importation échouée. Importez l’image depuis votre ordinateur.",
   UPLOAD_ERROR_SIZE = "Fichier trop lourd. Choisissez un fichier inférieur à 2 Mo.",
-  UPLOAD_ERROR_TIMEOUT = "Le téléchargement du fichier [FILE] a pris trop de temps et a été interrompu. Vérifiez votre connexion Internet et réessayez.",
+  UPLOAD_ERROR_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   UPLOAD_ERROR_UNKNOWN = "Téléchargement du fichier impossible. Réessayez.",
-  UPLOAD_SUCCESS = "Le fichier [FILE] a été correctement ajouté."
+  UPLOAD_IMAGE_ERROR_FORMAT = "Format non pris en charge. Importez une image.",
+  UPLOAD_FROM_HTML_ERROR = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
+  UPLOAD_MAX_FILES_COUNT = "Importation échouée. Ajoutez une seule image à la fois.",
+  UPLOAD_MULTIPLE_FROM_HTML_ERROR = "Importation des images échouée. Importez les images depuis votre ordinateur.",
+  UPLOAD_SUCCESS = "Le fichier [FILE] a été correctement ajouté.",
+  UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
 }
 
 export function getFileMessage(fileMessage: keyof typeof FileMessage, fileName: string): string {

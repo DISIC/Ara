@@ -111,22 +111,22 @@ export function useFileHandler() {
         const body = await error.response.json();
 
         if (body.message.includes("expected type")) {
-          errorMessage = getFileMessage("UPLOAD_ERROR_FORMAT", fileName);
+          errorMessage = getFileMessage("UPLOAD_IMAGE_ERROR_FORMAT", fileName);
         } else if (body.message.includes("expected size")) {
           errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
         } else {
-          errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+          errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
           captureWithPayloads(error);
         }
       }
       // Other errors
       else {
-        errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+        errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
         captureWithPayloads(error);
       }
     } else {
       console.error("An unexpected error occurred", error);
-      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+      errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
       captureWithPayloads(error);
     }
     notify("error", errorMessage);
@@ -143,7 +143,7 @@ export function useFileHandler() {
       errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", fileName);
     } else {
       console.error("An unexpected error occurred", error);
-      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", fileName);
+      errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
       captureWithPayloads(error);
     }
 

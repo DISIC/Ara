@@ -1,30 +1,35 @@
 <script setup lang="ts">
-import { useIsOffline } from "../../composables/useIsOffline";
-import TiptapEditor from "../tiptap/TiptapEditor.vue";
+import { computed } from "vue";
+
+import { isTiptapDocumentEmpty } from "../../utils";
+import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{ id: string; comment: string | null }>();
+const props = defineProps<{
+  id: string;
+  comment: string | null;
+}>();
 
 defineEmits<{
   (e: "update:comment", payload: string): void;
 }>();
 
-const isOffline = useIsOffline();
-
-const title = "Commentaire";
+const baseTitle = "Commentaire";
+const title = computed(() => {
+  return `${baseTitle} (${Number(!isTiptapDocumentEmpty(props.comment))})`;
+});
 </script>
 
 <template>
-  <LazyAccordion :title="title" disclose-color="var(--background-default-grey)">
-    <!-- COMMENT -->
-    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
-    </p>
-    <TiptapEditor
-      :key="id"
+  <LazyAccordion disclose-color="var(--background-default-grey)">
+    <template #title>
+      {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)"> (1)</strong><template v-else> (0)</template>
+    </template>
+    <RichTextEditor
+      type="criterium"
       :model-value="comment"
-      :labelled-by="`criterum-comment-field-${id}`"
-      :disabled="isOffline"
+      :label="title"
+      description="Vous pouvez ajouter une remarque si nécessaire."
       @update:model-value="$emit('update:comment', $event)"
     />
   </LazyAccordion>

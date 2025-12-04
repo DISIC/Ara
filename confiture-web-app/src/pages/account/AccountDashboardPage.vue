@@ -41,7 +41,6 @@ async function hideAuditsAlert() {
   mainHeadingRef.value?.focus();
 }
 
-// TODO: filter audits
 const inProgressAudits = computed(() => {
   return auditStore.listing?.filter(
     (a) =>

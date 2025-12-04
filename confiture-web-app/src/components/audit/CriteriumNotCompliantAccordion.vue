@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { provide, ref, useTemplateRef } from "vue";
+import { provide, ref, useTemplateRef, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
+
 import { ExampleImageFile, CriterionResultUserImpact, getFocusWhenListEmptyKey } from "../../types";
-import { formatUserImpact, getUploadUrl } from "../../utils";
+import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
+import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import TiptapEditor from "../tiptap/TiptapEditor.vue";
-import { FileListFile } from "../ui/FileList.vue";
-import FileUpload from "../ui/FileUpload.vue";
+import FileList, { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-defineProps<{
+const props = defineProps<{
   id: string;
+  pageId: number;
+  topicNumber: number;
+  criteriumNumber: number;
   comment: string | null;
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
-  onUpload: (file: File) => void;
   onDelete: (flFile: FileListFile) => void;
 }>();
 
@@ -29,9 +32,10 @@ function getFocusWhenListEmpty(): HTMLElement | null {
     : null;
 }
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
+  (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
@@ -83,35 +87,43 @@ function lazyAccordionOpened() {
   hasJustBeenSetAsNotCompliant = false;
 }
 
-const title = "Erreur et recommandation";
+const isFilledIn = computed(() => {
+  return !isTiptapDocumentEmpty(props.comment)
+    || props.exampleImages.length
+    || props.quickWin
+    || !!props.userImpact;
+});
+
+const baseTitle = "Erreur et recommandation";
+const title = computed(() => {
+  return `${baseTitle} (${Number(isFilledIn.value)})`;
+});
 </script>
 
 <template>
   <LazyAccordion
     ref="lazyAccordionRef"
-    :title="title"
     disclose-color="var(--background-default-grey)"
     @opened="lazyAccordionOpened"
   >
-    <!-- COMMENT -->
-    <p :id="`criterum-comment-field-${id}`" class="fr-label fr-sr-only">
-      {{ title }}
-    </p>
-    <TiptapEditor
-      :key="id"
+    <template #title>
+      {{ baseTitle }}<strong v-if="isFilledIn"> (1)</strong><template v-else> (0)</template>
+    </template>
+    <RichTextEditor
       ref="commentEditorRef"
-      class="fr-mb-4w"
+      type="criterium"
       :model-value="comment"
-      :labelled-by="`criterum-comment-field-${id}`"
-      :disabled="isOffline"
+      :label="title"
+      class="fr-mb-4w"
+      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
       @update:model-value="$emit('update:comment', $event)"
     />
 
-    <!-- FILE -->
-    <FileUpload
-      class="file-upload fr-mb-4w"
-      :accepted-formats="['jpg', 'jpeg', 'png']"
-      :fl-files="exampleImages.map(f => ({
+    <!-- FILES -->
+    <FileList
+      v-if="exampleImages.length"
+      class="fr-mb-4w"
+      :files="exampleImages.map(f => ({
         filename: f.originalFilename,
         key: f.key,
         mimetype: f.mimetype,
@@ -122,7 +134,6 @@ const title = "Erreur et recommandation";
       :multiple="true"
       title="Ajouter des images d’exemple"
       :on-delete="onDelete"
-      :on-upload="onUpload"
     />
 
     <!-- USER IMPACT -->

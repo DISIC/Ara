@@ -259,11 +259,10 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  if (!parsedJson.content?.at(0)?.content) {
-    return true;
-  }
+  const containsImage = jsonString.includes("\"type\":\"image\"");
+  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
 
-  return false;
+  return !containsImage && !containsText;
 }
 
 export function getScrollBehavior(): ScrollBehavior {
@@ -289,4 +288,21 @@ export function scrollToHash(hash: string) {
 
 export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Creates a File object from a given URL
+ *
+ * @returns {Promise<File | null>} the created File or null if any error
+ */
+export async function createFileFromUrl(url: string): Promise<File | null> {
+  let mimeType: string | undefined = undefined;
+  return await fetch(url)
+    .then((res: Response) => {
+      mimeType = res.headers.get("content-type") || undefined;
+      return res.arrayBuffer();
+    })
+    .then((buf: ArrayBuffer) => {
+      return new File([buf], "external", { type: mimeType });
+    });
 }

@@ -8,7 +8,7 @@ export interface AuditCreationEmailData {
 }
 
 export function subject(data: AuditCreationEmailData): string {
-  return `Accéder l’audit : « ${data.procedureName} »`;
+  return `Accéder à l’audit « ${data.procedureName} »`;
 }
 
 export function html(data: AuditCreationEmailData): string {

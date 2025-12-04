@@ -277,7 +277,7 @@ onMounted(() => {
             toutes les pages pour terminer votre audit.
           </p>
           <p class="fr-text--xs fr-mb-0">
-            À noter : les critères des
+            À noter : les critères des
             <strong>éléments transverses</strong> sont optionnels. Ils sont pris
             en compte dans le calcul du taux mais pas dans la progression de
             l’audit.

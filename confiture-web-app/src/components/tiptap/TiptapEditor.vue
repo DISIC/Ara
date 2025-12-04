@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, ShallowRef, useId, watch } from "vue";
+import { onBeforeUnmount, ShallowRef, useTemplateRef, watch } from "vue";
 
-import { displayedHeadings, tiptapEditorExtensions } from "./tiptap-extensions";
+import { insertFilesAtSelection } from "./image/ImageUploadExtension";
+import { displayedHeadings, getTiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
   modelValue?: string | null;
   editable?: boolean;
   labelledBy?: string | null;
+  describedBy?: string | null;
   disabled?: boolean;
-  editorSize?: "sm" | "lg";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,12 +20,13 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
-  editorSize: "sm"
+  describedBy: null
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-const uniqueId = useId();
+const emit = defineEmits<{
+  (event: "image:uploaded", value: string): void;
+  (event: "update:modelValue", value: string): void;
+}>();
 
 function getContent() {
   let jsonContent = null;
@@ -69,10 +71,8 @@ function setLink() {
 // Editor attributes to create an accessible textarea
 const editorAttributes: any = props.editable
   ? {
-      "aria-describedby": `tiptap-description-${uniqueId}`,
       "aria-multiline": "true",
-      "role": "textbox",
-      "class": `tiptap--${props.editorSize}`
+      "role": "textbox"
     }
   : {
       class: "tiptap--not-editable"
@@ -82,18 +82,38 @@ if (props.labelledBy) {
   editorAttributes["aria-labelledby"] = props.labelledBy;
 }
 
+if (props.describedBy) {
+  editorAttributes["aria-describedby"] = props.describedBy;
+}
+
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
   },
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: tiptapEditorExtensions,
+  extensions: getTiptapEditorExtensions({
+    onImageUploadComplete: fileName => emit("image:uploaded", fileName)
+  }),
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
+
+const browseInput = useTemplateRef("browseInput");
+function handleAddImageClick() {
+  if (browseInput.value) {
+    browseInput.value.value = "";
+  }
+  browseInput.value?.click();
+}
+
+function handleBrowseInputChange(e: Event) {
+  const inputElement = e?.target as HTMLInputElement;
+  const files = inputElement.files!;
+  insertFilesAtSelection(editor.value, Array.from(files));
+}
 
 watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
   editor.value.setEditable(editable && !disabled);
@@ -118,13 +138,6 @@ defineExpose({
       'tiptap-container--disabled': disabled
     }"
   >
-    <p
-      v-if="editable"
-      :id="`tiptap-description-${uniqueId}`"
-      class="fr-sr-only"
-    >
-      Éditeur de texte riche
-    </p>
     <ul v-if="editable" class="tiptap-buttons">
       <li>
         <ul>
@@ -267,6 +280,22 @@ defineExpose({
               @click="editor.chain().focus().toggleCodeBlock().run()"
             />
           </li>
+          <li>
+            <TiptapButton
+              label="Insérer une image"
+              icon="image-add-line"
+              :label-visible="true"
+              @click="handleAddImageClick"
+            />
+            <input
+              ref="browseInput"
+              type="file"
+              class="fr-hidden"
+              accept="image/*"
+              hidden
+              @change="handleBrowseInputChange"
+            />
+          </li>
         </ul>
       </li>
     </ul>
@@ -339,10 +368,16 @@ defineExpose({
 .tiptap-selection,
 .ProseMirror-selectednode {
   outline: var(--dsfr-outline) dotted 2px;
+  max-width: max-content;
 }
 
-.ProseMirror-widget {
-  opacity: 0.5;
+img.ProseMirror-widget {
+  opacity: 0.3;
+  color: color-mix(in srgb, currentcolor 0%, transparent);
+}
+
+.ProseMirror-gapcursor::after {
+  border-top-color: var(--grey-0-1000) !important;
 }
 
 /* Buttons */

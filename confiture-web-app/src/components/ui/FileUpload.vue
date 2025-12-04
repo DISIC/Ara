@@ -94,7 +94,7 @@ async function handleFileChange() {
         await props.onUpload(file);
         // Annouce upload success to screen reader
         await nextTick();
-        await sleep(300);
+        await sleep(1);
         message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
       } catch {
         console.error("Upload failed: ", file.name);

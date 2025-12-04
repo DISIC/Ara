@@ -1,6 +1,6 @@
 # Ara
 
-Ara est une plateforme web basée sur le référentiel général d'amélioration de l'accessibilité (RGAA) qui permet aux auditeur et auditrices de :
+Ara est une plateforme web basée sur le référentiel général d'amélioration de l'accessibilité (RGAA) qui permet aux auditeurs et auditrices de :
 
 - réaliser leurs audits d'accessibilité numérique en ligne,
 - générer automatiquement les rapports de ces audits ainsi que les déclarations d'accessibilité.

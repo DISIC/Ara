@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { useModal } from "../../composables/useModal";
 import { getFileMessage } from "../../enums";
 import { getFocusWhenListEmptyKey } from "../../types";
-import { formatBytes } from "../../utils";
+import { formatBytes, sleep } from "../../utils";
 
 export interface FileListFile {
   filename: string;
@@ -54,15 +54,6 @@ const allFiles = computed(() => {
 });
 
 const isEmpty = computed(() => files.length <= 0);
-
-// const selectedFiles = computed(() => {
-//   const len = files.length;
-//   if (len === 0) {
-//     return "Aucun fichier ajouté.";
-//   } else {
-//     return pluralize(len + " fichier ajouté", len + " fichiers ajoutés", len);
-//   }
-// });
 
 async function handleFileDeleteInlineReveal(
   range: number
@@ -136,7 +127,7 @@ async function deleteFile(
 
   try {
     await onDelete(flFile);
-
+    await sleep(300);
     // Notify to screen reader
     successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
   } catch (error) {

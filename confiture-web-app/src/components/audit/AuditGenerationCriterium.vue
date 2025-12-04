@@ -15,9 +15,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus
 } from "../../types";
-import {
-  formatStatus
-} from "../../utils";
+import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -120,16 +118,6 @@ const notify = useNotifications();
 
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
-
-function handleUploadExample(file: File) {
-  return fileHandler.uploadCriteriumFile(
-    props.auditUniqueId,
-    props.page.id,
-    props.topicNumber,
-    props.criterium.number,
-    file
-  );
-}
 
 function handleFileDeleteAfterConfirm(flFile: FileListFile) {
   const file = result.value.exampleImages.find(f => f.key === flFile.key)!;
@@ -367,8 +355,10 @@ const parentCriterium = computed(() => {
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
-      :on-upload="handleUploadExample"
       :on-delete="handleFileDeleteAfterConfirm"
+      :page-id="props.page.id"
+      :topic-number="props.topicNumber"
+      :criterium-number="props.criterium.number"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:quick-win="updateQuickWin"
       @update:user-impact="updateResultImpact($event)"

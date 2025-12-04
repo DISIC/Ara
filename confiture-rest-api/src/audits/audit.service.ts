@@ -7,7 +7,7 @@ import {
   Prisma,
   ExampleImageFile
 } from "@prisma/client";
-import { omit, orderBy, pick, sortBy, setWith, uniqBy } from "lodash";
+import { omit, orderBy, pick, sortBy, setWith, uniqBy, partition } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
@@ -599,6 +599,16 @@ export class AuditService {
     return noteFile;
   }
 
+  async uploadEditorImage(file: Express.Multer.File) {
+    const randomPrefix = nanoid();
+
+    const key = `editor/${randomPrefix}/${file.originalname}`;
+
+    await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
+
+    return key;
+  }
+
   /**
    * Returns true if stored filed was found and deleted. False if not found.
    */
@@ -797,29 +807,28 @@ export class AuditService {
       return;
     }
 
-    const results = await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          OR: [
-            {
-              auditUniqueId: audit.editUniqueId
-            },
-            {
-              auditTransverse: {
-                editUniqueId: audit.editUniqueId
-              }
-            }
-          ]
+    const results = await Promise.all([
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: audit.editUniqueId
+          },
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
-        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
-          criterium: c.criterium,
-          topic: c.topic
-        }))
-      },
-      include: {
-        exampleImages: true
-      }
-    });
+        include: {
+          exampleImages: true
+        }
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          pageId: audit.transverseElementsPageId,
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      })
+    ]).then(results => results.flat());
 
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
       (acc, c) => {
@@ -1465,6 +1474,13 @@ export class AuditService {
       };
     });
 
-    return orderBy(unorderedAudits, (a) => a.creationDate, ["desc"]);
+    // Separate audits with/without creationDate and order them
+    const partitionedAudits = partition(unorderedAudits, (a) => a.creationDate);
+    const orderedAudits = [
+      ...orderBy(partitionedAudits[0], (a) => a.creationDate, ["desc"]),
+      ...partitionedAudits[1]
+    ];
+
+    return orderedAudits;
   }
 }
