@@ -18,6 +18,8 @@ export function useFileHandler() {
    * 3) Creates an new StoredFile entity and store it in the database
    *
    * See back-end: AuditService#saveExampleImage
+   *
+   * Note: we don’t use this function anymore
    */
   async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
     try {
