@@ -541,7 +541,7 @@ describe("Audit", () => {
         .first()
         .click({ force: true });
 
-      cy.contains(/Audit terminé le \d{2}\/\d{2}\/\d{4}/);
+      cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
       cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
       cy.contains("a", "Accéder aux livrables").click();
@@ -553,7 +553,7 @@ describe("Audit", () => {
       cy.contains(
         "Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
       );
-      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
+      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
     });
   });
 

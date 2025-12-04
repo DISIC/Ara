@@ -227,7 +227,7 @@ watch(
       @close="onOnboardingClose"
     />
 
-    <div class="fr-mb-8w">
+    <div class="fr-mb-8w" data-cy="report-header">
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
       <p
