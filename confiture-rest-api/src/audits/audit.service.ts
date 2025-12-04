@@ -917,6 +917,8 @@ export class AuditService {
       creationDate: audit.creationDate,
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
+      statementPublicationDate: audit.statementPublicationDate,
+      statementEditionDate: audit.statementEditionDate,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
