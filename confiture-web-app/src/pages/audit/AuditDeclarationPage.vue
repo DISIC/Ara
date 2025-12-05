@@ -478,7 +478,7 @@ const isDevMode = useDevMode();
 
     <div class="fr-input-group">
       <label class="fr-label" for="notInScopeContent">
-        Contenus non soumis à l’obligation d’accessibilité et contenus tiers (optionnel)
+        Contenus non soumis à l’obligation d’accessibilité (optionnel)
         <span class="fr-hint-text">
           Listez les contenus et fonctionnalités non accessibles qui ne sont pas soumis à la législation.<br />Indiquez les alternatives si disponibles.
         </span>
