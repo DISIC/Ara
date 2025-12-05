@@ -388,7 +388,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.derogatedContent);
       cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité et contenus tiers (optionnel)"
+        "Contenus non soumis à l’obligation d’accessibilité (optionnel)"
       )
         .clear()
         .type(statementJson.notInScopeContent);
