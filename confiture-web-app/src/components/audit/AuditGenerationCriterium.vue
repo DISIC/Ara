@@ -13,21 +13,20 @@ import {
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus,
-  ExampleImageFile
+  CriteriumResultStatus
 } from "../../types";
 import {
   formatStatus,
   handleFileDeleteError
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
+import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
 import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
-import DeleteFileModal from "./DeleteFileModal.vue";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
@@ -123,24 +122,15 @@ const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
-const deleteFileModalRef = ref<InstanceType<typeof DeleteFileModal>>();
-const fileToDelete = ref<ExampleImageFile>();
-
-function openDeleteFileModal(image: ExampleImageFile) {
-  deleteFileModalRef.value?.show();
-  fileToDelete.value = image;
-}
-
-function handleDeleteExample() {
-  if (!fileToDelete.value) return;
-
+function handleFileDeleteAfterConfirm(flFile: FileListFile) {
+  const file = result.value.exampleImages.find(f => f.key === flFile.key)!;
   store
     .deleteExampleImage(
       props.auditUniqueId,
       props.page.id,
       props.topicNumber,
       props.criterium.number,
-      fileToDelete.value.id
+      file.id
     )
     .then(() => {
       errorMessage.value = null;
@@ -148,9 +138,6 @@ function handleDeleteExample() {
     .catch(async (error) => {
       errorMessage.value = await handleFileDeleteError(error);
       auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      deleteFileModalRef.value?.hide();
     });
 }
 
@@ -380,17 +367,10 @@ const parentCriterium = computed(() => {
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
       :error-message="errorMessage"
+      :on-delete="handleFileDeleteAfterConfirm"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:user-impact="updateResultImpact($event)"
-      @delete-file="openDeleteFileModal"
       @update:quick-win="updateQuickWin"
-    />
-
-    <DeleteFileModal
-      ref="deleteFileModalRef"
-      :mime-type="fileToDelete?.mimetype"
-      @confirm="handleDeleteExample"
-      @cancel="deleteFileModalRef?.hide()"
+      @update:user-impact="updateResultImpact($event)"
     />
 
     <!-- TESTS + METHODO -->
