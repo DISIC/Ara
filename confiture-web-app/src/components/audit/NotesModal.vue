@@ -6,10 +6,11 @@ import { useRoute } from "vue-router";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
-import { NotesFile, StoreName } from "../../types";
+import { StoreName } from "../../types";
 import { getUploadUrl, handleFileDeleteError, handleFileUploadError } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
+import { FileListFile } from "../ui/FileList.vue";
 import FileUpload from "../ui/FileUpload.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
@@ -58,9 +59,15 @@ function handleUploadFile(file: File) {
     });
 }
 
-function handleDeleteFile(file: NotesFile) {
+function onClosed() {
+  fileUpload.value?.reset();
+  emit("closed");
+}
+
+function handleDeleteFile(flFile: FileListFile) {
+  const notesFile = files.value.find(f => f.key === flFile.key)!;
   auditStore
-    .deleteAuditFile(uniqueId.value, file.id)
+    .deleteAuditFile(uniqueId.value, notesFile.id)
     .then(() => {
       errorMessage.value = null;
     })
@@ -80,7 +87,7 @@ function handleDeleteFile(file: NotesFile) {
     ref="modal"
     aria-labelledby="notes-modal-title"
     :is-sidebar="true"
-    @closed="$emit('closed')"
+    @closed="onClosed"
   >
     <form class="fr-container fr-container--fluid" @submit.prevent>
       <div class="fr-grid-row">
@@ -125,11 +132,10 @@ function handleDeleteFile(file: NotesFile) {
                     : undefined
                 }))"
                 :error-message="errorMessage"
+                :is-in-modal="true"
                 :multiple="true"
+                :on-delete="handleDeleteFile"
                 @upload-file="handleUploadFile"
-                @delete-file="handleDeleteFile(
-                  files.find(f => f.key === $event.key)!
-                )"
               />
             </div>
           </div>

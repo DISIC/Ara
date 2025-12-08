@@ -1,24 +1,32 @@
-<script lang="ts">
-export default {
-  inheritAttrs: false
-};
-</script>
-
 <script lang="ts" setup>
-import { ref } from "vue";
+import { shallowRef } from "vue";
 
-defineProps<{
+defineOptions({
+  inheritAttrs: false
+});
+
+interface Props {
   id: string;
   isSidebar?: boolean;
-}>();
+}
+withDefaults(defineProps<Props>(), {
+  isSidebar: false
+});
 
 const emit = defineEmits<{
   (e: "closed"): void;
 }>();
 
-const modal = ref<HTMLDialogElement>();
+// If the confirm action of the modal caused the deletion of the item containing
+// the button that triggered the modal disclosure, we need to specify which
+// element will be focused on conceal.
+// Using a function allows to spot the HTML element to focus at the last moment,
+// after the modal is actually concealed and DOM may have been updated.
+const getFocusOnConceal = shallowRef<(() => HTMLElement | null) | null>();
 
-const triggerElement = ref<HTMLElement>();
+const modal = shallowRef<HTMLDialogElement>();
+
+const triggerElement = shallowRef<HTMLElement>();
 
 function show() {
   if (document.activeElement) {
@@ -28,33 +36,25 @@ function show() {
   dsfr(modal.value).modal.disclose();
 }
 
-function hide() {
-  dsfr(modal.value).modal.conceal();
+function hide(options: { getFocusElement: (() => HTMLElement | null) | null }
+  = { getFocusElement: () => null }) {
+  getFocusOnConceal.value = options.getFocusElement;
+  dsfr(modal.value).modal.conceal(false, true);
 }
 
-const isOpened = ref(false);
-
 function onConceal() {
-  /*
-  FIXME: For some reason, the DSFR modal emits the `dsfr.conceal` event as
-  soon as the page loads. We want to ignore this one event fire so we track if
-  the modal is *actually* opened before firing our own event.
-  */
-  if (!isOpened.value) {
-    return;
-  }
-
-  isOpened.value = false;
   setTimeout(() => {
-    if (triggerElement.value && triggerElement.value.isConnected) {
+    let elementToFocus;
+    if (getFocusOnConceal.value) {
+      elementToFocus = getFocusOnConceal.value();
+    }
+    if (elementToFocus && elementToFocus.isConnected) {
+      elementToFocus.focus();
+    } else if (triggerElement.value && triggerElement.value.isConnected) {
       triggerElement.value.focus();
     }
     emit("closed");
   });
-}
-
-function onDisclose() {
-  isOpened.value = true;
 }
 
 defineExpose({ show, hide });
@@ -76,7 +76,7 @@ defineExpose({ show, hide });
       role="dialog"
       :class="['fr-modal', { sidebar: isSidebar }]"
       v-bind="$attrs"
-      v-on="{ 'dsfr.conceal': onConceal, 'dsfr.disclose': onDisclose }"
+      v-on="{ 'dsfr.conceal': onConceal }"
     >
       <slot />
     </dialog>
