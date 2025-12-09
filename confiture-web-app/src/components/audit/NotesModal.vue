@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { StoreName } from "../../types";
-import { getUploadUrl, handleFileDeleteError, handleFileUploadError } from "../../utils";
+import { getUploadUrl } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import { FileListFile } from "../ui/FileList.vue";
@@ -24,14 +24,14 @@ const emit = defineEmits<{
 }>();
 
 defineExpose({
-  show: () => modal.value?.show(),
-  hide: () => modal.value?.hide()
+  show,
+  hide
 });
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const fileUpload = ref<InstanceType<typeof FileUpload>>();
 
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const route = useRoute();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
@@ -44,19 +44,11 @@ const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
-function handleUploadFile(file: File) {
-  auditStore
-    .uploadAuditFile(uniqueId.value, file)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+function show() {
+  modal.value?.show();
+}
+function hide() {
+  modal.value?.hide();
 }
 
 function onClosed() {
@@ -64,20 +56,13 @@ function onClosed() {
   emit("closed");
 }
 
-function handleDeleteFile(flFile: FileListFile) {
+async function handleUploadFile(file: File) {
+  await fileHandler.uploadGlobalFile(uniqueId.value, file);
+}
+
+async function handleDeleteFile(flFile: FileListFile) {
   const notesFile = files.value.find(f => f.key === flFile.key)!;
-  auditStore
-    .deleteAuditFile(uniqueId.value, notesFile.id)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+  await fileHandler.deleteGlobalAuditFile(uniqueId.value, notesFile);
 }
 </script>
 
@@ -131,11 +116,10 @@ function handleDeleteFile(flFile: FileListFile) {
                     ? getUploadUrl(f.thumbnailKey)
                     : undefined
                 }))"
-                :error-message="errorMessage"
                 :is-in-modal="true"
                 :multiple="true"
+                :on-upload="handleUploadFile"
                 :on-delete="handleDeleteFile"
-                @upload-file="handleUploadFile"
               />
             </div>
           </div>

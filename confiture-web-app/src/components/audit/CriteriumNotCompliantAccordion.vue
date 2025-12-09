@@ -2,8 +2,8 @@
 import { ref, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
 import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
+
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList, { FileListFile } from "../ui/FileList.vue";
@@ -11,19 +11,14 @@ import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
-export interface Props {
+const props = defineProps<{
   id: string;
   comment: string | null;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
   onDelete: (flFile: FileListFile) => void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
+}>();
 
 const emit = defineEmits<{
   (e: "update:comment", payload: string): void;
@@ -57,10 +52,6 @@ const userImpacts: Array<{
 ];
 
 const isOffline = useIsOffline();
-
-function handleDeleteFile(image: ExampleImageFile) {
-  emit("delete-file", image);
-}
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
