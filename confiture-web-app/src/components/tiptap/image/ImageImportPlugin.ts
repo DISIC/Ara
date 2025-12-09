@@ -4,7 +4,7 @@ import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, EditorView } from "@tiptap/pm/view";
 import ky from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
-import { FILE_SIZE_LIMIT, FileErrorMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
+import { FILE_SIZE_LIMIT, FileMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
 import { createFileFromUrl, getUploadUrl } from "../../../utils";
 import { PlaceholderPlugin } from "./PlaceholderPlugin";
 
@@ -28,13 +28,13 @@ interface ImageImportPluginOptions {
  * - errors are notified to user:
  *   - local errors:
  *      - UPLOAD_MAX_FILES_COUNT
- *      - UPLOAD_FORMAT
- *      - UPLOAD_SIZE
+ *      - UPLOAD_IMAGE_ERROR_FORMAT
+ *      - UPLOAD_ERROR_SIZE
  *      - UNKNOWN_ERROR
  *   - server errors (see utils#handleFileUploadError):
- *      - UPLOAD_TIMEOUT
- *      - UPLOAD_FORMAT
- *      - UPLOAD_SIZE
+ *      - UPLOAD_ERROR_TIMEOUT
+ *      - UPLOAD_IMAGE_ERROR_FORMAT
+ *      - UPLOAD_ERROR_SIZE
  *      - UNKNOWN_ERROR
  *
  * Limitations:
@@ -152,7 +152,7 @@ export class ImageImportPlugin extends Plugin {
       // Handle image imports asynchronously
       this.getFilesFromUriItems(uriItems, (files) => {
         if (files.length < 1) {
-          this.notify("error", undefined, FileErrorMessage.FETCH_ERROR);
+          this.notify("error", undefined, FileMessage.FETCH_ERROR);
         } else {
           this.handleImagesImport(view, pos, files, options);
         }
@@ -193,7 +193,7 @@ export class ImageImportPlugin extends Plugin {
     options?: { replaceSelection: boolean }
   ): void {
     if (files.length > MAX_UPLOAD_FILES_COUNT) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_MAX_FILES_COUNT);
+      this.notify("error", undefined, FileMessage.UPLOAD_MAX_FILES_COUNT);
       return;
     }
     for (let i = 0, il = files.length, file; i < il; i++) {
@@ -232,13 +232,13 @@ export class ImageImportPlugin extends Plugin {
   ): void {
     // Check image format
     if (!file.type.startsWith("image")) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_FORMAT);
+      this.notify("error", undefined, FileMessage.UPLOAD_IMAGE_ERROR_FORMAT);
       return;
     }
 
     // Check max size
     if (file.size > FILE_SIZE_LIMIT) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_SIZE);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_SIZE);
       return;
     }
 
@@ -253,7 +253,7 @@ export class ImageImportPlugin extends Plugin {
     element.onerror = () => {
       // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
-      this.notify("error", undefined, FileErrorMessage.UNKNOWN_ERROR);
+      this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
     };
     element.onload = () => {
       element.setAttribute("width", element.width.toString());
@@ -314,51 +314,48 @@ export class ImageImportPlugin extends Plugin {
    *   1. cleans up the possible placeholder.
    *   2. notifies with an error
    */
-  private uploadAndReplacePlaceholder(
+  private async uploadAndReplacePlaceholder(
     view: EditorView,
     file: File,
     id: any,
     element: HTMLImageElement,
     localURL: string
-  ): void {
-    this.uploadImage(file).then(
-      (imgUrl: string) => {
-        this.options.onImageUploadComplete?.(file.name);
+  ): Promise<void> {
+    try {
+      const imgUrl = await this.uploadImage(file);
+      this.options.onImageUploadComplete?.(file.name);
 
-        const placeholder = this.findPlaceholderDecoration(view.state, id);
-        const pos: number | undefined = placeholder?.from;
+      const placeholder = this.findPlaceholderDecoration(view.state, id);
+      const pos: number | undefined = placeholder?.from;
 
-        // If the content around the placeholder has been deleted,
-        // do not insert the image
-        if (pos === undefined) {
-          return;
-        }
-
-        // Otherwise, replace the placeholder with a new image node
-        // Tip: the local blob URL is used as a background image
-        //      to ease the transition
-        const state = view.state;
-        const tr = state.tr;
-        const node = state.schema.nodes.image.create({
-          src: imgUrl,
-          alt: file.name === "external" ? "Image insérée" : file.name,
-          width: placeholder?.spec.width,
-          height: placeholder?.spec.height,
-          localURL
-        });
-        tr.replaceWith(pos, pos, node);
-        tr.setMeta(this.placeholderPlugin, { element, remove: { id } });
-
-        view.dispatch(tr);
-      },
-      async () => {
-        // On failure, clean up the placeholder
-        view.dispatch(
-          view.state.tr.setMeta(this.placeholderPlugin, { element, remove: { id } })
-        );
-        this.notify("error", undefined, FileErrorMessage.UNKNOWN_ERROR);
+      // If the content around the placeholder has been deleted,
+      // do not insert the image
+      if (pos === undefined) {
+        return;
       }
-    );
+
+      // Otherwise, replace the placeholder with a new image node
+      // Tip: the local blob URL is used as a background image
+      //      to ease the transition
+      const state = view.state;
+      const tr = state.tr;
+      const node = state.schema.nodes.image.create({
+        src: imgUrl,
+        alt: file.name === "external" ? "Image insérée" : file.name,
+        width: placeholder?.spec.width,
+        height: placeholder?.spec.height,
+        localURL
+      });
+      tr.replaceWith(pos, pos, node);
+      tr.setMeta(this.placeholderPlugin, { element, remove: { id } });
+      view.dispatch(tr);
+    } catch {
+      // On failure, clean up the placeholder
+      view.dispatch(
+        view.state.tr.setMeta(this.placeholderPlugin, { element, remove: { id } })
+      );
+      this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
+    };
   }
 
   /**
@@ -425,9 +422,9 @@ export class ImageImportPlugin extends Plugin {
     // Remove all <img> elements
     imgs.forEach(img => img.remove());
     if (imgs.length === 1) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_FROM_HTML_ERROR);
+      this.notify("error", undefined, FileMessage.UPLOAD_FROM_HTML_ERROR);
     } else if (imgs.length > 1) {
-      this.notify("error", undefined, FileErrorMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
+      this.notify("error", undefined, FileMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
     }
 
     return doc.body.innerHTML;

@@ -1,4 +1,4 @@
-import { Component } from "vue";
+import { Component, InjectionKey } from "vue";
 import { RouterScrollBehavior } from "vue-router";
 
 import { components, paths } from "./confiture-api";
@@ -158,3 +158,10 @@ export interface TabData {
   component: object;
   componentParams?: object;
 }
+
+/**
+ * Injection key: "getFocusWhenListEmpty", used to specify which HTMLElement
+ * to focus when a FileList becomes empty (after a FileListFile deletion)
+ */
+export const getFocusWhenListEmptyKey =
+  Symbol("getFocusWhenListEmpty") as InjectionKey<(() => HTMLElement | null | null)>;

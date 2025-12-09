@@ -32,17 +32,6 @@ export const FILE_SIZE_LIMIT = 2_000_000;
 export const DEFAULT_NOTIFICATION_ERROR_TITLE = "Erreur inconnue";
 export const DEFAULT_NOTIFICATION_ERROR_DESCRIPTION = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numerique.gouv.fr";
 
-export enum FileErrorMessage {
-  UPLOAD_SIZE = "Image trop lourde. Choisissez une image inférieure à 2 Mo.",
-  UPLOAD_FORMAT = "Format non pris en charge. Importez une image.",
-  UPLOAD_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
-  UPLOAD_MAX_FILES_COUNT = "Importation échouée. Ajoutez une seule image à la fois.",
-  FETCH_ERROR = "Importation échouée. Importez l’image depuis votre ordinateur.",
-  UPLOAD_FROM_HTML_ERROR = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
-  UPLOAD_MULTIPLE_FROM_HTML_ERROR = "Importation des images échouée. Importez les images depuis votre ordinateur.",
-  UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
-};
-
 export enum FileMessage {
   DELETE_ERROR_TIMEOUT = "Supression interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   DELETE_SUCCESS = "Le fichier [FILE] a été correctement supprimé.",
@@ -56,7 +45,7 @@ export enum FileMessage {
   UPLOAD_MULTIPLE_FROM_HTML_ERROR = "Importation des images échouée. Importez les images depuis votre ordinateur.",
   UPLOAD_SUCCESS = "Le fichier [FILE] a été correctement ajouté.",
   UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
-};
+}
 
 export function getFileMessage(fileMessage: keyof typeof FileMessage, fileName: string): string {
   return FileMessage[fileMessage].replace("[FILE]", fileName);
