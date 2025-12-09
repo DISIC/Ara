@@ -456,6 +456,9 @@ export class AuditService {
     await this.updateAuditEditDate(uniqueId);
   }
 
+  /**
+   * Note: we don’t use this function anymore
+   */
   async saveExampleImage(
     editUniqueId: string,
     pageId: number,
