@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { provide, ref, useTemplateRef, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
-
+import { ExampleImageFile, CriterionResultUserImpact, getFocusWhenListEmptyKey } from "../../types";
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList, { FileListFile } from "../ui/FileList.vue";
@@ -19,6 +18,14 @@ const props = defineProps<{
   userImpact: CriterionResultUserImpact | null;
   onDelete: (flFile: FileListFile) => void;
 }>();
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return userImpactRadioGroupRef.value
+    ? userImpactRadioGroupRef.value.$el
+    : null;
+}
 
 defineEmits<{
   (e: "update:comment", payload: string): void;
@@ -54,6 +61,7 @@ const userImpacts: Array<{
 const isOffline = useIsOffline();
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
 const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
@@ -108,23 +116,26 @@ const title = computed(() => {
 
     <!-- FILES -->
     <FileList
-      v-if="exampleImages.length"
-      ref="fileUpload"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
-        ...f,
-        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         filename: f.originalFilename,
+        key: f.key,
+        mimetype: f.mimetype,
+        size: f.size,
+        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
       }))"
-      title="Ajouter des images d’exemple"
+      :delete-only="true"
+      :multiple="true"
       :on-delete="onDelete"
       :focus-on-delete="commentEditorRef?.focusEditor"
     />
 
     <!-- USER IMPACT -->
     <RadioGroup
+      ref="userImpactRadioGroupRef"
       class="fr-mb-4w"
+      tabindex="-1"
       :model-value="userImpact"
       :items="userImpacts"
       :default-value="null"

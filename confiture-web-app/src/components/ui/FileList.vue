@@ -1,46 +1,113 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, nextTick, ref, Ref, shallowRef, useId } from "vue";
 import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { formatBytes, pluralize, sleep } from "../../utils";
+import { getFileMessage } from "../../enums";
+import { getFocusWhenListEmptyKey } from "../../types";
+import { formatBytes, sleep } from "../../utils";
 
 export interface FileListFile {
   filename: string;
-  size: number;
-  mimetype: string;
-  url: string;
-  thumbnailUrl?: string;
   key: string;
+  mimetype: string;
+  size: number;
+  thumbnailUrl?: string;
+  url: string;
 }
 
-const { files, isInModal, onDelete, focusOnDelete } = defineProps<{
+const {
+  deleteOnly,
+  files,
+  isInModal,
+  readonly,
+  onDelete,
+  focusOnDelete
+} = defineProps<{
+  deleteOnly?: boolean;
   files: FileListFile[];
-  readonly?: boolean;
   isInModal?: boolean;
+  readonly?: boolean;
   onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
   focusOnDelete?: () => void;
 }>();
 
+defineExpose({
+  resetInlineConfirm
+});
+
+const getFocusWhenListEmpty = inject(getFocusWhenListEmptyKey);
+
+const inlineConfirmPendingRange: Ref<number | undefined> = ref(undefined);
+
+const id = useId();
 const isOffline = useIsOffline();
 const dialog = useDialog();
 
 const fileBtnsRefs = ref<HTMLLIElement[]>([]);
+const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
 
-const selectedFiles = computed(() => {
+const successMessage = shallowRef<string>("");
+
+const allFiles = computed(() => {
+  if (readonly) {
+    return undefined;
+  }
   const len = files.length;
   if (len === 0) {
-    return "Aucun fichier ajouté.";
+    return "Aucun fichier ajouté";
+  } else if (len === 1) {
+    return `${len} fichier ajouté`;
   } else {
-    return pluralize(len + " fichier ajouté", len + " fichiers ajoutés", len);
+    return `${len} fichiers ajoutés`;
   }
 });
+
+const isEmpty = computed(() => files.length <= 0);
+const displayAllFiles = computed(() => {
+  return !readonly && !(isEmpty.value && deleteOnly);
+});
+
+async function handleFileDeleteInlineReveal(
+  range: number
+) {
+  inlineConfirmPendingRange.value = range;
+  await nextTick();
+  const confirmBtn = deleteConfirmBtnRefs.value[0];
+  confirmBtn?.focus();
+}
+
+async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
+  resetInlineConfirm();
+  const elementToFocus = getElementToFocusAfterDelete(range);
+  if (elementToFocus) {
+    elementToFocus.focus();
+  }
+  await deleteFile(flFile);
+}
+
+function resetInlineConfirm() {
+  inlineConfirmPendingRange.value = undefined;
+  successMessage.value = "";
+}
+
+function inlineDeleteCancel(range: number) {
+  const deleteBtn = fileBtnsRefs.value.find(
+    (btn) => Number(btn.dataset.range) === range
+  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  if (deleteBtn) {
+    deleteBtn.focus();
+  }
+  inlineConfirmPendingRange.value = undefined;
+}
 
 async function handleFileDelete(
   flFile: FileListFile,
   range: number
 ) {
+  resetInlineConfirm();
+  successMessage.value = "";
   if (isInModal) {
-    deleteFile(flFile);
+    handleFileDeleteInlineReveal(range);
   } else {
     handleFileDeleteWithModal(flFile, range);
   }
@@ -75,6 +142,8 @@ async function deleteFile(
   try {
     await onDelete(flFile);
     await sleep(300);
+    // Notify to screen reader
+    successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
   } catch {
     console.error("File delete fail: " + flFile.filename);
   }
@@ -149,6 +218,14 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
     return null;
   }
 
+  // otherwise (if list will become empty), focus the given getFocusOnEmpty prop
+  if (getFocusWhenListEmpty) {
+    focusElement = getFocusWhenListEmpty();
+    if (focusElement) {
+      return focusElement;
+    }
+  }
+
   // Should never happen
   console.error("Nothing to focus on modal dialog conceal");
   return null;
@@ -157,8 +234,14 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 
 <template>
   <div>
-    <p class="fr-mt-3w fr-mb-0">{{ selectedFiles }}</p>
-    <ul class="files">
+    <p v-if="displayAllFiles" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
+    <ul
+      v-if="!isEmpty"
+      class="files"
+      role="list"
+      :aria-label="allFiles"
+      :aria-describedby="successMessage ? `file-delete-message-${id}` : undefined"
+    >
       <li v-for="(file, i) in files" :key="file.url" ref="fileBtnsRefs" :data-range="i">
         <img
           v-if="file.thumbnailUrl"
@@ -176,10 +259,12 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
         >
         </span>
         <div class="file-link">
-          <span>{{ file.filename }}</span><br />
+          <span>{{ getFileName(file) }}</span><br />
           <span class="fr-hint-text">{{ getFileDetails(file) }}</span>
         </div>
-        <ul class="fr-btns-group fr-btns-group--inline">
+        <ul
+          class="fr-btns-group fr-btns-group--inline"
+        >
           <li v-if="isViewable(file)">
             <a
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
@@ -206,7 +291,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
           <li v-if="!readonly">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
-              :disabled="isOffline"
+              :disabled="isOffline ? true : undefined"
               :title="`Supprimer ${getFullFileName(file)}`"
               type="button"
               @click="handleFileDelete(file, i)"
@@ -216,8 +301,37 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
             </button>
           </li>
         </ul>
+        <form v-if="inlineConfirmPendingRange === i" class="files__confirm-inline">
+          <fieldset class="fr-fieldset fr-mb-0">
+            <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
+            <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
+                <button
+                  ref="deleteConfirmBtnRefs"
+                  class="fr-btn"
+                  type="button"
+                  @click="inlineDeleteConfirm(file, i)"
+                  v-html="getDeleteModalConfirmLabel(file)"
+                ></button>
+                <button
+                  class="fr-btn fr-btn--secondary"
+                  type="button"
+                  @click="inlineDeleteCancel(i)"
+                >
+                  Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
       </li>
     </ul>
+    <p
+      :id="`file-delete-message-${id}`"
+      class="fr-sr-only"
+      aria-live="polite"
+      role="alert"
+    >{{ successMessage }}</p>
   </div>
 </template>
 
@@ -233,7 +347,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 .files > li {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 0.5rem 1.5rem;
   align-items: center;
   padding: 0.75rem;
   border: 1px solid var(--artwork-motif-grey);
@@ -282,5 +396,15 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 
 .file-upload--dragged-over {
   outline: var(--dsfr-outline) dotted 3px;
+}
+
+.files__confirm-inline,
+.files__confirm-inline .fr-fieldset__element {
+  width: 100%;
+}
+
+.files__confirm-inline {
+  border-top: 1px solid var(--border-default-grey);
+  padding-top: 1rem;
 }
 </style>
