@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, ref } from "vue";
+import { computed, provide, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useAuditStore } from "../../store/audit";
-import { StoreName } from "../../types";
+import { getFocusWhenListEmptyKey, StoreName } from "../../types";
 import { getUploadUrl } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
@@ -16,6 +16,14 @@ import SaveIndicator from "./SaveIndicator.vue";
 defineProps<{
   isLoading: boolean;
 }>();
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return fileUpload.value
+    ? fileUpload.value.fileInputRef!
+    : null;
+}
 
 const emit = defineEmits<{
   (e: "closed"): void;
@@ -61,6 +69,10 @@ async function handleUploadFile(file: File) {
 async function handleDeleteFile(flFile: FileListFile) {
   const notesFile = files.value.find(f => f.key === flFile.key)!;
   await fileHandler.deleteGlobalAuditFile(uniqueId.value, notesFile);
+
+  // No need to tell which file has been correctly uploaded
+  // after a file has just been deleted…
+  fileUpload.value?.reset();
 }
 </script>
 
@@ -106,13 +118,14 @@ async function handleDeleteFile(flFile: FileListFile) {
               <FileUpload
                 ref="fileUpload"
                 class="fr-mb-4w"
-                :audit-files="files.map(f => ({
-                  ...f,
+                :fl-files="files.map(f => ({
                   filename: f.originalFilename,
-                  url: getUploadUrl(f.key),
-                  thumbnailUrl: f.thumbnailKey
-                    ? getUploadUrl(f.thumbnailKey)
-                    : undefined
+                  key: f.key,
+                  mimetype: f.mimetype,
+                  size: f.size,
+                  thumbnailUrl: f.thumbnailKey ?
+                    getUploadUrl(f.thumbnailKey) : undefined,
+                  url: getUploadUrl(f.key)
                 }))"
                 is-in-modal
                 multiple
