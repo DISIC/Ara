@@ -920,7 +920,14 @@ export class AuditService {
   ): Promise<AuditReportDto | undefined> {
     const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
-      include: AUDIT_EDIT_INCLUDE
+      include: {
+        ...AUDIT_EDIT_INCLUDE,
+        notesFiles: {
+          orderBy: {
+            id: "desc"
+          }
+        }
+      }
     });
 
     if (!audit) {

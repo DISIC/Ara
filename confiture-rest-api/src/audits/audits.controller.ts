@@ -100,7 +100,11 @@ export class AuditsController {
           procedureName: true
         }
       },
-      notesFiles: true
+      notesFiles: {
+        orderBy: {
+          id: "desc"
+        }
+      }
     });
 
     if (!audit) {
