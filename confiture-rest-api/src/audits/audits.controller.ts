@@ -163,6 +163,7 @@ export class AuditsController {
     }
   }
 
+  /** Note: we don’t use this route anymore */
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
   @ApiCreatedResponse({ type: ExampleImageFileDto })
