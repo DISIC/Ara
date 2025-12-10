@@ -134,7 +134,11 @@ async function deleteFile(
     await sleep(300);
 
     // Notify to screen reader
-    successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
+    if (isImage(flFile)) {
+      successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename);
+    } else {
+      successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
+    }
   } catch (error) {
     console.error("File delete fail: " + flFile.filename);
   }
