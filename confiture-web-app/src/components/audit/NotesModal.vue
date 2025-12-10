@@ -69,10 +69,6 @@ async function handleUploadFile(file: File) {
 async function handleDeleteFile(flFile: FileListFile) {
   const notesFile = files.value.find(f => f.key === flFile.key)!;
   await fileHandler.deleteGlobalAuditFile(uniqueId.value, notesFile);
-
-  // No need to tell which file has been correctly uploaded
-  // after a file has just been deleted…
-  fileUpload.value?.reset();
 }
 </script>
 

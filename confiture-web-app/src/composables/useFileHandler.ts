@@ -1,8 +1,8 @@
-import { HTTPError, TimeoutError } from "ky";
+import ky, { HTTPError, TimeoutError } from "ky";
 import { getFileMessage } from "../enums";
 import { useAuditStore, useResultsStore } from "../store";
 import { ExampleImageFile, NotesFile } from "../types";
-import { captureWithPayloads } from "../utils";
+import { captureWithPayloads, getUploadUrl, isImage } from "../utils";
 import { useNotifications } from "./useNotifications";
 
 export function useFileHandler() {
@@ -19,7 +19,7 @@ export function useFileHandler() {
    *
    * See back-end: AuditService#saveExampleImage
    *
-   * Note: we don’t use this function anymore
+   * ⚠️ Note: we don’t use this function anymore
    */
   async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
     try {
@@ -32,11 +32,7 @@ export function useFileHandler() {
       );
     } catch (error) {
       resultsStore.lastRequestFailed = true;
-      if (error instanceof Error) {
-        throw await handleFileUploadError(error, file.name);
-      } else {
-        console.error("An unexpected error occurred", error);
-      }
+      throw await handleFileUploadError(error, file);
     }
   }
 
@@ -60,25 +56,16 @@ export function useFileHandler() {
       );
     } catch (error) {
       resultsStore.lastRequestFailed = true;
-      if (error instanceof Error) {
-        throw handleFileDeleteError(error, auditFile.originalFilename);
-      } else {
-        console.error("An unexpected error occurred", error);
-      }
+      throw handleFileDeleteError(error, auditFile);
     }
   }
 
   async function uploadGlobalFile(auditUniqueId: string, file: File) {
     try {
-      const uploadRes = await auditStore.uploadAuditFile(auditUniqueId, file);
-      return uploadRes;
-    } catch (error: unknown) {
+      await auditStore.uploadAuditFile(auditUniqueId, file);
+    } catch (error) {
       auditStore.lastRequestFailed = true;
-      if (error instanceof Error) {
-        throw await handleFileUploadError(error, file.name);
-      } else {
-        console.error("An unexpected error occurred", error);
-      }
+      throw await handleFileUploadError(error, file);
     }
   }
 
@@ -87,74 +74,106 @@ export function useFileHandler() {
       await auditStore.deleteAuditFile(auditUniqueId, auditFile.id);
     } catch (error) {
       auditStore.lastRequestFailed = true;
-      if (error instanceof Error) {
-        throw handleFileDeleteError(error, auditFile.originalFilename);
-      } else {
-        console.error("An unexpected error occurred", error);
-      }
+      throw handleFileDeleteError(error, auditFile);
     }
   }
 
+  /**
+   * Function to upload an image file inside the editor
+   * @returns a promise that resolves with the URL of the uploaded image
+   */
+  async function uploadEditorImage(file: File): Promise<string> {
+    const formData = new FormData();
+    // To handle non-ascii characters, we encode the filename here
+    // and decode it on the backend side
+    formData.set("file", file, encodeURI(file.name));
+
+    try {
+      const imageUploadKey = (await ky
+        .post(`/api/audits/editor/images`, { body: formData, timeout: 15_000 })
+        .text()) as string;
+
+      const url = getUploadUrl(imageUploadKey);
+      return url;
+    } catch (error) {
+      throw await handleFileUploadError(error, file);
+    }
+  }
+
+  // Note: this function is async because of async `json()` call
   async function handleFileUploadError(
-    error: Error,
-    fileName: string
+    error: unknown,
+    file: File
   ): Promise<string | null> {
+    const fileName = file.name;
     let errorMessage: string | null = null;
+
+    if (!(error instanceof Error)) {
+      console.error("An unexpected error occurred", error);
+      return null;
+    }
 
     if (error instanceof TimeoutError) {
       errorMessage = getFileMessage("UPLOAD_ERROR_TIMEOUT", fileName);
     } else if (error instanceof HTTPError) {
       // 413 Entity Too Large
       if (error.response.status === 413) {
-        errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
+        if (isImage(file)) {
+          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", fileName);
+        } else {
+          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
+        }
       }
       // 422 Unprocessable Entity
       else if (error.response.status === 422) {
         const body = await error.response.json();
 
         if (body.message.includes("expected type")) {
-          errorMessage = getFileMessage("UPLOAD_IMAGE_ERROR_FORMAT", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_FORMAT_IMAGE", fileName);
         } else if (body.message.includes("expected size")) {
           errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
         } else {
-          errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
-          captureWithPayloads(error);
+          errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
         }
       }
       // Other errors
       else {
-        errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
-        captureWithPayloads(error);
+        errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
       }
     } else {
-      console.error("An unexpected error occurred", error);
-      errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
-      captureWithPayloads(error);
+      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
     }
-    notify("error", errorMessage);
+
+    captureWithPayloads(error);
+    notify("error", undefined, errorMessage);
     return errorMessage;
   }
 
   function handleFileDeleteError(
-    error: Error,
-    fileName: string
+    error: unknown,
+    file: ExampleImageFile | NotesFile
   ): string | null {
+    const fileName = file.originalFilename;
     let errorMessage: string | null = null;
 
+    if (!(error instanceof Error)) {
+      console.error("An unexpected error occurred", error);
+    }
     if (error instanceof TimeoutError) {
       errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", fileName);
     } else {
-      console.error("An unexpected error occurred", error);
-      errorMessage = getFileMessage("UNKNOWN_ERROR", fileName);
+      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", fileName);
       captureWithPayloads(error);
     }
 
-    notify("error", "Erreur", errorMessage);
+    captureWithPayloads(error);
+    notify("error", undefined, errorMessage);
     return errorMessage;
   }
 
   return {
     uploadCriteriumFile,
+    uploadEditorImage,
     deleteCriteriumAuditFile,
     uploadGlobalFile,
     deleteGlobalAuditFile

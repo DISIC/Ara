@@ -119,9 +119,9 @@ const notify = useNotifications();
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
-function handleFileDeleteAfterConfirm(flFile: FileListFile) {
+async function handleFileDeleteAfterConfirm(flFile: FileListFile) {
   const file = result.value.exampleImages.find(f => f.key === flFile.key)!;
-  fileHandler.deleteCriteriumAuditFile(
+  await fileHandler.deleteCriteriumAuditFile(
     props.auditUniqueId,
     props.page.id,
     props.topicNumber,
