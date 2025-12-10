@@ -304,3 +304,7 @@ export async function createFileFromUrl(url: string): Promise<File | null> {
       return new File([buf], "external", { type: mimeType });
     });
 }
+
+export function isImage(file: File) {
+  return file.type.startsWith("image");
+}

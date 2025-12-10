@@ -2,10 +2,10 @@ import { Slice } from "@tiptap/pm/model";
 import { EditorState, Plugin, PluginKey, Selection, Transaction } from "@tiptap/pm/state";
 import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, EditorView } from "@tiptap/pm/view";
-import ky from "ky";
+import { useFileHandler } from "../../../composables/useFileHandler";
 import { useNotifications } from "../../../composables/useNotifications";
 import { FILE_SIZE_LIMIT, FileMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
-import { createFileFromUrl, getUploadUrl } from "../../../utils";
+import { createFileFromUrl } from "../../../utils";
 import { PlaceholderPlugin } from "./PlaceholderPlugin";
 
 interface ImageImportPluginOptions {
@@ -27,15 +27,17 @@ interface ImageImportPluginOptions {
  *   replacing the placeholder with a smooth visual transition
  * - errors are notified to user:
  *   - local errors:
- *      - UPLOAD_MAX_FILES_COUNT
- *      - UPLOAD_IMAGE_ERROR_FORMAT
+ *      - UPLOAD_ERROR_FORMAT_IMAGE
+ *      - UPLOAD_ERROR_MULTIPLE_FILES
  *      - UPLOAD_ERROR_SIZE
- *      - UNKNOWN_ERROR
- *   - server errors (see utils#handleFileUploadError):
+ *      - UPLOAD_ERROR_SIZE_IMAGE
+ *      - UPLOAD_ERROR_UNKNOWN
+ *   - server errors (see useFileHandler#handleFileUploadError):
  *      - UPLOAD_ERROR_TIMEOUT
- *      - UPLOAD_IMAGE_ERROR_FORMAT
+ *      - UPLOAD_ERROR_FORMAT_IMAGE
  *      - UPLOAD_ERROR_SIZE
- *      - UNKNOWN_ERROR
+ *      - UPLOAD_ERROR_SIZE_IMAGE
+ *      - UPLOAD_ERROR_UNKNOWN
  *
  * Limitations:
  * - prevents multiple imports at the same time (only one by one)
@@ -66,6 +68,8 @@ export class ImageImportPlugin extends Plugin {
   }
 
   private notify = useNotifications();
+
+  private fileHandler = useFileHandler();
 
   /**
    * handleDrop: called when something is dropped on the editor.
@@ -152,7 +156,7 @@ export class ImageImportPlugin extends Plugin {
       // Handle image imports asynchronously
       this.getFilesFromUriItems(uriItems, (files) => {
         if (files.length < 1) {
-          this.notify("error", undefined, FileMessage.FETCH_ERROR);
+          this.notify("error", undefined, FileMessage.FETCH_ERROR_IMAGE);
         } else {
           this.handleImagesImport(view, pos, files, options);
         }
@@ -193,7 +197,7 @@ export class ImageImportPlugin extends Plugin {
     options?: { replaceSelection: boolean }
   ): void {
     if (files.length > MAX_UPLOAD_FILES_COUNT) {
-      this.notify("error", undefined, FileMessage.UPLOAD_MAX_FILES_COUNT);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_MULTIPLE_FILES);
       return;
     }
     for (let i = 0, il = files.length, file; i < il; i++) {
@@ -232,13 +236,13 @@ export class ImageImportPlugin extends Plugin {
   ): void {
     // Check image format
     if (!file.type.startsWith("image")) {
-      this.notify("error", undefined, FileMessage.UPLOAD_IMAGE_ERROR_FORMAT);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FORMAT_IMAGE);
       return;
     }
 
     // Check max size
     if (file.size > FILE_SIZE_LIMIT) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_SIZE);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_SIZE_IMAGE);
       return;
     }
 
@@ -253,6 +257,7 @@ export class ImageImportPlugin extends Plugin {
     element.onerror = () => {
       // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
+      console.log("ICI");
       this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
     };
     element.onload = () => {
@@ -322,7 +327,7 @@ export class ImageImportPlugin extends Plugin {
     localURL: string
   ): Promise<void> {
     try {
-      const imgUrl = await this.uploadImage(file);
+      const imgUrl = await this.fileHandler.uploadEditorImage(file);
       this.options.onImageUploadComplete?.(file.name);
 
       const placeholder = this.findPlaceholderDecoration(view.state, id);
@@ -354,26 +359,7 @@ export class ImageImportPlugin extends Plugin {
       view.dispatch(
         view.state.tr.setMeta(this.placeholderPlugin, { element, remove: { id } })
       );
-      this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
     };
-  }
-
-  /**
-   * Function to upload an image file inside the editor
-   * @returns a promise that resolves with the URL of the uploaded image
-   */
-  private async uploadImage(file: File): Promise<string> {
-    const formData = new FormData();
-    // To handle non-ascii characters, we encode the filename here and decode it on the back
-    formData.set("file", file, encodeURI(file.name));
-
-    const imageUploadKey = (await ky
-      .post(`/api/audits/editor/images`, { body: formData, timeout: 15_000 })
-      .text()) as string;
-
-    const url = getUploadUrl(imageUploadKey);
-
-    return url;
   }
 
   /**
@@ -422,9 +408,9 @@ export class ImageImportPlugin extends Plugin {
     // Remove all <img> elements
     imgs.forEach(img => img.remove());
     if (imgs.length === 1) {
-      this.notify("error", undefined, FileMessage.UPLOAD_FROM_HTML_ERROR);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FROM_HTML);
     } else if (imgs.length > 1) {
-      this.notify("error", undefined, FileMessage.UPLOAD_MULTIPLE_FROM_HTML_ERROR);
+      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FROM_HTML_MULTIPLE);
     }
 
     return doc.body.innerHTML;
