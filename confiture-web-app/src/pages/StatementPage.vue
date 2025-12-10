@@ -243,13 +243,12 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">
             Établissement de cette déclaration d’accessibilité
           </h4>
-          <p v-if="report.data.statementPublicationDate" class="fr-mb-2w fr-mb-md-3w">
-            Cette déclaration a été établie le {{ formatDate(report.data.statementPublicationDate) }}.
+          <p class="fr-mb-2w fr-mb-md-3w">
+            Cette déclaration a été établie le {{ report.data.statementPublicationDate ? formatDate(report.data.statementPublicationDate) : '[JJ/MM/YYYY]' }}.
             <template v-if="report.data.statementEditionDate">
               Elle a été mise à jour le {{ formatDate(report.data.statementEditionDate) }}.
             </template>
           </p>
-          <!-- Cette déclaration a été établie le XX mois XXXX. Elle a été mise à jour le XX mois XXXX. -->
           <h5 class="fr-h3">
             Technologies utilisées pour la réalisation de l’audit
           </h5>
