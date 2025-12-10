@@ -10,7 +10,7 @@ import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
-import { formatDate } from "../utils";
+import { formatDate, isSameDay } from "../utils";
 
 const report = useReportStore();
 
@@ -245,7 +245,14 @@ const siteUrl = computed(() => {
           </h4>
           <p class="fr-mb-2w fr-mb-md-3w">
             Cette déclaration a été établie le {{ report.data.statementPublicationDate ? formatDate(report.data.statementPublicationDate) : '[JJ/MM/YYYY]' }}.
-            <template v-if="report.data.statementEditionDate">
+            <template
+              v-if="
+                report.data.statementEditionDate &&
+                  !isSameDay(
+                    report.data.statementPublicationDate!,
+                    report.data.statementEditionDate)
+              "
+            >
               Elle a été mise à jour le {{ formatDate(report.data.statementEditionDate) }}.
             </template>
           </p>
