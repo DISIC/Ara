@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import { formatDate } from "../../utils";
+import { formatDate, isSameDay } from "../../utils";
 import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
 
@@ -53,7 +53,7 @@ const auditIsPublishable = computed(() => {
     </div>
 
     <p v-if="auditIsPublishable" class="fr-text--sm fr-mb-5v statement-step-date">
-      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate"> - Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
+      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate && !isSameDay(audit.statementPublicationDate!, audit.statementEditionDate)"> - Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
     </p>
 
     <p class="statement-step-description">
