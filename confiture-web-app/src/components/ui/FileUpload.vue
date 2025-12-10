@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
-import { sleep } from "../../utils";
+import { isImage, sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
 interface Props {
@@ -88,13 +88,21 @@ async function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
     if (file.size > props.maxFileSize) {
-      notify("error", getFileMessage("UPLOAD_ERROR_SIZE", file.name));
+      if (isImage(file)) {
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", file.name));
+      } else {
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE", file.name));
+      }
       return;
     }
     if (props.onUpload) {
       try {
         // Announce upload success to screen reader
-        message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+        if (isImage(file)) {
+          message.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
+        } else {
+          message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+        }
         await nextTick();
         await sleep(1);
         await props.onUpload(file);
@@ -105,6 +113,16 @@ async function handleFileChange() {
   }
   if (fileInputRef.value) {
     fileInputRef.value.value = "";
+  }
+}
+
+function flOnDelete(flFile: FileListFile, triggerButton?: EventTarget | null) {
+  // No need to tell which file has been correctly uploaded
+  // after a file has just been deleted…
+  message.value = "";
+
+  if (props.onDelete) {
+    props.onDelete(flFile, triggerButton);
   }
 }
 </script>
@@ -155,7 +173,7 @@ async function handleFileChange() {
       ref="fileListRef"
       :files="flFiles"
       :is-in-modal="isInModal"
-      :on-delete="onDelete"
+      :on-delete="flOnDelete"
       :readonly="readonly"
     />
   </div>
