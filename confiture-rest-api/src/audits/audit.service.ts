@@ -373,6 +373,12 @@ export class AuditService {
         }),
         this.updateAuditEditDate(uniqueId)
       ]);
+
+      // Updating audit accessibility statement
+      if (data.initiator) {
+        this.updateStatementDate(uniqueId);
+      }
+
       return audit;
     } catch (e) {
       // Audit does not exist
@@ -453,6 +459,15 @@ export class AuditService {
       ...promises,
       this.updateAuditEditDate(uniqueId)
     ]);
+
+    // Only update statement edition date if there is a publication date
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    if (audit.statementPublicationDate) {
+      this.updateStatementDate(uniqueId);
+    }
   }
 
   async saveExampleImage(
@@ -788,6 +803,20 @@ export class AuditService {
     });
   }
 
+  // Either update statement publication or edition date
+  private async updateStatementDate(uniqueId: string) {
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    return this.prisma.audit.updateMany({
+      where: { editUniqueId: uniqueId },
+      data: audit.statementPublicationDate
+        ? { statementEditionDate: new Date() }
+        : { statementPublicationDate: new Date() }
+    });
+  }
+
   async getAuditReportData(
     consultUniqueId: string
   ): Promise<AuditReportDto | undefined> {
@@ -889,6 +918,8 @@ export class AuditService {
       creationDate: audit.creationDate,
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
+      statementPublicationDate: audit.statementPublicationDate,
+      statementEditionDate: audit.statementEditionDate,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
@@ -1273,6 +1304,8 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: undefined,
+        statementPublicationDate: undefined,
+        statementEditionDate: undefined,
 
         environments: {
           createMany: {
@@ -1383,8 +1416,7 @@ export class AuditService {
         ...a.pages.flatMap((p) => p.results)
       ];
 
-      const pagesResults = a.pages.flatMap((p) => p.results);
-      const actualResults = pagesResults.filter((r) =>
+      const actualResults = allResults.filter((r) =>
         CRITERIA_BY_AUDIT_TYPE[a.auditType].find(
           (e) => e.topic === r.topic && e.criterium === r.criterium
         )
@@ -1393,7 +1425,7 @@ export class AuditService {
         actualResults.filter(
           (r) => r.status !== CriterionResultStatus.NOT_TESTED
         ).length /
-        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
+        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1));
 
       let complianceLevel = null;
 
@@ -1442,7 +1474,7 @@ export class AuditService {
 
       const auditIsComplete =
         actualResults.length ===
-          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length &&
+          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1) &&
         actualResults.every((r) => r.status !== "NOT_TESTED");
 
       return {
