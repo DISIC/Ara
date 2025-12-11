@@ -113,7 +113,7 @@ const siteUrl = computed(() => {
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
       <p v-if="report.data.statementPublicationDate" class="fr-text--sm fr-mb-4w dates">
-        Rédigée le {{ formatDate(report.data.statementPublicationDate) }}<template v-if="report.data.statementEditionDate"> - Mise à jour le {{ formatDate(report.data.statementEditionDate) }}</template>
+        Rédigée le {{ formatDate(report.data.statementPublicationDate) }}<template v-if="report.data.statementEditionDate && !isSameDay(report.data?.statementPublicationDate, report.data?.statementEditionDate)"> - Mise à jour le {{ formatDate(report.data.statementEditionDate) }}</template>
       </p>
 
       <p class="fr-mb-1v">
