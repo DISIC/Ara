@@ -19,6 +19,7 @@ import {
   formatBytes,
   formatDate,
   getAuditStatus,
+  isSameDay,
   isTiptapDocumentEmpty,
   slugify
 } from "../../utils";
@@ -245,7 +246,12 @@ watch(
         class="fr-text--sm fr-mb-4w dates"
       >
         Audit terminé le {{ formatDate(report.data.publishDate) }}
-        <template v-if="report.data.updateDate">
+        <template
+          v-if="
+            report.data.updateDate &&
+              !isSameDay(report.data.publishDate, report.data.updateDate)
+          "
+        >
           – Mis à jour le {{ formatDate(report.data.updateDate) }}
         </template>
       </p>

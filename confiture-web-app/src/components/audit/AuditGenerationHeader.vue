@@ -15,6 +15,7 @@ import {
   captureWithPayloads,
   formatBytes,
   formatDate,
+  isSameDay,
   slugify
 } from "../../utils";
 import CopyIcon from "../icons/CopyIcon.vue";
@@ -287,7 +288,7 @@ onMounted(() => {
             {{ formatDate(auditStore.currentAudit?.publicationDate) }}
           </time>
         </strong>
-        <span v-if="auditStore.currentAudit?.editionDate" class="fr-text--xs fr-mb-0 audit-status-modify">
+        <span v-if="auditStore.currentAudit?.editionDate && !isSameDay(auditStore.currentAudit?.publicationDate, auditStore.currentAudit?.editionDate)" class="fr-text--xs fr-mb-0 audit-status-modify">
           Mis à jour le
           <time :datetime="auditStore.currentAudit?.editionDate">
             {{ formatDate(auditStore.currentAudit?.editionDate) }}

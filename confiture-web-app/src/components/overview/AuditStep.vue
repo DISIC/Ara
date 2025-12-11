@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
-import { formatDate, getCriteriaCount } from "../../utils";
+import { formatDate, getCriteriaCount, isSameDay } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import StepCard from "./StepCard.vue";
@@ -77,7 +77,12 @@ const auditIsInProgress = computed(() => {
         <time :datetime="audit.publicationDate.toString()">{{
           formatDate(audit.publicationDate)
         }}</time>
-        <template v-if="audit.editionDate">
+        <template
+          v-if="
+            audit.editionDate &&
+              !isSameDay(audit.publicationDate, audit.editionDate)
+          "
+        >
           – Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
