@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Améliore le temps de réponse de la requête API des résultats ([#1321](https://github.com/DISIC/Ara/pull/1321))
+- Ne mets pas à jour la date de mise à jour de l’audit quand seules certaines propriétés sont modifiées (nom du site audité, nom de l’auditeur, adresse e-mail de l’auditeur) ([#1312](https://github.com/DISIC/Ara/pull/1312))
 
 ### 28/11/2025
 
