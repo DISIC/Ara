@@ -98,7 +98,11 @@ export class AuditsController {
           procedureName: true
         }
       },
-      notesFiles: true
+      notesFiles: {
+        orderBy: {
+          id: "desc"
+        }
+      }
     });
 
     if (!audit) {
@@ -147,6 +151,7 @@ export class AuditsController {
     }
   }
 
+  /** Note: we don’t use this route anymore */
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
   @ApiCreatedResponse({ type: ExampleImageFile })

@@ -456,6 +456,9 @@ export class AuditService {
     await this.updateAuditEditDate(uniqueId);
   }
 
+  /**
+   * Note: we don’t use this function anymore
+   */
   async saveExampleImage(
     editUniqueId: string,
     pageId: number,
@@ -802,7 +805,14 @@ export class AuditService {
   ): Promise<AuditReportDto | undefined> {
     const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
-      include: AUDIT_EDIT_INCLUDE
+      include: {
+        ...AUDIT_EDIT_INCLUDE,
+        notesFiles: {
+          orderBy: {
+            id: "desc"
+          }
+        }
+      }
     });
 
     if (!audit) {
