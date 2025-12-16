@@ -62,13 +62,21 @@ function onClosed() {
   emit("closed");
 }
 
-async function handleUploadFile(file: File) {
+async function handleFileImported(
+  resolve: () => void,
+  file: File
+) {
   await fileHandler.uploadGlobalFile(uniqueId.value, file);
+  resolve();
 }
 
-async function handleDeleteFile(flFile: FileListFile) {
+async function handleFileDeleted(
+  resolve: () => void,
+  flFile: FileListFile
+) {
   const notesFile = files.value.find(f => f.key === flFile.key)!;
   await fileHandler.deleteGlobalAuditFile(uniqueId.value, notesFile);
+  resolve();
 }
 </script>
 
@@ -125,8 +133,8 @@ async function handleDeleteFile(flFile: FileListFile) {
                 }))"
                 is-in-modal
                 multiple
-                :on-upload="handleUploadFile"
-                :on-delete="handleDeleteFile"
+                @file-imported="handleFileImported($event.resolve, $event.file)"
+                @file-deleted="handleFileDeleted($event.resolve, $event.flFile)"
               />
             </div>
           </div>

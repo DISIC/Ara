@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
-import { isImage, sleep } from "../../utils";
+import { isImage } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
 interface Props {
@@ -15,8 +15,6 @@ interface Props {
   isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
-  onUpload?: (file: File, triggerButton?: EventTarget | null) => void;
-  onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,9 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
   title: null
 });
 
-defineEmits<{
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: FileListFile): void;
+const emit = defineEmits<{
+  (e: "file-imported", payload: { resolve: (value: void) => void; file: File }): Promise<void>;
+  (e: "file-deleted", payload: { resolve: (value: void) => void; flFile: FileListFile }): Promise<void>;
 }>();
 
 const fileInputRef = useTemplateRef("fileInputRef");
@@ -95,20 +93,22 @@ async function handleFileChange() {
       }
       return;
     }
-    if (props.onUpload) {
-      try {
-        // Announce upload success to screen reader
-        if (isImage(file)) {
-          message.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
-        } else {
-          message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
-        }
-        await nextTick();
-        await sleep(1);
-        await props.onUpload(file);
-      } catch {
-        console.error("Upload failed: ", file.name);
+    try {
+      // Announce upload success to screen reader
+      if (isImage(file)) {
+        message.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
+      } else {
+        message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
       }
+
+      // Tell listeners that a file has been imported locally
+      // Typical use case: upload the file to a server using useFileHandler
+      await new Promise((resolve: (value: void) => void) => {
+        emit("file-imported", { resolve, file });
+      });
+      await nextTick(); // usefull to make updated live regions work as expected
+    } catch {
+      console.error("Upload failed: ", file.name);
     }
   }
   if (fileInputRef.value) {
@@ -116,14 +116,18 @@ async function handleFileChange() {
   }
 }
 
-function flOnDelete(flFile: FileListFile, triggerButton?: EventTarget | null) {
+async function flOnDelete(
+  resolve: (value: undefined) => void,
+  flFile: FileListFile
+) {
   // No need to tell which file has been correctly uploaded
   // after a file has just been deleted…
   message.value = "";
 
-  if (props.onDelete) {
-    props.onDelete(flFile, triggerButton);
-  }
+  await new Promise((resolve: (value: void) => void) => {
+    emit("file-deleted", { resolve, flFile });
+  });
+  resolve(undefined);
 }
 </script>
 
@@ -173,8 +177,8 @@ function flOnDelete(flFile: FileListFile, triggerButton?: EventTarget | null) {
       ref="fileListRef"
       :files="flFiles"
       :is-in-modal="isInModal"
-      :on-delete="flOnDelete"
       :readonly="readonly"
+      @file-deleted="flOnDelete($event.resolve, $event.flFile)"
     />
   </div>
 </template>
