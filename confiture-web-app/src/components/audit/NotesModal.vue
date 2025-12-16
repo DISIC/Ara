@@ -132,8 +132,8 @@ function handleDeleteFile(flFile: FileListFile) {
                     : undefined
                 }))"
                 :error-message="errorMessage"
-                :is-in-modal="true"
-                :multiple="true"
+                is-in-modal
+                multiple
                 :on-delete="handleDeleteFile"
                 @upload-file="handleUploadFile"
               />
