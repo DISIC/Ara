@@ -53,7 +53,7 @@ onReveal(() => {
               </button>
             </div>
             <div class="fr-modal__content">
-              <h1 id="generic-modal-title" class="fr-modal__title" v-html="title"></h1>
+              <h1 id="generic-modal-title" class="fr-modal__title">{{ title }}</h1>
               <p v-html="message"></p>
             </div>
             <div class="fr-modal__footer">
