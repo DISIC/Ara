@@ -257,7 +257,6 @@ export class ImageImportPlugin extends Plugin {
     element.onerror = () => {
       // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
-      console.log("ICI");
       this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
     };
     element.onload = () => {
