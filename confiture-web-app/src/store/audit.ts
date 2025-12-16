@@ -166,7 +166,7 @@ export const useAuditStore = defineStore("audit", {
         this.updateCurrentAuditEditionDate();
 
         const notesFiles = this.entities[uniqueId].notesFiles || [];
-        notesFiles.splice(0, 0, notesFile);
+        notesFiles.unshift(notesFile);
         return notesFile;
       } finally {
         this.decreaseCurrentRequestCount();
