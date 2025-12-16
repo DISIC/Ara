@@ -10,6 +10,10 @@
 
 - Corrige l’affichage des liens trop longs dans l’éditeur riche ([#1340](https://github.com/DISIC/Ara/pull/1340))
 
+### 16/12/2025
+
+- Ara sort de sa bêta. 🎉
+
 ### 12/12/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
@@ -1070,4 +1074,4 @@
 
 ### 16/11/2022
 
-Lancement de la version bêta d'Ara. 🎉
+- Lancement de la version bêta d'Ara. 🎉
