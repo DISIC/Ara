@@ -29,9 +29,6 @@ const width = useWindowWidth();
     <div class="fr-p-1w fr-px-md-3w fr-py-md-2w content">
       <p class="fr-h6 fr-mb-0 site-name">
         Ara
-        <span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">
-          BÊTA
-        </span>
       </p>
 
       <RouterLink
