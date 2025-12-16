@@ -82,9 +82,11 @@ async function handleFileDeleteInlineReveal(
 
 async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
   resetInlineConfirm();
+  await sleep(200);
   const elementToFocus = getElementToFocusAfterDelete(range);
   await deleteFile(flFile);
   if (elementToFocus) {
+    await sleep(500);
     elementToFocus.focus();
   }
 }
@@ -239,8 +241,10 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 <template>
   <div>
     <p v-if="displayAllFiles" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
-    <ul
+    <TransitionGroup
       v-if="!isEmpty"
+      tag="ul"
+      name="files"
       class="files"
       role="list"
       :aria-label="allFiles"
@@ -305,31 +309,33 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
             </button>
           </li>
         </ul>
-        <form v-if="inlineConfirmPendingRange === i" class="files__confirm-inline">
-          <fieldset class="fr-fieldset fr-mb-0">
-            <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
-            <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
-                <button
-                  ref="deleteConfirmBtnRefs"
-                  class="fr-btn"
-                  type="button"
-                  @click="inlineDeleteConfirm(file, i)"
-                  v-html="getDeleteModalConfirmLabel(file)"
-                ></button>
-                <button
-                  class="fr-btn fr-btn--secondary"
-                  type="button"
-                  @click="inlineDeleteCancel(i)"
-                >
-                  Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
-                </button>
+        <Transition name="inline-confirm">
+          <form v-if="inlineConfirmPendingRange === i" class="inline-confirm">
+            <fieldset class="fr-fieldset fr-mb-0">
+              <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
+                  <button
+                    ref="deleteConfirmBtnRefs"
+                    class="fr-btn"
+                    type="button"
+                    @click="inlineDeleteConfirm(file, i)"
+                    v-html="getDeleteModalConfirmLabel(file)"
+                  ></button>
+                  <button
+                    class="fr-btn fr-btn--secondary"
+                    type="button"
+                    @click="inlineDeleteCancel(i)"
+                  >
+                    Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </fieldset>
-        </form>
+            </fieldset>
+          </form>
+        </Transition>
       </li>
-    </ul>
+    </TransitionGroup>
     <p
       :id="`file-delete-message-${id}`"
       class="fr-sr-only"
@@ -340,6 +346,25 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 </template>
 
 <style scoped>
+/* Transition */
+.files-move,
+.files-enter-active,
+.files-leave-active {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.files-leave-active {
+  position: absolute;
+}
+
+.files-enter-from,
+.files-leave-to {
+  opacity: 0;
+  transform: translateY(-2.375rem);
+}
+
 .files {
   padding: 0;
   list-style: bullet;
@@ -355,6 +380,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   align-items: center;
   padding: 0.75rem;
   border: 1px solid var(--artwork-motif-grey);
+  position: relative;
 }
 
 .files > li + li {
@@ -402,12 +428,27 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   outline: var(--dsfr-outline) dotted 3px;
 }
 
-.files__confirm-inline,
-.files__confirm-inline .fr-fieldset__element {
+/* Transition */
+.inline-confirm-move,
+.inline-confirm-enter-active,
+.inline-confirm-leave-active {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.inline-confirm-enter-from,
+.inline-confirm-leave-to {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+
+.inline-confirm,
+.inline-confirm .fr-fieldset__element {
   width: 100%;
 }
 
-.files__confirm-inline {
+.inline-confirm {
   border-top: 1px solid var(--border-default-grey);
   padding-top: 1rem;
 }
