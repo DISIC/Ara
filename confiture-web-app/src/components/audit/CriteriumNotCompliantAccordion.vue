@@ -113,7 +113,6 @@ const title = computed(() => {
       @update:model-value="$emit('update:comment', $event)"
     />
 
-    <!-- FILES -->
     <FileList
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({

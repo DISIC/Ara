@@ -118,7 +118,6 @@ async function handleFileDeleted(
                 @update:model-value="handleNotesChange"
               />
 
-              <!-- FILE -->
               <FileUpload
                 ref="fileUpload"
                 class="fr-mb-4w"
