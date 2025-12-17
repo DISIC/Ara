@@ -45,6 +45,10 @@
   border-radius: 0;
 }
 
+.tiptap a {
+  word-break: break-all;
+}
+
 .tiptap:focus,
 .tiptap:focus-visible {
   outline-width: 2px !important;

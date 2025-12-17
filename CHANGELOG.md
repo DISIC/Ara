@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
+### 17/12/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des liens trop longs dans l’éditeur riche ([#1340](https://github.com/DISIC/Ara/pull/1340))
+
 ### 12/12/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections
