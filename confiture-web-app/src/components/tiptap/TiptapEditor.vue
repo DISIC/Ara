@@ -339,7 +339,7 @@ defineExpose({
 
   position: relative;
   background-color: var(--background-alt-grey);
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-radius: 0.25rem 0.25rem 0 0;
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
@@ -398,7 +398,7 @@ img.ProseMirror-widget {
   top: 0;
   z-index: 1;
   padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-radius: 0.25rem 0.25rem 0 0;
 }
 
 .titptap-buttons::-webkit-scrollbar {
