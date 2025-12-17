@@ -490,7 +490,7 @@ export class AuditService {
       }
 
       if (data.initiator) {
-        this.updateStatementDate(uniqueId);
+        return (await this.updateStatementDate(uniqueId)) ?? audit;
       }
 
       return audit;
@@ -576,7 +576,8 @@ export class AuditService {
 
     // Only update statement edition date if there is a publication date
     const audit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId }
+      where: { editUniqueId: uniqueId },
+      select: { statementPublicationDate: true }
     });
 
     if (audit.statementPublicationDate) {
@@ -928,10 +929,11 @@ export class AuditService {
   // Either update statement publication or edition date
   private async updateStatementDate(uniqueId: string) {
     const audit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId }
+      where: { editUniqueId: uniqueId },
+      select: { statementPublicationDate: true }
     });
 
-    return this.prisma.audit.updateMany({
+    return this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
