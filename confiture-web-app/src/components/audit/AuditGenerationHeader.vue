@@ -281,7 +281,10 @@ onMounted(() => {
         v-else-if="auditStore.currentAudit?.publicationDate"
         class="audit-status"
       >
-        <span class="fr-icon-success-line fr-icon--sm audit-status-icon" aria-hidden="true" />
+        <span
+          class="fr-icon-success-fill fr-icon--sm audit-status-icon"
+          aria-hidden="true"
+        />
         <strong class="audit-status-publish">
           Terminé le
           <time :datetime="auditStore.currentAudit?.publicationDate">
@@ -520,11 +523,18 @@ onMounted(() => {
     "icon publish"
     "empty modify";
   gap: 0 0.375rem;
+  align-items: first baseline;
+  grid-template-columns: 1.25rem auto;
 }
 
 .audit-status-icon {
   color: var(--text-default-success);
   grid-area: icon;
+
+  &::after,
+  &::before {
+    --icon-size: 1.25rem;
+  }
 }
 
 .audit-status-publish {

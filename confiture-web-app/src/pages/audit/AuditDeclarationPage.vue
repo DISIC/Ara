@@ -278,10 +278,10 @@ function confirmLeave() {
   >
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
-    <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-mb-4w dates">
+    <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-m-0 dates">
       Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)"> - Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
     </p>
-    <p class="fr-text--xs fr-mb-2w mandatory-notice">
+    <p class="fr-text--xs fr-mb-2w fr-mt-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
