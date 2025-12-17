@@ -28,7 +28,7 @@ describe("Report", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.get(".header").contains(auditJson.procedureName);
-      cy.get(".header").contains(`URL du site : ${statementJson.procedureUrl}`);
+      cy.get(".header").contains(`URL du site audité : ${statementJson.procedureUrl}`);
       cy.get(".header").contains("Type d’audit : 106 critères");
       cy.get(".header").contains(
         `Auditeur ou auditrice : ${auditJson.auditorName}`
