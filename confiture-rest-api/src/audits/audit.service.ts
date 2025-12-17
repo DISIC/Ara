@@ -489,6 +489,10 @@ export class AuditService {
         return (await this.updateAuditEditDate(uniqueId)) ?? audit;
       }
 
+      if (data.initiator) {
+        this.updateStatementDate(uniqueId);
+      }
+
       return audit;
     } catch (e) {
       // Audit does not exist
@@ -569,6 +573,7 @@ export class AuditService {
       ...promises
     ]);
     await this.updateAuditEditDate(uniqueId);
+    await this.updateStatementDate(uniqueId);
   }
 
   async saveExampleImage(
@@ -910,6 +915,20 @@ export class AuditService {
         include: AUDIT_EDIT_INCLUDE
       });
     }
+  }
+
+  // Either update statement publication or edition date
+  private async updateStatementDate(uniqueId: string) {
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    return this.prisma.audit.updateMany({
+      where: { editUniqueId: uniqueId },
+      data: audit.statementPublicationDate
+        ? { statementEditionDate: new Date() }
+        : { statementPublicationDate: new Date() }
+    });
   }
 
   async getAuditReportData(
