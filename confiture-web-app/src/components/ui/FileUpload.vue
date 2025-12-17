@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
-import { isImage } from "../../utils";
+import { isImage, sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
 interface Props {
@@ -37,7 +37,7 @@ const fileListRef = useTemplateRef("fileListRef");
 
 defineExpose({ reset, fileInputRef });
 
-const message = ref<string>("");
+const successMessage = ref<string>("");
 const isDraggedOver = ref(false);
 
 const id = useId();
@@ -77,11 +77,12 @@ function reset() {
   if (fileInputRef.value) {
     fileInputRef.value.value = "";
   }
-  message.value = "";
+  successMessage.value = "";
   fileListRef.value?.resetInlineConfirm();
 }
 
 async function handleFileChange() {
+  successMessage.value = "";
   // Errors that can be detected locally without requesting the server
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
@@ -94,19 +95,30 @@ async function handleFileChange() {
       return;
     }
     try {
-      // Announce upload success to screen reader
-      if (isImage(file)) {
-        message.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
-      } else {
-        message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
-      }
-
       // Tell listeners that a file has been imported locally
       // Typical use case: upload the file to a server using useFileHandler
       await new Promise((resolve: (value: void) => void) => {
         emit("file-imported", { resolve, file });
       });
-      await nextTick(); // usefull to make updated live regions work as expected
+      // At this point the file has been properly handled (uploaded)
+
+      await nextTick();
+      await sleep(500); // hack for Safari to make live regions work as expected
+
+      if (props.isInModal) {
+        // Announce upload success to screen reader
+        if (isImage(file)) {
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
+        } else {
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+        }
+      } else {
+        if (isImage(file)) {
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name));
+        } else {
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS", file.name));
+        }
+      }
     } catch {
       console.error("Upload failed: ", file.name);
     }
@@ -122,7 +134,7 @@ async function flOnDelete(
 ) {
   // No need to tell which file has been correctly uploaded
   // after a file has just been deleted…
-  message.value = "";
+  successMessage.value = "";
 
   await new Promise((resolve: (value: void) => void) => {
     emit("file-deleted", { resolve, flFile });
@@ -154,7 +166,7 @@ async function flOnDelete(
           type="file"
           name="file-upload"
           :accept="acceptedFormatsAttr"
-          :aria-description="message ?? undefined"
+          :aria-description="successMessage ?? undefined"
           :class="{ 'file-upload--dragged-over': isDraggedOver }"
           :disabled="isOffline ? true : undefined"
           @click="() => fileListRef?.resetInlineConfirm()"
@@ -167,8 +179,8 @@ async function flOnDelete(
           :id="`file-upload-message-alert-${id}`"
           class="fr-sr-only"
           aria-live="polite"
-          role="status"
-        >{{ message }}</p>
+          role="alert"
+        >{{ successMessage }}</p>
       </div>
     </div>
 
