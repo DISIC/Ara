@@ -53,23 +53,31 @@ const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
 
 const successMessage = shallowRef<string>("");
 
-const allFiles = computed(() => {
-  if (readonly) {
-    return undefined;
-  }
+const allFilesLabel = computed(() => {
   const len = files.length;
   if (len === 0) {
-    return "Aucun fichier ajouté";
+    return readonly ? "Aucune pièce jointe ajoutée" : "Aucun fichier ajouté";
   } else if (len === 1) {
-    return `${len} fichier ajouté`;
+    return readonly ? "Une pièce jointe" : "Un fichier ajouté";
   } else {
-    return `${len} fichiers ajoutés`;
+    return readonly ? `${len} pièces jointes` : `${len} fichiers ajoutés`;
   }
 });
 
 const isEmpty = computed(() => files.length <= 0);
 const displayAllFiles = computed(() => {
-  return !readonly && !(isEmpty.value && deleteOnly);
+  // Do not display in readonly mode
+  if (readonly) {
+    return false;
+  }
+
+  // Do not display if empty AND in deleteOnly mode (old images in criteria)
+  if (deleteOnly && isEmpty.value) {
+    return false;
+  }
+
+  // OPtherwise display it
+  return true;
 });
 
 async function handleFileDeleteInlineReveal(
@@ -134,6 +142,7 @@ async function handleFileDeleteWithModal(
   await dialog.showConfirm({
     title: getDeleteModalTitle(flFile),
     message: getDeleteModalMessage(flFile),
+    cancelLabel: getDeleteModalCancelLabel(flFile),
     confirmLabel: getDeleteModalConfirmLabel(flFile),
     confirmAction: {
       cb: () => deleteFile(flFile),
@@ -204,6 +213,12 @@ function getDeleteModalMessage(flFile: FileListFile) {
     : `Le fichier <strong>${getFileName(flFile)}</strong> sera définitivement supprimé.`;
 };
 
+function getDeleteModalCancelLabel(flFile: FileListFile) {
+  return isImage(flFile) ?
+    `Annuler<span class="fr-sr-only">, ne pas supprimer l’image ${getFileName(flFile)}</span>`
+    : `Annuler<span class="fr-sr-only">, ne pas supprimer le fichier ${getFileName(flFile)}</span>`;
+}
+
 function getDeleteModalConfirmLabel(flFile: FileListFile) {
   return isImage(flFile) ?
     `Supprimer l’image<span class="fr-sr-only"> ${getFileName(flFile)}</span>`
@@ -251,14 +266,14 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 
 <template>
   <div>
-    <p v-if="displayAllFiles" :aria-hidden="!isEmpty" class="fr-mt-3w fr-mb-0">{{ allFiles }}</p>
+    <p v-if="displayAllFiles" :aria-hidden="true" class="fr-mt-3w fr-mb-0">{{ allFilesLabel }}</p>
     <TransitionGroup
       v-if="!isEmpty"
       tag="ul"
       name="files"
       class="files"
       role="list"
-      :aria-label="allFiles"
+      :aria-label="allFilesLabel"
       :aria-describedby="successMessage ? `file-delete-message-${id}` : undefined"
     >
       <li v-for="(file, i) in files" :key="file.url" ref="fileBtnsRefs" :data-range="i">
