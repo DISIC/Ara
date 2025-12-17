@@ -1,18 +1,17 @@
 /**
  * Only one modal at a time in the app!
  */
-import { useConfirmDialog } from "@vueuse/core";
-import { shallowRef } from "vue";
+import { confirmDialog, useGenericModal } from "./useGenericModal";
 
-// Global state for modal content
-const title = shallowRef("");
-const message = shallowRef("");
-const confirmLabel = shallowRef("");
-const cancelLabel = shallowRef("");
-const getFocusOnConceal = shallowRef<(() => HTMLElement | null) | null>(null);
+const { reveal } = confirmDialog;
 
-const { reveal, confirm, cancel, onReveal, onConfirm, onCancel }
-  = useConfirmDialog();
+const {
+  title,
+  message,
+  confirmLabel,
+  cancelLabel,
+  getFocusOnConceal
+} = useGenericModal();
 
 export function useModal() {
   async function showConfirm(options: {
@@ -30,23 +29,5 @@ export function useModal() {
     return await reveal();
   }
 
-  return {
-    // Dialog state
-    title,
-    message,
-    confirmLabel,
-    cancelLabel,
-
-    // Dialog actions
-    showConfirm,
-    confirm,
-    cancel,
-
-    // Event listeners
-    onReveal,
-    onConfirm,
-    onCancel,
-
-    getFocusOnConceal
-  };
+  return { showConfirm };
 }

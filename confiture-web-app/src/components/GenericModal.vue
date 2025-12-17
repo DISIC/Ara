@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useModal } from "../composables/useModal";
+import { confirmDialog, useGenericModal } from "../composables/useGenericModal";
 import DsfrModal from "./ui/DsfrModal.vue";
 
 const genericModalRef = ref<InstanceType<typeof DsfrModal>>();
+
+const {
+  confirm,
+  cancel,
+  onReveal,
+  onConfirm,
+  onCancel
+} = confirmDialog;
 
 const {
   title,
   message,
   confirmLabel,
   cancelLabel,
-  confirm,
-  cancel,
-  onConfirm,
-  onCancel,
-  onReveal,
   getFocusOnConceal
-} = useModal();
+} = useGenericModal();
 
 onConfirm(() => {
   genericModalRef.value?.hide({
