@@ -167,7 +167,6 @@ export const useResultsStore = defineStore("results", {
 
     /**
      * Ratio of tested criteria over total number of criteria.
-     * Transverse criteria are excluded.
      *
      * `0.5` means half of the audit criteria have been tested.
      */
@@ -176,14 +175,9 @@ export const useResultsStore = defineStore("results", {
         return 0;
       }
 
-      const auditStore = useAuditStore();
-      const transversePageId =
-        auditStore.currentAudit?.transverseElementsPage!.id;
-
       const r = Object.values(this.data)
         .flatMap(Object.values)
-        .flatMap(Object.values)
-        .filter((cr) => cr.pageId !== transversePageId) as CriteriumResult[];
+        .flatMap(Object.values);
 
       const total = r.length;
 
