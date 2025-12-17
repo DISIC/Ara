@@ -2,6 +2,7 @@
 import { computed, inject, nextTick, ref, Ref, shallowRef, useId } from "vue";
 import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
 import { getFocusWhenListEmptyKey } from "../../types";
 import { formatBytes, sleep } from "../../utils";
@@ -45,6 +46,7 @@ const inlineConfirmPendingRange: Ref<number | undefined> = ref(undefined);
 const id = useId();
 const isOffline = useIsOffline();
 const dialog = useDialog();
+const notify = useNotifications();
 
 const fileBtnsRefs = ref<HTMLLIElement[]>([]);
 const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
@@ -88,6 +90,12 @@ async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
   if (elementToFocus) {
     await sleep(500);
     elementToFocus.focus();
+    // Notify to screen reader
+    if (isImage(flFile)) {
+      successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename);
+    } else {
+      successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
+    }
   }
 }
 
@@ -143,12 +151,15 @@ async function deleteFile(flFile: FileListFile) {
     await new Promise((resolve: (value: void) => void) => {
       emit("file-deleted", { resolve, flFile });
     });
+    // At this point the file has been properly handled (uploaded)
 
-    // Notify to screen reader
-    if (isImage(flFile)) {
-      successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename);
-    } else {
-      successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
+    if (!isInModal) {
+      // Notify success with toast
+      if (isImage(flFile)) {
+        notify("success", undefined, getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename));
+      } else {
+        notify("success", undefined, getFileMessage("DELETE_SUCCESS", flFile.filename));
+      }
     }
   } catch {
     console.error("File delete fail: " + flFile.filename);
