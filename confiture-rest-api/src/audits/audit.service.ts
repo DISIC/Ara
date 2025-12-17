@@ -573,7 +573,15 @@ export class AuditService {
       ...promises
     ]);
     await this.updateAuditEditDate(uniqueId);
-    await this.updateStatementDate(uniqueId);
+
+    // Only update statement edition date if there is a publication date
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId }
+    });
+
+    if (audit.statementPublicationDate) {
+      this.updateStatementDate(uniqueId);
+    }
   }
 
   async saveExampleImage(
