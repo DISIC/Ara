@@ -32,8 +32,8 @@ export const FILE_SIZE_LIMIT = 2_000_000;
 export enum FileMessage {
   DELETE_ERROR_TIMEOUT = "Suppression interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   DELETE_ERROR_UNKNOWN = "Suppression échouée, erreur inconnue. Vérifiez votre connexion et réessayez.",
-  DELETE_SUCCESS = "Le fichier [FILE] a été correctement supprimé.",
-  DELETE_SUCCESS_IMAGE = "L’image [FILE] a été correctement supprimée.",
+  DELETE_SUCCESS = "Fichier [FILE] supprimé.",
+  DELETE_SUCCESS_IMAGE = "Image [FILE] supprimée.",
   FETCH_ERROR_IMAGE = "Importation échouée. Importez l’image depuis votre ordinateur.",
   UPLOAD_ERROR_FORMAT_IMAGE = "Format non pris en charge. Importez une image.",
   UPLOAD_ERROR_FROM_HTML = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
@@ -43,8 +43,8 @@ export enum FileMessage {
   UPLOAD_ERROR_SIZE_IMAGE = "Image trop lourde. Choisissez une image inférieure à 2 Mo.",
   UPLOAD_ERROR_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   UPLOAD_ERROR_UNKNOWN = "Importation échouée, erreur inconnue. Réessayez.",
-  UPLOAD_SUCCESS = "Le fichier [FILE] a été correctement ajouté.",
-  UPLOAD_SUCCESS_IMAGE = "L’image [FILE] a été correctement ajoutée.",
+  UPLOAD_SUCCESS = "Fichier [FILE] ajouté.",
+  UPLOAD_SUCCESS_IMAGE = "Image [FILE] ajoutée.",
   UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
 }
 
