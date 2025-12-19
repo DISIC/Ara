@@ -44,13 +44,10 @@ function hide(options: { getFocusElement: (() => HTMLElement | null) | null }
 
 function onConceal() {
   setTimeout(() => {
-    let elementToFocus;
-    if (getFocusOnConceal.value) {
-      elementToFocus = getFocusOnConceal.value();
-    }
-    if (elementToFocus && elementToFocus.isConnected) {
+    const elementToFocus = getFocusOnConceal.value?.();
+    if (elementToFocus?.isConnected) {
       elementToFocus.focus();
-    } else if (triggerElement.value && triggerElement.value.isConnected) {
+    } else if (triggerElement.value?.isConnected) {
       triggerElement.value.focus();
     }
     emit("closed");
