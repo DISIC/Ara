@@ -49,8 +49,9 @@ onReveal(() => {
           <div class="fr-modal__body">
             <div class="fr-modal__header">
               <button
-                class="fr-btn--close fr-btn"
+                class="fr-btn fr-btn--close"
                 aria-controls="generic-modal"
+                type="button"
               >
                 Fermer
               </button>

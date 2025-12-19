@@ -202,6 +202,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
               :disabled="isOffline"
               :title="`Supprimer ${getFullFileName(file)}`"
+              type="button"
               @click="handleFileDelete(file, i)"
             >
               Supprimer
