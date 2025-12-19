@@ -62,14 +62,6 @@ defineExpose({ show, hide });
 
 <template>
   <Teleport to="body">
-    <!--
-    FIXME: For some reason, in v1.10 of the DSFR, a modal MUST have an activation
-    button. Otherwise the javascript API to manually open the modal won't work.
-
-    See: https://github.com/GouvernementFR/dsfr/issues/728
-    -->
-    <button hidden data-fr-opened="false" :aria-controls="id"></button>
-
     <dialog
       :id="id"
       ref="modal"
