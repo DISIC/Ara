@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useModal } from "../../composables/useModal";
 import { formatBytes, pluralize, sleep } from "../../utils";
 
 export interface FileListFile {
@@ -21,7 +21,7 @@ const { files, isInModal, onDelete } = defineProps<{
 }>();
 
 const isOffline = useIsOffline();
-const modal = useModal();
+const dialog = useDialog();
 
 const fileBtnsRefs = ref<HTMLLIElement[]>([]);
 
@@ -49,7 +49,7 @@ async function handleFileDeleteWithModal(
   flFile: FileListFile,
   range: number
 ) {
-  const { isCanceled } = await modal.showConfirm({
+  const { isCanceled } = await dialog.showConfirm({
     title: getDeleteModalTitle(flFile),
     message: getDeleteModalMessage(flFile),
     confirmLabel: getDeleteModalConfirmLabel(flFile),
@@ -141,7 +141,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   }
 
   // Should never happen
-  console.error("Nothing to focus on modal conceal");
+  console.error("Nothing to focus on modal dialog conceal");
   return null;
 }
 </script>
