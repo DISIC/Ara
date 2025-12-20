@@ -14,6 +14,7 @@ import sharp from "sharp";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
+import slugify from "../slugify";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
@@ -52,6 +53,8 @@ const isNotTested = (c: CriterionResult) =>
 const isTransverse = (c: CriterionResult, transversePageId: number) =>
   c.pageId === transversePageId;
 
+const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
+
 @Injectable()
 export class AuditService {
   constructor(
@@ -62,6 +65,8 @@ export class AuditService {
   async createAudit(data: CreateAuditDto) {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
+
+    const pagesWithSlug = this.generatePageSlugs(data.pages);
 
     const newAudit = await this.prisma.audit.create({
       data: {
@@ -80,13 +85,14 @@ export class AuditService {
         transverseElementsPage: {
           create: {
             name: "Éléments transverses",
+            slug: TRANSVERSE_ELEMENTS_SLUG,
             url: "",
             order: -1
           }
         },
         pages: {
           createMany: {
-            data: data.pages.map((p, i) => {
+            data: pagesWithSlug.map((p, i) => {
               return { ...p, order: i };
             })
           }
@@ -135,6 +141,30 @@ export class AuditService {
     });
 
     return newAudit;
+  }
+
+  /**
+   * Generate unique slugs for an array of pages.
+   *
+   * `transverse-elements` is reserved, slugs that would conflict with this name will be appended
+   *
+   * @param pages An array of obects containing a name property
+   * @returns An shallow copy of the `pages` array with added `slug` property that is guaranteed to be unique within that array
+   */
+  private generatePageSlugs<T extends { name: string }>(pages: T[]): (T & { slug: string })[] {
+    const existingSlugs = new Set<string>([TRANSVERSE_ELEMENTS_SLUG]);
+    const pagesWithSlug = pages.map(page => {
+      let slug = slugify(page.name);
+      for (let i = 1; ;i++) {
+        if (!existingSlugs.has(slug)) {
+          break;
+        }
+        slug = `${slugify(page.name)}-${i}`;
+      }
+      existingSlugs.add(slug);
+      return { ...page, slug };
+    });
+    return pagesWithSlug;
   }
 
   findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
@@ -286,7 +316,7 @@ export class AuditService {
   /**
    * @throws when audit or page is not found
    */
-  async getPageWithResults(uniqueId: string, pageId: number): Promise<GetPageWithResultsDto | null> {
+  async getPageWithResults(uniqueId: string, pageSlug: string): Promise<GetPageWithResultsDto | null> {
     const [audit, page] = await Promise.all([
       // fetch audit type
       this.prisma.audit.findUnique({
@@ -295,7 +325,7 @@ export class AuditService {
       }),
       // fetch page with associated results
       this.prisma.auditedPage.findFirst({
-        where: { id: pageId, auditUniqueId: uniqueId },
+        where: { slug: pageSlug, auditUniqueId: uniqueId },
         select: {
           id: true,
           name: true,
@@ -331,7 +361,7 @@ export class AuditService {
       return null;
     }
 
-    const placeholderResults = this.getPlaceholderResults(pageId, audit.auditType, page.results);
+    const placeholderResults = this.getPlaceholderResults(page.id, audit.auditType, page.results);
 
     page.results.push(...placeholderResults);
 
@@ -344,8 +374,9 @@ export class AuditService {
   ): Promise<Audit | undefined> {
     try {
       const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
-      const updatedPages = orderedPages.filter((p) => p.id);
-      const newPages = orderedPages.filter((p) => !p.id);
+      const pagesWithSlugs = this.generatePageSlugs(orderedPages);
+      const updatedPages = pagesWithSlugs.filter((p) => p.id);
+      const newPages = pagesWithSlugs.filter((p) => !p.id);
 
       const previousAudit = await this.prisma.audit.findUnique({
         where: {
@@ -427,14 +458,16 @@ export class AuditService {
               data: {
                 order: p.order,
                 name: p.name,
-                url: p.url
+                url: p.url,
+                slug: p.slug
               }
             })),
             createMany: {
               data: newPages.map((p) => ({
                 order: p.order,
                 name: p.name,
-                url: p.url
+                url: p.url,
+                slug: p.slug
               }))
             }
           },

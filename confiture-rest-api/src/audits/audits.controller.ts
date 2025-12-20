@@ -115,9 +115,9 @@ export class AuditsController {
   async getAuditPageWithResults(
     @Param("uniqueId") uniqueId: string,
     // TODO: use page slug instead. probably requires slug to be saved in database
-    @Param("pageId", new ParseIntPipe()) pageId: number
+    @Param("pageSlug") pageSlug: string
   ): Promise<GetPageWithResultsDto> {
-    const data = await this.auditService.getPageWithResults(uniqueId, pageId);
+    const data = await this.auditService.getPageWithResults(uniqueId, pageSlug);
     if (!data) {
       throw new NotFoundException();
     }

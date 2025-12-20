@@ -112,10 +112,13 @@ model TestEnvironment {
 }
 
 model AuditedPage {
-  id    Int    @id @default(autoincrement())
-  order Int    @default(0)
+  id    Int     @id @default(autoincrement())
+  order Int     @default(0)
   name  String
   url   String
+  // FIXME: migrate existing pages to slugify their name
+  slug  String?
+  // @@unique([auditUniqueId, slug])
 
   // parent audit when the page is a user made page
   /// @DtoEntityHidden
