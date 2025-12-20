@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {
   Audit,
+  AuditType,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
@@ -17,6 +18,7 @@ import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
+import { GetPageWithResultsDto, ResultDto } from "./dto/get-page-with-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
@@ -251,6 +253,89 @@ export class AuditService {
         };
       })
     );
+  }
+
+  private getPlaceholderResults(pageId: number, auditType: AuditType, existingResults: ResultDto[]): ResultDto[] {
+    return CRITERIA_BY_AUDIT_TYPE[auditType].map((criterion) => {
+      const existingResult = existingResults.find(
+        (result) =>
+          result.pageId === pageId &&
+          result.topic === criterion.topic &&
+          result.criterium == criterion.criterium
+      );
+
+      if (existingResult) return existingResult;
+
+      // return placeholder result
+      return {
+        status: CriterionResultStatus.NOT_TESTED,
+        compliantComment: null,
+        notCompliantComment: null,
+        userImpact: null,
+        notApplicableComment: null,
+        exampleImages: [],
+        quickWin: false,
+
+        topic: criterion.topic,
+        criterium: criterion.criterium,
+        pageId: pageId
+      };
+    });
+  }
+
+  /**
+   * @throws when audit or page is not found
+   */
+  async getPageWithResults(uniqueId: string, pageId: number): Promise<GetPageWithResultsDto | null> {
+    const [audit, page] = await Promise.all([
+      // fetch audit type
+      this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { auditType: true }
+      }),
+      // fetch page with associated results
+      this.prisma.auditedPage.findFirst({
+        where: { id: pageId, auditUniqueId: uniqueId },
+        select: {
+          id: true,
+          name: true,
+          results: {
+            select: {
+              status: true,
+              compliantComment: true,
+              notCompliantComment: true,
+              userImpact: true,
+              notApplicableComment: true,
+              exampleImages: {
+                select: {
+                  id: true,
+                  originalFilename: true,
+                  mimetype: true,
+                  size: true,
+                  key: true,
+                  thumbnailKey: true
+                }
+              },
+              quickWin: true,
+
+              topic: true,
+              criterium: true,
+              pageId: true
+            }
+          }
+        }
+      })
+    ]);
+
+    if (!audit || !page) {
+      return null;
+    }
+
+    const placeholderResults = this.getPlaceholderResults(pageId, audit.auditType, page.results);
+
+    page.results.push(...placeholderResults);
+
+    return page;
   }
 
   async updateAudit(

@@ -37,6 +37,7 @@ import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/duplicate-audit.dto";
+import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
@@ -106,6 +107,21 @@ export class AuditsController {
     }
 
     return audit;
+  }
+
+  @Get("/:uniqueId/pages/:pageId")
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getAuditPageWithResults(
+    @Param("uniqueId") uniqueId: string,
+    // TODO: use page slug instead. probably requires slug to be saved in database
+    @Param("pageId", new ParseIntPipe()) pageId: number
+  ): Promise<GetPageWithResultsDto> {
+    const data = await this.auditService.getPageWithResults(uniqueId, pageId);
+    if (!data) {
+      throw new NotFoundException();
+    }
+    return data;
   }
 
   /** Update an audit data in the database. */
