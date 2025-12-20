@@ -116,7 +116,6 @@ model AuditedPage {
   order Int    @default(0)
   name  String
   url   String
-  // FIXME: migrate existing pages to slugify their name
   slug  String
 
   // parent audit when the page is a user made page
