@@ -5,7 +5,6 @@ import {
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  ExampleImageFile,
   Prisma
 } from "@prisma/client";
 import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
@@ -19,8 +18,9 @@ import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
-import { GetPageWithResultsDto, ResultDto } from "./dto/get-page-with-results.dto";
+import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
+import { ResultDto } from "./dto/result.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
 import { FileStorageService } from "./file-storage.service";
@@ -210,10 +210,7 @@ export class AuditService {
   async getResultsWithEditUniqueId(
     uniqueId: string
   ): Promise<
-    Omit<
-      CriterionResult & { exampleImages: ExampleImageFile[] },
-      "id" | "auditUniqueId"
-    >[]
+    ResultDto[]
   > {
     const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUnique({
@@ -257,31 +254,7 @@ export class AuditService {
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
     return [audit.transverseElementsPage, ...pages].flatMap((page) =>
-      CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
-        const existingResult = existingResults.find(
-          (result) =>
-            result.pageId === page.id &&
-            result.topic === criterion.topic &&
-            result.criterium == criterion.criterium
-        );
-
-        if (existingResult) return existingResult;
-
-        // return placeholder result
-        return {
-          status: CriterionResultStatus.NOT_TESTED,
-          compliantComment: null,
-          notCompliantComment: null,
-          userImpact: null,
-          notApplicableComment: null,
-          exampleImages: [],
-          quickWin: false,
-
-          topic: criterion.topic,
-          criterium: criterion.criterium,
-          pageId: page.id
-        };
-      })
+      this.getPlaceholderResults(page.id, audit.auditType, existingResults)
     );
   }
 
