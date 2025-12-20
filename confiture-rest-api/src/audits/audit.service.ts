@@ -324,8 +324,13 @@ export class AuditService {
         select: { auditType: true }
       }),
       // fetch page with associated results
-      this.prisma.auditedPage.findFirst({
-        where: { slug: pageSlug, auditUniqueId: uniqueId },
+      this.prisma.auditedPage.findUnique({
+        where: {
+          auditUniqueId_slug: {
+            auditUniqueId: uniqueId,
+            slug: pageSlug
+          }
+        },
         select: {
           id: true,
           name: true,

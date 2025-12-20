@@ -109,12 +109,11 @@ export class AuditsController {
     return audit;
   }
 
-  @Get("/:uniqueId/pages/:pageId")
+  @Get("/:uniqueId/pages/:pageSlug")
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAuditPageWithResults(
     @Param("uniqueId") uniqueId: string,
-    // TODO: use page slug instead. probably requires slug to be saved in database
     @Param("pageSlug") pageSlug: string
   ): Promise<GetPageWithResultsDto> {
     const data = await this.auditService.getPageWithResults(uniqueId, pageSlug);
