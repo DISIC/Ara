@@ -1,7 +1,7 @@
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
-} from "src/generated/nestjs-dto/enums";
+} from "@prisma/client";
 import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
 
 export class ResultDto {
