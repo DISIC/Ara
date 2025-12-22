@@ -7601,6 +7601,7 @@ __metadata:
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.2.0"
     sharp: "npm:^0.31.3"
+    slugify: "npm:^1.6.6"
     source-map-support: "npm:^0.5.20"
     ts-node: "npm:^10.9.2"
     tsconfig-paths: "npm:^4.2.0"
@@ -15695,7 +15696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slugify@npm:^1.6.5":
+"slugify@npm:^1.6.5, slugify@npm:^1.6.6":
   version: 1.6.6
   resolution: "slugify@npm:1.6.6"
   checksum: 10c0/e7e63f08f389a371d6228bc19d64ec84360bf0a538333446cc49dbbf3971751a6d180d2f31551188dd007a65ca771e69f574e0283290a7825a818e90b75ef44d

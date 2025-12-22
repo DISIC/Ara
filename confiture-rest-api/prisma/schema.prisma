@@ -116,6 +116,7 @@ model AuditedPage {
   order Int    @default(0)
   name  String
   url   String
+  slug  String
 
   // parent audit when the page is a user made page
   /// @DtoEntityHidden
@@ -128,6 +129,8 @@ model AuditedPage {
 
   /// @DtoEntityHidden
   results CriterionResult[]
+
+  @@unique([auditUniqueId, slug])
 }
 
 model CriterionResult {

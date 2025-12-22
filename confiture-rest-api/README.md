@@ -36,7 +36,7 @@ docker run --name confiture-db \
            --env POSTGRES_PASSWORD=db-password \
            --publish 127.0.0.1:5432:5432 \
            --detach \
-             postgres:13
+             postgres:14
 ```
 
 Lancer les migrations de la base de données :
