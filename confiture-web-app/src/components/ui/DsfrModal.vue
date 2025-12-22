@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { shallowRef } from "vue";
+import { nextTick, shallowRef } from "vue";
 
 defineOptions({
   inheritAttrs: false
@@ -42,16 +42,15 @@ function hide(options: { getFocusElement: (() => HTMLElement | null) | null }
   dsfr(modal.value).modal.conceal(false, true);
 }
 
-function onConceal() {
-  setTimeout(() => {
-    const elementToFocus = getFocusOnConceal.value?.();
-    if (elementToFocus?.isConnected) {
-      elementToFocus.focus();
-    } else if (triggerElement.value?.isConnected) {
-      triggerElement.value.focus();
-    }
-    emit("closed");
-  });
+async function onConceal() {
+  await nextTick();
+  const elementToFocus = getFocusOnConceal.value?.();
+  if (elementToFocus?.isConnected) {
+    elementToFocus.focus();
+  } else if (triggerElement.value?.isConnected) {
+    triggerElement.value.focus();
+  }
+  emit("closed");
 }
 
 defineExpose({ show, hide });
