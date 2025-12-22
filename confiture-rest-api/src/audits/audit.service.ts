@@ -254,11 +254,19 @@ export class AuditService {
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
     return [audit.transverseElementsPage, ...pages].flatMap((page) =>
-      this.getPlaceholderResults(page.id, audit.auditType, existingResults)
+      this.getResultsWithPlaceholders(page.id, audit.auditType, existingResults)
     );
   }
 
-  private getPlaceholderResults(pageId: number, auditType: AuditType, existingResults: ResultDto[]): ResultDto[] {
+  /**
+   * Returns an array of results so that even if there are only
+   *
+   * For example, if we have only 3 results in db :
+   * ```
+   * [r1, r2, r4] -> [r1, r2, r3 (filler), r4, r5 (filler), ..., r106 (filler)]
+   * ```
+   */
+  private getResultsWithPlaceholders(pageId: number, auditType: AuditType, existingResults: ResultDto[]): ResultDto[] {
     return CRITERIA_BY_AUDIT_TYPE[auditType].map((criterion) => {
       const existingResult = existingResults.find(
         (result) =>
@@ -267,6 +275,7 @@ export class AuditService {
           result.criterium == criterion.criterium
       );
 
+      // return real result
       if (existingResult) return existingResult;
 
       // return placeholder result
@@ -348,9 +357,8 @@ export class AuditService {
       return null;
     }
 
-    const placeholderResults = this.getPlaceholderResults(page.id, audit.auditType, page.results);
-
-    page.results.push(...placeholderResults);
+    // add placeholder results
+    page.results = this.getResultsWithPlaceholders(page.id, audit.auditType, page.results);
 
     return page;
   }
