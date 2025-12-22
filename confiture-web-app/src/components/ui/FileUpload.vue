@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId } from "vue";
+import { computed, Ref, ref, useId, useTemplateRef } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -34,7 +34,7 @@ const emit = defineEmits<{
   (e: "delete-file", payload: FileListFile): void;
 }>();
 
-const fileInputRef = ref<HTMLInputElement>();
+const fileInputRef = useTemplateRef("fileInputRef");
 
 defineExpose({ onFileRequestFinished, reset, fileInputRef });
 
