@@ -297,12 +297,21 @@ export class AuditService {
         select: { auditType: true }
       }),
       // fetch page with associated results
-      this.prisma.auditedPage.findUnique({
+      this.prisma.auditedPage.findFirst({
         where: {
-          auditUniqueId_slug: {
-            auditUniqueId: uniqueId,
-            slug: pageSlug
-          }
+          OR: [
+            // search for normal pages
+            {
+              auditUniqueId: uniqueId
+            },
+            // search for transverse page
+            {
+              auditTransverse: {
+                editUniqueId: uniqueId
+              }
+            }
+          ],
+          slug: pageSlug
         },
         select: {
           id: true,
