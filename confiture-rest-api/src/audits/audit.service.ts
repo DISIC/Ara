@@ -295,9 +295,6 @@ export class AuditService {
     });
   }
 
-  /**
-   * @throws when audit or page is not found
-   */
   async getPageWithResults(uniqueId: string, pageSlug: string): Promise<GetPageWithResultsDto | null> {
     const [audit, page] = await Promise.all([
       // fetch audit type
