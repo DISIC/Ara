@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, nextTick, ref, Ref, shallowRef, useId } from "vue";
+import { computed, inject, nextTick, ref, Ref, shallowRef, useId, useTemplateRef } from "vue";
 import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -40,7 +40,7 @@ const isOffline = useIsOffline();
 const dialog = useDialog();
 const notify = useNotifications();
 
-const fileBtnsRefs = ref<HTMLLIElement[]>([]);
+const deteleBtnRefs = useTemplateRef("deteleBtnRefs");
 const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
 
 const successMessage = shallowRef<string>("");
@@ -105,9 +105,9 @@ function resetInlineConfirm() {
 }
 
 function inlineDeleteCancel(range: number) {
-  const deleteBtn = fileBtnsRefs.value.find(
+  const deleteBtn = deteleBtnRefs.value?.find(
     (btn) => Number(btn.dataset.range) === range
-  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  );
   if (deleteBtn) {
     deleteBtn.focus();
   }
@@ -220,17 +220,17 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   let focusElement;
 
   // if it exists, focus the item at following range
-  focusElement = fileBtnsRefs.value.find(
+  focusElement = deteleBtnRefs.value?.find(
     (btn) => Number(btn.dataset.range) === range + 1
-  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  );
   if (focusElement) {
     return focusElement;
   }
 
   // if it exists, focus the item at the preceding range
-  focusElement = fileBtnsRefs.value.find(
+  focusElement = deteleBtnRefs.value?.find(
     (btn) => Number(btn.dataset.range) === range - 1
-  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  );
   if (focusElement) {
     return focusElement;
   }
@@ -261,7 +261,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
       :aria-label="allFilesLabel"
       :aria-describedby="successMessage ? `file-delete-message-${id}` : undefined"
     >
-      <li v-for="(file, i) in files" :key="file.url" ref="fileBtnsRefs" :data-range="i">
+      <li v-for="(file, i) in files" :key="file.url">
         <img
           v-if="file.thumbnailUrl"
           class="fr-icon--lg file-thumbnail"
@@ -309,7 +309,9 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
           </li>
           <li v-if="!readonly">
             <button
+              ref="deteleBtnRefs"
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
+              :data-range="i"
               :disabled="isOffline ? true : undefined"
               :title="`Supprimer ${getFullFileName(file)}`"
               type="button"
