@@ -25,18 +25,18 @@ import {
   ApiTags
 } from "@nestjs/swagger";
 
-import { AuthRequired } from "src/auth/auth-required.decorator";
-import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
-import { User } from "src/auth/user.decorator";
-import { Audit } from "src/generated/nestjs-dto/audit.entity";
-import { CriterionResult } from "src/generated/nestjs-dto/criterionResult.entity";
-import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
+import { AuthRequired } from "../auth/auth-required.decorator";
+import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
+import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/duplicate-audit.dto";
+import { AuditDto } from "./dto/entities/audit.dto";
+import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
+import { ExampleImageFileDto } from "./dto/entities/example-image-file.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
@@ -55,12 +55,12 @@ export class AuditsController {
   @Post()
   @ApiCreatedResponse({
     description: "The audit has been successfully created.",
-    type: Audit
+    type: AuditDto
   })
   async createAudit(
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
-  ) {
+  ): Promise<AuditDto> {
     const audit = await this.auditService.createAudit(body);
 
     if (!user) {
@@ -85,7 +85,7 @@ export class AuditsController {
 
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
-  @ApiOkResponse({ description: "The audit was found.", type: Audit })
+  @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAudit(@Param("uniqueId") uniqueId: string) {
@@ -112,7 +112,7 @@ export class AuditsController {
   @Put("/:uniqueId")
   @ApiOkResponse({
     description: "The audit has been successfully updated",
-    type: Audit
+    type: AuditDto
   })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
@@ -149,7 +149,7 @@ export class AuditsController {
 
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
-  @ApiCreatedResponse({ type: ExampleImageFile })
+  @ApiCreatedResponse({ type: ExampleImageFileDto })
   async uploadExampleImage(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
@@ -259,7 +259,7 @@ export class AuditsController {
 
   /** Retrieve the results of an audit (compliance data) from the database. */
   @Get("/:uniqueId/results")
-  @ApiOkResponse({ type: [CriterionResult] })
+  @ApiOkResponse({ type: [CriterionResultDto] })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAuditResults(@Param("uniqueId") uniqueId: string) {
@@ -295,7 +295,7 @@ export class AuditsController {
 
   /** Flag an audit as "published", completed. */
   @Put("/:uniqueId/publish")
-  @ApiOkResponse({ type: Audit })
+  @ApiOkResponse({ type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async publishAudit(@Param("uniqueId") uniqueId: string) {
