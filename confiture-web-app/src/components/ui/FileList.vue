@@ -49,15 +49,16 @@ async function handleFileDeleteWithModal(
   flFile: FileListFile,
   range: number
 ) {
-  const { isCanceled } = await dialog.showConfirm({
+  await dialog.showConfirm({
     title: getDeleteModalTitle(flFile),
     message: getDeleteModalMessage(flFile),
     confirmLabel: getDeleteModalConfirmLabel(flFile),
-    getFocusOnConceal: () => getElementToFocusAfterDelete(range)
+    confirmAction: {
+      cb: () => deleteFile(flFile),
+      focus: () => getElementToFocusAfterDelete(range)
+    }
   });
-  if (!isCanceled) {
-    return await deleteFile(flFile);
-  }
+
   // Note: when deletion is cancelled from the modal dialog, focus automatically
   // returns to the button that opened the modal dialog.
 }

@@ -7,33 +7,30 @@ import DsfrModal from "./ui/DsfrModal.vue";
 const genericModalRef = ref<InstanceType<typeof DsfrModal>>();
 
 const store = useDialogStore();
-const { dialogLogic, dialogData } = storeToRefs(store);
+const { dialog } = storeToRefs(store);
 
-let timerId: undefined | ReturnType<typeof setTimeout> = undefined;
-dialogLogic.value.onConfirm(async () => {
+// Watch for store state to show modal dialog
+store.$subscribe((_mutation, state) => {
+  if (state.dialog) {
+    genericModalRef.value?.show();
+  }
+});
+
+function onConfirm() {
   genericModalRef.value?.hide({
-    getFocusElement: dialogData.value?.getFocusOnConceal ?? null
+    focusElementCb: dialog?.value?.confirmAction?.focus ?? null
   });
-  // wait for modal to disappear before to reset data
-  clearTimeout(timerId);
-  timerId = setTimeout(() => {
-    store.resetDialogData();
-  }, 1000);
-});
+  dialog?.value?.confirmAction?.cb?.();
+};
 
-dialogLogic.value.onCancel(async () => {
+function onCancel() {
   genericModalRef.value?.hide();
-  // wait for modal to disappear before to reset data
-  clearTimeout(timerId);
-  timerId = setTimeout(() => {
-    store.resetDialogData();
-  }, 1000);
-});
+};
 
-dialogLogic.value.onReveal(() => {
-  clearTimeout(timerId);
-  genericModalRef.value?.show();
-});
+// Reset dialog data when it has completely disappeared
+function onFadedOut() {
+  store.resetDialogData();
+}
 </script>
 
 <template>
@@ -41,7 +38,8 @@ dialogLogic.value.onReveal(() => {
     id="generic-modal"
     ref="genericModalRef"
     aria-labelledby="generic-modal-title"
-    @closed="dialogLogic.cancel"
+    @closed="onCancel"
+    @faded-out="onFadedOut"
   >
     <div class="fr-container fr-container--fluid fr-container-md">
       <div class="fr-grid-row fr-grid-row--center">
@@ -57,16 +55,16 @@ dialogLogic.value.onReveal(() => {
               </button>
             </div>
             <div class="fr-modal__content">
-              <h1 id="generic-modal-title" class="fr-modal__title">{{ dialogData?.title }}</h1>
-              <p v-html="dialogData?.message"></p>
+              <h1 id="generic-modal-title" class="fr-modal__title">{{ dialog?.title }}</h1>
+              <p v-html="dialog?.message"></p>
             </div>
             <div class="fr-modal__footer">
               <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
                 <li>
-                  <button class="fr-btn danger-button" @click="dialogLogic.confirm()" v-html="dialogData?.confirmLabel"></button>
+                  <button class="fr-btn danger-button" @click="onConfirm" v-html="dialog?.confirmLabel"></button>
                 </li>
                 <li>
-                  <button class="fr-btn fr-btn--secondary" @click="dialogLogic.cancel" v-html="dialogData?.cancelLabel"></button>
+                  <button class="fr-btn fr-btn--secondary" @click="onCancel" v-html="dialog?.cancelLabel"></button>
                 </li>
               </ul>
             </div>

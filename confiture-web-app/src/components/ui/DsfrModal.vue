@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, shallowRef } from "vue";
+import { nextTick, shallowRef, useTemplateRef } from "vue";
 
 defineOptions({
   inheritAttrs: false
@@ -15,6 +15,7 @@ withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: "closed"): void;
+  (e: "fadedOut"): void;
 }>();
 
 // If the confirm action of the modal caused the deletion of the item containing
@@ -22,29 +23,37 @@ const emit = defineEmits<{
 // element will be focused on conceal.
 // Using a function allows to spot the HTML element to focus at the last moment,
 // after the modal is actually concealed and DOM may have been updated.
-const getFocusOnConceal = shallowRef<(() => HTMLElement | null) | null>();
+const focusOnConcealCb = shallowRef<(() => HTMLElement | null) | null>();
 
-const modal = shallowRef<HTMLDialogElement>();
+const modalRef = useTemplateRef("modalRef");
 
 const triggerElement = shallowRef<HTMLElement>();
 
+function onFadedOut() {
+  emit("fadedOut");
+}
 function show() {
   if (document.activeElement) {
     triggerElement.value = document.activeElement as HTMLElement;
   }
 
-  dsfr(modal.value).modal.disclose();
+  dsfr(modalRef.value).modal.disclose();
 }
 
-function hide(options: { getFocusElement: (() => HTMLElement | null) | null }
-  = { getFocusElement: () => null }) {
-  getFocusOnConceal.value = options.getFocusElement;
-  dsfr(modal.value).modal.conceal(false, true);
+function hide(options: { focusElementCb: (() => HTMLElement | null) | null }
+  = { focusElementCb: () => null }) {
+  focusOnConcealCb.value = options.focusElementCb;
+  modalRef.value?.addEventListener(
+    "transitionend",
+    onFadedOut,
+    { once: true }
+  );
+  dsfr(modalRef.value).modal.conceal();
 }
 
 async function onConceal() {
   await nextTick();
-  const elementToFocus = getFocusOnConceal.value?.();
+  const elementToFocus = focusOnConcealCb.value?.();
   if (elementToFocus?.isConnected) {
     elementToFocus.focus();
   } else if (triggerElement.value?.isConnected) {
@@ -60,7 +69,7 @@ defineExpose({ show, hide });
   <Teleport to="body">
     <dialog
       :id="id"
-      ref="modal"
+      ref="modalRef"
       role="dialog"
       :class="['fr-modal', { sidebar: isSidebar }]"
       v-bind="$attrs"

@@ -1,60 +1,32 @@
-import type { EventHookOn, UseConfirmDialogRevealResult } from "@vueuse/core";
-import { useConfirmDialog } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { nextTick } from "vue";
 
-// See [useConfirmDialog | VueUse](https://vueuse.org/core/useConfirmDialog/)
-const dialogLogic = useConfirmDialog();
-
-interface DialogStoreState {
-  dialogLogic: {
-    reveal: (data?: any) => Promise<UseConfirmDialogRevealResult<any, any>>;
-    confirm: (data?: any) => void;
-    cancel: (data?: any) => any;
-    onReveal: EventHookOn;
-    onConfirm: EventHookOn;
-    onCancel: EventHookOn;
+export interface DialogData {
+  title: string;
+  message: string;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  confirmAction?: {
+    cb?: () => void;
+    focus?: () => HTMLElement | null;
   };
-  dialogData: {
-    title: string;
-    message: string;
-    confirmLabel: string;
-    cancelLabel: string;
-    getFocusOnConceal: (() => HTMLElement | null) | null;
-    data?: any;
-  } | null;
+}
+interface DialogStoreState {
+  dialog?: DialogData | null;
 }
 
 export const useDialogStore = defineStore("dialog", {
-  state(): DialogStoreState {
+  state: (): DialogStoreState => {
     return {
-      dialogLogic,
-      dialogData: null
+      dialog: null
     };
   },
   actions: {
-    async showDialog(
-      title: string,
-      message: string,
-      confirmLabel: string,
-      cancelLabel: string,
-      getFocusOnConceal: (() => HTMLElement | null) | null,
-      data?: any
-    ): Promise<UseConfirmDialogRevealResult<any, boolean>> {
-      this.dialogData = {
-        title,
-        message,
-        confirmLabel,
-        cancelLabel,
-        getFocusOnConceal,
-        data
-      };
-      await nextTick();
-      return await dialogLogic.reveal(data);
+    async showDialog(options: DialogData) {
+      this.dialog = { ...options, cancelLabel: options.cancelLabel || "Annuler" };
     },
 
     resetDialogData() {
-      this.dialogData = null;
+      this.dialog = null;
     }
   }
 });
