@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../generated/prisma/client";
 
 export const PAGE_PRISMA_SELECT: Prisma.AuditedPageSelect = {
   id: true,
