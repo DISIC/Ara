@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { AuditType } from "@prisma/client";
+import { AuditType } from "../../generated/prisma/client";
 
 export class AuditListingItemDto {
   procedureName: string;

@@ -1,14 +1,14 @@
 import { Readable } from "stream";
 import { Injectable, StreamableFile } from "@nestjs/common";
+import { groupBy } from "lodash";
+import * as XLSX from "xlsx";
 import {
   Audit,
   AuditedPage,
   CriterionResult,
   CriterionResultStatus,
   ExampleImageFile
-} from "@prisma/client";
-import { groupBy } from "lodash";
-import * as XLSX from "xlsx";
+} from "../generated/prisma/client";
 
 import { AuditService } from "./audit.service";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";

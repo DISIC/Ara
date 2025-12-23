@@ -1,4 +1,3 @@
-import { AuditType } from "@prisma/client";
 import { Type } from "class-transformer";
 import {
   IsArray,
@@ -11,6 +10,7 @@ import {
   IsString,
   ValidateNested
 } from "class-validator";
+import { AuditType } from "../../generated/prisma/client";
 
 export class CreateAuditPage {
   /**

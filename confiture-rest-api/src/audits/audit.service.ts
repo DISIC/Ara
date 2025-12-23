@@ -1,4 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
+import { nanoid } from "nanoid";
+import sharp from "sharp";
 import {
   Audit,
   CriterionResult,
@@ -6,10 +9,7 @@ import {
   CriterionResultUserImpact,
   ExampleImageFile,
   Prisma
-} from "@prisma/client";
-import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
-import { nanoid } from "nanoid";
-import sharp from "sharp";
+} from "../generated/prisma/client";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
@@ -363,10 +363,10 @@ export class AuditService {
       });
 
       // check the diffenences between the audit after and before the update
-      const changedProperties =
+      const changedProperties: (keyof typeof audit)[] =
         _
           .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
-          .map(entries => entries[0]);
+          .map(entries => entries[0] as keyof typeof audit);
 
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma.service";
+import { PrismaClientKnownRequestError } from "src/generated/prisma/internal/prismaNamespace";
 
+import { PrismaService } from "src/prisma.service";
 import { PatchProfileDto } from "./patch-profile.dto";
 
 @Injectable()
@@ -25,8 +26,8 @@ export class ProfileService {
       return user;
     } catch (e) {
       // User does not exist
-      // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      if (e?.code === "P2025") {
+      // https://www.prisma.io/docs/orm/reference/error-reference#p2025
+      if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
         return;
       }
       throw e;
