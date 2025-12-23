@@ -19,11 +19,13 @@ import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
+import { AuditDto } from "./dto/entities/audit.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { ResultDto } from "./dto/result.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
 import { FileStorageService } from "./file-storage.service";
+import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
 const AUDIT_EDIT_INCLUDE = {
   recipients: true,
@@ -62,7 +64,7 @@ export class AuditService {
     private readonly fileStorageService: FileStorageService
   ) {}
 
-  async createAudit(data: CreateAuditDto) {
+  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -105,7 +107,7 @@ export class AuditService {
           }
         }
       },
-      include: AUDIT_EDIT_INCLUDE
+      select: AUDIT_PRISMA_SELECT
     });
 
     if (Object.values(data.pageElements).every((el) => el)) {
