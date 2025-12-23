@@ -1,6 +1,6 @@
 import { AuditType } from "../../../generated/prisma/client";
 
-import { NotesFileDto } from "./notes-file";
+import { NotesFileDto } from "./notes-file.dto";
 import { PageDto } from "./page.dto";
 import { TestEnvironmentDto } from "./test-environment.dto";
 
