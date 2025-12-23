@@ -18,7 +18,7 @@ store.$subscribe((_mutation, state) => {
 
 function onConfirm() {
   genericModalRef.value?.hide({
-    focusElementCb: dialog?.value?.confirmAction?.focus ?? null
+    getElementToFocus: dialog?.value?.confirmAction?.focus
   });
   dialog?.value?.confirmAction?.cb?.();
 };

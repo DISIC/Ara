@@ -23,7 +23,8 @@ const emit = defineEmits<{
 // element will be focused on conceal.
 // Using a function allows to spot the HTML element to focus at the last moment,
 // after the modal is actually concealed and DOM may have been updated.
-const focusOnConcealCb = shallowRef<(() => HTMLElement | null) | null>();
+type GetElementToFocusOnConceal = (() => HTMLElement | null);
+const getElementToFocusOnConceal = shallowRef<GetElementToFocusOnConceal>();
 
 const modalRef = useTemplateRef("modalRef");
 
@@ -32,17 +33,19 @@ const triggerElement = shallowRef<HTMLElement>();
 function onFadedOut() {
   emit("fadedOut");
 }
+
 function show() {
   if (document.activeElement) {
     triggerElement.value = document.activeElement as HTMLElement;
   }
 
+  modalRef.value?.removeEventListener("transitionend", onFadedOut);
+
   dsfr(modalRef.value).modal.disclose();
 }
 
-function hide(options: { focusElementCb: (() => HTMLElement | null) | null }
-  = { focusElementCb: () => null }) {
-  focusOnConcealCb.value = options.focusElementCb;
+function hide(options?: { getElementToFocus?: GetElementToFocusOnConceal }) {
+  getElementToFocusOnConceal.value = options?.getElementToFocus;
   modalRef.value?.addEventListener(
     "transitionend",
     onFadedOut,
@@ -53,7 +56,7 @@ function hide(options: { focusElementCb: (() => HTMLElement | null) | null }
 
 async function onConceal() {
   await nextTick();
-  const elementToFocus = focusOnConcealCb.value?.();
+  const elementToFocus = getElementToFocusOnConceal.value?.();
   if (elementToFocus?.isConnected) {
     elementToFocus.focus();
   } else if (triggerElement.value?.isConnected) {

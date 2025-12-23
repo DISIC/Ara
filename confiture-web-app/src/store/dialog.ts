@@ -11,7 +11,7 @@ export interface DialogData {
   };
 }
 interface DialogStoreState {
-  dialog?: DialogData | null;
+  dialog: DialogData | null;
 }
 
 export const useDialogStore = defineStore("dialog", {
@@ -22,7 +22,11 @@ export const useDialogStore = defineStore("dialog", {
   },
   actions: {
     async showDialog(options: DialogData) {
-      this.dialog = { ...options, cancelLabel: options.cancelLabel || "Annuler" };
+      this.dialog = {
+        ...options,
+        confirmLabel: options.confirmLabel || "Confirmer",
+        cancelLabel: options.cancelLabel || "Annuler"
+      };
     },
 
     resetDialogData() {
