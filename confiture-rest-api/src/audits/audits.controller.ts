@@ -37,6 +37,7 @@ import { DuplicateAuditDto } from "./dto/duplicate-audit.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
 import { ExampleImageFileDto } from "./dto/entities/example-image-file.dto";
+import { NotesFileDto } from "./dto/entities/notes-file.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
@@ -80,7 +81,7 @@ export class AuditsController {
   @Get()
   @AuthRequired()
   @ApiOkResponse({ type: AuditListingItemDto, isArray: true })
-  async getAuditList(@User() user: AuthenticationJwtPayload) {
+  async getAuditList(@User() user: AuthenticationJwtPayload): Promise<AuditListingItemDto[]> {
     return this.auditService.getAuditsByAuditorEmail(user.email);
   }
 
@@ -89,7 +90,7 @@ export class AuditsController {
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAudit(@Param("uniqueId") uniqueId: string) {
+  async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
       environments: true,
       transverseElementsPage: true,
@@ -103,7 +104,7 @@ export class AuditsController {
     });
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -134,11 +135,11 @@ export class AuditsController {
   async updateAudit(
     @Param("uniqueId") uniqueId: string,
     @Body() body: UpdateAuditDto
-  ) {
+  ): Promise<AuditDto> {
     const audit = await this.auditService.updateAudit(uniqueId, body);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -154,11 +155,11 @@ export class AuditsController {
   async patchAudit(
     @Param("uniqueId") uniqueId: string,
     @Body() body: PatchAuditDto
-  ) {
+  ): Promise<void> {
     const audit = await this.auditService.patchAudit(uniqueId, body);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
   }
 
@@ -181,11 +182,11 @@ export class AuditsController {
     )
     file: Express.Multer.File,
     @Body() body: UploadImageDto
-  ) {
+  ): Promise<ExampleImageFileDto> {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return await this.auditService.saveExampleImage(
@@ -199,6 +200,7 @@ export class AuditsController {
 
   @Post("/:uniqueId/notes/files")
   @UseInterceptors(FileInterceptor("file"))
+  @ApiCreatedResponse({ type: NotesFileDto })
   async uploadNotesFile(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
@@ -211,11 +213,11 @@ export class AuditsController {
         })
     )
     file: Express.Multer.File
-  ) {
+  ): Promise<NotesFileDto> {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return await this.auditService.saveNotesFile(uniqueId, file);
@@ -277,12 +279,12 @@ export class AuditsController {
   @ApiOkResponse({ type: [CriterionResultDto] })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAuditResults(@Param("uniqueId") uniqueId: string) {
+  async getAuditResults(@Param("uniqueId") uniqueId: string): Promise<CriterionResultDto[]> {
     const results =
       await this.auditService.getResultsWithEditUniqueId(uniqueId);
 
     if (!results) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return results;
@@ -302,7 +304,7 @@ export class AuditsController {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     await this.auditService.updateResults(uniqueId, body);
@@ -313,7 +315,7 @@ export class AuditsController {
   @ApiOkResponse({ type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async publishAudit(@Param("uniqueId") uniqueId: string) {
+  async publishAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
     const auditIsComplete = await this.auditService.isAuditComplete(uniqueId);
     if (!auditIsComplete) {
       throw new ConflictException(
@@ -324,7 +326,7 @@ export class AuditsController {
     const audit = await this.auditService.publishAudit(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -339,7 +341,7 @@ export class AuditsController {
     const deleted = await this.auditService.softDeleteAudit(uniqueId);
 
     if (!deleted) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
   }
 
@@ -352,7 +354,8 @@ export class AuditsController {
    */
   @Post("/:uniqueId/duplicate")
   @ApiCreatedResponse({
-    description: "The audit has been successfully duplicated."
+    description: "The audit has been successfully duplicated.",
+    type: AuditDto
   })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
@@ -360,14 +363,14 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
-  ) {
+  ): Promise<AuditDto> {
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
       body.procedureName
     );
 
     if (!newAudit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     if (!user) {
