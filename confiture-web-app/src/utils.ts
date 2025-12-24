@@ -335,6 +335,10 @@ export function scrollToHash(hash: string) {
   }
 }
 
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Creates a File object from a given URL
  *

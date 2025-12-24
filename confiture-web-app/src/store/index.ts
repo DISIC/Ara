@@ -1,5 +1,6 @@
 export * from "./account";
 export * from "./audit";
+export * from "./dialog";
 export * from "./filters";
 export * from "./notification";
 export * from "./report";

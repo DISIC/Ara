@@ -1,60 +1,68 @@
-<script lang="ts">
-export default {
-  inheritAttrs: false
-};
-</script>
-
 <script lang="ts" setup>
-import { ref } from "vue";
+import { nextTick, shallowRef, useTemplateRef } from "vue";
 
-defineProps<{
+defineOptions({
+  inheritAttrs: false
+});
+
+interface Props {
   id: string;
   isSidebar?: boolean;
-}>();
+}
+withDefaults(defineProps<Props>(), {
+  isSidebar: false
+});
 
 const emit = defineEmits<{
   (e: "closed"): void;
+  (e: "fadedOut"): void;
 }>();
 
-const modal = ref<HTMLDialogElement>();
+// If the confirm action of the modal caused the deletion of the item containing
+// the button that triggered the modal disclosure, we need to specify which
+// element will be focused on conceal.
+// Using a function allows to spot the HTML element to focus at the last moment,
+// after the modal is actually concealed and DOM may have been updated.
+type GetElementToFocusOnConceal = (() => HTMLElement | null);
+const getElementToFocusOnConceal = shallowRef<GetElementToFocusOnConceal>();
 
-const triggerElement = ref<HTMLElement>();
+const modalRef = useTemplateRef("modalRef");
+
+const triggerElement = shallowRef<HTMLElement>();
+
+function onFadedOut() {
+  emit("fadedOut");
+}
 
 function show() {
   if (document.activeElement) {
     triggerElement.value = document.activeElement as HTMLElement;
   }
 
-  dsfr(modal.value).modal.disclose();
+  modalRef.value?.removeEventListener("transitionend", onFadedOut);
+
+  dsfr(modalRef.value).modal.disclose();
 }
 
-function hide() {
-  dsfr(modal.value).modal.conceal();
+function hide(options?: { getElementToFocus?: GetElementToFocusOnConceal }) {
+  getElementToFocusOnConceal.value = options?.getElementToFocus;
+  modalRef.value?.addEventListener(
+    "transitionend",
+    onFadedOut,
+    { once: true }
+  );
+  dsfr(modalRef.value).modal.conceal();
 }
 
-const isOpened = ref(false);
-
-function onConceal() {
-  /*
-  FIXME: For some reason, the DSFR modal emits the `dsfr.conceal` event as
-  soon as the page loads. We want to ignore this one event fire so we track if
-  the modal is *actually* opened before firing our own event.
-  */
-  if (!isOpened.value) {
-    return;
+async function onConceal() {
+  await nextTick();
+  const elementToFocus = getElementToFocusOnConceal.value?.();
+  if (elementToFocus?.isConnected) {
+    elementToFocus.focus();
+  } else if (triggerElement.value?.isConnected) {
+    triggerElement.value.focus();
   }
-
-  isOpened.value = false;
-  setTimeout(() => {
-    if (triggerElement.value && triggerElement.value.isConnected) {
-      triggerElement.value.focus();
-    }
-    emit("closed");
-  });
-}
-
-function onDisclose() {
-  isOpened.value = true;
+  emit("closed");
 }
 
 defineExpose({ show, hide });
@@ -62,21 +70,13 @@ defineExpose({ show, hide });
 
 <template>
   <Teleport to="body">
-    <!--
-    FIXME: For some reason, in v1.10 of the DSFR, a modal MUST have an activation
-    button. Otherwise the javascript API to manually open the modal won't work.
-
-    See: https://github.com/GouvernementFR/dsfr/issues/728
-    -->
-    <button hidden data-fr-opened="false" :aria-controls="id"></button>
-
     <dialog
       :id="id"
-      ref="modal"
+      ref="modalRef"
       role="dialog"
       :class="['fr-modal', { sidebar: isSidebar }]"
       v-bind="$attrs"
-      v-on="{ 'dsfr.conceal': onConceal, 'dsfr.disclose': onDisclose }"
+      v-on="{ 'dsfr.conceal': onConceal }"
     >
       <slot />
     </dialog>
