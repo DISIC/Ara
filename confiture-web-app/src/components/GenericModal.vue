@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { useTemplateRef } from "vue";
 import { useDialogStore } from "../store";
 import DsfrModal from "./ui/DsfrModal.vue";
 
-const genericModalRef = ref<InstanceType<typeof DsfrModal>>();
+const genericModalRef = useTemplateRef("genericModalRef");
 
 const store = useDialogStore();
 const { dialog } = storeToRefs(store);
