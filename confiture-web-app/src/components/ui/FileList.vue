@@ -41,7 +41,7 @@ const dialog = useDialog();
 const notify = useNotifications();
 
 const deteleBtnRefs = useTemplateRef("deteleBtnRefs");
-const deleteConfirmBtnRefs = ref<HTMLButtonElement[]>([]);
+const deleteConfirmBtnRefs = useTemplateRef("deleteConfirmBtnRefs");
 
 const successMessage = shallowRef<string>("");
 
@@ -78,7 +78,7 @@ async function handleFileDeleteInlineReveal(
   inlineConfirmPendingRange.value = range;
   await nextTick();
   await sleep(1);
-  const confirmBtn = deleteConfirmBtnRefs.value[0];
+  const confirmBtn = deleteConfirmBtnRefs.value?.[0];
   confirmBtn?.focus();
 }
 

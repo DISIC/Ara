@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, provide, ref } from "vue";
+import { computed, provide, ref, useTemplateRef } from "vue";
 import { useRoute } from "vue-router";
 
 import { useFileHandler } from "../../composables/useFileHandler";
@@ -20,8 +20,8 @@ defineProps<{
 provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
 
 function getFocusWhenListEmpty(): HTMLElement | null {
-  return fileUpload.value
-    ? fileUpload.value.fileInputRef!
+  return fileUploadRef.value
+    ? fileUploadRef.value.fileInputRef!
     : null;
 }
 
@@ -35,13 +35,12 @@ defineExpose({
   hide
 });
 
-const fileUpload = ref<InstanceType<typeof FileUpload>>();
-
 const auditStore = useAuditStore();
 const fileHandler = useFileHandler();
 const route = useRoute();
 
-const modal = ref<InstanceType<typeof DsfrModal>>();
+const fileUploadRef = useTemplateRef("fileUploadRef");
+const modalRef = useTemplateRef("modalRef");
 
 const notes = ref(auditStore.currentAudit?.notes || "");
 
@@ -51,14 +50,14 @@ const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
 function show() {
-  modal.value?.show();
+  modalRef.value?.show();
 }
 function hide() {
-  modal.value?.hide();
+  modalRef.value?.hide();
 }
 
 function onClosed() {
-  fileUpload.value?.reset();
+  fileUploadRef.value?.reset();
   emit("closed");
 }
 
@@ -83,7 +82,7 @@ async function handleFileDeleted(
 <template>
   <DsfrModal
     id="notes-modal"
-    ref="modal"
+    ref="modalRef"
     aria-labelledby="notes-modal-title"
     :is-sidebar="true"
     @closed="onClosed"
@@ -119,7 +118,7 @@ async function handleFileDeleted(
               />
 
               <FileUpload
-                ref="fileUpload"
+                ref="fileUploadRef"
                 class="fr-mb-4w"
                 :fl-files="files.map(f => ({
                   filename: f.originalFilename,
