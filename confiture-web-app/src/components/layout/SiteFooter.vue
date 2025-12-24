@@ -99,9 +99,9 @@ const bottomLinks = [
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
-                href="https://service-public.fr"
+                href="https://www.service-public.gouv.fr"
                 target="_blank"
-              >service-public.fr
+              >service-public.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
