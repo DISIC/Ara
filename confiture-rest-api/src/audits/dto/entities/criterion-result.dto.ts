@@ -1,11 +1,14 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { CriterionResultStatus, CriterionResultUserImpact } from "src/generated/prisma/enums";
 import { ExampleImageFileDto } from "./example-image-file.dto";
 
 export class CriterionResultDto {
-  id: number;
-  status: Record<string, never>;
+  @ApiProperty({ enum: CriterionResultStatus })
+  status: CriterionResultStatus;
   compliantComment: string | null;
   notCompliantComment: string | null;
-  userImpact: Record<string, unknown> | null;
+  @ApiProperty({ enum: CriterionResultUserImpact })
+  userImpact: CriterionResultUserImpact | null;
   exampleImages: ExampleImageFileDto[];
   quickWin: boolean;
   notApplicableComment: string | null;

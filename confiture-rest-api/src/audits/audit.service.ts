@@ -258,7 +258,7 @@ export class AuditService {
   async updateAudit(
     uniqueId: string,
     data: UpdateAuditDto
-  ): Promise<Audit | undefined> {
+  ): Promise<AuditDto | undefined> {
     try {
       const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
       const updatedPages = orderedPages.filter((p) => p.id);
@@ -361,7 +361,7 @@ export class AuditService {
           notes: data.notes,
           transverseElements: data.transverseElements
         },
-        include: AUDIT_EDIT_INCLUDE
+        select: AUDIT_PRISMA_SELECT
       });
 
       // check the diffenences between the audit after and before the update
@@ -1114,7 +1114,7 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(sourceUniqueId: string, newAuditName: string) {
+  async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
     const originalAudit = await this.prisma.audit.findFirst({
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
@@ -1340,7 +1340,8 @@ export class AuditService {
             auditEditUniqueId: duplicateEditUniqueId
           }
         }
-      }
+      },
+      select: AUDIT_PRISMA_SELECT
     });
 
     return newAudit;
