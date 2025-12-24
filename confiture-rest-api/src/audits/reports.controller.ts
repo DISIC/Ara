@@ -29,11 +29,11 @@ export class ReportsController {
   @ApiOkResponse({ description: "The audit was found.", type: AuditReportDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAuditReport(@Param("consultUniqueId") consultUniqueId: string) {
+  async getAuditReport(@Param("consultUniqueId") consultUniqueId: string): Promise<AuditReportDto> {
     const report = await this.auditService.getAuditReportData(consultUniqueId);
 
     if (!report) {
-      return this.sendAuditNotFoundStatus(consultUniqueId);
+      await this.sendAuditNotFoundStatus(consultUniqueId);
     }
 
     return report;
@@ -49,7 +49,7 @@ export class ReportsController {
       await this.auditExportService.getCsvExportWithConsultId(consultUniqueId);
 
     if (!file) {
-      return this.sendAuditNotFoundStatus(consultUniqueId);
+      await this.sendAuditNotFoundStatus(consultUniqueId);
     }
 
     return file;
