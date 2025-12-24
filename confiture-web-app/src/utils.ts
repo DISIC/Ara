@@ -5,6 +5,7 @@ import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
+import { FileListFile } from "./components/ui/FileList.vue";
 import {
   AuditReport,
   AuditStatus,
@@ -307,6 +308,10 @@ export async function createFileFromUrl(url: string): Promise<File | null> {
     });
 }
 
-export function isImage(file: File) {
-  return file.type.startsWith("image");
+export function isImage(file: File | FileListFile) {
+  if (file instanceof File) {
+    return file.type.startsWith("image");
+  } else if ("mimetype" in file) {
+    return file.mimetype.startsWith("image");
+  }
 }
