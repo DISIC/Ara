@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { debounce } from "lodash-es";
-import { computed, Ref, ref } from "vue";
+import { computed, provide, ref, useTemplateRef } from "vue";
 import { useRoute } from "vue-router";
 
-import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useAuditStore } from "../../store/audit";
-import { StoreName } from "../../types";
-import { getUploadUrl, handleFileDeleteError, handleFileUploadError } from "../../utils";
+import { getFocusWhenListEmptyKey, StoreName } from "../../types";
+import { getUploadUrl } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import { FileListFile } from "../ui/FileList.vue";
@@ -18,24 +17,30 @@ defineProps<{
   isLoading: boolean;
 }>();
 
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return fileUploadRef.value
+    ? fileUploadRef.value.fileInputRef!
+    : null;
+}
+
 const emit = defineEmits<{
   (e: "closed"): void;
   (e: "confirm", payload: string): void;
 }>();
 
 defineExpose({
-  show: () => modal.value?.show(),
-  hide: () => modal.value?.hide()
+  show,
+  hide
 });
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
-const fileUpload = ref<InstanceType<typeof FileUpload>>();
-
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const route = useRoute();
 
-const modal = ref<InstanceType<typeof DsfrModal>>();
-const isOffline = useIsOffline();
+const fileUploadRef = useTemplateRef("fileUploadRef");
+const modalRef = useTemplateRef("modalRef");
 
 const notes = ref(auditStore.currentAudit?.notes || "");
 
@@ -44,47 +49,40 @@ const files = computed(() => auditStore.currentAudit?.notesFiles || []);
 
 const handleNotesChange = debounce(() => emit("confirm", notes.value), 500);
 
-function handleUploadFile(file: File) {
-  auditStore
-    .uploadAuditFile(uniqueId.value, file)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileUploadError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+function show() {
+  modalRef.value?.show();
+}
+function hide() {
+  modalRef.value?.hide();
 }
 
 function onClosed() {
-  fileUpload.value?.reset();
+  fileUploadRef.value?.reset();
   emit("closed");
 }
 
-function handleDeleteFile(flFile: FileListFile) {
+async function handleFileImported(
+  resolve: () => void,
+  file: File
+) {
+  const notesFile = await fileHandler.uploadGlobalFile(uniqueId.value, file);
+  resolve();
+}
+
+async function handleFileDeleted(
+  resolve: () => void,
+  flFile: FileListFile
+) {
   const notesFile = files.value.find(f => f.key === flFile.key)!;
-  auditStore
-    .deleteAuditFile(uniqueId.value, notesFile.id)
-    .then(() => {
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    })
-    .finally(() => {
-      fileUpload.value?.onFileRequestFinished();
-    });
+  await fileHandler.deleteGlobalAuditFile(uniqueId.value, notesFile);
+  resolve();
 }
 </script>
 
 <template>
   <DsfrModal
     id="notes-modal"
-    ref="modal"
+    ref="modalRef"
     aria-labelledby="notes-modal-title"
     :is-sidebar="true"
     @closed="onClosed"
@@ -119,23 +117,22 @@ function handleDeleteFile(flFile: FileListFile) {
                 @update:model-value="handleNotesChange"
               />
 
-              <!-- FILE -->
               <FileUpload
-                ref="fileUpload"
+                ref="fileUploadRef"
                 class="fr-mb-4w"
-                :audit-files="files.map(f => ({
-                  ...f,
+                :fl-files="files.map(f => ({
                   filename: f.originalFilename,
-                  url: getUploadUrl(f.key),
-                  thumbnailUrl: f.thumbnailKey
-                    ? getUploadUrl(f.thumbnailKey)
-                    : undefined
+                  key: f.key,
+                  mimetype: f.mimetype,
+                  size: f.size,
+                  thumbnailUrl: f.thumbnailKey ?
+                    getUploadUrl(f.thumbnailKey) : undefined,
+                  url: getUploadUrl(f.key)
                 }))"
-                :error-message="errorMessage"
                 is-in-modal
                 multiple
-                :on-delete="handleDeleteFile"
-                @upload-file="handleUploadFile"
+                @file-imported="handleFileImported($event.resolve, $event.file)"
+                @file-deleted="handleFileDeleted($event.resolve, $event.flFile)"
               />
             </div>
           </div>
