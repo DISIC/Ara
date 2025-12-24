@@ -5,7 +5,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
 import { getFocusWhenListEmptyKey } from "../../types";
-import { formatBytes, sleep } from "../../utils";
+import { formatBytes, isImage, sleep } from "../../utils";
 
 export interface FileListFile {
   filename: string;
@@ -187,12 +187,6 @@ function getFileDetails(flFile: FileListFile) {
 
 function getFullFileName(flFile: FileListFile) {
   return getFileName(flFile) + " (" + getFileDetails(flFile) + ")";
-}
-
-function isImage(flFile: FileListFile) {
-  return (
-    flFile.mimetype.startsWith("image")
-  );
 }
 
 function isViewable(flFile: FileListFile) {
