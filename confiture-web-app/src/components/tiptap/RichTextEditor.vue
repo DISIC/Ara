@@ -56,7 +56,7 @@ function announceUploadSuccess(fileName: string) {
 <template>
   <AnnouncementAlert
     class="fr-mb-5v"
-    title="Nouveauté : ajoutez vos images dans les zones de texte"
+    title="Nouveauté : ajoutez vos images dans les zones de texte"
     storage-key="rich-text-editor-images"
     @close="closeNotification"
   >
@@ -65,7 +65,7 @@ function announceUploadSuccess(fileName: string) {
         <p>L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
         <p class="fr-mt-3w"><em>À noter : les images ajoutées lors de vos précédents audits via le composant « Ajouter une image d’exemple » sont conservées sous la zone de texte.</em></p>
       </template>
-      <p v-elsea>Vous pouvez maintenant ajouter des images dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
+      <p v-else>Vous pouvez maintenant ajouter des images dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
     </template>
   </AnnouncementAlert>
 
