@@ -53,7 +53,7 @@ export class AuthController {
     description:
       "Invalid credentials."
   })
-  async signin(@Body() body: SigninDto) {
+  async signin(@Body() body: SigninDto): Promise<string> {
     try {
       return await this.auth.signin(body.username, body.password);
     } catch (e) {
@@ -66,7 +66,8 @@ export class AuthController {
 
   @Post("refresh")
   @AuthRequired()
-  async refreshToken(@User() user: AuthenticationJwtPayload) {
+  @ApiCreatedResponse({ type: String })
+  async refreshToken(@User() user: AuthenticationJwtPayload): Promise<string> {
     try {
       return await this.auth.refreshToken(user.sub);
     } catch (e) {
@@ -86,7 +87,7 @@ export class AuthController {
   async deleteAccount(
     @Body() body: DeleteAccountDto,
     @User() user: AuthenticationJwtPayload
-  ) {
+  ): Promise<DeleteAccountResponseDto> {
     if (!(await this.auth.checkCredentials(user.email, body.password))) {
       throw new UnauthorizedException();
     }

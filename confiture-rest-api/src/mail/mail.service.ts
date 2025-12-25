@@ -81,7 +81,7 @@ export class MailService {
     });
   }
 
-  sendAuditCreatedMail(audit: Audit) {
+  sendAuditCreatedMail(audit: Pick<Audit, "editUniqueId" | "consultUniqueId" | "procedureName" | "auditType" | "auditorEmail">) {
     const overviewUrl = `${this.config.get("FRONT_BASE_URL")}/audits/${
       audit.editUniqueId
     }/synthese`;

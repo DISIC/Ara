@@ -107,10 +107,10 @@ export enum CriterionResultUserImpact {
 }
 
 /** File attached to audit notes. */
-export type NotesFile = components["schemas"]["NotesFile"];
+export type NotesFile = components["schemas"]["NotesFileDto"];
 
 /** Image file attached to specific criterium result when not compliant. */
-export type ExampleImageFile = components["schemas"]["ExampleImageFile"];
+export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
 export interface CriteriumResult {
   // ID
