@@ -6,6 +6,7 @@
     "dist",
     "**/*spec.ts",
     "scripts",
-    "confiture-api.ts"
+    "confiture-api.ts",
+    "prisma.config.ts"
   ]
 }
