@@ -99,6 +99,7 @@ const sectionId = computed(() => `${error.pageId}_${error.topic}_${error.criteri
             class="fr-col-md-6 fr-col-12 image-link"
             :href="getUploadUrl(example.key)"
             target="_blank"
+            rel="noopener"
           >
             <span class="fr-sr-only">
               Ouvrir l’image dans une nouvelle fenêtre

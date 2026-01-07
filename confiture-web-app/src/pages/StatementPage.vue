@@ -134,8 +134,8 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-1v">
-        URL du site audité :
-        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
+        URL du site audité :
+        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
@@ -147,6 +147,7 @@ const siteUrl = computed(() => {
           class="fr-link"
           target="_blank"
           :to="{ name: 'report', params: { uniqueId } }"
+          rel="noopener"
         >
           Accéder au rapport d’audit
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -204,8 +205,9 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
             <strong>{{ report.data.procedureName }}
-              <a target="_blank" :href="report.data.procedureUrl">
+              <a target="_blank" :href="report.data.procedureUrl" rel="noopener">
                 {{ report.data.procedureUrl }}
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a></strong>
             est <strong>{{ getA11yLevel() }} conforme</strong> avec le
             référentiel général d’amélioration de l’accessibilité (RGAA).
@@ -342,18 +344,20 @@ const siteUrl = computed(() => {
               <a
                 href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
                 target="_blank"
+                rel="noreferrer noopener"
               >
                 Écrire un message au Défenseur des droits
-                <span class="fr-sr-only">nouvelle fenêtre</span>
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
               <a
                 href="https://www.defenseurdesdroits.fr/carte-des-delegues"
                 target="_blank"
+                rel="noreferrer noopener"
               >
                 Contacter le délégué du Défenseur des droits dans votre région
-                <span class="fr-sr-only">nouvelle fenêtre</span>
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a>
             </li>
             <li>

@@ -69,6 +69,7 @@ const bottomLinks = [
             Ara est un service en ligne conçu et développé par <a
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
+              rel="noreferrer noopener"
               target="_blank"
             >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
               class="fr-link fr-text--sm"
@@ -81,6 +82,7 @@ const bottomLinks = [
             <a
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
+              rel="noreferrer noopener"
               target="_blank"
             >FIPHFP<span class="fr-sr-only">
               Fonds pour l’insertion des personnes handicapées dans la
@@ -92,6 +94,7 @@ const bottomLinks = [
               <a
                 class="fr-footer__content-link"
                 href="https://info.gouv.fr"
+                rel="noreferrer noopener"
                 target="_blank"
               >info.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -100,6 +103,7 @@ const bottomLinks = [
               <a
                 class="fr-footer__content-link"
                 href="https://www.service-public.gouv.fr"
+                rel="noreferrer noopener"
                 target="_blank"
               >service-public.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -108,6 +112,7 @@ const bottomLinks = [
               <a
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
+                rel="noreferrer noopener"
                 target="_blank"
               >legifrance.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -116,6 +121,7 @@ const bottomLinks = [
               <a
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
+                rel="noreferrer noopener"
                 target="_blank"
               >data.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -133,11 +139,12 @@ const bottomLinks = [
               class="fr-footer__partners-link"
               target="_blank"
               href="https://www.fiphfp.fr/"
+              rel="noreferrer noopener"
             >
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
+                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
               />
             </a>
           </div>
@@ -173,6 +180,7 @@ const bottomLinks = [
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
+              rel="noreferrer noopener"
             >licence etalab-2.0
               <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
           </p>

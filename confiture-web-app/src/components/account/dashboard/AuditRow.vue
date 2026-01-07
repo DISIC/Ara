@@ -309,8 +309,9 @@ function copyStatementLink(uniqueId: string) {
                 }"
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+                rel="noopener"
               >Consulter le rapport
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 

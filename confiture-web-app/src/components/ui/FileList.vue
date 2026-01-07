@@ -177,13 +177,11 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
               :href="file.url"
               :disabled="isOffline ? true : undefined"
+              rel="noopener"
               target="_blank"
-              :title="
-                `Voir ${getFullFileName(file)} – nouvelle fenêtre`
-              "
             >
               Voir
-              <span class="sr-only">{{ getFullFileName(file) }}</span>
+              <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
             </a>
           </li>
           <li>

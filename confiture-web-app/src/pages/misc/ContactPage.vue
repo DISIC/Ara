@@ -18,16 +18,19 @@ const reportStore = useReportStore();
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
+        rel="noreferrer noopener"
       >DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la
       <a
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
+        rel="noreferrer noopener"
       >direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, avec le soutien du
       <a
         class="fr-link"
         href="https://www.fiphfp.fr/"
         target="_blank"
+        rel="noreferrer noopener"
       >FIPHFP<span class="fr-sr-only">
         Fonds pour l’insertion des personnes handicapées dans la
         Fonction publique (nouvelle fenêtre)

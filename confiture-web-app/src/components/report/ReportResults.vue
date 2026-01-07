@@ -193,8 +193,10 @@ const transverseNotCompliantCount = computed(() => {
                         "
                         target="_blank"
                         class="fr-text--bold"
+                        rel="noopener"
                       >
                         {{ row[0] }}
+                        <span class="fr-sr-only">(nouvelle fenêtre)</span>
                       </a>
                     </td>
                     <td v-for="data in row.slice(1)" :key="data">{{ data }}</td>
