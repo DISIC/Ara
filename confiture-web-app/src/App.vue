@@ -60,6 +60,11 @@ function closeFeedbackNotice() {
 
   pageHeading?.focus();
 }
+
+// TODO: remove this after 12/01/2026 19:00
+const today = new Date();
+const date = new Date("January 12, 26 19:00:00");
+const showMaintenanceNotice = ref(today < date);
 </script>
 
 <template>
@@ -87,6 +92,18 @@ function closeFeedbackNotice() {
   <GenericModal />
 
   <SiteHeader />
+
+  <!-- TODO: remove this after 12/01/2026 19:00 -->
+  <div v-if="showMaintenanceNotice" class="fr-notice fr-notice--alert">
+    <div class="fr-container">
+      <div class="fr-notice__body">
+        <p>
+          <span class="fr-notice__title">Une opération de maintenance est prévue le lundi 12 janvier à 17h.</span>
+          <span class="fr-notice__desc">L'opération ne devrait durer que quelques minutes. Il est conseillé de ne pas utiliser Ara à ce moment là.</span>
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
     <div class="fr-container">
