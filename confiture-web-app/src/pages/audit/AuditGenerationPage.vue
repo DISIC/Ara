@@ -297,8 +297,8 @@ filterStore.$reset();
     <BackLink
       :label="
         isLoggedInAndOwnAudit
-          ? 'Retourner à mes audits'
-          : 'Retourner au tableau de bord de l’audit'
+          ? 'Retour à mes audits'
+          : 'Retour au tableau de bord de l’audit'
       "
       :to="
         isLoggedInAndOwnAudit

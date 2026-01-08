@@ -140,7 +140,13 @@ const showMaintenanceNotice = ref(today < date);
   scroll-margin: 2rem;
 }
 
-main:has(.top-link) {
-  margin-bottom: 4.5rem !important;
+main {
+  &:has(.top-link) {
+    margin-bottom: 4.5rem !important;
+  }
+
+  &:has(.back-link) {
+    padding-top: 1.5em !important;
+  }
 }
 </style>

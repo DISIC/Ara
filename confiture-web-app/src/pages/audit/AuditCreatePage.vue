@@ -205,7 +205,7 @@ async function goToPreviousStep() {
   />
 
   <BackLink
-    :label="`Retourner à ${accountStore.account ? 'mes audits' : 'l’accueil'}`"
+    :label="`Retour à ${accountStore.account ? 'mes audits' : 'l’accueil'}`"
     :to="{ name: accountStore.account ? 'account-dashboard' : 'home' }"
   />
 

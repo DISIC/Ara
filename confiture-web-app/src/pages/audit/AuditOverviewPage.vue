@@ -109,7 +109,7 @@ const isLoggedInAndOwnAudit = computed(() => {
 
     <BackLink
       v-if="isLoggedInAndOwnAudit"
-      label="Retourner à mes audits"
+      label="Retour à mes audits"
       :to="{ name: 'account-dashboard' }"
     />
 
