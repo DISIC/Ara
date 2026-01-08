@@ -98,8 +98,8 @@ const showMaintenanceNotice = ref(today < date);
     <div class="fr-container">
       <div class="fr-notice__body">
         <p>
-          <span class="fr-notice__title">Une opération de maintenance est prévue le lundi 12 janvier à 17h.</span>
-          <span class="fr-notice__desc">L'opération ne devrait durer que quelques minutes. Il est conseillé de ne pas utiliser Ara à ce moment là.</span>
+          <span class="fr-notice__title">L’accès à Ara sera perturbé le lundi 12 janvier entre 17h et 18h en raison d’une opération de maintenance.</span>
+          <span class="fr-notice__desc">Merci de votre compréhension.</span>
         </p>
       </div>
     </div>
