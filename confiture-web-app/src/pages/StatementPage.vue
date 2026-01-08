@@ -134,7 +134,7 @@ const siteUrl = computed(() => {
       </p>
 
       <p class="fr-mb-1v">
-        URL du site audité :
+        URL du site audité :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
