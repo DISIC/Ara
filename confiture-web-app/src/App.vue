@@ -139,4 +139,8 @@ const showMaintenanceNotice = ref(today < date);
 [id="main"]:target {
   scroll-margin: 2rem;
 }
+
+main:has(.top-link) {
+  margin-bottom: 4.5rem !important;
+}
 </style>
