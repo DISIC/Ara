@@ -108,17 +108,12 @@ function confirmDelete() {
     .then(() => {
       resultStore.$reset();
 
-      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
+      notify("success", undefined, `Audit « ${auditName} » supprimé`);
 
       if (accountStore.account) {
-        router.push({
-          name: "account-dashboard"
-        });
+        router.push({ name: "account-dashboard" });
       } else {
-        router.push({
-          name: "home",
-          state: { deleteAudit: "true" }
-        });
+        router.push({ name: "home" });
       }
     })
     .catch((error) => {

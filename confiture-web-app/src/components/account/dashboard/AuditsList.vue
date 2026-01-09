@@ -1,25 +1,38 @@
 <script lang="ts" setup>
+import { nextTick, useTemplateRef, watch } from "vue";
 import { AuditStatus } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import { pluralize } from "../../../utils";
 import AuditRow from "./AuditRow.vue";
 import NoAudit from "./NoAudit.vue";
 
-defineProps<{
+const props = defineProps<{
   audits: AccountAudit[];
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   noAuditLabel: string;
 }>();
+
+// Focus audit list heading when deleting an audit
+const auditStatusHeadingRef = useTemplateRef("auditStatusHeadingRef");
+
+watch(() => props.audits.length, async (newValue, oldValue) => {
+  if (newValue < oldValue) {
+    await nextTick();
+    auditStatusHeadingRef.value?.focus();
+  }
+});
 </script>
 
 <template>
   <div>
     <h2
+      ref="auditStatusHeadingRef"
       class="fr-badge fr-mb-2w audit-status"
       :class="{
         'fr-badge--green-emeraude': status === AuditStatus.COMPLETED,
         'fr-badge--purple-glycine': status === AuditStatus.IN_PROGRESS
       }"
+      tabindex="-1"
     >{{
       status === AuditStatus.IN_PROGRESS
         ? `En cours (${audits.length})`

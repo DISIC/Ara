@@ -98,7 +98,7 @@ function deleteAudit() {
   auditStore
     .deleteAudit(props.audit.editUniqueId)
     .then(() => {
-      notify("success", undefined, `Audit ${auditName} supprimé avec succès`);
+      notify("success", undefined, `Audit « ${auditName} » supprimé`);
     })
     .catch((error) => {
       notify(

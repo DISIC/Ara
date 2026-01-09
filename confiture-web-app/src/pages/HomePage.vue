@@ -1,40 +1,19 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
 import { REFERENTIAL } from "../enums";
-import { history } from "../router";
 import { useAccountStore } from "../store";
 
 const router = useRouter();
-
-const isDeleteAlertVisible = ref(false);
 const headingRef = ref();
-const closeAlertRef = ref();
-
-// Display alert and focus its close button
-onMounted(async () => {
-  if (history.state.deleteAudit) {
-    isDeleteAlertVisible.value = true;
-    await nextTick();
-    closeAlertRef.value.focus();
-  }
-});
 
 // Redirect connected user to his account
 const accountStore = useAccountStore();
 
 if (accountStore.account) {
   router.push({ name: "account-dashboard" });
-}
-
-// Hide alert, remove query param and focus main title
-async function hideDeleteAlert() {
-  isDeleteAlertVisible.value = false;
-  router.push({ query: {} });
-  await nextTick();
-  headingRef.value.focus();
 }
 
 const steps = [
@@ -64,21 +43,6 @@ const steps = [
     title="Accueil"
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
   />
-
-  <div
-    v-if="isDeleteAlertVisible"
-    role="alert"
-    class="fr-alert fr-alert--success fr-mb-4w"
-  >
-    <p>L’audit a correctement été supprimé.</p>
-    <button
-      ref="closeAlertRef"
-      class="fr-btn--close fr-btn"
-      @click="hideDeleteAlert"
-    >
-      Masquer le message
-    </button>
-  </div>
 
   <section class="fr-mt-9w">
     <h1 ref="headingRef">Je réalise un audit d’accessibilité avec Ara</h1>
