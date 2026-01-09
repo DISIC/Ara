@@ -136,7 +136,7 @@ const bottomLinks = [
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
+                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
               />
             </a>
           </div>
