@@ -112,6 +112,8 @@ const backLinkLabel = computed(() => {
       return "Retourner à mon audit";
   }
 });
+
+const currentProcedureName = procedureName.value;
 </script>
 
 <template>
@@ -128,7 +130,7 @@ const backLinkLabel = computed(() => {
 
   <FormWithValidation class="content" @submit="onSubmit">
     <h1 class="fr-mb-3v">Paramètres de l’audit</h1>
-    <p class="fr-text--xl fr-mb-4w">{{ procedureName }}</p>
+    <p class="fr-text--xl fr-mb-4w">{{ currentProcedureName }}</p>
 
     <p class="fr-text--sm fr-mb-2w notice">
       Sauf mentions contraires, tous les champs sont obligatoires.

@@ -6,12 +6,14 @@ import AuditSettingsForm from "../../components/audit/AuditSettingsForm.vue";
 import LeaveModal from "../../components/audit/LeaveModal.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType } from "../../types";
 
 const router = useRouter();
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 const auditUniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 const notify = useNotifications();
@@ -36,17 +38,12 @@ function confirmLeave() {
   leaveModalRef.value?.hide();
   confirmedLeave.value = true;
 
-  settingsFormRef.value?.onSubmit();
+  notify("info", undefined, "Modifications des paramètres annulées");
+  router.push(leaveModalDestination.value);
 }
 
 function cancelLeave() {
-  // Not closing the modal before route navigation would leave a dangling
-  // "trap focus" event handler on the document body, which would break further
-  // tab navigation
   leaveModalRef.value?.hide();
-
-  confirmedLeave.value = true;
-  router.push(leaveModalDestination.value);
 }
 
 // Display leave modal when navigating to another route
@@ -69,6 +66,8 @@ function submitSettings(data: {
 }) {
   isSubmitting.value = true;
 
+  const procedureNameChanged =
+    data.procedureName !== auditStore.currentAudit?.procedureName;
   const auditTypeChanged =
     data.auditType !== auditStore.currentAudit?.auditType;
 
@@ -78,24 +77,35 @@ function submitSettings(data: {
       ...data
     })
     .then(() => {
-      notify(
-        "success",
-        undefined,
-        "Les paramètres de votre audit ont été mis à jour avec succès"
-      );
+      if (previousRoute.route?.name === "account-dashboard") {
+        notify(
+          "success",
+          undefined,
+          `Paramètres de l’audit « ${data.procedureName} » mis à jour`,
+          { action:
+              {
+                label: "Accéder à l’audit",
+                cb() {
+                  router.push({ name: "audit-generation", params: { uniqueId: auditUniqueId } });
+                }
+              } }
+        );
+      } else {
+        notify(
+          "success",
+          undefined,
+          procedureNameChanged ? `Paramètres de l’audit « ${data.procedureName} » mis à jour` : "Paramètres de l’audit mis à jour"
+        );
+      }
 
       if (auditTypeChanged) {
         resultsStore.$reset();
       }
 
-      if (leaveModalDestination.value) {
-        router.push(leaveModalDestination.value);
-      } else {
-        router.push({
-          name: "audit-generation",
-          params: { uniqueId: auditUniqueId }
-        });
-      }
+      router.push(previousRoute.route ?? {
+        name: "audit-overview",
+        params: { uniqueId: auditUniqueId }
+      });
     })
     .catch((err) => {
       console.error(err);
@@ -125,16 +135,15 @@ function submitSettings(data: {
 
   <LeaveModal
     ref="leaveModalRef"
-    title="Vous aller quitter sans enregistrer vos modifications"
+    title="Quitter sans enregistrer vos modifications ?"
     icon="fr-icon-warning-line"
-    confirm="Enregistrer et quitter"
-    cancel="Quitter sans enregistrer"
+    confirm="Quitter sans enregistrer"
+    cancel="Reprendre les modifications"
     @confirm="confirmLeave"
     @cancel="cancelLeave"
   >
     <p>
-      Les modifications de votre audit ne seront pas prises en compte.
-      Souhaitez-vous quitter sans enregistrer vos modifications ?
+      Les modifications de votre audit ne seront pas enregistrées.
     </p>
   </LeaveModal>
 </template>
