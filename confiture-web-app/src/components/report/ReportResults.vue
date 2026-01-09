@@ -193,7 +193,6 @@ const transverseNotCompliantCount = computed(() => {
                         "
                         target="_blank"
                         class="fr-text--bold"
-                        rel="noopener"
                       >
                         {{ row[0] }}
                         <span class="fr-sr-only">(nouvelle fenêtre)</span>

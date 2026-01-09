@@ -177,7 +177,6 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
               class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
               :href="file.url"
               :disabled="isOffline ? true : undefined"
-              rel="noopener"
               target="_blank"
             >
               Voir

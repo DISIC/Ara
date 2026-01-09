@@ -96,7 +96,6 @@ const improvementsCount = computed(() => {
           :href="page.url"
           class="fr-link page-url"
           target="_blank"
-          rel="noopener"
         >
           {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>

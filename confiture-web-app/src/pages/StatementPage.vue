@@ -147,7 +147,6 @@ const siteUrl = computed(() => {
           class="fr-link"
           target="_blank"
           :to="{ name: 'report', params: { uniqueId } }"
-          rel="noopener"
         >
           Accéder au rapport d’audit
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -205,7 +204,7 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
             <strong>{{ report.data.procedureName }}
-              <a target="_blank" :href="report.data.procedureUrl" rel="noopener">
+              <a target="_blank" :href="report.data.procedureUrl">
                 {{ report.data.procedureUrl }}
                 <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a></strong>
@@ -344,7 +343,6 @@ const siteUrl = computed(() => {
               <a
                 href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
                 target="_blank"
-                rel="noreferrer noopener"
               >
                 Écrire un message au Défenseur des droits
                 <span class="fr-sr-only">(nouvelle fenêtre)</span>
@@ -354,7 +352,6 @@ const siteUrl = computed(() => {
               <a
                 href="https://www.defenseurdesdroits.fr/carte-des-delegues"
                 target="_blank"
-                rel="noreferrer noopener"
               >
                 Contacter le délégué du Défenseur des droits dans votre région
                 <span class="fr-sr-only">(nouvelle fenêtre)</span>

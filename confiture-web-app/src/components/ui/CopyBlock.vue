@@ -43,7 +43,6 @@ function onAlertClose() {
           :to="to"
           target="_blank"
           class="fr-btn fr-btn--tertiary fr-mb-0"
-          rel="noopener"
         >
           Consulter
           <span class="fr-sr-only">{{ linkHiddenLabel }} (nouvelle fenêtre)</span>
