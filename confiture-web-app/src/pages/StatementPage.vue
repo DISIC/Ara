@@ -204,7 +204,7 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
             <strong>{{ report.data.procedureName }}
-              <a target="_blank" :href="report.data.procedureUrl">
+              <a target="_blank" :href="report.data.procedureUrl" rel="noreferrer noopener">
                 {{ report.data.procedureUrl }}
                 <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a></strong>
