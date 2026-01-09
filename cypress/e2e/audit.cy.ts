@@ -180,7 +180,7 @@ describe("Audit", () => {
 
       cy.url().should(
         "eq",
-        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        `http://localhost:3000/audits/${editId}/synthese`
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -217,7 +217,10 @@ describe("Audit", () => {
 
   it("User can edit pages", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
+
+      cy.contains("Actions").click();
+      cy.contains("Modifier les paramètres de l’audit").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -291,10 +294,10 @@ describe("Audit", () => {
       cy.contains("Supprimer l’audit").click();
 
       cy.contains("Supprimer l’audit « Audit de mon petit site »");
-      cy.get("dialog").contains("button", "Supprimer l’audit").click();
+      cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
 
       cy.url().should("eq", "http://localhost:3000/");
-      cy.contains("L’audit a correctement été supprimé.");
+      cy.contains("Audit « Audit de mon petit site » supprimé");
     });
   });
 
