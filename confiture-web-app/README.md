@@ -143,3 +143,15 @@ Il extiste des variantes des composants de champs fréquement utilisés (`<DsfrF
 ```
 
 Cas particuliers : certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.
+
+### Utilisation des liens
+
+Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre, deux pré-requis :
+
+- créer un `<span class="fr-sr-only">(nouvelle fenêtre)</span>` à l'intérieur du lien en complément du libellé pour signifier qu'on ouvre le lien dans une nouvelle fenêtre.
+
+- ajouter l'attribut `rel="noopener noreferrer"` que quand c'est un lien externe. Si ce sont des liens de confiance comme ceux du gouvernement, on n'aura pas besoin d'ajouter ce `rel="noopener"` car c'est une valeur par défaut quand on définit `target="blank"` ([source](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener)).
+
+Même sans `target`, Si vous affichez uniquement un visuel sur votre lien, mettre un libellé explicite avec `<span class="fr-sr-only">libellé explicite</span>` à l'intérieur votre lien. C'est aussi valable pour le `button`.
+
+Aussi, selon l'article [Title, ce faux ami de l'accessibilité](https://www.24joursdeweb.fr/2025/title-ce-faux-ami-de-l-accessibilite), l'attribut `title` n'est pas conseillé pour des raisons d'accessibilité. Ecrivez le libellé de manière explicite ou utilisez le `span class="fr-sr-only"`.
