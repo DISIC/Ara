@@ -58,6 +58,9 @@ export interface Audit {
   auditorEmail: string;
   auditorName: string | null;
 
+  // Audit duplicated
+  sourceAudit: Audit | null;
+
   // A11y declaration edition
   technologies: string[];
   procedureUrl: string | null;

@@ -95,7 +95,8 @@ export class AuditsController {
       pages: true,
       sourceAudit: {
         select: {
-          procedureName: true
+          procedureName: true,
+          publicationDate: true
         }
       },
       notesFiles: true

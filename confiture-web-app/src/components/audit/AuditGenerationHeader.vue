@@ -28,8 +28,6 @@ import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;
-  auditPublicationDate: string | null;
-  auditEditionDate: string | null;
   keyInfos: {
     title: string;
     description: string;
@@ -199,10 +197,19 @@ const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
 
+const auditPublicationDate = computed(() => {
+  if (auditStore.currentAudit && auditStore.currentAudit.publicationDate) {
+    return auditStore.currentAudit.publicationDate;
+  } else {
+    return auditStore.currentAudit?.sourceAudit?.publicationDate;
+  }
+});
+
 const showAuditProgressBar = computed(() => {
   return (
-    !auditStore.currentAudit?.publicationDate ||
-    (auditStore.currentAudit?.publicationDate &&
+    !auditPublicationDate.value ||
+    (
+      auditPublicationDate.value &&
       resultsStore.auditProgress !== 1)
   );
 });
@@ -286,7 +293,7 @@ onMounted(() => {
       </AuditProgressBar>
 
       <div
-        v-else-if="auditStore.currentAudit?.publicationDate"
+        v-else-if="auditPublicationDate"
         class="audit-status"
       >
         <span
@@ -299,11 +306,11 @@ onMounted(() => {
           <time
             :datetime=" auditStore.currentAudit?.editionDate
               ? auditStore.currentAudit?.editionDate
-              : auditStore.currentAudit?.publicationDate
+              : auditPublicationDate
             "
           >{{ auditStore.currentAudit?.editionDate
             ? formatDate(auditStore.currentAudit?.editionDate, true)
-            : formatDate(auditStore.currentAudit?.publicationDate, true)
+            : formatDate(auditPublicationDate, true)
           }}</time></strong>
       </div>
     </div>

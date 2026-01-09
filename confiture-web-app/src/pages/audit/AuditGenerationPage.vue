@@ -311,8 +311,6 @@ filterStore.$reset();
       ref="auditGenerationHeaderRef"
       :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
-      :audit-publication-date="auditStore.currentAudit.publicationDate"
-      :audit-edition-date="auditStore.currentAudit.editionDate"
       :edit-unique-id="uniqueId"
     />
 
