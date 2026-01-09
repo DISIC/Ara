@@ -345,7 +345,7 @@ onMounted(() => {
                   :disabled="isOffline ? true : undefined"
                 >
                   Consulter le rapport
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />

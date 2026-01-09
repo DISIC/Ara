@@ -107,7 +107,7 @@ onMounted(() => {
   <h2 class="fr-sr-only">{{ page.name }}</h2>
 
   <div v-if="page.id !== transversePageId" class="fr-mb-3w page-url">
-    <a class="fr-link fr-link--sm" :href="page.url" target="_blank">
+    <a class="fr-link fr-link--sm" :href="page.url" target="_blank" rel="noreferrer noopener">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
   </div>

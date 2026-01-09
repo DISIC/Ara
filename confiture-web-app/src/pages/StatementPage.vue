@@ -135,7 +135,7 @@ const siteUrl = computed(() => {
 
       <p class="fr-mb-1v">
         URL du site audité :
-        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
+        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
@@ -204,8 +204,9 @@ const siteUrl = computed(() => {
           <h4 class="fr-h2">État de conformité</h4>
           <p class="fr-mb-9v fr-mb-md-6w">
             <strong>{{ report.data.procedureName }}
-              <a target="_blank" :href="report.data.procedureUrl">
+              <a target="_blank" :href="report.data.procedureUrl" rel="noreferrer noopener">
                 {{ report.data.procedureUrl }}
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a></strong>
             est <strong>{{ getA11yLevel() }} conforme</strong> avec le
             référentiel général d’amélioration de l’accessibilité (RGAA).
@@ -344,7 +345,7 @@ const siteUrl = computed(() => {
                 target="_blank"
               >
                 Écrire un message au Défenseur des droits
-                <span class="fr-sr-only">nouvelle fenêtre</span>
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
@@ -353,7 +354,7 @@ const siteUrl = computed(() => {
                 target="_blank"
               >
                 Contacter le délégué du Défenseur des droits dans votre région
-                <span class="fr-sr-only">nouvelle fenêtre</span>
+                <span class="fr-sr-only">(nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
