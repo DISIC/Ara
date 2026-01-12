@@ -22,6 +22,7 @@ import {
   ApiGoneResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags
 } from "@nestjs/swagger";
 
@@ -151,10 +152,10 @@ export class AuditsController {
     }
   }
 
-  /** TODO: we don’t use this route anymore */
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
   @ApiCreatedResponse({ type: ExampleImageFile })
+  @ApiOperation({ deprecated: true })
   async uploadExampleImage(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
