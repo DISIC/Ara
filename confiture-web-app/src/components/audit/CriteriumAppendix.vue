@@ -3,7 +3,7 @@ import { marked } from "marked";
 
 defineProps<{
   title: string;
-  appendices: any;
+  appendices: { ul?: string }[];
 }>();
 </script>
 
@@ -32,7 +32,7 @@ defineProps<{
               ? 'fr-mb-0'
               : 'fr-mb-2w'
           "
-          v-html="marked.parseInline(particularCase)"
+          v-html="marked.parseInline(particularCase as string)"
         />
       </template>
     </div>
