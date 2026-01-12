@@ -73,7 +73,7 @@ async function deleteFile(
   try {
     await onDelete(flFile);
     await sleep(300);
-  } catch (error) {
+  } catch {
     console.error("File delete fail: " + flFile.filename);
   }
 }
