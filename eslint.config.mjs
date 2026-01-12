@@ -29,8 +29,7 @@ export default antfu({
       "prefer-arrow-callback": "off", // TODO Check this rule
       "prefer-exponentiation-operator": "off", // TODO Check this rule
       "prefer-promise-reject-errors": "off", // TODO Check this rule
-      "prefer-template": "off", // TODO Check this rule
-      "unused-imports/no-unused-vars": "off" // TODO Check this rule
+      "prefer-template": "off" // TODO Check this rule
     }
   },
 
