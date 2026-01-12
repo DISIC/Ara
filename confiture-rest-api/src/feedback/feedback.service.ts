@@ -104,7 +104,7 @@ export class FeedbackService {
       });
 
       return payload.jti;
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException("Invalid feedback token");
     }
   }

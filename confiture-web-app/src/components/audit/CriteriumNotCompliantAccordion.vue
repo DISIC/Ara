@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
   (e: "delete-file", payload: ExampleImageFile): void;
@@ -57,10 +57,6 @@ const userImpacts: Array<{
 ];
 
 const isOffline = useIsOffline();
-
-function handleDeleteFile(image: ExampleImageFile) {
-  emit("delete-file", image);
-}
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();

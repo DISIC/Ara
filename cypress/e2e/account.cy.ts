@@ -101,7 +101,7 @@ describe("Account", () => {
     });
 
     it("User can update their user profile infos", () => {
-      cy.createTestAccount({ login: true }).then(({ username, password }) => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
         cy.visit("http://localhost:3000/compte");
         cy.contains("button", username).click();
         cy.contains("a", "Mon compte").click();
@@ -187,7 +187,7 @@ describe("Account", () => {
     });
 
     it("User can reset their password (logged in)", () => {
-      cy.createTestAccount({ login: true }).then(({ username, password }) => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
         cy.visit("http://localhost:3000/compte/parametres");
         cy.contains("Changer de mot de passe").click();
         cy.contains("Mot de passe oublié ?").click();

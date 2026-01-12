@@ -3,7 +3,6 @@ import { debounce } from "lodash-es";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
 import { useAuditStore } from "../../store/audit";
 import { StoreName } from "../../types";
@@ -35,7 +34,6 @@ const auditStore = useAuditStore();
 const route = useRoute();
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
-const isOffline = useIsOffline();
 
 const notes = ref(auditStore.currentAudit?.notes || "");
 
