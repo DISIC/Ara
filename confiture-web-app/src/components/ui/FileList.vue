@@ -76,7 +76,7 @@ const displayAllFiles = computed(() => {
     return false;
   }
 
-  // OPtherwise display it
+  // Otherwise display it
   return true;
 });
 
@@ -84,8 +84,11 @@ async function handleFileDeleteInlineReveal(
   range: number
 ) {
   inlineConfirmPendingRange.value = range;
+
+  // Wait so that confirm button name is announced to assistive technologies
   await nextTick();
   await sleep(1);
+
   const confirmBtn = deleteConfirmBtnRefs.value?.[0];
   confirmBtn?.focus();
 }
