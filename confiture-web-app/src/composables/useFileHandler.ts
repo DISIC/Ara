@@ -11,32 +11,6 @@ export function useFileHandler() {
   const notify = useNotifications();
 
   /**
-   * Uploads a file linked to a criterium (currently only images)
-   *
-   * 1) Creates a thumbnail from the given image (file)
-   * 2) Uploads the image + its thumbnail in an S3 bucket
-   * 3) Creates an new StoredFile entity and store it in the database
-   *
-   * See back-end: AuditService#saveExampleImage
-   *
-   * TODO: we don’t use this function anymore
-   */
-  async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
-    try {
-      await resultsStore.uploadExampleImage(
-        auditUniqueId,
-        pageId,
-        topicNumber,
-        criteriumNumber,
-        file
-      );
-    } catch (error) {
-      resultsStore.lastRequestFailed = true;
-      throw await handleFileUploadError(error, file);
-    }
-  }
-
-  /**
    * Deletes an image linked to a criterium
    *
    * 1) Gets the associated thumbnail and image URLs from the given ExampleImageFile (image)
@@ -172,7 +146,6 @@ export function useFileHandler() {
   }
 
   return {
-    uploadCriteriumFile,
     uploadEditorImage,
     deleteCriteriumAuditFile,
     uploadGlobalFile,
