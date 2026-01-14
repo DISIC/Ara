@@ -4,6 +4,11 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 14/01/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+- Quand on duplique l'audit terminé, mettre la date de fin d'audit comme date du jour. Si l'audit à dupliquer n'est pas terminé, ne pas mettre de fin d'audit. ([#1360](https://github.com/DISIC/Ara/pull/1360))
+
 ### 09/01/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

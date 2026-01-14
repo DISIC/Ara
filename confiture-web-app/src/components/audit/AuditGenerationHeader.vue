@@ -28,8 +28,6 @@ import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;
-  auditPublicationDate: string | null;
-  auditEditionDate: string | null;
   keyInfos: {
     title: string;
     description: string;
