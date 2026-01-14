@@ -197,19 +197,10 @@ const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
 
-const auditPublicationDate = computed(() => {
-  if (auditStore.currentAudit && auditStore.currentAudit.publicationDate) {
-    return auditStore.currentAudit.publicationDate;
-  } else {
-    return auditStore.currentAudit?.sourceAudit?.publicationDate;
-  }
-});
-
 const showAuditProgressBar = computed(() => {
   return (
-    !auditPublicationDate.value ||
-    (
-      auditPublicationDate.value &&
+    !auditStore.currentAudit?.publicationDate ||
+    (auditStore.currentAudit?.publicationDate &&
       resultsStore.auditProgress !== 1)
   );
 });
@@ -293,7 +284,7 @@ onMounted(() => {
       </AuditProgressBar>
 
       <div
-        v-else-if="auditPublicationDate"
+        v-else-if="auditStore.currentAudit?.publicationDate"
         class="audit-status"
       >
         <span
@@ -306,11 +297,11 @@ onMounted(() => {
           <time
             :datetime=" auditStore.currentAudit?.editionDate
               ? auditStore.currentAudit?.editionDate
-              : auditPublicationDate
+              : auditStore.currentAudit?.publicationDate
             "
           >{{ auditStore.currentAudit?.editionDate
             ? formatDate(auditStore.currentAudit?.editionDate, true)
-            : formatDate(auditPublicationDate, true)
+            : formatDate(auditStore.currentAudit?.publicationDate, true)
           }}</time></strong>
       </div>
     </div>

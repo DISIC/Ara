@@ -1281,7 +1281,7 @@ export class AuditService {
 
         creationDate: new Date(),
         editionDate: undefined,
-        publicationDate: undefined,
+        publicationDate: originalAudit.publicationDate ? new Date() : undefined,
 
         environments: {
           createMany: {
