@@ -447,7 +447,7 @@ describe("Account", () => {
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
 
-    it.only("User can delete audit", () => {
+    it("User can delete audit", () => {
       cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
