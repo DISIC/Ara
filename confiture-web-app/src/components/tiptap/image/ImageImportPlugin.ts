@@ -4,7 +4,7 @@ import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, EditorView } from "@tiptap/pm/view";
 import { useFileHandler } from "../../../composables/useFileHandler";
 import { useNotifications } from "../../../composables/useNotifications";
-import { FILE_SIZE_LIMIT, FileMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
+import { FILE_SIZE_LIMIT, getFileMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
 import { createFileFromUrl } from "../../../utils";
 import { PlaceholderPlugin } from "./PlaceholderPlugin";
 
@@ -156,7 +156,7 @@ export class ImageImportPlugin extends Plugin {
       // Handle image imports asynchronously
       this.getFilesFromUriItems(uriItems, (files) => {
         if (files.length < 1) {
-          this.notify("error", undefined, FileMessage.FETCH_ERROR_IMAGE);
+          this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
         } else {
           this.handleImagesImport(view, pos, files, options);
         }
@@ -197,7 +197,7 @@ export class ImageImportPlugin extends Plugin {
     options?: { replaceSelection: boolean }
   ): void {
     if (files.length > MAX_UPLOAD_FILES_COUNT) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_MULTIPLE_FILES);
+      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_MULTIPLE_FILES"));
       return;
     }
     for (let i = 0, il = files.length, file; i < il; i++) {
@@ -236,13 +236,13 @@ export class ImageImportPlugin extends Plugin {
   ): void {
     // Check image format
     if (!file.type.startsWith("image")) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FORMAT_IMAGE);
+      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FORMAT_IMAGE"));
       return;
     }
 
     // Check max size
     if (file.size > FILE_SIZE_LIMIT) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_SIZE_IMAGE);
+      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE_IMAGE"));
       return;
     }
 
@@ -257,7 +257,7 @@ export class ImageImportPlugin extends Plugin {
     element.onerror = () => {
       // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
-      this.notify("error", undefined, FileMessage.UNKNOWN_ERROR);
+      this.notify("error", undefined, getFileMessage("UNKNOWN_ERROR"));
     };
     element.onload = () => {
       element.setAttribute("width", element.width.toString());
@@ -407,9 +407,9 @@ export class ImageImportPlugin extends Plugin {
     // Remove all <img> elements
     imgs.forEach(img => img.remove());
     if (imgs.length === 1) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FROM_HTML);
+      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML"));
     } else if (imgs.length > 1) {
-      this.notify("error", undefined, FileMessage.UPLOAD_ERROR_FROM_HTML_MULTIPLE);
+      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
     }
 
     return doc.body.innerHTML;

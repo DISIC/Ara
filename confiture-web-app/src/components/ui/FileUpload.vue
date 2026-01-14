@@ -88,9 +88,9 @@ async function handleFileChange() {
     const file = fileInputRef.value?.files[0];
     if (file.size > props.maxFileSize) {
       if (isImage(file)) {
-        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", file.name));
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", { fileName: file.name }));
       } else {
-        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE", file.name));
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE", { fileName: file.name }));
       }
       return;
     }
@@ -108,15 +108,15 @@ async function handleFileChange() {
       if (props.isInModal) {
         // Announce upload success to screen reader
         if (isImage(file)) {
-          successMessage.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name);
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", { fileName: file.name });
         } else {
-          successMessage.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS", { fileName: file.name });
         }
       } else {
         if (isImage(file)) {
-          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS_IMAGE", file.name));
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS_IMAGE", { fileName: file.name }));
         } else {
-          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS", file.name));
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS", { fileName: file.name }));
         }
       }
     } catch {

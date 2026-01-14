@@ -29,7 +29,7 @@ export enum Browsers {
 export const MAX_UPLOAD_FILES_COUNT = 1;
 export const FILE_SIZE_LIMIT = 2_000_000;
 
-export enum FileMessage {
+enum FileMessage {
   DELETE_ERROR_TIMEOUT = "Suppression interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
   DELETE_ERROR_UNKNOWN = "Suppression échouée, erreur inconnue. Vérifiez votre connexion et réessayez.",
   DELETE_SUCCESS = "Fichier [FILE] supprimé.",
@@ -48,8 +48,14 @@ export enum FileMessage {
   UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
 }
 
-export function getFileMessage(fileMessage: keyof typeof FileMessage, fileName: string): string {
-  return FileMessage[fileMessage].replace("[FILE]", fileName);
+export function getFileMessage(fileMessage: keyof typeof FileMessage, options?: {
+  fileName: string;
+}): string {
+  if (options?.fileName) {
+    return FileMessage[fileMessage].replace("[FILE]", options.fileName);
+  } else {
+    return FileMessage[fileMessage];
+  }
 }
 
 export enum StaticTabLabel {
