@@ -103,9 +103,9 @@ async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
     elementToFocus.focus();
     // Notify to screen reader
     if (isImage(flFile)) {
-      successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename);
+      successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", { fileName: flFile.filename });
     } else {
-      successMessage.value = getFileMessage("DELETE_SUCCESS", flFile.filename);
+      successMessage.value = getFileMessage("DELETE_SUCCESS", { fileName: flFile.filename });
     }
   }
 }
@@ -168,9 +168,9 @@ async function deleteFile(flFile: FileListFile) {
     if (!isInModal) {
       // Notify success with toast
       if (isImage(flFile)) {
-        notify("success", undefined, getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename));
+        notify("success", undefined, getFileMessage("DELETE_SUCCESS_IMAGE", { fileName: flFile.filename }));
       } else {
-        notify("success", undefined, getFileMessage("DELETE_SUCCESS", flFile.filename));
+        notify("success", undefined, getFileMessage("DELETE_SUCCESS", { fileName: flFile.filename }));
       }
     }
   } catch {
