@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 
 import { RouterLink } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
@@ -15,7 +15,6 @@ import {
   slugify
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
-import DeleteModal from "../../audit/DeleteModal.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
 import CopyIcon from "../../icons/CopyIcon.vue";
 import EditDocumentIcon from "../../icons/EditDocumentIcon.vue";
@@ -25,6 +24,8 @@ const props = defineProps<{
   audit: AccountAudit;
   zIndex?: number;
 }>();
+
+defineEmits(["delete"]);
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
@@ -87,33 +88,6 @@ function duplicateAudit(name: string) {
     });
 }
 
-const deleteModal = ref<InstanceType<typeof DeleteModal>>();
-const isDeletionLoading = ref(false);
-
-function deleteAudit() {
-  isDeletionLoading.value = true;
-
-  const auditName = props.audit.procedureName;
-
-  auditStore
-    .deleteAudit(props.audit.editUniqueId)
-    .then(() => {
-      notify("success", undefined, `Audit « ${auditName} » supprimé`);
-    })
-    .catch((error) => {
-      notify(
-        "error",
-        "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
-      );
-      captureWithPayloads(error);
-    })
-    .finally(() => {
-      isDeletionLoading.value = false;
-      deleteModal.value?.hide();
-    });
-}
-
 const csvExportUrl = computed(
   () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
 );
@@ -160,12 +134,22 @@ function copyStatementLink(uniqueId: string) {
     );
   });
 }
+
+const auditNameRef = useTemplateRef("auditNameRef");
+
+defineExpose({
+  focusAuditName: () => {
+    // @ts-expect-error For some reason, the RouterLink type does not list "$el" as one of its props.
+    auditNameRef.value?.$el.focus();
+  }
+});
 </script>
 
 <template>
   <div class="fr-p-2w grid">
     <!-- Name -->
     <RouterLink
+      ref="auditNameRef"
       :to="{
         name: 'audit-generation',
         params: { uniqueId: audit.editUniqueId }
@@ -391,7 +375,7 @@ function copyStatementLink(uniqueId: string) {
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
-              @click="deleteModal?.show()"
+              @click="$emit('delete')"
             >
               Supprimer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
@@ -408,17 +392,6 @@ function copyStatementLink(uniqueId: string) {
     :original-audit-name="audit.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
-    @closed="
-      optionsDropdownRef?.buttonRef?.focus();
-      optionsDropdownRef?.closeOptions();
-    "
-  />
-
-  <DeleteModal
-    :id="audit.editUniqueId"
-    ref="deleteModal"
-    :procedure-name="audit.procedureName"
-    @confirm="deleteAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
