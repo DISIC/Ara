@@ -2,12 +2,13 @@
 import { provide, ref, useTemplateRef, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { ExampleImageFile, CriterionResultUserImpact, getFocusWhenListEmptyKey } from "../../types";
+import { ExampleImageFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList, { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{

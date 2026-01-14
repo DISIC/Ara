@@ -5,12 +5,13 @@ import { useRoute } from "vue-router";
 
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useAuditStore } from "../../store/audit";
-import { getFocusWhenListEmptyKey, StoreName } from "../../types";
+import { StoreName } from "../../types";
 import { getUploadUrl } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import FileUpload from "../ui/FileUpload.vue";
+import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
