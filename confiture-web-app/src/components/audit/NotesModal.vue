@@ -120,7 +120,7 @@ async function handleFileDeleted(
 
               <FileUpload
                 ref="fileUploadRef"
-                class="fr-mb-4w"
+                class="file-upload"
                 :fl-files="files.map(f => ({
                   filename: f.originalFilename,
                   key: f.key,
@@ -178,6 +178,10 @@ async function handleFileDeleted(
       color: var(--text-mention-grey);
     }
   }
+}
+
+.file-upload {
+  margin-bottom: 80vh;
 }
 
 @media (width < 36rem) {
