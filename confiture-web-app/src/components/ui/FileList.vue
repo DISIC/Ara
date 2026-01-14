@@ -4,8 +4,8 @@ import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
-import { getFocusWhenListEmptyKey } from "../../types";
 import { formatBytes, isImage, sleep } from "../../utils";
+import { getFocusWhenListEmptyKey } from "../audit/get-focus-when-list-empty-key";
 
 export interface FileListFile {
   filename: string;
