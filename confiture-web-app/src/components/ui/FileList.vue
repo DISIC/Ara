@@ -49,7 +49,7 @@ const dialog = useDialog();
 const notify = useNotifications();
 
 const deteleBtnRefs = useTemplateRef("deteleBtnRefs");
-const deleteConfirmBtnRefs = useTemplateRef("deleteConfirmBtnRefs");
+const deleteCancelBtnRefs = useTemplateRef("deleteCancelBtnRefs");
 
 const successMessage = shallowRef<string>("");
 
@@ -83,23 +83,29 @@ const displayAllFiles = computed(() => {
 async function handleFileDeleteInlineReveal(
   range: number
 ) {
+  // Reactivate the previously disabled Delete button
+  const deleteBtn = deteleBtnRefs.value?.find(
+    (btn) => Number(btn.dataset.range) === inlineConfirmPendingRange.value
+  ) as HTMLButtonElement;
+  if (deleteBtn) {
+    deleteBtn.disabled = false;
+  }
+
   inlineConfirmPendingRange.value = range;
 
   // Wait so that confirm button name is announced to assistive technologies
   await nextTick();
   await sleep(1);
 
-  const confirmBtn = deleteConfirmBtnRefs.value?.[0];
-  confirmBtn?.focus();
+  const cancelBtn = deleteCancelBtnRefs.value?.[0];
+  cancelBtn?.focus();
 }
 
 async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
   resetInlineConfirm();
-  await sleep(200);
   const elementToFocus = getElementToFocusAfterDelete(range);
   await deleteFile(flFile);
   if (elementToFocus) {
-    await sleep(500);
     elementToFocus.focus();
     // Notify to screen reader
     if (isImage(flFile)) {
@@ -111,6 +117,14 @@ async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
 }
 
 function resetInlineConfirm() {
+  // Reactivate the previously disabled Delete button
+  const deleteBtn = deteleBtnRefs.value?.find(
+    (btn) => Number(btn.dataset.range) === inlineConfirmPendingRange.value
+  ) as HTMLButtonElement;
+  if (deleteBtn) {
+    deleteBtn.disabled = false;
+  }
+
   inlineConfirmPendingRange.value = undefined;
   successMessage.value = "";
 }
@@ -120,6 +134,7 @@ function inlineDeleteCancel(range: number) {
     (btn) => Number(btn.dataset.range) === range
   );
   if (deleteBtn) {
+    deleteBtn.disabled = false;
     deleteBtn.focus();
   }
   inlineConfirmPendingRange.value = undefined;
@@ -127,11 +142,12 @@ function inlineDeleteCancel(range: number) {
 
 async function handleFileDelete(
   flFile: FileListFile,
-  range: number
+  range: number,
+  deleteButton: HTMLButtonElement
 ) {
-  resetInlineConfirm();
   successMessage.value = "";
   if (isInModal) {
+    deleteButton.disabled = true;
     await handleFileDeleteInlineReveal(range);
   } else {
     await handleFileDeleteWithModal(flFile, range);
@@ -265,7 +281,6 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   <div>
     <p v-if="displayAllFiles" :aria-hidden="true" class="fr-mt-3w fr-mb-0">{{ allFilesLabel }}</p>
     <TransitionGroup
-      v-if="!isEmpty"
       tag="ul"
       name="files"
       class="files"
@@ -274,91 +289,94 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
       :aria-describedby="successMessage ? `file-delete-message-${id}` : undefined"
     >
       <li v-for="(file, i) in files" :key="file.url">
-        <img
-          v-if="file.thumbnailUrl"
-          class="fr-icon--lg file-thumbnail"
-          :src="file.thumbnailUrl"
-          alt=""
-          loading="lazy"
-          width="80"
-          height="80"
-        />
-        <span
-          v-else
-          class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
-          loading="lazy"
-        >
-        </span>
-        <div class="file-link">
-          <span>{{ getFileName(file) }}</span><br />
-          <span class="fr-hint-text">{{ getFileDetails(file) }}</span>
-        </div>
-        <ul
-          class="fr-btns-group fr-btns-group--inline"
-        >
-          <li v-if="isViewable(file)">
-            <a
-              class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
-              :href="file.url"
-              :disabled="isOffline ? true : undefined"
-              target="_blank"
-            >
-              Voir
-              <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
-            </a>
-          </li>
-          <li>
-            <a
-              class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
-              download
-              :href="file.url"
-              :disabled="isOffline ? true : undefined"
-              :title="`Télécharger ${getFullFileName(file)}`"
-            >
-              Télécharger
-              <span class="sr-only">{{ getFullFileName(file) }}</span>
-            </a>
-          </li>
-          <li v-if="!readonly">
-            <button
-              ref="deteleBtnRefs"
-              class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
-              :data-range="i"
-              :disabled="isOffline ? true : undefined"
-              :title="`Supprimer ${getFullFileName(file)}`"
-              type="button"
-              @click="handleFileDelete(file, i)"
-            >
-              Supprimer
-              <span class="sr-only">{{ getFullFileName(file) }}</span>
-            </button>
-          </li>
-        </ul>
-        <Transition name="inline-confirm">
-          <form v-if="inlineConfirmPendingRange === i" class="inline-confirm">
-            <fieldset class="fr-fieldset fr-mb-0">
-              <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-                <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
-                  <button
-                    ref="deleteConfirmBtnRefs"
-                    class="fr-btn"
-                    type="button"
-                    @click="inlineDeleteConfirm(file, i)"
-                    v-html="getDeleteModalConfirmLabel(file)"
-                  ></button>
-                  <button
-                    class="fr-btn fr-btn--secondary"
-                    type="button"
-                    @click="inlineDeleteCancel(i)"
-                  >
-                    Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
-                  </button>
+        <div class="file-item">
+          <img
+            v-if="file.thumbnailUrl"
+            class="fr-icon--lg file-thumbnail"
+            :src="file.thumbnailUrl"
+            alt=""
+            loading="lazy"
+            width="80"
+            height="80"
+          />
+          <span
+            v-else
+            class="fr-icon--lg file-thumbnail__default fr-icon-file-text-line"
+            loading="lazy"
+          >
+          </span>
+          <div class="file-link">
+            <span>{{ getFileName(file) }}</span><br />
+            <span class="fr-hint-text">{{ getFileDetails(file) }}</span>
+          </div>
+          <ul
+            class="fr-btns-group fr-btns-group--inline"
+          >
+            <li v-if="isViewable(file)">
+              <a
+                class="fr-btn fr-btn fr-btn--tertiary-no-outline fr-icon-eye-line fr-mb-0"
+                :href="file.url"
+                :disabled="isOffline ? true : undefined"
+                target="_blank"
+              >
+                Voir
+                <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-mb-0"
+                download
+                :href="file.url"
+                :disabled="isOffline ? true : undefined"
+                :title="`Télécharger ${getFullFileName(file)}`"
+              >
+                Télécharger
+                <span class="sr-only">{{ getFullFileName(file) }}</span>
+              </a>
+            </li>
+            <li v-if="!readonly">
+              <button
+                ref="deteleBtnRefs"
+                class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
+                :data-range="i"
+                :disabled="isOffline ? true : undefined"
+                :title="`Supprimer ${getFullFileName(file)}`"
+                type="button"
+                @click="handleFileDelete(
+                  file, i, $event.target as HTMLButtonElement)"
+              >
+                Supprimer
+                <span class="sr-only">{{ getFullFileName(file) }}</span>
+              </button>
+            </li>
+          </ul>
+          <Transition name="inline-confirm">
+            <form v-if="inlineConfirmPendingRange === i" class="inline-confirm">
+              <fieldset class="fr-fieldset fr-mb-0">
+                <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
+                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                  <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline fr-btns-group--inline-sm fr-btns-group--icon-left">
+                    <button
+                      ref="deleteCancelBtnRefs"
+                      class="fr-btn fr-btn--secondary"
+                      type="button"
+                      @click="inlineDeleteCancel(i)"
+                    >
+                      Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
+                    </button>
+                    <button
+                      class="fr-btn"
+                      type="button"
+                      @click="inlineDeleteConfirm(file, i)"
+                      v-html="getDeleteModalConfirmLabel(file)"
+                    ></button>
+                  </div>
                 </div>
-              </div>
-            </fieldset>
-          </form>
-        </Transition>
+              </fieldset>
+            </form>
+          </Transition>
+        </div>
       </li>
     </TransitionGroup>
     <p
@@ -375,37 +393,38 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
 .files-move,
 .files-enter-active,
 .files-leave-active {
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
-}
-
-.files-leave-active {
-  position: absolute;
+  transition: all 0.5s ease;
 }
 
 .files-enter-from,
 .files-leave-to {
   opacity: 0;
-  transform: translateY(-2.375rem);
 }
 
 .files {
   padding: 0;
-  list-style: bullet;
+  list-style: none;
   width: 39rem; /* 6 columns */
   min-width: 50%;
   max-width: 100%;
 }
 
-.files > li {
+.files-leave-active {
+  position: absolute;
+  width: inherit;
+}
+
+.files > li .file-item {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
   align-items: center;
+  gap: 0.5rem 1.5rem;
+}
+
+.files > li {
   padding: 0.75rem;
   border: 1px solid var(--artwork-motif-grey);
-  position: relative;
 }
 
 .files > li + li {
