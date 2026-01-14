@@ -114,14 +114,14 @@ export function useFileHandler() {
     }
 
     if (error instanceof TimeoutError) {
-      errorMessage = getFileMessage("UPLOAD_ERROR_TIMEOUT", fileName);
+      errorMessage = getFileMessage("UPLOAD_ERROR_TIMEOUT", { fileName: fileName });
     } else if (error instanceof HTTPError) {
       // 413 Entity Too Large
       if (error.response.status === 413) {
         if (isImage(file)) {
-          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", { fileName: fileName });
         } else {
-          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", { fileName: fileName });
         }
       }
       // 422 Unprocessable Entity
@@ -129,19 +129,19 @@ export function useFileHandler() {
         const body = await error.response.json();
 
         if (body.message.includes("expected type")) {
-          errorMessage = getFileMessage("UPLOAD_ERROR_FORMAT_IMAGE", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_FORMAT_IMAGE", { fileName: fileName });
         } else if (body.message.includes("expected size")) {
-          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", { fileName: fileName });
         } else {
-          errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+          errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
         }
       }
       // Other errors
       else {
-        errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+        errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
       }
     } else {
-      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", fileName);
+      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
     }
 
     captureWithPayloads(error);
@@ -160,9 +160,9 @@ export function useFileHandler() {
       console.error("An unexpected error occurred", error);
     }
     if (error instanceof TimeoutError) {
-      errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", fileName);
+      errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", { fileName: fileName });
     } else {
-      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", fileName);
+      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", { fileName: fileName });
       captureWithPayloads(error);
     }
 
