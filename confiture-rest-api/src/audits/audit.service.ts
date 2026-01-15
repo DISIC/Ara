@@ -1297,8 +1297,6 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
-        statementPublicationDate: undefined,
-        statementEditionDate: undefined,
 
         transverseElementsPage: {
           create: {
