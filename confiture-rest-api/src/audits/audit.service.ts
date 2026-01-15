@@ -13,7 +13,7 @@ import sharp from "sharp";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
-import slugify from "../slugify";
+import { slugify } from "../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";

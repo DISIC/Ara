@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
 import { PrismaService } from "./prisma.service";
-import slugify from "./slugify";
+import { slugify } from "./utils";
 
 @Controller("debug")
 export class DebugController {
