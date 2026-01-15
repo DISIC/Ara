@@ -267,7 +267,7 @@ useWrappedFetch(async () => {
       }px)`;
     });
   }
-}, false);
+}, true);
 
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;

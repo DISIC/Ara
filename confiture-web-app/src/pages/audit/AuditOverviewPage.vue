@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import AuditStep from "../../components/overview/AuditStep.vue";
@@ -27,20 +27,6 @@ useWrappedFetch(async () => {
 const audit = computed(() => {
   return auditStore.currentAudit;
 });
-
-// Banners management
-const showDuplicatedAlert = ref(!!history.state.showDuplicatedAlert);
-
-watch(route, () => {
-  if (history.state.showDuplicatedAlert) {
-    showDuplicatedAlert.value = true;
-  }
-});
-
-function closeDuplicatedAuditAlert() {
-  showDuplicatedAlert.value = false;
-  focusPageHeading();
-}
 
 function closeAuditEmailAlert() {
   auditStore.showAuditEmailAlert = false;
@@ -87,21 +73,6 @@ const isLoggedInAndOwnAudit = computed(() => {
         class="fr-btn--close fr-btn"
         title="Masquer le message"
         @click="closeAuditEmailAlert"
-      >
-        Masquer le message
-      </button>
-    </div>
-
-    <!-- Duplicated audit alert -->
-    <div v-if="showDuplicatedAlert" class="fr-alert fr-alert--success fr-mb-3w">
-      <p class="fr-alert__title">Audit dupliqué avec succès</p>
-      <p>
-        Un lien pour accéder à cette page vient de vous être envoyé par mail.
-      </p>
-      <button
-        class="fr-btn--close fr-btn"
-        title="Masquer le message"
-        @click="closeDuplicatedAuditAlert"
       >
         Masquer le message
       </button>
