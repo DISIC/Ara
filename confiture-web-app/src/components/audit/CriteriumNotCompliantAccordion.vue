@@ -124,6 +124,7 @@ const title = computed(() => {
       }))"
       title="Ajouter des images d’exemple"
       :on-delete="onDelete"
+      :focus-on-delete="commentEditorRef?.focusEditor"
     />
 
     <!-- USER IMPACT -->

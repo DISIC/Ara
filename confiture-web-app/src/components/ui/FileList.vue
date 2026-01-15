@@ -13,11 +13,12 @@ export interface FileListFile {
   key: string;
 }
 
-const { files, isInModal, onDelete } = defineProps<{
+const { files, isInModal, onDelete, focusOnDelete } = defineProps<{
   files: FileListFile[];
   readonly?: boolean;
   isInModal?: boolean;
   onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
+  focusOnDelete?: () => void;
 }>();
 
 const isOffline = useIsOffline();
@@ -56,7 +57,8 @@ async function handleFileDeleteWithModal(
     confirmAction: {
       cb: () => deleteFile(flFile),
       focus: () => getElementToFocusAfterDelete(range)
-    }
+    },
+    titleIcon: "fr-icon-warning-line"
   });
 
   // Note: when deletion is cancelled from the modal dialog, focus automatically
@@ -106,14 +108,14 @@ function isViewable(flFile: FileListFile) {
 
 function getDeleteModalTitle(flFile: FileListFile) {
   return isImage(flFile)
-    ? `Voulez-vous vraiment supprimer cette image ?`
-    : `Voulez-vous vraiment supprimer ce fichier ?`;
+    ? `Supprimer l’image « ${flFile.filename} » ?`
+    : `Supprimer le fichier ?`;
 };
 
 function getDeleteModalMessage(flFile: FileListFile) {
   return isImage(flFile)
-    ? `L’image <strong>${getFileName(flFile)}</strong> sera définitivement supprimée de votre audit.`
-    : `Le fichier <strong>${getFileName(flFile)}</strong> sera définitivement supprimé de votre audit.`;
+    ? `L’image sera définitivement supprimée.`
+    : `Le fichier <strong>${getFileName(flFile)}</strong> sera définitivement supprimé.`;
 };
 
 function getDeleteModalConfirmLabel(flFile: FileListFile) {
@@ -125,6 +127,14 @@ function getDeleteModalConfirmLabel(flFile: FileListFile) {
 function getElementToFocusAfterDelete(range: number): HTMLElement | null {
   let focusElement;
 
+  // if it exists, focus the item at the preceding range
+  focusElement = fileBtnsRefs.value.find(
+    (btn) => Number(btn.dataset.range) === range - 1
+  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  if (focusElement) {
+    return focusElement;
+  }
+
   // if it exists, focus the item at following range
   focusElement = fileBtnsRefs.value.find(
     (btn) => Number(btn.dataset.range) === range + 1
@@ -133,12 +143,10 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
     return focusElement;
   }
 
-  // if it exists, focus the item at the preceding range
-  focusElement = fileBtnsRefs.value.find(
-    (btn) => Number(btn.dataset.range) === range - 1
-  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
-  if (focusElement) {
-    return focusElement;
+  if (focusOnDelete) {
+    focusOnDelete();
+
+    return null;
   }
 
   // Should never happen

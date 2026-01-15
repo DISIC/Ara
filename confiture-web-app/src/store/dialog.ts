@@ -9,6 +9,8 @@ export interface DialogData {
     cb?: () => void;
     focus?: () => HTMLElement | null;
   };
+  isDanger?: boolean;
+  titleIcon?: string;
 }
 interface DialogStoreState {
   dialog: DialogData | null;
