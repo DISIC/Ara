@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
+import TopLink from "../../components/ui/TopLink.vue";
 </script>
 
 <template>
@@ -69,10 +70,17 @@ import PageMeta from "../../components/PageMeta";
       <li>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) à&nbsp;:<br><span>Défenseur des droits<br> Libre réponse 71120<br> 75342 Paris CEDEX 07</span></li>
     </ul>
   </section>
+  <div class="top-link">
+    <TopLink />
+  </div>
 </template>
 
 <style scoped>
 .content {
   max-width: 49.5rem;
+}
+
+.top-link {
+  text-align: end;
 }
 </style>

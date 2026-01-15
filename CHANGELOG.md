@@ -4,6 +4,11 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 15/01/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+- Ajouter un bouton "Haut de page" pour les pages dont le contenu est dense et harmoniser les liens "Retour à" ([#1359](https://github.com/DISIC/Ara/pull/1359))
+
 ### 14/01/2025
 
 #### <span aria-hidden="true">🐛</span> Corrections

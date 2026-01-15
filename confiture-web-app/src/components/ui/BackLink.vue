@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="fr-mb-4w">
+  <div class="back-link fr-mb-5w">
     <RouterLink
       class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
       :to="to"

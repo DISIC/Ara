@@ -295,7 +295,9 @@ watch(
     </AraTabs>
   </template>
 
-  <TopLink />
+  <div class="top-link">
+    <TopLink />
+  </div>
 </template>
 
 <style scoped>
@@ -314,5 +316,9 @@ watch(
 
 .dates {
   color: var(--text-mention-grey);
+}
+
+.top-link {
+  text-align: end;
 }
 </style>

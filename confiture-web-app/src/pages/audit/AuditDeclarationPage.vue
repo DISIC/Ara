@@ -216,8 +216,8 @@ const isDevMode = useDevMode();
   <BackLink
     :label="
       accountStore.account?.email
-        ? 'Retourner à mes livrables'
-        : 'Retourner au tableau de bord de l’audit'
+        ? 'Retour à mes livrables'
+        : 'Retour au tableau de bord de l’audit'
     "
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
