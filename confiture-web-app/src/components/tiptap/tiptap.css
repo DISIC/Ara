@@ -3,6 +3,11 @@
   padding: 0.5rem 0.75rem;
 }
 
+.tiptap * {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
 .tiptap--rendered {
   min-height: inherit;
   padding: 0;
@@ -43,10 +48,6 @@
   cursor: initial;
   padding: 0;
   border-radius: 0;
-}
-
-.tiptap a {
-  word-break: break-all;
 }
 
 .tiptap:focus,
