@@ -12,6 +12,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
+- Un très long mot dépasse de l’éditeur riche ([#1368](https://github.com/DISIC/Ara/pull/1368))
 - Ajouter un bouton "Haut de page" pour les pages dont le contenu est dense et harmoniser les liens "Retour à" ([#1359](https://github.com/DISIC/Ara/pull/1359))
 
 ### 14/01/2025
