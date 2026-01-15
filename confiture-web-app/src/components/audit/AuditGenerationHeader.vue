@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import NotesModal from "../../components/audit/NotesModal.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -24,12 +23,11 @@ import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
 import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
+import NotesModal from "./NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
 
 defineProps<{
   auditName: string;
-  auditPublicationDate: string | null;
-  auditEditionDate: string | null;
   keyInfos: {
     title: string;
     description: string;
@@ -345,7 +343,7 @@ onMounted(() => {
                   :disabled="isOffline ? true : undefined"
                 >
                   Consulter le rapport
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />

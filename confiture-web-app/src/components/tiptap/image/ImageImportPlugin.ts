@@ -418,7 +418,7 @@ export class ImageImportPlugin extends Plugin {
     const doc = parser.parseFromString(html, "text/html");
 
     const imgs = Array.from(doc.querySelectorAll("img"));
-    const urls = imgs.map((img) => img.src);
+    // const urls = imgs.map((img) => img.src);
 
     // TODO: import images that can be imported
 

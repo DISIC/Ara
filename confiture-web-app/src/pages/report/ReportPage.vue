@@ -255,7 +255,7 @@ watch(
 
       <p class="fr-mb-1v">
         URL du site audité :
-        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl">
+        <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
           {{ siteUrl }}
           <span class="fr-sr-only">(nouvelle fenêtre)</span>
         </a>
@@ -295,7 +295,9 @@ watch(
     </AraTabs>
   </template>
 
-  <TopLink />
+  <div class="top-link">
+    <TopLink />
+  </div>
 </template>
 
 <style scoped>
@@ -314,5 +316,9 @@ watch(
 
 .dates {
   color: var(--text-mention-grey);
+}
+
+.top-link {
+  text-align: end;
 }
 </style>

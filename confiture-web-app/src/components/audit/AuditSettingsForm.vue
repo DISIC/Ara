@@ -105,11 +105,11 @@ watch(
 const backLinkLabel = computed(() => {
   switch (previousRoute.route?.name) {
     case "account-dashboard":
-      return "Retourner à mes audits";
+      return "Retour à mes audits";
     case "audit-overview":
-      return "Retourner au tableau de bord de l’audit";
+      return "Retour au tableau de bord de l’audit";
     default:
-      return "Retourner à mon audit";
+      return "Retour à mon audit";
   }
 });
 </script>

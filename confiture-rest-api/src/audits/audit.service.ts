@@ -4,20 +4,23 @@ import { nanoid } from "nanoid";
 import sharp from "sharp";
 import {
   Audit,
+  AuditType,
   CriterionResult,
   CriterionResultStatus,
   CriterionResultUserImpact,
-  ExampleImageFile,
   Prisma
 } from "../generated/prisma/client";
 
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
+import { slugify } from "../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { CreateAuditDto } from "./dto/create-audit.dto";
+import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { PatchAuditDto } from "./dto/patch-audit.dto";
+import { ResultDto } from "./dto/result.dto";
 import { UpdateAuditDto } from "./dto/update-audit.dto";
 import { UpdateResultsDto } from "./dto/update-results.dto";
 import { FileStorageService } from "./file-storage.service";
@@ -50,6 +53,8 @@ const isNotTested = (c: CriterionResult) =>
 const isTransverse = (c: CriterionResult, transversePageId: number) =>
   c.pageId === transversePageId;
 
+const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
+
 @Injectable()
 export class AuditService {
   constructor(
@@ -60,6 +65,8 @@ export class AuditService {
   async createAudit(data: CreateAuditDto) {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
+
+    const pagesWithSlug = this.generatePageSlugs(data.pages);
 
     const newAudit = await this.prisma.audit.create({
       data: {
@@ -78,13 +85,14 @@ export class AuditService {
         transverseElementsPage: {
           create: {
             name: "Éléments transverses",
+            slug: TRANSVERSE_ELEMENTS_SLUG,
             url: "",
             order: -1
           }
         },
         pages: {
           createMany: {
-            data: data.pages.map((p, i) => {
+            data: pagesWithSlug.map((p, i) => {
               return { ...p, order: i };
             })
           }
@@ -135,6 +143,30 @@ export class AuditService {
     return newAudit;
   }
 
+  /**
+   * Generate unique slugs for an array of pages.
+   *
+   * `transverse-elements` is reserved, slugs that would conflict with this name will be appended
+   *
+   * @param pages An array of objects containing a name property
+   * @returns An shallow copy of the `pages` array with added `slug` property that is guaranteed to be unique within that array
+   */
+  private generatePageSlugs<T extends { name: string }>(pages: T[]): (T & { slug: string })[] {
+    const existingSlugs = new Set<string>([TRANSVERSE_ELEMENTS_SLUG]);
+    const pagesWithSlug = pages.map(page => {
+      let slug = slugify(page.name);
+      for (let i = 1; ;i++) {
+        if (!existingSlugs.has(slug)) {
+          break;
+        }
+        slug = `${slugify(page.name)}-${i}`;
+      }
+      existingSlugs.add(slug);
+      return { ...page, slug };
+    });
+    return pagesWithSlug;
+  }
+
   findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },
@@ -178,10 +210,7 @@ export class AuditService {
   async getResultsWithEditUniqueId(
     uniqueId: string
   ): Promise<
-    Omit<
-      CriterionResult & { exampleImages: ExampleImageFile[] },
-      "id" | "auditUniqueId"
-    >[]
+    ResultDto[]
   > {
     const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUnique({
@@ -225,32 +254,112 @@ export class AuditService {
     // We do not create every empty criterion result rows in the db when creating pages.
     // Instead we return the results in the database and fill missing criteria with placeholder data.
     return [audit.transverseElementsPage, ...pages].flatMap((page) =>
-      CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((criterion) => {
-        const existingResult = existingResults.find(
-          (result) =>
-            result.pageId === page.id &&
-            result.topic === criterion.topic &&
-            result.criterium == criterion.criterium
-        );
-
-        if (existingResult) return existingResult;
-
-        // return placeholder result
-        return {
-          status: CriterionResultStatus.NOT_TESTED,
-          compliantComment: null,
-          notCompliantComment: null,
-          userImpact: null,
-          notApplicableComment: null,
-          exampleImages: [],
-          quickWin: false,
-
-          topic: criterion.topic,
-          criterium: criterion.criterium,
-          pageId: page.id
-        };
-      })
+      this.getResultsWithPlaceholders(page.id, audit.auditType, existingResults)
     );
+  }
+
+  /**
+   * Returns an array of results so that even if some are missing in the
+   * database, we get all 106 criteria in the result array
+   * (or 25, or 50, depending on the audit type).
+   *
+   * For example, if we have only 3 results in db :
+   * ```
+   * [r1, r2, r4] -> [r1, r2, r3 (filler), r4, r5 (filler), ..., r106 (filler)]
+   * ```
+   */
+  private getResultsWithPlaceholders(pageId: number, auditType: AuditType, existingResults: ResultDto[]): ResultDto[] {
+    return CRITERIA_BY_AUDIT_TYPE[auditType].map((criterion) => {
+      const existingResult = existingResults.find(
+        (result) =>
+          result.pageId === pageId &&
+          result.topic === criterion.topic &&
+          result.criterium == criterion.criterium
+      );
+
+      // return real result
+      if (existingResult) return existingResult;
+
+      // return placeholder result
+      return {
+        status: CriterionResultStatus.NOT_TESTED,
+        compliantComment: null,
+        notCompliantComment: null,
+        userImpact: null,
+        notApplicableComment: null,
+        exampleImages: [],
+        quickWin: false,
+
+        topic: criterion.topic,
+        criterium: criterion.criterium,
+        pageId: pageId
+      };
+    });
+  }
+
+  async getPageWithResults(uniqueId: string, pageSlug: string): Promise<GetPageWithResultsDto | null> {
+    const [audit, page] = await Promise.all([
+      // fetch audit type
+      this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { auditType: true }
+      }),
+      // fetch page with associated results
+      this.prisma.auditedPage.findFirst({
+        where: {
+          OR: [
+            // search for normal pages
+            {
+              auditUniqueId: uniqueId
+            },
+            // search for transverse page
+            {
+              auditTransverse: {
+                editUniqueId: uniqueId
+              }
+            }
+          ],
+          slug: pageSlug
+        },
+        select: {
+          id: true,
+          name: true,
+          results: {
+            select: {
+              status: true,
+              compliantComment: true,
+              notCompliantComment: true,
+              userImpact: true,
+              notApplicableComment: true,
+              exampleImages: {
+                select: {
+                  id: true,
+                  originalFilename: true,
+                  mimetype: true,
+                  size: true,
+                  key: true,
+                  thumbnailKey: true
+                }
+              },
+              quickWin: true,
+
+              topic: true,
+              criterium: true,
+              pageId: true
+            }
+          }
+        }
+      })
+    ]);
+
+    if (!audit || !page) {
+      return null;
+    }
+
+    // add placeholder results
+    page.results = this.getResultsWithPlaceholders(page.id, audit.auditType, page.results);
+
+    return page;
   }
 
   async updateAudit(
@@ -259,8 +368,9 @@ export class AuditService {
   ): Promise<Audit | undefined> {
     try {
       const orderedPages = data.pages.map((p, i) => ({ ...p, order: i }));
-      const updatedPages = orderedPages.filter((p) => p.id);
-      const newPages = orderedPages.filter((p) => !p.id);
+      const pagesWithSlugs = this.generatePageSlugs(orderedPages);
+      const updatedPages = pagesWithSlugs.filter((p) => p.id);
+      const newPages = pagesWithSlugs.filter((p) => !p.id);
 
       const previousAudit = await this.prisma.audit.findUnique({
         where: {
@@ -342,14 +452,16 @@ export class AuditService {
               data: {
                 order: p.order,
                 name: p.name,
-                url: p.url
+                url: p.url,
+                slug: p.slug
               }
             })),
             createMany: {
               data: newPages.map((p) => ({
                 order: p.order,
                 name: p.name,
-                url: p.url
+                url: p.url,
+                slug: p.slug
               }))
             }
           },
@@ -1261,10 +1373,25 @@ export class AuditService {
     const newAudit = await this.prisma.audit.create({
       data: {
         ...omit(originalAudit, [
+          // ignore ids
           "id",
           "auditTraceId",
           "sourceAuditId",
-          "transverseElementsPageId"
+          "transverseElementsPageId",
+
+          // reset statement fields
+          "procedureUrl",
+          "initiator",
+          "auditorOrganisation",
+          "contactName",
+          "contactEmail",
+          "contactFormUrl",
+          "technologies",
+          "tools",
+          "environments",
+          "notCompliantContent",
+          "derogatedContent",
+          "notInScopeContent"
         ]),
 
         // link new audit with the original
@@ -1281,15 +1408,7 @@ export class AuditService {
 
         creationDate: new Date(),
         editionDate: undefined,
-        publicationDate: undefined,
-
-        environments: {
-          createMany: {
-            data: originalAudit.environments.map((e) =>
-              omit(e, ["id", "auditUniqueId"])
-            )
-          }
-        },
+        publicationDate: originalAudit.publicationDate ? new Date() : undefined,
 
         transverseElementsPage: {
           create: {
@@ -1315,6 +1434,7 @@ export class AuditService {
             name: p.name,
             url: p.url,
             order: p.order,
+            slug: p.slug,
             results: {
               create: p.results.map((r) => ({
                 ...omit(r, ["id", "pageId"]),

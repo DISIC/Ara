@@ -2,6 +2,31 @@
 
 <p class="intro">Cette page vous permet de suivre l’évolution du produit de manière transparente et continue. Tous les changements importants d'Ara sont listés ici, avec leur date, leur type (correction, nouvelle fonctionnalité, autres changements) et le lien vers la PR correspondante.</p>
 
+<h2 class="fr-sr-only" id="2026">2026</h2>
+
+### 15/01/2025
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- La déclaration d’accessibilité n’est plus dupliquée lors de la copie d’un audit ([#1346](https://github.com/DISIC/Ara/pull/1346))
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Ajouter un bouton "Haut de page" pour les pages dont le contenu est dense et harmoniser les liens "Retour à" ([#1359](https://github.com/DISIC/Ara/pull/1359))
+
+### 14/01/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Quand on duplique l'audit terminé, mettre la date de fin d'audit comme date du jour. Si l'audit à dupliquer n'est pas terminé, ne pas mettre de fin d'audit. ([#1360](https://github.com/DISIC/Ara/pull/1360))
+
+### 09/01/2025
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Ajout de l'attribut `rel="noreferrer noopener"` pour les liens externes ([#1358](https://github.com/DISIC/Ara/pull/1358))
+- Ajout du wording `nouvelle fenêtre` manquant sur des liens qui ouvrent une nouvelle fenêtre pour le lecteur d'écran ([#1358](https://github.com/DISIC/Ara/pull/1358))
+
 <h2 class="fr-sr-only" id="2025">2025</h2>
 
 ### 17/12/2025

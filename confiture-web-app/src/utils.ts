@@ -1,5 +1,4 @@
 import { captureException, Scope } from "@sentry/vue";
-import { JSONContent } from "@tiptap/vue-3";
 import jwtDecode from "jwt-decode";
 import { HTTPError, TimeoutError } from "ky";
 import { noop } from "lodash-es";
@@ -160,7 +159,7 @@ export async function captureWithPayloads(
               null,
               2
             );
-          } catch (e) {
+          } catch {
             // noop, we dont do anything if it's not JSON
           }
         })
@@ -173,7 +172,7 @@ export async function captureWithPayloads(
         payloads["Response Raw"] = data;
         try {
           payloads["Response JSON"] = JSON.stringify(JSON.parse(data), null, 2);
-        } catch (e) {
+        } catch {
           // noop, we dont do anything if it's not JSON
         }
       })
@@ -300,9 +299,8 @@ export function isTiptapDocumentEmpty(
 ): boolean {
   if (!jsonString?.trim()) return true;
 
-  let parsedJson: JSONContent;
   try {
-    parsedJson = JSON.parse(jsonString);
+    JSON.parse(jsonString);
   } catch {
     // not json, most likely markdown
     return false;
@@ -333,6 +331,10 @@ export function scrollToHash(hash: string) {
     initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**

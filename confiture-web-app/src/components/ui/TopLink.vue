@@ -4,7 +4,7 @@ withDefaults(defineProps<{
   topMargin?: string;
 }>(), {
   target: "header",
-  topMargin: "2.5rem"
+  topMargin: "3rem"
 });
 </script>
 

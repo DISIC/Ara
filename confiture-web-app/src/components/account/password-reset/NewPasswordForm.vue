@@ -4,7 +4,7 @@ import { LENGTH, REQUIRED } from "../../../composables/validation";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "submit", newPassword: string): void;
 }>();
 

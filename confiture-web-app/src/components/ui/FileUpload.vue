@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId } from "vue";
+import { computed, Ref, ref, useId, useTemplateRef } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
@@ -11,8 +11,10 @@ export interface Props {
   errorMessage?: FileErrorMessage | null;
   maxFileSize?: string;
   multiple?: boolean;
+  isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
+  onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   boldTitle: false,
   errorMessage: null,
   errorMessageTitle: null,
+  isInModal: false,
   maxFileSize: "2 Mo",
   multiple: false,
   readonly: false,
@@ -31,14 +34,15 @@ const emit = defineEmits<{
   (e: "delete-file", payload: FileListFile): void;
 }>();
 
-defineExpose({ onFileRequestFinished });
+const fileInputRef = useTemplateRef("fileInputRef");
+
+defineExpose({ onFileRequestFinished, reset, fileInputRef });
 
 const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
 const isDraggedOver = ref(false);
 
 const id = useId();
 const isOffline = useIsOffline();
-const fileInputRef = ref<HTMLInputElement>();
 
 const acceptedFormatsHtml = computed(() => {
   if (!props.acceptedFormats) {
@@ -70,6 +74,13 @@ const title = computed(() => {
 });
 
 function cancelUpload() {
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
+  resetMessage();
+}
+
+function reset() {
   if (fileInputRef.value) {
     fileInputRef.value.value = "";
   }
@@ -143,7 +154,8 @@ function onFileRequestFinished() {
     <FileList
       :readonly="readonly"
       :files="auditFiles"
-      @delete="$emit('delete-file', auditFiles.find(f => f.key === $event)!)"
+      :is-in-modal="isInModal"
+      :on-delete="onDelete"
     />
   </div>
 </template>

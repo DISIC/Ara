@@ -12,7 +12,7 @@ const accountStore = useAccountStore();
       :to="{ name: 'account-dashboard' }"
       class="fr-link fr-icon-arrow-left-fill fr-link--icon-left"
     >
-      Retourner à mes audits
+      Retour à mes audits
     </RouterLink>
   </div>
 

@@ -297,8 +297,8 @@ filterStore.$reset();
     <BackLink
       :label="
         isLoggedInAndOwnAudit
-          ? 'Retourner à mes audits'
-          : 'Retourner au tableau de bord de l’audit'
+          ? 'Retour à mes audits'
+          : 'Retour au tableau de bord de l’audit'
       "
       :to="
         isLoggedInAndOwnAudit
@@ -311,8 +311,6 @@ filterStore.$reset();
       ref="auditGenerationHeaderRef"
       :audit-name="auditStore.currentAudit.procedureName"
       :key-infos="headerInfos"
-      :audit-publication-date="auditStore.currentAudit.publicationDate"
-      :audit-edition-date="auditStore.currentAudit.editionDate"
       :edit-unique-id="uniqueId"
     />
 

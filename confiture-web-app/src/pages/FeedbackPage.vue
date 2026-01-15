@@ -123,7 +123,7 @@ const previousPageName =
         class="fr-link fr-icon-arrow-left-line fr-link--icon-left"
         :to="previousPageUrl"
       >
-        Retourner à la page {{ previousPageName }}
+        Retour à la page {{ previousPageName }}
       </RouterLink>
     </template>
   </div>

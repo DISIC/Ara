@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageMeta from "../../components/PageMeta";
+import TopLink from "../../components/ui/TopLink.vue";
 </script>
 
 <!--
@@ -23,7 +24,6 @@ import PageMeta from "../../components/PageMeta";
       Ce site est édité par l’équipe
       <a
         href="https://design.numerique.gouv.fr"
-        rel="noreferrer noopener"
         target="_blank"
       >Design des services numériques
         <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -47,7 +47,6 @@ import PageMeta from "../../components/PageMeta";
       Ce site est conçu et développé par l’équipe
       <a
         href="https://design.numerique.gouv.fr"
-        rel="noreferrer noopener"
         target="_blank"
       >Design des services numériques
         <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
@@ -95,10 +94,17 @@ import PageMeta from "../../components/PageMeta";
       explicite du site source ara.numerique.gouv.fr est recommandée.
     </p>
   </section>
+  <div class="top-link">
+    <TopLink />
+  </div>
 </template>
 
 <style scoped>
 .content {
   max-width: 49.5rem;
+}
+
+.top-link {
+  text-align: end;
 }
 </style>

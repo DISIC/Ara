@@ -2,6 +2,7 @@
 import { useHead } from "@unhead/vue";
 import { onMounted, ref } from "vue";
 
+import GenericModal from "./components/GenericModal.vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
@@ -59,6 +60,11 @@ function closeFeedbackNotice() {
 
   pageHeading?.focus();
 }
+
+// TODO: remove this after 12/01/2026 19:00
+const today = new Date();
+const date = new Date("January 12, 26 19:00:00");
+const showMaintenanceNotice = ref(today < date);
 </script>
 
 <template>
@@ -83,7 +89,21 @@ function closeFeedbackNotice() {
     </nav>
   </div>
 
+  <GenericModal />
+
   <SiteHeader />
+
+  <!-- TODO: remove this after 12/01/2026 19:00 -->
+  <div v-if="showMaintenanceNotice" class="fr-notice fr-notice--alert">
+    <div class="fr-container">
+      <div class="fr-notice__body">
+        <p>
+          <span class="fr-notice__title">L’accès à Ara sera perturbé le lundi 12 janvier entre 17h et 18h en raison d’une opération de maintenance.</span>
+          <span class="fr-notice__desc">Merci de votre compréhension.</span>
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
     <div class="fr-container">
@@ -118,5 +138,15 @@ function closeFeedbackNotice() {
 <style scoped>
 [id="main"]:target {
   scroll-margin: 2rem;
+}
+
+main {
+  &:has(.top-link) {
+    margin-bottom: 4.5rem !important;
+  }
+
+  &:has(.back-link) {
+    padding-top: 1.5em !important;
+  }
 }
 </style>

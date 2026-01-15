@@ -332,7 +332,7 @@ describe("Audit", () => {
   });
 
   it("User can fill a11y statement", () => {
-    cy.createTestAudit().then(({ editId, reportId }) => {
+    cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("Compléter").invoke("removeAttr", "target").click();
 

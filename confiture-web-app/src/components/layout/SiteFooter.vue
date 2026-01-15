@@ -73,7 +73,6 @@ const bottomLinks = [
             >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
               class="fr-link fr-text--sm"
               href="https://www.numerique.gouv.fr/dinum/"
-              rel="noreferrer noopener"
               target="_blank"
             >
               direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>,
@@ -99,9 +98,9 @@ const bottomLinks = [
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
-                href="https://service-public.fr"
+                href="https://www.service-public.gouv.fr"
                 target="_blank"
-              >service-public.fr
+              >service-public.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
@@ -173,6 +172,7 @@ const bottomLinks = [
             <a
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
+              rel="noreferrer noopener"
             >licence etalab-2.0
               <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
           </p>

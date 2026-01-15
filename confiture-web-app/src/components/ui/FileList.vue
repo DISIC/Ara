@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { formatBytes, pluralize } from "../../utils";
+import { formatBytes, pluralize, sleep } from "../../utils";
 
 export interface FileListFile {
   filename: string;
@@ -12,12 +13,17 @@ export interface FileListFile {
   key: string;
 }
 
-const { files } = defineProps<{
+const { files, isInModal, onDelete } = defineProps<{
   files: FileListFile[];
   readonly?: boolean;
+  isInModal?: boolean;
+  onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }>();
 
 const isOffline = useIsOffline();
+const dialog = useDialog();
+
+const fileBtnsRefs = ref<HTMLLIElement[]>([]);
 
 const selectedFiles = computed(() => {
   const len = files.length;
@@ -28,23 +34,116 @@ const selectedFiles = computed(() => {
   }
 });
 
-defineEmits<{
-  delete: [key: FileListFile["key"]];
-}>();
+async function handleFileDelete(
+  flFile: FileListFile,
+  range: number
+) {
+  if (isInModal) {
+    deleteFile(flFile);
+  } else {
+    handleFileDeleteWithModal(flFile, range);
+  }
+}
 
-function isViewable(file: FileListFile) {
+async function handleFileDeleteWithModal(
+  flFile: FileListFile,
+  range: number
+) {
+  await dialog.showConfirm({
+    title: getDeleteModalTitle(flFile),
+    message: getDeleteModalMessage(flFile),
+    confirmLabel: getDeleteModalConfirmLabel(flFile),
+    confirmAction: {
+      cb: () => deleteFile(flFile),
+      focus: () => getElementToFocusAfterDelete(range)
+    }
+  });
+
+  // Note: when deletion is cancelled from the modal dialog, focus automatically
+  // returns to the button that opened the modal dialog.
+}
+
+async function deleteFile(
+  flFile: FileListFile
+) {
+  if (!onDelete) {
+    return;
+  }
+
+  try {
+    await onDelete(flFile);
+    await sleep(300);
+  } catch {
+    console.error("File delete fail: " + flFile.filename);
+  }
+}
+
+function getFileName(flFile: FileListFile) {
+  return flFile.filename;
+}
+
+function getFileDetails(flFile: FileListFile) {
+  const name = flFile.filename;
+  const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
+  return extension + " – " + formatBytes(flFile.size);
+}
+
+function getFullFileName(flFile: FileListFile) {
+  return getFileName(flFile) + " (" + getFileDetails(flFile) + ")";
+}
+
+function isImage(flFile: FileListFile) {
   return (
-    file.mimetype.startsWith("image") || file.mimetype.includes("pdf")
+    flFile.mimetype.startsWith("image")
   );
 }
 
-function getFileDetails(filename: string, size: number) {
-  const extension = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
-  return extension + " – " + formatBytes(size);
+function isViewable(flFile: FileListFile) {
+  return (
+    isImage(flFile) || flFile.mimetype.includes("pdf")
+  );
 }
 
-function getFullFileName(file: FileListFile) {
-  return file.filename + " (" + getFileDetails(file.filename, file.size) + ")";
+function getDeleteModalTitle(flFile: FileListFile) {
+  return isImage(flFile)
+    ? `Voulez-vous vraiment supprimer cette image ?`
+    : `Voulez-vous vraiment supprimer ce fichier ?`;
+};
+
+function getDeleteModalMessage(flFile: FileListFile) {
+  return isImage(flFile)
+    ? `L’image <strong>${getFileName(flFile)}</strong> sera définitivement supprimée de votre audit.`
+    : `Le fichier <strong>${getFileName(flFile)}</strong> sera définitivement supprimé de votre audit.`;
+};
+
+function getDeleteModalConfirmLabel(flFile: FileListFile) {
+  return isImage(flFile) ?
+    `Supprimer l’image<span class="fr-sr-only"> ${getFileName(flFile)}</span>`
+    : `Supprimer le fichier<span class="fr-sr-only"> ${getFileName(flFile)}</span>`;
+};
+
+function getElementToFocusAfterDelete(range: number): HTMLElement | null {
+  let focusElement;
+
+  // if it exists, focus the item at following range
+  focusElement = fileBtnsRefs.value.find(
+    (btn) => Number(btn.dataset.range) === range + 1
+  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  if (focusElement) {
+    return focusElement;
+  }
+
+  // if it exists, focus the item at the preceding range
+  focusElement = fileBtnsRefs.value.find(
+    (btn) => Number(btn.dataset.range) === range - 1
+  )?.querySelector(".fr-icon-delete-bin-line") as HTMLElement;
+  if (focusElement) {
+    return focusElement;
+  }
+
+  // Should never happen
+  console.error("Nothing to focus on modal dialog conceal");
+  return null;
 }
 </script>
 
@@ -52,7 +151,7 @@ function getFullFileName(file: FileListFile) {
   <div>
     <p class="fr-mt-3w fr-mb-0">{{ selectedFiles }}</p>
     <ul class="files">
-      <li v-for="file in files" :key="file.url">
+      <li v-for="(file, i) in files" :key="file.url" ref="fileBtnsRefs" :data-range="i">
         <img
           v-if="file.thumbnailUrl"
           class="fr-icon--lg file-thumbnail"
@@ -70,7 +169,7 @@ function getFullFileName(file: FileListFile) {
         </span>
         <div class="file-link">
           <span>{{ file.filename }}</span><br />
-          <span class="fr-hint-text">{{ getFileDetails(file.filename, file.size) }}</span>
+          <span class="fr-hint-text">{{ getFileDetails(file) }}</span>
         </div>
         <ul class="fr-btns-group fr-btns-group--inline">
           <li v-if="isViewable(file)">
@@ -79,12 +178,9 @@ function getFullFileName(file: FileListFile) {
               :href="file.url"
               :disabled="isOffline ? true : undefined"
               target="_blank"
-              :title="
-                `Voir ${getFullFileName(file)} – nouvelle fenêtre`
-              "
             >
               Voir
-              <span class="sr-only">{{ getFullFileName(file) }}</span>
+              <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
             </a>
           </li>
           <li>
@@ -104,7 +200,8 @@ function getFullFileName(file: FileListFile) {
               class="fr-btn fr-btn--tertiary-no-outline fr-icon-delete-bin-line fr-mb-0"
               :disabled="isOffline"
               :title="`Supprimer ${getFullFileName(file)}`"
-              @click="$emit('delete', file.key)"
+              type="button"
+              @click="handleFileDelete(file, i)"
             >
               Supprimer
               <span class="sr-only">{{ getFullFileName(file) }}</span>

@@ -4,7 +4,7 @@ import { EMAIL, REQUIRED } from "../../../composables/validation";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "submit", email: string): void;
 }>();
 

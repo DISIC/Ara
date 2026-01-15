@@ -6,7 +6,7 @@ import { FileErrorMessage } from "../../enums";
 import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
-import FileList from "../ui/FileList.vue";
+import FileList, { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import LazyAccordion from "./LazyAccordion.vue";
@@ -18,13 +18,14 @@ export interface Props {
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
+  onDelete: (flFile: FileListFile) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
   (e: "delete-file", payload: ExampleImageFile): void;
@@ -56,10 +57,6 @@ const userImpacts: Array<{
 ];
 
 const isOffline = useIsOffline();
-
-function handleDeleteFile(image: ExampleImageFile) {
-  emit("delete-file", image);
-}
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
 const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
@@ -126,9 +123,7 @@ const title = computed(() => {
         url: getUploadUrl(f.key)
       }))"
       title="Ajouter des images d’exemple"
-      @delete="handleDeleteFile(
-        exampleImages.find(f => f.key === $event)!
-      )"
+      :on-delete="onDelete"
     />
 
     <!-- USER IMPACT -->
