@@ -6,10 +6,10 @@ import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.enti
 
 export class ResultDto {
   status: CriterionResultStatus;
-  compliantComment: null | string;
-  notCompliantComment: null | string;
-  userImpact: null | CriterionResultUserImpact;
-  notApplicableComment: null | string;
+  compliantComment: string | null;
+  notCompliantComment: string | null;
+  userImpact: CriterionResultUserImpact | null;
+  notApplicableComment: string | null;
   exampleImages: ExampleImageFile[];
   quickWin: boolean;
 
