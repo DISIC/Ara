@@ -1261,10 +1261,25 @@ export class AuditService {
     const newAudit = await this.prisma.audit.create({
       data: {
         ...omit(originalAudit, [
+          // ignore ids
           "id",
           "auditTraceId",
           "sourceAuditId",
-          "transverseElementsPageId"
+          "transverseElementsPageId",
+
+          // reset statement fields
+          "procedureUrl",
+          "initiator",
+          "auditorOrganisation",
+          "contactName",
+          "contactEmail",
+          "contactFormUrl",
+          "technologies",
+          "tools",
+          "environments",
+          "notCompliantContent",
+          "derogatedContent",
+          "notInScopeContent"
         ]),
 
         // link new audit with the original
@@ -1282,14 +1297,6 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
-
-        environments: {
-          createMany: {
-            data: originalAudit.environments.map((e) =>
-              omit(e, ["id", "auditUniqueId"])
-            )
-          }
-        },
 
         transverseElementsPage: {
           create: {
