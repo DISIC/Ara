@@ -3,15 +3,14 @@ import { Injectable, StreamableFile } from "@nestjs/common";
 import {
   Audit,
   AuditedPage,
-  CriterionResult,
-  CriterionResultStatus,
-  ExampleImageFile
+  CriterionResultStatus
 } from "@prisma/client";
 import { groupBy } from "lodash";
 import * as XLSX from "xlsx";
 
 import { AuditService } from "./audit.service";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
+import { ResultDto } from "./dto/result.dto";
 
 XLSX.stream.set_readable(Readable);
 
@@ -30,10 +29,7 @@ export class AuditExportService {
     audit: Audit & {
       pages: AuditedPage[];
     },
-    results: Omit<
-      CriterionResult & { exampleImages: ExampleImageFile[] },
-      "id" | "auditUniqueId"
-    >[]
+    results: ResultDto[]
   ) {
     const data = [];
 

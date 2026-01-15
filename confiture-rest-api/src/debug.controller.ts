@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
 import { PrismaService } from "./prisma.service";
+import { slugify } from "./utils";
 
 @Controller("debug")
 export class DebugController {
@@ -96,7 +97,8 @@ export class DebugController {
         transverseElementsPage: {
           create: {
             name: "Éléments transverses",
-            url: ""
+            url: "",
+            slug: "elements-transverses"
           }
         },
         pages: {
@@ -104,35 +106,43 @@ export class DebugController {
             data: [
               {
                 name: "Accueil",
-                url: "https://example.com"
+                url: "https://example.com",
+                slug: slugify("Accueil")
               },
               {
                 name: "Contact",
-                url: "https://example.com/contact"
+                url: "https://example.com/contact",
+                slug: slugify("Contact")
               },
               {
                 name: "À propos",
-                url: "https://example.com/a-propos"
+                url: "https://example.com/a-propos",
+                slug: slugify("À propos")
               },
               {
                 name: "Blog",
-                url: "https://example.com/blog"
+                url: "https://example.com/blog",
+                slug: slugify("Blog")
               },
               {
                 name: "Article",
-                url: "https://example.com/blog/article"
+                url: "https://example.com/blog/article",
+                slug: slugify("Article")
               },
               {
                 name: "Connexion",
-                url: "https://example.com/connexion"
+                url: "https://example.com/connexion",
+                slug: slugify("Connexion")
               },
               {
                 name: "Documentation",
-                url: "https://example.com/documentation"
+                url: "https://example.com/documentation",
+                slug: slugify("Documentation")
               },
               {
                 name: "FAQ",
-                url: "https://example.com/faq"
+                url: "https://example.com/faq",
+                slug: slugify("FAQ")
               }
             ]
           }
