@@ -110,7 +110,7 @@ export class AuditsController {
   }
 
   @Get("/:uniqueId/pages/:pageSlug")
-  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiNotFoundResponse({ description: "The audit or the page does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAuditPageWithResults(
     @Param("uniqueId") uniqueId: string,

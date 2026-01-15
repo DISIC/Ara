@@ -148,7 +148,7 @@ export class AuditService {
    *
    * `transverse-elements` is reserved, slugs that would conflict with this name will be appended
    *
-   * @param pages An array of obects containing a name property
+   * @param pages An array of objects containing a name property
    * @returns An shallow copy of the `pages` array with added `slug` property that is guaranteed to be unique within that array
    */
   private generatePageSlugs<T extends { name: string }>(pages: T[]): (T & { slug: string })[] {
@@ -259,7 +259,9 @@ export class AuditService {
   }
 
   /**
-   * Returns an array of results so that even if there are only
+   * Returns an array of results so that even if some are missing in the
+   * database, we get all 106 criteria in the result array
+   * (or 25, or 50, depending on the audit type).
    *
    * For example, if we have only 3 results in db :
    * ```
