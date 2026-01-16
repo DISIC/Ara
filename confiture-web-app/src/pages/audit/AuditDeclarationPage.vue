@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { isEqual } from "lodash-es";
 import { computed, ref, toRaw, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
 
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSelection/TestEnvironmentSelection.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -12,7 +13,9 @@ import DsfrFieldWithValidation from "../../components/validation/DsfrFieldWithVa
 import FieldValidation from "../../components/validation/FieldValidation.vue";
 import FormWithValidation from "../../components/validation/form-with-validation/FormWithValidation.vue";
 import { useDevMode } from "../../composables/useDevMode";
+import { useDialog } from "../../composables/useDialog";
 import { useNotifications } from "../../composables/useNotifications";
+import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import {
   ARRAY_LENGTH,
@@ -32,6 +35,7 @@ import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
 import { formatEmail, URL_REGEX } from "../../utils";
 
 const route = useRoute();
+const previousRoute = usePreviousRoute();
 const uniqueId = route.params.uniqueId as string;
 const auditStore = useAuditStore();
 const accountStore = useAccountStore();
@@ -119,8 +123,10 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-function handleSubmit() {
-  const data: UpdateAuditRequestData = {
+const isStatementUpdate = !!auditStore.currentAudit?.initiator;
+
+const dataToBeSubmitted = computed<UpdateAuditRequestData>(() => {
+  return {
     ...auditStore.currentAudit!,
 
     initiator: auditInitiator.value,
@@ -139,9 +145,17 @@ function handleSubmit() {
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value
   };
+});
+
+const isSubmitting = ref(false);
+
+function handleSubmit() {
+  isSubmitting.value = true;
+
   return auditStore
-    .updateAudit(uniqueId, data)
+    .updateAudit(uniqueId, dataToBeSubmitted.value)
     .then(() => {
+      notify("success", undefined, isStatementUpdate ? "Déclaration d’accessibilité mise à jour" : "Déclaration d’accessibilité enregistrée");
       router.push({
         name: "audit-overview",
         params: { uniqueId }
@@ -154,7 +168,8 @@ function handleSubmit() {
         "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
       );
       throw err;
-    });
+    })
+    .finally(() => isSubmitting.value = false);
 }
 
 const auditIsPublishable = computed(() => {
@@ -200,6 +215,40 @@ function DEBUG_fillFields() {
 }
 
 const isDevMode = useDevMode();
+
+const dialog = useDialog();
+const confirmedLeave = ref(false);
+const leaveModalDestination = ref<string>("");
+
+onBeforeRouteLeave((to) => {
+  const currentAudit = auditStore.currentAudit;
+  const editedAudit = dataToBeSubmitted.value;
+
+  if (!confirmedLeave.value &&
+    !isEqual(currentAudit, editedAudit) &&
+    !isSubmitting.value
+  ) {
+    leaveModalDestination.value = to.fullPath;
+
+    dialog.showConfirm({
+      title: "Quitter sans enregistrer vos modifications ?",
+      message: "Les modifications de votre déclaration d’accessibilité ne seront pas enregistrées.",
+      confirmLabel: "Quitter sans enregistrer",
+      cancelLabel: "Reprendre les modifications",
+      titleIcon: "fr-icon-warning-line",
+      confirmAction: {
+        cb: () => confirmLeave()
+      }
+    });
+    return false;
+  }
+});
+
+function confirmLeave() {
+  confirmedLeave.value = true;
+  notify("info", undefined, "Modifications de la déclaration annulées");
+  router.push(leaveModalDestination.value);
+}
 </script>
 
 <template>
@@ -509,7 +558,7 @@ const isDevMode = useDevMode();
         }}
       </button>
       <RouterLink
-        :to="{
+        :to="previousRoute.route ?? {
           name: 'audit-overview',
           params: { uniqueId }
         }"
