@@ -1480,7 +1480,6 @@ export class AuditService {
   async getAuditsByAuditorEmail(email: string): Promise<AuditListingItemDto[]> {
     // for some reason, the type of `creationDate` is not nullable even tho it is in the DB
     // it seems that using `select` or `include` makes the nullable properties of audits non-nullable
-    // update prisma ?
     const audits = await this.prisma.audit.findMany({
       where: {
         auditorEmail: email,
