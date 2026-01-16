@@ -19,7 +19,7 @@ let placeholderPlugin: PlaceholderPlugin | null = null;
  * @see https://github.com/ProseMirror/prosemirror-dropcursor
  */
 export const ImageUploadExtension =
-  Extension.create({
+  Extension.create<{ onImageUploadComplete: ((fileName: string) => void) | null }>({
     name: "imageUpload",
     addProseMirrorPlugins() {
       placeholderPlugin = new PlaceholderPlugin();
