@@ -91,11 +91,7 @@ function submitSettings(data: {
               } }
         );
       } else {
-        notify(
-          "success",
-          undefined,
-          procedureNameChanged ? `Paramètres de l’audit « ${data.procedureName} » mis à jour` : "Paramètres de l’audit mis à jour"
-        );
+        notify("success", undefined, "Paramètres de l’audit mis à jour");
       }
 
       if (auditTypeChanged) {

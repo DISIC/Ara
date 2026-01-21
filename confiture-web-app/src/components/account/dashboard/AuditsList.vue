@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, useTemplateRef } from "vue";
-
+import { nextTick, ref, useTemplateRef, useId } from "vue";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAuditStore } from "../../../store";
 import { AuditStatus } from "../../../types";
@@ -19,6 +18,8 @@ const props = defineProps<{
   status: AuditStatus.IN_PROGRESS | AuditStatus.COMPLETED;
   noAuditLabel: string;
 }>();
+
+const uniqueId = useId();
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
@@ -42,8 +43,10 @@ function prepareDelete(name: string, editAuditId: string, index: number) {
 function deleteAudit() {
   auditStore
     .deleteAudit(deletedAuditId.value)
-    .then(() => {
+    .then(async () => {
       notify("success", undefined, `Audit « ${deletedAuditName.value} » supprimé`);
+      await nextTick();
+      setFocusAfterDeletion();
     })
     .catch((error) => {
       notify(
@@ -132,7 +135,7 @@ async function setFocusAfterDeletion() {
   </div>
 
   <DeleteModal
-    :id="deletedAuditId"
+    :id="`delete-modal-${uniqueId}`"
     ref="deleteModal"
     :procedure-name="deletedAuditName"
     @confirm="deleteAudit"
