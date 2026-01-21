@@ -66,8 +66,6 @@ function submitSettings(data: {
 }) {
   isSubmitting.value = true;
 
-  const procedureNameChanged =
-    data.procedureName !== auditStore.currentAudit?.procedureName;
   const auditTypeChanged =
     data.auditType !== auditStore.currentAudit?.auditType;
 
