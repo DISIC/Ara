@@ -56,7 +56,7 @@ function duplicateAudit(name: string) {
         action: {
           label: "Accéder à l'audit",
           cb() {
-            router.push({ name: "audit-overview", params: { uniqueId: newAuditId } });
+            router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }
         }
       });
