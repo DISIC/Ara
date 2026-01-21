@@ -167,14 +167,14 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
 
     <h3>Je contribue à enrichir vos données, puis-je y accéder ?</h3>
-    <p>
+    <p class="fr-mb-0">
       Bien sûr ! Les statistiques d’usage sont disponibles en accès libre sur
       <a href="https://stats.data.gouv.fr/">stats.data.gouv.fr</a>.
     </p>
+    <div class="top-link">
+      <TopLink />
+    </div>
   </section>
-  <div class="top-link">
-    <TopLink />
-  </div>
 </template>
 
 <style scoped>
