@@ -1433,6 +1433,16 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
+        statementPublicationDate: undefined,
+        statementEditionDate: undefined,
+
+        environments: {
+          createMany: {
+            data: originalAudit.environments.map((e) =>
+              omit(e, ["id", "auditUniqueId"])
+            )
+          }
+        },
 
         transverseElementsPage: {
           create: {
