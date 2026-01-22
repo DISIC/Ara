@@ -37,6 +37,22 @@ async function getStatsOnDateInterval(prisma: PrismaClient, startDate: Date, end
     }
   })).filter(filterTestAudits).length;
 
+  const createdFullAudits2024 = (await prisma.audit.findMany({
+    where: {
+      auditType: AuditType.FULL,
+      auditorEmail: {
+        notIn: EMAIL_BLACKLIST
+      },
+      creationDate: {
+        gte: startDate,
+        lt: endDate
+      }
+    },
+    select: {
+      auditorEmail: true
+    }
+  })).filter(filterTestAudits).length;
+
   const finishedFullAudits2024 = (await prisma.audit.findMany({
     where: {
       auditType: AuditType.FULL,
@@ -92,6 +108,7 @@ async function getStatsOnDateInterval(prisma: PrismaClient, startDate: Date, end
 
   return {
     createdAudits2024,
+    createdFullAudits2024,
     finishedFullAudits2024,
     filledStatements2024,
     compliants2024,
@@ -106,7 +123,7 @@ async function main() {
   const stats2024 = await getStatsOnDateInterval(prisma, new Date("2024-01-01"), new Date("2025-01-01"));
   const stats2025 = await getStatsOnDateInterval(prisma, new Date("2025-01-01"), new Date("2026-01-01"));
 
-  console.log({ stats2024, stats2025 });
+  console.log(JSON.stringify({ stats2024, stats2025 }, null, 4));
 }
 
 main();
