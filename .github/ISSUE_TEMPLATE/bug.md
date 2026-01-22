@@ -12,7 +12,11 @@ assignees: ''
 
 ## Description du problème
 
-- [Description détaillée du problème, localisation et impact sur l'usager.]
+- [Description détaillée du problème, localisation et impact sur l'usager]
+
+## Navigateur
+
+- [Nom du navigateur, version]
 
 ## Scénario pour reproduire le bug
 
