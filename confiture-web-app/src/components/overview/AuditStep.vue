@@ -66,13 +66,7 @@ const auditIsInProgress = computed(() => {
     </div>
 
     <p class="fr-text--sm fr-mb-3w audit-step-date">
-      <template v-if="auditIsInProgress && audit.creationDate">
-        Commencé le
-        <time :datetime="audit.creationDate.toString()">{{
-          formatDate(audit.creationDate)
-        }}</time></template>
-
-      <template v-else-if="auditIsReady && audit.publicationDate">
+      <template v-if="auditIsReady && audit.publicationDate">
         Terminé le
         <time :datetime="audit.publicationDate.toString()">{{
           formatDate(audit.publicationDate)
