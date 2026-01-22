@@ -174,6 +174,12 @@ useResizeObserver(bodyEl, () => {
 watch(
   () => routerRoute.params.tabSlug,
   (newValue) => {
+    // for some reason, on *some* audits, this is called with
+    // `newValue = undefined` when leaving the page, which would cause a 404
+    // error if we dont abort
+    if (!newValue) {
+      return;
+    }
     // tabSlug changes on route change
     selectedTabSlug.value = newValue as string;
 
