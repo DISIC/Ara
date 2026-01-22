@@ -1,7 +1,3 @@
-import {
-  CriterionResultStatus,
-  CriterionResultUserImpact
-} from "@prisma/client";
 import { Type } from "class-transformer";
 import {
   IsArray,
@@ -19,6 +15,10 @@ import {
   ValidationArguments,
   ValidationOptions
 } from "class-validator";
+import {
+  CriterionResultStatus,
+  CriterionResultUserImpact
+} from "../../generated/prisma/client";
 
 import { CRITERIA } from "../criteria";
 

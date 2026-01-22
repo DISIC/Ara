@@ -3,7 +3,7 @@ import {
   AuditType,
   CriterionResultStatus,
   CriterionResultUserImpact
-} from "@prisma/client";
+} from "../../generated/prisma/client";
 
 export class AuditReportDto {
   /** Unique ID used to construct the report URL. */

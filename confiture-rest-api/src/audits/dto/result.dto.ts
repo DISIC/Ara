@@ -1,8 +1,8 @@
+import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
-} from "@prisma/client";
-import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
+} from "../../generated/prisma/client";
 
 export class ResultDto {
   status: CriterionResultStatus;

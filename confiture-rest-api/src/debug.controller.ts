@@ -1,11 +1,11 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import {
-  CriterionResultStatus,
-  CriterionResultUserImpact
-} from "@prisma/client";
 import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
+import {
+  CriterionResultStatus,
+  CriterionResultUserImpact
+} from "./generated/prisma/client";
 import { PrismaService } from "./prisma.service";
 import { slugify } from "./utils";
 
