@@ -68,7 +68,8 @@ La documentation de l’API est disponible sur Swagger (requiert d’avoir lanc�
 
 Chaque route doit définir clairement le type de donnée qu’elle reçoit et renvoie. Cela permet de générer des types qui peuvent être consommé par l’application front.
 
-Pour cela, définir des *DTO* (data transfer object) pour la requête et pour la réponse (voir le dossier `src/audits/dto` pour des exemples) et les associer à la route via :
+Pour cela, définir des _DTO_ (data transfer object) pour la requête et pour la réponse (voir le dossier `src/audits/dto` pour des exemples) et les associer à la route via :
+
 - le décorateur `@Api***Response` (`@ApiOkResponse`, `@ApiCreadedResponse`, …)
 - le type du body marqué par `@Body`
 - le type de retour de la méthode
@@ -76,16 +77,18 @@ Pour cela, définir des *DTO* (data transfer object) pour la requête et pour la
 Ci-dessous, un exemple de déclaration de méthode pour une route `PUT /some/route` qui accepte un corps de requête de type `DoSomethingDto` et retourne une réponse de type `FoobarDto`
 
 ```typescript
-@Put("/some/route")
-// define the response type in the generated types
-@ApiOkResponse({ type: FoobarDto })
-async doSomething(
-  // explicitely define the type of the request body, this also enables automatic 
-  // validation and add the schema to the generated types
-  @Body() body: DoSomethingDto
-  // explicitely type the return type of the function to make sure we send
-  // exactly what we want to the client
-): Promise<FoobarDto> {
-  // ...
+class MyController {
+  @Put("/some/route")
+  // define the response type in the generated types
+  @ApiOkResponse({ type: FoobarDto })
+  async doSomething(
+    // explicitely define the type of the request body, this also enables automatic
+    // validation and add the schema to the generated types
+    @Body() body: DoSomethingDto
+    // explicitely type the return type of the function to make sure we send
+    // exactly what we want to the client
+  ): Promise<FoobarDto> {
+    // ...
+  }
 }
 ```
