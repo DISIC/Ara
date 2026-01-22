@@ -22,6 +22,7 @@ import {
   ApiGoneResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags
 } from "@nestjs/swagger";
 
@@ -99,7 +100,11 @@ export class AuditsController {
           procedureName: true
         }
       },
-      notesFiles: true
+      notesFiles: {
+        orderBy: {
+          id: "desc"
+        }
+      }
     });
 
     if (!audit) {
@@ -165,6 +170,7 @@ export class AuditsController {
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
   @ApiCreatedResponse({ type: ExampleImageFile })
+  @ApiOperation({ deprecated: true })
   async uploadExampleImage(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(

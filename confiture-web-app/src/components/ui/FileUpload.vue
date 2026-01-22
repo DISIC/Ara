@@ -1,48 +1,51 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId, useTemplateRef } from "vue";
-
+import { computed, nextTick, ref, useId, useTemplateRef } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
+
+import { useNotifications } from "../../composables/useNotifications";
+import { getFileMessage } from "../../enums";
+import { isImage, sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
-export interface Props {
+interface Props {
   acceptedFormats?: Array<string>;
-  auditFiles: FileListFile[];
-  errorMessage?: FileErrorMessage | null;
-  maxFileSize?: string;
+  flFiles: FileListFile[];
+  maxFileSize?: number;
   multiple?: boolean;
   isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
-  onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   acceptedFormats: undefined,
   boldTitle: false,
-  errorMessage: null,
-  errorMessageTitle: null,
-  isInModal: false,
-  maxFileSize: "2 Mo",
+  maxFileSize: 2000000,
   multiple: false,
+  isInModal: false,
   readonly: false,
   title: null
 });
 
 const emit = defineEmits<{
-  (e: "upload-file", payload: File): void;
-  (e: "delete-file", payload: FileListFile): void;
+  (e: "file-imported", payload: { resolve: (value: void) => void; file: File }): Promise<void>;
+  (e: "file-deleted", payload: { resolve: (value: void) => void; flFile: FileListFile }): Promise<void>;
 }>();
 
 const fileInputRef = useTemplateRef("fileInputRef");
+const fileListRef = useTemplateRef("fileListRef");
 
-defineExpose({ onFileRequestFinished, reset, fileInputRef });
+defineExpose({ reset, fileInputRef });
 
-const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
+const successMessage = ref<string>("");
 const isDraggedOver = ref(false);
 
 const id = useId();
 const isOffline = useIsOffline();
+
+const notify = useNotifications();
+
+const maxFileSizeHumanReadable = computed(() => (props.maxFileSize / 1000000) + " Mo");
 
 const acceptedFormatsHtml = computed(() => {
   if (!props.acceptedFormats) {
@@ -60,9 +63,6 @@ const acceptedFormatsAttr = computed(() => {
   }
 });
 
-const computedErrorMessage = computed(() =>
-  props.errorMessage ?? localErrorMessage.value ?? null);
-
 const title = computed(() => {
   if (props.title) {
     return props.title;
@@ -73,43 +73,79 @@ const title = computed(() => {
   }
 });
 
-function cancelUpload() {
-  if (fileInputRef.value) {
-    fileInputRef.value.value = "";
-  }
-  resetMessage();
-}
-
 function reset() {
   if (fileInputRef.value) {
     fileInputRef.value.value = "";
   }
-  resetMessage();
+  successMessage.value = "";
+  fileListRef.value?.resetInlineConfirm();
 }
 
-function resetMessage() {
-  localErrorMessage.value = null;
-}
-
-function handleFileChange() {
+async function handleFileChange() {
+  successMessage.value = "";
+  // Errors that can be detected locally without requesting the server
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
-    if (file.size > 2000000) {
-      localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
+    if (file.size > props.maxFileSize) {
+      if (isImage(file)) {
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE_IMAGE", { fileName: file.name }));
+      } else {
+        notify("error", undefined, getFileMessage("UPLOAD_ERROR_SIZE", { fileName: file.name }));
+      }
       return;
     }
-    emit("upload-file", file);
+    try {
+      // Tell listeners that a file has been imported locally
+      // Typical use case: upload the file to a server using useFileHandler
+      await new Promise((resolve: (value: void) => void) => {
+        emit("file-imported", { resolve, file });
+      });
+      // At this point the file has been properly handled (uploaded)
+
+      await nextTick();
+      await sleep(500); // hack for Safari to make live regions work as expected
+
+      if (props.isInModal) {
+        // Announce upload success to screen reader
+        if (isImage(file)) {
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS_IMAGE", { fileName: file.name });
+        } else {
+          successMessage.value = getFileMessage("UPLOAD_SUCCESS", { fileName: file.name });
+        }
+      } else {
+        if (isImage(file)) {
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS_IMAGE", { fileName: file.name }));
+        } else {
+          notify("success", undefined, getFileMessage("UPLOAD_SUCCESS", { fileName: file.name }));
+        }
+      }
+    } catch {
+      console.error("Upload failed: ", file.name);
+    }
+  }
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
   }
 }
 
-function onFileRequestFinished() {
-  localErrorMessage.value = null;
+async function flOnDelete(
+  resolve: (value: undefined) => void,
+  flFile: FileListFile
+) {
+  // No need to tell which file has been correctly uploaded
+  // after a file has just been deleted…
+  successMessage.value = "";
+
+  await new Promise((resolve: (value: void) => void) => {
+    emit("file-deleted", { resolve, flFile });
+  });
+  resolve(undefined);
 }
 </script>
 
 <template>
-  <div>
-    <div class="upload-wrapper">
+  <div class="upload-wrapper">
+    <div :id="`upload-input-wrapper-${id}`" class="upload-input-wrapper">
       <!-- TODO: handle multiple files upload -->
       <!-- :multiple="multiple ?? undefined" -->
       <div
@@ -119,7 +155,7 @@ function onFileRequestFinished() {
       >
         <label class="fr-label" :for="`file-upload-${id}`">
           {{ title }}
-          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSize }}.
+          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSizeHumanReadable }}.
             <span v-html="acceptedFormatsHtml"></span>.
           </span>
         </label>
@@ -130,32 +166,31 @@ function onFileRequestFinished() {
           type="file"
           name="file-upload"
           :accept="acceptedFormatsAttr"
-          :aria-describedby="`file-upload-messages-${id}`"
+          :aria-description="successMessage ?? undefined"
           :class="{ 'file-upload--dragged-over': isDraggedOver }"
-          :disabled="isOffline"
-          @input="resetMessage"
-          @cancel="cancelUpload"
+          :disabled="isOffline ? true : undefined"
+          @click="() => fileListRef?.resetInlineConfirm()"
           @change="handleFileChange"
           @dragover="isDraggedOver = true"
           @dragleave="isDraggedOver = false"
           @drop="isDraggedOver = false"
         >
-        <div :id="`file-upload-messages-${id}`" class="fr-messages-group" aria-live="assertive" aria-atomic="true">
-          <p
-            v-if="computedErrorMessage"
-            class="fr-message"
-            :class="{ 'fr-message--error': computedErrorMessage }"
-          >{{ computedErrorMessage }}</p>
-        </div>
+        <p
+          :id="`file-upload-message-alert-${id}`"
+          class="fr-sr-only"
+          aria-live="polite"
+          role="alert"
+        >{{ successMessage }}</p>
       </div>
     </div>
 
     <!-- Uploaded files -->
     <FileList
-      :readonly="readonly"
-      :files="auditFiles"
+      ref="fileListRef"
+      :files="flFiles"
       :is-in-modal="isInModal"
-      :on-delete="onDelete"
+      :readonly="readonly"
+      @file-deleted="flOnDelete($event.resolve, $event.flFile)"
     />
   </div>
 </template>
@@ -168,5 +203,14 @@ function onFileRequestFinished() {
 
 .file-upload--dragged-over {
   outline: var(--dsfr-outline) dotted 3px;
+}
+
+.fr-message {
+  white-space: pre;
+}
+
+.upload-input-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
 }
 </style>
