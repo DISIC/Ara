@@ -1,8 +1,8 @@
-import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "../../generated/prisma/client";
+import { ExampleImageFileDto } from "./entities/example-image-file.dto";
 
 export class ResultDto {
   status: CriterionResultStatus;
@@ -10,7 +10,7 @@ export class ResultDto {
   notCompliantComment: string | null;
   userImpact: CriterionResultUserImpact | null;
   notApplicableComment: string | null;
-  exampleImages: ExampleImageFile[];
+  exampleImages: ExampleImageFileDto[];
   quickWin: boolean;
 
   topic: number;
