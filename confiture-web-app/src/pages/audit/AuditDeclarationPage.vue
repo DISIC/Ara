@@ -123,8 +123,6 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const isStatementUpdate = !!auditStore.currentAudit?.initiator;
-
 const dataToBeSubmitted = computed<UpdateAuditRequestData>(() => {
   return {
     ...auditStore.currentAudit!,
@@ -151,6 +149,8 @@ const isSubmitting = ref(false);
 
 function handleSubmit() {
   isSubmitting.value = true;
+
+  const isStatementUpdate = !!auditStore.currentAudit?.initiator;
 
   return auditStore
     .updateAudit(uniqueId, dataToBeSubmitted.value)

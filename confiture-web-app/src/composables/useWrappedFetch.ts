@@ -1,7 +1,7 @@
 import { TimeoutError } from "ky";
 import { isEqual } from "lodash-es";
 import { onMounted, watch } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, RouteParamsGeneric, useRoute, useRouter } from "vue-router";
 
 import { captureWithPayloads } from "../utils";
 
@@ -13,14 +13,17 @@ import { captureWithPayloads } from "../utils";
  * if the request fails.
  *
  * @param {Promise<unknown>} func
- * @param {boolean} watchParams If true, the given function will be called anytime the
+ * @param {boolean | function(): boolean} watchParams If true, the given function will be called anytime the
  * route is the same but params change
  *
  * @example useWrappedFetch(() => auditStore.fetchAuditIfNeeded(uniqueId));
  */
 export function useWrappedFetch(
   func: () => Promise<unknown>,
-  watchParams = false
+  watchParams:
+    | boolean
+    | ((newParams: RouteParamsGeneric, oldParams: RouteParamsGeneric) => boolean)
+      = false
 ) {
   const router = useRouter();
   const route = useRoute();
@@ -50,18 +53,22 @@ export function useWrappedFetch(
     func().catch(handleError);
   });
 
-  if (watchParams) {
-    const watchStopHandle = watch(
-      () => route.params,
-      (newParams, oldParams) => {
+  const watchStopHandle = watch(
+    () => route.params,
+    (newParams, oldParams) => {
+      // `watchParams` can be a boolean or a function returning a boolean
+      const shouldRetrigger = typeof watchParams === "function"
+        ? watchParams(newParams, oldParams)
+        : watchParams;
+      if (shouldRetrigger) {
         // Make sure the params actually changed because if only the hash of the route
         // changed, the `params` objects will be equal but different references, which will trigger the watcher
         if (!isEqual(newParams, oldParams)) {
           func().catch(handleError);
         }
       }
-    );
+    }
+  );
 
-    onBeforeRouteLeave(watchStopHandle);
-  }
+  onBeforeRouteLeave(watchStopHandle);
 }

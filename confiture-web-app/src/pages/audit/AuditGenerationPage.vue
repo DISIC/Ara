@@ -267,7 +267,10 @@ useWrappedFetch(async () => {
       }px)`;
     });
   }
-}, true);
+}, (newParams, oldParams) => {
+  // Only fetch data if uniqueId changes
+  return newParams.uniqueId !== oldParams.uniqueId;
+});
 
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
