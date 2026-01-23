@@ -32,17 +32,17 @@ import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
-import { CreateAuditDto } from "./dto/create-audit.dto";
-import { DuplicateAuditDto } from "./dto/duplicate-audit.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
 import { ExampleImageFileDto } from "./dto/entities/example-image-file.dto";
 import { NotesFileDto } from "./dto/entities/notes-file.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
-import { PatchAuditDto } from "./dto/patch-audit.dto";
-import { UpdateAuditDto } from "./dto/update-audit.dto";
-import { UpdateResultsDto } from "./dto/update-results.dto";
-import { UploadImageDto } from "./dto/upload-image.dto";
+import { CreateAuditDto } from "./dto/requests/create-audit.dto";
+import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
+import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
+import { UpdateResultsDto } from "./dto/requests/update-results.dto";
+import { UploadImageDto } from "./dto/requests/upload-image.dto";
 
 @Controller("audits")
 @ApiTags("Audits")

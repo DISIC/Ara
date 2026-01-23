@@ -17,13 +17,13 @@ import { slugify } from "../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
-import { CreateAuditDto } from "./dto/create-audit.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
-import { PatchAuditDto } from "./dto/patch-audit.dto";
+import { CreateAuditDto } from "./dto/requests/create-audit.dto";
+import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
+import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { ResultDto } from "./dto/result.dto";
-import { UpdateAuditDto } from "./dto/update-audit.dto";
-import { UpdateResultsDto } from "./dto/update-results.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 

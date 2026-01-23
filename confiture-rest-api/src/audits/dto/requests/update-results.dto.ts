@@ -18,9 +18,9 @@ import {
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
-} from "../../generated/prisma/client";
+} from "../../../generated/prisma/client";
 
-import { CRITERIA } from "../criteria";
+import { CRITERIA } from "../../criteria";
 
 /** Validates the criterium property to make sure the criterium exists in the RGAA. */
 export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
