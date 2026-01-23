@@ -18,12 +18,12 @@ import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
+import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
-import { ResultDto } from "./dto/result.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
@@ -212,7 +212,7 @@ export class AuditService {
   async getResultsWithEditUniqueId(
     uniqueId: string
   ): Promise<
-    ResultDto[]
+    CriterionResultDto[]
   > {
     const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUnique({
@@ -270,7 +270,7 @@ export class AuditService {
    * [r1, r2, r4] -> [r1, r2, r3 (filler), r4, r5 (filler), ..., r106 (filler)]
    * ```
    */
-  private getResultsWithPlaceholders(pageId: number, auditType: AuditType, existingResults: ResultDto[]): ResultDto[] {
+  private getResultsWithPlaceholders(pageId: number, auditType: AuditType, existingResults: CriterionResultDto[]): CriterionResultDto[] {
     return CRITERIA_BY_AUDIT_TYPE[auditType].map((criterion) => {
       const existingResult = existingResults.find(
         (result) =>
