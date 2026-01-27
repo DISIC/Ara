@@ -10,7 +10,7 @@ import {
   IsString,
   ValidateNested
 } from "class-validator";
-import { AuditType } from "../../generated/prisma/client";
+import { AuditType } from "../../../generated/prisma/client";
 
 export class CreateAuditPage {
   /**

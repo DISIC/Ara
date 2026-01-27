@@ -25,23 +25,24 @@ import {
   ApiTags
 } from "@nestjs/swagger";
 
-import { AuthRequired } from "src/auth/auth-required.decorator";
-import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
-import { User } from "src/auth/user.decorator";
-import { Audit } from "src/generated/nestjs-dto/audit.entity";
-import { CriterionResult } from "src/generated/nestjs-dto/criterionResult.entity";
-import { ExampleImageFile } from "src/generated/nestjs-dto/exampleImageFile.entity";
+import { AuthRequired } from "../auth/auth-required.decorator";
+import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
+import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
-import { CreateAuditDto } from "./dto/create-audit.dto";
-import { DuplicateAuditDto } from "./dto/duplicate-audit.dto";
+import { AuditDto } from "./dto/entities/audit.dto";
+import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
+import { ExampleImageFileDto } from "./dto/entities/example-image-file.dto";
+import { NotesFileDto } from "./dto/entities/notes-file.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
-import { PatchAuditDto } from "./dto/patch-audit.dto";
-import { UpdateAuditDto } from "./dto/update-audit.dto";
-import { UpdateResultsDto } from "./dto/update-results.dto";
-import { UploadImageDto } from "./dto/upload-image.dto";
+import { CreateAuditDto } from "./dto/requests/create-audit.dto";
+import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
+import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
+import { UpdateResultsDto } from "./dto/requests/update-results.dto";
+import { UploadImageDto } from "./dto/requests/upload-image.dto";
 
 @Controller("audits")
 @ApiTags("Audits")
@@ -56,12 +57,12 @@ export class AuditsController {
   @Post()
   @ApiCreatedResponse({
     description: "The audit has been successfully created.",
-    type: Audit
+    type: AuditDto
   })
   async createAudit(
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
-  ) {
+  ): Promise<AuditDto> {
     const audit = await this.auditService.createAudit(body);
 
     if (!user) {
@@ -80,16 +81,16 @@ export class AuditsController {
   @Get()
   @AuthRequired()
   @ApiOkResponse({ type: AuditListingItemDto, isArray: true })
-  async getAuditList(@User() user: AuthenticationJwtPayload) {
+  async getAuditList(@User() user: AuthenticationJwtPayload): Promise<AuditListingItemDto[]> {
     return this.auditService.getAuditsByAuditorEmail(user.email);
   }
 
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
-  @ApiOkResponse({ description: "The audit was found.", type: Audit })
+  @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAudit(@Param("uniqueId") uniqueId: string) {
+  async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
       environments: true,
       transverseElementsPage: true,
@@ -103,7 +104,7 @@ export class AuditsController {
     });
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -127,18 +128,18 @@ export class AuditsController {
   @Put("/:uniqueId")
   @ApiOkResponse({
     description: "The audit has been successfully updated",
-    type: Audit
+    type: AuditDto
   })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async updateAudit(
     @Param("uniqueId") uniqueId: string,
     @Body() body: UpdateAuditDto
-  ) {
+  ): Promise<AuditDto> {
     const audit = await this.auditService.updateAudit(uniqueId, body);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -154,17 +155,17 @@ export class AuditsController {
   async patchAudit(
     @Param("uniqueId") uniqueId: string,
     @Body() body: PatchAuditDto
-  ) {
+  ): Promise<void> {
     const audit = await this.auditService.patchAudit(uniqueId, body);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
   }
 
   @Post("/:uniqueId/results/examples")
   @UseInterceptors(FileInterceptor("image"))
-  @ApiCreatedResponse({ type: ExampleImageFile })
+  @ApiCreatedResponse({ type: ExampleImageFileDto })
   async uploadExampleImage(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
@@ -181,11 +182,11 @@ export class AuditsController {
     )
     file: Express.Multer.File,
     @Body() body: UploadImageDto
-  ) {
+  ): Promise<ExampleImageFileDto> {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return await this.auditService.saveExampleImage(
@@ -199,6 +200,7 @@ export class AuditsController {
 
   @Post("/:uniqueId/notes/files")
   @UseInterceptors(FileInterceptor("file"))
+  @ApiCreatedResponse({ type: NotesFileDto })
   async uploadNotesFile(
     @Param("uniqueId") uniqueId: string,
     @UploadedFile(
@@ -211,11 +213,11 @@ export class AuditsController {
         })
     )
     file: Express.Multer.File
-  ) {
+  ): Promise<NotesFileDto> {
     const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return await this.auditService.saveNotesFile(uniqueId, file);
@@ -274,15 +276,15 @@ export class AuditsController {
 
   /** Retrieve the results of an audit (compliance data) from the database. */
   @Get("/:uniqueId/results")
-  @ApiOkResponse({ type: [CriterionResult] })
+  @ApiOkResponse({ type: [CriterionResultDto] })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAuditResults(@Param("uniqueId") uniqueId: string) {
+  async getAuditResults(@Param("uniqueId") uniqueId: string): Promise<CriterionResultDto[]> {
     const results =
       await this.auditService.getResultsWithEditUniqueId(uniqueId);
 
     if (!results) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return results;
@@ -302,7 +304,7 @@ export class AuditsController {
     const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     await this.auditService.updateResults(uniqueId, body);
@@ -310,10 +312,10 @@ export class AuditsController {
 
   /** Flag an audit as "published", completed. */
   @Put("/:uniqueId/publish")
-  @ApiOkResponse({ type: Audit })
+  @ApiOkResponse({ type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async publishAudit(@Param("uniqueId") uniqueId: string) {
+  async publishAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
     const auditIsComplete = await this.auditService.isAuditComplete(uniqueId);
     if (!auditIsComplete) {
       throw new ConflictException(
@@ -324,7 +326,7 @@ export class AuditsController {
     const audit = await this.auditService.publishAudit(uniqueId);
 
     if (!audit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     return audit;
@@ -339,7 +341,7 @@ export class AuditsController {
     const deleted = await this.auditService.softDeleteAudit(uniqueId);
 
     if (!deleted) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
   }
 
@@ -352,7 +354,8 @@ export class AuditsController {
    */
   @Post("/:uniqueId/duplicate")
   @ApiCreatedResponse({
-    description: "The audit has been successfully duplicated."
+    description: "The audit has been successfully duplicated.",
+    type: AuditDto
   })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
@@ -360,14 +363,14 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
-  ) {
+  ): Promise<AuditDto> {
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
       body.procedureName
     );
 
     if (!newAudit) {
-      return this.sendAuditNotFoundStatus(uniqueId);
+      await this.sendAuditNotFoundStatus(uniqueId);
     }
 
     if (!user) {

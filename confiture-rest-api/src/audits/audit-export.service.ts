@@ -10,7 +10,7 @@ import {
 
 import { AuditService } from "./audit.service";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
-import { ResultDto } from "./dto/result.dto";
+import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
 
 XLSX.stream.set_readable(Readable);
 
@@ -29,7 +29,7 @@ export class AuditExportService {
     audit: Audit & {
       pages: AuditedPage[];
     },
-    results: ResultDto[]
+    results: CriterionResultDto[]
   ) {
     const data = [];
 

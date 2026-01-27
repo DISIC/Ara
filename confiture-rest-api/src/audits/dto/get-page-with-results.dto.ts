@@ -1,7 +1,7 @@
-import { ResultDto } from "./result.dto";
+import { CriterionResultDto } from "./entities/criterion-result.dto";
 
 export class GetPageWithResultsDto {
   id: number;
   name: string;
-  results: ResultDto[];
+  results: CriterionResultDto[];
 }
