@@ -45,9 +45,8 @@ defineExpose({
                 />
                 Supprimer l’audit « {{ procedureName }} »
               </h1>
-              <p>
-                L’audit sera définitivement supprimé. Le rapport de cet audit restera accessible, mais vos données personnelles seront supprimées.
-              </p>
+              <p class="fr-mb-0">L’audit sera définitivement supprimé.</p>
+              <p>Le rapport de cet audit restera accessible mais vos données personnelles seront supprimées.</p>
             </div>
             <div class="fr-modal__footer">
               <ul
@@ -58,7 +57,7 @@ defineExpose({
                     class="fr-btn danger-button"
                     @click="$emit('confirm')"
                   >
-                    Supprimer l’audit
+                    Supprimer définitivement l’audit
                   </button>
                 </li>
                 <li>

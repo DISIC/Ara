@@ -41,12 +41,15 @@ function cancelLeave() {
 const newAuditTypeRef = ref<InstanceType<typeof NewAuditType>>();
 
 // Display leave modal when navigating to another route
-// FIXME: it causes bug with links on the page
 onBeforeRouteLeave((to) => {
   if (
     !isSubmitting.value &&
     !confirmedLeave.value &&
-    (newAuditTypeRef.value?.procedureName || newAuditTypeRef.value?.auditType)
+    (
+      newAuditTypeRef.value?.procedureName ||
+      newAuditTypeRef.value?.auditType ||
+      currentStep.value > 0
+    )
   ) {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
@@ -257,14 +260,14 @@ async function goToPreviousStep() {
 
   <LeaveModal
     ref="leaveModalRef"
-    title="Le paramétrage de l’audit n’est pas terminé"
+    title="Quitter avant d’avoir terminé le paramétrage ? "
     icon="fr-icon-warning-line"
     confirm="Quitter le paramétrage"
     cancel="Annuler"
     @confirm="confirmLeave"
     @cancel="cancelLeave"
   >
-    <p>Aucune des informations saisies ne sera enregistrée.</p>
+    <p>Aucune information saisie ne sera enregistrée.</p>
   </LeaveModal>
 </template>
 

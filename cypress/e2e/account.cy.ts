@@ -451,9 +451,9 @@ describe("Account", () => {
       cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
-      cy.get("dialog").contains("button", "Supprimer l’audit").click();
+      cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
 
-      cy.contains("Audit Audit de mon petit site supprimé avec succès");
+      cy.contains("Audit « Audit de mon petit site » supprimé");
     });
   });
 });

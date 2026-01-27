@@ -47,7 +47,7 @@ const store = useNotificationStore();
           <!-- FIXME: this button is not accessible with keyboard -->
           <button
             v-if="store.notification.action"
-            class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-mb-1v"
+            class="fr-btn fr-btn--tertiary-no-outline fr-mb-1v"
             @click="store.notification?.action?.cb"
           >
             {{ store.notification.action.label }}
