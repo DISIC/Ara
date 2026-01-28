@@ -88,15 +88,15 @@ import TopLink from "../../components/ui/TopLink.vue";
       Sauf mention de propriété intellectuelle détenue par des tiers, les
       contenus de ce site sont proposés sous licence ouverte 2.0.
     </p>
-    <p>
+    <p class="fr-mb-0">
       La mise en place de liens vers nos contenus et documents est cependant est
       à privilégier par rapport à la reproduction sur un site tiers. La mention
       explicite du site source ara.numerique.gouv.fr est recommandée.
     </p>
+    <div class="top-link">
+      <TopLink />
+    </div>
   </section>
-  <div class="top-link">
-    <TopLink />
-  </div>
 </template>
 
 <style scoped>

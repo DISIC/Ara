@@ -59,6 +59,10 @@ import TopLink from "../components/ui/TopLink.vue";
     line-height: 1.5rem;
     margin-block-end: 0.5rem;
   }
+
+  &:deep(ul:last-child) {
+    margin-bottom: 0;
+  }
 }
 
 .top-link {

@@ -64,15 +64,15 @@ import TopLink from "../../components/ui/TopLink.vue";
     <h2>Voies de recours</h2>
     <p>Si vous constatez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une fonctionnalité du site, que vous nous le signalez et que vous ne parvenez pas à obtenir une réponse de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au Défenseur des droits.</p>
     <p>Plusieurs moyens sont à votre disposition&nbsp;:</p>
-    <ul>
+    <ul class="fr-mb-0">
       <li><a href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine" target="_blank">Écrire un message au Défenseur des droits <span class="fr-sr-only">(nouvelle fenêtre)</span></a></li>
       <li><a href="https://www.defenseurdesdroits.fr/carte-des-delegues" target="_blank">Contacter le délégué du Défenseur des droits dans votre région <span class="fr-sr-only">(nouvelle fenêtre)</span></a></li>
       <li>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) à&nbsp;:<br><span>Défenseur des droits<br> Libre réponse 71120<br> 75342 Paris CEDEX 07</span></li>
     </ul>
+    <div class="top-link">
+      <TopLink />
+    </div>
   </section>
-  <div class="top-link">
-    <TopLink />
-  </div>
 </template>
 
 <style scoped>
