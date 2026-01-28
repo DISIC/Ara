@@ -946,58 +946,15 @@ export class AuditService {
       })
     ]).then(results => results.flat());
 
-    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
-      (acc, c) => {
-        const key = `${c.topic}.${c.criterium}`;
-        if (acc[key]) {
-          acc[key].push(c);
-        } else {
-          acc[key] = [c];
-        }
-        return acc;
-      },
-      {}
-    );
-
-    const applicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
-    );
-
-    const compliantCriteria = applicableCriteria.filter((criteria) => {
-      // remove untested transverse criterion
-      const withoutUntestedTrans = criteria.filter(
-        (c) =>
-          !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
-      );
-
-      return (
-        withoutUntestedTrans.some((c) => isCompliant(c)) &&
-        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
-      );
-    });
-
-    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
-      return criteria.some((c) => isNotCompliant(c));
-    });
-
-    const notApplicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) => {
-        // remove untested transverse criterion
-        const withoutUntestedTrans = criteria.filter(
-          (c) =>
-            !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
-        );
-
-        return withoutUntestedTrans.every((c) => isNotApplicable(c));
-      }
-    );
-
-    const accessibilityRate =
-      Math.round(
-        (compliantCriteria.length / applicableCriteria.length) * 100
-      ) || 0;
-
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
+
+    const {
+      compliantCriteria,
+      notCompliantCriteria,
+      applicableCriteria,
+      notApplicableCriteria,
+      accessibilityRate
+    } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
@@ -1196,6 +1153,68 @@ export class AuditService {
     };
 
     return report;
+  }
+
+  public static groupResultsByStatus(results: CriterionResult[], transversePageId: number) {
+    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
+      (acc, c) => {
+        const key = `${c.topic}.${c.criterium}`;
+        if (acc[key]) {
+          acc[key].push(c);
+        } else {
+          acc[key] = [c];
+        }
+        return acc;
+      },
+      {}
+    );
+
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
+    );
+
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) =>
+          !isTransverse(c, transversePageId) || !isNotTested(c)
+      );
+
+      return (
+        withoutUntestedTrans.some((c) => isCompliant(c)) &&
+        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
+      );
+    });
+
+    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c));
+    });
+
+    const notApplicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => {
+        // remove untested transverse criterion
+        const withoutUntestedTrans = criteria.filter(
+          (c) =>
+            !isTransverse(c, transversePageId) || !isNotTested(c)
+        );
+
+        return withoutUntestedTrans.every((c) => isNotApplicable(c));
+      }
+    );
+
+    const accessibilityRate =
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0;
+
+    return {
+      groupedCriteria,
+      applicableCriteria,
+      compliantCriteria,
+      notCompliantCriteria,
+      notApplicableCriteria,
+      accessibilityRate
+    };
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
