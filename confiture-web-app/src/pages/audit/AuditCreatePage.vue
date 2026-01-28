@@ -149,7 +149,10 @@ const isSubmitting = ref(false);
 const auditStore = useAuditStore();
 const notify = useNotifications();
 
-const { toggleTopicAccordionStatus } = useTopicAccordions();
+const {
+  toggleTopicAccordionStatus,
+  saveTopicAccordionStatusToLocalStorage
+} = useTopicAccordions();
 
 function submitAuditSettings() {
   isSubmitting.value = true;
@@ -228,6 +231,7 @@ function setTopicAccordionStatus(
         topic,
         topics.includes(topic)
       );
+      saveTopicAccordionStatusToLocalStorage();
     });
   });
 }

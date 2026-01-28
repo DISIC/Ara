@@ -3,7 +3,7 @@
  * ✅ format and save to localStorage
  * ✅ individually toggle topic with dedicated button
  * ✅ when creating an audit, set the value of the statuses (/!\ step 3)
- * - toggle topic with "Not applicable for page" button
+ * ✅ toggle topic with "Not applicable for page" button
  * - handle add / delete page
  * - sync with localStorage
  * - remove old `hiddenTopics`
@@ -41,7 +41,7 @@ export function useTopicAccordions() {
     return;
   }
 
-  function saveToLocalStorage() {
+  function saveTopicAccordionStatusToLocalStorage() {
     const stringifiedData = JSON.stringify(auditStore.topicAccordionsStatuses);
 
     localStorage.setItem(localStorageKey, stringifiedData);
@@ -56,10 +56,14 @@ export function useTopicAccordions() {
     setWith(auditStore.topicAccordionsStatuses, `${auditEditId}.${pageId}.${topicNumber}`, status, Object);
   }
 
+  function topicIsHidden(auditEditId: string, pageId: number, topic: number) {
+    return auditStore.topicAccordionsStatuses[auditEditId]?.[pageId]?.[topic];
+  }
+
   return {
     retrieveFromLocalStorage,
-    saveToLocalStorage,
-    toggleTopicAccordionStatus
-
+    saveTopicAccordionStatusToLocalStorage,
+    toggleTopicAccordionStatus,
+    topicIsHidden
   };
 }
