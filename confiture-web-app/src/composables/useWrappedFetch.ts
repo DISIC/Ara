@@ -53,22 +53,24 @@ export function useWrappedFetch(
     func().catch(handleError);
   });
 
-  const watchStopHandle = watch(
-    () => route.params,
-    (newParams, oldParams) => {
-      // `watchParams` can be a boolean or a function returning a boolean
-      const shouldRetrigger = typeof watchParams === "function"
-        ? watchParams(newParams, oldParams)
-        : watchParams;
-      if (shouldRetrigger) {
-        // Make sure the params actually changed because if only the hash of the route
-        // changed, the `params` objects will be equal but different references, which will trigger the watcher
-        if (!isEqual(newParams, oldParams)) {
-          func().catch(handleError);
+  if (watchParams) {
+    const watchStopHandle = watch(
+      () => route.params,
+      (newParams, oldParams) => {
+        // `watchParams` can be a boolean or a function returning a boolean
+        const shouldRetrigger = typeof watchParams === "function"
+          ? watchParams(newParams, oldParams)
+          : watchParams;
+        if (shouldRetrigger) {
+          // Make sure the params actually changed because if only the hash of the route
+          // changed, the `params` objects will be equal but different references, which will trigger the watcher
+          if (!isEqual(newParams, oldParams)) {
+            func().catch(handleError);
+          }
         }
       }
-    }
-  );
+    );
 
-  onBeforeRouteLeave(watchStopHandle);
+    onBeforeRouteLeave(watchStopHandle);
+  }
 }
