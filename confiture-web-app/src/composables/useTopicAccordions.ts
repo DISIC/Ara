@@ -4,18 +4,17 @@
  * ✅ individually toggle topic with dedicated button
  * ✅ when creating an audit, set the value of the statuses (/!\ step 3)
  * ✅ toggle topic with "Not applicable for page" button
- * - handle add / delete page
- * - sync with localStorage
- * - remove old `hiddenTopics`
+ * ✅ sync with localStorage
+ * ✅ remove old `hiddenTopics`
  * - handle priorities (not applicable on page, localStorage...)
+ * - handle add / delete page (is it required?)
+ * - e2e tests (existing + new?)
+ * - function names?
  */
 
 import { setWith } from "lodash-es";
 import { useAuditStore } from "../store";
 
-/**
- * When `true`, topic is hidden.
- */
 export interface topicAccordionsStatuses {
   [auditId: string]: {
     [pageId: number]: {
@@ -29,7 +28,8 @@ const localStorageKey = "ara:hidden-topics";
 export function useTopicAccordions() {
   const auditStore = useAuditStore();
 
-  function retrieveFromLocalStorage() {
+  /** Synchronise Pinia store with localStorage if any */
+  function retrieveTopicAccordionStatusesFromLocalStorage() {
     const data = localStorage.getItem(localStorageKey);
 
     if (data) {
@@ -41,12 +41,14 @@ export function useTopicAccordions() {
     return;
   }
 
+  /** Synchronise localStorage with Pinia store */
   function saveTopicAccordionStatusToLocalStorage() {
     const stringifiedData = JSON.stringify(auditStore.topicAccordionsStatuses);
 
     localStorage.setItem(localStorageKey, stringifiedData);
   }
 
+  /** Toggle topic status for a specific audit, page and topic */
   function toggleTopicAccordionStatus(
     auditEditId: string,
     pageId: number,
@@ -56,12 +58,13 @@ export function useTopicAccordions() {
     setWith(auditStore.topicAccordionsStatuses, `${auditEditId}.${pageId}.${topicNumber}`, status, Object);
   }
 
+  /** Check topic status (`true` if hidden) */
   function topicIsHidden(auditEditId: string, pageId: number, topic: number) {
     return auditStore.topicAccordionsStatuses[auditEditId]?.[pageId]?.[topic];
   }
 
   return {
-    retrieveFromLocalStorage,
+    retrieveTopicAccordionStatusesFromLocalStorage,
     saveTopicAccordionStatusToLocalStorage,
     toggleTopicAccordionStatus,
     topicIsHidden
