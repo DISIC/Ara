@@ -54,7 +54,7 @@ function duplicateAudit(name: string) {
 
       notify("success", undefined, `Audit « ${name} » créé`, {
         action: {
-          label: "Accéder à l'audit",
+          label: "Accéder à l’audit",
           cb() {
             router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }

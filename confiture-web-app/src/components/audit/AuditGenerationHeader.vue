@@ -74,7 +74,7 @@ function confirmDuplicate(name: string) {
       const [notifyTitle, notifyDescription] = accountStore.account ? [undefined, `Audit « ${name} » créé`] : [`Audit « ${name} » créé`, "Un lien d’accès à l’audit vous a été envoyé par e-mail"];
       notify("success", notifyTitle, notifyDescription, {
         action: {
-          label: "Accéder à l'audit",
+          label: "Accéder à l’audit",
           cb() {
             auditStore.$reset();
             resultStore.$reset();
