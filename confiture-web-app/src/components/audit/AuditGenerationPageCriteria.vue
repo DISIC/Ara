@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
+import { useTopicAccordions } from "../../composables/useTopicAccordions";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
@@ -81,7 +82,11 @@ const hiddenTopics = ref<Record<string, Set<number>>>({
   )
 });
 
+const { toggleTopicAccordionStatus } = useTopicAccordions();
+
 function toggleTopic(value: boolean, topic: number) {
+  toggleTopicAccordionStatus(props.auditUniqueId, props.page.id, topic, value);
+
   if (value) {
     hiddenTopics.value[props.page.id].delete(topic);
   } else {
