@@ -4,6 +4,7 @@ import { computed, ref, useTemplateRef } from "vue";
 import { RouterLink } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useWindowWidth } from "../../../composables/useWindowWidth";
+import router from "../../../router";
 import { useAuditStore } from "../../../store";
 import { AuditStatus, AuditType } from "../../../types";
 import { AccountAudit } from "../../../types/account";
@@ -52,24 +53,11 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModal.value?.hide();
 
-      notify("success", undefined, `Audit ${name} dupliqué avec succès`, {
+      notify("success", undefined, `Audit « ${name} » créé`, {
         action: {
-          label: "Annuler",
+          label: "Accéder à l’audit",
           cb() {
-            console.log("Cancelled" + newAuditId);
-            auditStore
-              .deleteAudit(newAuditId)
-              .then(() => {
-                notify("success", undefined, "Duplication de l’audit annulée.");
-              })
-              .catch((error) => {
-                notify(
-                  "error",
-                  "Une erreur est survenue",
-                  "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
-                );
-                captureWithPayloads(error);
-              });
+            router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }
         }
       });

@@ -133,6 +133,7 @@ function handleFileDeleteAfterConfirm(flFile: FileListFile) {
       file.id
     )
     .then(() => {
+      notify("success", undefined, `Image supprimée`);
       errorMessage.value = null;
     })
     .catch(async (error) => {

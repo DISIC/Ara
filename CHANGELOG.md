@@ -4,7 +4,13 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
-### 15/01/2025
+### 28/01/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Mise à jour de wordings plus clairs, de replacements de focus au clavier et de redirections plus cohérentes ([#1361](https://github.com/DISIC/Ara/pull/1361), [#1370](https://github.com/DISIC/Ara/pull/1370))
+
+### 15/01/2026
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
@@ -15,13 +21,13 @@
 - Un très long mot dépasse de l’éditeur riche ([#1368](https://github.com/DISIC/Ara/pull/1368))
 - Ajouter un bouton "Haut de page" pour les pages dont le contenu est dense et harmoniser les liens "Retour à" ([#1359](https://github.com/DISIC/Ara/pull/1359))
 
-### 14/01/2025
+### 14/01/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Quand on duplique l'audit terminé, mettre la date de fin d'audit comme date du jour. Si l'audit à dupliquer n'est pas terminé, ne pas mettre de fin d'audit. ([#1360](https://github.com/DISIC/Ara/pull/1360))
 
-### 09/01/2025
+### 09/01/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
 

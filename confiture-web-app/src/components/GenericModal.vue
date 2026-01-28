@@ -55,13 +55,20 @@ function onFadedOut() {
               </button>
             </div>
             <div class="fr-modal__content">
-              <h1 id="generic-modal-title" class="fr-modal__title">{{ dialog?.title }}</h1>
+              <h1 id="generic-modal-title" class="fr-modal__title">
+                <span
+                  v-if="dialog?.titleIcon"
+                  :class="`${dialog?.titleIcon} fr-fi--lg`"
+                  aria-hidden="true"
+                />
+                {{ dialog?.title }}
+              </h1>
               <p v-html="dialog?.message"></p>
             </div>
             <div class="fr-modal__footer">
               <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
                 <li>
-                  <button class="fr-btn danger-button" @click="onConfirm" v-html="dialog?.confirmLabel"></button>
+                  <button class="fr-btn" :class="{ 'danger-button': dialog?.isDanger }" @click="onConfirm" v-html="dialog?.confirmLabel"></button>
                 </li>
                 <li>
                   <button class="fr-btn fr-btn--secondary" @click="onCancel" v-html="dialog?.cancelLabel"></button>

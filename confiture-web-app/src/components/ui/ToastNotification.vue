@@ -23,7 +23,7 @@ const store = useNotificationStore();
           role="alert"
         >
           <div>
-            <p v-if="store.notification.title" class="fr-alert__title">
+            <p v-if="store.notification.title" class="fr-alert__title fr-text--md">
               {{ store.notification.title }}
             </p>
             <p

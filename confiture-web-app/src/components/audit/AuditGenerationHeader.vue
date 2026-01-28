@@ -68,20 +68,18 @@ function confirmDuplicate(name: string) {
   auditStore
     .duplicateAudit(uniqueId.value, name)
     .then((newAuditId) => {
-      auditStore.$reset();
-      resultStore.$reset();
-
       isDuplicationLoading.value = false;
-
       duplicateModal.value?.hide();
 
-      router.push({
-        name: "audit-overview",
-        params: {
-          uniqueId: newAuditId
-        },
-        state: {
-          showDuplicatedAlert: true
+      const [notifyTitle, notifyDescription] = accountStore.account ? [undefined, `Audit « ${name} » créé`] : [`Audit « ${name} » créé`, "Un lien d’accès à l’audit vous a été envoyé par e-mail"];
+      notify("success", notifyTitle, notifyDescription, {
+        action: {
+          label: "Accéder à l’audit",
+          cb() {
+            auditStore.$reset();
+            resultStore.$reset();
+            router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
+          }
         }
       });
     })
