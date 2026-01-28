@@ -37,7 +37,7 @@ interface AuditStoreState {
   lastRequestSuccessEnd: number | null;
   lastRequestFailed: boolean;
 
-  topicAccordionsStatuses: topicAccordionsStatuses | null;
+  topicAccordionsStatuses: topicAccordionsStatuses;
 }
 
 export const useAuditStore = defineStore("audit", {
