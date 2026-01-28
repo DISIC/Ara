@@ -4,6 +4,12 @@
     "confiture-rest-api",
     "confiture-web-app"
   ],
+  "resolutions": {
+    "prosemirror-view": "^1.41.5",
+    "prosemirror-model": "^1.24.1",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-transform": "^1.10.4"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
     "cypress": "^13.6.1",
