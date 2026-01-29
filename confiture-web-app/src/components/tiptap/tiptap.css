@@ -144,3 +144,94 @@
 .tiptap li > p {
   margin-bottom: 0.25em;
 }
+
+.tiptap [data-resize-container] {
+  display: block !important;
+  max-width: max-content;
+}
+
+.tiptap-selection,
+.ProseMirror-selectednode {
+  outline: var(--dsfr-outline) dotted 3px;
+  max-width: max-content;
+
+  [data-resize-handle] {
+    position: absolute;
+    background: var(--highlight-a11y-color-background);
+    border: 0.15rem solid var(--highlight-a11y-color-text-no-token);
+    z-index: 10;
+
+    &:focus-visible,
+    &:hover {
+      background: var(--highlight-a11y-color-text-no-token);
+    }
+
+    /* Corner handles */
+    &[data-resize-handle="top-left"],
+    &[data-resize-handle="top-right"],
+    &[data-resize-handle="bottom-left"],
+    &[data-resize-handle="bottom-right"] {
+      width: 0.85rem;
+      height: 0.85rem;
+    }
+
+    &[data-resize-handle="top-left"] {
+      top: -4px;
+      left: -4px;
+      cursor: nwse-resize;
+    }
+
+    &[data-resize-handle="top-right"] {
+      top: -4px;
+      right: -4px;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle="bottom-left"] {
+      bottom: -4px;
+      left: -4px;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle="bottom-right"] {
+      bottom: -4px;
+      right: -4px;
+      cursor: nwse-resize;
+    }
+
+    /* Edge handles */
+    &[data-resize-handle="top"],
+    &[data-resize-handle="bottom"] {
+      height: 6px;
+      left: 8px;
+      right: 8px;
+    }
+
+    &[data-resize-handle="top"] {
+      top: -3px;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle="bottom"] {
+      bottom: -3px;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle="left"],
+    &[data-resize-handle="right"] {
+      width: 6px;
+      top: 8px;
+      bottom: 8px;
+    }
+
+    &[data-resize-handle="left"] {
+      left: -3px;
+      cursor: ew-resize;
+    }
+
+    &[data-resize-handle="right"] {
+      right: -3px;
+      cursor: ew-resize;
+    }
+  }
+}
