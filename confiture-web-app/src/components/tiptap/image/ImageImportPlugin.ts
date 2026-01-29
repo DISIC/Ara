@@ -5,7 +5,7 @@ import { Decoration, EditorView } from "@tiptap/pm/view";
 import ky from "ky";
 import { useNotifications } from "../../../composables/useNotifications";
 import { FILE_SIZE_LIMIT, FileErrorMessage, MAX_UPLOAD_FILES_COUNT } from "../../../enums";
-import { createFileFromUrl, getUploadUrl, handleFileUploadError } from "../../../utils";
+import { createFileFromUrl, getUploadUrl } from "../../../utils";
 import { PlaceholderPlugin } from "./PlaceholderPlugin";
 
 interface ImageImportPluginOptions {
@@ -351,12 +351,12 @@ export class ImageImportPlugin extends Plugin {
 
         view.dispatch(tr);
       },
-      async (reason: Error) => {
+      async () => {
         // On failure, clean up the placeholder
         view.dispatch(
           view.state.tr.setMeta(this.placeholderPlugin, { element, remove: { id } })
         );
-        this.notify("error", undefined, await handleFileUploadError(reason));
+        this.notify("error", undefined, FileErrorMessage.UNKNOWN_ERROR);
       }
     );
   }
