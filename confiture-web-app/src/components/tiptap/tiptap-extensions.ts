@@ -7,12 +7,13 @@ import Typography from "@tiptap/extension-typography";
 import { Dropcursor } from "@tiptap/extensions";
 import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
-import { VueNodeViewRenderer } from "@tiptap/vue-3";
+import { VueNodeViewRenderer, ResizableNodeView } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
+
 import { marked } from "marked";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
@@ -169,7 +170,48 @@ export function getTiptapEditorExtensions(options?: {
         };
       },
       addNodeView() {
-        return VueNodeViewRenderer(TiptapImage);
+        return (props) => {
+          const vueNodeView: any = VueNodeViewRenderer(TiptapImage)(props);
+
+          if (!vueNodeView.HTMLAttributes) {
+            return vueNodeView;
+          }
+
+          const img = document.createElement("img");
+
+          Object.entries(vueNodeView.HTMLAttributes).forEach(([key, value]) => {
+            if (value == null) return;
+            if (key === "width" || key === "height") return;
+            img.setAttribute(key, String(value));
+          });
+
+          const node = vueNodeView.node;
+
+          // hack for respect picture's size
+          node.attrs.height = "auto";
+
+          const resizableView = new ResizableNodeView({
+            ...props,
+            element: img,
+            node,
+            onResize: (w, h) => {
+              img.style.width = `${w}px`;
+              img.style.height = `${h}px`;
+            },
+            onCommit: (w, h) => {
+              props.editor.commands.updateAttributes("image", { width: w, height: h });
+            },
+            onUpdate: (updatedNode) => {
+              if (updatedNode.type !== node.type) return false;
+              return true;
+            },
+            options: {
+              preserveAspectRatio: true
+            }
+          });
+
+          return resizableView;
+        };
       }
     }),
     uploadExtension,
