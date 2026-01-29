@@ -16,7 +16,6 @@ const props = defineProps<{
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
-  onDelete: (flFile: FileListFile) => void;
 }>();
 
 provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
@@ -27,10 +26,10 @@ function getFocusWhenListEmpty(): HTMLElement | null {
     : null;
 }
 
-defineEmits<{
+const emit = defineEmits<{
+  (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
@@ -127,8 +126,8 @@ const title = computed(() => {
       }))"
       :delete-only="true"
       :multiple="true"
-      :on-delete="onDelete"
       :focus-on-delete="commentEditorRef?.focusEditor"
+      @file-deleted="emit('file-deleted', $event)"
     />
 
     <!-- USER IMPACT -->

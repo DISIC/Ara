@@ -167,6 +167,7 @@ export const useAuditStore = defineStore("audit", {
 
         const notesFiles = this.entities[uniqueId].notesFiles || [];
         notesFiles.splice(0, 0, notesFile);
+        return notesFile;
       } finally {
         this.decreaseCurrentRequestCount();
       }

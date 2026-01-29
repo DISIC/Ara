@@ -652,9 +652,7 @@ export class AuditService {
     }
   }
 
-  /**
-   * Note: we don’t use this function anymore
-   */
+  /** TODO: we don’t use this function anymore */
   async saveExampleImage(
     editUniqueId: string,
     pageId: number,
