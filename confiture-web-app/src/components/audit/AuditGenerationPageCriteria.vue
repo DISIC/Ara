@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
-import { useTopicAccordions } from "../../composables/useTopicAccordions";
+import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage } from "../../types";
 import TopLink from "../ui/TopLink.vue";
@@ -63,19 +63,19 @@ const refFn =
         el as InstanceType<typeof NotApplicableSwitch>;
 
 const {
-  retrieveTopicAccordionStatusesFromLocalStorage,
-  toggleTopicAccordionStatus,
-  saveTopicAccordionStatusToLocalStorage
+  retrieveStatusFromLocalStorage,
+  toggleStatus,
+  saveStatusToLocalStorage
 } = useTopicAccordions();
 
 function toggleTopic(value: boolean, topic: number) {
-  toggleTopicAccordionStatus(props.auditUniqueId, props.page.id, topic, !value);
-  saveTopicAccordionStatusToLocalStorage();
+  toggleStatus(props.auditUniqueId, props.page.id, topic, !value);
+  saveStatusToLocalStorage();
 }
 
 // Set topic accordions status on page load
 onMounted(() => {
-  retrieveTopicAccordionStatusesFromLocalStorage();
+  retrieveStatusFromLocalStorage();
 });
 
 const { topicIsHidden } = useTopicAccordions();

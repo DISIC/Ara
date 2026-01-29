@@ -10,7 +10,7 @@ import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useNotifications } from "../../composables/useNotifications";
-import { useTopicAccordions } from "../../composables/useTopicAccordions";
+import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
 import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
@@ -150,8 +150,8 @@ const auditStore = useAuditStore();
 const notify = useNotifications();
 
 const {
-  toggleTopicAccordionStatus,
-  saveTopicAccordionStatusToLocalStorage
+  toggleStatus,
+  saveStatusToLocalStorage
 } = useTopicAccordions();
 
 function submitAuditSettings() {
@@ -225,13 +225,13 @@ function setTopicAccordionStatus(
 ) {
   pageIds.forEach(pageId => {
     [...Array.from({ length: 13 }).keys()].forEach(topic => {
-      toggleTopicAccordionStatus(
+      toggleStatus(
         auditEditId,
         pageId,
         topic,
         topics.includes(topic)
       );
-      saveTopicAccordionStatusToLocalStorage();
+      saveStatusToLocalStorage();
     });
   });
 }
