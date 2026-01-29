@@ -20,7 +20,6 @@ const {
   files,
   isInModal,
   readonly,
-  onDelete,
   focusOnDelete
 } = defineProps<{
   deleteOnly?: boolean;
@@ -34,6 +33,10 @@ const {
 defineExpose({
   resetInlineConfirm
 });
+
+const emit = defineEmits<{
+  (e: "file-deleted", payload: { resolve: (value: void) => void; flFile: FileListFile }): Promise<void>;
+}>();
 
 const getFocusWhenListEmpty = inject(getFocusWhenListEmptyKey);
 
@@ -72,6 +75,7 @@ async function handleFileDeleteInlineReveal(
 ) {
   inlineConfirmPendingRange.value = range;
   await nextTick();
+  await sleep(1);
   const confirmBtn = deleteConfirmBtnRefs.value[0];
   confirmBtn?.focus();
 }
@@ -79,10 +83,10 @@ async function handleFileDeleteInlineReveal(
 async function inlineDeleteConfirm(flFile: FileListFile, range: number) {
   resetInlineConfirm();
   const elementToFocus = getElementToFocusAfterDelete(range);
+  await deleteFile(flFile);
   if (elementToFocus) {
     elementToFocus.focus();
   }
-  await deleteFile(flFile);
 }
 
 function resetInlineConfirm() {
@@ -107,9 +111,9 @@ async function handleFileDelete(
   resetInlineConfirm();
   successMessage.value = "";
   if (isInModal) {
-    handleFileDeleteInlineReveal(range);
+    await handleFileDeleteInlineReveal(range);
   } else {
-    handleFileDeleteWithModal(flFile, range);
+    await handleFileDeleteWithModal(flFile, range);
   }
 }
 
@@ -132,16 +136,12 @@ async function handleFileDeleteWithModal(
   // returns to the button that opened the modal dialog.
 }
 
-async function deleteFile(
-  flFile: FileListFile
-) {
-  if (!onDelete) {
-    return;
-  }
-
+async function deleteFile(flFile: FileListFile) {
   try {
-    await onDelete(flFile);
-    await sleep(300);
+    await new Promise((resolve: (value: void) => void) => {
+      emit("file-deleted", { resolve, flFile });
+    });
+
     // Notify to screen reader
     if (isImage(flFile)) {
       successMessage.value = getFileMessage("DELETE_SUCCESS_IMAGE", flFile.filename);
@@ -334,7 +334,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
       :id="`file-delete-message-${id}`"
       class="fr-sr-only"
       aria-live="polite"
-      role="alert"
+      role="status"
     >{{ successMessage }}</p>
   </div>
 </template>

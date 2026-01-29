@@ -19,7 +19,7 @@ export function useFileHandler() {
    *
    * See back-end: AuditService#saveExampleImage
    *
-   * ⚠️ Note: we don’t use this function anymore
+   * TODO: we don’t use this function anymore
    */
   async function uploadCriteriumFile(auditUniqueId: string, pageId: number, topicNumber: number, criteriumNumber: number, file: File) {
     try {
@@ -62,7 +62,7 @@ export function useFileHandler() {
 
   async function uploadGlobalFile(auditUniqueId: string, file: File) {
     try {
-      await auditStore.uploadAuditFile(auditUniqueId, file);
+      return await auditStore.uploadAuditFile(auditUniqueId, file);
     } catch (error) {
       auditStore.lastRequestFailed = true;
       throw await handleFileUploadError(error, file);

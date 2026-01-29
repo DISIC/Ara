@@ -119,7 +119,10 @@ const notify = useNotifications();
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
-async function handleFileDeleteAfterConfirm(flFile: FileListFile) {
+async function handleFileDeleteAfterConfirm(
+  resolve: () => void,
+  flFile: FileListFile
+) {
   const file = result.value.exampleImages.find(f => f.key === flFile.key)!;
   await fileHandler.deleteCriteriumAuditFile(
     props.auditUniqueId,
@@ -129,6 +132,7 @@ async function handleFileDeleteAfterConfirm(flFile: FileListFile) {
     file
   ).then(() => {
     notify("success", undefined, `Image supprimée`);
+    resolve();
   });
 }
 
@@ -357,7 +361,8 @@ const parentCriterium = computed(() => {
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
-      :on-delete="handleFileDeleteAfterConfirm"
+      @file-deleted="handleFileDeleteAfterConfirm(
+        $event.resolve, $event.flFile)"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:quick-win="updateQuickWin"
       @update:user-impact="updateResultImpact($event)"
