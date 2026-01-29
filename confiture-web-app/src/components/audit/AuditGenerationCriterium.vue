@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 
+import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
-import { FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
@@ -15,10 +15,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus
 } from "../../types";
-import {
-  formatStatus,
-  handleFileDeleteError
-} from "../../utils";
+import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -30,6 +27,7 @@ import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 
 const store = useResultsStore();
 const auditStore = useAuditStore();
+const fileHandler = useFileHandler();
 const filtersStore = useFiltersStore();
 
 const props = defineProps<{
@@ -118,28 +116,20 @@ function toggleTransverseComment() {
 
 const notify = useNotifications();
 
-const errorMessage: Ref<FileErrorMessage | null> = ref(null);
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
 
 function handleFileDeleteAfterConfirm(flFile: FileListFile) {
   const file = result.value.exampleImages.find(f => f.key === flFile.key)!;
-  store
-    .deleteExampleImage(
-      props.auditUniqueId,
-      props.page.id,
-      props.topicNumber,
-      props.criterium.number,
-      file.id
-    )
-    .then(() => {
-      notify("success", undefined, `Image supprimée`);
-      errorMessage.value = null;
-    })
-    .catch(async (error) => {
-      errorMessage.value = await handleFileDeleteError(error);
-      auditStore.lastRequestFailed = true;
-    });
+  fileHandler.deleteCriteriumAuditFile(
+    props.auditUniqueId,
+    props.page.id,
+    props.topicNumber,
+    props.criterium.number,
+    file
+  ).then(() => {
+    notify("success", undefined, `Image supprimée`);
+  });
 }
 
 function handleUpdateResultError(err: any) {
@@ -367,7 +357,6 @@ const parentCriterium = computed(() => {
       :user-impact="result.userImpact"
       :example-images="result.exampleImages"
       :quick-win="result.quickWin"
-      :error-message="errorMessage"
       :on-delete="handleFileDeleteAfterConfirm"
       @update:comment="updateResultComment($event, 'notCompliantComment')"
       @update:quick-win="updateQuickWin"

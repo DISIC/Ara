@@ -1,10 +1,9 @@
 import { captureException, Scope } from "@sentry/vue";
 import jwtDecode from "jwt-decode";
-import { HTTPError, TimeoutError } from "ky";
+import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
-import { FileErrorMessage } from "./enums";
 import {
   AuditReport,
   AuditStatus,
@@ -243,54 +242,6 @@ export function waitForElement(selector: string): Promise<Element> {
 
 export function getUploadUrl(key: string): string {
   return `/uploads/${key}`;
-}
-
-export async function handleFileUploadError(
-  error: Error
-): Promise<FileErrorMessage> {
-  let errorType: FileErrorMessage;
-
-  if (error instanceof TimeoutError) {
-    return FileErrorMessage.UPLOAD_TIMEOUT;
-  }
-
-  if (!(error instanceof HTTPError)) {
-    captureWithPayloads(error);
-    return FileErrorMessage.UNKNOWN_ERROR;
-  }
-
-  if (error.response.status === 413) {
-    return FileErrorMessage.UPLOAD_SIZE;
-  }
-
-  // Unprocessable Entity
-  if (error.response.status === 422) {
-    const body = await error.response.json();
-
-    if (body.message.includes("expected type")) {
-      errorType = FileErrorMessage.UPLOAD_FORMAT;
-    } else if (body.message.includes("expected size")) {
-      errorType = FileErrorMessage.UPLOAD_SIZE;
-    } else {
-      errorType = FileErrorMessage.UNKNOWN_ERROR;
-      captureWithPayloads(error);
-    }
-  } else {
-    errorType = FileErrorMessage.UNKNOWN_ERROR;
-    captureWithPayloads(error);
-  }
-
-  return errorType;
-}
-
-export async function handleFileDeleteError(
-  error: Error
-): Promise<FileErrorMessage | null> {
-  if (!(error instanceof HTTPError)) {
-    return null;
-  }
-
-  return FileErrorMessage.UNKNOWN_ERROR;
 }
 
 /** Check if a tiptap document string corresponds to an empty document. */

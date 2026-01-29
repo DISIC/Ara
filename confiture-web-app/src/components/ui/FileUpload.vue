@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed, Ref, ref, useId, useTemplateRef } from "vue";
+import { computed, nextTick, Ref, ref, useId, useTemplateRef } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
+import { sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
 export interface Props {
@@ -14,6 +15,7 @@ export interface Props {
   isInModal?: boolean;
   readonly?: boolean;
   title?: string | null;
+  onUpload?: (file: File, triggerButton?: EventTarget | null) => void;
   onDelete?: (flFile: FileListFile, triggerButton?: EventTarget | null) => void;
 }
 
@@ -29,14 +31,14 @@ const props = withDefaults(defineProps<Props>(), {
   title: null
 });
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "upload-file", payload: File): void;
   (e: "delete-file", payload: FileListFile): void;
 }>();
 
 const fileInputRef = useTemplateRef("fileInputRef");
 
-defineExpose({ onFileRequestFinished, reset, fileInputRef });
+defineExpose({ reset, fileInputRef });
 
 const localErrorMessage: Ref<FileErrorMessage | null> = ref(null);
 const isDraggedOver = ref(false);
@@ -91,19 +93,27 @@ function resetMessage() {
   localErrorMessage.value = null;
 }
 
-function handleFileChange() {
+async function handleFileChange() {
   if (fileInputRef.value?.files && fileInputRef.value?.files[0]) {
     const file = fileInputRef.value?.files[0];
     if (file.size > 2000000) {
       localErrorMessage.value = FileErrorMessage.UPLOAD_SIZE;
       return;
     }
-    emit("upload-file", file);
+    if (props.onUpload) {
+      try {
+        // message.value = getFileMessage("UPLOAD_SUCCESS", file.name);
+        await nextTick();
+        await sleep(1);
+        await props.onUpload(file);
+      } catch {
+        console.error("Upload failed: ", file.name);
+      }
+    }
   }
-}
-
-function onFileRequestFinished() {
-  localErrorMessage.value = null;
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
 }
 </script>
 
