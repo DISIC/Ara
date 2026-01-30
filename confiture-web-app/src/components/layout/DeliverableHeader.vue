@@ -48,7 +48,7 @@
 }
 
 .logo {
-  height: 45px;
+  height: 2.8125rem;
   margin: auto;
   padding-right: 1rem;
 
