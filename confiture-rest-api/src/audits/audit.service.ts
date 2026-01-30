@@ -936,7 +936,8 @@ export class AuditService {
       where: { editUniqueId: uniqueId },
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
-        : { statementPublicationDate: new Date() }
+        : { statementPublicationDate: new Date() },
+      include: AUDIT_EDIT_INCLUDE
     });
   }
 
