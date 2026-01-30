@@ -190,7 +190,7 @@ const bottomLinks = [
 .logo-ara {
   height: 75px;
   margin: auto;
-  padding-left: 2rem;
+  padding-left: 1rem;
 
   img {
     height: 100%;
