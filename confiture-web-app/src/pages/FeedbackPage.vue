@@ -351,7 +351,7 @@ const previousPageName =
       concernant, ainsi que d’un droit d’accès, de rectification, de portabilité
       et d’effacement de vos données. Vous pouvez exercer vos droits en nous
       écrivant par e-mail à l’adresse suivante :
-      contact@design.numerique.gouv.fr.
+      ara@design.numerique.gouv.fr.
     </p>
     <button class="fr-btn fr-mb-5w" type="submit">Envoyer mon avis</button>
   </FormWithValidation>
