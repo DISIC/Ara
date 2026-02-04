@@ -189,8 +189,7 @@ const bottomLinks = [
 <style scoped>
 .logo-ara {
   height: 4.6875rem;
-  margin: auto;
-  padding-left: 1rem;
+  padding-left: 2rem;
 
   img {
     height: 100%;
