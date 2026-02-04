@@ -15,6 +15,7 @@ import {
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditReportDto } from "./dto/audit-report.dto";
+import { GetAccessibilityStatementDto } from "./dto/get-accessibility-statement.dto";
 
 @Controller("reports")
 @ApiTags("Audits")
@@ -53,6 +54,12 @@ export class ReportsController {
     }
 
     return file;
+  }
+
+  @Get("/:consultUniqueId/declaration")
+  async getAuditAccessibilityStatement(): Promise<GetAccessibilityStatementDto>
+  {
+    return Promise.reject();
   }
 
   /**
