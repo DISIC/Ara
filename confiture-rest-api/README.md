@@ -27,6 +27,7 @@ Remplir les variables d’environnement requises dans le `.env` :
 - `MAILER_USER` et `MAILER_PASSWORD` peuvent être générées via [https://ethereal.email/](https://ethereal.email/) en cliquant sur "Create Ethereal account".
 - `GRIST_*`, `S3_*` et `AWS_*` doivent être demandées en privé.
 - `JWT_SECRET` peut être laissé à sa valeur par défaut.
+- `DATABASE_SSL=false` est requis pour se connecter à une base de donnée sans SSL (par exemple, une base de développement locale)
 
 Lancer la base de données :
 
