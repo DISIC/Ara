@@ -4,7 +4,6 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuditsModule } from "src/audits/audits.module";
 import { FeedbackModule } from "src/feedback/feedback.module";
 import { MailModule } from "src/mail/mail.module";
-import { PrismaService } from "src/prisma.service";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { CreateAccountController } from "./create-account.controller";
@@ -12,7 +11,7 @@ import { PasswordResetController } from "./password-reset.controller";
 import { UpdateEmailController } from "./update-email.controller";
 
 @Module({
-  providers: [AuthService, PrismaService],
+  providers: [AuthService],
   controllers: [
     AuthController,
     CreateAccountController,

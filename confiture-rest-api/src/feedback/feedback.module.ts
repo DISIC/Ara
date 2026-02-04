@@ -1,13 +1,12 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma.service";
 import { FeedbackController } from "./feedback.controller";
 import { FeedbackService } from "./feedback.service";
 
 @Module({
   // FIXME: put PrismaService into a global module so the service is not instanciated multiple times
-  providers: [FeedbackService, PrismaService],
+  providers: [FeedbackService],
   controllers: [FeedbackController],
   imports: [
     // FIXME: Even tho this module is already imported in AuthModule using the

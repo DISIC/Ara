@@ -10,7 +10,7 @@ import { DebugController } from "./debug.controller";
 import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthCheckController } from "./health-check.controller";
 import { MailModule } from "./mail/mail.module";
-import { PrismaService } from "./prisma.service";
+import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 
 @Module({
@@ -21,6 +21,7 @@ import { ProfileModule } from "./profile/profile.module";
         ? configValidationSchema
         : undefined
     }),
+    PrismaModule,
     FeedbackModule,
     AuditsModule,
     MailModule,
@@ -28,7 +29,7 @@ import { ProfileModule } from "./profile/profile.module";
     ProfileModule,
     SentryModule.forRoot()
   ],
-  providers: [...(process.env.DEBUG_ENDPOINTS ? [PrismaService] : []), {
+  providers: [{
     provide: APP_FILTER,
     useClass: SentryGlobalFilter
   }],

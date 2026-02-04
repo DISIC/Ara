@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 
 import { MailService } from "src/mail/mail.service";
-import { PrismaService } from "src/prisma.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditsController } from "./audits.controller";
@@ -12,7 +11,6 @@ import { ReportsController } from "./reports.controller";
 @Module({
   providers: [
     AuditService,
-    PrismaService,
     MailService,
     FileStorageService,
     AuditExportService
