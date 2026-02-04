@@ -11,9 +11,9 @@ import { VueNodeViewRenderer } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
-
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
+import { marked } from "marked";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
@@ -199,3 +199,17 @@ export const tiptapRenderedExtensions: Extensions = [
   }),
   ...[AraTiptapRenderedExtension]
 ];
+
+/**
+ * Convert markdown string to HTML
+ */
+export function convertMarkdownToHTML(markdown: string): string {
+  let md = marked(markdown) as string;
+
+  // hack to replace heading level for TipTap
+  md = md.replace("h1", "h4");
+  md = md.replace("h2", "h5");
+  md = md.replace("h3", "h6");
+
+  return md;
+}
