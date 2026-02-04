@@ -6,6 +6,7 @@ export const configValidationSchema = Joi.object({
       scheme: "postgres"
     })
     .required(),
+  DATABASE_SSL: Joi.boolean().default(true),
   MAILER_USER: Joi.string().email().required(),
   MAILER_PASSWORD: Joi.string().required(),
   MAILER_SMTP_HOST: Joi.string().hostname().required(),
