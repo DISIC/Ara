@@ -4,7 +4,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { onBeforeUnmount, ShallowRef, useTemplateRef, watch } from "vue";
 
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
-import { displayedHeadings, getTiptapEditorExtensions } from "./tiptap-extensions";
+import { displayedHeadings, getTiptapEditorExtensions, convertMarkdownToHTML } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -29,17 +29,25 @@ const emit = defineEmits<{
 }>();
 
 function getContent() {
-  let jsonContent = null;
+  let content = null;
   if (props.modelValue) {
     try {
-      jsonContent = JSON.parse(props.modelValue);
+      // Try to parse as JSON (Tiptap format)
+      content = JSON.parse(props.modelValue);
     } catch {
-      // not json, most likely markdown
-      jsonContent = props.modelValue;
+      // Not JSON, treat as markdown and convert to HTML
+      // Tiptap will parse the HTML and convert it to its internal format
+      try {
+        content = convertMarkdownToHTML(props.modelValue);
+      }
+      catch {
+        // Other
+        content = props.modelValue;
+      }
     }
   }
 
-  return jsonContent;
+  return content;
 }
 
 function setLink() {
