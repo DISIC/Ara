@@ -160,7 +160,10 @@ function updateResultStatus(status: CriteriumResultStatus) {
         criteriumNotCompliantAccordion.value?.disclose();
       }
 
-      if (store.everyCriteriumAreTested) {
+      if (
+        store.everyCriteriumAreTested &&
+        !auditStore.currentAudit?.publicationDate
+      ) {
         auditStore.publishAudit(props.auditUniqueId).then(() => {
           notify(
             "info",

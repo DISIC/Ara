@@ -64,8 +64,7 @@ const auditIsPublishable = computed(() => {
         La déclaration d’accessibilité est prête à être complétée.
       </template>
       <template v-else>
-        Terminez l’audit avant de compléter et livrer la déclaration
-        d’accessibilité.
+        Terminez l’audit avant de compléter et livrer la déclaration d’accessibilité.
       </template>
     </p>
 
