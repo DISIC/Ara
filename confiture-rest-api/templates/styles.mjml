@@ -9,22 +9,6 @@
   inner-padding="8px 16px"
   border-radius="0"
 />
-<mj-class name="header" padding-top="24px" />
 <mj-style>a { text-decoration: underline !important }</mj-style>
-<mj-style>
-  @media only screen and (max-width: 479px) {
-    .header .mj-column-px-100,
-    .header .mj-column-px-32,
-    .header .mj-column-px-91 {
-      display: inline-block !important;
-      width: auto !important;
-      max-width: none !important;
-    }
-
-    .header .mj-column-px-345 {
-      margin-top: 16px;
-    }
-  }
-</mj-style>
 
 
