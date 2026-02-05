@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
+import _, { isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 import {
@@ -486,10 +486,34 @@ export class AuditService {
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
       if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
-        return (await this.updateAuditEditDate(uniqueId)) ?? audit;
+        await this.updateAuditEditDate(uniqueId);
       }
 
-      if (data.initiator) {
+      /**
+       * TODO:
+       * change from parameters
+       * - if `procedureName` or `pages` changed
+       * - and there is a `statementPublicationDate`
+       */
+
+      /**
+       * first time from statement
+       * - if initiator in payload
+       */
+
+      /**
+       * other times from statement
+       * - always
+       */
+
+      // update statement date if `procedureName` or `pages` changed
+      if (
+        (audit.statementPublicationDate || data.initiator) && (
+          changedProperties.includes("procedureName") ||
+        !isEqual(previousAudit.pages, audit.pages)
+
+        )
+      ) {
         return (await this.updateStatementDate(uniqueId)) ?? audit;
       }
 
@@ -532,6 +556,19 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
+    const criterium = await this.prisma.criterionResult.findUnique({
+      where: {
+        pageId_topic_criterium: {
+          criterium: body.data[0].criterium,
+          topic: body.data[0].topic,
+          pageId: body.data[0].pageId
+        }
+      },
+      select: {
+        status: true
+      }
+    });
+
     const promises = body.data
       .map((item) => {
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
@@ -574,14 +611,22 @@ export class AuditService {
     ]);
     await this.updateAuditEditDate(uniqueId);
 
-    // Only update statement edition date if there is a publication date
-    const audit = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      select: { statementPublicationDate: true }
-    });
+    /**
+     * Update `statementPublicationDate` on:
+     * - a single criterium status update
+     * - multiple criteria updates
+     */
+    const statusChanged = body.data.length === 1 && criterium.status !== body.data[0].status;
 
-    if (audit.statementPublicationDate) {
-      this.updateStatementDate(uniqueId);
+    if (body.data.length > 1 || statusChanged) {
+      const audit = await this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { statementPublicationDate: true }
+      });
+
+      if (audit.statementPublicationDate) {
+        this.updateStatementDate(uniqueId);
+      }
     }
   }
 
