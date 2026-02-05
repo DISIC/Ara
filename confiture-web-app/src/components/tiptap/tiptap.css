@@ -152,18 +152,18 @@
 
 .tiptap-selection,
 .ProseMirror-selectednode {
-  outline: var(--dsfr-outline) dotted 3px;
+  outline: var(--dsfr-outline) solid 0.125rem;
   max-width: max-content;
 
   [data-resize-handle] {
     position: absolute;
     background: var(--highlight-a11y-color-background);
-    border: 0.15rem solid var(--highlight-a11y-color-text-no-token);
+    border: 0.15rem solid var(--dsfr-outline);
     z-index: 10;
 
     &:focus-visible,
     &:hover {
-      background: var(--highlight-a11y-color-text-no-token);
+      background: var(--dsfr-outline);
     }
 
     /* Corner handles */
@@ -176,26 +176,26 @@
     }
 
     &[data-resize-handle="top-left"] {
-      top: -4px;
-      left: -4px;
+      top: -8px !important;
+      left: -8px !important;
       cursor: nwse-resize;
     }
 
     &[data-resize-handle="top-right"] {
-      top: -4px;
-      right: -4px;
+      top: -8px !important;
+      right: -8px !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-left"] {
-      bottom: -4px;
-      left: -4px;
+      bottom: -8px !important;
+      left: -8px !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-right"] {
-      bottom: -4px;
-      right: -4px;
+      bottom: -8px !important;
+      right: -8px !important;
       cursor: nwse-resize;
     }
 
