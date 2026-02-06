@@ -491,27 +491,16 @@ export class AuditService {
 
       /**
        * TODO:
-       * change from parameters
-       * - if `procedureName` or `pages` changed
-       * - and there is a `statementPublicationDate`
+       * - update statement date when updating statement fields.
+       * - use incoming API endpoint: PUT `/api/audits/xxx/statement`
        */
 
-      /**
-       * first time from statement
-       * - if initiator in payload
-       */
-
-      /**
-       * other times from statement
-       * - always
-       */
-
-      // update statement date if `procedureName` or `pages` changed
+      // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
       if (
-        (audit.statementPublicationDate || data.initiator) && (
-          changedProperties.includes("procedureName") ||
-        !isEqual(previousAudit.pages, audit.pages)
-
+        audit.statementPublicationDate &&
+        (
+          !isEqual(previousAudit.pages, audit.pages ||
+          changedProperties.includes("procedureName"))
         )
       ) {
         return (await this.updateStatementDate(uniqueId)) ?? audit;
