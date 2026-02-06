@@ -14,7 +14,7 @@ import {
 } from "../../composables/validation";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
-import { captureWithPayloads } from "../../utils";
+import { captureWithPayloads, notificationDefaultError } from "../../utils";
 
 const showGenericLoginError = ref(false);
 const genericErrorRef = ref<HTMLDivElement>();
@@ -54,8 +54,8 @@ async function handleSubmit() {
         // Unknown error
         notify(
           "error",
-          "Échec de la connexion",
-          "Une erreur inconnue est survenue"
+          notificationDefaultError.title,
+          notificationDefaultError.description
         );
         captureWithPayloads(err, false);
       }

@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from "vue";
 
 import { useNotifications } from "../../../composables/useNotifications";
 import { useAccountStore } from "../../../store/account";
+import { notificationDefaultError } from "../../../utils";
 import DsfrField from "../../ui/DsfrField.vue";
 
 const accountStore = useAccountStore();
@@ -46,8 +47,8 @@ function updateProfile() {
     .catch(() => {
       notify(
         "error",
-        "La mise a jour du profil a échoué",
-        "Une erreur inconnue est survenue"
+        notificationDefaultError.title,
+        notificationDefaultError.description
       );
     });
 }

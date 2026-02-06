@@ -9,6 +9,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AccountVerificationJwtPayload } from "../../types";
+import { notificationDefaultError } from "../../utils";
 
 const route = useRoute();
 const store = useAccountStore();
@@ -38,8 +39,8 @@ onMounted(async () => {
       } else {
         notify(
           "error",
-          "Échec de la vérification du compte",
-          "Une erreur inconnue est survenue"
+          notificationDefaultError.title,
+          notificationDefaultError.description
         );
       }
     });

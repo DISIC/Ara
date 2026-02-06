@@ -7,7 +7,7 @@ import { useNotifications } from "../../../composables/useNotifications";
 import { EMAIL, REQUIRED } from "../../../composables/validation";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads, formatEmail } from "../../../utils";
+import { captureWithPayloads, formatEmail, notificationDefaultError } from "../../../utils";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
@@ -74,8 +74,8 @@ async function updateEmail() {
       } else {
         notify(
           "error",
-          "Impossible de mettre à jour l'adresse mail.",
-          "Une erreur inconnue empêche la mise à jour de votre compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+          notificationDefaultError.title,
+          notificationDefaultError.description
         );
         captureWithPayloads(e, false);
       }
@@ -124,8 +124,8 @@ async function cancelEmailUpdate() {
   } catch (e) {
     notify(
       "error",
-      "Impossible d’annuler le changement d’adresse e-mail.",
-      "Une erreur inconnue empêche l’annulation du changement d’adresse e-mail. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      notificationDefaultError.title,
+      notificationDefaultError.description
     );
     captureWithPayloads(e, false);
   } finally {

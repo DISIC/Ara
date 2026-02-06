@@ -5,7 +5,7 @@ import { nextTick, ref, useTemplateRef } from "vue";
 import { useNotifications } from "../../../composables/useNotifications";
 import { LENGTH, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads } from "../../../utils";
+import { captureWithPayloads, notificationDefaultError } from "../../../utils";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
 
@@ -64,8 +64,8 @@ async function updatePassword() {
         // Unexpected network error
         notify(
           "error",
-          "Échec de la mise à jour du mot de passe",
-          "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+          notificationDefaultError.title,
+          notificationDefaultError.description
         );
         captureWithPayloads(err, false);
       }

@@ -11,7 +11,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { PasswordResetVerificationJwtPayload } from "../../types";
-import { captureWithPayloads, formatEmail, isJwtExpired } from "../../utils";
+import { captureWithPayloads, formatEmail, isJwtExpired, notificationDefaultError } from "../../utils";
 
 const route = useRoute();
 const router = useRouter();
@@ -43,8 +43,8 @@ async function onRequestSubmit(email: string) {
   } catch (e) {
     notify(
       "error",
-      "Impossible de demander la réinitialisation du mot de passe",
-      "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      notificationDefaultError.title,
+      notificationDefaultError.description
     );
     captureWithPayloads(e);
   }
@@ -58,8 +58,8 @@ async function resendEmail() {
   } catch (e) {
     notify(
       "error",
-      "Impossible de demander la réinitialisation du mot de passe",
-      "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      notificationDefaultError.title,
+      notificationDefaultError.description
     );
     captureWithPayloads(e);
   }
@@ -90,8 +90,8 @@ async function resetPassword(newPassword: string) {
   } catch (e) {
     notify(
       "error",
-      "Impossible de procéder à la mise à jour du mot de passe",
-      "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      notificationDefaultError.title,
+      notificationDefaultError.description
     );
     captureWithPayloads(e, false);
   }

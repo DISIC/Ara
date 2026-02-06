@@ -9,6 +9,7 @@ import { useNotifications } from "../../composables/useNotifications";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { NewEmailVerificationJwtPayload } from "../../types";
+import { notificationDefaultError } from "../../utils";
 
 const route = useRoute();
 const store = useAccountStore();
@@ -51,8 +52,8 @@ onMounted(async () => {
         console.log(err);
         notify(
           "error",
-          "Échec de la validation de l'adresse mail.",
-          "Une erreur inconnue est survenue"
+          notificationDefaultError.title,
+          notificationDefaultError.description
         );
       }
     });
