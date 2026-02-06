@@ -1,30 +1,31 @@
 import { Body, Controller, GoneException, NotFoundException, Param, Put } from "@nestjs/common";
 import { ApiGoneResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { AuditService } from "./audit.service";
+import { AuditDto } from "./dto/entities/audit.dto";
 import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 
-@Controller("statements")
+@Controller("audits")
 @ApiTags("Audits")
 export class StatementsController {
   constructor(
     private readonly auditService: AuditService
   ) {}
 
-  @Put("/:editUniqueId")
-  @ApiOkResponse({ description: "The statement was found.", type: UpdateStatementDto })
+  @Put("/:editUniqueId/statement")
+  @ApiOkResponse({ description: "The statement was found.", type: AuditDto })
   @ApiNotFoundResponse({ description: "The statement does not exist." })
   @ApiGoneResponse({ description: "The statement has been previously deleted." })
   async getAuditStatement(
     @Param("editUniqueId") editUniqueId: string,
     @Body() body: UpdateStatementDto
-  ): Promise<UpdateStatementDto> {
-    const statement = await this.auditService.updateAuditStatementData(editUniqueId, body);
+  ): Promise<AuditDto> {
+    const audit = await this.auditService.updateAuditStatementData(editUniqueId, body);
 
-    if (!statement) {
+    if (!audit) {
       await this.sendAuditNotFoundStatus(editUniqueId);
     }
 
-    return statement;
+    return audit;
   }
 
   /**
