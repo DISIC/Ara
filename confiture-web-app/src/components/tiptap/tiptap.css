@@ -58,7 +58,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tiptap:not(.tiptap--rendered) img:hover {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 0.1875rem 0.5rem;
   }
 }
 
@@ -148,6 +148,11 @@
 .tiptap [data-resize-container] {
   display: block !important;
   max-width: max-content;
+
+  &:hover {
+    outline: var(--dsfr-outline) solid 0.125rem;
+    cursor: hand;
+  }
 }
 
 .tiptap-selection,
@@ -176,61 +181,61 @@
     }
 
     &[data-resize-handle="top-left"] {
-      top: -8px !important;
-      left: -8px !important;
+      top: -0.5rem !important;
+      left: -0.5rem !important;
       cursor: nwse-resize;
     }
 
     &[data-resize-handle="top-right"] {
-      top: -8px !important;
-      right: -8px !important;
+      top: -0.5rem !important;
+      right: -0.5rem !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-left"] {
-      bottom: -8px !important;
-      left: -8px !important;
+      bottom: -0.5rem !important;
+      left: -0.5rem !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-right"] {
-      bottom: -8px !important;
-      right: -8px !important;
+      bottom: -0.5rem !important;
+      right: -0.5rem !important;
       cursor: nwse-resize;
     }
 
     /* Edge handles */
     &[data-resize-handle="top"],
     &[data-resize-handle="bottom"] {
-      height: 6px;
-      left: 8px;
-      right: 8px;
+      height: 0.375rem;
+      left: 0.5rem;
+      right: 0.5rem;
     }
 
     &[data-resize-handle="top"] {
-      top: -3px;
+      top: -0.1875rem;
       cursor: ns-resize;
     }
 
     &[data-resize-handle="bottom"] {
-      bottom: -3px;
+      bottom: -0.1875rem;
       cursor: ns-resize;
     }
 
     &[data-resize-handle="left"],
     &[data-resize-handle="right"] {
-      width: 6px;
-      top: 8px;
-      bottom: 8px;
+      width: 0.375rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
     }
 
     &[data-resize-handle="left"] {
-      left: -3px;
+      left: -0.1875rem;
       cursor: ew-resize;
     }
 
     &[data-resize-handle="right"] {
-      right: -3px;
+      right: -0.1875rem;
       cursor: ew-resize;
     }
   }

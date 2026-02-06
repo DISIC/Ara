@@ -1,4 +1,4 @@
-import { Attributes, Extensions, textblockTypeInputRule } from "@tiptap/core";
+import { Attributes, Extensions, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
 import { Heading, type Level } from "@tiptap/extension-heading";
@@ -171,40 +171,7 @@ export function getTiptapEditorExtensions(options: {
             return vueNodeView;
           }
 
-          const img = document.createElement("img");
-
-          Object.entries(vueNodeView.HTMLAttributes).forEach(([key, value]) => {
-            if (value == null) return;
-            if (key === "width" || key === "height") return;
-            img.setAttribute(key, String(value));
-          });
-
-          const node = vueNodeView.node;
-
-          // hack for respect picture's size
-          node.attrs.height = "auto";
-
-          const resizableView = new ResizableNodeView({
-            ...props,
-            element: img,
-            node,
-            onResize: (w, h) => {
-              img.style.width = `${w}px`;
-              img.style.height = `${h}px`;
-            },
-            onCommit: (w, h) => {
-              props.editor.commands.updateAttributes("image", { width: w, height: h });
-            },
-            onUpdate: (updatedNode) => {
-              if (updatedNode.type !== node.type) return false;
-              return true;
-            },
-            options: {
-              preserveAspectRatio: true
-            }
-          });
-
-          return resizableView;
+          return createResizableNodeView(props, vueNodeView);
         };
       }
     }),
@@ -239,3 +206,107 @@ export const tiptapRenderedExtensions: Extensions = [
   }),
   ...[AraTiptapRenderedExtension]
 ];
+
+// create a resizable node view for picture
+export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: any): ResizableNodeView => {
+  const img = document.createElement("img");
+
+  Object.entries(vueNodeView.HTMLAttributes).forEach(([key, value]) => {
+    if (value == null) return;
+    if (key === "width" || key === "height") return;
+    img.setAttribute(key, String(value));
+  });
+
+  const node = vueNodeView.node;
+
+  // hack for respect picture's size
+  node.attrs.height = "auto";
+
+  const resizableView = new ResizableNodeView({
+    ...props,
+    element: img,
+    node,
+    onResize: (w, h) => {
+      img.style.width = `${w}px`;
+      img.style.height = `${h}px`;
+    },
+    onCommit: (w, h) => {
+      props.editor.commands.updateAttributes("image", { width: w, height: h });
+    },
+    onUpdate: (updatedNode) => {
+      if (updatedNode.type !== node.type) return false;
+      return true;
+    },
+    options: {
+      preserveAspectRatio: true
+    }
+  });
+
+  // Check if the image node is currently selected in the editor
+  const isSelected = () => {
+    const nodePos = props.getPos();
+    if (!nodePos) {
+      return false;
+    }
+    const { selection } = props.editor.state;
+    return selection.from == nodePos;
+  };
+
+  // handleKeyDown to manage image resizing with ALT + Arrow
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (!isSelected() || !e.altKey) return;
+
+    if (!["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const step = 10;
+    const currentWidth = img.offsetWidth || parseInt(img.style.width) || 200;
+    const currentHeight = img.offsetHeight || parseInt(img.style.height) || 200;
+    const aspectRatio = currentWidth / currentHeight;
+
+    let newWidth = currentWidth;
+    let newHeight = currentHeight;
+
+    switch (e.key) {
+      case "ArrowRight":
+        newWidth = currentWidth + step;
+        newHeight = newWidth / aspectRatio;
+        break;
+      case "ArrowLeft":
+        newWidth = Math.max(50, currentWidth - step);
+        newHeight = newWidth / aspectRatio;
+        break;
+      case "ArrowUp":
+        newHeight = Math.max(50, currentHeight - step);
+        newWidth = newHeight * aspectRatio;
+        break;
+      case "ArrowDown":
+        newHeight = currentHeight + step;
+        newWidth = newHeight * aspectRatio;
+        break;
+    }
+
+    const currentTarget = e.currentTarget as HTMLElement;
+    if (newWidth > currentTarget.offsetWidth - 15) {
+      return;
+    }
+
+    // Apply resize
+    resizableView.onResize?.(newWidth, newHeight);
+    resizableView.onCommit?.(newWidth, newHeight);
+  };
+
+  // Capture phase to intercept before Tiptap handles it
+  props.editor.view.dom.addEventListener("keydown", handleKeydown, true);
+
+  // Cleanup on destroy
+  const originalDestroy = resizableView.destroy?.bind(resizableView);
+  resizableView.destroy = () => {
+    props.editor.view.dom.removeEventListener("keydown", handleKeydown, true);
+    originalDestroy?.();
+  };
+
+  return resizableView;
+};
