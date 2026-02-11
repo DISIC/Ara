@@ -24,6 +24,7 @@ import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
+import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
@@ -1607,5 +1608,70 @@ export class AuditService {
     ];
 
     return orderedAudits;
+  }
+
+  async updateAuditStatementData(
+    editUniqueId: string,
+    data: UpdateStatementDto
+  ): Promise<AuditDto | undefined> {
+    const audit = await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: {
+        initiator: data.initiator,
+        auditorOrganisation: data.auditorOrganisation,
+        procedureUrl: data.procedureUrl,
+        contactName: data.contactName,
+        contactEmail: data.contactEmail,
+        contactFormUrl: data.contactFormUrl,
+        technologies: data.technologies,
+        tools: data.tools,
+        environments: {
+          deleteMany: {
+            OR: [
+              {
+                platform: {
+                  notIn: data.environments.map((e) => e.platform)
+                }
+              },
+              {
+                operatingSystem: {
+                  notIn: data.environments.map((e) => e.operatingSystem)
+                }
+              },
+              {
+                assistiveTechnology: {
+                  notIn: data.environments.map((e) => e.assistiveTechnology)
+                }
+              },
+              {
+                browser: {
+                  notIn: data.environments.map((e) => e.browser)
+                }
+              }
+            ]
+          },
+          upsert: data.environments.map((environment) => ({
+            where: {
+              platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
+                    {
+                      auditUniqueId: editUniqueId,
+                      platform: environment.platform,
+                      operatingSystem: environment.operatingSystem,
+                      assistiveTechnology: environment.assistiveTechnology,
+                      browser: environment.browser
+                    }
+            },
+            create: environment,
+            update: environment
+          }))
+        },
+        notCompliantContent: data.notCompliantContent,
+        derogatedContent: data.derogatedContent,
+        notInScopeContent: data.notInScopeContent
+      },
+      select: AUDIT_PRISMA_SELECT
+    });
+
+    return audit;
   }
 }
