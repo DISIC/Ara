@@ -31,7 +31,7 @@ import {
   Platform
 } from "../../enums";
 import { useAccountStore, useAuditStore } from "../../store";
-import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
+import { AuditEnvironment, UpdateAuditStatementRequestData } from "../../types";
 import { formatEmail, URL_REGEX, formatDate, isSameDay } from "../../utils";
 
 const route = useRoute();
@@ -123,16 +123,14 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const dataToBeSubmitted = computed<UpdateAuditRequestData>(() => {
+const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
   return {
-    ...auditStore.currentAudit!,
-
     initiator: auditInitiator.value,
     auditorOrganisation: auditorOrganisation.value,
     procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value) || null,
-    contactFormUrl: contactFormUrl.value.trim() || null,
+    contactEmail: formatEmail(contactEmail.value) || undefined,
+    contactFormUrl: contactFormUrl.value.trim() || undefined,
     contactName: contactName.value,
 
     technologies: technologies.value,
@@ -153,7 +151,7 @@ function handleSubmit() {
   const isStatementUpdate = !!auditStore.currentAudit?.initiator;
 
   return auditStore
-    .updateAudit(uniqueId, dataToBeSubmitted.value)
+    .updateAuditStatement(uniqueId, dataToBeSubmitted.value)
     .then(() => {
       notify("success", undefined, isStatementUpdate ? "Déclaration d’accessibilité mise à jour" : "Déclaration d’accessibilité enregistrée");
       router.push({
@@ -222,11 +220,12 @@ const leaveModalDestination = ref<string>("");
 
 onBeforeRouteLeave((to) => {
   const currentAudit = auditStore.currentAudit;
-  const editedAudit = dataToBeSubmitted.value;
+  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
 
-  if (!confirmedLeave.value &&
-    !isEqual(currentAudit, editedAudit) &&
-    !isSubmitting.value
+  if (
+    !isSubmitting.value &&
+    !confirmedLeave.value &&
+    !isEqual(currentAudit, editedAudit)
   ) {
     leaveModalDestination.value = to.fullPath;
 

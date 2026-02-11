@@ -489,12 +489,6 @@ export class AuditService {
         await this.updateAuditEditDate(uniqueId);
       }
 
-      /**
-       * TODO:
-       * - update statement date when updating statement fields.
-       * - use incoming API endpoint: PUT `/api/audits/xxx/statement`
-       */
-
       // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
       if (
         audit.statementPublicationDate &&
@@ -1688,7 +1682,7 @@ export class AuditService {
     editUniqueId: string,
     data: UpdateStatementDto
   ): Promise<AuditDto | undefined> {
-    const audit = await this.prisma.audit.update({
+    await this.prisma.audit.update({
       where: { editUniqueId },
       data: {
         initiator: data.initiator,
@@ -1745,6 +1739,8 @@ export class AuditService {
       },
       select: AUDIT_PRISMA_SELECT
     });
+
+    const audit = await this.updateStatementDate(editUniqueId);
 
     return audit;
   }

@@ -1,7 +1,7 @@
 import { Component } from "vue";
 import { RouterScrollBehavior } from "vue-router";
 
-import { components } from "./confiture-api";
+import { components, paths } from "./confiture-api";
 
 export interface AuditEnvironment {
   id: number;
@@ -94,6 +94,8 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   environments: Omit<AuditEnvironment, "id">[];
   pages: Omit<AuditPage, "id" | "order">[];
 };
+
+export type UpdateAuditStatementRequestData = paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
 
 export enum CriteriumResultStatus {
   NOT_TESTED = "NOT_TESTED",
