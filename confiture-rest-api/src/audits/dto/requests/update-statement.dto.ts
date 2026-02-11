@@ -39,21 +39,21 @@ export class UpdateStatementDto {
    */
   @IsString()
   @IsOptional()
-  initiator?: string;
+  initiator: string;
 
   /**
    * @example "WEB AUDIT SARL"
    */
   @IsString()
   @IsOptional()
-  auditorOrganisation?: string;
+  auditorOrganisation: string;
 
   /**
    * @example "https://procedure.government.com"
    */
   @IsString()
   @IsOptional()
-  procedureUrl?: string;
+  procedureUrl: string;
 
   /**
    * @example "John Referent"
@@ -82,7 +82,7 @@ export class UpdateStatementDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  technologies?: string[];
+  technologies: string[];
 
   /**
    * @example ["Firefox devtools", "Axe"]
@@ -90,13 +90,13 @@ export class UpdateStatementDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  tools?: string[];
+  tools: string[];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StatementEnvironment)
   @IsOptional()
-  environments?: StatementEnvironment[];
+  environments: StatementEnvironment[];
 
   @IsString()
   @IsOptional()
