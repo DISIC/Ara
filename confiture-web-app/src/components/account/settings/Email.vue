@@ -108,7 +108,7 @@ const displayUpdateEmailForm = ref(false);
 async function showUpdateEmailForm() {
   displayUpdateEmailForm.value = true;
   await nextTick();
-  passwordField.value?.focus();
+  newEmailField.value?.focus();
 }
 
 async function hideUpdateEmailForm() {
@@ -150,7 +150,7 @@ async function cancelEmailUpdate() {
     v-if="displayEmailUpdateSuccess"
     class="fr-alert fr-alert--success fr-mb-3v"
   >
-    <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+    <p>Votre adresse e-mail a été mise à jour</p>
     <button class="fr-link--close fr-link" @click="closeEmailUpdateSuccess">
       Masquer le message
     </button>
@@ -219,19 +219,6 @@ async function cancelEmailUpdate() {
     @submit="updateEmail"
   >
 
-    <DsfrPasswordWithValidation
-      id="email-password"
-      ref="password-field"
-      v-model="password"
-      class="fr-mb-3w"
-      label="Mot de passe"
-      required
-      autocomplete="current-password"
-      show-forgotten-password-link
-      skip-forgotten-password-first-step
-      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-    />
-
     <DsfrFieldWithValidation
       id="new-email"
       ref="new-email-field"
@@ -245,6 +232,19 @@ async function cancelEmailUpdate() {
         REQUIRED('Champ obligatoire. Saisissez votre nouvelle adresse e-mail.'),
         EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
       ]"
+    />
+
+    <DsfrPasswordWithValidation
+      id="email-password"
+      ref="password-field"
+      v-model="password"
+      class="fr-mb-3w"
+      label="Mot de passe"
+      required
+      autocomplete="current-password"
+      show-forgotten-password-link
+      skip-forgotten-password-first-step
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
     />
 
     <ul
@@ -270,7 +270,7 @@ async function cancelEmailUpdate() {
   <button
     v-else-if="!displayPendingEmailVerification"
     ref="showButtonRef"
-    class="fr-btn fr-btn--tertiary-no-outline fr-mb-2w"
+    class="fr-btn fr-btn--tertiary-no-outline"
     @click="showUpdateEmailForm"
   >
     Changer d’adresse e-mail
