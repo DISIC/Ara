@@ -15,6 +15,7 @@ import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 
 import { marked } from "marked";
+import { useWindowWidth } from "../../composables/useWindowWidth";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
@@ -174,6 +175,12 @@ export function getTiptapEditorExtensions(options?: {
           const vueNodeView: any = VueNodeViewRenderer(TiptapImage)(props);
 
           if (!vueNodeView.HTMLAttributes) {
+            return vueNodeView;
+          }
+
+          // if mobile, we don't resize
+          const width = useWindowWidth().value;
+          if (width < 768) {
             return vueNodeView;
           }
 

@@ -20,7 +20,8 @@
   max-width: 100%;
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
-  padding: 0.5rem;
+  /*padding: 0.5rem;*/
+  padding: 0.125rem;
 }
 
 .tiptap img:not(.ProseMirror-widget) {
@@ -163,7 +164,7 @@
   [data-resize-handle] {
     position: absolute;
     background: var(--highlight-a11y-color-background);
-    border: 0.15rem solid var(--dsfr-outline);
+    border: 0.1rem solid var(--dsfr-outline);
     z-index: 10;
 
     &:focus-visible,
@@ -176,31 +177,32 @@
     &[data-resize-handle="top-right"],
     &[data-resize-handle="bottom-left"],
     &[data-resize-handle="bottom-right"] {
-      width: 0.85rem;
-      height: 0.85rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      background-color: var(--highlight-a11y-color-handle);
     }
 
     &[data-resize-handle="top-left"] {
-      top: -0.5rem !important;
-      left: -0.5rem !important;
+      top: -0.4375rem !important;
+      left: -0.4375rem !important;
       cursor: nwse-resize;
     }
 
     &[data-resize-handle="top-right"] {
-      top: -0.5rem !important;
-      right: -0.5rem !important;
+      top: -0.4375rem !important;
+      right: -0.4375rem !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-left"] {
-      bottom: -0.5rem !important;
-      left: -0.5rem !important;
+      bottom: -0.4375rem !important;
+      left: -0.4375rem !important;
       cursor: nesw-resize;
     }
 
     &[data-resize-handle="bottom-right"] {
-      bottom: -0.5rem !important;
-      right: -0.5rem !important;
+      bottom: -0.4375rem !important;
+      right: -0.4375rem !important;
       cursor: nwse-resize;
     }
 
