@@ -8,7 +8,8 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Mettre le nouveau logo ARA sur le site [#1386](https://github.com/DISIC/Ara/pull/1386)
+- Ajoute les dates de publication et de modification de la déclaration d’accessibilité ([#1331](https://github.com/DISIC/Ara/pull/1331))
+- Mettre le nouveau logo ARA sur le site ([#1386](https://github.com/DISIC/Ara/pull/1386))
 
 ### 28/01/2026
 
