@@ -363,8 +363,3 @@ export async function createFileFromUrl(url: string): Promise<File | null> {
       return new File([buf], "external", { type: mimeType });
     });
 }
-
-export const notificationDefaultError = {
-  title: "Erreur inconnue",
-  description: "Réessayez. Si le problème persiste, contactez-nous à l’adresse : ara@design.numérique.fr"
-};

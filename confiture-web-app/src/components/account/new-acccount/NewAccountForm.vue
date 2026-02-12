@@ -10,7 +10,7 @@ import {
   REQUIRED
 } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads, formatEmail, notificationDefaultError } from "../../../utils";
+import { captureWithPayloads, formatEmail } from "../../../utils";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
@@ -55,8 +55,8 @@ async function handleSubmit() {
           // Unkown error
           notify(
             "error",
-            notificationDefaultError.title,
-            notificationDefaultError.description
+            "Échec de la création de compte",
+            "Une erreur inconnue est survenue"
           );
           captureWithPayloads(err, false);
         }

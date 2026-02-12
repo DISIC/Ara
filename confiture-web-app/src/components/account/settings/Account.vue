@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { EQUAL, REQUIRED } from "../../../composables/validation";
 import { useAccountStore } from "../../../store/account";
-import { captureWithPayloads, notificationDefaultError } from "../../../utils";
+import { captureWithPayloads } from "../../../utils";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
 import FormWithValidation from "../../validation/form-with-validation/FormWithValidation.vue";
@@ -36,8 +36,8 @@ async function deleteAccount() {
       } else {
         notify(
           "error",
-          notificationDefaultError.title,
-          notificationDefaultError.description
+          "Impossible de supprimer le compte",
+          "Une erreur inconnue empêche la suppression du compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
         );
         captureWithPayloads(e, false);
       }
