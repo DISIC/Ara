@@ -30,22 +30,19 @@ export const MAX_UPLOAD_FILES_COUNT = 1;
 export const FILE_SIZE_LIMIT = 2_000_000;
 
 enum FileMessage {
-  DELETE_ERROR_TIMEOUT = "Suppression interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
-  DELETE_ERROR_UNKNOWN = "Suppression échouée, erreur inconnue. Vérifiez votre connexion et réessayez.",
+  DELETE_ERROR_TIMEOUT = "Échec de la suppression. Vérifiez votre connexion et réessayez.",
   DELETE_SUCCESS = "Fichier [FILE] supprimé.",
   DELETE_SUCCESS_IMAGE = "Image [FILE] supprimée.",
-  FETCH_ERROR_IMAGE = "Importation échouée. Importez l’image depuis votre ordinateur.",
+  FETCH_ERROR_IMAGE = "Echec de l'importation. Importez l'image depuis votre ordinateur.",
   UPLOAD_ERROR_FORMAT_IMAGE = "Format non pris en charge. Importez une image.",
-  UPLOAD_ERROR_FROM_HTML = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
-  UPLOAD_ERROR_FROM_HTML_MULTIPLE = "Importation des images échouée. Importez les images depuis votre ordinateur.",
-  UPLOAD_ERROR_MULTIPLE_FILES = "Importation échouée. Ajoutez une seule image à la fois.",
+  UPLOAD_ERROR_FROM_HTML_MULTIPLE = "Echec de l'importation. Importez les images depuis votre ordinateur.",
+  UPLOAD_ERROR_MULTIPLE_FILES = "Echec de l'importation. Ajoutez une seule image à la fois.",
   UPLOAD_ERROR_SIZE = "Fichier trop lourd. Choisissez un fichier inférieur à 2 Mo.",
   UPLOAD_ERROR_SIZE_IMAGE = "Image trop lourde. Choisissez une image inférieure à 2 Mo.",
-  UPLOAD_ERROR_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
-  UPLOAD_ERROR_UNKNOWN = "Importation échouée, erreur inconnue. Réessayez.",
+  UPLOAD_ERROR_TIMEOUT = "Échec de l'importation. Vérifiez votre connexion et réessayez.",
   UPLOAD_SUCCESS = "Fichier [FILE] ajouté.",
   UPLOAD_SUCCESS_IMAGE = "Image [FILE] ajoutée.",
-  UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
+  UNKNOWN_ERROR = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numérique.fr"
 }
 
 export function getFileMessage(fileMessage: keyof typeof FileMessage, options?: {
