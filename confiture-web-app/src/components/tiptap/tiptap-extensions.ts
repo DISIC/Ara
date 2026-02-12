@@ -252,7 +252,7 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
   // Check if the image node is currently selected in the editor
   const isSelected = () => {
     const nodePos = props.getPos();
-    if (!nodePos) {
+    if (nodePos === undefined) {
       return false;
     }
     const { selection } = props.editor.state;
