@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 12/02/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Mettre le nouveau logo ARA sur le site [#1386](https://github.com/DISIC/Ara/pull/1386)
+
 ### 28/01/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections

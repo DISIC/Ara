@@ -63,6 +63,9 @@ const bottomLinks = [
               Française
             </p>
           </RouterLink>
+          <div class="logo-ara">
+            <img src="../../assets/images/logo-ara.svg" alt="Logo Ara" />
+          </div>
         </div>
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
@@ -184,6 +187,15 @@ const bottomLinks = [
 </template>
 
 <style scoped>
+.logo-ara {
+  height: 4.6875rem;
+  padding-left: 2rem;
+
+  img {
+    height: 100%;
+  }
+}
+
 .logo-partner {
   border: 1px solid var(--border-default-grey);
 }
