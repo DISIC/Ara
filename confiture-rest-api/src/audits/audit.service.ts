@@ -539,19 +539,6 @@ export class AuditService {
   }
 
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
-    const criterium = await this.prisma.criterionResult.findUnique({
-      where: {
-        pageId_topic_criterium: {
-          criterium: body.data[0].criterium,
-          topic: body.data[0].topic,
-          pageId: body.data[0].pageId
-        }
-      },
-      select: {
-        status: true
-      }
-    });
-
     const promises = body.data
       .map((item) => {
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
@@ -594,11 +581,22 @@ export class AuditService {
     ]);
     await this.updateAuditEditDate(uniqueId);
 
-    /**
-     * Update `statementPublicationDate` on:
-     * - a single criterium status update
-     * - multiple criteria updates
-     */
+    // Update `statementPublicationDate` on:
+    // - a single criterium status update
+    // - multiple criteria updates
+    const criterium = await this.prisma.criterionResult.findUnique({
+      where: {
+        pageId_topic_criterium: {
+          criterium: body.data[0].criterium,
+          topic: body.data[0].topic,
+          pageId: body.data[0].pageId
+        }
+      },
+      select: {
+        status: true
+      }
+    });
+
     const statusChanged = body.data.length === 1 && criterium.status !== body.data[0].status;
 
     if (body.data.length > 1 || statusChanged) {
