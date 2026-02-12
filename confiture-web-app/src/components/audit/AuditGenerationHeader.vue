@@ -88,8 +88,8 @@ function confirmDuplicate(name: string) {
     .catch((error) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Échec de la duplication de l'audit",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(error);
     });
@@ -117,8 +117,8 @@ function confirmDelete() {
     .catch((error) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Échec de la supression de l'audit",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(error);
     })

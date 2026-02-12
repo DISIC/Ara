@@ -4,6 +4,7 @@ import { computed, ref, useTemplateRef } from "vue";
 import { RouterLink } from "vue-router";
 import { useNotifications } from "../../../composables/useNotifications";
 import { useWindowWidth } from "../../../composables/useWindowWidth";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import router from "../../../router";
 import { useAuditStore } from "../../../store";
 import { AuditStatus, AuditType } from "../../../types";
@@ -65,8 +66,8 @@ function duplicateAudit(name: string) {
     .catch((error) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la duplication de l’audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Échec de la duplication de l'audit",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(error);
     })

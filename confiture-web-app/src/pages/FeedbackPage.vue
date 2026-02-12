@@ -14,6 +14,7 @@ import FormWithValidation from "../components/validation/form-with-validation/Fo
 import { useNotifications } from "../composables/useNotifications";
 import { usePreviousRoute } from "../composables/usePreviousRoute";
 import { ARRAY_LENGTH, EMAIL, REQUIRED } from "../composables/validation";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../enums";
 import { paths } from "../types/confiture-api";
 import { captureWithPayloads } from "../utils";
 
@@ -86,8 +87,8 @@ function submitFeedback() {
     .catch((err) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la soumission du formulaire. Contactez-nous à l’adresse ara@design.numerique.gouv.fr si le problème persiste"
+        "Échec de l'envoi de vos retours",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(err);
     });
