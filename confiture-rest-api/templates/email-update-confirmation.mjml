@@ -1,8 +1,8 @@
 <mjml>
   <mj-head>
-    <mj-title>Ara : adresse e-mail mise à jour avec succès</mj-title>
+    <mj-title>Votre adresse e-mail a bien été mise à jour</mj-title>
     <mj-attributes>
-      <mj-preview>Ara : adresse e-mail mise à jour avec succès</mj-preview>
+      <mj-preview>Votre adresse e-mail a bien été mise à jour</mj-preview>
       <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
@@ -14,12 +14,10 @@
     <mj-section>
       <mj-column>
         <mj-text font-size="20px" font-weight="700" padding-bottom="8px">
-          Adresse e-mail mise à jour avec succès
+          Votre adresse e-mail a bien été mise à jour
         </mj-text>
         <mj-text padding-bottom="24px">
-          L’adresse e-mail de votre compte Ara a bien été modifiée. La prochaine
-          fois que vous vous connectez à votre compte, assurez-vous que vous
-          utilisez l’adresse e-mail : {{ newEmail }}.
+          L’adresse e-mail de votre compte Ara a bien bien été modifiée.
         </mj-text>
       </mj-column>
     </mj-section>
