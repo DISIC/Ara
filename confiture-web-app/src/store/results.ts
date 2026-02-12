@@ -2,6 +2,7 @@ import ky from "ky";
 import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { useNotifications } from "../composables/useNotifications";
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditType,
@@ -406,6 +407,14 @@ export const useResultsStore = defineStore("results", {
       }));
 
       await this.updateResults(uniqueId, updates);
+
+      const auditStore = useAuditStore();
+      if (
+        this.everyCriteriumAreTested &&
+        !auditStore.currentAudit?.publicationDate
+      ) {
+        await this.publishAuditIfEveryCriteriumAreTested(uniqueId);
+      }
     },
 
     /**
@@ -545,6 +554,32 @@ export const useResultsStore = defineStore("results", {
 
       await this.updateResults(uniqueId, updates);
       await auditStore.publishAudit(uniqueId);
+    },
+
+    async publishAuditIfEveryCriteriumAreTested(auditUniqueId: string): Promise<void> {
+      const auditStore = useAuditStore();
+
+      const notify = useNotifications();
+
+      auditStore.publishAudit(auditUniqueId).then(() => {
+        notify(
+          "info",
+          "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+          auditStore.currentAudit?.auditType === AuditType.FULL
+            ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
+            : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
+          {
+            link: {
+              label: "Accéder aux livrables",
+              to: {
+                name: "audit-overview",
+                params: { uniqueId: auditUniqueId }
+              }
+            }
+          }
+        );
+      });
     }
   }
+
 });
