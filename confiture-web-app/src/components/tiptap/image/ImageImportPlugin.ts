@@ -31,13 +31,13 @@ interface ImageImportPluginOptions {
  *      - UPLOAD_ERROR_MULTIPLE_FILES
  *      - UPLOAD_ERROR_SIZE
  *      - UPLOAD_ERROR_SIZE_IMAGE
- *      - UPLOAD_ERROR_UNKNOWN
+ *      - UNKNOWN_ERROR
  *   - server errors (see useFileHandler#handleFileUploadError):
  *      - UPLOAD_ERROR_TIMEOUT
  *      - UPLOAD_ERROR_FORMAT_IMAGE
  *      - UPLOAD_ERROR_SIZE
  *      - UPLOAD_ERROR_SIZE_IMAGE
- *      - UPLOAD_ERROR_UNKNOWN
+ *      - UNKNOWN_ERROR
  *
  * Limitations:
  * - prevents multiple imports at the same time (only one by one)
@@ -257,7 +257,7 @@ export class ImageImportPlugin extends Plugin {
     element.onerror = () => {
       // Error on the placeholder image. Should not happen…
       // See [Image loading errors | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#image_loading_errors)
-      this.notify("error", undefined, getFileMessage("UNKNOWN_ERROR"));
+      this.notify("error", "Erreur inconnue", getFileMessage("UNKNOWN_ERROR"));
     };
     element.onload = () => {
       element.setAttribute("width", element.width.toString());
@@ -407,7 +407,7 @@ export class ImageImportPlugin extends Plugin {
     // Remove all <img> elements
     imgs.forEach(img => img.remove());
     if (imgs.length === 1) {
-      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML"));
+      this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
     } else if (imgs.length > 1) {
       this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
     }

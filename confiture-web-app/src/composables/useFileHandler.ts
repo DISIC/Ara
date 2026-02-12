@@ -81,6 +81,7 @@ export function useFileHandler() {
   ): Promise<string | null> {
     const fileName = file.name;
     let errorMessage: string | null = null;
+    let errorTitle: string | undefined;
 
     if (!(error instanceof Error)) {
       console.error("An unexpected error occurred", error);
@@ -107,19 +108,22 @@ export function useFileHandler() {
         } else if (body.message.includes("expected size")) {
           errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", { fileName: fileName });
         } else {
-          errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
+          errorMessage = getFileMessage("UNKNOWN_ERROR", { fileName: fileName });
+          errorTitle = "Échec de l'importation";
         }
       }
       // Other errors
       else {
-        errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
+        errorMessage = getFileMessage("UNKNOWN_ERROR", { fileName: fileName });
+        errorTitle = "Échec de l'importation";
       }
     } else {
-      errorMessage = getFileMessage("UPLOAD_ERROR_UNKNOWN", { fileName: fileName });
+      errorMessage = getFileMessage("UNKNOWN_ERROR", { fileName: fileName });
+      errorTitle = "Échec de l'importation";
     }
 
     captureWithPayloads(error);
-    notify("error", undefined, errorMessage);
+    notify("error", errorTitle, errorMessage);
     return errorMessage;
   }
 
@@ -129,6 +133,7 @@ export function useFileHandler() {
   ): string | null {
     const fileName = file.originalFilename;
     let errorMessage: string | null = null;
+    let errorTitle: string | undefined;
 
     if (!(error instanceof Error)) {
       console.error("An unexpected error occurred", error);
@@ -136,12 +141,13 @@ export function useFileHandler() {
     if (error instanceof TimeoutError) {
       errorMessage = getFileMessage("DELETE_ERROR_TIMEOUT", { fileName: fileName });
     } else {
-      errorMessage = getFileMessage("DELETE_ERROR_UNKNOWN", { fileName: fileName });
+      errorMessage = getFileMessage("UNKNOWN_ERROR", { fileName: fileName });
+      errorTitle = "Échec de la suppression";
       captureWithPayloads(error);
     }
 
     captureWithPayloads(error);
-    notify("error", undefined, errorMessage);
+    notify("error", errorTitle, errorMessage);
     return errorMessage;
   }
 
