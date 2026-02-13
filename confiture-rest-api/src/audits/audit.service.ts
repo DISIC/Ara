@@ -1583,7 +1583,8 @@ export class AuditService {
         ...a.pages.flatMap((p) => p.results)
       ];
 
-      const actualResults = allResults.filter((r) =>
+      const pagesResults = a.pages.flatMap((p) => p.results);
+      const actualResults = pagesResults.filter((r) =>
         CRITERIA_BY_AUDIT_TYPE[a.auditType].find(
           (e) => e.topic === r.topic && e.criterium === r.criterium
         )
@@ -1592,7 +1593,7 @@ export class AuditService {
         actualResults.filter(
           (r) => r.status !== CriterionResultStatus.NOT_TESTED
         ).length /
-        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1));
+        (CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length);
 
       let complianceLevel = null;
 
@@ -1641,7 +1642,7 @@ export class AuditService {
 
       const auditIsComplete =
         actualResults.length ===
-          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * (a.pages.length + 1) &&
+          CRITERIA_BY_AUDIT_TYPE[a.auditType].length * a.pages.length &&
         actualResults.every((r) => r.status !== "NOT_TESTED");
 
       return {
