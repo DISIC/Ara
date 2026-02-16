@@ -160,7 +160,8 @@ export const useAuditStore = defineStore("audit", {
         })) as NotesFile;
 
       const notesFiles = this.entities[uniqueId].notesFiles || [];
-      notesFiles.push(notesFile);
+      notesFiles.unshift(notesFile);
+      return notesFile;
     },
 
     async deleteAuditFile(uniqueId: string, fileId: number) {

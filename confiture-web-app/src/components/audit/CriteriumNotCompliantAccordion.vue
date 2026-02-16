@@ -1,34 +1,36 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { provide, ref, useTemplateRef, computed } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
-import { FileErrorMessage } from "../../enums";
-import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
+import { ExampleImageFile, CriterionResultUserImpact } from "../../types";
 import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import FileList, { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 import LazyAccordion from "./LazyAccordion.vue";
 
-export interface Props {
+const props = defineProps<{
   id: string;
   comment: string | null;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   quickWin?: boolean;
   userImpact: CriterionResultUserImpact | null;
-  onDelete: (flFile: FileListFile) => void;
+}>();
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return userImpactRadioGroupRef.value
+    ? userImpactRadioGroupRef.value.$el
+    : null;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
-
-defineEmits<{
+const emit = defineEmits<{
+  (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
   (e: "update:comment", payload: string): void;
   (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "delete-file", payload: ExampleImageFile): void;
   (e: "update:quickWin", payload: boolean): void;
 }>();
 
@@ -59,6 +61,7 @@ const userImpacts: Array<{
 const isOffline = useIsOffline();
 
 const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
+const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
 const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
 
 let hasJustBeenSetAsNotCompliant = false;
@@ -111,25 +114,27 @@ const title = computed(() => {
       @update:model-value="$emit('update:comment', $event)"
     />
 
-    <!-- FILES -->
     <FileList
-      v-if="exampleImages.length"
-      ref="fileUpload"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
-        ...f,
-        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         filename: f.originalFilename,
+        key: f.key,
+        mimetype: f.mimetype,
+        size: f.size,
+        thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
       }))"
-      title="Ajouter des images d’exemple"
-      :on-delete="onDelete"
+      :delete-only="true"
+      :multiple="true"
       :focus-on-delete="commentEditorRef?.focusEditor"
+      @file-deleted="emit('file-deleted', $event)"
     />
 
     <!-- USER IMPACT -->
     <RadioGroup
+      ref="userImpactRadioGroupRef"
       class="fr-mb-4w"
+      tabindex="-1"
       :model-value="userImpact"
       :items="userImpacts"
       :default-value="null"

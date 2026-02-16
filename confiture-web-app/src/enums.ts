@@ -29,16 +29,31 @@ export enum Browsers {
 export const MAX_UPLOAD_FILES_COUNT = 1;
 export const FILE_SIZE_LIMIT = 2_000_000;
 
-export enum FileErrorMessage {
-  UPLOAD_SIZE = "Image trop lourde. Choisissez une image inférieure à 2 Mo.",
-  UPLOAD_FORMAT = "Format non pris en charge. Importez une image.",
-  UPLOAD_TIMEOUT = "Importation interrompue, délai d’attente dépassé. Vérifiez votre connexion et réessayez.",
-  UPLOAD_MAX_FILES_COUNT = "Importation échouée. Ajoutez une seule image à la fois.",
-  FETCH_ERROR = "Importation échouée. Importez l’image depuis votre ordinateur.",
-  UPLOAD_FROM_HTML_ERROR = "Importation de l’image échouée. Importez l’image depuis votre ordinateur.",
-  UPLOAD_MULTIPLE_FROM_HTML_ERROR = "Importation des images échouée. Importez les images depuis votre ordinateur.",
-  UNKNOWN_ERROR = "Erreur inconnue. Réessayez."
-};
+enum FileMessage {
+  DELETE_ERROR_TIMEOUT = "Échec de la suppression. Vérifiez votre connexion et réessayez.",
+  DELETE_SUCCESS = "Fichier [FILE] supprimé.",
+  DELETE_SUCCESS_IMAGE = "Image [FILE] supprimée.",
+  FETCH_ERROR_IMAGE = "Echec de l'importation. Importez l'image depuis votre ordinateur.",
+  UPLOAD_ERROR_FORMAT_IMAGE = "Format non pris en charge. Importez une image.",
+  UPLOAD_ERROR_FROM_HTML_MULTIPLE = "Echec de l'importation. Importez les images depuis votre ordinateur.",
+  UPLOAD_ERROR_MULTIPLE_FILES = "Echec de l'importation. Ajoutez une seule image à la fois.",
+  UPLOAD_ERROR_SIZE = "Fichier trop lourd. Choisissez un fichier inférieur à 2 Mo.",
+  UPLOAD_ERROR_SIZE_IMAGE = "Image trop lourde. Choisissez une image inférieure à 2 Mo.",
+  UPLOAD_ERROR_TIMEOUT = "Échec de l'importation. Vérifiez votre connexion et réessayez.",
+  UPLOAD_SUCCESS = "Fichier [FILE] ajouté.",
+  UPLOAD_SUCCESS_IMAGE = "Image [FILE] ajoutée.",
+  UNKNOWN_ERROR = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numérique.fr"
+}
+
+export function getFileMessage(fileMessage: keyof typeof FileMessage, options?: {
+  fileName: string;
+}): string {
+  if (options?.fileName) {
+    return FileMessage[fileMessage].replace("[FILE]", options.fileName);
+  } else {
+    return FileMessage[fileMessage];
+  }
+}
 
 export enum StaticTabLabel {
   AUDIT_COMMON_ELEMENTS_TAB_LABEL = "Éléments transverses",
