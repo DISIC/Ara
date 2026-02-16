@@ -11,6 +11,10 @@ import morgan from "morgan";
 
 import { AppModule } from "./app.module";
 
+/**
+ * TODO: DELETE THIS
+ */
+
 function configureSwagger(app: INestApplication) {
   const config = new DocumentBuilder().setTitle("Ara API").build();
   const document = SwaggerModule.createDocument(app, config);
