@@ -78,7 +78,7 @@ onMounted(() => {
   retrieveStatusFromLocalStorage();
 });
 
-const { topicIsHidden } = useTopicAccordions();
+const { isTopicHidden } = useTopicAccordions();
 </script>
 
 <template>
@@ -125,17 +125,17 @@ const { topicIsHidden } = useTopicAccordions();
         />
         <button
           class="fr-btn fr-btn--secondary fr-btn--sm toggle-topic-button"
-          :class="topicIsHidden(auditUniqueId, page.id, topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
+          :class="isTopicHidden(auditUniqueId, page.id, topic.number) ? 'fr-icon-arrow-down-s-line' : 'fr-icon-arrow-up-s-line'"
           @click="toggleTopic(
-            topicIsHidden(auditUniqueId, page.id, topic.number),
+            isTopicHidden(auditUniqueId, page.id, topic.number),
             topic.number
           )"
         >
-          {{ topicIsHidden(auditUniqueId, page.id, topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
+          {{ isTopicHidden(auditUniqueId, page.id, topic.number) ? 'Afficher' : 'Masquer' }} les critères de la thématique {{ topic.topic }}
         </button>
       </div>
       <template
-        v-if="!topicIsHidden(auditUniqueId, page.id, topic.number)"
+        v-if="!isTopicHidden(auditUniqueId, page.id, topic.number)"
       >
         <ol class="fr-p-0 fr-m-0">
           <AuditGenerationCriterium

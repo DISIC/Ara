@@ -45,7 +45,7 @@ export function useTopicAccordions() {
   }
 
   /** Check topic status (`true` if hidden) */
-  function topicIsHidden(auditEditId: string, pageId: number, topic: number) {
+  function isTopicHidden(auditEditId: string, pageId: number, topic: number) {
     return auditStore.topicAccordionsStatus[auditEditId]?.[pageId]?.[topic];
   }
 
@@ -53,6 +53,6 @@ export function useTopicAccordions() {
     retrieveStatusFromLocalStorage,
     saveStatusToLocalStorage,
     toggleStatus,
-    topicIsHidden
+    isTopicHidden
   };
 }
