@@ -183,6 +183,13 @@ function updateResultStatus(status: CriteriumResultStatus) {
           );
         });
       }
+
+      if (
+        store.everyCriteriumAreTested &&
+        auditStore.currentAudit?.publicationDate
+      ) {
+        auditStore.publishAudit(props.auditUniqueId);
+      }
     })
     .then(() => {
       store.lastUpdatedTopic = result.value.topic;
