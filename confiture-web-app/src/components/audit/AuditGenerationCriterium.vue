@@ -153,6 +153,9 @@ function handleUpdateResultError(err: any) {
 }
 
 function updateResultStatus(status: CriteriumResultStatus) {
+  // Static variable before criterium is tested
+  const everyCriteriumAreTested = store.everyCriteriumAreTested;
+
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
@@ -160,11 +163,10 @@ function updateResultStatus(status: CriteriumResultStatus) {
         criteriumNotCompliantAccordion.value?.disclose();
       }
 
-      if (
-        store.everyCriteriumAreTested &&
-        !auditStore.currentAudit?.publicationDate
-      ) {
-        auditStore.publishAudit(props.auditUniqueId).then(() => {
+      if (!everyCriteriumAreTested) {
+        auditStore.publishAudit(props.auditUniqueId);
+
+        if (!auditStore.currentAudit?.publicationDate) {
           notify(
             "info",
             "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
@@ -181,14 +183,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
               }
             }
           );
-        });
-      }
-
-      if (
-        store.everyCriteriumAreTested &&
-        auditStore.currentAudit?.publicationDate
-      ) {
-        auditStore.publishAudit(props.auditUniqueId);
+        }
       }
     })
     .then(() => {
