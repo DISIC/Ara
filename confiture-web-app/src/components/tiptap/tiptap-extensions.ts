@@ -1,7 +1,7 @@
 import { Attributes, Extensions, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-
 import { Heading, type Level } from "@tiptap/extension-heading";
+
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
@@ -14,8 +14,8 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-
 import { useWindowWidth } from "../../composables/useWindowWidth";
+
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
@@ -94,7 +94,8 @@ const commonExtensions: Extensions = [
   StarterKit.configure({
     codeBlock: false,
     dropcursor: false,
-    heading: false
+    heading: false,
+    link: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Typography.configure({
@@ -216,13 +217,7 @@ export const tiptapRenderedExtensions: Extensions = [
 
 // create a resizable node view for picture
 export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: any): ResizableNodeView => {
-  const img = document.createElement("img");
-
-  Object.entries(vueNodeView.HTMLAttributes).forEach(([key, value]) => {
-    if (value == null) return;
-    if (key === "width" || key === "height") return;
-    img.setAttribute(key, String(value));
-  });
+  const img = vueNodeView.dom.querySelector("img");
 
   const node = vueNodeView.node;
 
@@ -234,16 +229,13 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     element: img,
     node,
     onResize: (w, h) => {
-      img.style.width = `${w}px`;
-      img.style.height = `${h}px`;
+      img.setAttribute("width", Math.round(w));
+      img.setAttribute("height", Math.round(h));
     },
     onCommit: (w, h) => {
-      props.editor.commands.updateAttributes("image", { width: w, height: h });
+      props.editor.commands.updateAttributes("image", { width: Math.round(w), height: Math.round(h) });
     },
-    onUpdate: (updatedNode) => {
-      if (updatedNode.type !== node.type) return false;
-      return true;
-    },
+    onUpdate: () => false,
     options: {
       preserveAspectRatio: true
     }
@@ -269,8 +261,10 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     e.stopPropagation();
 
     const step = 10;
-    const currentWidth = img.offsetWidth || parseInt(img.style.width) || 200;
-    const currentHeight = img.offsetHeight || parseInt(img.style.height) || 200;
+    const defaultWH = 200;
+
+    const currentWidth = img.offsetWidth || img.width || defaultWH;
+    const currentHeight = img.offsetHeight || img.height || defaultWH;
     const aspectRatio = currentWidth / currentHeight;
 
     let newWidth = currentWidth;
@@ -295,8 +289,9 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
         break;
     }
 
+    const padding = 24;
     const currentTarget = e.currentTarget as HTMLElement;
-    if (newWidth > currentTarget.offsetWidth - 15) {
+    if (newWidth > currentTarget.offsetWidth - padding) {
       return;
     }
 

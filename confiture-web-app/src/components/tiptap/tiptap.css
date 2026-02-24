@@ -20,13 +20,12 @@
   max-width: 100%;
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
-  /*padding: 0.5rem;*/
   padding: 0.125rem;
 }
 
 .tiptap img:not(.ProseMirror-widget) {
-  background-size: calc(100% - 1rem);
-  background-position: 0.5rem 0.5rem;
+  background-size: calc(100% - 0.25rem); /* 100% - 2 x padding horizontal de l’image */
+  background-position: 0.125rem 0.125rem;
   background-repeat: no-repeat;
   object-position: -99999px 99999px;
   transition:
