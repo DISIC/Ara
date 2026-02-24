@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
-import { ref } from "vue";
 
 const props = defineProps(nodeViewProps);
-
-const imgRef = ref<HTMLImageElement>();
 
 function handleImageLoad(e: Event) {
   const imgElement = e.target as HTMLImageElement;
@@ -20,7 +17,6 @@ function handleImageLoad(e: Event) {
 <template>
   <node-view-wrapper class="vue-component">
     <img
-      ref="imgRef"
       data-drag-handle
       v-bind="node.attrs"
       :style="node.attrs.localURL ? `background-image: url('${node.attrs.localURL}')` : null"
