@@ -2,6 +2,7 @@ import ky from "ky";
 import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { topicAccordionsStatus } from "../composables/useTopicAccordionsStatus";
 import router from "../router";
 import {
   Audit,
@@ -36,6 +37,8 @@ interface AuditStoreState {
    */
   lastRequestSuccessEnd: number | null;
   lastRequestFailed: boolean;
+
+  topicAccordionsStatus: topicAccordionsStatus;
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -47,7 +50,8 @@ export const useAuditStore = defineStore("audit", {
     listing: [],
     currentRequestCount: 0,
     lastRequestSuccessEnd: null,
-    lastRequestFailed: false
+    lastRequestFailed: false,
+    topicAccordionsStatus: {}
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {

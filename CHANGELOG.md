@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 25/02/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- L’état (ouvert / fermé) des accordéons de thématiques est enregistré dans le navigateur pour chaque audit ([#1385](https://github.com/DISIC/Ara/pull/1385))
+
 ### 12/02/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
