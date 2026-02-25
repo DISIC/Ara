@@ -8,7 +8,8 @@ import {
   Audit,
   NotesFile,
   CreateAuditRequestData,
-  UpdateAuditRequestData
+  UpdateAuditRequestData,
+  UpdateAuditStatementRequestData
 } from "../types";
 import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
@@ -98,6 +99,19 @@ export const useAuditStore = defineStore("audit", {
         })
         .json()) as Audit;
       this.setAudit(uniqueId, response);
+      return response;
+    },
+
+    async updateAuditStatement(
+      editUniqueId: string,
+      data: UpdateAuditStatementRequestData
+    ): Promise<Audit> {
+      const response = (await ky
+        .put(`/api/audits/${editUniqueId}/statement`, {
+          json: data
+        })
+        .json()) as Audit;
+      this.setAudit(editUniqueId, response);
       return response;
     },
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import _, { omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
+import _, { isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 import {
@@ -24,6 +24,7 @@ import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
+import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
@@ -485,7 +486,18 @@ export class AuditService {
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
       if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
-        return (await this.updateAuditEditDate(uniqueId)) ?? audit;
+        await this.updateAuditEditDate(uniqueId);
+      }
+
+      // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
+      if (
+        audit.statementPublicationDate &&
+        (
+          !isEqual(previousAudit.pages, audit.pages ||
+          changedProperties.includes("procedureName"))
+        )
+      ) {
+        return (await this.updateStatementDate(uniqueId)) ?? audit;
       }
 
       return audit;
@@ -568,6 +580,35 @@ export class AuditService {
       ...promises
     ]);
     await this.updateAuditEditDate(uniqueId);
+
+    // Update `statementPublicationDate` on:
+    // - a single criterium status update
+    // - multiple criteria updates
+    const criterium = await this.prisma.criterionResult.findUnique({
+      where: {
+        pageId_topic_criterium: {
+          criterium: body.data[0].criterium,
+          topic: body.data[0].topic,
+          pageId: body.data[0].pageId
+        }
+      },
+      select: {
+        status: true
+      }
+    });
+
+    const statusChanged = body.data.length === 1 && criterium.status !== body.data[0].status;
+
+    if (body.data.length > 1 || statusChanged) {
+      const audit = await this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { statementPublicationDate: true }
+      });
+
+      if (audit.statementPublicationDate) {
+        this.updateStatementDate(uniqueId);
+      }
+    }
   }
 
   async saveExampleImage(
@@ -881,7 +922,6 @@ export class AuditService {
         },
         data: {
           publicationDate: new Date()
-          // editionDate: null,
         },
         include: AUDIT_EDIT_INCLUDE
       });
@@ -909,6 +949,22 @@ export class AuditService {
         include: AUDIT_EDIT_INCLUDE
       });
     }
+  }
+
+  // Either update statement publication or edition date
+  private async updateStatementDate(uniqueId: string) {
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      select: { statementPublicationDate: true }
+    });
+
+    return this.prisma.audit.update({
+      where: { editUniqueId: uniqueId },
+      data: audit.statementPublicationDate
+        ? { statementEditionDate: new Date() }
+        : { statementPublicationDate: new Date() },
+      include: AUDIT_EDIT_INCLUDE
+    });
   }
 
   async getAuditReportData(
@@ -1012,6 +1068,8 @@ export class AuditService {
       creationDate: audit.creationDate,
       publishDate: audit.publicationDate,
       updateDate: audit.editionDate,
+      statementPublicationDate: audit.statementPublicationDate,
+      statementEditionDate: audit.statementEditionDate,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
@@ -1411,6 +1469,16 @@ export class AuditService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
+        statementPublicationDate: undefined,
+        statementEditionDate: undefined,
+
+        environments: {
+          createMany: {
+            data: originalAudit.environments.map((e) =>
+              omit(e, ["id", "auditUniqueId"])
+            )
+          }
+        },
 
         transverseElementsPage: {
           create: {
@@ -1607,5 +1675,72 @@ export class AuditService {
     ];
 
     return orderedAudits;
+  }
+
+  async updateAuditStatementData(
+    editUniqueId: string,
+    data: UpdateStatementDto
+  ): Promise<AuditDto | undefined> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: {
+        initiator: data.initiator,
+        auditorOrganisation: data.auditorOrganisation,
+        procedureUrl: data.procedureUrl,
+        contactName: data.contactName,
+        contactEmail: data.contactEmail,
+        contactFormUrl: data.contactFormUrl,
+        technologies: data.technologies,
+        tools: data.tools,
+        environments: {
+          deleteMany: {
+            OR: [
+              {
+                platform: {
+                  notIn: data.environments.map((e) => e.platform)
+                }
+              },
+              {
+                operatingSystem: {
+                  notIn: data.environments.map((e) => e.operatingSystem)
+                }
+              },
+              {
+                assistiveTechnology: {
+                  notIn: data.environments.map((e) => e.assistiveTechnology)
+                }
+              },
+              {
+                browser: {
+                  notIn: data.environments.map((e) => e.browser)
+                }
+              }
+            ]
+          },
+          upsert: data.environments.map((environment) => ({
+            where: {
+              platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
+                    {
+                      auditUniqueId: editUniqueId,
+                      platform: environment.platform,
+                      operatingSystem: environment.operatingSystem,
+                      assistiveTechnology: environment.assistiveTechnology,
+                      browser: environment.browser
+                    }
+            },
+            create: environment,
+            update: environment
+          }))
+        },
+        notCompliantContent: data.notCompliantContent,
+        derogatedContent: data.derogatedContent,
+        notInScopeContent: data.notInScopeContent
+      },
+      select: AUDIT_PRISMA_SELECT
+    });
+
+    const audit = await this.updateStatementDate(editUniqueId);
+
+    return audit;
   }
 }

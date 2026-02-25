@@ -15,7 +15,7 @@
   &:deep(.step-card-heading) {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     grid-column: 1 / -1;
     flex-wrap: wrap;
 

@@ -31,8 +31,8 @@ import {
   Platform
 } from "../../enums";
 import { useAccountStore, useAuditStore } from "../../store";
-import { AuditEnvironment, UpdateAuditRequestData } from "../../types";
-import { formatEmail, URL_REGEX } from "../../utils";
+import { AuditEnvironment, UpdateAuditStatementRequestData } from "../../types";
+import { formatEmail, URL_REGEX, formatDate, isSameDay } from "../../utils";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -123,16 +123,14 @@ watch(
 const notify = useNotifications();
 const router = useRouter();
 
-const dataToBeSubmitted = computed<UpdateAuditRequestData>(() => {
+const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
   return {
-    ...auditStore.currentAudit!,
-
     initiator: auditInitiator.value,
     auditorOrganisation: auditorOrganisation.value,
     procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value) || null,
-    contactFormUrl: contactFormUrl.value.trim() || null,
+    contactEmail: formatEmail(contactEmail.value) || undefined,
+    contactFormUrl: contactFormUrl.value.trim() || undefined,
     contactName: contactName.value,
 
     technologies: technologies.value,
@@ -153,7 +151,7 @@ function handleSubmit() {
   const isStatementUpdate = !!auditStore.currentAudit?.initiator;
 
   return auditStore
-    .updateAudit(uniqueId, dataToBeSubmitted.value)
+    .updateAuditStatement(uniqueId, dataToBeSubmitted.value)
     .then(() => {
       notify("success", undefined, isStatementUpdate ? "Déclaration d’accessibilité mise à jour" : "Déclaration d’accessibilité enregistrée");
       router.push({
@@ -222,11 +220,12 @@ const leaveModalDestination = ref<string>("");
 
 onBeforeRouteLeave((to) => {
   const currentAudit = auditStore.currentAudit;
-  const editedAudit = dataToBeSubmitted.value;
+  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
 
-  if (!confirmedLeave.value &&
-    !isEqual(currentAudit, editedAudit) &&
-    !isSubmitting.value
+  if (
+    !isSubmitting.value &&
+    !confirmedLeave.value &&
+    !isEqual(currentAudit, editedAudit)
   ) {
     leaveModalDestination.value = to.fullPath;
 
@@ -276,8 +275,12 @@ function confirmLeave() {
     class="content"
     @submit="handleSubmit"
   >
-    <h1 class="fr-mb-6w">Déclaration d’accessibilité</h1>
-    <p class="fr-text--sm fr-mb-4w mandatory-notice">
+    <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
+    <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
+    <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-m-0 dates">
+      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)"> - Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
+    </p>
+    <p class="fr-text--xs fr-mb-2w fr-mt-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
     </p>
 
@@ -594,7 +597,8 @@ function confirmLeave() {
   max-width: 25rem;
 }
 
-.mandatory-notice {
+.mandatory-notice,
+.dates {
   color: var(--text-mention-grey);
 }
 
