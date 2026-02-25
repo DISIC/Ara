@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { NewEmailVerificationJwtPayload } from "../../types";
@@ -51,8 +52,8 @@ onMounted(async () => {
         console.log(err);
         notify(
           "error",
-          "Échec de la validation de l'adresse mail.",
-          "Une erreur inconnue est survenue"
+          "Échec de la validation de l’adresse e-mail",
+          DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
         );
       }
     });

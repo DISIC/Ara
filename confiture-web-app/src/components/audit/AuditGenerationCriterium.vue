@@ -6,7 +6,7 @@ import { computed, Ref, ref } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
-import { FileErrorMessage } from "../../enums";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE, FileErrorMessage } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
@@ -147,8 +147,8 @@ function handleUpdateResultError(err: any) {
   auditStore.lastRequestFailed = true;
   notify(
     "error",
-    "Une erreur est survenue",
-    "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+    DEFAULT_NOTIFICATION_ERROR_TITLE,
+    DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
   );
 }
 

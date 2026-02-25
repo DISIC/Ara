@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, ref, useTemplateRef, useId } from "vue";
 import { useNotifications } from "../../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { useAuditStore } from "../../../store";
 import { AuditStatus } from "../../../types";
 import { AccountAudit } from "../../../types/account";
@@ -51,8 +52,8 @@ function deleteAudit() {
     .catch((error) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la suppression de votre audit. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        "Échec de la supression de l'audit",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(error);
     })
