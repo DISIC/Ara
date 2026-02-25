@@ -65,7 +65,8 @@ const refFn =
 const {
   retrieveStatusFromLocalStorage,
   toggleStatus,
-  saveStatusToLocalStorage
+  saveStatusToLocalStorage,
+  isTopicHidden
 } = useTopicAccordions();
 
 function toggleTopic(value: boolean, topic: number) {
@@ -77,8 +78,6 @@ function toggleTopic(value: boolean, topic: number) {
 onMounted(() => {
   retrieveStatusFromLocalStorage();
 });
-
-const { isTopicHidden } = useTopicAccordions();
 </script>
 
 <template>
