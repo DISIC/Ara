@@ -10,6 +10,7 @@ import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITL
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
+  AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus
@@ -154,7 +155,7 @@ function handleUpdateResultError(err: any) {
 function updateResultStatus(status: CriteriumResultStatus) {
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
-    .then(async () => {
+    .then(() => {
       if (status === CriteriumResultStatus.NOT_COMPLIANT) {
         criteriumNotCompliantAccordion.value?.disclose();
       }
@@ -163,7 +164,24 @@ function updateResultStatus(status: CriteriumResultStatus) {
         store.everyCriteriumAreTested &&
         !auditStore.currentAudit?.publicationDate
       ) {
-        await store.publishAuditIfEveryCriteriumAreTested(props.auditUniqueId);
+        auditStore.publishAudit(props.auditUniqueId).then(() => {
+          notify(
+            "info",
+            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+            auditStore.currentAudit?.auditType === AuditType.FULL
+              ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
+              : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
+            {
+              link: {
+                label: "Accéder aux livrables",
+                to: {
+                  name: "audit-overview",
+                  params: { uniqueId: props.auditUniqueId }
+                }
+              }
+            }
+          );
+        });
       }
     })
     .then(() => {
