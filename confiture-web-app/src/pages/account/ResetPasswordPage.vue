@@ -8,6 +8,7 @@ import RequestPasswordReset from "../../components/account/password-reset/Reques
 import ResetInstructions from "../../components/account/password-reset/ResetInstructions.vue";
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { PasswordResetVerificationJwtPayload } from "../../types";
@@ -43,8 +44,8 @@ async function onRequestSubmit(email: string) {
   } catch (e) {
     notify(
       "error",
-      "Impossible de demander la réinitialisation du mot de passe",
-      "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      "Échec de la demande de réinitialisation du mot de passe",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
     );
     captureWithPayloads(e);
   }
@@ -58,8 +59,8 @@ async function resendEmail() {
   } catch (e) {
     notify(
       "error",
-      "Impossible de demander la réinitialisation du mot de passe",
-      "Une erreur inconnue empêche la réinitialisation de votre mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      "Échec de la demande de réinitialisation du mot de passe",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
     );
     captureWithPayloads(e);
   }

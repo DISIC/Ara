@@ -12,6 +12,7 @@ import {
   EMAIL,
   REQUIRED
 } from "../../composables/validation";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { captureWithPayloads } from "../../utils";
@@ -55,7 +56,7 @@ async function handleSubmit() {
         notify(
           "error",
           "Échec de la connexion",
-          "Une erreur inconnue est survenue"
+          DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
         );
         captureWithPayloads(err, false);
       }

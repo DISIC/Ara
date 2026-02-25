@@ -11,6 +11,7 @@ import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
@@ -199,8 +200,8 @@ function submitAuditSettings() {
     .catch((err) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        DEFAULT_NOTIFICATION_ERROR_TITLE,
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(err);
     })

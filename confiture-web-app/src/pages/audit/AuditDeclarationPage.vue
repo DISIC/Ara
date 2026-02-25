@@ -27,6 +27,8 @@ import {
 import {
   AssistiveTechnology,
   Browsers,
+  DEFAULT_NOTIFICATION_ERROR_DESCRIPTION,
+  DEFAULT_NOTIFICATION_ERROR_TITLE,
   OperatingSystem,
   Platform
 } from "../../enums";
@@ -162,8 +164,8 @@ function handleSubmit() {
     .catch((err) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        DEFAULT_NOTIFICATION_ERROR_TITLE,
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       throw err;
     })

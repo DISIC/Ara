@@ -8,6 +8,7 @@ import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType } from "../../types";
 
@@ -105,8 +106,8 @@ function submitSettings(data: {
       console.error(err);
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+        DEFAULT_NOTIFICATION_ERROR_TITLE,
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       isSubmitting.value = false;
     });
