@@ -1,18 +1,21 @@
-import { Attributes, Extensions, textblockTypeInputRule } from "@tiptap/core";
+import { Attributes, Extensions, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
+
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
+import { Dropcursor } from "@tiptap/extensions";
+import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
-import { VueNodeViewRenderer } from "@tiptap/vue-3";
+import { VueNodeViewRenderer, ResizableNodeView } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { Markdown } from "tiptap-markdown";
+import { useWindowWidth } from "../../composables/useWindowWidth";
+
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
@@ -91,15 +94,16 @@ const commonExtensions: Extensions = [
   StarterKit.configure({
     codeBlock: false,
     dropcursor: false,
-    heading: false
+    heading: false,
+    link: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown.configure({ linkify: true }),
-  DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
+  Markdown.configure(),
+  Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
 const commonImageAttrs = {
@@ -162,7 +166,21 @@ export function getTiptapEditorExtensions(options: {
         };
       },
       addNodeView() {
-        return VueNodeViewRenderer(TiptapImage);
+        return (props) => {
+          const vueNodeView: any = VueNodeViewRenderer(TiptapImage)(props);
+
+          if (!vueNodeView.HTMLAttributes) {
+            return vueNodeView;
+          }
+
+          // if mobile, we don't resize
+          const width = useWindowWidth().value;
+          if (width < 768) {
+            return vueNodeView;
+          }
+
+          return createResizableNodeView(props, vueNodeView);
+        };
       }
     }),
     ImageUploadExtension.configure({ onImageUploadComplete })
@@ -196,3 +214,104 @@ export const tiptapRenderedExtensions: Extensions = [
   }),
   ...[AraTiptapRenderedExtension]
 ];
+
+// create a resizable node view for picture
+export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: any): ResizableNodeView => {
+  const img = vueNodeView.dom.querySelector("img");
+
+  const node = vueNodeView.node;
+
+  const minImgWidth = 50;
+  // Padding : 12px x 2
+  const editorWidth = vueNodeView.view.dom.offsetWidth - 24;
+
+  const resizableView = new ResizableNodeView({
+    ...props,
+    element: img,
+    node,
+    onResize: (w, h) => {
+      img.width = w;
+      img.height = h;
+
+      // Force height auto
+      img.style.removeProperty("height");
+    },
+    onCommit: (w, h) => {
+      props.editor.commands.updateAttributes("image", { width: w, height: h });
+    },
+    onUpdate: () => true,
+    options: {
+      preserveAspectRatio: true,
+      min: { width: minImgWidth, height: 8 },
+      max: { width: editorWidth }
+    }
+  });
+
+  // hack for respect picture's size
+  img.style.removeProperty("height");
+
+  // Check if the image node is currently selected in the editor
+  const isSelected = () => {
+    const nodePos = props.getPos();
+    if (nodePos === undefined) {
+      return false;
+    }
+    const { selection } = props.editor.state;
+    return selection.from == nodePos;
+  };
+
+  // handleKeyDown to manage image resizing with ALT + Arrow
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (!isSelected() || !e.altKey) return;
+
+    if (!["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const step = 10;
+
+    const currentWidth = img.offsetWidth;
+    const aspectRatio = img.width / img.height;
+
+    let newWidth;
+
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        newWidth = Math.min(currentWidth + step, editorWidth);
+        break;
+
+      case "ArrowLeft":
+      case "ArrowUp":
+        newWidth = Math.max(currentWidth - step, minImgWidth);
+        break;
+
+      default:
+        return;
+    }
+
+    const newHeight = newWidth / aspectRatio;
+
+    // Apply resize
+    if (newWidth !== currentWidth) {
+      img.style.width = `${newWidth}px`;
+      img.width = newWidth;
+      img.height = newHeight;
+
+      props.editor.commands.updateAttributes("image", { width: newWidth, height: newHeight });
+    }
+  };
+
+  // Capture phase to intercept before Tiptap handles it
+  props.editor.view.dom.addEventListener("keydown", handleKeydown, true);
+
+  // Cleanup on destroy
+  const originalDestroy = resizableView.destroy?.bind(resizableView);
+  resizableView.destroy = () => {
+    props.editor.view.dom.removeEventListener("keydown", handleKeydown, true);
+    originalDestroy?.();
+  };
+
+  return resizableView;
+};

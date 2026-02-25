@@ -20,12 +20,12 @@
   max-width: 100%;
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
-  padding: 0.5rem;
+  padding: 0.125rem;
 }
 
 .tiptap img:not(.ProseMirror-widget) {
-  background-size: calc(100% - 1rem);
-  background-position: 0.5rem 0.5rem;
+  background-size: calc(100% - 0.25rem); /* 100% - 2 x padding horizontal de l’image */
+  background-position: 0.125rem 0.125rem;
   background-repeat: no-repeat;
   object-position: -99999px 99999px;
   transition:
@@ -58,7 +58,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tiptap:not(.tiptap--rendered) img:hover {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 0.1875rem 0.5rem;
   }
 }
 
@@ -143,4 +143,101 @@
 
 .tiptap li > p {
   margin-bottom: 0.25em;
+}
+
+.tiptap [data-resize-container] {
+  display: block !important;
+  max-width: max-content;
+
+  &:hover {
+    outline: var(--dsfr-outline) solid 0.125rem;
+    cursor: hand;
+  }
+}
+
+.tiptap-selection,
+.ProseMirror-selectednode {
+  outline: var(--dsfr-outline) solid 0.125rem;
+  max-width: max-content;
+
+  [data-resize-handle] {
+    position: absolute;
+    background: var(--highlight-a11y-color-background);
+    border: 0.1rem solid var(--dsfr-outline);
+    z-index: 10;
+
+    &:focus-visible,
+    &:hover {
+      background: var(--dsfr-outline);
+    }
+
+    /* Corner handles */
+    &[data-resize-handle="top-left"],
+    &[data-resize-handle="top-right"],
+    &[data-resize-handle="bottom-left"],
+    &[data-resize-handle="bottom-right"] {
+      width: 0.75rem;
+      height: 0.75rem;
+      background-color: var(--highlight-a11y-color-handle);
+    }
+
+    &[data-resize-handle="top-left"] {
+      top: -0.4375rem !important;
+      left: -0.4375rem !important;
+      cursor: nwse-resize;
+    }
+
+    &[data-resize-handle="top-right"] {
+      top: -0.4375rem !important;
+      right: -0.4375rem !important;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle="bottom-left"] {
+      bottom: -0.4375rem !important;
+      left: -0.4375rem !important;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle="bottom-right"] {
+      bottom: -0.4375rem !important;
+      right: -0.4375rem !important;
+      cursor: nwse-resize;
+    }
+
+    /* Edge handles */
+    &[data-resize-handle="top"],
+    &[data-resize-handle="bottom"] {
+      height: 0.375rem;
+      left: 0.5rem;
+      right: 0.5rem;
+    }
+
+    &[data-resize-handle="top"] {
+      top: -0.1875rem;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle="bottom"] {
+      bottom: -0.1875rem;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle="left"],
+    &[data-resize-handle="right"] {
+      width: 0.375rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+    }
+
+    &[data-resize-handle="left"] {
+      left: -0.1875rem;
+      cursor: ew-resize;
+    }
+
+    &[data-resize-handle="right"] {
+      right: -0.1875rem;
+      cursor: ew-resize;
+    }
+  }
 }
