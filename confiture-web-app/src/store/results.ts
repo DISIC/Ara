@@ -547,5 +547,4 @@ export const useResultsStore = defineStore("results", {
       await auditStore.publishAudit(uniqueId);
     }
   }
-
 });
