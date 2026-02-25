@@ -41,7 +41,7 @@ export enum FileErrorMessage {
 };
 
 export const DEFAULT_NOTIFICATION_ERROR_TITLE = "Erreur inconnue";
-export const DEFAULT_NOTIFICATION_ERROR_DESCRIPTION = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numérique.fr";
+export const DEFAULT_NOTIFICATION_ERROR_DESCRIPTION = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numerique.gouv.fr";
 
 export enum StaticTabLabel {
   AUDIT_COMMON_ELEMENTS_TAB_LABEL = "Éléments transverses",
