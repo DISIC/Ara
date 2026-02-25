@@ -221,25 +221,34 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
 
   const node = vueNodeView.node;
 
-  // hack for respect picture's size
-  node.attrs.height = "auto";
+  const minImgWidth = 50;
+  // Padding : 12px x 2
+  const editorWidth = vueNodeView.view.dom.offsetWidth - 24;
 
   const resizableView = new ResizableNodeView({
     ...props,
     element: img,
     node,
     onResize: (w, h) => {
-      img.setAttribute("width", Math.round(w));
-      img.setAttribute("height", Math.round(h));
+      img.width = w;
+      img.height = h;
+
+      // Force height auto
+      img.style.removeProperty("height");
     },
     onCommit: (w, h) => {
-      props.editor.commands.updateAttributes("image", { width: Math.round(w), height: Math.round(h) });
+      props.editor.commands.updateAttributes("image", { width: w, height: h });
     },
-    onUpdate: () => false,
+    onUpdate: () => true,
     options: {
-      preserveAspectRatio: true
+      preserveAspectRatio: true,
+      min: { width: minImgWidth, height: 8 },
+      max: { width: editorWidth }
     }
   });
+
+  // hack for respect picture's size
+  img.style.removeProperty("height");
 
   // Check if the image node is currently selected in the editor
   const isSelected = () => {
@@ -261,43 +270,37 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     e.stopPropagation();
 
     const step = 10;
-    const defaultWH = 200;
 
-    const currentWidth = img.offsetWidth || img.width || defaultWH;
-    const currentHeight = img.offsetHeight || img.height || defaultWH;
-    const aspectRatio = currentWidth / currentHeight;
+    const currentWidth = img.offsetWidth;
+    const aspectRatio = img.width / img.height;
 
-    let newWidth = currentWidth;
-    let newHeight = currentHeight;
+    let newWidth;
 
     switch (e.key) {
       case "ArrowRight":
-        newWidth = currentWidth + step;
-        newHeight = newWidth / aspectRatio;
-        break;
-      case "ArrowLeft":
-        newWidth = Math.max(50, currentWidth - step);
-        newHeight = newWidth / aspectRatio;
-        break;
-      case "ArrowUp":
-        newHeight = Math.max(50, currentHeight - step);
-        newWidth = newHeight * aspectRatio;
-        break;
       case "ArrowDown":
-        newHeight = currentHeight + step;
-        newWidth = newHeight * aspectRatio;
+        newWidth = Math.min(currentWidth + step, editorWidth);
         break;
+
+      case "ArrowLeft":
+      case "ArrowUp":
+        newWidth = Math.max(currentWidth - step, minImgWidth);
+        break;
+
+      default:
+        return;
     }
 
-    const padding = 24;
-    const currentTarget = e.currentTarget as HTMLElement;
-    if (newWidth > currentTarget.offsetWidth - padding) {
-      return;
-    }
+    const newHeight = newWidth / aspectRatio;
 
     // Apply resize
-    resizableView.onResize?.(newWidth, newHeight);
-    resizableView.onCommit?.(newWidth, newHeight);
+    if (newWidth !== currentWidth) {
+      img.style.width = `${newWidth}px`;
+      img.width = newWidth;
+      img.height = newHeight;
+
+      props.editor.commands.updateAttributes("image", { width: newWidth, height: newHeight });
+    }
   };
 
   // Capture phase to intercept before Tiptap handles it
