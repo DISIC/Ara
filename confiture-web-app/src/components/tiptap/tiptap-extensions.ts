@@ -204,12 +204,5 @@ export const tiptapRenderedExtensions: Extensions = [
  * Convert markdown string to HTML
  */
 export function convertMarkdownToHTML(markdown: string): string {
-  let md = marked(markdown) as string;
-
-  // hack to replace heading level for TipTap
-  md = md.replace("h1", "h4");
-  md = md.replace("h2", "h5");
-  md = md.replace("h3", "h6");
-
-  return md;
+  return marked(markdown) as string;
 }
