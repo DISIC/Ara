@@ -81,7 +81,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- TODO: handle empty state -->
   <h2 class="fr-sr-only">{{ page.name }}</h2>
 
   <div v-if="page.id !== transversePageId" class="fr-mb-3w page-url">

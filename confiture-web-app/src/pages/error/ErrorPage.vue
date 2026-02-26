@@ -15,7 +15,6 @@ const errorTitle =
     410: "Audit supprimé",
     500: "Erreur inattendue",
     503: "Service indisponible"
-    // TODO: get default content
   }[statusCode] ?? "Erreur inconnue";
 
 const notCompliantComment =
@@ -54,10 +53,8 @@ Merci de réessayer plus tard, vous serez bientôt en mesure de réutiliser le s
 Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
     `
   }[statusCode] ??
-  // TODO: get real wording
   `
-Blablabla une erreur
-Adipisicing officia in dolor do et voluptate cupidatat ut ut aute reprehenderit eu.
+Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
   `;
 
 const route = useRoute();
