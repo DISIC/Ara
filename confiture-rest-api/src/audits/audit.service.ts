@@ -521,7 +521,7 @@ export class AuditService {
     try {
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
-        data: { notes: data.notes }
+        data: { notes: data.notes, editionDate: new Date() }
       });
 
       return audit;
@@ -752,6 +752,8 @@ export class AuditService {
       }
     });
 
+    await this.updateAuditEditDate(editUniqueId);
+
     return noteFile;
   }
 
@@ -796,6 +798,8 @@ export class AuditService {
         id: fileId
       }
     });
+
+    await this.updateAuditEditDate(editUniqueId);
 
     return true;
   }
