@@ -118,13 +118,6 @@ export function getAuditStatus(report: AuditReport): string {
   return AuditStatus.COMPLETED;
 }
 
-/**
- * Get a CSS variable value from the root element.
- */
-export function getCssVarValue(varName: string): string {
-  return getComputedStyle(document.documentElement).getPropertyValue(varName);
-}
-
 export function slugify(value: string): string {
   return baseSlugify(value, { strict: true, lower: true });
 }
@@ -222,33 +215,6 @@ export function isJwtExpired(jwt: string) {
   }
 
   return Date.now() > payload.exp * 1000;
-}
-
-/**
- * Wait for an element matching the given selector to appear in the DOM and
- * return a promise resolving to the element.
- */
-export function waitForElement(selector: string): Promise<Element> {
-  return new Promise((resolve) => {
-    const el = document.querySelector(selector);
-
-    if (el) {
-      return resolve(el);
-    }
-
-    const observer = new MutationObserver(() => {
-      const el = document.querySelector(selector);
-      if (el) {
-        observer.disconnect();
-        resolve(el);
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  });
 }
 
 export function getUploadUrl(key: string): string {

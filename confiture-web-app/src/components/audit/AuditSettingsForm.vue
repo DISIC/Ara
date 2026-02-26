@@ -83,9 +83,6 @@ async function addPage() {
 }
 
 function onSubmit() {
-  // TODO: validate page sample
-  // pagesSampleRef.value?.validate(),
-
   emit("submit", {
     auditType: auditType.value!,
     procedureName: procedureName.value,

@@ -119,9 +119,6 @@ class ReportContext {
 
   samples: PageSample[];
 
-  // TODO: derogated content
-  // derogatedContent: any
-
   tools: string[];
 
   environments: Environment[];

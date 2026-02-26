@@ -60,11 +60,6 @@ function closeFeedbackNotice() {
 
   pageHeading?.focus();
 }
-
-// TODO: remove this after 12/01/2026 19:00
-const today = new Date();
-const date = new Date("January 12, 26 19:00:00");
-const showMaintenanceNotice = ref(today < date);
 </script>
 
 <template>
@@ -92,18 +87,6 @@ const showMaintenanceNotice = ref(today < date);
   <GenericModal />
 
   <SiteHeader />
-
-  <!-- TODO: remove this after 12/01/2026 19:00 -->
-  <div v-if="showMaintenanceNotice" class="fr-notice fr-notice--alert">
-    <div class="fr-container">
-      <div class="fr-notice__body">
-        <p>
-          <span class="fr-notice__title">L’accès à Ara sera perturbé le lundi 12 janvier entre 17h et 18h en raison d’une opération de maintenance.</span>
-          <span class="fr-notice__desc">Merci de votre compréhension.</span>
-        </p>
-      </div>
-    </div>
-  </div>
 
   <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
     <div class="fr-container">
