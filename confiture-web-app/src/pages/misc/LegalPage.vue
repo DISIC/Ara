@@ -3,14 +3,6 @@ import PageMeta from "../../components/PageMeta";
 import TopLink from "../../components/ui/TopLink.vue";
 </script>
 
-<!--
-  TODO: missing elements:
-  - product name
-  - editor info
-  - publishing info
-  - hosting provider info
-  - accessibility info
- -->
 <template>
   <PageMeta
     title="Mentions légales"
