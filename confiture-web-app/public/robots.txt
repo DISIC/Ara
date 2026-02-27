@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /audits/
 Disallow: /rapports/
 Disallow: /rapport/
+Disallow: /declarations/
+Disallow: /declaration/
