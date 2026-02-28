@@ -5,7 +5,7 @@ export interface UpdateEmailVerificationData {
 }
 
 export function subject(): string {
-  return `Ara : vérification de la nouvelle adresse e-mail`;
+  return `Confirmer votre nouvelle adresse e-mail`;
 }
 
 export function html(data: UpdateEmailVerificationData): string {
@@ -13,9 +13,7 @@ export function html(data: UpdateEmailVerificationData): string {
 }
 
 export function plain(data: UpdateEmailVerificationData): string {
-  return `Bonjour,
-
-Pour finaliser le changement d’adresse e-mail associée à votre compte Ara, nous devons vérifier votre nouvelle adresse. Veuillez cliquer sur le bouton ci-dessous :
+  return `Pour finaliser le changement de votre adresse e-mail, cliquez sur le bouton ci-dessous :
 
 ${data.verificationLink}
 
