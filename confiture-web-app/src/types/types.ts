@@ -152,8 +152,9 @@ export type ScrollPosition = Awaited<ScrollBehaviorResult>;
  */
 export interface TabData {
   label: string;
+  hiddenLabel?: string;
   id?: number;
-  icon?: Component;
+  icon?: Component | string;
   component: object;
   componentParams?: object;
 }
