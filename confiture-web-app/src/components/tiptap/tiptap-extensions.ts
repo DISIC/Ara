@@ -258,7 +258,8 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     options: {
       preserveAspectRatio: true,
       min: { width: minImgWidth, height: minImgHeight },
-      max: { width: maxImgWidth }
+      max: { width: maxImgWidth },
+      directions: ["right", "bottom"]
     }
   });
 
