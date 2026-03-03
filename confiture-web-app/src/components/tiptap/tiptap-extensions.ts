@@ -1,4 +1,4 @@
-import { Attributes, Extensions, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
+import { Attributes, Extensions, NodeView, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Heading, type Level } from "@tiptap/extension-heading";
 
@@ -8,17 +8,16 @@ import Typography from "@tiptap/extension-typography";
 import { Dropcursor } from "@tiptap/extensions";
 import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
-import { VueNodeViewRenderer, ResizableNodeView } from "@tiptap/vue-3";
+import { VueNodeViewRenderer, ResizableNodeView, Editor, VueNodeViewRendererOptions } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { useWindowWidth } from "../../composables/useWindowWidth";
-
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
-import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
+import TiptapImage from "./image/TiptapImage.vue";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -155,7 +154,7 @@ export function getTiptapEditorExtensions(options: {
           alt: {
             renderHTML: (attrs) => {
               return {
-              // In editor, alt is given by the uploaded file or "external"
+                // In editor, alt is given by the uploaded file or "external"
                 alt: attrs.alt
               };
             }
@@ -167,7 +166,7 @@ export function getTiptapEditorExtensions(options: {
       },
       addNodeView() {
         return (props) => {
-          const vueNodeView: any = VueNodeViewRenderer(TiptapImage)(props);
+          const vueNodeView = VueNodeViewRenderer(TiptapImage)(props) as NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>;
 
           if (!vueNodeView.HTMLAttributes) {
             return vueNodeView;
@@ -215,15 +214,18 @@ export const tiptapRenderedExtensions: Extensions = [
   ...[AraTiptapRenderedExtension]
 ];
 
-// create a resizable node view for picture
-export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: any): ResizableNodeView => {
-  const img = vueNodeView.dom.querySelector("img");
-
+// Create a resizable node view for each image
+export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>): ResizableNodeView => {
+  const img = vueNodeView.dom.querySelector("img")!;
   const node = vueNodeView.node;
 
   const minImgWidth = 50;
-  // Padding : 12px x 2
-  const editorWidth = vueNodeView.view.dom.offsetWidth - 24;
+  const minImgHeight = 30;
+
+  // Max image width is editor internal width (offsetWidth - 2 × inline padding)
+  const editorElement = vueNodeView.view.dom;
+  const inlinePadding: number = parseFloat(getComputedStyle(editorElement).getPropertyValue("padding-inline"));
+  const maxImgWidth = editorElement.offsetWidth - 2 * inlinePadding;
 
   const resizableView = new ResizableNodeView({
     ...props,
@@ -233,21 +235,35 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
       img.width = w;
       img.height = h;
 
-      // Force height auto
+      // ResizableNodeView#handleResize modifies both CSS width and height.
+      // CSS height needs to be removed here in order to preserve aspect ratio
+      // (height is defined to "auto" in CSS)
       img.style.removeProperty("height");
     },
     onCommit: (w, h) => {
-      props.editor.commands.updateAttributes("image", { width: w, height: h });
+      img.width = w;
+      img.height = h;
+
+      // Focus the editor in case user resizes an image with the mouse
+      // while the editor is not focused
+      props.editor.chain().focus().updateAttributes("image", {
+        width: w,
+        height: h
+      }).run();
     },
-    onUpdate: () => true,
+    onUpdate: (updatedNode) => {
+      img.style.width = `${updatedNode.attrs.width}px`;
+      return true;
+    },
     options: {
       preserveAspectRatio: true,
-      min: { width: minImgWidth, height: 8 },
-      max: { width: editorWidth }
+      min: { width: minImgWidth, height: minImgHeight },
+      max: { width: maxImgWidth }
     }
   });
 
-  // hack for respect picture's size
+  // Remove CSS height to respect image aspect ratio
+  // (height is defined to "auto" in CSS)
   img.style.removeProperty("height");
 
   // Check if the image node is currently selected in the editor
@@ -270,37 +286,40 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     e.stopPropagation();
 
     const step = 10;
-
     const currentWidth = img.offsetWidth;
     const aspectRatio = img.width / img.height;
 
-    let newWidth;
+    let newWidth, newHeight;
 
     switch (e.key) {
+      // Increase size (→ ↓)
       case "ArrowRight":
       case "ArrowDown":
-        newWidth = Math.min(currentWidth + step, editorWidth);
+        newWidth = Math.min(currentWidth + step, maxImgWidth);
+        newHeight = newWidth / aspectRatio; // no max height (always scrollable)
         break;
 
+      // Decrease size (← ↑)
       case "ArrowLeft":
       case "ArrowUp":
         newWidth = Math.max(currentWidth - step, minImgWidth);
+        if (newWidth / aspectRatio < minImgHeight) {
+          newWidth = currentWidth;
+        }
+        newHeight = newWidth / aspectRatio;
         break;
 
       default:
         return;
     }
 
-    const newHeight = newWidth / aspectRatio;
-
     // Apply resize
     if (newWidth !== currentWidth) {
       img.style.width = `${newWidth}px`;
       img.width = newWidth;
       img.height = newHeight;
-
       props.editor.commands.updateAttributes("image", { width: newWidth, height: newHeight });
-    }
+    };
   };
 
   // Capture phase to intercept before Tiptap handles it
