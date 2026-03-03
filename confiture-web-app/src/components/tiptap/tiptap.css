@@ -24,7 +24,7 @@
 }
 
 .tiptap img:not(.ProseMirror-widget) {
-  background-size: calc(100% - 0.25rem); /* 100% - 2 x padding horizontal de l’image */
+  background-size: calc(100% - 0.25rem); /* 100% - 2 × background offset */
   background-position: 0.125rem 0.125rem;
   background-repeat: no-repeat;
   object-position: -99999px 99999px;
@@ -150,20 +150,20 @@
   max-width: max-content;
 
   &:hover {
-    outline: var(--dsfr-outline) solid 0.125rem;
+    outline: var(--dsfr-outline) solid 2px;
     cursor: hand;
   }
 }
 
 .tiptap-selection,
 .ProseMirror-selectednode {
-  outline: var(--dsfr-outline) solid 0.125rem;
+  outline: var(--dsfr-outline) solid 0.2px;
   max-width: max-content;
 
   [data-resize-handle] {
     position: absolute;
     background: var(--highlight-a11y-color-background);
-    border: 0.1rem solid var(--dsfr-outline);
+    border: 2px solid var(--dsfr-outline);
     z-index: 10;
 
     &:focus-visible,
