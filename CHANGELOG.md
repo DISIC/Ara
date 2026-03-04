@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 04/03/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Pour un audit terminé, la barre de progression est affichée au lieu de la date de fin ([#1398](https://github.com/DISIC/Ara/pull/1398))
+
 ### 25/02/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
