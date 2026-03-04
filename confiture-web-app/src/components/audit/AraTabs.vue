@@ -251,7 +251,7 @@ watch(
             v-else
             class="fr-mr-2v"
           ></component>{{ tab.label }}
-          <span v-if="tabs[i].hiddenLabel" class="fr-sr-only">{{ tabs[i].hiddenLabel }}</span>
+          <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>
       </li>
     </ul>
