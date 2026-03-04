@@ -176,18 +176,6 @@ const csvExportSizeEstimation = computed(() => {
   return 502 + Object.keys(resultsStore.data ?? {}).length * 318;
 });
 
-function copyAuditLink(uniqueId: string) {
-  const url = `${window.location.origin}/audits/${uniqueId}/generation`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      "Le lien vers l’audit a bien été copié dans le presse-papier."
-    );
-  });
-}
-
 const isDevMode = useDevMode();
 
 const systemStore = useSystemStore();
@@ -360,22 +348,6 @@ onMounted(() => {
                 >
                   <CopyIcon class="fr-mr-2v" />
                   Dupliquer l’audit
-                </button>
-              </li>
-              <li
-                v-if="editUniqueId"
-                class="dropdown-item dropdown-item--with-meta"
-              >
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-                  @click="copyAuditLink(editUniqueId)"
-                >
-                  Copier le lien de l’audit
-                  <span class="fr-sr-only">
-                    {{ auditStore.currentAudit?.procedureName }}</span>
-                  <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Ce lien permet de modifier l’audit
-                  </span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
