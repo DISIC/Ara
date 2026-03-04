@@ -34,7 +34,10 @@ describe("Report", () => {
   it("User can copy report URL", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.contains("button", "Copier le lien du rapport").click();
+      // FIXME: svg logo is covering elements because
+      // Electron does not support CSS nesting for now.
+      // Adding `force: true` to click() function solves the problem.
+      cy.contains("button", "Copier le lien du rapport").click({ force: true });
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
       cy.contains(
         "Le lien vers le rapport a bien été copié dans le presse-papier."
@@ -45,8 +48,8 @@ describe("Report", () => {
   it("User can download results", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.contains("button", "Télécharger").click();
-      cy.contains("a", "Télécharger l'audit").click();
+      cy.contains("button", "Télécharger").click({ force: true });
+      cy.contains("a", "Télécharger l'audit").click({ force: true });
 
       cy.readFile("cypress/downloads/audit.csv");
     });
