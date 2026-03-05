@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ReportError } from "./getReportErrors";
 
+import { Ref } from "vue";
 import { useRoute } from "vue-router";
 import { Section, useScrollSpy } from "../../composables/useScrollSpy";
 import { StaticTabLabel, TabSlug } from "../../enums";
@@ -24,7 +25,8 @@ const sections: Section[] = [{
   id: `#page_${page.id}`,
   selector: `section:has(#page_${page.id})`
 } as Section; })];
-const activeId = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
+
+const activeId: Ref<string, string> = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
 
 function isActive(id: string) {
   return id === activeId.value;
