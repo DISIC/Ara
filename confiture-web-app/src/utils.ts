@@ -115,6 +115,16 @@ export function getCssVarValue(varName: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(varName);
 }
 
+export function getInnerWidth(element: HTMLElement): number {
+  const widthWithPaddings = element.clientWidth;
+  const elementComputedStyle = window.getComputedStyle(element, null);
+  return (
+    widthWithPaddings -
+    parseFloat(elementComputedStyle.paddingLeft) -
+    parseFloat(elementComputedStyle.paddingRight)
+  );
+}
+
 export function slugify(value: string): string {
   return baseSlugify(value, { strict: true, lower: true });
 }
