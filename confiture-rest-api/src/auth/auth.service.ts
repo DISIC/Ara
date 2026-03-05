@@ -367,20 +367,21 @@ export class AuthService {
       );
     }
 
-    await this.prisma.user.update({
-      where: { uid },
-      data: {
-        username: email,
-        newEmail: null,
-        newEmailVerificationJti: null
-      }
-    });
-
-    // Update email on user audits
-    await this.prisma.audit.updateMany({
-      where: { auditorEmail: user.username },
-      data: { auditorEmail: email }
-    });
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { uid },
+        data: {
+          username: email,
+          newEmail: null,
+          newEmailVerificationJti: null
+        }
+      }),
+      // Update email on user audits
+      this.prisma.audit.updateMany({
+        where: { auditorEmail: user.username },
+        data: { auditorEmail: email }
+      })
+    ]);
   }
 
   async userHasEmail(uid: string, email: string) {
