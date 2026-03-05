@@ -26,6 +26,12 @@ export class MarkdownPlugin extends Plugin {
       return false;
     }
 
+    // Check if the cursor is in a code block
+    const node = editor.$pos(editor.state.selection.$anchor.pos);
+    if (node.element.localName === "code") {
+      return false;
+    }
+
     const text = clipboardEvent.clipboardData.getData("text/plain");
 
     if (text && this.looksLikeMarkdown(text)) {
@@ -113,7 +119,8 @@ export class MarkdownPlugin extends Plugin {
     }
 
     linesWithLevels.forEach((it) => {
-      lines[it.index][1] = it.line;
+      lines[it.index][1] = it.line
+        .replace(/(\*\*|[*_])([^*_]+)\1/g, "$2"); // remove bold and italic
     });
 
     const result = lines.map(([, line]) => line).join("\n");
