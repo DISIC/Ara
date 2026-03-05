@@ -2,7 +2,6 @@
 import type { ReportError } from "./getReportErrors";
 
 import { Ref } from "vue";
-import { useRoute } from "vue-router";
 import { Section, useScrollSpy } from "../../composables/useScrollSpy";
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { ReportImprovement } from "./getReportImprovements";
@@ -14,9 +13,6 @@ const props = defineProps<{
   showFilters?: boolean;
   topNotice?: string;
 }>();
-
-// Set active side menu link
-const route = useRoute();
 
 const sections: Section[] = [{
   id: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
@@ -54,9 +50,7 @@ function isActive(id: string) {
                 :class="[
                   'fr-sidemenu__item',
                   {
-                    'fr-sidemenu__item--active':
-                      !route.hash ||
-                      isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
+                    'fr-sidemenu__item--active': isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                   }
                 ]"
               >
@@ -64,11 +58,7 @@ function isActive(id: string) {
                   :to="{ hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}` }"
                   class="fr-sidemenu__link"
                   :aria-current="
-                    route.hash
-                      ? isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
-                        ? 'true'
-                        : undefined
-                      : undefined
+                    isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`) ? 'true' : undefined
                   "
                 >{{
                   StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
