@@ -10,6 +10,8 @@ import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useNotifications } from "../../composables/useNotifications";
+import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
@@ -148,6 +150,11 @@ const isSubmitting = ref(false);
 const auditStore = useAuditStore();
 const notify = useNotifications();
 
+const {
+  toggleStatus,
+  saveStatusToLocalStorage
+} = useTopicAccordions();
+
 function submitAuditSettings() {
   isSubmitting.value = true;
 
@@ -165,23 +172,36 @@ function submitAuditSettings() {
 
   auditStore
     .createAudit(audit.value)
-    .then((audit) => {
+    .then((newAudit) => {
       if (!accountStore.account) {
         auditStore.showAuditEmailAlert = true;
       }
+
+      const topicsToHide = [
+        ...(audit.value.pageElements?.frame ? [] : [2]),
+        ...(audit.value.pageElements?.multimedia ? [] : [4]),
+        ...(audit.value.pageElements?.table ? [] : [5]),
+        ...(audit.value.pageElements?.form ? [] : [11])
+      ];
+
+      setTopicAccordionStatus(
+        newAudit.editUniqueId,
+        [newAudit.transverseElementsPage.id, ...newAudit.pages.map(p => p.id)],
+        topicsToHide
+      );
 
       return router.push({
         name: accountStore.account?.email
           ? "audit-generation"
           : "audit-overview",
-        params: { uniqueId: audit.editUniqueId }
+        params: { uniqueId: newAudit.editUniqueId }
       });
     })
     .catch((err) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        DEFAULT_NOTIFICATION_ERROR_TITLE,
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       captureWithPayloads(err);
     })
@@ -196,6 +216,25 @@ async function goToPreviousStep() {
 
   await nextTick();
   stepHeadingRef.value?.focus();
+}
+
+function setTopicAccordionStatus(
+  auditEditId: string,
+  pageIds: number[],
+  topics: number[]
+
+) {
+  pageIds.forEach(pageId => {
+    [...Array.from({ length: 13 }).keys()].forEach(topic => {
+      toggleStatus(
+        auditEditId,
+        pageId,
+        topic,
+        topics.includes(topic)
+      );
+      saveStatusToLocalStorage();
+    });
+  });
 }
 </script>
 

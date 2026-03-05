@@ -10,6 +10,17 @@
 
 - Ajoute un indicateur sur les onglets de pages lorsqu’elles sont complétées ([#1410](https://github.com/DISIC/Ara/pull/1410))
 
+### 04/03/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Pour un audit terminé, la barre de progression est affichée au lieu de la date de fin ([#1398](https://github.com/DISIC/Ara/pull/1398))
+
+### 25/02/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- L’état (ouvert / fermé) des accordéons de thématiques est enregistré dans le navigateur pour chaque audit ([#1385](https://github.com/DISIC/Ara/pull/1385))
 
 ### 12/02/2026
 

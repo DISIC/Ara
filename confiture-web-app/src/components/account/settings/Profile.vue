@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 
 import { useNotifications } from "../../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { useAccountStore } from "../../../store/account";
 import DsfrField from "../../ui/DsfrField.vue";
 
@@ -46,8 +47,8 @@ function updateProfile() {
     .catch(() => {
       notify(
         "error",
-        "La mise a jour du profil a échoué",
-        "Une erreur inconnue est survenue"
+        "Échec de la mise à jour du profil",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
     });
 }
