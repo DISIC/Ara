@@ -241,11 +241,17 @@ watch(
           @keydown.home.prevent="selectFirstTab"
           @keydown.end.prevent="selectLastTab"
         >
+          <span
+            v-if="typeof tabs[i].icon === 'string'"
+            :class="`${tabs[i].icon} fr-icon--sm fr-mr-2v`"
+            aria-hidden="true"
+          />
           <component
-            :is="props.tabs[i].icon"
-            v-if="props.tabs[i].icon && i === 0"
+            :is="tabs[i].icon"
+            v-else
             class="fr-mr-2v"
           ></component>{{ tab.label }}
+          <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>
       </li>
     </ul>

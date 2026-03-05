@@ -525,6 +525,13 @@ export const useResultsStore = defineStore("results", {
     },
 
     /**
+     * @returns true if all page criteria are ≠ NOT_TESTED
+     */
+    isPageCompleted(pageId: number): boolean {
+      return this.allResults?.filter(r => r.pageId === pageId).every(r => r.status !== CriteriumResultStatus.NOT_TESTED) ?? false;
+    },
+
+    /**
      * Fill the entire audit with random values for debugging purpose.
      */
     async DEV_fillResults(uniqueId: string) {
