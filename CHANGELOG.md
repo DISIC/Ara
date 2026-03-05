@@ -4,6 +4,13 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 05/03/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Ajoute un indicateur sur les onglets de pages lorsqu’elles sont complétées ([#1410](https://github.com/DISIC/Ara/pull/1410))
+
+
 ### 12/02/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
