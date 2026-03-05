@@ -479,7 +479,7 @@ export class AuditService {
 
       let returnedAudit: AuditDto;
 
-      // check the diffenences between the audit after and before the update
+      // check the differences between the audit after and before the update
       const changedProperties: (keyof typeof audit)[] =
         _
           .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
@@ -487,8 +487,8 @@ export class AuditService {
           .filter(el => !["notesFiles", "transverseElementsPage", "pages"].includes(el));
 
       const pagesChanged = !isEqual(
-        audit.pages.map(p => pick(p, ["name", "url", "order"])),
-        previousAudit.pages.map(p => pick(p, ["name", "url", "order"]))
+        audit.pages.map(p => pick(p, ["id", "name", "url", "order"])),
+        previousAudit.pages.map(p => pick(p, ["id", "name", "url", "order"]))
       );
 
       // update audit edition date only if a property other than below has been changed
