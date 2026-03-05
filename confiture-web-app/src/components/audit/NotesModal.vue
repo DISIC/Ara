@@ -46,7 +46,6 @@ function handleUploadFile(file: File) {
   auditStore
     .uploadAuditFile(uniqueId.value, file)
     .then(() => {
-      auditStore.updateCurrentAuditEditionDate();
       errorMessage.value = null;
     })
     .catch(async (error) => {
@@ -68,7 +67,6 @@ function handleDeleteFile(flFile: FileListFile) {
   auditStore
     .deleteAuditFile(uniqueId.value, notesFile.id)
     .then(() => {
-      auditStore.updateCurrentAuditEditionDate();
       errorMessage.value = null;
     })
     .catch(async (error) => {

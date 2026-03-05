@@ -153,23 +153,28 @@ export const useAuditStore = defineStore("audit", {
       formData.set("file", file, encodeURI(file.name));
 
       this.increaseCurrentRequestCount();
-      const notesFile = (await ky
-        .post(`/api/audits/${uniqueId}/notes/files`, {
-          body: formData
-        })
-        .json()
-        .finally(() => {
-          this.decreaseCurrentRequestCount();
-        })) as NotesFile;
 
-      const notesFiles = this.entities[uniqueId].notesFiles || [];
-      notesFiles.push(notesFile);
+      try {
+        const notesFile: NotesFile = await ky.post(`/api/audits/${uniqueId}/notes/files`, {
+          body: formData
+        }).json();
+
+        this.updateCurrentAuditEditionDate();
+
+        const notesFiles = this.entities[uniqueId].notesFiles || [];
+        notesFiles.push(notesFile);
+      } finally {
+        this.decreaseCurrentRequestCount();
+      }
     },
 
     async deleteAuditFile(uniqueId: string, fileId: number) {
       this.increaseCurrentRequestCount();
       await ky
         .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
+        .then(() => {
+          this.updateCurrentAuditEditionDate();
+        })
         .finally(() => {
           this.decreaseCurrentRequestCount();
         });
