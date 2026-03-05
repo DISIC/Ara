@@ -9,6 +9,7 @@ import { Dropcursor } from "@tiptap/extensions";
 import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
 import { VueNodeViewRenderer, ResizableNodeView, Editor, VueNodeViewRendererOptions } from "@tiptap/vue-3";
+import { useResizeObserver } from "@vueuse/core";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
@@ -16,7 +17,6 @@ import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 
 import { marked } from "marked";
-import { useWindowWidth } from "../../composables/useWindowWidth";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
 import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
@@ -24,6 +24,9 @@ import TiptapImage from "./image/TiptapImage.vue";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
+
+// Minimum editor inner width (in px) to enable image resize
+const minWidthToEnableImageResize = 600;
 
 // LowLight languages
 const lowlight = createLowlight(common);
@@ -177,12 +180,7 @@ export function getTiptapEditorExtensions(options?: {
           const vueNodeView = VueNodeViewRenderer(TiptapImage)(props) as NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>;
 
           if (!vueNodeView.HTMLAttributes) {
-            return vueNodeView;
-          }
-
-          // if mobile, we don't resize
-          const width = useWindowWidth().value;
-          if (width < 768) {
+            // <EditorContent> not rendered yet
             return vueNodeView;
           }
 
@@ -223,26 +221,25 @@ export const tiptapRenderedExtensions: Extensions = [
 ];
 
 // Create a resizable node view for each image
-export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeView: NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>): ResizableNodeView => {
+function createResizableNodeView(props: NodeViewRendererProps, vueNodeView: NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>): ResizableNodeView {
   const img = vueNodeView.dom.querySelector("img")!;
   const node = vueNodeView.node;
+  const editorElement = vueNodeView.view.dom;
 
   const minImgWidth = 50;
   const minImgHeight = 30;
-
-  // Max image width is editor internal width (offsetWidth - 2 × inline padding)
-  const editorElement = vueNodeView.view.dom;
-  const inlinePadding: number = parseFloat(getComputedStyle(editorElement).getPropertyValue("padding-inline"));
-  const maxImgWidth = editorElement.offsetWidth - 2 * inlinePadding;
+  const aspectRatio = img.width / img.height;
 
   const resizableView = new ResizableNodeView({
     ...props,
     element: img,
     node,
-    onResize: (w, h) => {
-      img.width = w;
-      img.height = h;
+    onResize: (w, _h) => {
+      const constrained = applyConstraints(editorElement, w, minImgWidth, minImgHeight, aspectRatio);
+      img.width = constrained.w;
+      img.height = constrained.h;
 
+      img.style.width = `${constrained.w.toString()}px`;
       // ResizableNodeView#handleResize modifies both CSS width and height.
       // CSS height needs to be removed here in order to preserve aspect ratio
       // (height is defined to "auto" in CSS)
@@ -265,9 +262,9 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     },
     options: {
       preserveAspectRatio: true,
-      min: { width: minImgWidth, height: minImgHeight },
-      max: { width: maxImgWidth },
       directions: ["right", "bottom"]
+      // Because resize constraint (max width) depends on the editor width,
+      // we cannot use the `min` and `max` options
     }
   });
 
@@ -294,55 +291,104 @@ export const createResizableNodeView = (props: NodeViewRendererProps, vueNodeVie
     e.preventDefault();
     e.stopPropagation();
 
+    if (!isResizeEnabled(editorElement, img)) {
+      return;
+    }
+
     const step = 10;
     const currentWidth = img.offsetWidth;
     const aspectRatio = img.width / img.height;
 
-    let newWidth, newHeight;
+    let newWidth;
 
     switch (e.key) {
       // Increase size (→ ↓)
       case "ArrowRight":
       case "ArrowDown":
-        newWidth = Math.min(currentWidth + step, maxImgWidth);
-        newHeight = newWidth / aspectRatio; // no max height (always scrollable)
+        newWidth = currentWidth + step;
         break;
 
       // Decrease size (← ↑)
       case "ArrowLeft":
       case "ArrowUp":
-        newWidth = Math.max(currentWidth - step, minImgWidth);
-        if (newWidth / aspectRatio < minImgHeight) {
-          newWidth = currentWidth;
-        }
-        newHeight = newWidth / aspectRatio;
+        newWidth = currentWidth - step;
         break;
 
       default:
         return;
     }
 
+    const constrained = applyConstraints(editorElement, newWidth, minImgWidth, minImgHeight, aspectRatio);
+
     // Apply resize
     if (newWidth !== currentWidth) {
-      img.style.width = `${newWidth}px`;
-      img.width = newWidth;
-      img.height = newHeight;
-      props.editor.commands.updateAttributes("image", { width: newWidth, height: newHeight });
+      img.style.width = `${constrained.w}px`;
+      img.width = constrained.w;
+      img.height = constrained.h;
+      props.editor.commands.updateAttributes("image", { width: constrained.w, height: constrained.h });
     };
   };
 
   // Capture phase to intercept before Tiptap handles it
-  props.editor.view.dom.addEventListener("keydown", handleKeydown, true);
+  editorElement.addEventListener("keydown", handleKeydown, true);
+  showOrHideHandles(editorElement);
+
+  const { stop: stopObservingResize } = useResizeObserver(editorElement, () => {
+    showOrHideHandles(editorElement);
+  });
 
   // Cleanup on destroy
   const originalDestroy = resizableView.destroy?.bind(resizableView);
   resizableView.destroy = () => {
-    props.editor.view.dom.removeEventListener("keydown", handleKeydown, true);
+    editorElement.removeEventListener("keydown", handleKeydown, true);
     originalDestroy?.();
+    stopObservingResize();
   };
 
   return resizableView;
 };
+
+function showOrHideHandles(editorElement: Element) {
+  const imgs = editorElement.querySelectorAll("[data-drag-handle]") as NodeListOf<HTMLImageElement>;
+  imgs.forEach((img) => {
+    const handles = img.parentElement?.querySelectorAll("[data-resize-handle]") as NodeListOf<HTMLDivElement>;
+    handles.forEach((handle) => {
+      if (isResizeEnabled(editorElement, img)) {
+        if (handle.style.display) {
+          handle.style.removeProperty("display");
+        }
+      } else {
+        handle.style.display = "none";
+      }
+    });
+  });
+}
+
+function isResizeEnabled(editorElement: Element, img: HTMLImageElement) {
+  const maxImgWidth = parseInt(editorElement.getAttribute("data-inner-width")!);
+  // Enable resize if the editor is wide enough
+  if (maxImgWidth > minWidthToEnableImageResize) {
+    return true;
+  }
+  // Enable resize if the image current width is smaller than the editor width
+  if (parseInt(img.getAttribute("width")!) < maxImgWidth) {
+    return true;
+  }
+}
+
+function applyConstraints(editorElement: Element, newWidth: number, minImgWidth: number, minImgHeight: number, aspectRatio: number): { w: number; h: number } {
+  // Max image width is editor inner width (offsetWidth - 2 × inline padding)
+  const maxImgWidth = parseInt(editorElement.getAttribute("data-inner-width")!);
+  let w = Math.min(newWidth, maxImgWidth);
+  w = Math.max(w, minImgWidth);
+  if (w / aspectRatio < minImgHeight) {
+    w = Math.floor(minImgHeight * aspectRatio);
+  }
+
+  const h = Math.round(w / aspectRatio);
+
+  return { w, h };
+}
 
 /**
  * Convert markdown string to HTML
