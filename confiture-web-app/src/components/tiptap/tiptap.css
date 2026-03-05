@@ -155,7 +155,6 @@
   }
 }
 
-.tiptap-selection,
 .ProseMirror-selectednode {
   outline: var(--dsfr-outline) solid 2px;
   max-width: max-content;
