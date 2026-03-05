@@ -1,4 +1,4 @@
-// Composant inspiré de Raddix
+// Component inspired by Raddix
 // https://raddix.dev/hooks/use-scroll-spy
 // https://github.com/insoftlabs/raddix/blob/main/packages/hooks/use-scroll-spy/src/index.ts
 
@@ -6,32 +6,45 @@
 
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 
+export interface Section {
+  id: string;
+  selector: string;
+}
+
+export interface SectionElement {
+  section: Section;
+  element: Element;
+}
+
 export function useScrollSpy(
-  items: string[],
+  items: Section[],
   options?: IntersectionObserverInit
 ) {
   const activeId = ref("");
+  const elements: SectionElement[] = [];
   let observer: IntersectionObserver | null = null;
 
   const createObserver = () => {
     observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry: IntersectionObserverEntry) => {
         if (entry.isIntersecting) {
-          activeId.value = `#${entry.target.id}`;
+          const element: SectionElement | undefined = elements.find(x => x.element === entry.target);
+          if (element) {
+            activeId.value = element.section.id;
+          }
         }
       });
     }, options);
 
-    items.forEach(id => {
-      if (!id) return;
-
-      const element = document.querySelector(id);
+    items.forEach((section: Section) => {
+      const element: Element | null = document.querySelector(section.selector);
       if (element) {
         observer?.observe(element);
+        elements.push({ section, element });
 
-        // Par défaut, le premier lien du menu doit être marqué comme actif
+        // By default, the first link in the menu should be marked as active.
         if (!activeId.value) {
-          activeId.value = id;
+          activeId.value = section.id;
         }
       }
     });

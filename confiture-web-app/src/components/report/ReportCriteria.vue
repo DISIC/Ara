@@ -2,7 +2,7 @@
 import type { ReportError } from "./getReportErrors";
 
 import { useRoute } from "vue-router";
-import { useScrollSpy } from "../../composables/useScrollSpy";
+import { Section, useScrollSpy } from "../../composables/useScrollSpy";
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { ReportImprovement } from "./getReportImprovements";
 
@@ -17,11 +17,14 @@ const props = defineProps<{
 // Set active side menu link
 const route = useRoute();
 
-const sections: string[] = [
-  `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
-  ...props.pagesData.map((page: ReportError | ReportImprovement) => `#page_${page.id}`)
-];
-const activeId = useScrollSpy(sections);
+const sections: Section[] = [{
+  id: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
+  selector: `section:has(#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG})`
+}, ...props.pagesData.map((page: ReportError | ReportImprovement) => { return {
+  id: `#page_${page.id}`,
+  selector: `section:has(#page_${page.id})`
+} as Section; })];
+const activeId = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
 
 function isActive(id: string) {
   return id === activeId.value;
