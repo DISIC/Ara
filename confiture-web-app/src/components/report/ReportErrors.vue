@@ -208,8 +208,11 @@ const errorsCount = computed(() => {
     <template #transverse-data>
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <template v-if="transverseErrors.topics.length">
-        <section :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG" class="fr-mb-8w">
-          <h3 :class="`fr-h3 ${report.data.transverseElements.length ? 'fr-mb-1w' : 'fr-mb-4w'} page-title`">
+        <section class="fr-mb-8w">
+          <h3
+            :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
+            :class="`fr-h3 ${report.data.transverseElements.length ? 'fr-mb-1w' : 'fr-mb-4w'} page-title`"
+          >
             {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
           </h3>
           <ul
@@ -240,11 +243,10 @@ const errorsCount = computed(() => {
     <template #pages-data>
       <section
         v-for="(page, i) in pagesErrors"
-        :id="`page_${page.id}`"
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h3 class="fr-h3 fr-mb-1w page-title">
+        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-1w page-title">
           {{ page.name }}
         </h3>
         <a
