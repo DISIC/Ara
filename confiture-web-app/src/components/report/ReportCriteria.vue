@@ -20,9 +20,9 @@ const sections: Section[] = [{
 }, ...props.pagesData.map((page: ReportError | ReportImprovement) => { return {
   id: `#page_${page.id}`,
   selector: `section:has(#page_${page.id})`
-} as Section; })];
+}; })];
 
-const activeId: Ref<string, string> = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
+const activeId: Ref<string> = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
 
 function isActive(id: string) {
   return id === activeId.value;

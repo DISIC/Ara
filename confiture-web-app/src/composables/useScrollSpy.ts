@@ -11,7 +11,7 @@ export interface Section {
   selector: string;
 }
 
-export interface SectionElement {
+interface SectionElement {
   section: Section;
   element: Element;
 }
