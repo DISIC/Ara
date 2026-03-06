@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { ReportError } from "./getReportErrors";
 
-import { useRoute } from "vue-router";
+import { Ref } from "vue";
+import { Section, useScrollSpy } from "../../composables/useScrollSpy";
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { ReportImprovement } from "./getReportImprovements";
 
-defineProps<{
+const props = defineProps<{
   count: string;
   pagesData: ReportError[] | ReportImprovement[];
   transverseData: ReportError | ReportImprovement;
@@ -13,11 +14,18 @@ defineProps<{
   topNotice?: string;
 }>();
 
-// Set active side menu link
-const route = useRoute();
+const sections: Section[] = [{
+  id: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`,
+  selector: `section:has(#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG})`
+}, ...props.pagesData.map((page: ReportError | ReportImprovement) => { return {
+  id: `#page_${page.id}`,
+  selector: `section:has(#page_${page.id})`
+}; })];
+
+const activeId: Ref<string> = useScrollSpy(sections, { rootMargin: "0% 0% -80% 0%" });
 
 function isActive(id: string) {
-  return route.hash && route.hash === id;
+  return id === activeId.value;
 }
 </script>
 
@@ -42,9 +50,7 @@ function isActive(id: string) {
                 :class="[
                   'fr-sidemenu__item',
                   {
-                    'fr-sidemenu__item--active':
-                      !route.hash ||
-                      isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
+                    'fr-sidemenu__item--active': isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
                   }
                 ]"
               >
@@ -52,11 +58,7 @@ function isActive(id: string) {
                   :to="{ hash: `#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}` }"
                   class="fr-sidemenu__link"
                   :aria-current="
-                    route.hash
-                      ? isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`)
-                        ? 'true'
-                        : undefined
-                      : undefined
+                    isActive(`#${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`) ? 'true' : undefined
                   "
                 >{{
                   StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL
