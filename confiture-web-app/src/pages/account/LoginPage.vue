@@ -66,7 +66,6 @@ async function handleSubmit() {
 
 <template>
   <PageMeta title="Connexion" />
-  <!-- TODO: fix top spacing -->
   <div
     v-if="showPasswordResetAlert || showCreatedAccountAlert"
     class="fr-alert fr-alert--success fr-mb-4w"
