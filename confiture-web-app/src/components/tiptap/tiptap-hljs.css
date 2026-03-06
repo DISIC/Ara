@@ -9,6 +9,7 @@
   @media (forced-colors: none), (forced-colors: active) {
     :root {
       --highlight-a11y-code-block-padding: 0.5em;
+      --highlight-a11y-color-handle: hsla(0, 0%, 100%, 1);
 
       &[data-fr-theme="light"] {
         --highlight-a11y-color-background: hsla(0, 0%, 100%, 1);

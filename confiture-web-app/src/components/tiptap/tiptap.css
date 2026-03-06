@@ -20,12 +20,12 @@
   max-width: 100%;
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
-  padding: 0.5rem;
+  padding: 0.125rem;
 }
 
 .tiptap img:not(.ProseMirror-widget) {
-  background-size: calc(100% - 1rem);
-  background-position: 0.5rem 0.5rem;
+  background-size: calc(100% - 0.25rem); /* 100% - 2 × background offset */
+  background-position: 0.125rem 0.125rem;
   background-repeat: no-repeat;
   object-position: -99999px 99999px;
   transition:
@@ -58,7 +58,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tiptap:not(.tiptap--rendered) img:hover {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 0.1875rem 0.5rem;
   }
 }
 
@@ -143,4 +143,51 @@
 
 .tiptap li > p {
   margin-bottom: 0.25em;
+}
+
+.tiptap [data-resize-container] {
+  display: block !important;
+  max-width: max-content;
+
+  &:hover {
+    outline: var(--dsfr-outline) solid 2px;
+    cursor: hand;
+  }
+}
+
+.ProseMirror-selectednode {
+  outline: var(--dsfr-outline) solid 2px;
+  max-width: max-content;
+
+  [data-resize-handle] {
+    --handle-size-ratio: 40;
+    --handle-size-max: 80px;
+    --handle-width: 0.5rem;
+    --handle-distance-from-border: 4px;
+    background-color: #ffffff;
+    border: 2px solid var(--dsfr-outline);
+    border-radius: 0.25rem;
+
+    &:focus-visible,
+    &:hover {
+      background-color: var(--dsfr-outline);
+    }
+
+    /* Edge handles */
+    &[data-resize-handle="bottom"] {
+      height: var(--handle-width);
+      margin-bottom: var(--handle-distance-from-border);
+      width: min(var(--handle-size-max), calc(1% * var(--handle-size-ratio)));
+      left: max(calc((100% - var(--handle-size-max)) / 2), calc(1% * (100 - var(--handle-size-ratio)) / 2)) !important;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle="right"] {
+      width: var(--handle-width);
+      margin-right: var(--handle-distance-from-border);
+      height: min(var(--handle-size-max), calc(1% * var(--handle-size-ratio)));
+      top: max(calc((100% - var(--handle-size-max)) / 2), calc(1% * (100 - var(--handle-size-ratio)) / 2)) !important;
+      cursor: ew-resize;
+    }
+  }
 }

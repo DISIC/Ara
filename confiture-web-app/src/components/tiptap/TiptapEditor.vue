@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onBeforeUnmount, ShallowRef, useTemplateRef, watch } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 
+import { onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, watch } from "vue";
+import { getInnerWidth } from "../../utils";
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
 import { displayedHeadings, getTiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
@@ -86,6 +88,10 @@ if (props.describedBy) {
   editorAttributes["aria-describedby"] = props.describedBy;
 }
 
+// Inner width attribute, useful when resizing window
+// Value is set when editor is resized (see #onMounted)
+editorAttributes["data-inner-width"] = Infinity;
+
 const editor = useEditor({
   editorProps: {
     attributes: editorAttributes
@@ -119,6 +125,16 @@ watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
   editor.value.setEditable(editable && !disabled);
 });
 
+const innerWidth = shallowRef(0);
+
+onMounted(() => {
+  const editorElement = editor.value.view.dom;
+  useResizeObserver(editorElement, () => {
+    const innerWidth = getInnerWidth(editorElement);
+    editorElement.setAttribute("data-inner-width", innerWidth.toString());
+  });
+});
+
 onBeforeUnmount(() => {
   editor.value?.destroy();
 });
@@ -126,7 +142,8 @@ onBeforeUnmount(() => {
 defineExpose({
   focusEditor: () => {
     editor.value.commands.focus();
-  }
+  },
+  getInnerWidth: () => innerWidth.value
 });
 </script>
 
@@ -365,7 +382,6 @@ defineExpose({
   color: var(--text-disabled-grey);
 }
 
-.tiptap-selection,
 .ProseMirror-selectednode {
   outline: var(--dsfr-outline) dotted 2px;
   max-width: max-content;
