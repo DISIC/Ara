@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -9,13 +8,11 @@ import { useNotifications } from "../../composables/useNotifications";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
-import { NewEmailVerificationJwtPayload } from "../../types";
 
 const route = useRoute();
 const store = useAccountStore();
 const tokenIsInvalid = ref(false);
 const showSuccess = ref(false);
-const newEmail = ref<string>();
 
 const notify = useNotifications();
 
@@ -26,10 +23,6 @@ onMounted(async () => {
     tokenIsInvalid.value = true;
     return;
   }
-
-  newEmail.value = (
-    jwtDecode(verificationToken) as NewEmailVerificationJwtPayload
-  ).email;
 
   store
     .verifyEmailUpdate(verificationToken)
@@ -97,15 +90,13 @@ onMounted(async () => {
           <span
             class="success-icon fr-icon--lg fr-icon-checkbox-circle-fill"
             aria-hidden="true"
-          ></span>
-          Votre adresse e-mail a été mise à jour avec succès
+          />
+          Votre adresse e-mail a bien été mise à jour
         </h1>
       </div>
 
-      <p class="fr-mb-6w">
-        La prochaine fois que vous vous connectez à votre compte, assurez-vous
-        que vous utilisez l’adresse e-mail :
-        <strong>{{ newEmail }}</strong>.
+      <p class="fr-mb-3w">
+        Pour accéder à votre espace, connectez-vous avec votre nouvelle adresse e-mail.
       </p>
 
       <RouterLink

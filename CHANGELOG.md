@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 06/03/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- La mise à jour de l’adresse email d’un compte met également à jour l’adresse email des audits de ce compte ([#1393](https://github.com/DISIC/Ara/pull/1393))
+
 ### 05/03/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
