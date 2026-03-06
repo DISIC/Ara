@@ -259,11 +259,9 @@ export const useResultsStore = defineStore("results", {
         this.data[update.pageId][update.topic][update.criterium] = update;
       });
 
-      // update the edition date of the local audit. It will not be the same
-      // value as the one stored in the DB but it is close enough in our case
       const auditStore = useAuditStore();
       if (auditStore.currentAudit) {
-        auditStore.currentAudit.editionDate = new Date().toISOString();
+        auditStore.updateCurrentAuditEditionDate();
       }
 
       // update filter store to record evaluated criteria

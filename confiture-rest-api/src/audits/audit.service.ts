@@ -477,16 +477,24 @@ export class AuditService {
         select: AUDIT_PRISMA_SELECT
       });
 
+      let returnedAudit: AuditDto;
+
       // check the diffenences between the audit after and before the update
       const changedProperties: (keyof typeof audit)[] =
         _
           .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
-          .map(entries => entries[0] as keyof typeof audit);
+          .map(entries => entries[0] as keyof typeof audit)
+          .filter(el => !["notesFiles", "transverseElementsPage", "pages"].includes(el));
+
+      const pagesChanged = !isEqual(
+        audit.pages.map(p => pick(p, ["name", "url", "order"])),
+        previousAudit.pages.map(p => pick(p, ["name", "url", "order"]))
+      );
 
       // update audit edition date only if a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
-      if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty))) {
-        await this.updateAuditEditDate(uniqueId);
+      if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty)) || pagesChanged) {
+        returnedAudit = await this.updateAuditEditDate(uniqueId);
       }
 
       // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
@@ -497,10 +505,10 @@ export class AuditService {
           changedProperties.includes("procedureName"))
         )
       ) {
-        return (await this.updateStatementDate(uniqueId)) ?? audit;
+        returnedAudit = (await this.updateStatementDate(uniqueId)) ?? audit;
       }
 
-      return audit;
+      return returnedAudit;
     } catch (e) {
       // Audit does not exist
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
@@ -521,7 +529,7 @@ export class AuditService {
     try {
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
-        data: { notes: data.notes }
+        data: { notes: data.notes, editionDate: new Date() }
       });
 
       return audit;
@@ -752,6 +760,8 @@ export class AuditService {
       }
     });
 
+    await this.updateAuditEditDate(editUniqueId);
+
     return noteFile;
   }
 
@@ -796,6 +806,8 @@ export class AuditService {
         id: fileId
       }
     });
+
+    await this.updateAuditEditDate(editUniqueId);
 
     return true;
   }
