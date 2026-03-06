@@ -17,8 +17,7 @@
     <mj-text color="#666666" font-size="12px" mj-class="black-link">
       Ara est un service en ligne conçu et développé par l’équipe
       <a style="color: inherit" href="https://design.numerique.gouv.fr/">
-        DesignGouv
-      </a>.
+        DesignGouv</a>
     </mj-text>
   </mj-column>
 </mj-section>

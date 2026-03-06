@@ -88,18 +88,6 @@ const csvExportFilename = computed(() => {
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
 
-function copyAuditLink(uniqueId: string) {
-  const url = `${window.location.origin}/audits/${uniqueId}/generation`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers l’audit a bien été copié dans le presse-papier.`
-    );
-  });
-}
-
 function copyReportLink(uniqueId: string) {
   const url = `${window.location.origin}/rapport/${uniqueId}`;
 
@@ -311,19 +299,6 @@ defineExpose({
               Modifier les paramètres
               <template v-if="windowWidth > 880">de l’audit</template>
             </RouterLink>
-          </li>
-
-          <li class="dropdown-item dropdown-item--with-meta">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyAuditLink(audit.editUniqueId)"
-            >
-              Copier le lien de l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
-              <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                Ce lien permet de modifier l’audit
-              </span>
-            </button>
           </li>
 
           <li aria-hidden="true" class="dropdown-separator" />

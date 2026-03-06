@@ -301,22 +301,6 @@ describe("Audit", () => {
     });
   });
 
-  it("User can copy audit link", () => {
-    cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-
-      cy.contains("button", "Actions").click();
-      cy.contains("button", "Copier le lien de l’audit").click();
-      // cy.get("@audit").then((audit) => {
-      cy.assertClipboardValue(
-        `http://localhost:3000/audits/${editId}/generation`
-      );
-      cy.contains(
-        "Le lien vers l’audit a bien été copié dans le presse-papier."
-      );
-    });
-  });
-
   it("User can update notes", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
