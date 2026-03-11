@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 
 import { useNotifications } from "../../composables/useNotifications";
 import { getFileMessage } from "../../enums";
-import { isImage, sleep } from "../../utils";
+import { formatBytes, isImage, sleep } from "../../utils";
 import FileList, { FileListFile } from "./FileList.vue";
 
 interface Props {
@@ -45,7 +45,7 @@ const isOffline = useIsOffline();
 
 const notify = useNotifications();
 
-const maxFileSizeHumanReadable = computed(() => (props.maxFileSize / 1000000) + " Mo");
+const maxFileSizeHumanReadable = computed(() => formatBytes(props.maxFileSize));
 
 const acceptedFormatsHtml = computed(() => {
   if (!props.acceptedFormats) {
