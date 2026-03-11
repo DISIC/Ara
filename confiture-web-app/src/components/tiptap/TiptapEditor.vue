@@ -337,7 +337,7 @@ defineExpose({
 }
 
 .tiptap__fake-table,
-.tiptap__fake-table td {
+.tiptap__fake-table > tr > td {
   border: none;
 }
 
