@@ -15,6 +15,7 @@ import {
 import { AuditExportService } from "./audit-export.service";
 import { AuditService } from "./audit.service";
 import { AuditReportDto } from "./dto/audit-report.dto";
+import { StatementDto } from "./dto/entities/statement.dto";
 
 @Controller("reports")
 @ApiTags("Audits")
@@ -53,6 +54,23 @@ export class ReportsController {
     }
 
     return file;
+  }
+
+  @Get("/:consultUniqueId/declaration")
+  @ApiOkResponse({ description: "The audit was found.", type: StatementDto })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async getAuditAccessibilityStatement(
+    @Param("consultUniqueId") consultUniqueId: string
+  ): Promise<StatementDto>
+  {
+    const statement = await this.auditService.getAuditStatementWithConsultId(consultUniqueId);
+
+    if (!statement) {
+      await this.sendAuditNotFoundStatus(consultUniqueId);
+    }
+
+    return statement;
   }
 
   /**
