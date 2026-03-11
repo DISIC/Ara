@@ -135,7 +135,7 @@ export function slugify(value: string): string {
 export function formatBytes(bytes: number, decimals = 0) {
   if (!+bytes) return "0 octet";
 
-  const k = 1024;
+  const k = 1000;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ["octets", "Ko", "Mo", "Go", "To", "Po", "Eo", "Zo", "Yo"];
 
