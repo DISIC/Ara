@@ -41,8 +41,8 @@
 
     <mj-section>
       <mj-column>
-        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
-        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
+        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
+        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
       </mj-column>
     </mj-section>
 
