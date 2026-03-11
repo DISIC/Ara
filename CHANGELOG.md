@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 11/03/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Dans le rapport dans les onglets « Détail des non-conformités » et « Point d’amélioration », on affiche dynamiquement le lien actif du menu latéral en fonction de la position de l’utilisateur ou l'utilisatrice sur la page, afin d’indiquer la page correspondant au contenu affiché. ([#1419](https://github.com/DISIC/Ara/pull/1419))
+
 ### 06/03/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
