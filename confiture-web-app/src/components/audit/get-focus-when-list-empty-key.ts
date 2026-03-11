@@ -5,4 +5,4 @@ import { InjectionKey } from "vue";
  * to focus when a FileList becomes empty (after a FileListFile deletion)
  */
 export const getFocusWhenListEmptyKey =
-  Symbol("getFocusWhenListEmpty") as InjectionKey<(() => HTMLElement | null | null)>;
+  Symbol("getFocusWhenListEmpty") as InjectionKey<((() => HTMLElement | null) | null)>;
