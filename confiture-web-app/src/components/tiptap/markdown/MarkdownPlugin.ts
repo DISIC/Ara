@@ -1,6 +1,7 @@
-import { Editor } from "@tiptap/core";
+import { Editor, generateHTML, generateJSON, generateText } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { uniqBy } from "lodash-es";
+import { displayedHeadings, getTiptapEditorExtensions } from "../tiptap-extensions";
 
 // Docs :  https://tiptap.dev/docs/editor/markdown/examples
 
@@ -11,68 +12,100 @@ export class MarkdownPlugin extends Plugin {
     super({
       key: new PluginKey("pasteMarkdown"),
       props: {
-        handlePaste: (view, event) =>
+        handlePaste: (_view, event) =>
           this.handlePaste(editor, event)
       }
     });
     this.editor = editor;
   }
 
+  /**
+   * `handlePaste` hook used to interpret pasted Markdown content
+   */
   private handlePaste(
     editor: Editor,
     clipboardEvent: ClipboardEvent
   ): boolean {
-    if (!clipboardEvent.clipboardData) {
+    const clipboardData = clipboardEvent.clipboardData;
+    if (!clipboardData) {
       return false;
     }
 
-    // Check if the cursor is in a code block
-    const node = editor.$pos(editor.state.selection.$anchor.pos);
-    if (node.element.localName === "code") {
+    // If cursor or selection is in a code block, do not interpret Markdown
+    const selectedNode = editor.state.selection.$from.parent;
+    if (selectedNode.type.name === "codeBlock") {
       return false;
     }
 
-    const text = clipboardEvent.clipboardData.getData("text/plain");
+    // Get plain text from clipboard (maybe Markdown?)
+    const text = clipboardData.getData("text/plain");
 
-    if (text && this.looksLikeMarkdown(text)) {
-      if (!this.editor || !this.editor.markdown) {
-        return false;
-      }
+    const mdManager = this.editor.markdown;
 
-      const markdown = this.realignCommentHeadings(text);
-
-      const json = this.editor.markdown.parse(markdown);
-
-      editor.commands.insertContent(json);
-      return true;
+    if (!text || !mdManager) {
+      return false;
     }
 
-    return false;
-  }
-
-  private looksLikeMarkdown(text: string): boolean {
-  // Simple heuristic: check for Markdown syntax
-    return (
-      /^#{1,6}\s/.test(text) || // Headings
-    /\*\*[^*]+\*\*/.test(text) || // Bold
-    /[*_][^*_]+[*_]/.test(text) || // Italic with * or _
-    /\[.+\]\(.+\)/.test(text) || // Links
-    /<[^>\s]+>/.test(text) || // Autolinks (any <link>)
-    /^[-*+]\s/.test(text) || // Lists
-    /^>\s/.test(text) || // Blockquote
-    /^(```|~~~)/.test(text) // Code blocks
-    );
-  }
-
-  private realignCommentHeadings(markdown: string): string {
-    if (!markdown) {
-      return markdown;
+    // Parse Markdown into a Tiptap JSON document. The Markdown manager
+    // interprets Markdown and creates nodes and marks accordingly
+    // Note: it does **not** check the editor schema
+    const jsonContent = mdManager.parse(text);
+    if (!jsonContent) {
+      return false;
     }
 
+    const extensions = getTiptapEditorExtensions();
+
+    // Generate raw text from the Tiptap JSON document using the editor extensions
+    // for the schema: only creates allowed nodes and marks
+    const textFromJson = generateText(jsonContent, extensions);
+
+    // HACK
+    // In order to detect if content is Markdown, we compare text and
+    // textFromJson. If both are different, it’s not Markdown!
+    //
+    // ✅ Markdown example:
+    // text:         "> First line of blockquote  \n> Second line"
+    // textFromJson: "\n\nFirst line of blockquote\nSecond line"
+    //
+    // ❌ Not Markdown example:
+    // text:         "Hello! Nice to meet you."
+    // textFromJson: "Hello! Nice to meet you."
+    if (text === textFromJson) {
+      return false;
+    }
+
+    const realignedJson = mdManager.parse(this.realignHeadingLevels(text));
+
+    // HACK
+    // We want the content to fit the editor schema. For example, no mark
+    // (bold, italic, …) is allowed inside a Heading node (h4, h5, …)
+    // After retrieving Tiptap JSON document from Markdown plain text,
+    // converting it to HTML before parsing it again to JSON allows us to use
+    // [DOMParser.rules](https://prosemirror.net/docs/ref/#model.DOMParser.rules)
+    //
+    // TL;DR: “Mardown → JSON → HTML → JSON” to fit the editor schema
+    const html = generateHTML(realignedJson, extensions);
+    const finalJson = generateJSON(html, extensions);
+
+    editor.commands.insertContent(finalJson);
+    return true;
+  }
+
+  /**
+   * Realign heading levels
+   *
+   * Examples for displayedHeadings = [4, 5, 6]:
+   * - h1, h2, h3     → h4, h5, h6
+   * - h2, h3, h4     → h4, h5, h6
+   * - h5, h6         → h4, h5
+   * - h3, h4, h5, h6 → h4, h5, h6, p
+   */
+  private realignHeadingLevels(markdown: string): string {
     const lines: [number, string][] = markdown.split("\n").map((l, i) => [i, l]);
 
     // Ignore code blocks for following heading level calculation
-    // (in case of markdown in code block)
+    // (in case of Markdown in code block)
     const linesWithoutCodeBlocks: [number, string][] = [];
     let ignore = false;
     for (let i = 0; i < lines.length; i++) {
@@ -102,8 +135,8 @@ export class MarkdownPlugin extends Plugin {
 
     for (let i = 0; i < headingLevels.length; i++) {
       const originalLevel = headingLevels[i];
-      const newLevel = 4 + i;
-      if (newLevel <= 6) {
+      const newLevel = displayedHeadings[0] + i;
+      if (newLevel <= displayedHeadings[displayedHeadings.length - 1]) {
         linesWithLevels
           .filter((it) => it.level === originalLevel)
           .forEach((it) => {
@@ -119,8 +152,7 @@ export class MarkdownPlugin extends Plugin {
     }
 
     linesWithLevels.forEach((it) => {
-      lines[it.index][1] = it.line
-        .replace(/(\*\*|[*_])([^*_]+)\1/g, "$2"); // remove bold and italic
+      lines[it.index][1] = it.line;
     });
 
     const result = lines.map(([, line]) => line).join("\n");

@@ -100,7 +100,7 @@ const commonExtensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown.configure(),
+  Markdown,
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
@@ -129,10 +129,15 @@ const commonImageAttrs = {
   }
 };
 
-export function getTiptapEditorExtensions(options: {
+export function getTiptapEditorExtensions(options?: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
-  const { onImageUploadComplete } = options;
+  const uploadExtension = ImageUploadExtension;
+  if (options?.onImageUploadComplete) {
+    uploadExtension.configure({
+      onImageUploadComplete: options.onImageUploadComplete
+    });
+  }
   return [
     ...commonExtensions,
     extendedLink.configure({
@@ -167,7 +172,7 @@ export function getTiptapEditorExtensions(options: {
         return VueNodeViewRenderer(TiptapImage);
       }
     }),
-    ImageUploadExtension.configure({ onImageUploadComplete }),
+    uploadExtension,
     PasteMarkdownExtension.configure()
   ];
 }
