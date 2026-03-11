@@ -2,12 +2,14 @@ import ky from "ky";
 import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { topicAccordionsStatus } from "../composables/useTopicAccordionsStatus";
 import router from "../router";
 import {
   Audit,
   NotesFile,
   CreateAuditRequestData,
-  UpdateAuditRequestData
+  UpdateAuditRequestData,
+  UpdateAuditStatementRequestData
 } from "../types";
 import { AccountAudit } from "../types/account";
 import { useAccountStore } from "./account";
@@ -35,6 +37,8 @@ interface AuditStoreState {
    */
   lastRequestSuccessEnd: number | null;
   lastRequestFailed: boolean;
+
+  topicAccordionsStatus: topicAccordionsStatus;
 }
 
 export const useAuditStore = defineStore("audit", {
@@ -46,7 +50,8 @@ export const useAuditStore = defineStore("audit", {
     listing: [],
     currentRequestCount: 0,
     lastRequestSuccessEnd: null,
-    lastRequestFailed: false
+    lastRequestFailed: false,
+    topicAccordionsStatus: {}
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
@@ -94,6 +99,19 @@ export const useAuditStore = defineStore("audit", {
         })
         .json()) as Audit;
       this.setAudit(uniqueId, response);
+      return response;
+    },
+
+    async updateAuditStatement(
+      editUniqueId: string,
+      data: UpdateAuditStatementRequestData
+    ): Promise<Audit> {
+      const response = (await ky
+        .put(`/api/audits/${editUniqueId}/statement`, {
+          json: data
+        })
+        .json()) as Audit;
+      this.setAudit(editUniqueId, response);
       return response;
     },
 

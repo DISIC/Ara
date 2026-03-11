@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { useAuditStats } from "../../composables/useAuditStats";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
-import { formatDate, getCriteriaCount } from "../../utils";
+import { formatDate, getCriteriaCount, isSameDay } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import StepCard from "./StepCard.vue";
@@ -32,7 +32,7 @@ const auditIsInProgress = computed(() => {
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w step-card-heading">
+    <div class="step-card-heading">
       <span
         v-if="auditIsReady"
         id="audit-step-status"
@@ -65,20 +65,19 @@ const auditIsInProgress = computed(() => {
       </RouterLink>
     </div>
 
-    <p class="fr-text--sm fr-mb-2w audit-step-date">
-      <template v-if="auditIsInProgress && audit.creationDate">
-        Commencé le
-        <time :datetime="audit.creationDate.toString()">{{
-          formatDate(audit.creationDate)
-        }}</time></template>
-
-      <template v-else-if="auditIsReady && audit.publicationDate">
+    <p class="fr-text--sm fr-mb-3w audit-step-date">
+      <template v-if="auditIsReady && audit.publicationDate">
         Terminé le
         <time :datetime="audit.publicationDate.toString()">{{
           formatDate(audit.publicationDate)
         }}</time>
-        <template v-if="audit.editionDate">
-          - Mis à jour le
+        <template
+          v-if="
+            audit.editionDate &&
+              !isSameDay(audit.publicationDate, audit.editionDate)
+          "
+        >
+          – Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
           }}</time></template>
@@ -163,6 +162,10 @@ const auditIsInProgress = computed(() => {
 </template>
 
 <style scoped>
+.step-card-heading {
+  margin-block-end: 0.125rem;
+}
+
 .audit-step-settings-link {
   margin-inline-start: auto;
 

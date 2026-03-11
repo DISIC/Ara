@@ -19,6 +19,8 @@ export class AuditReportDto {
   creationDate?: Date;
   publishDate?: Date;
   updateDate?: Date;
+  statementPublicationDate?: Date;
+  statementEditionDate?: Date;
 
   notCompliantContent?: string;
   derogatedContent?: string;

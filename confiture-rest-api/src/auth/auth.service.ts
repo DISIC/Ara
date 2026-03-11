@@ -351,32 +351,37 @@ export class AuthService {
     const { sub: uid, jti, email } = payload;
 
     // Addition checks: user exists, user needs email update verification, token is the last one
-    {
-      const user = await this.prisma.user.findUnique({ where: { uid } });
+    const user = await this.prisma.user.findUnique({ where: { uid } });
 
-      if (!user) {
-        throw new InvalidVerificationTokenError("User not found");
-      }
-
-      if (!user.newEmail) {
-        throw new InvalidVerificationTokenError("No pending email update");
-      }
-
-      if (user.newEmailVerificationJti !== jti) {
-        throw new InvalidVerificationTokenError(
-          "Token is not the latest generated token"
-        );
-      }
+    if (!user) {
+      throw new InvalidVerificationTokenError("User not found");
     }
 
-    await this.prisma.user.update({
-      where: { uid },
-      data: {
-        username: email,
-        newEmail: null,
-        newEmailVerificationJti: null
-      }
-    });
+    if (!user.newEmail) {
+      throw new InvalidVerificationTokenError("No pending email update");
+    }
+
+    if (user.newEmailVerificationJti !== jti) {
+      throw new InvalidVerificationTokenError(
+        "Token is not the latest generated token"
+      );
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { uid },
+        data: {
+          username: email,
+          newEmail: null,
+          newEmailVerificationJti: null
+        }
+      }),
+      // Update email on user audits
+      this.prisma.audit.updateMany({
+        where: { auditorEmail: user.username },
+        data: { auditorEmail: email }
+      })
+    ]);
   }
 
   async userHasEmail(uid: string, email: string) {

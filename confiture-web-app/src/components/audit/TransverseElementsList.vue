@@ -2,6 +2,7 @@
 import { nextTick, ref, watch } from "vue";
 
 import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import { useAuditStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
 import TagListField from "../ui/TagListField.vue";
@@ -58,8 +59,8 @@ async function submitForm() {
     .catch((err) => {
       notify(
         "error",
-        "Une erreur est survenue",
-        "Un problème empêche la sauvegarde de vos données. Contactez-nous à l'adresse contact@design.numerique.gouv.fr si le problème persiste."
+        DEFAULT_NOTIFICATION_ERROR_TITLE,
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
       );
       throw err;
     });

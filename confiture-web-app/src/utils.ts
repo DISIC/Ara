@@ -37,6 +37,16 @@ export function formatDate(dateString: string, short?: boolean): string {
     : formatter.format(new Date(dateString));
 }
 
+/**
+ * Check if 2 dates are the same day, ignoring time
+ */
+export function isSameDay(dateString1: string, dateString2: string): boolean {
+  const date1 = new Date(dateString1).toDateString();
+  const date2 = new Date(dateString2).toDateString();
+
+  return date1 === date2;
+}
+
 const FORMATTED_USER_IMPACT = {
   [CriterionResultUserImpact.MINOR]: "mineur",
   [CriterionResultUserImpact.MAJOR]: "majeur",

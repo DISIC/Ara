@@ -58,6 +58,8 @@ model Audit {
   notInScopeContent   String?
   notes               String?
   notesFiles          NotesFile[]
+  statementPublicationDate DateTime?
+  statementEditionDate DateTime?
 
   // Misc
   recipients      Recipent[] // unused for now

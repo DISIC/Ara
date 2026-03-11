@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 
 import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { AccountVerificationJwtPayload } from "../../types";
@@ -39,7 +40,7 @@ onMounted(async () => {
         notify(
           "error",
           "Échec de la vérification du compte",
-          "Une erreur inconnue est survenue"
+          DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
         );
       }
     });

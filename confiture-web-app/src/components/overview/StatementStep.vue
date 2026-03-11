@@ -3,6 +3,7 @@ import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
+import { formatDate, isSameDay } from "../../utils";
 import CopyBlock from "../ui/CopyBlock.vue";
 import StepCard from "./StepCard.vue";
 
@@ -18,13 +19,13 @@ const auditIsReady = computed(() => {
 });
 
 const auditIsPublishable = computed(() => {
-  return !!props.audit.initiator;
+  return !!props.audit.statementPublicationDate;
 });
 </script>
 
 <template>
   <StepCard>
-    <div class="fr-mb-2w step-card-heading">
+    <div :class="`step-card-heading ${auditIsPublishable ? 'statement-step-heading' : 'fr-mb-2w'}`">
       <span
         v-if="auditIsPublishable"
         id="statement-step-status"
@@ -51,6 +52,10 @@ const auditIsPublishable = computed(() => {
       </RouterLink>
     </div>
 
+    <p v-if="auditIsPublishable" class="fr-text--sm fr-mb-5v statement-step-date">
+      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate && !isSameDay(audit.statementPublicationDate!, audit.statementEditionDate)"> - Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
+    </p>
+
     <p class="statement-step-description">
       <template v-if="auditIsPublishable">
         Vous pouvez livrer la déclaration d’accessibilité.
@@ -59,8 +64,7 @@ const auditIsPublishable = computed(() => {
         La déclaration d’accessibilité est prête à être complétée.
       </template>
       <template v-else>
-        Terminez l’audit avant de compléter et livrer la déclaration
-        d’accessibilité.
+        Terminez l’audit avant de compléter et livrer la déclaration d’accessibilité.
       </template>
     </p>
 
@@ -102,6 +106,10 @@ const auditIsPublishable = computed(() => {
 </template>
 
 <style scoped>
+.statement-step-heading {
+  margin-block-end: 0.125rem;
+}
+
 .statement-step-settings-link {
   margin-inline-start: auto;
 
@@ -110,9 +118,14 @@ const auditIsPublishable = computed(() => {
   }
 }
 
-.statement-step-description {
+.statement-step-date {
   grid-column: 1 / -1;
   grid-row: 2;
+  color: var(--text-mention-grey);
+}
+
+.statement-step-description {
+  grid-column: 1 / -1;
 }
 
 .statement-step-main-cta {

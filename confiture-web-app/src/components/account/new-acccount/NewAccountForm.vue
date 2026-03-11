@@ -9,6 +9,7 @@ import {
   LENGTH,
   REQUIRED
 } from "../../../composables/validation";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads, formatEmail } from "../../../utils";
 import DsfrFieldWithValidation from "../../validation/DsfrFieldWithValidation.vue";
@@ -55,8 +56,8 @@ async function handleSubmit() {
           // Unkown error
           notify(
             "error",
-            "Échec de la création de compte",
-            "Une erreur inconnue est survenue"
+            "Échec de la création du compte",
+            DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
           );
           captureWithPayloads(err, false);
         }

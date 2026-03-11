@@ -23,7 +23,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         <Password />
         <hr class="fr-mt-3w" />
         <Email />
-        <hr />
+        <hr class="fr-mt-3w" />
         <h2 class="fr-h6">Données</h2>
         <p>
           Les données recueillies sont traitées par les équipes de la DINUM.

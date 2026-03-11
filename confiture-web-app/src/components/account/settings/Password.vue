@@ -4,6 +4,7 @@ import { nextTick, ref, useTemplateRef } from "vue";
 
 import { useNotifications } from "../../../composables/useNotifications";
 import { LENGTH, REQUIRED } from "../../../composables/validation";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads } from "../../../utils";
 import DsfrPasswordWithValidation from "../../validation/DsfrPasswordWithValidation.vue";
@@ -65,7 +66,7 @@ async function updatePassword() {
         notify(
           "error",
           "Échec de la mise à jour du mot de passe",
-          "Une erreur inconnue empêche la mise à jour du mot de passe. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+          DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
         );
         captureWithPayloads(err, false);
       }

@@ -3,8 +3,9 @@ import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useNotifications } from "../../composables/useNotifications";
 import { useAuditStore, useResultsStore } from "../../store";
-import { CriteriumResultStatus } from "../../types";
+import { AuditType, CriteriumResultStatus } from "../../types";
 
 const props = defineProps<{
   pageId: number;
@@ -19,6 +20,7 @@ defineEmits<{
 defineExpose({ focusInput });
 
 const isOffline = useIsOffline();
+const notify = useNotifications();
 
 const resultsStore = useResultsStore();
 const auditStore = useAuditStore();
@@ -41,18 +43,42 @@ watch(isChecked, (isChecked) => {
   switchValue.value = isChecked;
 });
 
-watch(switchValue, (switchValue) => {
+watch(switchValue, async (switchValue) => {
   if (switchValue === isChecked.value) {
     return;
   }
 
   if (switchValue) {
-    resultsStore.setTopicStatus(
+    await resultsStore.setTopicStatus(
       uniqueId,
       props.pageId,
       props.topicNumber,
       CriteriumResultStatus.NOT_APPLICABLE
     );
+
+    if (
+      resultsStore.everyCriteriumAreTested &&
+        !auditStore.currentAudit?.publicationDate
+    ) {
+      auditStore.publishAudit(uniqueId).then(() => {
+        notify(
+          "info",
+          "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+          auditStore.currentAudit?.auditType === AuditType.FULL
+            ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
+            : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
+          {
+            link: {
+              label: "Accéder aux livrables",
+              to: {
+                name: "audit-overview",
+                params: { uniqueId: uniqueId }
+              }
+            }
+          }
+        );
+      });
+    }
   } else {
     resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
   }

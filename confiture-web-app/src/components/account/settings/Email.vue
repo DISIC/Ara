@@ -5,6 +5,7 @@ import { onBeforeRouteLeave } from "vue-router";
 
 import { useNotifications } from "../../../composables/useNotifications";
 import { EMAIL, REQUIRED } from "../../../composables/validation";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { history } from "../../../router";
 import { useAccountStore } from "../../../store/account";
 import { captureWithPayloads, formatEmail } from "../../../utils";
@@ -74,8 +75,8 @@ async function updateEmail() {
       } else {
         notify(
           "error",
-          "Impossible de mettre à jour l'adresse mail.",
-          "Une erreur inconnue empêche la mise à jour de votre compte. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+          "Échec de la mise à jour de l’adresse e-mail",
+          DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
         );
         captureWithPayloads(e, false);
       }
@@ -108,7 +109,7 @@ const displayUpdateEmailForm = ref(false);
 async function showUpdateEmailForm() {
   displayUpdateEmailForm.value = true;
   await nextTick();
-  passwordField.value?.focus();
+  newEmailField.value?.focus();
 }
 
 async function hideUpdateEmailForm() {
@@ -124,8 +125,8 @@ async function cancelEmailUpdate() {
   } catch (e) {
     notify(
       "error",
-      "Impossible d’annuler le changement d’adresse e-mail.",
-      "Une erreur inconnue empêche l’annulation du changement d’adresse e-mail. Contactez-nous à l'adresse ara@design.numerique.gouv.fr si le problème persiste."
+      "Échec de l’annulation du changement d’adresse e-mail",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
     );
     captureWithPayloads(e, false);
   } finally {
@@ -150,7 +151,7 @@ async function cancelEmailUpdate() {
     v-if="displayEmailUpdateSuccess"
     class="fr-alert fr-alert--success fr-mb-3v"
   >
-    <p>Votre adresse e-mail a été mise à jour avec succès.</p>
+    <p>Votre adresse e-mail a été mise à jour</p>
     <button class="fr-link--close fr-link" @click="closeEmailUpdateSuccess">
       Masquer le message
     </button>
@@ -219,19 +220,6 @@ async function cancelEmailUpdate() {
     @submit="updateEmail"
   >
 
-    <DsfrPasswordWithValidation
-      id="email-password"
-      ref="password-field"
-      v-model="password"
-      class="fr-mb-3w"
-      label="Mot de passe"
-      required
-      autocomplete="current-password"
-      show-forgotten-password-link
-      skip-forgotten-password-first-step
-      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
-    />
-
     <DsfrFieldWithValidation
       id="new-email"
       ref="new-email-field"
@@ -245,6 +233,19 @@ async function cancelEmailUpdate() {
         REQUIRED('Champ obligatoire. Saisissez votre nouvelle adresse e-mail.'),
         EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
       ]"
+    />
+
+    <DsfrPasswordWithValidation
+      id="email-password"
+      ref="password-field"
+      v-model="password"
+      class="fr-mb-3w"
+      label="Mot de passe"
+      required
+      autocomplete="current-password"
+      show-forgotten-password-link
+      skip-forgotten-password-first-step
+      :validation="[REQUIRED('Champ obligatoire. Saisissez votre mot de passe.')]"
     />
 
     <ul
@@ -270,7 +271,7 @@ async function cancelEmailUpdate() {
   <button
     v-else-if="!displayPendingEmailVerification"
     ref="showButtonRef"
-    class="fr-btn fr-btn--tertiary-no-outline fr-mb-2w"
+    class="fr-btn fr-btn--tertiary-no-outline"
     @click="showUpdateEmailForm"
   >
     Changer d’adresse e-mail

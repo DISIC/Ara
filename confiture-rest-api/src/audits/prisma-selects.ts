@@ -51,6 +51,8 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
   creationDate: true,
   publicationDate: true,
   editionDate: true,
+  statementPublicationDate: true,
+  statementEditionDate: true,
 
   transverseElementsPage: {
     select: PAGE_PRISMA_SELECT

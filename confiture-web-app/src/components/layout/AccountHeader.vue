@@ -27,9 +27,8 @@ const width = useWindowWidth();
 <template>
   <header id="header" role="banner" class="account-header">
     <div class="fr-p-1w fr-px-md-3w fr-py-md-2w content">
-      <p class="fr-h6 fr-mb-0 site-name">
-        Ara
-      </p>
+
+      <div class="logo"></div>
 
       <RouterLink
         :to="{ name: 'account-dashboard' }"
@@ -87,13 +86,22 @@ const width = useWindowWidth();
   }
 }
 
-.site-name {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
 .account-dropdown {
   margin-inline-start: auto;
+}
+
+.logo {
+  margin: auto 0;
+  height: 1.75rem;
+  width: 5rem;
+  background-repeat: no-repeat;
+}
+
+[data-fr-theme="dark"] .logo {
+  background-image: url("../../assets/images/logo-ara-sombre.svg");
+}
+
+[data-fr-theme="light"] .logo {
+  background-image: url("../../assets/images/logo-ara-clair.svg");
 }
 </style>

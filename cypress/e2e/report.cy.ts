@@ -8,29 +8,24 @@ describe("Report", () => {
   it("User can see audit in progress banner for in progress audit", () => {
     cy.createTestAudit().then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.contains(
-        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé."
-      );
+      cy.contains("Résultats du rapport provisoires");
     });
   });
 
   it("User can't see audit in progress banner for completed audit", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.get(".header").contains(auditJson.procedureName);
-      cy.contains(
-        "Les résultats de ce rapport sont provisoires tant que l’audit n'est pas terminé."
-      ).should("not.exist");
+      cy.contains("Résultats du rapport provisoires").should("not.exist");
     });
   });
 
   it("User can see audit header infos", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.get(".header").contains(auditJson.procedureName);
-      cy.get(".header").contains(`URL du site audité : ${statementJson.procedureUrl}`);
-      cy.get(".header").contains("Type d’audit : 106 critères");
-      cy.get(".header").contains(
+      cy.get("[data-cy='report-header']").contains(auditJson.procedureName);
+      cy.get("[data-cy='report-header']").contains(`URL du site audité : ${statementJson.procedureUrl}`);
+      cy.get("[data-cy='report-header']").contains("Type d’audit : 106 critères");
+      cy.get("[data-cy='report-header']").contains(
         `Auditeur ou auditrice : ${auditJson.auditorName}`
       );
     });
@@ -78,7 +73,6 @@ describe("Report", () => {
       hasNoImprovementsComments: true
     }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
-      cy.get(".header").contains(auditJson.procedureName);
       cy.contains("button", "Points d’amélioration").should("not.exist");
     });
   });

@@ -37,13 +37,21 @@ function closeNewsSubMenu() {
                 </button>
               </div>
             </div>
+
             <div class="fr-header__service">
-              <p class="fr-header__service-title">
-                Ara
-              </p>
-              <p class="fr-header__service-tagline">
-                Réalisez vos audits d’accessibilité numérique
-              </p>
+              <div class="header">
+                <div class="logo">
+                  <img src="../../assets/images/logo-ara.svg" alt="Logo Ara" />
+                </div>
+                <div class="title">
+                  <p class="fr-header__service-title">
+                    Ara
+                  </p>
+                  <p class="fr-header__service-tagline">
+                    Réalisez vos audits d’accessibilité numérique
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="fr-header__tools">
@@ -149,3 +157,25 @@ function closeNewsSubMenu() {
     </div>
   </header>
 </template>
+
+<style scoped>
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  height: 2.8125rem;
+  margin: auto;
+  padding-right: 1rem;
+
+  img {
+    height: 100%;
+  }
+}
+</style>

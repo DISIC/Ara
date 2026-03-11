@@ -211,7 +211,9 @@ const tabsData = computed((): TabData[] => {
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
       id: p.id,
+      icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
       component: AuditGenerationPageCriteria,
       componentParams: {
         page: p,
