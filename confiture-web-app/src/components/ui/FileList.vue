@@ -216,8 +216,8 @@ function isViewable(flFile: FileListFile) {
 
 function getDeleteModalTitle(flFile: FileListFile) {
   return isImage(flFile)
-    ? `Supprimer l’image « ${flFile.filename} » ?`
-    : `Supprimer le fichier ?`;
+    ? `Supprimer l’image « ${flFile.filename} » ?`
+    : `Supprimer le fichier ?`;
 };
 
 function getDeleteModalMessage(flFile: FileListFile) {
