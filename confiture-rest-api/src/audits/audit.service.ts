@@ -477,7 +477,7 @@ export class AuditService {
         select: AUDIT_PRISMA_SELECT
       });
 
-      let returnedAudit: AuditDto;
+      let returnedAudit: AuditDto = audit;
 
       // check the differences between the audit after and before the update
       const changedProperties: (keyof typeof audit)[] =
