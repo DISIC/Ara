@@ -980,28 +980,7 @@ export class AuditService {
       return;
     }
 
-    const results = await Promise.all([
-      this.prisma.criterionResult.findMany({
-        where: {
-          page: {
-            auditUniqueId: audit.editUniqueId
-          },
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      }),
-      this.prisma.criterionResult.findMany({
-        where: {
-          pageId: audit.transverseElementsPageId,
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      })
-    ]).then(results => results.flat());
+    const results = await this.getAuditResults(audit);
 
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
 
@@ -1212,6 +1191,31 @@ export class AuditService {
     };
 
     return report;
+  }
+
+  private getAuditResults(audit: Pick<Audit, "editUniqueId" | "auditType" | "transverseElementsPageId">) {
+    return Promise.all([
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: audit.editUniqueId
+          },
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          pageId: audit.transverseElementsPageId,
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      })
+    ]).then(results => results.flat());
   }
 
   public static groupResultsByStatus(results: CriterionResult[], transversePageId: number) {
@@ -1710,28 +1714,7 @@ export class AuditService {
       return null;
     }
 
-    const results = await Promise.all([
-      this.prisma.criterionResult.findMany({
-        where: {
-          page: {
-            auditUniqueId: audit.editUniqueId
-          },
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      }),
-      this.prisma.criterionResult.findMany({
-        where: {
-          pageId: audit.transverseElementsPageId,
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      })
-    ]).then(results => results.flat());
+    const results = await this.getAuditResults(audit);
 
     const {
       accessibilityRate
