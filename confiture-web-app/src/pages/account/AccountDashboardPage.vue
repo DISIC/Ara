@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref } from "vue";
 
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
 import PageMeta from "../../components/PageMeta";
+import AnnouncementAlert from "../../components/ui/AnnouncementAlert.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
@@ -96,6 +97,21 @@ onMounted(() => {
       Masquer le message
     </button>
   </div>
+
+  <!-- TODO: add expiration date to +1 month before merging -->
+  <AnnouncementAlert
+    title="Mise à jour de la confidentialité de vos audits"
+    storage-key="audit-privacy"
+    class="fr-mb-4w"
+    @close="mainHeadingRef?.focus()"
+  >
+    <template #description>
+
+      <p>Tous vos audits sont désormais <strong>privés par défaut</strong>.</p>
+      <p class="fr-mb-2w">Pour permettre l’accès et l’édition d’un audit, vous devez le rendre public : menu « <strong>Actions</strong> » puis « <strong>Partager</strong> ».</p>
+      <p><strong>À noter</strong> : si vous avez déjà partagé des liens d’audit, pensez à les rendre publics.</p>
+    </template>
+  </AnnouncementAlert>
 
   <!-- Header -->
   <div class="fr-mb-6w header">
