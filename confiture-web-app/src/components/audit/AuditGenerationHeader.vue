@@ -350,14 +350,17 @@ onMounted(() => {
                   Dupliquer
                 </button>
               </li>
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
                   :disabled="!accountStore.account"
                   @click="console.log('partager')"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
-                  Partager <span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
+                  <span>
+                    Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
+                  </span>
+                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible uniquement avec un compte</span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
