@@ -151,7 +151,6 @@
 
   &:hover {
     outline: var(--dsfr-outline) solid 2px;
-    cursor: hand;
   }
 }
 
