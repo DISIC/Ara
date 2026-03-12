@@ -6,6 +6,10 @@
 
 ### 12/03/2026
 
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Permettre de redimensionner les images dans la zone de saisie ([#1396](https://github.com/DISIC/Ara/pull/1396))
+
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Prendre en compte la sémantique md lors du collage de texte dans une zone de saisie ([#1371](https://github.com/DISIC/Ara/pull/1371))
