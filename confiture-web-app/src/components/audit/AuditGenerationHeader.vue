@@ -27,6 +27,7 @@ import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import NotesModal from "./NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
+import ShareModal from "./ShareModal.vue";
 
 defineProps<{
   auditName: string;
@@ -52,6 +53,7 @@ const isOffline = useIsOffline();
 const router = useRouter();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
+const shareModal = ref<InstanceType<typeof ShareModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
@@ -354,7 +356,7 @@ onMounted(() => {
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
                   :disabled="!accountStore.account"
-                  @click="console.log('partager')"
+                  @click="shareModal?.show()"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
                   <span>
@@ -423,6 +425,16 @@ onMounted(() => {
     :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <ShareModal
+    ref="shareModal"
+    :edit-unique-id="uniqueId"
+    :audit-name="auditName"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
