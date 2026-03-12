@@ -34,10 +34,15 @@
             >{{ overviewUrl }}</a
           >
         </mj-text>
-        <mj-text align="center" font-weight="700"
-          >ℹ️ Ce lien est votre seul moyen d’accéder à vos documents.</mj-text
-        >
-        <mj-text align="center">Pensez à le conserver.</mj-text>
+        <mj-text align="center" font-weight="700">🔒 Ce lien est le seul moyen d’accéder à votre audit et de l’éditer.</mj-text>
+        <mj-text align="center">Conservez-le et ne le partagez pas.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
+        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
       </mj-column>
     </mj-section>
 
