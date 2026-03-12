@@ -19,8 +19,8 @@ import { common, createLowlight } from "lowlight";
 import { marked } from "marked";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
-import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
 import TiptapImage from "./image/TiptapImage.vue";
+import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -136,15 +136,10 @@ const commonImageAttrs = {
   }
 };
 
-export function getTiptapEditorExtensions(options?: {
+export function getTiptapEditorExtensions(options: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
-  const uploadExtension = ImageUploadExtension;
-  if (options?.onImageUploadComplete) {
-    uploadExtension.configure({
-      onImageUploadComplete: options.onImageUploadComplete
-    });
-  }
+  const { onImageUploadComplete } = options;
   return [
     ...commonExtensions,
     extendedLink.configure({
@@ -188,7 +183,8 @@ export function getTiptapEditorExtensions(options?: {
         };
       }
     }),
-    ImageUploadExtension.configure({ onImageUploadComplete })
+    ImageUploadExtension.configure({ onImageUploadComplete }),
+    PasteMarkdownExtension.configure()
   ];
 }
 
@@ -390,9 +386,6 @@ function applyConstraints(editorElement: Element, newWidth: number, minImgWidth:
   return { w, h };
 }
 
-/**
- * Convert markdown string to HTML
- */
 export function convertMarkdownToHTML(markdown: string): string {
-    return marked(markdown) as string;
+  return marked(markdown) as string;
 }
