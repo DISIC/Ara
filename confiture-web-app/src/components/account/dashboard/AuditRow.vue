@@ -217,6 +217,16 @@ defineExpose({
       inline
     />
 
+    <!-- Sharing -->
+    <p class="fr-mb-0">
+      <span class="fr-sr-only-md">Partage : </span>
+      <!-- TODO:
+       - update depending on audit status
+       - badge color / icon
+      -->
+      <span class="fr-badge fr-badge--sm fr-icon-earth-line fr-badge--icon-left fr-ml-1w">Privé</span>
+    </p>
+
     <!-- Main action -->
     <RouterLink
       :to="{
@@ -253,6 +263,7 @@ defineExpose({
     <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
+        icon-only
         title="Actions"
         :align-left="windowWidth < 880"
         :button-props="{
@@ -377,7 +388,7 @@ defineExpose({
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
+  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 0.75fr 1.5fr 0.75fr 0.25fr;
   gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
