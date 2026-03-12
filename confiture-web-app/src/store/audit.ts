@@ -129,6 +129,9 @@ export const useAuditStore = defineStore("audit", {
           json: data
         })
         .json()
+        .then(() => {
+          this.updateCurrentAuditEditionDate();
+        })
         .catch((error) => {
           if (this.entities[uniqueId] && previousNotes) {
             this.entities[uniqueId].notes = previousNotes;
@@ -154,23 +157,28 @@ export const useAuditStore = defineStore("audit", {
       formData.set("file", file, encodeURI(file.name));
 
       this.increaseCurrentRequestCount();
-      const notesFile = (await ky
-        .post(`/api/audits/${uniqueId}/notes/files`, {
-          body: formData
-        })
-        .json()
-        .finally(() => {
-          this.decreaseCurrentRequestCount();
-        })) as NotesFile;
 
-      const notesFiles = this.entities[uniqueId].notesFiles || [];
-      notesFiles.push(notesFile);
+      try {
+        const notesFile: NotesFile = await ky.post(`/api/audits/${uniqueId}/notes/files`, {
+          body: formData
+        }).json();
+
+        this.updateCurrentAuditEditionDate();
+
+        const notesFiles = this.entities[uniqueId].notesFiles || [];
+        notesFiles.push(notesFile);
+      } finally {
+        this.decreaseCurrentRequestCount();
+      }
     },
 
     async deleteAuditFile(uniqueId: string, fileId: number) {
       this.increaseCurrentRequestCount();
       await ky
         .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
+        .then(() => {
+          this.updateCurrentAuditEditionDate();
+        })
         .finally(() => {
           this.decreaseCurrentRequestCount();
         });
@@ -263,6 +271,16 @@ export const useAuditStore = defineStore("audit", {
         this.lastRequestSuccessEnd = Date.now();
         const key = getLastRequestTimestampStorageKey(this.currentAuditId!);
         localStorage.setItem(key, this.lastRequestSuccessEnd.toString());
+      }
+    },
+
+    /**
+     * Locally update edition date of the current audit It might be
+     * slightly different of the one stored in DB but close enough in our case.
+     */
+    updateCurrentAuditEditionDate() {
+      if (this.currentAudit) {
+        this.currentAudit.editionDate = new Date().toISOString();
       }
     }
   },
