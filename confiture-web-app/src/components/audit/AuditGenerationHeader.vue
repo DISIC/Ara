@@ -218,7 +218,11 @@ onMounted(() => {
   </div>
 
   <h1 class="fr-mb-3v">
-    Audit
+    <!-- TODO:
+     - update depending on audit status
+     - badge color / icon
+    -->
+    Audit <span class="fr-badge fr-icon-earth-line fr-badge--icon-left fr-ml-1w">Privé</span>
     <span class="fr-sr-only">
       Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
       problème lié à l’enregistrement
