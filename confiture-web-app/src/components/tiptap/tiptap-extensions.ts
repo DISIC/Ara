@@ -1,10 +1,11 @@
 import { Attributes, Extensions, textblockTypeInputRule } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import DropCursor from "@tiptap/extension-dropcursor";
 import { Heading, type Level } from "@tiptap/extension-heading";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
+import { Dropcursor } from "@tiptap/extensions";
+import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
 import { VueNodeViewRenderer } from "@tiptap/vue-3";
 import css from "highlight.js/lib/languages/css";
@@ -12,10 +13,11 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { Markdown } from "tiptap-markdown";
+import { marked } from "marked";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
 import TiptapImage from "./image//TiptapImage.vue";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
+import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
 
 // Define needed heading levels
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
@@ -98,8 +100,8 @@ const commonExtensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown.configure({ linkify: true }),
-  DropCursor.configure({ color: "var(--dsfr-outline)", width: 3 })
+  Markdown,
+  Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
 const commonImageAttrs = {
@@ -127,10 +129,15 @@ const commonImageAttrs = {
   }
 };
 
-export function getTiptapEditorExtensions(options: {
+export function getTiptapEditorExtensions(options?: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
-  const { onImageUploadComplete } = options;
+  const uploadExtension = ImageUploadExtension;
+  if (options?.onImageUploadComplete) {
+    uploadExtension.configure({
+      onImageUploadComplete: options.onImageUploadComplete
+    });
+  }
   return [
     ...commonExtensions,
     extendedLink.configure({
@@ -165,7 +172,8 @@ export function getTiptapEditorExtensions(options: {
         return VueNodeViewRenderer(TiptapImage);
       }
     }),
-    ImageUploadExtension.configure({ onImageUploadComplete })
+    uploadExtension,
+    PasteMarkdownExtension.configure()
   ];
 }
 
@@ -196,3 +204,10 @@ export const tiptapRenderedExtensions: Extensions = [
   }),
   ...[AraTiptapRenderedExtension]
 ];
+
+/**
+ * Convert markdown string to HTML
+ */
+export function convertMarkdownToHTML(markdown: string): string {
+  return marked(markdown) as string;
+}
