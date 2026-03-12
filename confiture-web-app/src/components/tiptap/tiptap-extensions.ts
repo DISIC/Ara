@@ -134,7 +134,7 @@ const commonImageAttrs = {
   }
 };
 
-export function getTiptapEditorExtensions(options: {
+export function getTiptapEditorExtensions(options?: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
   const uploadExtension = ImageUploadExtension;
