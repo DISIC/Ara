@@ -139,7 +139,12 @@ const commonImageAttrs = {
 export function getTiptapEditorExtensions(options: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
-  const { onImageUploadComplete } = options;
+  const uploadExtension = ImageUploadExtension;
+  if (options?.onImageUploadComplete) {
+    uploadExtension.configure({
+      onImageUploadComplete: options.onImageUploadComplete
+    });
+  }
   return [
     ...commonExtensions,
     extendedLink.configure({
@@ -183,7 +188,7 @@ export function getTiptapEditorExtensions(options: {
         };
       }
     }),
-    ImageUploadExtension.configure({ onImageUploadComplete }),
+    uploadExtension,
     PasteMarkdownExtension.configure()
   ];
 }
