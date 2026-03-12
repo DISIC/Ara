@@ -268,7 +268,7 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
-      cy.get("[role='tablist'] button").then((els) => {
+      cy.get("[role='tablist'] button span.tab-label").then((els) => {
         expect(els).to.have.length(7);
         const expectedPages = [
           "Éléments transverses",
@@ -278,6 +278,65 @@ describe("Audit", () => {
           "Connexion",
           "Documentation",
           "Paramètres"
+        ];
+        expectedPages.forEach((expectedPageName, i) => {
+          cy.wrap(els[i]).should("have.text", expectedPageName);
+        });
+      });
+    });
+  });
+
+  it("User can interchange page names", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
+
+      cy.contains("Actions").click();
+      cy.contains("Modifier les paramètres de l’audit").click();
+
+      cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
+        (els) => {
+          expect(els).to.have.length(8);
+          const expectedPages = [
+            "Accueil",
+            "Contact",
+            "À propos",
+            "Blog",
+            "Article",
+            "Connexion",
+            "Documentation",
+            "FAQ"
+          ];
+          expectedPages.forEach((expectedPageName, i) => {
+            cy.wrap(els[i]).should("have.value", expectedPageName);
+          });
+        }
+      );
+
+      cy.get("#page-name-1-input").clear().type("Blog");
+      cy.get("#page-name-2-input").clear().type("Accueil");
+      cy.get("#page-name-4-input").clear().type("Contact");
+      cy.get("#page-name-6-input").clear().type("FAQ");
+      cy.get("#page-name-8-input").clear().type("Connexion");
+
+      cy.contains("Enregistrer les modifications").click();
+
+      cy.url().should(
+        "eq",
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+      );
+
+      cy.get("[role='tablist'] button span.tab-label").then((els) => {
+        expect(els).to.have.length(9);
+        const expectedPages = [
+          "Éléments transverses",
+          "Blog",
+          "Accueil",
+          "À propos",
+          "Contact",
+          "Article",
+          "FAQ",
+          "Documentation",
+          "Connexion"
         ];
         expectedPages.forEach((expectedPageName, i) => {
           cy.wrap(els[i]).should("have.text", expectedPageName);
