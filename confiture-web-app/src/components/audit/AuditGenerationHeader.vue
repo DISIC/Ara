@@ -338,7 +338,7 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg">de l’audit</span>
+                  Modifier les paramètres
                 </RouterLink>
               </li>
               <li class="dropdown-item">
@@ -347,7 +347,17 @@ onMounted(() => {
                   @click="duplicateModal?.show()"
                 >
                   <CopyIcon class="fr-mr-2v" />
-                  Dupliquer l’audit
+                  Dupliquer
+                </button>
+              </li>
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
+                  :disabled="!accountStore.account"
+                  @click="console.log('partager')"
+                >
+                  <!-- TODO: delete badge in 1 month after merging -->
+                  Partager <span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -357,7 +367,7 @@ onMounted(() => {
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
-                  Exporter l’audit
+                  Télécharger l’audit
                   <span class="fr-text--xs fr-text--regular download-meta">
                     CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
