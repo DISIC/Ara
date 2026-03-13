@@ -332,6 +332,25 @@ export class AuditsController {
     return audit;
   }
 
+  /** Toggle audit privacy and make it public (default is private = `false`) */
+  @Patch("/:uniqueId/privacy")
+  @ApiOkResponse({
+    description: "The audit privacy has been successfully updated"
+  })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async toggleAuditPrivacy(
+    @Param("uniqueId") editUniqueId: string
+  ): Promise<void> {
+    const audit = await this.auditService.findAuditWithEditUniqueId(editUniqueId);
+
+    if (!audit) {
+      await this.sendAuditNotFoundStatus(editUniqueId);
+    }
+
+    return this.auditService.toggleAuditPrivacy(editUniqueId);
+  }
+
   /** Delete an audit from the database. */
   @Delete("/:uniqueId")
   @ApiOkResponse({ description: "The audit has been successfully deleted." })

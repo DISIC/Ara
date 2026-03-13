@@ -951,6 +951,22 @@ export class AuditService {
     }
   }
 
+  async toggleAuditPrivacy(editUniqueId: string): Promise<void> {
+    try {
+      const audit = await this.prisma.audit.findUnique({ where: { editUniqueId }, select: { isPublic: true } });
+
+      await this.prisma.audit.update({ where: { editUniqueId }, data: { isPublic: !audit.isPublic } });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
+        return;
+      }
+      throw e;
+    }
+  }
+
   /**
    * Update an audit editionDate, only when it has a publication date.
    * @returns the update audit if it is updated, undefined otherwise
@@ -1611,7 +1627,8 @@ export class AuditService {
           select: {
             results: true
           }
-        }
+        },
+        isPublic: true
       }
     });
 
@@ -1690,7 +1707,8 @@ export class AuditService {
           "editUniqueId",
           "consultUniqueId",
           "creationDate",
-          "auditType"
+          "auditType",
+          "isPublic"
         ),
         complianceLevel,
         status:
