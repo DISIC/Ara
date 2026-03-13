@@ -217,11 +217,8 @@ onMounted(() => {
   </div>
 
   <h1 class="fr-mb-3v">
-    <!-- TODO:
-     - update depending on audit status
-     - badge color / icon
-    -->
-    Audit <span class="fr-badge fr-icon-earth-line fr-badge--icon-left fr-ml-1w">Privé</span>
+    <!-- TODO: badge color / icon -->
+    Audit <span class="fr-badge fr-icon-earth-line fr-badge--icon-left fr-ml-1w">{{ auditStore.currentAudit?.isPublic ? 'Public' : 'Privé' }}</span>
     <span class="fr-sr-only">
       Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
       problème lié à l’enregistrement
@@ -445,7 +442,9 @@ onMounted(() => {
   />
 
   <ShareModal
+    v-if="auditStore.currentAudit"
     ref="shareModal"
+    :is-public="auditStore.currentAudit.isPublic"
     :edit-unique-id="uniqueId"
     :audit-name="auditName"
     @closed="
