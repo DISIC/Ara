@@ -78,30 +78,6 @@ watch(switchValue, async (switchValue) => {
         );
       }
     }
-
-    // if (
-    //   resultsStore.everyCriteriumAreTested &&
-    //     !auditStore.currentAudit?.publicationDate
-    // ) {
-    //   auditStore.publishAudit(uniqueId).then(() => {
-    //     notify(
-    //       "info",
-    //       "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
-    //       auditStore.currentAudit?.auditType === AuditType.FULL
-    //         ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
-    //         : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
-    //       {
-    //         link: {
-    //           label: "Accéder aux livrables",
-    //           to: {
-    //             name: "audit-overview",
-    //             params: { uniqueId: uniqueId }
-    //           }
-    //         }
-    //       }
-    //     );
-    //   });
-    // }
   } else {
     resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
   }
