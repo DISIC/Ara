@@ -153,9 +153,6 @@ function handleUpdateResultError(err: any) {
 }
 
 function updateResultStatus(status: CriteriumResultStatus) {
-  // Static variable before criterium is tested
-  const everyCriteriumAreTested = store.everyCriteriumAreTested;
-
   store
     .updateResults(props.auditUniqueId, [{ ...result.value, status }])
     .then(() => {
@@ -163,7 +160,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
         criteriumNotCompliantAccordion.value?.disclose();
       }
 
-      if (!everyCriteriumAreTested) {
+      if (store.everyCriteriumAreTested) {
         auditStore.publishAudit(props.auditUniqueId);
 
         if (!auditStore.currentAudit?.publicationDate) {

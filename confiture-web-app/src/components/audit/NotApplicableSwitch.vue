@@ -56,11 +56,10 @@ watch(switchValue, async (switchValue) => {
       CriteriumResultStatus.NOT_APPLICABLE
     );
 
-    if (
-      resultsStore.everyCriteriumAreTested &&
-        !auditStore.currentAudit?.publicationDate
-    ) {
-      auditStore.publishAudit(uniqueId).then(() => {
+    if (resultsStore.everyCriteriumAreTested) {
+      auditStore.publishAudit(uniqueId);
+
+      if (!auditStore.currentAudit?.publicationDate) {
         notify(
           "info",
           "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
@@ -77,7 +76,7 @@ watch(switchValue, async (switchValue) => {
             }
           }
         );
-      });
+      }
     }
   } else {
     resultsStore.revertTopicStatus(uniqueId, props.pageId, props.topicNumber);
