@@ -74,16 +74,23 @@ function toggleAuditPrivacy() {
               </h1>
 
               <div class="fr-toggle fr-toggle-lg fr-toggle--label-left fr-mb-2w">
-                <input :id="`audit-privacy-${editUniqueId}`" v-model="auditIsPublic" type="checkbox" class="fr-toggle__input" @change="toggleAuditPrivacy">
+                <input
+                  :id="`audit-privacy-${editUniqueId}`"
+                  v-model="auditIsPublic"
+                  type="checkbox"
+                  class="fr-toggle__input"
+                  aria-describedby="privacy-description privacy-warning"
+                  @change="toggleAuditPrivacy"
+                >
                 <label class="fr-toggle__label fr-text--lg" :for="`audit-privacy-${editUniqueId}`">Rendre l’audit public</label>
               </div>
 
-              <p class="fr-text--sm fr-mb-2w privacy-description">
+              <p id="privacy-description" class="fr-text--sm fr-mb-2w privacy-description">
                 <span aria-hidden="true" :class="auditIsPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-line'" class="fr-mr-1v privacy-icon" />
                 {{ auditIsPublic ? 'Toute personne disposant du lien peut accéder à l’audit et le modifier' : 'Vous êtes la seule personne à pouvoir accéder à l’audit et le modifier' }}
               </p>
               <template v-if="auditIsPublic">
-                <p class="fr-message fr-message--info fr-mb-3w">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
+                <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
                 <div class="fr-btns-group fr-btns-group--icon-left">
                   <button
                     class="fr-btn fr-btn--secondary fr-btn--icon-left fr-mb-0"
