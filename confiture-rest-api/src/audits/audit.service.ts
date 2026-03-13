@@ -491,9 +491,11 @@ export class AuditService {
         previousAudit.pages.map(p => pick(p, ["id", "name", "url", "order"]))
       );
 
-      // update audit edition date only if a property other than below has been changed
+      // update audit edition date only if:
+      // - it has a `publicationDate`
+      // - a property other than below has been changed
       const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
-      if (!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty)) || pagesChanged) {
+      if ((!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty)) || pagesChanged) && audit.publicationDate) {
         returnedAudit = await this.updateAuditEditDate(uniqueId);
       }
 
