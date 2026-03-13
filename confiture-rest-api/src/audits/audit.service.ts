@@ -1086,6 +1086,22 @@ export class AuditService {
     }
   }
 
+  async toggleAuditPrivacy(editUniqueId: string): Promise<void> {
+    try {
+      const audit = await this.prisma.audit.findUnique({ where: { editUniqueId }, select: { isPublic: true } });
+
+      await this.prisma.audit.update({ where: { editUniqueId }, data: { isPublic: !audit.isPublic } });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e?.code === "P2025"
+      ) {
+        return;
+      }
+      throw e;
+    }
+  }
+
   /**
    * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
    * as completed after having been completed or
@@ -1813,7 +1829,8 @@ export class AuditService {
           select: {
             results: true
           }
-        }
+        },
+        isPublic: true
       }
     });
 
@@ -1892,7 +1909,8 @@ export class AuditService {
           "editUniqueId",
           "consultUniqueId",
           "creationDate",
-          "auditType"
+          "auditType",
+          "isPublic"
         ),
         complianceLevel,
         status:
