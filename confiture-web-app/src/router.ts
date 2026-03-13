@@ -20,6 +20,7 @@ import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
+import AuditRestrictedAccessPage from "./pages/audit/AuditRestrictedAccessPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
@@ -255,6 +256,14 @@ const router = createRouter({
       name: "edit-audit-step-four",
       redirect: () => {
         return { name: "audit-overview" };
+      }
+    },
+    {
+      path: "/audits/:uniqueId/acces-restreint",
+      name: "acces-restreint",
+      component: AuditRestrictedAccessPage,
+      meta: {
+        name: "Accès restreint"
       }
     },
     // Overview
