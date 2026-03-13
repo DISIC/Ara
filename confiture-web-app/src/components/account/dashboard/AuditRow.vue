@@ -223,11 +223,8 @@ defineExpose({
     <!-- Sharing -->
     <p class="fr-mb-0">
       <span class="fr-sr-only-md">Partage : </span>
-      <!-- TODO:
-       - update depending on audit status
-       - badge color / icon
-      -->
-      <span class="fr-badge fr-badge--sm fr-icon-earth-line fr-badge--icon-left fr-ml-1w">Privé</span>
+      <!-- TODO: badge color / icon -->
+      <span class="fr-badge fr-badge--sm fr-icon-earth-line fr-badge--icon-left fr-ml-1w">{{ audit.isPublic ? 'Public' : 'Privé' }}</span>
     </p>
 
     <!-- Main action -->
@@ -389,6 +386,7 @@ defineExpose({
 
   <ShareModal
     ref="shareModal"
+    :is-public="audit.isPublic"
     :edit-unique-id="audit.editUniqueId"
     :audit-name="audit.procedureName"
     @closed="

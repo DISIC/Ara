@@ -49,6 +49,7 @@ export interface Audit {
   creationDate: string | null;
   publicationDate: string | null;
   editionDate: string | null;
+  isPublic: boolean;
 
   // Audit creation
   auditType: AuditType;
