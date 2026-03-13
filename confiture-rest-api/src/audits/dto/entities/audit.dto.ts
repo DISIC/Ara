@@ -32,6 +32,7 @@ export class AuditDto {
   creationDate: Date | null;
   publicationDate: Date | null;
   editionDate: Date | null;
+  isPublic: boolean;
 
   transverseElementsPage: PageDto;
   environments: TestEnvironmentDto[];

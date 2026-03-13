@@ -63,6 +63,7 @@ model Audit {
 
   // Misc
   recipients      Recipent[] // unused for now
+  isPublic        Boolean @default(false)
   creationDate    DateTime?
   publicationDate DateTime?
   editionDate     DateTime?
