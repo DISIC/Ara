@@ -19,7 +19,6 @@ import {
   isSameDay,
   slugify
 } from "../../utils";
-import CopyIcon from "../icons/CopyIcon.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
@@ -347,26 +346,34 @@ onMounted(() => {
                   Modifier les paramètres
                 </RouterLink>
               </li>
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
+                <!-- TODO: icon "file-copy-2" does not exist on DSFR -->
                 <button
-                  class="fr-btn fr-btn--tertiary-no-outline"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-2-line"
+                  :disabled="!accountStore.isOwner"
                   @click="duplicateModal?.show()"
                 >
-                  <CopyIcon class="fr-mr-2v" />
+                  <!-- <span> -->
+                  <!-- <CopyIcon class="fr-mr-2v" /> -->
                   Dupliquer
+                  <!-- </span> -->
+                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
                 </button>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
-                  :disabled="!accountStore.account"
+                  :disabled="!accountStore.isOwner"
                   @click="shareModal?.show()"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
                   <span>
                     Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
                   </span>
-                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible uniquement avec un compte</span>
+                  <span v-if="accountStore.account && !accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
+                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Disponible uniquement avec un compte
+                  </span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -383,12 +390,14 @@ onMounted(() => {
                 </a>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
+                  :disabled="!accountStore.isOwner"
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
+                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>
