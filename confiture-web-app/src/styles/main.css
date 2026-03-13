@@ -95,6 +95,10 @@ from DSFR links with `target="_blank"` */
   &:hover {
     background-color: var(--hover-tint) !important;
   }
+
+  &:disabled {
+    color: var(--text-disabled-grey) !important;
+  }
 }
 
 /* Override DSFR inputs, textareas and selects borders */
