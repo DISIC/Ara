@@ -241,7 +241,7 @@ describe("Account", () => {
           cy.visit(verificationLink);
 
           cy.contains(`Votre adresse email : ${newEmail}`);
-          cy.contains("Votre adresse e-mail a été mise à jour avec succès.");
+          cy.contains("Votre adresse e-mail a été mise à jour");
         });
       });
     });

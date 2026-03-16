@@ -268,7 +268,7 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
-      cy.get("[role='tablist'] button").then((els) => {
+      cy.get("[role='tablist'] button span.tab-label").then((els) => {
         expect(els).to.have.length(7);
         const expectedPages = [
           "Éléments transverses",
