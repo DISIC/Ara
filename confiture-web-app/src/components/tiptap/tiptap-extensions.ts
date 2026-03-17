@@ -369,8 +369,8 @@ function isResizeEnabled(editorElement: Element, img: HTMLImageElement) {
   if (maxImgWidth > minWidthToEnableImageResize) {
     return true;
   }
-  // Enable resize if the image current width is smaller than the editor width
-  if (parseInt(img.getAttribute("width")!) < maxImgWidth) {
+  // Enable resize if the image current width is smaller than (or equal to) the editor width
+  if (parseInt(img.getAttribute("width")!) <= maxImgWidth) {
     return true;
   }
 }
