@@ -19,6 +19,7 @@ import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditReportDto } from "./dto/audit-report.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
+import { StatementDto } from "./dto/entities/statement.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
@@ -993,81 +994,17 @@ export class AuditService {
       return;
     }
 
-    const results = await Promise.all([
-      this.prisma.criterionResult.findMany({
-        where: {
-          page: {
-            auditUniqueId: audit.editUniqueId
-          },
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      }),
-      this.prisma.criterionResult.findMany({
-        where: {
-          pageId: audit.transverseElementsPageId,
-          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-        },
-        include: {
-          exampleImages: true
-        }
-      })
-    ]).then(results => results.flat());
-
-    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
-      (acc, c) => {
-        const key = `${c.topic}.${c.criterium}`;
-        if (acc[key]) {
-          acc[key].push(c);
-        } else {
-          acc[key] = [c];
-        }
-        return acc;
-      },
-      {}
-    );
-
-    const applicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
-    );
-
-    const compliantCriteria = applicableCriteria.filter((criteria) => {
-      // remove untested transverse criterion
-      const withoutUntestedTrans = criteria.filter(
-        (c) =>
-          !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
-      );
-
-      return (
-        withoutUntestedTrans.some((c) => isCompliant(c)) &&
-        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
-      );
-    });
-
-    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
-      return criteria.some((c) => isNotCompliant(c));
-    });
-
-    const notApplicableCriteria = Object.values(groupedCriteria).filter(
-      (criteria) => {
-        // remove untested transverse criterion
-        const withoutUntestedTrans = criteria.filter(
-          (c) =>
-            !isTransverse(c, audit.transverseElementsPageId) || !isNotTested(c)
-        );
-
-        return withoutUntestedTrans.every((c) => isNotApplicable(c));
-      }
-    );
-
-    const accessibilityRate =
-      Math.round(
-        (compliantCriteria.length / applicableCriteria.length) * 100
-      ) || 0;
+    const results = await this.getAuditResults(audit);
 
     const totalCriteriaCount = CRITERIA_BY_AUDIT_TYPE[audit.auditType].length;
+
+    const {
+      compliantCriteria,
+      notCompliantCriteria,
+      applicableCriteria,
+      notApplicableCriteria,
+      accessibilityRate
+    } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
@@ -1268,6 +1205,93 @@ export class AuditService {
     };
 
     return report;
+  }
+
+  private getAuditResults(audit: Pick<Audit, "editUniqueId" | "auditType" | "transverseElementsPageId">) {
+    return Promise.all([
+      this.prisma.criterionResult.findMany({
+        where: {
+          page: {
+            auditUniqueId: audit.editUniqueId
+          },
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      }),
+      this.prisma.criterionResult.findMany({
+        where: {
+          pageId: audit.transverseElementsPageId,
+          OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+        },
+        include: {
+          exampleImages: true
+        }
+      })
+    ]).then(results => results.flat());
+  }
+
+  public static groupResultsByStatus(results: CriterionResult[], transversePageId: number) {
+    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
+      (acc, c) => {
+        const key = `${c.topic}.${c.criterium}`;
+        if (acc[key]) {
+          acc[key].push(c);
+        } else {
+          acc[key] = [c];
+        }
+        return acc;
+      },
+      {}
+    );
+
+    const applicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => criteria.some((c) => isCompliant(c) || isNotCompliant(c))
+    );
+
+    const compliantCriteria = applicableCriteria.filter((criteria) => {
+      // remove untested transverse criterion
+      const withoutUntestedTrans = criteria.filter(
+        (c) =>
+          !isTransverse(c, transversePageId) || !isNotTested(c)
+      );
+
+      return (
+        withoutUntestedTrans.some((c) => isCompliant(c)) &&
+          withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
+      );
+    });
+
+    const notCompliantCriteria = applicableCriteria.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c));
+    });
+
+    const notApplicableCriteria = Object.values(groupedCriteria).filter(
+      (criteria) => {
+        // remove untested transverse criterion
+        const withoutUntestedTrans = criteria.filter(
+          (c) =>
+            !isTransverse(c, transversePageId) || !isNotTested(c)
+        );
+
+        return withoutUntestedTrans.every((c) => isNotApplicable(c));
+      }
+    );
+
+    const accessibilityRate =
+      Math.round(
+        (compliantCriteria.length / applicableCriteria.length) * 100
+      ) || 0;
+
+    return {
+      groupedCriteria,
+      applicableCriteria,
+      compliantCriteria,
+      notCompliantCriteria,
+      notApplicableCriteria,
+      accessibilityRate
+    };
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
@@ -1689,6 +1713,60 @@ export class AuditService {
     ];
 
     return orderedAudits;
+  }
+
+  /**
+   * Returns a Promise that resolves to the accessibility statement data or null if the audit cannot be found
+   */
+  async getAuditStatementWithConsultId(consultUniqueId: string): Promise<StatementDto | null> {
+    const audit = await this.prisma.audit.findUnique({
+      where: { consultUniqueId },
+      select: AUDIT_PRISMA_SELECT
+    });
+
+    if (!audit) {
+      return null;
+    }
+
+    const results = await this.getAuditResults(audit);
+
+    const {
+      accessibilityRate
+    } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
+
+    const statement: StatementDto = {
+      consultUniqueId: audit.consultUniqueId,
+
+      editionDate: audit.editionDate,
+      creationDate: audit.creationDate,
+      publicationDate: audit.publicationDate,
+      statementEditionDate: audit.statementEditionDate,
+      statementPublicationDate: audit.statementPublicationDate,
+
+      auditorName: audit.auditorName,
+      auditorEmail: audit.auditorEmail,
+      auditorOrganisation: audit.auditorOrganisation,
+
+      contactEmail: audit.contactEmail,
+      contactFormUrl: audit.contactFormUrl,
+
+      procedureInitiator: audit.initiator,
+      procedureName: audit.procedureName,
+      procedureUrl: audit.procedureUrl,
+
+      accessibilityRate: accessibilityRate,
+
+      notCompliantContent: audit.notCompliantContent,
+      derogatedContent: audit.derogatedContent,
+      notInScopeContent: audit.notInScopeContent,
+
+      technologies: audit.technologies,
+      samples: audit.pages,
+      tools: audit.tools,
+      environments: audit.environments
+    };
+
+    return statement;
   }
 
   async updateAuditStatementData(
