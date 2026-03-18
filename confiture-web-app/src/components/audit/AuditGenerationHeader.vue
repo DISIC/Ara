@@ -217,8 +217,9 @@ onMounted(() => {
   </div>
 
   <h1 class="fr-mb-3v">
-    <!-- TODO: badge color / icon -->
-    Audit <span class="fr-badge fr-icon-earth-line fr-badge--icon-left fr-ml-1w">{{ auditStore.currentAudit?.isPublic ? 'Public' : 'Privé' }}</span>
+    Audit <span :class="`fr-badge fr-badge--blue-cumulus ${auditStore.currentAudit?.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
+      {{ auditStore.currentAudit?.isPublic ? 'Public' : 'Privé' }}
+    </span>
     <span class="fr-sr-only">
       Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
       problème lié à l’enregistrement
@@ -360,8 +361,9 @@ onMounted(() => {
                   @click="shareModal?.show()"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
-                  <span>
-                    Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
+                  <!-- Needed to ensure dropdown is correctly closing when clicking -->
+                  <span style="pointer-events: none;">
+                    Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
                   </span>
                   <span v-if="accountStore.account && !accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
                   <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">

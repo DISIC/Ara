@@ -13,3 +13,10 @@
   -webkit-mask-image: url("./dsfr-custom-icons/file-copy-2-line.svg");
   mask-image: url("./dsfr-custom-icons/file-copy-2-line.svg");
 }
+
+/* https://remixicon.com/icon/lock-2-line */
+.fr-icon-lock-2-line::before,
+.fr-icon-lock-2-line::after {
+  -webkit-mask-image: url("./dsfr-custom-icons/lock-2-line.svg");
+  mask-image: url("./dsfr-custom-icons/lock-2-line.svg");
+}

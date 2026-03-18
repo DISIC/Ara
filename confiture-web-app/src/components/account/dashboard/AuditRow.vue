@@ -222,8 +222,9 @@ defineExpose({
     <!-- Sharing -->
     <p class="fr-mb-0">
       <span class="fr-sr-only-md">Partage : </span>
-      <!-- TODO: badge color / icon -->
-      <span class="fr-badge fr-badge--sm fr-icon-earth-line fr-badge--icon-left fr-ml-1w">{{ audit.isPublic ? 'Public' : 'Privé' }}</span>
+      <span :class="`fr-badge fr-badge--sm fr-badge--blue-cumulus ${audit.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
+        {{ audit.isPublic ? 'Public' : 'Privé' }}
+      </span>
     </p>
 
     <!-- Main action -->
@@ -303,7 +304,7 @@ defineExpose({
               @click="shareModal?.show()"
             >
               <!-- TODO: delete badge in 1 month after merging -->
-              Partager <span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
+              Partager <span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
               <span class="fr-sr-only">l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
