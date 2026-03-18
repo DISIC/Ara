@@ -776,4 +776,9 @@ describe("Audit", () => {
       cy.get(".tiptap--rendered img").should("have.length", 0);
     });
   });
+
+  it("User can toggle audit privacy");
+  it("User can copy audit link in share modal");
+  it("User cant see audit if not connected");
+  it("User cant see audit if connected but not owner");
 });
