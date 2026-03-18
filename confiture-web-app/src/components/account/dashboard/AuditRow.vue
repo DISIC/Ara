@@ -398,7 +398,7 @@ defineExpose({
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 0.75fr 1.5fr 0.75fr 0.25fr;
+  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.1fr 0.6fr 1.5fr 0.75fr 0.25fr;
   gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);
