@@ -344,16 +344,12 @@ onMounted(() => {
                 </RouterLink>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
-                <!-- TODO: icon "file-copy-2" does not exist on DSFR -->
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-2-line"
                   :disabled="!accountStore.isOwner"
                   @click="duplicateModal?.show()"
                 >
-                  <!-- <span> -->
-                  <!-- <CopyIcon class="fr-mr-2v" /> -->
                   Dupliquer
-                  <!-- </span> -->
                   <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
                 </button>
               </li>

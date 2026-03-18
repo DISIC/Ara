@@ -19,7 +19,6 @@ import {
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
 import ShareModal from "../../audit/ShareModal.vue";
-import CopyIcon from "../../icons/CopyIcon.vue";
 import EditDocumentIcon from "../../icons/EditDocumentIcon.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
@@ -291,10 +290,9 @@ defineExpose({
 
           <li class="dropdown-item">
             <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              class="fr-btn fr-icon-file-copy-2-line fr-btn--icon-left fr-btn--tertiary-no-outline fr-m-0"
               @click="duplicateModal?.show()"
             >
-              <CopyIcon class="fr-mr-2v" />
               Dupliquer
               <span class="fr-sr-only">l’audit {{ audit.procedureName }}</span>
             </button>
