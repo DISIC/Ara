@@ -1702,7 +1702,7 @@ export class AuditService {
   }
 
   /**
-   * Returns accessibility statement data or null if the audit cannot be found
+   * Returns a Promise that resolves to the accessibility statement data or null if the audit cannot be found
    */
   async getAuditStatementWithConsultId(consultUniqueId: string): Promise<StatementDto | null> {
     const audit = await this.prisma.audit.findUnique({
