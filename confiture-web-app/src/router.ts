@@ -6,6 +6,7 @@ import {
 } from "vue-router";
 
 import AraTabsPanel from "./components/audit/AraTabsPanel.vue";
+import { canAccessToAudit, useCanAccessToAudit } from "./composables/useCanAccessToAudit";
 import { FirstTab } from "./enums";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
@@ -36,7 +37,7 @@ import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import TiptapPage from "./pages/TiptapPage.vue";
 import { useAccountStore, useAuditStore } from "./store";
-import { Audit, ScrollBehaviorResult, ScrollPosition } from "./types";
+import { ScrollBehaviorResult, ScrollPosition } from "./types";
 import { getScrollBehavior } from "./utils";
 
 declare module "vue-router" {
@@ -222,7 +223,10 @@ const router = createRouter({
       name: "audit-generation",
       beforeEnter: async (to: RouteLocationNormalized) => {
         const uniqueId: string = to.params.uniqueId as string;
-        return await checkIfAuditIsPublic(uniqueId);
+        const canAccess: canAccessToAudit = await useCanAccessToAudit(uniqueId);
+        if (!canAccess.canAccess && canAccess.redirectTo) {
+          return canAccess.redirectTo;
+        }
       },
       redirect: (to: any) => {
         return {
@@ -243,8 +247,6 @@ const router = createRouter({
       ],
       meta: {
         name: "Mon audit"
-        // TODO if we logout, how to redirect to acces-restreint ?
-        // authRequired: true,
       },
       props: true
 
@@ -462,26 +464,6 @@ router.afterEach(async (to, from) => {
     }
   }
 });
-
-async function checkIfAuditIsPublic(uniqueId: string) {
-  const auditStore = useAuditStore();
-  await auditStore.fetchAuditIfNeeded(uniqueId);
-  const currentAudit: Audit | null = auditStore.entities[uniqueId];
-  if (!currentAudit) {
-    return { name: "404" };
-  }
-
-  const accountStore = useAccountStore();
-  // if no login
-  if (!currentAudit.isPublic && (!accountStore || !accountStore.account)) {
-    return { name: "acces-restreint", params: { uniqueId } };
-  }
-
-  // if auditor isn't owner of audit
-  if (!currentAudit.isPublic && currentAudit.auditorEmail !== accountStore.account?.email) {
-    return { name: "acces-restreint", params: { uniqueId } };
-  }
-}
 
 function isTabNavigation(
   to: RouteLocationNormalized,
