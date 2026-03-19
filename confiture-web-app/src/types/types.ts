@@ -78,6 +78,9 @@ export interface Audit {
   statementEditionDate: string | null;
 
   transverseElements: string[];
+
+  // Owner
+  ownerUsername: string | null;
 }
 
 /** Audit type fields needed to create an audit */

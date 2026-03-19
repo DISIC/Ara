@@ -365,9 +365,11 @@ onMounted(() => {
                   <span style="pointer-events: none;">
                     Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
                   </span>
-                  <span v-if="accountStore.account && !accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
-                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-if="!auditStore.currentAuditIsLinkedToAccount" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
+                  </span>
+                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Seul le propriétaire peut dupliquer cet audit
                   </span>
                 </button>
               </li>

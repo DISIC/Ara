@@ -315,6 +315,10 @@ export const useAuditStore = defineStore("audit", {
 
     isLoading(): boolean {
       return this.currentRequestCount > 0;
+    },
+
+    currentAuditIsLinkedToAccount(): boolean {
+      return !!this.currentAudit?.ownerUsername;
     }
   }
 });
