@@ -34,6 +34,7 @@ import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import TiptapPage from "./pages/TiptapPage.vue";
+import redirects from "./redirects";
 import { useAccountStore, useAuditStore } from "./store";
 import { ScrollBehaviorResult, ScrollPosition } from "./types";
 import { getScrollBehavior } from "./utils";
@@ -208,14 +209,6 @@ const router = createRouter({
         name: "Mon audit"
       }
     },
-    // TODO: remove this redirect in few months (24/04/2024)
-    {
-      path: "/audits/:uniqueId/informations-generales",
-      name: "audit-settings-old",
-      redirect: () => {
-        return { name: "audit-settings" };
-      }
-    },
     {
       path: "/audits/:uniqueId/generation",
       name: "audit-generation",
@@ -247,14 +240,6 @@ const router = createRouter({
       component: AuditDeclarationPage,
       meta: {
         name: "Mon audit"
-      }
-    },
-    // TODO: remove this redirect in few months?
-    {
-      path: "/audits/:uniqueId/partage",
-      name: "edit-audit-step-four",
-      redirect: () => {
-        return { name: "audit-overview" };
       }
     },
     // Overview
@@ -293,21 +278,6 @@ const router = createRouter({
       },
       props: true
     },
-    // TODO: remove this redirect in few months (17/04/2024)
-    {
-      path: "/rapports/:uniqueId/:tabSlug?",
-      name: "report-old",
-      redirect: (to: any) => {
-        const tabSlug = to.params.tabSlug;
-        return {
-          name: "report-full",
-          params: {
-            uniqueId: to.params.uniqueId,
-            tabSlug: tabSlug.length > 0 ? tabSlug : FirstTab.REPORT_SLUG
-          }
-        };
-      }
-    },
     // a11y statement
     {
       path: "/declaration/:uniqueId",
@@ -315,14 +285,6 @@ const router = createRouter({
       component: StatementPage,
       meta: {
         name: "Déclaration d’accessibilité"
-      }
-    },
-    // TODO: remove this redirect in few months (17/04/2024)
-    {
-      path: "/declarations/:uniqueId",
-      name: "a11y-statement-old",
-      redirect: () => {
-        return { name: "a11y-statement" };
       }
     },
     // Roadmap
@@ -367,7 +329,8 @@ const router = createRouter({
             component: TiptapPage
           }
         ]
-      : [])
+      : []),
+    ...redirects
   ],
   history,
   scrollBehavior(to, from, savedPosition) {
