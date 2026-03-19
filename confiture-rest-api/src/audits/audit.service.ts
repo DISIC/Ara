@@ -29,19 +29,6 @@ import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
-const AUDIT_EDIT_INCLUDE = {
-  recipients: true,
-  environments: true,
-  transverseElementsPage: true,
-  pages: true,
-  sourceAudit: {
-    select: {
-      procedureName: true
-    }
-  },
-  notesFiles: true
-} as const;
-
 const isCompliant = (c: CriterionResult) =>
   c.status === CriterionResultStatus.COMPLIANT;
 
@@ -380,7 +367,7 @@ export class AuditService {
         where: {
           editUniqueId: uniqueId
         },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
 
       const audit = await this.prisma.audit.update({
@@ -938,7 +925,7 @@ export class AuditService {
         data: {
           publicationDate: new Date()
         },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
     } catch (e) {
       if (
@@ -977,7 +964,7 @@ export class AuditService {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: { editionDate: new Date() },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
     }
   }
@@ -994,7 +981,7 @@ export class AuditService {
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
         : { statementPublicationDate: new Date() },
-      include: AUDIT_EDIT_INCLUDE
+      include: AUDIT_PRISMA_SELECT
     });
   }
 
@@ -1003,7 +990,7 @@ export class AuditService {
   ): Promise<AuditReportDto | undefined> {
     const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
-      include: AUDIT_EDIT_INCLUDE
+      include: AUDIT_PRISMA_SELECT
     });
 
     if (!audit) {
@@ -1505,13 +1492,20 @@ export class AuditService {
           "environments",
           "notCompliantContent",
           "derogatedContent",
-          "notInScopeContent"
+          "notInScopeContent",
+          "ownerUsername"
         ]),
 
         // link new audit with the original
         sourceAudit: {
           connect: {
             editUniqueId: sourceUniqueId
+          }
+        },
+
+        owner: {
+          connect: {
+            username: originalAudit.ownerUsername
           }
         },
 
