@@ -73,6 +73,7 @@ export class DebugController {
       noImprovements: boolean;
       auditorEmail?: string;
       fillStatement?: boolean;
+      isPublic?: boolean;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -84,6 +85,7 @@ export class DebugController {
         consultUniqueId: reportUniqueId,
         creationDate: new Date(),
         publicationDate: body.isComplete ? new Date() : null,
+        isPublic: body.isPublic ?? true,
         auditTrace: {
           create: {
             auditConsultUniqueId: editUniqueId,

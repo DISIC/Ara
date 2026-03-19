@@ -779,6 +779,28 @@ describe("Audit", () => {
 
   it("User can toggle audit privacy");
   it("User can copy audit link in share modal");
-  it("User cant see audit if not connected");
-  it("User cant see audit if connected but not owner");
+
+  it("User cant see audit if not connected", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ isPublic: false }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.get("h1").contains("Accès restreint");
+      });
+    });
+  });
+
+  it("User cant see audit if connected but not owner", () => {
+    cy.createTestAudit({ isPublic: false, auditorEmail: "armand.dupont@domaine.com" }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/`);
+
+      cy.createTestAccount({ login: true }).then(() => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.get("h1").contains("Accès restreint");
+      });
+    });
+  });
 });
