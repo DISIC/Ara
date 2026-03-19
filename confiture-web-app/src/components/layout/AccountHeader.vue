@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 
+import { canAccessToAudit, useCanAccessToAudit } from "../../composables/useCanAccessToAudit";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWindowWidth } from "../../composables/useWindowWidth";
 import { useAccountStore } from "../../store";
@@ -13,11 +14,22 @@ const notify = useNotifications();
 const router = useRouter();
 const currentRoute = useRoute();
 
-function handleDisconnectClick() {
+async function handleDisconnectClick() {
   accountStore.logout();
   if (currentRoute.meta.authRequired) {
     router.push({ name: "login" });
   }
+
+  if (currentRoute.path.includes("generation")) {
+    const uniqueId: string = currentRoute.params.uniqueId as string;
+    if (uniqueId) {
+      const canAccess: canAccessToAudit = await useCanAccessToAudit(uniqueId);
+      if (!canAccess.canAccess && canAccess.redirectTo) {
+        router.push(canAccess.redirectTo);
+      }
+    }
+  }
+
   notify("success", undefined, "Vous avez été deconnecté avec succès.");
 }
 
