@@ -70,6 +70,8 @@ export class AuditsController {
         console.error(`Failed to send email for audit ${audit.editUniqueId}`);
         console.error(err);
       });
+
+      this.auditService.toggleAuditPrivacy(audit.editUniqueId);
     }
 
     return audit;
