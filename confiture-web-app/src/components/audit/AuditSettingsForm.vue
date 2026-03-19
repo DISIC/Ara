@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { EMAIL, REQUIRED } from "../../composables/validation";
 import router from "../../router";
-import { useAccountStore } from "../../store/account";
+import { useAuditStore, useAccountStore } from "../../store";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
@@ -65,6 +65,7 @@ const audits = [
 const route = useRoute();
 const previousRoute = usePreviousRoute();
 const accountStore = useAccountStore();
+const auditStore = useAuditStore();
 
 const auditType = ref(props.audit?.auditType);
 const procedureName = ref(props.audit?.procedureName || "");
@@ -173,7 +174,7 @@ const currentProcedureName = procedureName.value;
     </div>
 
     <fieldset
-      v-if="!accountStore.account"
+      v-if="!(accountStore.account || auditStore.currentAuditIsLinkedToAccount)"
       class="fr-p-0 fr-mt-4w auditor-fields"
     >
       <legend>
