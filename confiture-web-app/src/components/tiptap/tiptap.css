@@ -21,6 +21,9 @@
   border-radius: 0.25rem;
   margin: 0.5rem 0 2rem;
   padding: 0.125rem;
+  &.is-dragged {
+    cursor: grabbing;
+  }
 }
 
 .tiptap img:not(.ProseMirror-widget) {
