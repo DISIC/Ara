@@ -66,8 +66,8 @@ const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; ord
   const namesInOrder = orderBy(intersectingCurrentAuditPages, x => x.order).map(p => p.name);
   const previousNamesInOrder = orderBy(intersectingPreviousAuditPages, x => x.order).map(p => p.name);
 
-  return namesInOrder.length === previousNamesInOrder.length &&
-        JSON.stringify(namesInOrder) !== JSON.stringify(previousNamesInOrder) &&
+  return isEqual(namesInOrder.length, previousNamesInOrder.length) &&
+        !isEqual(JSON.stringify(namesInOrder), JSON.stringify(previousNamesInOrder)) &&
         namesInOrder.every(name => previousNamesInOrder.includes(name)) &&
         previousNamesInOrder.every(name => namesInOrder.includes(name));
 };
@@ -398,8 +398,7 @@ export class AuditService {
 
       if (updatedPages.length > 0) {
         // If reorganization detected, temporarily rename to avoid database integrity constraints
-        const namesAreIdenticalButReordered = hasNamesAreIdenticalButReordered(updatedPages, previousAudit.pages);
-        if (namesAreIdenticalButReordered) {
+        if (hasNamesAreIdenticalButReordered(updatedPages, previousAudit.pages)) {
           await this.prisma.$transaction(async (tx) => {
             // temporary slugs
             for (const p of updatedPages) {

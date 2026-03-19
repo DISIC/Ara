@@ -268,7 +268,7 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
-      cy.get("[role='tablist'] button span.tab-label").then((els) => {
+      cy.get("[data-cy='tab-label']").then((els) => {
         expect(els).to.have.length(7);
         const expectedPages = [
           "Éléments transverses",
@@ -325,7 +325,7 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
-      cy.get("[role='tablist'] button span.tab-label").then((els) => {
+      cy.get("[data-cy='tab-label']").then((els) => {
         expect(els).to.have.length(9);
         const expectedPages = [
           "Éléments transverses",
