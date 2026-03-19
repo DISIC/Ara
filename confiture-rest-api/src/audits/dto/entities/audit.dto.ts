@@ -5,6 +5,10 @@ import { NotesFileDto } from "./notes-file.dto";
 import { PageDto } from "./page.dto";
 import { TestEnvironmentDto } from "./test-environment.dto";
 
+class OwnerDto {
+  username: string;
+}
+
 export class AuditDto {
   id: number;
   editUniqueId: string;
@@ -38,4 +42,5 @@ export class AuditDto {
   environments: TestEnvironmentDto[];
   notesFiles: NotesFileDto[];
   pages: PageDto[];
+  owner: OwnerDto | null;
 }
