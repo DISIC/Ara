@@ -74,6 +74,7 @@ export class DebugController {
       auditorEmail?: string;
       fillStatement?: boolean;
       isPublic?: boolean;
+      ownerUserName?: string;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -149,6 +150,14 @@ export class DebugController {
             ]
           }
         },
+
+        ...(body.ownerUserName && {
+          owner: {
+            connect: {
+              username: body.ownerUserName
+            }
+          }
+        }),
 
         ...(body.fillStatement && {
           initiator: "Mairie de Poueton-les-Bains",

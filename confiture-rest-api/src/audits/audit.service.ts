@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import _, { isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
+import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
+
 import {
   Audit,
   AuditType,
@@ -10,7 +12,6 @@ import {
   CriterionResultUserImpact,
   Prisma
 } from "../generated/prisma/client";
-
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
 import { slugify } from "../utils";
@@ -27,6 +28,20 @@ import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
+
+const AUDIT_EDIT_INCLUDE = {
+  recipients: true,
+  environments: true,
+  transverseElementsPage: true,
+  pages: true,
+  sourceAudit: {
+    select: {
+      procedureName: true
+    }
+  },
+  notesFiles: true,
+  owner: true
+} as const;
 
 const isCompliant = (c: CriterionResult) =>
   c.status === CriterionResultStatus.COMPLIANT;
@@ -52,7 +67,7 @@ export class AuditService {
     private readonly fileStorageService: FileStorageService
   ) {}
 
-  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto, user: AuthenticationJwtPayload): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -71,6 +86,14 @@ export class AuditService {
 
         auditorEmail: data.auditorEmail,
         auditorName: data.auditorName,
+
+        ...(user && {
+          owner: {
+            connect: {
+              username: data.auditorEmail
+            }
+          }
+        }),
 
         transverseElementsPage: {
           create: {
@@ -366,7 +389,7 @@ export class AuditService {
         where: {
           editUniqueId: uniqueId
         },
-        include: AUDIT_PRISMA_SELECT
+        include: AUDIT_EDIT_INCLUDE
       });
 
       const audit = await this.prisma.audit.update({
@@ -924,7 +947,7 @@ export class AuditService {
         data: {
           publicationDate: new Date()
         },
-        include: AUDIT_PRISMA_SELECT
+        include: AUDIT_EDIT_INCLUDE
       });
     } catch (e) {
       if (
@@ -963,7 +986,7 @@ export class AuditService {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: { editionDate: new Date() },
-        include: AUDIT_PRISMA_SELECT
+        include: AUDIT_EDIT_INCLUDE
       });
     }
   }
@@ -980,7 +1003,7 @@ export class AuditService {
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
         : { statementPublicationDate: new Date() },
-      include: AUDIT_PRISMA_SELECT
+      include: AUDIT_EDIT_INCLUDE
     });
   }
 
@@ -989,7 +1012,7 @@ export class AuditService {
   ): Promise<AuditReportDto | undefined> {
     const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
-      include: AUDIT_PRISMA_SELECT
+      include: AUDIT_EDIT_INCLUDE
     });
 
     if (!audit) {
@@ -1479,11 +1502,13 @@ export class AuditService {
           }
         },
 
-        owner: {
-          connect: {
-            username: originalAudit.ownerUsername
+        ...(originalAudit.ownerUsername && {
+          owner: {
+            connect: {
+              username: originalAudit.ownerUsername
+            }
           }
-        },
+        }),
 
         editUniqueId: duplicateEditUniqueId,
         consultUniqueId: duplicateConsultUniqueId,

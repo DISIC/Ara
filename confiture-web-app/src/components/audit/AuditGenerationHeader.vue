@@ -63,6 +63,10 @@ const resultStore = useResultsStore();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
+const isOwner = computed(() => {
+  return !auditStore.currentAudit?.ownerUsername || accountStore.isOwner;
+});
+
 /**
  * Duplicate audit and redirect to new audit page
  */
@@ -347,11 +351,11 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-2-line"
-                  :disabled="!accountStore.isOwner"
+                  :disabled="!isOwner"
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer
-                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
+                  <span v-if="!isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut dupliquer cet audit</span>
                 </button>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
@@ -390,11 +394,11 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
-                  :disabled="!accountStore.isOwner"
+                  :disabled="!isOwner"
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
-                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  <span v-if="!isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>

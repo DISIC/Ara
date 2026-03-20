@@ -154,7 +154,7 @@ describe("Audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
@@ -220,7 +220,7 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -268,7 +268,7 @@ describe("Audit", () => {
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
-      cy.get("[role='tablist'] button").then((els) => {
+      cy.get("[data-cy='tab-label']").then((els) => {
         expect(els).to.have.length(7);
         const expectedPages = [
           "Éléments transverses",
@@ -286,7 +286,42 @@ describe("Audit", () => {
     });
   });
 
-  it("User can delete an audit", () => {
+  it("User can delete an audit if connected", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ ownerUserName: username }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+        cy.contains("Actions").click();
+        cy.contains("Supprimer l’audit").click();
+
+        cy.contains("Supprimer l’audit « Audit de mon petit site »");
+        cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
+
+        cy.url().should("eq", "http://localhost:3000/compte");
+        cy.contains("Audit « Audit de mon petit site » supprimé");
+      });
+    });
+  });
+
+  it("User cant delete an audit if connected and not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ isPublic: true, ownerUserName: username }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.createTestAccount({ login: true }).then(() => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+          cy.contains("Actions").click();
+          cy.contains("Supprimer l’audit").should("be.disabled");
+        });
+      });
+    });
+  });
+
+  it("Unkown user can delete after create audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -385,11 +420,11 @@ describe("Audit", () => {
     });
   });
 
-  it("User can copy an audit", () => {
+  it("User can copy an audit if not connected", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
-      cy.contains("button", "Dupliquer l’audit").click();
+      cy.contains("button", "Dupliquer").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
@@ -398,6 +433,42 @@ describe("Audit", () => {
       cy.contains("button", "Accéder à l’audit").click();
 
       cy.contains("h1 + p", "Audit de mon petit site (2)");
+    });
+  });
+
+  it("User can copy an audit if connected", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ ownerUserName: username }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Dupliquer").click();
+
+        cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
+        cy.get("dialog").contains("button", "Dupliquer l’audit").click();
+
+        cy.contains("Audit « Audit de mon petit site (2) » créé", { timeout: 50_000 });
+        cy.contains("button", "Accéder à l’audit").click();
+
+        cy.contains("h1 + p", "Audit de mon petit site (2)");
+      });
+    });
+  });
+
+  it.only("User can copy an audit if connected and not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ ownerUserName: username }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.createTestAccount({ login: true }).then(() => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+          cy.contains("Actions").click();
+          cy.contains("Dupliquer").should("be.disabled");
+        });
+      });
     });
   });
 
@@ -612,7 +683,7 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Actions").click();
-      cy.contains("Exporter l’audit").click();
+      cy.contains("Télécharger l’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
@@ -789,7 +860,7 @@ describe("Audit", () => {
 
   it("User cant see private audit if not connected", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ isPublic: false }).then(({ editId }) => {
+      cy.createTestAudit({ ownerUserName: username, isPublic: false }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
         cy.contains("button", username).click();
@@ -818,7 +889,7 @@ describe("Audit", () => {
 
   it("User cant see private audit if connected but not owner", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ isPublic: false }).then(({ editId }) => {
+      cy.createTestAudit({ isPublic: false, ownerUserName: username }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/`);
 
         cy.contains("button", username).click();
