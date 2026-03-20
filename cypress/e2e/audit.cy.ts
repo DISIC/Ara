@@ -780,7 +780,14 @@ describe("Audit", () => {
   it("User can toggle audit privacy");
   it("User can copy audit link in share modal");
 
-  it("User cant see audit if not connected", () => {
+  it("User can see audit if not connected after it has been created", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.get("h1").contains("Audit");
+    });
+  });
+
+  it("User cant see private audit if not connected", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ isPublic: false }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
@@ -793,13 +800,34 @@ describe("Audit", () => {
     });
   });
 
-  it("User cant see audit if connected but not owner", () => {
-    cy.createTestAudit({ isPublic: false, auditorEmail: "armand.dupont@domaine.com" }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/`);
+  it("User can see public audit if connected but not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit().then(({ editId }) => {
+        cy.visit(`http://localhost:3000/`);
 
-      cy.createTestAccount({ login: true }).then(() => {
-        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-        cy.get("h1").contains("Accès restreint");
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.createTestAccount({ login: true }).then(() => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+          cy.get("h1").contains("Audit");
+        });
+      });
+    });
+  });
+
+  it("User cant see private audit if connected but not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ isPublic: false }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.createTestAccount({ login: true }).then(() => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+          cy.get("h1").contains("Accès restreint");
+        });
       });
     });
   });
