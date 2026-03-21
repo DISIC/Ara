@@ -14,7 +14,12 @@
     "show-all-ts-errors": "vue-tsc --noEmit",
     "postinstall": "cp ../ROADMAP.md ../CHANGELOG.md ./src/assets"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/dompurify": "^2.4.0",
+    "@types/lodash-es": "^4.17.6",
+    "@types/marked": "^4.0.8",
+    "@types/node": "^22.10.0",
+    "vue-tsc": "^3.1.0",
     "@floating-ui/dom": "^1.7.4",
     "@gouvfr/dsfr": "1.14.0",
     "@sentry/tracing": "^7.120.4",
@@ -48,13 +53,6 @@
     "vite": "^7.1.9",
     "vue": "^3.5.22",
     "vue-router": "^4.2.5"
-  },
-  "devDependencies": {
-    "@types/dompurify": "^2.4.0",
-    "@types/lodash-es": "^4.17.6",
-    "@types/marked": "^4.0.8",
-    "@types/node": "^22.10.0",
-    "vue-tsc": "^3.1.0"
   },
   "engines": {
     "node": "^22.14.0"
