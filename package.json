@@ -35,7 +35,7 @@
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
-    "scalingo-postbuild": "yarn workspaces foreach --all run build",
+    "build": "yarn workspaces foreach --all run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
     "postinstall": "yarn copytypes && yarn workspace confiture-web-app run generate:rgaa",
     "prepare": "yarn simple-git-hooks",
@@ -43,9 +43,6 @@
     "dev:front": "yarn workspace confiture-web-app run dev",
     "dev": "yarn dev:back & yarn dev:front",
     "g:show-all-ts-errors": "cd $INIT_CWD && tsc --noEmit"
-  },
-  "dependencies": {
-    "pm2": "^5.4.0"
   },
   "engines": {
     "node": "^22.14.0"

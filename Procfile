@@ -1,2 +1,2 @@
-web: yarn pm2-runtime start ecosystem.config.js
+web: node confiture-rest-api/dist/main.js
 release: yarn workspace confiture-rest-api run prisma migrate deploy
