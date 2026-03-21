@@ -31,7 +31,7 @@ import { ProfileModule } from "./profile/profile.module";
     ProfileModule,
     SentryModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "../../confiture-web-app/dist"),
+      rootPath: join(__dirname, "..", "client"),
       // make sure to not serve the index.html for unknown API paths
       exclude: ["/api{/*path}"]
     })
