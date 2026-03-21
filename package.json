@@ -35,7 +35,7 @@
     "tests:open": "yarn cypress open",
     "tests:run": "yarn cypress run",
     "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
-    "build": "yarn copytypes && yarn workspace confiture-web-app run generate:rgaa && yarn yarn workspaces foreach --all run build",
+    "build": "yarn copytypes && yarn workspace confiture-web-app run generate:rgaa && yarn workspaces foreach --all run build",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
     "prepare": "yarn simple-git-hooks",
     "dev:back": "yarn workspace confiture-rest-api run start:dev",
