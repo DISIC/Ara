@@ -14,7 +14,6 @@
     "show-all-ts-errors": "yarn g:show-all-ts-errors",
     "migrate:dev": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
-    "postinstall": "run generate-api-types",
     "generate-api-types": "prisma generate && rimraf dist && GENERATE_TYPES=1 nest start --entryFile generate-api-typings.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
@@ -27,6 +26,7 @@
     "@nestjs/core": "^9.4.0",
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/platform-express": "^9.4.0",
+    "@nestjs/serve-static": "^5.0.4",
     "@nestjs/swagger": "^6.3.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
