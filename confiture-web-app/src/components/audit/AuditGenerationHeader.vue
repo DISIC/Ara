@@ -384,7 +384,7 @@ onMounted(() => {
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
-                  Télécharger l’audit
+                  Télécharger la grille d’audit
                   <span class="fr-text--xs fr-text--regular download-meta">
                     CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
