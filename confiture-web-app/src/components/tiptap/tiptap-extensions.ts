@@ -346,7 +346,7 @@ function createResizableNodeView(props: NodeViewRendererProps, vueNodeView: Node
 };
 
 function showOrHideHandles(editorElement: Element) {
-  const imgs = editorElement.querySelectorAll("[data-drag-handle]") as NodeListOf<HTMLImageElement>;
+  const imgs = editorElement.querySelectorAll("img") as NodeListOf<HTMLImageElement>;
   imgs.forEach((img) => {
     const handles = img.parentElement?.querySelectorAll("[data-resize-handle]") as NodeListOf<HTMLDivElement>;
     handles.forEach((handle) => {
