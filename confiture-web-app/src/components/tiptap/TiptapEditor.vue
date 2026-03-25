@@ -330,7 +330,7 @@ defineExpose({
 
     <!-- Visually show the editor with a border and a label when CSS is disabled -->
     <p class="tiptap__fake-label" aria-hidden="true">
-      Erreur et recommandation
+      Erreurs et recommandations
     </p>
     <table
       role="presentation"
