@@ -1,10 +1,10 @@
 import { captureException, Scope } from "@sentry/vue";
 import jwtDecode from "jwt-decode";
-import { HTTPError, TimeoutError } from "ky";
+import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
-import { FileErrorMessage } from "./enums";
+import { FileListFile } from "./components/ui/FileList.vue";
 import {
   AuditReport,
   AuditStatus,
@@ -135,7 +135,7 @@ export function slugify(value: string): string {
 export function formatBytes(bytes: number, decimals = 0) {
   if (!+bytes) return "0 octet";
 
-  const k = 1024;
+  const k = 1000;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ["octets", "Ko", "Mo", "Go", "To", "Po", "Eo", "Zo", "Yo"];
 
@@ -231,54 +231,6 @@ export function getUploadUrl(key: string): string {
   return `/uploads/${key}`;
 }
 
-export async function handleFileUploadError(
-  error: Error
-): Promise<FileErrorMessage> {
-  let errorType: FileErrorMessage;
-
-  if (error instanceof TimeoutError) {
-    return FileErrorMessage.UPLOAD_TIMEOUT;
-  }
-
-  if (!(error instanceof HTTPError)) {
-    captureWithPayloads(error);
-    return FileErrorMessage.UNKNOWN_ERROR;
-  }
-
-  if (error.response.status === 413) {
-    return FileErrorMessage.UPLOAD_SIZE;
-  }
-
-  // Unprocessable Entity
-  if (error.response.status === 422) {
-    const body = await error.response.json();
-
-    if (body.message.includes("expected type")) {
-      errorType = FileErrorMessage.UPLOAD_FORMAT;
-    } else if (body.message.includes("expected size")) {
-      errorType = FileErrorMessage.UPLOAD_SIZE;
-    } else {
-      errorType = FileErrorMessage.UNKNOWN_ERROR;
-      captureWithPayloads(error);
-    }
-  } else {
-    errorType = FileErrorMessage.UNKNOWN_ERROR;
-    captureWithPayloads(error);
-  }
-
-  return errorType;
-}
-
-export async function handleFileDeleteError(
-  error: Error
-): Promise<FileErrorMessage | null> {
-  if (!(error instanceof HTTPError)) {
-    return null;
-  }
-
-  return FileErrorMessage.UNKNOWN_ERROR;
-}
-
 /** Check if a tiptap document string corresponds to an empty document. */
 export function isTiptapDocumentEmpty(
   jsonString: string | null | undefined
@@ -338,4 +290,12 @@ export async function createFileFromUrl(url: string): Promise<File | null> {
     .then((buf: ArrayBuffer) => {
       return new File([buf], "external", { type: mimeType });
     });
+}
+
+export function isImage(file: File | FileListFile) {
+  if (file instanceof File) {
+    return file.type.startsWith("image");
+  } else if ("mimetype" in file) {
+    return file.mimetype.startsWith("image");
+  }
 }
