@@ -11,17 +11,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model Recipent {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String
-
-  Audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
-  auditUniqueId String?
-
-  @@unique([email, auditUniqueId])
-}
-
 enum AuditType {
   FAST // 25 criteria
   COMPLEMENTARY // 50 criteria
@@ -62,7 +51,6 @@ model Audit {
   statementEditionDate DateTime?
 
   // Misc
-  recipients      Recipent[] // unused for now
   creationDate    DateTime?
   publicationDate DateTime?
   editionDate     DateTime?
