@@ -24,7 +24,7 @@ import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
 export const displayedHeadings = [4, 5, 6] as Array<Level>;
 
 // Minimum editor inner width (in px) to enable image resize
-const minWidthToEnableImageResize = 600;
+const minWidthToEnableImageResize = 320;
 
 // LowLight languages
 const lowlight = createLowlight(common);
@@ -367,8 +367,8 @@ function isResizeEnabled(editorElement: Element, img: HTMLImageElement) {
   if (maxImgWidth > minWidthToEnableImageResize) {
     return true;
   }
-  // Enable resize if the image current width is smaller than the editor width
-  if (parseInt(img.getAttribute("width")!) < maxImgWidth) {
+  // Enable resize if the image current width is smaller than (or equal to) the editor width
+  if (parseInt(img.getAttribute("width")!) <= maxImgWidth) {
     return true;
   }
 }
