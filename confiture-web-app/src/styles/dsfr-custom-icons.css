@@ -20,3 +20,10 @@
   -webkit-mask-image: url("./dsfr-custom-icons/lock-2-line.svg");
   mask-image: url("./dsfr-custom-icons/lock-2-line.svg");
 }
+
+/* https://remixicon.com/icon/file-edit-line */
+.fr-icon-file-edit-line::before,
+.fr-icon-file-edit-line::after {
+  -webkit-mask-image: url("./dsfr-custom-icons/file-edit-line.svg");
+  mask-image: url("./dsfr-custom-icons/file-edit-line.svg");
+}

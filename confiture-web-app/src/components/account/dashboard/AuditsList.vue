@@ -93,7 +93,7 @@ async function setFocusAfterDeletion() {
     }}</h2>
 
     <template v-if="audits.length">
-      <div class="fr-mb-1w headers">
+      <div class="fr-mb-1w headers audits-list-grid">
         <p aria-hidden="true" class="fr-text--sm fr-text--bold fr-mb-0">
           Nom de l’audit
         </p>
@@ -113,6 +113,24 @@ async function setFocusAfterDeletion() {
         <p aria-hidden="true" class="fr-text--sm fr-text--bold fr-mb-0">
           Partage
         </p>
+
+        <!-- FIXME: these are fake buttons to align columns -->
+        <button
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-edit-line fake-hidden-headers"
+          aria-hidden="true"
+        >
+          {{ status === AuditStatus.COMPLETED ? 'Accéder à l’audit' : 'Commencer l’audit' }}
+        </button>
+        <button
+          class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line fake-hidden-headers"
+          aria-hidden="true"
+        >
+          Livrables
+        </button>
+        <button
+          class="fr-btn fr-btn--tertiary fr-icon-more-2-line fake-hidden-headers"
+          aria-hidden="true"
+        />
       </div>
 
       <div class="audits-list">
@@ -152,11 +170,17 @@ async function setFocusAfterDeletion() {
   color: var(--text-mention-grey);
 }
 
-.headers {
+:deep(.audits-list-grid) {
   display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.1fr 0.6fr 1.5fr 0.75fr 0.25fr;
   gap: 1rem;
+  grid-template-columns: 1.75fr 0.7fr 0.75fr 1.2fr 0.6fr 1.65fr 0.75fr 0.25fr;
 
+  @media (width < 55rem) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.headers {
   @media (width < 55rem) {
     display: none;
   }
@@ -166,5 +190,18 @@ async function setFocusAfterDeletion() {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+}
+
+/* Make button take full column width */
+.audit-main-action {
+  /* justify-content: center;
+  width: initial; */
+}
+
+.fake-hidden-headers {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  min-height: 0 !important;
+  height: 0 !important;
 }
 </style>
