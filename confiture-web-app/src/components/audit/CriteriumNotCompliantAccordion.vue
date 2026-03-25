@@ -89,7 +89,7 @@ const isFilledIn = computed(() => {
     || !!props.userImpact;
 });
 
-const baseTitle = "Erreur et recommandation";
+const baseTitle = "Erreurs et recommandations";
 const title = computed(() => {
   return `${baseTitle} (${Number(isFilledIn.value)})`;
 });
