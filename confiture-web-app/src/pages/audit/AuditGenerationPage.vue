@@ -7,7 +7,6 @@ import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
-import LayoutIcon from "../../components/icons/LayoutIcon.vue";
 import PageMeta from "../../components/PageMeta";
 import { SummaryCardThemes } from "../../components/SummaryCard.vue";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -200,7 +199,7 @@ const tabsData = computed((): TabData[] => {
       ? [
           {
             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-            icon: LayoutIcon,
+            icon: "fr-icon-layout-3-line",
             component: AuditGenerationPageCriteria,
             componentParams: {
               page: transversePage,

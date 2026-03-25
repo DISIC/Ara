@@ -242,15 +242,10 @@ watch(
           @keydown.end.prevent="selectLastTab"
         >
           <span
-            v-if="typeof tabs[i].icon === 'string'"
+            v-if="tabs[i].icon"
             :class="`${tabs[i].icon} fr-icon--sm fr-mr-2v`"
             aria-hidden="true"
           />
-          <component
-            :is="tabs[i].icon"
-            v-else
-            class="fr-mr-2v"
-          ></component>
           <span data-cy="tab-label">{{ tab.label }}</span>
           <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>

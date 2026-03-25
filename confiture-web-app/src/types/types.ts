@@ -1,4 +1,3 @@
-import { Component } from "vue";
 import { RouterScrollBehavior } from "vue-router";
 
 import { components, paths } from "./confiture-api";
@@ -154,7 +153,7 @@ export interface TabData {
   label: string;
   hiddenLabelSuffix?: string;
   id?: number;
-  icon?: Component | string;
+  icon?: string;
   component: object;
   componentParams?: object;
 }
