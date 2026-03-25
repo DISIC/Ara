@@ -250,7 +250,8 @@ watch(
             :is="tabs[i].icon"
             v-else
             class="fr-mr-2v"
-          ></component>{{ tab.label }}
+          ></component>
+          <span data-cy="tab-label">{{ tab.label }}</span>
           <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>
       </li>

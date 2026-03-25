@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import _, { isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
+import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 import {
@@ -58,6 +58,20 @@ const isTransverse = (c: CriterionResult, transversePageId: number) =>
   c.pageId === transversePageId;
 
 const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
+
+// Detect whether names are identical but in a different order
+const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; order: number }[], previousAuditPages: { name: string; order: number }[]) => {
+  const intersectingCurrentAuditPages = intersectionBy(currentAuditPages, previousAuditPages, x => x.name);
+  const intersectingPreviousAuditPages = intersectionBy(previousAuditPages, currentAuditPages, x => x.name);
+
+  const namesInOrder = orderBy(intersectingCurrentAuditPages, x => x.order).map(p => p.name);
+  const previousNamesInOrder = orderBy(intersectingPreviousAuditPages, x => x.order).map(p => p.name);
+
+  return isEqual(namesInOrder.length, previousNamesInOrder.length) &&
+        !isEqual(JSON.stringify(namesInOrder), JSON.stringify(previousNamesInOrder)) &&
+        namesInOrder.every(name => previousNamesInOrder.includes(name)) &&
+        previousNamesInOrder.every(name => namesInOrder.includes(name));
+};
 
 @Injectable()
 export class AuditService {
@@ -382,6 +396,22 @@ export class AuditService {
         },
         include: AUDIT_EDIT_INCLUDE
       });
+
+      if (updatedPages.length > 0) {
+        // If reorganization detected, temporarily rename to avoid database integrity constraints
+        if (hasNamesAreIdenticalButReordered(updatedPages, previousAudit.pages)) {
+          await this.prisma.$transaction(async (tx) => {
+            // temporary slugs
+            for (const p of updatedPages) {
+              await tx.auditedPage.update({ where: { id: p.id }, data: { slug: `${p.slug}_temp` } });
+            }
+            // real slugs
+            for (const p of updatedPages) {
+              await tx.auditedPage.update({ where: { id: p.id }, data: { slug: p.slug } });
+            }
+          });
+        }
+      }
 
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
