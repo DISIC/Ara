@@ -221,7 +221,7 @@ defineExpose({
         name: 'audit-generation',
         params: { uniqueId: audit.editUniqueId }
       }"
-      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-edit-line no-external-icon audit-main-action"
+      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-edit-line audit-main-action"
     >
       {{
         isNotStarted
@@ -241,7 +241,7 @@ defineExpose({
         name: 'audit-overview',
         params: { uniqueId: audit.editUniqueId }
       }"
-      class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line no-external-icon"
+      class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line"
     >
       Livrables
     </RouterLink>

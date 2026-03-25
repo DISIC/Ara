@@ -23,10 +23,7 @@ import "@gouvfr/dsfr/dist/utility/icons/icons.css";
           href="https://accessibilite.numerique.gouv.fr/methode/glossaire/${href}"
           target="_blank"
           class="no-external-icon"
-        >
-          ${text}
-          <span class="fr-sr-only"> (ouvre dans une nouvelle fenêtre)</span>
-        </a>`;
+        >${text}<span class="fr-sr-only"> (ouvre dans une nouvelle fenêtre)</span></a>`;
       } else {
         return `<a href="${href}">${text}</a>`;
       }
