@@ -4,6 +4,13 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 25/03/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Pouvoir interchanger le nom de 2 pages dans les paramètres de l'audit ([#1426](https://github.com/DISIC/Ara/pull/1426))
+- Pouvoir afficher du pur markdown sur la page Rapport d'audit accessibilité ([#1446](https://github.com/DISIC/Ara/pull/1446))
+
 ### 12/03/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
