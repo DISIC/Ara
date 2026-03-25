@@ -54,7 +54,7 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
-      "Le focus se déplacera dans le champ « Erreur et recommandation »",
+      "Le focus se déplacera dans le champ « Erreurs et recommandations »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: RadioColor.RED
   },
