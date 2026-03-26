@@ -3,7 +3,6 @@ import { computed, ref } from "vue";
 import { RouteLocationRaw } from "vue-router";
 
 import router from "../../router";
-import CopyIcon from "../icons/CopyIcon.vue";
 
 const props = defineProps<{
   linkHiddenLabel: string;
@@ -51,10 +50,9 @@ function onAlertClose() {
       <li v-if="showCopyButton">
         <button
           ref="copyButtonRef"
-          class="fr-btn fr-btn--secondary fr-mb-0"
+          class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-copy-line fr-mb-0"
           @click="copyUrl"
         >
-          <CopyIcon class="fr-mr-2v" />
           Copier le lien de partage
           <span class="fr-sr-only">{{ copyButtonHiddenLabel }}</span>
         </button>

@@ -1,0 +1,22 @@
+/* How to add custom icon: https://www.systeme-de-design.gouv.fr/version-courante/fr/fondamentaux/icone */
+
+/* https://remixicon.com/icon/layout-3-line */
+.fr-icon-layout-3-line::before,
+.fr-icon-layout-3-line::after {
+  -webkit-mask-image: url("../assets/dsfr-custom-icons/layout-3-line.svg");
+  mask-image: url("../assets/dsfr-custom-icons/layout-3-line.svg");
+}
+
+/* https://remixicon.com/icon/file-edit-line */
+.fr-icon-file-edit-line::before,
+.fr-icon-file-edit-line::after {
+  -webkit-mask-image: url("../assets/dsfr-custom-icons/file-edit-line.svg");
+  mask-image: url("../assets/dsfr-custom-icons/file-edit-line.svg");
+}
+
+/* https://remixicon.com/icon/file-copy-line */
+.fr-icon-file-copy-line::before,
+.fr-icon-file-copy-line::after {
+  -webkit-mask-image: url("../assets/dsfr-custom-icons/file-copy-line.svg");
+  mask-image: url("../assets/dsfr-custom-icons/file-copy-line.svg");
+}

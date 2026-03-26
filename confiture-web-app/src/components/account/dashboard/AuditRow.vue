@@ -18,8 +18,6 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
-import CopyIcon from "../../icons/CopyIcon.vue";
-import EditDocumentIcon from "../../icons/EditDocumentIcon.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -223,9 +221,8 @@ defineExpose({
         name: 'audit-generation',
         params: { uniqueId: audit.editUniqueId }
       }"
-      class="fr-btn fr-btn--secondary no-external-icon audit-main-action"
+      class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-edit-line audit-main-action"
     >
-      <EditDocumentIcon class="fr-mr-2v main-action-icon" />
       {{
         isNotStarted
           ? "Commencer l’audit"
@@ -244,7 +241,7 @@ defineExpose({
         name: 'audit-overview',
         params: { uniqueId: audit.editUniqueId }
       }"
-      class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line no-external-icon"
+      class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-file-text-line"
     >
       Livrables
     </RouterLink>
@@ -280,10 +277,9 @@ defineExpose({
 
           <li class="dropdown-item">
             <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
               @click="duplicateModal?.show()"
             >
-              <CopyIcon class="fr-mr-2v" />
               Dupliquer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
@@ -399,9 +395,5 @@ defineExpose({
 .audit-main-action {
   justify-content: center;
   width: initial;
-}
-
-.main-action-icon {
-  flex: 0 0 auto;
 }
 </style>

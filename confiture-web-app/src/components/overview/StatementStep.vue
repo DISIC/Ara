@@ -93,7 +93,7 @@ const auditIsPublishable = computed(() => {
             name: 'audit-declaration',
             params: { uniqueId: audit.editUniqueId }
           }"
-          class="fr-btn fr-btn--icon-left fr-icon-edit-line no-external-icon fr-mb-0"
+          class="fr-btn fr-btn--icon-left fr-icon-edit-line fr-mb-0"
           :class="{
             'fr-btn--tertiary': !auditIsReady
           }"
