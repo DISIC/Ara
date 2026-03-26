@@ -35,20 +35,6 @@ class UpdateAuditEnvironment {
   browser: string;
 }
 
-// class CreateAuditRecipients {
-//   /**
-//    * @example "Pierre Poljak"
-//    */
-//   @IsString()
-//   name: string;
-
-//   /**
-//    * @example "ministre@government.com"
-//    */
-//   @IsEmail()
-//   email: string;
-// }
-
 export class UpdateAuditDto extends BaseAuditDto {
   /**
    * @example "https://procedure.government.com"
@@ -91,11 +77,6 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsString()
   @IsOptional()
   contactFormUrl?: string;
-
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => CreateAuditRecipients)
-  // recipients: CreateAuditRecipients[];
 
   /**
    * @example ["Firefox devtools", "Axe"]
