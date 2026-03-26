@@ -3,7 +3,6 @@ import { computed, ref, useId } from "vue";
 
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useAuditStore } from "../../store";
-import AnnouncementAlert from "../ui/AnnouncementAlert.vue";
 import TiptapEditor from "./TiptapEditor.vue";
 
 defineOptions({
@@ -33,10 +32,6 @@ const richTextEditorRef = ref<InstanceType<typeof TiptapEditor>>();
 
 const showLabel = computed(() => props.type === "notes");
 
-function closeNotification() {
-  richTextEditorRef.value?.focusEditor();
-}
-
 const uploadSuccess = ref("");
 
 // Announce upload success to screen readers
@@ -54,21 +49,6 @@ function announceUploadSuccess(fileName: string) {
 </script>
 
 <template>
-  <AnnouncementAlert
-    class="fr-mb-5v"
-    title="Nouveauté : ajoutez vos images dans les zones de texte"
-    storage-key="rich-text-editor-images"
-    @close="closeNotification"
-  >
-    <template #description>
-      <template v-if="type === 'criterium'">
-        <p>L’ajout d’image se fait désormais directement dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
-        <p class="fr-mt-3w"><em>À noter : les images ajoutées lors de vos précédents audits via le composant « Ajouter une image d’exemple » sont conservées sous la zone de texte.</em></p>
-      </template>
-      <p v-else>Vous pouvez maintenant ajouter des images dans la zone de texte, par copier-coller, glisser-déposer ou à l’aide du bouton « Insérer une image ».</p>
-    </template>
-  </AnnouncementAlert>
-
   <p :id="`rich-text-editor-label-${uniqueId}`" class="fr-label" :class="showLabel ? 'fr-mb-1v' : 'fr-sr-only'">
     {{ label }}
   </p>
