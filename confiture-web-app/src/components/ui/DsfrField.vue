@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 
 export interface DsfrFieldProps {
-  modelValue?: string;
+  modelValue?: string | null;
   label: string;
   hint?: string;
   type?: "text" | "email" | "url";

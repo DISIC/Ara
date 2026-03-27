@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { useTemplateRef, watch } from "vue";
 
-import { useIsOffline } from "../../composables/useIsOffline";
 import { FileErrorMessage } from "../../enums";
-import { CriterionResultUserImpact, ExampleImageFile } from "../../types";
-import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
-import RichTextEditor from "../tiptap/RichTextEditor.vue";
+import { ExampleImageFile, NotCompliantItem } from "../../types";
+import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
-import { RadioColor } from "../ui/Radio.vue";
-import RadioGroup from "../ui/RadioGroup.vue";
+import CriteriumNotCompliantItem from "./CriteriumNotCompliantItem.vue";
 import LazyAccordion from "./LazyAccordion.vue";
 
 export interface Props {
   id: string;
-  comment: string | null;
+  criteriumId: number;
   errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
-  quickWin?: boolean;
-  userImpact: CriterionResultUserImpact | null;
+  items: NotCompliantItem[];
   onDelete: (flFile: FileListFile) => void;
 }
 
@@ -25,41 +21,17 @@ const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
 });
 
-defineEmits<{
-  (e: "update:comment", payload: string): void;
-  (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
+const emit = defineEmits<{
   (e: "delete-file", payload: ExampleImageFile): void;
-  (e: "update:quickWin", payload: boolean): void;
+  (e: "update:items", payload: NotCompliantItem[]): void;
 }>();
 
 defineExpose({ disclose });
 
-const userImpacts: Array<{
-  label: string;
-  value: CriterionResultUserImpact;
-  color?: RadioColor;
-}> = [
-  {
-    value: CriterionResultUserImpact.BLOCKING,
-    label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: RadioColor.RED
-  },
-  {
-    value: CriterionResultUserImpact.MAJOR,
-    label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: RadioColor.YELLOW
-  },
-  {
-    value: CriterionResultUserImpact.MINOR,
-    label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: RadioColor.GREY
-  }
-];
+const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
-const isOffline = useIsOffline();
-
-const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
+const criteriumNotCompliantItemRefs =
+  useTemplateRef<InstanceType<typeof CriteriumNotCompliantItem>[]>("criteriumNotCompliantItemRef");
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -70,26 +42,72 @@ async function disclose() {
   dsfr(accordion).accordionsGroup.members[0].disclose();
 }
 
+watch(props.items, () => {
+  emit("update:items", props.items);
+});
+
 function lazyAccordionOpened() {
+  if (!props.items.length) {
+    emit("update:items", [
+      {
+        title: null,
+        comment: null,
+        userImpact: null,
+        quickWin: false,
+        criterionResultId: props.criteriumId
+      }
+    ]);
+  }
+
   if (!hasJustBeenSetAsNotCompliant) {
     return;
   }
 
-  commentEditorRef.value?.focusEditor();
+  if (criteriumNotCompliantItemRefs.value
+    && criteriumNotCompliantItemRefs.value.length) {
+    const ref = criteriumNotCompliantItemRefs.value[0];
+    if (ref) {
+      ref.textFocusEditor();
+    }
+  }
+
   hasJustBeenSetAsNotCompliant = false;
 }
 
-const isFilledIn = computed(() => {
-  return !isTiptapDocumentEmpty(props.comment)
-    || props.exampleImages.length
-    || props.quickWin
-    || !!props.userImpact;
-});
+function setFocusToCommentEditor() {
+  if (criteriumNotCompliantItemRefs.value
+    && criteriumNotCompliantItemRefs.value.length) {
+    const ref = criteriumNotCompliantItemRefs.value[0];
+    if (ref) {
+      ref.commentFocusEditor();
+    }
+  }
+}
 
-const baseTitle = "Erreurs et recommandations";
-const title = computed(() => {
-  return `${baseTitle} (${Number(isFilledIn.value)})`;
-});
+function handleAddErrorClick() {
+  emit("update:items", [
+    ...props.items,
+    {
+      title: "null",
+      comment: null,
+      userImpact: null,
+      quickWin: false,
+      criterionResultId: props.criteriumId
+    }
+  ]);
+}
+
+function onDeleteNotCompliantItemClick(index: number) {
+  const items = props.items;
+  items.splice(index, 1);
+  emit("update:items", items);
+}
+
+function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
+  const items = props.items;
+  items[index] = item;
+  emit("update:items", items);
+}
 </script>
 
 <template>
@@ -99,17 +117,26 @@ const title = computed(() => {
     @opened="lazyAccordionOpened"
   >
     <template #title>
-      {{ baseTitle }}<strong v-if="isFilledIn"> (1)</strong><template v-else> (0)</template>
+      Erreurs et recommandations <span :class="{ 'fr-text--bold': items.length > 0 }"> ({{ items.length }})</span>
     </template>
-    <RichTextEditor
-      ref="commentEditorRef"
-      type="criterium"
-      :model-value="comment"
-      :label="title"
-      class="fr-mb-4w"
-      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
-      @update:model-value="$emit('update:comment', $event)"
-    />
+
+    <div v-for="(item, index) in items" :key="index" class="not-compliant-item">
+
+      <CriteriumNotCompliantItem
+        ref="criteriumNotCompliantItemRef"
+        :index="index"
+        :item="item"
+        :criterium-result-id="criteriumId"
+        :can-delete="items.length > 1"
+        :on-delete="onDeleteNotCompliantItemClick"
+        :on-update="onUpdateNotCompliantItemClick"
+      />
+
+    </div>
+
+    <div class="add">
+      <button type="button" @click="handleAddErrorClick">Ajouter une erreur</button>
+    </div>
 
     <!-- FILES -->
     <FileList
@@ -124,88 +151,19 @@ const title = computed(() => {
       }))"
       title="Ajouter des images d’exemple"
       :on-delete="onDelete"
-      :focus-on-delete="commentEditorRef?.focusEditor"
+      :focus-on-delete="setFocusToCommentEditor"
     />
 
-    <!-- USER IMPACT -->
-    <RadioGroup
-      class="fr-mb-4w"
-      :model-value="userImpact"
-      :items="userImpacts"
-      :default-value="null"
-      :disabled="isOffline"
-      @update:model-value="$emit('update:userImpact', $event)"
-    >
-      <template #label>
-        <div class="user-impact-label">
-          Impact sur l’usager
-          <button
-            aria-describedby="tooltip"
-            type="button"
-            class="fr-btn fr-btn--tooltip fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
-            data-fr-js-tooltip-referent="true"
-          >
-            Informations sur l’impact usager
-          </button>
-
-          <div
-            id="tooltip"
-            class="fr-tooltip fr-placement"
-            role="tooltip"
-            data-fr-js-tooltip="true"
-          >
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Bloquant</strong> : empêche complètement l’accès ou
-              l’utilisation.<br />
-              <span class="user-impact-example">Ex : il est impossible de soumettre un formulaire au
-                clavier.</span>
-            </p>
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Majeur</strong> : rend l’accès ou l’utilisation
-              difficile.<br />
-              <span class="user-impact-example">Ex : les champs ne sont pas regroupés.</span>
-            </p>
-            <p class="fr-text--xs fr-mb-0">
-              <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
-              l’utilisation.<br />
-              <span class="user-impact-example">Ex : des retours à la ligne sont utilisés pour espacer des
-                textes.</span>
-            </p>
-          </div>
-        </div>
-      </template>
-    </RadioGroup>
-
-    <!-- QUICK WIN -->
-    <div class="fr-fieldset__element fr-fieldset__element--inline">
-      <div class="fr-checkbox-group">
-        <input
-          :id="`criterium-quick-win-${id}`"
-          :checked="quickWin"
-          type="checkbox"
-          @input="
-            $emit(
-              'update:quickWin',
-              ($event.target as HTMLInputElement).checked
-            )
-          "
-        />
-        <label class="fr-label" :for="`criterium-quick-win-${id}`">
-          Facile à corriger
-        </label>
-      </div>
-    </div>
   </LazyAccordion>
 </template>
+<style>
+.not-compliant-item {
+  border-bottom: 1px solid var(--border-default-grey);
+  padding-bottom: 1em;
+  margin: 1em 0;
 
-<style scoped>
-.user-impact-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.user-impact-example {
-  font-style: italic;
+  &:first-child {
+    margin-top: 0;
+  }
 }
 </style>

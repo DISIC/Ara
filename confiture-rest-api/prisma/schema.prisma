@@ -136,7 +136,22 @@ model CriterionResult {
   pageId Int
   page   AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  notCompliantItems NotCompliantItem[]
+
   @@unique([pageId, topic, criterium])
+}
+
+model NotCompliantItem {
+    id Int @id @default(autoincrement())
+
+    title String?
+    comment String?
+    userImpact          CriterionResultUserImpact?
+    quickWin            Boolean                     @default(false)      
+
+    criterionResultId Int
+    criterionResult   CriterionResult @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
 }
 
 enum CriterionResultStatus {
