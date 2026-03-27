@@ -129,9 +129,9 @@ class UpdateResultsItem {
 
 class NotCompliantItem {
   // ID
-  /* @IsNumber()
+  @IsNumber()
   @IsOptional()
-  id?: number; */
+  id?: number;
 
   @IsString()
   @IsOptional()
