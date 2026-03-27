@@ -88,7 +88,7 @@ function handleAddErrorClick() {
   emit("update:items", [
     ...props.items,
     {
-      title: "null",
+      title: null,
       comment: null,
       userImpact: null,
       quickWin: false,
@@ -100,13 +100,11 @@ function handleAddErrorClick() {
 function onDeleteNotCompliantItemClick(index: number) {
   const items = props.items;
   items.splice(index, 1);
-  emit("update:items", items);
 }
 
 function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
   const items = props.items;
   items[index] = item;
-  emit("update:items", items);
 }
 </script>
 
