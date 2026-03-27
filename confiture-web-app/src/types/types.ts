@@ -97,6 +97,8 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
 
 export type UpdateAuditStatementRequestData = paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
 
+export type CreateDebugAuditRequestData = paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
+
 export enum CriteriumResultStatus {
   NOT_TESTED = "NOT_TESTED",
   COMPLIANT = "COMPLIANT",

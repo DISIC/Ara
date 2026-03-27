@@ -9,8 +9,8 @@ import {
 import { PrismaService } from "./prisma.service";
 import { slugify } from "./utils";
 
-@Controller("debug")
-export class DebugController {
+@Controller("tests")
+export class TestsController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auth: AuthService
