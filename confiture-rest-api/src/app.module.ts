@@ -6,6 +6,7 @@ import { AuditsModule } from "./audits/audits.module";
 import { AuthModule } from "./auth/auth.module";
 import { UserMiddleware } from "./auth/user.middleware";
 import { configValidationSchema } from "./config-validation-schema";
+import { DebugController } from "./debug/debug.controller";
 import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthCheckController } from "./health-check.controller";
 import { MailModule } from "./mail/mail.module";
@@ -35,6 +36,7 @@ import { TestsController } from "./tests.controller";
   }],
   controllers: [
     HealthCheckController,
+    DebugController,
     // enable tests enpoints only when the TESTS_ENDPOINTS variable is set
     ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
   ]
