@@ -198,9 +198,15 @@ const updateResultComment = debounce(
 );
 
 function updateResultNotCompliantItems(notCompliantItems: NotCompliantItem[]) {
+  console.log("notCompliantItems", notCompliantItems);
   store
     // eslint-disable-next-line vue/max-len
     .updateResults(props.auditUniqueId, [{ ...result.value, notCompliantItems }])
+    .then(async () => {
+      if (notCompliantItems.some(x => !x.id)) {
+        await store.fetchResults(props.auditUniqueId);
+      }
+    })
     .catch(handleUpdateResultError);
 }
 
