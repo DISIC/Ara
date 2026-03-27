@@ -241,7 +241,8 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -253,7 +254,8 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       })
     ]);
@@ -297,6 +299,8 @@ export class AuditService {
         notApplicableComment: null,
         exampleImages: [],
         quickWin: false,
+
+        notCompliantItems: [],
 
         topic: criterion.topic,
         criterium: criterion.criterium,
@@ -350,7 +354,15 @@ export class AuditService {
                 }
               },
               quickWin: true,
-
+              notCompliantItems: {
+                select: {
+                  id: true,
+                  title: true,
+                  comment: true,
+                  userImpact: true,
+                  quickWin: true
+                }
+              },
               topic: true,
               criterium: true,
               pageId: true
@@ -577,6 +589,8 @@ export class AuditService {
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const promises = body.data
       .map((item) => {
+        console.log("notCompliantItems", item.notCompliantItems.length, item.notCompliantItems[0]);
+
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
           topic: item.topic,
@@ -592,7 +606,14 @@ export class AuditService {
           notApplicableComment: item.notApplicableComment,
           userImpact: item.userImpact,
           quickWin: item.quickWin
+
         };
+
+        /* const notCompliantItemsResult = item.notCompliantItems.map((notCompliantItem) => {
+          return this.prisma.notCompliantItem.create({
+            data: notCompliantItem
+          });
+        }); */
 
         const result = [
           this.prisma.criterionResult.upsert({
@@ -606,6 +627,7 @@ export class AuditService {
             create: data,
             update: data
           })
+          // ...notCompliantItemsResult
         ];
 
         return result;
