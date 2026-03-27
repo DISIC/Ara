@@ -11,9 +11,9 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
-  CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  NotCompliantItem
 } from "../../types";
 import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
@@ -197,15 +197,10 @@ const updateResultComment = debounce(
   500
 );
 
-function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
+function updateResultNotCompliantItems(notCompliantItems: NotCompliantItem[]) {
   store
-    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
-    .catch(handleUpdateResultError);
-}
-
-function updateQuickWin(quickWin: boolean) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
+    // eslint-disable-next-line vue/max-len
+    .updateResults(props.auditUniqueId, [{ ...result.value, notCompliantItems }])
     .catch(handleUpdateResultError);
 }
 
@@ -356,15 +351,14 @@ const parentCriterium = computed(() => {
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       ref="criteriumNotCompliantAccordion"
-      :comment="result.notCompliantComment"
-      :user-impact="result.userImpact"
+      :criterium-id="result.id"
+      :items="result.notCompliantItems"
       :example-images="result.exampleImages"
-      :quick-win="result.quickWin"
+      :error-message="errorMessage"
+      :on-delete="handleFileDeleteAfterConfirm"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:quick-win="updateQuickWin"
-      @update:user-impact="updateResultImpact($event)"
+      @update:items="updateResultNotCompliantItems($event)"
     />
 
     <!-- TESTS + METHODO -->
