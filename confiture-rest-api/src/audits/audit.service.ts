@@ -584,11 +584,42 @@ export class AuditService {
 
         };
 
-        /* const notCompliantItemsResult = item.notCompliantItems.map((notCompliantItem) => {
-          return this.prisma.notCompliantItem.create({
-            data: notCompliantItem
+        /*  const notCompliantItemsResult = item.notCompliantItems.map((notCompliantItem) => {
+          return this.prisma.notCompliantItem.upsert({
+            where: {
+              id: notCompliantItem.id,
+              criterionResultId: notCompliantItem.criterionResultId
+            },
+            create: notCompliantItem,
+            update: notCompliantItem
           });
         }); */
+
+        const notCompliantItemsToCreate = this.prisma.notCompliantItem.createMany({
+          data: item.notCompliantItems.filter(x => !x.id)
+        });
+
+        const notCompliantItemsToUpdate = item.notCompliantItems.filter(x => x.id).map((notCompliantItem) => {
+          return this.prisma.notCompliantItem.update({
+            where: {
+              id: notCompliantItem.id,
+              criterionResultId: notCompliantItem.criterionResultId
+            },
+            data: notCompliantItem,
+            select: {
+              id: true
+            }
+          });
+        });
+
+        /* return this.prisma.notCompliantItem.create({
+            where: {
+              id: notCompliantItem.id,
+              criterionResultId: notCompliantItem.criterionResultId
+            },
+            create: notCompliantItem,
+            update: notCompliantItem
+          }); */
 
         const result = [
           this.prisma.criterionResult.upsert({
@@ -601,8 +632,10 @@ export class AuditService {
             },
             create: data,
             update: data
-          })
+          }),
           // ...notCompliantItemsResult
+          notCompliantItemsToCreate,
+          ...notCompliantItemsToUpdate
         ];
 
         return result;
@@ -1221,6 +1254,7 @@ export class AuditService {
           key: img.key,
           thumbnailKey: img.thumbnailKey
         }))
+        // notCompliantItems: r.notCompliantItems
       })),
 
       transverseElements: audit.transverseElements
@@ -1239,7 +1273,8 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -1248,7 +1283,8 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       })
     ]).then(results => results.flat());
@@ -1354,6 +1390,7 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true
+                // notCompliantItems: true
               }
             }
           }
@@ -1363,6 +1400,7 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true
+                // notCompliantItems: true
               }
             }
           }
@@ -1553,6 +1591,9 @@ export class AuditService {
                         r.id
                       ][e.id]
                   )
+                  /* notCompliantItems: {
+                    create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
+                  } */
                 }
               }))
             }
@@ -1573,6 +1614,9 @@ export class AuditService {
                     (e) => imagesCreateData[p.id][r.id][e.id]
                   )
                 }
+              /*  notCompliantItems: {
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
+                } */
               }))
             }
           }))

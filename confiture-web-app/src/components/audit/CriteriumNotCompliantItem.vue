@@ -82,7 +82,7 @@ defineExpose({
     type="text"
     label="Titre de l'erreur"
     class="fr-mb-4w user-error-label"
-    @update:model-value="handleItemValueClick('title', $event)"
+    @change="handleItemValueClick('title', $event.target.value)"
   />
 
   <RichTextEditor
