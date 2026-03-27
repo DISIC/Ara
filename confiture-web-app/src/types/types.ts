@@ -117,7 +117,14 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
-export type NotCompliantItem = components["schemas"]["NotCompliantItemDto"];
+export type NotCompliantItem = {
+  id?: number;
+  title: string | null;
+  comment: string | null;
+  userImpact: Record<string, unknown> | null;
+  quickWin: boolean;
+  criterionResultId: number;
+};
 
 export interface CriteriumResult {
   // ID
