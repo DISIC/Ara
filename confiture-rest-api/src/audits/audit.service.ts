@@ -30,7 +30,6 @@ import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
 const AUDIT_EDIT_INCLUDE = {
-  recipients: true,
   environments: true,
   transverseElementsPage: true,
   pages: true,
@@ -196,7 +195,6 @@ export class AuditService {
     return this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
       include: {
-        recipients: true,
         environments: true,
         pages: true,
         sourceAudit: {
@@ -213,7 +211,6 @@ export class AuditService {
     return this.prisma.audit.findUnique({
       where: { consultUniqueId: uniqueId },
       include: {
-        recipients: true,
         environments: true,
         pages: true,
         sourceAudit: {
