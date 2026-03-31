@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import hljs from "highlight.js";
 import { computed, onMounted, ref, ShallowRef } from "vue";
 
-import { convertMarkdownToHTML, tiptapRenderedExtensions } from "./tiptap-extensions";
+import { tiptapRenderedExtensions } from "./tiptap-extensions";
 
 const props = defineProps<{
   document: string;
@@ -14,7 +14,7 @@ const parsedDocument = computed(() => {
     return JSON.parse(props.document);
   } catch {
     try {
-      return convertMarkdownToHTML(props.document);
+      return editor.value.markdown?.instance(props.document);
     }
     catch {
       return props.document;

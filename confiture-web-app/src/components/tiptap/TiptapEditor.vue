@@ -5,8 +5,9 @@ import { useResizeObserver } from "@vueuse/core";
 
 import { onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, watch } from "vue";
 import { getInnerWidth } from "../../utils";
+import { getDisplayedHeadings } from "./heading/HeadingExtension";
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
-import { displayedHeadings, getTiptapEditorExtensions, convertMarkdownToHTML } from "./tiptap-extensions";
+import { getTiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -40,7 +41,7 @@ function getContent() {
       // Not JSON, treat as markdown and convert to HTML
       // Tiptap will parse the HTML and convert it to its internal format
       try {
-        content = convertMarkdownToHTML(props.modelValue);
+        content = editor.value.markdown?.instance(props.modelValue);
       }
       catch {
         // Other
@@ -101,9 +102,11 @@ if (props.describedBy) {
 editorAttributes["data-inner-width"] = Infinity;
 
 const editor = useEditor({
+  contentType: "markdown",
   editorProps: {
     attributes: editorAttributes
   },
+  enablePasteRules: false,
   editable: props.editable && !props.disabled,
   content: getContent(),
   extensions: getTiptapEditorExtensions({
@@ -199,7 +202,7 @@ defineExpose({
               @click="editor.chain().focus().toggleStrike().run()"
             />
           </li>
-          <li v-for="(hLevel, i) in displayedHeadings" :key="i">
+          <li v-for="(hLevel, i) in getDisplayedHeadings()" :key="i">
             <TiptapButton
               :label="`Passer en titre de niveau ${i + 1}`"
               :switch-off-label="`Retirer le niveau de titre ${i + 1}`"

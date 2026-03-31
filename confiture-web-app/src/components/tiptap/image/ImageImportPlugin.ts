@@ -1,4 +1,4 @@
-import { Slice } from "@tiptap/pm/model";
+import { Fragment, Slice } from "@tiptap/pm/model";
 import { EditorState, Plugin, PluginKey, Selection, Transaction } from "@tiptap/pm/state";
 import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, EditorView } from "@tiptap/pm/view";
@@ -59,6 +59,8 @@ export class ImageImportPlugin extends Plugin {
     super({
       key: new PluginKey("handleImageImport"),
       props: {
+        transformPasted: (slice, view, plain) =>
+          this.transformPasted(slice, view, plain),
         handleDrop: (view, event, slice, moved) =>
           this.handleDrop(view, event, slice, moved),
         handlePaste: (view, event, slice) =>
@@ -70,6 +72,35 @@ export class ImageImportPlugin extends Plugin {
   private notify = useNotifications();
 
   private fileHandler = useFileHandler();
+
+  private transformPasted(
+    slice: Slice,
+    _view: EditorView,
+    plain: boolean
+  ): Slice {
+    // Strip images out from HTML
+    // TODO: import images that can be imported
+    const content = slice.content.content;
+    let newContent: Fragment = Fragment.empty;
+    if (!plain) {
+      let imgCount = 0;
+      content.forEach(n => {
+        if (n.type.name != "image") {
+          newContent = newContent.addToEnd(n.copy(n.content));
+        } else {
+          imgCount++;
+        }
+      });
+      if (imgCount === 1) {
+        this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
+      } else if (imgCount > 1) {
+        this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
+      }
+      return new Slice(newContent, slice.openStart, slice.openEnd);
+    } else {
+      return slice;
+    }
+  }
 
   /**
    * handleDrop: called when something is dropped on the editor.
@@ -160,19 +191,6 @@ export class ImageImportPlugin extends Plugin {
         } else {
           this.handleImagesImport(view, pos, files, options);
         }
-      });
-      return true;
-    }
-
-    // Browser may pass a list of HTML content items
-    const htmlItems = dataTransferItems.filter((item) => {
-      return (item.kind === "string" && item.type.match("^text/html"));
-    });
-    if (htmlItems.length > 0) {
-      htmlItems.forEach(htmlItem => {
-        htmlItem.getAsString((html) =>
-          view.pasteHTML(this.removeImgsFromHTML(html))
-        );
       });
       return true;
     }
