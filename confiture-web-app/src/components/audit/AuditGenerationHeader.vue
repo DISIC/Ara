@@ -19,7 +19,6 @@ import {
   isSameDay,
   slugify
 } from "../../utils";
-import CopyIcon from "../icons/CopyIcon.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 import Dropdown from "../ui/Dropdown.vue";
 import AuditProgressBar from "./AuditProgressBar.vue";
@@ -343,10 +342,9 @@ onMounted(() => {
               </li>
               <li class="dropdown-item">
                 <button
-                  class="fr-btn fr-btn--tertiary-no-outline"
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
                   @click="duplicateModal?.show()"
                 >
-                  <CopyIcon class="fr-mr-2v" />
                   Dupliquer l’audit
                 </button>
               </li>
