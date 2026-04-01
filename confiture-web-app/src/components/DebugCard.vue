@@ -8,11 +8,6 @@ import { AuditType } from "../types";
 import { getCriteriaCount } from "../utils";
 import DsfrField from "./ui/DsfrField.vue";
 
-/**
- * TODO:
- * - add component on homepage
- */
-
 const notify = useNotifications();
 const accountStore = useAccountStore();
 const debugStore = useDebugStore();
