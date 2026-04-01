@@ -118,8 +118,12 @@ export class PasteMarkdownPlugin extends Plugin {
     return (
       /^#{1,6}\s/.test(text) || // Headings
       /\*\*[^*]+\*\*/.test(text) || // Bold
+      /[*_][^*_]+[*_]/.test(text) || // Italic with * or _
       /\[.+\]\(.+\)/.test(text) || // Links
-      /^[-*+]\s/.test(text) // Lists
+      /<[^>\s]+>/.test(text) || // Autolinks (any <link>)
+      /^[-*+]\s/.test(text) || // Lists
+      /^>\s/.test(text) || // Blockquote
+      /^(```|~~~)/.test(text) // Code blocks
     );
   }
 }
