@@ -2,7 +2,6 @@
 import { HTTPError } from "ky";
 import { ref, useTemplateRef } from "vue";
 
-import { useDevMode } from "../../../composables/useDevMode";
 import { useNotifications } from "../../../composables/useNotifications";
 import {
   EMAIL,
@@ -64,20 +63,9 @@ async function handleSubmit() {
       }
     });
 }
-
-const isDevMode = useDevMode();
-
-function fillFields() {
-  const randomNumber = Math.floor(Math.random() * 1_000_000);
-  userEmail.value = `email-${randomNumber}@example.com`;
-  userPassword.value = "123blabla!!!Pouet";
-}
 </script>
 
 <template>
-  <button v-if="isDevMode" class="fr-btn" @click="fillFields">
-    [DEV] Remplir les champs
-  </button>
   <div class="wrapper">
     <FormWithValidation @submit="handleSubmit">
       <h1 tabindex="-1" class="fr-mb-3w fr-h3">Créer votre compte Ara</h1>
