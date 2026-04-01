@@ -14,6 +14,7 @@ import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 import { TestsController } from "./tests.controller";
 
+console.log(process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,7 +37,8 @@ import { TestsController } from "./tests.controller";
   }],
   controllers: [
     HealthCheckController,
-    DebugController,
+    // Disable debug controller for production environment
+    ...(process.env.NODE_ENV !== "production" ? [DebugController] : []),
     // enable tests enpoints only when the TESTS_ENDPOINTS variable is set
     ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
   ]

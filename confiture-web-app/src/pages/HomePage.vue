@@ -9,6 +9,7 @@ import { REFERENTIAL } from "../enums";
 import { useAccountStore } from "../store";
 
 const isDevMode = useDevMode();
+const isProductionEnv = import.meta.env.PROD;
 
 const router = useRouter();
 const headingRef = ref();
@@ -48,7 +49,7 @@ const steps = [
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
   />
 
-  <DebugCard v-if="isDevMode" />
+  <DebugCard v-if="isDevMode && !isProductionEnv" />
 
   <section class="fr-mt-9w">
     <h1 ref="headingRef">Je réalise un audit d’accessibilité avec Ara</h1>
