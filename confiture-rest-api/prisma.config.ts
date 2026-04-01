@@ -9,7 +9,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: process.env.NODE_ENV !== "production" ? "yarn dlx tsx prisma/seed.ts" : undefined
+    seed: process.env.NODE_ENV !== "production" || process.env.HEROKU_APP_NAME
+      ? "yarn dlx tsx prisma/seed.ts"
+      : undefined
   },
   datasource: {
     // sometimes a DATABASE_URL in not specified

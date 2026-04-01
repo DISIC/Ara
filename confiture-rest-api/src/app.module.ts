@@ -37,7 +37,9 @@ import { TestsController } from "./tests.controller";
   controllers: [
     HealthCheckController,
     // Disable debug controller for production environment
-    ...(process.env.NODE_ENV !== "production" || process.env.GENERATE_TYPES ? [DebugController] : []),
+    ...(process.env.NODE_ENV !== "production" || process.env.HEROKU_APP_NAME || process.env.GENERATE_TYPES
+      ? [DebugController]
+      : []),
     // enable tests enpoints only when the TESTS_ENDPOINTS variable is set
     ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
   ]
