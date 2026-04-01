@@ -15,20 +15,17 @@ if (!hasSsl) {
 }
 
 const url = urlBuilder.toString();
-console.log(url);
 
 const adapter = new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 async function generateAccounts() {
-  const emails = [
-    "adrien.muzyczka.ext@numerique.gouv.fr",
-    "adrien@slash-tmp.dev",
-    "benoit.dequick@numerique.gouv.fr",
-    "emmanuelle.aboaf@shodo.io",
-    "quentin+ara@slash-tmp.dev",
-    "yaacov.cohen.ext@numerique.gouv.fr"
-  ];
+  if (!process.env.DATABASE_SEEDS) {
+    console.log("Nothing to seeds");
+    return;
+  };
+
+  const emails = process.env.DATABASE_SEEDS.split(",");
   const password = await hash("pouetpouetpouet", 10);
 
   await prisma.$transaction(emails.map(email => {
@@ -47,6 +44,8 @@ async function generateAccounts() {
       update: data
     });
   }));
+
+  console.log(`Seeded ${emails.length} accounts`);
 }
 
 generateAccounts();
