@@ -38,6 +38,7 @@ const extendedLink = Link.extend({
       // "class" is always reset
       class: {
         default: null,
+        parseHTML: () => null,
         renderHTML: () => {
           return {
             class: null
@@ -47,6 +48,7 @@ const extendedLink = Link.extend({
       // "rel" is always reset to "noopener noreferrer"
       rel: {
         default: null,
+        parseHTML: () => "noopener noreferrer",
         renderHTML: () => {
           return {
             rel: "noopener noreferrer"
@@ -91,7 +93,7 @@ const commonExtensions: Extensions = [
 
 const commonImageAttrs = {
   loading: {
-    parseHTML: (element: HTMLElement) => element.getAttribute("loading"),
+    parseHTML: () => "lazy",
     renderHTML: () => {
       return {
         loading: "lazy"
