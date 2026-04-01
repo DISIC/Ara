@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { ApiCreatedResponse } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
 import { CRITERIA } from "../audits/criteria";
 import { AuditDto } from "../audits/dto/entities/audit.dto";
@@ -13,6 +13,7 @@ import { slugify } from "../utils";
 import { CreateDebugAuditDto } from "./create-audit.dto";
 
 @Controller("debug")
+@ApiTags("Debug")
 export class DebugController {
   constructor(
     private readonly prisma: PrismaService

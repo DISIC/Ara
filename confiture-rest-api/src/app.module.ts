@@ -14,7 +14,6 @@ import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 import { TestsController } from "./tests.controller";
 
-console.log(process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({
