@@ -1,35 +1,50 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "bcrypt";
-import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import "dotenv/config";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-// FIXME: fix ts issue
-// @ts-ignore
-const adapter = new PrismaPg(pool);
+const urlBuilder = new URL(process.env.DATABASE_URL);
+const hasSsl = Boolean(process.env.DATABASE_SSL);
+
+if (!hasSsl) {
+  urlBuilder.searchParams.set("sslmode", "require");
+  urlBuilder.searchParams.set("uselibpqcompat", "true");
+} else {
+  urlBuilder.searchParams.delete("sslmode");
+  urlBuilder.searchParams.delete("uselibpqcompat");
+}
+
+const url = urlBuilder.toString();
+console.log(url);
+
+const adapter = new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 async function generateAccounts() {
   const emails = [
-    "adrien.muzyczka@modernisation.gouv.fr",
+    "adrien.muzyczka.ext@numerique.gouv.fr",
     "adrien@slash-tmp.dev",
-    "benoit.dequick@modernisation.gouv.fr",
+    "benoit.dequick@numerique.gouv.fr",
     "emmanuelle.aboaf@shodo.io",
     "quentin+ara@slash-tmp.dev",
-    "yaacov.cohen@prestataire.modernisation.gouv.fr"
+    "yaacov.cohen.ext@numerique.gouv.fr"
   ];
   const password = await hash("pouetpouetpouet", 10);
 
   await prisma.$transaction(emails.map(email => {
-    return prisma.user.create({
-      data: {
-        username: email,
-        password: password,
-        isVerified: true,
-        verificationJti: null
-      }
+    const data = {
+      username: email,
+      password: password,
+      isVerified: true,
+      verificationJti: null
+    };
+
+    return prisma.user.upsert({
+      where: {
+        username: email
+      },
+      create: data,
+      update: data
     });
   }));
 }
