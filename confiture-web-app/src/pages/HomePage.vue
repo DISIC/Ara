@@ -10,6 +10,7 @@ import { useAccountStore } from "../store";
 
 const isDevMode = useDevMode();
 const isProductionEnv = import.meta.env.PROD;
+const isHeroku = !!import.meta.env.HEROKU_APP_NAME;
 
 const router = useRouter();
 const headingRef = ref();
@@ -49,7 +50,9 @@ const steps = [
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
   />
 
-  <DebugCard v-if="isDevMode && !isProductionEnv" />
+  <DebugCard
+    v-if=" isDevMode && (!isProductionEnv || (isProductionEnv && isHeroku))"
+  />
 
   <section class="fr-mt-9w">
     <h1 ref="headingRef">Je réalise un audit d’accessibilité avec Ara</h1>

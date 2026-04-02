@@ -13,6 +13,8 @@ import { AuditStatus } from "../../types";
 
 const isDevMode = useDevMode();
 const isProductionEnv = import.meta.env.PROD;
+const isHeroku = !!import.meta.env.HEROKU_APP_NAME;
+
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();
 
@@ -102,7 +104,10 @@ onMounted(() => {
   </div>
 
   <!-- Debug component -->
-  <DebugCard v-if="isDevMode && !isProductionEnv" class="fr-mb-6w" />
+  <DebugCard
+    v-if="isDevMode && (!isProductionEnv || (isProductionEnv && isHeroku))"
+    class="fr-mb-6w"
+  />
 
   <!-- Header -->
   <div class="fr-mb-6w header">
