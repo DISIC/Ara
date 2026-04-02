@@ -69,8 +69,8 @@ defineExpose({
         {{ baseTitle }} {{ index + 1 }}
       </p>
     </div>
-    <div class="fr-col-4 delete">
-      <button type="button" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only"> l'erreur {{ index }}</span></button>
+    <div class="fr-col-4 error-user-delete">
+      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only"> l'erreur {{ index }}</span></button>
     </div>
   </div>
 
@@ -90,8 +90,8 @@ defineExpose({
     type="criterium"
     :model-value="item.comment"
     :label="`Recommandations sur l'erreur ${index + 1}`"
-    class="fr-mb-4w"
-    description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
+    class="fr-mb-1w"
+    description="Description de l’erreur, proposition de correction et image pour illustrer l’erreur ou la correction"
     @update:model-value="handleItemValueClick('comment', $event)"
   />
 
@@ -107,7 +107,7 @@ defineExpose({
   >
     <template #label>
       <div class="user-impact-label">
-        Impact sur l’usager
+        <span>Impact sur l’usager</span>
         <button
           aria-describedby="tooltip"
           type="button"
@@ -162,12 +162,17 @@ defineExpose({
 </template>
 
 <style>
+.user-impact-label span,
 .user-error-label label {
   font-size: 0.75rem;
   color: var(--text-mention-grey);
 }
 
-.delete {
+.user-impact-label span {
+  vertical-align: text-bottom;
+}
+
+.user-error-delete {
   text-align: right;
 
   button {
