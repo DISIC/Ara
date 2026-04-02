@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useTemplateRef, watch } from "vue";
+import { last } from "lodash-es";
 
+import { useTemplateRef } from "vue";
 import { FileErrorMessage } from "../../enums";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
 import { getUploadUrl } from "../../utils";
@@ -10,7 +11,6 @@ import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   id: string;
-  criteriumId: number;
   errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   items: NotCompliantItem[];
@@ -23,10 +23,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:items", payload: NotCompliantItem[]): void;
+  (e: "update:item", payload: { index: number; item: NotCompliantItem; action: string }): void;
 }>();
 
-defineExpose({ disclose });
+defineExpose({ disclose, focus });
 
 const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
@@ -42,36 +42,34 @@ async function disclose() {
   dsfr(accordion).accordionsGroup.members[0].disclose();
 }
 
-watch(props.items, () => {
-  emit("update:items", props.items);
-});
+function focus(index?: number) {
+  setFocusToTextEditor(index);
+}
 
 function lazyAccordionOpened() {
   if (!props.items.length) {
-    emit("update:items", [
-      {
-        title: null,
-        comment: null,
-        userImpact: null,
-        quickWin: false,
-        criterionResultId: props.criteriumId
-      }
-    ]);
+    addEmptyErrorToNotCompliantItems();
   }
 
   if (!hasJustBeenSetAsNotCompliant) {
     return;
   }
 
+  setFocusToTextEditor();
+
+  hasJustBeenSetAsNotCompliant = false;
+}
+
+function setFocusToTextEditor(index?: number) {
   if (criteriumNotCompliantItemRefs.value
     && criteriumNotCompliantItemRefs.value.length) {
-    const ref = criteriumNotCompliantItemRefs.value[0];
+    const ref = index !== undefined && index !== -1
+      ? criteriumNotCompliantItemRefs.value[index] :
+        last(criteriumNotCompliantItemRefs.value);
     if (ref) {
       ref.textFocusEditor();
     }
   }
-
-  hasJustBeenSetAsNotCompliant = false;
 }
 
 function setFocusToCommentEditor() {
@@ -84,27 +82,25 @@ function setFocusToCommentEditor() {
   }
 }
 
-function handleAddErrorClick() {
-  emit("update:items", [
-    ...props.items,
-    {
+function addEmptyErrorToNotCompliantItems() {
+  emit("update:item", {
+    index: -1,
+    item: {
       title: null,
       comment: null,
       userImpact: null,
-      quickWin: false,
-      criterionResultId: props.criteriumId
-    }
-  ]);
+      quickWin: false
+    },
+    action: "add"
+  });
 }
 
 function onDeleteNotCompliantItemClick(index: number) {
-  const items = props.items;
-  items.splice(index, 1);
+  emit("update:item", { index, item: props.items[index], action: "delete" });
 }
 
 function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
-  const items = props.items;
-  items[index] = item;
+  emit("update:item", { index, item, action: "update" });
 }
 </script>
 
@@ -124,7 +120,6 @@ function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
-        :criterium-result-id="criteriumId"
         :can-delete="items.length > 1"
         :on-delete="onDeleteNotCompliantItemClick"
         :on-update="onUpdateNotCompliantItemClick"
@@ -132,8 +127,8 @@ function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
 
     </div>
 
-    <div class="add">
-      <button type="button" @click="handleAddErrorClick">Ajouter une erreur</button>
+    <div v-if="items.length" class="add">
+      <button type="button" @click="addEmptyErrorToNotCompliantItems">Ajouter une erreur</button>
     </div>
 
     <!-- FILES -->
