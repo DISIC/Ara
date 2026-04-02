@@ -2,7 +2,6 @@
 import { last } from "lodash-es";
 
 import { computed, ref, useTemplateRef, watch } from "vue";
-import { FileErrorMessage } from "../../enums";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
 import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
@@ -11,15 +10,9 @@ import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   id: string;
-  errorMessage?: FileErrorMessage | null;
   exampleImages: ExampleImageFile[];
   items: NotCompliantItem[];
-  onDelete: (flFile: FileListFile) => void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  errorMessage: null
-});
+}>();
 
 const notCompliantItems = ref<NotCompliantItem[]>([]);
 
@@ -156,11 +149,11 @@ function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
         size: f.size,
         thumbnailUrl: f.thumbnailKey ? getUploadUrl(f.thumbnailKey) : undefined,
         url: getUploadUrl(f.key)
+      }))"
       :delete-only="true"
       :multiple="true"
       :focus-on-delete="setFocusToCommentEditor"
       @file-deleted="emit('file-deleted', $event)"
-      
     />
 
   </LazyAccordion>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef } from "vue";
+import { provide, useTemplateRef } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { CriterionResultUserImpact, NotCompliantItem } from "../../types";
 import { formatUserImpact } from "../../utils";
@@ -7,6 +7,7 @@ import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrField from "../ui/DsfrField.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
+import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 
 const props = defineProps<{
   index: number;
@@ -23,6 +24,14 @@ function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
   item[field] = value as never;
 
   props.onUpdate(props.index, item);
+}
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return userImpactRadioGroupRef.value
+    ? userImpactRadioGroupRef.value.$el
+    : null;
 }
 
 const userImpacts: Array<{
@@ -49,6 +58,7 @@ const userImpacts: Array<{
 
 const isOffline = useIsOffline();
 
+const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
 const commentEditorRef = useTemplateRef<InstanceType<typeof RichTextEditor>>("commentEditorRef");
 const titleEditorRef = useTemplateRef<InstanceType<typeof DsfrField>>("titleEditorRef");
 
@@ -97,12 +107,13 @@ defineExpose({
 
   <!-- USER IMPACT -->
   <RadioGroup
-    :id="`error-user-impact-${item.id}-${index}`"
+    ref="userImpactRadioGroupRef"
     class="fr-mb-4w"
-    :model-value="item.userImpact"
+    tabindex="-1"
     :items="userImpacts"
     :default-value="null"
     :disabled="isOffline"
+    :model-value="item.userImpact"
     @update:model-value="handleItemValueClick('userImpact', $event)"
   >
     <template #label>
@@ -172,7 +183,7 @@ defineExpose({
   vertical-align: text-bottom;
 }
 
-.user-error-delete {
+.error-user-delete {
   text-align: right;
 
   button {
