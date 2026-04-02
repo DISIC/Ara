@@ -598,7 +598,7 @@ describe("Audit", () => {
       cy.contains("a", "Accéder");
 
       cy.contains("button", "Copier le lien").click();
-      cy.contains("button", "Lien copié");
+      cy.contains("button", "Lien de partage copié");
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
     });
   });

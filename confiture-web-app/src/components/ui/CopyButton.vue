@@ -40,7 +40,7 @@ onMounted(() => {
     ref="copyButtonRef"
     type="button"
     :class="[`fr-btn fr-btn--secondary fr-btn--icon-left ${showSuccess ? 'fr-icon-check-line copy-button--success' : icon} copy-button`, {
-      'copy-button--within-btn-group': isWithinBtnGroup
+      'copy-button--within-btn-group fr-mb-0': isWithinBtnGroup
     }]"
     @click="copyContentToClipboard"
   >

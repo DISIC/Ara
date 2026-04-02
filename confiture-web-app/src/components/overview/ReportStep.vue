@@ -54,7 +54,7 @@ const auditIsReady = computed(() => {
             params: { uniqueId: audit.consultUniqueId }
           }"
           target="_blank"
-          class="fr-btn fr-btn--tertiary"
+          class="fr-btn fr-btn--tertiary fr-mb-0"
         >
           Consulter
           <span class="fr-sr-only">le rapport (nouvelle fenêtre)</span>
@@ -65,7 +65,7 @@ const auditIsReady = computed(() => {
         <CopyButton
           label="Copier le lien de partage"
           icon="fr-icon-link"
-          success-label="Lien copié"
+          success-label="Lien de partage copié"
           :content-to-copy="{
             name: 'report',
             params: { uniqueId: audit.consultUniqueId }
@@ -94,6 +94,8 @@ const auditIsReady = computed(() => {
 
   @media (width < 48rem) {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
   }
 }
 </style>
