@@ -112,6 +112,7 @@ const editor = useEditor({
   extensions: getTiptapEditorExtensions({
     onImageUploadComplete: fileName => emit("image:uploaded", fileName)
   }),
+
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -132,9 +133,16 @@ function handleBrowseInputChange(e: Event) {
   insertFilesAtSelection(editor.value, Array.from(files));
 }
 
-watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
-  editor.value.setEditable(editable && !disabled);
-});
+watch(
+  [() => props.editable, () => props.disabled, () => props.modelValue],
+  ([editable, disabled, modelValue]) => {
+    editor.value.setEditable(editable && !disabled);
+
+    if (modelValue && editor.value) {
+      editor.value.commands.setContent(getContent());
+    }
+  }
+);
 
 const innerWidth = shallowRef(0);
 

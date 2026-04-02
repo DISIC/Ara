@@ -11,7 +11,6 @@ import RadioGroup from "../ui/RadioGroup.vue";
 const props = defineProps<{
   index: number;
   item: NotCompliantItem;
-  criteriumResultId: number;
   canDelete: boolean;
   onDelete: (index: number) => void;
   onUpdate: (index: number, item: NotCompliantItem) => void;
@@ -76,21 +75,21 @@ defineExpose({
   </div>
 
   <DsfrField
-    :id="`error-title-${index}-${criteriumResultId}`"
+    :id="`error-title-${item.id}-${index}`"
     ref="titleEditorRef"
     :model-value="item.title"
     type="text"
     label="Titre de l'erreur"
     class="fr-mb-4w user-error-label"
-    @change="handleItemValueClick('title', $event.target.value)"
+    @input="handleItemValueClick('title', $event.target.value)"
   />
 
   <RichTextEditor
-    :id="`error-comment-${index}-${criteriumResultId}`"
+    :id="`error-comment-${item.id}-${index}`"
     ref="commentEditorRef"
     type="criterium"
     :model-value="item.comment"
-    :label="`Recommandations sur l'erreur ${index}`"
+    :label="`Recommandations sur l'erreur ${index + 1}`"
     class="fr-mb-4w"
     description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
     @update:model-value="handleItemValueClick('comment', $event)"
@@ -98,7 +97,7 @@ defineExpose({
 
   <!-- USER IMPACT -->
   <RadioGroup
-    :id="`error-user-impact-${index}-${criteriumResultId}`"
+    :id="`error-user-impact-${item.id}-${index}`"
     class="fr-mb-4w"
     :model-value="item.userImpact"
     :items="userImpacts"
@@ -150,12 +149,12 @@ defineExpose({
   <div class="fr-fieldset__element fr-fieldset__element--inline">
     <div class="fr-checkbox-group">
       <input
-        :id="`criterium-quick-win-${index}-${criteriumResultId}`"
+        :id="`criterium-quick-win-${item.id}-${index}`"
         :checked="item.quickWin"
         type="checkbox"
         @input="handleItemValueClick('quickWin', ($event.target as HTMLInputElement).checked)"
       />
-      <label class="fr-label" :for="`criterium-quick-win-${index}-${criteriumResultId}`">
+      <label class="fr-label" :for="`criterium-quick-win-${item.id}-${index}`">
         Facile à corriger
       </label>
     </div>
@@ -172,7 +171,7 @@ defineExpose({
   text-align: right;
 
   button {
-    color: var(--text-mention-grey);
+    color: var(--text-action-high-blue-france);
   }
 }
 </style>
