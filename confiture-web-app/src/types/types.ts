@@ -121,12 +121,13 @@ export type NotCompliantItem = {
   comment: string | null;
   userImpact: Record<string, unknown> | null;
   quickWin: boolean;
-  criterionResultId: number;
+  criterionResultId?: number;
 };
 
 export interface CriteriumResult {
   // ID
   id: number;
+
   topic: number;
   criterium: number;
   pageId: number;
