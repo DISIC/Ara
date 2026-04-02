@@ -408,11 +408,9 @@ const parentCriterium = computed(() => {
       ref="criteriumNotCompliantAccordion"
       :items="result.notCompliantItems"
       :example-images="result.exampleImages"
-      :error-message="errorMessage"
-      :on-delete="handleFileDeleteAfterConfirm"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @update:items="updateResultNotCompliantItem($event)"
+      @update:item="updateResultNotCompliantItem($event)"
     />
 
     <!-- TESTS + METHODO -->
