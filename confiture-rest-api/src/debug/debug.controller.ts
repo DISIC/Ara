@@ -9,7 +9,6 @@ import {
   CriterionResultUserImpact
 } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
-import { slugify } from "../utils";
 import { CreateDebugAuditDto } from "./create-audit.dto";
 
 @Controller("debug")
@@ -59,12 +58,12 @@ export class DebugController {
               {
                 name: "Accueil",
                 url: "https://example.com",
-                slug: slugify("Accueil")
+                slug: "accueil"
               },
               {
                 name: "Contact",
                 url: "https://example.com/contact",
-                slug: slugify("Contact")
+                slug: "contact"
               }
             ]
           }

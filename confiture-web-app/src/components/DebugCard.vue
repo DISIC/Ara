@@ -54,11 +54,10 @@ async function createDebugAudit() {
 <template>
   <div>
     <button class="fr-btn fr-btn--icon-right fr-icon-arrow-down-s-line fr-mb-2w" @click="showDebugPanel = !showDebugPanel">
-      {{ showDebugPanel ? 'Cacher' : 'Afficher' }} les options de débug
+      Créer un audit de test
     </button>
     <div v-if="showDebugPanel" class="debug-container">
       <section class="fr-p-2w debug-card">
-        <h2 class="fr-h4">Créer un audit</h2>
         <form @submit.prevent="createDebugAudit">
           <DsfrField
             id="debug-audit-procedure-name"
@@ -87,7 +86,7 @@ async function createDebugAudit() {
           <DsfrField
             id="debug-audit-email"
             v-model="auditorEmail"
-            label="Adresse email"
+            label="Adresse e-mail"
             type="email"
             required
           />
