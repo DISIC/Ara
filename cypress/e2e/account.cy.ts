@@ -24,7 +24,7 @@ describe("Account", () => {
           // Simulate receiving the verification link by email.
           cy.request(
             "POST",
-            "http://localhost:3000/api/debug/verification-token",
+            "http://localhost:3000/api/tests/verification-token",
             {
               username: email
             }
@@ -45,7 +45,7 @@ describe("Account", () => {
           // Simulate the account being verified in another tab
           cy.request(
             "POST",
-            "http://localhost:3000/api/debug/verification-token",
+            "http://localhost:3000/api/tests/verification-token",
             {
               username: email
             }
@@ -159,7 +159,7 @@ describe("Account", () => {
 
         cy.request(
           "POST",
-          "http://localhost:3000/api/debug/password-reset-verification-token",
+          "http://localhost:3000/api/tests/password-reset-verification-token",
           { username }
         ).then((resp) => {
           const verificationLink = `http://localhost:3000/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
@@ -199,7 +199,7 @@ describe("Account", () => {
 
         cy.request(
           "POST",
-          "http://localhost:3000/api/debug/password-reset-verification-token",
+          "http://localhost:3000/api/tests/password-reset-verification-token",
           { username }
         ).then((resp) => {
           const verificationLink = `http://localhost:3000/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
@@ -234,7 +234,7 @@ describe("Account", () => {
         // Simulate receiving the verification link by email.
         cy.request(
           "POST",
-          "http://localhost:3000/api/debug/email-update-verification-token",
+          "http://localhost:3000/api/tests/email-update-verification-token",
           { uid }
         ).then((resp) => {
           const verificationLink = `http://localhost:3000/compte/email-update-validation?token=${resp.body.token}`;

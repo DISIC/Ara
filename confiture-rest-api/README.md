@@ -40,6 +40,12 @@ docker run --name confiture-db \
              postgres:14
 ```
 
+Optionnellement, il est possible d’ajouter la variable d’environnement `DATABASE_SEEDS` pour pré-remplir la base de données avec des comptes utilisateurs dont le mot de passe est `pouetpouetpouet`. Exemple :
+
+```sh
+DATABASE_SEEDS="johndoe@email.com,pierredurand@email.com"
+```
+
 Lancer les migrations de la base de données :
 
 ```sh
