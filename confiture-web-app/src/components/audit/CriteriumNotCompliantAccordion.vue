@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { last } from "lodash-es";
 
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import { FileErrorMessage } from "../../enums";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
 import { getUploadUrl } from "../../utils";
@@ -19,6 +19,20 @@ const props = defineProps<{
 
 const props = withDefaults(defineProps<Props>(), {
   errorMessage: null
+});
+
+const notCompliantItems = ref<NotCompliantItem[]>([]);
+
+watch(() => props.items, () => {
+  notCompliantItems.value = [...props.items];
+}, {
+  immediate: true
+});
+
+const countNotCompliantItemsRecommandations = computed(() => {
+  return notCompliantItems.value
+    .filter(x => x.comment || x.quickWin === true || x.title || x.userImpact)
+    .length;
 });
 
 const emit = defineEmits<{
@@ -47,7 +61,7 @@ function focus(index?: number) {
 }
 
 function lazyAccordionOpened() {
-  if (!props.items.length) {
+  if (!notCompliantItems.value.length) {
     addEmptyErrorToNotCompliantItems();
   }
 
@@ -83,15 +97,11 @@ function setFocusToCommentEditor() {
 }
 
 function addEmptyErrorToNotCompliantItems() {
-  emit("update:item", {
-    index: -1,
-    item: {
-      title: null,
-      comment: null,
-      userImpact: null,
-      quickWin: false
-    },
-    action: "add"
+  notCompliantItems.value.push({
+    title: null,
+    comment: null,
+    userImpact: null,
+    quickWin: false
   });
 }
 
@@ -100,7 +110,7 @@ function onDeleteNotCompliantItemClick(index: number) {
 }
 
 function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
-  emit("update:item", { index, item, action: "update" });
+  emit("update:item", { index, item, action: !item.id ? "add" : "update" });
 }
 </script>
 
@@ -111,24 +121,29 @@ function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
     @opened="lazyAccordionOpened"
   >
     <template #title>
-      Erreurs et recommandations <span :class="{ 'fr-text--bold': items.length > 0 }"> ({{ items.length }})</span>
+      Erreurs et recommandations <span :class="{ 'fr-text--bold': countNotCompliantItemsRecommandations > 0 }"> ({{ countNotCompliantItemsRecommandations }})</span>
     </template>
 
-    <div v-for="(item, index) in items" :key="index" class="not-compliant-item">
+    <div v-for="(item, index) in notCompliantItems" :key="index" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
-        :can-delete="items.length > 1"
+        :can-delete="notCompliantItems.length > 1"
         :on-delete="onDeleteNotCompliantItemClick"
         :on-update="onUpdateNotCompliantItemClick"
       />
 
     </div>
 
-    <div v-if="items.length" class="add">
-      <button type="button" @click="addEmptyErrorToNotCompliantItems">Ajouter une erreur</button>
+    <div v-if="notCompliantItems.length" class="not-compliant-item-add">
+      <button
+        type="button"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-add-line"
+        @click="addEmptyErrorToNotCompliantItems"
+      >
+        Ajouter une erreur</button>
     </div>
 
     <!-- FILES -->
@@ -159,5 +174,9 @@ function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
   &:first-child {
     margin-top: 0;
   }
+}
+
+.not-compliant-item-add {
+  text-align: center;
 }
 </style>
