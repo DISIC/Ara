@@ -13,7 +13,7 @@ import { AuditStatus } from "../../types";
 
 const isDevMode = useDevMode();
 const isProductionEnv = import.meta.env.PROD;
-const isHeroku = !!import.meta.env.HEROKU_APP_NAME;
+const isHeroku = window.location.hostname.endsWith(".herokuapp.com");
 
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();

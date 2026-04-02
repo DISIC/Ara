@@ -10,7 +10,7 @@ import { useAccountStore } from "../store";
 
 const isDevMode = useDevMode();
 const isProductionEnv = import.meta.env.PROD;
-const isHeroku = !!import.meta.env.HEROKU_APP_NAME;
+const isHeroku = window.location.hostname.endsWith(".herokuapp.com");
 
 const router = useRouter();
 const headingRef = ref();
