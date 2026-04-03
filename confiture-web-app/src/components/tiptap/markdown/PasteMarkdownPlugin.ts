@@ -1,5 +1,4 @@
 import { Editor } from "@tiptap/core";
-import { Slice } from "@tiptap/pm/model";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { EditorView } from "@tiptap/pm/view";
 
@@ -17,8 +16,8 @@ export class PasteMarkdownPlugin extends Plugin {
       props: {
         handlePaste: (_view, event) =>
           this.handlePaste(editor, event),
-        handleDrop: (view, event, slice, moved) =>
-          this.handleDrop(view, event, slice, moved)
+        handleDrop: (view, event, _slice, moved) =>
+          this.handleDrop(view, event, moved)
       }
     });
     this.editor = editor;
@@ -43,7 +42,6 @@ export class PasteMarkdownPlugin extends Plugin {
   private handleDrop(
     view: EditorView,
     dragEvent: DragEvent,
-    _slice: Slice,
     moved: boolean
   ): boolean {
     if (moved || !dragEvent.dataTransfer || !dragEvent.dataTransfer.files) {

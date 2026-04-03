@@ -61,10 +61,10 @@ export class ImageImportPlugin extends Plugin {
       props: {
         transformPasted: (slice, view, plain) =>
           this.transformPasted(slice, view, plain),
-        handleDrop: (view, event, slice, moved) =>
-          this.handleDrop(view, event, slice, moved),
-        handlePaste: (view, event, slice) =>
-          this.handlePaste(view, event, slice)
+        handleDrop: (view, event, _slice, moved) =>
+          this.handleDrop(view, event, moved),
+        handlePaste: (view, event, _slice) =>
+          this.handlePaste(view, event)
       }
     });
   }
@@ -109,7 +109,6 @@ export class ImageImportPlugin extends Plugin {
   private handleDrop(
     view: EditorView,
     dragEvent: DragEvent,
-    _slice: Slice,
     moved: boolean
   ): boolean {
     if (moved || !dragEvent.dataTransfer || !dragEvent.dataTransfer.files) {
@@ -142,8 +141,7 @@ export class ImageImportPlugin extends Plugin {
    */
   private handlePaste(
     view: EditorView,
-    clipboardEvent: ClipboardEvent,
-    _slice: Slice | undefined
+    clipboardEvent: ClipboardEvent
   ): boolean {
     if (!clipboardEvent.clipboardData) {
       return false;

@@ -9,7 +9,7 @@ export function getDisplayedHeadings() {
 function getHeadingLevel(el: Element) {
   const tag = el.tagName; // e.g. "H1", "H2"
   if (/^H[1-6]$/.test(tag)) {
-    return parseInt(tag[1], 10);
+    return Number(tag[1]);
   }
   return null; // not a heading
 }
