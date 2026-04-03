@@ -224,16 +224,9 @@ const errorsCount = computed(() => {
             </li>
           </ul>
 
-          <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
+          <div v-for="topic in transverseErrors.topics" :key="topic.topic">
             <template v-for="(error, j) in topic.errors" :key="j">
               <ReportErrorCriterium :error="error" />
-              <hr
-                v-if="
-                  i !== transverseErrors.topics.length - 1 ||
-                    j !== topic.errors.length - 1
-                "
-                class="fr-mt-4w fr-pb-4w"
-              />
             </template>
           </div>
         </section>
@@ -268,12 +261,6 @@ const errorsCount = computed(() => {
         >
           <template v-for="(error, k) in topic.errors" :key="k">
             <ReportErrorCriterium :error="error" />
-            <hr
-              v-if="
-                j !== page.topics.length - 1 || k !== topic.errors.length - 1
-              "
-              class="fr-mt-4w fr-pb-4w"
-            />
           </template>
         </div>
       </section>

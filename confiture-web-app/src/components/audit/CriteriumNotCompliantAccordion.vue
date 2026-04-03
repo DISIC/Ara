@@ -39,7 +39,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:item", payload: { index: number; item: NotCompliantItem; action: string }): void;
+  (e: "update:item", payload: { index: number; item: NotCompliantItem; action: string; debounce: boolean }): void;
 }>();
 
 defineExpose({ disclose, focus });
@@ -108,11 +108,15 @@ function addEmptyErrorToNotCompliantItems() {
 }
 
 function onDeleteNotCompliantItemClick(index: number) {
-  emit("update:item", { index, item: props.items[index], action: "delete" });
+  emit("update:item", { index, item: props.items[index], action: "delete", debounce: false });
 }
 
-function onUpdateNotCompliantItemClick(index: number, item: NotCompliantItem) {
-  emit("update:item", { index, item, action: !item.id ? "add" : "update" });
+function onUpdateNotCompliantItemClick(
+  index: number,
+  item: NotCompliantItem,
+  debounce: boolean
+) {
+  emit("update:item", { index, item, action: !item.id ? "add" : "update", debounce });
 }
 </script>
 
