@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { last } from "lodash-es";
 
-import { computed, ref, useTemplateRef, watch } from "vue";
+import { computed, provide, ref, useTemplateRef, watch } from "vue";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
 import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
 import CriteriumNotCompliantItem from "./CriteriumNotCompliantItem.vue";
+import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
@@ -13,6 +14,14 @@ const props = defineProps<{
   exampleImages: ExampleImageFile[];
   items: NotCompliantItem[];
 }>();
+
+provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+function getFocusWhenListEmpty(): HTMLElement | null {
+  return criteriumNotCompliantItemRefs.value?.length ?
+    criteriumNotCompliantItemRefs.value[0].$el :
+    null;
+}
 
 const notCompliantItems = ref<NotCompliantItem[]>([]);
 
