@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { CriterionResultUserImpact, NotCompliantItem } from "../../types";
 import { formatUserImpact } from "../../utils";
@@ -7,7 +7,6 @@ import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrField from "../ui/DsfrField.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
-import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 
 const props = defineProps<{
   index: number;
@@ -24,14 +23,6 @@ function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
   item[field] = value as never;
 
   props.onUpdate(props.index, item);
-}
-
-provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
-
-function getFocusWhenListEmpty(): HTMLElement | null {
-  return userImpactRadioGroupRef.value
-    ? userImpactRadioGroupRef.value.$el
-    : null;
 }
 
 const userImpacts: Array<{
