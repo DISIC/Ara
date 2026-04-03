@@ -115,8 +115,19 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
+export type NotCompliantItem = {
+  id?: number;
+  title: string | null;
+  comment: string | null;
+  userImpact: Record<string, unknown> | null;
+  quickWin: boolean;
+  criterionResultId?: number;
+};
+
 export interface CriteriumResult {
   // ID
+  id: number;
+
   topic: number;
   criterium: number;
   pageId: number;
@@ -130,6 +141,7 @@ export interface CriteriumResult {
   notApplicableComment: string | null;
   exampleImages: ExampleImageFile[];
   quickWin: boolean;
+  notCompliantItems: NotCompliantItem[];
 }
 
 export enum StoreName {

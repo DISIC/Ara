@@ -248,8 +248,14 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: {
+            orderBy: {
+              id: "asc"
+            }
+          }
         }
+
       }),
       this.prisma.criterionResult.findMany({
         where: {
@@ -260,7 +266,12 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: {
+            orderBy: {
+              id: "asc"
+            }
+          }
         }
       })
     ]);
@@ -304,6 +315,8 @@ export class AuditService {
         notApplicableComment: null,
         exampleImages: [],
         quickWin: false,
+
+        notCompliantItems: [],
 
         topic: criterion.topic,
         criterium: criterion.criterium,
@@ -357,7 +370,18 @@ export class AuditService {
                 }
               },
               quickWin: true,
-
+              notCompliantItems: {
+                select: {
+                  id: true,
+                  title: true,
+                  comment: true,
+                  userImpact: true,
+                  quickWin: true
+                },
+                orderBy: {
+                  id: "asc"
+                }
+              },
               topic: true,
               criterium: true,
               pageId: true
@@ -596,7 +620,7 @@ export class AuditService {
           quickWin: item.quickWin
         };
 
-        const result = [
+        const result: any[] = [
           this.prisma.criterionResult.upsert({
             where: {
               pageId_topic_criterium: {
@@ -609,6 +633,46 @@ export class AuditService {
             update: data
           })
         ];
+
+        if (item.notCompliantItems.some(x => x.id)) {
+          const notCompliantItemsToUpdate = item.notCompliantItems.filter(x => x.id).map((notCompliantItem) => {
+            return this.prisma.notCompliantItem.upsert({
+              where: {
+                id: notCompliantItem.id,
+                criterionResultId: notCompliantItem.criterionResultId
+              },
+              create: notCompliantItem,
+              update: notCompliantItem
+            });
+          });
+
+          result.push(...notCompliantItemsToUpdate);
+
+          const criterionResultId = item.notCompliantItems[0].criterionResultId;
+
+          const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
+            where: {
+              criterionResultId: criterionResultId,
+              AND: [
+                {
+                  id: {
+                    notIn: item.notCompliantItems.filter(x => x.id).map(x => x.id)
+                  }
+                }
+              ]
+            }
+          });
+
+          result.push(notCompliantItemsToDelete);
+        }
+
+        if (item.notCompliantItems.some(x => !x.id)) {
+          const notCompliantItemsToCreate = this.prisma.notCompliantItem.createMany({
+            data: item.notCompliantItems.filter(x => !x.id)
+          });
+
+          result.push(notCompliantItemsToCreate);
+        }
 
         return result;
       })
@@ -1233,7 +1297,8 @@ export class AuditService {
           filename: img.originalFilename,
           key: img.key,
           thumbnailKey: img.thumbnailKey
-        }))
+        })),
+        notCompliantItems: r.notCompliantItems
       })),
 
       transverseElements: audit.transverseElements
@@ -1252,7 +1317,12 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: {
+            orderBy: {
+              id: "asc"
+            }
+          }
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -1261,7 +1331,12 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: {
+            orderBy: {
+              id: "asc"
+            }
+          }
         }
       })
     ]).then(results => results.flat());
@@ -1366,7 +1441,12 @@ export class AuditService {
           include: {
             results: {
               include: {
-                exampleImages: true
+                exampleImages: true,
+                notCompliantItems: {
+                  orderBy: {
+                    id: "asc"
+                  }
+                }
               }
             }
           }
@@ -1375,7 +1455,12 @@ export class AuditService {
           include: {
             results: {
               include: {
-                exampleImages: true
+                exampleImages: true,
+                notCompliantItems: {
+                  orderBy: {
+                    id: "asc"
+                  }
+                }
               }
             }
           }
@@ -1566,6 +1651,10 @@ export class AuditService {
                         r.id
                       ][e.id]
                   )
+
+                },
+                notCompliantItems: {
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
                 }
               }))
             }
@@ -1585,6 +1674,9 @@ export class AuditService {
                   create: r.exampleImages.map(
                     (e) => imagesCreateData[p.id][r.id][e.id]
                   )
+                },
+                notCompliantItems: {
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
                 }
               }))
             }

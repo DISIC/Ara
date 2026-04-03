@@ -4,16 +4,15 @@ import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
-import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
+import { useAuditStore, useFiltersStore, useNotificationStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
-  CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  NotCompliantItem
 } from "../../types";
 import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
@@ -52,7 +51,7 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
-      "Le focus se déplacera dans le champ « Erreur et recommandation »",
+      "Le focus se déplacera dans le champ « Erreurs et recommandations »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: RadioColor.RED
   },
@@ -114,7 +113,7 @@ function toggleTransverseComment() {
   showTransverseComment.value = !showTransverseComment.value;
 }
 
-const notify = useNotifications();
+const storeNotification = useNotificationStore();
 
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
@@ -131,7 +130,7 @@ async function handleFileDeleteAfterConfirm(
     props.criterium.number,
     file
   ).then(() => {
-    notify("success", undefined, `Image supprimée`);
+    storeNotification.showNotification("success", undefined, `Image supprimée`);
     resolve();
   });
 }
@@ -139,7 +138,7 @@ async function handleFileDeleteAfterConfirm(
 function handleUpdateResultError(err: any) {
   console.log(err);
   auditStore.lastRequestFailed = true;
-  notify(
+  storeNotification.showNotification(
     "error",
     DEFAULT_NOTIFICATION_ERROR_TITLE,
     DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
@@ -158,7 +157,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
         auditStore.publishAudit(props.auditUniqueId);
 
         if (!auditStore.currentAudit?.publicationDate) {
-          notify(
+          storeNotification.showNotification(
             "info",
             "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
@@ -197,17 +196,77 @@ const updateResultComment = debounce(
   500
 );
 
-function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
-    .catch(handleUpdateResultError);
-}
+const updateResultNotCompliantItem = async (payload:
+{ index: number; item: NotCompliantItem; action: string }) => {
+  const { index, item, action } = payload;
 
-function updateQuickWin(quickWin: boolean) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
-    .catch(handleUpdateResultError);
-}
+  const notCompliantItems: NotCompliantItem[] =
+    [...result.value.notCompliantItems];
+
+  switch (action) {
+    case "add":
+      if (!result.value.id) {
+        // sometimes, id don't loaded, so we fetch
+        await store.fetchResults(props.auditUniqueId);
+      }
+
+      item.criterionResultId = result.value.id;
+
+      notCompliantItems.push(item);
+      break;
+    case "update":
+      notCompliantItems[index] = item;
+      break;
+    case "delete":
+      notCompliantItems.splice(index, 1);
+      break;
+    default:
+      return;
+  }
+
+  try {
+    await store
+      .updateResults(
+        props.auditUniqueId,
+        [{ ...result.value, notCompliantItems }]
+      );
+
+    if (action === "add") {
+      // we fetch to have notCompliantItemId
+      await store.fetchResults(props.auditUniqueId);
+      criteriumNotCompliantAccordion.value?.focus(index);
+      return;
+    }
+
+    if (action === "delete")
+    {
+      storeNotification.showNotification("success", undefined, `Erreur supprimée`, {
+        action: {
+          label: "Annuler",
+          cb: async () => {
+            await updateResultNotCompliantItem({ index, item, action: "add" });
+            storeNotification.hideNotification();
+          }
+        }
+      });
+    }
+  } catch (error) {
+    handleUpdateResultError(error);
+  }
+};
+
+const updateResultNotCompliantItemDebounce =
+  debounce(
+    async (payload:
+    {
+      index: number;
+      item: NotCompliantItem;
+      action: string;
+    }) => {
+      await updateResultNotCompliantItem(payload);
+    },
+    500
+  );
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
@@ -356,15 +415,13 @@ const parentCriterium = computed(() => {
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       ref="criteriumNotCompliantAccordion"
-      :comment="result.notCompliantComment"
-      :user-impact="result.userImpact"
+      :items="result.notCompliantItems"
       :example-images="result.exampleImages"
-      :quick-win="result.quickWin"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:quick-win="updateQuickWin"
-      @update:user-impact="updateResultImpact($event)"
+      @update:item="(event) => event.debounce ?
+        updateResultNotCompliantItemDebounce(event)
+        : updateResultNotCompliantItem(event)"
     />
 
     <!-- TESTS + METHODO -->
