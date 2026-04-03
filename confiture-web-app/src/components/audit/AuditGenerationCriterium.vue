@@ -196,65 +196,74 @@ const updateResultComment = debounce(
   500
 );
 
-const updateResultNotCompliantItem =
+const updateResultNotCompliantItem = async (payload:
+{ index: number; item: NotCompliantItem; action: string }) => {
+  const { index, item, action } = payload;
+
+  const notCompliantItems: NotCompliantItem[] =
+    [...result.value.notCompliantItems];
+
+  switch (action) {
+    case "add":
+      if (!result.value.id) {
+        // sometimes, id don't loaded, so we fetch
+        await store.fetchResults(props.auditUniqueId);
+      }
+
+      item.criterionResultId = result.value.id;
+
+      notCompliantItems.push(item);
+      break;
+    case "update":
+      notCompliantItems[index] = item;
+      break;
+    case "delete":
+      notCompliantItems.splice(index, 1);
+      break;
+    default:
+      return;
+  }
+
+  try {
+    await store
+      .updateResults(
+        props.auditUniqueId,
+        [{ ...result.value, notCompliantItems }]
+      );
+
+    if (action === "add") {
+      // we fetch to have notCompliantItemId
+      await store.fetchResults(props.auditUniqueId);
+      criteriumNotCompliantAccordion.value?.focus(index);
+      return;
+    }
+
+    if (action === "delete")
+    {
+      storeNotification.showNotification("success", undefined, `Erreur supprimée`, {
+        action: {
+          label: "Annuler",
+          cb: async () => {
+            await updateResultNotCompliantItem({ index, item, action: "add" });
+            storeNotification.hideNotification();
+          }
+        }
+      });
+    }
+  } catch (error) {
+    handleUpdateResultError(error);
+  }
+};
+
+const updateResultNotCompliantItemDebounce =
   debounce(
     async (payload:
-    { index: number; item: NotCompliantItem; action: string }) => {
-      const { index, item, action } = payload;
-
-      const notCompliantItems: NotCompliantItem[] =
-        [...result.value.notCompliantItems];
-
-      switch (action) {
-        case "add":
-          if (!result.value.id) {
-            // sometimes, id don't loaded, so we fetch
-            await store.fetchResults(props.auditUniqueId);
-          }
-
-          item.criterionResultId = result.value.id;
-
-          notCompliantItems.push(item);
-          break;
-        case "update":
-          notCompliantItems[index] = item;
-          break;
-        case "delete":
-          notCompliantItems.splice(index, 1);
-          break;
-        default:
-          return;
-      }
-
-      try {
-        await store
-          .updateResults(
-            props.auditUniqueId,
-            [{ ...result.value, notCompliantItems }]
-          );
-
-        if (action === "add") {
-          // we fetch to have notCompliantItemId
-          await store.fetchResults(props.auditUniqueId);
-          criteriumNotCompliantAccordion.value?.focus(index);
-          return;
-        }
-
-        if (action === "delete")
-        {
-          storeNotification.showNotification("success", undefined, `Erreur supprimée`, {
-            action: {
-              label: "Annuler",
-              cb: async () => {
-                await updateResultNotCompliantItem({ index, item, action: "add" });
-                storeNotification.hideNotification();
-              }
-            }
-          });
-        }
-      } catch (error) {
-        handleUpdateResultError(error);
-      }
+    {
+      index: number;
+      item: NotCompliantItem;
+      action: string;
+    }) => {
+      await updateResultNotCompliantItem(payload);
     },
     500
   );
@@ -410,7 +419,9 @@ const parentCriterium = computed(() => {
       :example-images="result.exampleImages"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @update:item="updateResultNotCompliantItem($event)"
+      @update:item="(event) => event.debounce ?
+        updateResultNotCompliantItemDebounce(event)
+        : updateResultNotCompliantItem(event)"
     />
 
     <!-- TESTS + METHODO -->

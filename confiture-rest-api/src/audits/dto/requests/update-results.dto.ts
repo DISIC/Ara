@@ -122,12 +122,12 @@ class UpdateResultsItem {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => NotCompliantItem)
+  @Type(() => CriterionResultNotCompliantItem)
   @IsOptional()
-  notCompliantItems?: NotCompliantItem[];
+  notCompliantItems?: CriterionResultNotCompliantItem[];
 }
 
-class NotCompliantItem {
+class CriterionResultNotCompliantItem {
   // ID
   @IsNumber()
   @IsOptional()

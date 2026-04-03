@@ -603,8 +603,6 @@ export class AuditService {
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const promises = body.data
       .map((item) => {
-        console.log("item.notCompliantItems", item.notCompliantItems);
-
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
           topic: item.topic,
@@ -669,8 +667,6 @@ export class AuditService {
         }
 
         if (item.notCompliantItems.some(x => !x.id)) {
-          console.log("item.notCompliantItems to create", item.notCompliantItems);
-
           const notCompliantItemsToCreate = this.prisma.notCompliantItem.createMany({
             data: item.notCompliantItems.filter(x => !x.id)
           });
