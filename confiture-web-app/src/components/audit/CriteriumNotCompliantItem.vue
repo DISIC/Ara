@@ -13,7 +13,7 @@ const props = defineProps<{
   item: NotCompliantItem;
   canDelete: boolean;
   onDelete: (index: number) => void;
-  onUpdate: (index: number, item: NotCompliantItem) => void;
+  onUpdate: (index: number, item: NotCompliantItem, debounce: boolean) => void;
 }>();
 
 const baseTitle = "Erreur";
@@ -22,7 +22,7 @@ function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
   const item = { ...props.item };
   item[field] = value as never;
 
-  props.onUpdate(props.index, item);
+  props.onUpdate(props.index, item, field === "title" || field === "comment");
 }
 
 const userImpacts: Array<{
