@@ -18,6 +18,8 @@ const props = withDefaults(defineProps<{
 const showSuccess = ref(false);
 
 function copyContentToClipboard() {
+  if (showSuccess.value) return;
+
   const content = typeof props.contentToCopy === "string"
     ? props.contentToCopy
     : window.location.origin + router.resolve(props.contentToCopy).fullPath;
