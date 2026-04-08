@@ -4,13 +4,16 @@ import { onMounted, ref } from "vue";
 import { RouteLocationRaw } from "vue-router";
 import router from "../../router";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   icon: string;
-  label: string;
-  successLabel: string;
+  label?: string;
+  successLabel?: string;
   contentToCopy: string | RouteLocationRaw;
   isWithinBtnGroup?: boolean;
-}>();
+}>(), {
+  label: "Copier le lien de partage",
+  successLabel: "Lien de partage copié"
+});
 
 const showSuccess = ref(false);
 

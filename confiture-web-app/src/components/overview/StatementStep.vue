@@ -84,9 +84,7 @@ const auditIsPublishable = computed(() => {
       </div>
       <div class="fr-btns-group fr-btns-group--icon-left">
         <CopyButton
-          label="Copier le lien de partage"
           icon="fr-icon-link"
-          success-label="Lien de partage copié"
           :content-to-copy="{
             name: 'a11y-statement',
             params: { uniqueId: audit.consultUniqueId }
