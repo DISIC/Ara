@@ -84,6 +84,7 @@ const auditIsPublishable = computed(() => {
       </div>
       <div class="fr-btns-group fr-btns-group--icon-left">
         <CopyButton
+          hidden-label-suffix="de la déclaration"
           icon="fr-icon-link"
           :content-to-copy="{
             name: 'a11y-statement',

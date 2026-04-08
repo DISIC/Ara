@@ -8,6 +8,7 @@ const props = withDefaults(defineProps<{
   icon: string;
   label?: string;
   successLabel?: string;
+  hiddenLabelSuffix?: string;
   contentToCopy: string | RouteLocationRaw;
   isWithinBtnGroup?: boolean;
 }>(), {
@@ -50,6 +51,7 @@ onMounted(() => {
     @click="copyContentToClipboard"
   >
     {{ showSuccess ? successLabel : label }}
+    <span v-if="hiddenLabelSuffix" class="fr-sr-only">{{ hiddenLabelSuffix }}</span>
   </button>
 </template>
 

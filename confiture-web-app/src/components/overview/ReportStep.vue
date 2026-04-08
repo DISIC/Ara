@@ -63,6 +63,7 @@ const auditIsReady = computed(() => {
 
       <div class="fr-btns-group fr-btns-group--icon-left">
         <CopyButton
+          hidden-label-suffix="du rapport"
           icon="fr-icon-link"
           :content-to-copy="{
             name: 'report',
