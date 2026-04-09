@@ -212,10 +212,25 @@ const updateResultNotCompliantItem = async (payload:
 
       item.criterionResultId = result.value.id;
 
-      notCompliantItems.push(item);
+      if (item.id === -1) {
+        notCompliantItems[index] = item;
+      } else {
+        notCompliantItems.push(item);
+      }
+
+      if (notCompliantItems.some(x => x.id === -1)) {
+        notCompliantItems
+          .filter(x => x.id === -1)
+          .forEach((x) => {
+            x.id = undefined;
+            x.criterionResultId = result.value.id;
+          });
+      }
+
       break;
     case "update":
       notCompliantItems[index] = item;
+
       break;
     case "delete":
       notCompliantItems.splice(index, 1);
