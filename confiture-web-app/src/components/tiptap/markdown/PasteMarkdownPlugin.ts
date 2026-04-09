@@ -115,7 +115,7 @@ export class PasteMarkdownPlugin extends Plugin {
    * - does not recognise code block formated with 4 leading spaces
    * - probably other edge cases
    *
-   * FiXME: use a Markdown parser with "html: false" option when available for
+   * FIXME: use a Markdown parser with "html: false" option when available for
    * Tiptap (e.g. markdown-it).
    * See [Feature Request: Consider an alternate markdown support using markdown-it · ueberdosis/tiptap · Discussion #7489](https://github.com/ueberdosis/tiptap/discussions/7489)
    *
