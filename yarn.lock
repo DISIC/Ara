@@ -1041,26 +1041,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@brakebein/prisma-generator-nestjs-dto@npm:^1.29.0":
-  version: 1.29.0
-  resolution: "@brakebein/prisma-generator-nestjs-dto@npm:1.29.0"
-  dependencies:
-    "@prisma/generator-helper": "npm:^7.0.0"
-    case: "npm:^1.6.3"
-    chalk: "npm:^4.1.2"
-    make-dir: "npm:^3.1.0"
-    prettier: "npm:^3.0.0"
-    slash: "npm:^3.0.0"
-    type-fest: "npm:^4.37.0"
-  peerDependencies:
-    "@prisma/client": ^5.16.0 || ^6.0.0 || ^7.0.0
-    prisma: ^5.16.0 || ^6.0.0 || ^7.0.0
-  bin:
-    prisma-generator-nestjs-dto: dist/cli.js
-  checksum: 10c0/1d6fe95a012713f724d548c36d1e891dd14c075fb15ce2a73f5beaa233cf444ea033ff01209ebb99b3033e4b0cd56fc22a1938312c4727128154283189e8e19b
-  languageName: node
-  linkType: hard
-
 "@cacheable/memory@npm:^2.0.8":
   version: 2.0.8
   resolution: "@cacheable/memory@npm:2.0.8"
@@ -3150,13 +3130,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/dmmf@npm:7.5.0":
-  version: 7.5.0
-  resolution: "@prisma/dmmf@npm:7.5.0"
-  checksum: 10c0/0de58c45a64743541e839c775315fae1d7ad70831cdfd11f951c34ce65579bcaaa94e0c3ed64f4dbc9655982abf0d0d63de3346ef8acd4331339234f91da2eff
-  languageName: node
-  linkType: hard
-
 "@prisma/driver-adapter-utils@npm:7.5.0":
   version: 7.5.0
   resolution: "@prisma/driver-adapter-utils@npm:7.5.0"
@@ -3193,24 +3166,6 @@ __metadata:
     "@prisma/engines-version": "npm:7.5.0-15.280c870be64f457428992c43c1f6d557fab6e29e"
     "@prisma/get-platform": "npm:7.5.0"
   checksum: 10c0/5772ffcd4c090fe0a4fb88a0af9ac5e2bbc3297dca4fa132e18b3cce0a605dff376a4442330ab449a8ee01ae6da83a09c13c2feaf8a2a0bb1f2d454cb001ada6
-  languageName: node
-  linkType: hard
-
-"@prisma/generator-helper@npm:^7.0.0":
-  version: 7.5.0
-  resolution: "@prisma/generator-helper@npm:7.5.0"
-  dependencies:
-    "@prisma/debug": "npm:7.5.0"
-    "@prisma/dmmf": "npm:7.5.0"
-    "@prisma/generator": "npm:7.5.0"
-  checksum: 10c0/eab9399b9f849c4f85949a44880508875f4791ecfe7670f5666a4c15500082ed7bfad460b39f5ab55865b6f207cf8977b1d4c3bc42670d5c2697e2ad64d15ad2
-  languageName: node
-  linkType: hard
-
-"@prisma/generator@npm:7.5.0":
-  version: 7.5.0
-  resolution: "@prisma/generator@npm:7.5.0"
-  checksum: 10c0/2c9f362d1053fbb9c463cd092ba3f98127507d44482c3f8024ee09f2f77b6adf9551805e4540691f9df163e827bceb12e52da670a8473b3a91caa93440fae46e
   languageName: node
   linkType: hard
 
@@ -6666,13 +6621,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"case@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "case@npm:1.6.3"
-  checksum: 10c0/43fcbb1dff1c4add94dd2bc98bd923d6616f10bff6959adf686d192c3db7d7ced35410761e1ac94cc4a1f5c41c86406ad79d390805539e421e8a77e553f67223
-  languageName: node
-  linkType: hard
-
 "caseless@npm:~0.12.0":
   version: 0.12.0
   resolution: "caseless@npm:0.12.0"
@@ -7196,7 +7144,6 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.218.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.218.0"
-    "@brakebein/prisma-generator-nestjs-dto": "npm:^1.29.0"
     "@nestjs/cli": "npm:^11.0.10"
     "@nestjs/common": "npm:^11.1.17"
     "@nestjs/config": "npm:^4.0.3"
@@ -13526,7 +13473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.0, prettier@npm:^3.6.2, prettier@npm:^3.8.1":
+"prettier@npm:^3.6.2, prettier@npm:^3.8.1":
   version: 3.8.1
   resolution: "prettier@npm:3.8.1"
   bin:
@@ -15482,13 +15429,6 @@ __metadata:
   version: 0.21.3
   resolution: "type-fest@npm:0.21.3"
   checksum: 10c0/902bd57bfa30d51d4779b641c2bc403cdf1371fb9c91d3c058b0133694fcfdb817aef07a47f40faf79039eecbaa39ee9d3c532deff244f3a19ce68cea71a61e8
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^4.37.0":
-  version: 4.41.0
-  resolution: "type-fest@npm:4.41.0"
-  checksum: 10c0/f5ca697797ed5e88d33ac8f1fec21921839871f808dc59345c9cf67345bfb958ce41bd821165dbf3ae591cedec2bf6fe8882098dfdd8dc54320b859711a2c1e4
   languageName: node
   linkType: hard
 
