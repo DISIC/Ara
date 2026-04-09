@@ -43,5 +43,5 @@ confiture-api.ts
 # Sentry Config File
 .sentryclirc
 
-# Frentend files
+# Frontend files
 client
