@@ -36,14 +36,20 @@ export function getReportErrors(
     ...groupBy(
       report.data?.results
         .filter((r) => {
-          return (
-            r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-            userImpactFilters.includes(r.userImpact)
-          );
+          return r.status === CriteriumResultStatus.NOT_COMPLIANT;
         })
-        .filter((r) => {
-          return quickWinFilter ? r.quickWin : r;
-        }),
+        .map((r) => ({
+          ...r,
+          notCompliantItems: r.notCompliantItems
+            .filter(
+              (item) => (!item.userImpact && userImpactFilters.includes(null)) ||
+              (item.userImpact && userImpactFilters.includes(item.userImpact))
+            ).filter((r) => {
+              return quickWinFilter ? r.quickWin : r;
+            })
+
+        }))
+        .filter((r) => r.notCompliantItems.length > 0),
       "pageId"
     )
   } as Record<number, AuditReport["results"]>;

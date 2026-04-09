@@ -48,36 +48,44 @@ const minorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.MINOR
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.MINOR)
+      .length
 );
 
 const majorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.MAJOR
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.MAJOR)
+      .length
 );
 
 const blockingUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.BLOCKING
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.BLOCKING)
+      .length
 );
 
 const unknownUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === null
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === null)
+      .length
 );
 
 // Errors
