@@ -1,0 +1,50 @@
+<h1 title="# Titre 1">Titre 1</h1>
+<h2 title="## Titre 2">Titre 2</h2>
+<p>Voici un paragraphe avec du <strong>gras</strong>, de l’<em>italique</em> et du <s>barré</s>.</p>
+<h3 title="### Titre 3">Liens</h3>
+<p>Un lien vers <a rel="noopener noreferrer" href="https://ara.numerique.gouv.fr/">Ara</a>.</p>
+<h3 title="### Titre 3">Citation et code</h3>
+<blockquote title="> blockquote ligne 1 > blockquote ligne 2">
+  <p>Ceci est une citation</p>
+</blockquote>
+<p><code title="`code`">Ceci est un code en ligne</code></p>
+<pre><code title="```codeblock```">Ceci est un bloc de code.
+Avec une deuxième ligne.\nEt du vrai code ci-aorès&nbsp;:
+</code></pre>
+<pre><code>const a = "foo";
+const b = "bar";
+console.log(a + ", " + b);
+</code></pre>
+<h3 title="### Titre 3">Liste non ordonnée</h3>
+<ul title="- Un élément - Un autre élément - Et un dernier élément">
+  <li>
+    <p>Un élément</p>
+  </li>
+  <li>
+    <p>Un autre élément</p>
+  </li>
+  <li>
+    <p>Et un dernier élément</p>
+  </li>
+</ul>
+<h3 title="### Titre 3">Liste ordonnée</h3>
+<ol title="1. Un 1. Un autre élément 1. Et un dernier élément">
+  <li>
+    <p>Un</p>
+  </li>
+  <li>
+    <p>Deux</p>
+  </li>
+  <li>
+    <p>Trois</p>
+  </li>
+</ol>
+<h3 title="### Titre 3">Image</h3>
+<img title='![Ara (oiseau)](https://upload.wikimedia.org/wikipedia/commons/d/dd/Scarlet_Macaw_and_Blue-and-gold_Macaw.jpg "Scarlet Macaw and Blue-and-gold Macaw - Ara (oiseau) — Wikipédia")'
+  src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Scarlet_Macaw_and_Blue-and-gold_Macaw.jpg"
+  alt="Ara (oiseau)"
+  width="90"
+  height="82"
+  title="Scarlet Macaw and Blue-and-gold Macaw - Ara (oiseau) — Wikipédia"
+/>
+<h4 title="#### Titre 4">Titre 4</h4>
