@@ -16,9 +16,9 @@ export const configValidationSchema = Joi.object({
     .uri({ scheme: ["http", "https"] })
     .default((env) => {
       return (
-        (env.HEROKU_APP_NAME &&
-          `https://${env.HEROKU_APP_NAME}.herokuapp.com`) ||
-        "http://localhost:3000"
+        (env.APP && env.REGION_NAME &&
+          `https://${env.APP}.${env.REGION_NAME}.scalingo.io`)
+        || "http://localhost:3000"
       );
     }),
   GRIST_API_KEY: Joi.string().required(),
