@@ -117,12 +117,12 @@ Sont disponibles sur ce projet :
 
 ### Environnement de développement
 
-Le frontend est automatiquement déployé sur Heroku :
+Le frontend est automatiquement déployé sur Scalingo :
 
 - La branche principale `main` est déployée sur [https://ara-dev.osc-secnum-fr1.scalingo.io/](https://ara-dev.osc-secnum-fr1.scalingo.io/).
 - Les branches des PR sont déployées sur [https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/](https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/) (où XXX l’identifiant de la PR).
 
-Chaque déploiement a sa propre base de donnéel.
+Chaque déploiement a sa propre base de données.
 
 ### Environnement de production
 
