@@ -23,9 +23,6 @@ export class PasteMarkdownPlugin extends Plugin {
     this.editor = editor;
   }
 
-  /**
-   * `handlePaste` hook used to interpret pasted Markdown content
-   */
   private handlePaste(
     editor: Editor,
     clipboardEvent: ClipboardEvent
@@ -111,17 +108,33 @@ export class PasteMarkdownPlugin extends Plugin {
     return true;
   }
 
+  /**
+   * Check if the given string looks like Markdown
+   *
+   * Known limitations:
+   * - does not recognise code block formated with 4 leading spaces
+   * - probably other edge cases
+   *
+   * FiXME: use a Markdown parser with "html: false" option when available for
+   * Tiptap (e.g. markdown-it).
+   * See [Feature Request: Consider an alternate markdown support using markdown-it · ueberdosis/tiptap · Discussion #7489](https://github.com/ueberdosis/tiptap/discussions/7489)
+   *
+   * @param {string} text String to test
+   * @returns {boolean} true if it looks like Markdown, otherwise false
+   */
   private looksLikeMarkdown(text: string): boolean {
-    // Simple heuristic: check for Markdown syntax
     return (
-      /^#{1,6}\s/.test(text) || // Headings
-      /\*\*[^*]+\*\*/.test(text) || // Bold
-      /[*_][^*_]+[*_]/.test(text) || // Italic with * or _
-      /\[.+\]\(.+\)/.test(text) || // Links
-      /<[^>\s]+>/.test(text) || // Autolinks (any <link>)
-      /^[-*+]\s/.test(text) || // Lists
-      /^>\s/.test(text) || // Blockquote
-      /^(```|~~~)/.test(text) // Code blocks
+      /(?<!<[^>]*)(\*|_)(?!\1).+\1(?![^<]*>)/.test(text) || // Italic or bold (no need to split tests…)
+      /^\s{0,3}([-*_])(?:\s*\1){2,}\s*$/m.test(text) || // Horizontal line
+      /(?<!<[^>]*)~~.+~~(?![^<]*>)/.test(text) || // Strikethrough
+      /^\s{0,3}#{1,6}\s+.+$/m.test(text) || // Heading
+      /(?<!<[^>]*)\[.*\]\(.*\s?(?:".*")?\)(?![^<]*>)/.test(text) || // Link
+      /^\s{0,3}[-+*]\s+.+$/m.test(text) || // Unordered list
+      /^\s{0,3}\d+\.\s+.+$/m.test(text) || // Ordered list
+      /^\s{0,3}>\s*.+$/m.test(text) || // Block quotation
+      /(?<!<[^>]*)`[^`].+`(?![^<]*>)/.test(text) || // Inline code
+      /(?<!<[^>]*)(```|~~~)[\s\S]+?\1(?![^<]*>)/.test(text) || // Code block
+      /(?<!<[^>]*)!\[[^\]]*]\([^)]+?(?:\s+"(.*?)")?\)(?![^<]*>)/.test(text) // Image
     );
   }
 }
