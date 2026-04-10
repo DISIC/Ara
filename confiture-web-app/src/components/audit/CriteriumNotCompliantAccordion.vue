@@ -116,7 +116,7 @@ function onUpdateNotCompliantItemClick(
   item: NotCompliantItem,
   debounce: boolean
 ) {
-  emit("update:item", { index, item, action: !item.id || item.id === -1 ? "add" : "update", debounce });
+  emit("update:item", { index, item, action: !item.id ? "add" : "update", debounce });
 }
 </script>
 

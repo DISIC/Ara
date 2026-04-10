@@ -95,8 +95,6 @@ const transverseComment = computed((): string | null => {
     switch (transverseStatus.value) {
       case CriteriumResultStatus.COMPLIANT:
         return result.compliantComment;
-      case CriteriumResultStatus.NOT_COMPLIANT:
-        return result.notCompliantComment;
       case CriteriumResultStatus.NOT_APPLICABLE:
         return result.notApplicableComment;
       default:
@@ -105,6 +103,20 @@ const transverseComment = computed((): string | null => {
   }
 
   return null;
+});
+
+const transverseNotCompliantItems = computed((): NotCompliantItem[] => {
+  if (store.data && transversePageId.value) {
+    if (transverseStatus.value === CriteriumResultStatus.NOT_COMPLIANT) {
+      const result =
+        store.data?.[transversePageId.value][props.topicNumber][
+          props.criterium.number
+        ];
+      return result.notCompliantItems;
+    }
+  }
+
+  return [];
 });
 
 const showTransverseComment = ref(false);
@@ -211,21 +223,7 @@ const updateResultNotCompliantItem = async (payload:
       }
 
       item.criterionResultId = result.value.id;
-
-      if (item.id === -1) {
-        notCompliantItems[index] = item;
-      } else {
-        notCompliantItems.push(item);
-      }
-
-      if (notCompliantItems.some(x => x.id === -1)) {
-        notCompliantItems
-          .filter(x => x.id === -1)
-          .forEach((x) => {
-            x.id = undefined;
-            x.criterionResultId = result.value.id;
-          });
-      }
+      notCompliantItems.push(item);
 
       break;
     case "update":
@@ -389,7 +387,7 @@ const parentCriterium = computed(() => {
         </p>
 
         <button
-          v-if="transverseComment"
+          v-if="transverseComment || transverseNotCompliantItems.length"
           class="fr-link fr-link--sm criterium-transverse-button"
           @click="toggleTransverseComment"
         >
@@ -404,11 +402,34 @@ const parentCriterium = computed(() => {
         </button>
       </div>
 
-      <TiptapRenderer
-        v-if="showTransverseComment && transverseComment"
-        :document="transverseComment"
-        class="fr-mt-5w"
-      />
+      <template v-if="showTransverseComment && transverseComment">
+
+        <TiptapRenderer
+          :document="transverseComment"
+          class="fr-mt-5w"
+        />
+      </template>
+
+      <template
+        v-else-if="showTransverseComment
+          && transverseNotCompliantItems.length"
+      >
+        <div
+          v-for="(notCompliantItem, i) in transverseNotCompliantItems"
+          :key="i"
+          class="criterium-transverse-notice-separator"
+        >
+          <p v-if="notCompliantItem.title" class="fr-h3 fr-mt-3v">{{ notCompliantItem.title }}</p>
+          <TiptapRenderer
+            v-if="notCompliantItem.comment"
+            :document="notCompliantItem.comment"
+            class="fr-mt-5w"
+          />
+
+        </div>
+
+      </template>
+
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
@@ -483,6 +504,15 @@ const parentCriterium = computed(() => {
     .criterium-transverse-button {
       grid-column: 2;
     }
+  }
+}
+
+.criterium-transverse-notice-separator {
+  border-bottom: 1px solid var(--text-title-grey);
+  padding-bottom: 1em;
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 

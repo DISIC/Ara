@@ -49,7 +49,6 @@ const userImpacts: Array<{
 
 const isOffline = useIsOffline();
 
-const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
 const commentEditorRef = useTemplateRef<InstanceType<typeof RichTextEditor>>("commentEditorRef");
 const titleEditorRef = useTemplateRef<InstanceType<typeof DsfrField>>("titleEditorRef");
 

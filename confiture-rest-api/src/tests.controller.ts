@@ -192,43 +192,55 @@ export class TestsController {
 
     if (!body.isPristine) {
       await Promise.all(
-        [completedAudit.transverseElementsPage, ...auditPages].map(async (p) =>
-          this.prisma.criterionResult.createMany({
-            data: CRITERIA.map((c, i) => ({
-              status: [
-                CriterionResultStatus.COMPLIANT,
-                CriterionResultStatus.NOT_APPLICABLE,
-                CriterionResultStatus.NOT_COMPLIANT
-              ][i % 3],
-              notCompliantComment: "Une erreur ici",
-              notApplicableComment: body.noImprovements
-                ? null
-                : "Attention quand même si ça devient applicable",
-              compliantComment: body.noImprovements ? null : "Peut mieux faire",
-              quickWin: i % 7 === 0,
-              userImpact: [
-                CriterionResultUserImpact.MINOR,
-                CriterionResultUserImpact.MAJOR,
-                CriterionResultUserImpact.BLOCKING,
-                null
-              ][i % 4],
-              topic: c.topic,
-              criterium: c.criterium,
-              pageId: p.id
-            }))
+        [completedAudit.transverseElementsPage, ...auditPages].flatMap((p) =>
+
+          CRITERIA.map((c, i) => {
+            const status = [
+              CriterionResultStatus.COMPLIANT,
+              CriterionResultStatus.NOT_APPLICABLE,
+              CriterionResultStatus.NOT_COMPLIANT
+            ][i % 3];
+
+            return this.prisma.criterionResult.create({
+              data: {
+                status,
+                notApplicableComment: body.noImprovements
+                  ? null
+                  : "Attention quand même si ça devient applicable",
+                compliantComment: body.noImprovements ? null : "Peut mieux faire",
+                notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
+                  ? {
+                      create: [
+                        {
+                          title: `Titre de l'erreur`,
+                          comment: `Une erreur ici`,
+                          quickWin: i % 7 === 0,
+                          userImpact: [
+                            CriterionResultUserImpact.MINOR,
+                            CriterionResultUserImpact.MAJOR,
+                            CriterionResultUserImpact.BLOCKING,
+                            null
+                          ][i % 4]
+                        }
+                      ]
+                    }
+                  : undefined,
+                topic: c.topic,
+                criterium: c.criterium,
+                pageId: p.id
+              }
+            });
           })
         )
       );
     }
 
-    if (!body.isComplete && !body.isPristine) {
-      await this.prisma.criterionResult.delete({
+    if (!body.isComplete && !body.isPristine && auditPages.length > 0) {
+      await this.prisma.criterionResult.deleteMany({
         where: {
-          pageId_topic_criterium: {
-            topic: 1,
-            criterium: 1,
-            pageId: auditPages[0].id
-          }
+          topic: 1,
+          criterium: 1,
+          pageId: auditPages[0].id
         }
       });
     }
