@@ -162,6 +162,14 @@ export function getTiptapEditorExtensions(options?: {
 
           return createResizableNodeView(props, vueNodeView);
         };
+      },
+      parseHTML() {
+        const baseURL = window.location.origin;
+        return [
+          {
+            tag: `img[src^=\"/uploads/\"], img[src^=\"${baseURL}/uploads/\"]`
+          }
+        ];
       }
     }),
     options?.onImageUploadComplete ?
