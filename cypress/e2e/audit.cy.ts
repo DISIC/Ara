@@ -620,7 +620,9 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "FAQ").click();
-      cy.get(".criterium-container").contains("Non conforme").click();
+      cy.get(".criterium-container").contains("Non conforme");
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
       cy.get(".criterium-container .not-compliant-item input[type='text']")
         .type("Absence de l'alt sur l'image");
@@ -631,6 +633,66 @@ describe("Audit", () => {
 
       cy.get(".criterium-container .not-compliant-item label").contains("majeur").click();
       cy.get(".criterium-container .not-compliant-item .fr-checkbox-group").contains("Facile à corriger").click();
+    });
+  });
+
+  it("User can add a new not compliant item", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.contains("button[role=\"tab\"]", "FAQ").click();
+
+      cy.get(".criterium-container").contains("Non conforme");
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+
+      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
+        .type("Absence de l'alt sur l'image");
+
+      cy.get(".criterium-container .not-compliant-item:last .tiptap[role='textbox']")
+        .type("Il n’y a pas de alt sur l’image du hero");
+
+      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+    });
+  });
+
+  it.only("User can delete an not compliant item", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.contains("button[role=\"tab\"]", "FAQ").click();
+
+      cy.get(".criterium-container").contains("Non conforme");
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+
+      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button")
+        .contains("Supprimer")
+        .should("be.disabled");
+
+      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
+        .type("Absence de l'alt sur l'image");
+
+      cy.get(".criterium-container .not-compliant-item:last .tiptap[role='textbox']")
+        .type("Il n’y a pas de alt sur l’image du hero");
+
+      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+
+      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").contains("Supprimer").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)");
     });
   });
 
