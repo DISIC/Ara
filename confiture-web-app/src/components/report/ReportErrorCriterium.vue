@@ -64,7 +64,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
         role="listitem"
         class="criterium-not-compliant-item"
       >
-        <div class="criterium-not-compliant-item-header">
+        <div :id="`${sectionId}_erreur_${index + 1}`" class="criterium-not-compliant-item-header">
           <ul class="fr-badges-group fr-mb-3w">
             <li v-if="notCompliantItem.userImpact">
               <p
