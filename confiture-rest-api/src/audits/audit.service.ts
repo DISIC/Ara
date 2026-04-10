@@ -298,23 +298,6 @@ export class AuditService {
 
       // return real result
       if (existingResult) {
-        // Migration for NOT_COMPLIANT criteria, we dont use userImpact, notCompliantComment & quickWin anymore
-        if (existingResult.status === CriterionResultStatus.NOT_COMPLIANT
-        && !existingResult.notCompliantItems.length
-        && (existingResult.userImpact
-          || existingResult.notCompliantComment
-          || existingResult.quickWin)) {
-          existingResult.notCompliantItems = [
-            {
-              id: -1,
-              title: null,
-              comment: existingResult.notCompliantComment,
-              userImpact: existingResult.userImpact,
-              quickWin: existingResult.quickWin
-            }
-          ];
-        }
-
         return existingResult;
       }
 
@@ -1315,19 +1298,7 @@ export class AuditService {
           key: img.key,
           thumbnailKey: img.thumbnailKey
         })),
-        notCompliantItems: r.notCompliantItems.length ?
-          r.notCompliantItems :
-            (r.status === CriterionResultStatus.NOT_COMPLIANT &&
-              (r.userImpact || r.notCompliantComment || r.quickWin) ?
-                [
-                  {
-                    title: null,
-                    comment: r.notCompliantComment,
-                    userImpact: r.userImpact,
-                    quickWin: r.quickWin
-                  }
-                ]
-              : [])
+        notCompliantItems: r.notCompliantItems
       })),
 
       transverseElements: audit.transverseElements

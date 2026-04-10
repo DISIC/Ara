@@ -620,14 +620,15 @@ describe("Audit", () => {
       cy.contains("button[role=\"tab\"]", "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme").click();
 
-      cy.focused().should("have.attr", "role", "textbox");
+      cy.get(".criterium-container .not-compliant-item input[type='text']")
+        .type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .tiptap.tiptap")
+      cy.get(".criterium-container .not-compliant-item .tiptap[role='textbox']")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
-      cy.get(".criterium-container label").contains("majeur").click();
-      cy.get(".criterium-container").contains("Facile à corriger").click();
+      cy.get(".criterium-container .not-compliant-item label").contains("majeur").click();
+      cy.get(".criterium-container .not-compliant-item .fr-checkbox-group").contains("Facile à corriger").click();
     });
   });
 
