@@ -76,7 +76,8 @@ const commonExtensions: Extensions = [
     codeBlock: false,
     dropcursor: false,
     heading: false,
-    link: false
+    link: false,
+    underline: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Typography.configure({
