@@ -117,24 +117,14 @@ Sont disponibles sur ce projet :
 
 ### Environnement de développement
 
-Le frontend est automatiquement déployé sur Heroku :
+Le frontend est automatiquement déployé sur Scalingo :
 
-- La branche principale `main` est déployée sur [https://ara-production-81d0da406fda.herokuapp.com/](https://ara-production-81d0da406fda.herokuapp.com/).
-- Les branches des PR sont déployées sur [pipeline-xxxxxx-xxxxxx.herokuapp.com](pipeline-xxxxxx-xxxxxx.herokuapp.com) (où XXX est un identifiant aléatoire généré par Heroku).
+- La branche principale `main` est déployée sur [https://ara-dev.osc-secnum-fr1.scalingo.io/](https://ara-dev.osc-secnum-fr1.scalingo.io/).
+- Les branches des PR sont déployées sur [https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/](https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/) (où XXX l’identifiant de la PR).
 
-Pour réinitialiser la base de données :
-
-```sh
-DATABASE_URL="<url_de_la_base_de_donnees_de_developpement>" yarn prisma migrate reset
-```
+Chaque déploiement a sa propre base de données.
 
 ### Environnement de production
 
-> [!IMPORTANT]
-> Avant de déployer sur l’environnement de production, s’assurer que son adresse IP est whitelistée sur OVH.
-
-Pour lancer les migrations de la base de données sur OVH :
-
-```sh
-DATABASE_URL="<url_de_la_base_de_donnees_de_production>" yarn prisma migrate deploy
-```
+L’application est automatiquement déployée en production avec Scalingo. Les
+migrations de base de donnée sont lancées automatiquement si besoin.
