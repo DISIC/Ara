@@ -33,22 +33,22 @@ model Audit {
   transverseElements       String[]
 
   // A11y declaration edition step
-  initiator           String?
-  auditorOrganisation String?
-  procedureUrl        String?
-  contactName         String?
-  contactEmail        String?
-  contactFormUrl      String?
-  technologies        String[]
-  tools               String[]
-  environments        TestEnvironment[]
-  notCompliantContent String?
-  derogatedContent    String?
-  notInScopeContent   String?
-  notes               String?
-  notesFiles          NotesFile[]
+  initiator                String?
+  auditorOrganisation      String?
+  procedureUrl             String?
+  contactName              String?
+  contactEmail             String?
+  contactFormUrl           String?
+  technologies             String[]
+  tools                    String[]
+  environments             TestEnvironment[]
+  notCompliantContent      String?
+  derogatedContent         String?
+  notInScopeContent        String?
+  notes                    String?
+  notesFiles               NotesFile[]
   statementPublicationDate DateTime?
-  statementEditionDate DateTime?
+  statementEditionDate     DateTime?
 
   // Misc
   creationDate    DateTime?
