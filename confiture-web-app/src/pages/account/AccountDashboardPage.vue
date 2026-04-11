@@ -2,12 +2,18 @@
 import { computed, nextTick, onMounted, ref } from "vue";
 
 import AuditsList from "../../components/account/dashboard/AuditsList.vue";
+import DebugCard from "../../components/DebugCard.vue";
 import PageMeta from "../../components/PageMeta";
 import TopLink from "../../components/ui/TopLink.vue";
+import { useDevMode } from "../../composables/useDevMode";
 import { history } from "../../router";
 import { useAccountStore } from "../../store/account";
 import { useAuditStore } from "../../store/audit";
 import { AuditStatus } from "../../types";
+
+const isDevMode = useDevMode();
+const isProductionEnv = import.meta.env.PROD;
+const isHeroku = window.location.hostname.endsWith(".herokuapp.com");
 
 const accountStore = useAccountStore();
 const auditStore = useAuditStore();
@@ -96,6 +102,12 @@ onMounted(() => {
       Masquer le message
     </button>
   </div>
+
+  <!-- Debug component -->
+  <DebugCard
+    v-if="isDevMode && (!isProductionEnv || (isProductionEnv && isHeroku))"
+    class="fr-mb-6w"
+  />
 
   <!-- Header -->
   <div class="fr-mb-6w header">

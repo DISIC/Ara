@@ -2,9 +2,15 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
+import DebugCard from "../components/DebugCard.vue";
 import PageMeta from "../components/PageMeta";
+import { useDevMode } from "../composables/useDevMode";
 import { REFERENTIAL } from "../enums";
 import { useAccountStore } from "../store";
+
+const isDevMode = useDevMode();
+const isProductionEnv = import.meta.env.PROD;
+const isHeroku = window.location.hostname.endsWith(".herokuapp.com");
 
 const router = useRouter();
 const headingRef = ref();
@@ -42,6 +48,10 @@ const steps = [
   <PageMeta
     title="Accueil"
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
+  />
+
+  <DebugCard
+    v-if=" isDevMode && (!isProductionEnv || (isProductionEnv && isHeroku))"
   />
 
   <section class="fr-mt-9w">
