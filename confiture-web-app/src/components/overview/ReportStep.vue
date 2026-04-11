@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { useResultsStore } from "../../store";
 import { Audit } from "../../types";
-import CopyBlock from "../ui/CopyBlock.vue";
+import CopyButton from "../ui/CopyButton.vue";
 import StepCard from "./StepCard.vue";
 
 defineProps<{
@@ -46,17 +46,33 @@ const auditIsReady = computed(() => {
           : "Terminez l’audit avant de livrer le rapport d’audit."
       }}
     </p>
-    <CopyBlock
-      class="report-step-copy"
-      :to="{
-        name: 'report',
-        params: { uniqueId: audit.consultUniqueId }
-      }"
-      :show-copy-button="auditIsReady"
-      success-message="Le lien vers le rapport d’audit a bien été copié dans le presse-papier."
-      link-hidden-label="le rapport"
-      copy-button-hidden-label="du rapport"
-    />
+    <div class="report-step-actions">
+      <div class="fr-btns-group fr-btns-group--icon-left">
+        <RouterLink
+          :to="{
+            name: 'report',
+            params: { uniqueId: audit.consultUniqueId }
+          }"
+          target="_blank"
+          class="fr-btn fr-btn--tertiary fr-mb-0"
+        >
+          Consulter
+          <span class="fr-sr-only">le rapport (nouvelle fenêtre)</span>
+        </RouterLink>
+      </div>
+
+      <div class="fr-btns-group fr-btns-group--icon-left">
+        <CopyButton
+          hidden-label-suffix="du rapport"
+          icon="fr-icon-link"
+          :content-to-copy="{
+            name: 'report',
+            params: { uniqueId: audit.consultUniqueId }
+          }"
+          is-within-btn-group
+        />
+      </div>
+    </div>
   </StepCard>
 </template>
 
@@ -68,5 +84,17 @@ const auditIsReady = computed(() => {
 
 .report-step-copy {
   grid-column: 1 / -1;
+}
+
+.report-step-actions {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: subgrid;
+
+  @media (width < 48rem) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+  }
 }
 </style>

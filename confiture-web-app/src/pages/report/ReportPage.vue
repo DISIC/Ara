@@ -9,6 +9,7 @@ import ReportErrors from "../../components/report/ReportErrors.vue";
 import ReportImprovements from "../../components/report/ReportImprovements.vue";
 import ReportNotes from "../../components/report/ReportNotes.vue";
 import ReportResults from "../../components/report/ReportResults.vue";
+import CopyButton from "../../components/ui/CopyButton.vue";
 import Dropdown from "../../components/ui/Dropdown.vue";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
@@ -35,7 +36,6 @@ const report = useReportStore();
 
 const router = useRouter();
 
-const showCopyAlert = ref(false);
 const onboardingModalRef = ref<InstanceType<typeof OnboardingModal>>();
 const tabsRef = ref<InstanceType<typeof AraTabs>>();
 
@@ -120,22 +120,9 @@ const siteUrl = computed(() => {
   return null;
 });
 
-const copyReportButtonRef = ref<HTMLButtonElement>();
-
-async function copyReportUrl() {
-  const url =
-    window.location.origin +
+const reportUrlToCopy =
+  window.location.origin +
     router.resolve({ name: "report", params: { uniqueId } }).fullPath;
-
-  navigator.clipboard.writeText(url).then(() => {
-    showCopyAlert.value = true;
-  });
-}
-
-function hideReportAlert() {
-  showCopyAlert.value = false;
-  copyReportButtonRef.value?.focus();
-}
 
 function onOnboardingClose() {
   localStorage.setItem("confiture:seen-onboarding", "true");
@@ -175,13 +162,12 @@ watch(
   <div class="fr-mb-3v heading">
     <h1 class="fr-mb-0">Rapport d’audit accessibilité</h1>
     <div class="heading-actions">
-      <button
-        ref="copyReportButtonRef"
-        class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-links-fill"
-        @click="copyReportUrl"
-      >
-        Copier le lien du rapport
-      </button>
+      <CopyButton
+        icon="fr-icon-link"
+        :content-to-copy="reportUrlToCopy"
+        label="Copier le lien du rapport"
+        success-label="Lien copié"
+      />
       <Dropdown
         title="Télécharger"
         :button-props="{ class: 'fr-btn--secondary' }"
@@ -201,18 +187,6 @@ watch(
           </li>
         </ul>
       </Dropdown>
-    </div>
-  </div>
-
-  <div role="alert" aria-live="polite">
-    <div
-      v-if="showCopyAlert"
-      class="fr-alert fr-alert--success fr-alert--sm fr-mb-2w"
-    >
-      <p>Le lien vers le rapport a bien été copié dans le presse-papier.</p>
-      <button class="fr-link fr-link--close" @click="hideReportAlert">
-        Masquer le message
-      </button>
     </div>
   </div>
 
@@ -315,6 +289,7 @@ watch(
 .heading-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .dates {
