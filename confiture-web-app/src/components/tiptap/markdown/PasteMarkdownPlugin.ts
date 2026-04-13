@@ -56,10 +56,10 @@ export class PasteMarkdownPlugin extends Plugin {
     }
 
     // FIXME: Run the editor's drop logic instead of a fake "paste"
-    return this.handleDataTransfer(dragEvent.dataTransfer, position.pos, new ClipboardEvent("paste"));
+    return this.handleDataTransfer(dragEvent.dataTransfer, position.pos, new ClipboardEvent("paste"), true);
   }
 
-  private handleDataTransfer(dataTransfer: DataTransfer, pos: number, clipboardEvent: ClipboardEvent): boolean {
+  private handleDataTransfer(dataTransfer: DataTransfer, pos: number, clipboardEvent: ClipboardEvent, isDrop?: boolean): boolean {
     if (this.isInternalPaste) {
       this.isInternalPaste = false;
       return false;
@@ -100,7 +100,9 @@ export class PasteMarkdownPlugin extends Plugin {
     const html = mdManager.instance.parse(text) as string;
 
     // Move selection at given position and paste the HTML content
-    this.editor.commands.setTextSelection(pos);
+    if (isDrop) {
+      this.editor.commands.setTextSelection(pos);
+    }
 
     // Run the editor's paste logic with the given HTML string
     this.isInternalPaste = true;
