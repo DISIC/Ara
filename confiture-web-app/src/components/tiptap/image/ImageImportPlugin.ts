@@ -1,4 +1,3 @@
-import { Fragment, Slice } from "@tiptap/pm/model";
 import { EditorState, Plugin, PluginKey, Selection, Transaction } from "@tiptap/pm/state";
 import { canSplit } from "@tiptap/pm/transform";
 import { Decoration, EditorView } from "@tiptap/pm/view";
@@ -59,8 +58,8 @@ export class ImageImportPlugin extends Plugin {
     super({
       key: new PluginKey("handleImageImport"),
       props: {
-        transformPasted: (slice, view, plain) =>
-          this.transformPasted(slice, view, plain),
+        transformPastedHTML: (html, _view) =>
+          this.transformPastedHTML(html),
         handleDrop: (view, event, _slice, moved) =>
           this.handleDrop(view, event, moved),
         handlePaste: (view, event, _slice) =>
@@ -71,35 +70,26 @@ export class ImageImportPlugin extends Plugin {
 
   private notify = useNotifications();
 
+  private pasteError: string | null = null;
+
   private fileHandler = useFileHandler();
 
-  private transformPasted(
-    slice: Slice,
-    _view: EditorView,
-    plain: boolean
-  ): Slice {
-    // Strip images out from HTML
+  private transformPastedHTML(html: string) {
+    // Remove all <img> elements with src not beginning with "/uploads/"
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const baseURL = window.location.origin;
+    const imgs = Array.from(doc.querySelectorAll(`img:not([src^=\"/uploads/\"]):not([src^=\"${baseURL}/uploads/\"])`));
     // TODO: import images that can be imported
-    const content = slice.content.content;
-    let newContent: Fragment = Fragment.empty;
-    if (!plain) {
-      let imgCount = 0;
-      content.forEach(n => {
-        if (n.type.name != "image") {
-          newContent = newContent.addToEnd(n.copy(n.content));
-        } else {
-          imgCount++;
-        }
-      });
-      if (imgCount === 1) {
-        this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
-      } else if (imgCount > 1) {
-        this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
-      }
-      return new Slice(newContent, slice.openStart, slice.openEnd);
-    } else {
-      return slice;
+    imgs.forEach(img => img.remove());
+    if (imgs.length === 1) {
+      this.pasteError = getFileMessage("FETCH_ERROR_IMAGE");
+    } else if (imgs.length > 1) {
+      this.pasteError = getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE");
     }
+
+    return doc.body.innerHTML;
   }
 
   /**
@@ -194,6 +184,10 @@ export class ImageImportPlugin extends Plugin {
     }
 
     // Tiptap will handle other formats (e.g. HTML text)
+    if (this.pasteError) {
+      this.notify("error", undefined, this.pasteError);
+      this.pasteError = null;
+    }
     return false;
   }
 
@@ -409,26 +403,6 @@ export class ImageImportPlugin extends Plugin {
       const files = results.filter((file): file is File => file !== null);
       onComplete(files);
     });
-  }
-
-  private removeImgsFromHTML(html: string): string {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    const imgs = Array.from(doc.querySelectorAll("img"));
-    // const urls = imgs.map((img) => img.src);
-
-    // TODO: import images that can be imported
-
-    // Remove all <img> elements
-    imgs.forEach(img => img.remove());
-    if (imgs.length === 1) {
-      this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
-    } else if (imgs.length > 1) {
-      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
-    }
-
-    return doc.body.innerHTML;
   }
 
   /**
