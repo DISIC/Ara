@@ -29,6 +29,7 @@ model Audit {
   transverseElementsPageId Int           @unique
   auditorName              String?
   auditorEmail             String?
+  auditor                  Auditor?      @relation(fields: [auditorEmail], references: [email])
   showAuditorEmailInReport Boolean       @default(false)
   transverseElements       String[]
 
@@ -217,6 +218,14 @@ model EmailLog {
   lastAttempt DateTime @default(now())
 }
 
+// An email associated with an audit, which may or may not be associated with
+// an existing user account
+model Auditor {
+  email  String  @unique
+  user   User?
+  audits Audit[]
+}
+
 model User {
   id  Int    @id @default(autoincrement())
   uid String @unique @default(uuid())
@@ -232,6 +241,8 @@ model User {
 
   newEmail                String?
   newEmailVerificationJti String?
+
+  auditor Auditor @relation(fields: [username], references: [email])
 }
 
 model ActiveFeedbackToken {
