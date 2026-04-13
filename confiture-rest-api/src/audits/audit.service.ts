@@ -96,7 +96,17 @@ export class AuditService {
 
         auditType: data.auditType,
 
-        auditorEmail: data.auditorEmail,
+        auditor: {
+          connectOrCreate: {
+            where: {
+              email: data.auditorEmail
+            },
+            create: {
+              email: data.auditorEmail
+            }
+          }
+        },
+
         auditorName: data.auditorName,
 
         transverseElementsPage: {
@@ -1506,11 +1516,12 @@ export class AuditService {
     const newAudit = await this.prisma.audit.create({
       data: {
         ...omit(originalAudit, [
-          // ignore ids
+          // ignore ids/foreign keys
           "id",
           "auditTraceId",
           "sourceAuditId",
           "transverseElementsPageId",
+          "auditorEmail",
 
           // reset statement fields
           "procedureUrl",
@@ -1526,6 +1537,13 @@ export class AuditService {
           "derogatedContent",
           "notInScopeContent"
         ]),
+
+        auditor: {
+          // FIXME: connect to current user instead ?
+          connect: {
+            email: originalAudit.auditorEmail
+          }
+        },
 
         // link new audit with the original
         sourceAudit: {

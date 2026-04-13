@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
 import {
+  Auditor,
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "./generated/prisma/client";
@@ -78,6 +79,8 @@ export class DebugController {
     const editUniqueId = `edit-${nanoid()}`;
     const reportUniqueId = `report-${nanoid()}`;
 
+    const auditor: Auditor = { email: body.auditorEmail || "etienne.durand@example.com" };
+
     const completedAudit = await this.prisma.audit.create({
       data: {
         editUniqueId: editUniqueId,
@@ -92,7 +95,13 @@ export class DebugController {
         },
         auditType: "FULL",
         procedureName: "Audit de mon petit site",
-        auditorEmail: body.auditorEmail || "etienne.durand@example.com",
+        auditor: {
+          connectOrCreate: {
+            create: auditor,
+            where: auditor
+          }
+        },
+
         auditorName: "Étienne Durand",
         transverseElementsPage: {
           create: {
