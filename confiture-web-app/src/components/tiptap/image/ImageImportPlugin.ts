@@ -70,6 +70,8 @@ export class ImageImportPlugin extends Plugin {
 
   private notify = useNotifications();
 
+  private pasteError: string | null = null;
+
   private fileHandler = useFileHandler();
 
   private transformPastedHTML(html: string) {
@@ -82,9 +84,9 @@ export class ImageImportPlugin extends Plugin {
     // TODO: import images that can be imported
     imgs.forEach(img => img.remove());
     if (imgs.length === 1) {
-      this.notify("error", undefined, getFileMessage("FETCH_ERROR_IMAGE"));
+      this.pasteError = getFileMessage("FETCH_ERROR_IMAGE");
     } else if (imgs.length > 1) {
-      this.notify("error", undefined, getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE"));
+      this.pasteError = getFileMessage("UPLOAD_ERROR_FROM_HTML_MULTIPLE");
     }
 
     return doc.body.innerHTML;
@@ -182,6 +184,10 @@ export class ImageImportPlugin extends Plugin {
     }
 
     // Tiptap will handle other formats (e.g. HTML text)
+    if (this.pasteError) {
+      this.notify("error", undefined, this.pasteError);
+      this.pasteError = null;
+    }
     return false;
   }
 
