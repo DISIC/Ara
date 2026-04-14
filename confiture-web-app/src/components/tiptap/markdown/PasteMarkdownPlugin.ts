@@ -133,7 +133,7 @@ export class PasteMarkdownPlugin extends Plugin {
       /(?<!<[^>]*)\[.*\]\(.*\s?(?:".*")?\)(?![^<]*>)/.test(text) || // Link
       /^\s{0,3}[-+*]\s+.+$/m.test(text) || // Unordered list
       /^\s{0,3}\d+\.\s+.+$/m.test(text) || // Ordered list
-      /^\s{0,3}>\s*.+$/m.test(text) || // Block quotation
+      /^\s{0,3}>\s+.+$/m.test(text) || // Block quotation
       /(?<!<[^>]*)`[^`].+`(?![^<]*>)/.test(text) || // Inline code
       /(?<!<[^>]*)(```|~~~)[\s\S]+?\1(?![^<]*>)/.test(text) || // Code block
       /(?<!<[^>]*)!\[[^\]]*]\([^)]+?(?:\s+"(.*?)")?\)(?![^<]*>)/.test(text) // Image
