@@ -4,12 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
-### 13/04/2026
+### 14/04/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Plusieurs corrections sur le copier-coller et glisser déposer de contenus – Markdown, HTML, images. ([#1459](https://github.com/DISIC/Ara/pull/1459), [#1467](https://github.com/DISIC/Ara/pull/1467), [#1469](https://github.com/DISIC/Ara/pull/1469))
 - Amélioration du redimensionnement des images ([#1440](https://github.com/DISIC/Ara/pull/1440))
+- Plusieurs corrections sur le copier-coller et glisser déposer de contenus – Markdown, HTML, images. ([#1459](https://github.com/DISIC/Ara/pull/1459), [#1467](https://github.com/DISIC/Ara/pull/1467), [#1469](https://github.com/DISIC/Ara/pull/1469), [#1471](https://github.com/DISIC/Ara/pull/1471))
 
 ### 25/03/2026
 
