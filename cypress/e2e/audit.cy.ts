@@ -660,7 +660,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can delete an not compliant item", () => {
+  it("User can delete an not compliant item", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 

@@ -6,7 +6,6 @@ import { computed } from "vue";
 import rgaa from "../../criteres.json";
 import { CriterionResultUserImpact, ReportCriteriumResult } from "../../types";
 import {
-  formatStatus,
   formatUserImpact,
   getUploadUrl,
   isTiptapDocumentEmpty
@@ -52,7 +51,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
     </p>
 
     <p class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon fr-mb-3w">
-      {{ formatStatus(error.status) }} ({{ countNotCompliantItemsRecommandations }})
+      non-conformité ({{ countNotCompliantItemsRecommandations }})
     </p>
 
     <div role="list">

@@ -603,48 +603,21 @@ export class AuditService {
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const promises = body.data
       .map((item) => {
-        const data: Prisma.CriterionResultUpsertArgs["create"] = {
-          criterium: item.criterium,
-          topic: item.topic,
-          page: {
-            connect: {
-              id: item.pageId
-            }
-          },
+        const result: any[] = [];
 
-          status: item.status,
-          compliantComment: item.compliantComment,
-          notCompliantComment: item.notCompliantComment,
-          notApplicableComment: item.notApplicableComment,
-          userImpact: item.userImpact,
-          quickWin: item.quickWin
-        };
-
-        const result: any[] = [
-          this.prisma.criterionResult.upsert({
-            where: {
-              pageId_topic_criterium: {
-                criterium: item.criterium,
-                topic: item.topic,
-                pageId: item.pageId
-              }
-            },
-            create: data,
-            update: data
-          })
-        ];
-
-        if (item.notCompliantItems.some(x => x.id)) {
-          const notCompliantItemsToUpdate = item.notCompliantItems.filter(x => x.id).map((notCompliantItem) => {
-            return this.prisma.notCompliantItem.upsert({
-              where: {
-                id: notCompliantItem.id,
-                criterionResultId: notCompliantItem.criterionResultId
-              },
-              create: notCompliantItem,
-              update: notCompliantItem
+        const existingNotCompliantItems = item.notCompliantItems
+          .filter((x) => x.id);
+        if (existingNotCompliantItems.length) {
+          const notCompliantItemsToUpdate = existingNotCompliantItems
+            .map((notCompliantItem) => {
+              return this.prisma.notCompliantItem.update({
+                where: {
+                  id: notCompliantItem.id,
+                  criterionResultId: notCompliantItem.criterionResultId
+                },
+                data: notCompliantItem
+              });
             });
-          });
 
           result.push(...notCompliantItemsToUpdate);
 
@@ -656,7 +629,7 @@ export class AuditService {
               AND: [
                 {
                   id: {
-                    notIn: item.notCompliantItems.filter(x => x.id).map(x => x.id)
+                    notIn: existingNotCompliantItems.map((x) => x.id)
                   }
                 }
               ]
@@ -666,13 +639,45 @@ export class AuditService {
           result.push(notCompliantItemsToDelete);
         }
 
-        if (item.notCompliantItems.some(x => !x.id)) {
-          const notCompliantItemsToCreate = this.prisma.notCompliantItem.createMany({
-            data: item.notCompliantItems.filter(x => !x.id)
-          });
+        const newNotCompliantItems =
+          item.notCompliantItems?.filter((x) => !x.id).map((e) =>
+            omit(e, ["id", "criterionResultId"])
+          ) ?? [];
 
-          result.push(notCompliantItemsToCreate);
-        }
+        const data: Prisma.CriterionResultUpsertArgs["create"] = {
+          criterium: item.criterium,
+          topic: item.topic,
+          page: {
+            connect: {
+              id: item.pageId
+            }
+          },
+
+          status: item.status,
+          compliantComment: item.compliantComment,
+          notApplicableComment: item.notApplicableComment,
+          notCompliantItems: newNotCompliantItems.length > 0
+            ? {
+                createMany: {
+                  data: newNotCompliantItems
+                }
+              }
+            : undefined
+        };
+
+        result.push(
+          this.prisma.criterionResult.upsert({
+            where: {
+              pageId_topic_criterium: {
+                criterium: item.criterium,
+                topic: item.topic,
+                pageId: item.pageId
+              }
+            },
+            create: data,
+            update: data
+          })
+        );
 
         return result;
       })
