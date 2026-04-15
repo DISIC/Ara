@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
-import { useDialog } from "../../composables/useDialog";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { CriterionResultUserImpact, NotCompliantItem } from "../../types";
 import { formatUserImpact } from "../../utils";
@@ -11,8 +10,6 @@ import RadioGroup from "../ui/RadioGroup.vue";
 
 const props = defineProps<{
   index: number;
-  topicNumber: number;
-  criterium: any;
   item: NotCompliantItem;
   canDelete: boolean;
   onDelete: (index: number) => void;
@@ -21,26 +18,11 @@ const props = defineProps<{
 
 const baseTitle = "Erreur";
 
-const dialog = useDialog();
-
 function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
   const item = { ...props.item };
   item[field] = value as never;
 
   props.onUpdate(props.index, item, field === "title" || field === "comment");
-}
-
-async function handleDeleteItemClick(index: number) {
-  await dialog.showConfirm({
-    title: `Vous allez supprimer l'erreur ${index + 1}`,
-    message: `L'erreur ${index + 1} du critère ${props.topicNumber}.${props.criterium.number} sera définitivement supprimée`,
-    cancelLabel: "Annuler",
-    confirmLabel: `Supprimer l'erreur`,
-    confirmAction: {
-      cb: () => props.onDelete(index)
-    },
-    titleIcon: "fr-icon-warning-line"
-  });
 }
 
 const userImpacts: Array<{
@@ -88,7 +70,7 @@ defineExpose({
       </p>
     </div>
     <div class="fr-col-4 error-user-delete">
-      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="handleDeleteItemClick(index)">Supprimer<span class="fr-sr-only"> l'erreur {{ index }}</span></button>
+      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only"> l'erreur {{ index }}</span></button>
     </div>
   </div>
 
