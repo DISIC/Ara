@@ -173,9 +173,8 @@ function onUpdateNotCompliantItemClick(
 </template>
 <style>
 .not-compliant-item {
-  border-bottom: 1px solid var(--border-default-grey);
   padding-bottom: 1em;
-  margin: 1em 0;
+  border-bottom: 1px solid var(--border-default-grey);
 
   &:first-child {
     margin-top: 0;
@@ -184,5 +183,10 @@ function onUpdateNotCompliantItemClick(
 
 .not-compliant-item-add {
   text-align: center;
+  padding: 1em 0;
+
+  &:has(button:hover) {
+    background-color: var(--grey-925-125) !important;
+  }
 }
 </style>
