@@ -543,9 +543,15 @@ export const useResultsStore = defineStore("results", {
             CriteriumResultStatus.NOT_APPLICABLE
           ])!,
           compliantComment: sample(["Commentaire conforme", "Rien"])!,
-          notCompliantComment: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
-          userImpact: sample(CriterionResultUserImpact)!
+          notCompliantItems: [
+            {
+              title: sample(["Titre non conforme", "Pas de titre"])!,
+              comment: sample(["Commentaire non conforme", "Rien"])!,
+              userImpact: sample(CriterionResultUserImpact)!,
+              quickWin: false
+            }
+          ]
         })) ?? [];
 
       await this.updateResults(uniqueId, updates);
