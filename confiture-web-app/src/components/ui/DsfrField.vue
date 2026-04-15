@@ -4,6 +4,7 @@ import { computed, ref } from "vue";
 export interface DsfrFieldProps {
   modelValue?: string | null;
   label: string;
+  labelSrOnly?: string;
   hint?: string;
   type?: "text" | "email" | "url";
   required?: boolean;
@@ -40,7 +41,7 @@ defineExpose({
 <template>
   <div :class="['fr-input-group', { 'fr-input-group--error': isError }]">
     <label class="fr-label" :for="inputId">
-      {{ label }}
+      {{ label }}<span v-if="labelSrOnly" class="fr-sr-only">&nbsp;{{ labelSrOnly }}</span>
       <span v-if="hint || $slots.hint" class="fr-hint-text">
         <slot name="hint">{{ hint }}</slot>
       </span>

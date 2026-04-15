@@ -617,8 +617,14 @@ export class AuditService {
       .map((item) => {
         const result: any[] = [];
 
+        const newNotCompliantItems =
+          item.notCompliantItems?.filter((x) => !x.id).map((e) =>
+            omit(e, ["id", "criterionResultId"])
+          ) ?? [];
+
         const existingNotCompliantItems = item.notCompliantItems
           .filter((x) => x.id);
+
         if (existingNotCompliantItems.length) {
           const notCompliantItemsToUpdate = existingNotCompliantItems
             .map((notCompliantItem) => {
@@ -650,11 +656,6 @@ export class AuditService {
 
           result.push(notCompliantItemsToDelete);
         }
-
-        const newNotCompliantItems =
-          item.notCompliantItems?.filter((x) => !x.id).map((e) =>
-            omit(e, ["id", "criterionResultId"])
-          ) ?? [];
 
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
