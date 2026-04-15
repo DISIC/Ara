@@ -37,7 +37,10 @@ function copyContentToClipboard() {
 const initialButtonWidth = ref<string>();
 const copyButtonRef = templateRef("copyButtonRef");
 onMounted(() => {
-  initialButtonWidth.value = `${copyButtonRef.value?.offsetWidth}px`;
+  // FIXME: `setTimeout()` used to force computing element's width after prop is assigned
+  setTimeout(() => {
+    initialButtonWidth.value = `${copyButtonRef.value?.offsetWidth}px`;
+  }, 1);
 });
 </script>
 
