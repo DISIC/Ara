@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * Component is shown under "?dev=1" in every env although debug API routes are disabled in production.
+ */
 import { ref } from "vue";
 
 import { useNotifications } from "../composables/useNotifications";

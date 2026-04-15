@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 import DebugCard from "../components/DebugCard.vue";
 import PageMeta from "../components/PageMeta";
+import { useDevMode } from "../composables/useDevMode";
 import { REFERENTIAL } from "../enums";
-import { useAccountStore, ENABLE_DEBUG_CARD } from "../store";
+import { useAccountStore } from "../store";
 
 const router = useRouter();
-const headingRef = ref();
+const isDevMode = useDevMode();
 
 // Redirect connected user to his account
 const accountStore = useAccountStore();
@@ -45,7 +45,7 @@ const steps = [
     description="Avec Ara, vous évaluez manuellement les 106 critères du RGAA, générez un rapport d’audit et une déclaration d’accessibilité"
   />
 
-  <DebugCard v-if="ENABLE_DEBUG_CARD" />
+  <DebugCard v-if="isDevMode" />
 
   <section class="fr-mt-9w">
     <h1 ref="headingRef">Je réalise un audit d’accessibilité avec Ara</h1>
