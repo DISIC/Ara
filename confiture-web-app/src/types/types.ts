@@ -121,7 +121,7 @@ export type NotCompliantItem = {
   id?: number;
   title: string | null;
   comment: string | null;
-  userImpact: Record<string, unknown> | null;
+  userImpact: CriterionResultUserImpact | null;
   quickWin: boolean;
   criterionResultId?: number;
 };
