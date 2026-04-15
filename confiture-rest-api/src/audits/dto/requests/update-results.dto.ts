@@ -150,7 +150,8 @@ class CriterionResultNotCompliantItem {
   quickWin?: boolean;
 
   @IsNumber()
-  criterionResultId: number;
+  @IsOptional()
+  criterionResultId?: number;
 }
 
 export class UpdateResultsDto {
