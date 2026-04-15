@@ -654,8 +654,10 @@ export class AuditService {
           },
 
           status: item.status,
-          compliantComment: item.compliantComment,
+          notCompliantComment: item.notCompliantComment,
           notApplicableComment: item.notApplicableComment,
+          userImpact: item.userImpact,
+          quickWin: item.quickWin,
           notCompliantItems: newNotCompliantItems.length > 0
             ? {
                 createMany: {
