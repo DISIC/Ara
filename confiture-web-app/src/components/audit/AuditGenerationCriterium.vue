@@ -451,8 +451,6 @@ const parentCriterium = computed(() => {
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       ref="criteriumNotCompliantAccordion"
-      :topic-number="topicNumber"
-      :criterium="criterium"
       :items="result.notCompliantItems"
       :example-images="result.exampleImages"
       @file-deleted="handleFileDeleteAfterConfirm(

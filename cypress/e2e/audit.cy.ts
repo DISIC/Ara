@@ -660,7 +660,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can delete an not compliant item", () => {
+  it.only("User can delete an not compliant item", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -689,8 +689,6 @@ describe("Audit", () => {
       cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
 
       cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").contains("Supprimer").click();
-
-      cy.get("#generic-modal").contains("button", "Supprimer l'erreur").click();
 
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)");
     });

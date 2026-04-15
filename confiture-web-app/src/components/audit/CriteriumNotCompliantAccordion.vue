@@ -11,8 +11,6 @@ import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   id: string;
-  topicNumber: number;
-  criterium: any;
   exampleImages: ExampleImageFile[];
   items: NotCompliantItem[];
 }>();
@@ -138,8 +136,6 @@ function onUpdateNotCompliantItemClick(
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
-        :topic-number="topicNumber"
-        :criterium="criterium"
         :can-delete="notCompliantItems.length > 1"
         :on-delete="onDeleteNotCompliantItemClick"
         :on-update="onUpdateNotCompliantItemClick"
