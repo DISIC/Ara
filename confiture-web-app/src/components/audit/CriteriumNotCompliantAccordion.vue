@@ -173,7 +173,7 @@ function onUpdateNotCompliantItemClick(
 </template>
 <style>
 .not-compliant-item {
-  padding-bottom: 1em;
+  padding: 1em 0;
   border-bottom: 1px solid var(--border-default-grey);
 
   &:first-child {
