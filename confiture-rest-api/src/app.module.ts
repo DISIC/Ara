@@ -36,7 +36,7 @@ import { TestsController } from "./tests.controller";
   }],
   controllers: [
     HealthCheckController,
-    // Disable debug controller for production environment
+    // Only enable debug controller for dev and review environnments and when generating types
     ...(process.env.NODE_ENV !== "production" || process.env.HEROKU_APP_NAME || process.env.GENERATE_TYPES
       ? [DebugController]
       : []),

@@ -9,7 +9,7 @@ import {
   CriterionResultUserImpact
 } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
-import { CreateDebugAuditDto } from "./create-audit.dto";
+import { CreateDebugAuditDto } from "./create-debug-audit.dto";
 
 @Controller("debug")
 @ApiTags("Debug")
@@ -95,15 +95,9 @@ export class DebugController {
       select: AUDIT_PRISMA_SELECT
     });
 
-    const auditPages = await this.prisma.auditedPage.findMany({
-      where: {
-        auditUniqueId: editUniqueId
-      }
-    });
-
     if (!body.isPristine) {
       await Promise.all(
-        [audit.transverseElementsPage, ...auditPages].map(async (p) =>
+        [audit.transverseElementsPage, ...audit.pages].map(async (p) =>
           this.prisma.criterionResult.createMany({
             data: CRITERIA.map((c, i) => ({
               status: [
@@ -136,7 +130,7 @@ export class DebugController {
           pageId_topic_criterium: {
             topic: 1,
             criterium: 1,
-            pageId: auditPages[0].id
+            pageId: audit.pages[0].id
           }
         }
       });

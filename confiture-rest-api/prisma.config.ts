@@ -9,6 +9,7 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    // Only allow seeding on dev and review environnments
     seed: process.env.NODE_ENV !== "production" || process.env.HEROKU_APP_NAME
       ? "yarn dlx tsx prisma/seed.ts"
       : undefined

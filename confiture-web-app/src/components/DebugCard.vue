@@ -23,7 +23,7 @@ enum AuditCompletion {
 // Form data
 const auditTypes = [AuditType.FULL, AuditType.COMPLEMENTARY, AuditType.FAST];
 const selectedAuditType = ref(AuditType.FULL);
-const auditorEmail = ref(accountStore.account?.email ?? "");
+const auditorEmail = ref(accountStore.account?.email ?? "email@example.com");
 const procedureName = ref("Ma procédure");
 const auditCompletions = [
   { value: AuditCompletion.PRISTINE, label: "Vierge (0%)" },
