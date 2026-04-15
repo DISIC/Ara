@@ -105,6 +105,8 @@ function addEmptyErrorToNotCompliantItems() {
     userImpact: null,
     quickWin: false
   });
+
+  setTimeout(() => setFocusToTextEditor(), 100);
 }
 
 function onDeleteNotCompliantItemClick(index: number) {

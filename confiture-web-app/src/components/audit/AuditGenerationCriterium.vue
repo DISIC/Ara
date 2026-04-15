@@ -262,8 +262,10 @@ const updateResultNotCompliantItem = async (payload:
             action: {
               label: "Annuler",
               cb: async () => {
+                item.id = undefined;
                 await updateResultNotCompliantItem({ index, item, action: "add" });
                 storeNotification.hideNotification();
+                criteriumNotCompliantAccordion.value?.focus();
               }
             }
           }

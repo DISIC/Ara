@@ -70,7 +70,7 @@ defineExpose({
       </p>
     </div>
     <div class="fr-col-4 error-user-delete">
-      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only"> l'erreur {{ index }}</span></button>
+      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
     </div>
   </div>
 
@@ -80,6 +80,7 @@ defineExpose({
     :model-value="item.title"
     type="text"
     label="Titre de l'erreur"
+    :label-sr-only="`${index + 1}`"
     class="fr-mb-4w user-error-label"
     @input="handleItemValueClick('title', $event.target.value)"
   />
