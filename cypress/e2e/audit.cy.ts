@@ -625,7 +625,7 @@ describe("Audit", () => {
       cy.get(".criterium-container .not-compliant-item input[type='text']")
         .type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .not-compliant-item .tiptap[role='textbox']")
+      cy.get(".criterium-container .not-compliant-item .tiptap.tiptap")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
@@ -649,7 +649,7 @@ describe("Audit", () => {
       cy.get(".criterium-container .not-compliant-item:last input[type='text']")
         .type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .not-compliant-item:last .tiptap[role='textbox']")
+      cy.get(".criterium-container .not-compliant-item:last .tiptap.tiptap")
         .type("Il n’y a pas de alt sur l’image du hero");
 
       cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
@@ -679,7 +679,7 @@ describe("Audit", () => {
       cy.get(".criterium-container .not-compliant-item:last input[type='text']")
         .type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .not-compliant-item:last .tiptap[role='textbox']")
+      cy.get(".criterium-container .not-compliant-item:last .tiptap.tiptap")
         .type("Il n’y a pas de alt sur l’image du hero");
 
       cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
