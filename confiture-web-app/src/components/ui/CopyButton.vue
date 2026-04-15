@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
   isWithinBtnGroup?: boolean;
 }>(), {
   label: "Copier le lien de partage",
-  successLabel: "Lien de partage copié"
+  successLabel: "Lien copié"
 });
 
 const showSuccess = ref(false);

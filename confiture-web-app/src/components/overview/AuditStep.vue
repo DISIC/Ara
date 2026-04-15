@@ -130,10 +130,7 @@ const auditIsInProgress = computed(() => {
     />
 
     <ul
-      :class="[
-        'fr-btns-group fr-btns-group--icon-left audit-step-card-actions',
-        { 'audit-step-card-actions--half': auditIsReady }
-      ]"
+      class="fr-btns-group fr-btns-group--icon-left audit-step-card-actions"
     >
       <li>
         <RouterLink
@@ -213,10 +210,6 @@ const auditIsInProgress = computed(() => {
 
 .audit-step-card-actions {
   grid-column: 1 / -1;
-}
-
-.audit-step-card-actions--half {
-  grid-column: 1;
 }
 
 @media (width < 48rem) {
