@@ -253,15 +253,21 @@ const updateResultNotCompliantItem = async (payload:
 
     if (action === "delete")
     {
-      storeNotification.showNotification("success", undefined, `Erreur supprimée`, {
-        action: {
-          label: "Annuler",
-          cb: async () => {
-            await updateResultNotCompliantItem({ index, item, action: "add" });
-            storeNotification.hideNotification();
+      storeNotification
+        .showNotification(
+          "success",
+          undefined,
+          `Erreur ${index + 1} du critère ${props.topicNumber}.${props.criterium.number} supprimée`,
+          {
+            action: {
+              label: "Annuler",
+              cb: async () => {
+                await updateResultNotCompliantItem({ index, item, action: "add" });
+                storeNotification.hideNotification();
+              }
+            }
           }
-        }
-      });
+        );
     }
   } catch (error) {
     handleUpdateResultError(error);
