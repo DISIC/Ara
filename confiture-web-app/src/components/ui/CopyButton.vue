@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { templateRef } from "@vueuse/core";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, useTemplateRef } from "vue";
 import { RouteLocationRaw } from "vue-router";
 import router from "../../router";
 
@@ -35,12 +34,13 @@ function copyContentToClipboard() {
 }
 
 const initialButtonWidth = ref<string>();
-const copyButtonRef = templateRef("copyButtonRef");
+const copyButtonRef = useTemplateRef("copyButtonRef");
+
 onMounted(() => {
   // FIXME: `setTimeout()` used to force computing element's width after prop is assigned
   setTimeout(() => {
     initialButtonWidth.value = `${copyButtonRef.value?.offsetWidth}px`;
-  }, 1);
+  }, 500);
 });
 </script>
 
