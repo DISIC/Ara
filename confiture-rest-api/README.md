@@ -40,6 +40,18 @@ docker run --name confiture-db \
              postgres:14
 ```
 
+Optionnellement, il est possible d’ajouter la variable d’environnement `DATABASE_SEEDS` pour pré-remplir la base de données avec des comptes utilisateurs dont le format est `email:password` séparés par une `,`. Exemple :
+
+```sh
+DATABASE_SEEDS="johndoe@email.com:my-secret-password,pierredurand@email.com:my-more-secret-password"
+```
+
+Pour lancer la génération des seeds :
+
+```sh
+yarn db:seed
+```
+
 Lancer les migrations de la base de données :
 
 ```sh

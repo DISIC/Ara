@@ -272,6 +272,16 @@ function confirmLeave() {
     :to="{ name: 'audit-overview', params: { uniqueId } }"
   />
 
+  <div v-if="isDevMode" class="fr-mb-4w">
+    <button
+      class="fr-btn"
+      type="button"
+      @click="DEBUG_fillFields"
+    >
+      [DEV] Remplir les champs
+    </button>
+  </div>
+
   <FormWithValidation
     v-if="auditStore.currentAudit"
     class="content"
@@ -542,16 +552,6 @@ function confirmLeave() {
         v-model="notInScopeContent"
         class="fr-input"
       />
-    </div>
-
-    <div v-if="isDevMode">
-      <button
-        class="fr-btn fr-mt-4w fr-mb-2w"
-        type="button"
-        @click="DEBUG_fillFields"
-      >
-        [DEV] Remplir les champs
-      </button>
     </div>
 
     <div class="fr-mt-6w actions">

@@ -6,12 +6,13 @@ import { AuditsModule } from "./audits/audits.module";
 import { AuthModule } from "./auth/auth.module";
 import { UserMiddleware } from "./auth/user.middleware";
 import { configValidationSchema } from "./config-validation-schema";
-import { DebugController } from "./debug.controller";
+import { DebugController } from "./debug/debug.controller";
 import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthCheckController } from "./health-check.controller";
 import { MailModule } from "./mail/mail.module";
 import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
+import { TestsController } from "./tests.controller";
 
 @Module({
   imports: [
@@ -35,8 +36,12 @@ import { ProfileModule } from "./profile/profile.module";
   }],
   controllers: [
     HealthCheckController,
-    // enable debug enpoints only when the DEBUG_ENDPOINTS variable is set
-    ...(process.env.DEBUG_ENDPOINTS ? [DebugController] : [])
+    // Only enable debug controller for dev and review environnments and when generating types
+    ...(process.env.NODE_ENV !== "production" || process.env.HEROKU_APP_NAME || process.env.GENERATE_TYPES
+      ? [DebugController]
+      : []),
+    // enable tests enpoints only when the TESTS_ENDPOINTS variable is set
+    ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
   ]
 })
 export class AppModule implements NestModule {

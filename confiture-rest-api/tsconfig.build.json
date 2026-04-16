@@ -7,6 +7,7 @@
     "**/*spec.ts",
     "scripts",
     "confiture-api.ts",
-    "prisma.config.ts"
+    "prisma.config.ts",
+    "prisma/seed.ts"
   ]
 }
