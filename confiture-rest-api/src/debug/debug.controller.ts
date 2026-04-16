@@ -29,8 +29,8 @@ export class DebugController {
     const editUniqueId = nanoid();
     const reportUniqueId = nanoid();
 
-    const result = await this.prisma.$transaction(async () => {
-      const audit = await this.prisma.audit.create({
+    const result = await this.prisma.$transaction(async (tx) => {
+      const audit = await tx.audit.create({
         data: {
           editUniqueId: editUniqueId,
           consultUniqueId: reportUniqueId,
@@ -99,7 +99,7 @@ export class DebugController {
       if (!body.isPristine) {
         await Promise.all(
           [audit.transverseElementsPage, ...audit.pages].map(async (p) =>
-            this.prisma.criterionResult.createMany({
+            tx.criterionResult.createMany({
               data: CRITERIA.map((c, i) => ({
                 status: [
                   CriterionResultStatus.COMPLIANT,
@@ -126,7 +126,7 @@ export class DebugController {
       }
 
       if (!body.isComplete && !body.isPristine) {
-        await this.prisma.criterionResult.delete({
+        await tx.criterionResult.delete({
           where: {
             pageId_topic_criterium: {
               topic: 1,
