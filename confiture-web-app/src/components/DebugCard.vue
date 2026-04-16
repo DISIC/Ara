@@ -56,8 +56,8 @@ async function createDebugAudit() {
 
 <template>
   <div>
-    <button class="fr-btn fr-btn--icon-right fr-icon-arrow-down-s-line fr-mb-2w" @click="showDebugPanel = !showDebugPanel">
-      Créer un audit de test
+    <button :class="`fr-btn fr-btn--icon-right ${showDebugPanel ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line'} fr-mb-2w`" @click="showDebugPanel = !showDebugPanel">
+      {{ showDebugPanel ? 'Cacher' : 'Afficher' }} les fonctionnalités de débug
     </button>
     <div v-if="showDebugPanel" class="debug-container">
       <section class="fr-p-2w debug-card">
@@ -116,7 +116,7 @@ async function createDebugAudit() {
             <label class="fr-toggle__label" for="debug-audit-declaration">Rédiger la déclaration</label>
           </div>
 
-          <button class="fr-btn" type="submit">Créer un audit</button>
+          <button class="fr-btn" type="submit">Créer un audit de test</button>
         </form>
       </section>
     </div>
