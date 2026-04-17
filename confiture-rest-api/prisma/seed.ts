@@ -88,6 +88,8 @@ async function generateSeeds() {
         });
       });
     }));
+  }, {
+    timeout: 10_000
   });
 
   console.log(`Seeded ${rawAccounts.length} accounts with ${rawAudits.length} audits each.`);
