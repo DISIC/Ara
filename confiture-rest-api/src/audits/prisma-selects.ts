@@ -54,6 +54,13 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
   statementPublicationDate: true,
   statementEditionDate: true,
 
+  auditor: {
+    select: {
+      username: true,
+      isVerified: true
+    }
+  },
+
   transverseElementsPage: {
     select: PAGE_PRISMA_SELECT
   },

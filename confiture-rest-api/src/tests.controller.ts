@@ -92,7 +92,16 @@ export class TestsController {
         },
         auditType: "FULL",
         procedureName: "Audit de mon petit site",
-        auditorEmail: body.auditorEmail || "etienne.durand@example.com",
+        auditor: {
+          connectOrCreate: {
+            create: {
+              username: body.auditorEmail || "etienne.durand@example.com"
+            },
+            where: {
+              username: body.auditorEmail || "etienne.durand@example.com"
+            }
+          }
+        },
         auditorName: "Étienne Durand",
         transverseElementsPage: {
           create: {
