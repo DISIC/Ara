@@ -129,7 +129,7 @@ export const rawAudits = [
   },
   {
     creationDate: new Date(),
-    auditType: AuditType.FAST,
+    auditType: AuditType.COMPLEMENTARY,
     procedureName: "50 en cours",
     auditorName: "Étienne Durand",
     transverseElementsPage: {

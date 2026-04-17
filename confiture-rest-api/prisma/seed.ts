@@ -1,5 +1,4 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { nanoid } from "nanoid";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { getRawAccounts, rawAudits, rawCriteria } from "./seed-data";
 import "dotenv/config";
@@ -46,24 +45,55 @@ async function generateSeeds() {
       });
     }));
 
-    const audits = await Promise.all(accounts.flatMap(acc => {
+    const audits = await Promise.all(accounts.flatMap((acc, i) => {
       return rawAudits.map(rawAudit => {
-        const editUniqueId = nanoid();
-        const reportUniqueId = nanoid();
+        // Example key: "0-full-pending-with-statement"
+        const uniqueKey = `${i}-${rawAudit.auditType.toLowerCase()}-${rawAudit.publicationDate ? "pending" : "completed"}${rawAudit.statementPublicationDate ? "-with-statement" : ""}`;
+        const editUniqueId = `edit-${uniqueKey}`;
+        const reportUniqueId = `report-${uniqueKey}`;
 
-        return tx.audit.create({
-          data: {
-            ...rawAudit,
-            editUniqueId,
-            consultUniqueId: reportUniqueId,
-            auditTrace: {
+        const data = {
+          ...rawAudit,
+          editUniqueId,
+          consultUniqueId: reportUniqueId,
+          auditorEmail: acc.username,
+          auditTrace: {
+            connectOrCreate: {
+              where: {
+                auditEditUniqueId: editUniqueId
+              },
               create: {
-                auditConsultUniqueId: editUniqueId,
-                auditEditUniqueId: reportUniqueId
+                auditEditUniqueId: editUniqueId,
+                auditConsultUniqueId: reportUniqueId
               }
-            },
-            auditorEmail: acc.username
+            }
           },
+          pages: rawAudit.pages
+            ? {
+                createMany: {
+                  data: rawAudit.pages.createMany.data,
+                  skipDuplicates: true
+                }
+              }
+            : undefined,
+          environments: rawAudit.environments
+            ? {
+                createMany: {
+                  data: rawAudit.environments.createMany.data,
+                  skipDuplicates: true
+                }
+              }
+            : undefined
+        };
+
+        const { pages, transverseElementsPage, environments, auditTrace, ...updateData } = data;
+
+        return tx.audit.upsert({
+          where: {
+            editUniqueId
+          },
+          create: { isHidden: false, ...data },
+          update: { isHidden: false, ...updateData },
           select: {
             publicationDate: true,
             transverseElementsPage: true,
@@ -84,7 +114,8 @@ async function generateSeeds() {
               ...c,
               pageId: p.id
             };
-          })
+          }),
+          skipDuplicates: true
         });
       });
     }));
