@@ -206,13 +206,13 @@ export class AuditsController {
     )
     file: Express.Multer.File
   ): Promise<NotesFileDto> {
-    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    return await this.auditService.saveNotesFile(uniqueId, file);
+    return this.auditService.saveNotesFile(uniqueId, file);
   }
 
   @Post("/editor/images")

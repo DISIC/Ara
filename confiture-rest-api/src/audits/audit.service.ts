@@ -206,22 +206,6 @@ export class AuditService {
     });
   }
 
-  getAuditWithEditUniqueId(uniqueId: string) {
-    return this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      include: {
-        environments: true,
-        pages: true,
-        sourceAudit: {
-          select: {
-            procedureName: true
-          }
-        },
-        notesFiles: true
-      }
-    });
-  }
-
   getAuditWithConsultUniqueId(uniqueId: string) {
     return this.prisma.audit.findUnique({
       where: { consultUniqueId: uniqueId },
