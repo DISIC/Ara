@@ -184,6 +184,19 @@ export class AuditService {
     return pagesWithSlug;
   }
 
+  /**
+   * @param editUniqueId id of the audit to look for
+   * @param isHidden look for hidden audits, default: false
+   * @returns true if the audit exists in db, false otherwise
+   */
+  async checkIfAuditExists(editUniqueId: string, isHidden: boolean = false): Promise<boolean> {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId, isHidden },
+      select: { id: true }
+    });
+    return !!audit;
+  }
+
   findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },

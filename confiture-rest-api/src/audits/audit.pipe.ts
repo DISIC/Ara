@@ -8,7 +8,7 @@ export class AuditExistsPipe implements PipeTransform {
   ) { }
 
   async transform(value: string, metadata: ArgumentMetadata) {
-    console.log({ value, metadata });
+    console.log("audit pipe", { value, metadata });
     const exists = await this.auditService.checkIfAuditExists(value);
     if (!exists) {
       console.log("pipe: failed to find audit");
