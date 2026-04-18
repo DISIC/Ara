@@ -77,7 +77,7 @@ export class AuditService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly fileStorageService: FileStorageService
-  ) {}
+  ) { }
 
   async createAudit(data: CreateAuditDto): Promise<AuditDto> {
     const editUniqueId = nanoid();
@@ -172,7 +172,7 @@ export class AuditService {
     const existingSlugs = new Set<string>([TRANSVERSE_ELEMENTS_SLUG]);
     const pagesWithSlug = pages.map(page => {
       let slug = slugify(page.name);
-      for (let i = 1; ;i++) {
+      for (let i = 1; ; i++) {
         if (!existingSlugs.has(slug)) {
           break;
         }
@@ -182,6 +182,20 @@ export class AuditService {
       return { ...page, slug };
     });
     return pagesWithSlug;
+  }
+
+  /**
+   * @param editUniqueId id of the audit to look for
+   * @param isHidden look for hidden audits, default: false
+   * @returns true if the audit exists in db, false otherwise
+   */
+  async checkIfAuditExists(editUniqueId: string, isHidden: boolean = false): Promise<boolean> {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId, isHidden },
+      select: { id: true }
+    });
+
+    return !!audit;
   }
 
   findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {

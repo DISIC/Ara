@@ -189,9 +189,9 @@ export class AuditsController {
     file: Express.Multer.File,
     @Body() body: UploadImageDto
   ): Promise<ExampleImageFileDto> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
@@ -307,9 +307,9 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Body() body: UpdateResultsDto
   ) {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
