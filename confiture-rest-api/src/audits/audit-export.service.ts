@@ -8,6 +8,7 @@ import {
   CriterionResultStatus
 } from "../generated/prisma/client";
 
+import { PrismaService } from "../prisma.service";
 import { AuditService } from "./audit.service";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
@@ -23,7 +24,10 @@ const CRITERIUM_STATUS: Record<CriterionResultStatus, string> = {
 
 @Injectable()
 export class AuditExportService {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly prisma: PrismaService
+  ) { }
 
   private generateCsvExport(
     audit: Audit & {
@@ -89,12 +93,11 @@ export class AuditExportService {
   }
 
   async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
-    const audit = (await this.auditService.findAuditWithEditUniqueId(
-      editUniqueId,
-      { pages: true }
-    )) as Audit & {
-      pages: AuditedPage[];
-    };
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId },
+      include: { pages: true }
+    });
+
     const results =
       await this.auditService.getResultsWithEditUniqueId(editUniqueId);
 

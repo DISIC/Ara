@@ -198,10 +198,11 @@ export class AuditService {
     return !!audit;
   }
 
-  findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
+  /** Find and return an audit in the format that the API would return */
+  findAuditWithEditUniqueId(uniqueId: string): Promise<AuditDto> {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },
-      include
+      select: AUDIT_PRISMA_SELECT
     });
   }
 
@@ -1344,8 +1345,11 @@ export class AuditService {
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const audit = await this.findAuditWithEditUniqueId(uniqueId, {
-      pages: true
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: {
+        pages: true
+      }
     });
 
     const testedCount = await this.prisma.criterionResult.count({
