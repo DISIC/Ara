@@ -31,6 +31,7 @@ import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
 import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
+import { AuditExistsPipe } from "./audit.pipe";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
@@ -91,8 +92,8 @@ export class AuditsController {
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
-  async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
+  async getAudit(@Param("uniqueId", AuditExistsPipe) uniqueId: string): Promise<AuditDto> {
+    return this.auditService.findAuditWithEditUniqueId(uniqueId, {
       environments: true,
       transverseElementsPage: true,
       pages: true,
@@ -107,12 +108,6 @@ export class AuditsController {
         }
       }
     });
-
-    if (!audit) {
-      await this.sendAuditNotFoundStatus(uniqueId);
-    }
-
-    return audit;
   }
 
   @Get("/:uniqueId/pages/:pageSlug")
