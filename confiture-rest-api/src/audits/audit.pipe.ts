@@ -1,17 +1,19 @@
 import { Injectable, PipeTransform, ArgumentMetadata, GoneException, NotFoundException } from "@nestjs/common";
 import { AuditService } from "./audit.service";
 
+/**
+ * Asynchronously that the audit associated with the given editUniqueId exists.
+ * If it does not, return a 404 or 410 status.
+ */
 @Injectable()
 export class AuditExistsPipe implements PipeTransform {
   constructor(
     private readonly auditService: AuditService
   ) { }
 
-  async transform(value: string, metadata: ArgumentMetadata) {
-    console.log("audit pipe", { value, metadata });
+  async transform(value: string, _metadata: ArgumentMetadata) {
     const exists = await this.auditService.checkIfAuditExists(value);
     if (!exists) {
-      console.log("pipe: failed to find audit");
       await this.sendAuditNotFoundStatus(value);
     }
     return value;
