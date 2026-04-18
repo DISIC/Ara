@@ -84,7 +84,10 @@ export class AuditExportService {
     consultUniqueId: string
   ): Promise<StreamableFile> {
     const audit =
-      await this.auditService.getAuditWithConsultUniqueId(consultUniqueId);
+      await this.prisma.audit.findUnique({
+        where: { consultUniqueId },
+        include: { pages: true }
+      });
     const results = await this.auditService.getResultsWithEditUniqueId(
       audit.editUniqueId
     );
