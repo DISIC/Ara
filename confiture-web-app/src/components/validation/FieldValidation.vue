@@ -3,12 +3,12 @@ import { inject, onBeforeUnmount, watch } from "vue";
 import { useFormField, ValidationRule } from "../../composables/validation";
 import { addFieldKey, removeFieldKey } from "./form-with-validation/form-injection-keys";
 
-type DsfrFielWithValidationPrors = {
+type DsfrFielWithValidationProps = {
   value: T;
   validation: ValidationRule<T>[];
 };
 
-const props = defineProps<DsfrFielWithValidationPrors>();
+const props = defineProps<DsfrFielWithValidationProps>();
 
 const fieldValidation = useFormField<T>(props.value, props.validation);
 
