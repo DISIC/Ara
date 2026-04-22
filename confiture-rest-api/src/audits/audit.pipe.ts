@@ -2,7 +2,7 @@ import { Injectable, PipeTransform, ArgumentMetadata, GoneException, NotFoundExc
 import { AuditService } from "./audit.service";
 
 /**
- * Asynchronously that the audit associated with the given editUniqueId exists.
+ * Asynchronously checks that the audit associated with the given editUniqueId exists.
  * If it does not, return a 404 or 410 status.
  */
 @Injectable()
