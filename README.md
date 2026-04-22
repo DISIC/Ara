@@ -1,4 +1,4 @@
-# Ara
+# Ara [test]
 
 Ara est une plateforme web basée sur le référentiel général d'amélioration de l'accessibilité (RGAA) qui permet aux auditeurs et auditrices de :
 
