@@ -1,15 +1,11 @@
 import { Extension } from "@tiptap/core";
-import { MarkdownPlugin } from "./MarkdownPlugin";
-
-let markdownPlugin: MarkdownPlugin | null = null;
+import { PasteMarkdownPlugin } from "./PasteMarkdownPlugin";
 
 export const PasteMarkdownExtension = Extension.create({
   name: "pasteMarkdown",
   addProseMirrorPlugins() {
-    markdownPlugin = new MarkdownPlugin(this.editor);
-
     return [
-      markdownPlugin
+      new PasteMarkdownPlugin(this.editor)
     ];
   }
 });

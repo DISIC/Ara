@@ -367,7 +367,7 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get("[role='textbox'").clear().type("Annotations de l’audit");
+      cy.get(".tiptap").clear().type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
       cy.get(".notes-desktop-link")
@@ -624,7 +624,7 @@ describe("Audit", () => {
 
       cy.focused().should("have.attr", "role", "textbox");
 
-      cy.get(".criterium-container .tiptap[role='textbox']")
+      cy.get(".criterium-container .tiptap.tiptap")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
@@ -807,6 +807,36 @@ describe("Audit", () => {
       // Go to report page to check images count (3)
       cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
       cy.get(".tiptap--rendered img").should("have.length", 3);
+    });
+  });
+
+  it("User can paste Markdown content in the comment editor (and it’s interpreted)", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".notes-desktop-link")
+        .contains("button", "Ajouter des observations")
+        .click();
+      cy.get(".tiptap").clear().type("Copier coller de Markdown :")
+        .type("{enter}");
+      cy.get(".tiptap").pasteText("../fixtures/mdContent.md");
+      cy.get(".tiptap strong").should("exist");
+      cy.get(".tiptap img").should("not.exist");
+    });
+  });
+
+  it("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
+    cy.createTestAudit().then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".notes-desktop-link")
+        .contains("button", "Ajouter des observations")
+        .click();
+      cy.get(".tiptap").clear().type("Copier coller de texte HTML :")
+        .type("{enter}");
+      cy.get(".tiptap").pasteText("../fixtures/notMdContent.txt");
+      cy.get(".tiptap strong").should("not.exist");
+      cy.get(".tiptap img").should("not.exist");
     });
   });
 

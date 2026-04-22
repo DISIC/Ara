@@ -1,6 +1,5 @@
-import { Attributes, Extensions, NodeView, NodeViewRendererProps, textblockTypeInputRule } from "@tiptap/core";
+import { Attributes, Extensions, NodeView, NodeViewRendererProps } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { Heading, type Level } from "@tiptap/extension-heading";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
@@ -14,14 +13,11 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
-import { marked } from "marked";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
+import { CustomHeading } from "./heading/HeadingExtension";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
 import TiptapImage from "./image/TiptapImage.vue";
-import { PasteMarkdownExtension } from "./markdown/MarkdownExtension";
-
-// Define needed heading levels
-export const displayedHeadings = [4, 5, 6] as Array<Level>;
+import { PasteMarkdownExtension } from "./markdown/PasteMarkdownExtension";
 
 // Minimum editor inner width (in px) to enable image resize
 const minWidthToEnableImageResize = 320;
@@ -42,6 +38,7 @@ const extendedLink = Link.extend({
       // "class" is always reset
       class: {
         default: null,
+        parseHTML: () => null,
         renderHTML: () => {
           return {
             class: null
@@ -51,6 +48,7 @@ const extendedLink = Link.extend({
       // "rel" is always reset to "noopener noreferrer"
       rel: {
         default: null,
+        parseHTML: () => "noopener noreferrer",
         renderHTML: () => {
           return {
             rel: "noopener noreferrer"
@@ -73,45 +71,30 @@ const extendedLink = Link.extend({
 });
 
 const commonExtensions: Extensions = [
-  Heading.extend({
-    // prevent all marks from being applied to headings
-    marks: "",
-    // Shift heading levels when typing markdown
-    // Example: "## Foobar" would render a `h5`
-    addInputRules() {
-      return this.options.levels.map((level) => {
-        return textblockTypeInputRule({
-          find: new RegExp(
-            `^(#{${Math.min(...this.options.levels) - 3},${level - 3}})\\s$`
-          ),
-          type: this.type,
-          getAttributes: {
-            level
-          }
-        });
-      });
-    }
-  }).configure({
-    levels: displayedHeadings
-  }),
+  CustomHeading,
   StarterKit.configure({
     codeBlock: false,
     dropcursor: false,
     heading: false,
-    link: false
+    link: false,
+    underline: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
   Typography.configure({
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown,
+  Markdown.configure({
+    markedOptions: {
+      async: false
+    }
+  }),
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
 const commonImageAttrs = {
   loading: {
-    parseHTML: (element: HTMLElement) => element.getAttribute("loading"),
+    parseHTML: () => "lazy",
     renderHTML: () => {
       return {
         loading: "lazy"
@@ -139,6 +122,7 @@ export function getTiptapEditorExtensions(options?: {
 }) {
   return [
     ...commonExtensions,
+    PasteMarkdownExtension,
     extendedLink.configure({
       openOnClick: false,
       defaultProtocol: "https",
@@ -178,14 +162,21 @@ export function getTiptapEditorExtensions(options?: {
 
           return createResizableNodeView(props, vueNodeView);
         };
+      },
+      parseHTML() {
+        const baseURL = window.location.origin;
+        return [
+          {
+            tag: `img[src^=\"/uploads/\"], img[src^=\"${baseURL}/uploads/\"]`
+          }
+        ];
       }
     }),
     options?.onImageUploadComplete ?
         ImageUploadExtension.configure({
           onImageUploadComplete: options.onImageUploadComplete
         })
-      : ImageUploadExtension,
-    PasteMarkdownExtension.configure()
+      : ImageUploadExtension
   ];
 }
 
@@ -385,8 +376,4 @@ function applyConstraints(editorElement: Element, newWidth: number, minImgWidth:
   const h = Math.round(w / aspectRatio);
 
   return { w, h };
-}
-
-export function convertMarkdownToHTML(markdown: string): string {
-  return marked(markdown) as string;
 }
