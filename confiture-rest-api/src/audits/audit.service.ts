@@ -96,18 +96,16 @@ export class AuditService {
 
         auditType: data.auditType,
 
-        ...(data.auditorEmail && {
-          auditor: {
-            connectOrCreate: {
-              create: {
-                username: data.auditorEmail.toLowerCase()
-              },
-              where: {
-                username: data.auditorEmail.toLowerCase()
-              }
+        auditor: {
+          connectOrCreate: {
+            create: {
+              username: data.auditorEmail.toLowerCase()
+            },
+            where: {
+              username: data.auditorEmail.toLowerCase()
             }
           }
-        }),
+        },
         auditorName: data.auditorName,
 
         transverseElementsPage: {
@@ -413,20 +411,12 @@ export class AuditService {
 
           initiator: data.initiator,
 
-          ...(data.auditorEmail
-            ? {
-                auditor: {
-                  connectOrCreate: {
-                    create: { username: data.auditorEmail.toLowerCase() },
-                    where: { username: data.auditorEmail.toLowerCase() }
-                  }
-                }
-              }
-            : {
-                auditor: {
-                  disconnect: true
-                }
-              }),
+          auditor: {
+            connectOrCreate: {
+              create: { username: data.auditorEmail.toLowerCase() },
+              where: { username: data.auditorEmail.toLowerCase() }
+            }
+          },
           auditorName: data.auditorName,
           auditorOrganisation: data.auditorOrganisation,
 
