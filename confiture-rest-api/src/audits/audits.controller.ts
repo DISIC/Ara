@@ -92,7 +92,7 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
+    const audit = await this.auditService.findAudit(uniqueId);
 
     if (!audit) {
       await this.sendAuditNotFoundStatus(uniqueId);

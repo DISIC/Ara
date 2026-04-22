@@ -199,7 +199,7 @@ export class AuditService {
   }
 
   /** Find and return an audit in the format that the API would return */
-  findAuditWithEditUniqueId(uniqueId: string): Promise<AuditDto> {
+  findAudit(uniqueId: string): Promise<AuditDto> {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },
       select: AUDIT_PRISMA_SELECT
