@@ -1,0 +1,37 @@
+<mjml>
+  <mj-head>
+    <mj-title>Un audit vous a été transféré</mj-title>
+    <mj-attributes>
+      <mj-preview>Un audit vous a été transféré</mj-preview>
+      <mj-include path="./styles.mjml" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#fff">
+    <!-- HEADER -->
+    <mj-include path="./header.mjml" />
+
+    <!-- BODY -->
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="700" padding-bottom="8px">
+          Un audit vous a été transféré
+        </mj-text>
+        <mj-text padding-bottom="24px">
+        {{#if name}}{{name}} ({{originEmail}}){{else}}{{originEmail}}{{/if}}
+          vous a transféré l’audit « <strong>{{procedureName}}</strong> ». Si vous possédez un compte Ara, vous retrouverez cet audit dans votre espace.
+        </mj-text>
+        <mj-button href="{{auditUrl}}" mj-class="blue-button">Accéder à l’audit</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
+        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <br/><a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- FOOTER -->
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>
