@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, useTemplateRef, useId } from "vue";
+import { ref, useTemplateRef, useId } from "vue";
 import { useNotifications } from "../../../composables/useNotifications";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import { useAuditStore } from "../../../store";
@@ -7,6 +7,7 @@ import { AuditStatus } from "../../../types";
 import { AccountAudit } from "../../../types/account";
 import { captureWithPayloads, pluralize } from "../../../utils";
 import DeleteModal from "../../audit/DeleteModal.vue";
+import TransferModal from "../../audit/TransferModal.vue";
 import AuditRow from "./AuditRow.vue";
 import NoAudit from "./NoAudit.vue";
 
@@ -25,51 +26,96 @@ const uniqueId = useId();
 const notify = useNotifications();
 const auditStore = useAuditStore();
 
-// Focus audit list heading when deleting an audit
 const auditStatusHeadingRef = useTemplateRef("auditStatusHeadingRef");
 const auditRowsRefs = useTemplateRef<InstanceType<typeof AuditRow>[]>("auditRowsRefs");
+const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteModal>>("deleteModalRef");
+const transferModalRef = useTemplateRef<InstanceType<typeof TransferModal>>("transferModalRef");
 
-const deletedAuditName = ref("");
-const deletedAuditId = ref("");
-const deletedAuditIndex = ref<number>();
-const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+async function deleteAudit() {
+  try {
+    await auditStore.deleteAudit(selectedAuditId.value);
 
-function prepareDelete(name: string, editAuditId: string, index: number) {
-  deletedAuditName.value = name;
-  deletedAuditId.value = editAuditId;
-  deletedAuditIndex.value = index;
-  deleteModal.value?.show();
-}
+    deleteModalRef.value?.hide();
 
-function deleteAudit() {
-  auditStore
-    .deleteAudit(deletedAuditId.value)
-    .then(async () => {
-      notify("success", undefined, `Audit « ${deletedAuditName.value} » supprimé`);
-      await nextTick();
-      setFocusAfterDeletion();
-    })
-    .catch((error) => {
-      notify(
-        "error",
-        "Échec de la supression de l'audit",
-        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
-      );
-      captureWithPayloads(error);
-    })
-    .finally(() => {
-      deleteModal.value?.hide();
-    });
-}
-
-// Either focus previous audit or status heading after deleting
-async function setFocusAfterDeletion() {
-  if (!props.audits.length) {
-    auditStatusHeadingRef.value?.focus();
-  } else {
-    if (deletedAuditIndex.value) {
-      auditRowsRefs.value?.at(deletedAuditIndex.value - 1)?.focusAuditName();
+    if (selectedAuditIndex.value !== undefined) {
+      setFocusAfterAction();
     }
+
+    notify("success", undefined, `Audit « ${selectedAuditName.value} » supprimé`);
+  } catch (error) {
+    notify(
+      "error",
+      "Échec de la supression de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+}
+
+async function transferAudit(newEmail: string) {
+  try {
+    await auditStore.transferAudit(
+      selectedAuditId.value,
+      newEmail
+    );
+
+    transferModalRef.value?.hide();
+
+    if (selectedAuditIndex.value !== undefined) {
+      setFocusAfterAction();
+    }
+
+    notify("success", `Audit « ${selectedAuditName.value} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+  } catch (error) {
+    notify(
+      "error",
+      "Échec du transfert de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+}
+
+const selectedAuditName = ref("");
+const selectedAuditId = ref("");
+const selectedAuditIndex = ref<number>();
+
+// Set up data and open corresponding modal for given action
+function prepareAction(
+  procedureName: string,
+  editUniqueId: string,
+  index: number,
+  actionType: "delete" | "transfer"
+) {
+  selectedAuditName.value = procedureName;
+  selectedAuditId.value = editUniqueId;
+  selectedAuditIndex.value = index;
+
+  if (actionType === "transfer") {
+    transferModalRef?.value?.show();
+  }
+
+  if (actionType === "delete") {
+    deleteModalRef?.value?.show();
+  }
+}
+
+/**
+ * Set the focus after the action has been done:
+ * - Previous audit if any
+ * - Status heading of there is no audits left in list
+ */
+async function setFocusAfterAction() {
+  if (!props.audits.length) {
+    return auditStatusHeadingRef.value?.focus();
+  }
+
+  if (selectedAuditIndex.value !== undefined) {
+    const indexToFocus = selectedAuditIndex.value <= 0
+      ? 0
+      : selectedAuditIndex.value - 1;
+
+    auditRowsRefs.value?.at(indexToFocus)?.focusAuditName();
   }
 }
 </script>
@@ -127,7 +173,10 @@ async function setFocusAfterDeletion() {
               ? (audits.length - i) * 15
               : (audits.length - i) * 2
           "
-          @delete="prepareDelete(audit.procedureName, audit.editUniqueId, i)"
+          @delete="prepareAction(audit.procedureName, audit.editUniqueId, i, 'delete')"
+          @transfer="
+            prepareAction(audit.procedureName, audit.editUniqueId, i, 'transfer')
+          "
         />
       </div>
     </template>
@@ -137,10 +186,16 @@ async function setFocusAfterDeletion() {
 
   <DeleteModal
     :id="`delete-modal-${uniqueId}`"
-    ref="deleteModal"
-    :procedure-name="deletedAuditName"
+    ref="deleteModalRef"
+    :procedure-name="selectedAuditName"
     @confirm="deleteAudit"
-    @closed="setFocusAfterDeletion"
+  />
+
+  <TransferModal
+    :id="uniqueId"
+    ref="transferModalRef"
+    :procedure-name="selectedAuditName"
+    @confirm="transferAudit"
   />
 </template>
 

@@ -18,7 +18,6 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
-import TransferModal from "../../audit/TransferModal.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -26,7 +25,7 @@ const props = defineProps<{
   zIndex?: number;
 }>();
 
-defineEmits(["delete"]);
+defineEmits(["delete", "transfer"]);
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
@@ -76,22 +75,24 @@ function duplicateAudit(name: string) {
     });
 }
 
-const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
+// const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
-async function transferAudit(newEmail: string) {
-  try {
-    await auditStore.transferAudit(props.audit.editUniqueId, newEmail);
+// async function transferAudit(newEmail: string) {
+//   try {
+//     await auditStore.transferAudit(props.audit.editUniqueId, newEmail);
 
-    notify("success", `Audit « ${props.audit.procedureName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
-  } catch (error) {
-    notify(
-      "error",
-      "Échec du transfert de l'audit",
-      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
-    );
-    captureWithPayloads(error);
-  }
-}
+//     transferModalRef.value?.hide();
+
+//     notify("success", `Audit « ${props.audit.procedureName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+//   } catch (error) {
+//     notify(
+//       "error",
+//       "Échec du transfert de l'audit",
+//       DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+//     );
+//     captureWithPayloads(error);
+//   }
+// }
 
 const csvExportUrl = computed(
   () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
@@ -305,7 +306,7 @@ defineExpose({
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
-              @click="transferModalRef?.show()"
+              @click="$emit('transfer')"
             >
               Transférer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
@@ -386,7 +387,7 @@ defineExpose({
     "
   />
 
-  <TransferModal
+  <!-- <TransferModal
     :id="audit.editUniqueId"
     ref="transferModalRef"
     :procedure-name="audit.procedureName"
@@ -395,7 +396,7 @@ defineExpose({
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
     "
-  />
+  /> -->
 </template>
 
 <style scoped>

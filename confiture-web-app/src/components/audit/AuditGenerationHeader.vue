@@ -101,6 +101,8 @@ async function transferAudit(newEmail: string) {
   try {
     await auditStore.transferAudit(props.editUniqueId, newEmail);
 
+    transferModalRef.value?.hide();
+
     notify("success", `Audit « ${props.auditName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
 
     router.push({

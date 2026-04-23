@@ -261,15 +261,17 @@ export const useAuditStore = defineStore("audit", {
     async transferAudit(editUniqueId: string, newEmail: string) {
       const accountStore = useAccountStore();
 
-      const audit = await ky.put(`/api/audits/${editUniqueId}/transfer`, {
+      await ky.put(`/api/audits/${editUniqueId}/transfer`, {
         json: {
           newEmail,
           senderEmail: accountStore.account?.email
         }
       });
 
-      // TODO: update store
-      console.log(audit);
+      delete this.entities[editUniqueId];
+      this.listing = this.listing.filter(
+        (audit) => audit.editUniqueId !== editUniqueId
+      );
     },
 
     increaseCurrentRequestCount() {
