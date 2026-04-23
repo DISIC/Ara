@@ -97,8 +97,23 @@ function confirmDuplicate(name: string) {
 
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
-function transferAudit(newEmail: string) {
-  auditStore.transferAudit(props.editUniqueId, newEmail);
+async function transferAudit(newEmail: string) {
+  try {
+    await auditStore.transferAudit(props.editUniqueId, newEmail);
+
+    notify("success", `Audit « ${props.auditName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+
+    router.push({
+      name: accountStore.account ? "account-dashboard" : "home"
+    });
+  } catch (error) {
+    notify(
+      "error",
+      "Échec du transfert de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
 }
 
 /**

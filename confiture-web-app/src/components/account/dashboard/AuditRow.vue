@@ -78,8 +78,19 @@ function duplicateAudit(name: string) {
 
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
-function transferAudit(newEmail: string) {
-  auditStore.transferAudit(props.audit.editUniqueId, newEmail);
+async function transferAudit(newEmail: string) {
+  try {
+    await auditStore.transferAudit(props.audit.editUniqueId, newEmail);
+
+    notify("success", `Audit « ${props.audit.procedureName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+  } catch (error) {
+    notify(
+      "error",
+      "Échec du transfert de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
 }
 
 const csvExportUrl = computed(
