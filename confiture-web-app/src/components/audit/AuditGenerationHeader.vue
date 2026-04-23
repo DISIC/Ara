@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../../composables/useDevMode";
@@ -26,8 +26,9 @@ import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import NotesModal from "./NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
+import TransferModal from "./TransferModal.vue";
 
-defineProps<{
+const props = defineProps<{
   auditName: string;
   keyInfos: {
     title: string;
@@ -37,7 +38,7 @@ defineProps<{
     theme?: SummaryCardThemes;
     disabled?: boolean;
   }[];
-  editUniqueId?: string;
+  editUniqueId: string;
 }>();
 
 const stickyIndicator = ref<HTMLDivElement>();
@@ -92,6 +93,12 @@ function confirmDuplicate(name: string) {
       );
       captureWithPayloads(error);
     });
+}
+
+const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
+
+function transferAudit(newEmail: string) {
+  auditStore.transferAudit(props.editUniqueId, newEmail);
 }
 
 /**
@@ -346,6 +353,17 @@ onMounted(() => {
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer l’audit
+                  <span class="fr-sr-only"> {{ auditName }}</span>
+                </button>
+              </li>
+              <li class="dropdown-item">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                  @click="transferModalRef?.show()"
+                >
+                  Transférer l’audit
+                  <span class="fr-sr-only"> {{ auditName }}</span>
+                  <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -408,6 +426,17 @@ onMounted(() => {
     :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <TransferModal
+    :id="editUniqueId"
+    ref="transferModalRef"
+    :procedure-name="auditName"
+    @confirm="transferAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();

@@ -18,6 +18,7 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
+import TransferModal from "../../audit/TransferModal.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -73,6 +74,12 @@ function duplicateAudit(name: string) {
       isDuplicationLoading.value = false;
       duplicateModal.value?.hide();
     });
+}
+
+const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
+
+function transferAudit(newEmail: string) {
+  auditStore.transferAudit(props.audit.editUniqueId, newEmail);
 }
 
 const csvExportUrl = computed(
@@ -285,6 +292,16 @@ defineExpose({
             </button>
           </li>
           <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+              @click="transferModalRef?.show()"
+            >
+              Transférer l’audit
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
+            </button>
+          </li>
+          <li class="dropdown-item">
             <RouterLink
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line fr-m-0"
               :to="{
@@ -352,6 +369,17 @@ defineExpose({
     :original-audit-name="audit.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <TransferModal
+    :id="audit.editUniqueId"
+    ref="transferModalRef"
+    :procedure-name="audit.procedureName"
+    @confirm="transferAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
