@@ -1901,8 +1901,8 @@ export class AuditService {
       // Update audit with new owner info if any
       const data: Pick<Audit, "auditorEmail" | "auditorName" | "auditorOrganisation"> = {
         auditorEmail: newEmail,
-        auditorName: user?.name ?? "",
-        auditorOrganisation: user.orgName ?? ""
+        auditorName: (user && user.name) ? user.name : "",
+        auditorOrganisation: (user && user.orgName) ? user.orgName : ""
       };
 
       return await tx.audit.update({

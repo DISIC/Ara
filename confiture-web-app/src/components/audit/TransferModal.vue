@@ -49,7 +49,6 @@ function handleClose() {
     :aria-labelledby="`transfer-modal-title-${id}`"
     @closed="$emit('closed')"
   >
-    <!-- FIXME: fix focus problem on mount -->
     <FormWithValidation @submit="handleSubmit">
       <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
@@ -77,7 +76,7 @@ function handleClose() {
                   :value="email"
                   :validation="validationRules"
                 >
-                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format : nom@domaine.fr" />
+                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" type="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format : nom@domaine.fr" />
                 </FieldValidation>
 
                 <FieldValidation
@@ -85,7 +84,7 @@ function handleClose() {
                   :value="confirmEmail"
                   :validation="[...validationRules, EQUAL(() => email, 'Saisie incorrecte. Les deux adresse e-mail sont différentes.')]"
                 >
-                  <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" :error="error" label="Confirmer e-mail du destinataire" hint="Au format : nom@domaine.fr" />
+                  <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" type="email" :error="error" label="Confirmer e-mail du destinataire" hint="Au format : nom@domaine.fr" />
                 </FieldValidation>
               </div>
               <div class="fr-modal__footer">
