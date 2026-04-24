@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef } from "vue";
+import { ref } from "vue";
 import { RouteLocationRaw } from "vue-router";
 import router from "../../router";
 
+/**
+ * FIXME: trigger warning ⚠️ the code of the following component is a bit dirty.
+ *
+ * The goal is to create a button that changes its content
+ * when clicked without changing its size, in 2 different contexts.
+ */
 const props = withDefaults(defineProps<{
   icon: string;
   label?: string;
@@ -32,16 +38,6 @@ function copyContentToClipboard() {
     showSuccess.value = false;
   }, 3500);
 }
-
-const initialButtonWidth = ref<string>();
-const copyButtonRef = useTemplateRef("copyButtonRef");
-
-onMounted(() => {
-  // FIXME: `setTimeout()` used to force computing element's width after prop is assigned
-  setTimeout(() => {
-    initialButtonWidth.value = `${copyButtonRef.value?.offsetWidth}px`;
-  }, 500);
-});
 </script>
 
 <template>
@@ -53,7 +49,22 @@ onMounted(() => {
     }]"
     @click="copyContentToClipboard"
   >
-    {{ showSuccess ? successLabel : label }}
+    <template v-if="isWithinBtnGroup">
+      {{ showSuccess ? successLabel : label }}
+    </template>
+
+    <span v-else class="copy-button-outer-wrapper" :style="{ '--content': `'${label}'` }">
+      <span class="copy-button-inner-wrapper">
+        <template v-if="showSuccess">
+          <span class="fr-icon-check-line copy-button-success-icon" aria-hidden="true" />
+          {{ successLabel }}
+        </template>
+        <template v-else>
+          {{ label }}
+        </template>
+      </span>
+    </span>
+
     <span v-if="hiddenLabelSuffix" class="fr-sr-only">{{ hiddenLabelSuffix }}</span>
   </button>
 </template>
@@ -61,13 +72,40 @@ onMounted(() => {
 <style scoped>
 .copy-button {
   &:not(.copy-button--within-btn-group) {
-    width: v-bind(initialButtonWidth) !important;
-    justify-content: center !important;
+    .copy-button-outer-wrapper {
+      position: relative;
+
+      &::after {
+        content: var(--content);
+        visibility: hidden;
+      }
+
+      .copy-button-inner-wrapper {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .copy-button-success-icon::before {
+        --icon-size: 1rem;
+      }
+    }
   }
 }
 
 .copy-button--success {
   color: var(--text-default-success) !important;
   box-shadow: inset 0 0 0 1px var(--text-default-success) !important;
+
+  &:not(.copy-button--within-btn-group) {
+    .copy-button-inner-wrapper {
+      translate: 1.5rem;
+    }
+
+    &::before {
+      opacity: 0 !important;
+    }
+  }
 }
 </style>
