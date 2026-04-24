@@ -7,38 +7,18 @@ import PageMeta from "../../components/PageMeta";
 import TopLink from "../../components/ui/TopLink.vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { history } from "../../router";
-import { useAccountStore, useAuditStore } from "../../store";
+import { useAuditStore } from "../../store";
 import { AuditStatus } from "../../types";
 
-const accountStore = useAccountStore();
 const auditStore = useAuditStore();
 const isDevMode = useDevMode();
 
 // Reset password alert
 const showResetPasswordAlert = ref<boolean>(!!history.state.passwordReset);
+const mainHeadingRef = ref<HTMLHeadingElement>();
 
 async function closeResetPasswordAlert() {
   showResetPasswordAlert.value = false;
-  await nextTick();
-  mainHeadingRef.value?.focus();
-}
-
-// Account alert
-const mainHeadingRef = ref<HTMLHeadingElement>();
-
-const showAuditsAlert = ref(
-  // TODO: rename "confiture" into "ara" for all localStorage things
-  !localStorage.getItem(
-    "confiture:hide-account-audits-alert:" + accountStore.account?.uid
-  )
-);
-
-async function hideAuditsAlert() {
-  localStorage.setItem(
-    "confiture:hide-account-audits-alert:" + accountStore.account?.uid,
-    "true"
-  );
-  showAuditsAlert.value = false;
   await nextTick();
   mainHeadingRef.value?.focus();
 }
@@ -72,29 +52,6 @@ onMounted(() => {
       Votre mot de passe a été mis à jour avec succès
     </p>
     <button class="fr-link--close fr-link" @click="closeResetPasswordAlert">
-      Masquer le message
-    </button>
-  </div>
-
-  <!-- Welcome alert -->
-  <div v-if="showAuditsAlert" class="fr-alert fr-alert--info fr-mb-4w">
-    <p class="fr-alert__title">
-      Bienvenue dans votre espace <span aria-hidden="true">👋</span>
-    </p>
-    <p class="fr-mb-3v">
-      Vous trouverez ici tous les audits associés à votre adresse e-mail :
-      <strong>{{ accountStore.account?.email }}</strong>
-    </p>
-    <p>
-      <RouterLink class="fr-link" :to="{ name: 'missing-audit' }">
-        Un de vos audits manque dans votre espace ?
-      </RouterLink>
-    </p>
-    <button
-      class="fr-btn--close fr-btn"
-      title="Masquer le message"
-      @click="hideAuditsAlert"
-    >
       Masquer le message
     </button>
   </div>
