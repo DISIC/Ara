@@ -64,13 +64,13 @@ defineExpose({
 
 <template>
   <div class="fr-grid-row">
-    <div class="fr-col-8">
-      <p>
+    <div class="fr-col-8 fr-mb-2v">
+      <p class="fr-mb-0 fr-text--bold">
         {{ baseTitle }} {{ index + 1 }}
       </p>
     </div>
-    <div class="fr-col-4 error-user-delete">
-      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" :disabled="!canDelete" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
+    <div v-if="canDelete" class="fr-col-4 error-user-delete">
+      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
     </div>
   </div>
 
@@ -81,7 +81,7 @@ defineExpose({
     type="text"
     label="Titre de l'erreur"
     :label-sr-only="`${index + 1}`"
-    class="fr-mb-4w user-error-label"
+    class="fr-mb-2w user-error-label"
     @input="handleItemValueClick('title', $event.target.value)"
   />
 
@@ -92,14 +92,14 @@ defineExpose({
     :model-value="item.comment"
     :label="`Recommandations sur l'erreur ${index + 1}`"
     class="fr-mb-1w"
-    description="Description de l’erreur, proposition de correction et image pour illustrer l’erreur ou la correction"
+    description="Description de l’erreur et proposition de correction"
     @update:model-value="handleItemValueClick('comment', $event)"
   />
 
   <!-- USER IMPACT -->
   <RadioGroup
     ref="userImpactRadioGroupRef"
-    class="fr-mb-4w"
+    class="fr-mb-2w"
     tabindex="-1"
     :items="userImpacts"
     :default-value="null"
@@ -148,7 +148,7 @@ defineExpose({
   </RadioGroup>
 
   <!-- QUICK WIN -->
-  <div class="fr-fieldset__element fr-fieldset__element--inline">
+  <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
     <div class="fr-checkbox-group">
       <input
         :id="`criterium-quick-win-${item.id}-${index}`"

@@ -50,7 +50,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
       </a>
     </p>
 
-    <p class="fr-badge fr-badge--sm fr-badge--error fr-badge--no-icon fr-mb-3w">
+    <p class="fr-badge fr-badge--lg fr-badge--error fr-badge--no-icon fr-mb-3w">
       non-conformité ({{ countNotCompliantItemsRecommandations }})
     </p>
 
@@ -64,7 +64,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
         class="criterium-not-compliant-item"
       >
         <div :id="`${sectionId}_erreur_${index + 1}`" class="criterium-not-compliant-item-header">
-          <ul class="fr-badges-group fr-mb-3w">
+          <ul class="fr-badges-group fr-mb-2w">
             <li v-if="notCompliantItem.userImpact">
               <p
                 class="fr-badge fr-badge--sm fr-m-1-5v"
@@ -90,7 +90,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
           </a>
         </div>
 
-        <h3 v-if="notCompliantItem.title" class="fr-h4">{{ notCompliantItem.title }}</h3>
+        <h3 v-if="notCompliantItem.title">{{ notCompliantItem.title }}</h3>
 
         <!-- Error -->
         <TiptapRenderer
@@ -154,8 +154,8 @@ const countNotCompliantItemsRecommandations = computed(() => {
 
 .criterium-not-compliant-item {
   border: 1px solid var(--border-default-grey);
-  padding: 1rem;
-  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .criterium-not-compliant-item-header {
