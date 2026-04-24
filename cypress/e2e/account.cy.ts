@@ -413,7 +413,7 @@ describe("Account", () => {
       cy.get("@audit").then((audit) => {
         cy.assertClipboardValue(
           // @ts-ignore
-          // TODO remove `@ts-ignore` when the following issue is fixed:
+          // TODO: remove `@ts-ignore` when the following issue is fixed:
           // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
           `http://localhost:3000/rapport/${audit.reportId}`
         );
@@ -439,6 +439,39 @@ describe("Account", () => {
       cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
 
       cy.contains("Audit « Audit de mon petit site » supprimé");
+    });
+
+    it("User can transfer an audit", () => {
+      const newEmail = "example@domain.com";
+
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Transférer l’audit").click();
+
+      // Fill form
+      cy.getByLabel("Adresse e-mail du destinataire")
+        .clear()
+        .type(newEmail);
+      cy.getByLabel("Confirmer e-mail du destinataire")
+        .clear()
+        .type(newEmail);
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+
+      // Assert audit is gone (3 audits left)
+      cy.get(".audits-list .audit-name").should("have.length", 3);
+      cy.contains("a", "Audit de mon petit site").should("be.focused");
+      cy.contains("Audit « Audit de mon petit site » transféré");
+      cy.contains(`Un lien d’accès a été envoyé à : ${newEmail}`);
+
+      // Logout and check auditorEmail in audit parameters
+      cy.get(".account-header button[aria-expanded]").click();
+      cy.contains("button", "Me déconnecter").click();
+      cy.get("@audit").then(audit => {
+        // @ts-ignore
+        // TODO: remove `@ts-ignore` when the following issue is fixed:
+        // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
+        cy.visit(`http://localhost:3000/audits/${audit.editId}/parametres`);
+        cy.getByLabel("Adresse e-mail").should("have.value", newEmail);
+      });
     });
   });
 });
