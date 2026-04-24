@@ -156,6 +156,7 @@ function onUpdateNotCompliantItemClick(
 
     <!-- FILES -->
     <FileList
+      v-if="exampleImages.length"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
         filename: f.originalFilename,
@@ -175,20 +176,43 @@ function onUpdateNotCompliantItemClick(
 </template>
 <style>
 .not-compliant-item {
-  padding: 1em 0;
+  padding: 1em 0.75rem;
   border-bottom: 1px solid var(--border-default-grey);
+  margin: 0 -0.75rem;
 
   &:first-child {
-    margin-top: 0;
+    padding-top: 0.5em;
   }
 }
+</style>
 
+<style scoped>
 .not-compliant-item-add {
   text-align: center;
   padding: 1em 0;
+  margin: 0 -0.75rem;
 
   &:has(button:hover) {
-    background-color: var(--grey-925-125) !important;
+    background-color: var(--blue-france-950-100) !important;
+
+    button {
+      background-color: var(--blue-france-950-100) !important;
+    }
   }
+
+  &:has(button:active) {
+    background-color: var(--blue-france-925-125) !important;
+
+    button {
+      background-color: var(--blue-france-925-125) !important;
+    }
+  }
+}
+</style>
+
+<style scoped>
+:deep(.fr-collapse--expanded) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 </style>

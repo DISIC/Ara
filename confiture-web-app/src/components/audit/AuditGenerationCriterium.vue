@@ -217,15 +217,23 @@ const updateResultNotCompliantItem = async (payload:
 
   switch (action) {
     case "add":
+    {
       if (!result.value.id) {
         // sometimes, id don't loaded, so we fetch
         await store.fetchResults(props.auditUniqueId);
       }
 
+      // hack for debounce to prevent duplicate entries
+      const currentItem = notCompliantItems[index];
+      if (currentItem) {
+        item.id = currentItem.id;
+      }
+
       item.criterionResultId = result.value.id;
-      notCompliantItems.push(item);
+      notCompliantItems[index] = item;
 
       break;
+    }
     case "update":
       notCompliantItems[index] = item;
 
@@ -247,7 +255,6 @@ const updateResultNotCompliantItem = async (payload:
     if (action === "add") {
       // we fetch to have notCompliantItemId
       await store.fetchResults(props.auditUniqueId);
-      criteriumNotCompliantAccordion.value?.focus(index);
       return;
     }
 
@@ -257,7 +264,7 @@ const updateResultNotCompliantItem = async (payload:
         .showNotification(
           "success",
           undefined,
-          `Erreur ${index + 1} du critère ${props.topicNumber}.${props.criterium.number} supprimée`,
+          `Erreur supprimée`,
           {
             action: {
               label: "Annuler",

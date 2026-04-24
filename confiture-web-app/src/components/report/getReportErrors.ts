@@ -67,7 +67,8 @@ export function getReportErrors(
               return {
                 topic: Number(topicNumber),
                 name: getTopicName(Number(topicNumber)),
-                errors: sortBy(results, "criterium")
+                errors: sortBy(results, "criterium"),
+                errorsCount: results.flatMap(x => x.notCompliantItems).length
               };
             })
           ),
