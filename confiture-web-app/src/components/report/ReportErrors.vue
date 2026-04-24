@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { sum } from "lodash-es";
 
+import { computed, nextTick, ref, useTemplateRef } from "vue";
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import {
@@ -106,9 +107,11 @@ const pagesErrors = computed(() => {
 });
 
 const errorsCount = computed(() => {
-  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
-    .map((page: any) => page.topics.map((topic: any) => topic.errors))
-    .flat(2).length;
+  return sum(
+    getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
+      .map((page: any) => page.topics.map((topic: any) => topic.errorsCount))
+      .flat(2)
+  );
 });
 </script>
 
