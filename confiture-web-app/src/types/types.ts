@@ -123,7 +123,6 @@ export type NotCompliantItem = {
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
   quickWin: boolean;
-  criterionResultId?: number;
 };
 
 export interface CriteriumResult {

@@ -218,18 +218,12 @@ const updateResultNotCompliantItem = async (payload:
   switch (action) {
     case "add":
     {
-      if (!result.value.id) {
-        // sometimes, id don't loaded, so we fetch
-        await store.fetchResults(props.auditUniqueId);
-      }
-
       // hack for debounce to prevent duplicate entries
       const currentItem = notCompliantItems[index];
       if (currentItem) {
         item.id = currentItem.id;
       }
 
-      item.criterionResultId = result.value.id;
       notCompliantItems[index] = item;
 
       break;
@@ -270,7 +264,7 @@ const updateResultNotCompliantItem = async (payload:
               label: "Annuler",
               cb: async () => {
                 item.id = undefined;
-                await updateResultNotCompliantItem({ index, item, action: "add" });
+                await updateResultNotCompliantItem({ index: notCompliantItems.length, item, action: "add" });
                 storeNotification.hideNotification();
                 criteriumNotCompliantAccordion.value?.focus();
               }

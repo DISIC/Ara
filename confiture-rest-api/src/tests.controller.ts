@@ -236,11 +236,13 @@ export class TestsController {
     }
 
     if (!body.isComplete && !body.isPristine && auditPages.length > 0) {
-      await this.prisma.criterionResult.deleteMany({
+      await this.prisma.criterionResult.delete({
         where: {
-          topic: 1,
-          criterium: 1,
-          pageId: auditPages[0].id
+          pageId_topic_criterium: {
+            topic: 1,
+            criterium: 1,
+            pageId: auditPages[0].id
+          }
         }
       });
     }
