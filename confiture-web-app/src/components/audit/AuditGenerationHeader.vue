@@ -95,8 +95,27 @@ function confirmDuplicate(name: string) {
     });
 }
 
+/**
+ * TODO: check if audit is linked to an account
+ */
+const auditIsLinkedToAnAccount = computed(() => {
+  return true;
+});
+
+const canTransferAudit = computed(() => {
+  return true;
+  if (auditIsLinkedToAnAccount.value) {
+    return accountStore.account
+      && accountStore.account.email === auditStore.currentAudit?.auditorEmail;
+  } else {
+    return true;
+  }
+});
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
+/**
+ * Transfer audit and redirect to account dashboard if connected or home
+ */
 async function transferAudit(newEmail: string) {
   try {
     await auditStore.transferAudit(props.editUniqueId, newEmail);
@@ -373,14 +392,20 @@ onMounted(() => {
                   <span class="fr-sr-only"> {{ auditName }}</span>
                 </button>
               </li>
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                  :disabled="!canTransferAudit"
                   @click="transferModalRef?.show()"
                 >
-                  Transférer l’audit
-                  <span class="fr-sr-only"> {{ auditName }}</span>
-                  <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
+                  <span>
+                    Transférer l’audit
+                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
+                  </span>
+                  <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Seul le propriétaire peut transférer l’audit
+                  </span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
