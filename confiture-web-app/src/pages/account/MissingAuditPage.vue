@@ -17,39 +17,38 @@ const accountStore = useAccountStore();
   </div>
 
   <div class="wrapper fr-mb-6w">
-    <h1>Un audit manque dans votre espace ?</h1>
-    <p>
-      Vérifiez que l'adresse e-mail associée à votre audit est identique à celle
-      utilisée pour votre compte. Si ce n’est pas le cas, remplacez l’adresse
-      e-mail associée à votre audit par l’adresse utilisée pour votre compte :
-      <strong>{{ accountStore.account?.email }}</strong>.
-    </p>
-
+    <h1>Un audit n’apparaît pas dans votre espace ?</h1>
     <p class="fr-text--lg">
-      <strong>Modifier l’adresse e-mail associée à un audit :</strong>
+      Pour qu’un audit apparaisse dans votre espace, il doit être transféré à l’adresse e-mail de votre compte<template v-if="accountStore.account">
+         : <strong>{{ accountStore.account.email }}</strong>.
+      </template><template v-else>.</template>
     </p>
 
-    <ol>
-      <li>
-        Ouvrez votre audit à l’aide des liens qui vous ont été envoyés par
-        e-mail
-      </li>
-      <li>Cliquez sur le menu “Actions” situé en haut à droite de la page</li>
-      <li>Cliquez sur “Modifier les paramètres”</li>
-      <li>
-        En bas de page, saisissez l’adresse e-mail associée à votre compte Ara
-        puis validez votre saisie via le bouton “Mettre à jour les paramètres”
-      </li>
+    <div class="fr-callout">
+      <p class="fr-callout__text">Seul le propriétaire d’un audit peut le transférer.</p>
+    </div>
+
+    <p>
+      Pour transférer un audit :
+    </p>
+
+    <ol class="fr-pl-6w fr-mb-3v">
+      <li class="fr-mb-1w">Ouvrez la page « Audit »</li>
+      <li class="fr-mb-1w">Ouvrez le menu « Actions » situé en haut à droite de la page</li>
+      <li class="fr-mb-1w">Cliquez dans le menu sur « Transférer »</li>
+      <li class="fr-mb-1w">Renseignez l’adresse e-mail de votre compte<template v-if="accountStore.account">
+         : {{ accountStore.account.email }}
+      </template><template v-else>.</template></li>
+      <li>Cliquez sur « Transférer l’audit »</li>
     </ol>
 
-    <p>Votre audit devrait désormais apparaitre dans votre espace.</p>
+    <p>L’audit devrait désormais apparaître dans votre espace.</p>
   </div>
 
   <div class="fr-py-6w fr-px-2w banner">
-    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez toujours un problème ?</h2>
+    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez un problème ?</h2>
     <p class="fr-mb-0">
-      Contactez notre support par e-mail à l’adresse :
-      <strong>ara@design.numerique.gouv.fr</strong>
+      Contactez-nous par e-mail : <strong>ara@design.numerique.gouv.fr</strong>
     </p>
   </div>
 </template>
@@ -62,13 +61,11 @@ const accountStore = useAccountStore();
 
 .banner {
   background: var(--background-alt-blue-france);
+  text-align: center;
+  margin-bottom: -6rem;
+
+  /* Make banner full width and overflow its parent container */
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  margin-bottom: -6rem;
-}
-
-.banner > * {
-  max-width: 40rem;
-  margin: 0 auto;
 }
 </style>
