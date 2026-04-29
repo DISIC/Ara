@@ -414,11 +414,6 @@ defineExpose({
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
 }
 
-/* Override bg color in dark mode to avoid same color as wrapper */
-[data-fr-theme="dark"] .tiptap-container {
-  background-color: var(--background-contrast-grey);
-}
-
 .tiptap-container--not-editable {
   padding: 0;
   background-color: transparent;
