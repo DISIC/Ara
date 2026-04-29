@@ -1461,7 +1461,16 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true,
-                notCompliantItems: true
+                notCompliantItems: {
+                  select: {
+                    id: false,
+                    comment: true,
+                    quickWin: true,
+                    title: true,
+                    userImpact: true,
+                    criterionResultId: false
+                  }
+                }
               }
             }
           }
@@ -1471,7 +1480,16 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true,
-                notCompliantItems: true
+                notCompliantItems: {
+                  select: {
+                    id: false,
+                    comment: true,
+                    quickWin: true,
+                    title: true,
+                    userImpact: true,
+                    criterionResultId: false
+                  }
+                }
               }
             }
           }

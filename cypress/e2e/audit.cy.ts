@@ -670,9 +670,7 @@ describe("Audit", () => {
 
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
-      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button")
-        .contains("Supprimer")
-        .should("be.disabled");
+      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").should("not.exist");
 
       cy.get(".criterium-container").contains("Ajouter une erreur").click();
 
