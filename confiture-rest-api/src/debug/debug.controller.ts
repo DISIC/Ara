@@ -103,29 +103,43 @@ export class DebugController {
 
       if (!body.isPristine) {
         await Promise.all(
-          [audit.transverseElementsPage, ...audit.pages].map(async (p) =>
-            tx.criterionResult.createMany({
-              data: CRITERIA.map((c, i) => ({
-                status: [
-                  CriterionResultStatus.COMPLIANT,
-                  CriterionResultStatus.NOT_APPLICABLE,
-                  CriterionResultStatus.NOT_COMPLIANT
-                ][i % 3],
-                notCompliantComment: "Une erreur ici",
-                notApplicableComment: "Attention quand même si ça devient applicable",
-                compliantComment: "Peut mieux faire",
-                quickWin: i % 7 === 0,
-                userImpact: [
-                  CriterionResultUserImpact.MINOR,
-                  CriterionResultUserImpact.MAJOR,
-                  CriterionResultUserImpact.BLOCKING,
-                  null
-                ][i % 4],
-                topic: c.topic,
-                criterium: c.criterium,
-                pageId: p.id
-              }))
+          [audit.transverseElementsPage, ...audit.pages].flatMap((p) =>
+            CRITERIA.map((c, i) => {
+              const status = [
+                CriterionResultStatus.COMPLIANT,
+                CriterionResultStatus.NOT_APPLICABLE,
+                CriterionResultStatus.NOT_COMPLIANT
+              ][i % 3];
+
+              return tx.criterionResult.create({
+                data: {
+                  status,
+                  notApplicableComment: status === CriterionResultStatus.NOT_APPLICABLE
+                    ? "Attention quand même si ça devient applicable"
+                    : null,
+                  compliantComment: status === CriterionResultStatus.COMPLIANT ? "Peut mieux faire" : null,
+                  notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
+                    ? {
+                        create: {
+                          title: `Titre de l'erreur`,
+                          comment: `Une erreur ici`,
+                          quickWin: i % 7 === 0,
+                          userImpact: [
+                            CriterionResultUserImpact.MINOR,
+                            CriterionResultUserImpact.MAJOR,
+                            CriterionResultUserImpact.BLOCKING,
+                            null
+                          ][i % 4]
+                        }
+                      }
+                    : undefined,
+                  topic: c.topic,
+                  criterium: c.criterium,
+                  pageId: p.id
+                }
+              });
             })
+
           )
         );
       }

@@ -603,38 +603,12 @@ export class AuditService {
         const existingNotCompliantItems = item.notCompliantItems
           .filter((x) => x.id);
 
-        if (existingNotCompliantItems.length) {
-          const notCompliantItemsToUpdate = existingNotCompliantItems
-            .map((notCompliantItem) => {
-              return this.prisma.notCompliantItem.update({
-                where: {
-                  id: notCompliantItem.id,
-                  criterionResult: {
-                    page: {
-                      OR: [
-                        {
-                          auditUniqueId: uniqueId
-                        },
-                        {
-                          auditTransverse: {
-                            editUniqueId: uniqueId
-                          }
-                        }
-                      ]
-                    }
-                  }
-                },
-                data: notCompliantItem
-              });
-            });
-
-          result.push(...notCompliantItemsToUpdate);
-
-          const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
-            where: {
-              id: {
-                notIn: existingNotCompliantItems.map((x) => x.id)
-              },
+        const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
+          where: {
+            id: {
+              notIn: existingNotCompliantItems.map((x) => x.id)
+            },
+            AND: {
               criterionResult: {
                 criterium: item.criterium,
                 topic: item.topic,
@@ -653,10 +627,39 @@ export class AuditService {
                 }
               }
             }
+          }
+        });
+
+        result.push(notCompliantItemsToDelete);
+
+        const notCompliantItemsToUpdate = existingNotCompliantItems
+          .map((notCompliantItem) => {
+            return this.prisma.notCompliantItem.update({
+              where: {
+                id: notCompliantItem.id,
+                criterionResult: {
+                  criterium: item.criterium,
+                  topic: item.topic,
+                  pageId: item.pageId,
+                  page: {
+                    OR: [
+                      {
+                        auditUniqueId: uniqueId
+                      },
+                      {
+                        auditTransverse: {
+                          editUniqueId: uniqueId
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              data: omit(notCompliantItem, ["id"])
+            });
           });
 
-          result.push(notCompliantItemsToDelete);
-        }
+        result.push(...notCompliantItemsToUpdate);
 
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
