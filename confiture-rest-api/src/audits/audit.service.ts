@@ -1898,10 +1898,17 @@ export class AuditService {
         }
       });
 
+      const auditToUpdate = await tx.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { auditorName: true }
+      });
+
       // Update audit with new owner info if any
       const data: Pick<Audit, "auditorEmail" | "auditorName" | "auditorOrganisation"> = {
         auditorEmail: newEmail,
-        auditorName: (user && user.name) ? user.name : "",
+        auditorName: user?.name
+          ? user.name
+          : (auditToUpdate.auditorName || ""),
         auditorOrganisation: (user && user.orgName) ? user.orgName : ""
       };
 
