@@ -1,12 +1,12 @@
 <mjml>
   <mj-head>
     <mj-title>Confirmer votre adresse e-mail</mj-title>
+    <mj-include path="./styles.mjml" />
     <mj-attributes>
       <mj-preview>Confirmer votre adresse e-mail</mj-preview>
-      <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
-  <mj-body background-color="#fff">
+  <mj-body>
     <!-- HEADER -->
     <mj-include path="./header.mjml" />
 

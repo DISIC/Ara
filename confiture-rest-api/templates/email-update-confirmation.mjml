@@ -1,12 +1,12 @@
 <mjml>
   <mj-head>
     <mj-title>Votre adresse e-mail a bien été mise à jour</mj-title>
+    <mj-include path="./styles.mjml" />
     <mj-attributes>
       <mj-preview>Votre adresse e-mail a bien été mise à jour</mj-preview>
-      <mj-include path="./styles.mjml" />
     </mj-attributes>
   </mj-head>
-  <mj-body background-color="#fff">
+  <mj-body>
     <!-- HEADER -->
     <mj-include path="./header.mjml" />
 
