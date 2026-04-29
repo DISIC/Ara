@@ -210,19 +210,17 @@ export class TestsController {
                 compliantComment: body.noImprovements ? null : "Peut mieux faire",
                 notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
                   ? {
-                      create: [
-                        {
-                          title: `Titre de l'erreur`,
-                          comment: `Une erreur ici`,
-                          quickWin: i % 7 === 0,
-                          userImpact: [
-                            CriterionResultUserImpact.MINOR,
-                            CriterionResultUserImpact.MAJOR,
-                            CriterionResultUserImpact.BLOCKING,
-                            null
-                          ][i % 4]
-                        }
-                      ]
+                      create: {
+                        title: `Titre de l'erreur`,
+                        comment: `Une erreur ici`,
+                        quickWin: i % 7 === 0,
+                        userImpact: [
+                          CriterionResultUserImpact.MINOR,
+                          CriterionResultUserImpact.MAJOR,
+                          CriterionResultUserImpact.BLOCKING,
+                          null
+                        ][i % 4]
+                      }
                     }
                   : undefined,
                 topic: c.topic,

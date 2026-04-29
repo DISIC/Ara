@@ -210,31 +210,34 @@ const updateResultComment = debounce(
 
 const updateResultNotCompliantItem = async (payload:
 { index: number; item: NotCompliantItem; action: string }) => {
-  const { index, item, action } = payload;
+  const { item, action } = payload;
 
   const notCompliantItems: NotCompliantItem[] =
     [...result.value.notCompliantItems];
 
   switch (action) {
     case "add":
-    {
-      // hack for debounce to prevent duplicate entries
-      const currentItem = notCompliantItems[index];
-      if (currentItem) {
-        item.id = currentItem.id;
+      notCompliantItems.push(item);
+      break;
+
+    case "update": {
+      const idx = notCompliantItems.findIndex(x => x.id === item.id);
+      if (idx === -1) {
+        return;
       }
 
-      notCompliantItems[index] = item;
-
+      notCompliantItems[idx] = item;
       break;
     }
-    case "update":
-      notCompliantItems[index] = item;
+    case "delete": {
+      const idx = notCompliantItems.findIndex(x => x.id === item.id);
+      if (idx === -1) {
+        return;
+      }
 
+      notCompliantItems.splice(idx, 1);
       break;
-    case "delete":
-      notCompliantItems.splice(index, 1);
-      break;
+    }
     default:
       return;
   }
@@ -249,6 +252,7 @@ const updateResultNotCompliantItem = async (payload:
     if (action === "add") {
       // we fetch to have notCompliantItemId
       await store.fetchResults(props.auditUniqueId);
+      criteriumNotCompliantAccordion.value?.focus();
       return;
     }
 

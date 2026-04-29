@@ -25,14 +25,14 @@ function getFocusWhenListEmpty(): HTMLElement | null {
 
 const notCompliantItems = ref<NotCompliantItem[]>([]);
 
-const orderByNotCompliantItems = computed(() => {
-  return orderBy(notCompliantItems.value, x => x.id);
-});
-
 watch(() => props.items, () => {
   notCompliantItems.value = [...props.items];
 }, {
   immediate: true
+});
+
+const orderByNotCompliantItems = computed(() => {
+  return orderBy(notCompliantItems.value, x => x.id);
 });
 
 const countNotCompliantItemsRecommandations = computed(() => {
@@ -43,7 +43,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:item", payload: { index: number; item: NotCompliantItem; action: string; debounce: boolean }): void;
+  (e: "update:item", payload: { item: NotCompliantItem; action: string; debounce: boolean }): void;
 }>();
 
 defineExpose({ disclose, focus });
@@ -103,18 +103,20 @@ function setFocusToCommentEditor() {
 }
 
 function addEmptyErrorToNotCompliantItems() {
-  notCompliantItems.value.push({
-    title: null,
-    comment: null,
-    userImpact: null,
-    quickWin: false
+  emit("update:item", {
+    item: {
+      title: null,
+      comment: null,
+      userImpact: null,
+      quickWin: false
+    },
+    action: "add",
+    debounce: false
   });
-
-  setTimeout(() => setFocusToTextEditor(), 100);
 }
 
 function onDeleteNotCompliantItemClick(index: number) {
-  emit("update:item", { index, item: props.items[index], action: "delete", debounce: false });
+  emit("update:item", { item: orderByNotCompliantItems.value[index], action: "delete", debounce: false });
 }
 
 function onUpdateNotCompliantItemClick(
@@ -122,7 +124,7 @@ function onUpdateNotCompliantItemClick(
   item: NotCompliantItem,
   debounce: boolean
 ) {
-  emit("update:item", { index, item, action: !item.id ? "add" : "update", debounce });
+  emit("update:item", { item, action: !item.id ? "add" : "update", debounce });
 }
 </script>
 
@@ -136,7 +138,7 @@ function onUpdateNotCompliantItemClick(
       Erreurs et recommandations <span :class="{ 'fr-text--bold': countNotCompliantItemsRecommandations > 0 }"> ({{ countNotCompliantItemsRecommandations }})</span>
     </template>
 
-    <div v-for="(item, index) in orderByNotCompliantItems" :key="index" class="not-compliant-item">
+    <div v-for="(item, index) in orderByNotCompliantItems" :key="item.id ?? index" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"
