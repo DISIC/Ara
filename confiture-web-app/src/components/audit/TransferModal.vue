@@ -68,7 +68,7 @@ function handleClose() {
                   Transférer l’audit « {{ procedureName }} »
                 </h1>
                 <p>
-                  Vous n’aurez plus accès à l’audit. Votre destinataire recevra par e-mail un lien d’accès à l’audit.
+                  Vous n’aurez plus accès à l’audit. Votre destinataire recevra par <span style="white-space: nowrap">e-mail</span> un lien d’accès à l’audit.
                 </p>
 
                 <FieldValidation
@@ -82,7 +82,7 @@ function handleClose() {
                 <FieldValidation
                   v-slot="{ error, focusRef }"
                   :value="confirmEmail"
-                  :validation="[...validationRules, EQUAL(() => email, 'Saisie incorrecte. Les deux adresse e-mail sont différentes.')]"
+                  :validation="[...validationRules, EQUAL(() => email, 'Saisie incorrecte. Les deux adresses e-mail doivent être identiques.')]"
                 >
                   <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" type="email" :error="error" label="Confirmer e-mail du destinataire" hint="Au format : nom@domaine.fr" />
                 </FieldValidation>
