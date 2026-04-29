@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import PageMeta from "../../components/PageMeta";
+import BackLink from "../../components/ui/BackLink.vue";
 import { useAccountStore } from "../../store/account";
 
 const accountStore = useAccountStore();
@@ -8,12 +9,7 @@ const accountStore = useAccountStore();
 <template>
   <PageMeta title="Audit manquant ?" />
   <div class="fr-mb-4w">
-    <RouterLink
-      :to="{ name: 'account-dashboard' }"
-      class="fr-link fr-icon-arrow-left-fill fr-link--icon-left"
-    >
-      Retour à mes audits
-    </RouterLink>
+    <BackLink label="Retour à mes audits" :to="{ name: 'account-dashboard' }" />
   </div>
 
   <div class="wrapper fr-mb-6w">
