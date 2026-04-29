@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, useId } from "vue";
 
-import { REQUIRED, EMAIL, EQUAL } from "../../composables/validation";
+import { REQUIRED, EMAIL, EQUAL, NOT_EQUAL } from "../../composables/validation";
+import { useAccountStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FieldValidation from "../validation/FieldValidation.vue";
@@ -9,6 +10,8 @@ import FormWithValidation from "../validation/form-with-validation/FormWithValid
 
 const uniqueId = useId();
 const modal = ref<InstanceType<typeof DsfrModal>>();
+
+const accountStore = useAccountStore();
 
 defineProps<{
   procedureName: string;
@@ -30,7 +33,12 @@ const confirmEmail = ref("");
 
 const validationRules = [
   REQUIRED("Champ obligatoire. Saisissez l'adresse e-mail du destinataire."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr")
+  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr"),
+  ...(accountStore.account
+    // TODO: update error message if audit is linked to an account
+    ? [NOT_EQUAL(accountStore.account?.email, "Cet audit est déjà associé à votre compte. Saisissez une adresse e-mail différente.")]
+    : []
+  )
 ];
 
 function handleSubmit() {
