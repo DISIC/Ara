@@ -209,7 +209,7 @@ const updateResultComment = debounce(
 );
 
 const updateResultNotCompliantItem = async (payload:
-{ index: number; item: NotCompliantItem; action: string }) => {
+{ item: NotCompliantItem; action: string }) => {
   const { item, action } = payload;
 
   const notCompliantItems: NotCompliantItem[] =
@@ -268,9 +268,8 @@ const updateResultNotCompliantItem = async (payload:
               label: "Annuler",
               cb: async () => {
                 item.id = undefined;
-                await updateResultNotCompliantItem({ index: notCompliantItems.length, item, action: "add" });
+                await updateResultNotCompliantItem({ item, action: "add" });
                 storeNotification.hideNotification();
-                criteriumNotCompliantAccordion.value?.focus();
               }
             }
           }
@@ -285,7 +284,6 @@ const updateResultNotCompliantItemDebounce =
   debounce(
     async (payload:
     {
-      index: number;
       item: NotCompliantItem;
       action: string;
     }) => {
