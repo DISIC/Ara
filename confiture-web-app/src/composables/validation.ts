@@ -101,6 +101,14 @@ export function EQUAL(target: string | (() => string), msg: string): ValidationR
   };
 }
 
+export function NOT_EQUAL(target: string | (() => string), msg: string): ValidationRule<string> {
+  return (value) => {
+    const t = typeof target === "function" ? target() : target;
+
+    return !!value && value === t && msg;
+  };
+}
+
 export function ARRAY_LENGTH(minLength: number, msg: string): ValidationRule<any[]> {
   return value => !!value && value.length < minLength && msg;
 }
