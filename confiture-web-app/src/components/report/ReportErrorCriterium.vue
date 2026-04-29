@@ -48,7 +48,7 @@ const notCompliantItems = computed(() => {
 
 <template>
   <div>
-    <p :id="sectionId" class="fr-text--lg fr-text--bold criterium-title fr-h3 fr-mb-2w">
+    <p :id="sectionId" class="fr-text--lg fr-text--bold criterium-title fr-mb-2w">
       {{ error.topic }}.{{ error.criterium }}&nbsp;–
       <span v-html="getCriteriumTitle(error.topic, error.criterium)" />
       <a :href="'#' + sectionId" class="fr-btn fr-icon-links-line fr-btn--tertiary-no-outline fr-btn--sm">
