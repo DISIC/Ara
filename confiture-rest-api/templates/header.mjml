@@ -2,12 +2,12 @@
 <mj-section padding-top="24px">
   <!-- 116px = 100px image + 16px padding -->
   <mj-column width="116px" vertical-align="middle" padding-right="16px">
-    <mj-image padding="0" src="./assets/bloc-marque.png"></mj-image>
+    <mj-image padding="0" src="https://i.postimg.cc/90WHJmMQ/bloc-marque.png"></mj-image>
   </mj-column>
 
   <!-- 87px = 55px image + 32px padding -->
   <mj-column width="87px" vertical-align="middle" padding-right="32px">
-    <mj-image padding="0" src="./assets/ara.png"></mj-image>
+    <mj-image padding="0" src="https://i.postimg.cc/QtgrQ9XK/ara.png"></mj-image>
   </mj-column>
 
   <!-- 397px = 600px maxwidth - 116px france - 87px ara -->
