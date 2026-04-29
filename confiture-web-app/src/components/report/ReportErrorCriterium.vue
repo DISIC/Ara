@@ -60,11 +60,10 @@ const notCompliantItems = computed(() => {
       non-conformité ({{ countNotCompliantItemsRecommandations }})
     </p>
 
-    <div role="list">
-      <div
+    <ul role="list" class="fr-raw-list">
+      <li
         v-for="(notCompliantItem, index) in notCompliantItems"
         :key="index"
-        role="listitem"
         class="criterium-not-compliant-item"
       >
         <div :id="`${sectionId}_erreur_${index + 1}`" class="criterium-not-compliant-item-header">
@@ -109,9 +108,9 @@ const notCompliantItems = computed(() => {
           Aucune description de l’erreur ou recommandation ajoutée par l’auditrice ou l’auditeur.
         </p>
 
-      </div>
+      </li>
 
-    </div>
+    </ul>
 
     <template v-if="chunk(error.exampleImages, 2).length">
       <p class="fr-text--xs fr-mb-1w error-accordion-subtitle">
