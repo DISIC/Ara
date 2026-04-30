@@ -7,7 +7,7 @@ import { ref } from "vue";
 import { useNotifications } from "../composables/useNotifications";
 import router from "../router";
 import { useAccountStore, useDebugStore } from "../store";
-import { AuditType } from "../types";
+import { AuditType, CreateDebugAuditRequestData } from "../types";
 import { getCriteriaCount } from "../utils";
 import DsfrField from "./ui/DsfrField.vue";
 
@@ -37,14 +37,18 @@ const selectedAuditCompletion = ref(AuditCompletion.PRISTINE);
 const fillStatement = ref(false);
 
 // API call
-async function createDebugAudit() {
-  const data = {
-    procedureName: procedureName.value,
-    auditType: selectedAuditType.value,
+async function createDebugAudit(isCustom: boolean = false) {
+  const data: CreateDebugAuditRequestData = {
+    procedureName: isCustom ? procedureName.value : `Audit ${Date.now()}`,
+    auditType: isCustom ? selectedAuditType.value : AuditType.FULL,
     auditorEmail: auditorEmail.value,
-    isComplete: selectedAuditCompletion.value === AuditCompletion.COMPLETED,
-    isPristine: selectedAuditCompletion.value === AuditCompletion.PRISTINE,
-    fillStatement: fillStatement.value
+    isComplete: isCustom
+      ? selectedAuditCompletion.value === AuditCompletion.COMPLETED
+      : false,
+    isPristine: isCustom
+      ? selectedAuditCompletion.value === AuditCompletion.PRISTINE
+      : false,
+    fillStatement: isCustom ? fillStatement.value : true
   };
 
   const audit = await debugStore.createDebugAudit(data);
@@ -56,12 +60,15 @@ async function createDebugAudit() {
 
 <template>
   <div>
-    <button :class="`fr-btn fr-btn--icon-right ${showDebugPanel ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line'} fr-mb-2w`" @click="showDebugPanel = !showDebugPanel">
-      {{ showDebugPanel ? 'Cacher' : 'Afficher' }} les fonctionnalités de débug
-    </button>
+    <div class="debug-buttons fr-mb-2w">
+      <button class="fr-btn" type="button" @click="createDebugAudit()">Créer un audit de test</button>
+      <button :class="`fr-btn ${showDebugPanel ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line'}`" @click="showDebugPanel = !showDebugPanel">
+        {{ showDebugPanel ? 'Cacher' : 'Afficher' }} les options de création d’audit de test
+      </button>
+    </div>
     <div v-if="showDebugPanel" class="debug-container">
       <section class="fr-p-2w debug-card">
-        <form @submit.prevent="createDebugAudit">
+        <form @submit.prevent="createDebugAudit(true)">
           <DsfrField
             id="debug-audit-procedure-name"
             v-model="procedureName"
@@ -124,6 +131,11 @@ async function createDebugAudit() {
 </template>
 
 <style scoped>
+.debug-buttons {
+  display: flex;
+  gap: 1px;
+}
+
 .debug-card {
   border: 1px solid;
   max-width: 40rem;

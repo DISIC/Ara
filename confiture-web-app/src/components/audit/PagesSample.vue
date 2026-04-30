@@ -132,9 +132,9 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
 
       <div class="page-right-actions">
         <button
+          v-if="pages.length > 1"
           class="fr-btn fr-btn--tertiary-no-outline"
           type="button"
-          :disabled="pages.length === 1"
           @click="deletePage(i)"
         >
           Supprimer
