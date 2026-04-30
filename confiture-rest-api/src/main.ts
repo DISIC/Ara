@@ -13,7 +13,7 @@ import { AppModule } from "./app.module";
 
 function configureSwagger(app: INestApplication) {
   const swaggerTitle = "API Ara";
-  const swaggerDescription = `⚠️ <strong>Disclaimer</strong> : l'API d'Ara n'a pas vocation à devenir une API publique et est à utiliser avec précaution. Elle est maintenue uniquement pour les besoin du projet principal Ara (<a href="${process.env.FRONT_BASE_URL}" target="_blank">${process.env.FRONT_BASE_URL}</a>). Par conséquent, il n'y a aucune garantie de stabilité et il est possible qu'il y ait des breaking changes.`;
+  const swaggerDescription = `⚠️ <strong>Disclaimer</strong> : l'API d'Ara n'a pas vocation à devenir une API publique. Elle est maintenue uniquement pour les besoin du projet principal Ara (<a href="${process.env.FRONT_BASE_URL}" target="_blank">${process.env.FRONT_BASE_URL}</a>). Par conséquent, aucune garantie de stabilité n’est assurée. Des breaking changes peuvent survenir à tout moment et sans préavis.`;
   const swaggerUiOptions = {
     customSiteTitle: swaggerTitle,
     // Hide api version + improve description readability
