@@ -12,9 +12,24 @@ import morgan from "morgan";
 import { AppModule } from "./app.module";
 
 function configureSwagger(app: INestApplication) {
-  const config = new DocumentBuilder().setTitle("Ara API").build();
+  const swaggerTitle = "API Ara";
+  const swaggerDescription = `⚠️ <strong>Disclaimer</strong> : l'API d'Ara n'a pas vocation à devenir une API publique et est à utiliser avec précaution. Elle est maintenue uniquement pour les besoin du projet principal Ara (<a href="${process.env.FRONT_BASE_URL}" target="_blank">${process.env.FRONT_BASE_URL}</a>). Par conséquent, il n'y a aucune garantie de stabilité et il est possible qu'il y ait des breaking changes.`;
+  const swaggerUiOptions = {
+    customSiteTitle: swaggerTitle,
+    // Hide api version + improve description readability
+    customCss: `
+      hgroup h2 > span { display: none; }
+      .swagger-ui .info p, .swagger-ui .info a { font-size: 1rem; }
+      .swagger-ui .info p { line-height: 1.2; max-width:  50rem;  margin: 1rem 0; }
+    `
+  };
+
+  const config = new DocumentBuilder()
+    .setTitle(swaggerTitle)
+    .setDescription(swaggerDescription)
+    .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("/swagger", app, document);
+  SwaggerModule.setup("/swagger", app, document, swaggerUiOptions);
 }
 
 async function bootstrap() {
