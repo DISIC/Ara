@@ -5,12 +5,12 @@
       - 116px = 100px image + 16px padding
       - 87px = 55px image + 32px padding
   -->
-  <mj-group width="203px" vertical-align="middle">
-    <mj-column padding-right="16px">
+  <mj-group width="203px">
+    <mj-column padding-right="16px" vertical-align="middle">
       <mj-image padding="0" src="https://i.postimg.cc/90WHJmMQ/bloc-marque.png"></mj-image>
     </mj-column>
 
-    <mj-column padding-right="32px">
+    <mj-column padding-right="32px" vertical-align="middle">
       <mj-image padding="0" src="https://i.postimg.cc/QtgrQ9XK/ara.png"></mj-image>
     </mj-column>
   </mj-group>
