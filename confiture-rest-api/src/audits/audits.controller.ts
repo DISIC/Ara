@@ -40,6 +40,7 @@ import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
@@ -310,5 +311,40 @@ export class AuditsController {
   })
   async getCsvExport(@AuditId() uniqueId: string) {
     return await this.auditExportService.getCsvExport(uniqueId);
+  }
+
+  /**
+   * TODO: add decorator @AuditId if PR is merged
+   */
+  @Put("/:uniqueId/transfer")
+  @ApiCreatedResponse({
+    description: "The audit has been successfully transfered.",
+    type: AuditDto
+  })
+  @ApiNotFoundResponse({ description: "The audit does not exist." })
+  @ApiGoneResponse({ description: "The audit has been previously deleted." })
+  async transferAudit(
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: TransferAuditDto
+  ) {
+    const newAudit = await this.auditService.transferAudit(uniqueId, body.newEmail);
+
+    if (!newAudit) {
+      await this.sendAuditNotFoundStatus(uniqueId);
+    }
+
+    this.mailer.sendAuditTransferEmail(body.newEmail, {
+      editUniqueId: uniqueId,
+      auditorEmail: body.senderEmail,
+      auditorName: newAudit.auditorName,
+      procedureName: newAudit.procedureName
+    }).catch((err) => {
+      console.error(
+        `Failed to send transfer email for audit ${newAudit.editUniqueId}`
+      );
+      console.error(err);
+    });
+
+    return newAudit;
   }
 }

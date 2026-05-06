@@ -3,8 +3,8 @@ import { renderMailTemplate } from "./render-mjml-template";
 export interface AuditTransferEmailData {
   procedureName: string;
   auditUrl: string;
-  originEmail: string;
-  name: string;
+  senderEmail: string;
+  senderName: string;
 }
 
 export function subject(): string {
@@ -19,7 +19,7 @@ export function plain(data: AuditTransferEmailData): string {
   return `
     Un audit vous a été transféré
 
-    ${data.name ? data.name + " (" + data.originEmail + ")" : data.originEmail}
+    ${data.senderName ? data.senderName + " (" + data.senderEmail + ")" : data.senderEmail}
     vous a transféré l’audit « ${data.procedureName} ». Si vous possédez un compte Ara, vous retrouverez cet audit dans votre espace.
 
     ${data.auditUrl}

@@ -1881,4 +1881,37 @@ export class AuditService {
 
     return audit;
   }
+
+  /**
+   * Transfer an audit ownership to another user and link it to its account (if any)
+   */
+  async transferAudit(uniqueId: string, newEmail: string) {
+    const updatedAudit = this.prisma.$transaction(async (tx) => {
+      // Get new owner info
+      const user = await tx.user.findUnique({
+        where: {
+          username: newEmail
+        },
+        select: {
+          name: true,
+          orgName: true
+        }
+      });
+
+      // Update audit with new owner info if any
+      const data: Pick<Audit, "auditorEmail" | "auditorName" | "auditorOrganisation"> = {
+        auditorEmail: newEmail,
+        auditorName: user?.name ?? "",
+        auditorOrganisation: user.orgName ?? ""
+      };
+
+      return await tx.audit.update({
+        where: { editUniqueId: uniqueId },
+        data,
+        select: AUDIT_PRISMA_SELECT
+      });
+    });
+
+    return updatedAudit;
+  }
 }
