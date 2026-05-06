@@ -313,25 +313,16 @@ export class AuditsController {
     return await this.auditExportService.getCsvExport(uniqueId);
   }
 
-  /**
-   * TODO: add decorator @AuditId if PR is merged
-   */
   @Put("/:uniqueId/transfer")
   @ApiCreatedResponse({
     description: "The audit has been successfully transfered.",
     type: AuditDto
   })
-  @ApiNotFoundResponse({ description: "The audit does not exist." })
-  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async transferAudit(
-    @Param("uniqueId") uniqueId: string,
+    @AuditId() uniqueId: string,
     @Body() body: TransferAuditDto
   ) {
     const newAudit = await this.auditService.transferAudit(uniqueId, body.newEmail);
-
-    if (!newAudit) {
-      await this.sendAuditNotFoundStatus(uniqueId);
-    }
 
     this.mailer.sendAuditTransferEmail(body.newEmail, {
       editUniqueId: uniqueId,
