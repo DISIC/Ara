@@ -1,6 +1,0 @@
-upstream nginx.boilerplate
-{
-    server      php.nginx.boilerplate:9000 max_fails=3 fail_timeout=3s;
-    #ip_hash;
-    #keepalive  16;
-}
