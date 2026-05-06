@@ -39,9 +39,7 @@ describe("Report", () => {
       // Adding `force: true` to click() function solves the problem.
       cy.contains("button", "Copier le lien du rapport").click({ force: true });
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
-      cy.contains(
-        "Le lien vers le rapport a bien été copié dans le presse-papier."
-      );
+      cy.contains("button", "Lien copié");
     });
   });
 
