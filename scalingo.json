@@ -1,0 +1,7 @@
+{
+  "env": {
+    "IS_REVIEW_APP": {
+      "value": "true"
+    }
+  }
+}
