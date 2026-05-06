@@ -171,8 +171,8 @@ export class MailService {
 
     const data: AuditTransferEmailData = {
       auditUrl,
-      name: audit.auditorName,
-      originEmail: audit.auditorEmail,
+      senderName: audit.auditorName,
+      senderEmail: audit.auditorEmail,
       procedureName: audit.procedureName
     };
 

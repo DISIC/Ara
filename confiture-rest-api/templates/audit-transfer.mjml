@@ -17,7 +17,7 @@
           Un audit vous a été transféré
         </mj-text>
         <mj-text padding-bottom="24px">
-        {{#if name}}{{name}} ({{originEmail}}){{else}}{{originEmail}}{{/if}}
+        {{#if senderName}}{{senderName}} ({{senderEmail}}){{else}}{{senderEmail}}{{/if}}
           vous a transféré l’audit « <strong>{{procedureName}}</strong> ». Si vous possédez un compte Ara, vous retrouverez cet audit dans votre espace.
         </mj-text>
         <mj-button href="{{auditUrl}}" mj-class="blue-button">Accéder à l’audit</mj-button>
