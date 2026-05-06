@@ -89,7 +89,7 @@ function onFadedOut() {
   }
 
   .fr-btn--close {
-    top: 0.75rem;
+    top: auto !important;
   }
 }
 </style>

@@ -33,16 +33,8 @@ function getCriteriumTitle(topicNumber: number, criteriumNumber: number) {
 
 const sectionId = computed(() => `${error.pageId}_${error.topic}_${error.criterium}`);
 
-const countNotCompliantItemsRecommandations = computed(() => {
-  return error.notCompliantItems
-    .filter(x => x.comment || x.quickWin === true || x.title || x.userImpact)
-    .length;
-});
-
 const notCompliantItems = computed(() => {
-  return orderBy(error.notCompliantItems
-    .filter((x) =>
-      x.comment || x.quickWin === true || x.title || x.userImpact), x => x.id);
+  return orderBy(error.notCompliantItems, x => x.id);
 });
 </script>
 
@@ -57,7 +49,7 @@ const notCompliantItems = computed(() => {
     </p>
 
     <p class="fr-badge fr-badge--lg fr-badge--error fr-badge--no-icon fr-mb-3w">
-      non-conformité ({{ countNotCompliantItemsRecommandations }})
+      non-conformité ({{ notCompliantItems.length }})
     </p>
 
     <ul role="list" class="fr-raw-list">

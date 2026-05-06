@@ -70,7 +70,7 @@ defineExpose({
       </p>
     </div>
     <div v-if="canDelete" class="fr-col-4 error-user-delete">
-      <button type="button" class="fr-btn fr-btn--tertiary-no-outline" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
+      <button type="button" class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
     </div>
   </div>
 
@@ -99,7 +99,7 @@ defineExpose({
   <!-- USER IMPACT -->
   <RadioGroup
     ref="userImpactRadioGroupRef"
-    class="fr-mb-2w"
+    class="fr-mb-5v"
     tabindex="-1"
     :items="userImpacts"
     :default-value="null"
@@ -148,7 +148,7 @@ defineExpose({
   </RadioGroup>
 
   <!-- QUICK WIN -->
-  <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+  <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-5v">
     <div class="fr-checkbox-group">
       <input
         :id="`criterium-quick-win-${item.id}-${index}`"
