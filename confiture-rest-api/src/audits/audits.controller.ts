@@ -92,21 +92,7 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId, {
-      environments: true,
-      transverseElementsPage: true,
-      pages: true,
-      sourceAudit: {
-        select: {
-          procedureName: true
-        }
-      },
-      notesFiles: {
-        orderBy: {
-          id: "desc"
-        }
-      }
-    });
+    const audit = await this.auditService.findAudit(uniqueId);
 
     if (!audit) {
       await this.sendAuditNotFoundStatus(uniqueId);
@@ -189,9 +175,9 @@ export class AuditsController {
     file: Express.Multer.File,
     @Body() body: UploadImageDto
   ): Promise<ExampleImageFileDto> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
@@ -220,13 +206,13 @@ export class AuditsController {
     )
     file: Express.Multer.File
   ): Promise<NotesFileDto> {
-    const audit = await this.auditService.getAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    return await this.auditService.saveNotesFile(uniqueId, file);
+    return this.auditService.saveNotesFile(uniqueId, file);
   }
 
   @Post("/editor/images")
@@ -307,9 +293,9 @@ export class AuditsController {
     @Param("uniqueId") uniqueId: string,
     @Body() body: UpdateResultsDto
   ) {
-    const audit = await this.auditService.findAuditWithEditUniqueId(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!audit) {
+    if (!exists) {
       await this.sendAuditNotFoundStatus(uniqueId);
     }
 
@@ -322,6 +308,11 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async publishAudit(@Param("uniqueId") uniqueId: string): Promise<AuditDto> {
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
+    if (!exists) {
+      await this.sendAuditNotFoundStatus(uniqueId);
+    }
+
     const auditIsComplete = await this.auditService.isAuditComplete(uniqueId);
     if (!auditIsComplete) {
       throw new ConflictException(
@@ -330,10 +321,6 @@ export class AuditsController {
     }
 
     const audit = await this.auditService.publishAudit(uniqueId);
-
-    if (!audit) {
-      await this.sendAuditNotFoundStatus(uniqueId);
-    }
 
     return audit;
   }
@@ -398,13 +385,13 @@ export class AuditsController {
   @ApiNotFoundResponse({ description: "The audit does not exist." })
   @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async getCsvExport(@Param("uniqueId") uniqueId: string) {
-    const file = await this.auditExportService.getCsvExport(uniqueId);
+    const exists = await this.auditService.checkIfAuditExists(uniqueId);
 
-    if (!file) {
+    if (!exists) {
       return this.sendAuditNotFoundStatus(uniqueId);
     }
 
-    return file;
+    return this.auditExportService.getCsvExport(uniqueId);
   }
 
   /**
