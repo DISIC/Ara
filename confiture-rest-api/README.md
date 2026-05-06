@@ -105,3 +105,7 @@ class MyController {
   }
 }
 ```
+
+## Servir l’application front
+
+Le client de Ara (Single Page Application) peut être servi directement par l’appli backend en plaçant les fichiers statiques du front dans le dossier `confiture-rest-api/client`.

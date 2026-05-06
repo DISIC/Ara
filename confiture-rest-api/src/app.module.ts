@@ -1,6 +1,8 @@
+import { join } from "path";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER } from "@nestjs/core";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { AuditsModule } from "./audits/audits.module";
 import { AuthModule } from "./auth/auth.module";
@@ -28,7 +30,12 @@ import { TestsController } from "./tests.controller";
     MailModule,
     AuthModule,
     ProfileModule,
-    SentryModule.forRoot()
+    SentryModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "client"),
+      // make sure to not serve the index.html for unknown API paths
+      exclude: ["/api{/*path}"]
+    })
   ],
   providers: [{
     provide: APP_FILTER,

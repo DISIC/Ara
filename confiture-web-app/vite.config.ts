@@ -3,8 +3,8 @@ import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
 
 const uploadSourceMapsToSentry =
-  process.env.SENTRY_ORG &&
-  process.env.SENTRY_PROJECT &&
+  process.env.FRONTEND_SENTRY_ORG &&
+  process.env.FRONTEND_SENTRY_PROJECT &&
   process.env.SENTRY_AUTH_TOKEN &&
   process.env.VITE_SENTRY_RELEASE;
 
@@ -19,8 +19,8 @@ export default defineConfig({
     ...(uploadSourceMapsToSentry
       ? [
           sentryVitePlugin({
-            org: process.env.SENTRY_ORG,
-            project: process.env.SENTRY_PROJECT,
+            org: process.env.FRONTEND_SENTRY_ORG,
+            project: process.env.FRONTEND_SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
             release: {
               name: process.env.VITE_SENTRY_RELEASE
