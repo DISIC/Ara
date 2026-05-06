@@ -56,7 +56,12 @@ async function generateSeeds() {
           ...rawAudit,
           editUniqueId,
           consultUniqueId: reportUniqueId,
-          auditorEmail: acc.username,
+          auditor: {
+            connectOrCreate: {
+              create: { username: acc.username },
+              where: { username: acc.username }
+            }
+          },
           auditTrace: {
             connectOrCreate: {
               where: {

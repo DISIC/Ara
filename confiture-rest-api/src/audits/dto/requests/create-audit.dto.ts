@@ -63,7 +63,7 @@ export class BaseAuditDto {
    */
   @IsEmail()
   @IsOptional()
-  auditorEmail?: string;
+  auditorEmail: string;
 }
 
 class PageElements {

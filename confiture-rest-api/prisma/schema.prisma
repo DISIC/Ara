@@ -29,26 +29,27 @@ model Audit {
   transverseElementsPageId Int           @unique
   auditorName              String?
   auditorEmail             String?
+  auditor                  User?         @relation(fields: [auditorEmail], references: [username])
   showAuditorEmailInReport Boolean       @default(false)
   transverseElements       String[]
 
   // A11y declaration edition step
-  initiator           String?
-  auditorOrganisation String?
-  procedureUrl        String?
-  contactName         String?
-  contactEmail        String?
-  contactFormUrl      String?
-  technologies        String[]
-  tools               String[]
-  environments        TestEnvironment[]
-  notCompliantContent String?
-  derogatedContent    String?
-  notInScopeContent   String?
-  notes               String?
-  notesFiles          NotesFile[]
+  initiator                String?
+  auditorOrganisation      String?
+  procedureUrl             String?
+  contactName              String?
+  contactEmail             String?
+  contactFormUrl           String?
+  technologies             String[]
+  tools                    String[]
+  environments             TestEnvironment[]
+  notCompliantContent      String?
+  derogatedContent         String?
+  notInScopeContent        String?
+  notes                    String?
+  notesFiles               NotesFile[]
   statementPublicationDate DateTime?
-  statementEditionDate DateTime?
+  statementEditionDate     DateTime?
 
   // Misc
   creationDate    DateTime?
@@ -221,8 +222,8 @@ model User {
   id  Int    @id @default(autoincrement())
   uid String @unique @default(uuid())
 
-  username String @unique
-  password String
+  username String  @unique
+  password String?
 
   isVerified      Boolean @default(false)
   verificationJti String?
@@ -232,6 +233,8 @@ model User {
 
   newEmail                String?
   newEmailVerificationJti String?
+
+  audits Audit[]
 }
 
 model ActiveFeedbackToken {

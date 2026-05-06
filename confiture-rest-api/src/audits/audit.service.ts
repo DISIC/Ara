@@ -96,7 +96,16 @@ export class AuditService {
 
         auditType: data.auditType,
 
-        auditorEmail: data.auditorEmail,
+        auditor: {
+          connectOrCreate: {
+            create: {
+              username: data.auditorEmail.toLowerCase()
+            },
+            where: {
+              username: data.auditorEmail.toLowerCase()
+            }
+          }
+        },
         auditorName: data.auditorName,
 
         transverseElementsPage: {
@@ -402,7 +411,12 @@ export class AuditService {
 
           initiator: data.initiator,
 
-          auditorEmail: data.auditorEmail,
+          auditor: {
+            connectOrCreate: {
+              create: { username: data.auditorEmail.toLowerCase() },
+              where: { username: data.auditorEmail.toLowerCase() }
+            }
+          },
           auditorName: data.auditorName,
           auditorOrganisation: data.auditorOrganisation,
 
@@ -950,7 +964,7 @@ export class AuditService {
         data: {
           publicationDate: new Date()
         },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
     } catch (e) {
       if (
@@ -973,7 +987,7 @@ export class AuditService {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: { editionDate: new Date() },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
     }
   }
@@ -990,7 +1004,7 @@ export class AuditService {
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
         : { statementPublicationDate: new Date() },
-      include: AUDIT_EDIT_INCLUDE
+      include: AUDIT_PRISMA_SELECT
     });
   }
 
@@ -1498,6 +1512,7 @@ export class AuditService {
           "auditTraceId",
           "sourceAuditId",
           "transverseElementsPageId",
+          "auditorEmail",
 
           // reset statement fields
           "procedureUrl",
@@ -1513,6 +1528,15 @@ export class AuditService {
           "derogatedContent",
           "notInScopeContent"
         ]),
+
+        ...(originalAudit.auditorEmail && {
+          auditor: {
+            connect: {
+              // FIXME: shouldnt the new audit be under the user who duplicated the audit ?
+              username: originalAudit.auditorEmail.toLowerCase()
+            }
+          }
+        }),
 
         // link new audit with the original
         sourceAudit: {

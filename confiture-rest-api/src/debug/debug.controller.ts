@@ -44,7 +44,12 @@ export class DebugController {
           },
           auditType: body.auditType,
           procedureName: body.procedureName,
-          auditorEmail: body.auditorEmail,
+          auditor: {
+            connectOrCreate: {
+              where: { username: body.auditorEmail.toLowerCase() },
+              create: { username: body.auditorEmail.toLowerCase() }
+            }
+          },
           auditorName: "Étienne Durand",
           transverseElementsPage: {
             create: {
