@@ -59,7 +59,7 @@ const bottomLinks = [
                   class="fr-footer__top-link"
                   :to="{ name: 'missing-audit' }"
                 >
-                  Un audit n’apparaît pas dans votre espace ?
+                  Un audit n’apparaît pas dans votre espace&#8239;?
                 </RouterLink>
               </li>
             </ul>
