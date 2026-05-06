@@ -88,24 +88,8 @@ export class AuditsController {
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
-  async getAudit(
-    @AuditId() uniqueId: string
-  ): Promise<AuditDto> {
-    return this.auditService.findAuditWithEditUniqueId(uniqueId, {
-      environments: true,
-      transverseElementsPage: true,
-      pages: true,
-      sourceAudit: {
-        select: {
-          procedureName: true
-        }
-      },
-      notesFiles: {
-        orderBy: {
-          id: "desc"
-        }
-      }
-    });
+  getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
+    return this.auditService.findAudit(uniqueId);
   }
 
   @Get("/:uniqueId/pages/:pageSlug")

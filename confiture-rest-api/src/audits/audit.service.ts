@@ -77,7 +77,7 @@ export class AuditService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly fileStorageService: FileStorageService
-  ) {}
+  ) { }
 
   async createAudit(data: CreateAuditDto): Promise<AuditDto> {
     const editUniqueId = nanoid();
@@ -172,7 +172,7 @@ export class AuditService {
     const existingSlugs = new Set<string>([TRANSVERSE_ELEMENTS_SLUG]);
     const pagesWithSlug = pages.map(page => {
       let slug = slugify(page.name);
-      for (let i = 1; ;i++) {
+      for (let i = 1; ; i++) {
         if (!existingSlugs.has(slug)) {
           break;
         }
@@ -194,44 +194,15 @@ export class AuditService {
       where: { editUniqueId, isHidden },
       select: { id: true }
     });
+
     return !!audit;
   }
 
-  findAuditWithEditUniqueId(uniqueId: string, include?: Prisma.AuditInclude) {
+  /** Find and return an audit in the format that the API would return */
+  findAudit(uniqueId: string): Promise<AuditDto> {
     return this.prisma.audit.findFirst({
       where: { editUniqueId: uniqueId, isHidden: false },
-      include
-    });
-  }
-
-  getAuditWithEditUniqueId(uniqueId: string) {
-    return this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      include: {
-        environments: true,
-        pages: true,
-        sourceAudit: {
-          select: {
-            procedureName: true
-          }
-        },
-        notesFiles: true
-      }
-    });
-  }
-
-  getAuditWithConsultUniqueId(uniqueId: string) {
-    return this.prisma.audit.findUnique({
-      where: { consultUniqueId: uniqueId },
-      include: {
-        environments: true,
-        pages: true,
-        sourceAudit: {
-          select: {
-            procedureName: true
-          }
-        }
-      }
+      select: AUDIT_PRISMA_SELECT
     });
   }
 
@@ -1343,8 +1314,11 @@ export class AuditService {
   }
 
   async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const audit = await this.findAuditWithEditUniqueId(uniqueId, {
-      pages: true
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      include: {
+        pages: true
+      }
     });
 
     const testedCount = await this.prisma.criterionResult.count({

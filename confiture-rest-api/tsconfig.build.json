@@ -8,6 +8,7 @@
     "scripts",
     "confiture-api.ts",
     "prisma.config.ts",
-    "prisma/seed.ts"
+    "prisma/seed.ts",
+    "prisma/seed-data.ts"
   ]
 }
