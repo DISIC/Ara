@@ -232,6 +232,24 @@ export class TestsController {
         )
       );
     }
+    else {
+      const criteria = CRITERIA[0];
+
+      await this.prisma.criterionResult.create({
+        data: {
+          status: CriterionResultStatus.NOT_COMPLIANT,
+          notCompliantItems: {
+            create: {
+              title: `Titre de l'erreur`
+            }
+          },
+
+          topic: criteria.topic,
+          criterium: criteria.criterium,
+          pageId: completedAudit.transverseElementsPage.id
+        }
+      });
+    }
 
     if (!body.isComplete && !body.isPristine && auditPages.length > 0) {
       await this.prisma.criterionResult.delete({
