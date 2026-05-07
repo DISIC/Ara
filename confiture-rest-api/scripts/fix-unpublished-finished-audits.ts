@@ -8,7 +8,7 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
-
+  // get service instances configured by the nest framework
   const prisma = app.get(PrismaService);
   const auditService = app.get(AuditService);
 
