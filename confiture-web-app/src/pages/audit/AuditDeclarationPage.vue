@@ -5,6 +5,7 @@ import { computed, ref, toRaw, watch } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import TestEnvironmentSelection from "../../components/audit/TestEnvironmentSelection/TestEnvironmentSelection.vue";
 import PageMeta from "../../components/PageMeta";
+import TiptapEditor from "../../components/tiptap/TiptapEditor.vue";
 import BackLink from "../../components/ui/BackLink.vue";
 import DsfrField from "../../components/ui/DsfrField.vue";
 import TagListField from "../../components/ui/TagListField.vue";
@@ -507,16 +508,22 @@ function confirmLeave() {
     <h2 class="fr-h4 fr-mb-2w">Contenus non accessibles</h2>
 
     <div class="fr-input-group fr-mb-2w">
-      <label class="fr-label" for="notCompliantContent">
+      <p id="notCompliantContent" class="fr-label fr-mb-1w">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
-          Listez les contenus et fonctionnalités non conformes sur le site, en utilisant un langage simple et clair.<br />Indiquez les alternatives si disponibles.
+          Listez les contenus et les fonctionnalités qui posent des problèmes d’accessibilité, en utilisant un langage facile à comprendre.<br />Il n’est pas recommandé d’indiquer les numéros ou les intitulés des critères.<br />Indiquez les alternatives si disponibles.
         </span>
-      </label>
-      <textarea
-        id="notCompliantContent"
+      </p>
+
+      <TiptapEditor
         v-model="notCompliantContent"
-        class="fr-input"
+        labelled-by="notCompliantContent"
+        :display-strikethrough="false"
+        :display-headings="false"
+        :display-quote-line="false"
+        :display-code-view="false"
+        :display-code-block="false"
+        :display-insert-picture="false"
       />
     </div>
 
@@ -527,30 +534,42 @@ function confirmLeave() {
     </p>
 
     <div class="fr-input-group fr-mb-2w">
-      <label class="fr-label" for="derogatedContent">
+      <p if="derogatedContent" class="fr-label fr-mb-1w">
         Dérogations pour charge disproportionnée (optionnel)
         <span class="fr-hint-text">
           Listez les contenus et fonctionnalités trop coûteuse ou difficile à rendre accessible.<br />Indiquez les alternatives si disponibles.
         </span>
-      </label>
-      <textarea
-        id="derogatedContent"
+      </p>
+
+      <TiptapEditor
         v-model="derogatedContent"
-        class="fr-input"
+        labelled-by="derogatedContent"
+        :display-strikethrough="false"
+        :display-headings="false"
+        :display-quote-line="false"
+        :display-code-view="false"
+        :display-code-block="false"
+        :display-insert-picture="false"
       />
     </div>
 
     <div class="fr-input-group">
-      <label class="fr-label" for="notInScopeContent">
+      <p id="notInScopeContent" class="fr-label fr-mb-1w">
         Contenus non soumis à l’obligation d’accessibilité (optionnel)
         <span class="fr-hint-text">
           Listez les contenus et fonctionnalités non accessibles qui ne sont pas soumis à la législation.<br />Indiquez les alternatives si disponibles.
         </span>
-      </label>
-      <textarea
-        id="notInScopeContent"
+      </p>
+
+      <TiptapEditor
         v-model="notInScopeContent"
-        class="fr-input"
+        labelled-by="notInScopeContent"
+        :display-strikethrough="false"
+        :display-headings="false"
+        :display-quote-line="false"
+        :display-code-view="false"
+        :display-code-block="false"
+        :display-insert-picture="false"
       />
     </div>
 

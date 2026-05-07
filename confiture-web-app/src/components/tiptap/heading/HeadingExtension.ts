@@ -2,8 +2,12 @@ import { textblockTypeInputRule } from "@tiptap/core";
 import Heading, { Level } from "@tiptap/extension-heading";
 
 // Define needed heading levels
-export function getDisplayedHeadings() {
-  return [4, 5, 6] as Array<Level>;
+export function getDisplayedHeadings(displayHeadings: boolean = true) {
+  if (displayHeadings) {
+    return [4, 5, 6] as Array<Level>;
+  }
+
+  return [];
 }
 
 function getHeadingLevel(el: Element) {
