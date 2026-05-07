@@ -427,15 +427,13 @@ describe("Audit", () => {
       cy.getByLabel("Navigateur").clear().type("Edge");
 
       // Not accessible content
-      cy.getByLabel("Non-conformités (optionnel)")
+      cy.get("[aria-labelledby='notCompliantContent']")
         .clear()
         .type(statementJson.notCompliantContent);
-      cy.getByLabel("Dérogations pour charge disproportionnée (optionnel)")
+      cy.get("[aria-labelledby='derogatedContent']")
         .clear()
         .type(statementJson.derogatedContent);
-      cy.getByLabel(
-        "Contenus non soumis à l’obligation d’accessibilité (optionnel)"
-      )
+      cy.get("[aria-labelledby='notInScopeContent']")
         .clear()
         .type(statementJson.notInScopeContent);
 
