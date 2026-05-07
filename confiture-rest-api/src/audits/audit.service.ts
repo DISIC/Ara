@@ -964,7 +964,7 @@ export class AuditService {
         data: {
           publicationDate: new Date()
         },
-        include: AUDIT_PRISMA_SELECT
+        select: AUDIT_PRISMA_SELECT
       });
     } catch (e) {
       if (
@@ -987,7 +987,7 @@ export class AuditService {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: { editionDate: new Date() },
-        include: AUDIT_PRISMA_SELECT
+        select: AUDIT_PRISMA_SELECT
       });
     }
   }
@@ -1004,7 +1004,7 @@ export class AuditService {
       data: audit.statementPublicationDate
         ? { statementEditionDate: new Date() }
         : { statementPublicationDate: new Date() },
-      include: AUDIT_PRISMA_SELECT
+      select: AUDIT_PRISMA_SELECT
     });
   }
 
