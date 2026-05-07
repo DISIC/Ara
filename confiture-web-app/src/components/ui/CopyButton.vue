@@ -14,21 +14,32 @@ const props = withDefaults(defineProps<{
   label?: string;
   successLabel?: string;
   hiddenLabelSuffix?: string;
-  contentToCopy: string | RouteLocationRaw;
+  contentToCopy: string | RouteLocationRaw | (() => string);
   isWithinBtnGroup?: boolean;
 }>(), {
   label: "Copier le lien de partage",
   successLabel: "Lien copié"
 });
 
-const showSuccess = ref(false);
+const showSuccess = ref(true);
 
 function copyContentToClipboard() {
   if (showSuccess.value) return;
 
-  const content = typeof props.contentToCopy === "string"
-    ? props.contentToCopy
-    : window.location.origin + router.resolve(props.contentToCopy).fullPath;
+  let content: string;
+  switch (typeof props.contentToCopy) {
+    case "object":
+      content = window.location.origin
+        + router.resolve(props.contentToCopy).fullPath;
+      break;
+    case "function":
+      content = props.contentToCopy();
+      break;
+    default:
+      content = props.contentToCopy;
+  }
+
+  console.log({ content });
 
   navigator.clipboard.writeText(content).then(() => {
     showSuccess.value = true;

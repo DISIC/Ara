@@ -3,9 +3,9 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
+import CopyButton from "../components/ui/CopyButton.vue";
 import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import TopLink from "../components/ui/TopLink.vue";
-import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
@@ -17,8 +17,6 @@ const route = useRoute();
 const uniqueId = route.params.uniqueId as string;
 
 useWrappedFetch(() => report.fetchReport(uniqueId));
-
-const notify = useNotifications();
 
 function getA11yLevel() {
   if (report.data!.accessibilityRate === 100) {
@@ -32,7 +30,7 @@ function getA11yLevel() {
 
 const statementContainerRef = ref<HTMLDivElement>();
 
-async function copyA11yStatementHTML() {
+function getA11yStatementHTML(): string {
   const tagsWithSpacesRegex = /<(?<tagName>\S+)(\s+)>/g; // "<XX  >"
   const whitespaceFollowedTags = /<(?<tagName>p)>\s{1}/g; // "<p> "
   const whitespaceFollowingTags = /\s{1}<\/(?<tagName>p)>/g; // " </p>"
@@ -40,7 +38,7 @@ async function copyA11yStatementHTML() {
   const twoLineBreakTags = /<\/(?<tagName>h1|h2|h3|p|ul)>/g; // "</XX>"
   const indentedTags = /<(?<tagName>li)>/g; // "<li>"
 
-  const html = statementContainerRef.value?.innerHTML
+  return statementContainerRef.value?.innerHTML
     // Replace heading levels
     .replaceAll("<h3", "<h1")
     .replaceAll("</h3>", "</h1>")
@@ -64,16 +62,6 @@ async function copyA11yStatementHTML() {
     .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
     .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
     .replaceAll(indentedTags, "  <$<tagName>>");
-
-  if (html) {
-    navigator.clipboard.writeText(html).then(() => {
-      notify(
-        "success",
-        undefined,
-        "Le code HTML de la déclaration d’accessibilité a bien été copié dans le presse-papier."
-      );
-    });
-  }
 }
 
 const statementIsPublished = computed(() => {
@@ -160,12 +148,19 @@ const siteUrl = computed(() => {
           Vous devez publier l’intégralité de cette déclaration.
         </p>
 
-        <button
+        <!-- <button
           class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-copy-line fr-mb-4w"
           @click="copyA11yStatementHTML"
         >
           Copier le code HTML de la déclaration
-        </button>
+        </button> -->
+
+        <CopyButton
+          class="fr-mb-4w"
+          label="Copier le code HTML de la déclaration"
+          icon="fr-icon-file-copy-line"
+          :content-to-copy="getA11yStatementHTML"
+        />
 
         <div ref="statementContainerRef" class="fr-p-9v statement-container">
           <h3 class="fr-h1">Déclaration d’accessibilité</h3>
