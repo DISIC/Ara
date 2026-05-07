@@ -16,6 +16,17 @@ export interface Props {
   labelledBy?: string | null;
   describedBy?: string | null;
   disabled?: boolean;
+  displayBold?: boolean;
+  displayItalic?: boolean;
+  displayStrikethrough?: boolean;
+  displayHeadings?: boolean;
+  displayLink?: boolean;
+  displayListUnordered?: boolean;
+  displayListOrdered?: boolean;
+  displayQuoteLine?: boolean;
+  displayCodeView?: boolean;
+  displayCodeBlock?: boolean;
+  displayInsertPicture?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,7 +34,18 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
-  describedBy: null
+  describedBy: null,
+  displayBold: true,
+  displayItalic: true,
+  displayStrikethrough: true,
+  displayHeadings: true,
+  displayLink: true,
+  displayListUnordered: true,
+  displayListOrdered: true,
+  displayQuoteLine: true,
+  displayCodeView: true,
+  displayCodeBlock: true,
+  displayInsertPicture: true
 });
 
 const emit = defineEmits<{
@@ -168,8 +190,11 @@ defineExpose({
   >
     <ul v-if="editable" class="tiptap-buttons">
       <li>
-        <ul>
-          <li>
+        <ul
+          v-if="displayBold || displayItalic
+            || displayStrikethrough || displayHeadings"
+        >
+          <li v-if="displayBold">
             <TiptapButton
               label="Mettre en gras"
               switch-off-label="Retirer le gras"
@@ -180,7 +205,7 @@ defineExpose({
               @click="editor.chain().focus().toggleBold().run()"
             />
           </li>
-          <li>
+          <li v-if="displayItalic">
             <TiptapButton
               label="Mettre en italique"
               switch-off-label="Retirer l’italique"
@@ -191,7 +216,7 @@ defineExpose({
               @click="editor.chain().focus().toggleItalic().run()"
             />
           </li>
-          <li>
+          <li v-if="displayStrikethrough">
             <TiptapButton
               label="Barrer le texte"
               switch-off-label="Ne pas barrer le texte"
@@ -202,7 +227,10 @@ defineExpose({
               @click="editor.chain().focus().toggleStrike().run()"
             />
           </li>
-          <li v-for="(hLevel, i) in getDisplayedHeadings()" :key="i">
+          <li
+            v-for="(hLevel, i) in getDisplayedHeadings(displayHeadings)"
+            :key="i"
+          >
             <TiptapButton
               :label="`Passer en titre de niveau ${i + 1}`"
               :switch-off-label="`Retirer le niveau de titre ${i + 1}`"
@@ -224,7 +252,7 @@ defineExpose({
           </li>
         </ul>
       </li>
-      <li>
+      <li v-if="displayLink">
         <ul>
           <li>
             <TiptapButton
@@ -239,9 +267,9 @@ defineExpose({
           </li>
         </ul>
       </li>
-      <li>
+      <li v-if="displayListUnordered || displayListOrdered">
         <ul>
-          <li>
+          <li v-if="displayListUnordered">
             <TiptapButton
               label="Passer en liste non ordonnée"
               switch-off-label="Retirer les puces de liste"
@@ -256,7 +284,7 @@ defineExpose({
               @click="editor.chain().focus().toggleBulletList().run()"
             />
           </li>
-          <li>
+          <li v-if="displayListOrdered">
             <TiptapButton
               label="Passer en liste ordonnée"
               switch-off-label="Retirer les numéros de liste"
@@ -273,9 +301,12 @@ defineExpose({
           </li>
         </ul>
       </li>
-      <li>
+      <li
+        v-if="displayQuoteLine || displayCodeView
+          || displayCodeBlock || displayInsertPicture"
+      >
         <ul>
-          <li>
+          <li v-if="displayQuoteLine">
             <TiptapButton
               label="Définir comme citation"
               switch-off-label="Ne pas définir comme citation"
@@ -286,7 +317,7 @@ defineExpose({
               @click="editor.chain().focus().toggleBlockquote().run()"
             />
           </li>
-          <li>
+          <li v-if="displayCodeView">
             <TiptapButton
               label="Définir comme passage de code"
               switch-off-label="Ne pas définir comme passage de code"
@@ -297,7 +328,7 @@ defineExpose({
               @click="editor.chain().focus().toggleCode().run()"
             />
           </li>
-          <li>
+          <li v-if="displayCodeBlock">
             <TiptapButton
               label="Définir comme bloc de code"
               switch-off-label="Ne pas définir comme bloc de code"
@@ -308,7 +339,7 @@ defineExpose({
               @click="editor.chain().focus().toggleCodeBlock().run()"
             />
           </li>
-          <li>
+          <li v-if="displayInsertPicture">
             <TiptapButton
               label="Insérer une image"
               icon="image-add-line"
