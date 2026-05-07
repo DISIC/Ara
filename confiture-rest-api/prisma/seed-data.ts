@@ -1,6 +1,6 @@
 import { hash } from "bcrypt";
-import { CRITERIA } from "src/audits/criteria";
-import { AuditType, CriterionResultStatus, CriterionResultUserImpact } from "src/generated/prisma/client";
+import { CRITERIA } from "../src/audits/criteria";
+import { AuditType, CriterionResultStatus, CriterionResultUserImpact } from "../src/generated/prisma/client";
 
 // Accounts (email / password) based on `DATABASE_SEEDS` env variable
 export async function getRawAccounts() {

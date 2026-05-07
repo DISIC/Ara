@@ -1,5 +1,5 @@
 import { IsString, IsIn, IsBoolean, IsEmail } from "class-validator";
-import { AuditType } from "src/generated/prisma/enums";
+import { AuditType } from "../generated/prisma/enums";
 
 export class CreateDebugAuditDto {
   /**

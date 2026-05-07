@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 
-import { MailService } from "src/mail/mail.service";
+import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditExistsPipe } from "./audit.pipe";
 import { AuditService } from "./audit.service";

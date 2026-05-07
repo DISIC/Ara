@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { CriterionResultStatus, CriterionResultUserImpact } from "src/generated/prisma/enums";
+import { CriterionResultStatus, CriterionResultUserImpact } from "../../../generated/prisma/enums";
 import { ExampleImageFileDto } from "./example-image-file.dto";
 
 export class CriterionResultDto {

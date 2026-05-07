@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import got, { HTTPError } from "got";
 import { nanoid } from "nanoid";
-import { PrismaService } from "src/prisma.service";
+import { PrismaService } from "../prisma.service";
 import { NewFeedbackDto } from "./dto/new-feedback.dto";
 
 @Injectable()
