@@ -56,7 +56,6 @@ const store = useNotificationStore();
           <button
             class="fr-btn--close fr-btn"
             title="Masquer le message"
-            aria-hidden="true"
             @click="store.hideNotification"
           >
             Masquer le message
