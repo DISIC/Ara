@@ -18,7 +18,6 @@ async function bootstrap() {
       publicationDate: null
     },
     select: { editUniqueId: true, publicationDate: true, creationDate: true, procedureName: true },
-    take: 1000
   });
 
   console.log(`Found ${audits.length} potential complete audits with no publication`);
