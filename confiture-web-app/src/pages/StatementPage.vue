@@ -3,7 +3,8 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
-import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
+
+import TiptapRenderer from "../components/tiptap/TiptapRenderer.vue";
 import TopLink from "../components/ui/TopLink.vue";
 import { useNotifications } from "../composables/useNotifications";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
@@ -213,17 +214,19 @@ const siteUrl = computed(() => {
 
             <template v-if="report.data.notCompliantContent">
               <h5 class="fr-h3">Non-conformités</h5>
-              <MarkdownRenderer
+
+              <TiptapRenderer
                 class="fr-mb-2w fr-mb-md-3w"
-                :markdown="report.data.notCompliantContent"
+                :document="report.data.notCompliantContent"
               />
+
             </template>
 
             <template v-if="report.data.derogatedContent">
               <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-              <MarkdownRenderer
+              <TiptapRenderer
                 class="fr-mb-2w fr-mb-md-3w"
-                :markdown="report.data.derogatedContent"
+                :document="report.data.derogatedContent"
               />
             </template>
 
@@ -231,9 +234,9 @@ const siteUrl = computed(() => {
               <h5 class="fr-h3">
                 Contenus non soumis à l’obligation d’accessibilité
               </h5>
-              <MarkdownRenderer
+              <TiptapRenderer
                 class="fr-mb-2w fr-mb-md-3w"
-                :markdown="report.data.notInScopeContent"
+                :document="report.data.notInScopeContent"
               />
             </template>
           </template>

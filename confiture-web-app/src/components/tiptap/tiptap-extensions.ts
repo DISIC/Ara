@@ -208,6 +208,35 @@ export const tiptapRenderedExtensions: Extensions = [
   ...[AraTiptapRenderedExtension]
 ];
 
+export function tiptapEditorBasicExtensions() {
+  return [
+    StarterKit.configure({
+      blockquote: false,
+      strike: false,
+      code: false,
+      heading: false,
+      codeBlock: false
+    }),
+    Markdown.configure({
+      markedOptions: {
+        async: false
+      }
+    }),
+    PasteMarkdownExtension.configure(),
+    extendedLink.configure({
+      openOnClick: false,
+      defaultProtocol: "https",
+      shouldAutoLink: () => true,
+      HTMLAttributes: {
+      // Links do not open when editing, so not "new window"…
+      // Advantage: no extra icon when editing
+        target: null
+      }
+    })
+
+  ];
+}
+
 // Create a resizable node view for each image
 function createResizableNodeView(props: NodeViewRendererProps, vueNodeView: NodeView<typeof TiptapImage, Editor, VueNodeViewRendererOptions>): ResizableNodeView {
   const img = vueNodeView.dom.querySelector("img")!;

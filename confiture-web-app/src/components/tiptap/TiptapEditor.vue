@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, wat
 import { getInnerWidth } from "../../utils";
 import { getDisplayedHeadings } from "./heading/HeadingExtension";
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
-import { getTiptapEditorExtensions } from "./tiptap-extensions";
+import { getTiptapEditorExtensions, tiptapEditorBasicExtensions as getTiptapEditorBasicExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -16,6 +16,7 @@ export interface Props {
   labelledBy?: string | null;
   describedBy?: string | null;
   disabled?: boolean;
+  displayBasic?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,7 +24,8 @@ const props = withDefaults(defineProps<Props>(), {
   editable: true,
   disabled: false,
   labelledBy: null,
-  describedBy: null
+  describedBy: null,
+  displayBasic: false
 });
 
 const emit = defineEmits<{
@@ -53,7 +55,9 @@ function getContent() {
   return content;
 }
 
-function setLink() {
+function setLink(e: Event) {
+  e.preventDefault();
+
   const previousUrl = editor.value.getAttributes("link").href;
   // eslint-disable-next-line no-alert
   const url = window.prompt("Adresse du lien", previousUrl);
@@ -109,9 +113,11 @@ const editor = useEditor({
   enablePasteRules: false,
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: getTiptapEditorExtensions({
-    onImageUploadComplete: fileName => emit("image:uploaded", fileName)
-  }),
+  extensions: props.displayBasic
+    ? getTiptapEditorBasicExtensions()
+    : getTiptapEditorExtensions({
+        onImageUploadComplete: fileName => emit("image:uploaded", fileName)
+      }),
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -119,7 +125,9 @@ const editor = useEditor({
 }) as ShallowRef<Editor>;
 
 const browseInput = useTemplateRef("browseInput");
-function handleAddImageClick() {
+function handleAddImageClick(e: Event) {
+  e.preventDefault();
+
   if (browseInput.value) {
     browseInput.value.value = "";
   }
@@ -127,6 +135,8 @@ function handleAddImageClick() {
 }
 
 function handleBrowseInputChange(e: Event) {
+  e.preventDefault();
+
   const inputElement = e?.target as HTMLInputElement;
   const files = inputElement.files!;
   insertFilesAtSelection(editor.value, Array.from(files));
@@ -177,7 +187,8 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleBold() || disabled"
               :pressed="editor?.isActive('bold')"
-              @click="editor.chain().focus().toggleBold().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleBold().run();"
             />
           </li>
           <li>
@@ -188,10 +199,11 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleItalic() || disabled"
               :pressed="editor?.isActive('italic')"
-              @click="editor.chain().focus().toggleItalic().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleItalic().run();"
             />
           </li>
-          <li>
+          <li v-if="!props.displayBasic">
             <TiptapButton
               label="Barrer le texte"
               switch-off-label="Ne pas barrer le texte"
@@ -199,10 +211,14 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleStrike() || disabled"
               :pressed="editor?.isActive('strike')"
-              @click="editor.chain().focus().toggleStrike().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleStrike().run();"
             />
           </li>
-          <li v-for="(hLevel, i) in getDisplayedHeadings()" :key="i">
+          <li
+            v-for="(hLevel, i) in getDisplayedHeadings(!props.displayBasic)"
+            :key="i"
+          >
             <TiptapButton
               :label="`Passer en titre de niveau ${i + 1}`"
               :switch-off-label="`Retirer le niveau de titre ${i + 1}`"
@@ -210,18 +226,18 @@ defineExpose({
               :is-toggle="true"
               :disabled="
                 !editor?.can().toggleHeading({ level: hLevel as Level }) ||
-                  disabled
-              "
+                  disabled"
               :pressed="editor?.isActive('heading', { level: hLevel })"
-              @click="
-                editor
-                  .chain()
-                  .focus()
-                  .toggleHeading({ level: hLevel as Level })
-                  .run()
+              @click="$event.preventDefault();
+                      editor
+                        .chain()
+                        .focus()
+                        .toggleHeading({ level: hLevel as Level })
+                        .run();
               "
             />
           </li>
+
         </ul>
       </li>
       <li>
@@ -253,7 +269,8 @@ defineExpose({
                   disabled
               "
               :pressed="editor?.isActive('bulletList')"
-              @click="editor.chain().focus().toggleBulletList().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleBulletList().run();"
             />
           </li>
           <li>
@@ -268,12 +285,13 @@ defineExpose({
                   disabled
               "
               :pressed="editor?.isActive('orderedList')"
-              @click="editor.chain().focus().toggleOrderedList().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleOrderedList().run();"
             />
           </li>
         </ul>
       </li>
-      <li>
+      <li v-if="!props.displayBasic">
         <ul>
           <li>
             <TiptapButton
@@ -283,7 +301,8 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleBlockquote() || disabled"
               :pressed="editor?.isActive('blockquote')"
-              @click="editor.chain().focus().toggleBlockquote().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleBlockquote().run();"
             />
           </li>
           <li>
@@ -294,7 +313,8 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleCode() || disabled"
               :pressed="editor?.isActive('code')"
-              @click="editor.chain().focus().toggleCode().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleCode().run();"
             />
           </li>
           <li>
@@ -305,7 +325,8 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleCodeBlock() || disabled"
               :pressed="editor?.isActive('codeBlock')"
-              @click="editor.chain().focus().toggleCodeBlock().run()"
+              @click="$event.preventDefault();
+                      editor.chain().focus().toggleCodeBlock().run();"
             />
           </li>
           <li>
