@@ -1890,7 +1890,6 @@ export class AuditService {
    * Transfer an audit ownership to another user and link it to its account (if any)
    */
   async transferAudit(uniqueId: string, newEmail: string) {
-    console.log("hey");
     const updatedAudit = this.prisma.$transaction(async (tx) => {
       // Get new owner info
       const user = await tx.user.findUnique({
@@ -1903,9 +1902,8 @@ export class AuditService {
         }
       });
 
-      // Update audit with new owner info if any
-      const data: Pick<Audit, "auditorEmail" | "auditorName" | "auditorOrganisation"> = {
-        auditorEmail: newEmail,
+      // Update audit with new owner info if any or reset fields
+      const data: Pick<Audit, "auditorName" | "auditorOrganisation"> = {
         auditorName: "",
         auditorOrganisation: ""
       };
@@ -1918,11 +1916,20 @@ export class AuditService {
         data.auditorOrganisation = user.orgName;
       }
 
-      // FIXME: "'insert or update on table "Audit" violates foreign key constraint "Audit_auditorEmail_fkey"'"
-      // when transfering to email without account
       return await tx.audit.update({
         where: { editUniqueId: uniqueId },
-        data,
+        data: {
+          auditorOrganisation: data.auditorOrganisation,
+          auditorName: data.auditorName,
+          auditor: {
+            connectOrCreate: {
+              where: { username: newEmail },
+              create: {
+                username: newEmail
+              }
+            }
+          }
+        },
         select: AUDIT_PRISMA_SELECT
       });
     });
