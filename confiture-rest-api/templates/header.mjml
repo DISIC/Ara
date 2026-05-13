@@ -1,4 +1,3 @@
-<!-- TODO: upload images to server and add URL in `<mj-image>` src attribute -->
 <mj-section padding-top="24px">
   <!--
     203px = 116px (france) + 87px (ara)
