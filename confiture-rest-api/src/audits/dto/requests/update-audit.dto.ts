@@ -123,4 +123,12 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsString({ each: true })
   @IsOptional()
   transverseElements?: string[];
+
+  @IsString()
+  @IsOptional()
+  schemaPluriannuelUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  planActionUrl?: string;
 }

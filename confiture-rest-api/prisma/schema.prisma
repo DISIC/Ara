@@ -50,6 +50,8 @@ model Audit {
   notesFiles               NotesFile[]
   statementPublicationDate DateTime?
   statementEditionDate     DateTime?
+  schemaPluriannuelUrl     String?
+  planActionUrl            String?
 
   // Misc
   creationDate    DateTime?
