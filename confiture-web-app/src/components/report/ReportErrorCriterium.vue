@@ -85,7 +85,13 @@ const notCompliantItems = computed(() => {
           </a>
         </div>
 
-        <h3 v-if="notCompliantItem.title">{{ notCompliantItem.title }}</h3>
+        <h3>
+          <span class="fr-sr-only">Erreur {{ index + 1 }}</span>
+          <span v-if="notCompliantItem.title" class="fr-sr-only"> : </span>
+          <span v-if="notCompliantItem.title">
+            {{ notCompliantItem.title }}
+          </span>
+        </h3>
 
         <!-- Error -->
         <TiptapRenderer

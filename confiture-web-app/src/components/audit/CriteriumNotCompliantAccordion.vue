@@ -194,23 +194,23 @@ function onUpdateNotCompliantItemClick(
 
 <style scoped>
 .not-compliant-item-add {
-  text-align: center;
-  padding: 1em 0;
   margin: 0 -0.75rem;
 
-  &:has(button:hover) {
-    background-color: var(--blue-france-950-100) !important;
+  button {
+    padding: 1em 0;
+    width: 100%;
+    justify-content: center;
 
-    button {
+    &:hover {
       background-color: var(--blue-france-950-100) !important;
     }
-  }
 
-  &:has(button:active) {
-    background-color: var(--blue-france-925-125) !important;
-
-    button {
+    &:active {
       background-color: var(--blue-france-925-125) !important;
+    }
+
+    &:focus {
+      outline-offset: -2px;
     }
   }
 }
