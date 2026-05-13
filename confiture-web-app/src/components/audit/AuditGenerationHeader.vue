@@ -95,21 +95,13 @@ function confirmDuplicate(name: string) {
     });
 }
 
-/**
- * TODO: check if audit is linked to an account
- */
-// const auditIsLinkedToAnAccount = computed(() => {
-//   return true;
-// });
-
 const canTransferAudit = computed(() => {
-  return true;
-  // if (auditIsLinkedToAnAccount.value) {
-  //   return accountStore.account
-  //     && accountStore.account.email === auditStore.currentAudit?.auditorEmail;
-  // } else {
-  //   return true;
-  // }
+  if (auditStore.currentAudit?.auditor?.isVerified) {
+    return accountStore.account?.email
+      === auditStore.currentAudit?.auditorEmail;
+  } else {
+    return true;
+  }
 });
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
