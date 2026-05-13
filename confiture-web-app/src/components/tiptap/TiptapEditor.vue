@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, wat
 import { getInnerWidth } from "../../utils";
 import { getDisplayedHeadings } from "./heading/HeadingExtension";
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
-import { getTiptapEditorExtensions } from "./tiptap-extensions";
+import { getTiptapEditorExtensions, tiptapEditorBasicExtensions as getTiptapEditorBasicExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -16,17 +16,7 @@ export interface Props {
   labelledBy?: string | null;
   describedBy?: string | null;
   disabled?: boolean;
-  displayBold?: boolean;
-  displayItalic?: boolean;
-  displayStrikethrough?: boolean;
-  displayHeadings?: boolean;
-  displayLink?: boolean;
-  displayListUnordered?: boolean;
-  displayListOrdered?: boolean;
-  displayQuoteLine?: boolean;
-  displayCodeView?: boolean;
-  displayCodeBlock?: boolean;
-  displayInsertPicture?: boolean;
+  displayBasic?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,17 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   labelledBy: null,
   describedBy: null,
-  displayBold: true,
-  displayItalic: true,
-  displayStrikethrough: true,
-  displayHeadings: true,
-  displayLink: true,
-  displayListUnordered: true,
-  displayListOrdered: true,
-  displayQuoteLine: true,
-  displayCodeView: true,
-  displayCodeBlock: true,
-  displayInsertPicture: true
+  displayBasic: false
 });
 
 const emit = defineEmits<{
@@ -133,9 +113,11 @@ const editor = useEditor({
   enablePasteRules: false,
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: getTiptapEditorExtensions({
-    onImageUploadComplete: fileName => emit("image:uploaded", fileName)
-  }),
+  extensions: props.displayBasic
+    ? getTiptapEditorBasicExtensions()
+    : getTiptapEditorExtensions({
+        onImageUploadComplete: fileName => emit("image:uploaded", fileName)
+      }),
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -196,11 +178,8 @@ defineExpose({
   >
     <ul v-if="editable" class="tiptap-buttons">
       <li>
-        <ul
-          v-if="displayBold || displayItalic
-            || displayStrikethrough || displayHeadings"
-        >
-          <li v-if="displayBold">
+        <ul>
+          <li>
             <TiptapButton
               label="Mettre en gras"
               switch-off-label="Retirer le gras"
@@ -212,7 +191,7 @@ defineExpose({
                       editor.chain().focus().toggleBold().run();"
             />
           </li>
-          <li v-if="displayItalic">
+          <li>
             <TiptapButton
               label="Mettre en italique"
               switch-off-label="Retirer l’italique"
@@ -224,7 +203,7 @@ defineExpose({
                       editor.chain().focus().toggleItalic().run();"
             />
           </li>
-          <li v-if="displayStrikethrough">
+          <li v-if="!props.displayBasic">
             <TiptapButton
               label="Barrer le texte"
               switch-off-label="Ne pas barrer le texte"
@@ -237,7 +216,7 @@ defineExpose({
             />
           </li>
           <li
-            v-for="(hLevel, i) in getDisplayedHeadings(displayHeadings)"
+            v-for="(hLevel, i) in getDisplayedHeadings(!props.displayBasic)"
             :key="i"
           >
             <TiptapButton
@@ -247,8 +226,7 @@ defineExpose({
               :is-toggle="true"
               :disabled="
                 !editor?.can().toggleHeading({ level: hLevel as Level }) ||
-                  disabled
-              "
+                  disabled"
               :pressed="editor?.isActive('heading', { level: hLevel })"
               @click="$event.preventDefault();
                       editor
@@ -259,9 +237,10 @@ defineExpose({
               "
             />
           </li>
+
         </ul>
       </li>
-      <li v-if="displayLink">
+      <li>
         <ul>
           <li>
             <TiptapButton
@@ -276,9 +255,9 @@ defineExpose({
           </li>
         </ul>
       </li>
-      <li v-if="displayListUnordered || displayListOrdered">
+      <li>
         <ul>
-          <li v-if="displayListUnordered">
+          <li>
             <TiptapButton
               label="Passer en liste non ordonnée"
               switch-off-label="Retirer les puces de liste"
@@ -294,7 +273,7 @@ defineExpose({
                       editor.chain().focus().toggleBulletList().run();"
             />
           </li>
-          <li v-if="displayListOrdered">
+          <li>
             <TiptapButton
               label="Passer en liste ordonnée"
               switch-off-label="Retirer les numéros de liste"
@@ -312,12 +291,9 @@ defineExpose({
           </li>
         </ul>
       </li>
-      <li
-        v-if="displayQuoteLine || displayCodeView
-          || displayCodeBlock || displayInsertPicture"
-      >
+      <li v-if="!props.displayBasic">
         <ul>
-          <li v-if="displayQuoteLine">
+          <li>
             <TiptapButton
               label="Définir comme citation"
               switch-off-label="Ne pas définir comme citation"
@@ -329,7 +305,7 @@ defineExpose({
                       editor.chain().focus().toggleBlockquote().run();"
             />
           </li>
-          <li v-if="displayCodeView">
+          <li>
             <TiptapButton
               label="Définir comme passage de code"
               switch-off-label="Ne pas définir comme passage de code"
@@ -341,7 +317,7 @@ defineExpose({
                       editor.chain().focus().toggleCode().run();"
             />
           </li>
-          <li v-if="displayCodeBlock">
+          <li>
             <TiptapButton
               label="Définir comme bloc de code"
               switch-off-label="Ne pas définir comme bloc de code"
@@ -353,7 +329,7 @@ defineExpose({
                       editor.chain().focus().toggleCodeBlock().run();"
             />
           </li>
-          <li v-if="displayInsertPicture">
+          <li>
             <TiptapButton
               label="Insérer une image"
               icon="image-add-line"

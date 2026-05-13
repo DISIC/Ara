@@ -518,12 +518,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notCompliantContent"
         labelled-by="notCompliantContent"
-        :display-strikethrough="false"
-        :display-headings="false"
-        :display-quote-line="false"
-        :display-code-view="false"
-        :display-code-block="false"
-        :display-insert-picture="false"
+        :display-basic="true"
       />
     </div>
 
@@ -544,12 +539,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="derogatedContent"
         labelled-by="derogatedContent"
-        :display-strikethrough="false"
-        :display-headings="false"
-        :display-quote-line="false"
-        :display-code-view="false"
-        :display-code-block="false"
-        :display-insert-picture="false"
+        :display-basic="true"
       />
     </div>
 
@@ -564,12 +554,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notInScopeContent"
         labelled-by="notInScopeContent"
-        :display-strikethrough="false"
-        :display-headings="false"
-        :display-quote-line="false"
-        :display-code-view="false"
-        :display-code-block="false"
-        :display-insert-picture="false"
+        :display-basic="true"
       />
     </div>
 
