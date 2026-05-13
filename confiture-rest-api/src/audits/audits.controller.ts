@@ -327,7 +327,7 @@ export class AuditsController {
     this.mailer.sendAuditTransferEmail(body.newEmail, {
       editUniqueId: uniqueId,
       auditorEmail: body.senderEmail,
-      auditorName: newAudit.auditorName,
+      auditorName: body.senderName,
       procedureName: newAudit.procedureName
     }).catch((err) => {
       console.error(

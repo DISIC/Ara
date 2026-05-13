@@ -386,17 +386,6 @@ defineExpose({
       optionsDropdownRef?.closeOptions();
     "
   />
-
-  <!-- <TransferModal
-    :id="audit.editUniqueId"
-    ref="transferModalRef"
-    :procedure-name="audit.procedureName"
-    @confirm="transferAudit"
-    @closed="
-      optionsDropdownRef?.buttonRef?.focus();
-      optionsDropdownRef?.closeOptions();
-    "
-  /> -->
 </template>
 
 <style scoped>

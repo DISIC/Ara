@@ -1,4 +1,4 @@
-import { IsEmail } from "class-validator";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 
 export class TransferAuditDto {
   /**
@@ -6,6 +6,13 @@ export class TransferAuditDto {
    */
   @IsEmail()
   senderEmail: string;
+
+  /**
+   * @example "John Doe"
+   */
+  @IsString()
+  @IsOptional()
+  senderName?: string;
 
   /**
    * @example "name@domaine.com"
