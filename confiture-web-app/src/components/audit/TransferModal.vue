@@ -2,7 +2,7 @@
 import { ref, useId } from "vue";
 
 import { REQUIRED, EMAIL, EQUAL, NOT_EQUAL } from "../../composables/validation";
-import { useAccountStore } from "../../store";
+import { useAccountStore, useAuditStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 import FieldValidation from "../validation/FieldValidation.vue";
@@ -12,6 +12,7 @@ const uniqueId = useId();
 const modal = ref<InstanceType<typeof DsfrModal>>();
 
 const accountStore = useAccountStore();
+const auditStore = useAuditStore();
 
 defineProps<{
   procedureName: string;
@@ -34,6 +35,9 @@ const confirmEmail = ref("");
 const validationRules = [
   REQUIRED("Champ obligatoire. Saisissez l'adresse e-mail du destinataire."),
   EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr"),
+  ...(auditStore.currentAudit?.auditorEmail
+    ? [NOT_EQUAL(auditStore.currentAudit?.auditorEmail, "Cet audit appartient déjà à cette adresse e-mail. Saisissez une adresse e-mail différente.")]
+    : []),
   ...(accountStore.account
     // TODO: update error message if audit is linked to an account
     ? [NOT_EQUAL(accountStore.account?.email, "Cet audit est déjà associé à votre compte. Saisissez une adresse e-mail différente.")]

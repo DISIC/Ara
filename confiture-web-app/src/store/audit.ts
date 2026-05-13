@@ -266,7 +266,8 @@ export const useAuditStore = defineStore("audit", {
           newEmail,
           senderEmail: accountStore.account
             ? accountStore.account.email
-            : this.currentAudit?.auditorEmail
+            : this.currentAudit?.auditorEmail,
+          senderName: accountStore.account?.name ?? null
         }
       });
 
