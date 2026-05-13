@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useDevMode } from "../../composables/useDevMode";
@@ -26,8 +26,9 @@ import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import NotesModal from "./NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
+import TransferModal from "./TransferModal.vue";
 
-defineProps<{
+const props = defineProps<{
   auditName: string;
   keyInfos: {
     title: string;
@@ -37,7 +38,7 @@ defineProps<{
     theme?: SummaryCardThemes;
     disabled?: boolean;
   }[];
-  editUniqueId?: string;
+  editUniqueId: string;
 }>();
 
 const stickyIndicator = ref<HTMLDivElement>();
@@ -92,6 +93,40 @@ function confirmDuplicate(name: string) {
       );
       captureWithPayloads(error);
     });
+}
+
+const canTransferAudit = computed(() => {
+  if (auditStore.currentAudit?.auditor?.isVerified) {
+    return accountStore.account?.email
+      === auditStore.currentAudit?.auditorEmail;
+  } else {
+    return true;
+  }
+});
+const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
+
+/**
+ * Transfer audit and redirect to account dashboard if connected or home
+ */
+async function transferAudit(newEmail: string) {
+  try {
+    await auditStore.transferAudit(props.editUniqueId, newEmail);
+
+    transferModalRef.value?.hide();
+
+    notify("success", `Audit « ${props.auditName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+
+    router.push({
+      name: accountStore.account ? "account-dashboard" : "home"
+    });
+  } catch (error) {
+    notify(
+      "error",
+      "Échec du transfert de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
 }
 
 /**
@@ -346,6 +381,23 @@ onMounted(() => {
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer l’audit
+                  <span class="fr-sr-only"> {{ auditName }}</span>
+                </button>
+              </li>
+              <li class="dropdown-item dropdown-item--with-meta">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                  :disabled="!canTransferAudit"
+                  @click="transferModalRef?.show()"
+                >
+                  <span>
+                    Transférer l’audit
+                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
+                  </span>
+                  <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Seul le propriétaire peut transférer l’audit
+                  </span>
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -408,6 +460,17 @@ onMounted(() => {
     :original-audit-name="auditStore.currentAudit?.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <TransferModal
+    :id="editUniqueId"
+    ref="transferModalRef"
+    :procedure-name="auditName"
+    @confirm="transferAudit"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();

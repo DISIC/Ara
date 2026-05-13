@@ -40,6 +40,7 @@ import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
@@ -310,5 +311,31 @@ export class AuditsController {
   })
   async getCsvExport(@AuditId() uniqueId: string) {
     return await this.auditExportService.getCsvExport(uniqueId);
+  }
+
+  @Put("/:uniqueId/transfer")
+  @ApiCreatedResponse({
+    description: "The audit has been successfully transfered.",
+    type: AuditDto
+  })
+  async transferAudit(
+    @AuditId() uniqueId: string,
+    @Body() body: TransferAuditDto
+  ) {
+    const newAudit = await this.auditService.transferAudit(uniqueId, body.newEmail);
+
+    this.mailer.sendAuditTransferEmail(body.newEmail, {
+      editUniqueId: uniqueId,
+      auditorEmail: body.senderEmail,
+      auditorName: body.senderName,
+      procedureName: newAudit.procedureName
+    }).catch((err) => {
+      console.error(
+        `Failed to send transfer email for audit ${newAudit.editUniqueId}`
+      );
+      console.error(err);
+    });
+
+    return newAudit;
   }
 }

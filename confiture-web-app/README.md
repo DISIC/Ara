@@ -130,7 +130,7 @@ Il extiste des variantes des composants de champs fréquement utilisés (`<DsfrF
       <DsfrField :ref="focusRef" v-model="email" :error="error" label="Votre email" />
     </FieldValidation>
 
-    <!-- Shortcut component. Also exists for DsfrFiel -->
+    <!-- Shortcut component. Also exists for DsfrField -->
     <DsfrPasswordWithValidation
       v-model="userPassword"
       label="Mot de passe"

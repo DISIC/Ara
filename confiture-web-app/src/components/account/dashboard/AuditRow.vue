@@ -25,7 +25,7 @@ const props = defineProps<{
   zIndex?: number;
 }>();
 
-defineEmits(["delete"]);
+defineEmits(["delete", "transfer"]);
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
@@ -74,6 +74,25 @@ function duplicateAudit(name: string) {
       duplicateModal.value?.hide();
     });
 }
+
+// const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
+
+// async function transferAudit(newEmail: string) {
+//   try {
+//     await auditStore.transferAudit(props.audit.editUniqueId, newEmail);
+
+//     transferModalRef.value?.hide();
+
+//     notify("success", `Audit « ${props.audit.procedureName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+//   } catch (error) {
+//     notify(
+//       "error",
+//       "Échec du transfert de l'audit",
+//       DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+//     );
+//     captureWithPayloads(error);
+//   }
+// }
 
 const csvExportUrl = computed(
   () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
@@ -282,6 +301,16 @@ defineExpose({
             >
               Dupliquer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+              @click="$emit('transfer')"
+            >
+              Transférer l’audit
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
             </button>
           </li>
           <li class="dropdown-item">

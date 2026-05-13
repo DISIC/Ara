@@ -258,6 +258,25 @@ export const useAuditStore = defineStore("audit", {
       this.listing = audits;
     },
 
+    async transferAudit(editUniqueId: string, newEmail: string) {
+      const accountStore = useAccountStore();
+
+      await ky.put(`/api/audits/${editUniqueId}/transfer`, {
+        json: {
+          newEmail,
+          senderEmail: accountStore.account
+            ? accountStore.account.email
+            : this.currentAudit?.auditorEmail,
+          senderName: accountStore.account?.name ?? null
+        }
+      });
+
+      delete this.entities[editUniqueId];
+      this.listing = this.listing.filter(
+        (audit) => audit.editUniqueId !== editUniqueId
+      );
+    },
+
     increaseCurrentRequestCount() {
       this.currentRequestCount++;
     },
