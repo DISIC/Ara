@@ -498,7 +498,9 @@ export class AuditService {
           derogatedContent: data.derogatedContent,
           notInScopeContent: data.notInScopeContent,
           notes: data.notes,
-          transverseElements: data.transverseElements
+          transverseElements: data.transverseElements,
+          schemaPluriannuelUrl: data.schemaPluriannuelUrl,
+          planActionUrl: data.planActionUrl
         },
         select: AUDIT_PRISMA_SELECT
       });
@@ -1054,6 +1056,8 @@ export class AuditService {
       updateDate: audit.editionDate,
       statementPublicationDate: audit.statementPublicationDate,
       statementEditionDate: audit.statementEditionDate,
+      schemaPluriannuelUrl: audit.schemaPluriannuelUrl,
+      planActionUrl: audit.planActionUrl,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
@@ -1809,7 +1813,10 @@ export class AuditService {
       technologies: audit.technologies,
       samples: audit.pages,
       tools: audit.tools,
-      environments: audit.environments
+      environments: audit.environments,
+
+      schemaPluriannuelUrl: audit.schemaPluriannuelUrl,
+      planActionUrl: audit.planActionUrl
     };
 
     return statement;
@@ -1872,7 +1879,9 @@ export class AuditService {
         },
         notCompliantContent: data.notCompliantContent,
         derogatedContent: data.derogatedContent,
-        notInScopeContent: data.notInScopeContent
+        notInScopeContent: data.notInScopeContent,
+        schemaPluriannuelUrl: data.schemaPluriannuelUrl,
+        planActionUrl: data.planActionUrl
       },
       select: AUDIT_PRISMA_SELECT
     });

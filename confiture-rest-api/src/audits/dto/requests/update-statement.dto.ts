@@ -109,4 +109,12 @@ export class UpdateStatementDto {
   @IsString()
   @IsOptional()
   notInScopeContent?: string;
+
+  @IsString()
+  @IsOptional()
+  schemaPluriannuelUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  planActionUrl?: string;
 }

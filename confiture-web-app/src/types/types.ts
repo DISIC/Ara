@@ -74,6 +74,8 @@ export interface Audit {
   notesFiles: NotesFile[];
   statementPublicationDate: string | null;
   statementEditionDate: string | null;
+  schemaPluriannuelUrl: string | null;
+  planActionUrl: string | null;
 
   transverseElements: string[];
 }
