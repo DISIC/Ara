@@ -1887,6 +1887,11 @@ export class AuditService {
    */
   async transferAudit(uniqueId: string, newEmail: string) {
     const updatedAudit = this.prisma.$transaction(async (tx) => {
+      const auditToUpdate = await tx.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { auditorName: true }
+      });
+
       // Get new owner info
       const user = await tx.user.findUnique({
         where: {
@@ -1898,19 +1903,21 @@ export class AuditService {
         }
       });
 
-      const auditToUpdate = await tx.audit.findUnique({
-        where: { editUniqueId: uniqueId },
-        select: { auditorName: true }
-      });
-
       // Update audit with new owner info if any
       const data: Pick<Audit, "auditorEmail" | "auditorName" | "auditorOrganisation"> = {
         auditorEmail: newEmail,
-        auditorName: user?.name
-          ? user.name
-          : (auditToUpdate.auditorName || ""),
-        auditorOrganisation: (user && user.orgName) ? user.orgName : ""
+        auditorName: auditToUpdate.auditorName,
+        auditorOrganisation: ""
       };
+
+      if (user) {
+        if (user.name) {
+          data.auditorName = user.name;
+        }
+        if (user.orgName) {
+          data.auditorOrganisation = user.orgName;
+        }
+      }
 
       return await tx.audit.update({
         where: { editUniqueId: uniqueId },
