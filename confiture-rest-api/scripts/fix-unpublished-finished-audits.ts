@@ -18,7 +18,13 @@ async function bootstrap() {
     where: {
       publicationDate: null
     },
-    select: { editUniqueId: true, publicationDate: true, creationDate: true, procedureName: true }
+    select: {
+      editUniqueId: true,
+      publicationDate: true,
+      creationDate: true,
+      editionDate: true,
+      procedureName: true
+    }
   });
 
   console.log(`Found ${audits.length} potential complete audits with no publication`);
@@ -34,7 +40,7 @@ async function bootstrap() {
     process.stdout.write(`Updating audit ${a.editUniqueId}`);
     await prisma.audit.update({
       where: { editUniqueId: a.editUniqueId },
-      data: { publicationDate: a.creationDate }
+      data: { publicationDate: a.editionDate ?? a.creationDate }
     });
     console.log(" ✅");
   }
