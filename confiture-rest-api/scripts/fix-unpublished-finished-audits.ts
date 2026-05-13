@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import dotenv from "dotenv";
+
 import { AppModule } from "../src/app.module";
 import { AuditService } from "../src/audits/audit.service";
 import { PrismaService } from "../src/prisma.service";
@@ -17,7 +18,7 @@ async function bootstrap() {
     where: {
       publicationDate: null
     },
-    select: { editUniqueId: true, publicationDate: true, creationDate: true, procedureName: true },
+    select: { editUniqueId: true, publicationDate: true, creationDate: true, procedureName: true }
   });
 
   console.log(`Found ${audits.length} potential complete audits with no publication`);
