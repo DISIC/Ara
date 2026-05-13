@@ -597,8 +597,8 @@ describe("Audit", () => {
       cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
       cy.contains("a", "Accéder");
 
-      cy.contains("button", "Copier le lien").click();
-      cy.contains("button", "Lien de partage copié");
+      cy.contains("button", "Copier le lien de partage").click();
+      cy.contains("button", "Lien copié");
       cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
     });
   });
@@ -618,16 +618,73 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "FAQ").click();
-      cy.get(".criterium-container").contains("Non conforme").click();
+      cy.get(".criterium-container").contains("Non conforme");
 
-      cy.focused().should("have.attr", "role", "textbox");
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
-      cy.get(".criterium-container .tiptap.tiptap")
+      cy.get(".criterium-container .not-compliant-item input[type='text']")
+        .type("Absence de l'alt sur l'image");
+
+      cy.get(".criterium-container .not-compliant-item .tiptap")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
-      cy.get(".criterium-container label").contains("majeur").click();
-      cy.get(".criterium-container").contains("Facile à corriger").click();
+      cy.get(".criterium-container .not-compliant-item label").contains("majeur").click();
+      cy.get(".criterium-container .not-compliant-item .fr-checkbox-group").contains("Facile à corriger").click();
+    });
+  });
+
+  it("User can add a new not compliant item", () => {
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".criterium-container").contains("Non conforme");
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+
+      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
+        .type("Absence de l'alt sur l'image");
+
+      cy.get(".criterium-container .not-compliant-item:last .tiptap")
+        .type("Il n’y a pas de alt sur l’image du hero");
+
+      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+    });
+  });
+
+  it("User can delete an not compliant item", () => {
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".criterium-container").contains("Non conforme");
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+
+      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").should("not.exist");
+
+      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
+        .type("Absence de l'alt sur l'image");
+
+      cy.get(".criterium-container .not-compliant-item:last .tiptap")
+        .type("Il n’y a pas de alt sur l’image du hero");
+
+      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+
+      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+
+      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").contains("Supprimer").click();
+
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)");
     });
   });
 
@@ -766,8 +823,8 @@ describe("Audit", () => {
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.get(".criterium-container").contains("Non conforme").click();
-      cy.wait("@updateResults");
+      cy.get(".criterium-container").contains("Non conforme");
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
       // 1. Insert an image into the editor with the button
       cy.log("** Insert 1 image with the button **");
@@ -843,8 +900,9 @@ describe("Audit", () => {
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.get(".criterium-container").contains("Non conforme").click();
-      cy.wait("@updateResults");
+
+      cy.get(".criterium-container").contains("Non conforme");
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
       // 3. Copy-paste HTML content with 2 images
       cy.log("** Paste 1 image from clipboard **");

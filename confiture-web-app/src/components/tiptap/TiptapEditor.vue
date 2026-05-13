@@ -112,6 +112,7 @@ const editor = useEditor({
   extensions: getTiptapEditorExtensions({
     onImageUploadComplete: fileName => emit("image:uploaded", fileName)
   }),
+
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -132,9 +133,21 @@ function handleBrowseInputChange(e: Event) {
   insertFilesAtSelection(editor.value, Array.from(files));
 }
 
-watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
-  editor.value.setEditable(editable && !disabled);
-});
+watch(
+  [() => props.editable, () => props.disabled, () => props.modelValue],
+  ([editable, disabled, modelValue]) => {
+    editor.value.setEditable(editable && !disabled);
+
+    if (modelValue && editor.value) {
+      const lastPosition = editor.value.view.state.selection.from;
+
+      editor.value.commands.setContent(getContent());
+
+      // because sometimes, we lost cursor's position after update an item
+      editor.value.$pos(lastPosition);
+    }
+  }
+);
 
 const innerWidth = shallowRef(0);
 
@@ -330,7 +343,7 @@ defineExpose({
 
     <!-- Visually show the editor with a border and a label when CSS is disabled -->
     <p class="tiptap__fake-label" aria-hidden="true">
-      Erreur et recommandation
+      Erreurs et recommandations
     </p>
     <table
       role="presentation"
@@ -366,16 +379,11 @@ defineExpose({
   --tiptap-editor-height: 16.5rem;
 
   position: relative;
-  background-color: var(--background-alt-grey);
+  background-color: var(--background-contrast-grey);
   border-radius: 0.25rem 0.25rem 0 0;
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
-}
-
-/* Override bg color in dark mode to avoid same color as wrapper */
-[data-fr-theme="dark"] .tiptap-container {
-  background-color: var(--background-contrast-grey);
 }
 
 .tiptap-container--not-editable {

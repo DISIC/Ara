@@ -182,6 +182,8 @@ class ReportCriterionResult {
 
   notApplicableComment: string | null;
 
+  notCompliantItems: CriterionResultNotCompliantItem[];
+
   quickWin: boolean;
 }
 
@@ -200,4 +202,11 @@ class ReportNotesFile {
   thumbnailKey: string;
   size: number;
   mimetype: string;
+}
+
+class CriterionResultNotCompliantItem {
+  title: string | null;
+  comment: string | null;
+  userImpact: CriterionResultUserImpact | null;
+  quickWin: boolean | null;
 }
