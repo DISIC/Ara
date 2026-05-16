@@ -51,6 +51,19 @@ const bottomLinks = [
               </li>
             </ul>
           </div>
+          <div class="fr-col-12 fr-col-sm-6 fr-col-md-3">
+            <p class="fr-footer__top-cat">Aide</p>
+            <ul class="fr-footer__top-list">
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'missing-audit' }"
+                >
+                  Un audit n’apparaît pas dans votre espace&#8239;?
+                </RouterLink>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
