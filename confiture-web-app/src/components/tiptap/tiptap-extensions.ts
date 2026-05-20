@@ -118,8 +118,13 @@ const commonImageAttrs = {
 };
 
 export function getTiptapEditorExtensions(options?: {
+  basicMode: boolean;
   onImageUploadComplete: (fileName: string) => void;
 }) {
+  if (options?.basicMode === true) {
+    return getTiptapEditorBasicModeExtensions();
+  }
+
   return [
     ...commonExtensions,
     PasteMarkdownExtension,
@@ -208,7 +213,7 @@ export const tiptapRenderedExtensions: Extensions = [
   ...[AraTiptapRenderedExtension]
 ];
 
-export function tiptapEditorBasicExtensions() {
+export function getTiptapEditorBasicModeExtensions() {
   return [
     StarterKit.configure({
       blockquote: false,

@@ -3,11 +3,11 @@ import type { Level } from "@tiptap/extension-heading";
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { useResizeObserver } from "@vueuse/core";
 
-import { onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, shallowRef, ShallowRef, useTemplateRef, watch } from "vue";
 import { getInnerWidth } from "../../utils";
 import { getDisplayedHeadings } from "./heading/HeadingExtension";
 import { insertFilesAtSelection } from "./image/ImageUploadExtension";
-import { getTiptapEditorExtensions, tiptapEditorBasicExtensions as getTiptapEditorBasicExtensions } from "./tiptap-extensions";
+import { getTiptapEditorExtensions } from "./tiptap-extensions";
 import TiptapButton from "./TiptapButton.vue";
 
 export interface Props {
@@ -16,7 +16,7 @@ export interface Props {
   labelledBy?: string | null;
   describedBy?: string | null;
   disabled?: boolean;
-  displayBasic?: boolean;
+  basicMode?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,13 +25,61 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   labelledBy: null,
   describedBy: null,
-  displayBasic: false
+  basicMode: false
 });
 
 const emit = defineEmits<{
   (event: "image:uploaded", value: string): void;
   (event: "update:modelValue", value: string): void;
 }>();
+
+const extensions = getTiptapEditorExtensions({
+  basicMode: props.basicMode,
+  onImageUploadComplete: fileName => emit("image:uploaded", fileName)
+});
+
+const starterKitExtensionNames = new Set([
+  "blockquote",
+  "bold",
+  "bulletList",
+  "code",
+  "codeBlock",
+  "document",
+  "dropcursor",
+  "gapcursor",
+  "hardBreak",
+  "heading",
+  "history",
+  "horizontalRule",
+  "italic",
+  "listItem",
+  "orderedList",
+  "paragraph",
+  "strike",
+  "text"
+]);
+
+function hasExtension(name: string) {
+  if (extensions.some((extension) => extension.name === name)) {
+    return true;
+  }
+
+  const starterKit = extensions.find((extension) => extension.name === "starterKit");
+
+  if (!starterKit || !starterKitExtensionNames.has(name)) {
+    return false;
+  }
+
+  return starterKit.options?.[name] !== false;
+}
+
+const headingLevels = computed(() => {
+  if (hasExtension("heading")) {
+    return getDisplayedHeadings();
+  } else {
+    return [];
+  }
+});
 
 function getContent() {
   let content = null;
@@ -55,9 +103,7 @@ function getContent() {
   return content;
 }
 
-function setLink(e: Event) {
-  e.preventDefault();
-
+function setLink() {
   const previousUrl = editor.value.getAttributes("link").href;
   // eslint-disable-next-line no-alert
   const url = window.prompt("Adresse du lien", previousUrl);
@@ -113,11 +159,7 @@ const editor = useEditor({
   enablePasteRules: false,
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions: props.displayBasic
-    ? getTiptapEditorBasicExtensions()
-    : getTiptapEditorExtensions({
-        onImageUploadComplete: fileName => emit("image:uploaded", fileName)
-      }),
+  extensions,
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -125,9 +167,7 @@ const editor = useEditor({
 }) as ShallowRef<Editor>;
 
 const browseInput = useTemplateRef("browseInput");
-function handleAddImageClick(e: Event) {
-  e.preventDefault();
-
+function handleAddImageClick() {
   if (browseInput.value) {
     browseInput.value.value = "";
   }
@@ -135,8 +175,6 @@ function handleAddImageClick(e: Event) {
 }
 
 function handleBrowseInputChange(e: Event) {
-  e.preventDefault();
-
   const inputElement = e?.target as HTMLInputElement;
   const files = inputElement.files!;
   insertFilesAtSelection(editor.value, Array.from(files));
@@ -178,8 +216,13 @@ defineExpose({
   >
     <ul v-if="editable" class="tiptap-buttons">
       <li>
-        <ul>
-          <li>
+        <ul
+          v-if="hasExtension('bold')
+            || hasExtension('italic')
+            || hasExtension('strike')
+            || hasExtension('heading')"
+        >
+          <li v-if="hasExtension('bold')">
             <TiptapButton
               label="Mettre en gras"
               switch-off-label="Retirer le gras"
@@ -187,11 +230,10 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleBold() || disabled"
               :pressed="editor?.isActive('bold')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleBold().run();"
+              @click.prevent="editor.chain().focus().toggleBold().run();"
             />
           </li>
-          <li>
+          <li v-if="hasExtension('italic')">
             <TiptapButton
               label="Mettre en italique"
               switch-off-label="Retirer l’italique"
@@ -199,11 +241,10 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleItalic() || disabled"
               :pressed="editor?.isActive('italic')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleItalic().run();"
+              @click.prevent="editor.chain().focus().toggleItalic().run();"
             />
           </li>
-          <li v-if="!props.displayBasic">
+          <li v-if="hasExtension('strike')">
             <TiptapButton
               label="Barrer le texte"
               switch-off-label="Ne pas barrer le texte"
@@ -211,12 +252,11 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleStrike() || disabled"
               :pressed="editor?.isActive('strike')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleStrike().run();"
+              @click.prevent="editor.chain().focus().toggleStrike().run();"
             />
           </li>
           <li
-            v-for="(hLevel, i) in getDisplayedHeadings(!props.displayBasic)"
+            v-for="(hLevel, i) in headingLevels"
             :key="i"
           >
             <TiptapButton
@@ -228,19 +268,18 @@ defineExpose({
                 !editor?.can().toggleHeading({ level: hLevel as Level }) ||
                   disabled"
               :pressed="editor?.isActive('heading', { level: hLevel })"
-              @click="$event.preventDefault();
-                      editor
-                        .chain()
-                        .focus()
-                        .toggleHeading({ level: hLevel as Level })
-                        .run();
+              @click.prevent="editor
+                .chain()
+                .focus()
+                .toggleHeading({ level: hLevel as Level })
+                .run();
               "
             />
           </li>
 
         </ul>
       </li>
-      <li>
+      <li v-if="hasExtension('link')">
         <ul>
           <li>
             <TiptapButton
@@ -250,14 +289,14 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().setLink({ href: 'test' }) || disabled"
               :pressed="editor?.isActive('link')"
-              @click="setLink"
+              @click.prevent="setLink"
             />
           </li>
         </ul>
       </li>
-      <li>
+      <li v-if="hasExtension('bulletList') || hasExtension('orderedList')">
         <ul>
-          <li>
+          <li v-if="hasExtension('bulletList')">
             <TiptapButton
               label="Passer en liste non ordonnée"
               switch-off-label="Retirer les puces de liste"
@@ -269,11 +308,10 @@ defineExpose({
                   disabled
               "
               :pressed="editor?.isActive('bulletList')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleBulletList().run();"
+              @click.prevent="editor.chain().focus().toggleBulletList().run();"
             />
           </li>
-          <li>
+          <li v-if="hasExtension('orderedList')">
             <TiptapButton
               label="Passer en liste ordonnée"
               switch-off-label="Retirer les numéros de liste"
@@ -285,15 +323,19 @@ defineExpose({
                   disabled
               "
               :pressed="editor?.isActive('orderedList')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleOrderedList().run();"
+              @click.prevent="editor.chain().focus().toggleOrderedList().run();"
             />
           </li>
         </ul>
       </li>
-      <li v-if="!props.displayBasic">
+      <li
+        v-if="hasExtension('blockquote')
+          || hasExtension('code')
+          || hasExtension('codeBlock')
+          || hasExtension('image')"
+      >
         <ul>
-          <li>
+          <li v-if="hasExtension('blockquote')">
             <TiptapButton
               label="Définir comme citation"
               switch-off-label="Ne pas définir comme citation"
@@ -301,11 +343,10 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleBlockquote() || disabled"
               :pressed="editor?.isActive('blockquote')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleBlockquote().run();"
+              @click.prevent="editor.chain().focus().toggleBlockquote().run();"
             />
           </li>
-          <li>
+          <li v-if="hasExtension('code')">
             <TiptapButton
               label="Définir comme passage de code"
               switch-off-label="Ne pas définir comme passage de code"
@@ -313,11 +354,10 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleCode() || disabled"
               :pressed="editor?.isActive('code')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleCode().run();"
+              @click.prevent="editor.chain().focus().toggleCode().run();"
             />
           </li>
-          <li>
+          <li v-if="hasExtension('codeBlock')">
             <TiptapButton
               label="Définir comme bloc de code"
               switch-off-label="Ne pas définir comme bloc de code"
@@ -325,16 +365,15 @@ defineExpose({
               :is-toggle="true"
               :disabled="!editor?.can().toggleCodeBlock() || disabled"
               :pressed="editor?.isActive('codeBlock')"
-              @click="$event.preventDefault();
-                      editor.chain().focus().toggleCodeBlock().run();"
+              @click.prevent="editor.chain().focus().toggleCodeBlock().run();"
             />
           </li>
-          <li>
+          <li v-if="hasExtension('image')">
             <TiptapButton
               label="Insérer une image"
               icon="image-add-line"
               :label-visible="true"
-              @click="handleAddImageClick"
+              @click.prevent="handleAddImageClick"
             />
             <input
               ref="browseInput"

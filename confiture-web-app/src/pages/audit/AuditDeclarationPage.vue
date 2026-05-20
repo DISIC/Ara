@@ -518,7 +518,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notCompliantContent"
         labelled-by="notCompliantContent"
-        :display-basic="true"
+        :basic-mode="true"
       />
     </div>
 
@@ -539,7 +539,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="derogatedContent"
         labelled-by="derogatedContent"
-        :display-basic="true"
+        :basic-mode="true"
       />
     </div>
 
@@ -554,7 +554,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notInScopeContent"
         labelled-by="notInScopeContent"
-        :display-basic="true"
+        :basic-mode="true"
       />
     </div>
 
