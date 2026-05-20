@@ -1,10 +1,11 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { ApiCreatedResponse } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { AccountDeletionFeedbackDto } from "./dto/account-deletion-feedback.dto";
 import { NewFeedbackDto } from "./dto/new-feedback.dto";
 import { FeedbackService } from "./feedback.service";
 
 @Controller("feedback")
+@ApiTags("Feedback")
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
