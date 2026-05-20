@@ -44,19 +44,10 @@ const starterKitExtensionNames = new Set([
   "bulletList",
   "code",
   "codeBlock",
-  "document",
-  "dropcursor",
-  "gapcursor",
-  "hardBreak",
   "heading",
-  "history",
-  "horizontalRule",
   "italic",
-  "listItem",
   "orderedList",
-  "paragraph",
-  "strike",
-  "text"
+  "strike"
 ]);
 
 function hasExtension(name: string) {
@@ -65,7 +56,6 @@ function hasExtension(name: string) {
   }
 
   const starterKit = extensions.find((extension) => extension.name === "starterKit");
-
   if (!starterKit || !starterKitExtensionNames.has(name)) {
     return false;
   }
