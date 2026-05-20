@@ -437,7 +437,7 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.notInScopeContent);
 
-      cy.contains("button", "Valider la déclaration").click();
+      cy.contains("button", "Enregistrer").click();
       cy.contains("h1", auditJson.procedureName);
     });
   });

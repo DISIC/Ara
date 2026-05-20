@@ -599,7 +599,7 @@ function confirmLeave() {
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
-            : "Valider la déclaration"
+            : "Enregistrer"
         }}
       </button>
       <RouterLink

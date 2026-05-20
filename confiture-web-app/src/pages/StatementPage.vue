@@ -168,10 +168,67 @@ const siteUrl = computed(() => {
               n<sup>o</sup> 2005-102 du 11 février 2005.
             </p>
 
-            <p class="fr-mb-9v fr-mb-md-6w">
-              Cette déclaration d’accessibilité s’applique à
-              <strong>{{ report.data.procedureUrl }}</strong>.
+          <template
+            v-if="report.data.schemaPluriannuelUrl && report.data.planActionUrl"
+          >
+            <p>
+              A cette fin, {{ report.data.procedureInitiator }} met en œuvre
+              la stratégie et les actions suivantes :
             </p>
+            <ul class="fr-mb-9v">
+              <li>
+                <a
+                  :href="report.data.schemaPluriannuelUrl"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >Schéma pluriannuel de mise en accessibilité
+                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  :href="report.data.planActionUrl"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >Plan d'actions de l'année en cours
+                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                </a>
+              </li>
+            </ul>
+          </template>
+
+          <template
+            v-else-if="
+              report.data.schemaPluriannuelUrl || report.data.planActionUrl"
+          >
+            <p class="fr-mb-9v">
+              A cette fin, {{ report.data.procedureInitiator }} met en œuvre
+              la stratégie et les actions suivantes :
+              <template v-if="report.data.schemaPluriannuelUrl">
+                <a
+                  :href="report.data.schemaPluriannuelUrl"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >schéma pluriannuel de mise en accessibilité
+                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                </a>
+              </template>
+              <template v-if="report.data.planActionUrl">
+                <a
+                  :href="report.data.planActionUrl"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >plan d'actions de l'année en cours
+                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                </a>
+              </template>
+            </p>
+          </template>
+
+          <p class="fr-mb-9v fr-mb-md-6w">
+            Cette déclaration d’accessibilité s’applique à
+            <strong>{{ report.data.procedureUrl }}</strong>.
+          </p>
 
             <h4 class="fr-h2">État de conformité</h4>
             <p class="fr-mb-9v fr-mb-md-6w">
