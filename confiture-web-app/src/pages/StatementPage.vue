@@ -152,12 +152,11 @@ const siteUrl = computed(() => {
           <CopyButton
             class="copy-button"
             icon="fr-icon-file-copy-line"
+            label="Copier le code HTML"
             hidden-label-suffix="de la déclaration"
             success-label="Code HTML copié"
             :content-to-copy="getA11yStatementHTML"
-          >
-            Copier le code HTML
-          </CopyButton>
+          />
 
           <div ref="statementContainerRef" class="fr-p-9v statement-container">
             <h3 class="fr-h1">Déclaration d’accessibilité</h3>
