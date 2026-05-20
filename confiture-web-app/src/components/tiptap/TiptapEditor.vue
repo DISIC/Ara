@@ -33,44 +33,6 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
 }>();
 
-const extensions = getTiptapEditorExtensions({
-  basicMode: props.basicMode,
-  onImageUploadComplete: fileName => emit("image:uploaded", fileName)
-});
-
-const starterKitExtensionNames = new Set([
-  "blockquote",
-  "bold",
-  "bulletList",
-  "code",
-  "codeBlock",
-  "heading",
-  "italic",
-  "orderedList",
-  "strike"
-]);
-
-function hasExtension(name: string) {
-  if (extensions.some((extension) => extension.name === name)) {
-    return true;
-  }
-
-  const starterKit = extensions.find((extension) => extension.name === "starterKit");
-  if (!starterKit || !starterKitExtensionNames.has(name)) {
-    return false;
-  }
-
-  return starterKit.options?.[name] !== false;
-}
-
-const headingLevels = computed(() => {
-  if (hasExtension("heading")) {
-    return getDisplayedHeadings();
-  } else {
-    return [];
-  }
-});
-
 function getContent() {
   let content = null;
   if (props.modelValue) {
@@ -149,12 +111,28 @@ const editor = useEditor({
   enablePasteRules: false,
   editable: props.editable && !props.disabled,
   content: getContent(),
-  extensions,
+  extensions: getTiptapEditorExtensions({
+    basicMode: props.basicMode,
+    onImageUploadComplete: fileName => emit("image:uploaded", fileName)
+  }),
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
   }
 }) as ShallowRef<Editor>;
+
+function hasExtension(name: string) {
+  return editor.value?.extensionManager
+    .extensions.find((extension) => extension.name === name) !== undefined;
+}
+
+const headingLevels = computed(() => {
+  if (hasExtension("heading")) {
+    return getDisplayedHeadings();
+  } else {
+    return [];
+  }
+});
 
 const browseInput = useTemplateRef("browseInput");
 function handleAddImageClick() {
