@@ -394,9 +394,6 @@ describe("Audit", () => {
         .type(statementJson.procedureUrl);
 
       // Contact
-      cy.getByLabel("Nom et prénom du contact (optionnel)")
-        .clear()
-        .type(statementJson.contactName);
       cy.getByLabel("Adresse e-mail").clear().type(statementJson.contactEmail);
       cy.getByLabel("Formulaire de contact en ligne")
         .clear()
@@ -436,6 +433,14 @@ describe("Audit", () => {
       cy.get("[aria-labelledby='notInScopeContent']")
         .clear()
         .type(statementJson.notInScopeContent);
+
+      cy.getByLabel("URL du schéma pluriannuel de mise en accessibilité (optionnel)")
+        .clear()
+        .type(statementJson.schemaPluriannuelUrl);
+
+      cy.getByLabel("URL du plan d'actions en cours (optionnel)")
+        .clear()
+        .type(statementJson.planActionUrl);
 
       cy.contains("button", "Enregistrer").click();
       cy.contains("h1", auditJson.procedureName);

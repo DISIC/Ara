@@ -9,5 +9,7 @@
   "tools": "Firefox Devtools, AXE Webextension",
   "notCompliantContent": "Sit aliquip velit adipisicing esse cupidatat. Dolor nisi do Lorem laboris cillum.",
   "derogatedContent": "Non officia voluptate id magna culpa consectetur ex officia quis magna quis sint.",
-  "notInScopeContent": "Nostrud duis ut sint et et. Consequat fugiat sunt est elit sunt."
+  "notInScopeContent": "Nostrud duis ut sint et et. Consequat fugiat sunt est elit sunt.",
+  "schemaPluriannuelUrl": "https://example.com/schema-pluriannuel-url",
+  "planActionUrl": "https://example.com/plan-d-action"
 }
