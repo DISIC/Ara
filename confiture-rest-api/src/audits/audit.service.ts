@@ -396,7 +396,7 @@ export class AuditService {
         where: {
           editUniqueId: uniqueId
         },
-        include: AUDIT_EDIT_INCLUDE
+        include: AUDIT_PRISMA_SELECT
       });
 
       if (updatedPages.length > 0) {
@@ -1690,7 +1690,8 @@ export class AuditService {
           "environments",
           "notCompliantContent",
           "derogatedContent",
-          "notInScopeContent"
+          "notInScopeContent",
+          "ownerUsername"
         ]),
 
         ...(originalAudit.auditorEmail && {
@@ -1706,6 +1707,12 @@ export class AuditService {
         sourceAudit: {
           connect: {
             editUniqueId: sourceUniqueId
+          }
+        },
+
+        owner: {
+          connect: {
+            username: originalAudit.ownerUsername
           }
         },
 

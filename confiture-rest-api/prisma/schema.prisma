@@ -19,7 +19,7 @@ enum AuditType {
 
 model Audit {
   id Int @id @default(autoincrement())
-
+  
   // Audit creation step
   auditType                AuditType
   procedureName            String
@@ -62,6 +62,10 @@ model Audit {
   consultUniqueId String     @unique
   auditTraceId    Int        @unique
   auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
+
+  // owner user
+  ownerUsername String?
+  owner User? @relation(fields: [ownerUsername], references: [username], onUpdate: Cascade, onDelete: SetNull)
 
   // Audit duplication history
   sourceAudit   Audit?  @relation("AuditDuplicationHistory", fields: [sourceAuditId], references: [id])
