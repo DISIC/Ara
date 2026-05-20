@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaClientKnownRequestError } from "src/generated/prisma/internal/prismaNamespace";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace";
 
-import { PrismaService } from "src/prisma.service";
+import { PrismaService } from "../prisma.service";
 import { PatchProfileDto } from "./patch-profile.dto";
 
 @Injectable()

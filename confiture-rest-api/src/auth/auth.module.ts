@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { AuditsModule } from "src/audits/audits.module";
-import { FeedbackModule } from "src/feedback/feedback.module";
-import { MailModule } from "src/mail/mail.module";
+import { AuditsModule } from "../audits/audits.module";
+import { FeedbackModule } from "../feedback/feedback.module";
+import { MailModule } from "../mail/mail.module";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { CreateAccountController } from "./create-account.controller";

@@ -555,9 +555,13 @@ export class AuditService {
     data: PatchAuditDto
   ): Promise<Audit | undefined> {
     try {
-      const audit = await this.prisma.audit.update({
+      let audit = await this.prisma.audit.findUnique({ where: { editUniqueId: uniqueId } });
+      audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
-        data: { notes: data.notes, editionDate: new Date() }
+        data: {
+          notes: data.notes,
+          ...(audit.publicationDate && { editionDate: new Date() })
+        }
       });
 
       return audit;
