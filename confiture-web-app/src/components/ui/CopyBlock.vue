@@ -53,7 +53,6 @@ function onAlertClose() {
           class="fr-btn fr-icon-file-copy-2-line fr-btn--icon-left fr-btn--secondary fr-mb-0"
           @click="copyUrl"
         >
-          <!-- <CopyIcon class="fr-mr-2v" /> -->
           Copier le lien de partage
           <span class="fr-sr-only">{{ copyButtonHiddenLabel }}</span>
         </button>

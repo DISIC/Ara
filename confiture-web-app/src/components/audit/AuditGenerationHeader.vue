@@ -375,7 +375,6 @@ onMounted(() => {
                 </RouterLink>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
-                <!-- TODO: icon "file-copy-2" does not exist on DSFR -->
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
                   :disabled="!accountStore.isOwner"
