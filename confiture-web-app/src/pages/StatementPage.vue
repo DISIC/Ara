@@ -203,7 +203,7 @@ const siteUrl = computed(() => {
           >
             <p class="fr-mb-9v">
               A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-              la stratégie et les actions suivantes :
+              la stratégie et l'action suivantes :
               <template v-if="report.data.schemaPluriannuelUrl">
                 <a
                   :href="report.data.schemaPluriannuelUrl"
