@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 26/05/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des images d’en-tête dans les emails sur, entre autres, Gmail ([#1483](https://github.com/DISIC/Ara/pull/1488))
+
 ### 14/04/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
