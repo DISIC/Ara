@@ -18,7 +18,7 @@ function configureSwagger(app: INestApplication) {
     customSiteTitle: swaggerTitle,
     // Hide api version + improve description readability
     customCss: `
-      hgroup h2 > span { display: none; }
+      hgroup h1 > span { display: none; }
       .swagger-ui .info p, .swagger-ui .info a { font-size: 1rem; }
       .swagger-ui .info p { line-height: 1.2; max-width:  50rem;  margin: 1rem 0; }
     `
