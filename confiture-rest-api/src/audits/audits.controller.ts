@@ -320,14 +320,15 @@ export class AuditsController {
   })
   async transferAudit(
     @AuditId() uniqueId: string,
-    @Body() body: TransferAuditDto
+    @Body() body: TransferAuditDto,
+    @User() user: AuthenticationJwtPayload
   ) {
-    const newAudit = await this.auditService.transferAudit(uniqueId, body.newEmail);
+    const { originalAuditEmail, newAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
     this.mailer.sendAuditTransferEmail(body.newEmail, {
       editUniqueId: uniqueId,
-      auditorEmail: body.senderEmail,
-      auditorName: body.senderName,
+      auditorEmail: user?.email || originalAuditEmail,
+      auditorName: user?.name || null,
       procedureName: newAudit.procedureName
     }).catch((err) => {
       console.error(

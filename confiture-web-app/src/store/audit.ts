@@ -262,12 +262,9 @@ export const useAuditStore = defineStore("audit", {
       const accountStore = useAccountStore();
 
       await ky.put(`/api/audits/${editUniqueId}/transfer`, {
+        ...(accountStore.account ? { headers: { Authorization: `Bearer ${accountStore.authToken}` } } : {}),
         json: {
-          newEmail,
-          senderEmail: accountStore.account
-            ? accountStore.account.email
-            : this.currentAudit?.auditorEmail,
-          senderName: accountStore.account?.name ?? null
+          newEmail
         }
       });
 

@@ -1890,50 +1890,57 @@ export class AuditService {
    * Transfer an audit ownership to another user and link it to its account (if any)
    */
   async transferAudit(uniqueId: string, newEmail: string) {
-    const updatedAudit = this.prisma.$transaction(async (tx) => {
-      // Get new owner info
-      const user = await tx.user.findUnique({
-        where: {
-          username: newEmail
-        },
-        select: {
-          name: true,
-          orgName: true
-        }
-      });
-
-      // Update audit with new owner info if any or reset fields
-      const data: Pick<Audit, "auditorName" | "auditorOrganisation"> = {
-        auditorName: "",
-        auditorOrganisation: ""
-      };
-
-      if (user?.name) {
-        data.auditorName = user.name;
-      }
-
-      if (user?.orgName) {
-        data.auditorOrganisation = user.orgName;
-      }
-
-      return await tx.audit.update({
-        where: { editUniqueId: uniqueId },
-        data: {
-          auditorOrganisation: data.auditorOrganisation,
-          auditorName: data.auditorName,
-          auditor: {
-            connectOrCreate: {
-              where: { username: newEmail },
-              create: {
-                username: newEmail
-              }
-            }
-          }
-        },
-        select: AUDIT_PRISMA_SELECT
-      });
+    // Get original audit email
+    const audit = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      select: { auditorEmail: true }
     });
 
-    return updatedAudit;
+    // Get new owner info
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: newEmail
+      },
+      select: {
+        name: true,
+        orgName: true
+      }
+    });
+
+    // Update audit with new owner info if any or reset fields
+    const data: Pick<Audit, "auditorName" | "auditorOrganisation"> = {
+      auditorName: "",
+      auditorOrganisation: ""
+    };
+
+    if (user?.name) {
+      data.auditorName = user.name;
+    }
+
+    if (user?.orgName) {
+      data.auditorOrganisation = user.orgName;
+    }
+
+    const newAudit = await this.prisma.audit.update({
+      where: { editUniqueId: uniqueId },
+      data: {
+        auditorOrganisation: data.auditorOrganisation,
+        auditorName: data.auditorName,
+        auditor: {
+          connectOrCreate: {
+            where: { username: newEmail },
+            create: {
+              username: newEmail
+            }
+          }
+        }
+      },
+      select: AUDIT_PRISMA_SELECT
+    });
+
+    return {
+      originalAuditEmail: audit.auditorEmail,
+      newAudit
+    };
   }
 }
