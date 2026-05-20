@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   label?: string;
   successLabel?: string;
   hiddenLabelSuffix?: string;
-  contentToCopy: string | RouteLocationRaw;
+  contentToCopy: string | RouteLocationRaw | (() => string);
   isWithinBtnGroup?: boolean;
 }>(), {
   label: "Copier le lien de partage",
@@ -26,9 +26,18 @@ const showSuccess = ref(false);
 function copyContentToClipboard() {
   if (showSuccess.value) return;
 
-  const content = typeof props.contentToCopy === "string"
-    ? props.contentToCopy
-    : window.location.origin + router.resolve(props.contentToCopy).fullPath;
+  let content: string;
+  switch (typeof props.contentToCopy) {
+    case "function":
+      content = props.contentToCopy();
+      break;
+    case "object":
+      content = window.location.origin
+        + router.resolve(props.contentToCopy).fullPath;
+      break;
+    default:
+      content = props.contentToCopy;
+  }
 
   navigator.clipboard.writeText(content).then(() => {
     showSuccess.value = true;
