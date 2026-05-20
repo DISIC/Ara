@@ -75,6 +75,11 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
   },
   pages: {
     select: PAGE_PRISMA_SELECT
+  },
+  owner: {
+    select: {
+      username: true
+    }
   }
 };
 
