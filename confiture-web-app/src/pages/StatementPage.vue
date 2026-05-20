@@ -155,7 +155,6 @@ const siteUrl = computed(() => {
             hidden-label-suffix="de la déclaration"
             success-label="Code HTML copié"
             :content-to-copy="getA11yStatementHTML"
-            is-within-btn-group
           >
             Copier le code HTML
           </CopyButton>

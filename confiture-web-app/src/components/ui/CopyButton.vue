@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
   successLabel?: string;
   hiddenLabelSuffix?: string;
   contentToCopy: string | RouteLocationRaw | (() => string);
-  isWithinBtnGroup?: boolean;
+  constantWidth?: boolean;
 }>(), {
   label: "Copier le lien de partage",
   successLabel: "Lien copié"
@@ -54,11 +54,11 @@ function copyContentToClipboard() {
     ref="copyButtonRef"
     type="button"
     :class="[`fr-btn fr-btn--secondary fr-btn--icon-left ${showSuccess ? 'fr-icon-check-line copy-button--success' : icon} copy-button`, {
-      'copy-button--within-btn-group fr-mb-0': isWithinBtnGroup
+      'copy-button--within-btn-group fr-mb-0': !constantWidth
     }]"
     @click="copyContentToClipboard"
   >
-    <template v-if="isWithinBtnGroup">
+    <template v-if="!constantWidth">
       {{ showSuccess ? successLabel : label }}
     </template>
 
