@@ -12,6 +12,7 @@ import {
   Patch,
   Post,
   Put,
+  UnauthorizedException,
   UploadedFile,
   UseInterceptors
 } from "@nestjs/common";
@@ -21,7 +22,8 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
+  ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
 import { AuthRequired } from "../auth/auth-required.decorator";
@@ -318,11 +320,24 @@ export class AuditsController {
     description: "The audit has been successfully transfered.",
     type: AuditDto
   })
+  @ApiUnauthorizedResponse({
+    description:
+        "Only audit owner can transfer an audit."
+  })
   async transferAudit(
     @AuditId() uniqueId: string,
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
+    const audit = await this.getAudit(uniqueId);
+    const canTransfer = audit.auditor.isVerified
+      ? audit.auditor.username === user.email
+      : true;
+
+    if (!canTransfer) {
+      throw new UnauthorizedException();
+    }
+
     const { originalAuditEmail, newAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
     this.mailer.sendAuditTransferEmail(body.newEmail, {
