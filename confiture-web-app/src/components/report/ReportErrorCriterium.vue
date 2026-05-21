@@ -12,8 +12,12 @@ import {
 } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 
-const { error } = defineProps<{
+const { error, indexes } = defineProps<{
   error: ReportCriteriumResult;
+  indexes: {
+    index: number;
+    id: number;
+  }[];
 }>();
 
 function getCriterium(topicNumber: number, criteriumNumber: number) {
@@ -36,6 +40,10 @@ const sectionId = computed(() => `${error.pageId}_${error.topic}_${error.criteri
 const notCompliantItems = computed(() => {
   return orderBy(error.notCompliantItems, x => x.id);
 });
+
+function getLabelError(notCompliantItemId?: number) {
+  return `Erreur ${indexes.find(x => x.id === notCompliantItemId)?.index}`;
+}
 </script>
 
 <template>
@@ -86,7 +94,7 @@ const notCompliantItems = computed(() => {
         </div>
 
         <h3 class="fr-mb-3v">
-          <span class="fr-sr-only">Erreur {{ index + 1 }}</span>
+          <span class="fr-sr-only">{{ getLabelError(notCompliantItem.id) }}</span>
           <span v-if="notCompliantItem.title" class="fr-sr-only"> : </span>
           <span v-if="notCompliantItem.title">
             {{ notCompliantItem.title }}
