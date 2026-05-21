@@ -90,28 +90,43 @@ const unknownUserImpactErrorCount = computed(
 );
 
 // Errors
-const transverseErrors = computed(() => {
+
+const allErrors = computed(() => {
   return getReportErrors(
     report,
     quickWinFilter.value,
     userImpactFilters.value
-  )[0];
+  );
+});
+
+const transverseErrors = computed(() => {
+  return allErrors.value[0];
 });
 
 const pagesErrors = computed(() => {
-  return getReportErrors(
-    report,
-    quickWinFilter.value,
-    userImpactFilters.value
-  ).slice(1);
+  return allErrors.value.slice(1);
 });
 
 const errorsCount = computed(() => {
   return sum(
-    getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
+    allErrors.value
       .map((page: any) => page.topics.map((topic: any) => topic.errorsCount))
       .flat(2)
   );
+});
+
+const notCompliantItemsIndexes = computed(() => {
+  return allErrors.value
+    .flatMap((page: any) => page.topics
+      .filter((topic: any) => topic.errorsCount > 0))
+    .flatMap((topic) => topic.errors)
+    .flatMap((error) => error.notCompliantItems)
+    .map((notCompliantItem, index) => {
+      return {
+        index: index + 1,
+        id: notCompliantItem.id
+      };
+    });
 });
 </script>
 
@@ -237,7 +252,10 @@ const errorsCount = computed(() => {
 
           <div v-for="topic in transverseErrors.topics" :key="topic.topic">
             <template v-for="(error, j) in topic.errors" :key="j">
-              <ReportErrorCriterium :error="error" />
+              <ReportErrorCriterium
+                :error="error"
+                :indexes="notCompliantItemsIndexes"
+              />
             </template>
           </div>
         </section>
@@ -271,7 +289,10 @@ const errorsCount = computed(() => {
           :class="{ 'fr-mt-4w': j === 0 }"
         >
           <template v-for="(error, k) in topic.errors" :key="k">
-            <ReportErrorCriterium :error="error" />
+            <ReportErrorCriterium
+              :error="error"
+              :indexes="notCompliantItemsIndexes"
+            />
           </template>
         </div>
       </section>
