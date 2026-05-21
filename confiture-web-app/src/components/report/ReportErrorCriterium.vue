@@ -85,7 +85,7 @@ const notCompliantItems = computed(() => {
           </a>
         </div>
 
-        <h3>
+        <h3 class="fr-mb-3v">
           <span class="fr-sr-only">Erreur {{ index + 1 }}</span>
           <span v-if="notCompliantItem.title" class="fr-sr-only"> : </span>
           <span v-if="notCompliantItem.title">
@@ -182,5 +182,20 @@ const notCompliantItems = computed(() => {
 
 .criterium-not-compliant-item h6 {
   font-size: 1.125rem;
+}
+
+.tiptap--rendered {
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol,
+  ul {
+    margin-left: 2em;
+  }
 }
 </style>
