@@ -169,14 +169,16 @@ const siteUrl = computed(() => {
             </p>
 
           <template
-            v-if="report.data.schemaPluriannuelUrl && report.data.planActionUrl"
+            v-if="report.data.schemaPluriannuelUrl || report.data.planActionUrl"
           >
             <p>
               A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-              la stratégie et les actions suivantes :
+              <template v-if="report.data.schemaPluriannuelUrl && report.data.planActionUrl">la stratégie et les actions suivantes :</template>
+              <template v-else-if="report.data.schemaPluriannuelUrl">la stratégie suivante :</template>
+              <template v-else>les actions suivantes :</template>
             </p>
             <ul class="fr-mb-9v">
-              <li>
+              <li v-if="report.data.schemaPluriannuelUrl">
                 <a
                   :href="report.data.schemaPluriannuelUrl"
                   target="_blank"
@@ -185,7 +187,7 @@ const siteUrl = computed(() => {
                   <span class="fr-sr-only">(nouvelle fenêtre)</span>
                 </a>
               </li>
-              <li>
+              <li v-if="report.data.planActionUrl">
                 <a
                   :href="report.data.planActionUrl"
                   target="_blank"
@@ -195,34 +197,6 @@ const siteUrl = computed(() => {
                 </a>
               </li>
             </ul>
-          </template>
-
-          <template
-            v-else-if="
-              report.data.schemaPluriannuelUrl || report.data.planActionUrl"
-          >
-            <p class="fr-mb-9v">
-              A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-              la stratégie et l'action suivantes :
-              <template v-if="report.data.schemaPluriannuelUrl">
-                <a
-                  :href="report.data.schemaPluriannuelUrl"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >schéma pluriannuel de mise en accessibilité
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </template>
-              <template v-if="report.data.planActionUrl">
-                <a
-                  :href="report.data.planActionUrl"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >plan d'actions de l'année en cours
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </template>
-            </p>
           </template>
 
           <p class="fr-mb-9v fr-mb-md-6w">
@@ -241,14 +215,16 @@ const siteUrl = computed(() => {
               référentiel général d’amélioration de l’accessibilité (RGAA).
             </p>
 
-            <h5 class="fr-h2">Résultats des tests</h5>
-            <p class="fr-mb-9v fr-mb-md-6w">
-              L’audit de conformité réalisé par
-              <strong v-if="report.data.context.auditorOrganisation">{{ report.data.context.auditorOrganisation }}</strong><mark v-else>[nom de l’entitée ayant réalisé l’audit]</mark>
-              révèle que
-              <strong>{{ report.data.accessibilityRate }} %</strong> des critères
-              du {{ REFERENTIAL }} sont respectés.
-            </p>
+          <h5 class="fr-h2">Résultats des tests</h5>
+          <p>
+            L’audit de conformité réalisé par
+            <strong>{{ report.data.context.auditorOrganisation }}</strong>
+            révèle que :
+          </p>
+          <ul class="fr-mb-9v fr-mb-md-6w">
+            <li><strong>{{ report.data.accessibilityRate }} %</strong> des critères
+              du {{ REFERENTIAL }} sont respectés.</li>
+          </ul>
 
             <template
               v-if="
