@@ -2,10 +2,11 @@
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
 import { computed, ref, ShallowRef } from "vue";
 
-import { tiptapRenderedExtensions } from "./tiptap-extensions";
+import { getTipTapRenderedExtensions } from "./tiptap-extensions";
 
 const props = defineProps<{
   document: string;
+  basicMode?: boolean;
 }>();
 
 const parsedDocument = computed(() => {
@@ -27,7 +28,7 @@ const editor = useEditor({
   },
   editable: false,
   content: parsedDocument.value,
-  extensions: tiptapRenderedExtensions
+  extensions: getTipTapRenderedExtensions(props.basicMode)
 }) as ShallowRef<Editor>;
 
 const contentRef = ref<HTMLDivElement>();

@@ -89,6 +89,14 @@ const LinkExtension =
     }
   });
 
+const ExtendedLinkExtension = extendedLink.configure({
+  openOnClick: true,
+  HTMLAttributes: {
+    // Links open in a new window when displaying the editor in read-only mode
+    target: "_blank"
+  }
+});
+
 const commonExtensions: Extensions = [
   CustomHeading,
   getStarterKitExtensions({
@@ -105,6 +113,19 @@ const commonExtensions: Extensions = [
   }),
   MarkdownExtension,
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
+];
+
+const commonBasicExtensions: Extensions = [
+  getStarterKitExtensions({
+    blockquote: false,
+    code: false,
+    codeBlock: false,
+    dropcursor: false,
+    heading: false,
+    strike: false,
+    underline: false
+  }),
+  MarkdownExtension
 ];
 
 const commonImageAttrs = {
@@ -131,6 +152,46 @@ const commonImageAttrs = {
     }
   }
 };
+
+const tiptapRenderedExtensions: Extensions = [
+  ...commonExtensions,
+  ExtendedLinkExtension,
+  Image.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        ...commonImageAttrs,
+        alt: {
+          renderHTML: () => {
+            return {
+              // All images are decorative when rendered
+              alt: ""
+            };
+          }
+        }
+      };
+    }
+  }),
+  ...[AraTiptapRenderedExtension]
+];
+
+const tiptapRenderedBasicExtensions = [
+  ...commonBasicExtensions,
+  ExtendedLinkExtension,
+  ...[AraTiptapRenderedExtension]
+];
+
+function getStarterKitExtensions(options: any) {
+  return StarterKit.configure(options);
+}
+
+function getTiptapBasicEditorExtensions() {
+  return [
+    ...commonBasicExtensions,
+    PasteMarkdownExtension,
+    LinkExtension
+  ];
+}
 
 export function getTiptapEditorExtensions(options?: {
   basicMode: boolean;
@@ -191,53 +252,12 @@ export function getTiptapEditorExtensions(options?: {
   ];
 }
 
-export const tiptapRenderedExtensions: Extensions = [
-  ...commonExtensions,
-  extendedLink.configure({
-    openOnClick: true,
-    HTMLAttributes: {
-      // Links open in a new window when displaying the editor in read-only mode
-      target: "_blank"
-    }
-  }),
-  Image.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        ...commonImageAttrs,
-        alt: {
-          renderHTML: () => {
-            return {
-              // All images are decorative when rendered
-              alt: ""
-            };
-          }
-        }
-      };
-    }
-  }),
-  ...[AraTiptapRenderedExtension]
-];
+export function getTipTapRenderedExtensions(basicMode: boolean) {
+  if (basicMode) {
+    return tiptapRenderedBasicExtensions;
+  }
 
-function getStarterKitExtensions(options: any) {
-  return StarterKit.configure(options);
-}
-
-function getTiptapBasicEditorExtensions() {
-  return [
-    getStarterKitExtensions({
-      blockquote: false,
-      code: false,
-      codeBlock: false,
-      dropcursor: false,
-      heading: false,
-      strike: false,
-      underline: false
-    }),
-    MarkdownExtension,
-    PasteMarkdownExtension,
-    LinkExtension
-  ];
+  return tiptapRenderedExtensions;
 }
 
 // Create a resizable node view for each image
