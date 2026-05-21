@@ -70,9 +70,28 @@ const extendedLink = Link.extend({
   }
 });
 
+const MarkdownExtension =
+  Markdown.configure({
+    markedOptions: {
+      async: false
+    }
+  });
+
+const LinkExtension =
+  extendedLink.configure({
+    openOnClick: false,
+    defaultProtocol: "https",
+    shouldAutoLink: () => true,
+    HTMLAttributes: {
+      // Links do not open when editing, so not "new window"…
+      // Advantage: no extra icon when editing
+      target: null
+    }
+  });
+
 const commonExtensions: Extensions = [
   CustomHeading,
-  StarterKit.configure({
+  getStarterKitExtensions({
     codeBlock: false,
     dropcursor: false,
     heading: false,
@@ -84,11 +103,7 @@ const commonExtensions: Extensions = [
     openDoubleQuote: "« ",
     closeDoubleQuote: " »"
   }),
-  Markdown.configure({
-    markedOptions: {
-      async: false
-    }
-  }),
+  MarkdownExtension,
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
 ];
 
@@ -122,22 +137,13 @@ export function getTiptapEditorExtensions(options?: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
   if (options?.basicMode === true) {
-    return getTiptapEditorBasicModeExtensions();
+    return getTiptapBasicEditorExtensions();
   }
 
   return [
     ...commonExtensions,
     PasteMarkdownExtension,
-    extendedLink.configure({
-      openOnClick: false,
-      defaultProtocol: "https",
-      shouldAutoLink: () => true,
-      HTMLAttributes: {
-      // Links do not open when editing, so not "new window"…
-      // Advantage: no extra icon when editing
-        target: null
-      }
-    }),
+    LinkExtension,
     Image.extend({
       addAttributes() {
         return {
@@ -213,32 +219,24 @@ export const tiptapRenderedExtensions: Extensions = [
   ...[AraTiptapRenderedExtension]
 ];
 
-export function getTiptapEditorBasicModeExtensions() {
-  return [
-    StarterKit.configure({
-      blockquote: false,
-      strike: false,
-      code: false,
-      heading: false,
-      codeBlock: false
-    }),
-    Markdown.configure({
-      markedOptions: {
-        async: false
-      }
-    }),
-    PasteMarkdownExtension.configure(),
-    extendedLink.configure({
-      openOnClick: false,
-      defaultProtocol: "https",
-      shouldAutoLink: () => true,
-      HTMLAttributes: {
-      // Links do not open when editing, so not "new window"…
-      // Advantage: no extra icon when editing
-        target: null
-      }
-    })
+function getStarterKitExtensions(options: any) {
+  return StarterKit.configure(options);
+}
 
+function getTiptapBasicEditorExtensions() {
+  return [
+    getStarterKitExtensions({
+      blockquote: false,
+      code: false,
+      codeBlock: false,
+      dropcursor: false,
+      heading: false,
+      strike: false,
+      underline: false
+    }),
+    MarkdownExtension,
+    PasteMarkdownExtension,
+    LinkExtension
   ];
 }
 
