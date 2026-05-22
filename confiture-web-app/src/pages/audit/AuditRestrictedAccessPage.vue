@@ -15,7 +15,7 @@ const accountStore = useAccountStore();
     <div class="fr-col-12 fr-col-md-6 fr-mb-7w fr-mb-md-0">
       <h1 class="fr-mb-4">Accès restreint</h1>
       <p class="fr-mb-0 fr-text--xl">L’audit <span class="fr-text--bold">« {{ auditStore.currentAudit?.procedureName }} »</span> est privé.</p>
-      <p class="fr-text--xl">Pour accéder à l’audit, contactez le propriétaire de l’audit.</p>
+      <p class="fr-text--xl">Pour accéder à l’audit, contactez le propriétaire.</p>
       <div class="fr-mt-5w">
         <RouterLink
           class="fr-btn fr-mr-2w"
