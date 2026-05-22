@@ -3,7 +3,7 @@ import { useResizeObserver } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import AraTabs from "../../components/audit/AraTabs.vue";
+import AraTabsTwo, { TabItem } from "../../components/audit/AraTabsTwo.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
@@ -223,6 +223,15 @@ const tabsData = computed((): TabData[] => {
   ];
 });
 
+const tabsTwo = computed((): TabItem[] => {
+  return [
+    ...auditStore.currentAudit?.pages.map((p) => ({
+      label: p.name,
+      to: `/audits/${props.uniqueId}/generation/${p.slug}`
+    })) ?? []
+  ];
+});
+
 /**
  * Updates audit store `currentPageId` given a tab index.
  * Usefull for synchronising filters with current page (on tab change)
@@ -341,14 +350,17 @@ filterStore.$reset();
         id="audit-tabs"
         :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`"
       >
-        <AraTabs
+        <!-- <AraTabs
           panel-scroll-behavior="sameCriteria"
           :route="{ name: 'audit-generation-full', params: { uniqueId } }"
           :sticky-top="stickyTop"
           :tabs="tabsData"
           @selected-tab-change="onSelectedTabChange"
         >
-        </AraTabs>
+        </AraTabs> -->
+        <AraTabsTwo :tabs="tabsTwo">
+          <router-view />
+        </AraTabsTwo>
       </div>
     </div>
   </div>

@@ -15,6 +15,7 @@ export interface AuditPage {
   order: number;
   name: string;
   url: string;
+  slug: string;
 }
 
 export interface PageElements {

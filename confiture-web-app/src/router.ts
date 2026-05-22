@@ -20,6 +20,7 @@ import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
+import AuditPagePage from "./pages/audit/AuditPagePage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
@@ -226,7 +227,7 @@ const router = createRouter({
         {
           path: ":tabSlug",
           name: "audit-generation-full",
-          component: AraTabsPanel
+          component: AuditPagePage
         }
       ],
       meta: {
