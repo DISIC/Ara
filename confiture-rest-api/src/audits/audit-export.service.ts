@@ -86,7 +86,7 @@ export class AuditExportService {
     const audit =
       await this.prisma.audit.findUnique({
         where: { consultUniqueId },
-        include: { pages: true }
+        include: { pages: { orderBy: { order: "asc" } } }
       });
     const results = await this.auditService.getResultsWithEditUniqueId(
       audit.editUniqueId
@@ -98,7 +98,7 @@ export class AuditExportService {
   async getCsvExport(editUniqueId: string): Promise<StreamableFile> {
     const audit = await this.prisma.audit.findUnique({
       where: { editUniqueId },
-      include: { pages: true }
+      include: { pages: { orderBy: { order: "asc" } } }
     });
 
     const results =
