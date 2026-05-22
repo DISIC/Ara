@@ -45,9 +45,7 @@ const auditStore = useAuditStore();
 const notify = useNotifications();
 
 function toggleAuditPrivacy() {
-  auditStore.toggleAuditPrivacy(props.editUniqueId).then(() => {
-    console.log("success");
-  }).catch((error) => {
+  auditStore.toggleAuditPrivacy(props.editUniqueId).catch((error) => {
     console.log(error);
     notify(
       "error",
