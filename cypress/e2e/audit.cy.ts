@@ -1117,14 +1117,9 @@ describe("Audit", () => {
   });
 
   it("User cant see private audit if not connected", () => {
-    cy.createTestAccount({ login: true }).then(({ username }) => {
+    cy.createTestAccount().then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-        // FIXME: avoid calling 2 times click()
-        cy.contains("button", username).click();
-        cy.contains("button", username).click();
-        cy.contains("button", "Me déconnecter").click();
-
         cy.get("h1").contains("Accès restreint");
       });
     });
