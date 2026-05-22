@@ -6,7 +6,6 @@ import { onBeforeRouteLeave } from "vue-router";
 import AraTabsTwo, { TabItem } from "../../components/audit/AraTabsTwo.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
-import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
 import { SummaryCardThemes } from "../../components/SummaryCard.vue";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -14,14 +13,14 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { REFERENTIAL, StaticTabLabel } from "../../enums";
+import { REFERENTIAL, StaticTabLabel, TabSlug } from "../../enums";
 import {
   useAccountStore,
   useAuditStore,
   useFiltersStore,
   useResultsStore
 } from "../../store";
-import { AuditType, CriteriumResultStatus, TabData } from "../../types";
+import { AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
 
 const props = defineProps<{
@@ -192,42 +191,50 @@ const pageTitle = computed(() => {
   return titleParts.join(" - ");
 });
 
-const tabsData = computed((): TabData[] => {
-  const transversePage = auditStore.currentAudit?.transverseElementsPage;
-  return [
-    ...(transversePage
-      ? [
-          {
-            label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-            diplayLabelSuffix: " (optionnel)",
-            icon: "fr-icon-layout-3-line",
-            component: AuditGenerationPageCriteria,
-            componentParams: {
-              page: transversePage,
-              auditUniqueId: props.uniqueId
-            }
-          }
-        ]
-      : []),
-    ...(auditStore.currentAudit?.pages.map((p) => ({
-      label: p.name,
-      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
-      id: p.id,
-      icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
-      component: AuditGenerationPageCriteria,
-      componentParams: {
-        page: p,
-        auditUniqueId: props.uniqueId
-      }
-    })) ?? [])
-  ];
-});
+// const tabsData = computed((): TabData[] => {
+//   const transversePage = auditStore.currentAudit?.transverseElementsPage;
+//   return [
+//     ...(transversePage
+//       ? [
+//           {
+//             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
+//             diplayLabelSuffix: " (optionnel)",
+//             icon: "fr-icon-layout-3-line",
+//             component: AuditGenerationPageCriteria,
+//             componentParams: {
+//               page: transversePage,
+//               auditUniqueId: props.uniqueId
+//             }
+//           }
+//         ]
+//       : []),
+//     ...(auditStore.currentAudit?.pages.map((p) => ({
+//       label: p.name,
+//       hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
+//       id: p.id,
+//       icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
+//       component: AuditGenerationPageCriteria,
+//       componentParams: {
+//         page: p,
+//         auditUniqueId: props.uniqueId
+//       }
+//     })) ?? [])
+//   ];
+// });
 
 const tabsTwo = computed((): TabItem[] => {
   return [
+    ...auditStore.currentAudit?.transverseElementsPage
+      ? [{
+          label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
+          icon: "fr-icon-layout-3-line",
+          to: `/audits/${props.uniqueId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        }]
+      : [],
     ...auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      to: `/audits/${props.uniqueId}/generation/${p.slug}`
+      to: `/audits/${props.uniqueId}/generation/${p.slug}`,
+      icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined
     })) ?? []
   ];
 });
@@ -358,7 +365,12 @@ filterStore.$reset();
           @selected-tab-change="onSelectedTabChange"
         >
         </AraTabs> -->
-        <AraTabsTwo :tabs="tabsTwo">
+        <AraTabsTwo
+          :tabs="tabsTwo"
+          :sticky-top="stickyTop"
+          panel-scroll-behavior="sameCriteria"
+          @selected-tab-change="onSelectedTabChange"
+        >
           <router-view />
         </AraTabsTwo>
       </div>

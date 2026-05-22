@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useId, useTemplateRef } from "vue";
+import { ref, useId, useTemplateRef, watch } from "vue";
 import {
   RouterLink,
   type RouteLocationRaw
@@ -13,7 +13,7 @@ export interface TabItem {
   hiddenLabelSuffix?: string;
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   tabs: TabItem[];
 
   /**
@@ -23,7 +23,13 @@ const props = defineProps<{
    *   of the screen (e.g. for Report)
    */
   panelScrollBehavior?: "tabsTop" | "sameCriteria";
-}>();
+
+  /** CSS top value (e.g. "0", "4px" or "1rem"). Default is "0" */
+  stickyTop?: string;
+}>(), {
+  stickyTop: "0",
+  panelScrollBehavior: "tabsTop"
+});
 
 const selectedTabIndex = ref<number>(0);
 const tabButtonsRef =
@@ -33,9 +39,13 @@ const tabButtonsRef =
 
 const uniqueId = useId();
 
-// const emit = defineEmits<{
-//   (e: "selectedTabChange", selectedTabIndex: number): void;
-// }>();
+const emit = defineEmits<{
+  (e: "selectedTabChange", selectedTabIndex: number): void;
+}>();
+
+watch(selectedTabIndex, (tabIndex) => {
+  emit("selectedTabChange", tabIndex);
+});
 
 function tabId(i: number) {
   return `tab-${uniqueId}-${i}`;
@@ -88,6 +98,7 @@ defineExpose({
   <div
     class="tabs-wrapper"
     :data-panel-scroll-behavior="panelScrollBehavior"
+    :style="{ '--tabs-top-offset': stickyTop }"
   >
     <ul role="tablist" class="tabs">
       <li v-for="(tab, i) in tabs" :key="i" role="presentation" class="fr-p-0">
