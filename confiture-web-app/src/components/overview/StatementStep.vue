@@ -90,7 +90,6 @@ const auditIsPublishable = computed(() => {
             name: 'a11y-statement',
             params: { uniqueId: audit.consultUniqueId }
           }"
-          is-within-btn-group
         />
       </div>
     </div>

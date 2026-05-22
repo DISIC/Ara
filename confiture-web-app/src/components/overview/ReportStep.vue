@@ -69,7 +69,6 @@ const auditIsReady = computed(() => {
             name: 'report',
             params: { uniqueId: audit.consultUniqueId }
           }"
-          is-within-btn-group
         />
       </div>
     </div>

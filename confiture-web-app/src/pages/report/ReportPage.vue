@@ -166,6 +166,7 @@ watch(
         icon="fr-icon-link"
         :content-to-copy="reportUrlToCopy"
         label="Copier le lien du rapport"
+        constant-width
       />
       <Dropdown
         title="Télécharger"

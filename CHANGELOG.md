@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 22/05/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Revoit le feedback du bouton pour copier la déclaration ([#1510](https://github.com/DISIC/Ara/pull/1510))
+
 ### 20/05/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
