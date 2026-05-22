@@ -367,13 +367,11 @@ const siteUrl = computed(() => {
 }
 
 .statement-wrapper {
-  position: relative;
-  margin-top: calc(2.5rem + 1.5rem);
+  display: flex;
+  flex-direction: column;
 
   .copy-button {
-    position: absolute;
-    right: 0;
-    top: -2.5rem;
+    margin-inline-start: auto;
   }
 }
 
