@@ -1943,4 +1943,22 @@ export class AuditService {
       newAudit
     };
   }
+
+  /**
+   * User can transfer an audit if:
+   * - audit email is not verified
+   * - audit email is verified and user is owner
+   */
+  async canUserTransferAudit(uniqueId: string, userEmail: string) {
+    const { auditor } = await this.prisma.audit.findUnique({
+      where: {
+        editUniqueId: uniqueId
+      },
+      select: {
+        auditor: true
+      }
+    });
+
+    return !auditor.isVerified || auditor.username === userEmail;
+  }
 }

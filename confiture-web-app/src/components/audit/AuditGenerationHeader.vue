@@ -96,12 +96,8 @@ function confirmDuplicate(name: string) {
 }
 
 const canTransferAudit = computed(() => {
-  if (auditStore.currentAudit?.auditor?.isVerified) {
-    return accountStore.account?.email
-      === auditStore.currentAudit?.auditorEmail;
-  } else {
-    return true;
-  }
+  return !auditStore.currentAudit?.auditor?.isVerified
+    || accountStore.account?.email === auditStore.currentAudit?.auditorEmail;
 });
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 

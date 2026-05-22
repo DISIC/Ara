@@ -93,6 +93,7 @@ export interface CreateAuditRequestData {
   pageElements?: PageElements;
   auditorEmail: string;
   auditorName: string | null;
+  auditor?: Auditor;
 }
 
 /** Creation data type plus step 2 fields. */

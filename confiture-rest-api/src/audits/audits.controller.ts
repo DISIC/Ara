@@ -316,23 +316,19 @@ export class AuditsController {
   }
 
   @Put("/:uniqueId/transfer")
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: "The audit has been successfully transfered.",
     type: AuditDto
   })
   @ApiUnauthorizedResponse({
-    description:
-        "Only audit owner can transfer an audit."
+    description: "Only audit owner can transfer an audit."
   })
   async transferAudit(
     @AuditId() uniqueId: string,
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    const audit = await this.getAudit(uniqueId);
-    const canTransfer = audit.auditor.isVerified
-      ? audit.auditor.username === user.email
-      : true;
+    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user.email);
 
     if (!canTransfer) {
       throw new UnauthorizedException();
