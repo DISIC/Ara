@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Revoit le feedback du bouton pour copier la déclaration ([#1510](https://github.com/DISIC/Ara/pull/1510))
+- Corrige l’ordre des pages dans l’export CSV ([#1511](https://github.com/DISIC/Ara/pull/1511))
 
 ### 20/05/2026
 
