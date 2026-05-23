@@ -233,6 +233,7 @@ const tabsTwo = computed((): TabItem[] => {
       : [],
     ...auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
       to: `/audits/${props.uniqueId}/generation/${p.slug}`,
       icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined
     })) ?? []

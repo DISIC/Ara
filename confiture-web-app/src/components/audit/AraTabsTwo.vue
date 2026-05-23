@@ -2,20 +2,21 @@
 import { ref, useId, useTemplateRef, watch } from "vue";
 import {
   RouterLink,
+  useRoute,
+  useRouter,
   type RouteLocationRaw
 } from "vue-router";
 
 export interface TabItem {
   label: string;
+  hiddenLabelSuffix?: string;
   /** If present, the tab is rendered as a `<RouterLing>` */
   to: RouteLocationRaw;
   icon?: string;
-  hiddenLabelSuffix?: string;
 }
 
 const props = withDefaults(defineProps<{
   tabs: TabItem[];
-
   /**
    * - "sameCriteria" tries to scroll page to the same
    *   criteria as previous tab (e.g. for Audit)
@@ -23,7 +24,6 @@ const props = withDefaults(defineProps<{
    *   of the screen (e.g. for Report)
    */
   panelScrollBehavior?: "tabsTop" | "sameCriteria";
-
   /** CSS top value (e.g. "0", "4px" or "1rem"). Default is "0" */
   stickyTop?: string;
 }>(), {
@@ -89,9 +89,19 @@ function selectLastTab() {
   selectTab(props.tabs.length - 1);
 }
 
-defineExpose({
-  selectTab
-});
+// select the correct tab based on current route and each tab’s target route
+const route = useRoute();
+const router = useRouter();
+watch(() => route.path, path => {
+  const tabToSelectIndex = props.tabs.findIndex(t =>
+    t.to && router.resolve(t.to).path === path
+  );
+  if (tabToSelectIndex !== -1) {
+    selectTab(tabToSelectIndex);
+  }
+}, { immediate: true });
+
+defineExpose({ selectTab });
 </script>
 
 <template>
