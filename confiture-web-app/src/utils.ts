@@ -5,6 +5,7 @@ import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
 import { FileListFile } from "./components/ui/FileList.vue";
+import router from "./router";
 import {
   AuditReport,
   AuditStatus,
@@ -298,4 +299,17 @@ export function isImage(file: File | FileListFile) {
   } else if ("mimetype" in file) {
     return file.mimetype.startsWith("image");
   }
+}
+
+export function showErrorPage(httpStatusCode?: number) {
+  const route = router.currentRoute;
+  router.replace({
+    name: "Error",
+    params: { pathMatch: route.value.path.substring(1).split("/") },
+    query: route.value.query,
+    hash: route.value.hash,
+    state: {
+      errorStatus: httpStatusCode
+    }
+  });
 }

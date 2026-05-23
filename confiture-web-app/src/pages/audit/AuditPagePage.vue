@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useFetch } from "@vueuse/core";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import { TabSlug } from "../../enums";
 import { useAuditStore } from "../../store";
+import { GetPageWithResultsDto } from "../../types";
+import { showErrorPage } from "../../utils";
 
 const route = useRoute();
-const router = useRouter();
 
 const auditStore = useAuditStore();
 
@@ -23,32 +25,15 @@ const page = computed(() => {
     ?.pages.find(p => p.slug === pageSlug);
 });
 
-// TODO: fetch only the current page results here, and use request result as 404 check
-
-watch(() => auditStore.entities[route.params.uniqueId as string], (audit) => {
-  const pageSlug = route.params.tabSlug as string;
-
-  if (
-    !audit ||
-    (pageSlug === TabSlug.AUDIT_COMMON_ELEMENTS_SLUG
-      && audit.transverseElementsPage)
-  ) {
-    return;
+// TODO: fetch using some store methods instead of useFetch (although it’s pretty neat)
+const pageApiUrl = computed(() => `/api/audits/${route.params.uniqueId}/pages/${route.params.tabSlug}`);
+useFetch<GetPageWithResultsDto>(pageApiUrl, {
+  refetch: true,
+  onFetchError(ctx) {
+    showErrorPage(ctx.response?.status);
+    return ctx;
   }
-
-  if (!audit.pages.some(p => p.slug === pageSlug)) {
-    // TODO: replace 404 page with a special audit page not found tab content ?
-    router.replace({
-      name: "Error",
-      params: { pathMatch: route.path.substring(1).split("/") },
-      query: route.query,
-      hash: route.hash,
-      state: {
-        errorStatus: 404
-      }
-    });
-  }
-}, { immediate: true });
+});
 </script>
 
 <template>

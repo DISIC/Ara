@@ -171,3 +171,5 @@ export interface TabData {
   component: object;
   componentParams?: object;
 }
+
+export type GetPageWithResultsDto = components["schemas"]["GetPageWithResultsDto"];
