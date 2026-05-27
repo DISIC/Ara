@@ -42,7 +42,7 @@ export function getReportErrors(
           ...r,
           notCompliantItems: r.notCompliantItems
             .filter(
-              (item) => (!item.userImpact && userImpactFilters.includes(null)) ||
+              (item) => !item.userImpact ||
               (item.userImpact && userImpactFilters.includes(item.userImpact))
             ).filter((r) => {
               return quickWinFilter ? r.quickWin : r;
