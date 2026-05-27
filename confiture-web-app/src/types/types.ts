@@ -129,9 +129,9 @@ export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
 export type NotCompliantItem = {
   id?: number;
-  title: string | null;
-  comment: string | null;
-  userImpact: CriterionResultUserImpact | null;
+  title?: string;
+  comment?: string;
+  userImpact?: CriterionResultUserImpact;
   quickWin: boolean;
 };
 

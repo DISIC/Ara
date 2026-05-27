@@ -12,8 +12,11 @@ const props = defineProps<{
   index: number;
   item: NotCompliantItem;
   canDelete: boolean;
-  onDelete: (index: number) => void;
-  onUpdate: (index: number, item: NotCompliantItem, debounce: boolean) => void;
+}>();
+
+const emit = defineEmits<{
+  (e: "delete", index: number): void;
+  (e: "update", index: number, item: NotCompliantItem, debounce: boolean): void;
 }>();
 
 const baseTitle = "Erreur";
@@ -22,7 +25,7 @@ function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
   const item = { ...props.item };
   item[field] = value as never;
 
-  props.onUpdate(props.index, item, field === "title" || field === "comment");
+  emit("update", props.index, item, field === "title" || field === "comment");
 }
 
 const userImpacts: Array<{
@@ -70,7 +73,11 @@ defineExpose({
       </p>
     </div>
     <div v-if="canDelete" class="fr-col-4 error-user-delete">
-      <button type="button" class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline" @click="onDelete(index)">Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
+      <button
+        type="button"
+        class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+        @click="emit('delete', index)"
+      >Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
     </div>
   </div>
 
@@ -163,7 +170,7 @@ defineExpose({
   </div>
 </template>
 
-<style>
+<style scoped>
 .user-impact-label span,
 .user-error-label label {
   font-size: 0.75rem;
