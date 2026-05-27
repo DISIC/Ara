@@ -3,8 +3,8 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
-import CopyButton from "../components/ui/CopyButton.vue";
 import TiptapRenderer from "../components/tiptap/TiptapRenderer.vue";
+import CopyButton from "../components/ui/CopyButton.vue";
 import TopLink from "../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
@@ -202,37 +202,35 @@ const siteUrl = computed(() => {
             >
               <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
 
-            <template v-if="report.data.notCompliantContent">
-              <h5 class="fr-h3">Non-conformités</h5>
+              <template v-if="report.data.notCompliantContent">
+                <h5 class="fr-h3">Non-conformités</h5>
+                <TiptapRenderer
+                  class="fr-mb-2w fr-mb-md-3w"
+                  :document="report.data.notCompliantContent"
+                  :basic-mode="true"
+                />
+              </template>
 
-              <TiptapRenderer
-                class="fr-mb-2w fr-mb-md-3w"
-                :document="report.data.notCompliantContent"
-                :basic-mode="true"
-              />
+              <template v-if="report.data.derogatedContent">
+                <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+                <TiptapRenderer
+                  class="fr-mb-2w fr-mb-md-3w"
+                  :document="report.data.derogatedContent"
+                  :basic-mode="true"
+                />
+              </template>
 
+              <template v-if="report.data.notInScopeContent">
+                <h5 class="fr-h3">
+                  Contenus non soumis à l’obligation d’accessibilité
+                </h5>
+                <TiptapRenderer
+                  class="fr-mb-2w fr-mb-md-3w"
+                  :document="report.data.notInScopeContent"
+                  :basic-mode="true"
+                />
+              </template>
             </template>
-
-            <template v-if="report.data.derogatedContent">
-              <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-              <TiptapRenderer
-                class="fr-mb-2w fr-mb-md-3w"
-                :document="report.data.derogatedContent"
-                :basic-mode="true"
-              />
-            </template>
-
-            <template v-if="report.data.notInScopeContent">
-              <h5 class="fr-h3">
-                Contenus non soumis à l’obligation d’accessibilité
-              </h5>
-              <TiptapRenderer
-                class="fr-mb-2w fr-mb-md-3w"
-                :document="report.data.notInScopeContent"
-                :basic-mode="true"
-              />
-            </template>
-          </template>
 
             <h4 class="fr-h2">
               Établissement de cette déclaration d’accessibilité
@@ -395,5 +393,10 @@ const siteUrl = computed(() => {
 
 .top-link {
   text-align: end;
+}
+</style>
+<style>
+.tiptap {
+  min-height: 7.5rem !important;
 }
 </style>
