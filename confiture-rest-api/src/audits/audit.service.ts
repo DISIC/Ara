@@ -300,11 +300,8 @@ export class AuditService {
       return {
         status: CriterionResultStatus.NOT_TESTED,
         compliantComment: null,
-        notCompliantComment: null,
-        userImpact: null,
         notApplicableComment: null,
         exampleImages: [],
-        quickWin: false,
 
         notCompliantItems: [],
 
@@ -346,8 +343,6 @@ export class AuditService {
             select: {
               status: true,
               compliantComment: true,
-              notCompliantComment: true,
-              userImpact: true,
               notApplicableComment: true,
               exampleImages: {
                 select: {
@@ -359,7 +354,6 @@ export class AuditService {
                   thumbnailKey: true
                 }
               },
-              quickWin: true,
               notCompliantItems: {
                 select: {
                   id: true,
@@ -607,10 +601,7 @@ export class AuditService {
       .map((item) => {
         const result: PrismaPromise<any>[] = [];
 
-        const newNotCompliantItems =
-          item.notCompliantItems?.filter((x) => !x.id).map((e) =>
-            omit(e, ["id"])
-          ) ?? [];
+        const newNotCompliantItems = item.notCompliantItems?.filter((x) => !x.id) ?? [];
 
         const existingNotCompliantItems = item.notCompliantItems
           .filter((x) => x.id);
@@ -620,23 +611,21 @@ export class AuditService {
             id: {
               notIn: existingNotCompliantItems.map((x) => x.id)
             },
-            AND: {
-              criterionResult: {
-                criterium: item.criterium,
-                topic: item.topic,
-                pageId: item.pageId,
-                page: {
-                  OR: [
-                    {
-                      auditUniqueId: uniqueId
-                    },
-                    {
-                      auditTransverse: {
-                        editUniqueId: uniqueId
-                      }
+            criterionResult: {
+              criterium: item.criterium,
+              topic: item.topic,
+              pageId: item.pageId,
+              page: {
+                OR: [
+                  {
+                    auditUniqueId: uniqueId
+                  },
+                  {
+                    auditTransverse: {
+                      editUniqueId: uniqueId
                     }
-                  ]
-                }
+                  }
+                ]
               }
             }
           }
@@ -683,10 +672,7 @@ export class AuditService {
           },
           status: item.status,
           compliantComment: item.compliantComment,
-          notCompliantComment: item.notCompliantComment,
           notApplicableComment: item.notApplicableComment,
-          userImpact: item.userImpact,
-          quickWin: item.quickWin,
           notCompliantItems: newNotCompliantItems.length > 0
             ? {
                 createMany: {
@@ -1221,7 +1207,7 @@ export class AuditService {
           results.filter(
             (r) =>
               r.status === CriterionResultStatus.NOT_COMPLIANT &&
-              r.userImpact === CriterionResultUserImpact.BLOCKING
+              r.notCompliantItems.some(x => x.userImpact === CriterionResultUserImpact.BLOCKING)
           ),
           (r) => `${r.topic}.${r.criterium}`
         ).length,
@@ -1369,10 +1355,8 @@ export class AuditService {
         status: r.status,
 
         compliantComment: r.compliantComment,
-        notCompliantComment: r.notCompliantComment,
         notApplicableComment: r.notApplicableComment,
-        userImpact: r.userImpact,
-        quickWin: r.quickWin,
+
         exampleImages: r.exampleImages.map((img) => ({
           filename: img.originalFilename,
           key: img.key,

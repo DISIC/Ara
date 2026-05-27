@@ -172,22 +172,11 @@ class ReportCriterionResult {
 
   compliantComment: string | null;
 
-  /**
-   * @example "There is an accessibility error there. You should do this and that."
-   */
-  notCompliantComment: string | null;
   exampleImages: ReportExampleImage[];
-  /**
-   * @example "MAJOR"
-   */
-  @ApiProperty({ enum: CriterionResultUserImpact })
-  userImpact: CriterionResultUserImpact | null;
 
   notApplicableComment: string | null;
 
   notCompliantItems: CriterionResultNotCompliantItem[];
-
-  quickWin: boolean;
 }
 
 class ReportExampleImage {

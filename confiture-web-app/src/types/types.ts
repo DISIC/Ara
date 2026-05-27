@@ -147,11 +147,8 @@ export interface CriteriumResult {
   status: CriteriumResultStatus;
 
   compliantComment: string | null;
-  notCompliantComment: string | null;
-  userImpact: CriterionResultUserImpact | null;
   notApplicableComment: string | null;
   exampleImages: ExampleImageFile[];
-  quickWin: boolean;
   notCompliantItems: NotCompliantItem[];
 }
 
