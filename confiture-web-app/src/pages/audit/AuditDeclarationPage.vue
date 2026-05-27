@@ -631,7 +631,7 @@ function confirmLeave() {
 }
 </style>
 <style>
-.tiptap {
+form .tiptap {
   min-height: 7.5rem !important;
 }
 </style>
