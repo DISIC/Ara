@@ -7,4 +7,4 @@ export type ReportCriteriumResult =
   components["schemas"]["ReportCriterionResult"];
 
 export type ReportUserImpact =
-  components["schemas"]["CriterionResultNotCompliantItem"]["userImpact"];
+  components["schemas"]["CriterionResultNotCompliantItem"]["userImpact"] | null;
