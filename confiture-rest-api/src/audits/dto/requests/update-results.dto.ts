@@ -92,28 +92,6 @@ class UpdateResultsItem {
   compliantComment?: string;
 
   /**
-   * @example "Consectetur ad consectetur Lorem id enim sunt amet ea."
-   */
-  @IsString()
-  @IsOptional()
-  notCompliantComment?: string;
-
-  /**
-   * @example "MAJOR"
-   */
-  @IsString()
-  @IsIn(Object.values(CriterionResultUserImpact))
-  @IsOptional()
-  userImpact?: CriterionResultUserImpact;
-
-  /**
-   * Whether the result is easy to fix
-   */
-  @IsBoolean()
-  @IsOptional()
-  quickWin?: boolean;
-
-  /**
    * @example "Officia aliquip aute ipsum in eiusmod ea et."
    */
   @IsString()
@@ -123,7 +101,6 @@ class UpdateResultsItem {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CriterionResultNotCompliantItem)
-  @IsOptional()
   notCompliantItems?: CriterionResultNotCompliantItem[];
 }
 

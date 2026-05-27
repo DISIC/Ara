@@ -113,10 +113,10 @@ model CriterionResult {
 
   compliantComment String?
 
-  notCompliantComment String?                    @map("errorDescription")
-  userImpact          CriterionResultUserImpact?
-  exampleImages       ExampleImageFile[]
-  quickWin            Boolean                    @default(false)
+  notCompliantComment String?                    @map("errorDescription") @ignore
+  userImpact          CriterionResultUserImpact?                          @ignore
+  exampleImages       ExampleImageFile[]                                  
+  quickWin            Boolean                    @default(false)          @ignore
 
   notApplicableComment String?
 
