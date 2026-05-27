@@ -366,7 +366,7 @@ defineExpose({
   --tiptap-editor-height: 16.5rem;
 
   position: relative;
-  background-color: var(--background-alt-grey);
+  background-color: var(--background-contrast-grey);
   border-radius: 0.25rem 0.25rem 0 0;
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
@@ -391,11 +391,6 @@ defineExpose({
 
 .tiptap-container--disabled .tiptap * {
   color: var(--text-disabled-grey);
-}
-
-.ProseMirror-selectednode {
-  outline: var(--dsfr-outline) dotted 2px;
-  max-width: max-content;
 }
 
 img.ProseMirror-widget {

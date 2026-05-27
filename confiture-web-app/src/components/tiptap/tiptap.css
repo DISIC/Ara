@@ -13,6 +13,27 @@
   padding: 0;
 }
 
+.tiptap hr {
+  background-image: linear-gradient(0deg, var(--text-mention-grey), var(--text-mention-grey));
+  background-position: 0 0.5rem;
+  height: 1px;
+  padding: 0.5rem 0;
+  margin: 1.5rem 0;
+
+  &.ProseMirror-selectednode {
+    max-width: revert;
+  }
+}
+
+.tiptap:not(.tiptap--rendered) hr {
+  cursor: pointer;
+}
+
+.ProseMirror-hideselection hr::selection {
+  background: revert;
+  background-image: linear-gradient(0deg, var(--text-mention-grey), var(--text-mention-grey)) !important;
+}
+
 .tiptap img {
   cursor: pointer;
   display: block;
