@@ -395,8 +395,3 @@ const siteUrl = computed(() => {
   text-align: end;
 }
 </style>
-<style>
-.tiptap {
-  min-height: 7.5rem !important;
-}
-</style>

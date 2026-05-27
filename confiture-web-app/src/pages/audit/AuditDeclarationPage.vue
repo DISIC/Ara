@@ -630,3 +630,8 @@ function confirmLeave() {
   }
 }
 </style>
+<style>
+.tiptap {
+  min-height: 7.5rem !important;
+}
+</style>
