@@ -168,41 +168,51 @@ const siteUrl = computed(() => {
               n<sup>o</sup> 2005-102 du 11 février 2005.
             </p>
 
-          <template
-            v-if="report.data.schemaPluriannuelUrl || report.data.planActionUrl"
-          >
-            <p>
-              A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-              <template v-if="report.data.schemaPluriannuelUrl && report.data.planActionUrl">la stratégie et les actions suivantes :</template>
-              <template v-else-if="report.data.schemaPluriannuelUrl">la stratégie suivante :</template>
-              <template v-else>les actions suivantes :</template>
-            </p>
-            <ul class="fr-mb-9v">
-              <li v-if="report.data.schemaPluriannuelUrl">
-                <a
-                  :href="report.data.schemaPluriannuelUrl"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >Schéma pluriannuel de mise en accessibilité
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </li>
-              <li v-if="report.data.planActionUrl">
-                <a
-                  :href="report.data.planActionUrl"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >Plan d'actions de l'année en cours
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </li>
-            </ul>
-          </template>
+            <template
+              v-if="report.data.schemaPluriannuelUrl
+                || report.data.planActionUrl"
+            >
+              <p>
+                A cette fin, {{ report.data.procedureInitiator }} met en œuvre
+                <template
+                  v-if="report.data.schemaPluriannuelUrl
+                    && report.data.planActionUrl"
+                >
+                  la stratégie et les actions suivantes :
+                </template>
+                <template
+                  v-else-if="report.data.schemaPluriannuelUrl"
+                >
+                  la stratégie suivante :
+                </template>
+                <template v-else>les actions suivantes :</template>
+              </p>
+              <ul class="fr-mb-9v">
+                <li v-if="report.data.schemaPluriannuelUrl">
+                  <a
+                    :href="report.data.schemaPluriannuelUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Schéma pluriannuel de mise en accessibilité
+                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  </a>
+                </li>
+                <li v-if="report.data.planActionUrl">
+                  <a
+                    :href="report.data.planActionUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Plan d'actions de l'année en cours
+                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  </a>
+                </li>
+              </ul>
+            </template>
 
-          <p class="fr-mb-9v fr-mb-md-6w">
-            Cette déclaration d’accessibilité s’applique à
-            <strong>{{ report.data.procedureUrl }}</strong>.
-          </p>
+            <p class="fr-mb-9v fr-mb-md-6w">
+              Cette déclaration d’accessibilité s’applique à
+              <strong>{{ report.data.procedureUrl }}</strong>.
+            </p>
 
             <h4 class="fr-h2">État de conformité</h4>
             <p class="fr-mb-9v fr-mb-md-6w">
@@ -215,16 +225,16 @@ const siteUrl = computed(() => {
               référentiel général d’amélioration de l’accessibilité (RGAA).
             </p>
 
-          <h5 class="fr-h2">Résultats des tests</h5>
-          <p>
-            L’audit de conformité réalisé par
-            <strong>{{ report.data.context.auditorOrganisation }}</strong>
-            révèle que :
-          </p>
-          <ul class="fr-mb-9v fr-mb-md-6w">
-            <li><strong>{{ report.data.accessibilityRate }} %</strong> des critères
-              du {{ REFERENTIAL }} sont respectés.</li>
-          </ul>
+            <h5 class="fr-h2">Résultats des tests</h5>
+            <p>
+              L’audit de conformité réalisé par
+              <strong>{{ report.data.context.auditorOrganisation }}</strong>
+              révèle que :
+            </p>
+            <ul class="fr-mb-9v fr-mb-md-6w">
+              <li><strong>{{ report.data.accessibilityRate }} %</strong> des critères
+                du {{ REFERENTIAL }} sont respectés.</li>
+            </ul>
 
             <template
               v-if="
