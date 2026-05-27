@@ -365,7 +365,7 @@ function confirmLeave() {
       </p>
 
       <p id="contact-section-subtitle" class="fr-mb-2w">
-        Vous devez renseigner au moins un des deux moyens de contact suivant :
+        Renseignez au moins un des deux moyens de contact suivant :
       </p>
 
       <FieldValidation
