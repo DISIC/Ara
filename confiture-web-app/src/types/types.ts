@@ -130,8 +130,8 @@ export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 export type NotCompliantItem = {
   id?: number;
   title?: string;
-  comment?: string;
-  userImpact?: CriterionResultUserImpact;
+  comment: string | null;
+  userImpact: CriterionResultUserImpact | null;
   quickWin: boolean;
 };
 

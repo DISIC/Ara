@@ -10,7 +10,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  modelValue?: string;
+  modelValue: string | null;
   label: string;
   description: string;
   type: "criterium" | "notes";

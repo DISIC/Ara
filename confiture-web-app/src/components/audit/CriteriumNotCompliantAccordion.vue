@@ -106,8 +106,8 @@ function addEmptyErrorToNotCompliantItems() {
   emit("update:item", {
     item: {
       title: undefined,
-      comment: undefined,
-      userImpact: undefined,
+      comment: null,
+      userImpact: null,
       quickWin: false
     },
     action: "add",
