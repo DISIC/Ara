@@ -105,9 +105,9 @@ function setFocusToCommentEditor() {
 function addEmptyErrorToNotCompliantItems() {
   emit("update:item", {
     item: {
-      title: null,
-      comment: null,
-      userImpact: null,
+      title: undefined,
+      comment: undefined,
+      userImpact: undefined,
       quickWin: false
     },
     action: "add",
@@ -138,23 +138,23 @@ function onUpdateNotCompliantItemClick(
       Erreurs et recommandations <span :class="{ 'fr-text--bold': countNotCompliantItemsRecommandations > 0 }"> ({{ countNotCompliantItemsRecommandations }})</span>
     </template>
 
-    <div v-for="(item, index) in orderByNotCompliantItems" :key="item.id ?? index" class="not-compliant-item">
+    <div v-for="(item, index) in orderByNotCompliantItems" :key="id + '-not-compliant-item-' + index" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
         :can-delete="notCompliantItems.length > 1"
-        :on-delete="onDeleteNotCompliantItemClick"
-        :on-update="onUpdateNotCompliantItemClick"
+        @delete="onDeleteNotCompliantItemClick"
+        @update="onUpdateNotCompliantItemClick"
       />
 
     </div>
 
-    <div v-if="notCompliantItems.length" class="not-compliant-item-add">
+    <div v-if="notCompliantItems.length" class="fr-mx-n3v">
       <button
         type="button"
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-add-line"
+        class="not-compliant-item-add fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-add-line"
         @click="addEmptyErrorToNotCompliantItems"
       >
         Ajouter une erreur</button>
@@ -182,8 +182,9 @@ function onUpdateNotCompliantItemClick(
 </template>
 <style>
 .not-compliant-item {
-  padding: 1em 0.75rem 1.25em 0.75rem;
-  border-bottom: 1px solid var(--border-default-grey);
+  padding: 1em 0.75rem;
+  padding-block-end: 1.25em;
+  border-block-end: 1px solid var(--border-default-grey);
   margin: 0 -0.75rem;
 
   &:first-child {
@@ -194,31 +195,26 @@ function onUpdateNotCompliantItemClick(
 
 <style scoped>
 .not-compliant-item-add {
-  margin: 0 -0.75rem;
+  padding: 1em 0;
+  width: 100%;
+  justify-content: center;
 
-  button {
-    padding: 1em 0;
-    width: 100%;
-    justify-content: center;
+  &:hover {
+    background-color: var(--blue-france-950-100) !important;
+  }
 
-    &:hover {
-      background-color: var(--blue-france-950-100) !important;
-    }
+  &:active {
+    background-color: var(--blue-france-925-125) !important;
+  }
 
-    &:active {
-      background-color: var(--blue-france-925-125) !important;
-    }
-
-    &:focus {
-      outline-offset: -2px;
-    }
+  &:focus {
+    outline-offset: -2px;
   }
 }
 </style>
 
 <style scoped>
 :deep(.fr-collapse--expanded) {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-block: 0 0 !important;
 }
 </style>

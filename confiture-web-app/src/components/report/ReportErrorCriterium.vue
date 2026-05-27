@@ -164,7 +164,7 @@ function getLabelError(notCompliantItemId?: number) {
 .criterium-not-compliant-item {
   border: 1px solid var(--border-default-grey);
   padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-block-end: 1.5rem;
 }
 
 .criterium-not-compliant-item-header {

@@ -4,9 +4,10 @@ import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
+import { useHideNotifications, useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
-import { useAuditStore, useFiltersStore, useNotificationStore, useResultsStore } from "../../store";
+import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
@@ -125,7 +126,8 @@ function toggleTransverseComment() {
   showTransverseComment.value = !showTransverseComment.value;
 }
 
-const storeNotification = useNotificationStore();
+const notify = useNotifications();
+const hideNotify = useHideNotifications();
 
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
@@ -142,7 +144,7 @@ async function handleFileDeleteAfterConfirm(
     props.criterium.number,
     file
   ).then(() => {
-    storeNotification.showNotification("success", undefined, `Image supprimée`);
+    notify("success", undefined, `Image supprimée`);
     resolve();
   });
 }
@@ -150,7 +152,7 @@ async function handleFileDeleteAfterConfirm(
 function handleUpdateResultError(err: any) {
   console.log(err);
   auditStore.lastRequestFailed = true;
-  storeNotification.showNotification(
+  notify(
     "error",
     DEFAULT_NOTIFICATION_ERROR_TITLE,
     DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
@@ -169,7 +171,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
         auditStore.publishAudit(props.auditUniqueId);
 
         if (!auditStore.currentAudit?.publicationDate) {
-          storeNotification.showNotification(
+          notify(
             "info",
             "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
@@ -258,22 +260,21 @@ const updateResultNotCompliantItem = async (payload:
 
     if (action === "delete")
     {
-      storeNotification
-        .showNotification(
-          "success",
-          undefined,
-          `Erreur supprimée`,
-          {
-            action: {
-              label: "Annuler",
-              cb: async () => {
-                item.id = undefined;
-                await updateResultNotCompliantItem({ item, action: "add" });
-                storeNotification.hideNotification();
-              }
+      notify(
+        "success",
+        undefined,
+        `Erreur supprimée`,
+        {
+          action: {
+            label: "Annuler",
+            cb: async () => {
+              item.id = undefined;
+              await updateResultNotCompliantItem({ item, action: "add" });
+              hideNotify();
             }
           }
-        );
+        }
+      );
     }
   } catch (error) {
     handleUpdateResultError(error);
@@ -519,8 +520,8 @@ const parentCriterium = computed(() => {
 }
 
 .criterium-transverse-notice-separator {
-  border-bottom: 1px solid var(--text-title-grey);
-  padding-bottom: 1em;
+  border-block-end: 1px solid var(--text-title-grey);
+  padding-block-end: 1em;
 
   &:last-child {
     border-bottom: none;
