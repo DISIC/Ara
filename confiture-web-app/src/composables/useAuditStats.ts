@@ -79,7 +79,7 @@ export function useAuditStats() {
 
   const blockingCriteria = computed(() => {
     return notCompliantCriteria.value.filter((criteria) => {
-      return criteria.some(
+      return criteria.flatMap(x => x.notCompliantItems).some(
         (c) => c.userImpact === CriterionResultUserImpact.BLOCKING
       );
     });
@@ -95,7 +95,7 @@ export function useAuditStats() {
       store.allResults?.filter((r) => {
         return (
           r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-          r.userImpact === CriterionResultUserImpact.BLOCKING
+          r.notCompliantItems.some((x) => x.userImpact === CriterionResultUserImpact.BLOCKING)
         );
       }).length || 0;
 
