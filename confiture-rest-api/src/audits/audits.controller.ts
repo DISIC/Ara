@@ -334,20 +334,20 @@ export class AuditsController {
       throw new UnauthorizedException();
     }
 
-    const { originalAuditEmail, newAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
+    const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
     this.mailer.sendAuditTransferEmail(body.newEmail, {
       editUniqueId: uniqueId,
       auditorEmail: user?.email || originalAuditEmail,
       auditorName: user?.name || null,
-      procedureName: newAudit.procedureName
+      procedureName: updatedAudit.procedureName
     }).catch((err) => {
       console.error(
-        `Failed to send transfer email for audit ${newAudit.editUniqueId}`
+        `Failed to send transfer email for audit ${updatedAudit.editUniqueId}`
       );
       console.error(err);
     });
 
-    return newAudit;
+    return updatedAudit;
   }
 }
