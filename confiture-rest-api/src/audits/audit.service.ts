@@ -1891,7 +1891,7 @@ export class AuditService {
    */
   async transferAudit(uniqueId: string, newEmail: string) {
     // Get original audit email
-    const audit = await this.prisma.audit.findUnique({
+    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
       select: { auditorEmail: true }
     });
@@ -1908,24 +1908,11 @@ export class AuditService {
     });
 
     // Update audit with new owner info if any or reset fields
-    const data: Pick<Audit, "auditorName" | "auditorOrganisation"> = {
-      auditorName: "",
-      auditorOrganisation: ""
-    };
-
-    if (user?.name) {
-      data.auditorName = user.name;
-    }
-
-    if (user?.orgName) {
-      data.auditorOrganisation = user.orgName;
-    }
-
-    const newAudit = await this.prisma.audit.update({
+    const updatedAudit = await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: {
-        auditorOrganisation: data.auditorOrganisation,
-        auditorName: data.auditorName,
+        auditorOrganisation: user?.orgName ?? null,
+        auditorName: user?.name ?? null,
         auditor: {
           connectOrCreate: {
             where: { username: newEmail },
@@ -1939,8 +1926,8 @@ export class AuditService {
     });
 
     return {
-      originalAuditEmail: audit.auditorEmail,
-      newAudit
+      originalAuditEmail,
+      updatedAudit
     };
   }
 
