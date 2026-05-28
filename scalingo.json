@@ -1,0 +1,7 @@
+{
+  "env": {
+    "FRONT_BASE_URL": {
+      "generator": "url"
+    }
+  }
+}
