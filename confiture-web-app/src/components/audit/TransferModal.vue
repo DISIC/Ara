@@ -39,7 +39,6 @@ const validationRules = [
     ? [NOT_EQUAL(auditStore.currentAudit?.auditorEmail, "Cet audit appartient déjà à cette adresse e-mail. Saisissez une adresse e-mail différente.")]
     : []),
   ...(accountStore.account
-    // TODO: update error message if audit is linked to an account
     ? [NOT_EQUAL(accountStore.account?.email, "Cet audit est déjà associé à votre compte. Saisissez une adresse e-mail différente.")]
     : []
   )
@@ -94,7 +93,7 @@ function handleClose() {
                 <FieldValidation
                   v-slot="{ error, focusRef }"
                   :value="confirmEmail"
-                  :validation="[...validationRules, EQUAL(email, 'Saisie incorrecte. Les deux adresses e-mail doivent être identiques.')]"
+                  :validation="[...validationRules, EQUAL(() => email, 'Saisie incorrecte. Les deux adresses e-mail doivent être identiques.')]"
                 >
                   <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" type="email" :error="error" label="Confirmer e-mail du destinataire" hint="Au format : nom@domaine.fr" />
                 </FieldValidation>
