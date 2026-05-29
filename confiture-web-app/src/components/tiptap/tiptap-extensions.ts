@@ -1,11 +1,8 @@
 import { Attributes, Extensions, NodeView, NodeViewRendererProps } from "@tiptap/core";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
 import Typography from "@tiptap/extension-typography";
 import { Dropcursor } from "@tiptap/extensions";
-import { Markdown } from "@tiptap/markdown";
-import StarterKit from "@tiptap/starter-kit";
 import { VueNodeViewRenderer, ResizableNodeView, Editor, VueNodeViewRendererOptions } from "@tiptap/vue-3";
 import { useResizeObserver } from "@vueuse/core";
 import css from "highlight.js/lib/languages/css";
@@ -14,10 +11,14 @@ import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { common, createLowlight } from "lowlight";
 import { AraTiptapRenderedExtension } from "./AraTiptapRenderedExtension";
+import { ExtendedLinkExtension, LinkExtension } from "./extensions/LinkExtension";
+import { MarkdownExtension } from "./extensions/MarkdownExtension";
+import { getStarterKitExtensions } from "./extensions/StarterKitExtensions";
 import { CustomHeading } from "./heading/HeadingExtension";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
 import TiptapImage from "./image/TiptapImage.vue";
 import { PasteMarkdownExtension } from "./markdown/PasteMarkdownExtension";
+import { getTiptapBasicEditorExtensions, tiptapRenderedBasicExtensions } from "./tiptap-basic-extensions";
 
 // Minimum editor inner width (in px) to enable image resize
 const minWidthToEnableImageResize = 320;
@@ -30,73 +31,9 @@ lowlight.register("css", css);
 lowlight.register("js", js);
 lowlight.register("ts", ts);
 
-const extendedLink = Link.extend({
-  addAttributes() {
-    // Default attributes are useful when pasting links in editor for example.
-    return {
-      ...this.parent?.(),
-      // "class" is always reset
-      class: {
-        default: null,
-        parseHTML: () => null,
-        renderHTML: () => {
-          return {
-            class: null
-          };
-        }
-      },
-      // "rel" is always reset to "noopener noreferrer"
-      rel: {
-        default: null,
-        parseHTML: () => "noopener noreferrer",
-        renderHTML: () => {
-          return {
-            rel: "noopener noreferrer"
-          };
-        }
-      },
-      // "target" is reset to:
-      // - null (removed) when editing
-      // - "_blank" when rendered
-      target: {
-        default: null,
-        renderHTML: () => {
-          return {
-            target: this.options.HTMLAttributes.target
-          };
-        }
-      }
-    };
-  }
-});
-
-const MarkdownExtension =
-  Markdown.configure({
-    markedOptions: {
-      async: false
-    }
-  });
-
-const LinkExtension =
-  extendedLink.configure({
-    openOnClick: false,
-    defaultProtocol: "https",
-    shouldAutoLink: () => true,
-    HTMLAttributes: {
-      // Links do not open when editing, so not "new window"…
-      // Advantage: no extra icon when editing
-      target: null
-    }
-  });
-
-const ExtendedLinkExtension = extendedLink.configure({
-  openOnClick: true,
-  HTMLAttributes: {
-    // Links open in a new window when displaying the editor in read-only mode
-    target: "_blank"
-  }
-});
-
+/**
+ * have all extensions (starterKit, heading, codeBlock, typography and dropCursor)
+ */
 const commonExtensions: Extensions = [
   CustomHeading,
   getStarterKitExtensions({
@@ -113,19 +50,6 @@ const commonExtensions: Extensions = [
   }),
   MarkdownExtension,
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })
-];
-
-const commonBasicExtensions: Extensions = [
-  getStarterKitExtensions({
-    blockquote: false,
-    code: false,
-    codeBlock: false,
-    dropcursor: false,
-    heading: false,
-    strike: false,
-    underline: false
-  }),
-  MarkdownExtension
 ];
 
 const commonImageAttrs = {
@@ -153,6 +77,9 @@ const commonImageAttrs = {
   }
 };
 
+/**
+ * have all extensions for tiptap rendered (with Image)
+ */
 const tiptapRenderedExtensions: Extensions = [
   ...commonExtensions,
   ExtendedLinkExtension,
@@ -172,26 +99,8 @@ const tiptapRenderedExtensions: Extensions = [
       };
     }
   }),
-  ...[AraTiptapRenderedExtension]
+  AraTiptapRenderedExtension
 ];
-
-const tiptapRenderedBasicExtensions = [
-  ...commonBasicExtensions,
-  ExtendedLinkExtension,
-  ...[AraTiptapRenderedExtension]
-];
-
-function getStarterKitExtensions(options: any) {
-  return StarterKit.configure(options);
-}
-
-function getTiptapBasicEditorExtensions() {
-  return [
-    ...commonBasicExtensions,
-    PasteMarkdownExtension,
-    LinkExtension
-  ];
-}
 
 export function getTiptapEditorExtensions(options?: {
   basicMode: boolean;

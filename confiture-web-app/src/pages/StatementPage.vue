@@ -207,7 +207,7 @@ const siteUrl = computed(() => {
                 <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
                   :document="report.data.notCompliantContent"
-                  :basic-mode="true"
+                  basic-mode
                 />
               </template>
 
@@ -216,7 +216,7 @@ const siteUrl = computed(() => {
                 <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
                   :document="report.data.derogatedContent"
-                  :basic-mode="true"
+                  basic-mode
                 />
               </template>
 
@@ -227,7 +227,7 @@ const siteUrl = computed(() => {
                 <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
                   :document="report.data.notInScopeContent"
-                  :basic-mode="true"
+                  basic-mode
                 />
               </template>
             </template>

@@ -518,7 +518,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notCompliantContent"
         labelled-by="notCompliantContent"
-        :basic-mode="true"
+        basic-mode
       />
     </div>
 
@@ -529,7 +529,7 @@ function confirmLeave() {
     </p>
 
     <div class="fr-input-group fr-mb-2w">
-      <p if="derogatedContent" class="fr-label fr-mb-1w">
+      <p id="derogatedContent" class="fr-label fr-mb-1w">
         Dérogations pour charge disproportionnée (optionnel)
         <span class="fr-hint-text">
           Listez les contenus et fonctionnalités trop coûteuse ou difficile à rendre accessible.<br />Indiquez les alternatives si disponibles.
@@ -539,7 +539,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="derogatedContent"
         labelled-by="derogatedContent"
-        :basic-mode="true"
+        basic-mode
       />
     </div>
 
@@ -554,7 +554,7 @@ function confirmLeave() {
       <TiptapEditor
         v-model="notInScopeContent"
         labelled-by="notInScopeContent"
-        :basic-mode="true"
+        basic-mode
       />
     </div>
 
