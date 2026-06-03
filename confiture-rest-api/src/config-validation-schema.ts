@@ -14,13 +14,7 @@ export const configValidationSchema = Joi.object({
   MAILER_SMTP_SECURE: Joi.boolean().required(),
   FRONT_BASE_URL: Joi.string()
     .uri({ scheme: ["http", "https"] })
-    .default((env) => {
-      return (
-        (env.APP && env.REGION_NAME &&
-          `https://${env.APP}.${env.REGION_NAME}.scalingo.io`)
-        || "http://localhost:3000"
-      );
-    }),
+    .default("http://localhost:3000"),
   GRIST_API_KEY: Joi.string().required(),
   GRIST_DOC_ID: Joi.string().required(),
   GRIST_TABLE_ID: Joi.string().required(),
