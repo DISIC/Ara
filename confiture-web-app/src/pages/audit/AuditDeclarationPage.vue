@@ -90,7 +90,7 @@ watch(
       return;
     }
     auditInitiator.value = audit.initiator ?? "";
-    auditorOrganisation.value = audit.auditorOrganisation ?? "";
+    auditorOrganisation.value = audit.auditorOrganisation ?? accountStore.account?.orgName ?? "";
     procedureUrl.value = audit.procedureUrl ?? "";
     contactName.value = audit.contactName ?? "";
     contactEmail.value = audit.contactEmail ?? "";
