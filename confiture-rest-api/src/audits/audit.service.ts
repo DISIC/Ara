@@ -1386,22 +1386,20 @@ export class AuditService {
         page: {
           auditUniqueId: uniqueId
         },
-        criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
-        },
-        topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
-        },
         status: {
           not: CriterionResultStatus.NOT_TESTED
-        }
+        },
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
+          criterium: c.criterium,
+          topic: c.topic
+        }))
       }
     });
 
     const expectedCount =
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
 
-    return testedCount >= expectedCount;
+    return testedCount == expectedCount;
   }
 
   async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
