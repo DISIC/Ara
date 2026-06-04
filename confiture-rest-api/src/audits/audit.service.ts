@@ -1389,15 +1389,15 @@ export class AuditService {
         status: {
           not: CriterionResultStatus.NOT_TESTED
         },
-        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => ({
-          criterium: c.criterium,
-          topic: c.topic
-        }))
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
       }
     });
 
     const expectedCount =
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
+
+    console.log("testedCount", testedCount);
+    console.log("expectedCount", expectedCount);
 
     return testedCount == expectedCount;
   }
