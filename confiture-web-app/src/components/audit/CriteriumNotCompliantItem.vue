@@ -170,7 +170,7 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
+<style>
 .user-impact-label span,
 .user-error-label label {
   font-size: 0.75rem;
