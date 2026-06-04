@@ -199,6 +199,7 @@ const tabsData = computed((): TabData[] => {
       ? [
           {
             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
+            diplayLabelSuffix: " (optionnel)",
             icon: "fr-icon-layout-3-line",
             component: AuditGenerationPageCriteria,
             componentParams: {
