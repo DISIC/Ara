@@ -1936,7 +1936,7 @@ export class AuditService {
    * - audit email is not verified
    * - audit email is verified and user is owner
    */
-  async canUserTransferAudit(uniqueId: string, userEmail: string) {
+  async canUserTransferAudit(uniqueId: string, userEmail?: string) {
     const { auditor } = await this.prisma.audit.findUnique({
       where: {
         editUniqueId: uniqueId
