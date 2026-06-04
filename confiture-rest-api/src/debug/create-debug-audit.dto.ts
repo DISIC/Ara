@@ -1,4 +1,4 @@
-import { IsString, IsIn, IsBoolean, IsEmail, IsOptional, IsDateString } from "class-validator";
+import { IsString, IsIn, IsBoolean, IsEmail, IsOptional } from "class-validator";
 import { AuditType } from "../generated/prisma/enums";
 
 export class CreateDebugAuditDto {
@@ -31,6 +31,5 @@ export class CreateDebugAuditDto {
   fillStatement: boolean;
 
   @IsOptional()
-  @IsDateString()
-  publicationDate?: string;
+  publicationDate?: Date;
 }
