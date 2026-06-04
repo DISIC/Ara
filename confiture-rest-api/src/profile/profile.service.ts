@@ -10,13 +10,25 @@ export class ProfileService {
 
   async patchProfile(userEmail: string, body: PatchProfileDto) {
     try {
-      const user = await this.prisma.user.update({
-        where: { username: userEmail },
-        data: { name: body.name },
-        select: { id: true, username: true, name: true }
-      });
+      return await this.prisma.$transaction(async (tx) => {
+        const user = await tx.user.update({
+          where: { username: userEmail },
+          data: { name: body.name },
+          select: { id: true, username: true, name: true }
+        });
 
-      return user;
+        // Update user audits auditorName
+        await tx.audit.updateMany({
+          where: {
+            auditorEmail: userEmail
+          },
+          data: {
+            auditorName: body.name
+          }
+        });
+
+        return user;
+      });
     } catch (e) {
       // User does not exist
       // https://www.prisma.io/docs/orm/reference/error-reference#p2025
