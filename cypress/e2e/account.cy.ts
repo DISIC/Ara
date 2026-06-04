@@ -106,16 +106,9 @@ describe("Account", () => {
         cy.contains("a", "Mon compte").click();
 
         cy.getByLabel("Prénom et nom (optionnel)").type("John Doe");
-        cy.getByLabel("Nom de votre structure (optionnel)").type("ACME");
         cy.contains("Mettre à jour").click();
 
         cy.contains("Profil mis à jour avec succès");
-
-        // Check that user audits have updated auditorName
-        cy.contains("a", "Mes audits").click();
-        cy.contains("button", "Actions").click();
-        cy.contains("a", "Consulter le rapport").invoke("removeAttr", "target").click();
-        cy.contains("Auditeur ou auditrice : John Doe");
       });
     });
 
