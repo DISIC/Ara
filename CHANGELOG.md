@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 04/06/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige l’affichage des listes numérotées des tests de méthodologie sur Chrome ([#1522](https://github.com/DISIC/Ara/pull/1522))
+
 ### 22/05/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
