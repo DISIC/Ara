@@ -506,9 +506,7 @@ export class AuditService {
           derogatedContent: data.derogatedContent,
           notInScopeContent: data.notInScopeContent,
           notes: data.notes,
-          transverseElements: data.transverseElements,
-          schemaPluriannuelUrl: data.schemaPluriannuelUrl,
-          planActionUrl: data.planActionUrl
+          transverseElements: data.transverseElements
         },
         select: AUDIT_PRISMA_SELECT
       });

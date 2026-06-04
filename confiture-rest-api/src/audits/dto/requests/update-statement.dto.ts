@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsOptional,
   IsString,
+  IsUrl,
   ValidateNested
 } from "class-validator";
 
@@ -110,11 +111,11 @@ export class UpdateStatementDto {
   @IsOptional()
   notInScopeContent?: string;
 
-  @IsString()
+  @IsUrl()
   @IsOptional()
   schemaPluriannuelUrl?: string;
 
-  @IsString()
+  @IsUrl()
   @IsOptional()
   planActionUrl?: string;
 }
