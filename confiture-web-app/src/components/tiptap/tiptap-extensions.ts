@@ -18,7 +18,7 @@ import { CustomHeading } from "./heading/HeadingExtension";
 import { ImageUploadExtension } from "./image/ImageUploadExtension";
 import TiptapImage from "./image/TiptapImage.vue";
 import { PasteMarkdownExtension } from "./markdown/PasteMarkdownExtension";
-import { getTiptapBasicEditorExtensions, tiptapRenderedBasicExtensions } from "./tiptap-basic-extensions";
+import { tiptapBasicEditorExtensions, tiptapRenderedBasicExtensions } from "./tiptap-basic-extensions";
 
 // Minimum editor inner width (in px) to enable image resize
 const minWidthToEnableImageResize = 320;
@@ -107,7 +107,7 @@ export function getTiptapEditorExtensions(options?: {
   onImageUploadComplete: (fileName: string) => void;
 }) {
   if (options?.basicMode === true) {
-    return getTiptapBasicEditorExtensions();
+    return tiptapBasicEditorExtensions;
   }
 
   return [

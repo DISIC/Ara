@@ -27,13 +27,11 @@ const commonBasicExtensions: Extensions = [
  * ordered list, unordered list,
  * Paste Markdown, Link)
  */
-export function getTiptapBasicEditorExtensions() {
-  return [
-    ...commonBasicExtensions,
-    PasteMarkdownExtension,
-    LinkExtension
-  ];
-}
+export const tiptapBasicEditorExtensions = [
+  ...commonBasicExtensions,
+  PasteMarkdownExtension,
+  LinkExtension
+];
 
 /**
  * have basic extensions for tiptap Rendered (bold, italic,
