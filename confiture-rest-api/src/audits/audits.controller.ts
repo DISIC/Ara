@@ -326,7 +326,7 @@ export class AuditsController {
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email ?? undefined);
+    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email);
 
     if (!canTransfer) {
       throw new UnauthorizedException();
