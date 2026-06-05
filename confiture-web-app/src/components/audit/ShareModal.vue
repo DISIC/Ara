@@ -79,7 +79,7 @@ function toggleAuditPrivacy() {
                 Fermer
               </button>
             </div>
-            <div class="fr-modal__content">
+            <div class="fr-modal__content share-modal-content">
               <h1 :id="`share-modal-title-${editUniqueId}`" class="fr-modal__title fr-mb-4w">
                 Partager l’audit « {{ auditName }} »
               </h1>
@@ -103,8 +103,8 @@ function toggleAuditPrivacy() {
                   : 'Vous êtes la seule personne à pouvoir accéder à l’audit et le modifier.'
                 }}
               </p>
-              <template v-if="auditIsPublic">
-                <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
+              <div :class="{ 'hidden-public-content': !auditIsPublic }">
+                <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w ">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
                 <div class="fr-btns-group fr-btns-group--icon-left">
                   <button
                     class="fr-btn fr-btn--secondary fr-btn--icon-left fr-mb-0"
@@ -115,7 +115,7 @@ function toggleAuditPrivacy() {
                     {{ showCopySuccess ? 'Lien copié' : 'Copier le lien de partage' }}
                   </button>
                 </div>
-              </template>
+              </div>
             </div>
           </div>
         </div>
@@ -136,5 +136,14 @@ function toggleAuditPrivacy() {
 .copy-link-button {
   color: var(--text-default-success) !important;
   box-shadow: inset 0 0 0 1px var(--text-default-success) !important;
+}
+
+/* Avoid modal to resize from top and bottom when content changes. */
+.share-modal-content {
+  margin-block-end: 2rem !important;
+}
+
+.hidden-public-content {
+  visibility: hidden;
 }
 </style>
