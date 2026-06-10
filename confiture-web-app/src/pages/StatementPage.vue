@@ -187,7 +187,7 @@ const siteUrl = computed(() => {
             <h5 class="fr-h2">Résultats des tests</h5>
             <p class="fr-mb-9v fr-mb-md-6w">
               L’audit de conformité réalisé par
-              <strong v-if="report.data.context.auditorOrganisation">{{ report.data.context.auditorOrganisation }}</strong><template v-else>[nom de l'entitée ayant réalisé l'audit]</template>
+              <strong v-if="report.data.context.auditorOrganisation">{{ report.data.context.auditorOrganisation }}</strong><mark v-else>[nom de l’entitée ayant réalisé l’audit]</mark>
               révèle que
               <strong>{{ report.data.accessibilityRate }} %</strong> des critères
               du {{ REFERENTIAL }} sont respectés.

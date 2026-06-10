@@ -35,13 +35,13 @@ const confirmEmail = ref("");
 const validationRules = [
   REQUIRED("Champ obligatoire. Saisissez l'adresse e-mail du destinataire."),
   EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr"),
-  ...(auditStore.currentAudit?.auditorEmail
-    ? [NOT_EQUAL(auditStore.currentAudit?.auditorEmail, "Cet audit appartient déjà à cette adresse e-mail. Saisissez une adresse e-mail différente.")]
-    : []),
   ...(accountStore.account
     ? [NOT_EQUAL(accountStore.account?.email, "Cet audit est déjà associé à votre compte. Saisissez une adresse e-mail différente.")]
     : []
-  )
+  ),
+  ...(auditStore.currentAudit?.auditorEmail
+    ? [NOT_EQUAL(auditStore.currentAudit?.auditorEmail, "Cet audit appartient déjà à cette adresse e-mail. Saisissez une adresse e-mail différente.")]
+    : [])
 ];
 
 function handleSubmit() {
