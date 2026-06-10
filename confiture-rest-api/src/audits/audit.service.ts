@@ -1396,9 +1396,6 @@ export class AuditService {
     const expectedCount =
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
 
-    console.log("testedCount", testedCount);
-    console.log("expectedCount", expectedCount);
-
     return testedCount == expectedCount;
   }
 
