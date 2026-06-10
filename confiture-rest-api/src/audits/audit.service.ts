@@ -961,6 +961,27 @@ export class AuditService {
 
   async publishAudit(uniqueId: string) {
     try {
+      const [audit, auditIsComplete] = await Promise.all([
+        this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
+          },
+          select: {
+            publicationDate: true
+          }
+        }),
+        this.isAuditComplete(uniqueId)
+      ]);
+
+      if (audit?.publicationDate && auditIsComplete) {
+        return this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
+          },
+          select: AUDIT_PRISMA_SELECT
+        });
+      }
+
       return await this.prisma.audit.update({
         where: {
           editUniqueId: uniqueId
@@ -982,11 +1003,32 @@ export class AuditService {
   }
 
   /**
+   * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
+   * as completed after having been completed or
    * Update an audit editionDate, only when it has a publication date.
    * @returns the update audit if it is updated, undefined otherwise
    */
   private async updateAuditEditDate(uniqueId: string) {
-    const audit = await this.prisma.audit.findUnique({ where: { editUniqueId: uniqueId }, select: { publicationDate: true } });
+    const [audit, auditIsComplete] = await Promise.all([
+      this.prisma.audit.findUnique({
+        where: {
+          editUniqueId: uniqueId
+        },
+        select: {
+          publicationDate: true
+        }
+      }),
+      this.isAuditComplete(uniqueId)
+    ]);
+
+    if (audit.publicationDate && !auditIsComplete) {
+      return this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { publicationDate: null, editionDate: null },
+        select: AUDIT_PRISMA_SELECT
+      });
+    }
+
     if (audit.publicationDate) {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
@@ -1344,22 +1386,20 @@ export class AuditService {
         page: {
           auditUniqueId: uniqueId
         },
-        criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
-        },
-        topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
-        },
         status: {
           not: CriterionResultStatus.NOT_TESTED
-        }
+        },
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
       }
     });
 
     const expectedCount =
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
 
-    return testedCount === expectedCount;
+    console.log("testedCount", testedCount);
+    console.log("expectedCount", expectedCount);
+
+    return testedCount == expectedCount;
   }
 
   async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
