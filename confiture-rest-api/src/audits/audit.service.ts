@@ -1891,9 +1891,9 @@ export class AuditService {
    */
   async transferAudit(uniqueId: string, newEmail: string) {
     // Get original audit email
-    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUnique({
+    const { auditorEmail: originalAuditEmail, auditorName: originalAuditName } = await this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
-      select: { auditorEmail: true }
+      select: { auditorEmail: true, auditorName: true }
     });
 
     // Get new owner info
@@ -1927,6 +1927,7 @@ export class AuditService {
 
     return {
       originalAuditEmail,
+      originalAuditName,
       updatedAudit
     };
   }
