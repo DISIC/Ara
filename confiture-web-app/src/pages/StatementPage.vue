@@ -3,8 +3,8 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import PageMeta from "../components/PageMeta";
+import TiptapRenderer from "../components/tiptap/TiptapRenderer.vue";
 import CopyButton from "../components/ui/CopyButton.vue";
-import MarkdownRenderer from "../components/ui/MarkdownRenderer.vue";
 import TopLink from "../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
@@ -204,17 +204,19 @@ const siteUrl = computed(() => {
 
               <template v-if="report.data.notCompliantContent">
                 <h5 class="fr-h3">Non-conformités</h5>
-                <MarkdownRenderer
+                <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
-                  :markdown="report.data.notCompliantContent"
+                  :document="report.data.notCompliantContent"
+                  basic-mode
                 />
               </template>
 
               <template v-if="report.data.derogatedContent">
                 <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-                <MarkdownRenderer
+                <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
-                  :markdown="report.data.derogatedContent"
+                  :document="report.data.derogatedContent"
+                  basic-mode
                 />
               </template>
 
@@ -222,9 +224,10 @@ const siteUrl = computed(() => {
                 <h5 class="fr-h3">
                   Contenus non soumis à l’obligation d’accessibilité
                 </h5>
-                <MarkdownRenderer
+                <TiptapRenderer
                   class="fr-mb-2w fr-mb-md-3w"
-                  :markdown="report.data.notInScopeContent"
+                  :document="report.data.notInScopeContent"
+                  basic-mode
                 />
               </template>
             </template>
