@@ -35,7 +35,6 @@ const auditCompletions = [
 ];
 const selectedAuditCompletion = ref(AuditCompletion.PRISTINE);
 const fillStatement = ref(false);
-const publicationDate = ref("");
 
 // API call
 async function createDebugAudit(isCustom: boolean = false) {
@@ -49,10 +48,7 @@ async function createDebugAudit(isCustom: boolean = false) {
     isPristine: isCustom
       ? selectedAuditCompletion.value === AuditCompletion.PRISTINE
       : false,
-    fillStatement: isCustom ? fillStatement.value : true,
-    publicationDate: isCustom && publicationDate.value ?
-        publicationDate.value.toString()
-      : undefined
+    fillStatement: isCustom ? fillStatement.value : true
   };
 
   const audit = await debugStore.createDebugAudit(data);
@@ -121,13 +117,6 @@ async function createDebugAudit(isCustom: boolean = false) {
               </div>
             </div>
           </fieldset>
-
-          <div v-if="selectedAuditCompletion === AuditCompletion.COMPLETED" class="fr-mb-3w">
-            <div class="fr-input-group">
-              <label class="fr-label" for="debug-audit-date-publication">Date de publication</label>
-              <input id="debug-audit-date-publication" v-model="publicationDate" type="date" class="fr-input">
-            </div>
-          </div>
 
           <div v-if="selectedAuditType === AuditType.FULL" class="fr-toggle fr-mb-3w">
             <input id="debug-audit-declaration" v-model="fillStatement" type="checkbox" class="fr-toggle__input">

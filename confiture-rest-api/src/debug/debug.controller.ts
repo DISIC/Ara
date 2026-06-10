@@ -34,10 +34,8 @@ export class DebugController {
         data: {
           editUniqueId: editUniqueId,
           consultUniqueId: reportUniqueId,
-          creationDate: body.isComplete && body.publicationDate ? new Date(body.publicationDate) : new Date(),
-          publicationDate: body.isComplete ?
-              (body.publicationDate ? new Date(body.publicationDate) : new Date())
-            : null,
+          creationDate: new Date(),
+          publicationDate: body.isComplete ? new Date() : null,
           auditTrace: {
             create: {
               auditConsultUniqueId: editUniqueId,

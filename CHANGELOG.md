@@ -9,7 +9,6 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Ajouter la mention "Optionnel" dans l'onglet "Éléments transverses" ([#1523](https://github.com/DISIC/Ara/pull/1523))
-- Ne pas impacter la date de fin d'audit lors d'une modification d'audit ([#1518](https://github.com/DISIC/Ara/pull/1518))
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
