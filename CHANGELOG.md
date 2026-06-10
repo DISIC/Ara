@@ -4,6 +4,17 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 10/06/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Ajouter la mention "Optionnel" dans l'onglet "Éléments transverses" ([1523](https://github.com/DISIC/Ara/pull/1523)
+- Ne pas impacter la date de fin d'audit lors d'une modification d'audit ([1518](https://github.com/DISIC/Ara/pull/1518)
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Remplacer les zones de texte par des éditeurs riches dans la déclaration daccessibilité  ([1500](https://github.com/DISIC/Ara/pull/1500))
+
 ### 04/06/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
