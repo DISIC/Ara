@@ -78,7 +78,7 @@ function handleClose() {
                 <h1 :id="`transfer-modal-title-${id}`" class="fr-modal__title">
                   Transférer l’audit « {{ procedureName }} »
                 </h1>
-                <p>
+                <p class="fr-text--sm fr-mb-2w">
                   Vous n’aurez plus accès à l’audit. Votre destinataire recevra par <span style="white-space: nowrap">e-mail</span> un lien d’accès à l’audit.
                 </p>
 
@@ -87,7 +87,7 @@ function handleClose() {
                   :value="email"
                   :validation="validationRules"
                 >
-                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" type="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format : nom@domaine.fr" />
+                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" type="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format : nom@domaine.fr" class="fr-mb-2w" />
                 </FieldValidation>
 
                 <FieldValidation

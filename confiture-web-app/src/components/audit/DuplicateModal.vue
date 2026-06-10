@@ -67,7 +67,7 @@ function handleClose() {
                     « {{ originalAuditName }} »
                   </template>
                 </h1>
-                <p>
+                <p class="fr-text--sm fr-mb-2w">
                   La copie de votre audit reprendra l'intégralité du contenu de l’audit initial.
                 </p>
                 <DsfrField
