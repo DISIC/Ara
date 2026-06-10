@@ -442,11 +442,14 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
-                  :disabled="!accountStore.isOwner"
+                  :disabled="
+                    auditStore.currentAudit?.auditor.isVerified
+                      && !accountStore.isOwner
+                  "
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
-                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>
