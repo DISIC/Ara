@@ -147,8 +147,8 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value,
 
-    schemaPluriannuelUrl: schemaPluriannuelUrl.value,
-    planActionUrl: planActionUrl.value
+    schemaPluriannuelUrl: schemaPluriannuelUrl.value || undefined,
+    planActionUrl: planActionUrl.value || undefined
   };
 });
 

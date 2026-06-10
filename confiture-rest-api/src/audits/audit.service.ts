@@ -1927,8 +1927,8 @@ export class AuditService {
         notCompliantContent: data.notCompliantContent,
         derogatedContent: data.derogatedContent,
         notInScopeContent: data.notInScopeContent,
-        schemaPluriannuelUrl: data.schemaPluriannuelUrl,
-        planActionUrl: data.planActionUrl
+        schemaPluriannuelUrl: data.schemaPluriannuelUrl ?? null,
+        planActionUrl: data.planActionUrl ?? null
       },
       select: AUDIT_PRISMA_SELECT
     });
