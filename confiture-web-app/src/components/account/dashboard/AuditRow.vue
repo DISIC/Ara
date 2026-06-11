@@ -124,7 +124,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="fr-p-2w grid">
+  <div class="fr-p-2w grid audits-list-grid">
     <!-- Name -->
     <RouterLink
       ref="auditNameRef"
@@ -404,16 +404,9 @@ defineExpose({
 </template>
 
 <style scoped>
-.grid {
-  display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.1fr 0.6fr 1.5fr 0.75fr 0.25fr;
-  gap: 1rem;
+.audits-list-grid {
   align-items: center;
   border: 1px solid var(--border-default-grey);
-
-  @media (width < 55rem) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .audit-name {
