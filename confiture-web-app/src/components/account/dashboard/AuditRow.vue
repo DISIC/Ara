@@ -25,7 +25,7 @@ const props = defineProps<{
   zIndex?: number;
 }>();
 
-defineEmits(["delete"]);
+defineEmits(["delete", "transfer"]);
 
 const notify = useNotifications();
 const auditStore = useAuditStore();
@@ -282,6 +282,16 @@ defineExpose({
             >
               Dupliquer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+              @click="$emit('transfer')"
+            >
+              Transférer l’audit
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
             </button>
           </li>
           <li class="dropdown-item">

@@ -76,6 +76,13 @@ export interface Audit {
   statementEditionDate: string | null;
 
   transverseElements: string[];
+
+  auditor: Auditor;
+}
+
+interface Auditor {
+  username: string;
+  isVerified: boolean;
 }
 
 /** Audit type fields needed to create an audit */
@@ -86,6 +93,7 @@ export interface CreateAuditRequestData {
   pageElements?: PageElements;
   auditorEmail: string;
   auditorName: string | null;
+  auditor?: Auditor;
 }
 
 /** Creation data type plus step 2 fields. */

@@ -12,6 +12,7 @@ import {
   Patch,
   Post,
   Put,
+  UnauthorizedException,
   UploadedFile,
   UseInterceptors
 } from "@nestjs/common";
@@ -21,7 +22,8 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
+  ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
 import { AuthRequired } from "../auth/auth-required.decorator";
@@ -40,6 +42,7 @@ import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
 import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
+import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
@@ -310,5 +313,39 @@ export class AuditsController {
   })
   async getCsvExport(@AuditId() uniqueId: string) {
     return await this.auditExportService.getCsvExport(uniqueId);
+  }
+
+  @Put("/:uniqueId/transfer")
+  @ApiOkResponse({
+    description: "The audit has been successfully transfered.",
+    type: AuditDto
+  })
+  @ApiUnauthorizedResponse({ description: "Only audit owner can transfer an audit." })
+  async transferAudit(
+    @AuditId() uniqueId: string,
+    @Body() body: TransferAuditDto,
+    @User() user: AuthenticationJwtPayload
+  ) {
+    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email);
+
+    if (!canTransfer) {
+      throw new UnauthorizedException();
+    }
+
+    const { originalAuditEmail, originalAuditName, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
+
+    this.mailer.sendAuditTransferEmail(body.newEmail, {
+      editUniqueId: uniqueId,
+      auditorEmail: user?.email || originalAuditEmail,
+      auditorName: user?.name || originalAuditName,
+      procedureName: updatedAudit.procedureName
+    }).catch((err) => {
+      console.error(
+        `Failed to send transfer email for audit ${updatedAudit.editUniqueId}`
+      );
+      console.error(err);
+    });
+
+    return updatedAudit;
   }
 }

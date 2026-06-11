@@ -1885,4 +1885,68 @@ export class AuditService {
 
     return audit;
   }
+
+  /**
+   * Transfer an audit ownership to another user and link it to its account (if any)
+   */
+  async transferAudit(uniqueId: string, newEmail: string) {
+    // Get original audit email
+    const { auditorEmail: originalAuditEmail, auditorName: originalAuditName } = await this.prisma.audit.findUnique({
+      where: { editUniqueId: uniqueId },
+      select: { auditorEmail: true, auditorName: true }
+    });
+
+    // Get new owner info
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: newEmail
+      },
+      select: {
+        name: true,
+        orgName: true
+      }
+    });
+
+    // Update audit with new owner info if any or reset fields
+    const updatedAudit = await this.prisma.audit.update({
+      where: { editUniqueId: uniqueId },
+      data: {
+        auditorOrganisation: user?.orgName ?? null,
+        auditorName: user?.name ?? null,
+        auditor: {
+          connectOrCreate: {
+            where: { username: newEmail },
+            create: {
+              username: newEmail
+            }
+          }
+        }
+      },
+      select: AUDIT_PRISMA_SELECT
+    });
+
+    return {
+      originalAuditEmail,
+      originalAuditName,
+      updatedAudit
+    };
+  }
+
+  /**
+   * User can transfer an audit if:
+   * - audit email is not verified
+   * - audit email is verified and user is owner
+   */
+  async canUserTransferAudit(uniqueId: string, userEmail?: string) {
+    const { auditor } = await this.prisma.audit.findUnique({
+      where: {
+        editUniqueId: uniqueId
+      },
+      select: {
+        auditor: true
+      }
+    });
+
+    return !auditor.isVerified || auditor.username === userEmail;
+  }
 }

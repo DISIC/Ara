@@ -9,6 +9,8 @@ import * as accountConfirmationEmail from "./account-confirmation-email";
 import * as accountVerificationEmail from "./account-verification-email";
 import * as auditCreationEmail from "./audit-creation-email";
 import { AuditCreationEmailData } from "./audit-creation-email";
+import * as auditTransferEmail from "./audit-transfer-email";
+import { AuditTransferEmailData } from "./audit-transfer-email";
 import { EmailConfig } from "./email-config.interface";
 import * as passwordUpdateConfirmationEmail from "./password-update-confirmation-email";
 import * as requestPasswordResetEmail from "./request-password-reset-email";
@@ -22,7 +24,8 @@ const EMAILS: Record<EmailType, EmailConfig> = {
   [EmailType.PASSWORD_UPDATE_CONFIRMATION]: passwordUpdateConfirmationEmail,
   [EmailType.EMAIL_UPDATE_VERIFICATION]: updateEmailVerificationEmail,
   [EmailType.EMAIL_UPDATE_CONFIRMATION]: updateEmailConfirmationEmail,
-  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail
+  [EmailType.PASSWORD_RESET_REQUEST]: requestPasswordResetEmail,
+  [EmailType.AUDIT_TRANSFER]: auditTransferEmail
 };
 
 @Injectable()
@@ -160,5 +163,19 @@ export class MailService {
     return this.sendMail(email, EmailType.PASSWORD_RESET_REQUEST, {
       verificationLink
     });
+  }
+
+  sendAuditTransferEmail(email: string, audit: Pick<Audit, "editUniqueId" | "procedureName" | "auditorName" | "auditorEmail">) {
+    const baseUrl = this.config.get<string>("FRONT_BASE_URL");
+    const auditUrl = `${baseUrl}/audits/${audit.editUniqueId}/synthese`;
+
+    const data: AuditTransferEmailData = {
+      auditUrl,
+      senderName: audit.auditorName,
+      senderEmail: audit.auditorEmail,
+      procedureName: audit.procedureName
+    };
+
+    return this.sendMail(email, EmailType.AUDIT_TRANSFER, data);
   }
 }

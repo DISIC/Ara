@@ -93,8 +93,26 @@ export function URL(msg: string): ValidationRule<string> {
   return (value) => !!value && !URL_REGEX.test(value) && msg;
 }
 
-export function EQUAL(target: string, msg: string): ValidationRule<string> {
-  return value => !!value && value !== target && msg;
+/**
+ * `target` must be a function returning a string when comparing value to a reactive value (like a input `v-model`).
+ */
+export function EQUAL(target: string | (() => string), msg: string): ValidationRule<string> {
+  return (value) => {
+    const t = typeof target === "function" ? target() : target;
+
+    return !!value && value !== t && msg;
+  };
+}
+
+/**
+ * `target` must be a function returning a string when comparing value to a reactive value (like a input `v-model`).
+ */
+export function NOT_EQUAL(target: string | (() => string), msg: string): ValidationRule<string> {
+  return (value) => {
+    const t = typeof target === "function" ? target() : target;
+
+    return !!value && value === t && msg;
+  };
 }
 
 export function ARRAY_LENGTH(minLength: number, msg: string): ValidationRule<any[]> {

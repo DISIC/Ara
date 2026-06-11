@@ -173,7 +173,7 @@ const currentProcedureName = procedureName.value;
     </div>
 
     <fieldset
-      v-if="!accountStore.account"
+      v-if="!(accountStore.account || audit.auditor?.isVerified)"
       class="fr-p-0 fr-mt-4w auditor-fields"
     >
       <legend>

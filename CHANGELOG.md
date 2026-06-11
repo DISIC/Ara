@@ -4,15 +4,21 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 11/06/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Ajout de la fonctionnalité de "Transfert d’audit" pour changer le propriétaire d’un audit ([#1484](https://github.com/DISIC/Ara/pull/1484))
+
 ### 10/06/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Ajouter la mention "Optionnel" dans l'onglet "Éléments transverses" ([#1523](https://github.com/DISIC/Ara/pull/1523))
+- Ajoute la mention "Optionnel" dans l’onglet "Éléments transverses" ([#1523](https://github.com/DISIC/Ara/pull/1523))
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Remplacer les zones de texte par des éditeurs riches dans la déclaration daccessibilité  ([#1500](https://github.com/DISIC/Ara/pull/1500))
+- Remplace les zones de texte par des éditeurs riches dans la déclaration d’accessibilité  ([#1500](https://github.com/DISIC/Ara/pull/1500))
 
 ### 04/06/2026
 
