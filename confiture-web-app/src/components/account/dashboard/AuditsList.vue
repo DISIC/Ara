@@ -9,7 +9,6 @@ import { captureWithPayloads, pluralize } from "../../../utils";
 import DeleteModal from "../../audit/DeleteModal.vue";
 import TransferModal from "../../audit/TransferModal.vue";
 import AuditRow from "./AuditRow.vue";
-import NoAudit from "./NoAudit.vue";
 
 defineOptions({
   inheritAttrs: false
@@ -181,7 +180,9 @@ async function setFocusAfterAction() {
       </div>
     </template>
 
-    <NoAudit v-else :label="noAuditLabel" />
+    <p v-else class="fr-text--medium fr-py-4w no-audit">
+      {{ noAuditLabel }}
+    </p>
   </div>
 
   <DeleteModal
@@ -218,5 +219,13 @@ async function setFocusAfterAction() {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+}
+
+.no-audit {
+  background: var(--background-alt-blue-france);
+  border: 1px solid var(--background-action-low-blue-cumulus);
+  text-align: center;
+  font-weight: 500;
+  font-style: italic;
 }
 </style>

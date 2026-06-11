@@ -94,9 +94,6 @@ describe("Account", () => {
         cy.getByLabel("Mot de passe").type(password);
         cy.contains("button", "Se connecter").click();
         cy.contains("h1", "Mes audits");
-        cy.contains(
-          `Vous trouverez ici tous les audits associés à votre adresse e-mail : ${username}`
-        );
       });
     });
 
