@@ -8,7 +8,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajout de la fonctionnalité de "Transfert d’audit" pour changer le propriétaire d’un audit ([#1484](https://github.com/DISIC/Ara/pull/1484))
+- Ajout de la fonctionnalité de "Transfert d’audit" pour changer le propriétaire d’un audit ([#1484](https://github.com/DISIC/Ara/pull/1484), [#1487](https://github.com/DISIC/Ara/pull/1487))
 
 ### 10/06/2026
 
