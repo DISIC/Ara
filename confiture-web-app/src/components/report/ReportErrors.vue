@@ -23,7 +23,7 @@ const defaultUserImpactFillters = [
   null
 ];
 
-const userImpactFilters = ref<Array<ReportUserImpact>>(
+const userImpactFilters = ref<Array<ReportUserImpact | null>>(
   defaultUserImpactFillters
 );
 

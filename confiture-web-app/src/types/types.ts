@@ -1,6 +1,13 @@
 import { RouterScrollBehavior } from "vue-router";
 
-import { components, paths } from "./confiture-api";
+import {
+  AuditListingItemDtoStatus,
+  components,
+  CreateDebugAuditDtoAuditType,
+  CriterionResultDtoStatus,
+  CriterionResultDtoUserImpact,
+  paths
+} from "./confiture-api";
 
 export interface AuditEnvironment {
   id: number;
@@ -24,20 +31,13 @@ export interface PageElements {
   frame?: boolean;
 }
 
-export enum AuditType {
-  FAST = "FAST",
-  COMPLEMENTARY = "COMPLEMENTARY",
-  FULL = "FULL"
-}
+type AuditType = CreateDebugAuditDtoAuditType;
+export { CreateDebugAuditDtoAuditType as AuditType };
 
-export type AuditTypeString = `${AuditType}`;
+export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
 
-export enum AuditStatus {
-  NOT_STARTED = "NOT_STARTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  PUBLISHABLE = "PUBLISHABLE"
-}
+// FIXME: missing PUBLISHABLE ?
+export { AuditListingItemDtoStatus as AuditStatus };
 
 /** An audit object as returned by the API. */
 export interface Audit {
@@ -102,22 +102,15 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   pages: Omit<AuditPage, "id" | "order">[];
 };
 
-export type UpdateAuditStatementRequestData = paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
+export type UpdateAuditStatementRequestData =
+  paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
 
-export type CreateDebugAuditRequestData = paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
+export type CreateDebugAuditRequestData =
+  paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
 
-export enum CriteriumResultStatus {
-  NOT_TESTED = "NOT_TESTED",
-  COMPLIANT = "COMPLIANT",
-  NOT_COMPLIANT = "NOT_COMPLIANT",
-  NOT_APPLICABLE = "NOT_APPLICABLE"
-}
+export { CriterionResultDtoStatus as CriteriumResultStatus };
 
-export enum CriterionResultUserImpact {
-  MINOR = "MINOR",
-  MAJOR = "MAJOR",
-  BLOCKING = "BLOCKING"
-}
+export { CriterionResultDtoUserImpact as CriterionResultUserImpact };
 
 /** File attached to audit notes. */
 export type NotesFile = components["schemas"]["NotesFileDto"];
@@ -132,11 +125,11 @@ export interface CriteriumResult {
   pageId: number;
 
   // DATA
-  status: CriteriumResultStatus;
+  status: CriterionResultDtoStatus;
 
   compliantComment: string | null;
   notCompliantComment: string | null;
-  userImpact: CriterionResultUserImpact | null;
+  userImpact: CriterionResultDtoUserImpact | null;
   notApplicableComment: string | null;
   exampleImages: ExampleImageFile[];
   quickWin: boolean;
