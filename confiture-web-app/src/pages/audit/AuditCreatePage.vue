@@ -93,7 +93,8 @@ const audit = ref<CreateAuditRequestData>({
   pages: [{ name: "", url: "" }],
   pageElements: { multimedia: true, table: true, form: true, frame: true },
   auditorEmail: accountStore.account?.email ?? "",
-  auditorName: accountStore.account?.name ?? ""
+  auditorName: accountStore.account?.name ?? "",
+  auditor: null
 });
 
 // Default pages per audit type

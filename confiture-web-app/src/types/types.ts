@@ -40,45 +40,7 @@ export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
 export { AuditListingItemDtoStatus as AuditStatus };
 
 /** An audit object as returned by the API. */
-export interface Audit {
-  id: number;
-  editUniqueId: string;
-  consultUniqueId: string;
-
-  creationDate: string | null;
-  publicationDate: string | null;
-  editionDate: string | null;
-
-  // Audit creation
-  auditType: AuditType;
-  procedureName: string;
-  transverseElementsPage: AuditPage;
-  pages: AuditPage[];
-  auditorEmail: string;
-  auditorName: string | null;
-
-  // A11y declaration edition
-  technologies: string[];
-  procedureUrl: string | null;
-  initiator: string | null;
-  auditorOrganisation: string;
-  tools: string[];
-  environments: AuditEnvironment[];
-  contactName: string | null;
-  contactEmail: string | null;
-  contactFormUrl: string | null;
-  notCompliantContent: string | null;
-  derogatedContent: string | null;
-  notInScopeContent: string | null;
-  notes: string | null;
-  notesFiles: NotesFile[];
-  statementPublicationDate: string | null;
-  statementEditionDate: string | null;
-
-  transverseElements: string[];
-
-  auditor: Auditor;
-}
+export type Audit = components["schemas"]["AuditDto"];
 
 interface Auditor {
   username: string;
@@ -91,9 +53,9 @@ export interface CreateAuditRequestData {
   procedureName: string;
   pages: Omit<AuditPage, "id" | "order">[];
   pageElements?: PageElements;
-  auditorEmail: string;
+  auditorEmail: string | null;
   auditorName: string | null;
-  auditor?: Auditor;
+  auditor: Auditor | null;
 }
 
 /** Creation data type plus step 2 fields. */
@@ -101,6 +63,7 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   environments: Omit<AuditEnvironment, "id">[];
   pages: Omit<AuditPage, "id" | "order">[];
 };
+// export type UpdateAuditRequestData = components["schemas"]["UpdateAuditDto"];
 
 export type UpdateAuditStatementRequestData =
   paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
