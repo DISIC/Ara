@@ -224,19 +224,25 @@ const pageTitle = computed(() => {
 
 const tabsTwo = computed((): TabItem[] => {
   return [
-    ...auditStore.currentAudit?.transverseElementsPage
-      ? [{
-          label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-          icon: "fr-icon-layout-3-line",
-          to: `/audits/${props.uniqueId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
-        }]
-      : [],
-    ...auditStore.currentAudit?.pages.map((p) => ({
+    ...(auditStore.currentAudit?.transverseElementsPage
+      ? [
+          {
+            label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
+            icon: "fr-icon-layout-3-line",
+            to: `/audits/${props.uniqueId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+          }
+        ]
+      : []),
+    ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id)
+        ? " (entièrement évalué)"
+        : undefined,
       to: `/audits/${props.uniqueId}/generation/${p.slug}`,
-      icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined
-    })) ?? []
+      icon: resultsStore.isPageCompleted(p.id)
+        ? "fr-icon-check-line"
+        : undefined
+    })) ?? [])
   ];
 });
 
@@ -266,30 +272,33 @@ function toggleFilters(doShow: boolean) {
 }
 
 // Note: here useWrappedFetch uses onMounted callback
-useWrappedFetch(async () => {
-  resultsStore.$reset();
+useWrappedFetch(
+  async () => {
+    resultsStore.$reset();
 
-  await Promise.all([
-    auditStore.fetchAuditIfNeeded(props.uniqueId),
-    resultsStore.fetchResults(props.uniqueId)
-  ]);
+    await Promise.all([
+      auditStore.fetchAuditIfNeeded(props.uniqueId)
+      // resultsStore.fetchResults(props.uniqueId)
+    ]);
 
-  // wait for rerender before getting ref
-  await nextTick();
-  stickyIndicator.value = auditGenerationHeaderRef.value?.stickyIndicator;
+    // wait for rerender before getting ref
+    await nextTick();
+    stickyIndicator.value = auditGenerationHeaderRef.value?.stickyIndicator;
 
-  // if the user navigated away during fetching, it’s possible the stickyIndicator is not in the DOM anymore
-  if (stickyIndicator.value) {
-    useResizeObserver(stickyIndicator.value, () => {
-      stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
-        stickyIndicator!.value.clientHeight
-      }px)`;
-    });
+    // if the user navigated away during fetching, it’s possible the stickyIndicator is not in the DOM anymore
+    if (stickyIndicator.value) {
+      useResizeObserver(stickyIndicator.value, () => {
+        stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
+          stickyIndicator!.value.clientHeight
+        }px)`;
+      });
+    }
+  },
+  (newParams, oldParams) => {
+    // Only fetch data if uniqueId changes
+    return newParams.uniqueId !== oldParams.uniqueId;
   }
-}, (newParams, oldParams) => {
-  // Only fetch data if uniqueId changes
-  return newParams.uniqueId !== oldParams.uniqueId;
-});
+);
 
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
@@ -310,7 +319,10 @@ filterStore.$reset();
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div v-if="auditStore.currentAudit && resultsStore.auditId === uniqueId" class="page-wrapper">
+  <div
+    v-if="auditStore.currentAudit && resultsStore.auditId === uniqueId"
+    class="page-wrapper"
+  >
     <PageMeta
       :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
@@ -398,7 +410,9 @@ filterStore.$reset();
 
 .fr-col-md-11 {
   flex-grow: 1 !important;
-  max-width: calc(100% - calc(var(--filters-column-width) + var(--gap))) !important; /* Sidebar width + gap */
+  max-width: calc(
+    100% - calc(var(--filters-column-width) + var(--gap))
+  ) !important; /* Sidebar width + gap */
   width: auto !important;
 }
 

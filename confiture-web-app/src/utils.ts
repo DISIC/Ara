@@ -58,7 +58,7 @@ const FORMATTED_USER_IMPACT = {
  * Format a criterion result user impact type string into French.
  */
 export function formatUserImpact(
-  userImpact: CriterionResultUserImpact | `${CriterionResultUserImpact}`
+  userImpact: keyof typeof CriterionResultUserImpact
 ): string {
   return FORMATTED_USER_IMPACT[userImpact];
 }
@@ -74,7 +74,7 @@ const FORMATTED_STATUS = {
  * Format a criterion result status type string into French.
  */
 export function formatStatus(
-  status: CriteriumResultStatus | `${CriteriumResultStatus}`
+  status: keyof typeof CriteriumResultStatus
 ): string {
   return FORMATTED_STATUS[status];
 }
@@ -245,8 +245,10 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  const containsImage = jsonString.includes("\"type\":\"image\"");
-  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
+  const containsImage = jsonString.includes('"type":"image"');
+  const containsText = jsonString
+    .matchAll(/"text":"(?<textContent>[^"]+)?"/g)
+    .some((it) => it.groups?.textContent.trim());
 
   return !containsImage && !containsText;
 }
@@ -267,13 +269,15 @@ export function scrollToHash(hash: string) {
     const initalTabIndex = hashEl.getAttribute("tabindex");
     hashEl.setAttribute("tabindex", "-1");
     hashEl.focus();
-    initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
+    initalTabIndex
+      ? hashEl.setAttribute("tabindex", initalTabIndex)
+      : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
 }
 
 export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useFetch } from "@vueuse/core";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
+import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { TabSlug } from "../../enums";
-import { useAuditStore } from "../../store";
-import { GetPageWithResultsDto } from "../../types";
-import { showErrorPage } from "../../utils";
+import { useAuditStore, useResultsStore } from "../../store";
 
 const route = useRoute();
-
 const auditStore = useAuditStore();
+const resultsStore = useResultsStore();
 
 const page = computed(() => {
   const pageSlug = route.params.tabSlug as string;
@@ -21,19 +19,19 @@ const page = computed(() => {
     return auditStore.entities[auditUniqueId].transverseElementsPage;
   }
 
-  return auditStore.entities[auditUniqueId as string]
-    ?.pages.find(p => p.slug === pageSlug);
+  return auditStore.entities[auditUniqueId as string]?.pages.find(
+    (p) => p.slug === pageSlug
+  );
 });
 
-// TODO: fetch using some store methods instead of useFetch (although it’s pretty neat)
-const pageApiUrl = computed(() => `/api/audits/${route.params.uniqueId}/pages/${route.params.tabSlug}`);
-useFetch<GetPageWithResultsDto>(pageApiUrl, {
-  refetch: true,
-  onFetchError(ctx) {
-    showErrorPage(ctx.response?.status);
-    return ctx;
-  }
-});
+useWrappedFetch(
+  () =>
+    resultsStore.fetchPageResults(
+      route.params.uniqueId as string,
+      route.params.tabSlug as string
+    ),
+  true
+);
 </script>
 
 <template>

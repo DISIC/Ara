@@ -4,11 +4,13 @@ import { defineStore } from "pinia";
 import { api } from "../api";
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
+  ApiCriteriumResult,
   AuditType,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
-  ExampleImageFile
+  ExampleImageFile,
+  GetPageWithResultsDto
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -26,7 +28,7 @@ interface ResultsStoreState {
   data: {
     [key: PageId]: {
       [key: TopicNumber]: {
-        [key: CriteriumNumber]: CriteriumResult;
+        [key: CriteriumNumber]: ApiCriteriumResult;
       };
     };
   } | null;
@@ -237,6 +239,28 @@ export const useResultsStore = defineStore("results", {
       this.data = data;
     },
 
+    async fetchPageResults(auditId: string, pageSlug: string) {
+      const response = (await ky
+        .get(`/api/audits/${auditId}/pages/${pageSlug}`, {})
+        .json()) as GetPageWithResultsDto;
+
+      console.log(response);
+
+      const data: ResultsStoreState["data"] = {};
+
+      response.results.forEach((r) => {
+        if (!(r.pageId in data)) {
+          data[r.pageId] = {};
+        }
+
+        if (!(r.topic in data[r.pageId])) {
+          data[r.pageId][r.topic] = {};
+        }
+
+        data[r.pageId][r.topic][r.criterium] = r;
+      });
+    },
+
     async updateResults(uniqueId: string, updates: CriteriumResult[]) {
       if (!this.data) {
         return;
@@ -309,15 +333,20 @@ export const useResultsStore = defineStore("results", {
 
       // update linked criteria if any
       const updatedCritResult = updates[0];
-      const currentCritStatus = this.getCriteriumResult(updatedCritResult.pageId, updatedCritResult.topic, updatedCritResult.criterium)?.status;
-      const topicAndCriterium: string =
-        `${updatedCritResult.topic}.${updatedCritResult.criterium}`;
+      const currentCritStatus = this.getCriteriumResult(
+        updatedCritResult.pageId,
+        updatedCritResult.topic,
+        updatedCritResult.criterium
+      )?.status;
+      const topicAndCriterium: string = `${updatedCritResult.topic}.${updatedCritResult.criterium}`;
 
       if (
-        !(has(LINKED_CRITERIA, topicAndCriterium) &&
-        updates.length === 1 &&
-        // checks if result status has been updated
-        updatedCritResult.status !== currentCritStatus)
+        !(
+          has(LINKED_CRITERIA, topicAndCriterium) &&
+          updates.length === 1 &&
+          // checks if result status has been updated
+          updatedCritResult.status !== currentCritStatus
+        )
       ) {
         // nothing to do
         return;
@@ -329,7 +358,7 @@ export const useResultsStore = defineStore("results", {
 
       if (updatedCritResult.status === CriteriumResultStatus.NOT_APPLICABLE) {
         // save previous status of linked criteria
-        linkedCriteria.forEach(c => {
+        linkedCriteria.forEach((c) => {
           const [topic, criterium] = c.split(".").map(Number);
 
           setWith(
@@ -342,26 +371,44 @@ export const useResultsStore = defineStore("results", {
 
         // apply status to linked criteria
         if (auditStore.currentAudit) {
-          linkedUpdates = linkedCriteria.filter(c => this.isInCriteriaList(c, auditStore.currentAudit!.auditType)).map((update) => {
-            const [topic, criterium] = update.split(".").map(Number);
+          linkedUpdates = linkedCriteria
+            .filter((c) =>
+              this.isInCriteriaList(c, auditStore.currentAudit!.auditType)
+            )
+            .map((update) => {
+              const [topic, criterium] = update.split(".").map(Number);
 
-            return {
-              ...this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)!,
-              status: CriteriumResultStatus.NOT_APPLICABLE,
-              topic,
-              criterium
-            };
-          });
+              return {
+                ...this.getCriteriumResult(
+                  updatedCritResult.pageId,
+                  topic,
+                  criterium
+                )!,
+                status: CriteriumResultStatus.NOT_APPLICABLE,
+                topic,
+                criterium
+              };
+            });
         }
       } else if (currentCritStatus === CriteriumResultStatus.NOT_APPLICABLE) {
         // rollback old status on linked criteria
         linkedCriteria.forEach((c) => {
           const [topic, criterium] = c.split(".").map(Number);
 
-          const u = this.previousLinkedCriteria[updatedCritResult.pageId]?.[topic]?.[criterium];
-          const currentStatus = this.getCriteriumResult(updatedCritResult.pageId, topic, criterium)?.status;
+          const u =
+            this.previousLinkedCriteria[updatedCritResult.pageId]?.[topic]?.[
+              criterium
+            ];
+          const currentStatus = this.getCriteriumResult(
+            updatedCritResult.pageId,
+            topic,
+            criterium
+          )?.status;
 
-          const addUpdate = u && (u.status === currentStatus || currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
+          const addUpdate =
+            u &&
+            (u.status === currentStatus ||
+              currentStatus === CriteriumResultStatus.NOT_APPLICABLE);
 
           if (addUpdate) {
             linkedUpdates.push(u);
@@ -519,14 +566,20 @@ export const useResultsStore = defineStore("results", {
      */
     isInCriteriaList(topicAndCriterium: string, auditType: AuditType): boolean {
       const [topic, criterium] = topicAndCriterium.split(".").map(Number);
-      return CRITERIA_BY_AUDIT_TYPE[auditType].some(cr => cr.topic === topic && cr.criterium === criterium);
+      return CRITERIA_BY_AUDIT_TYPE[auditType].some(
+        (cr) => cr.topic === topic && cr.criterium === criterium
+      );
     },
 
     /**
      * @returns true if all page criteria are ≠ NOT_TESTED
      */
     isPageCompleted(pageId: number): boolean {
-      return this.allResults?.filter(r => r.pageId === pageId).every(r => r.status !== CriteriumResultStatus.NOT_TESTED) ?? false;
+      return (
+        this.allResults
+          ?.filter((r) => r.pageId === pageId)
+          .every((r) => r.status !== CriteriumResultStatus.NOT_TESTED) ?? false
+      );
     },
 
     /**
