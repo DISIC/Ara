@@ -53,7 +53,7 @@ export const useAccountStore = defineStore("account", {
       };
     },
 
-    isOwner(): boolean {
+    isCurrentAuditOwner(): boolean {
       const auditStore = useAuditStore();
       return this.account?.email === auditStore.currentAudit?.auditor.username;
     }
