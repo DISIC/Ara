@@ -1005,4 +1005,9 @@ describe("Audit", () => {
       cy.get(".audit-progress-label").contains("Progression de l’audit");
     });
   });
+
+  it("User can toggle audit privacy");
+  it("User can copy audit link in share modal");
+  it("User cant see audit if not connected");
+  it("User cant see audit if connected but not owner");
 });
