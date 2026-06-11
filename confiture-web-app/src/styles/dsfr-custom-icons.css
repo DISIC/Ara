@@ -27,3 +27,17 @@
   -webkit-mask-image: url("../assets/dsfr-custom-icons/share-forward-line.svg");
   mask-image: url("../assets/dsfr-custom-icons/share-forward-line.svg");
 }
+
+/* https://remixicon.com/icon/more-2-line */
+.fr-icon-more-2-line::before,
+.fr-icon-more-2-line::after {
+  -webkit-mask-image: url("./dsfr-custom-icons/more-2-line.svg");
+  mask-image: url("./dsfr-custom-icons/more-2-line.svg");
+}
+
+/* https://remixicon.com/icon/file-copy-2-line */
+.fr-icon-file-copy-2-line::before,
+.fr-icon-file-copy-2-line::after {
+  -webkit-mask-image: url("./dsfr-custom-icons/file-copy-2-line.svg");
+  mask-image: url("./dsfr-custom-icons/file-copy-2-line.svg");
+}

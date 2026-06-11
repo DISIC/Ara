@@ -10,6 +10,7 @@ import router from "./router";
 
 import { setupSentry } from "./sentry";
 import "./styles/main.css";
+import "./styles/dsfr-custom-icons.css";
 import "@gouvfr/dsfr/dist/dsfr.min.css";
 import "@gouvfr/dsfr/dist/dsfr.module.min.js";
 import "@gouvfr/dsfr/dist/utility/icons/icons.css";
