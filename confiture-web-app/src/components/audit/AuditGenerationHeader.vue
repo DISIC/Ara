@@ -378,7 +378,7 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
-                  :disabled="!accountStore.isOwner"
+                  :disabled="!accountStore.isCurrentAuditOwner"
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer
@@ -386,7 +386,7 @@ onMounted(() => {
                   <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
-                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut dupliquer cet audit
                   </span>
                 </button>
@@ -409,7 +409,7 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
-                  :disabled="!accountStore.isOwner"
+                  :disabled="!accountStore.isCurrentAuditOwner"
                   @click="shareModal?.show()"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
@@ -420,7 +420,7 @@ onMounted(() => {
                   <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
-                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut partager cet audit
                   </span>
                 </button>
@@ -444,12 +444,12 @@ onMounted(() => {
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
                   :disabled="
                     auditStore.currentAudit?.auditor.isVerified
-                      && !accountStore.isOwner
+                      && !accountStore.isCurrentAuditOwner
                   "
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
-                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !accountStore.isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>
