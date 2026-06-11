@@ -118,22 +118,9 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
-export interface CriteriumResult {
-  // ID
-  topic: number;
-  criterium: number;
-  pageId: number;
-
-  // DATA
-  status: CriterionResultDtoStatus;
-
-  compliantComment: string | null;
-  notCompliantComment: string | null;
-  userImpact: CriterionResultDtoUserImpact | null;
-  notApplicableComment: string | null;
-  exampleImages: ExampleImageFile[];
-  quickWin: boolean;
-}
+// a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
+// https://github.com/openapi-ts/openapi-typescript/issues/1872#issuecomment-2399197613
+export type CriteriumResult = Omit<components["schemas"]["CriterionResultDto"], "userImpact"> & { userImpact: CriterionResultDtoUserImpact | null };
 
 export enum StoreName {
   AUDIT_STORE = "AUDIT_STORE",
