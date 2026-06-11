@@ -41,42 +41,42 @@ export class UpdateAuditDto extends BaseAuditDto {
    */
   @IsString()
   @IsOptional()
-  procedureUrl?: string;
+  procedureUrl: string | null;
 
   /**
    * @example "Ministry of Internet"
    */
   @IsString()
   @IsOptional()
-  initiator?: string;
+  initiator: string | null;
 
   /**
    * @example "WEB AUDIT SARL"
    */
   @IsString()
   @IsOptional()
-  auditorOrganisation?: string;
+  auditorOrganisation: string | null;
 
   /**
    * @example "John Referent"
    */
   @IsString()
   @IsOptional()
-  contactName?: string;
+  contactName: string | null;
 
   /**
    * @example "accessibility@procedure.government.com"
    */
   @IsEmail()
   @IsOptional()
-  contactEmail?: string;
+  contactEmail: string | null;
 
   /**
    * @example "https://procedure.government.com/contact-a11y"
    */
   @IsString()
   @IsOptional()
-  contactFormUrl?: string;
+  contactFormUrl: string | null;
 
   /**
    * @example ["Firefox devtools", "Axe"]
@@ -84,13 +84,13 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  tools?: string[];
+  tools: string[] | null;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdateAuditEnvironment)
   @IsOptional()
-  environments?: UpdateAuditEnvironment[];
+  environments: UpdateAuditEnvironment[] | null;
 
   /**
    * @example ["HTML", "CSS"]
@@ -98,23 +98,23 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  technologies?: string[];
+  technologies: string[] | null;
 
   @IsString()
   @IsOptional()
-  notCompliantContent?: string;
+  notCompliantContent: string | null;
 
   @IsString()
   @IsOptional()
-  derogatedContent?: string;
+  derogatedContent: string | null;
 
   @IsString()
   @IsOptional()
-  notInScopeContent?: string;
+  notInScopeContent: string | null;
 
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes: string | null;
 
   /**
    * @example ["En-tête", "pied de page", "bandeau cookies"]
@@ -122,5 +122,5 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  transverseElements?: string[];
+  transverseElements: string[] | null;
 }

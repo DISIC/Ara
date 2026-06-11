@@ -18,7 +18,7 @@ export class CreateAuditPage {
    */
   @IsNumber()
   @IsOptional()
-  id?: number;
+  id: number | null;
 
   /**
    * @example "Page de contact"
@@ -62,7 +62,6 @@ export class BaseAuditDto {
    * @example "john@audit.com"
    */
   @IsEmail()
-  @IsOptional()
   auditorEmail: string;
 }
 

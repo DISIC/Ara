@@ -132,8 +132,8 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
     auditorOrganisation: auditorOrganisation.value,
     procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value) || undefined,
-    contactFormUrl: contactFormUrl.value.trim() || undefined,
+    contactEmail: formatEmail(contactEmail.value) || null,
+    contactFormUrl: contactFormUrl.value.trim() || null,
     contactName: contactName.value,
 
     technologies: technologies.value,
