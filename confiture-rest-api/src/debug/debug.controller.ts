@@ -35,7 +35,7 @@ export class DebugController {
     const reportUniqueId = nanoid();
 
     // Only allow admins to use route on production
-    const adminUsers = this.config.get("DEVELOPER_ACCOUNTS").split(",");
+    const adminUsers = this.config.get("ADMIN_ACCOUNTS").split(",");
     const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && (!user || !adminUsers.includes(user.email));
 
     if (userIsNotAuthorized) {
