@@ -73,7 +73,7 @@ defineExpose({ buttonRef, closeOptions });
     <button
       ref="buttonRef"
       class="fr-btn fr-btn--tertiary-no-outline"
-      :class="[iconOnly ? 'fr-icon-more-line' : 'fr-icon-arrow-down-s-line fr-btn--icon-right']"
+      :class="[iconOnly ? 'fr-icon-more-2-line' : 'fr-icon-arrow-down-s-line fr-btn--icon-right']"
       aria-haspopup="true"
       :aria-expanded="showContent"
       :aria-controls="`dropdown-${uniqueId}`"
