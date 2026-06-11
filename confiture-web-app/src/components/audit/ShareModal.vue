@@ -46,10 +46,9 @@ const notify = useNotifications();
 
 function toggleAuditPrivacy() {
   auditStore.toggleAuditPrivacy(props.editUniqueId).catch(() => {
-    // TODO: title wording
     notify(
       "error",
-      "Échec du partage de l'audit",
+      `L’audit n’a pas pu être rendu ${auditIsPublic.value ? "privé" : "public"}`,
       DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
     );
 
@@ -105,7 +104,7 @@ function toggleAuditPrivacy() {
                 <div class="fr-btns-group fr-btns-group--icon-left">
                   <button
                     class="fr-btn fr-btn--secondary fr-btn--icon-left fr-mb-0"
-                    :class="showCopySuccess ? 'fr-icon-check-line copy-link-button' : 'fr-icon-link'"
+                    :class="showCopySuccess ? 'fr-icon-check-line copy-link-button' : 'fr-icon-file-copy-2-line'"
                     type="button"
                     @click="copyLink"
                   >
