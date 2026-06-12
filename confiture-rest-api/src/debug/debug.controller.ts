@@ -1,4 +1,5 @@
 import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
 import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
@@ -17,7 +18,8 @@ import { CreateDebugAuditDto } from "./create-debug-audit.dto";
 @ApiTags("Debug")
 export class DebugController {
   constructor(
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService
   ) {}
 
   @Post("create-audit")
@@ -33,8 +35,8 @@ export class DebugController {
     const reportUniqueId = nanoid();
 
     // Only allow admins to use route on production
-    const adminUsers = process.env.DATABASE_ADMINS.split(",");
-    const userIsNotAuthorized = process.env.NODE_ENV === "production" && (!user || !adminUsers.includes(user.email));
+    const adminUsers = this.config.get("DATABASE_SEEDS").split(",");
+    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && (!user || !adminUsers.includes(user.email));
 
     if (userIsNotAuthorized) {
       throw new UnauthorizedException();
