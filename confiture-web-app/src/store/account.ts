@@ -4,6 +4,7 @@ import { api } from "../api";
 
 import { AuthenticationJwtPayload, AccountDeletionResponse, UpdateProfileRequestData } from "../types";
 import { useAuditStore } from "./audit";
+import { useResultsStore } from "./results";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -98,6 +99,8 @@ export const useAccountStore = defineStore("account", {
 
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      useAuditStore().$reset();
+      useResultsStore().$reset();
       this.$reset();
     },
 
