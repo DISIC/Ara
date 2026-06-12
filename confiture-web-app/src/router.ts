@@ -6,7 +6,6 @@ import {
 } from "vue-router";
 
 import AraTabsPanel from "./components/audit/AraTabsPanel.vue";
-import { useCanAccessToAudit } from "./composables/useCanAccessToAudit";
 import { FirstTab } from "./enums";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
@@ -21,7 +20,6 @@ import AuditCreatePage from "./pages/audit/AuditCreatePage.vue";
 import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
-import AuditRestrictedAccessPage from "./pages/audit/AuditRestrictedAccessPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
 import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
@@ -214,14 +212,6 @@ const router = createRouter({
     {
       path: "/audits/:uniqueId/generation",
       name: "audit-generation",
-      beforeEnter: async (to: RouteLocationNormalized) => {
-        const uniqueId: string = to.params.uniqueId as string;
-        const { canAccess, redirectTo } = await useCanAccessToAudit(uniqueId);
-
-        if (!canAccess && redirectTo) {
-          return redirectTo;
-        }
-      },
       redirect: (to: any) => {
         return {
           name: "audit-generation-full",
@@ -251,14 +241,6 @@ const router = createRouter({
       component: AuditDeclarationPage,
       meta: {
         name: "Mon audit"
-      }
-    },
-    {
-      path: "/audits/:uniqueId/acces-restreint",
-      name: "acces-restreint",
-      component: AuditRestrictedAccessPage,
-      meta: {
-        name: "Accès restreint"
       }
     },
     // Overview

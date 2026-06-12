@@ -10,6 +10,8 @@ const statusCode = (history.state.errorStatus ?? 404) as number;
 
 const errorTitle =
   {
+    401: "Accès restreint",
+    403: "Accès restreint",
     404: "Page non trouvée",
     408: "La connexion a expiré",
     410: "Audit supprimé",
@@ -17,8 +19,10 @@ const errorTitle =
     503: "Service indisponible"
   }[statusCode] ?? "Erreur inconnue";
 
-const notCompliantComment =
+const errorDescription =
   {
+    401: "L’audit est privé. Pour accéder à l’audit, contactez le propriétaire.",
+    403: "L’audit est privé. Pour accéder à l’audit, contactez le propriétaire.",
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
     410: "Désolé, l’audit que vous cherchez a été supprimé.",
@@ -66,7 +70,7 @@ const route = useRoute();
       <h1>{{ errorTitle }}</h1>
       <p class="fr-text--sm">Erreur {{ statusCode }}</p>
       <p class="fr-text--xl fr-mb-5w">
-        {{ notCompliantComment }}
+        {{ errorDescription }}
       </p>
       <div
         v-if="statusCode !== 410"
