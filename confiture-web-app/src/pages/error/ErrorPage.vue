@@ -3,6 +3,7 @@ import { marked } from "marked";
 import { useRoute } from "vue-router";
 
 import AuditNotFoundImage from "../../assets/images/audit-not-found.svg";
+import AuditRestrictedAccessImage from "../../assets/images/restricted-access.svg";
 import GenericErrorImage from "../../assets/images/server-error.svg";
 import { history } from "../../router";
 
@@ -61,6 +62,12 @@ Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivant
 Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
   `;
 
+const errorImage = {
+  401: AuditRestrictedAccessImage,
+  403: AuditRestrictedAccessImage,
+  410: AuditNotFoundImage
+}[statusCode] ?? GenericErrorImage;
+
 const route = useRoute();
 </script>
 
@@ -95,10 +102,7 @@ const route = useRoute();
       </div>
     </div>
     <div class="fr-col-12 fr-col-md-3 fr-col-offset-md-1">
-      <img
-        :src="statusCode === 410 ? AuditNotFoundImage : GenericErrorImage"
-        alt=""
-      />
+      <img :src="errorImage" alt="" />
     </div>
   </div>
 </template>
