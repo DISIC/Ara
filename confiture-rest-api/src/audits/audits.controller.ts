@@ -43,6 +43,7 @@ import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
+import { UpdateAuditPrivacyDto } from "./dto/requests/update-audit-privacy.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
@@ -74,7 +75,8 @@ export class AuditsController {
         console.error(err);
       });
 
-      this.auditService.toggleAuditPrivacy(audit.editUniqueId);
+      // FIXME:
+      // this.auditService.toggleAuditPrivacy(audit.editUniqueId);
     }
 
     return audit;
@@ -274,9 +276,10 @@ export class AuditsController {
     description: "The audit privacy has been successfully updated"
   })
   async toggleAuditPrivacy(
-    @AuditId() uniqueId: string
+    @AuditId() uniqueId: string,
+    @Body() body: UpdateAuditPrivacyDto
   ): Promise<void> {
-    return this.auditService.toggleAuditPrivacy(uniqueId);
+    return this.auditService.toggleAuditPrivacy(uniqueId, body.isPublic);
   }
 
   /** Delete an audit from the database. */
