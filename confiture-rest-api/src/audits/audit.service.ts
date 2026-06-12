@@ -211,6 +211,23 @@ export class AuditService {
     return !!audit;
   }
 
+  /**
+   * TODO: add this to all routes
+   * Check audit privacy and ownership if user is connected
+   *
+   * @param editUniqueId id of the audit to check ownership of
+   * @param username email adress of user
+   * @returns true if audit is public or if user is owner
+   */
+  async checkAuditOwnership(editUniqueId: string, username?: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { isPublic: true, auditor: { select: { username: true } } }
+    });
+
+    return audit.isPublic || (username && audit.auditor.username === username);
+  }
+
   /** Find and return an audit in the format that the API would return */
   findAudit(uniqueId: string): Promise<AuditDto> {
     return this.prisma.audit.findFirst({

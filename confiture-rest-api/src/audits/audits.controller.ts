@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -95,7 +96,12 @@ export class AuditsController {
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
-  getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
+  async getAudit(@AuditId() uniqueId: string, @User() user?: AuthenticationJwtPayload): Promise<AuditDto> {
+    const canAccess = await this.auditService.checkAuditOwnership(uniqueId, user?.email);
+    if (!canAccess) {
+      if (!user) throw new UnauthorizedException();
+      else throw new ForbiddenException();
+    }
     return this.auditService.findAudit(uniqueId);
   }
 
