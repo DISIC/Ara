@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import ky from "ky";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
+import { api } from "../api";
 import emojiMedium from "../assets/images/emoji-medium.svg";
 import emojiNo from "../assets/images/emoji-no.svg";
 import emojiYes from "../assets/images/emoji-yes.svg";
@@ -78,7 +78,7 @@ function submitFeedback() {
     })
   };
 
-  ky.post("/api/feedback", {
+  api.post("/api/feedback", {
     json: body
   })
     .then(() => {
