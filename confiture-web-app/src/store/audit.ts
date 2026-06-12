@@ -195,7 +195,7 @@ export const useAuditStore = defineStore("audit", {
 
     async toggleAuditPrivacy(uniqueId: string) {
       const currentIsPublicValue = this.currentAudit?.isPublic;
-      await ky
+      await api
         .patch(`/api/audits/${uniqueId}/privacy`, {
           json: {
             isPublic: !currentIsPublicValue

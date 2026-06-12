@@ -8,6 +8,7 @@ import {
   UpdateProfileRequestData
 } from "../types/account";
 import { useAuditStore } from "./audit";
+import { useResultsStore } from "./results";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -102,6 +103,8 @@ export const useAccountStore = defineStore("account", {
 
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      useAuditStore().$reset();
+      useResultsStore().$reset();
       this.$reset();
     },
 
