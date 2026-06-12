@@ -1087,20 +1087,11 @@ export class AuditService {
     }
   }
 
-  async toggleAuditPrivacy(editUniqueId: string): Promise<void> {
-    try {
-      const audit = await this.prisma.audit.findUnique({ where: { editUniqueId }, select: { isPublic: true } });
-
-      await this.prisma.audit.update({ where: { editUniqueId }, data: { isPublic: !audit.isPublic } });
-    } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e?.code === "P2025"
-      ) {
-        return;
-      }
-      throw e;
-    }
+  async toggleAuditPrivacy(editUniqueId: string, isPublic: boolean): Promise<void> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: { isPublic }
+    });
   }
 
   /**
