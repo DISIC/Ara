@@ -1,7 +1,7 @@
-import ky from "ky";
 import { sortBy } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { api } from "../api";
 import { topicAccordionsStatus } from "../composables/useTopicAccordionsStatus";
 import router from "../router";
 import {
@@ -12,7 +12,6 @@ import {
   UpdateAuditStatementRequestData
 } from "../types";
 import { AccountAudit } from "../types/account";
-import { useAccountStore } from "./account";
 
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastNotesRequestTimestamp:${auditId}`;
@@ -55,13 +54,9 @@ export const useAuditStore = defineStore("audit", {
   }),
   actions: {
     async createAudit(data: CreateAuditRequestData): Promise<Audit> {
-      const accountStore = useAccountStore();
-      const response = (await ky
+      const response = (await api
         .post("/api/audits", {
-          json: data,
-          headers: accountStore.authToken
-            ? { Authorization: `Bearer ${accountStore.authToken}` }
-            : undefined
+          json: data
         })
         .json()) as Audit;
       return response;
@@ -75,7 +70,7 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async fetchAudit(editUniqueId: string) {
-      const data = (await ky
+      const data = (await api
         .get(`/api/audits/${editUniqueId}`)
         .json()) as Audit;
 
@@ -93,7 +88,7 @@ export const useAuditStore = defineStore("audit", {
       uniqueId: string,
       data: UpdateAuditRequestData
     ): Promise<Audit> {
-      const response = (await ky
+      const response = (await api
         .put(`/api/audits/${uniqueId}`, {
           json: data
         })
@@ -106,7 +101,7 @@ export const useAuditStore = defineStore("audit", {
       editUniqueId: string,
       data: UpdateAuditStatementRequestData
     ): Promise<Audit> {
-      const response = (await ky
+      const response = (await api
         .put(`/api/audits/${editUniqueId}/statement`, {
           json: data
         })
@@ -124,7 +119,7 @@ export const useAuditStore = defineStore("audit", {
 
       this.increaseCurrentRequestCount();
 
-      await ky
+      await api
         .patch(`/api/audits/${uniqueId}`, {
           json: data
         })
@@ -144,7 +139,7 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async deleteAudit(uniqueId: string): Promise<void> {
-      await ky.delete(`/api/audits/${uniqueId}`);
+      await api.delete(`/api/audits/${uniqueId}`);
       delete this.entities[uniqueId];
       this.listing = this.listing.filter(
         (audit) => audit.editUniqueId !== uniqueId
@@ -159,7 +154,7 @@ export const useAuditStore = defineStore("audit", {
       this.increaseCurrentRequestCount();
 
       try {
-        const notesFile: NotesFile = await ky.post(`/api/audits/${uniqueId}/notes/files`, {
+        const notesFile: NotesFile = await api.post(`/api/audits/${uniqueId}/notes/files`, {
           body: formData
         }).json();
 
@@ -175,7 +170,7 @@ export const useAuditStore = defineStore("audit", {
 
     async deleteAuditFile(uniqueId: string, fileId: number) {
       this.increaseCurrentRequestCount();
-      await ky
+      await api
         .delete(`/api/audits/${uniqueId}/notes/files/${fileId}`)
         .then(() => {
           this.updateCurrentAuditEditionDate();
@@ -191,7 +186,7 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async publishAudit(uniqueId: string): Promise<Audit> {
-      const response = (await ky
+      const response = (await api
         .put(`/api/audits/${uniqueId}/publish`)
         .json()) as Audit;
       this.setAudit(uniqueId, response);
@@ -203,16 +198,11 @@ export const useAuditStore = defineStore("audit", {
      * @returns A promise to the unique id of the copy
      */
     async duplicateAudit(uniqueId: string, copyName: string): Promise<string> {
-      const accountStore = useAccountStore();
-
-      const newAudit = (await ky
+      const newAudit = (await api
         .post(`/api/audits/${uniqueId}/duplicate`, {
           json: {
             procedureName: copyName
           },
-          headers: accountStore.authToken
-            ? { Authorization: `Bearer ${accountStore.authToken}` }
-            : undefined,
           // Duplicating an audit can be a pretty long process
           timeout: false
         })
@@ -248,25 +238,17 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async fetchAudits() {
-      const accountStore = useAccountStore();
-      const audits = (await ky
-        .get("/api/audits", {
-          headers: { Authorization: `Bearer ${accountStore.authToken}` }
-        })
+      const audits = (await api
+        .get("/api/audits")
         .json()) as AccountAudit[];
 
       this.listing = audits;
     },
 
     async transferAudit(editUniqueId: string, newEmail: string) {
-      const accountStore = useAccountStore();
-
-      await ky.put(`/api/audits/${editUniqueId}/transfer`, {
-        ...(accountStore.account ? { headers: { Authorization: `Bearer ${accountStore.authToken}` } } : {}),
-        json: {
-          newEmail
-        }
-      });
+      await api.put(`/api/audits/${editUniqueId}/transfer`, { json: {
+        newEmail
+      } });
 
       delete this.entities[editUniqueId];
       this.listing = this.listing.filter(

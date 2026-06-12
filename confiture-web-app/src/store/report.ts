@@ -1,5 +1,5 @@
-import ky from "ky";
 import { defineStore } from "pinia";
+import { api } from "../api";
 
 import { AuditReport } from "../types";
 
@@ -14,7 +14,7 @@ export const useReportStore = defineStore("report", {
   actions: {
     async fetchReport(consultUniqueId: string) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const data = (await ky
+      const data = (await api
         .get(`/api/reports/${consultUniqueId}`, {
           // large audits can take a while to be fetched on slow connection
           timeout: 15_000

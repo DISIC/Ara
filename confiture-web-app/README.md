@@ -72,7 +72,7 @@ import { paths } from "./confiture-api";
 export type GetAuditReportResponseBody =
   paths["/reports/{consultUniqueId}"]["get"]["responses"]["200"]["content"]["application/json"];
 
-const data = (await ky
+const data = (await api
   .get("/reports/{consultUniqueId}")
   .json()) as GetAuditReportResponseBody;
 ```
