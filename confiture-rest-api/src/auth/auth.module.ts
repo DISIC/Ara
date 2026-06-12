@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { AuditsModule } from "../audits/audits.module";
@@ -28,7 +28,7 @@ import { UpdateEmailController } from "./update-email.controller";
       })
     }),
     FeedbackModule,
-    AuditsModule
+    forwardRef(() => AuditsModule)
   ],
   exports: [AuthService]
 })

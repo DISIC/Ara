@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
+
+import { AuthService } from "../auth/auth.service";
 import {
   Audit,
   AuditType,
@@ -10,7 +12,6 @@ import {
   CriterionResultUserImpact,
   Prisma
 } from "../generated/prisma/client";
-
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
 import { slugify } from "../utils";
@@ -76,7 +77,8 @@ const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; ord
 export class AuditService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly fileStorageService: FileStorageService
+    private readonly fileStorageService: FileStorageService,
+    private readonly authService: AuthService
   ) { }
 
   async createAudit(data: CreateAuditDto): Promise<AuditDto> {
@@ -403,6 +405,12 @@ export class AuditService {
         }
       }
 
+      // Reset org when changing email from unverified to verified user.
+      const shouldResetOrganisation =
+        data.auditorEmail !== previousAudit.auditorEmail
+        && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
+        && await this.authService.isAccountVerified(data.auditorEmail);
+
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: {
@@ -418,7 +426,7 @@ export class AuditService {
             }
           },
           auditorName: data.auditorName,
-          auditorOrganisation: data.auditorOrganisation,
+          auditorOrganisation: shouldResetOrganisation ? null : data.auditorOrganisation,
 
           contactName: data.contactName,
           contactEmail: data.contactEmail,
@@ -1902,8 +1910,7 @@ export class AuditService {
         username: newEmail
       },
       select: {
-        name: true,
-        orgName: true
+        name: true
       }
     });
 
@@ -1911,7 +1918,7 @@ export class AuditService {
     const updatedAudit = await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: {
-        auditorOrganisation: user?.orgName ?? null,
+        auditorOrganisation: null,
         auditorName: user?.name ?? null,
         auditor: {
           connectOrCreate: {
