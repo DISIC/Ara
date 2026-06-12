@@ -83,7 +83,7 @@ export class AuditService {
     private readonly authService: AuthService
   ) { }
 
-  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto, isPublic: boolean): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -133,7 +133,9 @@ export class AuditService {
             auditConsultUniqueId: consultUniqueId,
             auditEditUniqueId: editUniqueId
           }
-        }
+        },
+
+        isPublic
       },
       select: AUDIT_PRISMA_SELECT
     });
