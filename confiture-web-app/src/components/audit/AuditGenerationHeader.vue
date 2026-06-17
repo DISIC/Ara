@@ -110,7 +110,7 @@ async function transferAudit(newEmail: string) {
 
     transferModalRef.value?.hide();
 
-    notify("success", `Audit « ${props.auditName} » transféré`, `Un lien d’accès a été envoyé à : ${newEmail}`);
+    notify("success", `Audit « ${props.auditName} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"
