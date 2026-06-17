@@ -46,6 +46,8 @@ const validationRules = [
 
 function handleSubmit() {
   emit("confirm", email.value);
+  email.value = "";
+  confirmEmail.value = "";
 }
 
 function handleClose() {
