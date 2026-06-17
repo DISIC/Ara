@@ -510,7 +510,7 @@ function confirmLeave() {
       <p id="notCompliantContent" class="fr-label fr-mb-1w">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
-          Listez les contenus et les fonctionnalités qui posent des problèmes d’accessibilité, en utilisant un langage facile à comprendre.<br />Il n’est pas recommandé d’indiquer les numéros ou les intitulés des critères.<br />Indiquez les alternatives si disponibles.
+          Listez les contenus et les fonctionnalités qui posent des problèmes d’accessibilité dans un langage facile à comprendre.<br />Évitez de mentionner uniquement des numéros ou des intitulés de critères.<br />Indiquez les alternatives si disponibles.
         </span>
       </p>
 
