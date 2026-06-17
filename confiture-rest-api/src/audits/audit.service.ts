@@ -1396,7 +1396,7 @@ export class AuditService {
     const expectedCount =
       CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
 
-    return testedCount == expectedCount;
+    return testedCount === expectedCount;
   }
 
   async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
