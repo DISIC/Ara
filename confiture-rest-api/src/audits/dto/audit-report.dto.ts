@@ -22,6 +22,9 @@ export class AuditReportDto {
   statementPublicationDate?: Date;
   statementEditionDate?: Date;
 
+  schemaPluriannuelUrl?: string;
+  planActionUrl?: string;
+
   notCompliantContent?: string;
   derogatedContent?: string;
   notInScopeContent?: string;

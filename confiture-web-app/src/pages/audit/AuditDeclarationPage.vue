@@ -71,7 +71,6 @@ const environments = ref<Omit<AuditEnvironment, "id">[]>([]);
 const auditInitiator = ref("");
 const auditorOrganisation = ref("");
 const procedureUrl = ref("");
-const contactName = ref("");
 
 const contactEmail = ref("");
 const contactFormUrl = ref("");
@@ -83,6 +82,9 @@ const notCompliantContent = ref("");
 const derogatedContent = ref("");
 const notInScopeContent = ref("");
 
+const schemaPluriannuelUrl = ref("");
+const planActionUrl = ref("");
+
 watch(
   () => auditStore.currentAudit,
   (audit) => {
@@ -92,7 +94,6 @@ watch(
     auditInitiator.value = audit.initiator ?? "";
     auditorOrganisation.value = audit.auditorOrganisation ?? "";
     procedureUrl.value = audit.procedureUrl ?? "";
-    contactName.value = audit.contactName ?? "";
     contactEmail.value = audit.contactEmail ?? "";
     contactFormUrl.value = audit.contactFormUrl ?? "";
 
@@ -117,6 +118,9 @@ watch(
     notCompliantContent.value = audit.notCompliantContent ?? "";
     derogatedContent.value = audit.derogatedContent ?? "";
     notInScopeContent.value = audit.notInScopeContent ?? "";
+
+    schemaPluriannuelUrl.value = audit.schemaPluriannuelUrl ?? "";
+    planActionUrl.value = audit.planActionUrl ?? "";
   },
   {
     immediate: true
@@ -134,7 +138,6 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
 
     contactEmail: formatEmail(contactEmail.value) || undefined,
     contactFormUrl: contactFormUrl.value.trim() || undefined,
-    contactName: contactName.value,
 
     technologies: technologies.value,
     environments: environments.value,
@@ -142,7 +145,10 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
 
     notCompliantContent: notCompliantContent.value,
     derogatedContent: derogatedContent.value,
-    notInScopeContent: notInScopeContent.value
+    notInScopeContent: notInScopeContent.value,
+
+    schemaPluriannuelUrl: schemaPluriannuelUrl.value || undefined,
+    planActionUrl: planActionUrl.value || undefined
   };
 });
 
@@ -213,6 +219,9 @@ function DEBUG_fillFields() {
     "Non officia voluptate id magna culpa consectetur ex officia quis magna quis sint.";
   derogatedContent.value =
     "Nostrud duis ut sint et et. Consequat fugiat sunt est elit sunt.";
+
+  schemaPluriannuelUrl.value = "https://example.com/schema-pluriannuel-url";
+  planActionUrl.value = "https://example.com/plan-d-action";
 }
 
 const isDevMode = useDevMode();
@@ -349,22 +358,14 @@ function confirmLeave() {
         <h2 class="fr-h4 fr-mb-2w">Retour d’information et contact</h2>
       </legend>
 
-      <p class="fr-mb-2w">
+      <p class="fr-mb-2w fr-text--sm">
         Ces informations permettent aux usagers qui rencontrent des difficultés
         pour accéder à du contenu ou à un service d’être orienté vers une
         solution adaptée.
       </p>
 
-      <DsfrField
-        id="procedure-manager-name"
-        v-model="contactName"
-        label="Nom et prénom du contact (optionnel)"
-        type="text"
-        class="fr-mb-2w"
-      />
-
       <p id="contact-section-subtitle" class="fr-mb-2w">
-        Vous devez renseigner au moins un des deux moyens de contact suivant :
+        Renseignez au moins un des deux moyens de contact suivant :
       </p>
 
       <FieldValidation
@@ -400,8 +401,6 @@ function confirmLeave() {
               class="fr-mb-3v"
             />
           </FieldValidation>
-
-          <p class="fr-mb-3v"><em>Ou</em></p>
 
           <FieldValidation
             v-slot="{ error, focusRef }"
@@ -511,7 +510,7 @@ function confirmLeave() {
       <p id="notCompliantContent" class="fr-label fr-mb-1w">
         Non-conformités (optionnel)
         <span class="fr-hint-text">
-          Listez les contenus et les fonctionnalités qui posent des problèmes d’accessibilité, en utilisant un langage facile à comprendre.<br />Il n’est pas recommandé d’indiquer les numéros ou les intitulés des critères.<br />Indiquez les alternatives si disponibles.
+          Listez les contenus et les fonctionnalités qui posent des problèmes d’accessibilité dans un langage facile à comprendre.<br />Évitez de mentionner uniquement des numéros ou des intitulés de critères.<br />Indiquez les alternatives si disponibles.
         </span>
       </p>
 
@@ -524,7 +523,7 @@ function confirmLeave() {
 
     <h3 class="fr-h6 fr-mb-2w">Dérogations</h3>
 
-    <p class="fr-mb-2w">
+    <p class="fr-mb-2w fr-text--sm">
       Les contenus dérogés doivent être discutés entre l’auditeur ou l’auditrice et le responsable du site audité. C’est le responsable du site qui accepte de prendre le risque juridique de mentionner ces contenus.
     </p>
 
@@ -558,12 +557,49 @@ function confirmLeave() {
       />
     </div>
 
+    <h2 class="fr-h4 fr-mb-2w">Schéma pluriannuel de mise en accessibilité et plan d'action</h2>
+
+    <div class="fr-input-group fr-mb-2w">
+      <DsfrFieldWithValidation
+        id="schema-pluriannuel-url"
+        v-model="schemaPluriannuelUrl"
+        label="URL du schéma pluriannuel de mise en accessibilité (optionnel)"
+        type="text"
+        :pattern="URL_REGEX"
+        :validation="[
+          URL('Format incorrect. Saisissez une URL commençant par https:// ou http://')
+        ]"
+      >
+        <template #hint>
+          Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
+        </template>
+      </DsfrFieldWithValidation>
+    </div>
+
+    <div class="fr-input-group fr-mb-2w">
+
+      <DsfrFieldWithValidation
+        id="plan-action-url"
+        v-model="planActionUrl"
+        label="URL du plan d'actions en cours (optionnel)"
+        type="text"
+        :pattern="URL_REGEX"
+        :validation="[
+          URL('Format incorrect. Saisissez une URL commençant par https:// ou http://')
+        ]"
+      >
+        <template #hint>
+          Saisissez une URL commençant par <code>https://</code> ou <code>http://</code>
+        </template>
+      </DsfrFieldWithValidation>
+    </div>
+
     <div class="fr-mt-6w actions">
       <button class="fr-btn" type="submit">
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
-            : "Valider la déclaration"
+            : "Enregistrer"
         }}
       </button>
       <RouterLink
