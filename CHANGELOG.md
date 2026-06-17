@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 17/06/2026
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Le nom de l’auditeur·ice des audits est mis à jour lorsque celui-ci change dans le profil et le champ "Nom de votre structure" est supprimé du profil ([#1520](https://github.com/DISIC/Ara/pull/1520))
+
 ### 11/06/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
