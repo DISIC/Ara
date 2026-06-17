@@ -10,6 +10,10 @@
 
 - Le nom de l’auditeur·ice des audits est mis à jour lorsque celui-ci change dans le profil et le champ "Nom de votre structure" est supprimé du profil ([#1520](https://github.com/DISIC/Ara/pull/1520))
 
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Permettre d'ajouter les schéma pluriannuel et plans d'actions dans la déclaration d'accessibilité ([#1508](https://github.com/DISIC/Ara/pull/1508))
+
 ### 11/06/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
