@@ -48,8 +48,7 @@ export const useAccountStore = defineStore("account", {
       return {
         uid: payload.sub,
         email: payload.email,
-        name: payload.name,
-        orgName: payload.org
+        name: payload.name
       };
     }
   },

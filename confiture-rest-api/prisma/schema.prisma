@@ -230,7 +230,6 @@ model User {
   verificationJti String?
 
   name    String?
-  orgName String?
 
   newEmail                String?
   newEmailVerificationJti String?

@@ -173,8 +173,7 @@ export class AuthService {
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
-      name: user.name,
-      org: user.orgName
+      name: user.name
     };
     const token = await this.jwt.signAsync(payload, { expiresIn: "24h" });
 
@@ -193,8 +192,7 @@ export class AuthService {
     const payload: AuthenticationJwtPayload = {
       sub: user.uid,
       email: user.username,
-      name: user.name,
-      org: user.orgName
+      name: user.name
     };
     const token = await this.jwt.signAsync(payload, { expiresIn: "24h" });
     return token;
