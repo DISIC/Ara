@@ -46,12 +46,14 @@ const validationRules = [
 
 function handleSubmit() {
   emit("confirm", email.value);
-  email.value = "";
-  confirmEmail.value = "";
 }
 
 function handleClose() {
+  email.value = "";
+  confirmEmail.value = "";
+
   modal.value?.hide();
+  emit("closed");
 }
 </script>
 
@@ -60,7 +62,7 @@ function handleClose() {
     :id="`transfer-modal-${id}`"
     ref="modal"
     :aria-labelledby="`transfer-modal-title-${id}`"
-    @closed="$emit('closed')"
+    @closed="handleClose"
   >
     <FormWithValidation @submit="handleSubmit">
       <div class="fr-container fr-container--fluid fr-container-md">
