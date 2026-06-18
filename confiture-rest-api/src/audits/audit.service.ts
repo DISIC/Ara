@@ -4,7 +4,6 @@ import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, so
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
-import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 import { AuthService } from "../auth/auth.service";
 
 import {
@@ -42,8 +41,7 @@ const AUDIT_EDIT_INCLUDE = {
       procedureName: true
     }
   },
-  notesFiles: true,
-  owner: true
+  notesFiles: true
 } as const;
 
 const isCompliant = (c: CriterionResult) =>
@@ -85,7 +83,7 @@ export class AuditService {
     private readonly authService: AuthService
   ) { }
 
-  async createAudit(data: CreateAuditDto, user: AuthenticationJwtPayload): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -113,14 +111,6 @@ export class AuditService {
           }
         },
         auditorName: data.auditorName,
-
-        ...(user && {
-          owner: {
-            connect: {
-              username: data.auditorEmail
-            }
-          }
-        }),
 
         transverseElementsPage: {
           create: {
@@ -1701,8 +1691,7 @@ export class AuditService {
           "environments",
           "notCompliantContent",
           "derogatedContent",
-          "notInScopeContent",
-          "ownerUsername"
+          "notInScopeContent"
         ]),
 
         ...(originalAudit.auditorEmail && {
@@ -1720,14 +1709,6 @@ export class AuditService {
             editUniqueId: sourceUniqueId
           }
         },
-
-        ...(originalAudit.ownerUsername && {
-          owner: {
-            connect: {
-              username: originalAudit.ownerUsername
-            }
-          }
-        }),
 
         editUniqueId: duplicateEditUniqueId,
         consultUniqueId: duplicateConsultUniqueId,

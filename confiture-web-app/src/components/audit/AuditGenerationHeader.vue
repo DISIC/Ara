@@ -64,10 +64,6 @@ const resultStore = useResultsStore();
 const accountStore = useAccountStore();
 const notify = useNotifications();
 
-const isOwner = computed(() => {
-  return !auditStore.currentAudit?.ownerUsername || accountStore.isOwner;
-});
-
 /**
  * Duplicate audit and redirect to new audit page
  */
@@ -382,7 +378,7 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
-                  :disabled="!isOwner"
+                  :disabled="!accountStore.isOwner"
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer
@@ -416,7 +412,7 @@ onMounted(() => {
                   <span style="pointer-events: none;">
                     Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
                   </span>
-                  <span v-if="!auditStore.currentAuditIsLinkedToAccount" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
                   <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
@@ -441,11 +437,11 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
-                  :disabled="!isOwner"
+                  :disabled="!accountStore.isOwner"
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
-                  <span v-if="!isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  <span v-if="!accountStore.isOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>

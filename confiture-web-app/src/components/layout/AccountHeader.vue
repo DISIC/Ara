@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 
-import { canAccessToAudit, useCanAccessToAudit } from "../../composables/useCanAccessToAudit";
+import { useCanAccessToAudit } from "../../composables/useCanAccessToAudit";
 import { useNotifications } from "../../composables/useNotifications";
 import { useWindowWidth } from "../../composables/useWindowWidth";
 import { useAccountStore } from "../../store";
@@ -23,9 +23,9 @@ async function handleDisconnectClick() {
   if (currentRoute.path.includes("generation")) {
     const uniqueId: string = currentRoute.params.uniqueId as string;
     if (uniqueId) {
-      const canAccess: canAccessToAudit = await useCanAccessToAudit(uniqueId);
-      if (!canAccess.canAccess && canAccess.redirectTo) {
-        router.push(canAccess.redirectTo);
+      const { canAccess, redirectTo } = await useCanAccessToAudit(uniqueId);
+      if (!canAccess && redirectTo) {
+        router.push(redirectTo);
       }
     }
   }
