@@ -54,6 +54,7 @@ model Audit {
   planActionUrl            String?
 
   // Misc
+  isPublic        Boolean @default(false)
   creationDate    DateTime?
   publicationDate DateTime?
   editionDate     DateTime?
