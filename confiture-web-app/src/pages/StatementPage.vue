@@ -61,7 +61,11 @@ function getA11yStatementHTML(): string {
     .replaceAll(whitespaceFollowingTags, "</$<tagName>>")
     .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
     .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
-    .replaceAll(indentedTags, "  <$<tagName>>");
+    .replaceAll(indentedTags, "  <$<tagName>>")
+
+    // Remove extra <a> attributes
+    .replaceAll(" target=\"_blank\"", "")
+    .replaceAll(" <span>(nouvelle fenêtre)</span>", "");
 }
 
 const statementIsPublished = computed(() => {
