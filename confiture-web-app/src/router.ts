@@ -6,7 +6,7 @@ import {
 } from "vue-router";
 
 import AraTabsPanel from "./components/audit/AraTabsPanel.vue";
-import { canAccessToAudit, useCanAccessToAudit } from "./composables/useCanAccessToAudit";
+import { useCanAccessToAudit } from "./composables/useCanAccessToAudit";
 import { FirstTab } from "./enums";
 import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
@@ -216,9 +216,10 @@ const router = createRouter({
       name: "audit-generation",
       beforeEnter: async (to: RouteLocationNormalized) => {
         const uniqueId: string = to.params.uniqueId as string;
-        const canAccess: canAccessToAudit = await useCanAccessToAudit(uniqueId);
-        if (!canAccess.canAccess && canAccess.redirectTo) {
-          return canAccess.redirectTo;
+        const { canAccess, redirectTo } = await useCanAccessToAudit(uniqueId);
+
+        if (!canAccess && redirectTo) {
+          return redirectTo;
         }
       },
       redirect: (to: any) => {

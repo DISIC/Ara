@@ -66,7 +66,7 @@ export class AuditsController {
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    const audit = await this.auditService.createAudit(body, user);
+    const audit = await this.auditService.createAudit(body);
 
     if (!user) {
       this.mailer.sendAuditCreatedMail(audit).catch((err) => {
@@ -273,18 +273,10 @@ export class AuditsController {
   @ApiOkResponse({
     description: "The audit privacy has been successfully updated"
   })
-  @ApiNotFoundResponse({ description: "The audit does not exist." })
-  @ApiGoneResponse({ description: "The audit has been previously deleted." })
   async toggleAuditPrivacy(
-    @Param("uniqueId") editUniqueId: string
+    @AuditId() uniqueId: string
   ): Promise<void> {
-    const audit = await this.auditService.findAuditWithEditUniqueId(editUniqueId);
-
-    if (!audit) {
-      await this.sendAuditNotFoundStatus(editUniqueId);
-    }
-
-    return this.auditService.toggleAuditPrivacy(editUniqueId);
+    return this.auditService.toggleAuditPrivacy(uniqueId);
   }
 
   /** Delete an audit from the database. */

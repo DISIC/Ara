@@ -45,7 +45,10 @@ const auditStore = useAuditStore();
 const notify = useNotifications();
 
 function toggleAuditPrivacy() {
-  auditStore.toggleAuditPrivacy(props.editUniqueId).catch(() => {
+  auditStore.toggleAuditPrivacy(props.editUniqueId).then(() => {
+    console.log("success");
+  }).catch((error) => {
+    console.log(error);
     notify(
       "error",
       `L’audit n’a pas pu être rendu ${auditIsPublic.value ? "privé" : "public"}`,
