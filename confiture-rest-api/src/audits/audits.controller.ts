@@ -3,7 +3,6 @@ import {
   ConflictException,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -15,6 +14,7 @@ import {
   Put,
   UnauthorizedException,
   UploadedFile,
+  UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -33,6 +33,7 @@ import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditId } from "./audit-id.decorator";
+import { AuditOwnershipGuard } from "./audit-ownership.guard";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
@@ -51,6 +52,7 @@ import { UploadImageDto } from "./dto/requests/upload-image.dto";
 
 @Controller("audits")
 @ApiTags("Audits")
+@UseGuards(AuditOwnershipGuard)
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
@@ -96,12 +98,7 @@ export class AuditsController {
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
-  async getAudit(@AuditId() uniqueId: string, @User() user?: AuthenticationJwtPayload): Promise<AuditDto> {
-    const canAccess = await this.auditService.checkAuditOwnership(uniqueId, user?.email);
-    if (!canAccess) {
-      if (!user) throw new UnauthorizedException();
-      else throw new ForbiddenException();
-    }
+  async getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
     return this.auditService.findAudit(uniqueId);
   }
 
