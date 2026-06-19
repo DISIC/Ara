@@ -214,20 +214,31 @@ export class AuditService {
   }
 
   /**
-   * TODO: add this to all routes
    * Check audit privacy and ownership if user is connected
    *
    * @param editUniqueId id of the audit to check ownership of
    * @param username email adress of user
    * @returns true if audit is public or if user is owner
    */
-  async checkAuditOwnership(editUniqueId: string, username?: string) {
+  async validateAuditAccess(editUniqueId: string, username?: string) {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId },
       select: { isPublic: true, auditor: { select: { username: true } } }
     });
 
     return audit.isPublic || (username && audit.auditor.username === username);
+  }
+
+  /**
+   * Check that the user if the audit owner
+   */
+  async isAuditOwnedBy(editUniqueId: string, username: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { auditor: { select: { username: true } } }
+    });
+
+    return audit.auditor.username === username;
   }
 
   /** Find and return an audit in the format that the API would return */
@@ -1703,6 +1714,15 @@ export class AuditService {
           "derogatedContent",
           "notInScopeContent"
         ]),
+
+        /**
+         * - je suis connecté ?
+         *  - non : je ne peux pas dupliquer
+         *  - oui :
+         *     - audit lié à un compte ?
+         *        - oui : je peux dupliquer si je suis proprio
+         *        - non : je peux pas dupliquer
+         */
 
         ...(originalAudit.auditorEmail && {
           auditor: {

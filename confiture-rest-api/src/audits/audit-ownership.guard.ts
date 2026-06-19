@@ -23,6 +23,6 @@ export class AuditOwnershipGuard implements CanActivate {
       return true;
     }
 
-    return this.auditService.checkAuditOwnership(auditId, username);
+    return this.auditService.validateAuditAccess(auditId, username);
   }
 }
