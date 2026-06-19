@@ -246,7 +246,7 @@ export const useAuditStore = defineStore("audit", {
           progress: originalAuditListingItem.progress,
           estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
           statementIsPublished: originalAuditListingItem.statementIsPublished,
-          isPublic: false
+          isPublic: originalAuditListingItem.isPublic
         };
         this.listing.push(newAuditListItem);
       }
