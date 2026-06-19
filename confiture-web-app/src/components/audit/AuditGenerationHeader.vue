@@ -383,10 +383,10 @@ onMounted(() => {
                 >
                   Dupliquer
                   <span class="fr-sr-only"> {{ auditName }}</span>
-                  <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
-                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-else-if="!accountStore.isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut dupliquer cet audit
                   </span>
                 </button>
