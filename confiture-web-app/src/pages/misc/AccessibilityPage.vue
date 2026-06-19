@@ -18,7 +18,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     <p>L’audit de conformité réalisé par <strong>la Brigade d'Intervention du Numérique de la DINUM</strong> révèle que <strong>100&nbsp;%</strong> des critères du RGAA version 4.1.2 sont respectés.</p>
     <h2> Établissement de cette déclaration d’accessibilité </h2>
     <p>Cette déclaration a été établie le <strong>23 avril 2025</strong>. Elle a été mise à jour le <strong>9 octobre 2025</strong>.</p>
-    <h3> Technologies utilisées pour la réalisation de l’audit </h3>
+    <h3>Technologies utilisées pour la réalisation du site</h3>
     <ul>
       <li>HTML</li>
       <li>CSS</li>
@@ -41,7 +41,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       <li>Inspecteur de composants</li>
       <li>Validateur HTML du W3C</li>
     </ul>
-    <h3> Pages du site ayant fait l’objet de la vérification de conformité </h3>
+    <h3>Pages du site ayant fait l’objet de la vérification de conformité</h3>
     <ul>
       <li>Accueil <strong>https://ara.numerique.gouv.fr/</strong></li>
       <li>Contact et contributions <strong>https://ara.numerique.gouv.fr/contact-contributions</strong></li>

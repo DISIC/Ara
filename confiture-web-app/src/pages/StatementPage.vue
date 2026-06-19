@@ -61,7 +61,11 @@ function getA11yStatementHTML(): string {
     .replaceAll(whitespaceFollowingTags, "</$<tagName>>")
     .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
     .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
-    .replaceAll(indentedTags, "  <$<tagName>>");
+    .replaceAll(indentedTags, "  <$<tagName>>")
+
+    // Remove extra <a> attributes
+    .replaceAll(" target=\"_blank\"", "")
+    .replaceAll(" <span>(nouvelle fenêtre)</span>", "");
 }
 
 const statementIsPublished = computed(() => {
@@ -292,7 +296,7 @@ const siteUrl = computed(() => {
               </template>
             </p>
             <h5 class="fr-h3">
-              Technologies utilisées pour la réalisation de l’audit
+              Technologies utilisées pour la réalisation du site
             </h5>
             <ul class="fr-mb-2w fr-mb-md-3w">
               <li v-for="tech in report.data.context.technologies" :key="tech">
