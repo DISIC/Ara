@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -300,6 +301,7 @@ export class AuditsController {
    *   - the example images
    */
   @Post("/:uniqueId/duplicate")
+  @AuthRequired()
   @ApiCreatedResponse({
     description: "The audit has been successfully duplicated.",
     type: AuditDto
@@ -309,19 +311,22 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
+    // only the audit owner can duplicate it
+    if (!await this.auditService.isAuditOwnedBy(uniqueId, user.email)) {
+      throw new ForbiddenException();
+    }
+
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
       body.procedureName
     );
 
-    if (!user) {
-      this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
-        console.error(
-          `Failed to send email for audit ${newAudit.editUniqueId}`
-        );
-        console.error(err);
-      });
-    }
+    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
+      console.error(
+        `Failed to send email for audit ${newAudit.editUniqueId}`
+      );
+      console.error(err);
+    });
 
     return newAudit;
   }
