@@ -432,12 +432,12 @@ function confirmLeave() {
       </FieldValidation>
     </fieldset>
 
-    <h2 class="fr-h4 fr-mb-2w">Technologies utilisées sur le site</h2>
+    <h2 class="fr-h4 fr-mb-2w">Technologies utilisées pour la réalisation du site web</h2>
 
     <FieldValidation
       v-slot="{ error, focusRef }"
       :value="technologies"
-      :validation="[ARRAY_LENGTH(1, 'Indiquez les technologies utilisées sur le site.')]"
+      :validation="[ARRAY_LENGTH(1, 'Indiquez les technologies utilisées pour la réalisation du site web.')]"
     >
       <TagListField
         :ref="focusRef"

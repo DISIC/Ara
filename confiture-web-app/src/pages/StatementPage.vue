@@ -9,7 +9,7 @@ import TopLink from "../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
-import { formatDate, isSameDay } from "../utils";
+import { formatDate, isSameDay, isTiptapDocumentEmpty } from "../utils";
 
 const report = useReportStore();
 
@@ -104,14 +104,13 @@ const siteUrl = computed(() => {
       <p class="fr-text--lead fr-mb-2w">{{ report.data.procedureName }}</p>
 
       <p v-if="report.data.statementPublicationDate" class="fr-text--sm fr-mb-4w dates">
-        Rédigée le {{ formatDate(report.data.statementPublicationDate) }}<template v-if="report.data.statementEditionDate && !isSameDay(report.data?.statementPublicationDate, report.data?.statementEditionDate)"> - Mise à jour le {{ formatDate(report.data.statementEditionDate) }}</template>
+        Rédigée le {{ formatDate(report.data.statementPublicationDate) }}<template v-if="report.data.statementEditionDate && !isSameDay(report.data?.statementPublicationDate, report.data?.statementEditionDate)">&nbsp;-&nbsp;Mise à jour le {{ formatDate(report.data.statementEditionDate) }}</template>
       </p>
 
       <p class="fr-mb-1v">
-        URL du site audité :
+        URL du site audité&nbsp;:
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
-          {{ siteUrl }}
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          {{ siteUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -122,8 +121,7 @@ const siteUrl = computed(() => {
           target="_blank"
           :to="{ name: 'report', params: { uniqueId } }"
         >
-          Accéder au rapport d’audit
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          Accéder au rapport d’audit<span class="fr-sr-only"> (nouvelle fenêtre)</span>
         </RouterLink>
       </p>
 
@@ -139,7 +137,7 @@ const siteUrl = computed(() => {
           </li>
           <li>
             Dès la page d’accueil et sur toutes les pages de votre site,
-            afficher la mention “<strong>Accessibilité : {{ getA11yLevel() }} conforme</strong>”. Cette mention peut être par exemple, un lien dans le pied de
+            afficher la mention “<strong>Accessibilité&nbsp;: {{ getA11yLevel() }} conforme</strong>”. Cette mention peut être par exemple, un lien dans le pied de
             page vers la page contenant votre déclaration.
           </li>
         </ol>
@@ -169,7 +167,7 @@ const siteUrl = computed(() => {
               rendre ses sites internet, intranet, extranet et ses progiciels
               accessibles (et ses applications mobiles et mobilier urbain
               numérique) conformément à l’article 47 de la loi
-              n<sup>o</sup> 2005-102 du 11 février 2005.
+              n<sup>o</sup>&nbsp;2005-102 du 11&nbsp;février 2005.
             </p>
 
             <template
@@ -177,68 +175,55 @@ const siteUrl = computed(() => {
                 || report.data.planActionUrl"
             >
               <p>
-                A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-                <template
-                  v-if="report.data.schemaPluriannuelUrl
-                    && report.data.planActionUrl"
-                >
-                  la stratégie et les actions suivantes :
-                </template>
-                <template
-                  v-else-if="report.data.schemaPluriannuelUrl"
-                >
-                  la stratégie suivante :
-                </template>
-                <template v-else>les actions suivantes :</template>
+                À cette fin, {{ report.data.procedureInitiator }} met en œuvre
+                la stratégie et les actions suivantes&nbsp;:
               </p>
               <ul class="fr-mb-9v">
-                <li v-if="report.data.schemaPluriannuelUrl">
-                  <a
-                    :href="report.data.schemaPluriannuelUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >Schéma pluriannuel de mise en accessibilité
-                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                  </a>
+                <li>
+                  <p v-if="report.data.schemaPluriannuelUrl">
+                    <a
+                      :href="report.data.schemaPluriannuelUrl"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                    </a>&nbsp;;
+                  </p>
+                  <p v-else>Aucun schéma pluriannuel de mise en accessibilité&nbsp;;</p>
                 </li>
-                <li v-if="report.data.planActionUrl">
-                  <a
-                    :href="report.data.planActionUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >Plan d'actions de l'année en cours
-                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                  </a>
+                <li>
+                  <p v-if="report.data.planActionUrl">
+                    <a
+                      :href="report.data.planActionUrl"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                    </a>.
+                  </p>
+                  <p v-else>Aucun plan d’action de l’année en cours.</p>
                 </li>
               </ul>
             </template>
 
             <p class="fr-mb-9v fr-mb-md-6w">
               Cette déclaration d’accessibilité s’applique à
-              <strong>{{ report.data.procedureUrl }}</strong>.
+              <strong>{{ report.data.procedureName }} (<a target="_blank" :href="report.data.procedureUrl" rel="noreferrer noopener">
+                {{ report.data.procedureUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+              </a>)</strong>.
             </p>
 
             <h4 class="fr-h2">État de conformité</h4>
             <p class="fr-mb-9v fr-mb-md-6w">
-              <strong>{{ report.data.procedureName }}
-                <a target="_blank" :href="report.data.procedureUrl" rel="noreferrer noopener">
-                  {{ report.data.procedureUrl }}
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a></strong>
-              est <strong>{{ getA11yLevel() }} conforme</strong> avec le
-              référentiel général d’amélioration de l’accessibilité (RGAA).
+              {{ report.data.procedureName }} est <strong>{{ getA11yLevel() }} conforme</strong>
+              avec le référentiel général d’amélioration de l’accessibilité (RGAA).
             </p>
 
             <h5 class="fr-h2">Résultats des tests</h5>
             <p>
               L’audit de conformité réalisé par
               <strong>{{ report.data.context.auditorOrganisation }}</strong>
-              révèle que :
+              révèle que <strong>{{ report.data.accessibilityRate }}&nbsp;%</strong> des critères
+              du {{ REFERENTIAL }} sont respectés.
             </p>
-            <ul class="fr-mb-9v fr-mb-md-6w">
-              <li><strong>{{ report.data.accessibilityRate }} %</strong> des critères
-                du {{ REFERENTIAL }} sont respectés.</li>
-            </ul>
 
             <template
               v-if="
@@ -248,155 +233,161 @@ const siteUrl = computed(() => {
               "
             >
               <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
-
-              <template v-if="report.data.notCompliantContent">
-                <h5 class="fr-h3">Non-conformités</h5>
-                <TiptapRenderer
-                  class="fr-mb-2w fr-mb-md-3w"
-                  :document="report.data.notCompliantContent"
-                  basic-mode
-                />
-              </template>
-
-              <template v-if="report.data.derogatedContent">
-                <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
-                <TiptapRenderer
-                  class="fr-mb-2w fr-mb-md-3w"
-                  :document="report.data.derogatedContent"
-                  basic-mode
-                />
-              </template>
-
-              <template v-if="report.data.notInScopeContent">
-                <h5 class="fr-h3">
-                  Contenus non soumis à l’obligation d’accessibilité
-                </h5>
-                <TiptapRenderer
-                  class="fr-mb-2w fr-mb-md-3w"
-                  :document="report.data.notInScopeContent"
-                  basic-mode
-                />
-              </template>
-            </template>
-
-            <h4 class="fr-h2">
-              Établissement de cette déclaration d’accessibilité
-            </h4>
-            <p class="fr-mb-2w fr-mb-md-3w">
-              Cette déclaration a été établie le {{ report.data.statementPublicationDate ? formatDate(report.data.statementPublicationDate) : '[JJ/MM/YYYY]' }}.
-              <template
-                v-if="
-                  report.data.statementEditionDate &&
-                    !isSameDay(
-                      report.data.statementPublicationDate!,
-                      report.data.statementEditionDate)
-                "
+              <p
+                v-if="!isTiptapDocumentEmpty(report.data.notCompliantContent)
+                  || !isTiptapDocumentEmpty(report.data.derogatedContent)
+                  || !isTiptapDocumentEmpty(report.data.notInScopeContent)"
               >
-                Elle a été mise à jour le {{ formatDate(report.data.statementEditionDate) }}.
-              </template>
-            </p>
-            <h5 class="fr-h3">
-              Technologies utilisées pour la réalisation du site
-            </h5>
-            <ul class="fr-mb-2w fr-mb-md-3w">
-              <li v-for="tech in report.data.context.technologies" :key="tech">
-                {{ tech }}
-              </li>
-            </ul>
+                Les contenus listés ci-dessous ne sont pas accessibles pour les raisons suivantes.</p>
 
-            <template v-if="report.data.context.environments">
-              <h5 class="fr-h3">Environnement de test</h5>
-              <p>
-                Les vérifications de restitution de contenus ont été réalisées sur
-                la base de la combinaison fournie par la base de référence du
-                RGAA, avec les versions suivantes :
+              <h5 class="fr-h3">Non-conformités</h5>
+              <TiptapRenderer
+                v-if="!isTiptapDocumentEmpty(report.data.notCompliantContent)"
+                class="fr-mb-2w fr-mb-md-3w"
+                :document="report.data.notCompliantContent!"
+                basic-mode
+              />
+              <p v-else>Aucune.</p>
+
+              <h5 class="fr-h3">Dérogations pour charge disproportionnée</h5>
+              <TiptapRenderer
+                v-if="!isTiptapDocumentEmpty(report.data.derogatedContent)"
+                class="fr-mb-2w fr-mb-md-3w"
+                :document="report.data.derogatedContent!"
+                basic-mode
+              />
+              <p v-else>Aucune.</p>
+
+              <h5 class="fr-h3">
+                Contenus non soumis à l’obligation d’accessibilité
+              </h5>
+              <TiptapRenderer
+                v-if="!isTiptapDocumentEmpty(report.data.notInScopeContent)"
+                class="fr-mb-2w fr-mb-md-3w"
+                :document="report.data.notInScopeContent!"
+                basic-mode
+              />
+              <p v-else>Aucun.</p>
+
+              <h4 class="fr-h2">
+                Établissement de cette déclaration d’accessibilité
+              </h4>
+              <p class="fr-mb-2w fr-mb-md-3w">
+                Cette déclaration a été établie le {{ report.data.statementPublicationDate ? formatDate(report.data.statementPublicationDate) : '[JJ/MM/YYYY]' }}.
+                <template
+                  v-if="
+                    report.data.statementEditionDate &&
+                      !isSameDay(
+                        report.data.statementPublicationDate!,
+                        report.data.statementEditionDate)
+                  "
+                >
+                  Elle a été mise à jour le {{ formatDate(report.data.statementEditionDate) }}.
+                </template>
               </p>
+              <h5 class="fr-h3">
+                Technologies utilisées pour la réalisation du site web
+              </h5>
               <ul class="fr-mb-2w fr-mb-md-3w">
                 <li
-                  v-for="(env, i) in report.data.context.environments"
-                  :key="i"
+                  v-for="tech in report.data.context.technologies"
+                  :key="tech"
                 >
-                  Sur {{ env.platform }} {{ env.operatingSystem }} avec
-                  {{ env.browser }} et
-                  {{ env.assistiveTechnology }}
+                  {{ tech }}
                 </li>
               </ul>
-              <h5 class="fr-h3">Outils pour évaluer l’accessibilité</h5>
-              <ul class="fr-mb-2w fr-mb-md-3w">
-                <li v-for="tool in report.data.context.tools" :key="tool">
-                  {{ tool }}
+
+              <template v-if="report.data.context.environments">
+                <h5 class="fr-h3">Environnement de test</h5>
+                <p>
+                  Les vérifications de restitution de contenus ont été réalisées sur
+                  la base de la combinaison fournie par la base de référence du
+                  RGAA, avec les versions suivantes&nbsp;:
+                </p>
+                <ul class="fr-mb-2w fr-mb-md-3w">
+                  <li
+                    v-for="(env, i) in report.data.context.environments"
+                    :key="i"
+                  >
+                    Sur {{ env.platform }} {{ env.operatingSystem }} avec
+                    {{ env.browser }} et
+                    {{ env.assistiveTechnology }}
+                  </li>
+                </ul>
+                <h5 class="fr-h3">Les outils utilisés lors de l’évaluation</h5>
+                <ul class="fr-mb-2w fr-mb-md-3w">
+                  <li v-for="tool in report.data.context.tools" :key="tool">
+                    {{ tool }}
+                  </li>
+                </ul>
+              </template>
+
+              <h5 class="fr-h3">
+                Pages du site ayant fait l’objet de la vérification de conformité
+              </h5>
+              <ul class="fr-mb-9v fr-mb-md-6w">
+                <li
+                  v-for="page in report.data.context.samples.slice(1)"
+                  :key="page.name"
+                >
+                  {{ page.name }} – {{ page.url }}
                 </li>
               </ul>
-            </template>
+              <h4 class="fr-h2">Retour d’information et contact</h4>
+              <p>
+                Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
+                pouvez contacter le responsable de
+                {{ report.data.procedureName }} pour être orienté vers une
+                alternative accessible ou obtenir le contenu sous une autre forme.
+              </p>
+              <ul class="fr-mb-9v fr-mb-md-6w">
+                <li v-if="report.data.contactFormUrl">
+                  Envoyer un message&nbsp;: <strong><a target="_blank" :href="report.data.contactFormUrl" rel="noreferrer noopener">
+                    {{ report.data.contactFormUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  </a></strong>&nbsp;;
+                </li>
+                <li v-if="report.data.contactEmail">
+                  Contacter {{ report.data.procedureInitiator }}&nbsp;:
+                  <strong>{{ report.data.contactEmail }}</strong>.
+                </li>
+              </ul>
 
-            <h5 class="fr-h3">
-              Pages du site ayant fait l’objet de la vérification de conformité
-            </h5>
-            <ul class="fr-mb-9v fr-mb-md-6w">
-              <li
-                v-for="page in report.data.context.samples.slice(1)"
-                :key="page.name"
-              >
-                {{ page.name }} <strong class="page-url">{{ page.url }}</strong>
-              </li>
-            </ul>
-            <h4 class="fr-h2">Retour d’information et contact</h4>
-            <p>
-              Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-              pouvez contacter le responsable de
-              {{ report.data.procedureName }} pour être orienté vers une
-              alternative accessible ou obtenir le contenu sous une autre forme.
-            </p>
-            <ul class="fr-mb-9v fr-mb-md-6w">
-              <li v-if="report.data.contactFormUrl">
-                Envoyer un message
-                <strong>{{ report.data.contactFormUrl }}</strong>
-              </li>
-              <li v-if="report.data.contactEmail">
-                Contacter
-                <strong>{{ report.data.procedureInitiator }} :
-                  {{ report.data.contactEmail }}</strong>
-              </li>
-            </ul>
+              <h4 class="fr-h2">Voies de recours</h4>
+              <p>
+                Si vous constatez un défaut d’accessibilité vous empêchant d’accéder
+                à un contenu ou une fonctionnalité du site, que vous nous le
+                signalez et que vous ne parvenez pas à obtenir une réponse de notre
+                part, vous êtes en droit de faire parvenir vos doléances ou une
+                demande de saisine au Défenseur des droits.
+              </p>
 
-            <h4 class="fr-h2">Voies de recours</h4>
-            <p>
-              Si vous constatez un défaut d’accessibilité vous empêchant d’accéder
-              à un contenu ou une fonctionnalité du site, que vous nous le
-              signalez et que vous ne parvenez pas à obtenir une réponse de notre
-              part, vous êtes en droit de faire parvenir vos doléances ou une
-              demande de saisine au Défenseur des droits.
-            </p>
-
-            <p>Plusieurs moyens sont à votre disposition :</p>
-            <ul>
-              <li>
-                <a
-                  href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
-                  target="_blank"
-                >
-                  Écrire un message au Défenseur des droits
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.defenseurdesdroits.fr/carte-des-delegues"
-                  target="_blank"
-                >
-                  Contacter le délégué du Défenseur des droits dans votre région
-                  <span class="fr-sr-only">(nouvelle fenêtre)</span>
-                </a>
-              </li>
-              <li>
-                Envoyer un courrier par la poste (gratuit, ne pas mettre de
-                timbre) à :<br />
-                <span class="fr-mt-1w mailing-address">Défenseur des droits<br />
-                  Libre réponse 71120<br />
-                  75342 Paris CEDEX 07</span>
-              </li>
-            </ul>
-          </div>
+              <p>Plusieurs moyens sont à votre disposition&nbsp;:</p>
+              <ul>
+                <li>
+                  <a
+                    href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
+                    target="_blank"
+                  >
+                    Écrire un message au Défenseur des droits<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.defenseurdesdroits.fr/carte-des-delegues"
+                    target="_blank"
+                  >
+                    Contacter le délégué du Défenseur des droits dans votre région<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  </a>
+                </li>
+                <li>
+                  Envoyer un courrier par la poste (gratuit, ne pas mettre de
+                  timbre) à&nbsp;:<br />
+                  <span class="fr-mt-1w mailing-address">Défenseur des droits<br />
+                    Libre réponse 71120<br />
+                    75342 Paris CEDEX 07</span>
+                </li>
+              </ul>
+            </template></div>
         </div>
 
         <div class="top-link">
@@ -440,5 +431,9 @@ const siteUrl = computed(() => {
 
 .top-link {
   text-align: end;
+}
+
+li > p {
+  margin: 0;
 }
 </style>
