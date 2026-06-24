@@ -137,7 +137,7 @@ const siteUrl = computed(() => {
           </li>
           <li>
             Dès la page d’accueil et sur toutes les pages de votre site,
-            afficher la mention “<strong>Accessibilité&nbsp;: {{ getA11yLevel() }} conforme</strong>”. Cette mention peut être par exemple, un lien dans le pied de
+            afficher la mention «&nbsp;<strong>Accessibilité&nbsp;: {{ getA11yLevel() }} conforme</strong>&nbsp;». Cette mention peut être par exemple, un lien dans le pied de
             page vers la page contenant votre déclaration.
           </li>
         </ol>
