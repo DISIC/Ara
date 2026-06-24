@@ -180,26 +180,26 @@ const siteUrl = computed(() => {
               </p>
               <ul class="fr-mb-9v">
                 <li>
-                  <p v-if="report.data.schemaPluriannuelUrl">
+                  <template v-if="report.data.schemaPluriannuelUrl">
                     <a
                       :href="report.data.schemaPluriannuelUrl"
                       target="_blank"
                       rel="noreferrer noopener"
                     >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only"> (nouvelle fenêtre)</span>
                     </a>&nbsp;;
-                  </p>
-                  <p v-else>Aucun schéma pluriannuel de mise en accessibilité&nbsp;;</p>
+                  </template>
+                  <template v-else>Aucun schéma pluriannuel de mise en accessibilité&nbsp;;</template>
                 </li>
                 <li>
-                  <p v-if="report.data.planActionUrl">
+                  <template v-if="report.data.planActionUrl">
                     <a
                       :href="report.data.planActionUrl"
                       target="_blank"
                       rel="noreferrer noopener"
                     >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only"> (nouvelle fenêtre)</span>
                     </a>.
-                  </p>
-                  <p v-else>Aucun plan d’action de l’année en cours.</p>
+                  </template>
+                  <template v-else>Aucun plan d’action de l’année en cours.</template>
                 </li>
               </ul>
             </template>
@@ -431,9 +431,5 @@ const siteUrl = computed(() => {
 
 .top-link {
   text-align: end;
-}
-
-li > p {
-  margin: 0;
 }
 </style>
