@@ -1,3 +1,11 @@
+<script lang="ts">
+export enum UpdateItemAction {
+  ADD,
+  UPDATE,
+  DELETE
+}
+</script>
+
 <script setup lang="ts">
 import { last, orderBy } from "lodash-es";
 
@@ -43,7 +51,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:item", payload: { item: NotCompliantItem; action: string; debounce: boolean }): void;
+  (e: "update:item", payload: { item: NotCompliantItem; action: UpdateItemAction; debounce: boolean }): void;
 }>();
 
 defineExpose({ disclose, focus });
@@ -110,13 +118,13 @@ function addEmptyErrorToNotCompliantItems() {
       userImpact: null,
       quickWin: false
     },
-    action: "add",
+    action: UpdateItemAction.ADD,
     debounce: false
   });
 }
 
 function onDeleteNotCompliantItemClick(index: number) {
-  emit("update:item", { item: orderByNotCompliantItems.value[index], action: "delete", debounce: false });
+  emit("update:item", { item: orderByNotCompliantItems.value[index], action: UpdateItemAction.DELETE, debounce: false });
 }
 
 function onUpdateNotCompliantItemClick(
@@ -124,7 +132,7 @@ function onUpdateNotCompliantItemClick(
   item: NotCompliantItem,
   debounce: boolean
 ) {
-  emit("update:item", { item, action: !item.id ? "add" : "update", debounce });
+  emit("update:item", { item, action: !item.id ? UpdateItemAction.ADD : UpdateItemAction.UPDATE, debounce });
 }
 </script>
 

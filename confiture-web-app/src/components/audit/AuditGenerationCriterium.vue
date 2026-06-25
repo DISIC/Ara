@@ -22,7 +22,7 @@ import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
-import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
+import CriteriumNotCompliantAccordion, { UpdateItemAction } from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 
 const store = useResultsStore();
@@ -211,18 +211,18 @@ const updateResultComment = debounce(
 );
 
 const updateResultNotCompliantItem = async (payload:
-{ item: NotCompliantItem; action: string }) => {
+{ item: NotCompliantItem; action: UpdateItemAction }) => {
   const { item, action } = payload;
 
   const notCompliantItems: NotCompliantItem[] =
     [...result.value.notCompliantItems];
 
   switch (action) {
-    case "add":
+    case UpdateItemAction.ADD:
       notCompliantItems.push(item);
       break;
 
-    case "update": {
+    case UpdateItemAction.UPDATE: {
       const idx = notCompliantItems.findIndex(x => x.id === item.id);
       if (idx === -1) {
         return;
@@ -231,7 +231,7 @@ const updateResultNotCompliantItem = async (payload:
       notCompliantItems[idx] = item;
       break;
     }
-    case "delete": {
+    case UpdateItemAction.DELETE: {
       const idx = notCompliantItems.findIndex(x => x.id === item.id);
       if (idx === -1) {
         return;
@@ -251,14 +251,14 @@ const updateResultNotCompliantItem = async (payload:
         [{ ...result.value, notCompliantItems }]
       );
 
-    if (action === "add") {
+    if (action === UpdateItemAction.ADD) {
       // we fetch to have notCompliantItemId
       await store.fetchResults(props.auditUniqueId);
       criteriumNotCompliantAccordion.value?.focus();
       return;
     }
 
-    if (action === "delete")
+    if (action === UpdateItemAction.DELETE)
     {
       notify(
         "success",
@@ -269,7 +269,9 @@ const updateResultNotCompliantItem = async (payload:
             label: "Annuler",
             cb: async () => {
               item.id = undefined;
-              await updateResultNotCompliantItem({ item, action: "add" });
+              await updateResultNotCompliantItem(
+                { item, action: UpdateItemAction.ADD }
+              );
               hideNotify();
             }
           }
@@ -286,7 +288,7 @@ const updateResultNotCompliantItemDebounce =
     async (payload:
     {
       item: NotCompliantItem;
-      action: string;
+      action: UpdateItemAction;
     }) => {
       await updateResultNotCompliantItem(payload);
     },
