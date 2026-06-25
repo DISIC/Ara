@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
@@ -244,11 +245,7 @@ export class AuditService {
         },
         include: {
           exampleImages: true,
-          notCompliantItems: {
-            orderBy: {
-              id: "asc"
-            }
-          }
+          notCompliantItems: true
         }
 
       }),
@@ -262,11 +259,7 @@ export class AuditService {
         },
         include: {
           exampleImages: true,
-          notCompliantItems: {
-            orderBy: {
-              id: "asc"
-            }
-          }
+          notCompliantItems: true
         }
       })
     ]);
@@ -374,9 +367,6 @@ export class AuditService {
                   comment: true,
                   userImpact: true,
                   quickWin: true
-                },
-                orderBy: {
-                  id: "asc"
                 }
               },
               topic: true,
@@ -615,11 +605,11 @@ export class AuditService {
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const promises = body.data
       .map((item) => {
-        const result: any[] = [];
+        const result: PrismaPromise<any>[] = [];
 
         const newNotCompliantItems =
           item.notCompliantItems?.filter((x) => !x.id).map((e) =>
-            omit(e, ["id", "criterionResultId"])
+            omit(e, ["id"])
           ) ?? [];
 
         const existingNotCompliantItems = item.notCompliantItems
@@ -631,7 +621,20 @@ export class AuditService {
               return this.prisma.notCompliantItem.update({
                 where: {
                   id: notCompliantItem.id,
-                  criterionResultId: notCompliantItem.criterionResultId
+                  criterionResult: {
+                    page: {
+                      OR: [
+                        {
+                          auditUniqueId: uniqueId
+                        },
+                        {
+                          auditTransverse: {
+                            editUniqueId: uniqueId
+                          }
+                        }
+                      ]
+                    }
+                  }
                 },
                 data: notCompliantItem
               });
@@ -639,18 +642,28 @@ export class AuditService {
 
           result.push(...notCompliantItemsToUpdate);
 
-          const criterionResultId = item.notCompliantItems[0].criterionResultId;
-
           const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
             where: {
-              criterionResultId: criterionResultId,
-              AND: [
-                {
-                  id: {
-                    notIn: existingNotCompliantItems.map((x) => x.id)
-                  }
+              id: {
+                notIn: existingNotCompliantItems.map((x) => x.id)
+              },
+              criterionResult: {
+                criterium: item.criterium,
+                topic: item.topic,
+                pageId: item.pageId,
+                page: {
+                  OR: [
+                    {
+                      auditUniqueId: uniqueId
+                    },
+                    {
+                      auditTransverse: {
+                        editUniqueId: uniqueId
+                      }
+                    }
+                  ]
                 }
-              ]
+              }
             }
           });
 
@@ -665,7 +678,6 @@ export class AuditService {
               id: item.pageId
             }
           },
-
           status: item.status,
           compliantComment: item.compliantComment,
           notCompliantComment: item.notCompliantComment,
@@ -1383,11 +1395,7 @@ export class AuditService {
         },
         include: {
           exampleImages: true,
-          notCompliantItems: {
-            orderBy: {
-              id: "asc"
-            }
-          }
+          notCompliantItems: true
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -1397,11 +1405,7 @@ export class AuditService {
         },
         include: {
           exampleImages: true,
-          notCompliantItems: {
-            orderBy: {
-              id: "asc"
-            }
-          }
+          notCompliantItems: true
         }
       })
     ]).then(results => results.flat());
@@ -1505,11 +1509,7 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true,
-                notCompliantItems: {
-                  orderBy: {
-                    id: "asc"
-                  }
-                }
+                notCompliantItems: true
               }
             }
           }
@@ -1519,11 +1519,7 @@ export class AuditService {
             results: {
               include: {
                 exampleImages: true,
-                notCompliantItems: {
-                  orderBy: {
-                    id: "asc"
-                  }
-                }
+                notCompliantItems: true
               }
             }
           }
@@ -1727,7 +1723,7 @@ export class AuditService {
 
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
                 }
               }))
             }
@@ -1749,7 +1745,7 @@ export class AuditService {
                   )
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id", "criterionResultId"]) }))
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
                 }
               }))
             }

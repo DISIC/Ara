@@ -148,10 +148,6 @@ class CriterionResultNotCompliantItem {
   @IsBoolean()
   @IsOptional()
   quickWin?: boolean;
-
-  @IsNumber()
-  @IsOptional()
-  criterionResultId?: number;
 }
 
 export class UpdateResultsDto {
