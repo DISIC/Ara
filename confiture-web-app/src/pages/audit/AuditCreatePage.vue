@@ -86,15 +86,28 @@ const steps = [
 ];
 const stepHeadingRef = ref<HTMLHeadingElement>();
 
+interface CreateAuditFormData {
+  auditType: AuditType | null;
+  procedureName: string;
+  pages: { name: string; url: string }[];
+  pageElements: {
+    multimedia: boolean;
+    table: boolean;
+    form: boolean;
+    frame: boolean;
+  };
+  auditorEmail: string;
+  auditorName: string;
+}
+
 // Setup audit object
-const audit = ref<CreateAuditRequestData>({
+const audit = ref<CreateAuditFormData>({
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
   pageElements: { multimedia: true, table: true, form: true, frame: true },
   auditorEmail: accountStore.account?.email ?? "",
-  auditorName: accountStore.account?.name ?? "",
-  auditor: null
+  auditorName: accountStore.account?.name ?? ""
 });
 
 // Default pages per audit type
@@ -130,7 +143,7 @@ watch(auditType, (newValue) => {
   }
 });
 
-async function submitStep(payload: Partial<CreateAuditRequestData>) {
+async function submitStep(payload: Partial<CreateAuditFormData>) {
   audit.value = {
     ...audit.value,
     ...payload
@@ -171,8 +184,17 @@ function submitAuditSettings() {
       .catch(captureWithPayloads);
   }
 
+  const data: CreateAuditRequestData = {
+    auditType: audit.value.auditType!,
+    procedureName: audit.value.procedureName,
+    pages: audit.value.pages,
+    pageElements: audit.value.pageElements,
+    auditorEmail: audit.value.auditorEmail,
+    auditorName: audit.value.auditorName
+  };
+
   auditStore
-    .createAudit(audit.value)
+    .createAudit(data)
     .then((newAudit) => {
       if (!accountStore.account) {
         auditStore.showAuditEmailAlert = true;

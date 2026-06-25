@@ -2,12 +2,13 @@ import { Type } from "class-transformer";
 import {
   IsArray,
   IsEmail,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested
 } from "class-validator";
 
-import { BaseAuditDto } from "./create-audit.dto";
+import { BaseAuditDto, CreateAuditPage } from "./create-audit.dto";
 
 class UpdateAuditEnvironment {
   /**
@@ -33,6 +34,15 @@ class UpdateAuditEnvironment {
    */
   @IsString()
   browser: string;
+}
+
+export class UpdateAuditPageDto extends CreateAuditPage {
+  /**
+   * Include the page ID in order to update an existing page.
+   */
+  @IsNumber()
+  @IsOptional()
+  id: number | null;
 }
 
 export class UpdateAuditDto extends BaseAuditDto {
@@ -123,4 +133,9 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsString({ each: true })
   @IsOptional()
   transverseElements: string[] | null;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateAuditPageDto)
+  pages: UpdateAuditPageDto[];
 }

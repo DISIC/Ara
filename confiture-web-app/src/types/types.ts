@@ -24,14 +24,8 @@ export interface AuditPage {
   url: string;
 }
 
-export interface PageElements {
-  multimedia?: boolean;
-  table?: boolean;
-  form?: boolean;
-  frame?: boolean;
-}
+export type PageElements = components["schemas"]["PageElements"];
 
-type AuditType = CreateDebugAuditDtoAuditType;
 export { CreateDebugAuditDtoAuditType as AuditType };
 
 export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
@@ -42,28 +36,14 @@ export { AuditListingItemDtoStatus as AuditStatus };
 /** An audit object as returned by the API. */
 export type Audit = components["schemas"]["AuditDto"];
 
-interface Auditor {
-  username: string;
-  isVerified: boolean;
-}
-
 /** Audit type fields needed to create an audit */
-export interface CreateAuditRequestData {
-  auditType: AuditType | null;
-  procedureName: string;
-  pages: Omit<AuditPage, "id" | "order">[];
-  pageElements?: PageElements;
-  auditorEmail: string | null;
-  auditorName: string | null;
-  auditor: Auditor | null;
-}
+export type CreateAuditRequestData = paths["/audits"]["post"]["requestBody"]["content"]["application/json"];
 
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   environments: Omit<AuditEnvironment, "id">[];
   pages: Omit<AuditPage, "id" | "order">[];
 };
-// export type UpdateAuditRequestData = components["schemas"]["UpdateAuditDto"];
 
 export type UpdateAuditStatementRequestData =
   paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
