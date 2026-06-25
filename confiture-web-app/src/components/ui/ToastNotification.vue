@@ -2,6 +2,14 @@
 import { useNotificationStore } from "../../store";
 
 const store = useNotificationStore();
+
+function onAction() {
+  store.notification?.action?.cb();
+
+  if (store.notification?.action?.hideOnTrigger) {
+    store.hideNotification();
+  }
+}
 </script>
 
 <template>
@@ -48,7 +56,7 @@ const store = useNotificationStore();
           <button
             v-if="store.notification.action"
             class="fr-btn fr-btn--tertiary-no-outline fr-mb-1v"
-            @click="store.notification?.action?.cb"
+            @click="onAction"
           >
             {{ store.notification.action.label }}
           </button>

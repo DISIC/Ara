@@ -4,7 +4,7 @@ import { marked } from "marked";
 import { computed, ref } from "vue";
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { useHideNotifications, useNotifications } from "../../composables/useNotifications";
+import { useNotifications } from "../../composables/useNotifications";
 import { LINKED_CRITERIA } from "../../criteria";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
@@ -127,7 +127,6 @@ function toggleTransverseComment() {
 }
 
 const notify = useNotifications();
-const hideNotify = useHideNotifications();
 
 const criteriumNotCompliantAccordion =
   ref<InstanceType<typeof CriteriumNotCompliantAccordion>>();
@@ -272,7 +271,6 @@ const updateResultNotCompliantItem = async (payload:
               await updateResultNotCompliantItem(
                 { item, action: UpdateItemAction.ADD }
               );
-              hideNotify();
             }
           }
         }
