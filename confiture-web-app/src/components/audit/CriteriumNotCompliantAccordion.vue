@@ -39,13 +39,13 @@ watch(() => props.items, () => {
   immediate: true
 });
 
-const orderByNotCompliantItems = computed(() => {
+const orderedItems = computed(() => {
   return orderBy(notCompliantItems.value, x => x.id);
 });
 
-const countNotCompliantItemsRecommandations = computed(() => {
+const notCompliantItemsCount = computed(() => {
   return notCompliantItems.value
-    .filter(x => x.comment || x.quickWin === true || x.title || x.userImpact)
+    .filter(x => x.comment || x.quickWin || x.title || x.userImpact)
     .length;
 });
 
@@ -124,7 +124,7 @@ function addEmptyErrorToNotCompliantItems() {
 }
 
 function onDeleteNotCompliantItemClick(index: number) {
-  emit("update:item", { item: orderByNotCompliantItems.value[index], action: UpdateItemAction.DELETE, debounce: false });
+  emit("update:item", { item: orderedItems.value[index], action: UpdateItemAction.DELETE, debounce: false });
 }
 
 function onUpdateNotCompliantItemClick(
@@ -143,10 +143,10 @@ function onUpdateNotCompliantItemClick(
     @opened="lazyAccordionOpened"
   >
     <template #title>
-      Erreurs et recommandations <span :class="{ 'fr-text--bold': countNotCompliantItemsRecommandations > 0 }"> ({{ countNotCompliantItemsRecommandations }})</span>
+      Erreurs et recommandations <span :class="{ 'fr-text--bold': notCompliantItemsCount > 0 }"> ({{ notCompliantItemsCount }})</span>
     </template>
 
-    <div v-for="(item, index) in orderByNotCompliantItems" :key="id + '-not-compliant-item-' + index" class="not-compliant-item">
+    <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + index" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"
