@@ -38,11 +38,6 @@ export class BaseAuditDto {
   @IsString()
   procedureName: string;
 
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => CreateAuditPage)
-  // pages: CreateAuditPage[];
-
   /**
    * @example "John Auditor"
    */
