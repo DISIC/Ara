@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chunk } from "lodash-es";
+import { chunk, orderBy } from "lodash-es";
 import { marked } from "marked";
 
 import { computed } from "vue";
@@ -38,6 +38,12 @@ const countNotCompliantItemsRecommandations = computed(() => {
     .filter(x => x.comment || x.quickWin === true || x.title || x.userImpact)
     .length;
 });
+
+const notCompliantItems = computed(() => {
+  return orderBy(error.notCompliantItems
+    .filter((x) =>
+      x.comment || x.quickWin === true || x.title || x.userImpact), x => x.id);
+});
 </script>
 
 <template>
@@ -56,9 +62,7 @@ const countNotCompliantItemsRecommandations = computed(() => {
 
     <div role="list">
       <div
-        v-for="(notCompliantItem, index) in error.notCompliantItems
-          .filter((x) =>
-            x.comment || x.quickWin === true || x.title || x.userImpact)"
+        v-for="(notCompliantItem, index) in notCompliantItems"
         :key="index"
         role="listitem"
         class="criterium-not-compliant-item"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { last } from "lodash-es";
+import { last, orderBy } from "lodash-es";
 
 import { computed, provide, ref, useTemplateRef, watch } from "vue";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
@@ -24,6 +24,10 @@ function getFocusWhenListEmpty(): HTMLElement | null {
 }
 
 const notCompliantItems = ref<NotCompliantItem[]>([]);
+
+const orderByNotCompliantItems = computed(() => {
+  return orderBy(notCompliantItems.value, x => x.id);
+});
 
 watch(() => props.items, () => {
   notCompliantItems.value = [...props.items];
@@ -132,7 +136,7 @@ function onUpdateNotCompliantItemClick(
       Erreurs et recommandations <span :class="{ 'fr-text--bold': countNotCompliantItemsRecommandations > 0 }"> ({{ countNotCompliantItemsRecommandations }})</span>
     </template>
 
-    <div v-for="(item, index) in notCompliantItems" :key="index" class="not-compliant-item">
+    <div v-for="(item, index) in orderByNotCompliantItems" :key="index" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"
