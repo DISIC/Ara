@@ -167,6 +167,30 @@ function getLabelError(notCompliantItemId?: number) {
   margin-block-end: 1.5rem;
 }
 
+.criterium-not-compliant-item :deep(h4) {
+  font-size: 1.375rem;
+}
+
+.criterium-not-compliant-item :deep(h5) {
+  font-size: 1.25rem;
+}
+
+.criterium-not-compliant-item :deep(h6) {
+  font-size: 1.125rem;
+}
+
+.criterium-not-compliant-item :deep(.tiptap--rendered p:last-child) {
+  margin-block-end: 0;
+}
+
+.criterium-not-compliant-item :deep(.tiptap--rendered ul) {
+  list-style: disc;
+}
+
+.criterium-not-compliant-item :deep(.tiptap--rendered ul, .tiptap--rendered ol) {
+  margin-inline-start: 2em;
+}
+
 .criterium-not-compliant-item-badges {
   margin-inline-end: auto;
 }
@@ -180,34 +204,5 @@ function getLabelError(notCompliantItemId?: number) {
   font-style: italic;
   color: var(--text-mention-grey);
   text-align: center;
-}
-</style>
-
-<style>
-.criterium-not-compliant-item h4 {
-  font-size: 1.375rem;
-}
-
-.criterium-not-compliant-item h5 {
-  font-size: 1.25rem;
-}
-
-.criterium-not-compliant-item h6 {
-  font-size: 1.125rem;
-}
-
-.tiptap--rendered {
-  p:last-child {
-    margin-bottom: 0;
-  }
-
-  ul {
-    list-style: disc;
-  }
-
-  ol,
-  ul {
-    margin-left: 2em;
-  }
 }
 </style>

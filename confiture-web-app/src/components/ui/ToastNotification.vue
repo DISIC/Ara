@@ -99,4 +99,15 @@ function onAction() {
   opacity: 0;
   transform: translateY(2rem);
 }
+
+/* Align icon and close button for sm toast alert (because toasts with action have bigger height). */
+.fr-alert {
+  &.fr-alert--sm::before {
+    margin: 1rem 0.5rem;
+  }
+
+  .fr-btn--close {
+    inset-block-start: auto !important;
+  }
+}
 </style>
