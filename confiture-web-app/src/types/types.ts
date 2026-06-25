@@ -9,20 +9,9 @@ import {
   paths
 } from "./confiture-api";
 
-export interface AuditEnvironment {
-  id: number;
-  platform: string;
-  operatingSystem: string;
-  assistiveTechnology: string;
-  browser: string;
-}
+export type AuditEnvironment = components["schemas"]["TestEnvironmentDto"];
 
-export interface AuditPage {
-  id: number;
-  order: number;
-  name: string;
-  url: string;
-}
+export type AuditPage = components["schemas"]["PageDto"];
 
 export type PageElements = components["schemas"]["PageElements"];
 
