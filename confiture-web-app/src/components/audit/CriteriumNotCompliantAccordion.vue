@@ -188,7 +188,8 @@ function onUpdateNotCompliantItemClick(
 
   </LazyAccordion>
 </template>
-<style>
+
+<style scoped>
 .not-compliant-item {
   padding: 1em 0.75rem;
   padding-block-end: 1.25em;
@@ -199,9 +200,7 @@ function onUpdateNotCompliantItemClick(
     padding-top: 0.5em;
   }
 }
-</style>
 
-<style scoped>
 .not-compliant-item-add {
   padding: 1em 0;
   width: 100%;
@@ -219,9 +218,7 @@ function onUpdateNotCompliantItemClick(
     outline-offset: -2px;
   }
 }
-</style>
 
-<style scoped>
 :deep(.fr-collapse--expanded) {
   padding-block: 0 0 !important;
 }
