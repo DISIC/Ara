@@ -149,21 +149,9 @@ function handleBrowseInputChange(e: Event) {
   insertFilesAtSelection(editor.value, Array.from(files));
 }
 
-watch(
-  [() => props.editable, () => props.disabled, () => props.modelValue],
-  ([editable, disabled, modelValue]) => {
-    editor.value.setEditable(editable && !disabled);
-
-    if (modelValue && editor.value) {
-      const lastPosition = editor.value.view.state.selection.from;
-
-      editor.value.commands.setContent(getContent());
-
-      // because sometimes, we lost cursor's position after update an item
-      editor.value.$pos(lastPosition);
-    }
-  }
-);
+watch([() => props.editable, () => props.disabled], ([editable, disabled]) => {
+  editor.value.setEditable(editable && !disabled);
+});
 
 const innerWidth = shallowRef(0);
 
