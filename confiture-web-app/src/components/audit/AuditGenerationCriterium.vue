@@ -107,14 +107,15 @@ const transverseComment = computed((): string | null => {
 });
 
 const transverseNotCompliantItems = computed((): NotCompliantItem[] => {
-  if (store.data && transversePageId.value) {
-    if (transverseStatus.value === CriteriumResultStatus.NOT_COMPLIANT) {
-      const result =
-        store.data?.[transversePageId.value][props.topicNumber][
-          props.criterium.number
-        ];
-      return result.notCompliantItems;
-    }
+  if (
+    store.data
+    && transversePageId.value
+    && transverseStatus.value === CriteriumResultStatus.NOT_COMPLIANT
+  ) {
+    const result = store.data[transversePageId.value][props.topicNumber][
+      props.criterium.number
+    ];
+    return result.notCompliantItems;
   }
 
   return [];
@@ -282,16 +283,7 @@ const updateResultNotCompliantItem = async (payload:
 };
 
 const updateResultNotCompliantItemDebounce =
-  debounce(
-    async (payload:
-    {
-      item: NotCompliantItem;
-      action: UpdateItemAction;
-    }) => {
-      await updateResultNotCompliantItem(payload);
-    },
-    500
-  );
+  debounce(updateResultNotCompliantItem, 500);
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
