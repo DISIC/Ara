@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const baseTitle = "Erreur";
 
-function handleItemValueClick(field: keyof NotCompliantItem, value: any) {
+function handleItemChange(field: keyof NotCompliantItem, value: any) {
   const item = { ...props.item };
   item[field] = value as never;
 
@@ -89,7 +89,7 @@ defineExpose({
     label="Titre de l'erreur"
     :label-sr-only="`${index + 1}`"
     class="fr-mb-2w user-error-label"
-    @input="handleItemValueClick('title', $event.target.value)"
+    @input="handleItemChange('title', $event.target.value)"
   />
 
   <RichTextEditor
@@ -100,7 +100,7 @@ defineExpose({
     :label="`Recommandations sur l'erreur ${index + 1}`"
     class="fr-mb-1w"
     description="Description de l’erreur et proposition de correction"
-    @update:model-value="handleItemValueClick('comment', $event)"
+    @update:model-value="handleItemChange('comment', $event)"
   />
 
   <!-- USER IMPACT -->
@@ -112,7 +112,7 @@ defineExpose({
     :default-value="null"
     :disabled="isOffline"
     :model-value="item.userImpact"
-    @update:model-value="handleItemValueClick('userImpact', $event)"
+    @update:model-value="handleItemChange('userImpact', $event)"
   >
     <template #label>
       <div class="user-impact-label">
@@ -161,7 +161,7 @@ defineExpose({
         :id="`criterium-quick-win-${item.id}-${index}`"
         :checked="item.quickWin"
         type="checkbox"
-        @input="handleItemValueClick('quickWin', ($event.target as HTMLInputElement).checked)"
+        @input="handleItemChange('quickWin', ($event.target as HTMLInputElement).checked)"
       />
       <label class="fr-label" :for="`criterium-quick-win-${item.id}-${index}`">
         Facile à corriger
