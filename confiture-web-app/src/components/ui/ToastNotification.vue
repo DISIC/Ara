@@ -19,10 +19,11 @@ function onAction() {
         <div
           v-if="store.notification"
           :key="store.notification.id"
-          class="toast-notification fr-alert"
+          class="fr-alert toast-notification"
           :class="[
             `fr-alert--${store.notification.status}`,
             {
+              'toast-notification--with-action': store.notification.action,
               'fr-alert--sm':
                 !store.notification.title && store.notification.description
             }
@@ -100,8 +101,8 @@ function onAction() {
   transform: translateY(2rem);
 }
 
-/* Align icon and close button for sm toast alert (because toasts with action have bigger height). */
-.fr-alert {
+/* Align icon and close button for sm toast with action */
+.toast-notification--with-action {
   &.fr-alert--sm::before {
     margin: 1rem 0.5rem;
   }
