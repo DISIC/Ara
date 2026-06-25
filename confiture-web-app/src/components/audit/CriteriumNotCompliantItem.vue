@@ -21,10 +21,11 @@ const emit = defineEmits<{
 
 const baseTitle = "Erreur";
 
-function handleItemChange(field: keyof NotCompliantItem, value: any) {
-  const item = { ...props.item };
-  item[field] = value as never;
-
+function handleItemChange(
+  field: keyof NotCompliantItem,
+  value: NotCompliantItem[keyof NotCompliantItem]
+) {
+  const item = { ...props.item, [field]: value };
   emit("update", props.index, item, field === "title" || field === "comment");
 }
 
