@@ -67,7 +67,7 @@ function getLabelError(notCompliantItemId?: number) {
         class="criterium-not-compliant-item"
       >
         <div :id="`${sectionId}_erreur_${index + 1}`" class="criterium-not-compliant-item-header">
-          <ul class="fr-badges-group fr-mb-2w">
+          <ul v-if="notCompliantItem.userImpact || notCompliantItem.quickWin" class="criterium-not-compliant-item-badges fr-badges-group fr-mb-2w">
             <li v-if="notCompliantItem.userImpact">
               <p
                 class="fr-badge fr-badge--sm fr-m-1-5v"
@@ -167,9 +167,13 @@ function getLabelError(notCompliantItemId?: number) {
   margin-block-end: 1.5rem;
 }
 
+.criterium-not-compliant-item-badges {
+  margin-inline-end: auto;
+}
+
 .criterium-not-compliant-item-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
 }
 
 .criterium-not-compliant-item-no-erreur {

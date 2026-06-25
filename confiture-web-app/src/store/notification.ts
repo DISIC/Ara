@@ -10,13 +10,17 @@ interface NotificationStoreState {
     status: NotificationStatus;
     title?: string;
     description?: string;
-    action?: { label: string; cb: () => void };
+    action?: {
+      label: string;
+      cb: () => void;
+      hideOnTrigger?: boolean;
+    };
     link?: { label: string; to: RouteLocationRaw };
   } | null;
 }
 
 interface NotificationOptions {
-  action?: { label: string; cb: () => void };
+  action?: { label: string; cb: () => void; hideOnTrigger?: boolean };
   link?: { label: string; to: RouteLocationRaw };
 }
 
@@ -34,6 +38,10 @@ export const useNotificationStore = defineStore("notification", {
       description?: string,
       options?: NotificationOptions
     ) {
+      if (options?.action) {
+        options.action.hideOnTrigger ??= true;
+      }
+
       this.notification = {
         id: this.nextId++,
         description,
