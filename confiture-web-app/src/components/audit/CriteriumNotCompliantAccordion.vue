@@ -1,11 +1,3 @@
-<script lang="ts">
-export enum UpdateItemAction {
-  ADD,
-  UPDATE,
-  DELETE
-}
-</script>
-
 <script setup lang="ts">
 import { last, orderBy } from "lodash-es";
 
@@ -51,10 +43,12 @@ const notCompliantItemsCount = computed(() => {
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:item", payload: { item: NotCompliantItem; action: UpdateItemAction; debounce: boolean }): void;
+  (e: "create:item"): void;
+  (e: "update:item", payload: { item: NotCompliantItem; debounce: boolean }): void;
+  (e: "delete:item", payload: { id: number }): void;
 }>();
 
-defineExpose({ disclose, focus });
+defineExpose({ disclose, focus, refreshNotCompliantItems });
 
 const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
@@ -72,6 +66,10 @@ async function disclose() {
 
 function focus(index?: number) {
   setFocusToTextEditor(index);
+}
+
+function refreshNotCompliantItems(items: NotCompliantItem[]) {
+  notCompliantItems.value = [...items];
 }
 
 function lazyAccordionOpened() {
@@ -111,28 +109,18 @@ function setFocusToCommentEditor() {
 }
 
 function addEmptyErrorToNotCompliantItems() {
-  emit("update:item", {
-    item: {
-      title: undefined,
-      comment: null,
-      userImpact: null,
-      quickWin: false
-    },
-    action: UpdateItemAction.ADD,
-    debounce: false
-  });
+  emit("create:item");
 }
 
-function onDeleteNotCompliantItemClick(index: number) {
-  emit("update:item", { item: orderedItems.value[index], action: UpdateItemAction.DELETE, debounce: false });
+function onDeleteNotCompliantItemClick(id: number) {
+  emit("delete:item", { id });
 }
 
 function onUpdateNotCompliantItemClick(
-  index: number,
   item: NotCompliantItem,
   debounce: boolean
 ) {
-  emit("update:item", { item, action: !item.id ? UpdateItemAction.ADD : UpdateItemAction.UPDATE, debounce });
+  emit("update:item", { item, debounce });
 }
 </script>
 

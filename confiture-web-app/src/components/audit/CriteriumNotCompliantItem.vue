@@ -15,8 +15,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "delete", index: number): void;
-  (e: "update", index: number, item: NotCompliantItem, debounce: boolean): void;
+  (e: "delete", id: number): void;
+  (e: "update", item: NotCompliantItem, debounce: boolean): void;
 }>();
 
 const baseTitle = "Erreur";
@@ -26,7 +26,7 @@ function handleItemChange(
   value: NotCompliantItem[keyof NotCompliantItem]
 ) {
   const item = { ...props.item, [field]: value };
-  emit("update", props.index, item, field === "title" || field === "comment");
+  emit("update", item, field === "title" || field === "comment");
 }
 
 const userImpacts: Array<{
@@ -77,7 +77,7 @@ defineExpose({
       <button
         type="button"
         class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-        @click="emit('delete', index)"
+        @click="emit('delete', item.id)"
       >Supprimer<span class="fr-sr-only">&nbsp;l'erreur {{ index + 1 }}</span></button>
     </div>
   </div>

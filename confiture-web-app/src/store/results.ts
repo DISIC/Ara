@@ -8,7 +8,9 @@ import {
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
-  ExampleImageFile
+  ExampleImageFile,
+  NotCompliantItem,
+  UpdateNotCompliantItemData
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -556,6 +558,43 @@ export const useResultsStore = defineStore("results", {
 
       await this.updateResults(uniqueId, updates);
       await auditStore.publishAudit(uniqueId);
+    },
+
+    async createNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number
+    ): Promise<NotCompliantItem> {
+      return (await api
+        .post(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items`)
+        .json()) as NotCompliantItem;
+    },
+
+    async updateNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number,
+      notCompliantItemId: number,
+      notCompliantItem: UpdateNotCompliantItemData
+    ): Promise<NotCompliantItem> {
+      return (await api
+        .patch(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`, {
+          json: notCompliantItem
+        })
+        .json()) as NotCompliantItem;
+    },
+
+    async deleteNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number,
+      notCompliantItemId: number
+    ): Promise<void> {
+      await api
+        .delete(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`);
     }
   }
 });

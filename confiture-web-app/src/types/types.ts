@@ -128,12 +128,14 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
 export type NotCompliantItem = {
-  id?: number;
+  id: number;
   title?: string;
   comment: string | null;
   userImpact: CriterionResultUserImpact | null;
   quickWin: boolean;
 };
+
+export type UpdateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items/{itemId}"]["patch"]["requestBody"]["content"]["application/json"];
 
 export interface CriteriumResult {
   // ID

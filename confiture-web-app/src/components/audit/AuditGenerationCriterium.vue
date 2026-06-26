@@ -11,18 +11,19 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
+  CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
   NotCompliantItem
 } from "../../types";
-import { formatStatus } from "../../utils";
+import { formatStatus, slugify } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import CriteriumCompliantAccordion from "./CriteriumCompliantAccordion.vue";
 import CriteriumNotApplicableAccordion from "./CriteriumNotApplicableAccordion.vue";
-import CriteriumNotCompliantAccordion, { UpdateItemAction } from "./CriteriumNotCompliantAccordion.vue";
+import CriteriumNotCompliantAccordion from "./CriteriumNotCompliantAccordion.vue";
 import CriteriumTestsAccordion from "./CriteriumTestsAccordion.vue";
 
 const store = useResultsStore();
@@ -210,73 +211,104 @@ const updateResultComment = debounce(
   500
 );
 
-const updateResultNotCompliantItem = async (payload:
-{ item: NotCompliantItem; action: UpdateItemAction }) => {
-  const { item, action } = payload;
+const createNotCompliantItem = async () => {
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
 
   const notCompliantItems: NotCompliantItem[] =
     [...result.value.notCompliantItems];
 
-  switch (action) {
-    case UpdateItemAction.ADD:
-      notCompliantItems.push(item);
-      break;
+  const itemAdded = await store.createNotCompliantItem(
+    auditUniqueId,
+    slug,
+    topicNumber,
+    criteriumNumber
+  );
 
-    case UpdateItemAction.UPDATE: {
-      const idx = notCompliantItems.findIndex(x => x.id === item.id);
-      if (idx === -1) {
-        return;
-      }
+  notCompliantItems.push(itemAdded);
 
-      notCompliantItems[idx] = item;
-      break;
-    }
-    case UpdateItemAction.DELETE: {
-      const idx = notCompliantItems.findIndex(x => x.id === item.id);
-      if (idx === -1) {
-        return;
-      }
+  criteriumNotCompliantAccordion
+    .value?.refreshNotCompliantItems(notCompliantItems);
+  criteriumNotCompliantAccordion.value?.focus();
+};
 
-      notCompliantItems.splice(idx, 1);
-      break;
-    }
-    default:
-      return;
+const deleteNotCompliantItem = async (payload: { id: number }) => {
+  const { id } = payload;
+
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
+
+  const notCompliantItems: NotCompliantItem[] =
+    [...result.value.notCompliantItems];
+
+  const idx = notCompliantItems.findIndex(x => x.id === id);
+  if (idx === -1) {
+    return;
   }
 
-  try {
-    await store
-      .updateResults(
-        props.auditUniqueId,
-        [{ ...result.value, notCompliantItems }]
-      );
+  await store.deleteNotCompliantItem(
+    auditUniqueId,
+    slug,
+    topicNumber,
+    criteriumNumber,
+    id
+  );
 
-    if (action === UpdateItemAction.ADD) {
-      // we fetch to have notCompliantItemId
-      await store.fetchResults(props.auditUniqueId);
-      criteriumNotCompliantAccordion.value?.focus();
+  notCompliantItems.splice(idx, 1);
+
+  criteriumNotCompliantAccordion
+    .value?.refreshNotCompliantItems(notCompliantItems);
+
+  notify(
+    "success",
+    undefined,
+    `Erreur supprimée`,
+    {
+      action: {
+        label: "Annuler",
+        cb: async () => {
+          await createNotCompliantItem();
+        }
+      }
+    }
+  );
+};
+
+const updateResultNotCompliantItem = async (payload:
+{ item: NotCompliantItem }) => {
+  const { item } = payload;
+
+  try {
+    const { auditUniqueId, page, topicNumber, criterium } = props;
+    const slug = slugify(page.name);
+    const criteriumNumber = criterium.number;
+
+    const notCompliantItems: NotCompliantItem[] =
+      [...result.value.notCompliantItems];
+
+    await store.updateNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      item.id,
+      {
+        comment: item.comment,
+        quickWin: item.quickWin,
+        title: item.title,
+        userImpact:
+            item.userImpact as Record<string, CriterionResultUserImpact> | null
+      }
+    );
+
+    const idx = notCompliantItems.findIndex(x => x.id === item.id);
+    if (idx === -1) {
       return;
     }
 
-    if (action === UpdateItemAction.DELETE)
-    {
-      notify(
-        "success",
-        undefined,
-        `Erreur supprimée`,
-        {
-          action: {
-            label: "Annuler",
-            cb: async () => {
-              item.id = undefined;
-              await updateResultNotCompliantItem(
-                { item, action: UpdateItemAction.ADD }
-              );
-            }
-          }
-        }
-      );
-    }
+    notCompliantItems[idx] = item;
   } catch (error) {
     handleUpdateResultError(error);
   }
@@ -459,9 +491,11 @@ const parentCriterium = computed(() => {
       :example-images="result.exampleImages"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
+      @create:item="createNotCompliantItem"
       @update:item="(event) => event.debounce ?
         updateResultNotCompliantItemDebounce(event)
         : updateResultNotCompliantItem(event)"
+      @delete:item="deleteNotCompliantItem"
     />
 
     <!-- TESTS + METHODO -->
