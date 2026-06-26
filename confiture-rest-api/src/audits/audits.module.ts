@@ -8,6 +8,7 @@ import { AuditExistsPipe } from "./audit.pipe";
 import { AuditService } from "./audit.service";
 import { AuditsController } from "./audits.controller";
 import { FileStorageService } from "./file-storage.service";
+import { NotCompliantItemsController } from "./not-compliant-items.controller";
 import { ReportsController } from "./reports.controller";
 import { StatementsController } from "./statements.controller";
 
@@ -19,7 +20,7 @@ import { StatementsController } from "./statements.controller";
     AuditExportService,
     AuditExistsPipe
   ],
-  controllers: [AuditsController, ReportsController, StatementsController],
+  controllers: [AuditsController, ReportsController, StatementsController, NotCompliantItemsController],
   imports: [
     MulterModule.register({
       fileFilter(_req, file, callback) {
