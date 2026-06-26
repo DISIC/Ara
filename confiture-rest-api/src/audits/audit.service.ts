@@ -1092,7 +1092,7 @@ export class AuditService {
    * Update an audit editionDate, only when it has a publication date.
    * @returns the update audit if it is updated, undefined otherwise
    */
-  private async updateAuditEditDate(uniqueId: string) {
+  async updateAuditEditDate(uniqueId: string) {
     const [audit, auditIsComplete] = await Promise.all([
       this.prisma.audit.findUnique({
         where: {

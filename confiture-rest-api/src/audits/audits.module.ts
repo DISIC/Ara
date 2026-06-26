@@ -8,13 +8,15 @@ import { AuditExistsPipe } from "./audit.pipe";
 import { AuditService } from "./audit.service";
 import { AuditsController } from "./audits.controller";
 import { FileStorageService } from "./file-storage.service";
-import { NotCompliantItemsController } from "./not-compliant-items.controller";
+import { NotCompliantItemsController } from "./not-compliant-items/not-compliant-items.controller";
+import { NotCompliantItemsService } from "./not-compliant-items/not-compliant-items.service";
 import { ReportsController } from "./reports.controller";
 import { StatementsController } from "./statements.controller";
 
 @Module({
   providers: [
     AuditService,
+    NotCompliantItemsService,
     MailService,
     FileStorageService,
     AuditExportService,
