@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma.service";
 import { AuditService } from "../audit.service";
 import { NotCompliantItemDto } from "../dto/entities/not-compliant-item.dto";
@@ -12,17 +12,28 @@ export class NotCompliantItemsService {
     private readonly auditService: AuditService
   ) { }
 
-  async createItem(auditUniqueId: string, pageSlug: string, topic: number, criterium: number): Promise<NotCompliantItemDto> {
+  async createItem(
+    auditUniqueId: string,
+    pageSlug: string,
+    topic: number,
+    criterium: number
+  ): Promise<NotCompliantItemDto> {
     // FIXME: find a way to create item without fetching page first
-    const page = await this.prisma.auditedPage.findUniqueOrThrow({
+    const page = await this.prisma.auditedPage.findFirst({
       where: {
-        auditUniqueId_slug: {
-          auditUniqueId,
-          slug: pageSlug
-        }
-      },
-      select: { id: true }
+        OR: [
+          // search for normal pages
+          { auditUniqueId },
+          // search for transverse page
+          { auditTransverse: { editUniqueId: auditUniqueId } }
+        ],
+        slug: pageSlug
+      }
     });
+
+    if (!page) {
+      throw new NotFoundException();
+    }
 
     const newItem = await this.prisma.notCompliantItem.create({
       data: {
@@ -44,23 +55,14 @@ export class NotCompliantItemsService {
     return newItem;
   }
 
-  getItems(auditUniqueId: string, pageSlug: string, topic: number, criterium: number): Promise<NotCompliantItemDto[]> {
-    return this.prisma.notCompliantItem.findMany({
-      where: {
-        criterionResult: {
-          topic,
-          criterium,
-          page: {
-            slug: pageSlug,
-            auditUniqueId
-          }
-        }
-      },
-      select: NOT_COMPLIANT_ITEM_SELECT
-    });
-  }
-
-  async updateItem(auditUniqueId: string, pageSlug: string, topic: number, criterium: number, itemId: number, update: UpdateNotCompliantItemDto): Promise<NotCompliantItemDto> {
+  async updateItem(
+    auditUniqueId: string,
+    pageSlug: string,
+    topic: number,
+    criterium: number,
+    itemId: number,
+    update: UpdateNotCompliantItemDto
+  ): Promise<NotCompliantItemDto> {
     const updatedItem = await this.prisma.notCompliantItem.update({
       where: {
         id: itemId,
@@ -69,7 +71,10 @@ export class NotCompliantItemsService {
           criterium,
           page: {
             slug: pageSlug,
-            auditUniqueId
+            OR: [
+              { auditUniqueId },
+              { auditTransverse: { editUniqueId: auditUniqueId } }
+            ]
           }
         }
       },
@@ -87,7 +92,13 @@ export class NotCompliantItemsService {
     return updatedItem;
   }
 
-  async deleteItem(auditUniqueId: string, pageSlug: string, topic: number, criterium: number, itemId: number) {
+  async deleteItem(
+    auditUniqueId: string,
+    pageSlug: string,
+    topic: number,
+    criterium: number,
+    itemId: number
+  ) {
     await this.prisma.notCompliantItem.delete({
       where: {
         id: itemId,
@@ -96,7 +107,10 @@ export class NotCompliantItemsService {
           criterium,
           page: {
             slug: pageSlug,
-            auditUniqueId
+            OR: [
+              { auditUniqueId },
+              { auditTransverse: { editUniqueId: auditUniqueId } }
+            ]
           }
         }
       }
