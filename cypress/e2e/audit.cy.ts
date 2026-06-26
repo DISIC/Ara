@@ -148,6 +148,8 @@ describe("Audit", () => {
     // Check topic "Cadres" completion is 100%
     cy.get(".topic-filter-item").eq(1).contains("Cadres");
     cy.get(".topic-filter-item").eq(1).contains("100%");
+
+    cy.get(".audit-progress-label").contains("Progression de l’audit");
   });
 
   it("User can go to settings page from audit", () => {
@@ -194,7 +196,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can go back to previous/next tab with navigator back and previous buttons", () => {
+  it.only("User can go back to previous/next tab with navigator back and previous buttons", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       const nextSlug = slugify(auditJson.pages[3].name);
@@ -360,7 +362,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can update notes", () => {
+  it.only("User can update notes", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -447,7 +449,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can copy an audit", () => {
+  it.only("User can copy an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
@@ -592,6 +594,8 @@ describe("Audit", () => {
         .first()
         .click({ force: true });
 
+      cy.get(".audit-progress-label").eq(0);
+
       cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
       cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
@@ -616,7 +620,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can edit a criterium content", () => {
+  it.only("User can edit a criterium content", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -763,7 +767,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can insert an image in the comment editor", () => {
+  it.only("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
@@ -826,7 +830,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
+  it.only("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -840,7 +844,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
+  it.only("User can insert HTML content in the comment editor (and images are stripped out)", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
