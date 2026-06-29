@@ -177,19 +177,7 @@ const siteUrl = computed(() => {
                 || report.data.planActionUrl"
             >
               <p>
-                A cette fin, {{ report.data.procedureInitiator }} met en œuvre
-                <template
-                  v-if="report.data.schemaPluriannuelUrl
-                    && report.data.planActionUrl"
-                >
-                  la stratégie et les actions suivantes :
-                </template>
-                <template
-                  v-else-if="report.data.schemaPluriannuelUrl"
-                >
-                  la stratégie suivante :
-                </template>
-                <template v-else>les actions suivantes :</template>
+                À cette fin
               </p>
               <ul class="fr-mb-9v">
                 <li v-if="report.data.schemaPluriannuelUrl">
