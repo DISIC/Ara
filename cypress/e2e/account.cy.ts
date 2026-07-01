@@ -250,7 +250,7 @@ describe("Account", () => {
       });
     });
 
-    it.only("User can delete their account", () => {
+    it("User can delete their account", () => {
       cy.createTestAccount({ login: true }).then(({ username, password }) => {
         cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
           cy.visit("http://localhost:3000/compte/parametres");
