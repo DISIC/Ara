@@ -553,7 +553,7 @@ export const useResultsStore = defineStore("results", {
               comment: sample(["Commentaire non conforme", "Rien"])!,
               userImpact: sample(CriterionResultUserImpact)!,
               quickWin: false
-            }
+            } as NotCompliantItem
           ]
         })) ?? [];
 
