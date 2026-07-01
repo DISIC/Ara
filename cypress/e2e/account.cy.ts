@@ -255,8 +255,6 @@ describe("Account", () => {
         cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
           cy.visit("http://localhost:3000/compte/parametres");
 
-          // cy.log(editId)
-
           // Delete account form
           cy.contains("button", "Supprimer mon compte").click();
           cy.getByLabel(
