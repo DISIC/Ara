@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Param, Patch, Post } from "@nestjs/common";
 import { AuditId } from "../audit-id.decorator";
 import { NotCompliantItemDto } from "../dto/entities/not-compliant-item.dto";
+import { CreateNotCompliantItemDto } from "./dto/create-not-compliant-item.dto";
 import { UpdateNotCompliantItemDto } from "./dto/update-not-compliant-item.dto";
 import { NotCompliantItemsService } from "./not-compliant-items.service";
 
@@ -13,9 +14,10 @@ export class NotCompliantItemsController {
     @AuditId() uniqueId: string,
     @Param("slug") slug: string,
     @Param("topic") topic: string,
-    @Param("criterium") criterium: string
+    @Param("criterium") criterium: string,
+    @Body() body: CreateNotCompliantItemDto | undefined
   ): Promise<NotCompliantItemDto> {
-    return this.itemService.createItem(uniqueId, slug, Number(topic), Number(criterium));
+    return this.itemService.createItem(uniqueId, slug, Number(topic), Number(criterium), body);
   }
 
   @Patch(":itemId")

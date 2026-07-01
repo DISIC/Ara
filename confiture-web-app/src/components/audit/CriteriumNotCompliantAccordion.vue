@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { last, orderBy } from "lodash-es";
 
-import { computed, provide, ref, useTemplateRef, watch } from "vue";
+import { computed, provide, useTemplateRef } from "vue";
 import { ExampleImageFile, NotCompliantItem } from "../../types";
 import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
@@ -12,7 +12,7 @@ import LazyAccordion from "./LazyAccordion.vue";
 const props = defineProps<{
   id: string;
   exampleImages: ExampleImageFile[];
-  items: NotCompliantItem[];
+  notCompliantItems: NotCompliantItem[];
 }>();
 
 provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
@@ -23,20 +23,12 @@ function getFocusWhenListEmpty(): HTMLElement | null {
     null;
 }
 
-const notCompliantItems = ref<NotCompliantItem[]>([]);
-
-watch(() => props.items, () => {
-  notCompliantItems.value = [...props.items];
-}, {
-  immediate: true
-});
-
 const orderedItems = computed(() => {
-  return orderBy(notCompliantItems.value, x => x.id);
+  return orderBy(props.notCompliantItems, x => x.id);
 });
 
 const notCompliantItemsCount = computed(() => {
-  return notCompliantItems.value
+  return props.notCompliantItems
     .filter(x => x.comment || x.quickWin || x.title || x.userImpact)
     .length;
 });
@@ -48,7 +40,7 @@ const emit = defineEmits<{
   (e: "delete:item", payload: { id: number }): void;
 }>();
 
-defineExpose({ disclose, focus, refreshNotCompliantItems });
+defineExpose({ disclose, focus });
 
 const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
@@ -68,12 +60,8 @@ function focus(index?: number) {
   setFocusToTextEditor(index);
 }
 
-function refreshNotCompliantItems(items: NotCompliantItem[]) {
-  notCompliantItems.value = [...items];
-}
-
 function lazyAccordionOpened() {
-  if (!notCompliantItems.value.length) {
+  if (!props.notCompliantItems.length) {
     addEmptyErrorToNotCompliantItems();
   }
 
@@ -134,7 +122,7 @@ function onUpdateNotCompliantItemClick(
       Erreurs et recommandations <span :class="{ 'fr-text--bold': notCompliantItemsCount > 0 }"> ({{ notCompliantItemsCount }})</span>
     </template>
 
-    <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + index" class="not-compliant-item">
+    <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + item.id" class="not-compliant-item">
 
       <CriteriumNotCompliantItem
         ref="criteriumNotCompliantItemRef"

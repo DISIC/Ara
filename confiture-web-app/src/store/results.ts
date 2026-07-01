@@ -1,7 +1,7 @@
 import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
-
 import { api } from "../api";
+
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditType,
@@ -12,6 +12,7 @@ import {
   NotCompliantItem,
   UpdateNotCompliantItemData
 } from "../types";
+import { CreateNotCompliantItemDto } from "./../../../confiture-rest-api/src/audits/not-compliant-items/dto/create-not-compliant-item.dto";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
 
@@ -564,8 +565,17 @@ export const useResultsStore = defineStore("results", {
       uniqueId: string,
       slug: string,
       topic: number,
-      criterium: number
+      criterium: number,
+      notCompliantItem: CreateNotCompliantItemDto | null = null
     ): Promise<NotCompliantItem> {
+      if (notCompliantItem) {
+        return (await api
+          .post(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items`, {
+            json: notCompliantItem
+          })
+          .json()) as NotCompliantItem;
+      }
+
       return (await api
         .post(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items`)
         .json()) as NotCompliantItem;

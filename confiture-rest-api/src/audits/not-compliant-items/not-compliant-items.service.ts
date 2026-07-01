@@ -3,6 +3,7 @@ import { PrismaService } from "src/prisma.service";
 import { AuditService } from "../audit.service";
 import { NotCompliantItemDto } from "../dto/entities/not-compliant-item.dto";
 import { NOT_COMPLIANT_ITEM_SELECT } from "../prisma-selects";
+import { CreateNotCompliantItemDto } from "./dto/create-not-compliant-item.dto";
 import { UpdateNotCompliantItemDto } from "./dto/update-not-compliant-item.dto";
 
 @Injectable()
@@ -16,7 +17,8 @@ export class NotCompliantItemsService {
     auditUniqueId: string,
     pageSlug: string,
     topic: number,
-    criterium: number
+    criterium: number,
+    create: CreateNotCompliantItemDto | undefined
   ): Promise<NotCompliantItemDto> {
     // FIXME: find a way to create item without fetching page first
     const page = await this.prisma.auditedPage.findFirst({
@@ -45,7 +47,11 @@ export class NotCompliantItemsService {
               pageId: page.id
             }
           }
-        }
+        },
+        comment: create?.comment,
+        quickWin: create?.quickWin,
+        title: create?.title,
+        userImpact: create?.userImpact
       },
       select: NOT_COMPLIANT_ITEM_SELECT
     });

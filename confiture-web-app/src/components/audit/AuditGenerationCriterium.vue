@@ -211,26 +211,27 @@ const updateResultComment = debounce(
   500
 );
 
-const createNotCompliantItem = async () => {
+const createNotCompliantItem = async (
+  itemToCreate: NotCompliantItem | null = null) => {
   const { auditUniqueId, page, topicNumber, criterium } = props;
   const slug = slugify(page.name);
   const criteriumNumber = criterium.number;
-
-  const notCompliantItems: NotCompliantItem[] =
-    [...result.value.notCompliantItems];
 
   const itemAdded = await store.createNotCompliantItem(
     auditUniqueId,
     slug,
     topicNumber,
-    criteriumNumber
+    criteriumNumber,
+    itemToCreate
   );
 
-  notCompliantItems.push(itemAdded);
+  result.value.notCompliantItems = [
+    ...result.value.notCompliantItems,
+    itemAdded
+  ];
 
-  criteriumNotCompliantAccordion
-    .value?.refreshNotCompliantItems(notCompliantItems);
-  criteriumNotCompliantAccordion.value?.focus();
+  // the time required for the value `result.value.notCompliantItems` to propagate
+  setTimeout(() => criteriumNotCompliantAccordion.value?.focus(), 100);
 };
 
 const deleteNotCompliantItem = async (payload: { id: number }) => {
@@ -240,13 +241,7 @@ const deleteNotCompliantItem = async (payload: { id: number }) => {
   const slug = slugify(page.name);
   const criteriumNumber = criterium.number;
 
-  const notCompliantItems: NotCompliantItem[] =
-    [...result.value.notCompliantItems];
-
-  const idx = notCompliantItems.findIndex(x => x.id === id);
-  if (idx === -1) {
-    return;
-  }
+  const itemToDelete = result.value.notCompliantItems.find(x => x.id === id);
 
   await store.deleteNotCompliantItem(
     auditUniqueId,
@@ -256,10 +251,8 @@ const deleteNotCompliantItem = async (payload: { id: number }) => {
     id
   );
 
-  notCompliantItems.splice(idx, 1);
-
-  criteriumNotCompliantAccordion
-    .value?.refreshNotCompliantItems(notCompliantItems);
+  result.value.notCompliantItems =
+    result.value.notCompliantItems.filter(x => x.id !== id);
 
   notify(
     "success",
@@ -269,7 +262,7 @@ const deleteNotCompliantItem = async (payload: { id: number }) => {
       action: {
         label: "Annuler",
         cb: async () => {
-          await createNotCompliantItem();
+          await createNotCompliantItem(itemToDelete);
         }
       }
     }
@@ -284,9 +277,6 @@ const updateResultNotCompliantItem = async (payload:
     const { auditUniqueId, page, topicNumber, criterium } = props;
     const slug = slugify(page.name);
     const criteriumNumber = criterium.number;
-
-    const notCompliantItems: NotCompliantItem[] =
-      [...result.value.notCompliantItems];
 
     await store.updateNotCompliantItem(
       auditUniqueId,
@@ -303,12 +293,8 @@ const updateResultNotCompliantItem = async (payload:
       }
     );
 
-    const idx = notCompliantItems.findIndex(x => x.id === item.id);
-    if (idx === -1) {
-      return;
-    }
-
-    notCompliantItems[idx] = item;
+    result.value.notCompliantItems =
+      result.value.notCompliantItems.map(x => x.id === item.id ? item : x);
   } catch (error) {
     handleUpdateResultError(error);
   }
@@ -487,7 +473,7 @@ const parentCriterium = computed(() => {
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       ref="criteriumNotCompliantAccordion"
-      :items="result.notCompliantItems"
+      :not-compliant-items="result.notCompliantItems"
       :example-images="result.exampleImages"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
