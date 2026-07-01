@@ -10,42 +10,14 @@ import {
   IsString,
   Max,
   Min,
-  registerDecorator,
-  ValidateNested,
-  ValidationArguments,
-  ValidationOptions
+  ValidateNested
 } from "class-validator";
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "../../../generated/prisma/client";
 
-import { CRITERIA } from "../../criteria";
-
-/** Validates the criterium property to make sure the criterium exists in the RGAA. */
-export function IsRgaaCriterium(validationOptions?: ValidationOptions) {
-  return function (
-    object: Pick<UpdateResultsItem, "topic" | "criterium">,
-    propertyName: string
-  ) {
-    registerDecorator({
-      name: "isRgaaCriterium",
-      target: object.constructor,
-      propertyName: propertyName,
-      constraints: [],
-      options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const { topic } = args.object as UpdateResultsItem;
-          return !!CRITERIA.find(
-            (criterium) =>
-              criterium.criterium === value && criterium.topic === topic
-          );
-        }
-      }
-    });
-  };
-}
+import { IsRgaaCriterium } from "../../is-rgaa-criterium.decorator";
 
 class UpdateResultsItem {
   // ID

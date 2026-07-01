@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import { IsInt, IsNumber, IsPositive, Max, Min } from "class-validator";
-import { IsRgaaCriterium } from "./update-results.dto";
+
+import { IsRgaaCriterium } from "../../is-rgaa-criterium.decorator";
 
 /*
 The `@Type(() => Number)` decorator is required to correctly parse strings into numbers

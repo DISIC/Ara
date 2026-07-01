@@ -1,4 +1,7 @@
 import { Controller, Get, Param, Patch } from "@nestjs/common";
+import { AuditId } from "../audit-id.decorator";
+import { CriterionResultDto } from "../dto/entities/criterion-result.dto";
+import { ResultsParams } from "./results-params";
 import { ResultsService } from "./results.service";
 
 @Controller("/audits/:uniqueId/pages/:slug/results")
@@ -6,17 +9,14 @@ export class ResultsController {
   constructor(private readonly resultsService: ResultsService) {}
 
   @Get()
-  getResults(@Param("uniqueId") uniqueId: string, @Param("slug") slug: string) {
-    return [];
+  getResults(@AuditId() uniqueId: string, @Param("slug") slug: string): Promise<CriterionResultDto[]> {
+    return this.resultsService.getResults(uniqueId, slug);
   }
 
   @Patch(":topic.:criterion")
   updateResult(
-    @Param("uniqueId") uniqueId: string,
-    @Param("slug") slug: string,
-    @Param("topic") topic: string,
-    @Param("criterion") criterion: string
+    @Param() params: ResultsParams
   ) {
-    return {};
+    console.log(params);
   }
 }

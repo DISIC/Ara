@@ -77,3 +77,26 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
     select: PAGE_PRISMA_SELECT
   }
 };
+
+export const RESULT_PRISMA_SELECT: Prisma.CriterionResultSelect = {
+  status: true,
+  compliantComment: true,
+  notCompliantComment: true,
+  userImpact: true,
+  notApplicableComment: true,
+  exampleImages: {
+    select: {
+      id: true,
+      originalFilename: true,
+      mimetype: true,
+      size: true,
+      key: true,
+      thumbnailKey: true
+    }
+  },
+  quickWin: true,
+
+  topic: true,
+  criterium: true,
+  pageId: true
+};
