@@ -11,10 +11,11 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
-  CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
-  NotCompliantItem
+  NotCompliantItem,
+  NotCompliantItemPatch,
+  UpdateNotCompliantItemData
 } from "../../types";
 import { formatStatus, slugify } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
@@ -270,8 +271,9 @@ const deleteNotCompliantItem = async (payload: { id: number }) => {
 };
 
 const updateResultNotCompliantItem = async (payload:
-{ item: NotCompliantItem }) => {
-  const { item } = payload;
+{ patch: NotCompliantItemPatch }) => {
+  const { patch } = payload;
+  const { id, ...changes } = patch;
 
   try {
     const { auditUniqueId, page, topicNumber, criterium } = props;
@@ -283,25 +285,38 @@ const updateResultNotCompliantItem = async (payload:
       slug,
       topicNumber,
       criteriumNumber,
-      item.id,
-      {
-        comment: item.comment,
-        quickWin: item.quickWin,
-        title: item.title,
-        userImpact:
-            item.userImpact as Record<string, CriterionResultUserImpact> | null
-      }
+      id,
+      changes as UpdateNotCompliantItemData
     );
 
     result.value.notCompliantItems =
-      result.value.notCompliantItems.map(x => x.id === item.id ? item : x);
+      result.value.notCompliantItems.map(x =>
+        x.id === id ? { ...x, ...changes } : x);
   } catch (error) {
     handleUpdateResultError(error);
   }
 };
 
-const updateResultNotCompliantItemDebounce =
-  debounce(updateResultNotCompliantItem, 500);
+// One debounce instance per (item id, field) so edits to different fields
+// (or different items) don't cancel each other's pending update.
+const debouncedUpdaters = new Map<
+  string,
+  ReturnType<typeof debounce<typeof updateResultNotCompliantItem>>
+>();
+
+const updateResultNotCompliantItemDebounce = (payload: {
+  patch: NotCompliantItemPatch;
+}) => {
+  const { id, ...changes } = payload.patch;
+  const key = `${id}-${Object.keys(changes).join(",")}`;
+
+  let debounced = debouncedUpdaters.get(key);
+  if (!debounced) {
+    debounced = debounce(updateResultNotCompliantItem, 500);
+    debouncedUpdaters.set(key, debounced);
+  }
+  debounced(payload);
+};
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {

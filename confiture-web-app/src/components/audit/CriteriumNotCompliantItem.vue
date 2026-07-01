@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { useIsOffline } from "../../composables/useIsOffline";
-import { CriterionResultUserImpact, NotCompliantItem } from "../../types";
+import {
+  CriterionResultUserImpact,
+  NotCompliantItem,
+  NotCompliantItemPatch
+} from "../../types";
 import { formatUserImpact } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
 import DsfrField from "../ui/DsfrField.vue";
@@ -16,7 +20,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "delete", id: number): void;
-  (e: "update", item: NotCompliantItem, debounce: boolean): void;
+  (e: "update", patch: NotCompliantItemPatch, debounce: boolean): void;
 }>();
 
 const baseTitle = "Erreur";
@@ -25,8 +29,11 @@ function handleItemChange(
   field: keyof NotCompliantItem,
   value: NotCompliantItem[keyof NotCompliantItem]
 ) {
-  const item = { ...props.item, [field]: value };
-  emit("update", item, field === "title" || field === "comment");
+  emit(
+    "update",
+    { id: props.item.id, [field]: value },
+    field === "title" || field === "comment"
+  );
 }
 
 const userImpacts: Array<{

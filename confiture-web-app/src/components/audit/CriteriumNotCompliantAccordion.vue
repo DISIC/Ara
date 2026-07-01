@@ -2,7 +2,11 @@
 import { last, orderBy } from "lodash-es";
 
 import { computed, provide, useTemplateRef } from "vue";
-import { ExampleImageFile, NotCompliantItem } from "../../types";
+import {
+  ExampleImageFile,
+  NotCompliantItem,
+  NotCompliantItemPatch
+} from "../../types";
 import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
 import CriteriumNotCompliantItem from "./CriteriumNotCompliantItem.vue";
@@ -36,7 +40,7 @@ const notCompliantItemsCount = computed(() => {
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
   (e: "create:item"): void;
-  (e: "update:item", payload: { item: NotCompliantItem; debounce: boolean }): void;
+  (e: "update:item", payload: { patch: NotCompliantItemPatch; debounce: boolean }): void;
   (e: "delete:item", payload: { id: number }): void;
 }>();
 
@@ -105,10 +109,10 @@ function onDeleteNotCompliantItemClick(id: number) {
 }
 
 function onUpdateNotCompliantItemClick(
-  item: NotCompliantItem,
+  patch: NotCompliantItemPatch,
   debounce: boolean
 ) {
-  emit("update:item", { item, debounce });
+  emit("update:item", { patch, debounce });
 }
 </script>
 
