@@ -5,6 +5,7 @@ import { api } from "../api";
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditType,
+  CreateNotCompliantItemData,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
@@ -12,7 +13,6 @@ import {
   NotCompliantItem,
   UpdateNotCompliantItemData
 } from "../types";
-import { CreateNotCompliantItemDto } from "./../../../confiture-rest-api/src/audits/not-compliant-items/dto/create-not-compliant-item.dto";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
 
@@ -566,7 +566,7 @@ export const useResultsStore = defineStore("results", {
       slug: string,
       topic: number,
       criterium: number,
-      notCompliantItem: CreateNotCompliantItemDto | null = null
+      notCompliantItem: CreateNotCompliantItemData | null = null
     ): Promise<NotCompliantItem> {
       if (notCompliantItem) {
         return (await api

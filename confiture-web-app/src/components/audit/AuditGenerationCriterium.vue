@@ -11,6 +11,7 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
+  CreateNotCompliantItemData,
   CriteriumResult,
   CriteriumResultStatus,
   NotCompliantItem,
@@ -223,7 +224,7 @@ const createNotCompliantItem = async (
     slug,
     topicNumber,
     criteriumNumber,
-    itemToCreate
+    itemToCreate ? itemToCreate as CreateNotCompliantItemData : null
   );
 
   result.value.notCompliantItems = [

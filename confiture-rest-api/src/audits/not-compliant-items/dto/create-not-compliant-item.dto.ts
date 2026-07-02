@@ -1,5 +1,6 @@
 import { IsBoolean, IsEnum, IsOptional, IsString } from "class-validator";
 import { CriterionResultUserImpact } from "../../../generated/prisma/client";
+
 export class CreateNotCompliantItemDto {
   @IsString()
   @IsOptional()

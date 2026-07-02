@@ -15,7 +15,7 @@ export class NotCompliantItemsController {
     @Param("slug") slug: string,
     @Param("topic") topic: string,
     @Param("criterium") criterium: string,
-    @Body() body: CreateNotCompliantItemDto | undefined
+    @Body() body?: CreateNotCompliantItemDto
   ): Promise<NotCompliantItemDto> {
     return this.itemService.createItem(uniqueId, slug, Number(topic), Number(criterium), body);
   }

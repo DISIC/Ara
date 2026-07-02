@@ -18,7 +18,7 @@ export class NotCompliantItemsService {
     pageSlug: string,
     topic: number,
     criterium: number,
-    create: CreateNotCompliantItemDto | undefined
+    create?: CreateNotCompliantItemDto
   ): Promise<NotCompliantItemDto> {
     // FIXME: find a way to create item without fetching page first
     const page = await this.prisma.auditedPage.findFirst({
