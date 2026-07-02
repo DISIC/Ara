@@ -180,8 +180,8 @@ const errorId = "error-" + uniqueId;
     >
       <div class="narrow-content">
         <h2 id="test-environment-section-title" class="fr-h4 fr-mb-2w">Environnements de test</h2>
-        <p>
-          Nous vous proposons par défaut les combinaisons d’environnements de test prévus par le RGAA. Il revient à l’auditeur ou à l’auditrice, en concertation avec les responsables du site, de définir les environnements en fonction du contexte d’usage du site.<br />Vous pouvez ajouter d’autres environnements de test.
+        <p class="fr-text--sm">
+          Nous vous proposons par défaut les combinaisons d’environnements de test prévus par le RGAA. Vous pouvez ajouter d’autres environnements de test.
         </p>
       </div>
 

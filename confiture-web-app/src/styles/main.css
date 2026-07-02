@@ -121,5 +121,6 @@ from DSFR links with `target="_blank"` */
 }
 
 mark {
-  background-color: var(--yellow-moutarde-975-75);
+  background-color: var(--yellow-tournesol-850-200);
+  color: inherit;
 }

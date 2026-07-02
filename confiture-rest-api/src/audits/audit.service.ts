@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
+
+import { AuthService } from "../auth/auth.service";
 import {
   Audit,
   AuditType,
@@ -10,7 +12,6 @@ import {
   CriterionResultUserImpact,
   Prisma
 } from "../generated/prisma/client";
-
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
 import { slugify } from "../utils";
@@ -76,7 +77,8 @@ const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; ord
 export class AuditService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly fileStorageService: FileStorageService
+    private readonly fileStorageService: FileStorageService,
+    private readonly authService: AuthService
   ) { }
 
   async createAudit(data: CreateAuditDto): Promise<AuditDto> {
@@ -403,6 +405,12 @@ export class AuditService {
         }
       }
 
+      // Reset org when changing email from unverified to verified user.
+      const shouldResetOrganisation =
+        data.auditorEmail !== previousAudit.auditorEmail
+        && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
+        && await this.authService.isAccountVerified(data.auditorEmail);
+
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: {
@@ -418,7 +426,7 @@ export class AuditService {
             }
           },
           auditorName: data.auditorName,
-          auditorOrganisation: data.auditorOrganisation,
+          auditorOrganisation: shouldResetOrganisation ? null : data.auditorOrganisation,
 
           contactName: data.contactName,
           contactEmail: data.contactEmail,
@@ -961,6 +969,27 @@ export class AuditService {
 
   async publishAudit(uniqueId: string) {
     try {
+      const [audit, auditIsComplete] = await Promise.all([
+        this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
+          },
+          select: {
+            publicationDate: true
+          }
+        }),
+        this.isAuditComplete(uniqueId)
+      ]);
+
+      if (audit?.publicationDate && auditIsComplete) {
+        return this.prisma.audit.findUnique({
+          where: {
+            editUniqueId: uniqueId
+          },
+          select: AUDIT_PRISMA_SELECT
+        });
+      }
+
       return await this.prisma.audit.update({
         where: {
           editUniqueId: uniqueId
@@ -982,11 +1011,32 @@ export class AuditService {
   }
 
   /**
+   * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
+   * as completed after having been completed or
    * Update an audit editionDate, only when it has a publication date.
    * @returns the update audit if it is updated, undefined otherwise
    */
   private async updateAuditEditDate(uniqueId: string) {
-    const audit = await this.prisma.audit.findUnique({ where: { editUniqueId: uniqueId }, select: { publicationDate: true } });
+    const [audit, auditIsComplete] = await Promise.all([
+      this.prisma.audit.findUnique({
+        where: {
+          editUniqueId: uniqueId
+        },
+        select: {
+          publicationDate: true
+        }
+      }),
+      this.isAuditComplete(uniqueId)
+    ]);
+
+    if (audit.publicationDate && !auditIsComplete) {
+      return this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { publicationDate: null, editionDate: null },
+        select: AUDIT_PRISMA_SELECT
+      });
+    }
+
     if (audit.publicationDate) {
       return this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
@@ -1058,6 +1108,8 @@ export class AuditService {
       updateDate: audit.editionDate,
       statementPublicationDate: audit.statementPublicationDate,
       statementEditionDate: audit.statementEditionDate,
+      schemaPluriannuelUrl: audit.schemaPluriannuelUrl,
+      planActionUrl: audit.planActionUrl,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
@@ -1344,15 +1396,10 @@ export class AuditService {
         page: {
           auditUniqueId: uniqueId
         },
-        criterium: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.criterium)
-        },
-        topic: {
-          in: CRITERIA_BY_AUDIT_TYPE[audit.auditType].map((c) => c.topic)
-        },
         status: {
           not: CriterionResultStatus.NOT_TESTED
-        }
+        },
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
       }
     });
 
@@ -1813,7 +1860,10 @@ export class AuditService {
       technologies: audit.technologies,
       samples: audit.pages,
       tools: audit.tools,
-      environments: audit.environments
+      environments: audit.environments,
+
+      schemaPluriannuelUrl: audit.schemaPluriannuelUrl,
+      planActionUrl: audit.planActionUrl
     };
 
     return statement;
@@ -1876,7 +1926,9 @@ export class AuditService {
         },
         notCompliantContent: data.notCompliantContent,
         derogatedContent: data.derogatedContent,
-        notInScopeContent: data.notInScopeContent
+        notInScopeContent: data.notInScopeContent,
+        schemaPluriannuelUrl: data.schemaPluriannuelUrl ?? null,
+        planActionUrl: data.planActionUrl ?? null
       },
       select: AUDIT_PRISMA_SELECT
     });
@@ -1891,9 +1943,9 @@ export class AuditService {
    */
   async transferAudit(uniqueId: string, newEmail: string) {
     // Get original audit email
-    const { auditorEmail: originalAuditEmail, auditorName: originalAuditName } = await this.prisma.audit.findUnique({
+    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUnique({
       where: { editUniqueId: uniqueId },
-      select: { auditorEmail: true, auditorName: true }
+      select: { auditorEmail: true }
     });
 
     // Get new owner info
@@ -1902,8 +1954,7 @@ export class AuditService {
         username: newEmail
       },
       select: {
-        name: true,
-        orgName: true
+        name: true
       }
     });
 
@@ -1911,7 +1962,7 @@ export class AuditService {
     const updatedAudit = await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: {
-        auditorOrganisation: user?.orgName ?? null,
+        auditorOrganisation: null,
         auditorName: user?.name ?? null,
         auditor: {
           connectOrCreate: {
@@ -1927,7 +1978,6 @@ export class AuditService {
 
     return {
       originalAuditEmail,
-      originalAuditName,
       updatedAudit
     };
   }

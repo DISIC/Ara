@@ -332,12 +332,12 @@ export class AuditsController {
       throw new UnauthorizedException();
     }
 
-    const { originalAuditEmail, originalAuditName, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
+    const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
     this.mailer.sendAuditTransferEmail(body.newEmail, {
       editUniqueId: uniqueId,
       auditorEmail: user?.email || originalAuditEmail,
-      auditorName: user?.name || originalAuditName,
+      auditorName: user?.name,
       procedureName: updatedAudit.procedureName
     }).catch((err) => {
       console.error(

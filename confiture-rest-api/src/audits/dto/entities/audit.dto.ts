@@ -39,6 +39,8 @@ export class AuditDto {
   editionDate: Date | null;
   statementPublicationDate: Date | null;
   statementEditionDate: Date | null;
+  schemaPluriannuelUrl: string | null;
+  planActionUrl: string | null;
 
   transverseElementsPage: PageDto;
   environments: TestEnvironmentDto[];

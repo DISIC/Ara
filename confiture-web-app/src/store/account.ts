@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
-import ky from "ky";
 import { defineStore } from "pinia";
+import { api } from "../api";
 
 import { AuthenticationJwtPayload } from "../types";
 import {
@@ -48,15 +48,14 @@ export const useAccountStore = defineStore("account", {
       return {
         uid: payload.sub,
         email: payload.email,
-        name: payload.name,
-        orgName: payload.org
+        name: payload.name
       };
     }
   },
 
   actions: {
     async createAccount(username: string, password: string) {
-      await ky.post("/api/auth/signup", {
+      await api.post("/api/auth/signup", {
         json: {
           username,
           password
@@ -65,7 +64,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     async resendVerificationEmail(username: string) {
-      await ky.post("/api/auth/resend-verification-email", {
+      await api.post("/api/auth/resend-verification-email", {
         json: {
           username
         }
@@ -73,7 +72,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     async login(username: string, password: string) {
-      const authToken = await ky
+      const authToken = await api
         .post("/api/auth/signin", {
           json: {
             username,
@@ -87,10 +86,8 @@ export const useAccountStore = defineStore("account", {
     },
 
     async refreshToken() {
-      const authToken = await ky
-        .post("/api/auth/refresh", {
-          headers: { Authorization: `Bearer ${this.$state.authToken}` }
-        })
+      const authToken = await api
+        .post("/api/auth/refresh")
         .text();
 
       this.authToken = authToken;
@@ -103,7 +100,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     async verifyAccountCreation(verificationToken: string) {
-      await ky.post("/api/auth/verify", {
+      await api.post("/api/auth/verify", {
         json: {
           token: verificationToken
         }
@@ -127,7 +124,7 @@ export const useAccountStore = defineStore("account", {
         signal.addEventListener("abort", onAbort, { once: true });
 
         const checkIsVerified = async () => {
-          const isAccountVerified = await ky.get(url).json();
+          const isAccountVerified = await api.get(url).json();
 
           if (!isAccountVerified && !isAborted) {
             timerId = setTimeout(checkIsVerified, CHECK_INTERVAL);
@@ -142,10 +139,9 @@ export const useAccountStore = defineStore("account", {
     },
 
     async updateProfile(data: UpdateProfileRequestData) {
-      await ky
+      await api
         .patch(`/api/profile`, {
-          json: data,
-          headers: { Authorization: `Bearer ${this.$state.authToken}` }
+          json: data
         })
         .json();
 
@@ -153,12 +149,11 @@ export const useAccountStore = defineStore("account", {
     },
 
     async deleteAccount(password: string) {
-      const response = (await ky
+      const response = (await api
         .delete("/api/auth/account", {
           json: {
             password
-          },
-          headers: { Authorization: `Bearer ${this.authToken}` }
+          }
         })
         .json()) as AccountDeletionResponse;
 
@@ -167,7 +162,7 @@ export const useAccountStore = defineStore("account", {
     },
 
     async sendAccountDeletionFeedback(feedback: string) {
-      await ky.post("/api/feedback/account-deleted", {
+      await api.post("/api/feedback/account-deleted", {
         json: {
           feedback,
           feedbackToken: this.accountDeletionFeedbackToken
@@ -176,30 +171,26 @@ export const useAccountStore = defineStore("account", {
     },
 
     async updateEmail(newEmail: string, password: string) {
-      await ky.put("/api/auth/account/email", {
+      await api.put("/api/auth/account/email", {
         json: {
           newEmail,
           password
-        },
-        headers: { Authorization: `Bearer ${this.authToken}` }
+        }
       });
     },
 
     async resendEmailUpdateVerificationEmail() {
-      await ky.post(
-        "/api/auth/account/resend-email-update-verification-email",
-        { headers: { Authorization: `Bearer ${this.authToken}` } }
+      await api.post(
+        "/api/auth/account/resend-email-update-verification-email"
       );
     },
 
     async cancelEmailUpdate() {
-      await ky.post("/api/auth/account/cancel-email-update", {
-        headers: { Authorization: `Bearer ${this.authToken}` }
-      });
+      await api.post("/api/auth/account/cancel-email-update");
     },
 
     async verifyEmailUpdate(verificationToken: string) {
-      await ky.post("/api/auth/account/verify-email-update", {
+      await api.post("/api/auth/account/verify-email-update", {
         json: {
           token: verificationToken
         }
@@ -207,9 +198,8 @@ export const useAccountStore = defineStore("account", {
     },
 
     async updatePassword(oldPassword: string, newPassword: string) {
-      await ky.put("/api/auth/update-password", {
-        json: { oldPassword, newPassword },
-        headers: { Authorization: `Bearer ${this.$state.authToken}` }
+      await api.put("/api/auth/update-password", {
+        json: { oldPassword, newPassword }
       });
     },
 
@@ -232,10 +222,8 @@ export const useAccountStore = defineStore("account", {
         signal.addEventListener("abort", onAbort, { once: true });
 
         const checkIsVerified = async () => {
-          const isAccountVerified = await ky
-            .get(url, {
-              headers: { Authorization: `Bearer ${this.authToken}` }
-            })
+          const isAccountVerified = await api
+            .get(url)
             .json();
 
           if (!isAccountVerified && !isAborted) {
@@ -251,13 +239,13 @@ export const useAccountStore = defineStore("account", {
     },
 
     async requestPasswordReset(email: string) {
-      await ky.post("/api/auth/account/request-password-reset", {
+      await api.post("/api/auth/account/request-password-reset", {
         json: { email }
       });
     },
 
     async resetPassword(newPassword: string, verificationToken: string) {
-      await ky.post("/api/auth/account/reset-password", {
+      await api.post("/api/auth/account/reset-password", {
         json: { newPassword, token: verificationToken }
       });
     }

@@ -8,8 +8,6 @@ export interface AuthenticationJwtPayload {
   email: string;
   /** User full name */
   name: string | null;
-  /** User organization. */
-  org: string | null;
 
   /** Issued at */
   iat: number;

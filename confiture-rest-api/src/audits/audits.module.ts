@@ -1,6 +1,7 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 
+import { AuthModule } from "../auth/auth.module";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditExistsPipe } from "./audit.pipe";
@@ -26,7 +27,8 @@ import { StatementsController } from "./statements.controller";
         file.originalname = decodeURI(file.originalname);
         callback(null, true);
       }
-    })
+    }),
+    forwardRef(() => AuthModule)
   ],
   exports: [AuditService]
 })

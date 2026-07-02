@@ -1,4 +1,5 @@
-import ky, { HTTPError, TimeoutError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
+import { api } from "../api";
 import { getFileMessage } from "../enums";
 import { useAuditStore, useResultsStore } from "../store";
 import { ExampleImageFile, NotesFile } from "../types";
@@ -63,7 +64,7 @@ export function useFileHandler() {
     formData.set("file", file, encodeURI(file.name));
 
     try {
-      const imageUploadKey = (await ky
+      const imageUploadKey = (await api
         .post(`/api/audits/editor/images`, { body: formData, timeout: 15_000 })
         .text()) as string;
 

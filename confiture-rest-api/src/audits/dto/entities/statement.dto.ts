@@ -31,4 +31,7 @@ export class StatementDto {
   samples: PageDto[];
   tools: string[];
   environments: TestEnvironmentDto[];
+
+  schemaPluriannuelUrl: string | null;
+  planActionUrl: string | null;
 }

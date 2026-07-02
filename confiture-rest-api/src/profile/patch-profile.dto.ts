@@ -4,8 +4,4 @@ export class PatchProfileDto {
   @IsString()
   @IsOptional()
   name?: string;
-
-  @IsString()
-  @IsOptional()
-  orgName?: string;
 }

@@ -1,7 +1,7 @@
-import ky from "ky";
 import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
 
+import { api } from "../api";
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditType,
@@ -208,7 +208,7 @@ export const useResultsStore = defineStore("results", {
 
   actions: {
     async fetchResults(uniqueId: string) {
-      const response = (await ky
+      const response = (await api
         .get(`/api/audits/${uniqueId}/results`, {
           // large audits can take a while to fetch on slow connections
           timeout: 15_000
@@ -289,7 +289,7 @@ export const useResultsStore = defineStore("results", {
 
       this.increaseCurrentRequestCount();
 
-      await ky
+      await api
         .patch(`/api/audits/${uniqueId}/results`, {
           json: {
             data: updates
@@ -455,7 +455,7 @@ export const useResultsStore = defineStore("results", {
 
       this.increaseCurrentRequestCount();
 
-      const exampleImage = (await ky
+      const exampleImage = (await api
         .post(`/api/audits/${uniqueId}/results/examples`, {
           body: formData
         })
@@ -480,7 +480,7 @@ export const useResultsStore = defineStore("results", {
     ) {
       this.increaseCurrentRequestCount();
 
-      await ky
+      await api
         .delete(`/api/audits/${uniqueId}/results/examples/${exampleId}`)
         .finally(() => {
           this.decreaseCurrentRequestCount();

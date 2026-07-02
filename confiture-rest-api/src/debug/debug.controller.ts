@@ -1,6 +1,9 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
+import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
+import { User } from "src/auth/user.decorator";
 import { CRITERIA } from "../audits/criteria";
 import { AuditDto } from "../audits/dto/entities/audit.dto";
 import { AUDIT_PRISMA_SELECT } from "../audits/prisma-selects";
@@ -15,7 +18,8 @@ import { CreateDebugAuditDto } from "./create-debug-audit.dto";
 @ApiTags("Debug")
 export class DebugController {
   constructor(
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService
   ) {}
 
   @Post("create-audit")
@@ -24,18 +28,29 @@ export class DebugController {
     type: AuditDto
   })
   async createAudit(
-    @Body() body: CreateDebugAuditDto
+    @Body() body: CreateDebugAuditDto,
+    @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const reportUniqueId = nanoid();
+
+    // Only allow admins to use route on production
+    const adminUsers = this.config.get("ADMIN_ACCOUNTS").split(",");
+    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && (!user || !adminUsers.includes(user.email));
+
+    if (userIsNotAuthorized) {
+      throw new UnauthorizedException();
+    }
 
     const result = await this.prisma.$transaction(async (tx) => {
       const audit = await tx.audit.create({
         data: {
           editUniqueId: editUniqueId,
           consultUniqueId: reportUniqueId,
-          creationDate: new Date(),
-          publicationDate: body.isComplete ? new Date() : null,
+          creationDate: body.isComplete && body.publicationDate ? new Date(body.publicationDate) : new Date(),
+          publicationDate: body.isComplete ?
+              (body.publicationDate ? new Date(body.publicationDate) : new Date())
+            : null,
           auditTrace: {
             create: {
               auditConsultUniqueId: editUniqueId,

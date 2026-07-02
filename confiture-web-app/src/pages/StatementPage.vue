@@ -61,7 +61,11 @@ function getA11yStatementHTML(): string {
     .replaceAll(whitespaceFollowingTags, "</$<tagName>>")
     .replaceAll(oneLineBreakTags, "<$<tagName>>\n")
     .replaceAll(twoLineBreakTags, "</$<tagName>>\n\n")
-    .replaceAll(indentedTags, "  <$<tagName>>");
+    .replaceAll(indentedTags, "  <$<tagName>>")
+
+    // Remove extra <a> attributes
+    .replaceAll(" target=\"_blank\"", "")
+    .replaceAll(" <span>(nouvelle fenêtre)</span>", "");
 }
 
 const statementIsPublished = computed(() => {
@@ -168,6 +172,47 @@ const siteUrl = computed(() => {
               n<sup>o</sup> 2005-102 du 11 février 2005.
             </p>
 
+            <template
+              v-if="report.data.schemaPluriannuelUrl
+                || report.data.planActionUrl"
+            >
+              <p>
+                A cette fin, {{ report.data.procedureInitiator }} met en œuvre
+                <template
+                  v-if="report.data.schemaPluriannuelUrl
+                    && report.data.planActionUrl"
+                >
+                  la stratégie et les actions suivantes :
+                </template>
+                <template
+                  v-else-if="report.data.schemaPluriannuelUrl"
+                >
+                  la stratégie suivante :
+                </template>
+                <template v-else>les actions suivantes :</template>
+              </p>
+              <ul class="fr-mb-9v">
+                <li v-if="report.data.schemaPluriannuelUrl">
+                  <a
+                    :href="report.data.schemaPluriannuelUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Schéma pluriannuel de mise en accessibilité
+                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  </a>
+                </li>
+                <li v-if="report.data.planActionUrl">
+                  <a
+                    :href="report.data.planActionUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Plan d'actions de l'année en cours
+                    <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                  </a>
+                </li>
+              </ul>
+            </template>
+
             <p class="fr-mb-9v fr-mb-md-6w">
               Cette déclaration d’accessibilité s’applique à
               <strong>{{ report.data.procedureUrl }}</strong>.
@@ -185,13 +230,15 @@ const siteUrl = computed(() => {
             </p>
 
             <h5 class="fr-h2">Résultats des tests</h5>
-            <p class="fr-mb-9v fr-mb-md-6w">
+            <p>
               L’audit de conformité réalisé par
-              <strong v-if="report.data.context.auditorOrganisation">{{ report.data.context.auditorOrganisation }}</strong><mark v-else>[nom de l’entitée ayant réalisé l’audit]</mark>
-              révèle que
-              <strong>{{ report.data.accessibilityRate }} %</strong> des critères
-              du {{ REFERENTIAL }} sont respectés.
+              <strong>{{ report.data.context.auditorOrganisation }}</strong>
+              révèle que :
             </p>
+            <ul class="fr-mb-9v fr-mb-md-6w">
+              <li><strong>{{ report.data.accessibilityRate }} %</strong> des critères
+                du {{ REFERENTIAL }} sont respectés.</li>
+            </ul>
 
             <template
               v-if="
@@ -249,7 +296,7 @@ const siteUrl = computed(() => {
               </template>
             </p>
             <h5 class="fr-h3">
-              Technologies utilisées pour la réalisation de l’audit
+              Technologies utilisées pour la réalisation du site
             </h5>
             <ul class="fr-mb-2w fr-mb-md-3w">
               <li v-for="tech in report.data.context.technologies" :key="tech">
