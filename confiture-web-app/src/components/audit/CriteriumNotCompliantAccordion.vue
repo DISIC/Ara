@@ -5,7 +5,7 @@ import { computed, provide, useTemplateRef } from "vue";
 import {
   ExampleImageFile,
   NotCompliantItem,
-  NotCompliantItemPatch
+  PatchNotCompliantItemData
 } from "../../types";
 import { getUploadUrl } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
@@ -40,7 +40,7 @@ const notCompliantItemsCount = computed(() => {
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
   (e: "create:item"): void;
-  (e: "update:item", payload: { patch: NotCompliantItemPatch; debounce: boolean }): void;
+  (e: "update:item", payload: { patch: PatchNotCompliantItemData; debounce: boolean }): void;
   (e: "delete:item", payload: { id: number }): void;
 }>();
 
@@ -109,7 +109,7 @@ function onDeleteNotCompliantItemClick(id: number) {
 }
 
 function onUpdateNotCompliantItemClick(
-  patch: NotCompliantItemPatch,
+  patch: PatchNotCompliantItemData,
   debounce: boolean
 ) {
   emit("update:item", { patch, debounce });

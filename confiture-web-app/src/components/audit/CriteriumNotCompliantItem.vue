@@ -4,7 +4,7 @@ import { useIsOffline } from "../../composables/useIsOffline";
 import {
   CriterionResultUserImpact,
   NotCompliantItem,
-  NotCompliantItemPatch
+  PatchNotCompliantItemData
 } from "../../types";
 import { formatUserImpact } from "../../utils";
 import RichTextEditor from "../tiptap/RichTextEditor.vue";
@@ -20,7 +20,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "delete", id: number): void;
-  (e: "update", patch: NotCompliantItemPatch, debounce: boolean): void;
+  (e: "update", patch: PatchNotCompliantItemData, debounce: boolean): void;
 }>();
 
 const baseTitle = "Erreur";

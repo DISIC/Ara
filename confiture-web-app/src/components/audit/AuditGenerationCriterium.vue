@@ -15,7 +15,7 @@ import {
   CriteriumResult,
   CriteriumResultStatus,
   NotCompliantItem,
-  NotCompliantItemPatch,
+  PatchNotCompliantItemData,
   UpdateNotCompliantItemData
 } from "../../types";
 import { formatStatus, slugify } from "../../utils";
@@ -272,7 +272,7 @@ const deleteNotCompliantItem = async (payload: { id: number }) => {
 };
 
 const updateResultNotCompliantItem = async (payload:
-{ patch: NotCompliantItemPatch }) => {
+{ patch: PatchNotCompliantItemData }) => {
   const { patch } = payload;
   const { id, ...changes } = patch;
 
@@ -306,7 +306,7 @@ const debouncedUpdaters = new Map<
 >();
 
 const updateResultNotCompliantItemDebounce = (payload: {
-  patch: NotCompliantItemPatch;
+  patch: PatchNotCompliantItemData;
 }) => {
   const { id, ...changes } = payload.patch;
   const key = `${id}-${Object.keys(changes).join(",")}`;

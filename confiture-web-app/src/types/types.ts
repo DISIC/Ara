@@ -139,7 +139,7 @@ export type CreateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/
 
 export type UpdateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items/{itemId}"]["patch"]["requestBody"]["content"]["application/json"];
 
-export type NotCompliantItemPatch = { id: number } & Partial<
+export type PatchNotCompliantItemData = { id: number } & Partial<
   Omit<NotCompliantItem, "id">
 >;
 
