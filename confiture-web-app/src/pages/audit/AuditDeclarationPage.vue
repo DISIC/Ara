@@ -138,6 +138,8 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
 
     contactEmail: formatEmail(contactEmail.value) || null,
     contactFormUrl: contactFormUrl.value.trim() || null,
+    // the API expects `contactName` but since we don't use it anywhere, we juste leave it as `null`
+    contactName: null,
 
     technologies: technologies.value,
     environments: environments.value,
