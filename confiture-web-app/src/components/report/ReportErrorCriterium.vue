@@ -190,7 +190,7 @@ function getLabelError(notCompliantItemId?: number) {
 .criterium-not-compliant-item :deep(.tiptap--rendered ul),
 .criterium-not-compliant-item :deep(.tiptap--rendered ol) {
   margin-inline-start: 2em;
-  margin-block-end: 1em;
+  margin-block-end: 1.5em;
 }
 
 .criterium-not-compliant-item-badges {
