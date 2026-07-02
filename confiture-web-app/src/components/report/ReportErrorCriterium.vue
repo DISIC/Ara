@@ -187,7 +187,8 @@ function getLabelError(notCompliantItemId?: number) {
   list-style: disc;
 }
 
-.criterium-not-compliant-item :deep(.tiptap--rendered ul, .tiptap--rendered ol) {
+.criterium-not-compliant-item :deep(.tiptap--rendered ul),
+.criterium-not-compliant-item :deep(.tiptap--rendered ol) {
   margin-inline-start: 2em;
 }
 

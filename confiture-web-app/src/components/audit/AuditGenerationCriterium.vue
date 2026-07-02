@@ -281,7 +281,7 @@ const updateResultNotCompliantItem = async (payload:
     const slug = slugify(page.name);
     const criteriumNumber = criterium.number;
 
-    await store.updateNotCompliantItem(
+    const notCompliantItemUpdated = await store.updateNotCompliantItem(
       auditUniqueId,
       slug,
       topicNumber,
@@ -292,7 +292,7 @@ const updateResultNotCompliantItem = async (payload:
 
     result.value.notCompliantItems =
       result.value.notCompliantItems.map(x =>
-        x.id === id ? { ...x, ...changes } : x);
+        x.id === notCompliantItemUpdated.id ? notCompliantItemUpdated : x);
   } catch (error) {
     handleUpdateResultError(error);
   }
