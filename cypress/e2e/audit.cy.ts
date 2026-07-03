@@ -897,7 +897,7 @@ describe("Audit", () => {
       // Assert we're on homepage with toast
       cy.contains("Je réalise un audit d’accessibilité avec Ara");
       cy.contains("Audit « Audit de mon petit site » transféré");
-      cy.contains("Un lien d’accès a été envoyé à : example@domain.com");
+      cy.contains("Lien d’accès envoyé à example@domain.com");
     });
   });
 });
