@@ -196,7 +196,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can go back to previous/next tab with navigator back and previous buttons", () => {
+  it("User can go back to previous/next tab with navigator back and previous buttons", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       const nextSlug = slugify(auditJson.pages[3].name);
@@ -362,15 +362,14 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can update notes", () => {
+  it("User can update notes", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-
-      cy.get(".tiptap").type("Annotations de l’audit");
+      cy.get(".tiptap").clear().type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
       cy.get(".notes-desktop-link")
@@ -449,7 +448,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can copy an audit", () => {
+  it("User can copy an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
@@ -620,7 +619,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can edit a criterium content", () => {
+  it("User can edit a criterium content", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -767,7 +766,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can insert an image in the comment editor", () => {
+  it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
@@ -823,28 +822,30 @@ describe("Audit", () => {
         .contains("button", "Ajouter des observations")
         .click();
 
-      cy.get(".tiptap").type("Copier coller de Markdown :{enter}");
+      cy.get(".tiptap").clear().type("Copier coller de Markdown :")
+        .type("{enter}");
       cy.get(".tiptap").pasteText("../fixtures/mdContent.md");
       cy.get(".tiptap strong").should("exist");
       cy.get(".tiptap img").should("not.exist");
     });
   });
 
-  it.only("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
+  it("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").type("Copier coller de texte HTML :{enter}");
+      cy.get(".tiptap").clear().type("Copier coller de texte HTML :")
+        .type("{enter}");
       cy.get(".tiptap").pasteText("../fixtures/notMdContent.txt");
       cy.get(".tiptap strong").should("not.exist");
       cy.get(".tiptap img").should("not.exist");
     });
   });
 
-  it.only("User can insert HTML content in the comment editor (and images are stripped out)", () => {
+  it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
