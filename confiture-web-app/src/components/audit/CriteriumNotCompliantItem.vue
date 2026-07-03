@@ -178,9 +178,9 @@ defineExpose({
   </div>
 </template>
 
-<style>
+<style scoped>
 .user-impact-label span,
-.user-error-label label {
+.user-error-label :deep(.fr-label) {
   font-size: 0.75rem;
   color: var(--text-mention-grey);
 }

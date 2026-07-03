@@ -549,7 +549,7 @@ const parentCriterium = computed(() => {
 
 .criterium-transverse-notice-separator {
   border-block-end: 1px solid var(--text-title-grey);
-  padding-block-end: 1em;
+  padding-block-end: 1rem;
 
   &:last-child {
     border-bottom: none;

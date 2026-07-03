@@ -171,18 +171,18 @@ function onUpdateNotCompliantItemClick(
 
 <style scoped>
 .not-compliant-item {
-  padding: 1em 0.75rem;
-  padding-block-end: 1.25em;
+  padding: 1rem 0.75rem;
+  padding-block-end: 1.25rem;
   border-block-end: 1px solid var(--border-default-grey);
   margin: 0 -0.75rem;
 
   &:first-child {
-    padding-top: 0.5em;
+    padding-top: 0.5rem;
   }
 }
 
 .not-compliant-item-add {
-  padding: 1em 0;
+  padding: 1rem 0;
   width: 100%;
   justify-content: center;
 
