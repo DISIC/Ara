@@ -11,7 +11,7 @@ describe("Common", () => {
         cy.get(".audit-compliance-level").should("contain.text", "51 %");
 
         cy.visit(`http://localhost:3000/declarations/${reportId}`);
-        cy.contains(`que 51 % des critères`);
+        cy.contains(`51 % des critères`);
 
         cy.visit(`http://localhost:3000/rapport/${reportId}`);
         cy.get("[role='tabpanel'] .card-metric.card-metric--blue").should(
