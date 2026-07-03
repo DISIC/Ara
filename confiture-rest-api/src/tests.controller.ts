@@ -73,6 +73,7 @@ export class TestsController {
       noImprovements: boolean;
       auditorEmail?: string;
       fillStatement?: boolean;
+      publicationDate?: Date;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -83,7 +84,9 @@ export class TestsController {
         editUniqueId: editUniqueId,
         consultUniqueId: reportUniqueId,
         creationDate: new Date(),
-        publicationDate: body.isComplete ? new Date() : null,
+        publicationDate: body.isComplete ?
+            (body.publicationDate ? new Date(body.publicationDate) : new Date())
+          : null,
         auditTrace: {
           create: {
             auditConsultUniqueId: editUniqueId,

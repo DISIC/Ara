@@ -593,9 +593,9 @@ describe("Audit", () => {
         .first()
         .click({ force: true });
 
-      cy.get(".audit-progress-label").eq(0);
-
       cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
+      cy.contains("Progression de l’audit").should("not.exist");
+
       cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
       cy.contains("a", "Accéder aux livrables").click();
@@ -902,6 +902,50 @@ describe("Audit", () => {
       cy.contains("Je réalise un audit d’accessibilité avec Ara");
       cy.contains("Audit « Audit de mon petit site » transféré");
       cy.contains("Lien d’accès envoyé à example@domain.com");
+    });
+  });
+
+  it("User can change criteria in an audit completed without displaying the progress bar, an audit is still completed", () => {
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    const today = new Date();
+    const publicationDate = new Date(today.setDate(today.getDate() - 2));
+
+    cy.createTestAudit({
+      isComplete: true,
+      publicationDate: publicationDate.toString()
+    }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".audit-status").contains("Terminé le");
+      cy.get(".audit-status").contains("Mis à jour le").should("not.exist");
+
+      cy.contains("button[role=\"tab\"]", "Accueil").click();
+      cy.get(".criterium-container").contains("Non conforme").click();
+
+      cy.wait("@updateResults");
+
+      cy.get(".audit-status").contains("Terminé le");
+      cy.get(".audit-status").contains("Mis à jour le");
+    });
+  });
+
+  it("User can remove criteria in an audit completed and display the progress bar", () => {
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    cy.createTestAudit({
+      isComplete: true
+    }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".audit-status").contains("Terminé le");
+
+      cy.contains("button[role=\"tab\"]", "Accueil").click();
+      cy.get(".criterium-container").contains("Conforme").click();
+
+      cy.wait("@updateResults");
+
+      cy.get(".audit-progress-label").contains("Progression de l’audit");
     });
   });
 });
