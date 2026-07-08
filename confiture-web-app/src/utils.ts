@@ -5,6 +5,7 @@ import { noop } from "lodash-es";
 import baseSlugify from "slugify";
 
 import { FileListFile } from "./components/ui/FileList.vue";
+import router from "./router";
 import {
   AuditReport,
   AuditStatus,
@@ -57,7 +58,7 @@ const FORMATTED_USER_IMPACT = {
  * Format a criterion result user impact type string into French.
  */
 export function formatUserImpact(
-  userImpact: CriterionResultUserImpact | `${CriterionResultUserImpact}`
+  userImpact: keyof typeof CriterionResultUserImpact
 ): string {
   return FORMATTED_USER_IMPACT[userImpact];
 }
@@ -73,7 +74,7 @@ const FORMATTED_STATUS = {
  * Format a criterion result status type string into French.
  */
 export function formatStatus(
-  status: CriteriumResultStatus | `${CriteriumResultStatus}`
+  status: keyof typeof CriteriumResultStatus
 ): string {
   return FORMATTED_STATUS[status];
 }
@@ -244,8 +245,10 @@ export function isTiptapDocumentEmpty(
     return false;
   }
 
-  const containsImage = jsonString.includes("\"type\":\"image\"");
-  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
+  const containsImage = jsonString.includes('"type":"image"');
+  const containsText = jsonString
+    .matchAll(/"text":"(?<textContent>[^"]+)?"/g)
+    .some((it) => it.groups?.textContent.trim());
 
   return !containsImage && !containsText;
 }
@@ -266,13 +269,15 @@ export function scrollToHash(hash: string) {
     const initalTabIndex = hashEl.getAttribute("tabindex");
     hashEl.setAttribute("tabindex", "-1");
     hashEl.focus();
-    initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
+    initalTabIndex
+      ? hashEl.setAttribute("tabindex", initalTabIndex)
+      : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
 }
 
 export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -298,4 +303,17 @@ export function isImage(file: File | FileListFile) {
   } else if ("mimetype" in file) {
     return file.mimetype.startsWith("image");
   }
+}
+
+export function showErrorPage(httpStatusCode?: number) {
+  const route = router.currentRoute;
+  router.replace({
+    name: "Error",
+    params: { pathMatch: route.value.path.substring(1).split("/") },
+    query: route.value.query,
+    hash: route.value.hash,
+    state: {
+      errorStatus: httpStatusCode
+    }
+  });
 }

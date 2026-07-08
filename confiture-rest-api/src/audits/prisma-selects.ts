@@ -4,7 +4,8 @@ export const PAGE_PRISMA_SELECT: Prisma.AuditedPageSelect = {
   id: true,
   order: true,
   name: true,
-  url: true
+  url: true,
+  slug: true
 };
 
 export const ENVIRONMENT_PRISMA_SELECT: Prisma.TestEnvironmentSelect = {

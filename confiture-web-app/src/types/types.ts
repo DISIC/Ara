@@ -15,6 +15,7 @@ export interface AuditPage {
   order: number;
   name: string;
   url: string;
+  slug: string;
 }
 
 export interface PageElements {
@@ -104,22 +105,24 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   pages: Omit<AuditPage, "id" | "order">[];
 };
 
-export type UpdateAuditStatementRequestData = paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
+export type UpdateAuditStatementRequestData =
+  paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
 
-export type CreateDebugAuditRequestData = paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
+export type CreateDebugAuditRequestData =
+  paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
 
-export enum CriteriumResultStatus {
-  NOT_TESTED = "NOT_TESTED",
-  COMPLIANT = "COMPLIANT",
-  NOT_COMPLIANT = "NOT_COMPLIANT",
-  NOT_APPLICABLE = "NOT_APPLICABLE"
-}
+export const CriteriumResultStatus = {
+  NOT_TESTED: "NOT_TESTED",
+  COMPLIANT: "COMPLIANT",
+  NOT_COMPLIANT: "NOT_COMPLIANT",
+  NOT_APPLICABLE: "NOT_APPLICABLE"
+};
 
-export enum CriterionResultUserImpact {
-  MINOR = "MINOR",
-  MAJOR = "MAJOR",
-  BLOCKING = "BLOCKING"
-}
+export const CriterionResultUserImpact = {
+  MINOR: "MINOR",
+  MAJOR: "MAJOR",
+  BLOCKING: "BLOCKING"
+};
 
 /** File attached to audit notes. */
 export type NotesFile = components["schemas"]["NotesFileDto"];
@@ -134,15 +137,17 @@ export interface CriteriumResult {
   pageId: number;
 
   // DATA
-  status: CriteriumResultStatus;
+  status: keyof typeof CriteriumResultStatus;
 
   compliantComment: string | null;
   notCompliantComment: string | null;
-  userImpact: CriterionResultUserImpact | null;
+  userImpact: keyof typeof CriterionResultUserImpact | null;
   notApplicableComment: string | null;
   exampleImages: ExampleImageFile[];
   quickWin: boolean;
 }
+
+export type ApiCriteriumResult = components["schemas"]["CriterionResultDto"];
 
 export enum StoreName {
   AUDIT_STORE = "AUDIT_STORE",
@@ -170,3 +175,6 @@ export interface TabData {
   component: object;
   componentParams?: object;
 }
+
+export type GetPageWithResultsDto =
+  components["schemas"]["GetPageWithResultsDto"];

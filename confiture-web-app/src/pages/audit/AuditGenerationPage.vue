@@ -3,10 +3,9 @@ import { useResizeObserver } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import AraTabs from "../../components/audit/AraTabs.vue";
+import AraTabsTwo, { TabItem } from "../../components/audit/AraTabsTwo.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
-import AuditGenerationPageCriteria from "../../components/audit/AuditGenerationPageCriteria.vue";
 import PageMeta from "../../components/PageMeta";
 import { SummaryCardThemes } from "../../components/SummaryCard.vue";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -14,14 +13,14 @@ import { useAuditStats } from "../../composables/useAuditStats";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import rgaa from "../../criteres.json";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../criteria";
-import { REFERENTIAL, StaticTabLabel } from "../../enums";
+import { REFERENTIAL, StaticTabLabel, TabSlug } from "../../enums";
 import {
   useAccountStore,
   useAuditStore,
   useFiltersStore,
   useResultsStore
 } from "../../store";
-import { AuditType, CriteriumResultStatus, TabData } from "../../types";
+import { AuditType, CriteriumResultStatus } from "../../types";
 import { pluralize } from "../../utils";
 
 const props = defineProps<{
@@ -192,33 +191,57 @@ const pageTitle = computed(() => {
   return titleParts.join(" - ");
 });
 
-const tabsData = computed((): TabData[] => {
-  const transversePage = auditStore.currentAudit?.transverseElementsPage;
+// const tabsData = computed((): TabData[] => {
+//   const transversePage = auditStore.currentAudit?.transverseElementsPage;
+//   return [
+//     ...(transversePage
+//       ? [
+//           {
+//             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
+//             diplayLabelSuffix: " (optionnel)",
+//             icon: "fr-icon-layout-3-line",
+//             component: AuditGenerationPageCriteria,
+//             componentParams: {
+//               page: transversePage,
+//               auditUniqueId: props.uniqueId
+//             }
+//           }
+//         ]
+//       : []),
+//     ...(auditStore.currentAudit?.pages.map((p) => ({
+//       label: p.name,
+//       hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
+//       id: p.id,
+//       icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
+//       component: AuditGenerationPageCriteria,
+//       componentParams: {
+//         page: p,
+//         auditUniqueId: props.uniqueId
+//       }
+//     })) ?? [])
+//   ];
+// });
+
+const tabsTwo = computed((): TabItem[] => {
   return [
-    ...(transversePage
+    ...(auditStore.currentAudit?.transverseElementsPage
       ? [
           {
             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-            diplayLabelSuffix: " (optionnel)",
             icon: "fr-icon-layout-3-line",
-            component: AuditGenerationPageCriteria,
-            componentParams: {
-              page: transversePage,
-              auditUniqueId: props.uniqueId
-            }
+            to: `/audits/${props.uniqueId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
           }
         ]
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
-      id: p.id,
-      icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
-      component: AuditGenerationPageCriteria,
-      componentParams: {
-        page: p,
-        auditUniqueId: props.uniqueId
-      }
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id)
+        ? " (entièrement évalué)"
+        : undefined,
+      to: `/audits/${props.uniqueId}/generation/${p.slug}`,
+      icon: resultsStore.isPageCompleted(p.id)
+        ? "fr-icon-check-line"
+        : undefined
     })) ?? [])
   ];
 });
@@ -249,30 +272,33 @@ function toggleFilters(doShow: boolean) {
 }
 
 // Note: here useWrappedFetch uses onMounted callback
-useWrappedFetch(async () => {
-  resultsStore.$reset();
+useWrappedFetch(
+  async () => {
+    resultsStore.$reset();
 
-  await Promise.all([
-    auditStore.fetchAuditIfNeeded(props.uniqueId),
-    resultsStore.fetchResults(props.uniqueId)
-  ]);
+    await Promise.all([
+      auditStore.fetchAuditIfNeeded(props.uniqueId)
+      // resultsStore.fetchResults(props.uniqueId)
+    ]);
 
-  // wait for rerender before getting ref
-  await nextTick();
-  stickyIndicator.value = auditGenerationHeaderRef.value?.stickyIndicator;
+    // wait for rerender before getting ref
+    await nextTick();
+    stickyIndicator.value = auditGenerationHeaderRef.value?.stickyIndicator;
 
-  // if the user navigated away during fetching, it’s possible the stickyIndicator is not in the DOM anymore
-  if (stickyIndicator.value) {
-    useResizeObserver(stickyIndicator.value, () => {
-      stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
-        stickyIndicator!.value.clientHeight
-      }px)`;
-    });
+    // if the user navigated away during fetching, it’s possible the stickyIndicator is not in the DOM anymore
+    if (stickyIndicator.value) {
+      useResizeObserver(stickyIndicator.value, () => {
+        stickyTop.value = `calc(${getComputedStyle(stickyIndicator!.value).top} + ${
+          stickyIndicator!.value.clientHeight
+        }px)`;
+      });
+    }
+  },
+  (newParams, oldParams) => {
+    // Only fetch data if uniqueId changes
+    return newParams.uniqueId !== oldParams.uniqueId;
   }
-}, (newParams, oldParams) => {
-  // Only fetch data if uniqueId changes
-  return newParams.uniqueId !== oldParams.uniqueId;
-});
+);
 
 onBeforeRouteLeave(() => {
   auditStore.showAuditEmailAlert = false;
@@ -293,7 +319,10 @@ filterStore.$reset();
 
 <template>
   <!-- FIXME: handle loading states -->
-  <div v-if="auditStore.currentAudit && resultsStore.auditId === uniqueId" class="page-wrapper">
+  <div
+    v-if="auditStore.currentAudit && resultsStore.auditId === uniqueId"
+    class="page-wrapper"
+  >
     <PageMeta
       :title="pageTitle"
       description="Réalisez simplement et validez votre audit d'accessibilité numérique."
@@ -341,14 +370,22 @@ filterStore.$reset();
         id="audit-tabs"
         :class="`fr-col-12 fr-col-md-${showFilters ? '9' : '11'}`"
       >
-        <AraTabs
+        <!-- <AraTabs
           panel-scroll-behavior="sameCriteria"
           :route="{ name: 'audit-generation-full', params: { uniqueId } }"
           :sticky-top="stickyTop"
           :tabs="tabsData"
           @selected-tab-change="onSelectedTabChange"
         >
-        </AraTabs>
+        </AraTabs> -->
+        <AraTabsTwo
+          :tabs="tabsTwo"
+          :sticky-top="stickyTop"
+          panel-scroll-behavior="sameCriteria"
+          @selected-tab-change="onSelectedTabChange"
+        >
+          <router-view />
+        </AraTabsTwo>
       </div>
     </div>
   </div>
@@ -373,7 +410,9 @@ filterStore.$reset();
 
 .fr-col-md-11 {
   flex-grow: 1 !important;
-  max-width: calc(100% - calc(var(--filters-column-width) + var(--gap))) !important; /* Sidebar width + gap */
+  max-width: calc(
+    100% - calc(var(--filters-column-width) + var(--gap))
+  ) !important; /* Sidebar width + gap */
   width: auto !important;
 }
 
