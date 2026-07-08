@@ -232,7 +232,7 @@ const siteUrl = computed(() => {
             <h5 class="fr-h2">Résultats des tests</h5>
             <p>
               L’audit de conformité réalisé par
-              <strong>{{ report.data.context.auditorOrganisation }}</strong>
+              <strong>{{ report.data.context.auditorOrganisation ?? "Entité ayant réalisé l’audit" }}</strong>
               révèle que :
             </p>
             <ul class="fr-mb-9v fr-mb-md-6w">
