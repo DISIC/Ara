@@ -822,8 +822,7 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").clear().type("Copier coller de Markdown :")
-        .type("{enter}");
+      cy.get(".tiptap").type("Copier coller de Markdown :{enter}");
       cy.get(".tiptap").pasteText("../fixtures/mdContent.md");
       cy.get(".tiptap strong").should("exist");
       cy.get(".tiptap img").should("not.exist");
@@ -837,8 +836,7 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").clear().type("Copier coller de texte HTML :")
-        .type("{enter}");
+      cy.get(".tiptap").type("Copier coller de texte HTML :{enter}");
       cy.get(".tiptap").pasteText("../fixtures/notMdContent.txt");
       cy.get(".tiptap strong").should("not.exist");
       cy.get(".tiptap img").should("not.exist");
