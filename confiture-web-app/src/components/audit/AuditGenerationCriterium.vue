@@ -11,14 +11,11 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
-  CreateNotCompliantItemData,
   CriteriumResult,
   CriteriumResultStatus,
-  NotCompliantItem,
-  PatchNotCompliantItemData,
-  UpdateNotCompliantItemData
+  NotCompliantItem
 } from "../../types";
-import { formatStatus, slugify } from "../../utils";
+import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
 import { FileListFile } from "../ui/FileList.vue";
 import { RadioColor } from "../ui/Radio.vue";
@@ -213,112 +210,6 @@ const updateResultComment = debounce(
   500
 );
 
-const createNotCompliantItem = async (
-  itemToCreate: NotCompliantItem | null = null) => {
-  const { auditUniqueId, page, topicNumber, criterium } = props;
-  const slug = slugify(page.name);
-  const criteriumNumber = criterium.number;
-
-  const itemAdded = await store.createNotCompliantItem(
-    auditUniqueId,
-    slug,
-    topicNumber,
-    criteriumNumber,
-    itemToCreate ? itemToCreate as CreateNotCompliantItemData : null
-  );
-
-  result.value.notCompliantItems = [
-    ...result.value.notCompliantItems,
-    itemAdded
-  ];
-
-  // the time required for the value `result.value.notCompliantItems` to propagate
-  setTimeout(() => criteriumNotCompliantAccordion.value?.focus(), 100);
-};
-
-const deleteNotCompliantItem = async (payload: { id: number }) => {
-  const { id } = payload;
-
-  const { auditUniqueId, page, topicNumber, criterium } = props;
-  const slug = slugify(page.name);
-  const criteriumNumber = criterium.number;
-
-  const itemToDelete = result.value.notCompliantItems.find(x => x.id === id);
-
-  await store.deleteNotCompliantItem(
-    auditUniqueId,
-    slug,
-    topicNumber,
-    criteriumNumber,
-    id
-  );
-
-  result.value.notCompliantItems =
-    result.value.notCompliantItems.filter(x => x.id !== id);
-
-  notify(
-    "success",
-    undefined,
-    `Erreur supprimée`,
-    {
-      action: {
-        label: "Annuler",
-        cb: async () => {
-          await createNotCompliantItem(itemToDelete);
-        }
-      }
-    }
-  );
-};
-
-const updateResultNotCompliantItem = async (payload:
-{ patch: PatchNotCompliantItemData }) => {
-  const { patch } = payload;
-  const { id, ...changes } = patch;
-
-  try {
-    const { auditUniqueId, page, topicNumber, criterium } = props;
-    const slug = slugify(page.name);
-    const criteriumNumber = criterium.number;
-
-    const notCompliantItemUpdated = await store.updateNotCompliantItem(
-      auditUniqueId,
-      slug,
-      topicNumber,
-      criteriumNumber,
-      id,
-      changes as UpdateNotCompliantItemData
-    );
-
-    result.value.notCompliantItems =
-      result.value.notCompliantItems.map(x =>
-        x.id === notCompliantItemUpdated.id ? notCompliantItemUpdated : x);
-  } catch (error) {
-    handleUpdateResultError(error);
-  }
-};
-
-// One debounce instance per (item id, field) so edits to different fields
-// (or different items) don't cancel each other's pending update.
-const debouncedUpdaters = new Map<
-  string,
-  ReturnType<typeof debounce<typeof updateResultNotCompliantItem>>
->();
-
-const updateResultNotCompliantItemDebounce = (payload: {
-  patch: PatchNotCompliantItemData;
-}) => {
-  const { id, ...changes } = payload.patch;
-  const key = `${id}-${Object.keys(changes).join(",")}`;
-
-  let debounced = debouncedUpdaters.get(key);
-  if (!debounced) {
-    debounced = debounce(updateResultNotCompliantItem, 500);
-    debouncedUpdaters.set(key, debounced);
-  }
-  debounced(payload);
-};
-
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
   return `${props.page.id}-${props.topicNumber}-${props.criterium.number}`;
@@ -491,13 +382,12 @@ const parentCriterium = computed(() => {
       ref="criteriumNotCompliantAccordion"
       :not-compliant-items="result.notCompliantItems"
       :example-images="result.exampleImages"
+      :audit-unique-id="auditUniqueId"
+      :page="page"
+      :criterium="criterium"
+      :topic-number="topicNumber"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @create:item="createNotCompliantItem"
-      @update:item="(event) => event.debounce ?
-        updateResultNotCompliantItemDebounce(event)
-        : updateResultNotCompliantItem(event)"
-      @delete:item="deleteNotCompliantItem"
     />
 
     <!-- TESTS + METHODO -->

@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { last, orderBy } from "lodash-es";
+import { debounce, last, orderBy } from "lodash-es";
 
-import { computed, provide, useTemplateRef } from "vue";
+import { computed, provide, ref, useTemplateRef } from "vue";
+import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
+import { useResultsStore } from "../../store";
 import {
+  AuditPage,
+  CreateNotCompliantItemData,
   ExampleImageFile,
   NotCompliantItem,
-  PatchNotCompliantItemData
+  PatchNotCompliantItemData,
+  UpdateNotCompliantItemData
 } from "../../types";
-import { getUploadUrl } from "../../utils";
+import { captureWithPayloads, getUploadUrl, slugify } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
 import CriteriumNotCompliantItem from "./CriteriumNotCompliantItem.vue";
 import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
@@ -15,11 +21,19 @@ import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   id: string;
+  auditUniqueId: string;
+  page: AuditPage;
+  topicNumber: number;
+  criterium: any;
   exampleImages: ExampleImageFile[];
   notCompliantItems: NotCompliantItem[];
 }>();
 
 provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
+
+const store = useResultsStore();
+
+const notify = useNotifications();
 
 function getFocusWhenListEmpty(): HTMLElement | null {
   return criteriumNotCompliantItemRefs.value?.length ?
@@ -27,24 +41,23 @@ function getFocusWhenListEmpty(): HTMLElement | null {
     null;
 }
 
+const notCompliantItems = ref<NotCompliantItem[]>(props.notCompliantItems);
+
 const orderedItems = computed(() => {
-  return orderBy(props.notCompliantItems, x => x.id);
+  return orderBy(notCompliantItems.value, x => x.id);
 });
 
 const notCompliantItemsCount = computed(() => {
-  return props.notCompliantItems
+  return notCompliantItems.value
     .filter(x => x.comment || x.quickWin || x.title || x.userImpact)
     .length;
 });
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "create:item"): void;
-  (e: "update:item", payload: { patch: PatchNotCompliantItemData; debounce: boolean }): void;
-  (e: "delete:item", payload: { id: number }): void;
 }>();
 
-defineExpose({ disclose, focus });
+defineExpose({ disclose });
 
 const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
@@ -60,13 +73,9 @@ async function disclose() {
   dsfr(accordion).accordionsGroup.members[0].disclose();
 }
 
-function focus(index?: number) {
-  setFocusToTextEditor(index);
-}
-
 function lazyAccordionOpened() {
   if (!props.notCompliantItems.length) {
-    addEmptyErrorToNotCompliantItems();
+    createNotCompliantItem();
   }
 
   if (!hasJustBeenSetAsNotCompliant) {
@@ -100,19 +109,142 @@ function setFocusToCommentEditor() {
   }
 }
 
-function addEmptyErrorToNotCompliantItems() {
-  emit("create:item");
-}
+const createNotCompliantItem = async (
+  itemToCreate: NotCompliantItem | null = null) => {
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
 
-function onDeleteNotCompliantItemClick(id: number) {
-  emit("delete:item", { id });
-}
+  try {
+    const itemAdded = await store.createNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      itemToCreate ? itemToCreate as CreateNotCompliantItemData : null
+    );
+
+    notCompliantItems.value = [
+      ...notCompliantItems.value,
+      itemAdded
+    ];
+
+    // the time required for the value `result.value.notCompliantItems` to propagate
+    setTimeout(() => setFocusToTextEditor(), 100);
+  }
+  catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+const deleteNotCompliantItem = async (id: number) => {
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
+
+  const itemToDelete = notCompliantItems.value.find(x => x.id === id);
+
+  try {
+    await store.deleteNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      id
+    );
+
+    notCompliantItems.value =
+      notCompliantItems.value.filter(x => x.id !== id);
+
+    notify(
+      "success",
+      undefined,
+      `Erreur supprimée`,
+      {
+        action: {
+          label: "Annuler",
+          cb: async () => {
+            await createNotCompliantItem(itemToDelete);
+          }
+        }
+      }
+    );
+  } catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+const updateResultNotCompliantItem = async (payload:
+{ patch: PatchNotCompliantItemData }) => {
+  const { patch } = payload;
+  const { id, ...changes } = patch;
+
+  try {
+    const { auditUniqueId, page, topicNumber, criterium } = props;
+    const slug = slugify(page.name);
+    const criteriumNumber = criterium.number;
+
+    const notCompliantItemUpdated = await store.updateNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      id,
+      changes as UpdateNotCompliantItemData
+    );
+
+    notCompliantItems.value =
+      notCompliantItems.value.map(x =>
+        x.id === notCompliantItemUpdated.id ? notCompliantItemUpdated : x);
+  } catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+// One debounce instance per (item id, field) so edits to different fields
+// (or different items) don't cancel each other's pending update.
+const debouncedUpdaters = new Map<
+  string,
+  ReturnType<typeof debounce<typeof updateResultNotCompliantItem>>
+>();
+
+const updateResultNotCompliantItemDebounce = (payload: {
+  patch: PatchNotCompliantItemData;
+}) => {
+  const { id, ...changes } = payload.patch;
+  const key = `${id}-${Object.keys(changes).join(",")}`;
+
+  let debounced = debouncedUpdaters.get(key);
+  if (!debounced) {
+    debounced = debounce(updateResultNotCompliantItem, 500);
+    debouncedUpdaters.set(key, debounced);
+  }
+  debounced(payload);
+};
 
 function onUpdateNotCompliantItemClick(
   patch: PatchNotCompliantItemData,
   debounce: boolean
 ) {
-  emit("update:item", { patch, debounce });
+  if (debounce) {
+    updateResultNotCompliantItemDebounce({ patch });
+  } else {
+    updateResultNotCompliantItem({ patch }); }
 }
 </script>
 
@@ -133,7 +265,7 @@ function onUpdateNotCompliantItemClick(
         :index="index"
         :item="item"
         :can-delete="notCompliantItems.length > 1"
-        @delete="onDeleteNotCompliantItemClick"
+        @delete="deleteNotCompliantItem"
         @update="onUpdateNotCompliantItemClick"
       />
 
@@ -143,7 +275,7 @@ function onUpdateNotCompliantItemClick(
       <button
         type="button"
         class="not-compliant-item-add fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-add-line"
-        @click="addEmptyErrorToNotCompliantItems"
+        @click="createNotCompliantItem()"
       >
         Ajouter une erreur</button>
     </div>
