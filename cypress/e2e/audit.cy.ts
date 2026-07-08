@@ -369,7 +369,8 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").clear().type("Annotations de l’audit");
+
+      cy.get(".tiptap").type("Annotations de l’audit");
       cy.get("dialog#notes-modal").contains("button", "Fermer").click();
 
       cy.get(".notes-desktop-link")
