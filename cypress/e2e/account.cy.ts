@@ -464,7 +464,7 @@ describe("Account", () => {
       cy.get(".audits-list .audit-name").should("have.length", 3);
       cy.contains("a", "Audit de mon petit site").should("be.focused");
       cy.contains("Audit « Audit de mon petit site » transféré");
-      cy.contains(`Un lien d’accès a été envoyé à : ${newEmail}`);
+      cy.contains(`Lien d’accès envoyé à ${newEmail}`);
 
       // Logout and check auditorEmail in audit parameters
       cy.get(".account-header button[aria-expanded]").click();
