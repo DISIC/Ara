@@ -3,20 +3,26 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAuditStats } from "../../composables/useAuditStats";
+import { useWindowWidth } from "../../composables/useWindowWidth";
 import { useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
 import { formatDate, getCriteriaCount, isSameDay } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
+import Dropdown from "../ui/Dropdown.vue";
 import StepCard from "./StepCard.vue";
 
-defineProps<{
+const props = defineProps<{
   audit: Audit;
+  canTransferAudit: boolean;
 }>();
+
+defineEmits(["delete", "transfer", "duplicate"]);
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
+const windowWidth = useWindowWidth();
 
 const { complianceLevel, compliantCriteriaCount, notCompliantCriteriaCount } =
   useAuditStats();
@@ -54,15 +60,66 @@ const auditIsInProgress = computed(() => {
           critères
         </p>
       </h2>
-      <RouterLink
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line audit-step-settings-link"
-        :to="{
-          name: 'audit-settings',
-          params: { uniqueId: audit.editUniqueId }
-        }"
-      >
-        Modifier les paramètres
-      </RouterLink>
+
+      <!-- Tertiary actions -->
+      <div class="audit-step-settings-link">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Actions"
+          :align-left="windowWidth < 880"
+          :button-props="{
+            class: 'fr-btn--tertiary',
+            ariaLabel: `Actions de l’audit ${audit.procedureName}`
+          }"
+        >
+
+          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+            <li>
+              <RouterLink
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+                :to="{
+                  name: 'audit-settings',
+                  params: { uniqueId: audit.editUniqueId }
+                }"
+              >
+                Modifier les paramètres
+              </RouterLink>
+            </li>
+
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
+                @click="$emit('duplicate')"
+              >
+                Dupliquer
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              </button>
+            </li>
+            <li class="dropdown-item dropdown-item--with-meta">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                :disabled="props.canTransferAudit"
+                @click="$emit('transfer')"
+              >
+                Transférer
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <p v-if="props.canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible que si l'audit est associé à un compte</p>
+              </button>
+            </li>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
+                @click="$emit('delete')"
+              >
+                Supprimer l’audit
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              </button>
+            </li>
+          </ul>
+        </Dropdown>
+      </div>
+
     </div>
 
     <p class="fr-text--sm fr-mb-3w audit-step-date">
@@ -114,7 +171,7 @@ const auditIsInProgress = computed(() => {
       />
 
       <SummaryCard
-        title="Critères<br /> confomes"
+        title="Critères<br /> conformes"
         :value="compliantCriteriaCount"
         :theme="SummaryCardThemes.Green"
         minimal
