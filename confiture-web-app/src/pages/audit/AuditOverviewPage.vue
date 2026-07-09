@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-import DeleteModal from "../../components/audit/DeleteModal.vue";
-import DuplicateModal from "../../components/audit/DuplicateModal.vue";
-import TransferModal from "../../components/audit/TransferModal.vue";
 import AuditStep from "../../components/overview/AuditStep.vue";
 import GridStep from "../../components/overview/GridStep.vue";
 import ReportStep from "../../components/overview/ReportStep.vue";
 import StatementStep from "../../components/overview/StatementStep.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
-import { useNotifications } from "../../composables/useNotifications.js";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums.js";
-import router from "../../router.js";
 import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
-import { captureWithPayloads } from "../../utils.js";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
@@ -33,10 +26,6 @@ useWrappedFetch(async () => {
 
 const audit = computed(() => {
   return auditStore.currentAudit;
-});
-
-const auditProcedureName = computed(() => {
-  return audit.value?.procedureName || "";
 });
 
 function closeAuditEmailAlert() {
@@ -56,96 +45,6 @@ const isLoggedInAndOwnAudit = computed(() => {
     auditStore.currentAudit?.auditorEmail === accountStore.account?.email
   );
 });
-
-const canTransferAudit = computed(() => {
-  return !auditStore.currentAudit?.auditor?.isVerified
-    || accountStore.account?.email === auditStore.currentAudit?.auditorEmail;
-});
-
-const notify = useNotifications();
-
-const deleteModalRef = ref<InstanceType<typeof DeleteModal>>();
-const transferModalRef = ref<InstanceType<typeof TransferModal>>();
-const duplicateModalRef = ref<InstanceType<typeof DuplicateModal>>();
-const isDuplicationLoading = ref(false);
-
-function duplicateAudit(name: string) {
-  if (!audit.value) {
-    return;
-  }
-  isDuplicationLoading.value = true;
-  auditStore
-    .duplicateAudit(audit.value.editUniqueId, name)
-    .then((newAuditId) => {
-      duplicateModalRef.value?.hide();
-
-      notify("success", undefined, `Audit « ${name} » créé`, {
-        action: {
-          label: "Accéder à l’audit",
-          cb() {
-            router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
-          }
-        }
-      });
-    })
-    .catch((error) => {
-      notify(
-        "error",
-        "Échec de la duplication de l'audit",
-        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
-      );
-      captureWithPayloads(error);
-    })
-    .finally(() => {
-      isDuplicationLoading.value = false;
-      duplicateModalRef.value?.hide();
-    });
-}
-
-async function deleteAudit() {
-  try {
-    await auditStore.deleteAudit(uniqueId.value);
-
-    deleteModalRef.value?.hide();
-
-    notify("success", undefined, `Audit « ${auditProcedureName.value} » supprimé`);
-
-    router.push({
-      name: accountStore.account ? "account-dashboard" : "home"
-    });
-  } catch (error) {
-    notify(
-      "error",
-      "Échec de la supression de l'audit",
-      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
-    );
-    captureWithPayloads(error);
-  }
-}
-
-async function transferAudit(newEmail: string) {
-  try {
-    await auditStore.transferAudit(
-      uniqueId.value,
-      newEmail
-    );
-
-    transferModalRef.value?.hide();
-
-    notify("success", `Audit « ${auditProcedureName.value} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
-
-    router.push({
-      name: accountStore.account ? "account-dashboard" : "home"
-    });
-  } catch (error) {
-    notify(
-      "error",
-      "Échec du transfert de l'audit",
-      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
-    );
-    captureWithPayloads(error);
-  }
-}
 </script>
 
 <template>
@@ -199,10 +98,6 @@ async function transferAudit(newEmail: string) {
           v-if="!isLoggedInAndOwnAudit"
           :audit="audit"
           class="fr-mb-1w"
-          :can-transfer-audit="canTransferAudit"
-          @delete="deleteModalRef?.show()"
-          @transfer="transferModalRef?.show()"
-          @duplicate="duplicateModalRef?.show()"
         />
 
         <h2 v-if="!isLoggedInAndOwnAudit" class="fr-mb-0">Livrables</h2>
@@ -230,28 +125,6 @@ async function transferAudit(newEmail: string) {
       </div>
     </div>
   </template>
-
-  <DuplicateModal
-    :id="`duplicate-modal-${uniqueId}`"
-    ref="duplicateModalRef"
-    :original-audit-name="auditProcedureName"
-    :is-loading="isDuplicationLoading"
-    @confirm="duplicateAudit"
-  />
-
-  <DeleteModal
-    :id="`delete-modal-${uniqueId}`"
-    ref="deleteModalRef"
-    :procedure-name="auditProcedureName"
-    @confirm="deleteAudit"
-  />
-
-  <TransferModal
-    :id="`transfer-modal-${uniqueId}`"
-    ref="transferModalRef"
-    :procedure-name="auditProcedureName"
-    @confirm="transferAudit"
-  />
 </template>
 
 <style scoped>
