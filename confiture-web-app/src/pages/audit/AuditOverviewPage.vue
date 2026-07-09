@@ -232,7 +232,7 @@ async function transferAudit(newEmail: string) {
   </template>
 
   <DuplicateModal
-    :id="uniqueId"
+    :id="`duplicate-modal-${uniqueId}`"
     ref="duplicateModalRef"
     :original-audit-name="auditProcedureName"
     :is-loading="isDuplicationLoading"
@@ -247,7 +247,7 @@ async function transferAudit(newEmail: string) {
   />
 
   <TransferModal
-    :id="uniqueId"
+    :id="`transfer-modal-${uniqueId}`"
     ref="transferModalRef"
     :procedure-name="auditProcedureName"
     @confirm="transferAudit"
