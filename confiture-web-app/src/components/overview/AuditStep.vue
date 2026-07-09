@@ -98,12 +98,12 @@ const auditIsInProgress = computed(() => {
             <li class="dropdown-item dropdown-item--with-meta">
               <button
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
-                :disabled="props.canTransferAudit"
+                :disabled="!props.canTransferAudit"
                 @click="$emit('transfer')"
               >
                 Transférer
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>
-                <p v-if="props.canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible que si l'audit est associé à un compte</p>
+                <p v-if="!props.canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible que si l'audit est associé à un compte</p>
               </button>
             </li>
             <li aria-hidden="true" class="dropdown-separator"></li>
