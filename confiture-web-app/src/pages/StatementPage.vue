@@ -447,10 +447,6 @@ const siteUrl = computed(() => {
 
 .statement-entity {
   color: var(--text-default-grey);
-  background-color: var(--yellow-moutarde-975-75);
-}
-
-[data-fr-theme="dark"] .statement-entity {
   background-color: var(--yellow-moutarde-850-200);
 }
 </style>
