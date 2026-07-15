@@ -904,7 +904,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can change criteria in an audit completed without displaying the progress bar, an audit is still completed", () => {
+  it("User can change criteria in a completed audit to update editionDate", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     const today = new Date();
@@ -929,7 +929,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can remove criteria in an audit completed and display the progress bar", () => {
+  it("User can uncheck criterium in a completed audit so it becomes in progress", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     cy.createTestAudit({
