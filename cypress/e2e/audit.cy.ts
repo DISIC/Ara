@@ -904,7 +904,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can't transfer an audit after logging out", () => {
+  it("User can't transfer an audit after logging out", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username, isPristine: true }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
@@ -920,7 +920,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can transfer an audit without being logged in", () => {
+  it("User can transfer an audit without being logged in", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("button", "Actions").click();
