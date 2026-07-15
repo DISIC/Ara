@@ -389,7 +389,6 @@ onMounted(() => {
                   <span>
                     Transférer l’audit
                     <span class="fr-sr-only"> {{ auditName }}</span>
-                    <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
                   </span>
                   <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut transférer l’audit

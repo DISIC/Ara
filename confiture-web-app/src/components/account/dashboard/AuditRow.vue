@@ -291,7 +291,6 @@ defineExpose({
             >
               Transférer l’audit
               <span class="fr-sr-only"> {{ audit.procedureName }}</span>
-              <span class="fr-badge fr-badge--sm fr-badge--yellow-tournesol fr-icon-flashlight-fill fr-badge--icon-left fr-ml-1-5v">Nouveau</span>
             </button>
           </li>
           <li class="dropdown-item">
