@@ -904,6 +904,57 @@ describe("Audit", () => {
     });
   });
 
+  it.only("User can't transfer an audit after logging out", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username, isPristine: true }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Transférer").should("be.disabled");
+      });
+    });
+  });
+
+  it.only("User can transfer an audit without being logged in", () => {
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Transférer").click();
+
+      // Error: 2nd field is empty
+      cy.getByLabel("Adresse e-mail du destinataire")
+        .clear()
+        .type("example@domain.com");
+
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+
+      cy.getByLabel("Confirmer e-mail du destinataire")
+        .clear()
+        .type("exampl@domain.com");
+
+      // Error: 2nd field isnt equal to first
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+
+      // Valid form
+      cy.getByLabel("Confirmer e-mail du destinataire")
+        .clear()
+        .type("example@domain.com");
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+
+      // Assert we're on homepage with toast
+      cy.contains("Je réalise un audit d’accessibilité avec Ara");
+      cy.contains("Audit « Audit de mon petit site » transféré");
+      cy.contains("Lien d’accès envoyé à example@domain.com");
+    });
+  });
+
   it("User can change criteria in a completed audit to update editionDate", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
