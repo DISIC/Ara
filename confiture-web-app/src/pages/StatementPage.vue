@@ -235,7 +235,7 @@ const siteUrl = computed(() => {
               <strong
                 v-if="report.data.context.auditorOrganisation"
               >{{ report.data.context.auditorOrganisation }}</strong>
-              <span v-else class="statement-entity">[entité ayant réalisé l’audit]</span>
+              <mark v-else>[entité ayant réalisé l’audit]</mark>
               révèle que :
             </p>
             <ul class="fr-mb-9v fr-mb-md-6w">
@@ -443,10 +443,5 @@ const siteUrl = computed(() => {
 
 .top-link {
   text-align: end;
-}
-
-.statement-entity {
-  color: var(--text-default-grey);
-  background-color: var(--yellow-moutarde-850-200);
 }
 </style>
