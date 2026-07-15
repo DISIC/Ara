@@ -202,7 +202,7 @@ async function transferAudit(newEmail: string) {
               >
                 Transférer
                 <span class="fr-sr-only"> {{ audit.procedureName }}</span>
-                <p v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Disponible que si l'audit est associé à un compte</p>
+                <p v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut transférer l’audit</p>
               </button>
             </li>
             <li aria-hidden="true" class="dropdown-separator"></li>
