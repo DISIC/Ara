@@ -232,7 +232,10 @@ const siteUrl = computed(() => {
             <h5 class="fr-h2">Résultats des tests</h5>
             <p>
               L’audit de conformité réalisé par
-              <strong>{{ report.data.context.auditorOrganisation ?? "Entité ayant réalisé l’audit" }}</strong>
+              <strong
+                v-if="report.data.context.auditorOrganisation"
+              >{{ report.data.context.auditorOrganisation }}</strong>
+              <span v-else class="statement-entity">[entité ayant réalisé l’audit]</span>
               révèle que :
             </p>
             <ul class="fr-mb-9v fr-mb-md-6w">
@@ -440,5 +443,14 @@ const siteUrl = computed(() => {
 
 .top-link {
   text-align: end;
+}
+
+.statement-entity {
+  color: var(--text-default-grey);
+  background-color: var(--yellow-moutarde-975-75);
+}
+
+[data-fr-theme="dark"] .statement-entity {
+  background-color: var(--yellow-moutarde-850-200);
 }
 </style>
