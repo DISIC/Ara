@@ -98,11 +98,6 @@ function copyReportLink(uniqueId: string) {
     if (isStatementCopied.value) {
       isStatementCopied.value = false;
     }
-
-    const ref = optionsDropdownRef.value;
-    if (ref) {
-      ref.showDropdown();
-    }
   });
 }
 
@@ -114,11 +109,6 @@ function copyStatementLink(uniqueId: string) {
 
     if (isReportCopied.value) {
       isReportCopied.value = false;
-    }
-
-    const ref = optionsDropdownRef.value;
-    if (ref) {
-      ref.showDropdown();
     }
   });
 }
@@ -335,13 +325,14 @@ defineExpose({
           <li class="dropdown-item">
             <button
               v-if="!isReportCopied"
+              data-keep-open
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyReportLink(audit.consultUniqueId)"
             >
               Copier le lien du rapport
               <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
             </button>
-            <div v-else class="copy-link" aria-live="polite" role="alert">
+            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
               <span class="fr-icon-check-line fr-m-0">Lien du rapport copié</span>
             </div>
           </li>
@@ -349,13 +340,13 @@ defineExpose({
           <li v-if="audit.statementIsPublished" class="dropdown-item">
             <button
               v-if="!isStatementCopied"
-
+              data-keep-open
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyStatementLink(audit.consultUniqueId)"
             >
               Copier le lien de la déclaration
             </button>
-            <div v-else class="copy-link" aria-live="polite" role="alert">
+            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
               <span class="fr-icon-check-line fr-m-0">Lien de la déclaration copié</span>
             </div>
           </li>

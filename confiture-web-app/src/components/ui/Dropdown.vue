@@ -27,10 +27,6 @@ function toggleOptions() {
   }
 }
 
-function showDropdown() {
-  showContent.value = true;
-}
-
 function closeOptions() {
   showContent.value = false;
   buttonRef.value?.focus();
@@ -44,13 +40,15 @@ function handleWindowClick(e: MouseEvent) {
     showContent.value = false;
   } else {
     // Click inside container, check if clicked element is an interactive element other than the trigger button
-    const { nodeName } = e.target as HTMLElement;
+    const target = e.target as HTMLElement;
+    const { nodeName } = target;
     if (
       e.target !== buttonRef.value &&
-      (nodeName === "BUTTON" || nodeName === "A")
+      (nodeName === "BUTTON" || nodeName === "A") &&
+      // Some actions (e.g. copy link) keep the dropdown open on purpose.
+      !target.closest("[data-keep-open]")
     ) {
-      showContent.value = false;
-      buttonRef.value?.focus();
+      closeOptions();
     }
   }
 }
@@ -72,7 +70,7 @@ watch(route, () => {
   }
 });
 
-defineExpose({ buttonRef, closeOptions, showDropdown });
+defineExpose({ buttonRef, closeOptions });
 </script>
 
 <template>
