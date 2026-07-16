@@ -10,7 +10,7 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
     // Only allow seeding on dev and review environnments
-    seed: process.env.NODE_ENV !== "production" || process.env.IS_REVIEW_APP
+    seed: process.env.NODE_ENV !== "production" || process.env.IS_REVIEW_APP === "true"
       ? "yarn dlx tsx prisma/seed.ts"
       : undefined
   },
