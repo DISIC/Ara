@@ -148,6 +148,8 @@ describe("Audit", () => {
     // Check topic "Cadres" completion is 100%
     cy.get(".topic-filter-item").eq(1).contains("Cadres");
     cy.get(".topic-filter-item").eq(1).contains("100%");
+
+    cy.get(".audit-progress-label").contains("Progression de l’audit");
   });
 
   it("User can go to settings page from audit", () => {
@@ -593,6 +595,8 @@ describe("Audit", () => {
         .click({ force: true });
 
       cy.contains(new RegExp(`Terminé le \\d{1,2} ${monthesRe} \\d{4}`));
+      cy.contains("Progression de l’audit").should("not.exist");
+
       cy.contains("Bravo ! Vous êtes sur le point de terminer votre audit 🎉");
 
       cy.contains("a", "Accéder aux livrables").click();
@@ -818,7 +822,6 @@ describe("Audit", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-
       cy.get(".tiptap").type("Copier coller de Markdown :{enter}");
       cy.get(".tiptap").pasteText("../fixtures/mdContent.md");
       cy.get(".tiptap strong").should("exist");
@@ -898,6 +901,50 @@ describe("Audit", () => {
       cy.contains("Je réalise un audit d’accessibilité avec Ara");
       cy.contains("Audit « Audit de mon petit site » transféré");
       cy.contains("Lien d’accès envoyé à example@domain.com");
+    });
+  });
+
+  it("User can change criteria in a completed audit to update editionDate", () => {
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    const today = new Date();
+    const publicationDate = new Date(today.setDate(today.getDate() - 2));
+
+    cy.createTestAudit({
+      isComplete: true,
+      publicationDate: publicationDate.toString()
+    }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".audit-status").contains("Terminé le");
+      cy.get(".audit-status").contains("Mis à jour le").should("not.exist");
+
+      cy.contains("button[role=\"tab\"]", "Accueil").click();
+      cy.get(".criterium-container").contains("Non conforme").click();
+
+      cy.wait("@updateResults");
+
+      cy.get(".audit-status").contains("Terminé le");
+      cy.get(".audit-status").contains("Mis à jour le");
+    });
+  });
+
+  it("User can uncheck criterium in a completed audit so it becomes in progress", () => {
+    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+
+    cy.createTestAudit({
+      isComplete: true
+    }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      cy.get(".audit-status").contains("Terminé le");
+
+      cy.contains("button[role=\"tab\"]", "Accueil").click();
+      cy.get(".criterium-container").contains("Conforme").click();
+
+      cy.wait("@updateResults");
+
+      cy.get(".audit-progress-label").contains("Progression de l’audit");
     });
   });
 });
