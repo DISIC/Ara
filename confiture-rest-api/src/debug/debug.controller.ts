@@ -1,6 +1,6 @@
-import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, Get, Post, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
 import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 import { User } from "src/auth/user.decorator";
@@ -21,6 +21,16 @@ export class DebugController {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService
   ) {}
+
+  @Get("is-dev-mode-allowed")
+  @ApiOkResponse({
+    description: "Display dev mode switch or not",
+    type: Boolean
+  })
+  async isDevModeAllowed(): Promise<boolean> {
+    const isProd = this.config.get("NODE_ENV") === "production";
+    return !isProd;
+  }
 
   @Post("create-audit")
   @ApiCreatedResponse({
