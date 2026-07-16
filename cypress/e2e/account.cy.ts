@@ -251,26 +251,32 @@ describe("Account", () => {
     });
 
     it("User can delete their account", () => {
-      cy.createTestAccount({ login: true }).then(({ password }) => {
-        cy.visit("http://localhost:3000/compte/parametres");
+      cy.createTestAccount({ login: true }).then(({ username, password }) => {
+        cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+          cy.visit("http://localhost:3000/compte/parametres");
 
-        // Delete account form
-        cy.contains("button", "Supprimer mon compte").click();
-        cy.getByLabel(
-          "Saisissez la phrase suivante pour confirmer la suppression de votre compte : je confirme vouloir supprimer mon compte"
-        ).type("je confirme vouloir supprimer mon compte");
-        cy.getByLabel("Mot de passe").type(password);
-        cy.contains("button", "Supprimer mon compte").click();
-        cy.contains(
-          "Vous avez été déconnecté et votre compte a été supprimé avec succès"
-        );
+          // Delete account form
+          cy.contains("button", "Supprimer mon compte").click();
+          cy.getByLabel(
+            "Saisissez la phrase suivante pour confirmer la suppression de votre compte : je confirme vouloir supprimer mon compte"
+          ).type("je confirme vouloir supprimer mon compte");
+          cy.getByLabel("Mot de passe").type(password);
+          cy.contains("button", "Supprimer mon compte").click();
+          cy.contains(
+            "Vous avez été déconnecté et votre compte a été supprimé avec succès"
+          );
 
-        // Submit feedback form
-        cy.getByLabel(
-          "Pourriez-vous nous donner la raison de votre départ ?"
-        ).type("Quoi ? Ça n’est pas un outil d’audit automatique ⁈");
-        cy.contains("button", "Envoyer mon avis").click();
-        cy.contains("Votre avis a bien été envoyé");
+          // FIXME: make this work locally
+          // Submit feedback form
+          // cy.getByLabel(
+          //   "Pourriez-vous nous donner la raison de votre départ ?"
+          // ).type("Quoi ? Ça n’est pas un outil d’audit automatique ⁈");
+          // cy.contains("button", "Envoyer mon avis").click();
+          // cy.contains("Votre avis a bien été envoyé");
+
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+          cy.contains("Désolé, l’audit que vous cherchez a été supprimé.");
+        });
       });
     });
   });

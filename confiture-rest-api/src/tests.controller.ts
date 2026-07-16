@@ -86,8 +86,8 @@ export class TestsController {
         publicationDate: body.isComplete ? new Date() : null,
         auditTrace: {
           create: {
-            auditConsultUniqueId: editUniqueId,
-            auditEditUniqueId: reportUniqueId
+            auditConsultUniqueId: reportUniqueId,
+            auditEditUniqueId: editUniqueId
           }
         },
         auditType: "FULL",

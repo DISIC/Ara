@@ -909,7 +909,7 @@ export class AuditService {
   }
 
   /**
-   * Mark an audit as deleted and remove auditor informations. Its data will be not be deleted.
+   * Mark an audit as deleted and remove auditor informations. Its data will not be deleted.
    * @returns True if an audit was deleted, false otherwise.
    */
   async softDeleteAudit(uniqueId: string): Promise<boolean> {
@@ -1670,15 +1670,16 @@ export class AuditService {
     return newAudit;
   }
 
-  async anonymiseAudits(userEmail: string) {
+  async softDeleteAuditsByAuditorEmail(userEmail: string) {
     await this.prisma.audit.updateMany({
       where: {
         auditorEmail: userEmail
       },
       data: {
+        isHidden: true,
         auditorEmail: null,
         auditorName: null,
-        showAuditorEmailInReport: false
+        auditorOrganisation: null
       }
     });
   }
