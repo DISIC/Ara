@@ -23,7 +23,7 @@ const containerRef = ref<HTMLDivElement>();
 function toggleOptions() {
   showContent.value = !showContent.value;
   if (!showContent.value) {
-    emit("closed");
+    closeOptions();
   }
 }
 
@@ -37,7 +37,7 @@ function closeOptions() {
 function handleWindowClick(e: MouseEvent) {
   if (!containerRef.value?.contains(e.target as HTMLElement)) {
     // Click outside of container
-    showContent.value = false;
+    closeOptions();
   } else {
     // Click inside container, check if clicked element is an interactive element other than the trigger button
     const target = e.target as HTMLElement;
@@ -66,7 +66,7 @@ const route = useRoute();
 // Close dropdown when changing route
 watch(route, () => {
   if (showContent.value) {
-    showContent.value = false;
+    closeOptions();
   }
 });
 
