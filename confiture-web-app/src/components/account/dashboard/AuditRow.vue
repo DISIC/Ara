@@ -86,15 +86,23 @@ const csvExportFilename = computed(() => {
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
 
+const isReportCopied = ref(false);
+const isStatementCopied = ref(false);
+
 function copyReportLink(uniqueId: string) {
   const url = `${window.location.origin}/rapport/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers le rapport a bien été copié dans le presse-papier.`
-    );
+    isReportCopied.value = true;
+
+    if (isStatementCopied.value) {
+      isStatementCopied.value = false;
+    }
+
+    const ref = optionsDropdownRef.value;
+    if (ref) {
+      ref.showDropdown();
+    }
   });
 }
 
@@ -102,12 +110,27 @@ function copyStatementLink(uniqueId: string) {
   const url = `${window.location.origin}/declaration/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier.`
-    );
+    isStatementCopied.value = true;
+
+    if (isReportCopied.value) {
+      isReportCopied.value = false;
+    }
+
+    const ref = optionsDropdownRef.value;
+    if (ref) {
+      ref.showDropdown();
+    }
   });
+}
+
+function closeDropdown() {
+  if (isReportCopied.value) {
+    isReportCopied.value = false;
+  }
+
+  if (isStatementCopied.value) {
+    isStatementCopied.value = false;
+  }
 }
 
 const auditNameRef = useTemplateRef("auditNameRef");
@@ -256,6 +279,7 @@ defineExpose({
           class: 'fr-btn--tertiary',
           ariaLabel: `Actions de l’audit ${audit.procedureName}`
         }"
+        @closed="closeDropdown"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
           <template v-if="!isInProgress && !isNotStarted">
@@ -268,7 +292,7 @@ defineExpose({
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >Consulter le rapport
-                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
+                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -281,7 +305,7 @@ defineExpose({
               @click="duplicateModal?.show()"
             >
               Dupliquer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -290,7 +314,7 @@ defineExpose({
               @click="$emit('transfer')"
             >
               Transférer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -310,21 +334,30 @@ defineExpose({
 
           <li class="dropdown-item">
             <button
+              v-if="!isReportCopied"
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyReportLink(audit.consultUniqueId)"
             >
               Copier le lien du rapport
-              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
             </button>
+            <div v-else class="copy-link" aria-live="polite" role="alert">
+              <span class="fr-icon-check-line fr-m-0">Lien du rapport copié</span>
+            </div>
           </li>
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
             <button
+              v-if="!isStatementCopied"
+
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyStatementLink(audit.consultUniqueId)"
             >
               Copier le lien de la déclaration
             </button>
+            <div v-else class="copy-link" aria-live="polite" role="alert">
+              <span class="fr-icon-check-line fr-m-0">Lien de la déclaration copié</span>
+            </div>
           </li>
 
           <li class="dropdown-item dropdown-item--with-meta">
@@ -404,5 +437,22 @@ defineExpose({
 .audit-main-action {
   justify-content: center;
   width: initial;
+}
+
+.copy-link {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+
+  span {
+    color: var(--text-default-success);
+    line-height: 1.5rem;
+
+    &::before {
+      --icon-size: 1rem;
+
+      margin-left: -0.125rem;
+      margin-right: 0.5rem;
+    }
+  }
 }
 </style>
