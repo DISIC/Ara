@@ -167,7 +167,6 @@ async function transferAudit(newEmail: string) {
           title="Actions"
           :align-left="windowWidth < 880"
           :button-props="{
-            class: 'fr-btn--tertiary',
             ariaLabel: `Actions de l’audit ${audit.procedureName}`
           }"
         >
