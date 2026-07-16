@@ -48,7 +48,6 @@ export class DebugController {
     const adminAccounts = this.config.get("ADMIN_ACCOUNTS");
     const adminUsers = adminAccounts ? adminAccounts.split(",") : [];
     const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && this.config.get("IS_REVIEW_APP") !== "true" && adminUsers && (!user || !adminUsers.includes(user.email));
-
     if (userIsNotAuthorized) {
       throw new UnauthorizedException();
     }
