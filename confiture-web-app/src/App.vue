@@ -109,7 +109,7 @@ function closeFeedbackNotice() {
     </div>
   </div>
 
-  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w">
+  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w" tabindex="-1">
     <RouterView />
   </main>
 
