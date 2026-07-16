@@ -10,6 +10,10 @@ defineProps<{
   disabled?: boolean;
 }>();
 
+const emit = defineEmits<{
+  (e: "closed"): void;
+}>();
+
 const uniqueId = useId();
 
 const showContent = ref(false);
@@ -18,11 +22,19 @@ const containerRef = ref<HTMLDivElement>();
 
 function toggleOptions() {
   showContent.value = !showContent.value;
+  if (!showContent.value) {
+    emit("closed");
+  }
+}
+
+function showDropdown() {
+  showContent.value = true;
 }
 
 function closeOptions() {
   showContent.value = false;
   buttonRef.value?.focus();
+  emit("closed");
 }
 
 // Close the dropdown if click is outside the dropdown container or if the clicked element is a button or link.
@@ -60,7 +72,7 @@ watch(route, () => {
   }
 });
 
-defineExpose({ buttonRef, closeOptions });
+defineExpose({ buttonRef, closeOptions, showDropdown });
 </script>
 
 <template>
