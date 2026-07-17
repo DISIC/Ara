@@ -169,40 +169,34 @@ const siteUrl = computed(() => {
               numérique) conformément à l’article 47 de la loi
               n<sup>o</sup>&nbsp;2005-102 du 11&nbsp;février 2005.
             </p>
-
-            <template
-              v-if="report.data.schemaPluriannuelUrl
-                || report.data.planActionUrl"
-            >
-              <p>
-                À cette fin, {{ report.data.procedureInitiator }} met en œuvre
-                la stratégie et les actions suivantes&nbsp;:
-              </p>
-              <ul class="fr-mb-9v">
-                <li>
-                  <template v-if="report.data.schemaPluriannuelUrl">
-                    <a
-                      :href="report.data.schemaPluriannuelUrl"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only"> (nouvelle fenêtre)</span>
-                    </a>&nbsp;;
-                  </template>
-                  <template v-else>Aucun schéma pluriannuel de mise en accessibilité&nbsp;;</template>
-                </li>
-                <li>
-                  <template v-if="report.data.planActionUrl">
-                    <a
-                      :href="report.data.planActionUrl"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only"> (nouvelle fenêtre)</span>
-                    </a>.
-                  </template>
-                  <template v-else>Aucun plan d’action de l’année en cours.</template>
-                </li>
-              </ul>
-            </template>
+            <p>
+              À cette fin, {{ report.data.procedureInitiator }} met en œuvre
+              la stratégie et les actions suivantes&nbsp;:
+            </p>
+            <ul class="fr-mb-9v">
+              <li>
+                <template v-if="report.data.schemaPluriannuelUrl">
+                  <a
+                    :href="report.data.schemaPluriannuelUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  </a>&nbsp;;
+                </template>
+                <template v-else>Aucun schéma pluriannuel de mise en accessibilité&nbsp;;</template>
+              </li>
+              <li>
+                <template v-if="report.data.planActionUrl">
+                  <a
+                    :href="report.data.planActionUrl"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  </a>.
+                </template>
+                <template v-else>Aucun plan d’action de l’année en cours.</template>
+              </li>
+            </ul>
 
             <p class="fr-mb-9v fr-mb-md-6w">
               Cette déclaration d’accessibilité s’applique à
