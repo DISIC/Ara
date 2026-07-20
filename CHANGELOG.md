@@ -10,7 +10,7 @@
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Les audits de comptes supprimés ne sont correctement plus accessibles ([#1552](https://github.com/DISIC/Ara/pull/1552))
-- 
+
 ### 17/06/2026
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
