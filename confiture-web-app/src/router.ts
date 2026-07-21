@@ -30,6 +30,7 @@ import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
 import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
+import TransverseDocPage from "./pages/misc/TransverseDocPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
@@ -108,6 +109,14 @@ const router = createRouter({
       component: ContactPage,
       meta: {
         name: "Contact"
+      }
+    },
+    {
+      path: "/documentation-onglet-transverse",
+      name: "transverseDoc",
+      component: TransverseDocPage,
+      meta: {
+        name: "Mentions légales"
       }
     },
     // Account pages
