@@ -36,7 +36,7 @@ export class DebugController {
 
     // Only allow admins to use route on production
     const adminUsers = this.config.get("ADMIN_ACCOUNTS").split(",");
-    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && (!user || !adminUsers.includes(user.email));
+    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && !process.env.IS_REVIEW_APP && (!user || !adminUsers.includes(user.email));
 
     if (userIsNotAuthorized) {
       throw new UnauthorizedException();
