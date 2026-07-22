@@ -483,5 +483,33 @@ describe("Account", () => {
         cy.getByLabel("Adresse e-mail").should("have.value", newEmail);
       });
     });
+
+    it("User can toggle audit privacy", () => {
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Partager").click();
+      cy.contains("label", "Rendre l’audit public").click();
+
+      cy.contains("Toute personne disposant du lien peut accéder à l’audit et le modifier.");
+      cy.contains("La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.");
+      cy.contains("dialog.fr-modal--opened button", "Fermer").click();
+
+      cy.get(".fr-badge--blue-cumulus").first().contains("Public");
+    });
+
+    it("User can copy audit link in share modal", () => {
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Partager").click();
+      cy.contains("label", "Rendre l’audit public").click();
+
+      cy.contains("button", "Copier le lien de partage").click();
+      cy.get("@audit").then((audit) => {
+        cy.assertClipboardValue(
+          // @ts-ignore
+          // TODO remove `@ts-ignore` when the following issue is fixed:
+          // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
+          `http://localhost:3000/audits/${audit.editId}/generation`
+        );
+      });
+    });
   });
 });

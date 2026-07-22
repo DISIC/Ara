@@ -518,7 +518,7 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User can copy an audit if connected and not owner", () => {
+  it("User can copy an audit if connected and not owner", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ ownerUserName: username }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/`);
@@ -1077,11 +1077,40 @@ describe("Audit", () => {
     });
   });
 
-  it("User can toggle audit privacy");
   it("User can copy audit link in share modal");
+  it("User can toggle audit privacy", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username, isPublic: false }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Partager").click();
+        cy.contains("label", "Rendre l’audit public").click();
 
-  it("User can see audit if not connected after it has been created", () => {
-    cy.createTestAudit().then(({ editId }) => {
+        cy.contains("Toute personne disposant du lien peut accéder à l’audit et le modifier.");
+        cy.contains("La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.");
+        cy.contains("dialog.fr-modal--opened button", "Fermer").click();
+
+        cy.contains("h1", "Audit Public");
+      });
+    });
+  });
+
+  it("User can copy audit link in share modal", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username, isPublic: false }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Partager").click();
+        cy.contains("label", "Rendre l’audit public").click();
+
+        cy.contains("button", "Copier le lien de partage").click();
+        cy.assertClipboardValue(`http://localhost:3000/audits/${editId}/generation`);
+      });
+    });
+  });
+
+  it("User can see public audit if not connected after it has been created", () => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.get("h1").contains("Audit");
     });
@@ -1089,9 +1118,10 @@ describe("Audit", () => {
 
   it("User cant see private audit if not connected", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ ownerUserName: username, isPublic: false }).then(({ editId }) => {
+      cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-
+        // FIXME: avoid calling 2 times click()
+        cy.contains("button", username).click();
         cy.contains("button", username).click();
         cy.contains("button", "Me déconnecter").click();
 
@@ -1102,7 +1132,7 @@ describe("Audit", () => {
 
   it("User can see public audit if connected but not owner", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit().then(({ editId }) => {
+      cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/`);
 
         cy.contains("button", username).click();
@@ -1118,7 +1148,7 @@ describe("Audit", () => {
 
   it("User cant see private audit if connected but not owner", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ isPublic: false, ownerUserName: username }).then(({ editId }) => {
+      cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
         cy.visit(`http://localhost:3000/`);
 
         cy.contains("button", username).click();
