@@ -343,7 +343,7 @@ defineExpose({
               :download="csvExportFilename"
             >
               Télécharger l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }} </span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -356,7 +356,7 @@ defineExpose({
               @click="$emit('delete')"
             >
               Supprimer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
