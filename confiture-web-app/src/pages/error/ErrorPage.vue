@@ -7,7 +7,10 @@ import AuditRestrictedAccessImage from "../../assets/images/restricted-access.sv
 import GenericErrorImage from "../../assets/images/server-error.svg";
 import { history } from "../../router";
 
+// FIXME: refactor this page
+
 const statusCode = (history.state.errorStatus ?? 404) as number;
+const errorPayload = history.state.errorPayload as any;
 
 const errorTitle =
   {
@@ -22,8 +25,8 @@ const errorTitle =
 
 const errorDescription =
   {
-    401: "L’audit est privé. Pour accéder à l’audit, contactez le propriétaire.",
-    403: "L’audit est privé. Pour accéder à l’audit, contactez le propriétaire.",
+    401: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
+    403: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
     410: "Désolé, l’audit que vous cherchez a été supprimé.",
@@ -75,18 +78,16 @@ const route = useRoute();
   <div class="fr-grid-row fr-mt-7w fr-mt-md-15w">
     <div class="fr-col-12 fr-col-md-6 fr-mb-7w fr-mb-md-0">
       <h1>{{ errorTitle }}</h1>
-      <p class="fr-text--sm">Erreur {{ statusCode }}</p>
-      <p class="fr-text--xl fr-mb-5w">
-        {{ errorDescription }}
-      </p>
+      <p v-if="![401, 403].includes(statusCode)" class="fr-text--sm">Erreur {{ statusCode }}</p>
+      <p class="fr-text--xl fr-mb-5w" v-html="errorDescription" />
       <div
-        v-if="statusCode !== 410"
+        v-if="![401, 403, 410].includes(statusCode)"
         class="fr-text--sm"
         v-html="marked.parse(errorInstruction, { gfm: false })"
-      ></div>
+      />
       <div>
         <RouterLink
-          v-if="[404, 410].includes(statusCode)"
+          v-if="[401, 403, 404, 410].includes(statusCode)"
           class="fr-btn fr-mr-2w"
           :to="{ name: 'home' }"
         >
