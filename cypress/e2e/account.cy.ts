@@ -285,7 +285,7 @@ describe("Account", () => {
     // Create an logged in account and 4 associated audits (1 completed, 1 pristine and 2 in progress)
     beforeEach(() => {
       cy.createTestAccount({ login: true }).then(({ username }) => {
-        cy.createTestAudit({ auditorEmail: username, isComplete: true });
+        cy.createTestAudit({ auditorEmail: username, isComplete: true }).as("finished-audit");
         cy.createTestAudit({ auditorEmail: username, isPristine: true });
         cy.createTestAudit({ auditorEmail: username });
         cy.createTestAudit({ auditorEmail: username }).as("audit");
@@ -405,7 +405,7 @@ describe("Account", () => {
     });
 
     it("User can duplicate audit", () => {
-      cy.contains("button", "Actions").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
       cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
@@ -418,9 +418,9 @@ describe("Account", () => {
     });
 
     it("User can copy report link", () => {
-      cy.contains("button", "Actions").click();
+      cy.get(".fr-badge--green-emeraude ~ .audits-list button[aria-haspopup]").click();
       cy.contains("button", "Copier le lien du rapport").click();
-      cy.get("@audit").then((audit) => {
+      cy.get("@finished-audit").then((audit) => {
         cy.assertClipboardValue(
           // @ts-ignore
           // TODO: remove `@ts-ignore` when the following issue is fixed:
@@ -436,14 +436,14 @@ describe("Account", () => {
     it("User can download audit", () => {
       cy.exec("rm -rf cypress/downloads");
 
-      cy.contains("Actions").click();
-      cy.contains("Télécharger l’audit").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
+      cy.contains("Télécharger la grille d’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
 
     it("User can delete audit", () => {
-      cy.contains("Actions").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
       cy.contains("Supprimer l’audit").click();
 
       cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
