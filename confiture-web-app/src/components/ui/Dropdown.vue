@@ -10,10 +10,6 @@ defineProps<{
   disabled?: boolean;
 }>();
 
-const emit = defineEmits<{
-  (e: "closed"): void;
-}>();
-
 const uniqueId = useId();
 
 const showContent = ref(false);
@@ -22,22 +18,18 @@ const containerRef = ref<HTMLDivElement>();
 
 function toggleOptions() {
   showContent.value = !showContent.value;
-  if (!showContent.value) {
-    closeOptions();
-  }
 }
 
 function closeOptions() {
   showContent.value = false;
   buttonRef.value?.focus();
-  emit("closed");
 }
 
 // Close the dropdown if click is outside the dropdown container or if the clicked element is a button or link.
 function handleWindowClick(e: MouseEvent) {
   if (!containerRef.value?.contains(e.target as HTMLElement)) {
     // Click outside of container
-    closeOptions();
+    showContent.value = false;
   } else {
     // Click inside container, check if clicked element is an interactive element other than the trigger button
     const target = e.target as HTMLElement;
@@ -48,7 +40,8 @@ function handleWindowClick(e: MouseEvent) {
       // Some actions (e.g. copy link) keep the dropdown open on purpose.
       !target.closest("[data-keep-open]")
     ) {
-      closeOptions();
+      showContent.value = false;
+      buttonRef.value?.focus();
     }
   }
 }
@@ -66,7 +59,7 @@ const route = useRoute();
 // Close dropdown when changing route
 watch(route, () => {
   if (showContent.value) {
-    closeOptions();
+    showContent.value = false;
   }
 });
 
