@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
@@ -218,15 +218,18 @@ export class AuditService {
    *
    * @param editUniqueId id of the audit to check ownership of
    * @param username email adress of user
-   * @returns true if audit is public or if user is owner
+   * @returns if the audit is accessible by the user
+   * @throws if the audit is not acessible by the user
    */
-  async validateAuditAccess(editUniqueId: string, username?: string) {
+  async validateAuditAccess(editUniqueId: string, username?: string): Promise<void> {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId },
-      select: { isPublic: true, auditor: { select: { username: true } } }
+      select: { procedureName: true, isPublic: true, auditor: { select: { username: true } } }
     });
 
-    return audit.isPublic || (username && audit.auditor.username === username);
+    if (!(audit.isPublic || (username && audit.auditor.username === username))) {
+      throw new ForbiddenException({ auditName: audit.procedureName });
+    }
   }
 
   /**
