@@ -2,6 +2,14 @@
 import { useNotificationStore } from "../../store";
 
 const store = useNotificationStore();
+
+function onAction() {
+  store.notification?.action?.cb();
+
+  if (store.notification?.action?.hideOnTrigger) {
+    store.hideNotification();
+  }
+}
 </script>
 
 <template>
@@ -11,10 +19,11 @@ const store = useNotificationStore();
         <div
           v-if="store.notification"
           :key="store.notification.id"
-          class="toast-notification fr-alert"
+          class="fr-alert toast-notification"
           :class="[
             `fr-alert--${store.notification.status}`,
             {
+              'toast-notification--with-action': store.notification.action,
               'fr-alert--sm':
                 !store.notification.title && store.notification.description
             }
@@ -48,7 +57,7 @@ const store = useNotificationStore();
           <button
             v-if="store.notification.action"
             class="fr-btn fr-btn--tertiary-no-outline fr-mb-1v"
-            @click="store.notification?.action?.cb"
+            @click="onAction"
           >
             {{ store.notification.action.label }}
           </button>
@@ -90,5 +99,16 @@ const store = useNotificationStore();
 .v-leave-to {
   opacity: 0;
   transform: translateY(2rem);
+}
+
+/* Align icon and close button for sm toast with action */
+.toast-notification--with-action {
+  &.fr-alert--sm::before {
+    margin: 1rem 0.5rem;
+  }
+
+  .fr-btn--close {
+    inset-block-start: auto !important;
+  }
 }
 </style>

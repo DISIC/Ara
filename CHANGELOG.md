@@ -4,6 +4,11 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 22/07/2026
+
+#### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
+
+- Ajouter plusieurs erreurs par critère non conforme ([#1458](https://github.com/DISIC/Ara/pull/1458))
 
 ### 16/07/2026
 

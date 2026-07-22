@@ -11,9 +11,9 @@ import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import {
   AuditPage,
   AuditType,
-  CriterionResultUserImpact,
   CriteriumResult,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  NotCompliantItem
 } from "../../types";
 import { formatStatus } from "../../utils";
 import TiptapRenderer from "../tiptap/TiptapRenderer.vue";
@@ -52,7 +52,7 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
-      "Le focus se déplacera dans le champ « Erreur et recommandation »",
+      "Le focus se déplacera dans le champ « Erreurs et recommandations »",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: RadioColor.RED
   },
@@ -96,8 +96,6 @@ const transverseComment = computed((): string | null => {
     switch (transverseStatus.value) {
       case CriteriumResultStatus.COMPLIANT:
         return result.compliantComment;
-      case CriteriumResultStatus.NOT_COMPLIANT:
-        return result.notCompliantComment;
       case CriteriumResultStatus.NOT_APPLICABLE:
         return result.notApplicableComment;
       default:
@@ -106,6 +104,21 @@ const transverseComment = computed((): string | null => {
   }
 
   return null;
+});
+
+const transverseNotCompliantItems = computed((): NotCompliantItem[] => {
+  if (
+    store.data
+    && transversePageId.value
+    && transverseStatus.value === CriteriumResultStatus.NOT_COMPLIANT
+  ) {
+    const result = store.data[transversePageId.value][props.topicNumber][
+      props.criterium.number
+    ];
+    return result.notCompliantItems;
+  }
+
+  return [];
 });
 
 const showTransverseComment = ref(false);
@@ -196,18 +209,6 @@ const updateResultComment = debounce(
   },
   500
 );
-
-function updateResultImpact(userImpact: CriterionResultUserImpact | null) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, userImpact }])
-    .catch(handleUpdateResultError);
-}
-
-function updateQuickWin(quickWin: boolean) {
-  store
-    .updateResults(props.auditUniqueId, [{ ...result.value, quickWin }])
-    .catch(handleUpdateResultError);
-}
 
 // Get a unique id for a criterium per page (e.g. 1-1-8)
 const uniqueId = computed(() => {
@@ -315,7 +316,7 @@ const parentCriterium = computed(() => {
         </p>
 
         <button
-          v-if="transverseComment"
+          v-if="transverseComment || transverseNotCompliantItems.length"
           class="fr-link fr-link--sm criterium-transverse-button"
           @click="toggleTransverseComment"
         >
@@ -330,11 +331,34 @@ const parentCriterium = computed(() => {
         </button>
       </div>
 
-      <TiptapRenderer
-        v-if="showTransverseComment && transverseComment"
-        :document="transverseComment"
-        class="fr-mt-5w"
-      />
+      <template v-if="showTransverseComment && transverseComment">
+
+        <TiptapRenderer
+          :document="transverseComment"
+          class="fr-mt-5w"
+        />
+      </template>
+
+      <template
+        v-else-if="showTransverseComment
+          && transverseNotCompliantItems.length"
+      >
+        <div
+          v-for="(notCompliantItem, i) in transverseNotCompliantItems"
+          :key="i"
+          class="criterium-transverse-notice-separator"
+        >
+          <p v-if="notCompliantItem.title" class="fr-h3 fr-mt-3v">{{ notCompliantItem.title }}</p>
+          <TiptapRenderer
+            v-if="notCompliantItem.comment"
+            :document="notCompliantItem.comment"
+            class="fr-mt-5w"
+          />
+
+        </div>
+
+      </template>
+
     </div>
 
     <!-- COMMENT / DESCRIPTION -->
@@ -356,15 +380,14 @@ const parentCriterium = computed(() => {
       v-else-if="result.status === CriteriumResultStatus.NOT_COMPLIANT"
       :id="`not-compliant-accordion-${uniqueId}`"
       ref="criteriumNotCompliantAccordion"
-      :comment="result.notCompliantComment"
-      :user-impact="result.userImpact"
+      :not-compliant-items="result.notCompliantItems"
       :example-images="result.exampleImages"
-      :quick-win="result.quickWin"
+      :audit-unique-id="auditUniqueId"
+      :page="page"
+      :criterium="criterium"
+      :topic-number="topicNumber"
       @file-deleted="handleFileDeleteAfterConfirm(
         $event.resolve, $event.flFile)"
-      @update:comment="updateResultComment($event, 'notCompliantComment')"
-      @update:quick-win="updateQuickWin"
-      @update:user-impact="updateResultImpact($event)"
     />
 
     <!-- TESTS + METHODO -->
@@ -411,6 +434,15 @@ const parentCriterium = computed(() => {
     .criterium-transverse-button {
       grid-column: 2;
     }
+  }
+}
+
+.criterium-transverse-notice-separator {
+  border-block-end: 1px solid var(--text-title-grey);
+  padding-block-end: 1rem;
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 

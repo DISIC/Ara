@@ -77,3 +77,11 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
     select: PAGE_PRISMA_SELECT
   }
 };
+
+export const NOT_COMPLIANT_ITEM_SELECT: Prisma.NotCompliantItemSelect = {
+  id: true,
+  title: true,
+  comment: true,
+  quickWin: true,
+  userImpact: true
+};

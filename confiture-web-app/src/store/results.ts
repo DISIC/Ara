@@ -1,14 +1,17 @@
 import { has, sample, setWith, unset } from "lodash-es";
 import { defineStore } from "pinia";
-
 import { api } from "../api";
+
 import { CRITERIA_BY_AUDIT_TYPE, LINKED_CRITERIA } from "../criteria";
 import {
   AuditType,
+  CreateNotCompliantItemData,
   CriterionResultUserImpact,
   CriteriumResult,
   CriteriumResultStatus,
-  ExampleImageFile
+  ExampleImageFile,
+  NotCompliantItem,
+  UpdateNotCompliantItemData
 } from "../types";
 import { useAuditStore } from "./audit";
 import { useFiltersStore } from "./filters";
@@ -543,13 +546,65 @@ export const useResultsStore = defineStore("results", {
             CriteriumResultStatus.NOT_APPLICABLE
           ])!,
           compliantComment: sample(["Commentaire conforme", "Rien"])!,
-          notCompliantComment: sample(["Commentaire non conforme", "Rien"])!,
           notApplicableComment: sample(["Commentaire non-applicable", "Rien"])!,
-          userImpact: sample(CriterionResultUserImpact)!
+          notCompliantItems: [
+            {
+              title: sample(["Titre non conforme", "Pas de titre"])!,
+              comment: sample(["Commentaire non conforme", "Rien"])!,
+              userImpact: sample(CriterionResultUserImpact)!,
+              quickWin: false
+            } as NotCompliantItem
+          ]
         })) ?? [];
 
       await this.updateResults(uniqueId, updates);
       await auditStore.publishAudit(uniqueId);
+    },
+
+    async createNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number,
+      notCompliantItem: CreateNotCompliantItemData | null = null
+    ): Promise<NotCompliantItem> {
+      if (notCompliantItem) {
+        return (await api
+          .post(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items`, {
+            json: notCompliantItem
+          })
+          .json()) as NotCompliantItem;
+      }
+
+      return (await api
+        .post(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items`)
+        .json()) as NotCompliantItem;
+    },
+
+    async updateNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number,
+      notCompliantItemId: number,
+      notCompliantItem: UpdateNotCompliantItemData
+    ): Promise<NotCompliantItem> {
+      return (await api
+        .patch(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`, {
+          json: notCompliantItem
+        })
+        .json()) as NotCompliantItem;
+    },
+
+    async deleteNotCompliantItem(
+      uniqueId: string,
+      slug: string,
+      topic: number,
+      criterium: number,
+      notCompliantItemId: number
+    ): Promise<void> {
+      await api
+        .delete(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`);
     }
   }
 });
