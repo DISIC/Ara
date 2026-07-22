@@ -95,9 +95,7 @@ function copyReportLink(uniqueId: string) {
   navigator.clipboard.writeText(url).then(() => {
     isReportCopied.value = true;
 
-    if (isStatementCopied.value) {
-      isStatementCopied.value = false;
-    }
+    setTimeout(() => isReportCopied.value = false, 3500);
   });
 }
 
@@ -107,20 +105,8 @@ function copyStatementLink(uniqueId: string) {
   navigator.clipboard.writeText(url).then(() => {
     isStatementCopied.value = true;
 
-    if (isReportCopied.value) {
-      isReportCopied.value = false;
-    }
+    setTimeout(() => isStatementCopied.value = false, 3500);
   });
-}
-
-function closeDropdown() {
-  if (isReportCopied.value) {
-    isReportCopied.value = false;
-  }
-
-  if (isStatementCopied.value) {
-    isStatementCopied.value = false;
-  }
 }
 
 const auditNameRef = useTemplateRef("auditNameRef");
@@ -269,7 +255,6 @@ defineExpose({
           class: 'fr-btn--tertiary',
           ariaLabel: `Actions de l’audit ${audit.procedureName}`
         }"
-        @closed="closeDropdown"
       >
         <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
           <template v-if="!isInProgress && !isNotStarted">
