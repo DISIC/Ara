@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce, last, orderBy } from "lodash-es";
 
-import { computed, provide, ref, useTemplateRef } from "vue";
+import { computed, provide, useTemplateRef } from "vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
 import { useResultsStore } from "../../store";
@@ -41,14 +41,12 @@ function getFocusWhenListEmpty(): HTMLElement | null {
     null;
 }
 
-const notCompliantItems = ref<NotCompliantItem[]>(props.notCompliantItems);
-
 const orderedItems = computed(() => {
-  return orderBy(notCompliantItems.value, x => x.id);
+  return orderBy(props.notCompliantItems, x => x.id);
 });
 
 const notCompliantItemsCount = computed(() => {
-  return notCompliantItems.value
+  return props.notCompliantItems
     .filter(x => x.comment || x.quickWin || x.title || x.userImpact)
     .length;
 });
@@ -116,19 +114,16 @@ const createNotCompliantItem = async (
   const criteriumNumber = criterium.number;
 
   try {
-    const itemAdded = await store.createNotCompliantItem(
+    await store.createNotCompliantItem(
       auditUniqueId,
+      page.id,
       slug,
       topicNumber,
       criteriumNumber,
       itemToCreate ? itemToCreate as CreateNotCompliantItemData : null
     );
 
-    notCompliantItems.value = [
-      ...notCompliantItems.value,
-      itemAdded
-    ];
-
+    // FIXME: ...
     // the time required for the value `result.value.notCompliantItems` to propagate
     setTimeout(() => setFocusToTextEditor(), 100);
   }
@@ -147,19 +142,17 @@ const deleteNotCompliantItem = async (id: number) => {
   const slug = slugify(page.name);
   const criteriumNumber = criterium.number;
 
-  const itemToDelete = notCompliantItems.value.find(x => x.id === id);
+  const itemToDelete = props.notCompliantItems.find(x => x.id === id);
 
   try {
     await store.deleteNotCompliantItem(
       auditUniqueId,
+      page.id,
       slug,
       topicNumber,
       criteriumNumber,
       id
     );
-
-    notCompliantItems.value =
-      notCompliantItems.value.filter(x => x.id !== id);
 
     notify(
       "success",
@@ -194,18 +187,15 @@ const updateResultNotCompliantItem = async (payload:
     const slug = slugify(page.name);
     const criteriumNumber = criterium.number;
 
-    const notCompliantItemUpdated = await store.updateNotCompliantItem(
+    await store.updateNotCompliantItem(
       auditUniqueId,
+      page.id,
       slug,
       topicNumber,
       criteriumNumber,
       id,
       changes as UpdateNotCompliantItemData
     );
-
-    notCompliantItems.value =
-      notCompliantItems.value.map(x =>
-        x.id === notCompliantItemUpdated.id ? notCompliantItemUpdated : x);
   } catch (error) {
     notify(
       "error",
@@ -259,8 +249,10 @@ function onUpdateNotCompliantItemClick(
     </template>
 
     <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + item.id" class="not-compliant-item">
-
+      <p>{{ item.id }}</p>
+      <p>{{ id + '-not-compliant-item-' + item.id }}</p>
       <CriteriumNotCompliantItem
+        :key="id + '-not-compliant-item-' + item.id"
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
