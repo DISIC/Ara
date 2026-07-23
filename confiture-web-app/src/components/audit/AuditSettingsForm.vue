@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { EMAIL, REQUIRED } from "../../composables/validation";
 import router from "../../router";
-import { useAccountStore } from "../../store/account";
+import { useAccountStore } from "../../store";
 import { AuditPage, AuditType, CreateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
@@ -172,10 +172,7 @@ const currentProcedureName = procedureName.value;
       </button>
     </div>
 
-    <fieldset
-      v-if="!(accountStore.account || audit.auditor?.isVerified)"
-      class="fr-p-0 fr-mt-4w auditor-fields"
-    >
+    <fieldset v-if="!(accountStore.account || audit.auditor?.isVerified)" class="fr-p-0 fr-mt-4w auditor-fields">
       <legend>
         <h2 class="fr-h4">Informations personnelles</h2>
       </legend>

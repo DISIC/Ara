@@ -153,10 +153,10 @@ describe("Audit", () => {
   });
 
   it("User can go to settings page from audit", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
@@ -166,7 +166,7 @@ describe("Audit", () => {
   });
 
   it("User can edit procedure name", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
       cy.getByLabel("Nom du site ou du service audité").should(
@@ -180,16 +180,13 @@ describe("Audit", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.url().should(
-        "eq",
-        `http://localhost:3000/audits/${editId}/synthese`
-      );
+      cy.url().should("eq", `http://localhost:3000/audits/${editId}/synthese`);
       cy.get("h1").contains("Audit de mon gros site");
     });
   });
 
   it("User can display the audit at a given tab directly thanks to a URL slug", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
       testTabReachByURL(slug);
@@ -197,7 +194,7 @@ describe("Audit", () => {
   });
 
   it("User can go back to previous/next tab with navigator back and previous buttons", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);
       const nextSlug = slugify(auditJson.pages[3].name);
       cy.visit(`http://localhost:3000/audits/${editId}/generation/${slug}`);
@@ -206,7 +203,7 @@ describe("Audit", () => {
   });
 
   it("User can reach topics titles with anchors", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
       cy.get(".topic-filter-anchor")
         .should("exist")
@@ -218,11 +215,11 @@ describe("Audit", () => {
   });
 
   it("User can edit pages", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -289,11 +286,11 @@ describe("Audit", () => {
   });
 
   it("User can interchange page names", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -347,15 +344,58 @@ describe("Audit", () => {
     });
   });
 
-  it("User can delete an audit", () => {
-    cy.createTestAudit().then(({ editId }) => {
+  it("User can delete an audit if connected", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ ownerUserName: username, isPublic: true }).then(
+        ({ editId }) => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+          cy.contains("Actions").click();
+          cy.contains("Supprimer l’audit").click();
+
+          cy.contains("Supprimer l’audit « Audit de mon petit site »");
+          cy.get("dialog")
+            .contains("button", "Supprimer définitivement l’audit")
+            .click();
+
+          cy.url().should("eq", "http://localhost:3000/compte");
+          cy.contains("Audit « Audit de mon petit site » supprimé");
+        }
+      );
+    });
+  });
+
+  it("User cant delete an audit if connected and not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ isPublic: true, auditorEmail: username }).then(
+        ({ editId }) => {
+          cy.visit(`http://localhost:3000/`);
+
+          cy.contains("button", username).click();
+          cy.contains("button", "Me déconnecter").click();
+
+          cy.createTestAccount({ login: true }).then(() => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+            cy.contains("Actions").click();
+            cy.contains("Supprimer l’audit").should("be.disabled");
+          });
+        }
+      );
+    });
+  });
+
+  it("Unkown user can delete after create audit", () => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
 
       cy.contains("Supprimer l’audit « Audit de mon petit site »");
-      cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
+      cy.get("dialog")
+        .contains("button", "Supprimer définitivement l’audit")
+        .click();
 
       cy.url().should("eq", "http://localhost:3000/");
       cy.contains("Audit « Audit de mon petit site » supprimé");
@@ -363,7 +403,7 @@ describe("Audit", () => {
   });
 
   it("User can update notes", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
@@ -381,7 +421,7 @@ describe("Audit", () => {
   });
 
   it("User can fill a11y statement", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("Compléter").invoke("removeAttr", "target").click();
 
@@ -436,7 +476,9 @@ describe("Audit", () => {
         .clear()
         .type(statementJson.notInScopeContent);
 
-      cy.getByLabel("URL du schéma pluriannuel de mise en accessibilité (optionnel)")
+      cy.getByLabel(
+        "URL du schéma pluriannuel de mise en accessibilité (optionnel)"
+      )
         .clear()
         .type(statementJson.schemaPluriannuelUrl);
 
@@ -449,24 +491,56 @@ describe("Audit", () => {
     });
   });
 
-  it("User can copy an audit", () => {
-    cy.createTestAudit().then(({ editId }) => {
+  it("User can't copy an audit if not connected", () => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
-      cy.contains("button", "Dupliquer l’audit").click();
+      cy.contains("Dupliquer").should("be.disabled");
+    });
+  });
 
-      cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
-      cy.get("dialog").contains("button", "Dupliquer l’audit").click();
+  it("User can copy an audit if connected", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Dupliquer").click();
 
-      cy.contains("Audit « Audit de mon petit site (2) » créé", { timeout: 50_000 });
-      cy.contains("button", "Accéder à l’audit").click();
+        cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
+        cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
-      cy.contains("h1 + p", "Audit de mon petit site (2)");
+        cy.contains("Audit « Audit de mon petit site (2) » créé", {
+          timeout: 50_000
+        });
+        cy.contains("button", "Accéder à l’audit").click();
+
+        cy.contains("h1 + p", "Audit de mon petit site (2)");
+      });
+    });
+  });
+
+  it("User can't copy an audit if connected and not owner", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username, isPublic: true }).then(
+        ({ editId }) => {
+          cy.visit(`http://localhost:3000/`);
+
+          cy.contains("button", username).click();
+          cy.contains("button", "Me déconnecter").click();
+
+          cy.createTestAccount({ login: true }).then(() => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+            cy.contains("Actions").click();
+            cy.contains("Dupliquer").should("be.disabled");
+          });
+        }
+      );
     });
   });
 
   it("User can search in criteria title", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.getByLabel("Recherche par mots clés")
         .clear()
@@ -481,7 +555,7 @@ describe("Audit", () => {
   });
 
   it("User can hide tests and references", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Masquer les tests et références").click();
       cy.contains("Tests et références du critère 1.1").should("not.exist");
@@ -489,7 +563,7 @@ describe("Audit", () => {
   });
 
   it("User can filter criteria", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       // Check total length
@@ -544,7 +618,7 @@ describe("Audit", () => {
   });
 
   it("User can filter evaluated criteria", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Masquer les critères évalués").click();
@@ -583,9 +657,22 @@ describe("Audit", () => {
   });
 
   it("User can finish the audit", () => {
-    const monthes = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    const monthes = [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ];
     const monthesRe = "(?:" + monthes.join("|") + ")";
-    cy.createTestAudit().then(({ editId, reportId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "Accueil").click();
@@ -611,7 +698,7 @@ describe("Audit", () => {
   });
 
   it("User can set a topic as NA", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button[role=\"tab\"]", "Connexion").click();
       cy.contains(" Non applicable sur la page").click();
@@ -620,83 +707,127 @@ describe("Audit", () => {
     });
   });
 
+  // FIXME: 500 errors
   it("User can edit a criterium content", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.contains("button[role=\"tab\"]", "FAQ").click();
+      cy.contains("button[role='tab']", "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme");
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+      cy.get(".criterium-container")
+        .contains("Erreurs et recommandations (1)")
+        .click();
 
-      cy.get(".criterium-container .not-compliant-item input[type='text']")
-        .type("Absence de l'alt sur l'image");
+      cy.get(
+        ".criterium-container .not-compliant-item input[type='text']"
+      ).type("Absence de l'alt sur l'image");
 
       cy.get(".criterium-container .not-compliant-item .tiptap")
         .clear({ force: true })
         .type("Il n’y a pas de alt sur l’image du hero");
 
-      cy.get(".criterium-container .not-compliant-item label").contains("majeur").click();
-      cy.get(".criterium-container .not-compliant-item .fr-checkbox-group").contains("Facile à corriger").click();
+      cy.get(".criterium-container .not-compliant-item label")
+        .contains("majeur")
+        .click();
+      cy.get(".criterium-container .not-compliant-item .fr-checkbox-group")
+        .contains("Facile à corriger")
+        .click();
     });
   });
 
   it("User can add a new not compliant item", () => {
-    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.get(".criterium-container").contains("Non conforme");
+        cy.get(".criterium-container").contains("Non conforme");
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+        cy.get(".criterium-container")
+          .contains("Erreurs et recommandations (1)")
+          .click();
 
-      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+        cy.get(".criterium-container").contains("Ajouter une erreur").click();
 
-      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
-        .type("Absence de l'alt sur l'image");
+        cy.get(
+          ".criterium-container .not-compliant-item:last input[type='text']"
+        ).type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .not-compliant-item:last .tiptap")
-        .type("Il n’y a pas de alt sur l’image du hero");
+        cy.get(".criterium-container .not-compliant-item:last .tiptap").type(
+          "Il n’y a pas de alt sur l’image du hero"
+        );
 
-      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+        cy.get(".criterium-container .not-compliant-item:last label")
+          .contains("mineur")
+          .click();
 
-      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+        cy.get(
+          ".criterium-container .not-compliant-item:last .fr-checkbox-group"
+        )
+          .contains("Facile à corriger")
+          .click();
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
-    });
+        cy.get(".criterium-container").contains(
+          "Erreurs et recommandations (2)"
+        );
+      }
+    );
   });
 
   it("User can delete an not compliant item", () => {
-    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.get(".criterium-container").contains("Non conforme");
+        cy.get(".criterium-container").contains("Non conforme");
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+        cy.get(".criterium-container")
+          .contains("Erreurs et recommandations (1)")
+          .click();
 
-      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").should("not.exist");
+        cy.get(
+          ".criterium-container .not-compliant-item:first .error-user-delete button"
+        ).should("not.exist");
 
-      cy.get(".criterium-container").contains("Ajouter une erreur").click();
+        cy.get(".criterium-container").contains("Ajouter une erreur").click();
 
-      cy.get(".criterium-container .not-compliant-item:last input[type='text']")
-        .type("Absence de l'alt sur l'image");
+        cy.get(
+          ".criterium-container .not-compliant-item:last input[type='text']"
+        ).type("Absence de l'alt sur l'image");
 
-      cy.get(".criterium-container .not-compliant-item:last .tiptap")
-        .type("Il n’y a pas de alt sur l’image du hero");
+        cy.get(".criterium-container .not-compliant-item:last .tiptap").type(
+          "Il n’y a pas de alt sur l’image du hero"
+        );
 
-      cy.get(".criterium-container .not-compliant-item:last label").contains("mineur").click();
+        cy.get(".criterium-container .not-compliant-item:last label")
+          .contains("mineur")
+          .click();
 
-      cy.get(".criterium-container .not-compliant-item:last .fr-checkbox-group").contains("Facile à corriger").click();
+        cy.get(
+          ".criterium-container .not-compliant-item:last .fr-checkbox-group"
+        )
+          .contains("Facile à corriger")
+          .click();
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+        cy.get(".criterium-container").contains(
+          "Erreurs et recommandations (2)"
+        );
 
-      cy.get(".criterium-container .not-compliant-item:first .error-user-delete button").contains("Supprimer").click();
+        cy.get(
+          ".criterium-container .not-compliant-item:first .error-user-delete button"
+        )
+          .contains("Supprimer")
+          .click();
 
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)");
-    });
+        cy.get(".criterium-container").contains(
+          "Erreurs et recommandations (1)"
+        );
+      }
+    );
   });
 
   it("User can see transverse status and comment from other pages", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "Documentation").click();
@@ -729,18 +860,18 @@ describe("Audit", () => {
   it("User can download an audit", () => {
     cy.exec("rm -rf cypress/downloads");
 
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Actions").click();
-      cy.contains("Exporter l’audit").click();
+      cy.contains("Télécharger la grille d’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
   });
 
   it("User can reset filters", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Conforme (323)").click();
@@ -767,7 +898,7 @@ describe("Audit", () => {
   });
 
   it("User can add transverse elements", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Lister les éléments transverses").click();
@@ -791,89 +922,130 @@ describe("Audit", () => {
   });
 
   it("User can automatically set as NA some linked criteria", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       // check that linked criteria are also NA
       cy.get(".criterium-container").contains("Non applicable").click();
-      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(2).should("be.checked");
-      cy.get(".criterium-container").eq(2).contains("Vous avez évalué le critère 1.1 Non applicable");
+      cy.get(".criterium-container")
+        .eq(2)
+        .find("fieldset > div input[type='checkbox']")
+        .eq(2)
+        .should("be.checked");
+      cy.get(".criterium-container")
+        .eq(2)
+        .contains("Vous avez évalué le critère 1.1 Non applicable");
 
       // check that linked criteria get their previous status back
       cy.get(".criterium-container").contains("Conforme").click();
-      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(2).should("not.be.checked");
-      cy.get(".criterium-container").eq(2).find("fieldset > div input[type='checkbox']").eq(1).should("be.checked");
-      cy.get(".criterium-container").eq(2).contains("Vous avez évalué le critère 1.1 Non applicable").should("not.exist");
+      cy.get(".criterium-container")
+        .eq(2)
+        .find("fieldset > div input[type='checkbox']")
+        .eq(2)
+        .should("not.be.checked");
+      cy.get(".criterium-container")
+        .eq(2)
+        .find("fieldset > div input[type='checkbox']")
+        .eq(1)
+        .should("be.checked");
+      cy.get(".criterium-container")
+        .eq(2)
+        .contains("Vous avez évalué le critère 1.1 Non applicable")
+        .should("not.exist");
     });
   });
 
   it("User can show or hide topic criteria", () => {
-    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      // Check total criteria count
-      cy.get(".criterium-container").should("have.length", 106);
+        // Check total criteria count
+        cy.get(".criterium-container").should("have.length", 106);
 
-      // Hide topic 1 criteria (-9)
-      cy.get("button.toggle-topic-button").first().click();
-      cy.get(".criterium-container").should("have.length", 97);
+        // Hide topic 1 criteria (-9)
+        cy.get("button.toggle-topic-button").first().click();
+        cy.get(".criterium-container").should("have.length", 97);
 
-      // Show topic 1 criteria (+9)
-      cy.get("button.toggle-topic-button").first().click();
-      cy.get(".criterium-container").should("have.length", 106);
-    });
+        // Show topic 1 criteria (+9)
+        cy.get("button.toggle-topic-button").first().click();
+        cy.get(".criterium-container").should("have.length", 106);
+      }
+    );
   });
 
+  // FIXME: error
   it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
-    cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.get(".criterium-container").contains("Non conforme");
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId, reportId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.get(".criterium-container").contains("Non conforme");
+        cy.get(".criterium-container")
+          .contains("Erreurs et recommandations (1)")
+          .click();
 
-      // 1. Insert an image into the editor with the button
-      cy.log("** Insert 1 image with the button **");
-      cy.contains("Insérer une image").click();
-      cy.get(".criterium-container input[type='file']")
-        .selectFile("cypress/fixtures/aras-rouges.jpg", { force: true });
+        // 1. Insert an image into the editor with the button
+        cy.log("** Insert 1 image with the button **");
+        cy.contains("Insérer une image").click();
+        cy.get(".criterium-container input[type='file']").selectFile(
+          "cypress/fixtures/aras-rouges.jpg",
+          { force: true }
+        );
 
-      // Editor content has changed => results updated
-      cy.wait(["@uploadImage", "@updateResults"]);
+        // Editor content has changed => results updated
+        cy.wait(["@uploadImage", "@updateResults"]);
 
-      // 2. Drag and drop a local image
-      cy.log("** Drag and drop 1 local image **");
-      cy.get(".criterium-container .tiptap")
-        .selectFile("cypress/fixtures/ara-bleu.jpg", { action: "drag-drop" });
+        // 2. Drag and drop a local image
+        cy.log("** Drag and drop 1 local image **");
+        cy.get(".criterium-container .tiptap").selectFile(
+          "cypress/fixtures/ara-bleu.jpg",
+          { action: "drag-drop" }
+        );
 
-      // Editor content has changed => results updated
-      cy.wait(["@uploadImage", "@updateResults"]);
+        // Editor content has changed => results updated
+        cy.wait(["@uploadImage", "@updateResults"]);
 
-      // 3. Copy-paste a local image
-      cy.log("** Paste 1 image from clipboard **");
-      const fileName = "groupe-ara.jpg";
-      cy.get(".criterium-container .tiptap").pasteImage({ filePath: `../fixtures/${fileName}`, fileName });
+        // 3. Copy-paste a local image
+        cy.log("** Paste 1 image from clipboard **");
+        const fileName = "groupe-ara.jpg";
+        cy.get(".criterium-container .tiptap").pasteImage({
+          filePath: `../fixtures/${fileName}`,
+          fileName
+        });
 
-      // Check success message
-      cy.get(".criterium-container [aria-live='polite']").contains(`L’image « ${fileName} » a été correctement insérée`);
-      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).debug();
-      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).should("exist");
+        // Check success message
+        cy.get(".criterium-container [aria-live='polite']").contains(
+          `L’image « ${fileName} » a été correctement insérée`
+        );
+        cy.get(
+          `.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`
+        ).debug();
+        cy.get(
+          `.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`
+        ).should("exist");
 
-      // Editor content has changed => results updated
-      cy.wait("@updateResults");
+        // Editor content has changed => results updated
+        cy.wait("@updateResults");
 
-      cy.get(".criterium-container img[src^='/uploads/']")
-        .should("have.length", 3);
+        cy.get(".criterium-container img[src^='/uploads/']").should(
+          "have.length",
+          3
+        );
 
-      // Go to report page to check images count (3)
-      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
-      cy.get(".tiptap--rendered img").should("have.length", 3);
-    });
+        // Go to report page to check images count (3)
+        cy.visit(
+          `http://localhost:3000/rapport/${reportId}/details-des-non-conformites`
+        );
+        cy.get(".tiptap--rendered img").should("have.length", 3);
+      }
+    );
   });
 
   it("User can paste Markdown content in the comment editor (and it’s interpreted)", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
@@ -887,7 +1059,7 @@ describe("Audit", () => {
   });
 
   it("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
-    cy.createTestAudit().then(({ editId }) => {
+    cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
@@ -900,66 +1072,77 @@ describe("Audit", () => {
     });
   });
 
+  // FIXME: error
   it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
-    cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId, reportId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.get(".criterium-container").contains("Non conforme");
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+        cy.get(".criterium-container").contains("Non conforme");
+        cy.get(".criterium-container")
+          .contains("Erreurs et recommandations (1)")
+          .click();
 
-      // 3. Copy-paste HTML content with 2 images
-      cy.log("** Paste 1 image from clipboard **");
-      cy.get(".criterium-container .tiptap").pasteHTML("../fixtures/contentExample.html");
+        // 3. Copy-paste HTML content with 2 images
+        cy.log("** Paste 1 image from clipboard **");
+        cy.get(".criterium-container .tiptap").pasteHTML(
+          "../fixtures/contentExample.html"
+        );
 
-      // Editor content has changed => results updated
-      cy.wait("@updateResults");
+        // Editor content has changed => results updated
+        cy.wait("@updateResults");
 
-      // Go to report page to check text + images count (0)
-      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
-      // - 1 h4
-      cy.get(".tiptap--rendered h4").should("have.length", 1);
-      // - 2 li
-      cy.get(".tiptap--rendered li").should("have.length", 2);
-      // - 0 img
-      cy.get(".tiptap--rendered img").should("have.length", 0);
-    });
+        // Go to report page to check text + images count (0)
+        cy.visit(
+          `http://localhost:3000/rapport/${reportId}/details-des-non-conformites`
+        );
+        // - 1 h4
+        cy.get(".tiptap--rendered h4").should("have.length", 1);
+        // - 2 li
+        cy.get(".tiptap--rendered li").should("have.length", 2);
+        // - 0 img
+        cy.get(".tiptap--rendered img").should("have.length", 0);
+      }
+    );
   });
 
   it("User can transfer an audit", () => {
-    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
-      cy.contains("button", "Actions").click();
-      cy.contains("button", "Transférer l’audit").click();
+    cy.createTestAudit({ isPristine: true, isPublic: true }).then(
+      ({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Transférer l’audit").click();
 
-      // Error: 2nd field is empty
-      cy.getByLabel("Adresse e-mail du destinataire")
-        .clear()
-        .type("example@domain.com");
+        // Error: 2nd field is empty
+        cy.getByLabel("Adresse e-mail du destinataire")
+          .clear()
+          .type("example@domain.com");
 
-      cy.contains("button[type='submit']", "Transférer l’audit").click();
-      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+        cy.contains("button[type='submit']", "Transférer l’audit").click();
+        cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
 
-      cy.getByLabel("Confirmer e-mail du destinataire")
-        .clear()
-        .type("exampl@domain.com");
+        cy.getByLabel("Confirmer e-mail du destinataire")
+          .clear()
+          .type("exampl@domain.com");
 
-      // Error: 2nd field isnt equal to first
-      cy.contains("button[type='submit']", "Transférer l’audit").click();
-      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+        // Error: 2nd field isnt equal to first
+        cy.contains("button[type='submit']", "Transférer l’audit").click();
+        cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
 
-      // Valid form
-      cy.getByLabel("Confirmer e-mail du destinataire")
-        .clear()
-        .type("example@domain.com");
-      cy.contains("button[type='submit']", "Transférer l’audit").click();
+        // Valid form
+        cy.getByLabel("Confirmer e-mail du destinataire")
+          .clear()
+          .type("example@domain.com");
+        cy.contains("button[type='submit']", "Transférer l’audit").click();
 
-      // Assert we're on homepage with toast
-      cy.contains("Je réalise un audit d’accessibilité avec Ara");
-      cy.contains("Audit « Audit de mon petit site » transféré");
-      cy.contains("Lien d’accès envoyé à example@domain.com");
-    });
+        // Assert we're on homepage with toast
+        cy.contains("Je réalise un audit d’accessibilité avec Ara");
+        cy.contains("Audit « Audit de mon petit site » transféré");
+        cy.contains("Lien d’accès envoyé à example@domain.com");
+      }
+    );
   });
 
   it("User can change criteria in a completed audit to update editionDate", () => {
@@ -970,7 +1153,8 @@ describe("Audit", () => {
 
     cy.createTestAudit({
       isComplete: true,
-      publicationDate: publicationDate.toString()
+      publicationDate: publicationDate.toString(),
+      isPublic: true
     }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -991,7 +1175,8 @@ describe("Audit", () => {
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
 
     cy.createTestAudit({
-      isComplete: true
+      isComplete: true,
+      isPublic: true
     }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
@@ -1003,6 +1188,97 @@ describe("Audit", () => {
       cy.wait("@updateResults");
 
       cy.get(".audit-progress-label").contains("Progression de l’audit");
+    });
+  });
+
+  describe("Audit sharing", () => {
+    it("User can toggle audit privacy", () => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
+        cy.createTestAudit({ auditorEmail: username, isPublic: false }).then(
+          ({ editId }) => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+            cy.contains("button", "Actions").click();
+            cy.contains("button", "Partager").click();
+            cy.contains("label", "Rendre l’audit public").click();
+
+            cy.contains(
+              "Toute personne disposant du lien peut accéder à l’audit et le modifier."
+            );
+            cy.contains(
+              "La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ."
+            );
+            cy.contains("dialog.fr-modal--opened button", "Fermer").click();
+
+            cy.contains("h1", "Audit Public");
+          }
+        );
+      });
+    });
+
+    it("User can copy audit link in share modal", () => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
+        cy.createTestAudit({ auditorEmail: username, isPublic: false }).then(
+          ({ editId }) => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+            cy.contains("button", "Actions").click();
+            cy.contains("button", "Partager").click();
+            cy.contains("label", "Rendre l’audit public").click();
+
+            cy.contains("button", "Copier le lien de partage").click();
+            cy.assertClipboardValue(
+              `http://localhost:3000/audits/${editId}/generation`
+            );
+          }
+        );
+      });
+    });
+
+    it("User can see public audit if not connected after it has been created", () => {
+      cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+        cy.get("h1").contains("Audit");
+      });
+    });
+
+    it("User cant see private audit if not connected", () => {
+      cy.createTestAccount().then(({ username }) => {
+        cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+          cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+          cy.get("h1").contains("Accès restreint");
+        });
+      });
+    });
+
+    it("User can see public audit if connected but not owner", () => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
+        cy.createTestAudit({ isPublic: true }).then(({ editId }) => {
+          cy.visit(`http://localhost:3000/`);
+
+          cy.contains("button", username).click();
+          cy.contains("button", "Me déconnecter").click();
+
+          cy.createTestAccount({ login: true }).then(() => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+            cy.get("h1").contains("Audit");
+          });
+        });
+      });
+    });
+
+    it("User cant see private audit if connected but not owner", () => {
+      cy.createTestAccount({ login: true }).then(({ username }) => {
+        cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+          cy.visit(`http://localhost:3000/`);
+
+          cy.contains("button", username).click();
+          cy.contains("button", "Me déconnecter").click();
+
+          cy.createTestAccount({ login: true }).then(() => {
+            cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+            cy.get("h1").contains("Accès restreint");
+          });
+        });
+      });
     });
   });
 });

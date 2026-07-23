@@ -2,6 +2,7 @@ describe("Common", () => {
   it("check that audit stats are coherent accross pages", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({
+        isPublic: true,
         auditorEmail: username,
         isComplete: true,
         fillStatement: true

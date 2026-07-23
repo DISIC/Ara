@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -14,6 +15,7 @@ import {
   Put,
   UnauthorizedException,
   UploadedFile,
+  UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -32,6 +34,7 @@ import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditId } from "./audit-id.decorator";
+import { AuditOwnershipGuard } from "./audit-ownership.guard";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
@@ -43,12 +46,14 @@ import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
+import { UpdateAuditPrivacyDto } from "./dto/requests/update-audit-privacy.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
 
 @Controller("audits")
 @ApiTags("Audits")
+@UseGuards(AuditOwnershipGuard)
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
@@ -66,13 +71,16 @@ export class AuditsController {
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    const audit = await this.auditService.createAudit(body);
+    const audit = await this.auditService.createAudit(body, !user);
 
     if (!user) {
       this.mailer.sendAuditCreatedMail(audit).catch((err) => {
         console.error(`Failed to send email for audit ${audit.editUniqueId}`);
         console.error(err);
       });
+
+      // FIXME:
+      // this.auditService.toggleAuditPrivacy(audit.editUniqueId);
     }
 
     return audit;
@@ -91,7 +99,7 @@ export class AuditsController {
   /** Retrieve an audit from the database. */
   @Get("/:uniqueId")
   @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
-  getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
+  async getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
     return this.auditService.findAudit(uniqueId);
   }
 
@@ -266,6 +274,18 @@ export class AuditsController {
     return this.auditService.publishAudit(uniqueId);
   }
 
+  /** Toggle audit privacy and make it public (default is private = `false`) */
+  @Patch("/:uniqueId/privacy")
+  @ApiOkResponse({
+    description: "The audit privacy has been successfully updated"
+  })
+  async toggleAuditPrivacy(
+    @AuditId() uniqueId: string,
+    @Body() body: UpdateAuditPrivacyDto
+  ): Promise<void> {
+    return this.auditService.toggleAuditPrivacy(uniqueId, body.isPublic);
+  }
+
   /** Delete an audit from the database. */
   @Delete("/:uniqueId")
   @ApiOkResponse({ description: "The audit has been successfully deleted." })
@@ -281,6 +301,7 @@ export class AuditsController {
    *   - the example images
    */
   @Post("/:uniqueId/duplicate")
+  @AuthRequired()
   @ApiCreatedResponse({
     description: "The audit has been successfully duplicated.",
     type: AuditDto
@@ -290,19 +311,22 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
+    // only the audit owner can duplicate it
+    if (!await this.auditService.isAuditOwnedBy(uniqueId, user.email)) {
+      throw new ForbiddenException();
+    }
+
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
       body.procedureName
     );
 
-    if (!user) {
-      this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
-        console.error(
-          `Failed to send email for audit ${newAudit.editUniqueId}`
-        );
-        console.error(err);
-      });
-    }
+    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
+      console.error(
+        `Failed to send email for audit ${newAudit.editUniqueId}`
+      );
+      console.error(err);
+    });
 
     return newAudit;
   }

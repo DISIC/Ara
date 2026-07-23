@@ -19,7 +19,7 @@ enum AuditType {
 
 model Audit {
   id Int @id @default(autoincrement())
-
+  
   // Audit creation step
   auditType                AuditType
   procedureName            String
@@ -54,6 +54,7 @@ model Audit {
   planActionUrl            String?
 
   // Misc
+  isPublic        Boolean @default(false)
   creationDate    DateTime?
   publicationDate DateTime?
   editionDate     DateTime?
