@@ -7,7 +7,6 @@ export class CriterionResultDto {
   @ApiProperty({ enum: CriterionResultStatus })
   status: CriterionResultStatus;
   compliantComment: string | null;
-  @ApiProperty({ enum: CriterionResultUserImpact })
   exampleImages: ExampleImageFileDto[];
   notApplicableComment: string | null;
   topic: number;
