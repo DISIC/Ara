@@ -249,10 +249,7 @@ function onUpdateNotCompliantItemClick(
     </template>
 
     <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + item.id" class="not-compliant-item">
-      <p>{{ item.id }}</p>
-      <p>{{ id + '-not-compliant-item-' + item.id }}</p>
       <CriteriumNotCompliantItem
-        :key="id + '-not-compliant-item-' + item.id"
         ref="criteriumNotCompliantItemRef"
         :index="index"
         :item="item"
