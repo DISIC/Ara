@@ -252,7 +252,7 @@ describe("Account", () => {
 
     it("User can delete their account", () => {
       cy.createTestAccount({ login: true }).then(({ username, password }) => {
-        cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+        cy.createTestAudit({ auditorEmail: username, isPublic: true }).then(({ editId }) => {
           cy.visit("http://localhost:3000/compte/parametres");
 
           // Delete account form
@@ -288,7 +288,8 @@ describe("Account", () => {
         cy.createTestAudit({ auditorEmail: username, isComplete: true }).as("finished-audit");
         cy.createTestAudit({ auditorEmail: username, isPristine: true });
         cy.createTestAudit({ auditorEmail: username });
-        cy.createTestAudit({ auditorEmail: username }).as("audit");
+        cy.createTestAudit({ auditorEmail: username, isPublic: true }).as("transferAudit");
+        cy.createTestAudit({ auditorEmail: username }).as("privacyAudit");
         cy.visit("http://localhost:3000/compte");
       });
     });
@@ -412,7 +413,7 @@ describe("Account", () => {
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
       cy.contains("Audit « Audit de mon petit site (2) » créé", { timeout: 50_000 });
-      cy.contains("button", "Accéder à l’audit").click();
+      cy.contains(".fr-alert button", "Accéder à l’audit").click();
 
       cy.contains("h1 + p", "Audit de mon petit site (2)");
     });
@@ -458,16 +459,12 @@ describe("Account", () => {
       cy.contains("button", "Transférer l’audit").click();
 
       // Fill form
-      cy.getByLabel("Adresse e-mail du destinataire")
-        .clear()
-        .type(newEmail);
-      cy.getByLabel("Confirmer e-mail du destinataire")
-        .clear()
-        .type(newEmail);
+      cy.getByLabel("Adresse e-mail du destinataire").type(newEmail);
+      cy.getByLabel("Confirmer e-mail du destinataire").type(newEmail);
       cy.contains("button[type='submit']", "Transférer l’audit").click();
 
-      // Assert audit is gone (3 audits left)
-      cy.get(".audits-list .audit-name").should("have.length", 3);
+      // Assert audit is gone (4 audits left)
+      cy.get(".audits-list .audit-name").should("have.length", 4);
       cy.contains("a", "Audit de mon petit site").should("be.focused");
       cy.contains("Audit « Audit de mon petit site » transféré");
       cy.contains(`Lien d’accès envoyé à ${newEmail}`);
@@ -475,7 +472,7 @@ describe("Account", () => {
       // Logout and check auditorEmail in audit parameters
       cy.get(".account-header button[aria-expanded]").click();
       cy.contains("button", "Me déconnecter").click();
-      cy.get("@audit").then(audit => {
+      cy.get("@transferAudit").then(audit => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
@@ -502,7 +499,7 @@ describe("Account", () => {
       cy.contains("label", "Rendre l’audit public").click();
 
       cy.contains("button", "Copier le lien de partage").click();
-      cy.get("@audit").then((audit) => {
+      cy.get("@privacyAudit").then((audit) => {
         cy.assertClipboardValue(
           // @ts-ignore
           // TODO remove `@ts-ignore` when the following issue is fixed:
