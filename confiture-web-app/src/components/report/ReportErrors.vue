@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { sum } from "lodash-es";
 
+import { computed, nextTick, ref, useTemplateRef } from "vue";
 import { StaticTabLabel, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
 import {
@@ -48,59 +49,84 @@ const minorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.MINOR
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.MINOR)
+      .length
 );
 
 const majorUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.MAJOR
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.MAJOR)
+      .length
 );
 
 const blockingUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === CriterionResultUserImpact.BLOCKING
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === CriterionResultUserImpact.BLOCKING)
+      .length
 );
 
 const unknownUserImpactErrorCount = computed(
   () =>
     report.data?.results.filter(
       (r) =>
-        r.status === CriteriumResultStatus.NOT_COMPLIANT &&
-        r.userImpact === null
-    ).length
+        r.status === CriteriumResultStatus.NOT_COMPLIANT
+    )
+      .flatMap(x => x.notCompliantItems)
+      .filter(x => x.userImpact === null)
+      .length
 );
 
 // Errors
-const transverseErrors = computed(() => {
+
+const allErrors = computed(() => {
   return getReportErrors(
     report,
     quickWinFilter.value,
     userImpactFilters.value
-  )[0];
+  );
+});
+
+const transverseErrors = computed(() => {
+  return allErrors.value[0];
 });
 
 const pagesErrors = computed(() => {
-  return getReportErrors(
-    report,
-    quickWinFilter.value,
-    userImpactFilters.value
-  ).slice(1);
+  return allErrors.value.slice(1);
 });
 
 const errorsCount = computed(() => {
-  return getReportErrors(report, quickWinFilter.value, userImpactFilters.value)
-    .map((page: any) => page.topics.map((topic: any) => topic.errors))
-    .flat(2).length;
+  return sum(
+    allErrors.value
+      .map((page: any) => page.topics.map((topic: any) => topic.errorsCount))
+      .flat(2)
+  );
+});
+
+const notCompliantItemsIndexes = computed(() => {
+  return allErrors.value
+    .flatMap((page: any) => page.topics
+      .filter((topic: any) => topic.errorsCount > 0))
+    .flatMap((topic) => topic.errors)
+    .flatMap((error) => error.notCompliantItems)
+    .map((notCompliantItem, index) => {
+      return {
+        index: index + 1,
+        id: notCompliantItem.id
+      };
+    });
 });
 </script>
 
@@ -209,12 +235,12 @@ const errorsCount = computed(() => {
       <h2 class="fr-sr-only">Détails des non-conformités</h2>
       <template v-if="transverseErrors.topics.length">
         <section class="fr-mb-8w">
-          <h3
+          <p
             :id="TabSlug.AUDIT_COMMON_ELEMENTS_SLUG"
             :class="`fr-h3 ${report.data.transverseElements.length ? 'fr-mb-1w' : 'fr-mb-4w'} page-title`"
           >
             {{ StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL }}
-          </h3>
+          </p>
           <ul
             v-if="report.data.transverseElements.length"
             class="fr-tags-group fr-mb-4w"
@@ -224,15 +250,11 @@ const errorsCount = computed(() => {
             </li>
           </ul>
 
-          <div v-for="(topic, i) in transverseErrors.topics" :key="topic.topic">
+          <div v-for="topic in transverseErrors.topics" :key="topic.topic">
             <template v-for="(error, j) in topic.errors" :key="j">
-              <ReportErrorCriterium :error="error" />
-              <hr
-                v-if="
-                  i !== transverseErrors.topics.length - 1 ||
-                    j !== topic.errors.length - 1
-                "
-                class="fr-mt-4w fr-pb-4w"
+              <ReportErrorCriterium
+                :error="error"
+                :indexes="notCompliantItemsIndexes"
               />
             </template>
           </div>
@@ -246,9 +268,9 @@ const errorsCount = computed(() => {
         :key="page.id"
         :class="{ 'fr-mb-8w': i !== pagesErrors.length - 1 }"
       >
-        <h3 :id="`page_${page.id}`" class="fr-h3 fr-mb-1w page-title">
+        <p :id="`page_${page.id}`" class="fr-h3 fr-mb-1w page-title">
           {{ page.name }}
-        </h3>
+        </p>
         <a
           :href="page.url"
           class="fr-link fr-mb-4w page-url"
@@ -267,12 +289,9 @@ const errorsCount = computed(() => {
           :class="{ 'fr-mt-4w': j === 0 }"
         >
           <template v-for="(error, k) in topic.errors" :key="k">
-            <ReportErrorCriterium :error="error" />
-            <hr
-              v-if="
-                j !== page.topics.length - 1 || k !== topic.errors.length - 1
-              "
-              class="fr-mt-4w fr-pb-4w"
+            <ReportErrorCriterium
+              :error="error"
+              :indexes="notCompliantItemsIndexes"
             />
           </template>
         </div>

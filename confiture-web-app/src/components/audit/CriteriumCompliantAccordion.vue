@@ -29,7 +29,7 @@ const title = computed(() => {
       type="criterium"
       :model-value="comment"
       :label="title"
-      description="Vous pouvez ajouter une remarque si nécessaire."
+      description="Remarque"
       @update:model-value="$emit('update:comment', $event)"
     />
   </LazyAccordion>

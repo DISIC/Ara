@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
@@ -243,8 +244,10 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
+
       }),
       this.prisma.criterionResult.findMany({
         where: {
@@ -255,7 +258,8 @@ export class AuditService {
           }
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       })
     ]);
@@ -288,17 +292,18 @@ export class AuditService {
       );
 
       // return real result
-      if (existingResult) return existingResult;
+      if (existingResult) {
+        return existingResult;
+      }
 
       // return placeholder result
       return {
         status: CriterionResultStatus.NOT_TESTED,
         compliantComment: null,
-        notCompliantComment: null,
-        userImpact: null,
         notApplicableComment: null,
         exampleImages: [],
-        quickWin: false,
+
+        notCompliantItems: [],
 
         topic: criterion.topic,
         criterium: criterion.criterium,
@@ -338,8 +343,6 @@ export class AuditService {
             select: {
               status: true,
               compliantComment: true,
-              notCompliantComment: true,
-              userImpact: true,
               notApplicableComment: true,
               exampleImages: {
                 select: {
@@ -351,8 +354,15 @@ export class AuditService {
                   thumbnailKey: true
                 }
               },
-              quickWin: true,
-
+              notCompliantItems: {
+                select: {
+                  id: true,
+                  title: true,
+                  comment: true,
+                  userImpact: true,
+                  quickWin: true
+                }
+              },
               topic: true,
               criterium: true,
               pageId: true
@@ -589,6 +599,69 @@ export class AuditService {
   async updateResults(uniqueId: string, body: UpdateResultsDto) {
     const promises = body.data
       .map((item) => {
+        const result: PrismaPromise<any>[] = [];
+
+        const newNotCompliantItems = item.notCompliantItems?.filter((x) => !x.id) ?? [];
+
+        const existingNotCompliantItems = item.notCompliantItems
+          .filter((x) => x.id);
+
+        const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
+          where: {
+            id: {
+              notIn: existingNotCompliantItems.map((x) => x.id)
+            },
+            criterionResult: {
+              criterium: item.criterium,
+              topic: item.topic,
+              pageId: item.pageId,
+              page: {
+                OR: [
+                  {
+                    auditUniqueId: uniqueId
+                  },
+                  {
+                    auditTransverse: {
+                      editUniqueId: uniqueId
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        });
+
+        result.push(notCompliantItemsToDelete);
+
+        const notCompliantItemsToUpdate = existingNotCompliantItems
+          .map((notCompliantItem) => {
+            return this.prisma.notCompliantItem.update({
+              where: {
+                id: notCompliantItem.id,
+                criterionResult: {
+                  criterium: item.criterium,
+                  topic: item.topic,
+                  pageId: item.pageId,
+                  page: {
+                    OR: [
+                      {
+                        auditUniqueId: uniqueId
+                      },
+                      {
+                        auditTransverse: {
+                          editUniqueId: uniqueId
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              data: omit(notCompliantItem, ["id"])
+            });
+          });
+
+        result.push(...notCompliantItemsToUpdate);
+
         const data: Prisma.CriterionResultUpsertArgs["create"] = {
           criterium: item.criterium,
           topic: item.topic,
@@ -597,16 +670,19 @@ export class AuditService {
               id: item.pageId
             }
           },
-
           status: item.status,
           compliantComment: item.compliantComment,
-          notCompliantComment: item.notCompliantComment,
           notApplicableComment: item.notApplicableComment,
-          userImpact: item.userImpact,
-          quickWin: item.quickWin
+          notCompliantItems: newNotCompliantItems.length > 0
+            ? {
+                createMany: {
+                  data: newNotCompliantItems
+                }
+              }
+            : undefined
         };
 
-        const result = [
+        result.push(
           this.prisma.criterionResult.upsert({
             where: {
               pageId_topic_criterium: {
@@ -618,7 +694,7 @@ export class AuditService {
             create: data,
             update: data
           })
-        ];
+        );
 
         return result;
       })
@@ -909,7 +985,7 @@ export class AuditService {
   }
 
   /**
-   * Mark an audit as deleted and remove auditor informations. Its data will be not be deleted.
+   * Mark an audit as deleted and remove auditor informations. Its data will not be deleted.
    * @returns True if an audit was deleted, false otherwise.
    */
   async softDeleteAudit(uniqueId: string): Promise<boolean> {
@@ -1016,7 +1092,7 @@ export class AuditService {
    * Update an audit editionDate, only when it has a publication date.
    * @returns the update audit if it is updated, undefined otherwise
    */
-  private async updateAuditEditDate(uniqueId: string) {
+  async updateAuditEditDate(uniqueId: string) {
     const [audit, auditIsComplete] = await Promise.all([
       this.prisma.audit.findUnique({
         where: {
@@ -1131,7 +1207,7 @@ export class AuditService {
           results.filter(
             (r) =>
               r.status === CriterionResultStatus.NOT_COMPLIANT &&
-              r.userImpact === CriterionResultUserImpact.BLOCKING
+              r.notCompliantItems.some(x => x.userImpact === CriterionResultUserImpact.BLOCKING)
           ),
           (r) => `${r.topic}.${r.criterium}`
         ).length,
@@ -1279,15 +1355,14 @@ export class AuditService {
         status: r.status,
 
         compliantComment: r.compliantComment,
-        notCompliantComment: r.notCompliantComment,
         notApplicableComment: r.notApplicableComment,
-        userImpact: r.userImpact,
-        quickWin: r.quickWin,
+
         exampleImages: r.exampleImages.map((img) => ({
           filename: img.originalFilename,
           key: img.key,
           thumbnailKey: img.thumbnailKey
-        }))
+        })),
+        notCompliantItems: r.notCompliantItems
       })),
 
       transverseElements: audit.transverseElements
@@ -1306,7 +1381,8 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -1315,7 +1391,8 @@ export class AuditService {
           OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
         },
         include: {
-          exampleImages: true
+          exampleImages: true,
+          notCompliantItems: true
         }
       })
     ]).then(results => results.flat());
@@ -1418,7 +1495,17 @@ export class AuditService {
           include: {
             results: {
               include: {
-                exampleImages: true
+                exampleImages: true,
+                notCompliantItems: {
+                  select: {
+                    id: false,
+                    comment: true,
+                    quickWin: true,
+                    title: true,
+                    userImpact: true,
+                    criterionResultId: false
+                  }
+                }
               }
             }
           }
@@ -1427,7 +1514,17 @@ export class AuditService {
           include: {
             results: {
               include: {
-                exampleImages: true
+                exampleImages: true,
+                notCompliantItems: {
+                  select: {
+                    id: false,
+                    comment: true,
+                    quickWin: true,
+                    title: true,
+                    userImpact: true,
+                    criterionResultId: false
+                  }
+                }
               }
             }
           }
@@ -1628,6 +1725,10 @@ export class AuditService {
                         r.id
                       ][e.id]
                   )
+
+                },
+                notCompliantItems: {
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
                 }
               }))
             }
@@ -1647,6 +1748,9 @@ export class AuditService {
                   create: r.exampleImages.map(
                     (e) => imagesCreateData[p.id][r.id][e.id]
                   )
+                },
+                notCompliantItems: {
+                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
                 }
               }))
             }
@@ -1670,15 +1774,16 @@ export class AuditService {
     return newAudit;
   }
 
-  async anonymiseAudits(userEmail: string) {
+  async softDeleteAuditsByAuditorEmail(userEmail: string) {
     await this.prisma.audit.updateMany({
       where: {
         auditorEmail: userEmail
       },
       data: {
+        isHidden: true,
         auditorEmail: null,
         auditorName: null,
-        showAuditorEmailInReport: false
+        auditorOrganisation: null
       }
     });
   }

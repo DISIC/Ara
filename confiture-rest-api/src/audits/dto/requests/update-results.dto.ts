@@ -119,6 +119,33 @@ class UpdateResultsItem {
   @IsString()
   @IsOptional()
   notApplicableComment: string | null;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CriterionResultNotCompliantItem)
+  notCompliantItems?: CriterionResultNotCompliantItem[];
+}
+
+class CriterionResultNotCompliantItem {
+  // ID
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
+  @IsString()
+  @IsOptional()
+  title: string | null;
+
+  @IsString()
+  @IsOptional()
+  comment: string | null;
+
+  @IsIn(Object.values(CriterionResultUserImpact))
+  @IsOptional()
+  userImpact: CriterionResultUserImpact | null;
+
+  @IsBoolean()
+  quickWin: boolean;
 }
 
 export class UpdateResultsDto {

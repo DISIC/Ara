@@ -50,9 +50,19 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
+export type CriteriumResult = components["schemas"]["CriterionResultDto"];
+
 // a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
 // https://github.com/openapi-ts/openapi-typescript/issues/1872#issuecomment-2399197613
-export type CriteriumResult = Omit<components["schemas"]["CriterionResultDto"], "userImpact"> & { userImpact: CriterionResultDtoUserImpact | null };
+export type NotCompliantItem = Omit<components["schemas"]["NotCompliantItemDto"], "userImpact"> & { userImpact: CriterionResultDtoUserImpact | null };
+
+export type CreateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items"]["post"]["requestBody"]["content"]["application/json"];
+
+export type UpdateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items/{itemId}"]["patch"]["requestBody"]["content"]["application/json"];
+
+export type PatchNotCompliantItemData = { id: number } & Partial<
+  Omit<NotCompliantItem, "id">
+>;
 
 export enum StoreName {
   AUDIT_STORE = "AUDIT_STORE",

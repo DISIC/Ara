@@ -115,6 +115,7 @@ const editor = useEditor({
     basicMode: props.basicMode,
     onImageUploadComplete: fileName => emit("image:uploaded", fileName)
   }),
+
   onUpdate({ editor }) {
     // The content has changed.
     emit("update:modelValue", JSON.stringify(editor.getJSON()));
@@ -358,7 +359,7 @@ defineExpose({
 
     <!-- Visually show the editor with a border and a label when CSS is disabled -->
     <p class="tiptap__fake-label" aria-hidden="true">
-      Erreur et recommandation
+      Erreurs et recommandations
     </p>
     <table
       role="presentation"
@@ -399,11 +400,6 @@ defineExpose({
   border: 1px solid var(--border-plain-grey);
   border-bottom: 0;
   box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
-}
-
-/* Override bg color in dark mode to avoid same color as wrapper */
-[data-fr-theme="dark"] .tiptap-container {
-  background-color: var(--background-contrast-grey);
 }
 
 .tiptap-container--not-editable {

@@ -92,7 +92,7 @@ export class AuthController {
       throw new UnauthorizedException();
     }
 
-    await this.audit.anonymiseAudits(user.email);
+    await this.audit.softDeleteAuditsByAuditorEmail(user.email);
 
     const feedbackToken = await this.feedback.generateFeedbackToken();
 

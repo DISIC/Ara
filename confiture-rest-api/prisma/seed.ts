@@ -113,15 +113,51 @@ async function generateSeeds() {
 
     await Promise.all(completedAudits.flatMap(audit => {
       return [audit.transverseElementsPage, ...audit.pages].map(p => {
-        return tx.criterionResult.createMany({
-          data: rawCriteria.map(c => {
-            return {
-              ...c,
+        return (async () => {
+          await tx.criterionResult.createMany({
+            data: rawCriteria.map(({ notCompliantItems, ...criterion }) => {
+              return {
+                ...criterion,
+                pageId: p.id
+              };
+            }),
+            skipDuplicates: true
+          });
+
+          const criterionResults = await tx.criterionResult.findMany({
+            where: {
               pageId: p.id
-            };
-          }),
-          skipDuplicates: true
-        });
+            },
+            select: {
+              id: true,
+              topic: true,
+              criterium: true
+            }
+          });
+
+          const criterionResultIdByKey = new Map(
+            criterionResults.map(result => [`${result.topic}.${result.criterium}`, result.id])
+          );
+
+          const notCompliantItems = rawCriteria.flatMap(criterion => {
+            const criterionResultId = criterionResultIdByKey.get(`${criterion.topic}.${criterion.criterium}`);
+
+            if (!criterionResultId || !criterion.notCompliantItems?.length) {
+              return [];
+            }
+
+            return criterion.notCompliantItems.map(item => ({
+              ...item,
+              criterionResultId
+            }));
+          });
+
+          if (notCompliantItems.length > 0) {
+            await tx.notCompliantItem.createMany({
+              data: notCompliantItems
+            });
+          }
+        })();
       });
     }));
   }, {

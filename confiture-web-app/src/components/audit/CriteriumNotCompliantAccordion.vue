@@ -1,68 +1,68 @@
 <script setup lang="ts">
-import { provide, ref, useTemplateRef, computed } from "vue";
+import { debounce, last, orderBy } from "lodash-es";
 
-import { useIsOffline } from "../../composables/useIsOffline";
-import { ExampleImageFile, CriterionResultUserImpact } from "../../types";
-import { formatUserImpact, getUploadUrl, isTiptapDocumentEmpty } from "../../utils";
-import RichTextEditor from "../tiptap/RichTextEditor.vue";
+import { computed, provide, ref, useTemplateRef } from "vue";
+import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
+import { useResultsStore } from "../../store";
+import {
+  AuditPage,
+  CreateNotCompliantItemData,
+  ExampleImageFile,
+  NotCompliantItem,
+  PatchNotCompliantItemData,
+  UpdateNotCompliantItemData
+} from "../../types";
+import { captureWithPayloads, getUploadUrl, slugify } from "../../utils";
 import FileList, { FileListFile } from "../ui/FileList.vue";
-import { RadioColor } from "../ui/Radio.vue";
-import RadioGroup from "../ui/RadioGroup.vue";
+import CriteriumNotCompliantItem from "./CriteriumNotCompliantItem.vue";
 import { getFocusWhenListEmptyKey } from "./get-focus-when-list-empty-key";
 import LazyAccordion from "./LazyAccordion.vue";
 
 const props = defineProps<{
   id: string;
-  comment: string | null;
+  auditUniqueId: string;
+  page: AuditPage;
+  topicNumber: number;
+  criterium: any;
   exampleImages: ExampleImageFile[];
-  quickWin?: boolean;
-  userImpact: CriterionResultUserImpact | null;
+  notCompliantItems: NotCompliantItem[];
 }>();
 
 provide(getFocusWhenListEmptyKey, getFocusWhenListEmpty);
 
+const store = useResultsStore();
+
+const notify = useNotifications();
+
 function getFocusWhenListEmpty(): HTMLElement | null {
-  return userImpactRadioGroupRef.value
-    ? userImpactRadioGroupRef.value.$el
-    : null;
+  return criteriumNotCompliantItemRefs.value?.length ?
+    criteriumNotCompliantItemRefs.value[0].$el :
+    null;
 }
+
+const notCompliantItems = ref<NotCompliantItem[]>(props.notCompliantItems);
+
+const orderedItems = computed(() => {
+  return orderBy(notCompliantItems.value, x => x.id);
+});
+
+const notCompliantItemsCount = computed(() => {
+  return notCompliantItems.value
+    .filter(x => x.comment || x.quickWin || x.title || x.userImpact)
+    .length;
+});
 
 const emit = defineEmits<{
   (e: "file-deleted", payload: { resolve: () => void; flFile: FileListFile }): Promise<void>;
-  (e: "update:comment", payload: string): void;
-  (e: "update:userImpact", payload: CriterionResultUserImpact | null): void;
-  (e: "update:quickWin", payload: boolean): void;
 }>();
 
 defineExpose({ disclose });
 
-const userImpacts: Array<{
-  label: string;
-  value: CriterionResultUserImpact;
-  color?: RadioColor;
-}> = [
-  {
-    value: CriterionResultUserImpact.BLOCKING,
-    label: formatUserImpact(CriterionResultUserImpact.BLOCKING),
-    color: RadioColor.RED
-  },
-  {
-    value: CriterionResultUserImpact.MAJOR,
-    label: formatUserImpact(CriterionResultUserImpact.MAJOR),
-    color: RadioColor.YELLOW
-  },
-  {
-    value: CriterionResultUserImpact.MINOR,
-    label: formatUserImpact(CriterionResultUserImpact.MINOR),
-    color: RadioColor.GREY
-  }
-];
+const lazyAccordionRef = useTemplateRef<InstanceType<typeof LazyAccordion>>("lazyAccordionRef");
 
-const isOffline = useIsOffline();
-
-const lazyAccordionRef = ref<InstanceType<typeof LazyAccordion>>();
-const userImpactRadioGroupRef = useTemplateRef("userImpactRadioGroupRef");
-const commentEditorRef = ref<InstanceType<typeof RichTextEditor>>();
+const criteriumNotCompliantItemRefs =
+  useTemplateRef<InstanceType<typeof CriteriumNotCompliantItem>[]>("criteriumNotCompliantItemRef");
 
 let hasJustBeenSetAsNotCompliant = false;
 
@@ -74,25 +74,178 @@ async function disclose() {
 }
 
 function lazyAccordionOpened() {
+  if (!props.notCompliantItems.length) {
+    createNotCompliantItem();
+  }
+
   if (!hasJustBeenSetAsNotCompliant) {
     return;
   }
 
-  commentEditorRef.value?.focusEditor();
+  setFocusToTextEditor();
+
   hasJustBeenSetAsNotCompliant = false;
 }
 
-const isFilledIn = computed(() => {
-  return !isTiptapDocumentEmpty(props.comment)
-    || props.exampleImages.length
-    || props.quickWin
-    || !!props.userImpact;
-});
+function setFocusToTextEditor(index?: number) {
+  if (criteriumNotCompliantItemRefs.value
+    && criteriumNotCompliantItemRefs.value.length) {
+    const ref = index !== undefined && index !== -1
+      ? criteriumNotCompliantItemRefs.value[index] :
+        last(criteriumNotCompliantItemRefs.value);
+    if (ref) {
+      ref.textFocusEditor();
+    }
+  }
+}
 
-const baseTitle = "Erreur et recommandation";
-const title = computed(() => {
-  return `${baseTitle} (${Number(isFilledIn.value)})`;
-});
+function setFocusToCommentEditor() {
+  if (criteriumNotCompliantItemRefs.value
+    && criteriumNotCompliantItemRefs.value.length) {
+    const ref = criteriumNotCompliantItemRefs.value[0];
+    if (ref) {
+      ref.commentFocusEditor();
+    }
+  }
+}
+
+const createNotCompliantItem = async (
+  itemToCreate: NotCompliantItem | null = null) => {
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
+
+  try {
+    const itemAdded = await store.createNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      itemToCreate ? itemToCreate as CreateNotCompliantItemData : null
+    );
+
+    notCompliantItems.value = [
+      ...notCompliantItems.value,
+      itemAdded
+    ];
+
+    // the time required for the value `result.value.notCompliantItems` to propagate
+    setTimeout(() => setFocusToTextEditor(), 100);
+  }
+  catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+const deleteNotCompliantItem = async (id: number) => {
+  const { auditUniqueId, page, topicNumber, criterium } = props;
+  const slug = slugify(page.name);
+  const criteriumNumber = criterium.number;
+
+  const itemToDelete = notCompliantItems.value.find(x => x.id === id);
+
+  try {
+    await store.deleteNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      id
+    );
+
+    notCompliantItems.value =
+      notCompliantItems.value.filter(x => x.id !== id);
+
+    notify(
+      "success",
+      undefined,
+      `Erreur supprimée`,
+      {
+        action: {
+          label: "Annuler",
+          cb: async () => {
+            await createNotCompliantItem(itemToDelete);
+          }
+        }
+      }
+    );
+  } catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+const updateResultNotCompliantItem = async (payload:
+{ patch: PatchNotCompliantItemData }) => {
+  const { patch } = payload;
+  const { id, ...changes } = patch;
+
+  try {
+    const { auditUniqueId, page, topicNumber, criterium } = props;
+    const slug = slugify(page.name);
+    const criteriumNumber = criterium.number;
+
+    const notCompliantItemUpdated = await store.updateNotCompliantItem(
+      auditUniqueId,
+      slug,
+      topicNumber,
+      criteriumNumber,
+      id,
+      changes as UpdateNotCompliantItemData
+    );
+
+    notCompliantItems.value =
+      notCompliantItems.value.map(x =>
+        x.id === notCompliantItemUpdated.id ? notCompliantItemUpdated : x);
+  } catch (error) {
+    notify(
+      "error",
+      DEFAULT_NOTIFICATION_ERROR_TITLE,
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+};
+
+// One debounce instance per (item id, field) so edits to different fields
+// (or different items) don't cancel each other's pending update.
+const debouncedUpdaters = new Map<
+  string,
+  ReturnType<typeof debounce<typeof updateResultNotCompliantItem>>
+>();
+
+const updateResultNotCompliantItemDebounce = (payload: {
+  patch: PatchNotCompliantItemData;
+}) => {
+  const { id, ...changes } = payload.patch;
+  const key = `${id}-${Object.keys(changes).join(",")}`;
+
+  let debounced = debouncedUpdaters.get(key);
+  if (!debounced) {
+    debounced = debounce(updateResultNotCompliantItem, 500);
+    debouncedUpdaters.set(key, debounced);
+  }
+  debounced(payload);
+};
+
+function onUpdateNotCompliantItemClick(
+  patch: PatchNotCompliantItemData,
+  debounce: boolean
+) {
+  if (debounce) {
+    updateResultNotCompliantItemDebounce({ patch });
+  } else {
+    updateResultNotCompliantItem({ patch }); }
+}
 </script>
 
 <template>
@@ -102,19 +255,34 @@ const title = computed(() => {
     @opened="lazyAccordionOpened"
   >
     <template #title>
-      {{ baseTitle }}<strong v-if="isFilledIn"> (1)</strong><template v-else> (0)</template>
+      Erreurs et recommandations <span :class="{ 'fr-text--bold': notCompliantItemsCount > 0 }"> ({{ notCompliantItemsCount }})</span>
     </template>
-    <RichTextEditor
-      ref="commentEditorRef"
-      type="criterium"
-      :model-value="comment"
-      :label="title"
-      class="fr-mb-4w"
-      description="Décrivez les erreurs, proposez une correction et ajoutez une image pour illustrer l’erreur ou la correction."
-      @update:model-value="$emit('update:comment', $event)"
-    />
 
+    <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + item.id" class="not-compliant-item">
+
+      <CriteriumNotCompliantItem
+        ref="criteriumNotCompliantItemRef"
+        :index="index"
+        :item="item"
+        :can-delete="notCompliantItems.length > 1"
+        @delete="deleteNotCompliantItem"
+        @update="onUpdateNotCompliantItemClick"
+      />
+
+    </div>
+
+    <div v-if="notCompliantItems.length" class="fr-mx-n3v">
+      <button
+        type="button"
+        class="not-compliant-item-add fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-add-line"
+        @click="createNotCompliantItem()"
+      >
+        Ajouter une erreur</button>
+    </div>
+
+    <!-- FILES -->
     <FileList
+      v-if="exampleImages.length"
       class="fr-mb-4w"
       :files="exampleImages.map(f => ({
         filename: f.originalFilename,
@@ -126,91 +294,44 @@ const title = computed(() => {
       }))"
       :delete-only="true"
       :multiple="true"
-      :focus-on-delete="commentEditorRef?.focusEditor"
+      :focus-on-delete="setFocusToCommentEditor"
       @file-deleted="emit('file-deleted', $event)"
     />
 
-    <!-- USER IMPACT -->
-    <RadioGroup
-      ref="userImpactRadioGroupRef"
-      class="fr-mb-4w"
-      tabindex="-1"
-      :model-value="userImpact"
-      :items="userImpacts"
-      :default-value="null"
-      :disabled="isOffline"
-      @update:model-value="$emit('update:userImpact', $event)"
-    >
-      <template #label>
-        <div class="user-impact-label">
-          Impact sur l’usager
-          <button
-            aria-describedby="tooltip"
-            type="button"
-            class="fr-btn fr-btn--tooltip fr-btn--sm fr-icon-question-line fr-btn--tertiary-no-outline"
-            data-fr-js-tooltip-referent="true"
-          >
-            Informations sur l’impact usager
-          </button>
-
-          <div
-            id="tooltip"
-            class="fr-tooltip fr-placement"
-            role="tooltip"
-            data-fr-js-tooltip="true"
-          >
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Bloquant</strong> : empêche complètement l’accès ou
-              l’utilisation.<br />
-              <span class="user-impact-example">Ex : il est impossible de soumettre un formulaire au
-                clavier.</span>
-            </p>
-            <p class="fr-text--xs fr-mb-1w">
-              <strong>Majeur</strong> : rend l’accès ou l’utilisation
-              difficile.<br />
-              <span class="user-impact-example">Ex : les champs ne sont pas regroupés.</span>
-            </p>
-            <p class="fr-text--xs fr-mb-0">
-              <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
-              l’utilisation.<br />
-              <span class="user-impact-example">Ex : des retours à la ligne sont utilisés pour espacer des
-                textes.</span>
-            </p>
-          </div>
-        </div>
-      </template>
-    </RadioGroup>
-
-    <!-- QUICK WIN -->
-    <div class="fr-fieldset__element fr-fieldset__element--inline">
-      <div class="fr-checkbox-group">
-        <input
-          :id="`criterium-quick-win-${id}`"
-          :checked="quickWin"
-          type="checkbox"
-          @input="
-            $emit(
-              'update:quickWin',
-              ($event.target as HTMLInputElement).checked
-            )
-          "
-        />
-        <label class="fr-label" :for="`criterium-quick-win-${id}`">
-          Facile à corriger
-        </label>
-      </div>
-    </div>
   </LazyAccordion>
 </template>
 
 <style scoped>
-.user-impact-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.not-compliant-item {
+  padding: 1rem 0.75rem;
+  padding-block-end: 1.25rem;
+  border-block-end: 1px solid var(--border-default-grey);
+  margin: 0 -0.75rem;
+
+  &:first-child {
+    padding-top: 0.5rem;
+  }
 }
 
-.user-impact-example {
-  font-style: italic;
+.not-compliant-item-add {
+  padding: 1rem 0;
+  width: 100%;
+  justify-content: center;
+
+  &:hover {
+    background-color: var(--blue-france-950-100) !important;
+  }
+
+  &:active {
+    background-color: var(--blue-france-925-125) !important;
+  }
+
+  &:focus {
+    outline-offset: -2px;
+  }
+}
+
+:deep(.fr-collapse--expanded) {
+  padding-block: 0 0 !important;
 }
 </style>
