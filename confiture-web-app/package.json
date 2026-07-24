@@ -37,7 +37,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/marked": "^6.0.0",
     "@types/node": "^22.10.0",
-    "@unhead/vue": "^1.5.3",
+    "@unhead/vue": "^3.2.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vueuse/core": "^12.8.2",
     "dompurify": "^3.4.12",

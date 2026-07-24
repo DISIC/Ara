@@ -1,4 +1,4 @@
-import { createHead } from "@unhead/vue";
+import { createHead } from "@unhead/vue/client";
 import { marked, Tokens } from "marked";
 
 import { createPinia } from "pinia";
