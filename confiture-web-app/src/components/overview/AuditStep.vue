@@ -160,7 +160,6 @@ async function transferAudit(newEmail: string) {
         </p>
       </h2>
 
-      <!-- Tertiary actions -->
       <div class="audit-step-settings-link">
         <Dropdown
           ref="optionsDropdownRef"
