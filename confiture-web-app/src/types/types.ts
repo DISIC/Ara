@@ -5,8 +5,8 @@ import {
   components,
   CreateDebugAuditDtoAuditType,
   CriterionResultDtoStatus,
-  CriterionResultDtoUserImpact,
-  paths
+  paths,
+  NotCompliantItemDtoUserImpact
 } from "./confiture-api";
 
 export type AuditEnvironment = components["schemas"]["TestEnvironmentDto"];
@@ -42,7 +42,7 @@ export type CreateDebugAuditRequestData =
 
 export { CriterionResultDtoStatus as CriteriumResultStatus };
 
-export { CriterionResultDtoUserImpact as CriterionResultUserImpact };
+export { NotCompliantItemDtoUserImpact as CriterionResultUserImpact };
 
 /** File attached to audit notes. */
 export type NotesFile = components["schemas"]["NotesFileDto"];
@@ -50,11 +50,10 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
-export type CriteriumResult = components["schemas"]["CriterionResultDto"];
-
 // a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
 // https://github.com/openapi-ts/openapi-typescript/issues/1872#issuecomment-2399197613
-export type NotCompliantItem = Omit<components["schemas"]["NotCompliantItemDto"], "userImpact"> & { userImpact: CriterionResultDtoUserImpact | null };
+export type NotCompliantItem = Omit<components["schemas"]["NotCompliantItemDto"], "userImpact"> & { userImpact: NotCompliantItemDtoUserImpact | null };
+export type CriteriumResult = Omit<components["schemas"]["CriterionResultDto"], "notCompliantItems"> & { notCompliantItems: NotCompliantItem[] };
 
 export type CreateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items"]["post"]["requestBody"]["content"]["application/json"];
 
