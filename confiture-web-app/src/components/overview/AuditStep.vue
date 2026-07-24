@@ -1,22 +1,33 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAuditStats } from "../../composables/useAuditStats";
-import { useResultsStore } from "../../store";
+import { useNotifications } from "../../composables/useNotifications";
+import { useWindowWidth } from "../../composables/useWindowWidth";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
+import router from "../../router";
+import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { Audit, AuditType } from "../../types";
-import { formatDate, getCriteriaCount, isSameDay } from "../../utils";
+import { captureWithPayloads, formatDate, getCriteriaCount, isSameDay } from "../../utils";
 import AuditProgressBar from "../audit/AuditProgressBar.vue";
+import DeleteModal from "../audit/DeleteModal.vue";
+import DuplicateModal from "../audit/DuplicateModal.vue";
+import TransferModal from "../audit/TransferModal.vue";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
+import Dropdown from "../ui/Dropdown.vue";
 import StepCard from "./StepCard.vue";
 
-defineProps<{
+const props = defineProps<{
   audit: Audit;
 }>();
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
 const resultsStore = useResultsStore();
+const auditStore = useAuditStore();
+const accountStore = useAccountStore();
+const windowWidth = useWindowWidth();
 
 const { complianceLevel, compliantCriteriaCount, notCompliantCriteriaCount } =
   useAuditStats();
@@ -28,6 +39,100 @@ const auditIsReady = computed(() => {
 const auditIsInProgress = computed(() => {
   return resultsStore.auditProgress > 0 && resultsStore.auditProgress < 1;
 });
+
+const auditProcedureName = computed(() => {
+  return props.audit.procedureName || "";
+});
+
+const canTransferAudit = computed(() => {
+  return !props.audit?.auditor?.isVerified
+    || accountStore.account?.email === props.audit?.auditorEmail;
+});
+
+const notify = useNotifications();
+
+const deleteModalRef = ref<InstanceType<typeof DeleteModal>>();
+const transferModalRef = ref<InstanceType<typeof TransferModal>>();
+const duplicateModalRef = ref<InstanceType<typeof DuplicateModal>>();
+const isDuplicationLoading = ref(false);
+
+function duplicateAudit(name: string) {
+  if (!props.audit) {
+    return;
+  }
+  isDuplicationLoading.value = true;
+  auditStore
+    .duplicateAudit(props.audit.editUniqueId, name)
+    .then((newAuditId) => {
+      duplicateModalRef.value?.hide();
+
+      notify("success", undefined, `Audit « ${name} » créé`, {
+        action: {
+          label: "Accéder à l’audit",
+          cb() {
+            router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
+          }
+        }
+      });
+    })
+    .catch((error) => {
+      notify(
+        "error",
+        "Échec de la duplication de l'audit",
+        DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+      );
+      captureWithPayloads(error);
+    })
+    .finally(() => {
+      isDuplicationLoading.value = false;
+      duplicateModalRef.value?.hide();
+    });
+}
+
+async function deleteAudit() {
+  try {
+    await auditStore.deleteAudit(uniqueId.value);
+
+    deleteModalRef.value?.hide();
+
+    notify("success", undefined, `Audit « ${auditProcedureName.value} » supprimé`);
+
+    router.push({
+      name: accountStore.account ? "account-dashboard" : "home"
+    });
+  } catch (error) {
+    notify(
+      "error",
+      "Échec de la supression de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+}
+
+async function transferAudit(newEmail: string) {
+  try {
+    await auditStore.transferAudit(
+      uniqueId.value,
+      newEmail
+    );
+
+    transferModalRef.value?.hide();
+
+    notify("success", `Audit « ${auditProcedureName.value} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
+
+    router.push({
+      name: accountStore.account ? "account-dashboard" : "home"
+    });
+  } catch (error) {
+    notify(
+      "error",
+      "Échec du transfert de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+}
 </script>
 
 <template>
@@ -54,15 +159,65 @@ const auditIsInProgress = computed(() => {
           critères
         </p>
       </h2>
-      <RouterLink
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line audit-step-settings-link"
-        :to="{
-          name: 'audit-settings',
-          params: { uniqueId: audit.editUniqueId }
-        }"
-      >
-        Modifier les paramètres
-      </RouterLink>
+
+      <!-- Tertiary actions -->
+      <div class="audit-step-settings-link">
+        <Dropdown
+          ref="optionsDropdownRef"
+          title="Actions"
+          :align-left="windowWidth < 880"
+          :button-props="{
+            ariaLabel: `Actions de l’audit ${audit.procedureName}`
+          }"
+        >
+
+          <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+            <li>
+              <RouterLink
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+                :to="{
+                  name: 'audit-settings',
+                  params: { uniqueId: audit.editUniqueId }
+                }"
+              >
+                Modifier les paramètres
+              </RouterLink>
+            </li>
+
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
+                @click="duplicateModalRef?.show()"
+              >
+                Dupliquer
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              </button>
+            </li>
+            <li class="dropdown-item dropdown-item--with-meta">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                :disabled="!canTransferAudit"
+                @click="transferModalRef?.show()"
+              >
+                Transférer
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <p v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut transférer l’audit</p>
+              </button>
+            </li>
+            <li aria-hidden="true" class="dropdown-separator"></li>
+            <li class="dropdown-item">
+              <button
+                class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
+                @click="deleteModalRef?.show()"
+              >
+                Supprimer l’audit
+                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              </button>
+            </li>
+          </ul>
+        </Dropdown>
+      </div>
+
     </div>
 
     <p class="fr-text--sm fr-mb-3w audit-step-date">
@@ -114,7 +269,7 @@ const auditIsInProgress = computed(() => {
       />
 
       <SummaryCard
-        title="Critères<br /> confomes"
+        title="Critères<br /> conformes"
         :value="compliantCriteriaCount"
         :theme="SummaryCardThemes.Green"
         minimal
@@ -156,6 +311,28 @@ const auditIsInProgress = computed(() => {
       </li>
     </ul>
   </StepCard>
+
+  <DuplicateModal
+    :id="`duplicate-modal-${uniqueId}`"
+    ref="duplicateModalRef"
+    :original-audit-name="auditProcedureName"
+    :is-loading="isDuplicationLoading"
+    @confirm="duplicateAudit"
+  />
+
+  <DeleteModal
+    :id="`delete-modal-${uniqueId}`"
+    ref="deleteModalRef"
+    :procedure-name="auditProcedureName"
+    @confirm="deleteAudit"
+  />
+
+  <TransferModal
+    :id="`transfer-modal-${uniqueId}`"
+    ref="transferModalRef"
+    :procedure-name="auditProcedureName"
+    @confirm="transferAudit"
+  />
 </template>
 
 <style scoped>
