@@ -28,7 +28,7 @@ export class DebugController {
     type: Boolean
   })
   async isDevModeAllowed(): Promise<boolean> {
-    const isProd = this.config.get("NODE_ENV") === "production";
+    const isProd = this.config.get("NODE_ENV") === "production" && !process.env.IS_REVIEW_APP;
     return !isProd;
   }
 
@@ -47,7 +47,7 @@ export class DebugController {
     // Only allow admins to use route on production
     const adminAccounts = this.config.get("ADMIN_ACCOUNTS");
     const adminUsers = adminAccounts ? adminAccounts.split(",") : [];
-    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && adminUsers && (!user || !adminUsers.includes(user.email));
+    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && !process.env.IS_REVIEW_APP && adminUsers && (!user || !adminUsers.includes(user.email));
 
     if (userIsNotAuthorized) {
       throw new UnauthorizedException();
