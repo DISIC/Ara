@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 import fiphfpLogo from "../../assets/images/fiphfp.png";
+
 import { useDebugStore } from "../../store";
-import { useAccountStore } from "../../store/account";
 import ThemeModal from "./ThemeModal.vue";
 
-const accountStore = useAccountStore();
 const debugStore = useDebugStore();
+const route = useRoute();
+
+const isReportPage = computed(
+  () => route.name === "report" || route.name === "report-full"
+);
 
 const bottomLinks = [
   {
@@ -37,7 +43,7 @@ function switchDevMode() {
 
 <template>
   <footer id="footer" class="fr-footer fr-mt-auto" role="contentinfo">
-    <div v-if="accountStore.account" class="fr-footer__top">
+    <div v-if="!isReportPage" class="fr-footer__top">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">

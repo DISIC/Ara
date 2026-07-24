@@ -9,6 +9,7 @@
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
 - Ajouter le placeholder "Entité ayant réalisé l'audit" dans la déclaration ([#1555](https://github.com/DISIC/Ara/pull/1555))
+- Les liens du haut du pied de page s’affichent quelque soit l’état de connexion de l’usager (mais pas dans le rapport) ([#1570](https://github.com/DISIC/Ara/pull/1570))
 
 ### 22/07/2026
 
