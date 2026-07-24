@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 24/07/2026
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Ajouter le placeholder "Entité ayant réalisé l'audit" dans la déclaration ([#1555](https://github.com/DISIC/Ara/pull/1555))
+
 ### 22/07/2026
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
