@@ -1,6 +1,5 @@
 import { TabSlug } from "../../../confiture-web-app/src/enums";
 
-// FIXME: weird behaviour with page reloads (caused by "fake tabs"?)
 describe("Report", () => {
   it("User can see correct pages count and transverse criteria count", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
