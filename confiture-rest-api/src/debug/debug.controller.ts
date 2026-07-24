@@ -1,6 +1,6 @@
-import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, Get, Post, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
 import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 import { User } from "src/auth/user.decorator";
@@ -22,6 +22,16 @@ export class DebugController {
     private readonly config: ConfigService
   ) {}
 
+  @Get("is-dev-mode-allowed")
+  @ApiOkResponse({
+    description: "Display dev mode switch or not",
+    type: Boolean
+  })
+  async isDevModeAllowed(): Promise<boolean> {
+    const isProd = this.config.get("NODE_ENV") === "production" && this.config.get("IS_REVIEW_APP") !== "true";
+    return !isProd;
+  }
+
   @Post("create-audit")
   @ApiCreatedResponse({
     description: "The debug audit has been successfully created.",
@@ -37,8 +47,7 @@ export class DebugController {
     // Only allow admins to use route on production
     const adminAccounts = this.config.get("ADMIN_ACCOUNTS");
     const adminUsers = adminAccounts ? adminAccounts.split(",") : [];
-    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && adminUsers && (!user || !adminUsers.includes(user.email));
-
+    const userIsNotAuthorized = this.config.get("NODE_ENV") === "production" && this.config.get("IS_REVIEW_APP") !== "true" && adminUsers && (!user || !adminUsers.includes(user.email));
     if (userIsNotAuthorized) {
       throw new UnauthorizedException();
     }

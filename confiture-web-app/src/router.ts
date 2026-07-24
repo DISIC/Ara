@@ -369,18 +369,6 @@ const router = createRouter({
   }
 });
 
-router.beforeEach((to, from) => {
-  if (from.query.dev && !to.query.dev) {
-    return {
-      ...to,
-      query: {
-        ...to.query,
-        dev: from.query.dev
-      }
-    };
-  }
-});
-
 router.beforeEach((to) => {
   const accountStore = useAccountStore();
   if (to.meta.authRequired && !accountStore.account) {
