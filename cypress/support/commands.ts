@@ -145,6 +145,12 @@ declare global {
       }>;
 
       isWithinViewport(): Chainable<Element>;
+
+      /**
+       * Custom command to call console.table so it also works in headless mode.
+       * @example cy.table([{ id: 1, name: "foo" }])
+       */
+      table(data: unknown): Chainable<null>;
     }
   }
 }
@@ -236,6 +242,17 @@ Cypress.Commands.addQuery(
     return innerFn;
   }
 );
+
+// New command to call console.table, using "table" task in headless mode.
+// See "table" task in cypress.config.
+Cypress.Commands.add("table", (data: unknown) => {
+  if (Cypress.browser.isHeadless) {
+    return cy.task("table", data, { log: false });
+  } else {
+    // eslint-disable-next-line no-console
+    console.table(data);
+  }
+});
 
 // Override cy.log so that it calls "log" task in headless mode.
 // See "log" task in cypress.config.
