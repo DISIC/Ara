@@ -1,102 +1,32 @@
 import { RouterScrollBehavior } from "vue-router";
 
-import { components, paths } from "./confiture-api";
+import {
+  AuditListingItemDtoStatus,
+  components,
+  CreateDebugAuditDtoAuditType,
+  CriterionResultDtoStatus,
+  paths,
+  NotCompliantItemDtoUserImpact
+} from "./confiture-api";
 
-export interface AuditEnvironment {
-  id: number;
-  platform: string;
-  operatingSystem: string;
-  assistiveTechnology: string;
-  browser: string;
-}
+export type AuditEnvironment = components["schemas"]["TestEnvironmentDto"];
 
-export interface AuditPage {
-  id: number;
-  order: number;
-  name: string;
-  url: string;
-}
+export type AuditPage = components["schemas"]["PageDto"];
 
-export interface PageElements {
-  multimedia?: boolean;
-  table?: boolean;
-  form?: boolean;
-  frame?: boolean;
-}
+export type PageElements = components["schemas"]["PageElements"];
 
-export enum AuditType {
-  FAST = "FAST",
-  COMPLEMENTARY = "COMPLEMENTARY",
-  FULL = "FULL"
-}
+export { CreateDebugAuditDtoAuditType as AuditType };
 
-export type AuditTypeString = `${AuditType}`;
+export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
 
-export enum AuditStatus {
-  NOT_STARTED = "NOT_STARTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  PUBLISHABLE = "PUBLISHABLE"
-}
+// FIXME: missing PUBLISHABLE ?
+export { AuditListingItemDtoStatus as AuditStatus };
 
 /** An audit object as returned by the API. */
-export interface Audit {
-  id: number;
-  editUniqueId: string;
-  consultUniqueId: string;
-
-  creationDate: string | null;
-  publicationDate: string | null;
-  editionDate: string | null;
-
-  // Audit creation
-  auditType: AuditType;
-  procedureName: string;
-  transverseElementsPage: AuditPage;
-  pages: AuditPage[];
-  auditorEmail: string;
-  auditorName: string | null;
-
-  // A11y declaration edition
-  technologies: string[];
-  procedureUrl: string | null;
-  initiator: string | null;
-  auditorOrganisation: string;
-  tools: string[];
-  environments: AuditEnvironment[];
-  contactName: string | null;
-  contactEmail: string | null;
-  contactFormUrl: string | null;
-  notCompliantContent: string | null;
-  derogatedContent: string | null;
-  notInScopeContent: string | null;
-  notes: string | null;
-  notesFiles: NotesFile[];
-  statementPublicationDate: string | null;
-  statementEditionDate: string | null;
-  schemaPluriannuelUrl: string | null;
-  planActionUrl: string | null;
-
-  transverseElements: string[];
-
-  auditor: Auditor;
-}
-
-interface Auditor {
-  username: string;
-  isVerified: boolean;
-}
+export type Audit = components["schemas"]["AuditDto"];
 
 /** Audit type fields needed to create an audit */
-export interface CreateAuditRequestData {
-  auditType: AuditType | null;
-  procedureName: string;
-  pages: Omit<AuditPage, "id" | "order">[];
-  pageElements?: PageElements;
-  auditorEmail: string;
-  auditorName: string | null;
-  auditor?: Auditor;
-}
+export type CreateAuditRequestData = paths["/audits"]["post"]["requestBody"]["content"]["application/json"];
 
 /** Creation data type plus step 2 fields. */
 export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
@@ -104,22 +34,15 @@ export type UpdateAuditRequestData = Omit<Audit, "environments" | "pages"> & {
   pages: Omit<AuditPage, "id" | "order">[];
 };
 
-export type UpdateAuditStatementRequestData = paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
+export type UpdateAuditStatementRequestData =
+  paths["/audits/{editUniqueId}/statement"]["put"]["requestBody"]["content"]["application/json"];
 
-export type CreateDebugAuditRequestData = paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
+export type CreateDebugAuditRequestData =
+  paths["/debug/create-audit"]["post"]["requestBody"]["content"]["application/json"];
 
-export enum CriteriumResultStatus {
-  NOT_TESTED = "NOT_TESTED",
-  COMPLIANT = "COMPLIANT",
-  NOT_COMPLIANT = "NOT_COMPLIANT",
-  NOT_APPLICABLE = "NOT_APPLICABLE"
-}
+export { CriterionResultDtoStatus as CriteriumResultStatus };
 
-export enum CriterionResultUserImpact {
-  MINOR = "MINOR",
-  MAJOR = "MAJOR",
-  BLOCKING = "BLOCKING"
-}
+export { NotCompliantItemDtoUserImpact as CriterionResultUserImpact };
 
 /** File attached to audit notes. */
 export type NotesFile = components["schemas"]["NotesFileDto"];
@@ -127,13 +50,10 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
-export type NotCompliantItem = {
-  id: number;
-  title?: string;
-  comment: string | null;
-  userImpact: CriterionResultUserImpact | null;
-  quickWin: boolean;
-};
+// a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
+// https://github.com/openapi-ts/openapi-typescript/issues/1872#issuecomment-2399197613
+export type NotCompliantItem = Omit<components["schemas"]["NotCompliantItemDto"], "userImpact"> & { userImpact: NotCompliantItemDtoUserImpact | null };
+export type CriteriumResult = Omit<components["schemas"]["CriterionResultDto"], "notCompliantItems"> & { notCompliantItems: NotCompliantItem[] };
 
 export type CreateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/results/{topic}.{criterium}/not-compliant-items"]["post"]["requestBody"]["content"]["application/json"];
 
@@ -142,23 +62,6 @@ export type UpdateNotCompliantItemData = paths["/audits/{uniqueId}/pages/{slug}/
 export type PatchNotCompliantItemData = { id: number } & Partial<
   Omit<NotCompliantItem, "id">
 >;
-
-export interface CriteriumResult {
-  // ID
-  id: number;
-
-  topic: number;
-  criterium: number;
-  pageId: number;
-
-  // DATA
-  status: CriteriumResultStatus;
-
-  compliantComment: string | null;
-  notApplicableComment: string | null;
-  exampleImages: ExampleImageFile[];
-  notCompliantItems: NotCompliantItem[];
-}
 
 export enum StoreName {
   AUDIT_STORE = "AUDIT_STORE",

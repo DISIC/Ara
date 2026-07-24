@@ -92,7 +92,7 @@ defineExpose({
   <DsfrField
     :id="`error-title-${item.id}-${index}`"
     ref="titleEditorRef"
-    :model-value="item.title"
+    :model-value="item.title ?? undefined"
     type="text"
     label="Titre de l'erreur"
     :label-sr-only="`${index + 1}`"

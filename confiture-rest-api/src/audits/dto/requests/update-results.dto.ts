@@ -89,14 +89,36 @@ class UpdateResultsItem {
    */
   @IsString()
   @IsOptional()
-  compliantComment?: string;
+  compliantComment: string | null;
+
+  /**
+   * @example "Consectetur ad consectetur Lorem id enim sunt amet ea."
+   */
+  @IsString()
+  @IsOptional()
+  notCompliantComment: string | null;
+
+  /**
+   * @example "MAJOR"
+   */
+  @IsString()
+  @IsIn(Object.values(CriterionResultUserImpact))
+  @IsOptional()
+  userImpact: CriterionResultUserImpact | null;
+
+  /**
+   * Whether the result is easy to fix
+   */
+  @IsBoolean()
+  @IsOptional()
+  quickWin: boolean | null;
 
   /**
    * @example "Officia aliquip aute ipsum in eiusmod ea et."
    */
   @IsString()
   @IsOptional()
-  notApplicableComment?: string;
+  notApplicableComment: string | null;
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -112,19 +134,18 @@ class CriterionResultNotCompliantItem {
 
   @IsString()
   @IsOptional()
-  title?: string;
+  title: string | null;
 
   @IsString()
   @IsOptional()
-  comment?: string;
+  comment: string | null;
 
   @IsIn(Object.values(CriterionResultUserImpact))
   @IsOptional()
-  userImpact?: CriterionResultUserImpact;
+  userImpact: CriterionResultUserImpact | null;
 
   @IsBoolean()
-  @IsOptional()
-  quickWin?: boolean;
+  quickWin: boolean;
 }
 
 export class UpdateResultsDto {
