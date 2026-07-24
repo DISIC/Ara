@@ -5689,12 +5689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dompurify@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@types/dompurify@npm:2.4.0"
+"@types/dompurify@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@types/dompurify@npm:3.2.0"
   dependencies:
-    "@types/trusted-types": "npm:*"
-  checksum: 10c0/a20c4288a067811e097f0b92a0cae927a9c49c0d5de36fea66b85fcc5c8db63a22ac47df37f324e426a01e8ab99ae28ea04260301350bda194850617a26931d6
+    dompurify: "npm:*"
+  checksum: 10c0/e83fec586ffbb1b43f7c8479f2a99c223814d240db912d53fb126aaeea52a4091deceeb75632b5d76004d88ef0fbf444984887b121dece6fa69f4172ed4b2b07
   languageName: node
   linkType: hard
 
@@ -6053,7 +6053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/trusted-types@npm:*":
+"@types/trusted-types@npm:^2.0.7":
   version: 2.0.7
   resolution: "@types/trusted-types@npm:2.0.7"
   checksum: 10c0/4c4855f10de7c6c135e0d32ce462419d8abbbc33713b31d294596c0cc34ae1fa6112a2f9da729c8f7a20707782b0d69da3b1f8df6645b0366d08825ca1522e0c
@@ -8296,14 +8296,14 @@ __metadata:
     "@tiptap/pm": "npm:^3.15.3"
     "@tiptap/starter-kit": "npm:^3.15.3"
     "@tiptap/vue-3": "npm:^3.15.3"
-    "@types/dompurify": "npm:^2.4.0"
+    "@types/dompurify": "npm:^3.2.0"
     "@types/lodash-es": "npm:^4.17.12"
     "@types/marked": "npm:^4.0.8"
     "@types/node": "npm:^22.10.0"
     "@unhead/vue": "npm:^1.5.3"
     "@vitejs/plugin-vue": "npm:^6.0.8"
     "@vueuse/core": "npm:^12.8.2"
-    dompurify: "npm:^2.4.1"
+    dompurify: "npm:^3.4.12"
     highlight.js: "npm:^11.11.1"
     jwt-decode: "npm:^4.0.0"
     ky: "npm:^2.0.2"
@@ -8876,10 +8876,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^2.4.1":
-  version: 2.5.9
-  resolution: "dompurify@npm:2.5.9"
-  checksum: 10c0/91cf3fd8ad07f969a740813a2101d573547954fd87925d729e8cfc592fa93c51fc3f7b298d336bd90c1a5eae1ad65d1ca06254b938fd84af84ef081c9c4b75ee
+"dompurify@npm:*, dompurify@npm:^3.4.12":
+  version: 3.4.12
+  resolution: "dompurify@npm:3.4.12"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10c0/127a13817353d4e20e75a991a9022a04c3af12af7479f68e2b8bee6dbc7330a96edfb8f4ebff96f4f0f24cd43e8dbba46214131f510c3aa87a843bd8b610d0ab
   languageName: node
   linkType: hard
 
