@@ -8306,7 +8306,7 @@ __metadata:
     dompurify: "npm:^2.4.1"
     highlight.js: "npm:^11.11.1"
     jwt-decode: "npm:^4.0.0"
-    ky: "npm:^0.33.0"
+    ky: "npm:^2.0.2"
     lodash-es: "npm:^4.18.1"
     lowlight: "npm:^3.3.0"
     marked: "npm:^4.2.4"
@@ -12071,10 +12071,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:^0.33.0":
-  version: 0.33.3
-  resolution: "ky@npm:0.33.3"
-  checksum: 10c0/5ba8de4c97c2abe5fb1b7d1b20252f95a7b249254af03cdfac670b9615de6b2b4af747bf363a1b918d2650c4cc83259578105f8eadd284f4e1c4261081e29640
+"ky@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "ky@npm:2.0.2"
+  checksum: 10c0/5bac227454193003c819eed5a26b30ae9ac639648be2944547f1aad204a470261ae2a8f7537dac0fd4a6433264bb8f1081b25411bfb49ef5d05a0e21d18b2ab9
   languageName: node
   linkType: hard
 

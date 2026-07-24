@@ -4,11 +4,11 @@ import { useAccountStore } from "./store";
 export const api = ky.extend({
   hooks: {
     beforeRequest: [
-      ({ headers }) => {
+      ({ request }) => {
         // authenticate user with API if they are logged in
         const accountStore = useAccountStore();
         if (accountStore.authToken) {
-          headers.set("Authorization", `Bearer ${accountStore.authToken}`);
+          request.headers.set("Authorization", `Bearer ${accountStore.authToken}`);
         }
       }
     ]
