@@ -86,15 +86,16 @@ const csvExportFilename = computed(() => {
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
 
+const isReportCopied = ref(false);
+const isStatementCopied = ref(false);
+
 function copyReportLink(uniqueId: string) {
   const url = `${window.location.origin}/rapport/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers le rapport a bien été copié dans le presse-papier.`
-    );
+    isReportCopied.value = true;
+
+    setTimeout(() => isReportCopied.value = false, 3500);
   });
 }
 
@@ -102,11 +103,9 @@ function copyStatementLink(uniqueId: string) {
   const url = `${window.location.origin}/declaration/${uniqueId}`;
 
   navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier.`
-    );
+    isStatementCopied.value = true;
+
+    setTimeout(() => isStatementCopied.value = false, 3500);
   });
 }
 
@@ -268,7 +267,7 @@ defineExpose({
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >Consulter le rapport
-                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
+                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -281,7 +280,7 @@ defineExpose({
               @click="duplicateModal?.show()"
             >
               Dupliquer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -290,7 +289,7 @@ defineExpose({
               @click="$emit('transfer')"
             >
               Transférer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -310,21 +309,31 @@ defineExpose({
 
           <li class="dropdown-item">
             <button
+              v-if="!isReportCopied"
+              data-keep-open
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyReportLink(audit.consultUniqueId)"
             >
               Copier le lien du rapport
-              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
             </button>
+            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
+              <span class="fr-icon-check-line fr-m-0">Lien du rapport copié</span>
+            </div>
           </li>
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
             <button
+              v-if="!isStatementCopied"
+              data-keep-open
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
               @click="copyStatementLink(audit.consultUniqueId)"
             >
               Copier le lien de la déclaration
             </button>
+            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
+              <span class="fr-icon-check-line fr-m-0">Lien de la déclaration copié</span>
+            </div>
           </li>
 
           <li class="dropdown-item dropdown-item--with-meta">
@@ -334,7 +343,7 @@ defineExpose({
               :download="csvExportFilename"
             >
               Télécharger l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }} </span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -347,7 +356,7 @@ defineExpose({
               @click="$emit('delete')"
             >
               Supprimer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
@@ -404,5 +413,22 @@ defineExpose({
 .audit-main-action {
   justify-content: center;
   width: initial;
+}
+
+.copy-link {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+
+  span {
+    color: var(--text-default-success);
+    line-height: 1.5rem;
+
+    &::before {
+      --icon-size: 1rem;
+
+      margin-left: -0.125rem;
+      margin-right: 0.5rem;
+    }
+  }
 }
 </style>
