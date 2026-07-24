@@ -1,5 +1,5 @@
 import { createHead } from "@unhead/vue";
-import { marked } from "marked";
+import { marked, Tokens } from "marked";
 
 import { createPinia } from "pinia";
 import { createApp } from "vue";
@@ -16,21 +16,24 @@ import "@gouvfr/dsfr/dist/utility/icons/icons.css";
 
 // markdown configuration
 {
-  const renderer = {
-    link(href: string, title: string, text: string) {
-      if (href.startsWith("#")) {
-        return `<a
-          href="https://accessibilite.numerique.gouv.fr/methode/glossaire/${href}"
-          target="_blank"
-          class="no-external-icon"
-        >${text}<span class="fr-sr-only"> (ouvre dans une nouvelle fenêtre)</span></a>`;
-      } else {
-        return `<a href="${href}">${text}</a>`;
+  const extension = {
+    useNewRenderer: true,
+    renderer: {
+      link(token: Tokens.Link) {
+        if (token.href?.startsWith("#")) {
+          return `<a
+            href="https://accessibilite.numerique.gouv.fr/methode/glossaire/${token.href}"
+            target="_blank"
+            class="no-external-icon"
+          >${token.text}<span class="fr-sr-only"> (ouvre dans une nouvelle fenêtre)</span></a>`;
+        } else {
+          return `<a href="${token.href}">${token.text}</a>`;
+        }
       }
     }
   };
 
-  marked.use({ renderer });
+  marked.use(extension);
 }
 
 const pinia = createPinia();

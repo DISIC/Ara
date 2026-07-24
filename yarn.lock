@@ -5837,10 +5837,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/marked@npm:^4.0.8":
-  version: 4.3.2
-  resolution: "@types/marked@npm:4.3.2"
-  checksum: 10c0/6f44d28da5c940a719d6c6aca41e33f49c5fe957f7972939cc1cbb47d045951f4d969f382d655345d0463e47db1994635d2862018716fcef2fa85ceeceb116e7
+"@types/marked@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@types/marked@npm:6.0.0"
+  dependencies:
+    marked: "npm:*"
+  checksum: 10c0/1a831af52413b1a208c91539d3bdda9be83d5451dc094c3cbc07e3e07186970673b9ec3ad5edd6c136b1249875c41e22c39eacb3c00ea7c59d0873c35c273035
   languageName: node
   linkType: hard
 
@@ -8298,7 +8300,7 @@ __metadata:
     "@tiptap/vue-3": "npm:^3.15.3"
     "@types/dompurify": "npm:^3.2.0"
     "@types/lodash-es": "npm:^4.17.12"
-    "@types/marked": "npm:^4.0.8"
+    "@types/marked": "npm:^6.0.0"
     "@types/node": "npm:^22.10.0"
     "@unhead/vue": "npm:^1.5.3"
     "@vitejs/plugin-vue": "npm:^6.0.8"
@@ -8309,7 +8311,7 @@ __metadata:
     ky: "npm:^2.0.2"
     lodash-es: "npm:^4.18.1"
     lowlight: "npm:^3.3.0"
-    marked: "npm:^4.2.4"
+    marked: "npm:^18.0.7"
     pinia: "npm:^2.0.28"
     slugify: "npm:^1.6.9"
     vite: "npm:^7.1.9"
@@ -12654,21 +12656,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"marked@npm:*, marked@npm:^18.0.7":
+  version: 18.0.7
+  resolution: "marked@npm:18.0.7"
+  bin:
+    marked: bin/marked.js
+  checksum: 10c0/84fc25d8583ff5c7b200dc6719e238472bb50e93b656b724ddfac4469c71ab1ef36bc8b4c1b2b26efabe713fd9a3437e3fd8af8555379c988dd902299842a730
+  languageName: node
+  linkType: hard
+
 "marked@npm:^17.0.1":
   version: 17.0.4
   resolution: "marked@npm:17.0.4"
   bin:
     marked: bin/marked.js
   checksum: 10c0/a6f6a2df8157835bc23b2bede31f1cae7af75af7a2cd2e070d640c5a490e6cfe5eb63309cf353d7b373f7aef04ead4f2de51a59905bb829c462d802484468cd9
-  languageName: node
-  linkType: hard
-
-"marked@npm:^4.2.4":
-  version: 4.3.0
-  resolution: "marked@npm:4.3.0"
-  bin:
-    marked: bin/marked.js
-  checksum: 10c0/0013463855e31b9c88d8bb2891a611d10ef1dc79f2e3cbff1bf71ba389e04c5971298c886af0be799d7fa9aa4593b086a136062d59f1210b0480b026a8c5dc47
   languageName: node
   linkType: hard
 
