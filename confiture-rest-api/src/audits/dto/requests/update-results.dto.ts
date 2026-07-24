@@ -92,28 +92,6 @@ class UpdateResultsItem {
   compliantComment: string | null;
 
   /**
-   * @example "Consectetur ad consectetur Lorem id enim sunt amet ea."
-   */
-  @IsString()
-  @IsOptional()
-  notCompliantComment: string | null;
-
-  /**
-   * @example "MAJOR"
-   */
-  @IsString()
-  @IsIn(Object.values(CriterionResultUserImpact))
-  @IsOptional()
-  userImpact: CriterionResultUserImpact | null;
-
-  /**
-   * Whether the result is easy to fix
-   */
-  @IsBoolean()
-  @IsOptional()
-  quickWin: boolean | null;
-
-  /**
    * @example "Officia aliquip aute ipsum in eiusmod ea et."
    */
   @IsString()

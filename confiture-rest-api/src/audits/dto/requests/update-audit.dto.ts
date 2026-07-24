@@ -42,7 +42,7 @@ export class UpdateAuditPageDto extends CreateAuditPage {
    */
   @IsNumber()
   @IsOptional()
-  id: number | null;
+  id?: number;
 }
 
 export class UpdateAuditDto extends BaseAuditDto {
@@ -99,16 +99,14 @@ export class UpdateAuditDto extends BaseAuditDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdateAuditEnvironment)
-  @IsOptional()
-  environments: UpdateAuditEnvironment[] | null;
+  environments: UpdateAuditEnvironment[];
 
   /**
    * @example ["HTML", "CSS"]
    */
   @IsArray()
   @IsString({ each: true })
-  @IsOptional()
-  technologies: string[] | null;
+  technologies: string[];
 
   @IsString()
   @IsOptional()
@@ -131,8 +129,7 @@ export class UpdateAuditDto extends BaseAuditDto {
    */
   @IsArray()
   @IsString({ each: true })
-  @IsOptional()
-  transverseElements: string[] | null;
+  transverseElements: string[];
 
   @IsArray()
   @ValidateNested({ each: true })
