@@ -40,8 +40,7 @@ export function checkA11y() {
   cy.configureAxe({
     locale: {
       lang: "fr"
-    },
-    reporter: "option"
+    }
   });
 
   cy.checkA11y(undefined, {
