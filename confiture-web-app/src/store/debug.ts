@@ -17,7 +17,7 @@ export const useDebugStore = defineStore("debug", {
     async initDevModeSwitch() {
       const allowDevModeFromLS = localStorage.getItem(lsAllowDevModeKey);
       let allowDevMode: boolean;
-      if (allowDevModeFromLS === "true" || allowDevModeFromLS === "false") {
+      if (allowDevModeFromLS) {
         // check if dev mode is allowed from local storage "ara:allow-dev-mode" key
         allowDevMode = (allowDevModeFromLS === "true");
       } else {
@@ -40,7 +40,7 @@ export const useDebugStore = defineStore("debug", {
     },
     saveDevMode(devMode: boolean) {
       this.devMode = devMode;
-      localStorage.setItem(lsDevModeKey, devMode ? "true" : "false");
+      localStorage.setItem(lsDevModeKey, devMode.toString());
     },
     async createDebugAudit(data: CreateDebugAuditRequestData) {
       const response = (await api

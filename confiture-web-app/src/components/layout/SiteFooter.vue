@@ -189,8 +189,9 @@ function switchDevMode() {
           </li>
           <li v-if="debugStore.allowDevMode" class="fr-footer__bottom-item">
             <button
+              type="button"
               class="fr-footer__bottom-link fr-icon-computer-line fr-link--icon-left"
-              @click.prevent="switchDevMode"
+              @click="switchDevMode"
             >
               <template v-if="debugStore.devMode">Désactiver le mode développeur</template>
               <template v-else>Activer le mode développeur</template>
