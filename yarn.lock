@@ -6253,21 +6253,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:>=10.0.0":
+"@types/node@npm:>=10.0.0, @types/node@npm:^26.1.1":
   version: 26.1.1
   resolution: "@types/node@npm:26.1.1"
   dependencies:
     undici-types: "npm:~8.3.0"
   checksum: 10c0/25ac5093195736dd074d5027adbba85617bc951d5a41506ebd3b9073048acb7233613f3822d5f9b9447f9c0841c91f6387c46283916767e3ef79f23917452c46
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.10.0":
-  version: 22.19.15
-  resolution: "@types/node@npm:22.19.15"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/f17eaf3d0d1da5e93ad9e287efb78201f8a5282973c004c5f70d91675c5c6b926a23acaa7b158a42b3d7e27e36b349d65a531710c91c308fca53dd7fa280ef98
   languageName: node
   linkType: hard
 
@@ -8635,7 +8626,7 @@ __metadata:
     "@types/lodash": "npm:^4.14.194"
     "@types/mjml": "npm:^4.7.1"
     "@types/multer": "npm:^1.4.7"
-    "@types/node": "npm:^22.10.0"
+    "@types/node": "npm:^26.1.1"
     "@types/nodemailer": "npm:^6.4.4"
     "@types/pg": "npm:^8.16.0"
     "@types/sharp": "npm:^0.31.1"
@@ -8691,7 +8682,7 @@ __metadata:
     "@types/dompurify": "npm:^3.2.0"
     "@types/lodash-es": "npm:^4.17.12"
     "@types/marked": "npm:^6.0.0"
-    "@types/node": "npm:^22.10.0"
+    "@types/node": "npm:^26.1.1"
     "@unhead/vue": "npm:^3.2.3"
     "@vitejs/plugin-vue": "npm:^6.0.8"
     "@vueuse/core": "npm:^14.3.0"
@@ -18234,13 +18225,6 @@ __metadata:
   version: 1.5.0
   resolution: "uint8array-extras@npm:1.5.0"
   checksum: 10c0/0e74641ac7dadb02eadefc1ccdadba6010e007757bda824960de3c72bbe2b04e6d3af75648441f412148c4103261d54fcb60be45a2863beb76643a55fddba3bd
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 
