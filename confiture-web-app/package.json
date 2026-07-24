@@ -51,7 +51,7 @@
     "slugify": "^1.6.9",
     "vite": "^7.1.9",
     "vue": "^3.5.40",
-    "vue-router": "^4.2.5",
+    "vue-router": "^5.2.0",
     "vue-tsc": "^3.3.8"
   },
   "engines": {
