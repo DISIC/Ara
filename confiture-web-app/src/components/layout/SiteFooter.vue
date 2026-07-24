@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import fiphfpLogo from "../../assets/images/fiphfp.png";
+import { useDebugStore } from "../../store";
 import { useAccountStore } from "../../store/account";
 import ThemeModal from "./ThemeModal.vue";
 
 const accountStore = useAccountStore();
+const debugStore = useDebugStore();
 
 const bottomLinks = [
   {
@@ -27,6 +29,12 @@ const bottomLinks = [
     routeName: "contact"
   }
 ];
+
+function switchDevMode() {
+  debugStore.saveDevMode(!debugStore.devMode);
+  const mainEl = document.getElementById("main") as HTMLElement;
+  mainEl.focus();
+}
 </script>
 
 <template>
@@ -179,6 +187,15 @@ const bottomLinks = [
               data-fr-opened="false"
             >
               Paramètres d'affichage
+            </button>
+          </li>
+          <li v-if="debugStore.allowDevMode" class="fr-footer__bottom-item">
+            <button
+              class="fr-footer__bottom-link fr-icon-computer-line fr-link--icon-left"
+              @click.prevent="switchDevMode"
+            >
+              <template v-if="debugStore.devMode">Désactiver le mode développeur</template>
+              <template v-else>Activer le mode développeur</template>
             </button>
           </li>
         </ul>

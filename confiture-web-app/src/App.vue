@@ -6,6 +6,7 @@ import GenericModal from "./components/GenericModal.vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
+import { useDebugStore } from "./store";
 import { useAccountStore } from "./store/account";
 
 // Default meta tags
@@ -30,6 +31,9 @@ useHead({
     { name: "twitter:card", content: "summary_large_image" }
   ]
 });
+
+const debugStore = useDebugStore();
+debugStore.initDevModeSwitch();
 
 const accountStore = useAccountStore();
 onMounted(() => {
@@ -109,7 +113,7 @@ function closeFeedbackNotice() {
     </div>
   </div>
 
-  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w">
+  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w" tabindex="-1">
     <RouterView />
   </main>
 
