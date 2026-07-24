@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@floating-ui/dom": "^1.8.0",
-    "@gouvfr/dsfr": "^1.15.1",
+    "@gouvfr/dsfr": "1.14.0",
     "@sentry/vite-plugin": "^5.4.0",
     "@sentry/vue": "^10.68.0",
     "@tiptap/core": "^3.29.0",
