@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { api } from "../api";
 

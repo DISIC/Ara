@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 

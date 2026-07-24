@@ -1,5 +1,5 @@
 import { captureException, Scope } from "@sentry/vue";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
