@@ -318,7 +318,7 @@ export const rawCriteria = CRITERIA.map((c, i) => {
     notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
       ? [
           {
-            title: `Titre de l'erreur`,
+            title: `Titre de l’erreur`,
             comment: `Une erreur ici`,
             quickWin: i % 7 === 0,
             userImpact: [

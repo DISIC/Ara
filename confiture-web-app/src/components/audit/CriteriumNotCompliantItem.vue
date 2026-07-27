@@ -94,7 +94,7 @@ defineExpose({
     ref="titleEditorRef"
     :model-value="item.title"
     type="text"
-    label="Titre de l'erreur"
+    label="Titre de l’erreur"
     :label-sr-only="`${index + 1}`"
     class="fr-mb-2w user-error-label"
     @input="handleItemChange('title', $event.target.value)"
