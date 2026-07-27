@@ -112,11 +112,11 @@ const router = createRouter({
       }
     },
     {
-      path: "/documentation-onglet-transverse",
+      path: "/aide/onglet-transverse",
       name: "transverseDoc",
       component: TransverseDocPage,
       meta: {
-        name: "Mentions légales"
+        name: "Comment utiliser l’onglet « Éléments transverses » ?"
       }
     },
     // Account pages
