@@ -77,71 +77,114 @@ async function cancelEdition() {
 </script>
 
 <template>
-  <div>
-    <template v-if="!editing">
-      <button
-        v-if="tags.length === 0"
-        class="fr-btn fr-btn--sm fr-btn--tertiary"
-        @click="startEdition"
-      >
-        Lister les éléments transverses
-      </button>
-      <div>
-        <ul class="fr-tags-group">
-          <li v-for="(tag, i) in tags" :key="i">
-            <p class="fr-tag">{{ tag }}</p>
-
-            <button
-              v-if="i === tags.length - 1"
-              ref="editButtonRef"
-              class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-fill fr-ml-1v edit-tags-button"
-              @click="startEdition"
-            >
-              Modifier <span class="fr-sr-only">les éléments transverses</span>
-            </button>
-          </li>
-        </ul>
+  <div class="container">
+    <div class="flex-container">
+      <div class="help-link">
+        <RouterLink
+          :to="{
+            name: 'transverseDoc'
+          }"
+          class="fr-btn--icon-left fr-icon-information-line"
+        >
+          Comment utiliser cet onglet&#8239;?
+        </RouterLink>
       </div>
-    </template>
+      <div class="transverse-elements">
+        <template v-if="!editing">
+          <button
+            v-if="tags.length === 0"
+            class="fr-btn fr-btn--sm fr-btn--tertiary"
+            @click="startEdition"
+          >
+            Lister les éléments transverses
+          </button>
+          <div>
+            <ul class="fr-tags-group">
+              <li v-for="(tag, i) in tags" :key="i">
+                <p class="fr-tag">{{ tag }}</p>
 
-    <template v-else>
-      <form @submit.prevent>
-        <TagListField
-          ref="tagListFieldRef"
-          v-model="tags"
-          label="Nom de l’élément transverse"
-          hint="Exemples : En-tête, pied de page, bandeau cookies"
-          class="elements-field"
-          add-label="les éléments transverses"
-        />
-        <ul class="fr-btns-group fr-btns-group--inline-md">
-          <li>
-            <button
-              ref="submitButtonRef"
-              type="button"
-              class="fr-btn"
-              @click="submitForm"
-            >
-              Enregistrer
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="fr-btn fr-btn--tertiary-no-outline"
-              @click="cancelEdition"
-            >
-              Annuler
-            </button>
-          </li>
-        </ul>
-      </form>
-      <hr v-if="editing" class="fr-mt-3w" />
-    </template>
+                <button
+                  v-if="i === tags.length - 1"
+                  ref="editButtonRef"
+                  class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-fill fr-ml-1v edit-tags-button"
+                  @click="startEdition"
+                >
+                  Modifier <span class="fr-sr-only">les éléments transverses</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </template>
+
+        <template v-else>
+          <form @submit.prevent>
+            <TagListField
+              ref="tagListFieldRef"
+              v-model="tags"
+              label="Nom de l’élément transverse"
+              hint="Exemples : En-tête, pied de page, bandeau cookies"
+              class="elements-field"
+              add-label="les éléments transverses"
+            />
+            <ul class="fr-btns-group fr-btns-group--inline-md">
+              <li>
+                <button
+                  ref="submitButtonRef"
+                  type="button"
+                  class="fr-btn"
+                  @click="submitForm"
+                >
+                  Enregistrer
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="fr-btn fr-btn--tertiary-no-outline"
+                  @click="cancelEdition"
+                >
+                  Annuler
+                </button>
+              </li>
+            </ul>
+          </form>
+          <hr v-if="editing" class="fr-mt-3w" />
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  container-type: inline-size;
+}
+
+.flex-container {
+  display: flex;
+  column-gap: 3rem;
+  flex-flow: row-reverse nowrap;
+  justify-content: flex-end;
+
+  @container (width < 48rem) {
+    flex-wrap: wrap;
+    gap: 3rem 0;
+  }
+}
+
+.transverse-elements {
+  flex-basis: 100%;
+}
+
+.help-link {
+  flex-basis: max-content;
+  flex-shrink: 0;
+
+  @container (width < 48rem) {
+    flex-shrink: 1;
+  }
+}
+
 .edit-tags-button {
   vertical-align: top;
 }
