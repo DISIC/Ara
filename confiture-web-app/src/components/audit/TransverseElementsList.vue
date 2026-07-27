@@ -84,7 +84,7 @@ async function cancelEdition() {
           :to="{
             name: 'transverseDoc'
           }"
-          class="fr-btn--icon-left fr-icon-information-line"
+          class="fr-link fr-link--icon-left fr-icon-information-line fr-text--sm"
         >
           Comment utiliser cet onglet&#8239;?
         </RouterLink>
