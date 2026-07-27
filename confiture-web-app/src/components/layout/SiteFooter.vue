@@ -87,25 +87,6 @@ function switchDevMode() {
         </div>
       </div>
     </div>
-    <div v-else class="fr-footer__top">
-      <div class="fr-container">
-        <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
-          <div class="fr-col-12">
-            <p class="fr-footer__top-cat">Aide</p>
-            <ul class="fr-footer__top-list">
-              <li>
-                <RouterLink
-                  class="fr-footer__top-link"
-                  :to="{ name: 'transverseDoc' }"
-                >
-                  Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;?
-                </RouterLink>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="fr-container">
       <div class="fr-footer__body">
         <div class="fr-footer__brand fr-enlarge-link">

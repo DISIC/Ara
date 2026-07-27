@@ -6,8 +6,8 @@ import TopLink from "../../components/ui/TopLink.vue";
 
 <template>
   <PageMeta
-    title="Mentions légales"
-    description="Mentions légales du site ara.numerique.gouv.fr"
+    title="Comment utiliser l’onglet « Éléments transverses » ?"
+    description="Documentation pour expliquer comment utiliser l’onglet « Éléments transverses » ? du site ara.numerique.gouv.fr"
   />
 
   <section class="fr-my-0 fr-mx-auto content">
@@ -20,24 +20,24 @@ import TopLink from "../../components/ui/TopLink.vue";
         d’évaluer chaque critère sur l’ensemble des pages de l’échantillon.</strong>
     </p>
     <nav class="fr-summary fr-mb-4w" role="navigation" aria-labelledby="fr-summary-title">
-      <h2 id="fr-summary-title" class="fr-summary__title">Sommaire</h2>
+      <p id="fr-summary-title" class="fr-summary__title">Sommaire</p>
       <ol>
         <li>
-          <a id="summary-link-1" class="fr-summary__link" href="#anchor-1">C’est quoi un élément transverse&#8239;?</a>
+          <a id="summary-link-1" class="fr-summary__link" href="#c-est-quoi-un-element-transverse">C’est quoi un élément transverse&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#anchor-2">Comment fonctionne l’onglet&#8239;?</a>
+          <a id="summary-link-2" class="fr-summary__link" href="#comment-fonctionne-l-onglet">Comment fonctionne l’onglet&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#anchor-2">Pourquoi cet onglet est optionnel&#8239;?</a>
+          <a id="summary-link-2" class="fr-summary__link" href="#pourquoi-cet-onglet-est-optionnel">Pourquoi cet onglet est optionnel&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#anchor-2">Comment ça compte dans le calcul du taux&#8239;?</a>
+          <a id="summary-link-2" class="fr-summary__link" href="#comment-ca-compte-dans-le-calcul-du-taux">Comment ça compte dans le calcul du taux&#8239;?</a>
         </li>
       </ol>
     </nav>
 
-    <h2>C’est quoi un élément transverse&#8239;?</h2>
+    <h2 id="c-est-quoi-un-element-transverse">C’est quoi un élément transverse&#8239;?</h2>
     <p>Un élément transverses est un élément présent sur
       <strong>plusieurs</strong> ou sur <strong>l’ensemble des pages</strong> de
       l’échantillon. Il peut s’agir par exemple&nbsp;:</p>
@@ -52,13 +52,13 @@ import TopLink from "../../components/ui/TopLink.vue";
     <p>Dans l’onglet «&nbsp;Éléments transverses&nbsp;», cliquez sur le bouton
       «&nbsp;Lister les éléments transverses&nbsp;» situé en haut de l’onglet
       pour afficher le champ permettant de saisir ces éléments.</p>
-    <figure role="group" class="fr-content-media" aria-label="Description / Source">
+    <figure role="group" class="fr-content-media">
       <div class="fr-content-media__img">
         <img width="459" height="168" :src="captureEcran" alt="" />
       </div>
       <figcaption class="fr-content-media__caption">Page «&nbsp;Audit&nbsp;», onglet «&nbsp;Éléments transverses&nbsp;»</figcaption>
     </figure>
-    <h2>Comment fonctionne l’onglet&#8239;?</h2>
+    <h2 id="comment-fonctionne-l-onglet">Comment fonctionne l’onglet&#8239;?</h2>
     <p>Lorsqu’un élément commun à plusieurs pages présente une non-conformité,
       l’onglet <b>«&nbsp;Éléments transverses&nbsp;»</b> permet de renseigner le
       critère concerné <strong>une seule fois</strong>. Il n’est donc
@@ -69,7 +69,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       <b>«&nbsp;Éléments transverses&nbsp;»</b>. Si une page présente une autre
       non-conformité liée au même critère dans son contenu, celle-ci doit être
       relevée sur l’onglet de la page concernée.</p>
-    <h2>Pourquoi c’est optionnel de le remplir&#8239;?</h2>
+    <h2 id="pourquoi-cet-onglet-est-optionnel">Pourquoi c’est optionnel de le remplir&#8239;?</h2>
     <p>L’utilisation de cet onglet est optionnelle pour plusieurs raisons&nbsp;:</p>
     <ul>
       <li>Cet onglet concerne <strong>uniquement les critères liés aux éléments
@@ -81,11 +81,11 @@ import TopLink from "../../components/ui/TopLink.vue";
         renseigner les non-conformités communes à plusieurs pages d’une autre
         façon. Par exemple, directement sur chacune des pages concernées.</li>
     </ul>
-    <h2>Comment ça compte dans le calcul du taux&#8239;?</h2>
+    <h2 id="comment-ca-compte-dans-le-calcul-du-taux">Comment ça compte dans le calcul du taux&#8239;?</h2>
     <p>Les résultats de cet onglet sont bien pris en compte dans le calcul du
       taux global de conformité.</p>
     <p>Par exemple, si un critère est <b>Conforme</b> sur toutes les pages de
-      l'échantillon mais <b>Non conforme</b> dans l’onglet
+      l’échantillon mais <b>Non conforme</b> dans l’onglet
       <b>«&nbsp;Éléments transverses&nbsp;»</b>, il sera considéré comme
       <b>Non conforme</b> dans le calcul du taux global.</p>
     <div class="top-link">
