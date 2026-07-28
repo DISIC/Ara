@@ -224,6 +224,7 @@ const updateResultNotCompliantItemDebounce = (payload: {
     debounced = debounce(updateResultNotCompliantItem, 500);
     debouncedUpdaters.set(key, debounced);
   }
+  store.abortRequest();
   debounced(payload);
 };
 
@@ -234,7 +235,8 @@ function onUpdateNotCompliantItemClick(
   if (debounce) {
     updateResultNotCompliantItemDebounce({ patch });
   } else {
-    updateResultNotCompliantItem({ patch }); }
+    updateResultNotCompliantItem({ patch });
+  }
 }
 </script>
 
