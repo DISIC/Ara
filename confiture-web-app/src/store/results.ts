@@ -596,6 +596,8 @@ export const useResultsStore = defineStore("results", {
       notCompliantItemId: number,
       notCompliantItem: UpdateNotCompliantItemData
     ): Promise<NotCompliantItem | void> {
+      this.increaseCurrentRequestCount();
+
       const updatedItem = await api
         .patch(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`, {
           json: notCompliantItem,
@@ -604,6 +606,8 @@ export const useResultsStore = defineStore("results", {
           if (error.name === "AbortError") {
             return;
           }
+        }).finally(() => {
+          this.decreaseCurrentRequestCount();
         });
 
       if (updatedItem) {
