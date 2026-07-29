@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 29/07/2026
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Ajouter les actions liées à un audit dans la page "Tableau de bord d'un audit  ([#1557](https://github.com/DISIC/Ara/pull/1557))
+
 ### 24/07/2026
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
