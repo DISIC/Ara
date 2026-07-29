@@ -92,11 +92,11 @@ function closeFeedbackNotice() {
 
   <SiteHeader />
 
-  <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
+  <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info" role="region" aria-label="Message d'information">
     <div class="fr-container">
       <div class="fr-notice__body">
         <p>
-          <span class="fr-notice__title">
+          <span>
             Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas
             à nous faire part de vos retours depuis ce
             <RouterLink :to="{ name: 'feedback' }" target="_blank">
