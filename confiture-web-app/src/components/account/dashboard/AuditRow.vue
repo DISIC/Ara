@@ -318,7 +318,7 @@ defineExpose({
               <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
             </button>
             <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
-              <span class="fr-icon-check-line fr-m-0">Lien du rapport copié</span>
+              <span class="fr-icon-check-line fr-m-0 fr-text--bold">Lien du rapport copié</span>
             </div>
           </li>
 
@@ -332,7 +332,7 @@ defineExpose({
               Copier le lien de la déclaration
             </button>
             <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
-              <span class="fr-icon-check-line fr-m-0">Lien de la déclaration copié</span>
+              <span class="fr-icon-check-line fr-m-0 fr-text--bold">Lien de la déclaration copié</span>
             </div>
           </li>
 
