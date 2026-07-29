@@ -102,14 +102,18 @@ img {
 
 .content {
   max-width: 49.5rem;
-}
 
-.content p + ul {
-  margin-top: 0.75rem;
-}
+  p + ul {
+    margin-top: 0.75rem;
+  }
 
-.content ul {
-  margin: var(--text-spacing);
+  ul {
+    margin: var(--text-spacing);
+  }
+
+  h2 {
+    margin-top: 2.5rem;
+  }
 }
 
 .top-link {
