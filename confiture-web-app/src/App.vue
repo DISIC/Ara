@@ -92,29 +92,31 @@ function closeFeedbackNotice() {
 
   <SiteHeader />
 
-  <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info" role="region" aria-label="Message d'information">
-    <div class="fr-container">
-      <div class="fr-notice__body">
-        <p>
-          <span>
-            Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas
-            à nous faire part de vos retours depuis ce
-            <RouterLink :to="{ name: 'feedback' }" target="_blank">
-              court formulaire
-              <span class="fr-sr-only">(nouvelle fenêtre)</span></RouterLink>.
-          </span>
-        </p>
-        <button
-          title="Masquer le message"
-          class="fr-btn--close fr-btn"
-          @click="closeFeedbackNotice"
-        >Masquer le message</button>
+  <main id="main" role="main" tabindex="-1">
+    <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
+      <div class="fr-container">
+        <div class="fr-notice__body">
+          <p>
+            <span class="fr-notice__title">
+              Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas
+              à nous faire part de vos retours depuis ce
+              <RouterLink :to="{ name: 'feedback' }" target="_blank">
+                court formulaire
+                <span class="fr-sr-only">(nouvelle fenêtre)</span></RouterLink>.
+            </span>
+          </p>
+          <button
+            title="Masquer le message"
+            class="fr-btn--close fr-btn"
+            @click="closeFeedbackNotice"
+          >Masquer le message</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w" tabindex="-1">
-    <RouterView />
+    <div class="container fr-container fr-mb-12w fr-pt-5w">
+      <RouterView />
+    </div>
   </main>
 
   <SiteFooter />
@@ -127,7 +129,7 @@ function closeFeedbackNotice() {
   scroll-margin: 2rem;
 }
 
-main {
+.container {
   &:has(.top-link) {
     margin-bottom: 4.5rem !important;
   }
