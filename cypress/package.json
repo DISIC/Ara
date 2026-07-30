@@ -2,6 +2,9 @@
   "name": "cypress-e2e",
   "version": "0.0.1",
   "private": true,
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
     "open": "cypress open",
     "run": "cypress run",
