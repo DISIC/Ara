@@ -72,6 +72,9 @@ interface ResultsStoreState {
   lastRequestFailed: boolean;
 
   lastUpdatedTopic: number;
+
+  // FIXME: refactor the way all requests are done
+  abortController: AbortController | null;
 }
 
 export const useResultsStore = defineStore("results", {
@@ -84,7 +87,8 @@ export const useResultsStore = defineStore("results", {
       currentRequestCount: 0,
       lastRequestSuccessEnd: null,
       lastRequestFailed: false,
-      lastUpdatedTopic: 1
+      lastUpdatedTopic: 1,
+      abortController: null
     };
   },
 
@@ -591,17 +595,27 @@ export const useResultsStore = defineStore("results", {
       criterium: number,
       notCompliantItemId: number,
       notCompliantItem: UpdateNotCompliantItemData
-    ): Promise<NotCompliantItem> {
+    ): Promise<NotCompliantItem | void> {
+      this.increaseCurrentRequestCount();
+
       const updatedItem = await api
         .patch(`/api/audits/${uniqueId}/pages/${slug}/results/${topic}.${criterium}/not-compliant-items/${notCompliantItemId}`, {
-          json: notCompliantItem
-        })
-        .json<NotCompliantItem>();
+          json: notCompliantItem,
+          signal: this.abortController?.signal
+        }).json<NotCompliantItem>().catch((error) => {
+          if (error.name === "AbortError") {
+            return;
+          }
+        }).finally(() => {
+          this.decreaseCurrentRequestCount();
+        });
 
+      if (updatedItem) {
       // update result in store
-      const idx = this.data?.[pageId][topic][criterium].notCompliantItems.findIndex(item => item.id === notCompliantItemId) ?? -1;
-      if (idx !== -1) {
-        this.data?.[pageId][topic][criterium].notCompliantItems.splice(idx, 1, updatedItem);
+        const idx = this.data?.[pageId][topic][criterium].notCompliantItems.findIndex(item => item.id === notCompliantItemId) ?? -1;
+        if (idx !== -1) {
+          this.data?.[pageId][topic][criterium].notCompliantItems.splice(idx, 1, updatedItem);
+        }
       }
 
       return updatedItem;
@@ -624,6 +638,11 @@ export const useResultsStore = defineStore("results", {
       if (idx !== -1) {
         this.data?.[pageId][topic][criterium].notCompliantItems.splice(idx, 1);
       }
+    },
+
+    abortRequest() {
+      this.abortController?.abort();
+      this.abortController = new AbortController();
     }
   }
 });

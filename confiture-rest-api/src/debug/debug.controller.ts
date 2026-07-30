@@ -146,7 +146,7 @@ export class DebugController {
                   notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
                     ? {
                         create: {
-                          title: `Titre de l'erreur`,
+                          title: `Titre de l’erreur`,
                           comment: `Une erreur ici`,
                           quickWin: i % 7 === 0,
                           userImpact: [
