@@ -2,7 +2,8 @@
   "private": true,
   "workspaces": [
     "confiture-rest-api",
-    "confiture-web-app"
+    "confiture-web-app",
+    "cypress"
   ],
   "resolutions": {
     "prosemirror-view": "^1.41.5",
@@ -12,9 +13,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
-    "axe-core": "^4.12.1",
-    "cypress": "^15.19.0",
-    "cypress-axe": "^1.7.0",
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.2.0",
@@ -34,9 +32,9 @@
     "lint:fix": "eslint --fix .",
     "lint:styles": "stylelint confiture-web-app/src/**/*.{css,vue}",
     "lint:styles:fix": "stylelint --fix confiture-web-app/src/**/*.{css,vue}",
-    "tests:open": "yarn cypress open",
-    "tests:run": "yarn cypress run",
-    "tests:show-all-ts-errors": "tsc --project cypress/tsconfig.json --noEmit",
+    "tests:open": "yarn workspace cypress-e2e run open",
+    "tests:run": "yarn workspace cypress-e2e run run",
+    "tests:show-all-ts-errors": "yarn workspace cypress-e2e run show-all-ts-errors",
     "build": "bash scripts/build.sh",
     "copytypes": "yarn workspace confiture-rest-api run generate-api-types && cp ./confiture-rest-api/confiture-api.ts ./confiture-web-app/src/types",
     "prepare": "yarn simple-git-hooks",
