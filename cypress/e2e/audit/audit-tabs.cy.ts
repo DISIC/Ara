@@ -2,7 +2,7 @@ import { slugify } from "../../../confiture-web-app/src/utils";
 import * as auditJson from "../../fixtures/audit.json";
 import { testTabReachByURL, testTabsWithPrevNext } from "../common";
 
-describe("Audit tabs management", () => {
+describe("Audit tabs", () => {
   it("User can display the audit at a given tab directly thanks to a URL slug", () => {
     cy.createTestAudit().then(({ editId }) => {
       const slug = slugify(auditJson.pages[2].name);

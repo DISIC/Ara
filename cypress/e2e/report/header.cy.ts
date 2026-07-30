@@ -1,7 +1,7 @@
 import * as auditJson from "../../fixtures/audit.json";
 import * as statementJson from "../../fixtures/statement.json";
 
-describe("Header report", () => {
+describe("Report header", () => {
   it("User can see audit in progress banner for in progress audit", () => {
     cy.createTestAudit().then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);

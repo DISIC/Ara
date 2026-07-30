@@ -2,7 +2,7 @@ import { TabSlug } from "../../../confiture-web-app/src/enums";
 import { testTabsWithPrevNext, testTabReachByURL } from "../common";
 
 // FIXME: weird behaviour with page reloads (caused by "fake tabs"?)
-describe("Tabs management", () => {
+describe("Tabs", () => {
   it("User can’t see improvements tab if there are no improvements with comment", () => {
     cy.createTestAudit({
       isComplete: true,

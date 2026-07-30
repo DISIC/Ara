@@ -1,4 +1,4 @@
-describe("Filter management", () => {
+describe("Filters", () => {
   it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);

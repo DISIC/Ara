@@ -1,4 +1,4 @@
-describe("Tranverse tab management", () => {
+describe("Tranverse tab", () => {
   it("User can see transverse status and comment from other pages", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);

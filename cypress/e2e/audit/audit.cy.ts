@@ -1,6 +1,6 @@
 import * as auditJson from "../../fixtures/audit.json";
 
-describe("Audit management", () => {
+describe("Audit", () => {
   it("User can create an audit", () => {
     function fillPageField(pageIndex: number, field: string, content: string) {
       cy.contains(`Page ${pageIndex}`)

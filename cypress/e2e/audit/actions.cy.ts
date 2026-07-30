@@ -1,6 +1,6 @@
 import { TabSlug } from "../../../confiture-web-app/src/enums";
 
-describe("Actions management", () => {
+describe("Actions", () => {
   it("User can go to settings page from audit", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);

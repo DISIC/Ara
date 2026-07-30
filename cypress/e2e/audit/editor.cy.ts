@@ -1,4 +1,4 @@
-describe("Tiptap management", () => {
+describe("Editor", () => {
   it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
     cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");

@@ -1,4 +1,4 @@
-describe("Notes management", () => {
+describe("Notes", () => {
   it("User can update notes", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
