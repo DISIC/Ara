@@ -309,31 +309,35 @@ defineExpose({
 
           <li class="dropdown-item">
             <button
-              v-if="!isReportCopied"
               data-keep-open
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              aria-live="polite"
               @click="copyReportLink(audit.consultUniqueId)"
+              @disabled="isReportCopied"
             >
-              Copier le lien du rapport
-              <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
+              <p v-if="!isReportCopied" class="fr-btn--icon-left fr-icon-link">
+                Copier le lien du rapport
+                <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
+              </p>
+              <template v-else>
+                <span class="fr-btn--icon-left fr-icon-check-line fr-text--bold copy-link-success">Lien du rapport copié</span>
+              </template>
             </button>
-            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
-              <span class="fr-icon-check-line fr-m-0 fr-text--bold">Lien du rapport copié</span>
-            </div>
           </li>
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
             <button
-              v-if="!isStatementCopied"
               data-keep-open
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
+              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
+              aria-live="polite"
               @click="copyStatementLink(audit.consultUniqueId)"
+              @disabled="isStatementCopied"
             >
-              Copier le lien de la déclaration
+              <span v-if="!isStatementCopied" class="fr-btn--icon-left fr-icon-link">
+                Copier le lien de la déclaration
+              </span>
+              <span v-else class="fr-btn--icon-left fr-icon-check-line fr-text--bold copy-link-success">Lien de la déclaration copié</span>
             </button>
-            <div v-else class="copy-link" aria-live="polite" role="alert" tabindex="0">
-              <span class="fr-icon-check-line fr-m-0 fr-text--bold">Lien de la déclaration copié</span>
-            </div>
           </li>
 
           <li class="dropdown-item dropdown-item--with-meta">
@@ -415,20 +419,7 @@ defineExpose({
   width: initial;
 }
 
-.copy-link {
-  min-height: 2.5rem;
-  padding: 0.5rem 1rem;
-
-  span {
-    color: var(--text-default-success);
-    line-height: 1.5rem;
-
-    &::before {
-      --icon-size: 1rem;
-
-      margin-left: -0.125rem;
-      margin-right: 0.5rem;
-    }
-  }
+.copy-link-success {
+  color: var(--text-default-success);
 }
 </style>
