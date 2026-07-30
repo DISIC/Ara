@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
-
+echo "🚧 BUILDING... Cleaning cache..."
+yarn cache clean
+echo "🚧 BUILDING... Install..."
+yarn install
 echo "🚧 BUILDING... Generating API types..."
 yarn copytypes
 
