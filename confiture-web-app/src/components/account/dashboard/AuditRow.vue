@@ -18,6 +18,8 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
+import CopyButton from "../../ui/CopyButton.vue";
+
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -85,29 +87,6 @@ const csvExportFilename = computed(() => {
   }
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
-
-const isReportCopied = ref(false);
-const isStatementCopied = ref(false);
-
-function copyReportLink(uniqueId: string) {
-  const url = `${window.location.origin}/rapport/${uniqueId}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    isReportCopied.value = true;
-
-    setTimeout(() => isReportCopied.value = false, 3500);
-  });
-}
-
-function copyStatementLink(uniqueId: string) {
-  const url = `${window.location.origin}/declaration/${uniqueId}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    isStatementCopied.value = true;
-
-    setTimeout(() => isStatementCopied.value = false, 3500);
-  });
-}
 
 const auditNameRef = useTemplateRef("auditNameRef");
 
@@ -308,36 +287,33 @@ defineExpose({
           <li aria-hidden="true" class="dropdown-separator" />
 
           <li class="dropdown-item">
-            <button
-              data-keep-open
-              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              aria-live="polite"
-              @click="copyReportLink(audit.consultUniqueId)"
-              @disabled="isReportCopied"
-            >
-              <p v-if="!isReportCopied" class="fr-btn--icon-left fr-icon-link">
-                Copier le lien du rapport
-                <span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span>
-              </p>
-              <template v-else>
-                <span class="fr-btn--icon-left fr-icon-check-line fr-text--bold copy-link-success">Lien du rapport copié</span>
-              </template>
-            </button>
+            <CopyButton
+              :dropdown="true"
+              :no-outline="true"
+              :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
+              label="Copier le lien du rapport"
+              success-label="Lien du rapport copié"
+              icon="fr-icon-link"
+              :content-to-copy="{
+                name: 'report',
+                params: { uniqueId: audit.consultUniqueId }
+              }"
+            />
           </li>
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
-            <button
-              data-keep-open
-              class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              aria-live="polite"
-              @click="copyStatementLink(audit.consultUniqueId)"
-              @disabled="isStatementCopied"
-            >
-              <span v-if="!isStatementCopied" class="fr-btn--icon-left fr-icon-link">
-                Copier le lien de la déclaration
-              </span>
-              <span v-else class="fr-btn--icon-left fr-icon-check-line fr-text--bold copy-link-success">Lien de la déclaration copié</span>
-            </button>
+            <CopyButton
+              :dropdown="true"
+              :no-outline="true"
+              :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
+              label="Copier le lien de la déclaration"
+              success-label="Lien de la déclaration copié"
+              icon="fr-icon-link"
+              :content-to-copy="{
+                name: 'a11y-statement',
+                params: { uniqueId: audit.consultUniqueId }
+              }"
+            />
           </li>
 
           <li class="dropdown-item dropdown-item--with-meta">
@@ -417,9 +393,5 @@ defineExpose({
 .audit-main-action {
   justify-content: center;
   width: initial;
-}
-
-.copy-link-success {
-  color: var(--text-default-success);
 }
 </style>
