@@ -9,7 +9,8 @@
     "prosemirror-view": "^1.41.5",
     "prosemirror-model": "^1.24.1",
     "prosemirror-state": "^1.4.3",
-    "prosemirror-transform": "^1.10.4"
+    "prosemirror-transform": "^1.10.4",
+    "@types/mjml-core": "4.15.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
