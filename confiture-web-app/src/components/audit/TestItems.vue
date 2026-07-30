@@ -8,13 +8,16 @@ const auditId = useRouteParams("auditId");
 const pageSlug = useRouteParams("pageSlug");
 const criterion = useRouteParams("criterion");
 
+// if any of the params changes, the data is invalidated and a new fetch is triggered
 const testItems = useTestItems([auditId, pageSlug, criterion], {
   onCreated(createdItem) {
     // move focus to the title field of the newly created item
   },
   onDeleted(deletedItem) {
     // move focus the previous item in the list
-  }
+  },
+  // show a confirm modal before deleting an item
+  confirmDelete: true
 });
 </script>
 
@@ -28,15 +31,12 @@ const testItems = useTestItems([auditId, pageSlug, criterion], {
     <ul>
       <li v-for="item, in testItems.data.value" :key="item.id">
 
-        <!-- Update (TODO: dont plug directly to item ?) -->
         <input
-          v-model="item.title"
-          type="text"
+          :value="item.title"
           @input="testItems.update(item.id, { title: $event.target?.value })"
         />
-        <input
-          v-model="item.description"
-          type="text"
+        <textarea
+          :value="item.description"
           @input="testItems.update(item.id, { description: $event.target?.value })"
         />
 
