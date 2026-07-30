@@ -13,11 +13,14 @@ const notify = useNotifications();
 const router = useRouter();
 const currentRoute = useRoute();
 
-function handleDisconnectClick() {
+async function handleDisconnectClick() {
   accountStore.logout();
   if (currentRoute.meta.authRequired) {
     router.push({ name: "login" });
+  } else {
+    router.push({ name: "home" });
   }
+
   notify("success", undefined, "Vous avez été deconnecté avec succès.");
 }
 

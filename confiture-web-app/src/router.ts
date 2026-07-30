@@ -233,6 +233,7 @@ const router = createRouter({
         name: "Mon audit"
       },
       props: true
+
     },
     {
       path: "/audits/:uniqueId/declaration",

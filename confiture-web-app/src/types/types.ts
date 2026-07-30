@@ -39,6 +39,11 @@ export enum AuditStatus {
   PUBLISHABLE = "PUBLISHABLE"
 }
 
+interface Auditor {
+  username: string;
+  isVerified: boolean;
+}
+
 /** An audit object as returned by the API. */
 export interface Audit {
   id: number;
@@ -48,6 +53,7 @@ export interface Audit {
   creationDate: string | null;
   publicationDate: string | null;
   editionDate: string | null;
+  isPublic: boolean;
 
   // Audit creation
   auditType: AuditType;

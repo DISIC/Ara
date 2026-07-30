@@ -7,6 +7,8 @@ import {
   AccountDeletionResponse,
   UpdateProfileRequestData
 } from "../types/account";
+import { useAuditStore } from "./audit";
+import { useResultsStore } from "./results";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -40,7 +42,7 @@ export const useAccountStore = defineStore("account", {
   },
 
   getters: {
-    account: (state) => {
+    account(state) {
       if (!state.authToken) {
         return null;
       }
@@ -50,6 +52,11 @@ export const useAccountStore = defineStore("account", {
         email: payload.email,
         name: payload.name
       };
+    },
+
+    isCurrentAuditOwner(): boolean {
+      const auditStore = useAuditStore();
+      return this.account?.email === auditStore.currentAudit?.auditor.username;
     }
   },
 
@@ -96,6 +103,8 @@ export const useAccountStore = defineStore("account", {
 
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      useAuditStore().$reset();
+      useResultsStore().$reset();
       this.$reset();
     },
 

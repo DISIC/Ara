@@ -3,13 +3,19 @@ import { marked } from "marked";
 import { useRoute } from "vue-router";
 
 import AuditNotFoundImage from "../../assets/images/audit-not-found.svg";
+import AuditRestrictedAccessImage from "../../assets/images/restricted-access.svg";
 import GenericErrorImage from "../../assets/images/server-error.svg";
 import { history } from "../../router";
 
+// FIXME: refactor this page
+
 const statusCode = (history.state.errorStatus ?? 404) as number;
+const errorPayload = history.state.errorPayload as any;
 
 const errorTitle =
   {
+    401: "Accès restreint",
+    403: "Accès restreint",
     404: "Page non trouvée",
     408: "La connexion a expiré",
     410: "Audit supprimé",
@@ -17,8 +23,10 @@ const errorTitle =
     503: "Service indisponible"
   }[statusCode] ?? "Erreur inconnue";
 
-const notCompliantComment =
+const errorDescription =
   {
+    401: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
+    403: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",
     410: "Désolé, l’audit que vous cherchez a été supprimé.",
@@ -57,6 +65,12 @@ Si vous avez besoin d’une aide, nous contacter par e-mail à l'adresse suivant
 Si vous avez besoin d’une aide, merci de nous contacter par e-mail à l'adresse suivante : **ara@design.numerique.gouv.fr**.
   `;
 
+const errorImage = {
+  401: AuditRestrictedAccessImage,
+  403: AuditRestrictedAccessImage,
+  410: AuditNotFoundImage
+}[statusCode] ?? GenericErrorImage;
+
 const route = useRoute();
 </script>
 
@@ -64,18 +78,16 @@ const route = useRoute();
   <div class="fr-grid-row fr-mt-7w fr-mt-md-15w">
     <div class="fr-col-12 fr-col-md-6 fr-mb-7w fr-mb-md-0">
       <h1>{{ errorTitle }}</h1>
-      <p class="fr-text--sm">Erreur {{ statusCode }}</p>
-      <p class="fr-text--xl fr-mb-5w">
-        {{ notCompliantComment }}
-      </p>
+      <p v-if="![401, 403].includes(statusCode)" class="fr-text--sm">Erreur {{ statusCode }}</p>
+      <p class="fr-text--xl fr-mb-5w" v-html="errorDescription" />
       <div
-        v-if="statusCode !== 410"
+        v-if="![401, 403, 410].includes(statusCode)"
         class="fr-text--sm"
         v-html="marked.parse(errorInstruction, { gfm: false })"
-      ></div>
+      />
       <div>
         <RouterLink
-          v-if="[404, 410].includes(statusCode)"
+          v-if="[401, 403, 404, 410].includes(statusCode)"
           class="fr-btn fr-mr-2w"
           :to="{ name: 'home' }"
         >
@@ -91,10 +103,7 @@ const route = useRoute();
       </div>
     </div>
     <div class="fr-col-12 fr-col-md-3 fr-col-offset-md-1">
-      <img
-        :src="statusCode === 410 ? AuditNotFoundImage : GenericErrorImage"
-        alt=""
-      />
+      <img :src="errorImage" alt="" />
     </div>
   </div>
 </template>

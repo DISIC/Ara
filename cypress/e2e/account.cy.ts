@@ -252,7 +252,7 @@ describe("Account", () => {
 
     it("User can delete their account", () => {
       cy.createTestAccount({ login: true }).then(({ username, password }) => {
-        cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
+        cy.createTestAudit({ auditorEmail: username, isPublic: true }).then(({ editId }) => {
           cy.visit("http://localhost:3000/compte/parametres");
 
           // Delete account form
@@ -285,10 +285,11 @@ describe("Account", () => {
     // Create an logged in account and 4 associated audits (1 completed, 1 pristine and 2 in progress)
     beforeEach(() => {
       cy.createTestAccount({ login: true }).then(({ username }) => {
-        cy.createTestAudit({ auditorEmail: username, isComplete: true });
+        cy.createTestAudit({ auditorEmail: username, isComplete: true }).as("finished-audit");
         cy.createTestAudit({ auditorEmail: username, isPristine: true });
         cy.createTestAudit({ auditorEmail: username });
-        cy.createTestAudit({ auditorEmail: username }).as("audit");
+        cy.createTestAudit({ auditorEmail: username, isPublic: true }).as("transferAudit");
+        cy.createTestAudit({ auditorEmail: username }).as("privacyAudit");
         cy.visit("http://localhost:3000/compte");
       });
     });
@@ -405,22 +406,22 @@ describe("Account", () => {
     });
 
     it("User can duplicate audit", () => {
-      cy.contains("button", "Actions").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
       cy.contains("button", "Dupliquer l’audit").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
       cy.contains("Audit « Audit de mon petit site (2) » créé", { timeout: 50_000 });
-      cy.contains("button", "Accéder à l’audit").click();
+      cy.contains(".fr-alert button", "Accéder à l’audit").click();
 
       cy.contains("h1 + p", "Audit de mon petit site (2)");
     });
 
     it("User can copy report link", () => {
-      cy.contains("button", "Actions").click();
+      cy.get(".fr-badge--green-emeraude ~ .audits-list button[aria-haspopup]").click();
       cy.contains("button", "Copier le lien du rapport").click();
-      cy.get("@audit").then((audit) => {
+      cy.get("@finished-audit").then((audit) => {
         cy.assertClipboardValue(
           // @ts-ignore
           // TODO: remove `@ts-ignore` when the following issue is fixed:
@@ -436,14 +437,14 @@ describe("Account", () => {
     it("User can download audit", () => {
       cy.exec("rm -rf cypress/downloads");
 
-      cy.contains("Actions").click();
-      cy.contains("Télécharger l’audit").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
+      cy.contains("Télécharger la grille d’audit").click();
 
       cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
     });
 
     it("User can delete audit", () => {
-      cy.contains("Actions").click();
+      cy.contains("button[aria-haspopup]", "Actions").click();
       cy.contains("Supprimer l’audit").click();
 
       cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
@@ -458,16 +459,12 @@ describe("Account", () => {
       cy.contains("button", "Transférer l’audit").click();
 
       // Fill form
-      cy.getByLabel("Adresse e-mail du destinataire")
-        .clear()
-        .type(newEmail);
-      cy.getByLabel("Confirmer e-mail du destinataire")
-        .clear()
-        .type(newEmail);
+      cy.getByLabel("Adresse e-mail du destinataire").type(newEmail);
+      cy.getByLabel("Confirmer e-mail du destinataire").type(newEmail);
       cy.contains("button[type='submit']", "Transférer l’audit").click();
 
-      // Assert audit is gone (3 audits left)
-      cy.get(".audits-list .audit-name").should("have.length", 3);
+      // Assert audit is gone (4 audits left)
+      cy.get(".audits-list .audit-name").should("have.length", 4);
       cy.contains("a", "Audit de mon petit site").should("be.focused");
       cy.contains("Audit « Audit de mon petit site » transféré");
       cy.contains(`Lien d’accès envoyé à ${newEmail}`);
@@ -475,12 +472,40 @@ describe("Account", () => {
       // Logout and check auditorEmail in audit parameters
       cy.get(".account-header button[aria-expanded]").click();
       cy.contains("button", "Me déconnecter").click();
-      cy.get("@audit").then(audit => {
+      cy.get("@transferAudit").then(audit => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
         cy.visit(`http://localhost:3000/audits/${audit.editId}/parametres`);
         cy.getByLabel("Adresse e-mail").should("have.value", newEmail);
+      });
+    });
+
+    it("User can toggle audit privacy", () => {
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Partager").click();
+      cy.contains("label", "Rendre l’audit public").click();
+
+      cy.contains("Toute personne disposant du lien peut accéder à l’audit et le modifier.");
+      cy.contains("La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.");
+      cy.contains("dialog.fr-modal--opened button", "Fermer").click();
+
+      cy.get(".fr-badge--blue-cumulus").first().contains("Public");
+    });
+
+    it("User can copy audit link in share modal", () => {
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Partager").click();
+      cy.contains("label", "Rendre l’audit public").click();
+
+      cy.contains("button", "Copier le lien de partage").click();
+      cy.get("@privacyAudit").then((audit) => {
+        cy.assertClipboardValue(
+          // @ts-ignore
+          // TODO remove `@ts-ignore` when the following issue is fixed:
+          // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
+          `http://localhost:3000/audits/${audit.editId}/generation`
+        );
       });
     });
   });

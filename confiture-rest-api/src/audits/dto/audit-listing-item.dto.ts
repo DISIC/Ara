@@ -14,4 +14,5 @@ export class AuditListingItemDto {
   estimatedCsvSize: number;
   statementIsPublished: boolean;
   progress: number;
+  isPublic: boolean;
 }
