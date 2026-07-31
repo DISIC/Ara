@@ -18,6 +18,8 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
+import CopyButton from "../../ui/CopyButton.vue";
+
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -52,7 +54,7 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModal.value?.hide();
 
-      notify("success", undefined, `Audit « ${name} » créé`, {
+      notify("success", undefined, `Audit «&nbsp;${name}&nbsp;» créé`, {
         action: {
           label: "Accéder à l’audit",
           cb() {
@@ -86,30 +88,6 @@ const csvExportFilename = computed(() => {
   return `audit-${slugify(props.audit.procedureName)}.csv`;
 });
 
-function copyReportLink(uniqueId: string) {
-  const url = `${window.location.origin}/rapport/${uniqueId}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers le rapport a bien été copié dans le presse-papier.`
-    );
-  });
-}
-
-function copyStatementLink(uniqueId: string) {
-  const url = `${window.location.origin}/declaration/${uniqueId}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    notify(
-      "success",
-      undefined,
-      `Le lien vers la déclaration d’accessibilité a bien été copié dans le presse-papier.`
-    );
-  });
-}
-
 const auditNameRef = useTemplateRef("auditNameRef");
 
 defineExpose({
@@ -136,7 +114,7 @@ defineExpose({
 
     <!-- Creation date -->
     <p class="fr-mb-0">
-      <span class="fr-sr-only-md">Date de création : </span>
+      <span class="fr-sr-only-md">Date de création&nbsp;: </span>
       <time v-if="audit.creationDate" :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -171,7 +149,7 @@ defineExpose({
           {{
             isInProgress || isNotStarted
               ? "Audit en cours"
-              : `${audit.complianceLevel} %`
+              : `${audit.complianceLevel}&nbsp;%`
           }}
         </p>
         <p
@@ -232,7 +210,7 @@ defineExpose({
       }}
       <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
         {{ audit.procedureName }}</span>
-      <span v-else class="fr-sr-only">pour l’audit {{ audit.procedureName }}</span>
+      <span v-else class="fr-sr-only">&nbsp;pour l’audit {{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Secondary action -->
@@ -268,7 +246,7 @@ defineExpose({
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >Consulter le rapport
-                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
+                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -281,7 +259,7 @@ defineExpose({
               @click="duplicateModal?.show()"
             >
               Dupliquer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -290,7 +268,7 @@ defineExpose({
               @click="$emit('transfer')"
             >
               Transférer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -309,22 +287,33 @@ defineExpose({
           <li aria-hidden="true" class="dropdown-separator" />
 
           <li class="dropdown-item">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyReportLink(audit.consultUniqueId)"
-            >
-              Copier le lien du rapport
-              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
-            </button>
+            <CopyButton
+              data-keep-open
+              :no-outline="true"
+              :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
+              label="Copier le lien du rapport"
+              success-label="Lien du rapport copié"
+              icon="fr-icon-link"
+              :content-to-copy="{
+                name: 'report',
+                params: { uniqueId: audit.consultUniqueId }
+              }"
+            />
           </li>
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-link fr-m-0"
-              @click="copyStatementLink(audit.consultUniqueId)"
-            >
-              Copier le lien de la déclaration
-            </button>
+            <CopyButton
+              data-keep-open
+              :no-outline="true"
+              :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
+              label="Copier le lien de la déclaration"
+              success-label="Lien de la déclaration copié"
+              icon="fr-icon-link"
+              :content-to-copy="{
+                name: 'a11y-statement',
+                params: { uniqueId: audit.consultUniqueId }
+              }"
+            />
           </li>
 
           <li class="dropdown-item dropdown-item--with-meta">
@@ -334,7 +323,7 @@ defineExpose({
               :download="csvExportFilename"
             >
               Télécharger l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}&nbsp;</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -347,7 +336,7 @@ defineExpose({
               @click="$emit('delete')"
             >
               Supprimer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
