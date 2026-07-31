@@ -1,7 +1,7 @@
 describe("Editor", () => {
   it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
-    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
@@ -76,7 +76,7 @@ describe("Editor", () => {
   });
 
   it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
-    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/*/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
