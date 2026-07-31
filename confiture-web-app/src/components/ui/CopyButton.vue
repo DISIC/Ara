@@ -17,7 +17,6 @@ const props = withDefaults(defineProps<{
   contentToCopy: string | RouteLocationRaw | (() => string);
   constantWidth?: boolean;
   noOutline?: boolean;
-  dropdown?: boolean;
 }>(), {
   label: "Copier le lien de partage",
   successLabel: "Lien copié"
@@ -59,7 +58,6 @@ function copyContentToClipboard() {
       'copy-button--within-btn-group fr-mb-0': !constantWidth
     }]"
     aria-live="polite"
-    :data-keep-open="dropdown ? true : undefined"
     @click="copyContentToClipboard"
   >
     <template v-if="!constantWidth">
@@ -77,7 +75,7 @@ function copyContentToClipboard() {
         </template>
       </span>
     </span>
-    <span v-if="hiddenLabelSuffix" class="fr-sr-only"> {{ hiddenLabelSuffix }}</span>
+    <span v-if="hiddenLabelSuffix" class="fr-sr-only">&nbsp;{{ hiddenLabelSuffix }}</span>
   </button>
 </template>
 

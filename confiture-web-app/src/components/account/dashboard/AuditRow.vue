@@ -54,7 +54,7 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModal.value?.hide();
 
-      notify("success", undefined, `Audit « ${name} » créé`, {
+      notify("success", undefined, `Audit «&nbsp;${name}&nbsp;» créé`, {
         action: {
           label: "Accéder à l’audit",
           cb() {
@@ -114,7 +114,7 @@ defineExpose({
 
     <!-- Creation date -->
     <p class="fr-mb-0">
-      <span class="fr-sr-only-md">Date de création : </span>
+      <span class="fr-sr-only-md">Date de création&nbsp;: </span>
       <time v-if="audit.creationDate" :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -149,7 +149,7 @@ defineExpose({
           {{
             isInProgress || isNotStarted
               ? "Audit en cours"
-              : `${audit.complianceLevel} %`
+              : `${audit.complianceLevel}&nbsp;%`
           }}
         </p>
         <p
@@ -210,7 +210,7 @@ defineExpose({
       }}
       <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
         {{ audit.procedureName }}</span>
-      <span v-else class="fr-sr-only">pour l’audit {{ audit.procedureName }}</span>
+      <span v-else class="fr-sr-only">&nbsp;pour l’audit {{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Secondary action -->
@@ -246,7 +246,7 @@ defineExpose({
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
               >Consulter le rapport
-                <span class="fr-sr-only"> {{ audit.procedureName }} (nouvelle fenêtre)</span>
+                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -259,7 +259,7 @@ defineExpose({
               @click="duplicateModal?.show()"
             >
               Dupliquer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -268,7 +268,7 @@ defineExpose({
               @click="$emit('transfer')"
             >
               Transférer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -288,7 +288,7 @@ defineExpose({
 
           <li class="dropdown-item">
             <CopyButton
-              :dropdown="true"
+              data-keep-open
               :no-outline="true"
               :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
               label="Copier le lien du rapport"
@@ -303,7 +303,7 @@ defineExpose({
 
           <li v-if="audit.statementIsPublished" class="dropdown-item">
             <CopyButton
-              :dropdown="true"
+              data-keep-open
               :no-outline="true"
               :hidden-label-suffix="`de l’audit ${audit.procedureName}`"
               label="Copier le lien de la déclaration"
@@ -323,7 +323,7 @@ defineExpose({
               :download="csvExportFilename"
             >
               Télécharger l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }} </span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}&nbsp;</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -336,7 +336,7 @@ defineExpose({
               @click="$emit('delete')"
             >
               Supprimer l’audit
-              <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
