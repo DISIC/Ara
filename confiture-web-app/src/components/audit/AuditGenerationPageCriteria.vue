@@ -89,7 +89,7 @@ onMounted(() => {
     </a>
   </div>
 
-  <TransverseElementsList v-else class="fr-mb-3w transverse-elements" />
+  <TransverseElementsList v-else class="fr-mb-3w" />
 
   <template v-if="store.filteredTopics.length">
     <section

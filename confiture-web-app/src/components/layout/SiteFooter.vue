@@ -46,7 +46,7 @@ function switchDevMode() {
     <div v-if="!isReportPage" class="fr-footer__top">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
-          <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
+          <div class="fr-col-12 fr-col-md-3">
             <p class="fr-footer__top-cat">Nouveautés</p>
             <ul class="fr-footer__top-list">
               <li>
@@ -63,7 +63,7 @@ function switchDevMode() {
               </li>
             </ul>
           </div>
-          <div class="fr-col-12 fr-col-sm-6 fr-col-md-3">
+          <div class="fr-col-12 fr-col-md-6">
             <p class="fr-footer__top-cat">Aide</p>
             <ul class="fr-footer__top-list">
               <li>
@@ -72,6 +72,14 @@ function switchDevMode() {
                   :to="{ name: 'missing-audit' }"
                 >
                   Un audit n’apparaît pas dans votre espace&#8239;?
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'transverseDoc' }"
+                >
+                  Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;?
                 </RouterLink>
               </li>
             </ul>
