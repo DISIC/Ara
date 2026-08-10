@@ -142,8 +142,7 @@ export const useAccountStore = defineStore("account", {
       await api
         .patch(`/api/profile`, {
           json: data
-        })
-        .json();
+        });
 
       await this.refreshToken();
     },
