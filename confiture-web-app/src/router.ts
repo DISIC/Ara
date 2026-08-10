@@ -263,7 +263,7 @@ const router = createRouter({
     },
     // Report pages
     {
-      path: "/rapport/:uniqueId/",
+      path: "/rapport/:uniqueId",
       name: "report",
       redirect: (to: any) => {
         return {
