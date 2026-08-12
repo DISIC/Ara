@@ -46,6 +46,7 @@ declare module "vue-router" {
     name: string | (() => string);
     hideHomeLink?: boolean;
     authRequired?: boolean;
+    intendedFor?: "auditor" | "audited-entity";
   }
 }
 
@@ -278,11 +279,16 @@ const router = createRouter({
         {
           path: ":tabSlug",
           name: "report-full",
-          component: AraTabsPanel
+          component: AraTabsPanel,
+          meta: {
+            name: "Rapport d’audit",
+            intendedFor: "audited-entity"
+          }
         }
       ],
       meta: {
         name: "Rapport d’audit",
+        intendedFor: "audited-entity",
         hideHomeLink: true
       },
       props: true
@@ -293,7 +299,8 @@ const router = createRouter({
       name: "a11y-statement",
       component: StatementPage,
       meta: {
-        name: "Déclaration d’accessibilité"
+        name: "Déclaration d’accessibilité",
+        intendedFor: "audited-entity"
       }
     },
     // Roadmap
