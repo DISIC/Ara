@@ -23,16 +23,16 @@ import TopLink from "../../components/ui/TopLink.vue";
       <p id="fr-summary-title" class="fr-summary__title">Sommaire</p>
       <ol>
         <li>
-          <a id="summary-link-1" class="fr-summary__link" href="#c-est-quoi-un-element-transverse">C’est quoi un élément transverse&#8239;?</a>
+          <a class="fr-summary__link" href="#c-est-quoi-un-element-transverse">C’est quoi un élément transverse&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#comment-fonctionne-l-onglet">Comment fonctionne l’onglet&#8239;?</a>
+          <a class="fr-summary__link" href="#comment-fonctionne-l-onglet">Comment fonctionne l’onglet&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#pourquoi-cet-onglet-est-optionnel">Pourquoi cet onglet est optionnel&#8239;?</a>
+          <a class="fr-summary__link" href="#pourquoi-cet-onglet-est-optionnel">Pourquoi cet onglet est optionnel&#8239;?</a>
         </li>
         <li>
-          <a id="summary-link-2" class="fr-summary__link" href="#comment-ca-compte-dans-le-calcul-du-taux">Comment ça compte dans le calcul du taux&#8239;?</a>
+          <a class="fr-summary__link" href="#comment-ca-compte-dans-le-calcul-du-taux">Comment ça compte dans le calcul du taux&#8239;?</a>
         </li>
       </ol>
     </nav>
