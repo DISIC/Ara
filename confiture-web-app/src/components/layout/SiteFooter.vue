@@ -9,8 +9,8 @@ import ThemeModal from "./ThemeModal.vue";
 const debugStore = useDebugStore();
 const route = useRoute();
 
-const isReportPage = computed(
-  () => route.name === "report" || route.name === "report-full"
+const isForAuditedEntity = computed(
+  () => route.meta.intendedFor === "audited-entity"
 );
 
 const bottomLinks = [
@@ -43,7 +43,7 @@ function switchDevMode() {
 
 <template>
   <footer id="footer" class="fr-footer fr-mt-auto" role="contentinfo">
-    <div v-if="!isReportPage" class="fr-footer__top">
+    <div v-if="!isForAuditedEntity" class="fr-footer__top">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-md-3">
