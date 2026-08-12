@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 10/08/2026
+
+#### <span aria-hidden="true">⚙️</span> Autres changements
+
+- Ajout d’une page d’aide pour expliquer comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;» ([#1561](https://github.com/DISIC/Ara/pull/1561))
+
 ### 29/07/2026
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
