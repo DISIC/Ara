@@ -38,7 +38,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     </nav>
 
     <h2 id="c-est-quoi-un-element-transverse">C’est quoi un élément transverse&#8239;?</h2>
-    <p>Un élément transverses est un élément présent sur
+    <p>Un élément transverse est un élément présent sur
       <strong>plusieurs</strong> ou sur <strong>l’ensemble des pages</strong> de
       l’échantillon. Il peut s’agir par exemple&nbsp;:</p>
     <ul>
