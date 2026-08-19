@@ -1,4 +1,5 @@
 import { useResizeObserver } from "@vueuse/core";
+import { nextTick } from "vue";
 import {
   createRouter,
   createWebHistory,
@@ -397,6 +398,7 @@ router.afterEach(async (to, from) => {
   if (from.path !== to.path) {
     const pageTitleAlert = document.querySelector("#page-title-alert");
     if (pageTitleAlert) {
+      await nextTick();
       pageTitleAlert.innerHTML = `<p>${
         typeof to.meta.name === "function" ? to.meta.name() : to.meta.name
       }</p>`;
