@@ -826,7 +826,7 @@ describe("Audit", () => {
 
   it("User can insert an image in the comment editor", () => {
     cy.intercept("POST", "/api/audits/editor/images").as("uploadImage");
-    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
@@ -901,7 +901,7 @@ describe("Audit", () => {
   });
 
   it("User can insert HTML content in the comment editor (and images are stripped out)", () => {
-    cy.intercept("PATCH", `/api/audits/*/results`).as("updateResults");
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/*/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
@@ -932,6 +932,57 @@ describe("Audit", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
       cy.contains("button", "Transférer l’audit").click();
+
+      // Error: 2nd field is empty
+      cy.getByLabel("Adresse e-mail du destinataire")
+        .clear()
+        .type("example@domain.com");
+
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+
+      cy.getByLabel("Confirmer e-mail du destinataire")
+        .clear()
+        .type("exampl@domain.com");
+
+      // Error: 2nd field isnt equal to first
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+      cy.getByLabel("Confirmer e-mail du destinataire").should("be.focused");
+
+      // Valid form
+      cy.getByLabel("Confirmer e-mail du destinataire")
+        .clear()
+        .type("example@domain.com");
+      cy.contains("button[type='submit']", "Transférer l’audit").click();
+
+      // Assert we're on homepage with toast
+      cy.contains("Je réalise un audit d’accessibilité avec Ara");
+      cy.contains("Audit « Audit de mon petit site » transféré");
+      cy.contains("Lien d’accès envoyé à example@domain.com");
+    });
+  });
+
+  it("User can't transfer an audit after logging out", () => {
+    cy.createTestAccount({ login: true }).then(({ username }) => {
+      cy.createTestAudit({ auditorEmail: username, isPristine: true }).then(({ editId }) => {
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+        cy.contains("button", username).click();
+        cy.contains("button", "Me déconnecter").click();
+
+        cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+
+        cy.contains("button", "Actions").click();
+        cy.contains("button", "Transférer").should("be.disabled");
+      });
+    });
+  });
+
+  it("User can transfer an audit without being logged in", () => {
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
+      cy.contains("button", "Actions").click();
+      cy.contains("button", "Transférer").click();
 
       // Error: 2nd field is empty
       cy.getByLabel("Adresse e-mail du destinataire")

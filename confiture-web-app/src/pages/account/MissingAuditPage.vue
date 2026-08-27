@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PageMeta from "../../components/PageMeta";
-import BackLink from "../../components/ui/BackLink.vue";
 import { useAccountStore } from "../../store/account";
 
 const accountStore = useAccountStore();
@@ -8,9 +7,6 @@ const accountStore = useAccountStore();
 
 <template>
   <PageMeta title="Audit manquant ?" />
-  <div class="fr-mb-4w">
-    <BackLink label="Retour à mes audits" :to="{ name: 'account-dashboard' }" />
-  </div>
 
   <div class="wrapper fr-mb-6w">
     <h1>Un audit n’apparaît pas dans votre espace&nbsp;?</h1>

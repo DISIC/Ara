@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
   hiddenLabelSuffix?: string;
   contentToCopy: string | RouteLocationRaw | (() => string);
   constantWidth?: boolean;
+  noOutline?: boolean;
 }>(), {
   label: "Copier le lien de partage",
   successLabel: "Lien copié"
@@ -53,9 +54,10 @@ function copyContentToClipboard() {
   <button
     ref="copyButtonRef"
     type="button"
-    :class="[`fr-btn fr-btn--secondary fr-btn--icon-left ${showSuccess ? 'fr-icon-check-line copy-button--success' : icon} copy-button`, {
+    :class="[`fr-btn ${noOutline ? 'fr-btn--tertiary-no-outline' : 'fr-btn--secondary'} fr-btn--icon-left ${showSuccess ? 'fr-icon-check-line copy-button--success' + (noOutline ? '' : ' outline') : icon} copy-button`, {
       'copy-button--within-btn-group fr-mb-0': !constantWidth
     }]"
+    aria-live="polite"
     @click="copyContentToClipboard"
   >
     <template v-if="!constantWidth">
@@ -73,8 +75,7 @@ function copyContentToClipboard() {
         </template>
       </span>
     </span>
-
-    <span v-if="hiddenLabelSuffix" class="fr-sr-only">{{ hiddenLabelSuffix }}</span>
+    <span v-if="hiddenLabelSuffix" class="fr-sr-only">&nbsp;{{ hiddenLabelSuffix }}</span>
   </button>
 </template>
 
@@ -105,7 +106,10 @@ function copyContentToClipboard() {
 
 .copy-button--success {
   color: var(--text-default-success) !important;
-  box-shadow: inset 0 0 0 1px var(--text-default-success) !important;
+
+  &.outline {
+    box-shadow: inset 0 0 0 1px var(--text-default-success) !important;
+  }
 
   &:not(.copy-button--within-btn-group) {
     .copy-button-inner-wrapper {

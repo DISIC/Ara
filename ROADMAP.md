@@ -6,12 +6,12 @@
 
 <p class="mention">Fonctionnalités en cours de conception ou de développement. Bientôt en production.</p>
 
+- **Un audit est privé par défaut**
+  - Permettre de partager un audit et de le rendre public.
 - **Multiples erreurs et recommandations par critère**
   - Permettre d’ajouter plusieurs erreurs et recommandations pour un même critère durant l’audit.
 - **Rapport centré sur les erreurs**
   - Refonte partielle du rapport pour afficher une liste de non-conformités par l’auditeurice, plutôt qu’une liste de critères invalidés.
-- **Transfert d’audits simplifié**
-  - Faciliter le déplacement d’un audit d’un compte Ara à un autre.
 
 ## <span aria-hidden="true">🗓️</span> À venir
 

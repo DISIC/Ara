@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 import fiphfpLogo from "../../assets/images/fiphfp.png";
-import { useAccountStore } from "../../store/account";
+
+import { useDebugStore } from "../../store";
 import ThemeModal from "./ThemeModal.vue";
 
-const accountStore = useAccountStore();
+const debugStore = useDebugStore();
+const route = useRoute();
+
+const isForAuditedEntity = computed(
+  () => route.meta.intendedFor === "audited-entity"
+);
 
 const bottomLinks = [
   {
@@ -27,14 +35,18 @@ const bottomLinks = [
     routeName: "contact"
   }
 ];
+
+function switchDevMode() {
+  debugStore.saveDevMode(!debugStore.devMode);
+}
 </script>
 
 <template>
   <footer id="footer" class="fr-footer fr-mt-auto" role="contentinfo">
-    <div v-if="accountStore.account" class="fr-footer__top">
+    <div v-if="!isForAuditedEntity" class="fr-footer__top">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
-          <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
+          <div class="fr-col-12 fr-col-md-3">
             <p class="fr-footer__top-cat">Nouveautés</p>
             <ul class="fr-footer__top-list">
               <li>
@@ -51,7 +63,7 @@ const bottomLinks = [
               </li>
             </ul>
           </div>
-          <div class="fr-col-12 fr-col-sm-6 fr-col-md-3">
+          <div class="fr-col-12 fr-col-md-6">
             <p class="fr-footer__top-cat">Aide</p>
             <ul class="fr-footer__top-list">
               <li>
@@ -60,6 +72,14 @@ const bottomLinks = [
                   :to="{ name: 'missing-audit' }"
                 >
                   Un audit n’apparaît pas dans votre espace&#8239;?
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink
+                  class="fr-footer__top-link"
+                  :to="{ name: 'transverseDoc' }"
+                >
+                  Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;?
                 </RouterLink>
               </li>
             </ul>
@@ -179,6 +199,16 @@ const bottomLinks = [
               data-fr-opened="false"
             >
               Paramètres d'affichage
+            </button>
+          </li>
+          <li v-if="debugStore.allowDevMode" class="fr-footer__bottom-item">
+            <button
+              type="button"
+              class="fr-footer__bottom-link fr-icon-computer-line fr-link--icon-left"
+              @click="switchDevMode"
+            >
+              <template v-if="debugStore.devMode">Désactiver le mode développeur</template>
+              <template v-else>Activer le mode développeur</template>
             </button>
           </li>
         </ul>

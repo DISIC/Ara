@@ -214,7 +214,7 @@ export class TestsController {
                 notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
                   ? {
                       create: {
-                        title: `Titre de l'erreur`,
+                        title: `Titre de l’erreur`,
                         comment: `Une erreur ici`,
                         quickWin: i % 7 === 0,
                         userImpact: [
@@ -243,7 +243,7 @@ export class TestsController {
           status: CriterionResultStatus.NOT_COMPLIANT,
           notCompliantItems: {
             create: {
-              title: `Titre de l'erreur`
+              title: `Titre de l’erreur`
             }
           },
 

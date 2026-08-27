@@ -30,6 +30,7 @@ import ContactPage from "./pages/misc/ContactPage.vue";
 import LegalPage from "./pages/misc/LegalPage.vue";
 import PrivacyPage from "./pages/misc/PrivacyPage.vue";
 import SiteMapPage from "./pages/misc/SiteMapPage.vue";
+import TransverseDocPage from "./pages/misc/TransverseDocPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
@@ -45,6 +46,7 @@ declare module "vue-router" {
     name: string | (() => string);
     hideHomeLink?: boolean;
     authRequired?: boolean;
+    intendedFor?: "auditor" | "audited-entity";
   }
 }
 
@@ -108,6 +110,14 @@ const router = createRouter({
       component: ContactPage,
       meta: {
         name: "Contact"
+      }
+    },
+    {
+      path: "/aide/onglet-transverse",
+      name: "transverseDoc",
+      component: TransverseDocPage,
+      meta: {
+        name: "Comment utiliser l’onglet « Éléments transverses » ?"
       }
     },
     // Account pages
@@ -269,11 +279,16 @@ const router = createRouter({
         {
           path: ":tabSlug",
           name: "report-full",
-          component: AraTabsPanel
+          component: AraTabsPanel,
+          meta: {
+            name: "Rapport d’audit",
+            intendedFor: "audited-entity"
+          }
         }
       ],
       meta: {
         name: "Rapport d’audit",
+        intendedFor: "audited-entity",
         hideHomeLink: true
       },
       props: true
@@ -284,7 +299,8 @@ const router = createRouter({
       name: "a11y-statement",
       component: StatementPage,
       meta: {
-        name: "Déclaration d’accessibilité"
+        name: "Déclaration d’accessibilité",
+        intendedFor: "audited-entity"
       }
     },
     // Roadmap
@@ -366,18 +382,6 @@ const router = createRouter({
     }
 
     return scrollToTop();
-  }
-});
-
-router.beforeEach((to, from) => {
-  if (from.query.dev && !to.query.dev) {
-    return {
-      ...to,
-      query: {
-        ...to.query,
-        dev: from.query.dev
-      }
-    };
   }
 });
 
