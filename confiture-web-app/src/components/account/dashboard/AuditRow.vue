@@ -7,8 +7,7 @@ import { useWindowWidth } from "../../../composables/useWindowWidth";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../../enums";
 import router from "../../../router";
 import { useAuditStore } from "../../../store";
-import { AuditStatus, AuditType } from "../../../types";
-import { AccountAudit } from "../../../types/account";
+import { AuditStatus, AuditType, AccountAudit } from "../../../types";
 import {
   captureWithPayloads,
   formatBytes,
