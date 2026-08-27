@@ -50,7 +50,7 @@ export type NotesFile = components["schemas"]["NotesFileDto"];
 /** Image file attached to specific criterium result when not compliant. */
 export type ExampleImageFile = components["schemas"]["ExampleImageFileDto"];
 
-// a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
+// FIXME: a bug in openapi-typescript erroneously generate nullable enum properties as non nullable
 // https://github.com/openapi-ts/openapi-typescript/issues/1872#issuecomment-2399197613
 export type NotCompliantItem = Omit<components["schemas"]["NotCompliantItemDto"], "userImpact"> & { userImpact: NotCompliantItemDtoUserImpact | null };
 export type CriteriumResult = Omit<components["schemas"]["CriterionResultDto"], "notCompliantItems"> & { notCompliantItems: NotCompliantItem[] };
