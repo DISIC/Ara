@@ -12,7 +12,7 @@ import { useAccountStore } from "../../store";
 import DsfrField from "../ui/DsfrField.vue";
 
 const props = defineProps<{
-  email: string;
+  email: string | null;
   name: string | null;
 }>();
 

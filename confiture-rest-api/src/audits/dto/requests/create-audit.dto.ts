@@ -4,22 +4,13 @@ import {
   IsBoolean,
   IsEmail,
   IsIn,
-  IsNumber,
   IsObject,
-  IsOptional,
   IsString,
   ValidateNested
 } from "class-validator";
 import { AuditType } from "../../../generated/prisma/client";
 
 export class CreateAuditPage {
-  /**
-   * Include the page ID in order to update an existing page.
-   */
-  @IsNumber()
-  @IsOptional()
-  id?: number;
-
   /**
    * @example "Page de contact"
    */
@@ -47,11 +38,6 @@ export class BaseAuditDto {
   @IsString()
   procedureName: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateAuditPage)
-  pages: CreateAuditPage[];
-
   /**
    * @example "John Auditor"
    */
@@ -62,7 +48,6 @@ export class BaseAuditDto {
    * @example "john@audit.com"
    */
   @IsEmail()
-  @IsOptional()
   auditorEmail: string;
 }
 
@@ -85,4 +70,9 @@ export class CreateAuditDto extends BaseAuditDto {
   @ValidateNested()
   @Type(() => PageElements)
   pageElements: PageElements;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAuditPage)
+  pages: CreateAuditPage[];
 }

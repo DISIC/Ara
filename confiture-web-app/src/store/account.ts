@@ -2,11 +2,7 @@ import jwtDecode from "jwt-decode";
 import { defineStore } from "pinia";
 import { api } from "../api";
 
-import { AuthenticationJwtPayload } from "../types";
-import {
-  AccountDeletionResponse,
-  UpdateProfileRequestData
-} from "../types/account";
+import { AuthenticationJwtPayload, AccountDeletionResponse, UpdateProfileRequestData } from "../types";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 

@@ -111,10 +111,6 @@ export function getAuditStatus(report: AuditReport): string {
     return AuditStatus.IN_PROGRESS;
   }
 
-  if (report.procedureInitiator) {
-    return AuditStatus.PUBLISHABLE;
-  }
-
   return AuditStatus.COMPLETED;
 }
 
@@ -245,7 +241,9 @@ export function isTiptapDocumentEmpty(
   }
 
   const containsImage = jsonString.includes("\"type\":\"image\"");
-  const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
+  const containsText = jsonString
+    .matchAll(/"text":"(?<textContent>[^"]+)?"/g)
+    .some((it) => it.groups?.textContent.trim());
 
   return !containsImage && !containsText;
 }
@@ -266,13 +264,15 @@ export function scrollToHash(hash: string) {
     const initalTabIndex = hashEl.getAttribute("tabindex");
     hashEl.setAttribute("tabindex", "-1");
     hashEl.focus();
-    initalTabIndex ? hashEl.setAttribute("tabindex", initalTabIndex) : hashEl.removeAttribute("tabindex");
+    initalTabIndex
+      ? hashEl.setAttribute("tabindex", initalTabIndex)
+      : hashEl.removeAttribute("tabindex");
     hashEl.scrollIntoView();
   }
 }
 
 export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

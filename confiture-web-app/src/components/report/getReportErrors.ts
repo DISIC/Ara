@@ -24,7 +24,7 @@ export type ReportError = {
 export function getReportErrors(
   report: ReportStoreState,
   quickWinFilter: boolean,
-  userImpactFilters: Array<ReportUserImpact>
+  userImpactFilters: Array<ReportUserImpact | null>
 ): ReportError[] {
   const resultsGroupedByPage = {
     // include pages with no errors
