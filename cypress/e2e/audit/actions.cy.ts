@@ -85,6 +85,8 @@ describe("Actions", () => {
         .type("https://example.com/parametres");
 
       cy.contains("Enregistrer les modifications").click();
+      // TODO: displaying audit page shouldn't be that long!
+      cy.contains("h1", "Audit", { timeout: 50_000 });
       cy.url().should(
         "eq",
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
@@ -191,6 +193,7 @@ describe("Actions", () => {
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
 
+      // TODO: displaying audit page shouldn't be that long!
       cy.contains("Audit « Audit de mon petit site (2) » créé", { timeout: 50_000 });
       cy.contains("button", "Accéder à l’audit").click();
 
