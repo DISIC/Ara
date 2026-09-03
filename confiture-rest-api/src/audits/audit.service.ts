@@ -1120,7 +1120,7 @@ export class AuditService {
     }
   }
 
-  async toggleAuditPrivacy(editUniqueId: string, isPublic: boolean): Promise<void> {
+  async setAuditPrivacy(editUniqueId: string, isPublic: boolean): Promise<void> {
     await this.prisma.audit.update({
       where: { editUniqueId },
       data: { isPublic }
