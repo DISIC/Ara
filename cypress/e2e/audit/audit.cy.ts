@@ -452,7 +452,7 @@ describe("Audit", () => {
     });
   });
 
-  it("User can delete comments without lose comments between multiple audit tabs", () => {
+  it("User can delete comments without lose existing comments between multiple audit tabs", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
     cy.intercept("DELETE", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("deleteResults");
 
