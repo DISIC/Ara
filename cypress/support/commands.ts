@@ -175,7 +175,6 @@ Cypress.Commands.add("assertClipboardValue", (value: string) => {
 interface CreateTestAuditOptions {
   isComplete?: boolean;
   isPristine?: boolean;
-  isEmpty?: boolean;
   hasNoImprovementsComments?: boolean;
   auditorEmail?: string;
   fillStatement?: boolean;
@@ -189,7 +188,6 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
   cy.request("POST", "http://localhost:3000/api/tests/create-audit", {
     isComplete: options?.isComplete,
     isPristine: options?.isPristine,
-    isEmpty: options?.isEmpty,
     noImprovements: options?.hasNoImprovementsComments,
     auditorEmail: options?.auditorEmail,
     fillStatement: options?.fillStatement,

@@ -70,7 +70,6 @@ export class TestsController {
     body: {
       isComplete: boolean;
       isPristine: boolean;
-      isEmpty: boolean;
       noImprovements: boolean;
       auditorEmail?: string;
       fillStatement?: boolean;
@@ -193,13 +192,6 @@ export class TestsController {
         auditUniqueId: editUniqueId
       }
     });
-
-    if (body.isEmpty) {
-      return {
-        editId: editUniqueId,
-        reportId: reportUniqueId
-      };
-    }
 
     if (!body.isPristine) {
       await Promise.all(
