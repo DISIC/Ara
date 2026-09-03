@@ -305,24 +305,20 @@ describe("Audit", () => {
     });
   });
 
-  it.only("User copy and paste comments between multiple audit tabs", () => {
+  it.only("User copy and paste comments between multiple audit tabs on new empty audit", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
-    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+    cy.createTestAudit({ isEmpty: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
-      cy.get(".criterium-container").contains("Non conforme");
-
-      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click().wait(100);
+      cy.get(".criterium-container").contains("Non conforme").click().wait(100);
 
       cy.get(".criterium-container .not-compliant-item input[type='text']")
-        .clear({ force: true })
         .type("Premier titre");
 
       cy.wait(["@updateResults"]);
 
       cy.get(".criterium-container .not-compliant-item .tiptap")
-        .clear({ force: true })
         .type("Premier commentaire");
 
       cy.wait(["@updateResults"]);
@@ -342,28 +338,41 @@ describe("Audit", () => {
       cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
 
       cy.get(".criterium-container").contains("Non conforme").click();
-      cy.get(".criterium-container").contains("Erreurs et recommandations").click().wait(100);
 
       cy.get(".criterium-container .not-compliant-item input[type='text']")
         .type("Troisième titre");
 
+      cy.wait(["@updateResults"]);
+
       cy.get(".criterium-container .not-compliant-item .tiptap")
-        .clear({ force: true })
         .type("Troisième commentaire");
 
       cy.wait(["@updateResults"]);
 
       cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
 
-      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("contain.text", "Premier titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("have.value", "Premier titre");
       cy.get(".criterium-container .not-compliant-item:nth-child(1) .tiptap").should("contain.text", "Premier commentaire");
 
-      cy.get(".criterium-container .not-compliant-item:nth-child(2) input[type='text']").should("contain.text", "Deuxième titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(2) input[type='text']").should("have.value", "Deuxième titre");
       cy.get(".criterium-container .not-compliant-item:nth-child(2) .tiptap").should("contain.text", "Deuxième commentaire");
 
       cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
 
-      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("contain.text", "Troisième titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("have.value", "Troisième titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) .tiptap").should("contain.text", "Troisième commentaire");
+
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("have.value", "Premier titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) .tiptap").should("contain.text", "Premier commentaire");
+
+      cy.get(".criterium-container .not-compliant-item:nth-child(2) input[type='text']").should("have.value", "Deuxième titre");
+      cy.get(".criterium-container .not-compliant-item:nth-child(2) .tiptap").should("contain.text", "Deuxième commentaire");
+
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) input[type='text']").should("have.value", "Troisième titre");
       cy.get(".criterium-container .not-compliant-item:nth-child(1) .tiptap").should("contain.text", "Troisième commentaire");
     });
   });

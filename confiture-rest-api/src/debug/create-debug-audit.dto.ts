@@ -28,6 +28,9 @@ export class CreateDebugAuditDto {
   isPristine: boolean;
 
   @IsBoolean()
+  isEmpty: boolean;
+
+  @IsBoolean()
   fillStatement: boolean;
 
   @IsOptional()
