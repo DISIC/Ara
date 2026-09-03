@@ -78,9 +78,6 @@ export class AuditsController {
         console.error(`Failed to send email for audit ${audit.editUniqueId}`);
         console.error(err);
       });
-
-      // FIXME:
-      // this.auditService.toggleAuditPrivacy(audit.editUniqueId);
     }
 
     return audit;
@@ -94,13 +91,6 @@ export class AuditsController {
   @ApiOkResponse({ type: AuditListingItemDto, isArray: true })
   async getAuditList(@User() user: AuthenticationJwtPayload): Promise<AuditListingItemDto[]> {
     return this.auditService.getAuditsByAuditorEmail(user.email);
-  }
-
-  /** Retrieve an audit from the database. */
-  @Get("/:uniqueId")
-  @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
-  async getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
-    return this.auditService.findAudit(uniqueId);
   }
 
   @Get("/:uniqueId/pages/:pageSlug")
@@ -283,7 +273,7 @@ export class AuditsController {
     @AuditId() uniqueId: string,
     @Body() body: UpdateAuditPrivacyDto
   ): Promise<void> {
-    return this.auditService.toggleAuditPrivacy(uniqueId, body.isPublic);
+    return this.auditService.setAuditPrivacy(uniqueId, body.isPublic);
   }
 
   /** Delete an audit from the database. */
