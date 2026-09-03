@@ -1,40 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import fiphfpLogo from "../../assets/images/fiphfp.png";
-
 import { useDebugStore } from "../../store";
+import AraLogo from "../ui/AraLogo.vue";
 import ThemeModal from "./ThemeModal.vue";
 
 const debugStore = useDebugStore();
-const route = useRoute();
-
-const isForAuditedEntity = computed(
-  () => route.meta.intendedFor === "audited-entity"
-);
-
-const bottomLinks = [
-  {
-    label: "Plan du site",
-    routeName: "site-map"
-  },
-  {
-    label: "Accessibilité : totalement conforme",
-    routeName: "accessibility"
-  },
-  {
-    label: "Mentions légales",
-    routeName: "legal"
-  },
-  {
-    label: "Données personnelles",
-    routeName: "privacy"
-  },
-  {
-    label: "Contact et contributions",
-    routeName: "contact"
-  }
-];
 
 function switchDevMode() {
   debugStore.saveDevMode(!debugStore.devMode);
@@ -43,62 +12,10 @@ function switchDevMode() {
 
 <template>
   <footer id="footer" class="fr-footer fr-mt-auto" role="contentinfo">
-    <div v-if="!isForAuditedEntity" class="fr-footer__top">
-      <div class="fr-container">
-        <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
-          <div class="fr-col-12 fr-col-md-3">
-            <p class="fr-footer__top-cat">Nouveautés</p>
-            <ul class="fr-footer__top-list">
-              <li>
-                <RouterLink
-                  class="fr-footer__top-link"
-                  :to="{ name: 'roadmap' }"
-                >Feuille de route</RouterLink>
-              </li>
-              <li>
-                <RouterLink
-                  class="fr-footer__top-link"
-                  :to="{ name: 'changelog' }"
-                >Notes de version</RouterLink>
-              </li>
-            </ul>
-          </div>
-          <div class="fr-col-12 fr-col-md-6">
-            <p class="fr-footer__top-cat">Aide</p>
-            <ul class="fr-footer__top-list">
-              <li>
-                <RouterLink
-                  class="fr-footer__top-link"
-                  :to="{ name: 'missing-audit' }"
-                >
-                  Un audit n’apparaît pas dans votre espace&#8239;?
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink
-                  class="fr-footer__top-link"
-                  :to="{ name: 'transverseDoc' }"
-                >
-                  Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;?
-                </RouterLink>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="fr-container">
       <div class="fr-footer__body">
-        <div class="fr-footer__brand fr-enlarge-link">
-          <RouterLink :to="{ name: 'home' }" title="Retour à l’accueil">
-            <p class="fr-logo" title="république française">
-              République<br />
-              Française
-            </p>
-          </RouterLink>
-          <div class="logo-ara">
-            <img src="../../assets/images/logo-ara.svg" alt="Logo Ara" />
-          </div>
+        <div class="fr-footer__brand">
+          <AraLogo variant="footer" />
         </div>
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
@@ -126,25 +43,9 @@ function switchDevMode() {
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
-                href="https://info.gouv.fr"
+                href="https://ara.numerique.gouv.fr/"
                 target="_blank"
-              >info.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
-            </li>
-            <li class="fr-footer__content-item">
-              <a
-                class="fr-footer__content-link"
-                href="https://www.service-public.gouv.fr"
-                target="_blank"
-              >service-public.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
-            </li>
-            <li class="fr-footer__content-item">
-              <a
-                class="fr-footer__content-link"
-                href="https://legifrance.gouv.fr"
-                target="_blank"
-              >legifrance.gouv.fr
+              >ara.numerique.gouv.fr
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
@@ -157,71 +58,23 @@ function switchDevMode() {
             </li>
           </ul>
         </div>
-      </div>
-      <div class="fr-footer__partners">
-        <p class="fr-footer__partners-title fr-mb-1w">
-          Conçu avec le soutien de notre partenaire :
-        </p>
-        <div class="fr-footer__partners-logos">
-          <div class="fr-footer__partners-main">
-            <a
-              class="fr-footer__partners-link"
-              target="_blank"
-              href="https://www.fiphfp.fr/"
-            >
-              <img
-                class="fr-footer__logo logo-partner"
-                :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
-              />
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="fr-footer__bottom">
-        <ul class="fr-footer__bottom-list">
-          <li
-            v-for="link in bottomLinks"
-            :key="link.routeName"
-            class="fr-footer__bottom-item"
+        <div class="footer-actions">
+          <button
+            class="fr-footer__bottom-link fr-fi-theme-fill fr-link--icon-left"
+            aria-controls="fr-theme-modal"
+            data-fr-opened="false"
           >
-            <RouterLink
-              class="fr-footer__bottom-link"
-              :to="{ name: link.routeName }"
-            >
-              {{ link.label }}
-            </RouterLink>
-          </li>
-          <li class="fr-footer__bottom-item">
-            <button
-              class="fr-footer__bottom-link fr-fi-theme-fill fr-link--icon-left"
-              aria-controls="fr-theme-modal"
-              data-fr-opened="false"
-            >
-              Paramètres d'affichage
-            </button>
-          </li>
-          <li v-if="debugStore.allowDevMode" class="fr-footer__bottom-item">
-            <button
-              type="button"
-              class="fr-footer__bottom-link fr-icon-computer-line fr-link--icon-left"
-              @click="switchDevMode"
-            >
-              <template v-if="debugStore.devMode">Désactiver le mode développeur</template>
-              <template v-else>Activer le mode développeur</template>
-            </button>
-          </li>
-        </ul>
-        <div class="fr-footer__bottom-copy">
-          <p>
-            Sauf mention contraire, tous les contenus de ce site sont sous
-            <a
-              href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-              target="_blank"
-              rel="noreferrer noopener"
-            >licence etalab-2.0
-              <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
-          </p>
+            Paramètres d'affichage
+          </button>
+          <button
+            v-if="debugStore.allowDevMode"
+            type="button"
+            class="fr-footer__bottom-link fr-icon-computer-line fr-link--icon-left"
+            @click="switchDevMode"
+          >
+            <template v-if="debugStore.devMode">Désactiver le mode développeur</template>
+            <template v-else>Activer le mode développeur</template>
+          </button>
         </div>
       </div>
     </div>
@@ -230,20 +83,21 @@ function switchDevMode() {
 </template>
 
 <style scoped>
-.logo-ara {
-  height: 4.6875rem;
-  padding-left: 2rem;
+.footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-  img {
-    height: 100%;
+@media (width >= 62em) {
+  .footer-actions {
+    margin-left: auto;
   }
 }
 
-.logo-partner {
-  border: 1px solid var(--border-default-grey);
-}
-
-.fr-footer__partners-link::after {
-  content: none;
+@media (width < 768px) {
+  .fr-footer__brand {
+    margin: auto;
+  }
 }
 </style>

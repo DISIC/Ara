@@ -5,6 +5,7 @@ import { onMounted, ref } from "vue";
 import GenericModal from "./components/GenericModal.vue";
 import SiteFooter from "./components/layout/SiteFooter.vue";
 import SiteHeader from "./components/layout/SiteHeader.vue";
+import AraBreadcrumb from "./components/ui/AraBreadcrumb.vue";
 import ToastNotification from "./components/ui/ToastNotification.vue";
 import { useDebugStore } from "./store";
 import { useAccountStore } from "./store/account";
@@ -113,7 +114,8 @@ function closeFeedbackNotice() {
     </div>
   </div>
 
-  <main id="main" role="main" class="fr-container fr-mb-12w fr-pt-5w" tabindex="-1">
+  <main id="main" role="main" class="fr-container fr-mb-12w" tabindex="-1">
+    <AraBreadcrumb />
     <RouterView />
   </main>
 
@@ -125,15 +127,5 @@ function closeFeedbackNotice() {
 <style scoped>
 [id="main"]:target {
   scroll-margin: 2rem;
-}
-
-main {
-  &:has(.top-link) {
-    margin-bottom: 4.5rem !important;
-  }
-
-  &:has(.back-link) {
-    padding-top: 1.5em !important;
-  }
 }
 </style>

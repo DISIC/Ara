@@ -60,6 +60,9 @@ from DSFR links with `target="_blank"` */
   --danger-bg-hover-color: #cc372b;
   --danger-text-hover-color: var(--text-inverted-grey);
   --danger-secondary-text-base-color: var(--text-default-error);
+  --color-primary: #000073;
+  --color-secondary: #8b8be1;
+  --color-muted: #3a3a3a;
 }
 
 [data-fr-theme="dark"] {
@@ -67,6 +70,8 @@ from DSFR links with `target="_blank"` */
   --danger-bg-hover-color: var(--grey-950-125);
   --danger-text-hover-color: #f55e4b;
   --danger-secondary-text-base-color: var(--background-action-high-error);
+  --color-primary: #ffffff;
+  --color-muted: #828282;
 
   /* Override some DSFR colors in dark mode for better contrast */
   .fr-btn--secondary:hover,

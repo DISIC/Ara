@@ -3,7 +3,9 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useNotifications } from "../../composables/useNotifications";
 import { useWindowWidth } from "../../composables/useWindowWidth";
+
 import { useAccountStore } from "../../store";
+import AraLogo from "../ui/AraLogo.vue";
 import Dropdown from "../ui/Dropdown.vue";
 
 const accountStore = useAccountStore();
@@ -28,14 +30,7 @@ const width = useWindowWidth();
   <header id="header" role="banner" class="account-header">
     <div class="fr-p-1w fr-px-md-3w fr-py-md-2w content">
 
-      <div class="logo"></div>
-
-      <RouterLink
-        :to="{ name: 'account-dashboard' }"
-        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-home-4-line"
-      >
-        {{ width < 768 ? "Audits" : "Mes audits" }}
-      </RouterLink>
+      <AraLogo variant="header" />
 
       <Dropdown
         v-if="accountStore.account"
@@ -88,20 +83,5 @@ const width = useWindowWidth();
 
 .account-dropdown {
   margin-inline-start: auto;
-}
-
-.logo {
-  margin: auto 0;
-  height: 1.75rem;
-  width: 5rem;
-  background-repeat: no-repeat;
-}
-
-[data-fr-theme="dark"] .logo {
-  background-image: url("../../assets/images/logo-ara-sombre.svg");
-}
-
-[data-fr-theme="light"] .logo {
-  background-image: url("../../assets/images/logo-ara-clair.svg");
 }
 </style>
