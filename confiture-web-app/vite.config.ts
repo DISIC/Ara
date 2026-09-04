@@ -11,6 +11,7 @@ const uploadSourceMapsToSentry =
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    cssMinify: "esbuild",
     sourcemap: true // Source map generation must be turned on
   },
   assetsInclude: ["**/*.docx", "**/*.md"],

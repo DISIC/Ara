@@ -41,14 +41,11 @@ async function handleSubmit() {
     })
     .catch(async (err) => {
       if (err instanceof HTTPError) {
-        const body = await err.response.json();
-
         if (err.response.status === 409) {
           // Email already used
           emailField.value?.setError("Cette adresse e-mail est déjà associée à un compte. Connectez-vous.", true);
         } else if (
-          err.response.status === 400 &&
-          body.message.includes("username must be an email")
+          err.response.status === 400 && err.data?.message.includes("username must be an email")
         ) {
           emailField.value?.setError("Format incorrect. Utilisez le format : nom@domaine.fr.", true);
         } else {

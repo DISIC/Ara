@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { api } from "../api";
 
@@ -142,8 +142,7 @@ export const useAccountStore = defineStore("account", {
       await api
         .patch(`/api/profile`, {
           json: data
-        })
-        .json();
+        });
 
       await this.refreshToken();
     },

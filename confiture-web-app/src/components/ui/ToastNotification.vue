@@ -32,15 +32,16 @@ function onAction() {
           role="alert"
         >
           <div>
-            <p v-if="store.notification.title" class="fr-alert__title fr-text--md">
-              {{ store.notification.title }}
-            </p>
+            <p
+              v-if="store.notification.title"
+              class="fr-alert__title fr-text--md"
+              v-html="store.notification.title"
+            ></p>
             <p
               v-if="store.notification.description"
               :class="{ 'fr-mb-2w': store.notification.link }"
-            >
-              {{ store.notification.description }}
-            </p>
+              v-html="store.notification.description"
+            ></p>
 
             <!-- FIXME: this link is not accessible with keyboard -->
             <RouterLink
