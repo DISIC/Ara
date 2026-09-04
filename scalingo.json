@@ -2,9 +2,6 @@
   "env": {
     "FRONT_BASE_URL": {
       "generator": "url"
-    },
-    "YARN2_SKIP_PRUNING": {
-      "value": "true"
     }
   }
 }
