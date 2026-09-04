@@ -5248,7 +5248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mjml-core@npm:*":
+"@types/mjml-core@npm:4.15.2":
   version: 4.15.2
   resolution: "@types/mjml-core@npm:4.15.2"
   checksum: 10c0/551333a7f884fe59d0d62683bfa52432e941bf5ccb3e6913b82743056a5a70a4853a98dd64cfd360948da4ca5cbf1d1b74427009bda4b04090eebdb56e7e35cc
