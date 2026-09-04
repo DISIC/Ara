@@ -9,6 +9,11 @@ export default defineConfig({
         log(args) {
           console.log(...args);
           return null;
+        },
+        // New task to run console.table from Node
+        table(data) {
+          console.table(data);
+          return null;
         }
       });
     }
