@@ -62,7 +62,6 @@ export class BaseAuditDto {
    * @example "john@audit.com"
    */
   @IsEmail()
-  @IsOptional()
   auditorEmail: string;
 }
 
