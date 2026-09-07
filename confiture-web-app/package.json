@@ -2,6 +2,7 @@
   "name": "confiture-web-app",
   "version": "0.0.2",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "yarn generate:rgaa && vue-tsc --noEmit && vite build",
