@@ -3,6 +3,7 @@ import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
+import { RouteMeta } from "vue-router";
 
 import { FileListFile } from "./components/ui/FileList.vue";
 import {
@@ -248,6 +249,15 @@ export function isTiptapDocumentEmpty(
   const containsText = jsonString.matchAll(/"text":"(?<textContent>[^"]+)?"/g).some(it => it.groups?.textContent.trim());
 
   return !containsImage && !containsText;
+}
+
+/**
+ * Resolve the human readable label of a route, from its `meta.name`
+ * (which can either be a string or a function returning a string).
+ */
+export function getRouteLabel(route: { meta: RouteMeta }): string {
+  const name = route.meta.name;
+  return (typeof name === "function" ? name() : name) ?? "";
 }
 
 export function getScrollBehavior(): ScrollBehavior {

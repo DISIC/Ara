@@ -40,12 +40,15 @@ import TiptapPage from "./pages/TiptapPage.vue";
 import redirects from "./redirects";
 import { useAccountStore, useAuditStore } from "./store";
 import { ScrollBehaviorResult, ScrollPosition } from "./types";
-import { getScrollBehavior } from "./utils";
+import { getRouteLabel, getScrollBehavior } from "./utils";
 
 declare module "vue-router" {
   interface RouteMeta {
     // add a `meta.name` property to have the route's name appear in "go back to [name]" prompts
     name: string | (() => string);
+    // add a `meta.parent` property (name of the parent route) to display a
+    // breadcrumb on the page. Routes without a parent get no breadcrumb.
+    parent?: string | (() => string | null);
     hideHomeLink?: boolean;
     authRequired?: boolean;
     intendedFor?: "auditor" | "audited-entity";
@@ -60,6 +63,28 @@ export const history = createWebHistory();
 function getProcedureName() {
   const auditStore = useAuditStore();
   return auditStore.currentAudit?.procedureName ?? "de mon audit";
+}
+
+/**
+ * Breadcrumb parent of the pages that are only reachable from the account
+ * dashboard when the user is logged in.
+ */
+function getAccountOrHomeParent() {
+  const accountStore = useAccountStore();
+  return accountStore.account ? "account-dashboard" : "home";
+}
+
+/**
+ * Breadcrumb parent of an audit page: the account dashboard when the audit
+ * belongs to the logged in user, the homepage otherwise (public access).
+ */
+function getAuditParent() {
+  const accountStore = useAccountStore();
+  const auditStore = useAuditStore();
+  return accountStore.account &&
+    auditStore.currentAudit?.auditorEmail === accountStore.account.email
+    ? "account-dashboard"
+    : "home";
 }
 
 const router = createRouter({
@@ -78,6 +103,7 @@ const router = createRouter({
       name: "site-map",
       component: SiteMapPage,
       meta: {
+        parent: "home",
         name: "Plan du site"
       }
     },
@@ -86,6 +112,7 @@ const router = createRouter({
       name: "accessibility",
       component: AccessibilityPage,
       meta: {
+        parent: "home",
         name: "Accessibilité"
       }
     },
@@ -94,6 +121,7 @@ const router = createRouter({
       name: "privacy",
       component: PrivacyPage,
       meta: {
+        parent: "home",
         name: "Données personnelles"
       }
     },
@@ -102,6 +130,7 @@ const router = createRouter({
       name: "legal",
       component: LegalPage,
       meta: {
+        parent: "home",
         name: "Mentions légales"
       }
     },
@@ -111,6 +140,7 @@ const router = createRouter({
       name: "contact",
       component: ContactPage,
       meta: {
+        parent: "home",
         name: "Contact"
       }
     },
@@ -128,6 +158,7 @@ const router = createRouter({
       name: "new-account",
       component: NewAccountPage,
       meta: {
+        parent: "home",
         name: "Créer votre compte Ara"
       }
     },
@@ -152,6 +183,7 @@ const router = createRouter({
       name: "login",
       component: LoginPage,
       meta: {
+        parent: "home",
         name: "Connexion à Ara"
       }
     },
@@ -160,6 +192,7 @@ const router = createRouter({
       name: "password-reset",
       component: ResetPasswordPage,
       meta: {
+        parent: "login",
         name: "Réinitialiser votre mot de passe"
       }
     },
@@ -168,6 +201,7 @@ const router = createRouter({
       name: "account-dashboard",
       component: AccountDashboardPage,
       meta: {
+        parent: "home",
         name: "Mes audits",
         authRequired: true
       }
@@ -177,6 +211,7 @@ const router = createRouter({
       name: "account-settings",
       component: AccountSettingsPage,
       meta: {
+        parent: "home",
         authRequired: true,
         name: "Mon compte"
       }
@@ -201,6 +236,7 @@ const router = createRouter({
       name: "missing-audit",
       component: MissingAuditPage,
       meta: {
+        parent: "login",
         name: "Je ne retrouve pas mon audit"
       }
     },
@@ -210,6 +246,7 @@ const router = createRouter({
       name: "create-audit",
       component: AuditCreatePage,
       meta: {
+        parent: getAccountOrHomeParent,
         name: "Nouvel audit"
       }
     },
@@ -218,6 +255,7 @@ const router = createRouter({
       name: "audit-settings",
       component: AuditSettingsPage,
       meta: {
+        parent: "audit-overview",
         name: "Mon audit"
       }
     },
@@ -242,6 +280,7 @@ const router = createRouter({
         }
       ],
       meta: {
+        parent: "audit-overview",
         name: "Mon audit"
       },
       props: true
@@ -251,6 +290,7 @@ const router = createRouter({
       name: "audit-declaration",
       component: AuditDeclarationPage,
       meta: {
+        parent: "audit-overview",
         name: "Mon audit"
       }
     },
@@ -260,6 +300,7 @@ const router = createRouter({
       name: "audit-overview",
       component: AuditOverviewPage,
       meta: {
+        parent: getAuditParent,
         name: () => `Synthèse ${getProcedureName()}`
       }
     },
@@ -325,6 +366,7 @@ const router = createRouter({
       name: "roadmap",
       component: RoadmapPage,
       meta: {
+        parent: "home",
         name: "Feuille de route"
       }
     },
@@ -334,6 +376,7 @@ const router = createRouter({
       name: "changelog",
       component: ChangelogPage,
       meta: {
+        parent: "home",
         name: "Notes de version"
       }
     },
@@ -343,6 +386,7 @@ const router = createRouter({
       name: "feedback",
       component: FeedbackPage,
       meta: {
+        parent: "home",
         name: "Donner mon avis"
       }
     },
@@ -433,9 +477,7 @@ router.afterEach(async (to, from) => {
   if (from.path !== to.path) {
     const pageTitleAlert = document.querySelector("#page-title-alert");
     if (pageTitleAlert) {
-      pageTitleAlert.innerHTML = `<p>${
-        typeof to.meta.name === "function" ? to.meta.name() : to.meta.name
-      }</p>`;
+      pageTitleAlert.innerHTML = `<p>${getRouteLabel(to)}</p>`;
 
       setTimeout(() => {
         pageTitleAlert.innerHTML = "";

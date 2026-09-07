@@ -16,7 +16,7 @@ import { usePreviousRoute } from "../composables/usePreviousRoute";
 import { ARRAY_LENGTH, EMAIL, REQUIRED } from "../composables/validation";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../enums";
 import { paths } from "../types/confiture-api";
-import { captureWithPayloads } from "../utils";
+import { captureWithPayloads, getRouteLabel } from "../utils";
 
 export type CreateFeedbackRequestData =
   paths["/feedback"]["post"]["requestBody"]["content"]["application/json"];
@@ -97,10 +97,7 @@ const router = useRouter();
 
 const { route, url } = usePreviousRoute();
 const previousPageUrl = url ?? router.resolve({ name: "home" }).href;
-const previousPageName =
-  (typeof route?.meta.name === "function"
-    ? route?.meta.name()
-    : route?.meta.name) ?? "précédente";
+const previousPageName = (route && getRouteLabel(route)) || "précédente";
 </script>
 
 <template>
