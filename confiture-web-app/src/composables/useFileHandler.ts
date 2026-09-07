@@ -102,11 +102,9 @@ export function useFileHandler() {
       }
       // 422 Unprocessable Entity
       else if (error.response.status === 422) {
-        const body = await error.response.json();
-
-        if (body.message.includes("expected type")) {
+        if (error.data?.message.includes("expected type")) {
           errorMessage = getFileMessage("UPLOAD_ERROR_FORMAT_IMAGE", { fileName: fileName });
-        } else if (body.message.includes("expected size")) {
+        } else if (error.data?.message.includes("expected size")) {
           errorMessage = getFileMessage("UPLOAD_ERROR_SIZE", { fileName: fileName });
         } else {
           errorMessage = getFileMessage("UNKNOWN_ERROR", { fileName: fileName });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { HTTPError } from "ky";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";

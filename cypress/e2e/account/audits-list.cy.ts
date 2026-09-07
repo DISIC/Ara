@@ -4,7 +4,11 @@ describe("Audits list", () => {
   // Create an logged in account and 4 associated audits (1 completed, 1 pristine and 2 in progress)
   beforeEach(() => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true });
+      cy.createTestAudit({
+        auditorEmail: username,
+        isComplete: true,
+        fillStatement: true
+      }).as("auditStatementFilled");
       cy.createTestAudit({ auditorEmail: username, isPristine: true });
       cy.createTestAudit({ auditorEmail: username });
       cy.createTestAudit({ auditorEmail: username }).as("audit");
@@ -146,24 +150,24 @@ describe("Audits list", () => {
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
         `http://localhost:3000/rapport/${audit.reportId}`
       );
-      cy.contains("span", "Lien du rapport copié");
+      cy.contains("button", "Lien du rapport copié");
     });
   });
 
   it("User can copy statement link", () => {
     cy.visit("http://localhost:3000/compte");
 
-    cy.get(".dropdown-container:last").contains("button", "Actions").click();
+    cy.get(".fr-badge--green-emeraude").parent().contains("button", "Actions").last().click();
     cy.contains("button", "Copier le lien de la déclaration").click();
 
-    cy.get("@audit").then((audit) => {
+    cy.get("@auditStatementFilled").then((audit) => {
       cy.assertClipboardValue(
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
         `http://localhost:3000/declaration/${audit.reportId}`
       );
-      cy.contains("span", "Lien de la déclaration copié");
+      cy.contains("button", "Lien de la déclaration copié");
     });
   });
 

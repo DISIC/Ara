@@ -11,7 +11,8 @@ const props = defineProps<{
 const html = computed(() => {
   const parse = props.inline ? marked.parseInline : marked.parse;
   const rawHtml = parse(props.markdown, {
-    breaks: true
+    breaks: true,
+    async: false
   });
   const sanitizedHtml = DOMPurify.sanitize(rawHtml);
   return sanitizedHtml;
