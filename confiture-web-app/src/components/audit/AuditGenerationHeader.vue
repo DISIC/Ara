@@ -415,7 +415,7 @@ onMounted(() => {
                   <!-- TODO: delete badge in 1 month after merging -->
                   <!-- Needed to ensure dropdown is correctly closing when clicking -->
                   <span style="pointer-events: none;">
-                    Partager<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
+                    Changer le statut<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
                   </span>
                   <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
