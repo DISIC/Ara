@@ -19,25 +19,27 @@ function switchDevMode() {
         </div>
         <div class="fr-footer__content">
           <p class="fr-footer__content-desc">
-            Ara est un service en ligne conçu et développé par <a
+            Cet outil est basé sur la solution
+
+            <a
+              class="fr-link fr-text--sm"
+              href="https://github.com/DISIC/Ara"
+              target="_blank"
+            >Ara</a>, sous
+            <a
+              class="fr-link fr-text--sm"
+
+              href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
+              target="_blank"
+            >licence etalab-2.0</a>
+
+            développée par <a
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
-            >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
-              class="fr-link fr-text--sm"
-              href="https://www.numerique.gouv.fr/dinum/"
-              target="_blank"
-            >
-              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>,
-            avec le soutien du
-            <a
-              class="fr-link fr-text--sm"
-              href="https://www.fiphfp.fr/"
-              target="_blank"
-            >FIPHFP<span class="fr-sr-only">
-              Fonds pour l’insertion des personnes handicapées dans la
-              Fonction publique (nouvelle fenêtre)
-            </span></a>.
+            >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>.
+
+            Les rapports d'audit ne sont pas en accès libre et ne sont partagés à aucun tiers.
           </p>
           <ul class="fr-footer__content-list">
             <li class="fr-footer__content-item">
@@ -51,9 +53,9 @@ function switchDevMode() {
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
-                href="https://data.gouv.fr"
+                href="https://www.talan.com/france/fr"
                 target="_blank"
-              >data.gouv.fr
+              >talan.com
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
             </li>
           </ul>
