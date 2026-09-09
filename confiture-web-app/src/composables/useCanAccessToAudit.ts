@@ -36,6 +36,6 @@ export async function useCanAccessToAudit(uniqueId: string): Promise<canAccessTo
   const isOwner = currentAudit.auditorEmail === accountStore.account.email;
   return {
     canAccess: isOwner,
-    redirectTo: isOwner ? { name: "acces-restreint", params: { uniqueId } } : null
+    redirectTo: !isOwner ? { name: "acces-restreint", params: { uniqueId } } : null
   };
 }
