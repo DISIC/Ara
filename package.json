@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
+    "axe-core": "^4.13.0",
     "cypress": "^13.6.1",
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
