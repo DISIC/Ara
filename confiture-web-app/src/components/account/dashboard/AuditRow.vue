@@ -17,8 +17,9 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
-import CopyButton from "../../ui/CopyButton.vue";
+import ShareModal from "../../audit/ShareModal.vue";
 
+import CopyButton from "../../ui/CopyButton.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -79,6 +80,8 @@ function duplicateAudit(name: string) {
       duplicateModal.value?.hide();
     });
 }
+
+const shareModal = ref<InstanceType<typeof ShareModal>>();
 
 const csvExportUrl = computed(
   () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
@@ -276,7 +279,7 @@ defineExpose({
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
-              @click="console.log('partager')"
+              @click="shareModal?.show()"
             >
               <!-- TODO: delete badge in 1 month after merging -->
               Partager <span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-checkbox-line fr-ml-1v">Nouveau</span>
@@ -370,6 +373,16 @@ defineExpose({
     :original-audit-name="audit.procedureName"
     :is-loading="isDuplicationLoading"
     @confirm="duplicateAudit"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
+
+  <ShareModal
+    ref="shareModal"
+    :edit-unique-id="audit.editUniqueId"
+    :audit-name="audit.procedureName"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();
