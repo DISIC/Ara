@@ -282,8 +282,8 @@ defineExpose({
             >
               <!-- TODO: delete badge in 1 month after merging -->
               <!-- Needed to ensure dropdown is correctly closing when clicking -->
-              Partager <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
-              <span class="fr-sr-only">l’audit {{ audit.procedureName }}</span>
+              Changer le statut <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
+              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">

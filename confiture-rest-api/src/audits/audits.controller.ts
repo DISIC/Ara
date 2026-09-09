@@ -93,6 +93,13 @@ export class AuditsController {
     return this.auditService.getAuditsByAuditorEmail(user.email);
   }
 
+  /** Retrieve an audit from the database. */
+  @Get("/:uniqueId")
+  @ApiOkResponse({ description: "The audit was found.", type: AuditDto })
+  getAudit(@AuditId() uniqueId: string): Promise<AuditDto> {
+    return this.auditService.findAudit(uniqueId);
+  }
+
   @Get("/:uniqueId/pages/:pageSlug")
   @ApiNotFoundResponse({ description: "The page or the audit does not exist." })
   async getAuditPageWithResults(

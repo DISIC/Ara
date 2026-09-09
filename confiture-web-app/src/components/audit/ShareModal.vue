@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import { useAuditStore } from "../../store";
+import CopyButton from "../ui/CopyButton.vue";
 import DsfrModal from "../ui/DsfrModal.vue";
 
 const props = defineProps<{
@@ -23,22 +24,6 @@ defineExpose({
 
 const modal = ref<InstanceType<typeof DsfrModal>>();
 const auditIsPublic = ref(props.isPublic);
-
-// Copy audit public URL
-const showCopySuccess = ref(false);
-function copyLink() {
-  if (showCopySuccess.value) return;
-
-  const url = `${window.location.origin}/audits/${props.editUniqueId}/generation`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    showCopySuccess.value = true;
-  });
-
-  setTimeout(() => {
-    showCopySuccess.value = false;
-  }, 3500);
-}
 
 // Call store action
 const auditStore = useAuditStore();
@@ -81,7 +66,7 @@ function toggleAuditPrivacy() {
             </div>
             <div class="fr-modal__content share-modal-content">
               <h1 :id="`share-modal-title-${editUniqueId}`" class="fr-modal__title fr-mb-4w">
-                Partager l’audit « {{ auditName }} »
+                Changer le statut de l’audit « {{ auditName }} »
               </h1>
 
               <div class="fr-toggle fr-toggle-lg fr-toggle--label-left fr-mb-2w">
@@ -106,14 +91,17 @@ function toggleAuditPrivacy() {
               <div :class="{ 'hidden-public-content': !auditIsPublic }">
                 <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w ">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
                 <div class="fr-btns-group fr-btns-group--icon-left">
-                  <button
-                    class="fr-btn fr-btn--secondary fr-btn--icon-left fr-mb-0"
-                    :class="showCopySuccess ? 'fr-icon-check-line copy-link-button' : 'fr-icon-link'"
-                    type="button"
-                    @click="copyLink"
-                  >
-                    {{ showCopySuccess ? 'Lien copié' : 'Copier le lien de partage' }}
-                  </button>
+                  <CopyButton
+                    data-keep-open
+                    :hidden-label-suffix="`de l’audit ${auditName}`"
+                    label="Copier le lien de partage"
+                    success-label="Lien copié"
+                    icon="fr-icon-link"
+                    :content-to-copy="{
+                      name: 'audit-generation-full',
+                      params: { uniqueId: editUniqueId }
+                    }"
+                  />
                 </div>
               </div>
             </div>
