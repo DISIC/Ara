@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { AxeResults } from "axe-core";
 import { computed, onMounted, ref } from "vue";
-
+import { api } from "../../api";
 import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
-import { AuditPage } from "../../types";
+import { AuditPage, CreateNotCompliantItemData, CriterionResultUserImpact, CriteriumResult, CriteriumResultStatus } from "../../types";
+import { slugify } from "../../utils";
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
+
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
 import TransverseElementsList from "./TransverseElementsList.vue";
 
@@ -74,6 +77,180 @@ function toggleTopic(value: boolean, topic: number) {
   saveStatusToLocalStorage();
 }
 
+async function auditAutoPageClick(url: string) {
+  console.log(url);
+
+  try {
+    const results = await api.post(`/api/scan`, {
+      json: { url }
+    }).json() as AxeResults;
+
+    console.log(results);
+
+    const { inapplicable, passes, violations } = results;
+
+    inapplicable.forEach((ina) => {
+      const tag = ina.tags.find((x) => x.startsWith("RGAA-"));
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          result.status = CriteriumResultStatus.NOT_APPLICABLE;
+
+          resultsStore.updateResults(props.auditUniqueId, [result]);
+
+          console.log("result", result);
+        }
+      }
+    });
+
+    passes.forEach((passe) => {
+      const tag = passe.tags.find((x) => x.startsWith("RGAA-"));
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          result.status = CriteriumResultStatus.COMPLIANT;
+          resultsStore.updateResults(props.auditUniqueId, [result]);
+        }
+
+        console.log("result", result);
+      }
+    });
+
+    for (const violation of violations) {
+      const tag = violation.tags.find((x) => x.startsWith("RGAA-"));
+
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          result.status = CriteriumResultStatus.NOT_COMPLIANT;
+          result.notCompliantItems = [];
+
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
+
+          console.log("result", result);
+
+          for (const node of violation.nodes) {
+            let userImpact: CriterionResultUserImpact | null = null;
+
+            switch (violation.impact) {
+              case "critical":
+                userImpact = CriterionResultUserImpact.BLOCKING;
+                break;
+
+              case "minor":
+                userImpact = CriterionResultUserImpact.MINOR;
+                break;
+              case "serious":
+              case "moderate":
+                userImpact = CriterionResultUserImpact.MAJOR;
+                break;
+            }
+
+            let comment = null;
+            if (node.failureSummary) {
+              comment = node.failureSummary;
+              comment += "\n";
+            }
+
+            if (node.html) {
+              comment += `HTML :\n\`\`\`html\n${node.html}\n\`\`\`\n`;
+            }
+
+            if (node.target) {
+              comment += `target :\n\`\`\`html\n${node.target}\n\`\`\`\n`;
+            }
+
+            const notCompliantItem: CreateNotCompliantItemData = {
+              comment,
+              userImpact,
+              quickWin: false
+            };
+
+            const slug = slugify(props.page.name);
+
+            await resultsStore.createNotCompliantItem(
+              props.auditUniqueId,
+              props.page.id,
+              slug,
+              result.topic,
+              result.criterium,
+              notCompliantItem as CreateNotCompliantItemData
+            );
+          }
+
+          /*  let userImpact = null;
+
+          switch (violation.impact) {
+            case "critical":
+              userImpact = CriterionResultUserImpact.BLOCKING;
+              break;
+
+            case "minor":
+              userImpact = CriterionResultUserImpact.MINOR;
+              break;
+            case "serious":
+            case "moderate":
+              userImpact = CriterionResultUserImpact.MAJOR;
+              break;
+          }
+
+           const notCompliantItem: NotCompliantItem = {
+
+            title: violation.help,
+            comment: violation.description,
+            userImpact,
+            quickWin: false
+          };
+
+          result.notCompliantItems.push(notCompliantItem); */
+
+          /* result.notCompliantItems.push({
+            id: undefined,
+            title: violation.id.toString(),
+            comment: violation.description,
+            userImpact // "minor", "moderate", "serious", or "critical"
+          }); */
+        }
+
+        /*
+
+        const topic = store.filteredTopics
+          .find(x => x.number === criteriums[0]);
+        console.log("topic", topic);
+        if (topic) {
+          const criteria = topic.criteria
+            .find((x: any) => x.criterium.number === criteriums[1]);
+          console.log("criteria", criteria);
+          if (criteria) {
+            criteria.status = CriteriumResultStatus.NOT_COMPLIANT;
+          }
+
+          console.log("criteria2", criteria);
+        } */
+      }
+    }
+  }
+  catch (error) {
+    console.error("Impossible de scanner la page", error);
+  }
+}
+
+function getResultFromTag(tag: string): CriteriumResult | undefined {
+  const criteriums = tag.replace("RGAA-", "").split(".").map(Number);
+
+  const topicNumber = criteriums[0];
+  const criterumNumber = criteriums[1];
+
+  return resultsStore.getCriteriumResult(
+    props.page.id,
+    topicNumber,
+    criterumNumber
+  );
+}
+
 // Set topic accordions status on page load
 onMounted(() => {
   retrieveStatusFromLocalStorage();
@@ -87,6 +264,10 @@ onMounted(() => {
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank" rel="noreferrer noopener">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
+  </div>
+
+  <div v-if="page.id !== transversePageId" class="fr-mb-3w">
+    <button class="fr-btn" type="button" @click="auditAutoPageClick(page.url)">Auditer automatiquement cette page</button>
   </div>
 
   <TransverseElementsList v-else class="fr-mb-3w" />

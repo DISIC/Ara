@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsBoolean, IsEnum, IsOptional, IsString } from "class-validator";
 import { CriterionResultUserImpact } from "../../../generated/prisma/client";
 
@@ -10,6 +11,7 @@ export class CreateNotCompliantItemDto {
   @IsOptional()
   comment?: string | null;
 
+  @ApiPropertyOptional({ enum: CriterionResultUserImpact, nullable: true })
   @IsEnum(Object.values(CriterionResultUserImpact))
   @IsOptional()
   userImpact?: CriterionResultUserImpact | null;
