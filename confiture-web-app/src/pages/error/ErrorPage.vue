@@ -14,7 +14,7 @@ const errorPayload = history.state.errorPayload as any;
 
 const errorTitle =
   {
-    401: "Accès restreint",
+    401: "Accès non autorisé",
     403: "Accès restreint",
     404: "Page non trouvée",
     408: "La connexion a expiré",
@@ -25,7 +25,7 @@ const errorTitle =
 
 const errorDescription =
   {
-    401: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
+    401: `Un compte est requis pour l’accès à cette page.`,
     403: `L’audit <strong>« ${errorPayload.auditName} »</strong> est privé.<br /> Pour accéder à l’audit, contactez le propriétaire.`,
     404: "La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.",
     408: "Désolé, la page n'a pa pu être affichée, le serveur a mis trop de temps à répondre.",

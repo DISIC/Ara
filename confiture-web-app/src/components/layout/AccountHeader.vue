@@ -18,7 +18,9 @@ async function handleDisconnectClick() {
   if (currentRoute.meta.authRequired) {
     router.push({ name: "login" });
   } else {
-    router.push({ name: "home" });
+    // FIXME: find a better way to refresh current page after logging out from
+    // a page that needs authentication
+    router.go(0);
   }
 
   notify("success", undefined, "Vous avez été deconnecté avec succès.");
