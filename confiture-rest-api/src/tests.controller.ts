@@ -89,7 +89,7 @@ export class TestsController {
         publicationDate: body.isComplete ?
             (body.publicationDate ? new Date(body.publicationDate) : new Date())
           : null,
-        isPublic: body.isPublic ?? true,
+        isPublic: body.isPublic ?? false,
         auditTrace: {
           create: {
             auditConsultUniqueId: reportUniqueId,
