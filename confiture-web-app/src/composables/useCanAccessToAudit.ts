@@ -33,7 +33,7 @@ export async function useCanAccessToAudit(uniqueId: string): Promise<canAccessTo
   }
 
   // if auditor is owner of audit
-  const isOwner = currentAudit.auditorEmail === accountStore.account.email;
+  const isOwner = currentAudit.ownerUsername === accountStore.account.email;
   return {
     canAccess: isOwner,
     redirectTo: !isOwner ? { name: "acces-restreint", params: { uniqueId } } : null

@@ -66,7 +66,7 @@ export class AuditsController {
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    const audit = await this.auditService.createAudit(body);
+    const audit = await this.auditService.createAudit(body, user);
 
     if (!user) {
       this.mailer.sendAuditCreatedMail(audit).catch((err) => {

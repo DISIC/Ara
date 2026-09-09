@@ -55,6 +55,7 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
   statementEditionDate: true,
   schemaPluriannuelUrl: true,
   planActionUrl: true,
+  isPublic: true,
 
   auditor: {
     select: {

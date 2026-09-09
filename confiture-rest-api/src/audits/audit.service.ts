@@ -4,7 +4,9 @@ import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, so
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
+import { AuthenticationJwtPayload } from "src/auth/jwt-payloads";
 import { AuthService } from "../auth/auth.service";
+
 import {
   Audit,
   AuditType,
@@ -40,7 +42,8 @@ const AUDIT_EDIT_INCLUDE = {
       procedureName: true
     }
   },
-  notesFiles: true
+  notesFiles: true,
+  owner: true
 } as const;
 
 const isCompliant = (c: CriterionResult) =>
@@ -82,7 +85,7 @@ export class AuditService {
     private readonly authService: AuthService
   ) { }
 
-  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto, user: AuthenticationJwtPayload): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -110,6 +113,14 @@ export class AuditService {
           }
         },
         auditorName: data.auditorName,
+
+        ...(user && {
+          owner: {
+            connect: {
+              username: data.auditorEmail
+            }
+          }
+        }),
 
         transverseElementsPage: {
           create: {
@@ -396,7 +407,7 @@ export class AuditService {
         where: {
           editUniqueId: uniqueId
         },
-        include: AUDIT_PRISMA_SELECT
+        include: AUDIT_EDIT_INCLUDE
       });
 
       if (updatedPages.length > 0) {
@@ -1710,11 +1721,13 @@ export class AuditService {
           }
         },
 
-        owner: {
-          connect: {
-            username: originalAudit.ownerUsername
+        ...(originalAudit.ownerUsername && {
+          owner: {
+            connect: {
+              username: originalAudit.ownerUsername
+            }
           }
-        },
+        }),
 
         editUniqueId: duplicateEditUniqueId,
         consultUniqueId: duplicateConsultUniqueId,
