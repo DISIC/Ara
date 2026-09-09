@@ -194,22 +194,23 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async toggleAuditPrivacy(uniqueId: string) {
-      const currentIsPublicValue = this.currentAudit?.isPublic;
+      const listingEditedAuditIndex = this.listing.findIndex(a => a.editUniqueId === uniqueId);
+      const isPublic = this.currentAudit ? this.currentAudit?.isPublic : this.listing[listingEditedAuditIndex].isPublic;
+
       await api
         .patch(`/api/audits/${uniqueId}/privacy`, {
           json: {
-            isPublic: !currentIsPublicValue
+            isPublic: !isPublic
           }
         })
         .then(() => {
           // Live update UI with correct isPublic value
           if (this.currentAudit) {
-            this.currentAudit.isPublic = !currentIsPublicValue;
+            this.currentAudit.isPublic = !isPublic;
           }
 
-          const listingEditedAuditIndex = this.listing.findIndex(a => a.editUniqueId === uniqueId);
           if (listingEditedAuditIndex >= 0) {
-            this.listing[listingEditedAuditIndex].isPublic = !this.listing[listingEditedAuditIndex].isPublic;
+            this.listing[listingEditedAuditIndex].isPublic = !isPublic;
           }
         });
     },
