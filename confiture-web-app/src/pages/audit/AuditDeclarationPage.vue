@@ -136,8 +136,10 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
     auditorOrganisation: auditorOrganisation.value,
     procedureUrl: procedureUrl.value.trim(),
 
-    contactEmail: formatEmail(contactEmail.value) || undefined,
-    contactFormUrl: contactFormUrl.value.trim() || undefined,
+    contactEmail: formatEmail(contactEmail.value) || null,
+    contactFormUrl: contactFormUrl.value.trim() || null,
+    // the API expects `contactName` but since we don't use it anywhere, we juste leave it as `null`
+    contactName: null,
 
     technologies: technologies.value,
     environments: environments.value,
@@ -147,8 +149,8 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
     derogatedContent: derogatedContent.value,
     notInScopeContent: notInScopeContent.value,
 
-    schemaPluriannuelUrl: schemaPluriannuelUrl.value || undefined,
-    planActionUrl: planActionUrl.value || undefined
+    schemaPluriannuelUrl: schemaPluriannuelUrl.value || null,
+    planActionUrl: planActionUrl.value || null
   };
 });
 

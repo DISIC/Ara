@@ -1,4 +1,4 @@
-import { components, paths } from "./confiture-api";
+import { components, paths } from "../confiture-api";
 
 export type UpdateProfileRequestData =
   paths["/profile"]["patch"]["requestBody"]["content"]["application/json"];
