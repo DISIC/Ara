@@ -314,7 +314,8 @@ export class AuditsController {
 
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
-      body.procedureName
+      body.procedureName,
+      user.email
     );
 
     return newAudit;
