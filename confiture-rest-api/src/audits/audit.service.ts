@@ -253,7 +253,7 @@ export class AuditService {
   }
 
   async isDuplicationAllowed(editUniqueId: string, username: string) {
-    return await this.isAuditOwnedBy(editUniqueId, username) &&
+    return await this.isAuditOwnedBy(editUniqueId, username) ||
       await this.isAuditPublicAndOrphanAndUserConnected(editUniqueId, username);
   }
 
@@ -1540,7 +1540,7 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
+  async duplicateAudit(sourceUniqueId: string, newAuditName: string, userEmail: string): Promise<AuditDto> {
     const originalAudit = await this.prisma.audit.findFirst({
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
@@ -1731,20 +1731,11 @@ export class AuditService {
           "notInScopeContent"
         ]),
 
-        /**
-         * - je suis connecté ?
-         *  - non : je ne peux pas dupliquer
-         *  - oui :
-         *     - audit lié à un compte ?
-         *        - oui : je peux dupliquer si je suis proprio
-         *        - non : je peux le dupliquer
-         */
-
+        // associate new audit to connected user email
         ...(originalAudit.auditorEmail && {
           auditor: {
             connect: {
-              // FIXME: shouldnt the new audit be under the user who duplicated the audit ?
-              username: originalAudit.auditorEmail.toLowerCase()
+              username: userEmail.toLowerCase()
             }
           }
         }),
