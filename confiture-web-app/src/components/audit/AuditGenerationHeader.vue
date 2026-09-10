@@ -26,6 +26,7 @@ import DeleteModal from "./DeleteModal.vue";
 import DuplicateModal from "./DuplicateModal.vue";
 import NotesModal from "./NotesModal.vue";
 import SaveIndicator from "./SaveIndicator.vue";
+import ShareModal from "./ShareModal.vue";
 import TransferModal from "./TransferModal.vue";
 
 const props = defineProps<{
@@ -52,6 +53,7 @@ const isOffline = useIsOffline();
 const router = useRouter();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
+const shareModal = ref<InstanceType<typeof ShareModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
@@ -236,6 +238,37 @@ onMounted(() => {
 
   observer.observe(scrollSentinelRef.value!);
 });
+
+const isAuditPublicAndOrphanAndUserConnected = computed(() => {
+  if (!auditStore.currentAudit) {
+    return false;
+  }
+  return accountStore.account && auditStore.currentAudit.isPublic &&
+    !auditStore.currentAudit.auditor.isVerified;
+});
+
+const isCurrentAuditOwner = computed(() => {
+  const auditStore = useAuditStore();
+  if (!accountStore.account || !auditStore.currentAudit) {
+    return false;
+  }
+  return accountStore.account.email
+    === auditStore.currentAudit.auditor.username;
+});
+
+const isAuditOwnedByOtherAndUserConnected = computed(() => {
+  const auditStore = useAuditStore();
+  if (!accountStore.account || !auditStore.currentAudit) {
+    return false;
+  }
+  return auditStore.currentAudit.auditor.isVerified
+    && auditStore.currentAudit.auditor.username !== accountStore.account?.email;
+});
+
+const canDuplicate = computed(() => {
+  return isCurrentAuditOwner.value ||
+    isAuditPublicAndOrphanAndUserConnected.value;
+});
 </script>
 
 <template>
@@ -246,7 +279,9 @@ onMounted(() => {
   </div>
 
   <h1 class="fr-mb-3v">
-    Audit
+    Audit <span :class="`fr-badge fr-badge--blue-cumulus ${auditStore.currentAudit?.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
+      {{ auditStore.currentAudit?.isPublic ? 'Public' : 'Privé' }}
+    </span>
     <span class="fr-sr-only">
       Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
       problème lié à l’enregistrement
@@ -368,16 +403,23 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg">de l’audit</span>
+                  Modifier les paramètres
                 </RouterLink>
               </li>
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
+                  :disabled="!canDuplicate"
                   @click="duplicateModal?.show()"
                 >
-                  Dupliquer l’audit
+                  Dupliquer
                   <span class="fr-sr-only"> {{ auditName }}</span>
+                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Disponible uniquement avec un compte
+                  </span>
+                  <span v-else-if="isAuditOwnedByOtherAndUserConnected" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Seul le propriétaire peut dupliquer cet audit
+                  </span>
                 </button>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
@@ -395,6 +437,25 @@ onMounted(() => {
                   </span>
                 </button>
               </li>
+              <li class="dropdown-item dropdown-item--with-meta">
+                <button
+                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
+                  :disabled="!isCurrentAuditOwner"
+                  @click="shareModal?.show()"
+                >
+                  <!-- TODO: delete badge in 1 month after merging -->
+                  <!-- Needed to ensure dropdown is correctly closing when clicking -->
+                  <span style="pointer-events: none;">
+                    Changer le statut<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
+                  </span>
+                  <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Disponible uniquement avec un compte
+                  </span>
+                  <span v-else-if="!accountStore.account || (accountStore.account && !isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                    Seul le propriétaire peut partager cet audit
+                  </span>
+                </button>
+              </li>
               <li aria-hidden="true" class="dropdown-separator" />
               <li class="dropdown-item">
                 <a
@@ -402,19 +463,24 @@ onMounted(() => {
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
-                  Exporter l’audit
+                  Télécharger la grille d’audit
                   <span class="fr-text--xs fr-text--regular download-meta">
                     CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
                 </a>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
+                  :disabled="
+                    auditStore.currentAudit?.auditor.isVerified
+                      && !isCurrentAuditOwner
+                  "
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
+                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>
@@ -466,6 +532,14 @@ onMounted(() => {
     ref="transferModalRef"
     :procedure-name="auditName"
     @confirm="transferAudit"
+  />
+
+  <ShareModal
+    v-if="auditStore.currentAudit"
+    ref="shareModal"
+    :is-public="auditStore.currentAudit.isPublic"
+    :edit-unique-id="uniqueId"
+    :audit-name="auditName"
     @closed="
       optionsDropdownRef?.buttonRef?.focus();
       optionsDropdownRef?.closeOptions();

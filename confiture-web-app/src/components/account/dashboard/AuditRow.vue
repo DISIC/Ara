@@ -18,8 +18,9 @@ import {
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
 import DuplicateModal from "../../audit/DuplicateModal.vue";
-import CopyButton from "../../ui/CopyButton.vue";
+import ShareModal from "../../audit/ShareModal.vue";
 
+import CopyButton from "../../ui/CopyButton.vue";
 import Dropdown from "../../ui/Dropdown.vue";
 
 const props = defineProps<{
@@ -40,6 +41,10 @@ const isNotStarted = computed(
 
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
+);
+
+const isCompleted = computed(
+  () => props.audit.status === AuditStatus.COMPLETED
 );
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
@@ -77,6 +82,8 @@ function duplicateAudit(name: string) {
     });
 }
 
+const shareModal = ref<InstanceType<typeof ShareModal>>();
+
 const csvExportUrl = computed(
   () => `/api/audits/${props.audit.editUniqueId}/exports/csv`
 );
@@ -99,7 +106,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="fr-p-2w grid">
+  <div class="fr-p-2w grid audits-list-grid">
     <!-- Name -->
     <RouterLink
       ref="auditNameRef"
@@ -193,6 +200,14 @@ defineExpose({
       inline
     />
 
+    <!-- Sharing -->
+    <p class="fr-mb-0">
+      <span class="fr-sr-only-md">Partage : </span>
+      <span :class="`fr-badge fr-badge--sm fr-badge--blue-cumulus ${audit.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
+        {{ audit.isPublic ? 'Public' : 'Privé' }}
+      </span>
+    </p>
+
     <!-- Main action -->
     <RouterLink
       :to="{
@@ -228,6 +243,7 @@ defineExpose({
     <div :style="{ zIndex: zIndex }">
       <Dropdown
         ref="optionsDropdownRef"
+        icon-only
         title="Actions"
         :align-left="windowWidth < 880"
         :button-props="{
@@ -245,8 +261,7 @@ defineExpose({
                 }"
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              >Consulter le rapport
-                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }} (nouvelle fenêtre)</span>
+              >Consulter le rapport<span class="fr-sr-only">de l’audit {{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -257,9 +272,18 @@ defineExpose({
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
               @click="duplicateModal?.show()"
+            >Dupliquer<span class="fr-sr-only">l’audit {{ audit.procedureName }}</span>
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
+              @click="shareModal?.show()"
             >
-              Dupliquer l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+              <!-- TODO: delete badge in 1 month after merging -->
+              <!-- Needed to ensure dropdown is correctly closing when clicking -->
+              Changer le statut <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
+              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -280,13 +304,13 @@ defineExpose({
               }"
             >
               Modifier les paramètres
-              <template v-if="windowWidth > 880">de l’audit</template>
+              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
             </RouterLink>
           </li>
 
           <li aria-hidden="true" class="dropdown-separator" />
 
-          <li class="dropdown-item">
+          <li v-if="isCompleted" class="dropdown-item">
             <CopyButton
               data-keep-open
               :no-outline="true"
@@ -322,8 +346,7 @@ defineExpose({
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
-              Télécharger l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}&nbsp;</span>
+              Télécharger la grille d’audit<span class="fr-sr-only"> {{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -355,19 +378,23 @@ defineExpose({
       optionsDropdownRef?.closeOptions();
     "
   />
+
+  <ShareModal
+    ref="shareModal"
+    :is-public="audit.isPublic"
+    :edit-unique-id="audit.editUniqueId"
+    :audit-name="audit.procedureName"
+    @closed="
+      optionsDropdownRef?.buttonRef?.focus();
+      optionsDropdownRef?.closeOptions();
+    "
+  />
 </template>
 
 <style scoped>
-.grid {
-  display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
-  gap: 1rem;
+.audits-list-grid {
   align-items: center;
   border: 1px solid var(--border-default-grey);
-
-  @media (width < 55rem) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .audit-name {
