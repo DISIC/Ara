@@ -52,11 +52,6 @@ export const useAccountStore = defineStore("account", {
         email: payload.email,
         name: payload.name
       };
-    },
-
-    isCurrentAuditOwner(): boolean {
-      const auditStore = useAuditStore();
-      return this.account?.email === auditStore.currentAudit?.auditor.username;
     }
   },
 

@@ -238,6 +238,37 @@ onMounted(() => {
 
   observer.observe(scrollSentinelRef.value!);
 });
+
+const isAuditPublicAndOrphanAndUserConnected = computed(() => {
+  if (!auditStore.currentAudit) {
+    return false;
+  }
+  return accountStore.account && auditStore.currentAudit.isPublic &&
+    !auditStore.currentAudit.auditor.isVerified;
+});
+
+const isCurrentAuditOwner = computed(() => {
+  const auditStore = useAuditStore();
+  if (!accountStore.account || !auditStore.currentAudit) {
+    return false;
+  }
+  return accountStore.account.email
+    === auditStore.currentAudit.auditor.username;
+});
+
+const isAuditOwnedByOtherAndUserConnected = computed(() => {
+  const auditStore = useAuditStore();
+  if (!accountStore.account || !auditStore.currentAudit) {
+    return false;
+  }
+  return auditStore.currentAudit.auditor.isVerified
+    && auditStore.currentAudit.auditor.username !== accountStore.account?.email;
+});
+
+const isDuplicationAllowed = computed(() => {
+  return isCurrentAuditOwner.value ||
+    isAuditPublicAndOrphanAndUserConnected.value;
+});
 </script>
 
 <template>
@@ -378,7 +409,7 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
-                  :disabled="!accountStore.isCurrentAuditOwner"
+                  :disabled="!isDuplicationAllowed"
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer
@@ -386,7 +417,7 @@ onMounted(() => {
                   <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
-                  <span v-else-if="!accountStore.isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-else-if="isAuditOwnedByOtherAndUserConnected" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut dupliquer cet audit
                   </span>
                 </button>
@@ -409,7 +440,7 @@ onMounted(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
-                  :disabled="!accountStore.isCurrentAuditOwner"
+                  :disabled="!isCurrentAuditOwner"
                   @click="shareModal?.show()"
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
@@ -420,7 +451,7 @@ onMounted(() => {
                   <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>
-                  <span v-else-if="!accountStore.account || (accountStore.account && !accountStore.isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                  <span v-else-if="!accountStore.account || (accountStore.account && !isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut partager cet audit
                   </span>
                 </button>
@@ -444,12 +475,12 @@ onMounted(() => {
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
                   :disabled="
                     auditStore.currentAudit?.auditor.isVerified
-                      && !accountStore.isCurrentAuditOwner
+                      && !isCurrentAuditOwner
                   "
                   @click="deleteModal?.show()"
                 >
                   Supprimer l’audit
-                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !accountStore.isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
                 </button>
               </li>
             </ul>

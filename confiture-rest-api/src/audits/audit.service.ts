@@ -244,6 +244,19 @@ export class AuditService {
     return audit.auditor.username === username;
   }
 
+  async isAuditPublicAndOrphanAndUserConnected(editUniqueId: string, username: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { isPublic: true, auditor: { select: { username: true, isVerified: true } } }
+    });
+    return username && audit.isPublic && !audit.auditor.isVerified;
+  }
+
+  async isDuplicationAllowed(editUniqueId: string, username: string) {
+    return await this.isAuditOwnedBy(editUniqueId, username) &&
+      await this.isAuditPublicAndOrphanAndUserConnected(editUniqueId, username);
+  }
+
   /** Find and return an audit in the format that the API would return */
   findAudit(uniqueId: string): Promise<AuditDto> {
     return this.prisma.audit.findFirst({
@@ -1724,7 +1737,7 @@ export class AuditService {
          *  - oui :
          *     - audit lié à un compte ?
          *        - oui : je peux dupliquer si je suis proprio
-         *        - non : je peux pas dupliquer
+         *        - non : je peux le dupliquer
          */
 
         ...(originalAudit.auditorEmail && {
