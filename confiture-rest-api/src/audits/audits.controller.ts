@@ -308,8 +308,7 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    // only the audit owner can duplicate it
-    if (!await this.auditService.isAuditOwnedBy(uniqueId, user.email)) {
+    if (!(await this.auditService.isDuplicationAllowed(uniqueId, user.email))) {
       throw new ForbiddenException();
     }
 
@@ -317,13 +316,6 @@ export class AuditsController {
       uniqueId,
       body.procedureName
     );
-
-    this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
-      console.error(
-        `Failed to send email for audit ${newAudit.editUniqueId}`
-      );
-      console.error(err);
-    });
 
     return newAudit;
   }
