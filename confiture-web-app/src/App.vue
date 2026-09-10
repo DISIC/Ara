@@ -128,4 +128,12 @@ function closeFeedbackNotice() {
 [id="main"]:target {
   scroll-margin: 2rem;
 }
+
+main {
+  padding-top: 2.5rem;
+}
+
+main:has(.fr-breadcrumb) {
+  padding-top: unset;
+}
 </style>

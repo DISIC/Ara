@@ -12,7 +12,6 @@ import AccountDashboardPage from "./pages/account/AccountDashboardPage.vue";
 import AccountDeletionFeedback from "./pages/account/AccountDeletionFeedback.vue";
 import AccountSettingsPage from "./pages/account/AccountSettingsPage.vue";
 import LoginPage from "./pages/account/LoginPage.vue";
-import MissingAuditPage from "./pages/account/MissingAuditPage.vue";
 import NewAccountPage from "./pages/account/NewAccountPage.vue";
 import NewAccountValidationPage from "./pages/account/NewAccountValidationPage.vue";
 import ResetPasswordPage from "./pages/account/ResetPasswordPage.vue";
@@ -22,19 +21,12 @@ import AuditDeclarationPage from "./pages/audit/AuditDeclarationPage.vue";
 import AuditGenerationPage from "./pages/audit/AuditGenerationPage.vue";
 import AuditOverviewPage from "./pages/audit/AuditOverviewPage.vue";
 import AuditSettingsPage from "./pages/audit/AuditSettingsPage.vue";
-import ChangelogPage from "./pages/ChangelogPage.vue";
 import ErrorPage from "./pages/error/ErrorPage.vue";
 import FeedbackPage from "./pages/FeedbackPage.vue";
 import HomePage from "./pages/HomePage.vue";
-import AccessibilityPage from "./pages/misc/AccessibilityPage.vue";
-import ContactPage from "./pages/misc/ContactPage.vue";
-import LegalPage from "./pages/misc/LegalPage.vue";
-import PrivacyPage from "./pages/misc/PrivacyPage.vue";
-import SiteMapPage from "./pages/misc/SiteMapPage.vue";
 import TransverseDocPage from "./pages/misc/TransverseDocPage.vue";
 import ReportPage from "./pages/report/ReportPage.vue";
 import ReportPasswordPage from "./pages/report/ReportPasswordPage.vue";
-import RoadmapPage from "./pages/RoadmapPage.vue";
 import StatementPage from "./pages/StatementPage.vue";
 import TiptapPage from "./pages/TiptapPage.vue";
 import redirects from "./redirects";
@@ -96,52 +88,6 @@ const router = createRouter({
       component: HomePage,
       meta: {
         name: "Accueil"
-      }
-    },
-    {
-      path: "/plan-du-site",
-      name: "site-map",
-      component: SiteMapPage,
-      meta: {
-        parent: "home",
-        name: "Plan du site"
-      }
-    },
-    {
-      path: "/accessibilite",
-      name: "accessibility",
-      component: AccessibilityPage,
-      meta: {
-        parent: "home",
-        name: "Accessibilité"
-      }
-    },
-    {
-      path: "/donnees-personnelles",
-      name: "privacy",
-      component: PrivacyPage,
-      meta: {
-        parent: "home",
-        name: "Données personnelles"
-      }
-    },
-    {
-      path: "/mentions-legales",
-      name: "legal",
-      component: LegalPage,
-      meta: {
-        parent: "home",
-        name: "Mentions légales"
-      }
-    },
-    // Contact page
-    {
-      path: "/contact-contributions",
-      name: "contact",
-      component: ContactPage,
-      meta: {
-        parent: "home",
-        name: "Contact"
       }
     },
     {
@@ -229,15 +175,6 @@ const router = createRouter({
         if (!accountStore.accountDeletionFeedbackToken) {
           return { name: "home" };
         }
-      }
-    },
-    {
-      path: "/audit-manquant",
-      name: "missing-audit",
-      component: MissingAuditPage,
-      meta: {
-        parent: "login",
-        name: "Je ne retrouve pas mon audit"
       }
     },
     // Audit pages
@@ -358,26 +295,6 @@ const router = createRouter({
         name: "Déclaration d’accessibilité",
         intendedFor: "audited-entity",
         reportAccessCheck: true
-      }
-    },
-    // Roadmap
-    {
-      path: "/feuille-de-route",
-      name: "roadmap",
-      component: RoadmapPage,
-      meta: {
-        parent: "home",
-        name: "Feuille de route"
-      }
-    },
-    // Changelog
-    {
-      path: "/notes-de-versions",
-      name: "changelog",
-      component: ChangelogPage,
-      meta: {
-        parent: "home",
-        name: "Notes de version"
       }
     },
     // Feedback page
