@@ -276,17 +276,36 @@ export class AuditsController {
   @ApiOkResponse({
     description: "The audit privacy has been successfully updated"
   })
-  async toggleAuditPrivacy(
+  async setAuditPrivacy(
     @AuditId() uniqueId: string,
-    @Body() body: UpdateAuditPrivacyDto
+    @Body() body: UpdateAuditPrivacyDto,
+    @User() user: AuthenticationJwtPayload
   ): Promise<void> {
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const canSetAuditPrivacy = await this.auditService.isAuditOwnedBy(uniqueId, user.email);
+    if (!canSetAuditPrivacy) {
+      throw new ForbiddenException();
+    }
+
     return this.auditService.setAuditPrivacy(uniqueId, body.isPublic);
   }
 
   /** Delete an audit from the database. */
   @Delete("/:uniqueId")
   @ApiOkResponse({ description: "The audit has been successfully deleted." })
-  async deleteAudit(@AuditId() uniqueId: string) {
+  async deleteAudit(
+    @AuditId() uniqueId: string,
+    @User() user: AuthenticationJwtPayload
+  ) {
+    const canDelete = await this.auditService.canDelete(uniqueId, user?.email);
+
+    if (!canDelete) {
+      throw new ForbiddenException();
+    }
+
     await this.auditService.softDeleteAudit(uniqueId);
   }
 
@@ -308,7 +327,7 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    if (!(await this.auditService.isDuplicationAllowed(uniqueId, user.email))) {
+    if (!(await this.auditService.canDuplicate(uniqueId, user.email))) {
       throw new ForbiddenException();
     }
 
@@ -340,10 +359,13 @@ export class AuditsController {
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email);
-
-    if (!canTransfer) {
+    if (!user) {
       throw new UnauthorizedException();
+    }
+
+    const canTransfer = await this.auditService.isAuditOwnedBy(uniqueId, user.email);
+    if (!canTransfer) {
+      throw new ForbiddenException();
     }
 
     const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
