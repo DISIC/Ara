@@ -265,7 +265,7 @@ const isAuditOwnedByOtherAndUserConnected = computed(() => {
     && auditStore.currentAudit.auditor.username !== accountStore.account?.email;
 });
 
-const isDuplicationAllowed = computed(() => {
+const canDuplicate = computed(() => {
   return isCurrentAuditOwner.value ||
     isAuditPublicAndOrphanAndUserConnected.value;
 });
@@ -409,7 +409,7 @@ const isDuplicationAllowed = computed(() => {
               <li class="dropdown-item dropdown-item--with-meta">
                 <button
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
-                  :disabled="!isDuplicationAllowed"
+                  :disabled="!canDuplicate"
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer

@@ -252,9 +252,27 @@ export class AuditService {
     return username && audit.isPublic && !audit.auditor.isVerified;
   }
 
-  async isDuplicationAllowed(editUniqueId: string, username: string) {
+  async canDuplicate(editUniqueId: string, username: string) {
     return await this.isAuditOwnedBy(editUniqueId, username) ||
       await this.isAuditPublicAndOrphanAndUserConnected(editUniqueId, username);
+  }
+
+  async canDelete(editUniqueId: string, username?: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: {
+        isPublic: true,
+        auditor: {
+          select: {
+            username: true,
+            isVerified: true
+          }
+        }
+      }
+    });
+
+    return (audit.isPublic && !audit.auditor.isVerified)
+      || (username && audit.auditor.username === username);
   }
 
   /** Find and return an audit in the format that the API would return */
@@ -2141,23 +2159,5 @@ export class AuditService {
       originalAuditEmail,
       updatedAudit
     };
-  }
-
-  /**
-   * User can transfer an audit if:
-   * - audit email is not verified
-   * - audit email is verified and user is owner
-   */
-  async canUserTransferAudit(uniqueId: string, userEmail?: string) {
-    const { auditor } = await this.prisma.audit.findUnique({
-      where: {
-        editUniqueId: uniqueId
-      },
-      select: {
-        auditor: true
-      }
-    });
-
-    return !auditor.isVerified || auditor.username === userEmail;
   }
 }
