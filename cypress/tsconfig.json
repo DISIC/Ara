@@ -11,7 +11,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "types": ["cypress", "node"],
+    "types": ["cypress", "cypress-axe", "node"],
     "skipLibCheck": true
   },
   "include": ["**/*.ts", "../confiture-web-app/**/*"]
