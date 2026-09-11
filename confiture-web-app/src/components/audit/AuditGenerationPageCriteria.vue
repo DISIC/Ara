@@ -77,6 +77,13 @@ function toggleTopic(value: boolean, topic: number) {
   saveStatusToLocalStorage();
 }
 
+const HTML_TAG_REGEX =
+  /<\/?[a-z][a-z0-9-]*(?:\s+[a-z0-9-]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]+))?)*\s*\/?>/gi;
+
+function markHtmlTags(text: string): string {
+  return text.replace(HTML_TAG_REGEX, (tag) => `\`${tag}\``);
+}
+
 async function auditAutoPageClick(url: string) {
   console.log(url);
 
@@ -89,6 +96,21 @@ async function auditAutoPageClick(url: string) {
 
     const { inapplicable, passes, violations } = results;
 
+    // clean all results
+    const tags = [...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))];
+
+    tags.filter(x => x !== undefined)
+      .forEach((tag) => {
+        const result = getResultFromTag(tag);
+        if (result) {
+          result.status = CriteriumResultStatus.NOT_TESTED;
+          result.notApplicableComment = "";
+          result.compliantComment = "";
+          result.notCompliantItems = [];
+          resultsStore.updateResults(props.auditUniqueId, [result]);
+        }
+      });
+
     inapplicable.forEach((ina) => {
       const tag = ina.tags.find((x) => x.startsWith("RGAA-"));
       if (tag) {
@@ -97,9 +119,22 @@ async function auditAutoPageClick(url: string) {
         if (result) {
           result.status = CriteriumResultStatus.NOT_APPLICABLE;
 
-          resultsStore.updateResults(props.auditUniqueId, [result]);
+          if (result.notApplicableComment) {
+            result.notApplicableComment += "\n\n";
+          }
 
-          console.log("result", result);
+          if (ina.description) {
+            result.notApplicableComment += markHtmlTags(ina.description);
+
+            result.notApplicableComment += "\n";
+          }
+
+          result.notApplicableComment += markHtmlTags(ina.help);
+          if (ina.helpUrl) {
+            result.notApplicableComment += `\nSource : [${ina.helpUrl}](${ina.helpUrl})`;
+          }
+
+          resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       }
     });
@@ -111,10 +146,33 @@ async function auditAutoPageClick(url: string) {
 
         if (result) {
           result.status = CriteriumResultStatus.COMPLIANT;
+
+          if (result.compliantComment) {
+            result.notApplicableComment += "\n\n";
+          }
+
+          if (passe.description) {
+            result.compliantComment += markHtmlTags(passe.description);
+            result.compliantComment += "\n";
+          }
+
+          if (passe.help) {
+            result.compliantComment += markHtmlTags(passe.help);
+          }
+
+          if (passe.helpUrl) {
+            result.compliantComment += `\nSource : [${passe.helpUrl}](${passe.helpUrl})`;
+          }
+
+          if (passe.nodes.length) {
+            result.compliantComment += "\n\n Voici les éléments concernés :";
+            for (const node of passe.nodes) {
+              result.compliantComment += `\n\`\`\`html\n${node.html}\n\`\`\`\n`;
+            }
+          }
+
           resultsStore.updateResults(props.auditUniqueId, [result]);
         }
-
-        console.log("result", result);
       }
     });
 
@@ -126,11 +184,8 @@ async function auditAutoPageClick(url: string) {
 
         if (result) {
           result.status = CriteriumResultStatus.NOT_COMPLIANT;
-          result.notCompliantItems = [];
 
           await resultsStore.updateResults(props.auditUniqueId, [result]);
-
-          console.log("result", result);
 
           for (const node of violation.nodes) {
             let userImpact: CriterionResultUserImpact | null = null;
@@ -152,15 +207,11 @@ async function auditAutoPageClick(url: string) {
             let comment = null;
             if (node.failureSummary) {
               comment = node.failureSummary;
-              comment += "\n";
+              comment += "\n\n";
             }
 
             if (node.html) {
-              comment += `HTML :\n\`\`\`html\n${node.html}\n\`\`\`\n`;
-            }
-
-            if (node.target) {
-              comment += `target :\n\`\`\`html\n${node.target}\n\`\`\`\n`;
+              comment += `L'élément concerné :\n\`\`\`html\n${node.html}\n\`\`\`\n`;
             }
 
             const notCompliantItem: CreateNotCompliantItemData = {
@@ -180,56 +231,7 @@ async function auditAutoPageClick(url: string) {
               notCompliantItem as CreateNotCompliantItemData
             );
           }
-
-          /*  let userImpact = null;
-
-          switch (violation.impact) {
-            case "critical":
-              userImpact = CriterionResultUserImpact.BLOCKING;
-              break;
-
-            case "minor":
-              userImpact = CriterionResultUserImpact.MINOR;
-              break;
-            case "serious":
-            case "moderate":
-              userImpact = CriterionResultUserImpact.MAJOR;
-              break;
-          }
-
-           const notCompliantItem: NotCompliantItem = {
-
-            title: violation.help,
-            comment: violation.description,
-            userImpact,
-            quickWin: false
-          };
-
-          result.notCompliantItems.push(notCompliantItem); */
-
-          /* result.notCompliantItems.push({
-            id: undefined,
-            title: violation.id.toString(),
-            comment: violation.description,
-            userImpact // "minor", "moderate", "serious", or "critical"
-          }); */
         }
-
-        /*
-
-        const topic = store.filteredTopics
-          .find(x => x.number === criteriums[0]);
-        console.log("topic", topic);
-        if (topic) {
-          const criteria = topic.criteria
-            .find((x: any) => x.criterium.number === criteriums[1]);
-          console.log("criteria", criteria);
-          if (criteria) {
-            criteria.status = CriteriumResultStatus.NOT_COMPLIANT;
-          }
-
-          console.log("criteria2", criteria);
-        } */
       }
     }
   }
