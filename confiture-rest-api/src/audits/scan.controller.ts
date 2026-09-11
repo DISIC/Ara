@@ -9,7 +9,8 @@ import {
 } from "@nestjs/swagger";
 
 import axe, { AxeResults } from "axe-core";
-import puppeteer from "puppeteer";
+import fr from "axe-core/locales/fr.json";
+import { chromium } from "playwright";
 import { ScanAuditDto } from "./dto/requests/scan-audit.dto";
 
 @Controller("scan")
@@ -19,17 +20,16 @@ export class ScanController {
   @Post()
 
   async scanPage(@Body() body: ScanAuditDto): Promise<AxeResults> {
-    console.log("scan page", body);
-
-    const browser = await puppeteer.launch({
-      headless: true
+    const browser = await chromium.launch({
+      headless: true,
+      executablePath: process.env.CHROME_PATH
     });
 
     try {
       const page = await browser.newPage();
 
       await page.goto(body.url, {
-        waitUntil: "networkidle2",
+        waitUntil: "networkidle",
         timeout: 30_000
       });
 
@@ -37,6 +37,12 @@ export class ScanController {
       await page.addScriptTag({
         content: axe.source
       });
+
+      await page.evaluate(async (locale) => {
+        await (window as any).axe.configure({
+          locale
+        });
+      }, fr);
 
       const results = await page.evaluate(async () => {
         return await (window as any).axe.run(document, {
