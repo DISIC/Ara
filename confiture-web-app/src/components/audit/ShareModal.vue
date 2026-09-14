@@ -66,7 +66,7 @@ function toggleAuditPrivacy() {
             </div>
             <div class="fr-modal__content share-modal-content">
               <h1 :id="`share-modal-title-${editUniqueId}`" class="fr-modal__title fr-mb-4w">
-                Changer le statut de l’audit « {{ auditName }} »
+                Partage de l’audit « {{ auditName }} »
               </h1>
 
               <div class="fr-toggle fr-toggle-lg fr-toggle--label-left fr-mb-2w">
