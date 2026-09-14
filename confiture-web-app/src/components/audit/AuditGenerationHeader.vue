@@ -452,7 +452,7 @@ const canDuplicate = computed(() => {
                     Disponible uniquement avec un compte
                   </span>
                   <span v-else-if="!accountStore.account || (accountStore.account && !isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Seul le propriétaire peut partager cet audit
+                    Seul le propriétaire peut changer le statut de cet audit
                   </span>
                 </button>
               </li>
