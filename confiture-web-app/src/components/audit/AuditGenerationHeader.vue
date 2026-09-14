@@ -429,8 +429,7 @@ const canDuplicate = computed(() => {
                   @click="transferModalRef?.show()"
                 >
                   <span>
-                    Transférer l’audit
-                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    Transférer<span class="fr-sr-only"> l’audit {{ auditName }}</span>
                   </span>
                   <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut transférer l’audit
@@ -445,9 +444,7 @@ const canDuplicate = computed(() => {
                 >
                   <!-- TODO: delete badge in 1 month after merging -->
                   <!-- Needed to ensure dropdown is correctly closing when clicking -->
-                  <span style="pointer-events: none;">
-                    Changer le statut<span class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
-                  </span>
+                  <span>Partage<span class="fr-sr-only"> de l’audit {{ auditStore.currentAudit?.procedureName }}</span> <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span></span>
                   <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Disponible uniquement avec un compte
                   </span>

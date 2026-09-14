@@ -277,22 +277,21 @@ defineExpose({
           </li>
           <li class="dropdown-item">
             <button
+              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+              @click="$emit('transfer')"
+            >
+              Transférer
+              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
               @click="shareModal?.show()"
             >
               <!-- TODO: delete badge in 1 month after merging -->
               <!-- Needed to ensure dropdown is correctly closing when clicking -->
-              Changer le statut <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
-              <span class="fr-sr-only">de l’audit {{ audit.procedureName }}</span>
-            </button>
-          </li>
-          <li class="dropdown-item">
-            <button
-              class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
-              @click="$emit('transfer')"
-            >
-              Transférer l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+              Partage<span class="fr-sr-only"> de l’audit {{ audit.procedureName }}</span> <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -352,7 +351,9 @@ defineExpose({
               </span>
             </a>
           </li>
+
           <li aria-hidden="true" class="dropdown-separator"></li>
+
           <li class="dropdown-item">
             <button
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
