@@ -454,14 +454,14 @@ const canDuplicate = computed(() => {
                 </button>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
-              <li class="dropdown-item">
+              <li class="dropdown-item dropdown-item--with-meta">
                 <a
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill download-link"
                   :href="csvExportUrl"
                   :download="csvExportFilename"
                 >
                   Télécharger la grille d’audit
-                  <span class="fr-text--xs fr-text--regular download-meta">
+                  <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                     CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
                 </a>
@@ -581,11 +581,6 @@ const canDuplicate = computed(() => {
 .download-link {
   display: flex;
   flex-wrap: wrap;
-}
-
-.download-meta {
-  flex-basis: 100%;
-  color: var(--text-mention-grey);
 }
 
 .notes-desktop-link {
