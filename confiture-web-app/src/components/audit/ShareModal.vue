@@ -98,7 +98,7 @@ function toggleAuditPrivacy() {
                     success-label="Lien copié"
                     icon="fr-icon-link"
                     :content-to-copy="{
-                      name: 'audit-generation-full',
+                      name: 'audit-generation',
                       params: { uniqueId: editUniqueId }
                     }"
                   />
