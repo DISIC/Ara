@@ -89,7 +89,7 @@ function toggleAuditPrivacy() {
                 }}
               </p>
               <div :class="{ 'hidden-public-content': !auditIsPublic }">
-                <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w ">La modification d’un champ par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
+                <p id="privacy-warning" class="fr-message fr-message--info fr-mb-3w ">La modification d’un champ dans un audit par plusieurs personnes en même temps peut entraîner une perte des saisies dans le champ.</p>
                 <div class="fr-btns-group fr-btns-group--icon-left">
                   <CopyButton
                     data-keep-open
