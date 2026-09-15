@@ -1,10 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
 import { AuthService } from "../auth/auth.service";
+
 import {
   Audit,
   AuditType,
@@ -82,7 +83,7 @@ export class AuditService {
     private readonly authService: AuthService
   ) { }
 
-  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto, isPublic: boolean): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -132,7 +133,9 @@ export class AuditService {
             auditConsultUniqueId: consultUniqueId,
             auditEditUniqueId: editUniqueId
           }
-        }
+        },
+
+        isPublic
       },
       select: AUDIT_PRISMA_SELECT
     });
@@ -208,6 +211,68 @@ export class AuditService {
     });
 
     return !!audit;
+  }
+
+  /**
+   * Check audit privacy and ownership if user is connected
+   *
+   * @param editUniqueId id of the audit to check ownership of
+   * @param username email adress of user
+   * @returns if the audit is accessible by the user
+   * @throws if the audit is not acessible by the user
+   */
+  async validateAuditAccess(editUniqueId: string, username?: string): Promise<void> {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { procedureName: true, isPublic: true, auditor: { select: { username: true } } }
+    });
+
+    if (!(audit.isPublic || (username && audit.auditor.username === username))) {
+      throw new ForbiddenException({ auditName: audit.procedureName });
+    }
+  }
+
+  /**
+   * Check that the user if the audit owner
+   */
+  async isAuditOwnedBy(editUniqueId: string, username: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { auditor: { select: { username: true } } }
+    });
+
+    return audit.auditor.username === username;
+  }
+
+  async isAuditPublicAndOrphanAndUserConnected(editUniqueId: string, username: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { isPublic: true, auditor: { select: { username: true, isVerified: true } } }
+    });
+    return username && audit.isPublic && !audit.auditor.isVerified;
+  }
+
+  async canDuplicate(editUniqueId: string, username: string) {
+    return await this.isAuditOwnedBy(editUniqueId, username) ||
+      await this.isAuditPublicAndOrphanAndUserConnected(editUniqueId, username);
+  }
+
+  async canDelete(editUniqueId: string, username?: string) {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: {
+        isPublic: true,
+        auditor: {
+          select: {
+            username: true,
+            isVerified: true
+          }
+        }
+      }
+    });
+
+    return (audit.isPublic && !audit.auditor.isVerified)
+      || (username && audit.auditor.username === username);
   }
 
   /** Find and return an audit in the format that the API would return */
@@ -1086,6 +1151,13 @@ export class AuditService {
     }
   }
 
+  async setAuditPrivacy(editUniqueId: string, isPublic: boolean): Promise<void> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: { isPublic }
+    });
+  }
+
   /**
    * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
    * as completed after having been completed or
@@ -1486,7 +1558,7 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
+  async duplicateAudit(sourceUniqueId: string, newAuditName: string, userEmail: string): Promise<AuditDto> {
     const originalAudit = await this.prisma.audit.findFirst({
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
@@ -1677,11 +1749,11 @@ export class AuditService {
           "notInScopeContent"
         ]),
 
+        // associate new audit to connected user email
         ...(originalAudit.auditorEmail && {
           auditor: {
             connect: {
-              // FIXME: shouldnt the new audit be under the user who duplicated the audit ?
-              username: originalAudit.auditorEmail.toLowerCase()
+              username: userEmail.toLowerCase()
             }
           }
         }),
@@ -1813,7 +1885,8 @@ export class AuditService {
           select: {
             results: true
           }
-        }
+        },
+        isPublic: true
       }
     });
 
@@ -1892,7 +1965,8 @@ export class AuditService {
           "editUniqueId",
           "consultUniqueId",
           "creationDate",
-          "auditType"
+          "auditType",
+          "isPublic"
         ),
         complianceLevel,
         status:
@@ -2085,23 +2159,5 @@ export class AuditService {
       originalAuditEmail,
       updatedAudit
     };
-  }
-
-  /**
-   * User can transfer an audit if:
-   * - audit email is not verified
-   * - audit email is verified and user is owner
-   */
-  async canUserTransferAudit(uniqueId: string, userEmail?: string) {
-    const { auditor } = await this.prisma.audit.findUnique({
-      where: {
-        editUniqueId: uniqueId
-      },
-      select: {
-        auditor: true
-      }
-    });
-
-    return !auditor.isVerified || auditor.username === userEmail;
   }
 }
