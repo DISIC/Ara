@@ -194,7 +194,7 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     auditorEmail: options?.auditorEmail,
     fillStatement: options?.fillStatement,
     publicationDate: options?.publicationDate,
-    isPublic: options?.isPublic,
+    isPublic: options?.isPublic ?? true,
     ownerUserName: options?.ownerUserName
   }).its("body");
 });
