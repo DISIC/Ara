@@ -70,7 +70,7 @@ onMounted(() => {
     <template #description>
 
       <p>Tous vos audits sont désormais <strong>privés par défaut</strong>.</p>
-      <p class="fr-mb-2w">Pour permettre l’accès et l’édition d’un audit, vous devez le rendre public : menu « <strong>Actions</strong> » puis « <strong>Partage</strong> ».</p>
+      <p class="fr-mb-2w">Pour permettre l’accès et l’édition d’un audit, vous devez le rendre public : menu «&nbsp;<strong>Actions</strong>&nbsp;» puis «&nbsp;<strong>Partage</strong>&nbsp;».</p>
       <p><strong>À noter</strong> : si vous avez déjà partagé des liens d’audit, pensez à les rendre publics.</p>
     </template>
   </AnnouncementAlert>
