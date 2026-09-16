@@ -97,21 +97,21 @@ async function auditAutoPageClick(url: string) {
     const { inapplicable, passes, violations } = results;
 
     // clean all results
-    const tags = [...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))];
+    const tags = [...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...violations.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))];
 
     tags.filter(x => x !== undefined)
-      .forEach((tag) => {
+      .forEach(async (tag) => {
         const result = getResultFromTag(tag);
         if (result) {
           result.status = CriteriumResultStatus.NOT_TESTED;
           result.notApplicableComment = "";
           result.compliantComment = "";
           result.notCompliantItems = [];
-          resultsStore.updateResults(props.auditUniqueId, [result]);
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       });
 
-    inapplicable.forEach((ina) => {
+    inapplicable.forEach(async (ina) => {
       const tag = ina.tags.find((x) => x.startsWith("RGAA-"));
       if (tag) {
         const result = getResultFromTag(tag);
@@ -119,27 +119,26 @@ async function auditAutoPageClick(url: string) {
         if (result) {
           result.status = CriteriumResultStatus.NOT_APPLICABLE;
 
-          if (result.notApplicableComment) {
+          if (ina.description) {
+            result.notApplicableComment += `### ${markHtmlTags(ina.description)}`;
             result.notApplicableComment += "\n\n";
           }
 
-          if (ina.description) {
-            result.notApplicableComment += markHtmlTags(ina.description);
+          if (ina.help) {
+            result.notApplicableComment += markHtmlTags(ina.help);
+            if (ina.helpUrl) {
+              result.notApplicableComment += `\n[Pour plus d'informations](${ina.helpUrl})`;
+            }
 
-            result.notApplicableComment += "\n";
+            result.notApplicableComment += "\n\n";
           }
 
-          result.notApplicableComment += markHtmlTags(ina.help);
-          if (ina.helpUrl) {
-            result.notApplicableComment += `\nSource : [${ina.helpUrl}](${ina.helpUrl})`;
-          }
-
-          resultsStore.updateResults(props.auditUniqueId, [result]);
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       }
     });
 
-    passes.forEach((passe) => {
+    passes.forEach(async (passe) => {
       const tag = passe.tags.find((x) => x.startsWith("RGAA-"));
       if (tag) {
         const result = getResultFromTag(tag);
@@ -147,31 +146,44 @@ async function auditAutoPageClick(url: string) {
         if (result) {
           result.status = CriteriumResultStatus.COMPLIANT;
 
-          if (result.compliantComment) {
-            result.notApplicableComment += "\n\n";
-          }
-
           if (passe.description) {
-            result.compliantComment += markHtmlTags(passe.description);
-            result.compliantComment += "\n";
+            result.compliantComment += `### ${markHtmlTags(passe.description)}`;
+            result.compliantComment += "\n\n";
           }
 
           if (passe.help) {
             result.compliantComment += markHtmlTags(passe.help);
-          }
 
-          if (passe.helpUrl) {
-            result.compliantComment += `\nSource : [${passe.helpUrl}](${passe.helpUrl})`;
+            if (passe.helpUrl) {
+              result.compliantComment += "\n";
+              result.compliantComment += `[Pour plus d'informations](${passe.helpUrl})`;
+            }
+
+            result.compliantComment += "\n\n";
           }
 
           if (passe.nodes.length) {
-            result.compliantComment += "\n\n Voici les éléments concernés :";
             for (const node of passe.nodes) {
-              result.compliantComment += `\n\`\`\`html\n${node.html}\n\`\`\`\n`;
+              result.compliantComment += `##### Elément ${node.target.join("\n\n")}`;
+              result.compliantComment += "\n\n";
+
+              const checksResults = [...node.any, ...node.all, ...node.none];
+
+              if (checksResults.length) {
+                result.compliantComment += "L'élément a ces recommandations suivantes :";
+                result.compliantComment += "\n\n";
+                for (const checkResult of checksResults) {
+                  result.compliantComment += `- ${markHtmlTags(checkResult.message)}`;
+                  result.compliantComment += "\n\n";
+                }
+              }
+
+              result.compliantComment += `\n\nNœud associé : \n\`\`\`html\n${node.html}\n\`\`\`\n`;
+              result.compliantComment += "\n\n";
             }
           }
 
-          resultsStore.updateResults(props.auditUniqueId, [result]);
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       }
     });
@@ -183,9 +195,10 @@ async function auditAutoPageClick(url: string) {
         const result = getResultFromTag(tag);
 
         if (result) {
-          result.status = CriteriumResultStatus.NOT_COMPLIANT;
-
-          await resultsStore.updateResults(props.auditUniqueId, [result]);
+          if (result.status !== CriteriumResultStatus.NOT_COMPLIANT) {
+            result.status = CriteriumResultStatus.NOT_COMPLIANT;
+            await resultsStore.updateResults(props.auditUniqueId, [result]);
+          }
 
           for (const node of violation.nodes) {
             let userImpact: CriterionResultUserImpact | null = null;
@@ -204,17 +217,74 @@ async function auditAutoPageClick(url: string) {
                 break;
             }
 
+            const title = violation.help;
+
             let comment = null;
-            if (node.failureSummary) {
-              comment = node.failureSummary;
+
+            if (violation.description) {
+              comment = markHtmlTags(violation.description);
+              comment += "\n\n";
+              comment += `[Pour plus d'informations](${violation.helpUrl})`;
               comment += "\n\n";
             }
 
             if (node.html) {
-              comment += `L'élément concerné :\n\`\`\`html\n${node.html}\n\`\`\`\n`;
+              comment += `Emplacement de l'élément :\n\`\`\`html\n${node.target.join("\n\n")}\n\`\`\`\n`;
+              comment += "\n\n";
+              comment += `\`\`\`html\n${node.html}\n\`\`\``;
+              comment += "\n\n";
+            }
+
+            if (node.all.length) {
+              comment += "Pour résoudre ce problème, vous devez corriger les éléments suivants : \n\n";
+              for (const all of node.all) {
+                comment += `${markHtmlTags(all.message)}`;
+                if (all.relatedNodes?.length) {
+                  comment += "\n\n";
+                  for (const relatedNode of all.relatedNodes) {
+                    comment += `\n\nNœud associé : \n\`\`\`html\n${relatedNode.html}\n\`\`\`\n`;
+                  }
+                }
+              }
+
+              comment += "\n\n";
+            }
+
+            if (node.any.length) {
+              if (node.any.length === 1) {
+                const any = node.any[0];
+
+                comment += "Pour résoudre ce problème, vous devez corriger les éléments suivants : \n\n";
+                comment += `- ${markHtmlTags(any.message)}`;
+
+                if (any.relatedNodes?.length) {
+                  comment += "\n\n";
+                  for (const relatedNode of any.relatedNodes) {
+                    comment += `\n\nNœud associé : \n\`\`\`html\n${relatedNode.html}\n\`\`\`\n`;
+                  }
+                }
+              } else {
+                comment += "Pour résoudre ce problème, vous devez corriger au moins (1) des problèmes suivants : \n\n";
+
+                for (const any of node.any) {
+                  comment += `- ${markHtmlTags(any.message)}\n\n`;
+                }
+              }
+
+              comment += "\n\n";
+            }
+
+            if (node.none.length) {
+              comment += "Et corriger les suivants :\n\n";
+              for (const none of node.none) {
+                comment += `- ${none.message}\n\n`;
+              }
+
+              comment += "\n\n";
             }
 
             const notCompliantItem: CreateNotCompliantItemData = {
+              title,
               comment,
               userImpact,
               quickWin: false
