@@ -3,7 +3,6 @@ import {
   ConflictException,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpStatus,
   NotFoundException,
@@ -13,7 +12,6 @@ import {
   Patch,
   Post,
   Put,
-  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -271,8 +269,9 @@ export class AuditsController {
     return this.auditService.publishAudit(uniqueId);
   }
 
-  /** Toggle audit privacy and make it public (default is private = `false`) */
+  /** Set audit privacy (public or private) */
   @Patch("/:uniqueId/privacy")
+  @AuthRequired()
   @ApiOkResponse({
     description: "The audit privacy has been successfully updated"
   })
@@ -281,14 +280,7 @@ export class AuditsController {
     @Body() body: UpdateAuditPrivacyDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<void> {
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const canSetAuditPrivacy = await this.auditService.isAuditOwnedBy(uniqueId, user.email);
-    if (!canSetAuditPrivacy) {
-      throw new ForbiddenException();
-    }
+    await this.auditService.checkEditPrivacyPermissions(uniqueId, user.email);
 
     return this.auditService.setAuditPrivacy(uniqueId, body.isPublic);
   }
@@ -300,11 +292,7 @@ export class AuditsController {
     @AuditId() uniqueId: string,
     @User() user: AuthenticationJwtPayload
   ) {
-    const canDelete = await this.auditService.canDelete(uniqueId, user?.email);
-
-    if (!canDelete) {
-      throw new ForbiddenException();
-    }
+    await this.auditService.checkDeletePermissions(uniqueId, user?.email);
 
     await this.auditService.softDeleteAudit(uniqueId);
   }
@@ -327,9 +315,7 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    if (!(await this.auditService.canDuplicate(uniqueId, user.email))) {
-      throw new ForbiddenException();
-    }
+    await this.auditService.checkDuplicatePermissions(uniqueId, user.email);
 
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
@@ -349,6 +335,7 @@ export class AuditsController {
   }
 
   @Put("/:uniqueId/transfer")
+  @AuthRequired()
   @ApiOkResponse({
     description: "The audit has been successfully transfered.",
     type: AuditDto
@@ -359,14 +346,7 @@ export class AuditsController {
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const canTransfer = await this.auditService.isAuditOwnedBy(uniqueId, user.email);
-    if (!canTransfer) {
-      throw new ForbiddenException();
-    }
+    await this.auditService.checkTransferPermissions(uniqueId, user.email);
 
     const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
