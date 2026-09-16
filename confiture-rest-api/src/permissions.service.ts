@@ -47,7 +47,8 @@ export class PermissionsService {
     });
 
     // Audit is orphan
-    if (audit.isPublic && !audit.auditor.isVerified) {
+    if (!audit.auditor.isVerified) {
+      assert(audit.isPublic, "Orphan audit should never be private");
       return;
     }
 

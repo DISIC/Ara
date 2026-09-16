@@ -6,6 +6,7 @@ import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
 import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
+import { canDelete, canDuplicate, canEditPrivacy, canTransfer, isOrphan, isUserAuditOwner } from "../../permissions";
 import {
   useAccountStore,
   useAuditStore,
@@ -97,10 +98,6 @@ function confirmDuplicate(name: string) {
     });
 }
 
-const canTransferAudit = computed(() => {
-  return !auditStore.currentAudit?.auditor?.isVerified
-    || accountStore.account?.email === auditStore.currentAudit?.auditorEmail;
-});
 const transferModalRef = useTemplateRef<InstanceType<typeof DuplicateModal>>("transferModalRef");
 
 /**
@@ -238,328 +235,308 @@ onMounted(() => {
 
   observer.observe(scrollSentinelRef.value!);
 });
-
-const isAuditPublicAndOrphanAndUserConnected = computed(() => {
-  if (!auditStore.currentAudit) {
-    return false;
-  }
-  return accountStore.account && auditStore.currentAudit.isPublic &&
-    !auditStore.currentAudit.auditor.isVerified;
-});
-
-const isCurrentAuditOwner = computed(() => {
-  const auditStore = useAuditStore();
-  if (!accountStore.account || !auditStore.currentAudit) {
-    return false;
-  }
-  return accountStore.account.email
-    === auditStore.currentAudit.auditor.username;
-});
-
-const isAuditOwnedByOtherAndUserConnected = computed(() => {
-  const auditStore = useAuditStore();
-  if (!accountStore.account || !auditStore.currentAudit) {
-    return false;
-  }
-  return auditStore.currentAudit.auditor.isVerified
-    && auditStore.currentAudit.auditor.username !== accountStore.account?.email;
-});
-
-const canDuplicate = computed(() => {
-  return isCurrentAuditOwner.value ||
-    isAuditPublicAndOrphanAndUserConnected.value;
-});
 </script>
 
 <template>
-  <div v-if="isDevMode" class="fr-mb-4w">
-    <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
-      [DEV] Remplir l’audit
-    </button>
-  </div>
-
-  <h1 class="fr-mb-3v">
-    Audit <span :class="`fr-badge fr-badge--blue-cumulus ${auditStore.currentAudit?.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
-      {{ auditStore.currentAudit?.isPublic ? 'Public' : 'Privé' }}
-    </span>
-    <span class="fr-sr-only">
-      Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
-      problème lié à l’enregistrement
-    </span>
-  </h1>
-  <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
-
-  <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">
-    <div
-      v-if="!systemStore.isOnline"
-      id="offlineAlert"
-      class="fr-pt-1w offline-alert"
-    >
-      <div class="fr-alert fr-alert--error">
-        <h3 class="fr-alert__title">Tentative de connexion...</h3>
-        <p>
-          Vous êtes actuellement hors connexion. Veuillez vérifier votre
-          connexion internet.
-        </p>
-      </div>
+  <template v-if="auditStore.currentAudit">
+    <div v-if="isDevMode" class="fr-mb-4w">
+      <button class="fr-btn" @click="resultsStore.DEV_fillResults(uniqueId)">
+        [DEV] Remplir l’audit
+      </button>
     </div>
 
-    <div
-      class="fr-col-12 fr-col-sm-5 fr-col-md-3 indicator-left-side"
-      :class="{ 'with-border': showLeftSideBorders }"
-    >
-      <AuditProgressBar
-        v-if="showAuditProgressBar"
-        :value="resultStore.auditProgress"
-        label="Progression de l’audit"
-        tooltip-label="Informations sur la progression de l’audit"
-        :size="8"
-        class="progress-bar"
+    <h1 class="fr-mb-3v">
+      Audit <span :class="`fr-badge fr-badge--blue-cumulus ${auditStore.currentAudit.isPublic ? 'fr-icon-earth-line' : 'fr-icon-lock-2-line'} fr-badge--icon-left fr-ml-1w`">
+        {{ auditStore.currentAudit.isPublic ? 'Public' : 'Privé' }}
+      </span>
+      <span class="fr-sr-only">
+        Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
+        problème lié à l’enregistrement
+      </span>
+    </h1>
+    <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
+
+    <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">
+      <div
+        v-if="!systemStore.isOnline"
+        id="offlineAlert"
+        class="fr-pt-1w offline-alert"
       >
-        <template #tooltip-content>
-          <p class="fr-text--sm">
-            La progression de l'audit se base sur les critères évalués de chaque
-            <strong>page de votre échantillon</strong>. Évaluez les critères de
-            toutes les pages pour terminer votre audit.
+        <div class="fr-alert fr-alert--error">
+          <h3 class="fr-alert__title">Tentative de connexion...</h3>
+          <p>
+            Vous êtes actuellement hors connexion. Veuillez vérifier votre
+            connexion internet.
           </p>
-          <p class="fr-text--xs fr-mb-0">
-            À noter : les critères des
-            <strong>éléments transverses</strong> sont optionnels. Ils sont pris
-            en compte dans le calcul du taux mais pas dans la progression de
-            l’audit.
-          </p>
-        </template>
-      </AuditProgressBar>
+        </div>
+      </div>
 
       <div
-        v-else-if="auditStore.currentAudit?.publicationDate"
-        class="audit-status"
+        class="fr-col-12 fr-col-sm-5 fr-col-md-3 indicator-left-side"
+        :class="{ 'with-border': showLeftSideBorders }"
       >
-        <span
-          class="fr-icon-success-fill fr-icon--sm audit-status-icon"
-          aria-hidden="true"
+        <AuditProgressBar
+          v-if="showAuditProgressBar"
+          :value="resultStore.auditProgress"
+          label="Progression de l’audit"
+          tooltip-label="Informations sur la progression de l’audit"
+          :size="8"
+          class="progress-bar"
+        >
+          <template #tooltip-content>
+            <p class="fr-text--sm">
+              La progression de l'audit se base sur les critères évalués de chaque
+              <strong>page de votre échantillon</strong>. Évaluez les critères de
+              toutes les pages pour terminer votre audit.
+            </p>
+            <p class="fr-text--xs fr-mb-0">
+              À noter : les critères des
+              <strong>éléments transverses</strong> sont optionnels. Ils sont pris
+              en compte dans le calcul du taux mais pas dans la progression de
+              l’audit.
+            </p>
+          </template>
+        </AuditProgressBar>
+
+        <div
+          v-else-if="auditStore.currentAudit.publicationDate"
+          class="audit-status"
+        >
+          <span
+            class="fr-icon-success-fill fr-icon--sm audit-status-icon"
+            aria-hidden="true"
+          />
+          <strong class="audit-status-publish">
+            Terminé le
+            <time :datetime="auditStore.currentAudit.publicationDate">
+              {{ formatDate(auditStore.currentAudit.publicationDate) }}
+            </time>
+          </strong>
+          <span v-if="auditStore.currentAudit.editionDate && !isSameDay(auditStore.currentAudit.publicationDate, auditStore.currentAudit.editionDate)" class="fr-text--xs fr-mb-0 audit-status-modify">
+            Mis à jour le
+            <time :datetime="auditStore.currentAudit.editionDate">
+              {{ formatDate(auditStore.currentAudit.editionDate) }}
+            </time>
+          </span>
+        </div>
+      </div>
+
+      <div class="fr-col-12 fr-col-sm-7 fr-col-md-9 sub-header">
+        <SaveIndicator
+          v-if="route.name === 'audit-generation-full'"
+          class="audit-main-indicator"
         />
-        <strong class="audit-status-publish">
-          Terminé le
-          <time :datetime="auditStore.currentAudit?.publicationDate">
-            {{ formatDate(auditStore.currentAudit?.publicationDate) }}
-          </time>
-        </strong>
-        <span v-if="auditStore.currentAudit?.editionDate && !isSameDay(auditStore.currentAudit?.publicationDate, auditStore.currentAudit?.editionDate)" class="fr-text--xs fr-mb-0 audit-status-modify">
-          Mis à jour le
-          <time :datetime="auditStore.currentAudit?.editionDate">
-            {{ formatDate(auditStore.currentAudit?.editionDate) }}
-          </time>
-        </span>
+        <ul class="fr-my-0 fr-p-0 top-actions" role="list">
+          <li class="fr-p-0">
+            <Dropdown
+              ref="optionsDropdownRef"
+              title="Actions"
+              :disabled="isOffline"
+            >
+              <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
+                <li class="fr-hidden-lg dropdown-item">
+                  <button
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-draft-line"
+                    :disabled="isOffline"
+                    @click="openNotesModal"
+                  >
+                    Ajouter des observations
+                  </button>
+                </li>
+                <li aria-hidden="true" class="fr-hidden-lg dropdown-separator" />
+                <li class="fr-p-0 dropdown-item">
+                  <component
+                    :is="isOffline ? 'button' : 'RouterLink'"
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left"
+                    :to="isOffline ? undefined : {
+                      name: 'report',
+                      params: {
+                        uniqueId: auditStore.currentAudit.consultUniqueId
+                      }
+                    }"
+                    target="_blank"
+                    :disabled="isOffline ? true : undefined"
+                  >
+                    Consulter le rapport
+                    <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
+                  </component>
+                </li>
+                <li aria-hidden="true" class="dropdown-separator" />
+                <li class="fr-p-0 dropdown-item">
+                  <RouterLink
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
+                    :to="{
+                      name: 'audit-settings',
+                      params: { uniqueId: editUniqueId }
+                    }"
+                  >
+                    Modifier les paramètres
+                  </RouterLink>
+                </li>
+                <li class="dropdown-item dropdown-item--with-meta">
+                  <button
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
+                    :disabled="!canDuplicate(
+                      auditStore.currentAudit,
+                      accountStore.account?.email)
+                    "
+                    @click="duplicateModal?.show()"
+                  >
+                    Dupliquer
+                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      Disponible uniquement avec un compte
+                    </span>
+                    <span v-else-if="!isUserAuditOwner(auditStore.currentAudit, accountStore.account?.email)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      Seul le propriétaire peut dupliquer cet audit
+                    </span>
+                  </button>
+                </li>
+                <li class="dropdown-item dropdown-item--with-meta">
+                  <button
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
+                    :disabled="!canTransfer(
+                      auditStore.currentAudit,
+                      accountStore.account?.email)
+                    "
+                    @click="transferModalRef?.show()"
+                  >
+                    <span>
+                      Transférer<span class="fr-sr-only"> l’audit {{ auditName }}</span>
+                    </span>
+                    <span v-if="!canTransfer(auditStore.currentAudit, accountStore.account?.email)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      Seul le propriétaire peut transférer l’audit
+                    </span>
+                  </button>
+                </li>
+                <li class="dropdown-item dropdown-item--with-meta">
+                  <button
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
+                    :disabled="!canEditPrivacy(
+                      auditStore.currentAudit,
+                      accountStore.account?.email)
+                    "
+                    @click="shareModal?.show()"
+                  >
+                    <!-- TODO: delete badge in 1 month after merging -->
+                    <!-- Needed to ensure dropdown is correctly closing when clicking -->
+                    <span>Partager<span class="fr-sr-only"> l’audit {{ auditStore.currentAudit.procedureName }}</span> <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span></span>
+                    <span v-if="!accountStore.account && isOrphan(auditStore.currentAudit)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      Disponible uniquement avec un compte
+                    </span>
+                    <span v-else-if="!isUserAuditOwner(auditStore.currentAudit, accountStore.account?.email)" class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      Seul le propriétaire peut changer le statut de cet audit
+                    </span>
+                  </button>
+                </li>
+                <li aria-hidden="true" class="dropdown-separator" />
+                <li class="dropdown-item dropdown-item--with-meta">
+                  <a
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill download-link"
+                    :href="csvExportUrl"
+                    :download="csvExportFilename"
+                  >
+                    Télécharger la grille d’audit
+                    <span class="fr-text--xs fr-text--regular dropdown-item-meta">
+                      CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                    </span>
+                  </a>
+                </li>
+                <li aria-hidden="true" class="dropdown-separator" />
+                <li class="dropdown-item dropdown-item--with-meta">
+                  <button
+                    class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
+                    :disabled="!canDelete(
+                      auditStore.currentAudit,
+                      accountStore.account?.email)
+                    "
+                    @click="deleteModal?.show()"
+                  >
+                    Supprimer l’audit
+                    <span v-if="!canDelete(auditStore.currentAudit, accountStore.account?.email)" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
+                  </button>
+                </li>
+              </ul>
+            </Dropdown>
+          </li>
+
+          <li class="fr-unhidden-lg fr-p-0 notes-desktop-link">
+            <button
+              class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
+              :disabled="isOffline"
+              @click="openNotesModal"
+            >
+              Ajouter des observations
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="fr-col-12 fr-col-sm-7 fr-col-md-9 sub-header">
-      <SaveIndicator
-        v-if="route.name === 'audit-generation-full'"
-        class="audit-main-indicator"
+    <div class="metrics fr-mb-4w">
+      <SummaryCard
+        v-for="info in keyInfos"
+        :key="info.title"
+        :title="info.title"
+        :description="info.description"
+        :value="info.value"
+        :unit="info.unit"
+        :theme="info.theme"
+        :disabled="info.disabled"
       />
-      <ul class="fr-my-0 fr-p-0 top-actions" role="list">
-        <li class="fr-p-0">
-          <Dropdown
-            ref="optionsDropdownRef"
-            title="Actions"
-            :disabled="isOffline"
-          >
-            <ul role="list" class="fr-p-0 fr-m-0 dropdown-list">
-              <li class="fr-hidden-lg dropdown-item">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-draft-line"
-                  :disabled="isOffline"
-                  @click="openNotesModal"
-                >
-                  Ajouter des observations
-                </button>
-              </li>
-              <li aria-hidden="true" class="fr-hidden-lg dropdown-separator" />
-              <li class="fr-p-0 dropdown-item">
-                <component
-                  :is="isOffline ? 'button' : 'RouterLink'"
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left"
-                  :to="isOffline ? undefined : {
-                    name: 'report',
-                    params: {
-                      uniqueId: auditStore.currentAudit?.consultUniqueId
-                    }
-                  }"
-                  target="_blank"
-                  :disabled="isOffline ? true : undefined"
-                >
-                  Consulter le rapport
-                  <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
-                </component>
-              </li>
-              <li aria-hidden="true" class="dropdown-separator" />
-              <li class="fr-p-0 dropdown-item">
-                <RouterLink
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-settings-5-line"
-                  :to="{
-                    name: 'audit-settings',
-                    params: { uniqueId: editUniqueId }
-                  }"
-                >
-                  Modifier les paramètres
-                </RouterLink>
-              </li>
-              <li class="dropdown-item dropdown-item--with-meta">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
-                  :disabled="!canDuplicate"
-                  @click="duplicateModal?.show()"
-                >
-                  Dupliquer
-                  <span class="fr-sr-only"> {{ auditName }}</span>
-                  <span v-if="!accountStore.account" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Disponible uniquement avec un compte
-                  </span>
-                  <span v-else-if="isAuditOwnedByOtherAndUserConnected" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Seul le propriétaire peut dupliquer cet audit
-                  </span>
-                </button>
-              </li>
-              <li class="dropdown-item dropdown-item--with-meta">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
-                  :disabled="!canTransferAudit"
-                  @click="transferModalRef?.show()"
-                >
-                  <span>
-                    Transférer<span class="fr-sr-only"> l’audit {{ auditName }}</span>
-                  </span>
-                  <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Seul le propriétaire peut transférer l’audit
-                  </span>
-                </button>
-              </li>
-              <li class="dropdown-item dropdown-item--with-meta">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-user-add-line fr-m-0"
-                  :disabled="!isCurrentAuditOwner"
-                  @click="shareModal?.show()"
-                >
-                  <!-- TODO: delete badge in 1 month after merging -->
-                  <!-- Needed to ensure dropdown is correctly closing when clicking -->
-                  <span>Partager<span class="fr-sr-only"> l’audit {{ auditStore.currentAudit?.procedureName }}</span> <span style="pointer-events: none;" class="fr-badge fr-badge--sm fr-badge--yellow-moutarde fr-badge--icon-left fr-icon-flashlight-fill fr-ml-1-5v">Nouveau</span></span>
-                  <span v-if="!auditStore.currentAudit?.auditor.isVerified" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Disponible uniquement avec un compte
-                  </span>
-                  <span v-else-if="!accountStore.account || (accountStore.account && !isCurrentAuditOwner)" class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    Seul le propriétaire peut changer le statut de cet audit
-                  </span>
-                </button>
-              </li>
-              <li aria-hidden="true" class="dropdown-separator" />
-              <li class="dropdown-item dropdown-item--with-meta">
-                <a
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-download-fill download-link"
-                  :href="csvExportUrl"
-                  :download="csvExportFilename"
-                >
-                  Télécharger la grille d’audit
-                  <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
-                  </span>
-                </a>
-              </li>
-              <li aria-hidden="true" class="dropdown-separator" />
-              <li class="dropdown-item dropdown-item--with-meta">
-                <button
-                  class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
-                  :disabled="
-                    auditStore.currentAudit?.auditor.isVerified
-                      && !isCurrentAuditOwner
-                  "
-                  @click="deleteModal?.show()"
-                >
-                  Supprimer l’audit
-                  <span v-if="auditStore.currentAudit?.auditor.isVerified && !isCurrentAuditOwner" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut supprimer cet audit</span>
-                </button>
-              </li>
-            </ul>
-          </Dropdown>
-        </li>
-
-        <li class="fr-unhidden-lg fr-p-0 notes-desktop-link">
-          <button
-            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-draft-line"
-            :disabled="isOffline"
-            @click="openNotesModal"
-          >
-            Ajouter des observations
-          </button>
-        </li>
-      </ul>
     </div>
-  </div>
 
-  <div class="metrics fr-mb-4w">
-    <SummaryCard
-      v-for="info in keyInfos"
-      :key="info.title"
-      :title="info.title"
-      :description="info.description"
-      :value="info.value"
-      :unit="info.unit"
-      :theme="info.theme"
-      :disabled="info.disabled"
+    <div ref="scrollSentinelRef" />
+
+    <DuplicateModal
+      :id="uniqueId"
+      ref="duplicateModal"
+      :original-audit-name="auditStore.currentAudit.procedureName"
+      :is-loading="isDuplicationLoading"
+      @confirm="confirmDuplicate"
+      @closed="
+        optionsDropdownRef?.buttonRef?.focus();
+        optionsDropdownRef?.closeOptions();
+      "
     />
-  </div>
 
-  <div ref="scrollSentinelRef" />
+    <TransferModal
+      :id="editUniqueId"
+      ref="transferModalRef"
+      :procedure-name="auditName"
+      @confirm="transferAudit"
+    />
 
-  <DuplicateModal
-    :id="uniqueId"
-    ref="duplicateModal"
-    :original-audit-name="auditStore.currentAudit?.procedureName"
-    :is-loading="isDuplicationLoading"
-    @confirm="confirmDuplicate"
-    @closed="
-      optionsDropdownRef?.buttonRef?.focus();
-      optionsDropdownRef?.closeOptions();
-    "
-  />
+    <ShareModal
+      v-if="auditStore.currentAudit"
+      ref="shareModal"
+      :is-public="auditStore.currentAudit.isPublic"
+      :edit-unique-id="uniqueId"
+      :audit-name="auditName"
+      @closed="
+        optionsDropdownRef?.buttonRef?.focus();
+        optionsDropdownRef?.closeOptions();
+      "
+    />
 
-  <TransferModal
-    :id="editUniqueId"
-    ref="transferModalRef"
-    :procedure-name="auditName"
-    @confirm="transferAudit"
-  />
+    <DeleteModal
+      v-if="auditStore.currentAudit"
+      :id="uniqueId"
+      ref="deleteModal"
+      :procedure-name="auditStore.currentAudit.procedureName"
+      @confirm="confirmDelete"
+      @closed="
+        optionsDropdownRef?.buttonRef?.focus();
+        optionsDropdownRef?.closeOptions();
+      "
+    />
 
-  <ShareModal
-    v-if="auditStore.currentAudit"
-    ref="shareModal"
-    :is-public="auditStore.currentAudit.isPublic"
-    :edit-unique-id="uniqueId"
-    :audit-name="auditName"
-    @closed="
-      optionsDropdownRef?.buttonRef?.focus();
-      optionsDropdownRef?.closeOptions();
-    "
-  />
-
-  <DeleteModal
-    v-if="auditStore.currentAudit"
-    :id="uniqueId"
-    ref="deleteModal"
-    :procedure-name="auditStore.currentAudit.procedureName"
-    @confirm="confirmDelete"
-    @closed="
-      optionsDropdownRef?.buttonRef?.focus();
-      optionsDropdownRef?.closeOptions();
-    "
-  />
-
-  <NotesModal
-    ref="notesModal"
-    :is-loading="isNotesLoading"
-    @confirm="updateAuditNotes"
-  />
+    <NotesModal
+      ref="notesModal"
+      :is-loading="isNotesLoading"
+      @confirm="updateAuditNotes"
+    />
+  </template>
 </template>
 
 <style scoped>
