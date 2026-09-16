@@ -1,5 +1,4 @@
-import assert from "node:assert";
-import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
@@ -232,102 +231,102 @@ export class AuditService {
     }
   }
 
-  /**
-   * Check that the user if the audit owner
-   */
-  async isAuditOwnedBy(editUniqueId: string, username: string) {
-    const audit = await this.prisma.audit.findFirst({
-      where: { editUniqueId },
-      select: { auditor: { select: { username: true } } }
-    });
+  // /**
+  //  * Check that the user if the audit owner
+  //  */
+  // async isAuditOwnedBy(editUniqueId: string, username: string) {
+  //   const audit = await this.prisma.audit.findFirst({
+  //     where: { editUniqueId },
+  //     select: { auditor: { select: { username: true } } }
+  //   });
 
-    return audit.auditor.username === username;
-  }
+  //   return audit.auditor.username === username;
+  // }
 
-  async isAuditOrphan(editUniqueId: string): Promise<boolean> {
-    const audit = await this.prisma.audit.findFirst({
-      where: { editUniqueId },
-      select: { isPublic: true, auditor: { select: { username: true, isVerified: true } } }
-    });
+  // async isAuditOrphan(editUniqueId: string): Promise<boolean> {
+  //   const audit = await this.prisma.audit.findFirst({
+  //     where: { editUniqueId },
+  //     select: { isPublic: true, auditor: { select: { username: true, isVerified: true } } }
+  //   });
 
-    assert(audit.isPublic, "Orphan audit should never be private");
+  //   assert(audit.isPublic, "Orphan audit should never be private");
 
-    return !audit.auditor.isVerified;
-  }
+  //   return !audit.auditor.isVerified;
+  // }
 
-  /**
-   * Checks if duplication is possible
-   * - Anyone can delete an orphan audit
-   * - If user is not audit owner, throws ForbiddenException (code 403)
-   */
-  async checkDuplicatePermissions(editUniqueId: string, username: string) {
-    const userIsAuditOwner = await this.isAuditOwnedBy(editUniqueId, username);
-    const orphan = await this.isAuditOrphan(editUniqueId);
+  // /**
+  //  * Checks if duplication is possible
+  //  * - Anyone can delete an orphan audit
+  //  * - If user is not audit owner, throws ForbiddenException (code 403)
+  //  */
+  // async checkDuplicatePermissions(editUniqueId: string, username: string) {
+  //   const userIsAuditOwner = await this.isAuditOwnedBy(editUniqueId, username);
+  //   const orphan = await this.isAuditOrphan(editUniqueId);
 
-    if (orphan) {
-      return;
-    }
+  //   if (orphan) {
+  //     return;
+  //   }
 
-    if (!userIsAuditOwner) {
-      throw new ForbiddenException();
-    }
-  }
+  //   if (!userIsAuditOwner) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 
-  /**
-   * Checks if deletion is possible
-   * - Anyone can delete an orphan audit
-   * - If user is not connected and audit not orphan, throws UnauthorizedException (code 401)
-   * - If user is not audit owner, trows ForbiddenException (code 403)
-   */
-  async checkDeletePermissions(editUniqueId: string, username?: string): Promise<void> {
-    const audit = await this.prisma.audit.findFirst({
-      where: { editUniqueId },
-      select: {
-        isPublic: true,
-        auditor: {
-          select: {
-            username: true,
-            isVerified: true
-          }
-        }
-      }
-    });
+  // /**
+  //  * Checks if deletion is possible
+  //  * - Anyone can delete an orphan audit
+  //  * - If user is not connected and audit not orphan, throws UnauthorizedException (code 401)
+  //  * - If user is not audit owner, trows ForbiddenException (code 403)
+  //  */
+  // async checkDeletePermissions(editUniqueId: string, username?: string): Promise<void> {
+  //   const audit = await this.prisma.audit.findFirst({
+  //     where: { editUniqueId },
+  //     select: {
+  //       isPublic: true,
+  //       auditor: {
+  //         select: {
+  //           username: true,
+  //           isVerified: true
+  //         }
+  //       }
+  //     }
+  //   });
 
-    // Audit is orphan
-    if (audit.isPublic && !audit.auditor.isVerified) {
-      return;
-    }
+  //   // Audit is orphan
+  //   if (audit.isPublic && !audit.auditor.isVerified) {
+  //     return;
+  //   }
 
-    // User is not connected
-    if (!username) {
-      throw new UnauthorizedException();
-    }
+  //   // User is not connected
+  //   if (!username) {
+  //     throw new UnauthorizedException();
+  //   }
 
-    // User is not audit owner
-    if (audit.auditor.username !== username) {
-      throw new ForbiddenException();
-    }
-  }
+  //   // User is not audit owner
+  //   if (audit.auditor.username !== username) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 
-  /**
-   * Checks if transfer is possible
-   * - If user is not audit owner, throws ForbiddenException (code 403)
-   */
-  async checkTransferPermissions(editUniqueId: string, username: string) {
-    if (!(await this.isAuditOwnedBy(editUniqueId, username))) {
-      throw new ForbiddenException();
-    }
-  }
+  // /**
+  //  * Checks if transfer is possible
+  //  * - If user is not audit owner, throws ForbiddenException (code 403)
+  //  */
+  // async checkTransferPermissions(editUniqueId: string, username: string) {
+  //   if (!(await this.isAuditOwnedBy(editUniqueId, username))) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 
-  /**
-   * Checks if editing audit privacy (public / private) is possible
-   * - If user is not audit owner, throws ForbiddenException (code 403)
-   */
-  async checkEditPrivacyPermissions(editUniqueId: string, username: string) {
-    if (!(await this.isAuditOwnedBy(editUniqueId, username))) {
-      throw new ForbiddenException();
-    }
-  }
+  // /**
+  //  * Checks if editing audit privacy (public / private) is possible
+  //  * - If user is not audit owner, throws ForbiddenException (code 403)
+  //  */
+  // async checkEditPrivacyPermissions(editUniqueId: string, username: string) {
+  //   if (!(await this.isAuditOwnedBy(editUniqueId, username))) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 
   /** Find and return an audit in the format that the API would return */
   findAudit(uniqueId: string): Promise<AuditDto> {

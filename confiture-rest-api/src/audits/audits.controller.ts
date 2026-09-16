@@ -26,6 +26,7 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
+import { PermissionsService } from "src/permissions.service";
 import { AuthRequired } from "../auth/auth-required.decorator";
 import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
 import { User } from "../auth/user.decorator";
@@ -55,6 +56,7 @@ import { UploadImageDto } from "./dto/requests/upload-image.dto";
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
+    private readonly permissionsService: PermissionsService,
     private readonly mailer: MailService,
     private readonly auditExportService: AuditExportService
   ) {}
@@ -280,7 +282,7 @@ export class AuditsController {
     @Body() body: UpdateAuditPrivacyDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<void> {
-    await this.auditService.checkEditPrivacyPermissions(uniqueId, user.email);
+    await this.permissionsService.checkEditPrivacyPermissions(uniqueId, user.email);
 
     return this.auditService.setAuditPrivacy(uniqueId, body.isPublic);
   }
@@ -292,7 +294,7 @@ export class AuditsController {
     @AuditId() uniqueId: string,
     @User() user: AuthenticationJwtPayload
   ) {
-    await this.auditService.checkDeletePermissions(uniqueId, user?.email);
+    await this.permissionsService.checkDeletePermissions(uniqueId, user?.email);
 
     await this.auditService.softDeleteAudit(uniqueId);
   }
@@ -315,7 +317,7 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    await this.auditService.checkDuplicatePermissions(uniqueId, user.email);
+    await this.permissionsService.checkDuplicatePermissions(uniqueId, user.email);
 
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
@@ -346,7 +348,7 @@ export class AuditsController {
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    await this.auditService.checkTransferPermissions(uniqueId, user.email);
+    await this.permissionsService.checkTransferPermissions(uniqueId, user.email);
 
     const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 
