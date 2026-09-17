@@ -61,21 +61,21 @@ export class UpdateStatementDto {
    */
   @IsString()
   @IsOptional()
-  contactName?: string;
+  contactName: string | null;
 
   /**
    * @example "accessibility@procedure.government.com"
    */
   @IsEmail()
   @IsOptional()
-  contactEmail?: string;
+  contactEmail: string | null;
 
   /**
    * @example "https://procedure.government.com/contact-a11y"
    */
   @IsString()
   @IsOptional()
-  contactFormUrl?: string;
+  contactFormUrl: string | null;
 
   /**
    * @example ["HTML", "CSS"]
@@ -101,21 +101,21 @@ export class UpdateStatementDto {
 
   @IsString()
   @IsOptional()
-  notCompliantContent?: string;
+  notCompliantContent: string | null;
 
   @IsString()
   @IsOptional()
-  derogatedContent?: string;
+  derogatedContent: string | null;
 
   @IsString()
   @IsOptional()
-  notInScopeContent?: string;
+  notInScopeContent: string | null;
 
   @IsUrl()
   @IsOptional()
-  schemaPluriannuelUrl?: string;
+  schemaPluriannuelUrl: string | null;
 
   @IsUrl()
   @IsOptional()
-  planActionUrl?: string;
+  planActionUrl: string | null;
 }

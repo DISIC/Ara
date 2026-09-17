@@ -9,9 +9,9 @@ import {
   NotesFile,
   CreateAuditRequestData,
   UpdateAuditRequestData,
-  UpdateAuditStatementRequestData
+  UpdateAuditStatementRequestData,
+  AccountAudit
 } from "../types";
-import { AccountAudit } from "../types/account";
 
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastNotesRequestTimestamp:${auditId}`;

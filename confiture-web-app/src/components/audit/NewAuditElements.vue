@@ -46,7 +46,7 @@ function submitAuditElements() {
     pageElements: pageElements.value.reduce(
       (acc, val) => ({ ...acc, [val.key]: val.value }),
       {}
-    )
+    ) as PageElements
   });
 }
 
