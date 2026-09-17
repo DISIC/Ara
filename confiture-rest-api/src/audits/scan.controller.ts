@@ -21,8 +21,7 @@ export class ScanController {
 
   async scanPage(@Body() body: ScanAuditDto): Promise<AxeResults> {
     const browser = await chromium.launch({
-      headless: true,
-      executablePath: process.env.CHROME_PATH
+      headless: true
     });
 
     try {

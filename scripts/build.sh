@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "🚧 BUILDING... Installing Playwright Chromium..."
+yarn workspace confiture-rest-api playwright install chromium
+
 echo "🚧 BUILDING... Generating API types..."
 yarn copytypes
 
