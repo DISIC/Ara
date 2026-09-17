@@ -7418,6 +7418,7 @@ __metadata:
     "@types/nodemailer": "npm:^6.4.4"
     "@types/pg": "npm:^8.16.0"
     "@types/sharp": "npm:^0.31.1"
+    axe-core: "npm:^4.13.0"
     bcrypt: "npm:^5.1.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.13.2"
@@ -14622,7 +14623,6 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^5.4.1"
-    axe-core: "npm:^4.13.0"
     cypress: "npm:^13.6.1"
     eslint: "npm:^9.29.0"
     eslint-plugin-format: "npm:^1.0.1"
