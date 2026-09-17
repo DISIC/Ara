@@ -20,7 +20,7 @@ rm -rf confiture-rest-api/client
 mv confiture-web-app/dist confiture-rest-api/client
 
 echo "🚧 BUILDING... Pruning dependencies"
-yarn workspaces focus --production --all
+yarn workspaces focus confiture-rest-api --production
 yarn cache clean
 
 echo "✅ BUILDING DONE !"
