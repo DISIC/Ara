@@ -204,7 +204,9 @@ export const useAuditStore = defineStore("audit", {
           }
 
           const listingEditedAuditIndex = this.listing.findIndex(a => a.editUniqueId === uniqueId);
-          this.listing[listingEditedAuditIndex].isPublic = !this.listing[listingEditedAuditIndex].isPublic;
+          if (listingEditedAuditIndex >= 0) {
+            this.listing[listingEditedAuditIndex].isPublic = !this.listing[listingEditedAuditIndex].isPublic;
+          }
         });
     },
 
@@ -314,10 +316,6 @@ export const useAuditStore = defineStore("audit", {
 
     isLoading(): boolean {
       return this.currentRequestCount > 0;
-    },
-
-    currentAuditIsLinkedToAccount(): boolean {
-      return !!this.currentAudit?.ownerUsername;
     }
   }
 });

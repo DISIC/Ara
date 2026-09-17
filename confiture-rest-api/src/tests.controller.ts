@@ -163,14 +163,6 @@ export class TestsController {
           }
         },
 
-        ...(body.ownerUserName && {
-          owner: {
-            connect: {
-              username: body.ownerUserName
-            }
-          }
-        }),
-
         ...(body.fillStatement && {
           initiator: "Mairie de Poueton-les-Bains",
           auditorOrganisation: "2 devs, 1 Odette",
