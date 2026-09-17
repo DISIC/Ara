@@ -15,6 +15,7 @@ import { MailModule } from "./mail/mail.module";
 import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 import { TestsController } from "./tests.controller";
+import { VersionMiddleware } from "./version.middleware";
 
 @Module({
   imports: [
@@ -51,5 +52,6 @@ import { TestsController } from "./tests.controller";
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserMiddleware).forRoutes("*");
+    consumer.apply(VersionMiddleware).forRoutes("*");
   }
 }
