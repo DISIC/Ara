@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "🚧 BUILDING... Cleaning Playwright browsers..."
+rm -rf ~/.cache/ms-playwright
+
 echo "🚧 BUILDING... Installing Playwright Chromium headless shell..."
 yarn workspace confiture-rest-api playwright install --only-shell
 
