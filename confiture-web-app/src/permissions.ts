@@ -4,7 +4,7 @@ import { Audit } from "./types";
  * An "orphan audit" is not owned by a verified user
  */
 export function isOrphan(audit: Audit) {
-  return !audit.auditor.isVerified;
+  return !audit.auditor?.isVerified;
 }
 
 export function isUserAuditOwner(audit: Audit, username?: string): boolean {
