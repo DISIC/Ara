@@ -84,8 +84,8 @@ export class PermissionsService {
   }
 
   /**
-     * Check that the user if the audit owner
-     */
+   * Check that the user if the audit owner
+   */
   private async isAuditOwnedBy(editUniqueId: string, username: string) {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId },
@@ -95,6 +95,9 @@ export class PermissionsService {
     return audit.auditor.username === username;
   }
 
+  /**
+   * An "orphan audit" is not owned by a verified user
+   */
   private async isAuditOrphan(editUniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId },

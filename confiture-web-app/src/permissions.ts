@@ -1,5 +1,8 @@
 import { Audit } from "./types";
 
+/**
+ * An "orphan audit" is not owned by a verified user
+ */
 export function isOrphan(audit: Audit) {
   return !audit.auditor.isVerified;
 }
