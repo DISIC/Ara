@@ -193,6 +193,28 @@ export const useAuditStore = defineStore("audit", {
       return response;
     },
 
+    async toggleAuditPrivacy(uniqueId: string) {
+      const listingEditedAuditIndex = this.listing.findIndex(a => a.editUniqueId === uniqueId);
+      const isPublic = this.currentAudit ? this.currentAudit?.isPublic : this.listing[listingEditedAuditIndex].isPublic;
+
+      await api
+        .patch(`/api/audits/${uniqueId}/privacy`, {
+          json: {
+            isPublic: !isPublic
+          }
+        })
+        .then(() => {
+          // Live update UI with correct isPublic value
+          if (this.currentAudit) {
+            this.currentAudit.isPublic = !isPublic;
+          }
+
+          if (listingEditedAuditIndex >= 0) {
+            this.listing[listingEditedAuditIndex].isPublic = !isPublic;
+          }
+        });
+    },
+
     /**
      * @param uniqueId Id of the audit to duplicate
      * @returns A promise to the unique id of the copy
@@ -224,7 +246,8 @@ export const useAuditStore = defineStore("audit", {
           status: originalAuditListingItem.status,
           progress: originalAuditListingItem.progress,
           estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
-          statementIsPublished: originalAuditListingItem.statementIsPublished
+          statementIsPublished: originalAuditListingItem.statementIsPublished,
+          isPublic: originalAuditListingItem.isPublic
         };
         this.listing.push(newAuditListItem);
       }
