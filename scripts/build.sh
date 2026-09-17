@@ -2,7 +2,7 @@
 set -e
 
 echo "🚧 BUILDING... Installing Playwright Chromium..."
-yarn workspace confiture-rest-api playwright install chromium
+yarn workspace confiture-rest-api playwright install --only-shell
 
 echo "🚧 BUILDING... Generating API types..."
 yarn copytypes
@@ -20,7 +20,7 @@ rm -rf confiture-rest-api/client
 mv confiture-web-app/dist confiture-rest-api/client
 
 echo "🚧 BUILDING... Pruning dependencies"
-yarn workspaces focus confiture-rest-api --production
+yarn workspaces focus --production --all
 yarn cache clean
 
 echo "✅ BUILDING DONE !"
