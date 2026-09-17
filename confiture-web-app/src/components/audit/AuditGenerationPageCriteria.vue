@@ -209,7 +209,7 @@ async function auditAutoPageClick(url: string) {
           }
 
           for (const node of violation.nodes) {
-            let userImpact: CriterionResultUserImpact | null = null;
+            let userImpact: CriterionResultUserImpact | undefined;
 
             switch (violation.impact) {
               case "critical":
