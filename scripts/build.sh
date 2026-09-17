@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚧 BUILDING... Installing Playwright Chromium..."
+echo "🚧 BUILDING... Installing Playwright Chromium headless shell..."
 yarn workspace confiture-rest-api playwright install --only-shell
 
 echo "🚧 BUILDING... Generating API types..."
