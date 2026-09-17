@@ -30,7 +30,7 @@ export class ScanController {
 
       await page.goto(body.url, {
         waitUntil: "networkidle",
-        timeout: 30_000
+        timeout: 50_000
       });
 
       // Injecte axe-core dans la page

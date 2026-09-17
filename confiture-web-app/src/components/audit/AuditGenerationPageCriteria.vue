@@ -2,13 +2,15 @@
 import { AxeResults } from "axe-core";
 import { computed, onMounted, ref } from "vue";
 import { api } from "../../api";
+import { useNotifications } from "../../composables/useNotifications";
 import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
 import { AuditPage, CreateNotCompliantItemData, CriterionResultUserImpact, CriteriumResult, CriteriumResultStatus } from "../../types";
-import { slugify } from "../../utils";
+import { captureWithPayloads, slugify } from "../../utils";
+
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
-
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
 import TransverseElementsList from "./TransverseElementsList.vue";
 
@@ -20,6 +22,7 @@ const props = defineProps<{
 const store = useFiltersStore();
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
+const notify = useNotifications();
 
 const transversePageId = computed(() => {
   return auditStore.currentAudit?.transverseElementsPage.id;
@@ -84,34 +87,39 @@ function markHtmlTags(text: string): string {
   return text.replace(HTML_TAG_REGEX, (tag) => `\`${tag}\``);
 }
 
-async function auditAutoPageClick(url: string) {
-  console.log(url);
+const isAuditing = ref(false);
 
+async function auditAutoPageClick(url: string) {
   try {
+    isAuditing.value = true;
     const results = await api.post(`/api/scan`, {
       json: { url }
     }).json() as AxeResults;
 
+    // Ne pas oublier de supprimer
     console.log(results);
 
     const { inapplicable, passes, violations } = results;
 
     // clean all results
-    const tags = [...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))), ...violations.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))];
+    const tags = [
+      ...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))),
+      ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))),
+      ...violations.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))
+    ];
 
-    tags.filter(x => x !== undefined)
-      .forEach(async (tag) => {
-        const result = getResultFromTag(tag);
-        if (result) {
-          result.status = CriteriumResultStatus.NOT_TESTED;
-          result.notApplicableComment = "";
-          result.compliantComment = "";
-          result.notCompliantItems = [];
-          await resultsStore.updateResults(props.auditUniqueId, [result]);
-        }
-      });
+    for (const tag of tags.filter(x => x !== undefined)) {
+      const result = getResultFromTag(tag);
+      if (result) {
+        result.status = CriteriumResultStatus.NOT_TESTED;
+        result.notApplicableComment = "";
+        result.compliantComment = "";
+        result.notCompliantItems = [];
+        await resultsStore.updateResults(props.auditUniqueId, [result]);
+      }
+    }
 
-    inapplicable.forEach(async (ina) => {
+    for (const ina of inapplicable) {
       const tag = ina.tags.find((x) => x.startsWith("RGAA-"));
       if (tag) {
         const result = getResultFromTag(tag);
@@ -120,7 +128,7 @@ async function auditAutoPageClick(url: string) {
           result.status = CriteriumResultStatus.NOT_APPLICABLE;
 
           if (ina.description) {
-            result.notApplicableComment += `### ${markHtmlTags(ina.description)}`;
+            result.notApplicableComment += `#### ${markHtmlTags(ina.description)}`;
             result.notApplicableComment += "\n\n";
           }
 
@@ -136,9 +144,9 @@ async function auditAutoPageClick(url: string) {
           await resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       }
-    });
+    }
 
-    passes.forEach(async (passe) => {
+    for (const passe of passes) {
       const tag = passe.tags.find((x) => x.startsWith("RGAA-"));
       if (tag) {
         const result = getResultFromTag(tag);
@@ -147,7 +155,7 @@ async function auditAutoPageClick(url: string) {
           result.status = CriteriumResultStatus.COMPLIANT;
 
           if (passe.description) {
-            result.compliantComment += `### ${markHtmlTags(passe.description)}`;
+            result.compliantComment += `#### ${markHtmlTags(passe.description)}`;
             result.compliantComment += "\n\n";
           }
 
@@ -186,7 +194,7 @@ async function auditAutoPageClick(url: string) {
           await resultsStore.updateResults(props.auditUniqueId, [result]);
         }
       }
-    });
+    }
 
     for (const violation of violations) {
       const tag = violation.tags.find((x) => x.startsWith("RGAA-"));
@@ -306,7 +314,15 @@ async function auditAutoPageClick(url: string) {
     }
   }
   catch (error) {
-    console.error("Impossible de scanner la page", error);
+    notify(
+      "error",
+      "Impossible de scanner la page",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+  finally {
+    isAuditing.value = false;
   }
 }
 
@@ -339,7 +355,10 @@ onMounted(() => {
   </div>
 
   <div v-if="page.id !== transversePageId" class="fr-mb-3w">
-    <button class="fr-btn" type="button" @click="auditAutoPageClick(page.url)">Auditer automatiquement cette page</button>
+    <button class="fr-btn" type="button" :disabled="isAuditing" @click="auditAutoPageClick(page.url)">
+      <span v-if="!isAuditing">Auditer automatiquement cette page</span>
+      <span v-else>En cours d'audit...</span>
+    </button>
   </div>
 
   <TransverseElementsList v-else class="fr-mb-3w" />
