@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
+import { useNotifications } from "../../composables/useNotifications";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
+import { useAuditStore } from "../../store";
 import DsfrModal from "../ui/DsfrModal.vue";
-
-const modal = ref<InstanceType<typeof DsfrModal>>();
 
 const props = defineProps<{
   auditName: string;
   editUniqueId: string;
+  isPublic: boolean;
 }>();
 
 defineEmits<{
@@ -19,8 +21,8 @@ defineExpose({
   hide: () => modal.value?.hide()
 });
 
-// TODO: plug prop as default value
-const auditIsPublic = ref(false);
+const modal = ref<InstanceType<typeof DsfrModal>>();
+const auditIsPublic = ref(props.isPublic);
 
 // Copy audit public URL
 const showCopySuccess = ref(false);
@@ -38,13 +40,22 @@ function copyLink() {
   }, 3500);
 }
 
-// TODO: make api call
+// Call store action
+const auditStore = useAuditStore();
+const notify = useNotifications();
+
 function toggleAuditPrivacy() {
-  if (auditIsPublic.value) {
-    console.log("audit is public");
-  } else {
-    console.log("audit is private");
-  }
+  auditStore.toggleAuditPrivacy(props.editUniqueId).catch(() => {
+    // TODO: title wording
+    notify(
+      "error",
+      "Échec du partage de l'audit",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+
+    // Reset toggle to old value
+    auditIsPublic.value = !auditIsPublic.value;
+  });
 }
 </script>
 
