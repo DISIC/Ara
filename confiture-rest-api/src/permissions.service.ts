@@ -6,7 +6,26 @@ import { PrismaService } from "./prisma.service";
 export class PermissionsService {
   constructor(
     private readonly prisma: PrismaService
-  ) {}
+  ) { }
+
+  /**
+   * Check audit privacy and ownership if user is connected
+   *
+   * @param editUniqueId id of the audit to check ownership of
+   * @param username email adress of user
+   * @returns if the audit is accessible by the user
+   * @throws if the audit is not acessible by the user
+   */
+  async checkAuditAccess(editUniqueId: string, username?: string): Promise<void> {
+    const audit = await this.prisma.audit.findFirst({
+      where: { editUniqueId },
+      select: { procedureName: true, isPublic: true, auditor: { select: { username: true } } }
+    });
+
+    if (!(audit.isPublic || (username && audit.auditor.username === username))) {
+      throw new ForbiddenException({ auditName: audit.procedureName });
+    }
+  }
 
   /**
    * Checks if duplication is possible
@@ -48,6 +67,7 @@ export class PermissionsService {
 
     // Audit is orphan
     if (!audit.auditor.isVerified) {
+      // throws if `audit.isPublic` is false
       assert(audit.isPublic, "Orphan audit should never be private");
       return;
     }
@@ -101,9 +121,10 @@ export class PermissionsService {
   private async isAuditOrphan(editUniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId },
-      select: { isPublic: true, auditor: { select: { username: true, isVerified: true } } }
+      select: { isPublic: true, auditor: { select: { isVerified: true } } }
     });
 
+    // throws if `audit.isPublic` is false
     assert(audit.isPublic, "Orphan audit should never be private");
 
     return !audit.auditor.isVerified;

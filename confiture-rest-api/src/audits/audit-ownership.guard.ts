@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Request } from "express";
+import { PermissionsService } from "../permissions.service";
 import { AuditService } from "./audit.service";
 
 /**
@@ -11,7 +12,8 @@ import { AuditService } from "./audit.service";
 @Injectable()
 export class AuditOwnershipGuard implements CanActivate {
   constructor(
-    private readonly auditService: AuditService
+    private readonly auditService: AuditService,
+    private readonly permissionsService: PermissionsService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,7 +25,7 @@ export class AuditOwnershipGuard implements CanActivate {
       return true;
     }
 
-    await this.auditService.validateAuditAccess(auditId, username);
+    await this.permissionsService.checkAuditAccess(auditId, username);
 
     return true;
   }
