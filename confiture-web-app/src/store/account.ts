@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { api } from "../api";
 
 import { AuthenticationJwtPayload, AccountDeletionResponse, UpdateProfileRequestData } from "../types";
+import { useAuditStore } from "./audit";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -36,7 +37,7 @@ export const useAccountStore = defineStore("account", {
   },
 
   getters: {
-    account: (state) => {
+    account(state) {
       if (!state.authToken) {
         return null;
       }
@@ -46,6 +47,11 @@ export const useAccountStore = defineStore("account", {
         email: payload.email,
         name: payload.name
       };
+    },
+
+    isOwner(): boolean {
+      const auditStore = useAuditStore();
+      return this.account?.email === auditStore.currentAudit?.auditorEmail;
     }
   },
 
