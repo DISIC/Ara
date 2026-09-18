@@ -2,7 +2,7 @@
 set -e
 
 echo "🚧 BUILDING... Installing Playwright Chromium headless shell..."
-yarn workspace confiture-rest-api playwright install --only-shell
+yarn workspace confiture-rest-api exec playwright-core install chromium --only-shell
 
 echo "📦 Contents of Playwright cache:"
 find ~/.cache/ms-playwright -maxdepth 1 -mindepth 1 -type d -exec du -sh {} \;

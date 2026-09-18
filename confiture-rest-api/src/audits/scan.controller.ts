@@ -10,7 +10,7 @@ import {
 
 import axe, { AxeResults } from "axe-core";
 import fr from "axe-core/locales/fr.json";
-import { chromium } from "playwright";
+import { chromium } from "playwright-core";
 import { ScanAuditDto } from "./dto/requests/scan-audit.dto";
 
 @Controller("scan")
