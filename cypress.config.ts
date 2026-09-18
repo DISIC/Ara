@@ -12,6 +12,5 @@ export default defineConfig({
         }
       });
     }
-  },
-  experimentalStudio: true
+  }
 });
