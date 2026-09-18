@@ -31,3 +31,21 @@ export function testTabsWithPrevNext(slug: string, nextSlug: string) {
     .invoke("attr", "aria-selected")
     .should("eq", "true");
 }
+
+export function createNotCompliantItem(index: number, title: string, comment: string, force: boolean = false) {
+  cy.get(`.criterium-container .not-compliant-item:nth-child(${index}) input[type='text']`)
+    .clear({ force })
+    .type(title);
+
+  cy.wait(["@updateResults"]);
+
+  cy.get(`.criterium-container .not-compliant-item:nth-child(${index}) .tiptap`)
+    .type(comment);
+
+  cy.wait(["@updateResults"]);
+}
+
+export function shouldHaveNotCompliantItem(index: number, title: string, comment: string) {
+  cy.get(`.criterium-container .not-compliant-item:nth-child(${index}) input[type='text']`).should("have.value", title);
+  cy.get(`.criterium-container .not-compliant-item:nth-child(${index}) .tiptap`).should("contain.text", comment);
+}
