@@ -1,4 +1,5 @@
 import * as auditJson from "../../fixtures/audit.json";
+import { createNotCompliantItem, shouldHaveNotCompliantItem } from "../common";
 
 describe("Audit", () => {
   it("User can create an audit", () => {
@@ -302,6 +303,136 @@ describe("Audit", () => {
       cy.wait("@updateResults");
 
       cy.get(".audit-progress-label").contains("Progression de l’audit");
+    });
+  });
+
+  it("User can comments on same criteria between multiple audit tabs on pristine audit", () => {
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
+
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      // Creating two non-compliant criteria on Elements transverses Tab
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+      createNotCompliantItem(1, "Premier titre", "Premier commentaire", true);
+      cy.get(".criterium-container").contains("Ajouter une erreur").click().wait(100);
+      createNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Creating one non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      cy.get(".criterium-container").contains("Non conforme").click();
+      createNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+
+      // Checking if we have two same non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Checking if we have one same non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+
+      // Re-checking if we have two same non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Re-checking if we have one same non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+    });
+  });
+
+  it("User can comments on same criteria between multiple audit tabs on complete audit", () => {
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
+
+    cy.createTestAudit({ isComplete: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      // Creating two non-compliant criteria on Elements transverses Tab
+      cy.get(".criterium-container").contains("Non conforme").click().wait(100);
+      createNotCompliantItem(1, "Premier titre", "Premier commentaire", true);
+      cy.get(".criterium-container").contains("Ajouter une erreur").click().wait(100);
+      createNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Creating one non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      cy.get(".criterium-container").contains("Non conforme").click();
+      createNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+
+      // Checking if we have two same non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Checking if we have one same non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+
+      // Re-checking if we have two same non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+
+      // Re-checking if we have one same non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      shouldHaveNotCompliantItem(1, "Troisième titre", "Troisième commentaire");
+    });
+  });
+
+  it("User can delete comments without losing existing comments between multiple audit tabs", () => {
+    cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
+    cy.intercept("DELETE", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("deleteResults");
+
+    cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+
+      // Creating three non-compliant criteria on Elements transverses Tab
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
+      createNotCompliantItem(1, "Premier titre", "Premier commentaire", true);
+      cy.get(".criterium-container").contains("Ajouter une erreur").click().wait(100);
+      createNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+      cy.get(".criterium-container").contains("Ajouter une erreur").click().wait(100);
+      createNotCompliantItem(3, "Troisième titre", "Troisième commentaire");
+
+      // Creating two non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      cy.get(".criterium-container").contains("Non conforme").click();
+      createNotCompliantItem(1, "Quatrième titre", "Quatrième commentaire");
+      cy.get(".criterium-container").contains("Ajouter une erreur").click().wait(100);
+      createNotCompliantItem(2, "Cinquième titre", "Cinquième commentaire");
+
+      // Checking if we have three same non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      cy.get(".criterium-container").contains("Erreurs et recommandations (3)");
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Deuxième titre", "Deuxième commentaire");
+      shouldHaveNotCompliantItem(3, "Troisième titre", "Troisième commentaire");
+
+      // Delete one non-compliant criteria on Elements transverses Tab
+      cy.get(".criterium-container .not-compliant-item:nth-child(2) .error-user-delete button").contains("Supprimer").click();
+      cy.wait(["@deleteResults"]);
+
+      // Checking if we have two same non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+      shouldHaveNotCompliantItem(1, "Quatrième titre", "Quatrième commentaire");
+      shouldHaveNotCompliantItem(2, "Cinquième titre", "Cinquième commentaire");
+
+      // Delete one non-compliant criteria on Accueil Tab
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) .error-user-delete button").contains("Supprimer").click();
+      cy.wait(["@deleteResults"]);
+
+      // Checking if we have now two non-compliant criteria on Elements transverses Tab
+      cy.contains("button[role=\"tab\"]", "Éléments transverses").click().wait(100);
+      cy.get(".criterium-container").contains("Erreurs et recommandations (2)");
+      shouldHaveNotCompliantItem(1, "Premier titre", "Premier commentaire");
+      shouldHaveNotCompliantItem(2, "Troisième titre", "Troisième commentaire");
+
+      // Checking if we have now one non-compliant criteria on Accueil Tab
+      cy.contains("button[role=\"tab\"]", "Accueil").click().wait(100);
+      cy.get(".criterium-container").contains("Erreurs et recommandations (1)");
+      shouldHaveNotCompliantItem(1, "Cinquième titre", "Cinquième commentaire");
     });
   });
 });
