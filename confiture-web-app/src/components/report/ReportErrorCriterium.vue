@@ -66,7 +66,7 @@ function getLabelError(notCompliantItemId?: number) {
         :key="index"
         class="criterium-not-compliant-item"
       >
-        <div :id="`${sectionId}_erreur_${index + 1}`" class="criterium-not-compliant-item-header">
+        <div :id="`${sectionId}_${notCompliantItem.id}`" class="criterium-not-compliant-item-header">
           <ul v-if="notCompliantItem.userImpact || notCompliantItem.quickWin" class="criterium-not-compliant-item-badges fr-badges-group fr-mb-2w">
             <li v-if="notCompliantItem.userImpact">
               <p
@@ -88,7 +88,7 @@ function getLabelError(notCompliantItemId?: number) {
             </li>
           </ul>
 
-          <a :href="`#${sectionId}_erreur_${index + 1}`" class="fr-btn fr-icon-links-line fr-btn--tertiary-no-outline fr-btn--sm">
+          <a :href="`#${sectionId}_${notCompliantItem.id}`" class="fr-btn fr-icon-links-line fr-btn--tertiary-no-outline fr-btn--sm">
             <span class="fr-sr-only">ancre vers l'erreur {{ index + 1 }} du critère {{ error.topic }}.{{ error.criterium }}</span>
           </a>
         </div>
