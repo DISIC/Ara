@@ -1,7 +1,8 @@
 import type { AxeResults } from "axe-core";
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import axe from "axe-core";
-import { chromium, Browser } from "playwright-core";
+import fr from "axe-core/locales/fr.json";
+import { chromium, Browser } from "playwright";
 
 @Injectable()
 export class ScanService implements OnModuleInit, OnModuleDestroy {
@@ -34,7 +35,7 @@ export class ScanService implements OnModuleInit, OnModuleDestroy {
         await (window as any).axe.configure({
           locale
         });
-      });
+      }, fr);
 
       return await page.evaluate(async () => {
         return await (window as any).axe.run(document, {
