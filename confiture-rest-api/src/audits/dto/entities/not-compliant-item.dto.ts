@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { CriterionResultUserImpact } from "src/generated/prisma/enums";
+import { CriterionResultUserImpact } from "../../../generated/prisma/enums";
 
 export class NotCompliantItemDto {
   id: number;

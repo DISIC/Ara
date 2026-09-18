@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "src/prisma.service";
+import { PrismaService } from "../../prisma.service";
 import { AuditService } from "../audit.service";
 import { NotCompliantItemDto } from "../dto/entities/not-compliant-item.dto";
 import { NOT_COMPLIANT_ITEM_SELECT } from "../prisma-selects";
