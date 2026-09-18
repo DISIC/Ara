@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { AxeResults } from "axe-core";
 import { computed, onMounted, ref } from "vue";
-
+import { api } from "../../api";
+import { useNotifications } from "../../composables/useNotifications";
 import { useTopicAccordions } from "../../composables/useTopicAccordionsStatus";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION } from "../../enums";
 import { useAuditStore, useFiltersStore, useResultsStore } from "../../store";
-import { AuditPage } from "../../types";
+import { AuditPage, CreateNotCompliantItemData, CriterionResultUserImpact, CriteriumResult, CriteriumResultStatus } from "../../types";
+import { captureWithPayloads, slugify } from "../../utils";
+
 import TopLink from "../ui/TopLink.vue";
 import AuditGenerationCriterium from "./AuditGenerationCriterium.vue";
 import NotApplicableSwitch from "./NotApplicableSwitch.vue";
@@ -17,6 +22,7 @@ const props = defineProps<{
 const store = useFiltersStore();
 const auditStore = useAuditStore();
 const resultsStore = useResultsStore();
+const notify = useNotifications();
 
 const transversePageId = computed(() => {
   return auditStore.currentAudit?.transverseElementsPage.id;
@@ -74,6 +80,265 @@ function toggleTopic(value: boolean, topic: number) {
   saveStatusToLocalStorage();
 }
 
+const HTML_TAG_REGEX =
+  /<\/?[a-z][a-z0-9-]*(?:\s+[a-z0-9-]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]+))?)*\s*\/?>/gi;
+
+function markHtmlTags(text: string): string {
+  return text.replace(HTML_TAG_REGEX, (tag) => `\`${tag}\``);
+}
+
+const isAuditing = ref(false);
+
+async function auditAutoPageClick(url: string) {
+  try {
+    isAuditing.value = true;
+    const results = await api.post(`/api/scan`, {
+      json: { url }
+    }).json() as AxeResults;
+
+    // Ne pas oublier de supprimer
+    console.log(results);
+
+    const { inapplicable, passes, violations } = results;
+
+    // clean all results
+    const tags = [
+      ...inapplicable.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))),
+      ...passes.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-"))),
+      ...violations.flatMap(x => x.tags.find((t) => t.startsWith("RGAA-")))
+    ];
+
+    for (const tag of tags.filter(x => x !== undefined)) {
+      const result = getResultFromTag(tag);
+      if (result) {
+        result.status = CriteriumResultStatus.NOT_TESTED;
+        result.notApplicableComment = "";
+        result.compliantComment = "";
+        result.notCompliantItems = [];
+        await resultsStore.updateResults(props.auditUniqueId, [result]);
+      }
+    }
+
+    for (const ina of inapplicable) {
+      const tag = ina.tags.find((x) => x.startsWith("RGAA-"));
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          result.status = CriteriumResultStatus.NOT_APPLICABLE;
+
+          if (ina.description) {
+            result.notApplicableComment += `#### ${markHtmlTags(ina.description)}`;
+            result.notApplicableComment += "\n\n";
+          }
+
+          if (ina.help) {
+            result.notApplicableComment += markHtmlTags(ina.help);
+            if (ina.helpUrl) {
+              result.notApplicableComment += `\n[Pour plus d'informations](${ina.helpUrl})`;
+            }
+
+            result.notApplicableComment += "\n\n";
+          }
+
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
+        }
+      }
+    }
+
+    for (const passe of passes) {
+      const tag = passe.tags.find((x) => x.startsWith("RGAA-"));
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          result.status = CriteriumResultStatus.COMPLIANT;
+
+          if (passe.description) {
+            result.compliantComment += `#### ${markHtmlTags(passe.description)}`;
+            result.compliantComment += "\n\n";
+          }
+
+          if (passe.help) {
+            result.compliantComment += markHtmlTags(passe.help);
+
+            if (passe.helpUrl) {
+              result.compliantComment += "\n";
+              result.compliantComment += `[Pour plus d'informations](${passe.helpUrl})`;
+            }
+
+            result.compliantComment += "\n\n";
+          }
+
+          if (passe.nodes.length) {
+            for (const node of passe.nodes) {
+              result.compliantComment += `##### Elément ${node.target.join("\n\n")}`;
+              result.compliantComment += "\n\n";
+
+              const checksResults = [...node.any, ...node.all, ...node.none];
+
+              if (checksResults.length) {
+                result.compliantComment += "L'élément a ces recommandations suivantes :";
+                result.compliantComment += "\n\n";
+                for (const checkResult of checksResults) {
+                  result.compliantComment += `- ${markHtmlTags(checkResult.message)}`;
+                  result.compliantComment += "\n\n";
+                }
+              }
+
+              result.compliantComment += `\n\nNœud associé : \n\`\`\`html\n${node.html}\n\`\`\`\n`;
+              result.compliantComment += "\n\n";
+            }
+          }
+
+          await resultsStore.updateResults(props.auditUniqueId, [result]);
+        }
+      }
+    }
+
+    for (const violation of violations) {
+      const tag = violation.tags.find((x) => x.startsWith("RGAA-"));
+
+      if (tag) {
+        const result = getResultFromTag(tag);
+
+        if (result) {
+          if (result.status !== CriteriumResultStatus.NOT_COMPLIANT) {
+            result.status = CriteriumResultStatus.NOT_COMPLIANT;
+            await resultsStore.updateResults(props.auditUniqueId, [result]);
+          }
+
+          for (const node of violation.nodes) {
+            let userImpact: CriterionResultUserImpact | undefined;
+
+            switch (violation.impact) {
+              case "critical":
+                userImpact = CriterionResultUserImpact.BLOCKING;
+                break;
+
+              case "minor":
+                userImpact = CriterionResultUserImpact.MINOR;
+                break;
+              case "serious":
+              case "moderate":
+                userImpact = CriterionResultUserImpact.MAJOR;
+                break;
+            }
+
+            const title = violation.help;
+
+            let comment = null;
+
+            if (violation.description) {
+              comment = markHtmlTags(violation.description);
+              comment += "\n\n";
+              comment += `[Pour plus d'informations](${violation.helpUrl})`;
+              comment += "\n\n";
+            }
+
+            if (node.html) {
+              comment += `Emplacement de l'élément :\n\`\`\`html\n${node.target.join("\n\n")}\n\`\`\`\n`;
+              comment += "\n\n";
+              comment += `\`\`\`html\n${node.html}\n\`\`\``;
+              comment += "\n\n";
+            }
+
+            if (node.all.length) {
+              comment += "Pour résoudre ce problème, vous devez corriger les éléments suivants : \n\n";
+              for (const all of node.all) {
+                comment += `${markHtmlTags(all.message)}`;
+                if (all.relatedNodes?.length) {
+                  comment += "\n\n";
+                  for (const relatedNode of all.relatedNodes) {
+                    comment += `\n\nNœud associé : \n\`\`\`html\n${relatedNode.html}\n\`\`\`\n`;
+                  }
+                }
+              }
+
+              comment += "\n\n";
+            }
+
+            if (node.any.length) {
+              if (node.any.length === 1) {
+                const any = node.any[0];
+
+                comment += "Pour résoudre ce problème, vous devez corriger les éléments suivants : \n\n";
+                comment += `- ${markHtmlTags(any.message)}`;
+
+                if (any.relatedNodes?.length) {
+                  comment += "\n\n";
+                  for (const relatedNode of any.relatedNodes) {
+                    comment += `\n\nNœud associé : \n\`\`\`html\n${relatedNode.html}\n\`\`\`\n`;
+                  }
+                }
+              } else {
+                comment += "Pour résoudre ce problème, vous devez corriger au moins (1) des problèmes suivants : \n\n";
+
+                for (const any of node.any) {
+                  comment += `- ${markHtmlTags(any.message)}\n\n`;
+                }
+              }
+
+              comment += "\n\n";
+            }
+
+            if (node.none.length) {
+              comment += "Et corriger les suivants :\n\n";
+              for (const none of node.none) {
+                comment += `- ${none.message}\n\n`;
+              }
+
+              comment += "\n\n";
+            }
+
+            const notCompliantItem: CreateNotCompliantItemData = {
+              title,
+              comment,
+              userImpact,
+              quickWin: false
+            };
+
+            const slug = slugify(props.page.name);
+
+            await resultsStore.createNotCompliantItem(
+              props.auditUniqueId,
+              props.page.id,
+              slug,
+              result.topic,
+              result.criterium,
+              notCompliantItem as CreateNotCompliantItemData
+            );
+          }
+        }
+      }
+    }
+  }
+  catch (error) {
+    notify(
+      "error",
+      "Impossible de scanner la page",
+      DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
+    );
+    captureWithPayloads(error);
+  }
+  finally {
+    isAuditing.value = false;
+  }
+}
+
+function getResultFromTag(tag: string): CriteriumResult | undefined {
+  const criteriums = tag.replace("RGAA-", "").split(".").map(Number);
+
+  const topicNumber = criteriums[0];
+  const criterumNumber = criteriums[1];
+
+  return resultsStore.getCriteriumResult(
+    props.page.id,
+    topicNumber,
+    criterumNumber
+  );
+}
+
 // Set topic accordions status on page load
 onMounted(() => {
   retrieveStatusFromLocalStorage();
@@ -87,6 +352,13 @@ onMounted(() => {
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank" rel="noreferrer noopener">
       {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
     </a>
+  </div>
+
+  <div v-if="page.id !== transversePageId" class="fr-mb-3w">
+    <button class="fr-btn" type="button" :disabled="isAuditing" @click="auditAutoPageClick(page.url)">
+      <span v-if="!isAuditing">Auditer automatiquement cette page</span>
+      <span v-else>En cours d'audit...</span>
+    </button>
   </div>
 
   <TransverseElementsList v-else class="fr-mb-3w" />

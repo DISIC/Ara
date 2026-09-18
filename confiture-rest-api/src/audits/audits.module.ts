@@ -11,6 +11,8 @@ import { FileStorageService } from "./file-storage.service";
 import { NotCompliantItemsController } from "./not-compliant-items/not-compliant-items.controller";
 import { NotCompliantItemsService } from "./not-compliant-items/not-compliant-items.service";
 import { ReportsController } from "./reports.controller";
+import { ScanController } from "./scan.controller";
+import { ScanService } from "./scan.service";
 import { StatementsController } from "./statements.controller";
 
 @Module({
@@ -20,9 +22,10 @@ import { StatementsController } from "./statements.controller";
     MailService,
     FileStorageService,
     AuditExportService,
-    AuditExistsPipe
+    AuditExistsPipe,
+    ScanService
   ],
-  controllers: [AuditsController, ReportsController, StatementsController, NotCompliantItemsController],
+  controllers: [AuditsController, ReportsController, StatementsController, NotCompliantItemsController, ScanController],
   imports: [
     MulterModule.register({
       fileFilter(_req, file, callback) {

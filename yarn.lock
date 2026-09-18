@@ -6479,6 +6479,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axe-core@npm:^4.13.0":
+  version: 4.13.0
+  resolution: "axe-core@npm:4.13.0"
+  checksum: 10c0/0e3be8be10eea64beddefd3007e1425424ff60c26c5f4d5f748ec48c2825356839c02ad4167fc1f03a6d84ecd82108f49fb2846ab7fe949273787391745561ca
+  languageName: node
+  linkType: hard
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -7411,6 +7418,7 @@ __metadata:
     "@types/nodemailer": "npm:^6.4.4"
     "@types/pg": "npm:^8.16.0"
     "@types/sharp": "npm:^0.31.1"
+    axe-core: "npm:^4.13.0"
     bcrypt: "npm:^5.1.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.13.2"
@@ -7426,6 +7434,8 @@ __metadata:
     nodemailer: "npm:^6.7.7"
     openapi-typescript: "npm:^7.13.0"
     pg: "npm:^8.16.3"
+    playwright: "npm:^1.63.0"
+    playwright-core: "npm:^1.63.0"
     prisma: "npm:^7.2.0"
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
@@ -13648,6 +13658,26 @@ __metadata:
     exsolve: "npm:^1.0.7"
     pathe: "npm:^2.0.3"
   checksum: 10c0/d2bbddc5b81bd4741e1529c08ef4c5f1542bbdcf63498b73b8e1d84cff71806d1b8b1577800549bb569cb7aa20056257677b979bff48c97967cba7e64f72ae12
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.63.0, playwright-core@npm:^1.63.0":
+  version: 1.63.0
+  resolution: "playwright-core@npm:1.63.0"
+  bin:
+    playwright-core: cli.js
+  checksum: 10c0/39c1ebae4029ca2e9371e00a5588d962038e24b6e0bdb7d0d27374dde04838f349b83ae0c8b3b648653d0935cba7fb9011f1201adaab9dd0db7801ad6c75e9aa
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.63.0":
+  version: 1.63.0
+  resolution: "playwright@npm:1.63.0"
+  dependencies:
+    playwright-core: "npm:1.63.0"
+  bin:
+    playwright: cli.js
+  checksum: 10c0/d1fd048a89be27c9aba6757dc4f70eff4a5163b49f439ad691767be8b2a482327d0dd1928b4f73c8fe0d8b33aab2c9dc2670424ab60f112d9e98e91b94e3b090
   languageName: node
   linkType: hard
 
