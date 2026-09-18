@@ -10,5 +10,8 @@
     "prisma.config.ts",
     "prisma/seed.ts",
     "prisma/seed-data.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "incremental": false
+  }
 }
