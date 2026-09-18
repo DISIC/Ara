@@ -41,20 +41,11 @@ du -sh node_modules || true
 echo "📦 Playwright cache after pruning:"
 du -sh ~/.cache/ms-playwright || true
 
-echo "📦 Largest top-level directories:"
-du -h -d 1 . | sort -h
+echo "🧹 Cleaning Cypress cache..."
+rm -rf ~/.cache/Cypress
 
-echo "📦 Largest backend directories:"
-du -h -d 2 confiture-rest-api | sort -h | tail -30
-
-echo "📦 Largest node_modules packages:"
-du -h -d 1 node_modules | sort -h | tail -30
-
-echo "📦 Yarn cache:"
-du -sh .yarn/cache 2>/dev/null || true
-
-echo "📦 Global caches:"
-du -h -d 2 ~/.cache 2>/dev/null | sort -h | tail -30
+echo "📦 Global cache after cleanup:"
+du -sh ~/.cache || true
 
 yarn cache clean
 
