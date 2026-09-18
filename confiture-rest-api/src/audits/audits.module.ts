@@ -12,6 +12,7 @@ import { NotCompliantItemsController } from "./not-compliant-items/not-compliant
 import { NotCompliantItemsService } from "./not-compliant-items/not-compliant-items.service";
 import { ReportsController } from "./reports.controller";
 import { ScanController } from "./scan.controller";
+import { ScanService } from "./scan.service";
 import { StatementsController } from "./statements.controller";
 
 @Module({
@@ -21,7 +22,8 @@ import { StatementsController } from "./statements.controller";
     MailService,
     FileStorageService,
     AuditExportService,
-    AuditExistsPipe
+    AuditExistsPipe,
+    ScanService
   ],
   controllers: [AuditsController, ReportsController, StatementsController, NotCompliantItemsController, ScanController],
   imports: [

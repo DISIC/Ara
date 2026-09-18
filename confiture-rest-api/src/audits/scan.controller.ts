@@ -8,53 +8,19 @@ import {
   ApiTags
 } from "@nestjs/swagger";
 
-import axe, { AxeResults } from "axe-core";
-import fr from "axe-core/locales/fr.json";
-import { chromium } from "playwright-core";
+import { AxeResults } from "axe-core";
 import { ScanAuditDto } from "./dto/requests/scan-audit.dto";
+import { ScanService } from "./scan.service";
 
 @Controller("scan")
 @ApiTags("Audits")
-
 export class ScanController {
+  constructor(private readonly scanService: ScanService) {
+
+  }
+
   @Post()
-
   async scanPage(@Body() body: ScanAuditDto): Promise<AxeResults> {
-    const browser = await chromium.launch({
-      headless: true
-    });
-
-    try {
-      const page = await browser.newPage();
-
-      await page.goto(body.url, {
-        waitUntil: "networkidle",
-        timeout: 50_000
-      });
-
-      // Injecte axe-core dans la page
-      await page.addScriptTag({
-        content: axe.source
-      });
-
-      await page.evaluate(async (locale) => {
-        await (window as any).axe.configure({
-          locale
-        });
-      }, fr);
-
-      const results = await page.evaluate(async () => {
-        return await (window as any).axe.run(document, {
-          runOnly: {
-            type: "tag",
-            values: ["RGAAv4"]
-          }
-        });
-      });
-
-      return results;
-    } finally {
-      await browser.close();
-    }
+    return await this.scanService.scan(body.url);
   }
 }
