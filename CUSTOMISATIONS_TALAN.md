@@ -167,6 +167,29 @@ propre). En attente de commit/push/déploiement.
 
 ---
 
+## Export des erreurs en tickets Jira (CSV)
+
+**Date** : 2026-09-21
+**Branche** : `feature/export-jira-csv`
+
+**Pourquoi** : importer les erreurs d'un audit dans Jira Cloud, un ticket par
+erreur. Export généré côté front, sans nouvel endpoint. Code isolé dans
+`src/talan/jira-export/`, sans dépendance aux types, utils et critères de
+DISIC (seulement `criteres.json`, les stores et `StepCard`).
+
+**Fichiers ajoutés (propres au fork)** :
+
+- `confiture-web-app/src/talan/jira-export/`
+
+**Fichiers existants modifiés (risque de conflit)** :
+
+- `confiture-web-app/src/components/audit/AuditGenerationHeader.vue` : import
+  - balise `<JiraExportMenuItem>` dans le menu Actions
+- `confiture-web-app/src/pages/audit/AuditOverviewPage.vue` : import + balise
+  `<JiraExportStep>` dans la synthèse
+
+---
+
 ## Template pour une nouvelle entrée
 
 ```markdown

@@ -10,6 +10,7 @@ import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
+import JiraExportStep from "../../talan/jira-export/JiraExportStep.vue";
 import { AuditType } from "../../types";
 
 const route = useRoute();
@@ -111,6 +112,12 @@ const isLoggedInAndOwnAudit = computed(() => {
 
         <!-- Grid -->
         <GridStep
+          :audit="audit"
+          class="fr-mb-1w"
+          :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
+        />
+
+        <JiraExportStep
           :audit="audit"
           class="fr-mb-1w"
           :heading-level="isLoggedInAndOwnAudit ? 'h2' : 'h3'"
