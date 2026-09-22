@@ -2,6 +2,9 @@ import assert from "node:assert";
 import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 
+// Definitions
+// - Orphan audit: a public audit not owned by a verified user
+
 @Injectable()
 export class PermissionsService {
   constructor(
