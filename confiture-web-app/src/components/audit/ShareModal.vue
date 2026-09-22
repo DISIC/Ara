@@ -25,21 +25,22 @@ defineExpose({
 const modal = ref<InstanceType<typeof DsfrModal>>();
 const auditIsPublic = ref(props.isPublic);
 
-// Call store action
 const auditStore = useAuditStore();
 const notify = useNotifications();
 
 function toggleAuditPrivacy() {
-  auditStore.toggleAuditPrivacy(props.editUniqueId).catch((error) => {
+  // Call store action
+  const isPublic = auditIsPublic.value;
+  auditStore.setAuditPrivacy(props.editUniqueId, isPublic).catch((error) => {
     console.log(error);
     notify(
       "error",
-      `L’audit n’a pas pu être rendu ${auditIsPublic.value ? "privé" : "public"}`,
+      `L’audit n’a pas pu être rendu ${isPublic ? "privé" : "public"}`,
       DEFAULT_NOTIFICATION_ERROR_DESCRIPTION
     );
 
     // Reset toggle to old value
-    auditIsPublic.value = !auditIsPublic.value;
+    auditIsPublic.value = !isPublic;
   });
 }
 </script>
