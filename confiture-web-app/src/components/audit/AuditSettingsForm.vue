@@ -73,6 +73,8 @@ const auditorEmail = ref(props.audit?.auditorEmail || "");
 const auditorName = ref(props.audit?.auditorName ?? "");
 
 const pagesSampleRef = ref<InstanceType<typeof PagesSample>>();
+
+const isPristine = ref(true);
 /**
  * Create a new page and focus its name field.
  */
@@ -125,7 +127,7 @@ const currentProcedureName = procedureName.value;
     }"
   />
 
-  <FormWithValidation class="content" @submit="onSubmit">
+  <FormWithValidation class="content" @submit="onSubmit" @change="isPristine = false">
     <h1 class="fr-mb-3v">Paramètres de l’audit</h1>
     <p class="fr-text--xl fr-mb-4w">{{ currentProcedureName }}</p>
 
@@ -205,7 +207,7 @@ const currentProcedureName = procedureName.value;
     </fieldset>
 
     <div>
-      <button class="fr-btn fr-mt-6w" type="submit">
+      <button class="fr-btn fr-mt-6w" type="submit" :disabled="isPristine">
         Enregistrer les modifications
       </button>
 
