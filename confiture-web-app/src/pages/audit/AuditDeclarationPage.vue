@@ -35,7 +35,7 @@ import {
 } from "../../enums";
 import { useAccountStore, useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditStatementRequestData } from "../../types";
-import { formatEmail, URL_REGEX, formatDate, isSameDay } from "../../utils";
+import { formatEmail, URL_REGEX, formatDate, isSameDay, isObjectNullOrEmpty } from "../../utils";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -237,6 +237,7 @@ onBeforeRouteLeave((to) => {
   const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
 
   if (
+    !isObjectNullOrEmpty(dataToBeSubmitted.value) &&
     !isSubmitting.value &&
     !confirmedLeave.value &&
     !isEqual(currentAudit, editedAudit)
