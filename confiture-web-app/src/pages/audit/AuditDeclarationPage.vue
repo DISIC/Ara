@@ -523,6 +523,7 @@ function confirmLeave() {
         v-model="notCompliantContent"
         labelled-by="notCompliantContent"
         basic-mode
+        @update:model-value="isPristine = false"
       />
     </div>
 
@@ -544,6 +545,7 @@ function confirmLeave() {
         v-model="derogatedContent"
         labelled-by="derogatedContent"
         basic-mode
+        @update:model-value="isPristine = false"
       />
     </div>
 
@@ -559,6 +561,7 @@ function confirmLeave() {
         v-model="notInScopeContent"
         labelled-by="notInScopeContent"
         basic-mode
+        @update:model-value="isPristine = false"
       />
     </div>
 
