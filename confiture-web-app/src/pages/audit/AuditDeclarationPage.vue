@@ -600,7 +600,7 @@ function confirmLeave() {
     </div>
 
     <div class="fr-mt-6w actions">
-      <button class="fr-btn" type="submit">
+      <button class="fr-btn" type="submit" :disabled="isPristine">
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
