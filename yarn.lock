@@ -5295,22 +5295,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mjml-core@npm:*":
-  version: 5.1.0
-  resolution: "@types/mjml-core@npm:5.1.0"
-  checksum: 10c0/30806ad342f3e58fc602015ba1545e969733cb77c8967d7b41d0ef83d599351fcac45a302e63aec5996d01cc30263bd8daf73d16d17c88580dbbe14ede7f1af0
-  languageName: node
-  linkType: hard
-
-"@types/mjml@npm:^4.7.1":
-  version: 4.7.4
-  resolution: "@types/mjml@npm:4.7.4"
-  dependencies:
-    "@types/mjml-core": "npm:*"
-  checksum: 10c0/6f4bbdf709e1f6c9b26be67146b1e4c759142fb4ddfa4c079b600835701bb2039c60cd530d016f1d2f1aef4256580e30cdc942c3acd6935e2fe56b5a665795ae
-  languageName: node
-  linkType: hard
-
 "@types/ms@npm:*":
   version: 2.1.0
   resolution: "@types/ms@npm:2.1.0"
@@ -7227,7 +7211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^2.0.16, colorette@npm:^2.0.20":
+"colorette@npm:^2.0.20":
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 10c0/e94116ff33b0ff56f3b83b9ace895e5bf87c2a7a47b3401b8c3f3226e050d5ef76cf4072fb3325f9dc24d1698f9b730baf4e05eeaf861d74a1883073f4c98a40
@@ -7382,7 +7366,6 @@ __metadata:
     "@types/bcrypt": "npm:^5.0.0"
     "@types/express": "npm:^5.0.6"
     "@types/lodash": "npm:^4.14.194"
-    "@types/mjml": "npm:^4.7.1"
     "@types/multer": "npm:^1.4.7"
     "@types/node": "npm:^22.10.0"
     "@types/nodemailer": "npm:^6.4.4"
