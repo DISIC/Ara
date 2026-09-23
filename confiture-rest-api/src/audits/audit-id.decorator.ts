@@ -5,7 +5,7 @@ import { AuditExistsPipe } from "./audit.pipe";
 function methodDecoratorToParamDecorator(
   decorator: MethodDecorator
 ): ParameterDecorator {
-  return (target: object, propertyKey: string) =>
+  return (target: object, propertyKey: string | symbol) =>
     decorator(target, propertyKey, { value: target[propertyKey] });
 }
 
