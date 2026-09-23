@@ -61,7 +61,6 @@
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.14.194",
-    "@types/mjml": "^4.7.1",
     "@types/multer": "^1.4.7",
     "@types/node": "^22.10.0",
     "@types/nodemailer": "^6.4.4",
