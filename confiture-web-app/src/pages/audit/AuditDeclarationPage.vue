@@ -35,7 +35,7 @@ import {
 } from "../../enums";
 import { useAccountStore, useAuditStore } from "../../store";
 import { AuditEnvironment, UpdateAuditStatementRequestData } from "../../types";
-import { formatEmail, URL_REGEX, formatDate, isSameDay, isObjectNullOrEmpty } from "../../utils";
+import { formatEmail, URL_REGEX, formatDate, isSameDay } from "../../utils";
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -154,6 +154,7 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
   };
 });
 
+const isPristine = ref(true);
 const isSubmitting = ref(false);
 
 function handleSubmit() {
@@ -237,7 +238,7 @@ onBeforeRouteLeave((to) => {
   const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
 
   if (
-    !isObjectNullOrEmpty(dataToBeSubmitted.value) &&
+    !isPristine.value &&
     !isSubmitting.value &&
     !confirmedLeave.value &&
     !isEqual(currentAudit, editedAudit)
@@ -299,6 +300,7 @@ function confirmLeave() {
     v-if="auditStore.currentAudit"
     class="content"
     @submit="handleSubmit"
+    @change="isPristine = false"
   >
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>

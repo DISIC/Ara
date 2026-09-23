@@ -299,15 +299,3 @@ export function isImage(file: File | FileListFile) {
     return file.mimetype.startsWith("image");
   }
 }
-
-export function isNullOrEmpty(value: any): boolean {
-  if (Array.isArray(value)) {
-    return value.length === 0;
-  }
-
-  return value === undefined || value === null || value === "";
-}
-
-export function isObjectNullOrEmpty(value: any): boolean {
-  return Object.values(value).every(x => isNullOrEmpty(x));
-}
