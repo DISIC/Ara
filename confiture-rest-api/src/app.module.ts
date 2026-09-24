@@ -1,20 +1,9 @@
 import { join } from "path";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { APP_FILTER } from "@nestjs/core";
 import { ServeStaticModule } from "@nestjs/serve-static";
-import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
-import { AuditsModule } from "./audits/audits.module";
-import { AuthModule } from "./auth/auth.module";
-import { UserMiddleware } from "./auth/user.middleware";
+import { AuditsModule as AuditsTwoModule } from "./audits-2/audits.module";
 import { configValidationSchema } from "./config-validation-schema";
-import { DebugController } from "./debug/debug.controller";
-import { FeedbackModule } from "./feedback/feedback.module";
-import { HealthCheckController } from "./health-check.controller";
-import { MailModule } from "./mail/mail.module";
-import { PrismaModule } from "./prisma.module";
-import { ProfileModule } from "./profile/profile.module";
-import { TestsController } from "./tests.controller";
 
 @Module({
   imports: [
@@ -24,32 +13,33 @@ import { TestsController } from "./tests.controller";
         ? configValidationSchema
         : undefined
     }),
-    PrismaModule,
-    FeedbackModule,
-    AuditsModule,
-    MailModule,
-    AuthModule,
-    ProfileModule,
-    SentryModule.forRoot(),
+    // PrismaModule,
+    // FeedbackModule,
+    // AuditsModule,
+    // MailModule,
+    // AuthModule,
+    // ProfileModule,
+    // SentryModule.forRoot(),
+    AuditsTwoModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
       // make sure to not serve the index.html for unknown API paths
       exclude: ["/api{/*path}"]
     })
   ],
-  providers: [{
-    provide: APP_FILTER,
-    useClass: SentryGlobalFilter
-  }],
+  // providers: [{
+  //   provide: APP_FILTER,
+  //   useClass: SentryGlobalFilter
+  // }],
   controllers: [
-    HealthCheckController,
-    DebugController,
+    // HealthCheckController,
+    // DebugController,
     // enable tests enpoints only when the TESTS_ENDPOINTS variable is set
-    ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
+    // ...(process.env.TESTS_ENDPOINTS ? [TestsController] : [])
   ]
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserMiddleware).forRoutes("*");
+  configure(_consumer: MiddlewareConsumer) {
+    // consumer.apply(UserMiddleware).forRoutes("*");
   }
 }
