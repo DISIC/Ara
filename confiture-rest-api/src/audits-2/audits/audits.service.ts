@@ -17,12 +17,7 @@ export class AuditsService {
 
   async getAudit(editUniqueId: string): Promise<AuditResponseDto> {
     return this.prisma.audit.findFirstOrThrow({
-      where: { editUniqueId, isHidden: false },
-      // TODO: automatically return properties from dto only
-      select: {
-        editUniqueId: true,
-        procedureName: true
-      }
+      where: { editUniqueId, isHidden: false }
     });
   }
 
