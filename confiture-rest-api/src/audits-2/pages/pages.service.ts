@@ -19,7 +19,7 @@ export class PagesService {
       },
       select: { slug: true }
     })).map(el => el.slug);
-    const slug = this.generateUniqueSlug(data.name, existingSlugs);
+    const slug = PagesService.generateUniqueSlug(data.name, existingSlugs);
 
     return this.prisma.auditedPage.create({
       data: { ...data, slug, order: existingSlugs.length + 1, audit: { connect: { editUniqueId } } }
@@ -34,7 +34,7 @@ export class PagesService {
       select: { slug: true }
     })).map(el => el.slug);
 
-    const slugs = this.generateManyUniqueSlugs(data.map(x => x.name), existingSlugs);
+    const slugs = PagesService.generateManyUniqueSlugs(data.map(x => x.name), existingSlugs);
     console.log({ slugs });
 
     return this.prisma.auditedPage.createManyAndReturn({
@@ -56,7 +56,7 @@ export class PagesService {
   }
 
   // TODO: test me
-  private generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
+  private static generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
     const generatedSlugs = [];
     for (let i = 0; i < pageNames.length; i++) {
       const pageName = pageNames[i];
@@ -67,7 +67,7 @@ export class PagesService {
   }
 
   // TODO: test me
-  private generateUniqueSlug(pageName: string, existingSlugs: string[]): string {
+  private static generateUniqueSlug(pageName: string, existingSlugs: string[]): string {
     let slug = slugify(pageName);
     const slugs = [...existingSlugs, TRANSVERSE_ELEMENTS_SLUG];
     for (let i = 1; slugs.includes(slug); i++) {
