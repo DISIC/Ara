@@ -1,15 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post } from "@nestjs/common";
+import { Prisma } from "../../generated/prisma/client";
+import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 
-/*
-- ✅ validation du payload
-- 🚧 validation des params d’url
-- ✅ authentification & permissions
-*/
-
 @Controller("/audits")
 export class AuditsController {
+  constructor(
+    private readonly auditsService: AuditsService
+  ) {}
+
   //
   // CRUD methods
   //
@@ -28,10 +28,21 @@ export class AuditsController {
   }
 
   @Get(":uniqueId")
-  getAudit(
+  async getAudit(
     @Param("uniqueId") uniqueId: string
   ): Promise<AuditResponseDto> {
-    return Promise.resolve({ editUniqueId: uniqueId, procedureName: "feur" });
+    try {
+      return await this.auditsService.getAudit(uniqueId);
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+        if (this.auditsService.hasBeenDeleted(uniqueId)) {
+          throw new GoneException();
+        } else {
+          throw new NotFoundException();
+        }
+      }
+      throw err;
+    }
   }
 
   @Patch(":uniqueId")

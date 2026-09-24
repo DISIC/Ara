@@ -15,6 +15,7 @@ export class PermissionGuard implements CanActivate {
   }
 }
 
+/** Checks that the request is about an audit or a sub-resource of an audit (pages, results, …). */
 function isAuditRequest(req: Request): boolean {
   return !!req.params.uniqueId;
 }

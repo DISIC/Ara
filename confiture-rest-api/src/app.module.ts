@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuditsModule as AuditsTwoModule } from "./audits-2/audits.module";
 import { configValidationSchema } from "./config-validation-schema";
+import { PrismaModule } from "./prisma.module";
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { configValidationSchema } from "./config-validation-schema";
         ? configValidationSchema
         : undefined
     }),
-    // PrismaModule,
+    PrismaModule,
     // FeedbackModule,
     // AuditsModule,
     // MailModule,
