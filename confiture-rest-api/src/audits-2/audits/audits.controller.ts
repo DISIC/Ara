@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { Prisma } from "../../generated/prisma/client";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 
+@UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({ type: AuditResponseDto, excludeExtraneousValues: true })
 @Controller("/audits")
 export class AuditsController {
   constructor(
@@ -23,8 +25,9 @@ export class AuditsController {
   }
 
   @Get()
-  getAudits(): Promise<AuditResponseDto[]> {
-    throw "todo";
+  async getAudits(): Promise<AuditResponseDto[]> {
+    const audit: AuditResponseDto = { editUniqueId: "feur", procedureName: "blabla", extra: "nope", foo: "bar" } as AuditResponseDto;
+    return [audit, audit, audit];
   }
 
   @Get(":uniqueId")
