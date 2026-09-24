@@ -12,6 +12,7 @@
     "prisma/seed-data.ts"
   ],
   "compilerOptions": {
-    "incremental": false
+    "incremental": false,
+    "rootDir": "./src"
   }
 }
