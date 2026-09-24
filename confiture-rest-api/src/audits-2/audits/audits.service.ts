@@ -22,7 +22,18 @@ export class AuditsService {
   }
 
   async updateAudit(): Promise<AuditResponseDto> { throw "todo"; }
-  async deleteAudit(): Promise<void> { throw "todo"; }
+
+  async softDeleteAudit(editUniqueId: string): Promise<void> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: {
+        isHidden: true,
+        auditorEmail: null,
+        auditorName: null,
+        auditorOrganisation: null
+      }
+    });
+  }
 
   //
   // action methods
