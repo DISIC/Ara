@@ -4,7 +4,7 @@ import { slugify } from "../../utils";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
 
-const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
+export const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
 
 @Injectable()
 export class PagesService {
@@ -22,7 +22,7 @@ export class PagesService {
     const slug = this.generateUniqueSlug(data.name, existingSlugs);
 
     return this.prisma.auditedPage.create({
-      data: { ...data, slug, audit: { connect: { editUniqueId } } }
+      data: { ...data, slug, order: existingSlugs.length + 1, audit: { connect: { editUniqueId } } }
     });
   }
 
@@ -35,21 +35,33 @@ export class PagesService {
     })).map(el => el.slug);
 
     const slugs = this.generateManyUniqueSlugs(data.map(x => x.name), existingSlugs);
+    console.log({ slugs });
 
     return this.prisma.auditedPage.createManyAndReturn({
-      data: data.map((p, i) => ({ ...p, slug: slugs[i], audit: { connect: { editUniqueId } } }))
+      data: data.map((p, i) => ({
+        ...p,
+        slug: slugs[i],
+        order: i,
+        auditUniqueId: editUniqueId
+      }))
+    });
+  }
+
+  async getPages(editUniqueId: string): Promise<PageResponseDto[]> {
+    return await this.prisma.auditedPage.findMany({
+      where: {
+        auditUniqueId: editUniqueId
+      }
     });
   }
 
   // TODO: test me
   private generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
-    const everySlugs = [...existingSlugs];
     const generatedSlugs = [];
     for (let i = 0; i < pageNames.length; i++) {
       const pageName = pageNames[i];
-      const slug = this.generateUniqueSlug(pageName, everySlugs);
+      const slug = this.generateUniqueSlug(pageName, [...existingSlugs, ...generatedSlugs]);
       generatedSlugs.push(slug);
-      existingSlugs.push(slug);
     }
     return generatedSlugs;
   }
