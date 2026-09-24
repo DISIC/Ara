@@ -1,8 +1,7 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
+import { ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { Prisma } from "../../generated/prisma/client";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
-import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ type: AuditResponseDto, excludeExtraneousValues: true })
@@ -17,11 +16,8 @@ export class AuditsController {
   //
 
   @Post()
-  createAudit(
-    @Body() body: CreateAuditRequestDto
-  ): Promise<AuditResponseDto> {
-    console.log({ body });
-    return Promise.resolve({ editUniqueId: "pouet123", procedureName: body.procedureName });
+  createAudit(): Promise<AuditResponseDto> {
+    throw "todo";
   }
 
   @Get()
@@ -31,9 +27,7 @@ export class AuditsController {
   }
 
   @Get(":uniqueId")
-  async getAudit(
-    @Param("uniqueId") uniqueId: string
-  ): Promise<AuditResponseDto> {
+  async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditResponseDto> {
     try {
       return await this.auditsService.getAudit(uniqueId);
     } catch (err) {
@@ -54,8 +48,8 @@ export class AuditsController {
   }
 
   @Delete(":uniqueId")
-  deleteAudit(): Promise<void> {
-    throw "todo";
+  async deleteAudit(@Param("uniqueId") uniqueId: string): Promise<void> {
+    await this.auditsService.softDeleteAudit(uniqueId);
   }
 
   //
