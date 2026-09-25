@@ -32,7 +32,7 @@ describe("Editor", () => {
 
       // Check success message
       cy.get(".criterium-container [aria-live='polite']").contains(`L’image « ${fileName} » a été correctement insérée`);
-      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).debug();
+      cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`);
       cy.get(`.criterium-container .tiptap img[alt="${fileName}"]:not([data-loading="true"])`).should("exist");
 
       // Editor content has changed => results updated
