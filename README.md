@@ -19,7 +19,7 @@ Les espaces de travail (_workspaces_) sont :
 ## Prérequis
 
 - Environnement d'exécution JavaScript (_JavaScript runtime environment_) :\
-  [Node.js](https://nodejs.org) version `22.14.0`
+  [Node.js](https://nodejs.org) version `24.21.0`
 - Gestionnaire de paquets (_Package manager_) :\
   [Yarn 4 (Modern)](https://yarnpkg.com/) version `4.9.2`
 - Conteneurisation :\
