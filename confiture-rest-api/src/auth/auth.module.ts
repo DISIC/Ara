@@ -32,4 +32,4 @@ import { UpdateEmailController } from "./update-email.controller";
   ],
   exports: [AuthService]
 })
-export class AuthModule {}
+export class AuthModule { }
