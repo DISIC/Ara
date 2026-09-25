@@ -16,7 +16,9 @@
     "migrate:prod": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "generate-api-types": "prisma generate && rimraf dist && GENERATE_TYPES=1 nest start --entryFile generate-api-typings.js",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.218.0",
@@ -57,21 +59,42 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
+    "@nestjs/testing": "^11.2.6",
     "@sentry/cli": "^2.57.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.14.194",
     "@types/multer": "^1.4.7",
     "@types/node": "^24.13.5",
     "@types/nodemailer": "^6.4.4",
     "@types/pg": "^8.16.0",
     "@types/sharp": "^0.31.1",
+    "jest": "^30.5.2",
     "openapi-typescript": "^7.13.0",
     "source-map-support": "^0.5.20",
+    "ts-jest": "^29.4.14",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
   },
   "engines": {
     "node": "^24.21.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   }
 }
