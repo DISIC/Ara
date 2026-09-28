@@ -5,7 +5,7 @@ describe("Actions", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
       cy.get("h1").contains("Paramètres de l’audit");
       cy.url().should(
         "eq",
@@ -42,7 +42,7 @@ describe("Actions", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -113,7 +113,7 @@ describe("Actions", () => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
-      cy.contains("Modifier les paramètres de l’audit").click();
+      cy.contains("Modifier les paramètres").click();
 
       cy.get("fieldset .fr-input-group .fr-input[id^='page-name']").then(
         (els) => {
@@ -186,7 +186,7 @@ describe("Actions", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
-      cy.contains("button", "Dupliquer l’audit").click();
+      cy.contains("button", "Dupliquer").click();
 
       cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
       cy.get("dialog").contains("button", "Dupliquer l’audit").click();
@@ -215,7 +215,7 @@ describe("Actions", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
-      cy.contains("button", "Transférer l’audit").click();
+      cy.contains("button", "Transférer").click();
 
       // Error: 2nd field is empty
       cy.getByLabel("Adresse e-mail du destinataire")
