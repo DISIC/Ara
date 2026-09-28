@@ -355,8 +355,7 @@ onMounted(() => {
                   target="_blank"
                   :disabled="isOffline ? true : undefined"
                 >
-                  Consulter le rapport
-                  <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
+                  Consulter le rapport<span v-if="!isOffline" class="fr-sr-only">&nbsp;de l’audit {{ auditName }} (nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -368,7 +367,7 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg">de l’audit</span>
+                  Modifier les paramètres<span class="fr-sr-only">&nbsp;de l’audit {{ auditName }}</span>
                 </RouterLink>
               </li>
               <li class="dropdown-item">
@@ -376,8 +375,7 @@ onMounted(() => {
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line"
                   @click="duplicateModal?.show()"
                 >
-                  Dupliquer l’audit
-                  <span class="fr-sr-only"> {{ auditName }}</span>
+                  Dupliquer<span class="fr-sr-only">&nbsp;l’audit {{ auditName }}</span>
                 </button>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
@@ -387,8 +385,7 @@ onMounted(() => {
                   @click="transferModalRef?.show()"
                 >
                   <span>
-                    Transférer l’audit
-                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    Transférer<span class="fr-sr-only">&nbsp;l’audit {{ auditName }}</span>
                   </span>
                   <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut transférer l’audit
@@ -414,7 +411,7 @@ onMounted(() => {
                   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
                   @click="deleteModal?.show()"
                 >
-                  Supprimer l’audit
+                  Supprimer l’audit<span class="fr-sr-only">&nbsp;{{ auditName }}</span>
                 </button>
               </li>
             </ul>
@@ -452,7 +449,7 @@ onMounted(() => {
   <DuplicateModal
     :id="uniqueId"
     ref="duplicateModal"
-    :original-audit-name="auditStore.currentAudit?.procedureName"
+    :original-audit-name="auditName"
     :is-loading="isDuplicationLoading"
     @confirm="confirmDuplicate"
     @closed="

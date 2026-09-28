@@ -44,7 +44,7 @@ describe("Report header", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
       cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Télécharger").click({ force: true });
-      cy.contains("a", "Télécharger l'audit").click({ force: true });
+      cy.contains("a", "Télécharger la grille d’audit").click({ force: true });
 
       cy.readFile("cypress/downloads/audit.csv");
     });
