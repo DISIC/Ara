@@ -14,14 +14,17 @@ interface NotificationStoreState {
       label: string;
       cb: () => void;
       hideOnTrigger?: boolean;
+      srLabel?: string;
     };
     link?: { label: string; to: RouteLocationRaw };
+    close?: () => void; // action to do after close
   } | null;
 }
 
 interface NotificationOptions {
-  action?: { label: string; cb: () => void; hideOnTrigger?: boolean };
+  action?: { label: string; srLabel?: string; cb: () => void; hideOnTrigger?: boolean };
   link?: { label: string; to: RouteLocationRaw };
+  close?: () => void;
 }
 
 export const useNotificationStore = defineStore("notification", {
@@ -52,6 +55,10 @@ export const useNotificationStore = defineStore("notification", {
     },
 
     hideNotification() {
+      if (this.notification?.close) {
+        this.notification.close();
+      }
+
       this.notification = null;
     }
   }

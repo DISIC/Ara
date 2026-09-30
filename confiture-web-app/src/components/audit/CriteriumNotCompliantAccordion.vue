@@ -161,9 +161,13 @@ const deleteNotCompliantItem = async (id: number) => {
       {
         action: {
           label: "Annuler",
+          srLabel: "la suppression de l'erreur",
           cb: async () => {
             await createNotCompliantItem(itemToDelete);
           }
+        },
+        close: () => {
+          setFocusToTextEditor();
         }
       }
     );
