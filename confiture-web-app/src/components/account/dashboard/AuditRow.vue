@@ -206,13 +206,7 @@ defineExpose({
           : isInProgress
             ? "Continuer l’audit"
             : "Accéder à l’audit"
-      }}<span
-        v-if="isInProgress || isNotStarted"
-        class="fr-sr-only"
-      >{{ audit.procedureName }}</span><span
-        v-else
-        class="fr-sr-only"
-      >&nbsp;{{ audit.procedureName }}</span>
+      }}<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Secondary action -->
