@@ -154,7 +154,6 @@ const dataToBeSubmitted = computed<UpdateAuditStatementRequestData>(() => {
   };
 });
 
-const isPristine = ref(true);
 const isSubmitting = ref(false);
 
 function handleSubmit() {
@@ -184,6 +183,14 @@ function handleSubmit() {
 
 const auditIsPublishable = computed(() => {
   return !!auditStore.currentAudit?.initiator;
+});
+
+const hasDataChanged = ref(false);
+watch(() => dataToBeSubmitted.value, () => {
+  const currentAudit = auditStore.currentAudit;
+  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
+
+  hasDataChanged.value = !isEqual(currentAudit, editedAudit);
 });
 
 /**
@@ -234,14 +241,10 @@ const confirmedLeave = ref(false);
 const leaveModalDestination = ref<string>("");
 
 onBeforeRouteLeave((to) => {
-  const currentAudit = auditStore.currentAudit;
-  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
-
   if (
-    !isPristine.value &&
     !isSubmitting.value &&
     !confirmedLeave.value &&
-    !isEqual(currentAudit, editedAudit)
+    hasDataChanged.value
   ) {
     leaveModalDestination.value = to.fullPath;
 
@@ -300,7 +303,6 @@ function confirmLeave() {
     v-if="auditStore.currentAudit"
     class="content"
     @submit="handleSubmit"
-    @change="isPristine = false"
   >
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
@@ -523,7 +525,6 @@ function confirmLeave() {
         v-model="notCompliantContent"
         labelled-by="notCompliantContent"
         basic-mode
-        @update:model-value="isPristine = false"
       />
     </div>
 
@@ -545,7 +546,6 @@ function confirmLeave() {
         v-model="derogatedContent"
         labelled-by="derogatedContent"
         basic-mode
-        @update:model-value="isPristine = false"
       />
     </div>
 
@@ -561,7 +561,6 @@ function confirmLeave() {
         v-model="notInScopeContent"
         labelled-by="notInScopeContent"
         basic-mode
-        @update:model-value="isPristine = false"
       />
     </div>
 
@@ -603,7 +602,7 @@ function confirmLeave() {
     </div>
 
     <div class="fr-mt-6w actions">
-      <button class="fr-btn" type="submit" :disabled="isPristine && auditIsPublishable">
+      <button class="fr-btn" type="submit" :disabled="!hasDataChanged && auditIsPublishable">
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
