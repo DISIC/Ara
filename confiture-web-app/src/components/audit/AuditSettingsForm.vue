@@ -74,7 +74,8 @@ const auditorName = ref(props.audit?.auditorName ?? "");
 
 const pagesSampleRef = ref<InstanceType<typeof PagesSample>>();
 
-const isPristine = ref(true);
+const hasDataChanged = ref(false);
+
 /**
  * Create a new page and focus its name field.
  */
@@ -94,10 +95,15 @@ function onSubmit() {
   });
 }
 
+function onChange() {
+  hasDataChanged.value = true;
+  emit("change");
+}
+
 watch(
   pages,
   () => {
-    emit("change");
+    onChange();
   },
   { deep: true }
 );
@@ -127,7 +133,7 @@ const currentProcedureName = procedureName.value;
     }"
   />
 
-  <FormWithValidation class="content" @submit="onSubmit" @change="isPristine = false">
+  <FormWithValidation class="content" @submit="onSubmit">
     <h1 class="fr-mb-3v">Paramètres de l’audit</h1>
     <p class="fr-text--xl fr-mb-4w">{{ currentProcedureName }}</p>
 
@@ -143,7 +149,7 @@ const currentProcedureName = procedureName.value;
       hint="Exemples : Service-Public, Demande de permis de conduire"
       required
       :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
-      @update:model-value="emit('change')"
+      @update:model-value="onChange"
     />
 
     <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
@@ -157,7 +163,7 @@ const currentProcedureName = procedureName.value;
         :checked="auditType === type.value"
         :goals="type.goals"
         :documentation-link="type.documentation"
-        @update:model-value="emit('change')"
+        @update:model-value="onChange"
       />
     </div>
 
@@ -187,7 +193,7 @@ const currentProcedureName = procedureName.value;
         v-model="auditorName"
         label="Prénom et nom (optionnel)"
         hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question."
-        @update:model-value="emit('change')"
+        @update:model-value="onChange"
       />
 
       <DsfrFieldWithValidation
@@ -202,12 +208,12 @@ const currentProcedureName = procedureName.value;
           REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
           EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr')
         ]"
-        @update:model-value="emit('change')"
+        @update:model-value="onChange"
       />
     </fieldset>
 
     <div>
-      <button class="fr-btn fr-mt-6w" type="submit" :disabled="isPristine">
+      <button class="fr-btn fr-mt-6w" type="submit" :disabled="!hasDataChanged">
         Enregistrer les modifications
       </button>
 

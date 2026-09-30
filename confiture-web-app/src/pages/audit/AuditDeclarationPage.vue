@@ -186,6 +186,7 @@ const auditIsPublishable = computed(() => {
 });
 
 const hasDataChanged = ref(false);
+
 watch(() => dataToBeSubmitted.value, () => {
   const currentAudit = auditStore.currentAudit;
   const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
