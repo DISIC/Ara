@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import fs from "node:fs";
 import path from "node:path";
 import { defineConfig } from "cypress";
@@ -17,7 +18,7 @@ export default defineConfig({
         }
         failureIndex++;
         const prefix = String(failureIndex).padStart(2, "0");
-        const newPath = path.join(path.dirname(details.path), `${prefix}_${path.basename(details.path)}`);
+        const newPath = path.join(path.dirname(details.path), `${prefix} ${path.basename(details.path)}`);
         fs.renameSync(details.path, newPath);
         return { path: newPath };
       });
