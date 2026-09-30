@@ -1,7 +1,6 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { AuditsModule } from "../audits/audits.module";
 import { FeedbackModule } from "../feedback/feedback.module";
 import { MailModule } from "../mail/mail.module";
 import { AuthController } from "./auth.controller";
@@ -27,8 +26,9 @@ import { UpdateEmailController } from "./update-email.controller";
         secret: config.get("JWT_SECRET")
       })
     }),
-    FeedbackModule,
-    forwardRef(() => AuditsModule)
+    FeedbackModule
+    // TODO: emit a event that AuditService listens to
+    // forwardRef(() => AuditsModule)
   ],
   exports: [AuthService]
 })

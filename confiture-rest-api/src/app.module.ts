@@ -3,6 +3,8 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuditsModule as AuditsTwoModule } from "./audits-2/audits.module";
+import { AuthModule } from "./auth/auth.module";
+import { UserMiddleware } from "./auth/user.middleware";
 import { configValidationSchema } from "./config-validation-schema";
 import { PrismaModule } from "./prisma.module";
 
@@ -18,7 +20,7 @@ import { PrismaModule } from "./prisma.module";
     // FeedbackModule,
     // AuditsModule,
     // MailModule,
-    // AuthModule,
+    AuthModule,
     // ProfileModule,
     // SentryModule.forRoot(),
     AuditsTwoModule,
@@ -40,7 +42,7 @@ import { PrismaModule } from "./prisma.module";
   ]
 })
 export class AppModule implements NestModule {
-  configure(_consumer: MiddlewareConsumer) {
-    // consumer.apply(UserMiddleware).forRoutes("*");
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserMiddleware).forRoutes("*");
   }
 }

@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { compare, hash } from "bcrypt";
 import { nanoid } from "nanoid";
 
+import { User } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
 import {
   AccountVerificationJwtPayload,
@@ -432,5 +433,14 @@ export class AuthService {
       });
 
     return email;
+  }
+
+  getUserByUid(uid: string): Promise<User> {
+    return this.prisma.user.findFirstOrThrow({
+      where: {
+        uid,
+        isVerified: true
+      }
+    });
   }
 }
