@@ -185,6 +185,15 @@ const auditIsPublishable = computed(() => {
   return !!auditStore.currentAudit?.initiator;
 });
 
+const hasDataChanged = ref(false);
+
+watch(() => dataToBeSubmitted.value, () => {
+  const currentAudit = auditStore.currentAudit;
+  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
+
+  hasDataChanged.value = !isEqual(currentAudit, editedAudit);
+});
+
 /**
  * Dev function to avoid filling all fields manually
  */
@@ -233,13 +242,10 @@ const confirmedLeave = ref(false);
 const leaveModalDestination = ref<string>("");
 
 onBeforeRouteLeave((to) => {
-  const currentAudit = auditStore.currentAudit;
-  const editedAudit = { ...currentAudit, ...dataToBeSubmitted.value };
-
   if (
     !isSubmitting.value &&
     !confirmedLeave.value &&
-    !isEqual(currentAudit, editedAudit)
+    hasDataChanged.value
   ) {
     leaveModalDestination.value = to.fullPath;
 
@@ -597,7 +603,7 @@ function confirmLeave() {
     </div>
 
     <div class="fr-mt-6w actions">
-      <button class="fr-btn" type="submit">
+      <button class="fr-btn" type="submit" :disabled="!hasDataChanged && auditIsPublishable">
         {{
           auditIsPublishable
             ? "Enregistrer les modifications"
