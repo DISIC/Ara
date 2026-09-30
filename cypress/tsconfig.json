@@ -14,5 +14,5 @@
     "types": ["cypress", "cypress-axe", "node"],
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "../cypress.config.ts", "../confiture-web-app/**/*"]
+  "include": ["**/*.ts", "../confiture-web-app/**/*"]
 }
