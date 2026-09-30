@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { nanoid } from "nanoid";
 import { AuditType } from "../../generated/prisma/enums";
 import { PrismaService } from "../../prisma.service";
@@ -10,7 +11,8 @@ import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 export class AuditsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly pagesService: PagesService
+    private readonly pagesService: PagesService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   //
@@ -26,6 +28,16 @@ export class AuditsService {
       data: {
         editUniqueId,
         consultUniqueId,
+        auditor: {
+          connectOrCreate: {
+            create: {
+              username: "adrien@slash-tmp.dev"
+            },
+            where: {
+              username: "adrien@slash-tmp.dev"
+            }
+          }
+        },
         auditType: AuditType.FULL,
         procedureName: data.procedureName,
         auditTrace: {
@@ -48,6 +60,8 @@ export class AuditsService {
     if (data.pages) {
       await this.pagesService.createPages(audit.editUniqueId, data.pages);
     }
+
+    this.eventEmitter.emit("audit.created", audit);
 
     return audit;
   }

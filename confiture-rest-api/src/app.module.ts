@@ -1,6 +1,7 @@
 import { join } from "path";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuditsModule as AuditsTwoModule } from "./audits-2/audits.module";
 import { AuthModule } from "./auth/auth.module";
@@ -16,6 +17,7 @@ import { PrismaModule } from "./prisma.module";
         ? configValidationSchema
         : undefined
     }),
+    EventEmitterModule.forRoot(),
     PrismaModule,
     // FeedbackModule,
     // AuditsModule,
