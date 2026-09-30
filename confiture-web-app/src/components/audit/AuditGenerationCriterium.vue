@@ -184,6 +184,9 @@ function updateResultStatus(status: CriteriumResultStatus) {
                   name: "audit-overview",
                   params: { uniqueId: props.auditUniqueId }
                 }
+              },
+              close: () => {
+                // TODO
               }
             }
           );

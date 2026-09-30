@@ -82,6 +82,9 @@ function confirmDuplicate(name: string) {
             resultStore.$reset();
             router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }
+        },
+        close: () => {
+          optionsDropdownRef?.value?.buttonRef?.focus();
         }
       });
     })
