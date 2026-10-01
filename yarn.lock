@@ -3048,6 +3048,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/authorization@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@nestjs/authorization@npm:0.0.1"
+  peerDependencies:
+    "@nestjs/common": ^12.0.0
+    "@nestjs/core": ^12.0.0
+    "@nestjs/microservices": ^12.0.0
+    "@nestjs/websockets": ^12.0.0
+    reflect-metadata: ^0.1.13 || ^0.2.0
+    rxjs: ^7.1.0
+  peerDependenciesMeta:
+    "@nestjs/microservices":
+      optional: true
+    "@nestjs/websockets":
+      optional: true
+  checksum: 10c0/9f1ad96f904f0f01a69386b675c0aa678f6e9dcc175f158b325e5cd3157d82f6cd5bfc9a9a6c69e3f4808e29e72cf008620b47aa49834acb3ec4b286bfe01cff
+  languageName: node
+  linkType: hard
+
 "@nestjs/cli@npm:^12.0.0":
   version: 12.0.8
   resolution: "@nestjs/cli@npm:12.0.8"
@@ -8465,6 +8484,7 @@ __metadata:
     "@aws-sdk/s3-request-presigner": "npm:^3.218.0"
     "@casl/ability": "npm:^7.0.1"
     "@casl/prisma": "npm:^2.0.2"
+    "@nestjs/authorization": "npm:^0.0.1"
     "@nestjs/cli": "npm:^12.0.0"
     "@nestjs/common": "npm:^12.0.0"
     "@nestjs/config": "npm:^12.0.0"

@@ -1,4 +1,5 @@
 import { join } from "path";
+import { AuthorizationModule } from "@nestjs/authorization";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -23,6 +24,7 @@ import { PrismaModule } from "./prisma.module";
     // AuditsModule,
     // MailModule,
     AuthModule,
+    AuthorizationModule.forRoot(),
     // ProfileModule,
     // SentryModule.forRoot(),
     AuditsTwoModule,

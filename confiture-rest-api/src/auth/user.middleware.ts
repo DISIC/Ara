@@ -15,7 +15,6 @@ export class UserMiddleware implements NestMiddleware {
 
   use(req: Request, res: any, next: (error?: any) => void) {
     const token = this.extractTokenFromHeader(req);
-    console.log({ token });
 
     if (!token) {
       next();
@@ -25,9 +24,7 @@ export class UserMiddleware implements NestMiddleware {
     this.jwt
       .verifyAsync<AuthenticationJwtPayload>(token)
       .then((payload) => {
-        console.log({ payload });
         this.authService.getUserByUid(payload.sub).then(user => {
-          console.log({ user });
           req.user = user;
           next();
         }).catch(next);

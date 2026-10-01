@@ -1,5 +1,7 @@
+import { AuthorizationService } from "@nestjs/authorization";
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
-import { Prisma } from "../../generated/prisma/client";
+import { User as CurrentUser } from "../../auth/user.decorator";
+import { Prisma, User } from "../../generated/prisma/client";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
@@ -9,7 +11,8 @@ import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 @Controller("/audits")
 export class AuditsController {
   constructor(
-    private readonly auditsService: AuditsService
+    private readonly auditsService: AuditsService,
+    private readonly authorizationService: AuthorizationService
   ) {}
 
   //
@@ -49,8 +52,8 @@ export class AuditsController {
   }
 
   @Delete(":uniqueId")
-  async deleteAudit(@Param("uniqueId") uniqueId: string): Promise<void> {
-    await this.auditsService.softDeleteAudit(uniqueId);
+  async deleteAudit(@Param("uniqueId") uniqueId: string, @CurrentUser() user: User | null): Promise<void> {
+    await this.auditsService.softDeleteAudit(uniqueId, user);
   }
 
   //
