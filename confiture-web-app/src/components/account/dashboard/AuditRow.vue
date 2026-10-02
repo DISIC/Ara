@@ -113,7 +113,7 @@ defineExpose({
 
     <!-- Creation date -->
     <p class="fr-mb-0">
-      <span class="fr-sr-only-md">Date de création&nbsp;: </span>
+      <span class="fr-sr-only-md">Date de création&nbsp;:&nbsp;</span>
       <time v-if="audit.creationDate" :datetime="audit.creationDate.toString()">
         {{ formatDate(audit.creationDate.toString(), true) }}
       </time>
@@ -122,7 +122,7 @@ defineExpose({
 
     <!-- Type -->
     <p class="fr-mb-0">
-      <span class="fr-sr-only">Type </span>
+      <span class="fr-sr-only">Type&nbsp;</span>
       {{ getCriteriaCount(audit.auditType) }} critères
     </p>
 
@@ -144,7 +144,7 @@ defineExpose({
               }
           "
         >
-          <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité</span>
+          <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité&nbsp;</span>
           {{
             isInProgress || isNotStarted
               ? "Audit en cours"
