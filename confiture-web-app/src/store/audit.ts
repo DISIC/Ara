@@ -239,16 +239,21 @@ export const useAuditStore = defineStore("audit", {
 
     async fetchAudits() {
       const audits = (await api
-        .get("/api/audits")
+        .get("/api/audits", {
+          // TODO: remove this once the API route is optimized
+          timeout: 40_000
+        })
         .json()) as AccountAudit[];
 
       this.listing = audits;
     },
 
     async transferAudit(editUniqueId: string, newEmail: string) {
-      await api.put(`/api/audits/${editUniqueId}/transfer`, { json: {
-        newEmail
-      } });
+      await api.put(`/api/audits/${editUniqueId}/transfer`, {
+        json: {
+          newEmail
+        }
+      });
 
       delete this.entities[editUniqueId];
       this.listing = this.listing.filter(
