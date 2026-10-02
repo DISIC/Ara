@@ -1404,28 +1404,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@casl/ability@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@casl/ability@npm:7.0.1"
-  dependencies:
-    "@ucast/mongo2js": "npm:^2.0.0"
-  checksum: 10c0/87b7a66b9c5a62a8d413efa858ffb80d103b41eae07f9b62c1c0a61a3641c83bf6374a02fc449b1f958e282205abef95a41738f648447f60415e72ec89d899d6
-  languageName: node
-  linkType: hard
-
-"@casl/prisma@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "@casl/prisma@npm:2.0.2"
-  dependencies:
-    "@ucast/core": "npm:^2.0.0"
-    "@ucast/js": "npm:^4.0.1"
-  peerDependencies:
-    "@casl/ability": ^7.0.0
-    "@prisma/client": ^4.16.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-  checksum: 10c0/05e834e28f84b4b1deb8c88f0ad59e331b22df5fad11beeafe07f62107007104444fd7ab19ab0c0030e7400e329e96445b050271c85256dfd9e01971f7746d55
-  languageName: node
-  linkType: hard
-
 "@chevrotain/cst-dts-gen@npm:10.5.0":
   version: 10.5.0
   resolution: "@chevrotain/cst-dts-gen@npm:10.5.0"
@@ -6603,42 +6581,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ucast/core@npm:2.0.0, @ucast/core@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@ucast/core@npm:2.0.0"
-  checksum: 10c0/52f29f94d12f932490524fceab5cfde195d98476246ab56e04922302cf4987c8d32f7e4b02e12a03be582f6a70b7021b90010c3dcb17e94fee42cc1a48730220
-  languageName: node
-  linkType: hard
-
-"@ucast/js@npm:4.0.1, @ucast/js@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@ucast/js@npm:4.0.1"
-  dependencies:
-    "@ucast/core": "npm:2.0.0"
-  checksum: 10c0/13e640a877f330e1966ceacb791748bb447ed57a55534861d7549fe35152d9f78894ad82e827905c20aee91472668a961d75609f149bf45dd2f7d61e1a454f25
-  languageName: node
-  linkType: hard
-
-"@ucast/mongo2js@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@ucast/mongo2js@npm:2.0.0"
-  dependencies:
-    "@ucast/core": "npm:2.0.0"
-    "@ucast/js": "npm:4.0.1"
-    "@ucast/mongo": "npm:3.0.0"
-  checksum: 10c0/788548712d0dffbf59509eb8c6fcae9277cbb53db66ce7e642a7d09980fd7ccc03ffbd73a1e472de2be19c07289c4e339dab7199b5dd8f65b6349c577e9c127a
-  languageName: node
-  linkType: hard
-
-"@ucast/mongo@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@ucast/mongo@npm:3.0.0"
-  dependencies:
-    "@ucast/core": "npm:2.0.0"
-  checksum: 10c0/94a677ccda25d2340f89b6b62d7f98c2eeb788039fbac0c3f8beaa77ab7959b2904c696f30d6d56d419a9d60e372deeb13d99e9e2e7859bca20af3bcc3001197
-  languageName: node
-  linkType: hard
-
 "@ungap/structured-clone@npm:^1.3.0":
   version: 1.4.0
   resolution: "@ungap/structured-clone@npm:1.4.0"
@@ -8482,8 +8424,6 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.218.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.218.0"
-    "@casl/ability": "npm:^7.0.1"
-    "@casl/prisma": "npm:^2.0.2"
     "@nestjs/authorization": "npm:^0.0.1"
     "@nestjs/cli": "npm:^12.0.0"
     "@nestjs/common": "npm:^12.0.0"
