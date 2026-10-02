@@ -1848,10 +1848,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gouvfr/dsfr@npm:1.14.0":
-  version: 1.14.0
-  resolution: "@gouvfr/dsfr@npm:1.14.0"
-  checksum: 10c0/3dde12e684c309a1e99713b8f1fa16d775fdcf1a51114d53d3208c37abbbc5780700345ac6e89a3460ed1be3781ba8d3263dbcb0171902e92d4117672d704420
+"@gouvfr/dsfr@npm:^1.15.3":
+  version: 1.15.3
+  resolution: "@gouvfr/dsfr@npm:1.15.3"
+  checksum: 10c0/694e2f9d91dc63064acf2aeb7542ffde01d34d989be5c41c6bce5346c103f89ca85b667dae0fd1255462524c61268340e1b4d3d699d02699afd3bb690846f3c8
   languageName: node
   linkType: hard
 
@@ -7145,7 +7145,7 @@ __metadata:
   resolution: "confiture-web-app@workspace:confiture-web-app"
   dependencies:
     "@floating-ui/dom": "npm:^1.7.4"
-    "@gouvfr/dsfr": "npm:1.14.0"
+    "@gouvfr/dsfr": "npm:^1.15.3"
     "@sentry/tracing": "npm:^7.120.4"
     "@sentry/vite-plugin": "npm:^4.4.0"
     "@sentry/vue": "npm:^10.19.0"
