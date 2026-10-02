@@ -1,9 +1,9 @@
 import { Policy } from "@nestjs/authorization";
-import { Audit, User } from "../../generated/prisma/client";
+import { User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
 
 const isAuditInAccount = (audit: { auditor: { isVerified: boolean } }) => audit.auditor.isVerified;
-const isUserAuditOwner = (user: { username: string }, audit: { auditorEmail: string }) => audit.auditorEmail == user.username;
+const isUserAuditOwner = (user: { username: string } | null, audit: { auditorEmail: string }) => audit.auditorEmail == user?.username;
 
 @Policy()
 export class AuditPolicy {
@@ -11,8 +11,16 @@ export class AuditPolicy {
     private readonly prisma: PrismaService
   ) {}
 
-  read(_user: User | null, _audit: Audit) {
-    throw true;
+  async read(user: User | null, auditUniqueId: string): Promise<boolean> {
+    console.log(`checking read permission on audit ${auditUniqueId}`);
+    const audit = await this.getAudit(auditUniqueId);
+
+    if (isAuditInAccount(audit)) {
+      return isUserAuditOwner(user, audit);
+    } else {
+      // @ts-expect-error `isPublic` does not exist yet on audit
+      return audit.isPublic;
+    }
   }
 
   create(_user: User | null) {
