@@ -15,7 +15,6 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
-import { AuditService } from "../audits/audit.service";
 import { FeedbackService } from "../feedback/feedback.service";
 import { MailService } from "../mail/mail.service";
 import { AuthRequired } from "./auth-required.decorator";
@@ -33,8 +32,8 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly email: MailService,
-    private readonly feedback: FeedbackService,
-    private readonly audit: AuditService
+    private readonly feedback: FeedbackService
+    // private readonly audit: AuditService
   ) {}
 
   /**
@@ -92,7 +91,8 @@ export class AuthController {
       throw new UnauthorizedException();
     }
 
-    await this.audit.softDeleteAuditsByAuditorEmail(user.email);
+    // TODO: emit an event and handle the event in AuditService
+    // await this.audit.softDeleteAuditsByAuditorEmail(user.email);
 
     const feedbackToken = await this.feedback.generateFeedbackToken();
 
