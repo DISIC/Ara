@@ -318,6 +318,7 @@ const parentCriterium = computed(() => {
         <button
           v-if="transverseComment || transverseNotCompliantItems.length"
           class="fr-link fr-link--sm criterium-transverse-button"
+          aria-live="polite"
           @click="toggleTransverseComment"
         >
           {{ showTransverseComment ? "Masquer" : "Voir" }}
