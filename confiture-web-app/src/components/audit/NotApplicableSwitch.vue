@@ -75,7 +75,7 @@ watch(switchValue, async (switchValue) => {
               }
             },
             close: () => {
-              // TODO
+              focusInput();
             }
           }
         );
