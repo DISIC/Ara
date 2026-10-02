@@ -206,10 +206,7 @@ defineExpose({
           : isInProgress
             ? "Continuer l’audit"
             : "Accéder à l’audit"
-      }}
-      <span v-if="isInProgress || isNotStarted" class="fr-sr-only">
-        {{ audit.procedureName }}</span>
-      <span v-else class="fr-sr-only">&nbsp;pour l’audit {{ audit.procedureName }}</span>
+      }}<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
     </RouterLink>
 
     <!-- Secondary action -->
@@ -244,8 +241,8 @@ defineExpose({
                 }"
                 target="_blank"
                 class="fr-btn fr-btn--tertiary-no-outline fr-m-0"
-              >Consulter le rapport
-                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }} (nouvelle fenêtre)</span>
+              >
+                Consulter le rapport<span class="fr-sr-only">&nbsp;de l’audit {{ audit.procedureName }} (nouvelle fenêtre)</span>
               </RouterLink>
             </li>
 
@@ -257,8 +254,7 @@ defineExpose({
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
               @click="duplicateModal?.show()"
             >
-              Dupliquer l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+              Dupliquer<span class="fr-sr-only">&nbsp;l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -266,8 +262,7 @@ defineExpose({
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-share-forward-line fr-m-0"
               @click="$emit('transfer')"
             >
-              Transférer l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+              Transférer<span class="fr-sr-only">&nbsp;l’audit {{ audit.procedureName }}</span>
             </button>
           </li>
           <li class="dropdown-item">
@@ -278,8 +273,7 @@ defineExpose({
                 params: { uniqueId: audit.editUniqueId }
               }"
             >
-              Modifier les paramètres
-              <template v-if="windowWidth > 880">de l’audit</template>
+              Modifier les paramètres<span class="fr-sr-only">&nbsp;de l’audit {{ audit.procedureName }}</span>
             </RouterLink>
           </li>
 
@@ -321,8 +315,7 @@ defineExpose({
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
-              Télécharger l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}&nbsp;</span>
+              Télécharger la grille d’audit<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
@@ -334,8 +327,7 @@ defineExpose({
               class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
               @click="$emit('delete')"
             >
-              Supprimer l’audit
-              <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
+              Supprimer l’audit<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
             </button>
           </li>
         </ul>
