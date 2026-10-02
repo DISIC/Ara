@@ -74,7 +74,7 @@ watch(switchValue, async (switchValue) => {
                 params: { uniqueId: uniqueId }
               }
             },
-            close: () => {
+            actionAfterClose: () => {
               focusInput();
             }
           }

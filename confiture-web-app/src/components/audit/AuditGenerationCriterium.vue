@@ -186,7 +186,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
                   params: { uniqueId: props.auditUniqueId }
                 }
               },
-              close: () => {
+              actionAfterClose: () => {
                 statusRef?.value?.focusInput();
               }
             }

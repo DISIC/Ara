@@ -166,7 +166,7 @@ const deleteNotCompliantItem = async (id: number) => {
             await createNotCompliantItem(itemToDelete);
           }
         },
-        close: () => {
+        actionAfterClose: () => {
           setFocusToTextEditor();
         }
       }

@@ -28,7 +28,11 @@ function focusNotification() {
   if (store.notification.link) {
     // @ts-expect-error For some reason, the RouterLink type does not list "$el" as one of its props.
     linkRef.value?.$el.focus();
+    return;
   }
+
+  setTimeout(() =>
+    store.hideNotification(), store.notification.timeout ?? 5000);
 }
 </script>
 
