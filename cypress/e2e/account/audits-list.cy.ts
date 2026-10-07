@@ -168,7 +168,7 @@ describe("Audits list", () => {
   });
 
   it("User can download audit", () => {
-    cy.task("rm -rf cypress/downloads");
+    cy.task("clearDownloads");
 
     cy.contains("Actions").click();
     cy.contains("Télécharger la grille d’audit").click();
