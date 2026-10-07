@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, RouteLocationRaw, useRoute, useRouter } from "vue-router";
 
 import AuditSettingsForm from "../../components/audit/AuditSettingsForm.vue";
 import LeaveModal from "../../components/audit/LeaveModal.vue";
@@ -55,6 +55,27 @@ onBeforeRouteLeave((to) => {
   }
 });
 
+const nextRoute = computed((): RouteLocationRaw => {
+  if (previousRoute.route) {
+    if (previousRoute.route.name === "audit-generation-full") {
+      return {
+        name: "audit-generation-full",
+        params: {
+          uniqueId: auditUniqueId,
+          tabSlug: FirstTab.AUDIT_SLUG
+        }
+      };
+    } else {
+      return previousRoute.route;
+    }
+  } else {
+    return {
+      name: "audit-overview",
+      params: { uniqueId: auditUniqueId }
+    };
+  }
+});
+
 // Form submission
 function submitSettings(data: {
   auditType: AuditType;
@@ -94,27 +115,6 @@ function submitSettings(data: {
       if (auditTypeChanged) {
         resultsStore.$reset();
       }
-
-      const nextRoute = computed(() => {
-        if (previousRoute.route) {
-          if (previousRoute.route.name === "audit-generation-full") {
-            return {
-              name: "audit-generation-full",
-              params: {
-                uniqueId: auditUniqueId,
-                tabSlug: FirstTab.AUDIT_SLUG
-              }
-            };
-          } else {
-            return previousRoute.route;
-          }
-        } else {
-          return {
-            name: "audit-overview",
-            params: { uniqueId: auditUniqueId }
-          };
-        }
-      });
 
       router.push(nextRoute.value);
     })
