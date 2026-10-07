@@ -117,8 +117,7 @@ function switchDevMode() {
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
-            >FIPHFP<span class="fr-sr-only">
-              &nbsp;Fonds pour l’insertion des personnes handicapées dans la
+            >FIPHFP<span class="fr-sr-only">&nbsp;Fonds pour l’insertion des personnes handicapées dans la
               Fonction publique (nouvelle fenêtre)
             </span></a>.
           </p>
@@ -128,32 +127,28 @@ function switchDevMode() {
                 class="fr-footer__content-link"
                 href="https://info.gouv.fr"
                 target="_blank"
-              >info.gouv.fr
-                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
+              >info.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://www.service-public.gouv.fr"
                 target="_blank"
-              >service-public.gouv.fr
-                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
+              >service-public.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
-              >legifrance.gouv.fr
-                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
+              >legifrance.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
-              >data.gouv.fr
-                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
+              >data.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
           </ul>
         </div>

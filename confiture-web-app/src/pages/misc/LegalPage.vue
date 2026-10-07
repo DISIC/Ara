@@ -18,7 +18,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         href="https://design.numerique.gouv.fr"
         target="_blank"
       >Design des services numériques
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+        <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
       de la Direction interministérielle du numérique, un service du Premier
       ministre.
     </p>
@@ -41,7 +41,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         href="https://design.numerique.gouv.fr"
         target="_blank"
       >Design et Accessibilité
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+        <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
       et utilise le système de design de l’État.
     </p>
 
@@ -52,7 +52,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         href="https://github.com/DISIC/Ara/"
         rel="noreferrer noopener"
         target="_blank"
-      >Github <span class="fr-sr-only">(nouvelle fenêtre)</span></a>.
+      >Github <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>.
     </p>
 
     <h2>Propriété intellectuelle et liens</h2>
