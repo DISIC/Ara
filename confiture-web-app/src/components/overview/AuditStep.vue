@@ -179,7 +179,7 @@ async function transferAudit(newEmail: string) {
                   params: { uniqueId: audit.editUniqueId }
                 }"
               >
-                Modifier les paramètres
+                Modifier les paramètres<span class="fr-sr-only">&nbsp;de l’audit {{ audit.procedureName }}</span>
               </RouterLink>
             </li>
 
@@ -188,8 +188,7 @@ async function transferAudit(newEmail: string) {
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-file-copy-line fr-m-0"
                 @click="duplicateModalRef?.show()"
               >
-                Dupliquer
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                Dupliquer<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               </button>
             </li>
             <li class="dropdown-item dropdown-item--with-meta">
@@ -198,8 +197,7 @@ async function transferAudit(newEmail: string) {
                 :disabled="!canTransferAudit"
                 @click="transferModalRef?.show()"
               >
-                Transférer
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                Transférer<span class="fr-sr-only">&nbsp;l’audit{{ audit.procedureName }}</span>
                 <p v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut transférer l’audit</p>
               </button>
             </li>
@@ -209,8 +207,7 @@ async function transferAudit(newEmail: string) {
                 class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-delete-line fr-m-0 danger-button--secondary"
                 @click="deleteModalRef?.show()"
               >
-                Supprimer l’audit
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                Supprimer l’audit<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               </button>
             </li>
           </ul>
