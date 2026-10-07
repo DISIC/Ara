@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { computed, ref, ShallowRef } from "vue";
+import { onMounted, ref, ShallowRef } from "vue";
 
 import { getTipTapRenderedExtensions } from "./tiptap-extensions";
 
@@ -9,27 +9,30 @@ const props = defineProps<{
   basicMode?: boolean;
 }>();
 
-const parsedDocument = computed(() => {
+function parseDocument(document: string) {
   try {
-    return JSON.parse(props.document);
+    return JSON.parse(document);
   } catch {
     try {
-      return editor.value.markdown?.instance(props.document);
+      return editor.value.markdown?.instance(document);
     }
     catch {
-      return props.document;
+      return document;
     }
   }
-});
+}
 
 const editor = useEditor({
   editorProps: {
     attributes: { class: `tiptap--rendered` }
   },
   editable: false,
-  content: parsedDocument.value,
   extensions: getTipTapRenderedExtensions(props.basicMode)
 }) as ShallowRef<Editor>;
+
+onMounted(() => {
+  editor.value.commands.setContent(parseDocument(props.document));
+});
 
 const contentRef = ref<HTMLDivElement>();
 </script>
