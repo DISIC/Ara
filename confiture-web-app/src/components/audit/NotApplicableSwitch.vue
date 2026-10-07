@@ -102,7 +102,7 @@ function focusInput() {
       @change="$emit('toggle', switchValue)"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
-      <span class="fr-sr-only">Thématique {{ topicTitle }}</span>
+      <span class="fr-sr-only">Thématique {{ topicTitle }}&nbsp;</span>
       Non applicable
       {{
         pageId === transverseElementsPageId
