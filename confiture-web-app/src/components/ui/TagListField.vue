@@ -111,7 +111,7 @@ const listId = useId();
         type="button"
         @click="removeTag(i)"
       >
-        <span class="fr-sr-only">Retirer</span>
+        <span class="fr-sr-only">Retirer&nbsp;</span>
         {{ tag }}
       </button>
     </li>

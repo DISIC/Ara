@@ -233,8 +233,7 @@ watch(
       <p class="fr-mb-1v">
         URL du site audité :
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
-          {{ siteUrl }}
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          {{ siteUrl }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -255,8 +254,7 @@ watch(
           class="fr-link"
           target="_blank"
         >
-          Accéder à la déclaration d’accessibilité
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          Accéder à la déclaration d’accessibilité<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
     </div>
