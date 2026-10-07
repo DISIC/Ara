@@ -199,7 +199,7 @@ describe("Actions", () => {
   });
 
   it("User can download an audit", () => {
-    cy.exec("rm -rf cypress/downloads");
+    cy.task("clearDownloads");
 
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation`);
