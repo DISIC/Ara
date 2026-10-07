@@ -34,6 +34,13 @@ export default defineConfig({
         table(data) {
           console.table(data);
           return null;
+        },
+        clearDownloads() {
+          const downloads = config.downloadsFolder;
+          fs.rmSync(downloads, { recursive: true, force: true });
+          fs.mkdirSync(downloads, { recursive: true });
+
+          return null;
         }
       });
     }
