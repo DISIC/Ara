@@ -276,7 +276,8 @@ const notCompliantItemsIndexes = computed(() => {
           class="fr-link fr-mb-4w page-url"
           target="_blank"
         >
-          {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          {{ page.url }}
+          <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
 
         <p v-if="page.topics.length === 0" class="fr-mt-4w">

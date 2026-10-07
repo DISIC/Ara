@@ -356,7 +356,7 @@ onMounted(() => {
                   :disabled="isOffline ? true : undefined"
                 >
                   Consulter le rapport
-                  <span v-if="!isOffline" class="fr-sr-only">(nouvelle fenêtre)</span>
+                  <span v-if="!isOffline" class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                 </component>
               </li>
               <li aria-hidden="true" class="dropdown-separator" />
@@ -368,7 +368,7 @@ onMounted(() => {
                     params: { uniqueId: editUniqueId }
                   }"
                 >
-                  Modifier les paramètres <span class="fr-hidden fr-unhidden-lg">de l’audit</span>
+                  Modifier les paramètres<span class="fr-hidden fr-unhidden-lg">&nbsp;de l’audit</span>
                 </RouterLink>
               </li>
               <li class="dropdown-item">
@@ -377,7 +377,7 @@ onMounted(() => {
                   @click="duplicateModal?.show()"
                 >
                   Dupliquer l’audit
-                  <span class="fr-sr-only"> {{ auditName }}</span>
+                  <span class="fr-sr-only">&nbsp;{{ auditName }}</span>
                 </button>
               </li>
               <li class="dropdown-item dropdown-item--with-meta">
@@ -388,7 +388,7 @@ onMounted(() => {
                 >
                   <span>
                     Transférer l’audit
-                    <span class="fr-sr-only"> {{ auditName }}</span>
+                    <span class="fr-sr-only">&nbsp;{{ auditName }}&nbsp;</span>
                   </span>
                   <span v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">
                     Seul le propriétaire peut transférer l’audit

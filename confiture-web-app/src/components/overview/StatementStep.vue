@@ -79,7 +79,7 @@ const auditIsPublishable = computed(() => {
           class="fr-btn fr-btn--tertiary fr-mb-0"
         >
           Consulter
-          <span class="fr-sr-only">la déclaration d’accessibilité (nouvelle fenêtre)</span>
+          <span class="fr-sr-only">&nbsp;la déclaration d’accessibilité (nouvelle fenêtre)</span>
         </RouterLink>
       </div>
       <div class="fr-btns-group fr-btns-group--icon-left">

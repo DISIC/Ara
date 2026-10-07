@@ -106,19 +106,19 @@ function switchDevMode() {
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
-            >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
+            >DesignGouv<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>, une équipe de la <a
               class="fr-link fr-text--sm"
               href="https://www.numerique.gouv.fr/dinum/"
               target="_blank"
             >
-              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>,
+              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>,
             avec le soutien du
             <a
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
             >FIPHFP<span class="fr-sr-only">
-              Fonds pour l’insertion des personnes handicapées dans la
+              &nbsp;Fonds pour l’insertion des personnes handicapées dans la
               Fonction publique (nouvelle fenêtre)
             </span></a>.
           </p>
@@ -129,7 +129,7 @@ function switchDevMode() {
                 href="https://info.gouv.fr"
                 target="_blank"
               >info.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
@@ -137,7 +137,7 @@ function switchDevMode() {
                 href="https://www.service-public.gouv.fr"
                 target="_blank"
               >service-public.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
@@ -145,7 +145,7 @@ function switchDevMode() {
                 href="https://legifrance.gouv.fr"
                 target="_blank"
               >legifrance.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
@@ -153,7 +153,7 @@ function switchDevMode() {
                 href="https://data.gouv.fr"
                 target="_blank"
               >data.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+                <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
           </ul>
         </div>
@@ -219,8 +219,7 @@ function switchDevMode() {
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
               rel="noreferrer noopener"
-            >licence etalab-2.0
-              <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+            >licence etalab-2.0 <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
           </p>
         </div>
       </div>
