@@ -8,7 +8,7 @@ export interface AraTiptapRenderedExtensionOptions {
 
 /**
  * Plugin making links opening in a new window accessible by adding an invisible
- * span (`<span class="fr-sr-only"> (nouvelle fenêtre)</span>"`)
+ * span (`<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>"`)
  *
  * ## Note
  * In the report, all links are converted to links openning in a new window.
@@ -44,7 +44,7 @@ const accessibleLinkPlugin = new Plugin({
                 () => {
                   const span = document.createElement("span");
                   span.className = "fr-sr-only";
-                  span.textContent = " (nouvelle fenêtre)";
+                  span.innerHTML = "&nbsp;(nouvelle fenêtre)";
                   return span;
                 },
                 {

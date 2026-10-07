@@ -109,7 +109,7 @@ async function cancelEdition() {
                   class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-edit-fill fr-ml-1v edit-tags-button"
                   @click="startEdition"
                 >
-                  Modifier <span class="fr-sr-only">les éléments transverses</span>
+                  Modifier<span class="fr-sr-only">&nbsp;les éléments transverses</span>
                 </button>
               </li>
             </ul>
