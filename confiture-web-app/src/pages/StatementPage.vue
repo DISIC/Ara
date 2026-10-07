@@ -110,7 +110,7 @@ const siteUrl = computed(() => {
       <p class="fr-mb-1v">
         URL du site audité&nbsp;:
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
-          {{ siteUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+          {{ siteUrl }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
@@ -121,7 +121,7 @@ const siteUrl = computed(() => {
           target="_blank"
           :to="{ name: 'report', params: { uniqueId } }"
         >
-          Accéder au rapport d’audit<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+          Accéder au rapport d’audit<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
 
@@ -180,7 +180,7 @@ const siteUrl = computed(() => {
                     :href="report.data.schemaPluriannuelUrl"
                     target="_blank"
                     rel="noreferrer noopener"
-                  >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  >Schéma pluriannuel de mise en accessibilité<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                   </a>
                 </template>
                 <template v-else>Aucun schéma pluriannuel de mise en accessibilité</template>
@@ -191,7 +191,7 @@ const siteUrl = computed(() => {
                     :href="report.data.planActionUrl"
                     target="_blank"
                     rel="noreferrer noopener"
-                  >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  >Plan d’action de l’année en cours incluant le bilan des actions réalisées l’année précédente<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                   </a>
                 </template>
                 <template v-else>Aucun plan d’action de l’année en cours</template>
@@ -201,7 +201,7 @@ const siteUrl = computed(() => {
             <p class="fr-mb-9v fr-mb-md-6w">
               Cette déclaration d’accessibilité s’applique à
               <strong>{{ report.data.procedureName }} (<a target="_blank" :href="report.data.procedureUrl" rel="noreferrer noopener">
-                {{ report.data.procedureUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                {{ report.data.procedureUrl }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
               </a>)</strong>.
             </p>
 
@@ -334,7 +334,7 @@ const siteUrl = computed(() => {
             <ul class="fr-mb-9v fr-mb-md-6w">
               <li v-if="report.data.contactFormUrl">
                 Envoyer un message&nbsp;: <strong><a target="_blank" :href="report.data.contactFormUrl" rel="noreferrer noopener">
-                  {{ report.data.contactFormUrl }}<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  {{ report.data.contactFormUrl }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                 </a></strong>
               </li>
               <li v-if="report.data.contactEmail">
@@ -359,7 +359,7 @@ const siteUrl = computed(() => {
                   href="https://formulaire.defenseurdesdroits.fr/formulaire_saisine"
                   target="_blank"
                 >
-                  Écrire un message au Défenseur des droits<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  Écrire un message au Défenseur des droits<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                 </a>
               </li>
               <li>
@@ -367,7 +367,7 @@ const siteUrl = computed(() => {
                   href="https://www.defenseurdesdroits.fr/carte-des-delegues"
                   target="_blank"
                 >
-                  Contacter le délégué du Défenseur des droits dans votre région<span class="fr-sr-only"> (nouvelle fenêtre)</span>
+                  Contacter le délégué du Défenseur des droits dans votre région<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                 </a>
               </li>
               <li>
