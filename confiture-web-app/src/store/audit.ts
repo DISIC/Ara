@@ -13,6 +13,8 @@ import {
   AccountAudit
 } from "../types";
 
+export const AUDIT_LISTING_CACHE_STORAGE_KEY = "ara:audit-list-cache";
+
 const getLastRequestTimestampStorageKey = (auditId: string) =>
   `confiture:lastNotesRequestTimestamp:${auditId}`;
 
@@ -238,12 +240,32 @@ export const useAuditStore = defineStore("audit", {
     },
 
     async fetchAudits() {
-      const audits = (await api
+      // load cached data from storage and parse it
+      const cachedDataJson = localStorage.getItem(AUDIT_LISTING_CACHE_STORAGE_KEY);
+      let cachedData = null;
+      if (cachedDataJson) {
+        try {
+          cachedData = JSON.parse(cachedDataJson);
+        } catch {}
+      }
+
+      // show the cached version of the list after one second. this timeout is
+      // aborted by the fetch request succeeding
+      const showCacheTimeout = setTimeout(() => {
+        if (cachedData) {
+          this.listing = cachedData;
+        }
+      }, 1000);
+
+      const audits = await api
         .get("/api/audits", {
-          // TODO: remove this once the API route is optimized
-          timeout: 40_000
+          timeout: false
         })
-        .json()) as AccountAudit[];
+        .json<AccountAudit[]>();
+
+      // abort showing the cached version and save received audits to storage
+      clearTimeout(showCacheTimeout);
+      localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(audits));
 
       this.listing = audits;
     },

@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { api } from "../api";
 
 import { AuthenticationJwtPayload, AccountDeletionResponse, UpdateProfileRequestData } from "../types";
+import { AUDIT_LISTING_CACHE_STORAGE_KEY } from "./audit";
 
 const AUTH_TOKEN_STORAGE_KEY = "confiture:authToken";
 
@@ -92,6 +93,7 @@ export const useAccountStore = defineStore("account", {
 
     logout() {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(AUDIT_LISTING_CACHE_STORAGE_KEY);
       this.$reset();
     },
 
