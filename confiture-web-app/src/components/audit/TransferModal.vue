@@ -80,7 +80,7 @@ function handleClose() {
               </div>
               <div class="fr-modal__content">
                 <h1 :id="`transfer-modal-title-${id}`" class="fr-modal__title">
-                  Transférer l’audit « {{ procedureName }} »
+                  Transférer l’audit «&nbsp;{{ procedureName }}&nbsp;»
                 </h1>
                 <p class="fr-text--sm fr-mb-2w">
                   Vous n’aurez plus accès à l’audit. Votre destinataire recevra par <span style="white-space: nowrap">e-mail</span> un lien d’accès à l’audit.

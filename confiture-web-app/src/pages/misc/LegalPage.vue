@@ -26,9 +26,9 @@ import TopLink from "../../components/ui/TopLink.vue";
       DINUM<br />
       20 avenue de Ségur<br />
       75007 Paris<br />
-      Tel. accueil : 01.71.21.01.70<br />
-      SIRET : 12000101100010 (secrétariat général du gouvernement)<br />
-      SIREN : 120 001 011
+      Tel. accueil&nbsp;: 01.71.21.01.70<br />
+      SIRET&nbsp;: 12000101100010 (secrétariat général du gouvernement)<br />
+      SIREN&nbsp;: 120 001 011
     </p>
 
     <h2>Directrice de publication</h2>

@@ -308,7 +308,7 @@ function confirmLeave() {
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
     <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-m-0 dates">
-      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)"> - Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
+      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)">&nbsp;-&nbsp;Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
     </p>
     <p class="fr-text--xs fr-mb-2w fr-mt-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
@@ -373,7 +373,7 @@ function confirmLeave() {
       </p>
 
       <p id="contact-section-subtitle" class="fr-mb-2w">
-        Renseignez au moins un des deux moyens de contact suivant :
+        Renseignez au moins un des deux moyens de contact suivant&nbsp;:
       </p>
 
       <FieldValidation
@@ -420,7 +420,7 @@ function confirmLeave() {
               :ref="focusRef"
               v-model="contactFormUrl"
               label="Formulaire de contact en ligne"
-              hint="Exemple : contact@ministere.gouv.fr"
+              hint="Exemple&nbsp;: contact@ministere.gouv.fr"
               type="url"
               placeholder="https://"
               :error="

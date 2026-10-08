@@ -206,7 +206,7 @@ const currentProcedureName = procedureName.value;
         required
         :validation="[
           REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
-          EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr')
+          EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format&nbsp;: nom@domaine.fr')
         ]"
         @update:model-value="onChange"
       />
