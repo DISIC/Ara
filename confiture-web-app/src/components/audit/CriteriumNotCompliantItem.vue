@@ -141,20 +141,20 @@ defineExpose({
           data-fr-js-tooltip="true"
         >
           <p class="fr-text--xs fr-mb-1w">
-            <strong>Bloquant</strong> : empêche complètement l’accès ou
+            <strong>Bloquant</strong>&nbsp;: empêche complètement l’accès ou
             l’utilisation.<br />
-            <span class="user-impact-example">Ex : il est impossible de soumettre un formulaire au
+            <span class="user-impact-example">Ex&nbsp;: il est impossible de soumettre un formulaire au
               clavier.</span>
           </p>
           <p class="fr-text--xs fr-mb-1w">
-            <strong>Majeur</strong> : rend l’accès ou l’utilisation
+            <strong>Majeur</strong>&nbsp;: rend l’accès ou l’utilisation
             difficile.<br />
-            <span class="user-impact-example">Ex : les champs ne sont pas regroupés.</span>
+            <span class="user-impact-example">Ex&nbsp;: les champs ne sont pas regroupés.</span>
           </p>
           <p class="fr-text--xs fr-mb-0">
-            <strong>Mineur</strong> : gêne légèrement sans empêcher l’accès ou
+            <strong>Mineur</strong>&nbsp;: gêne légèrement sans empêcher l’accès ou
             l’utilisation.<br />
-            <span class="user-impact-example">Ex : des retours à la ligne sont utilisés pour espacer des
+            <span class="user-impact-example">Ex&nbsp;: des retours à la ligne sont utilisés pour espacer des
               textes.</span>
           </p>
         </div>

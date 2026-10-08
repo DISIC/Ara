@@ -27,7 +27,7 @@ async function closeResendSuccessAlert() {
   <div class="wrapper">
     <h1 tabindex="-1" class="fr-h3">Consultez votre boite de réception</h1>
     <p class="fr-mb-6w">
-      Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse :<br /><strong>{{ userEmail }}</strong>
+      Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse&nbsp;:<br /><strong>{{ userEmail }}</strong>
     </p>
 
     <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu ?</h2>
