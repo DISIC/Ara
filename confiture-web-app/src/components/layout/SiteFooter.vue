@@ -19,7 +19,7 @@ const bottomLinks = [
     routeName: "site-map"
   },
   {
-    label: "Accessibilité : totalement conforme",
+    label: "Accessibilité&nbsp;: totalement conforme",
     routeName: "accessibility"
   },
   {
@@ -184,7 +184,7 @@ function switchDevMode() {
               class="fr-footer__bottom-link"
               :to="{ name: link.routeName }"
             >
-              {{ link.label }}
+              <span v-html="link.label"></span>
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
