@@ -34,7 +34,7 @@ const reportStore = useReportStore();
       </span></a>.
     </p>
     <p :class="{ 'fr-mb-5w': !reportStore.data }">
-      Contactez-nous par e-mail :
+      Contactez-nous par e-mail&nbsp;:
       <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
@@ -54,10 +54,10 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <p>Vous pouvez également :</p>
+    <p>Vous pouvez également&nbsp;:</p>
     <ul>
       <li>
-        Nous écrire par e-mail :
+        Nous écrire par e-mail&nbsp;:
         <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>

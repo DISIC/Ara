@@ -100,7 +100,7 @@ async function handleSubmit() {
         ref="emailField"
         v-model="userEmail"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu&nbsp;: nom@domaine.fr"
         type="email"
         required
         autocomplete="email"

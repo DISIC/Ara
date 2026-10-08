@@ -80,7 +80,7 @@ async function handleSubmit() {
         v-model="userEmail"
         class="fr-mb-2w"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu : nom@domaine.fr"
         type="email"
         required
         :validation="[

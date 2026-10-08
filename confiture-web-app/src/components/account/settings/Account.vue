@@ -76,7 +76,7 @@ async function hideAccountDeletionForm() {
         v-model="confirmPhrase"
         type="text"
         required
-        :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte : ${VALIDATION_STRING}`"
+        :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte&nbsp;: ${VALIDATION_STRING}`"
         hint="N’utilisez pas de majuscules, ni d’espace au début ou à la fin de votre saisie."
         :validation="confirmPhraseValidation"
       />
