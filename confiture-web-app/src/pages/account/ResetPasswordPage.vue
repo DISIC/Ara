@@ -138,7 +138,7 @@ const pageTitles = [
 
       <p class="fr-text--sm fr-mb-6w">
         Si vous avez besoin d’aide pour changer de mot de passe, merci de nous
-        contacter par e-mail à l’adresse suivante :
+        contacter par e-mail à l’adresse suivante&nbsp;:
         <strong>ara@design.numerique.gouv.fr</strong>.
       </p>
 

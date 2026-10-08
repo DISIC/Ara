@@ -172,7 +172,7 @@ onMounted(() => {
             !store.hasNoResultsFromComplianceLevel
         "
       >
-        <p><strong>Suggestions :</strong></p>
+        <p><strong>Suggestions&nbsp;:</strong></p>
         <ul>
           <li>Vérifiez l’orthographe des termes de recherche</li>
           <li>Essayez un autre mot</li>
