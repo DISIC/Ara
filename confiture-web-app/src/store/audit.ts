@@ -146,6 +146,7 @@ export const useAuditStore = defineStore("audit", {
       this.listing = this.listing.filter(
         (audit) => audit.editUniqueId !== uniqueId
       );
+      localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(this.listing));
     },
 
     async uploadAuditFile(uniqueId: string, file: File) {
@@ -229,6 +230,7 @@ export const useAuditStore = defineStore("audit", {
           statementIsPublished: originalAuditListingItem.statementIsPublished
         };
         this.listing.push(newAuditListItem);
+        localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(this.listing));
       }
 
       return newAudit.editUniqueId;
@@ -281,6 +283,7 @@ export const useAuditStore = defineStore("audit", {
       this.listing = this.listing.filter(
         (audit) => audit.editUniqueId !== editUniqueId
       );
+      localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(this.listing));
     },
 
     increaseCurrentRequestCount() {
