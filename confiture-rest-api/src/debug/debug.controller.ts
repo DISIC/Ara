@@ -67,6 +67,7 @@ export class DebugController {
               auditEditUniqueId: reportUniqueId
             }
           },
+          isPublic: true,
           auditType: body.auditType,
           procedureName: body.procedureName,
           auditor: {

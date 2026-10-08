@@ -13,11 +13,16 @@ const notify = useNotifications();
 const router = useRouter();
 const currentRoute = useRoute();
 
-function handleDisconnectClick() {
+async function handleDisconnectClick() {
   accountStore.logout();
   if (currentRoute.meta.authRequired) {
     router.push({ name: "login" });
+  } else {
+    // FIXME: find a better way to refresh current page after logging out from
+    // a page that needs authentication
+    router.go(0);
   }
+
   notify("success", undefined, "Vous avez été deconnecté avec succès.");
 }
 

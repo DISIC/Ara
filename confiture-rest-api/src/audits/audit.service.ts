@@ -82,7 +82,7 @@ export class AuditService {
     private readonly authService: AuthService
   ) { }
 
-  async createAudit(data: CreateAuditDto): Promise<AuditDto> {
+  async createAudit(data: CreateAuditDto, isPublic: boolean): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -132,7 +132,9 @@ export class AuditService {
             auditConsultUniqueId: consultUniqueId,
             auditEditUniqueId: editUniqueId
           }
-        }
+        },
+
+        isPublic
       },
       select: AUDIT_PRISMA_SELECT
     });
@@ -1086,6 +1088,13 @@ export class AuditService {
     }
   }
 
+  async setAuditPrivacy(editUniqueId: string, isPublic: boolean): Promise<void> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: { isPublic }
+    });
+  }
+
   /**
    * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
    * as completed after having been completed or
@@ -1486,7 +1495,7 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
+  async duplicateAudit(sourceUniqueId: string, newAuditName: string, userEmail: string): Promise<AuditDto> {
     const originalAudit = await this.prisma.audit.findFirst({
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
@@ -1677,11 +1686,11 @@ export class AuditService {
           "notInScopeContent"
         ]),
 
+        // associate new audit to connected user email
         ...(originalAudit.auditorEmail && {
           auditor: {
             connect: {
-              // FIXME: shouldnt the new audit be under the user who duplicated the audit ?
-              username: originalAudit.auditorEmail.toLowerCase()
+              username: userEmail.toLowerCase()
             }
           }
         }),
@@ -1813,7 +1822,8 @@ export class AuditService {
           select: {
             results: true
           }
-        }
+        },
+        isPublic: true
       }
     });
 
@@ -1892,7 +1902,8 @@ export class AuditService {
           "editUniqueId",
           "consultUniqueId",
           "creationDate",
-          "auditType"
+          "auditType",
+          "isPublic"
         ),
         complianceLevel,
         status:
@@ -2085,23 +2096,5 @@ export class AuditService {
       originalAuditEmail,
       updatedAudit
     };
-  }
-
-  /**
-   * User can transfer an audit if:
-   * - audit email is not verified
-   * - audit email is verified and user is owner
-   */
-  async canUserTransferAudit(uniqueId: string, userEmail?: string) {
-    const { auditor } = await this.prisma.audit.findUnique({
-      where: {
-        editUniqueId: uniqueId
-      },
-      select: {
-        auditor: true
-      }
-    });
-
-    return !auditor.isVerified || auditor.username === userEmail;
   }
 }
