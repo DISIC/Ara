@@ -27,6 +27,7 @@ export const useAccountStore = defineStore("account", {
       } catch {
         authToken = null;
         localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+        localStorage.removeItem(AUDIT_LISTING_CACHE_STORAGE_KEY);
       }
     }
 
