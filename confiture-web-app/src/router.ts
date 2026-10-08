@@ -336,11 +336,6 @@ const router = createRouter({
       name: "Error",
       component: ErrorPage
     },
-    {
-      path: "/tiptap",
-      name: "Tiptap",
-      component: TiptapPage
-    },
     // TODO: to delete when done with WYSIWYG
     ...(import.meta.env.VITE_ENABLE_TIPTAP
       ? [
