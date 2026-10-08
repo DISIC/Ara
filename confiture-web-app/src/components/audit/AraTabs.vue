@@ -247,9 +247,10 @@ watch(
             aria-hidden="true"
           />
           <span data-cy="tab-label">{{ tab.label }}</span>
-          <span v-if="tabs[i].diplayLabelSuffix">
-            {{ tabs[i].diplayLabelSuffix }}
-          </span>
+          <span
+            v-if="tabs[i].diplayLabelSuffix"
+            v-html="tabs[i].diplayLabelSuffix"
+          ></span>
           <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">&nbsp;{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>
       </li>
