@@ -43,7 +43,7 @@ defineExpose({
                   class="fr-icon-warning-line fr-fi--lg"
                   aria-hidden="true"
                 />
-                Supprimer l’audit « {{ procedureName }} »
+                Supprimer l’audit «&nbsp;{{ procedureName }}&nbsp;»
               </h1>
               <p class="fr-mb-0">L’audit sera définitivement supprimé.</p>
               <p>Le rapport de cet audit restera accessible mais vos données personnelles seront supprimées.</p>
