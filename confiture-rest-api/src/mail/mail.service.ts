@@ -177,6 +177,14 @@ export class MailService {
     });
   }
 
+  @OnEvent("audit.transfered")
+  onAuditTranfered(payload: {
+    audit: Pick<Audit, "editUniqueId" | "procedureName" | "auditorName" | "auditorEmail">;
+    recipient: string;
+  }) {
+    this.sendAuditTransferEmail(payload.recipient, payload.audit);
+  }
+
   sendAuditTransferEmail(email: string, audit: Pick<Audit, "editUniqueId" | "procedureName" | "auditorName" | "auditorEmail">) {
     const baseUrl = this.config.get<string>("FRONT_BASE_URL");
     const auditUrl = `${baseUrl}/audits/${audit.editUniqueId}/synthese`;

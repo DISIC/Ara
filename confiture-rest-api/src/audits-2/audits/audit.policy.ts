@@ -34,6 +34,16 @@ export class AuditPolicy {
     }
   }
 
+  async transfer(user: User | null, auditUniqueId: string): Promise<boolean> {
+    const audit = await this.getAudit(auditUniqueId);
+
+    if (isAuditInAccount(audit)) {
+      return isUserAuditOwner(user, audit);
+    } else {
+      return false;
+    }
+  }
+
   private getAudit(editUniqueId: string) {
     return this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId, isHidden: false },

@@ -114,7 +114,51 @@ export class AuditsService {
   // action methods
   //
 
-  async transferAudit(): Promise<void> { throw "todo"; }
+  async transferAudit(uniqueId: string, newEmail: string, user?: User): Promise<void> {
+    // Get original audit email
+    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId: uniqueId },
+      select: { auditorEmail: true }
+    });
+
+    // Get new owner info
+    const newOwner = await this.prisma.user.findUnique({
+      where: {
+        username: newEmail
+      },
+      select: {
+        name: true
+      }
+    });
+
+    // Update audit with new owner info if any or reset fields
+    const audit = await this.prisma.audit.update({
+      where: { editUniqueId: uniqueId },
+      data: {
+        auditorOrganisation: null,
+        auditorName: newOwner?.name ?? null,
+        auditor: {
+          connectOrCreate: {
+            where: { username: newEmail },
+            create: {
+              username: newEmail
+            }
+          }
+        }
+      }
+    });
+
+    this.eventEmitter.emit("audit.transfered", {
+      audit: {
+        editUniqueId: uniqueId,
+        auditorEmail: user?.username || originalAuditEmail,
+        auditorName: user?.name,
+        procedureName: audit.procedureName
+      },
+      recipient: newEmail
+    });
+  }
+
   async duplicateAudit(): Promise<AuditResponseDto> { throw "todo"; }
 
   //

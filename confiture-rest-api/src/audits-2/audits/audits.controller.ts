@@ -6,6 +6,7 @@ import { AuditPolicy } from "./audit.policy";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
+import { TransferAuditRequestDto } from "./dto/transfer-audit-request.dto";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ type: AuditResponseDto, excludeExtraneousValues: true })
@@ -65,8 +66,13 @@ export class AuditsController {
   //
 
   @Post(":uniqueId/transfer")
-  transferAudit(): Promise<void> {
-    throw "todo";
+  async transferAudit(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User,
+    @Body() body: TransferAuditRequestDto
+  ): Promise<void> {
+    await this.authorizationService.authorize(AuditPolicy, "transfer", user, uniqueId);
+    return this.auditsService.transferAudit(uniqueId, body.newEmail, user);
   }
 
   @Post(":uniqueId/duplicate")
