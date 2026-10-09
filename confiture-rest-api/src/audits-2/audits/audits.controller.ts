@@ -2,6 +2,7 @@ import { AuthorizationService } from "@nestjs/authorization";
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { Prisma, User } from "../../generated/prisma/client";
+import { AuditPolicy } from "./audit.policy";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
@@ -20,7 +21,8 @@ export class AuditsController {
   //
 
   @Post()
-  createAudit(@Body() body: CreateAuditRequestDto): Promise<AuditResponseDto> {
+  async createAudit(@Body() body: CreateAuditRequestDto, @CurrentUser() user?: User): Promise<AuditResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "create", user);
     return this.auditsService.createAudit(body);
   }
 
@@ -36,7 +38,7 @@ export class AuditsController {
       return await this.auditsService.getAudit(uniqueId);
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
-        if (this.auditsService.hasBeenDeleted(uniqueId)) {
+        if (await this.auditsService.hasBeenDeleted(uniqueId)) {
           throw new GoneException();
         } else {
           throw new NotFoundException();

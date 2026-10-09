@@ -2,8 +2,8 @@ import { Policy } from "@nestjs/authorization";
 import { User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
 
-const isAuditInAccount = (audit: { auditor: { isVerified: boolean } }) => audit.auditor.isVerified;
-const isUserAuditOwner = (user: { username: string } | null, audit: { auditorEmail: string }) => audit.auditorEmail == user?.username;
+const isAuditInAccount = (audit: { auditor: null | { isVerified: boolean } }): boolean => audit.auditor?.isVerified ?? false;
+const isUserAuditOwner = (user: { username: string } | null, audit: { auditorEmail: string | null }): boolean => !!audit.auditorEmail && audit.auditorEmail === user?.username;
 
 @Policy()
 export class AuditPolicy {

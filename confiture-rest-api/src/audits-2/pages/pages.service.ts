@@ -56,7 +56,7 @@ export class PagesService {
 
   // TODO: test me
   static generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
-    const generatedSlugs = [];
+    const generatedSlugs: string[] = [];
     for (let i = 0; i < pageNames.length; i++) {
       const pageName = pageNames[i];
       const slug = this.generateUniqueSlug(pageName, [...existingSlugs, ...generatedSlugs]);
