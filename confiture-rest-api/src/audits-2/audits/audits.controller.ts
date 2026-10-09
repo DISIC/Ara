@@ -29,6 +29,7 @@ export class AuditsController {
 
   @Get()
   async getAudits(@CurrentUser() user: User): Promise<AuditResponseDto[]> {
+    // FIXME: create a "readMultiple" permission?
     await this.authorizationService.authorize(AuditPolicy, "read", user);
     return this.auditsService.getAudits(user.username);
   }
