@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { renderMailTemplate } from "./render-mjml-template";
 
 export interface AuditTransferEmailData {

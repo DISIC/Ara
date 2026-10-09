@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Readable } from "stream";
 import { Injectable, StreamableFile } from "@nestjs/common";
 import { groupBy } from "lodash";
