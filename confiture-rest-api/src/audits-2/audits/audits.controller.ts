@@ -23,13 +23,12 @@ export class AuditsController {
   @Post()
   async createAudit(@Body() body: CreateAuditRequestDto, @CurrentUser() user?: User): Promise<AuditResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "create", user);
-    return this.auditsService.createAudit(body);
+    return this.auditsService.createAudit(body, user);
   }
 
   @Get()
   async getAudits(): Promise<AuditResponseDto[]> {
-    const audit: AuditResponseDto = { editUniqueId: "feur", procedureName: "blabla", extra: "nope", foo: "bar" } as AuditResponseDto;
-    return [audit, audit, audit];
+    throw "todo";
   }
 
   @Get(":uniqueId")

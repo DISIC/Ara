@@ -5,7 +5,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 import { createTransport, getTestMessageUrl, Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-import { Audit, AuditType, EmailStatus, EmailType } from "../generated/prisma/client";
+import { Audit, AuditType, EmailStatus, EmailType, User } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
 import * as accountConfirmationEmail from "./account-confirmation-email";
 import * as accountVerificationEmail from "./account-verification-email";
@@ -87,6 +87,15 @@ export class MailService {
   }
 
   @OnEvent("audit.created")
+  onAuditCreated(payload: {
+    audit: Pick<Audit, "editUniqueId" | "consultUniqueId" | "procedureName" | "auditType" | "auditorEmail">;
+    createdBy?: User;
+  }) {
+    if (!payload.createdBy) {
+      this.sendAuditCreatedMail(payload.audit);
+    }
+  }
+
   sendAuditCreatedMail(audit: Pick<Audit, "editUniqueId" | "consultUniqueId" | "procedureName" | "auditType" | "auditorEmail">) {
     const overviewUrl = `${this.config.get("FRONT_BASE_URL")}/audits/${
       audit.editUniqueId

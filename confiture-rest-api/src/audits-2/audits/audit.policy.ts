@@ -24,6 +24,7 @@ export class AuditPolicy {
   }
 
   create(_user: User | null) {
+    // anyone can create an audit
     return true;
   }
 

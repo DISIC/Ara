@@ -3,9 +3,9 @@ import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { nanoid } from "nanoid";
 import { User } from "../../generated/prisma/client";
-import { AuditType } from "../../generated/prisma/enums";
 import { PrismaService } from "../../prisma.service";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
+import { ResultsService } from "../results/results.service";
 import { AuditPolicy } from "./audit.policy";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
@@ -15,6 +15,7 @@ export class AuditsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly pagesService: PagesService,
+    private readonly resultsService: ResultsService,
     private readonly eventEmitter: EventEmitter2,
     private readonly authorization: AuthorizationService
   ) {}
@@ -23,8 +24,7 @@ export class AuditsService {
   // CRUD methods
   //
 
-  async createAudit(data: CreateAuditRequestDto): Promise<AuditResponseDto> {
-    // simplified implementation for demonstration purpose
+  async createAudit(data: CreateAuditRequestDto, user?: User): Promise<AuditResponseDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -32,30 +32,32 @@ export class AuditsService {
       data: {
         editUniqueId,
         consultUniqueId,
+        creationDate: new Date(),
+        procedureName: data.procedureName,
+        auditType: data.auditType,
         auditor: {
           connectOrCreate: {
             create: {
-              username: "adrien@slash-tmp.dev"
+              username: data.auditorEmail.toLowerCase()
             },
             where: {
-              username: "adrien@slash-tmp.dev"
+              username: data.auditorEmail.toLowerCase()
             }
           }
         },
-        auditType: AuditType.FULL,
-        procedureName: data.procedureName,
-        auditTrace: {
-          create: {
-            auditConsultUniqueId: consultUniqueId,
-            auditEditUniqueId: editUniqueId
-          }
-        },
+        auditorName: data.auditorName,
         transverseElementsPage: {
           create: {
             name: "Éléments transverses",
             slug: TRANSVERSE_ELEMENTS_SLUG,
             url: "",
             order: -1
+          }
+        },
+        auditTrace: {
+          create: {
+            auditConsultUniqueId: consultUniqueId,
+            auditEditUniqueId: editUniqueId
           }
         }
       }
@@ -65,7 +67,16 @@ export class AuditsService {
       await this.pagesService.createPages(audit.editUniqueId, data.pages);
     }
 
-    this.eventEmitter.emit("audit.created", audit);
+    // TODO: prefill results
+    const topicNumbers = [
+      ...(data.pageElements.frame ? [] : [2]),
+      ...(data.pageElements.multimedia ? [] : [4]),
+      ...(data.pageElements.table ? [] : [5]),
+      ...(data.pageElements.form ? [] : [11])
+    ];
+    await this.resultsService.prefillNotApplicableTopics(editUniqueId, topicNumbers);
+
+    this.eventEmitter.emit("audit.created", { audit, createdBy: user });
 
     return audit;
   }
