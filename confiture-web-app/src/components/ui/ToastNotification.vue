@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+import { ref, useTemplateRef } from "vue";
 import { useNotificationStore } from "../../store";
 
 const store = useNotificationStore();
+
+const linkRef = useTemplateRef("linkRef");
+const actionRef = ref<HTMLButtonElement>();
 
 function onAction() {
   store.notification?.action?.cb();
@@ -10,12 +14,32 @@ function onAction() {
     store.hideNotification();
   }
 }
+
+function focusNotification() {
+  if (!store.notification) {
+    return;
+  }
+
+  if (store.notification.action) {
+    actionRef.value?.focus();
+    return;
+  }
+
+  if (store.notification.link) {
+    // @ts-expect-error For some reason, the RouterLink type does not list "$el" as one of its props.
+    linkRef.value?.$el.focus();
+    return;
+  }
+
+  setTimeout(() =>
+    store.hideNotification(), store.notification.timeout ?? 5000);
+}
 </script>
 
 <template>
   <Teleport to="body">
     <div aria-live="polite">
-      <Transition>
+      <Transition @after-enter="focusNotification">
         <div
           v-if="store.notification"
           :key="store.notification.id"
@@ -45,6 +69,7 @@ function onAction() {
             <!-- FIXME: this link is not accessible with keyboard -->
             <RouterLink
               v-if="store.notification.link"
+              ref="linkRef"
               class="fr-link fr-icon-arrow-right-line fr-link--icon-right"
               :to="store.notification.link.to"
               @click="store.hideNotification()"
@@ -56,10 +81,14 @@ function onAction() {
           <!-- FIXME: this button is not accessible with keyboard -->
           <button
             v-if="store.notification.action"
+            ref="actionRef"
             class="fr-btn fr-btn--tertiary-no-outline fr-mb-1v"
             @click="onAction"
           >
             {{ store.notification.action.label }}
+            <span v-if="store.notification.action.srLabel" class="fr-sr-only">
+              &nbsp;{{ store.notification.action.srLabel }}
+            </span>
           </button>
 
           <button
