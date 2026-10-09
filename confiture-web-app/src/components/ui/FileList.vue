@@ -320,7 +320,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 target="_blank"
               >
                 Voir
-                <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
+                <span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
@@ -332,7 +332,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 :title="`Télécharger ${getFullFileName(file)}`"
               >
                 Télécharger
-                <span class="sr-only">{{ getFullFileName(file) }}</span>
+                <span class="sr-only">&nbsp;{{ getFullFileName(file) }}</span>
               </a>
             </li>
             <li v-if="!readonly">
@@ -363,7 +363,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                       type="button"
                       @click="inlineDeleteCancel(i)"
                     >
-                      Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
+                      Annuler<span class="fr-sr-only">&nbsp;la suppression de {{ getFullFileName(file) }}</span>
                     </button>
                     <button
                       class="fr-btn"

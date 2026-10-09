@@ -52,7 +52,7 @@ const statuses: Array<{
   {
     label: formatStatus(CriteriumResultStatus.NOT_COMPLIANT),
     extraLabel:
-      "Le focus se déplacera dans le champ « Erreurs et recommandations »",
+      "Le focus se déplacera dans le champ «&nbsp;Erreurs et recommandations&nbsp;»",
     value: CriteriumResultStatus.NOT_COMPLIANT,
     color: RadioColor.RED
   },
@@ -173,7 +173,7 @@ function updateResultStatus(status: CriteriumResultStatus) {
         if (!auditStore.currentAudit?.publicationDate) {
           notify(
             "info",
-            "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+            "Bravo&nbsp;! Vous êtes sur le point de terminer votre audit 🎉",
             auditStore.currentAudit?.auditType === AuditType.FULL
               ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
               : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
@@ -318,6 +318,7 @@ const parentCriterium = computed(() => {
         <button
           v-if="transverseComment || transverseNotCompliantItems.length"
           class="fr-link fr-link--sm criterium-transverse-button"
+          aria-live="polite"
           @click="toggleTransverseComment"
         >
           {{ showTransverseComment ? "Masquer" : "Voir" }}

@@ -189,7 +189,7 @@ async function transferAudit(newEmail: string) {
                 @click="duplicateModalRef?.show()"
               >
                 Dupliquer
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               </button>
             </li>
             <li class="dropdown-item dropdown-item--with-meta">
@@ -199,7 +199,7 @@ async function transferAudit(newEmail: string) {
                 @click="transferModalRef?.show()"
               >
                 Transférer
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
                 <p v-if="!canTransferAudit" class="fr-text--xs fr-text--regular dropdown-item-meta">Seul le propriétaire peut transférer l’audit</p>
               </button>
             </li>
@@ -210,7 +210,7 @@ async function transferAudit(newEmail: string) {
                 @click="deleteModalRef?.show()"
               >
                 Supprimer l’audit
-                <span class="fr-sr-only"> {{ audit.procedureName }}</span>
+                <span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               </button>
             </li>
           </ul>

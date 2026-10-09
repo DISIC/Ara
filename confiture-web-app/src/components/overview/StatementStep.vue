@@ -53,7 +53,7 @@ const auditIsPublishable = computed(() => {
     </div>
 
     <p v-if="auditIsPublishable" class="fr-text--sm fr-mb-5v statement-step-date">
-      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate && !isSameDay(audit.statementPublicationDate!, audit.statementEditionDate)"> - Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
+      Rédigée le {{ formatDate(audit.statementPublicationDate!) }}<template v-if="audit.statementEditionDate && !isSameDay(audit.statementPublicationDate!, audit.statementEditionDate)">&nbsp;-&nbsp;Mise à jour le {{ formatDate(audit.statementEditionDate) }}</template>
     </p>
 
     <p class="statement-step-description">
@@ -79,7 +79,7 @@ const auditIsPublishable = computed(() => {
           class="fr-btn fr-btn--tertiary fr-mb-0"
         >
           Consulter
-          <span class="fr-sr-only">la déclaration d’accessibilité (nouvelle fenêtre)</span>
+          <span class="fr-sr-only">&nbsp;la déclaration d’accessibilité (nouvelle fenêtre)</span>
         </RouterLink>
       </div>
       <div class="fr-btns-group fr-btns-group--icon-left">

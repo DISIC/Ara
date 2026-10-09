@@ -52,7 +52,7 @@ function handleChange(value: string) {
         :class="item.color"
         :for="`checkbox-group-${uniqueId}--${i}`"
       >
-        {{ item.label }}<span class="fr-sr-only">, {{ item.extraLabel }}</span>
+        {{ item.label }}<span class="fr-sr-only">,</span><span class="fr-sr-only" v-html="item.extraLabel"></span>
       </label>
     </div>
   </fieldset>

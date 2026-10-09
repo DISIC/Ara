@@ -85,7 +85,7 @@ onMounted(() => {
 
   <div v-if="page.id !== transversePageId" class="fr-mb-3w page-url">
     <a class="fr-link fr-link--sm" :href="page.url" target="_blank" rel="noreferrer noopener">
-      {{ page.url }} <span class="fr-sr-only">(nouvelle fenêtre)</span>
+      {{ page.url }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
     </a>
   </div>
 
@@ -172,7 +172,7 @@ onMounted(() => {
             !store.hasNoResultsFromComplianceLevel
         "
       >
-        <p><strong>Suggestions :</strong></p>
+        <p><strong>Suggestions&nbsp;:</strong></p>
         <ul>
           <li>Vérifiez l’orthographe des termes de recherche</li>
           <li>Essayez un autre mot</li>

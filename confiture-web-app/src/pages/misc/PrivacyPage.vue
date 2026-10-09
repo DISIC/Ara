@@ -46,8 +46,8 @@ import TopLink from "../../components/ui/TopLink.vue";
                   </td>
                   <td>
                     Mission d’intérêt public relevant de la compétence de la
-                    DINUM (article 6 – 5° du décret n<sup>o</sup> 2019-1088 du
-                    25 octobre 2019)
+                    DINUM (article 6 – 5° du décret n<sup>o</sup>&nbsp;2019-1088 du
+                    25&nbsp;octobre 2019)
                   </td>
                   <td rowspan="2">
                     L’utilisateur·rice peut supprimer son compte et ses données
@@ -62,7 +62,7 @@ import TopLink from "../../components/ui/TopLink.vue";
                 </tr>
                 <tr>
                   <td>Prénom et nom</td>
-                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>«&nbsp;Signer&nbsp;» le rapport d’accessibilité</td>
                   <td>Intérêt légitime</td>
                 </tr>
               </tbody>
@@ -109,7 +109,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       </div>
     </div>
     <h3>Quels sont vos droits ?</h3>
-    <p>Vous disposez :</p>
+    <p>Vous disposez&nbsp;:</p>
     <ul>
       <li>d’un droit d’information et d’un droit d’accès à vos données ;</li>
       <li>d’un droit à la limitation du traitement de vos données ;</li>
@@ -117,9 +117,9 @@ import TopLink from "../../components/ui/TopLink.vue";
       <li>d’un droit d’opposition.</li>
     </ul>
     <p>
-      Pour les exercer, contactez-nous par message électronique : dpd@pm.gouv.fr
+      Pour les exercer, contactez-nous par message électronique&nbsp;: dpd@pm.gouv.fr
     </p>
-    <p>Ou par voie postale à l’adresse suivante :</p>
+    <p>Ou par voie postale à l’adresse suivante&nbsp;:</p>
     <p>
       Services du Premier ministre<br />
       À l’attention du délégué à la protection des données (DPD)<br />
@@ -134,7 +134,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
     <p>
       Pour vous aider dans votre démarche, vous trouverez un modèle de demande
-      élaboré par la CNIL ici :
+      élaboré par la CNIL ici&nbsp;:
       <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces">www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a>.
     </p>
     <p>
@@ -145,7 +145,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     <h2>Suivi d’audience et vie privée</h2>
     <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
     <p>
-      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
+      Ce site dépose un petit fichier texte (un «&nbsp;cookie&nbsp;») sur votre appareil
       lorsque vous le consultez. Cela nous permet de mesurer le nombre de
       visites et de comprendre quelles sont les pages les plus consultées.
     </p>
@@ -160,7 +160,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
     <p>
       Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
-      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
+      conformité avec la recommandation «&nbsp;Cookies&nbsp;» de la CNIL. Cela signifie
       que votre adresse IP, par exemple, est anonymisée avant d’être
       enregistrée. Il est donc impossible d’associer vos visites sur ce site à
       votre personne.

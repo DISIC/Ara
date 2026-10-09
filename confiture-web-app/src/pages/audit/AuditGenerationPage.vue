@@ -199,7 +199,7 @@ const tabsData = computed((): TabData[] => {
       ? [
           {
             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-            diplayLabelSuffix: " (optionnel)",
+            diplayLabelSuffix: "&nbsp;(optionnel)",
             icon: "fr-icon-layout-3-line",
             component: AuditGenerationPageCriteria,
             componentParams: {
@@ -211,7 +211,7 @@ const tabsData = computed((): TabData[] => {
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? "(entièrement évalué)" : undefined,
       id: p.id,
       icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
       component: AuditGenerationPageCriteria,
