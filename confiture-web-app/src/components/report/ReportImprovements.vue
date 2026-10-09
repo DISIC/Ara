@@ -97,8 +97,7 @@ const improvementsCount = computed(() => {
           class="fr-link page-url"
           target="_blank"
         >
-          {{ page.url }}
-          <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
+          {{ page.url }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
 
         <div
