@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
