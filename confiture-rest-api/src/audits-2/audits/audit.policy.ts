@@ -11,24 +11,16 @@ export class AuditPolicy {
     private readonly prisma: PrismaService
   ) {}
 
-  async read(user: User | null, auditUniqueId: string): Promise<boolean> {
-    console.log(`checking read permission on audit ${auditUniqueId}`);
-    const audit = await this.getAudit(auditUniqueId);
-
-    if (isAuditInAccount(audit)) {
-      return isUserAuditOwner(user, audit);
-    } else {
-      // @ts-expect-error `isPublic` does not exist yet on audit
-      return audit.isPublic;
-    }
+  read(_user: User | null): boolean {
+    return true;
   }
 
-  create(_user: User | null) {
+  create(_user: User | null): boolean {
     // anyone can create an audit
     return true;
   }
 
-  update(_user: User | null) {
+  update(_user: User | null): boolean {
     return true;
   }
 

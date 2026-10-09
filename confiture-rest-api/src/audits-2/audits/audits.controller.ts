@@ -27,13 +27,15 @@ export class AuditsController {
   }
 
   @Get()
-  async getAudits(): Promise<AuditResponseDto[]> {
-    throw "todo";
+  async getAudits(@CurrentUser() user: User): Promise<AuditResponseDto[]> {
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
+    return this.auditsService.getAudits(user.username);
   }
 
   @Get(":uniqueId")
-  async getAudit(@Param("uniqueId") uniqueId: string): Promise<AuditResponseDto> {
+  async getAudit(@Param("uniqueId") uniqueId: string, @CurrentUser() user: User | null): Promise<AuditResponseDto> {
     try {
+      await this.authorizationService.authorize(AuditPolicy, "read", user);
       return await this.auditsService.getAudit(uniqueId);
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {

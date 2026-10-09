@@ -78,7 +78,14 @@ export class AuditsService {
     return audit;
   }
 
-  async getAudits(): Promise<AuditResponseDto[]> { throw "todo"; }
+  async getAudits(auditorEmail: string): Promise<AuditResponseDto[]> {
+    return await this.prisma.audit.findMany({
+      where: {
+        auditorEmail,
+        isHidden: false
+      }
+    });
+  }
 
   async getAudit(editUniqueId: string): Promise<AuditResponseDto> {
     return this.prisma.audit.findFirstOrThrow({

@@ -2,7 +2,6 @@ import { AuthorizationService } from "@nestjs/authorization";
 import { Patch, Post, Delete, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
-import { AuditPolicy } from "../audits/audit.policy";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
 import { PagesService } from "./pages.service";
@@ -27,9 +26,9 @@ export class PagesController {
   @Get()
   async getPages(
     @Param("uniqueId") uniqueId: string,
-    @CurrentUser() user: User | null
+    @CurrentUser() _user: User | null
   ): Promise<PageResponseDto[]> {
-    await this.authorizationService.authorize(AuditPolicy, "read", user, uniqueId);
+    // await this.authorizationService.authorize(AuditPolicy, "read", user, uniqueId);
     return await this.pageService.getPages(uniqueId);
   }
 
