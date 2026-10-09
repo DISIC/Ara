@@ -98,8 +98,7 @@ const listId = useId();
         class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mt-1w"
         @click="addTags"
       >
-        Ajouter
-        <span class="fr-sr-only">&nbsp;{{ addLabel }}</span>
+        Ajouter<span class="fr-sr-only">&nbsp;{{ addLabel }}</span>
       </button>
     </template>
   </DsfrField>
