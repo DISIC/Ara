@@ -363,8 +363,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                       type="button"
                       @click="inlineDeleteCancel(i)"
                     >
-                      Annuler
-                      <span class="fr-sr-only">&nbsp;la suppression de {{ getFullFileName(file) }}</span>
+                      Annuler<span class="fr-sr-only">&nbsp;la suppression de {{ getFullFileName(file) }}</span>
                     </button>
                     <button
                       class="fr-btn"
