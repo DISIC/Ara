@@ -38,8 +38,7 @@ export class AuditPolicy {
     if (isAuditInAccount(audit)) {
       return isUserAuditOwner(user, audit);
     } else {
-      // @ts-expect-error `isPublic` does not exist yet on audit
-      return audit.isPublic;
+      return true;
     }
   }
 
@@ -48,7 +47,6 @@ export class AuditPolicy {
       where: { editUniqueId, isHidden: false },
       select: {
         auditorEmail: true,
-        // isPublic: true,
         auditor: { select: { isVerified: true } }
       }
     });

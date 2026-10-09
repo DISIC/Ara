@@ -1,4 +1,3 @@
-import { AuthorizationService } from "@nestjs/authorization";
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { nanoid } from "nanoid";
@@ -6,7 +5,6 @@ import { User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
-import { AuditPolicy } from "./audit.policy";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 
@@ -16,8 +14,7 @@ export class AuditsService {
     private readonly prisma: PrismaService,
     private readonly pagesService: PagesService,
     private readonly resultsService: ResultsService,
-    private readonly eventEmitter: EventEmitter2,
-    private readonly authorization: AuthorizationService
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   //
@@ -91,17 +88,19 @@ export class AuditsService {
 
   async updateAudit(): Promise<AuditResponseDto> { throw "todo"; }
 
-  async softDeleteAudit(editUniqueId: string, user: User | null): Promise<void> {
-    await this.authorization.authorize(AuditPolicy, "delete", user, editUniqueId);
-    // await this.prisma.audit.update({
-    //   where: { editUniqueId },
-    //   data: {
-    //     isHidden: true,
-    //     auditorEmail: null,
-    //     auditorName: null,
-    //     auditorOrganisation: null
-    //   }
-    // });
+  /**
+   * Mark an audit as deleted and anonymise auditor informations. Its data will not be deleted.
+   */
+  async softDeleteAudit(editUniqueId: string): Promise<void> {
+    await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: {
+        isHidden: true,
+        auditorEmail: null,
+        auditorName: null,
+        auditorOrganisation: null
+      }
+    });
   }
 
   //

@@ -54,7 +54,8 @@ export class AuditsController {
 
   @Delete(":uniqueId")
   async deleteAudit(@Param("uniqueId") uniqueId: string, @CurrentUser() user: User | null): Promise<void> {
-    await this.auditsService.softDeleteAudit(uniqueId, user);
+    await this.authorizationService.authorize(AuditPolicy, "delete", user, uniqueId);
+    await this.auditsService.softDeleteAudit(uniqueId);
   }
 
   //
