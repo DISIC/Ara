@@ -3,6 +3,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { nanoid } from "nanoid";
 import { User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
+import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
@@ -73,7 +74,7 @@ export class AuditsService {
     ];
     await this.resultsService.prefillNotApplicableTopics(editUniqueId, topicNumbers);
 
-    this.eventEmitter.emit("audit.created", { audit, createdBy: user });
+    this.eventEmitter.emit(EVENTS.AUDIT_CREATED, { audit, createdBy: user });
 
     return audit;
   }
@@ -148,7 +149,7 @@ export class AuditsService {
       }
     });
 
-    this.eventEmitter.emit("audit.transfered", {
+    this.eventEmitter.emit(EVENTS.AUDIT_TRANSFERED, {
       audit: {
         editUniqueId: uniqueId,
         auditorEmail: user?.username || originalAuditEmail,
