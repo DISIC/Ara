@@ -15,6 +15,7 @@ import { MailModule } from "./mail/mail.module";
 import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 import { TestsController } from "./tests.controller";
+import "dotenv/config";
 
 @Module({
   imports: [
