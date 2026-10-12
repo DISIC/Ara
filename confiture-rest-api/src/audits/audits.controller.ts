@@ -12,8 +12,8 @@ import {
   Patch,
   Post,
   Put,
-  UnauthorizedException,
   UploadedFile,
+  UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -26,12 +26,14 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
+import { PermissionsService } from "src/permissions.service";
 import { AuthRequired } from "../auth/auth-required.decorator";
 import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
 import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditId } from "./audit-id.decorator";
+import { AuditOwnershipGuard } from "./audit-ownership.guard";
 import { AuditService } from "./audit.service";
 import { AuditListingItemDto } from "./dto/audit-listing-item.dto";
 import { AuditDto } from "./dto/entities/audit.dto";
@@ -43,15 +45,18 @@ import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { DuplicateAuditDto } from "./dto/requests/duplicate-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { TransferAuditDto } from "./dto/requests/transfer-audit.dto";
+import { UpdateAuditPrivacyDto } from "./dto/requests/update-audit-privacy.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
 import { UploadImageDto } from "./dto/requests/upload-image.dto";
 
 @Controller("audits")
 @ApiTags("Audits")
+@UseGuards(AuditOwnershipGuard)
 export class AuditsController {
   constructor(
     private readonly auditService: AuditService,
+    private readonly permissionsService: PermissionsService,
     private readonly mailer: MailService,
     private readonly auditExportService: AuditExportService
   ) {}
@@ -66,7 +71,7 @@ export class AuditsController {
     @Body() body: CreateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
-    const audit = await this.auditService.createAudit(body);
+    const audit = await this.auditService.createAudit(body, !user);
 
     if (!user) {
       this.mailer.sendAuditCreatedMail(audit).catch((err) => {
@@ -266,10 +271,31 @@ export class AuditsController {
     return this.auditService.publishAudit(uniqueId);
   }
 
+  /** Set audit privacy (public or private) */
+  @Patch("/:uniqueId/privacy")
+  @AuthRequired()
+  @ApiOkResponse({
+    description: "The audit privacy has been successfully updated"
+  })
+  async setAuditPrivacy(
+    @AuditId() uniqueId: string,
+    @Body() body: UpdateAuditPrivacyDto,
+    @User() user: AuthenticationJwtPayload
+  ): Promise<void> {
+    await this.permissionsService.checkEditPrivacyPermissions(uniqueId, user.email);
+
+    return this.auditService.setAuditPrivacy(uniqueId, body.isPublic);
+  }
+
   /** Delete an audit from the database. */
   @Delete("/:uniqueId")
   @ApiOkResponse({ description: "The audit has been successfully deleted." })
-  async deleteAudit(@AuditId() uniqueId: string) {
+  async deleteAudit(
+    @AuditId() uniqueId: string,
+    @User() user: AuthenticationJwtPayload
+  ) {
+    await this.permissionsService.checkDeletePermissions(uniqueId, user?.email);
+
     await this.auditService.softDeleteAudit(uniqueId);
   }
 
@@ -281,6 +307,7 @@ export class AuditsController {
    *   - the example images
    */
   @Post("/:uniqueId/duplicate")
+  @AuthRequired()
   @ApiCreatedResponse({
     description: "The audit has been successfully duplicated.",
     type: AuditDto
@@ -290,19 +317,13 @@ export class AuditsController {
     @Body() body: DuplicateAuditDto,
     @User() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
+    await this.permissionsService.checkDuplicatePermissions(uniqueId, user.email);
+
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
-      body.procedureName
+      body.procedureName,
+      user.email
     );
-
-    if (!user) {
-      this.mailer.sendAuditCreatedMail(newAudit).catch((err) => {
-        console.error(
-          `Failed to send email for audit ${newAudit.editUniqueId}`
-        );
-        console.error(err);
-      });
-    }
 
     return newAudit;
   }
@@ -316,6 +337,7 @@ export class AuditsController {
   }
 
   @Put("/:uniqueId/transfer")
+  @AuthRequired()
   @ApiOkResponse({
     description: "The audit has been successfully transfered.",
     type: AuditDto
@@ -326,11 +348,7 @@ export class AuditsController {
     @Body() body: TransferAuditDto,
     @User() user: AuthenticationJwtPayload
   ) {
-    const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email);
-
-    if (!canTransfer) {
-      throw new UnauthorizedException();
-    }
+    await this.permissionsService.checkTransferPermissions(uniqueId, user.email);
 
     const { originalAuditEmail, updatedAudit } = await this.auditService.transferAudit(uniqueId, body.newEmail);
 

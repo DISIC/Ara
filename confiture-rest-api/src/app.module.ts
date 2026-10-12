@@ -12,6 +12,7 @@ import { DebugController } from "./debug/debug.controller";
 import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthCheckController } from "./health-check.controller";
 import { MailModule } from "./mail/mail.module";
+import { PermissionsModule } from "./permissions.module";
 import { PrismaModule } from "./prisma.module";
 import { ProfileModule } from "./profile/profile.module";
 import { TestsController } from "./tests.controller";
@@ -30,6 +31,7 @@ import { TestsController } from "./tests.controller";
     MailModule,
     AuthModule,
     ProfileModule,
+    PermissionsModule,
     SentryModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),

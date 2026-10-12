@@ -35,7 +35,7 @@ describe("Report header", () => {
       // Electron does not support CSS nesting for now.
       // Adding `force: true` to click() function solves the problem.
       cy.contains("button", "Copier le lien du rapport").click({ force: true });
-      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
+      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Lien copié");
     });
   });

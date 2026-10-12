@@ -1,4 +1,4 @@
-import { TimeoutError } from "ky";
+import { HTTPError, TimeoutError } from "ky";
 import { isEqual } from "lodash-es";
 import { onMounted, watch } from "vue";
 import { onBeforeRouteLeave, RouteParamsGeneric, useRoute, useRouter } from "vue-router";
@@ -28,8 +28,14 @@ export function useWrappedFetch(
   const router = useRouter();
   const route = useRoute();
 
-  function handleError(error: any) {
-    let errorStatus = error?.response?.status;
+  async function handleError(error: any) {
+    let errorStatus;
+    let errorPayload;
+
+    if (error instanceof HTTPError) {
+      errorStatus = error.response.status;
+      errorPayload = await error.response.json();
+    }
 
     // display an 408 Request Timeout error page in case of ky request timing out
     if (error instanceof TimeoutError) {
@@ -42,7 +48,8 @@ export function useWrappedFetch(
       query: route.query,
       hash: route.hash,
       state: {
-        errorStatus
+        errorStatus,
+        errorPayload
       }
     });
 
