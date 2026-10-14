@@ -14,7 +14,7 @@ describe("Audit", () => {
         .type(content);
     }
 
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
 
     // Navigate to new audit page
     cy.contains("a", "Je réalise un audit").click();
@@ -81,7 +81,7 @@ describe("Audit", () => {
         .type(content);
     }
 
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
 
     // Navigate to new audit page
     cy.contains("a", "Je réalise un audit").click();
@@ -153,7 +153,7 @@ describe("Audit", () => {
     const monthes = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
     const monthesRe = "(?:" + monthes.join("|") + ")";
     cy.createTestAudit().then(({ editId, reportId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "Accueil").click();
 
@@ -173,13 +173,13 @@ describe("Audit", () => {
 
       cy.contains("button", "Copier le lien de partage").click();
       cy.contains("button", "Lien copié");
-      cy.assertClipboardValue(`http://localhost:3000/rapport/${reportId}/`);
+      cy.assertClipboardValue(`${Cypress.config("baseUrl")}/rapport/${reportId}/`);
     });
   });
 
   it("User can set a topic as NA", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
       cy.contains("button[role=\"tab\"]", "Connexion").click();
       cy.contains(" Non applicable sur la page").click();
 
@@ -189,7 +189,7 @@ describe("Audit", () => {
 
   it("User can edit a criterium content", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "FAQ").click();
       cy.get(".criterium-container").contains("Non conforme");
@@ -210,7 +210,7 @@ describe("Audit", () => {
 
   it("User can add a new not compliant item", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".criterium-container").contains("Non conforme");
 
@@ -234,7 +234,7 @@ describe("Audit", () => {
 
   it("User can delete an not compliant item", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".criterium-container").contains("Non conforme");
 
@@ -272,7 +272,7 @@ describe("Audit", () => {
       isComplete: true,
       publicationDate: publicationDate.toString()
     }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".audit-status").contains("Terminé le");
       cy.get(".audit-status").contains("Mis à jour le").should("not.exist");
@@ -293,7 +293,7 @@ describe("Audit", () => {
     cy.createTestAudit({
       isComplete: true
     }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".audit-status").contains("Terminé le");
 
@@ -310,7 +310,7 @@ describe("Audit", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // Creating two non-compliant criteria on Elements transverses Tab
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
@@ -347,7 +347,7 @@ describe("Audit", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
     cy.createTestAudit({ isComplete: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // Creating two non-compliant criteria on Elements transverses Tab
       cy.get(".criterium-container").contains("Non conforme").click().wait(100);
@@ -385,7 +385,7 @@ describe("Audit", () => {
     cy.intercept("DELETE", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("deleteResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // Creating three non-compliant criteria on Elements transverses Tab
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();

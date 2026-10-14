@@ -5,6 +5,7 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
+    baseUrl: "http://localhost:3000",
     setupNodeEvents(on, config) {
       // Same failure numbering as the Mocha summary, reset for each spec
       let failureIndex = 0;
