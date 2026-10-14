@@ -4,7 +4,7 @@ describe("Editor", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/not-compliant-items/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
       cy.get(".criterium-container").contains("Non conforme");
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
 
@@ -42,14 +42,14 @@ describe("Editor", () => {
         .should("have.length", 3);
 
       // Go to report page to check images count (3)
-      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
+      cy.visit(`/rapport/${reportId}/details-des-non-conformites`);
       cy.get(".tiptap--rendered img").should("have.length", 3);
     });
   });
 
   it("User can paste Markdown content in the comment editor (and it’s interpreted)", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
@@ -63,7 +63,7 @@ describe("Editor", () => {
 
   it("User can paste HTML text content in the comment editor (and it's not interpreted)", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
@@ -79,7 +79,7 @@ describe("Editor", () => {
     cy.intercept("PATCH", `/api/audits/*/pages/*/results/*/*/*`).as("updateResults");
 
     cy.createTestAudit({ isPristine: true }).then(({ editId, reportId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.get(".criterium-container").contains("Non conforme");
       cy.get(".criterium-container").contains("Erreurs et recommandations (1)").click();
@@ -92,7 +92,7 @@ describe("Editor", () => {
       cy.wait("@updateResults");
 
       // Go to report page to check text + images count (0)
-      cy.visit(`http://localhost:3000/rapport/${reportId}/details-des-non-conformites`);
+      cy.visit(`/rapport/${reportId}/details-des-non-conformites`);
       // - 1 h4
       cy.get(".tiptap--rendered h4").should("have.length", 1);
       // - 2 li

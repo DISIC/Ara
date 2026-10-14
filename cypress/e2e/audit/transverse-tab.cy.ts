@@ -1,7 +1,7 @@
 describe("Transverse tab", () => {
   it("User can see transverse status and comment from other pages", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("button[role=\"tab\"]", "Documentation").click();
       cy.get(".criterium-container")
@@ -32,7 +32,7 @@ describe("Transverse tab", () => {
 
   it("User can add transverse elements", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("Lister les éléments transverses").click();
       cy.getByLabel("Nom de l’élément transverse").type(

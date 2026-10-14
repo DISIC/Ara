@@ -1,7 +1,7 @@
 describe("Filters", () => {
   it("User can search in criteria title", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
       cy.getByLabel("Recherche par mots clés")
         .clear()
         .type("alternative")
@@ -16,7 +16,7 @@ describe("Filters", () => {
 
   it("User can hide tests and references", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
       cy.contains("Masquer les tests et références").click();
       cy.contains("Tests et références du critère 1.1").should("not.exist");
     });
@@ -24,7 +24,7 @@ describe("Filters", () => {
 
   it("User can filter criteria", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // Check total length
       cy.get("li.criterium-container").then((els) => {
@@ -79,7 +79,7 @@ describe("Filters", () => {
 
   it("User can filter evaluated criteria", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("Masquer les critères évalués").click();
       cy.contains("Tous les critères évalués ont été masqués");
@@ -118,7 +118,7 @@ describe("Filters", () => {
 
   it("User can reset filters", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       cy.contains("Conforme (323)").click();
       cy.contains("Non applicable (315)").click();
@@ -145,7 +145,7 @@ describe("Filters", () => {
 
   it("User can automatically set as NA some linked criteria", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // check that linked criteria are also NA
       cy.get(".criterium-container").contains("Non applicable").click();
@@ -162,7 +162,7 @@ describe("Filters", () => {
 
   it("User can show or hide topic criteria", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
+      cy.visit(`/audits/${editId}/generation`);
 
       // Check total criteria count
       cy.get(".criterium-container").should("have.length", 106);

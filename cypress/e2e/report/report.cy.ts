@@ -3,7 +3,7 @@ import { TabSlug } from "../../../confiture-web-app/src/enums";
 describe("Report", () => {
   it("User can see correct pages count and transverse criteria count", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapport/${reportId}`);
+      cy.visit(`/rapport/${reportId}`);
       cy.get("#repartition-des-criteres-par-pages + .fr-table tbody tr").then(
         (els) => {
           expect(els).to.have.length(8);
@@ -18,7 +18,7 @@ describe("Report", () => {
 
   it("User can filter errors", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
-      cy.visit(`http://localhost:3000/rapport/${reportId}`);
+      cy.visit(`/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.contains("315 non-conformités");
       cy.get(".criterium-title").then((els) => {
@@ -71,7 +71,7 @@ describe("Report", () => {
   it("User can reach topics titles with anchors", () => {
     cy.createTestAudit().then(({ reportId }) => {
       const slug = TabSlug.REPORT_ERRORS_SLUG;
-      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
+      cy.visit(`/rapport/${reportId}/${slug}`);
       cy.get(".fr-sidemenu__link")
         .should("exist")
         .each(($el, index) => {

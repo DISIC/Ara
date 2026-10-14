@@ -1,0 +1,24 @@
+name: E2E
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_BASE_URL: https://ara-dev-pr${{ github.event.number }}.osc-secnum-fr1.scalingo.io
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable && yarn install --immutable
+      - name: Attendre le déploiement
+        run: npx wait-on "$CYPRESS_BASE_URL/api/healthcheck" --timeout 600000
+      - run: yarn tests:run
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
