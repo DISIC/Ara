@@ -125,7 +125,7 @@ describe("Audits list", () => {
 
   it("User can duplicate audit", () => {
     cy.contains("button", "Actions").click();
-    cy.contains("button", "Dupliquer l’audit").click();
+    cy.contains("button", "Dupliquer").click();
 
     cy.getByLabel("Nom de la copie").type("Audit de mon petit site (2)");
     cy.get("dialog").contains("button", "Dupliquer l’audit").click();
@@ -168,10 +168,10 @@ describe("Audits list", () => {
   });
 
   it("User can download audit", () => {
-    cy.exec("rm -rf cypress/downloads");
+    cy.task("clearDownloads");
 
     cy.contains("Actions").click();
-    cy.contains("Télécharger l’audit").click();
+    cy.contains("Télécharger la grille d’audit").click();
 
     cy.readFile("cypress/downloads/audit-audit-de-mon-petit-site.csv");
   });
@@ -189,7 +189,7 @@ describe("Audits list", () => {
     const newEmail = "example@domain.com";
 
     cy.contains("button", "Actions").click();
-    cy.contains("button", "Transférer l’audit").click();
+    cy.contains("button", "Transférer").click();
 
     // Fill form
     cy.getByLabel("Adresse e-mail du destinataire")

@@ -179,7 +179,7 @@ watch(
               :href="csvExportUrl"
               :download="csvExportFilename"
             >
-              Télécharger l'audit
+              Télécharger la grille d’audit<span class="fr-sr-only">&nbsp;{{ report.data?.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
                 CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
               </span>
