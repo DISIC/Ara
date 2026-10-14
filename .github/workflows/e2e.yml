@@ -6,6 +6,7 @@ on:
 jobs:
   cypress:
     runs-on: ubuntu-latest
+
     services:
       postgres:
         image: postgres:17
@@ -22,6 +23,7 @@ jobs:
         env:
           MP_SMTP_AUTH_ACCEPT_ANY: 1
           MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
     env:
       DATABASE_URL: postgres://db-user:db-password@localhost:5432/confiture-db
       DATABASE_SSL: false
@@ -42,21 +44,51 @@ jobs:
       S3_VIRTUAL_HOST: https://s3.example.com
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn workspace confiture-rest-api exec prisma generate
-      - run: yarn workspace confiture-rest-api run migrate:prod
-      - run: yarn workspace confiture-rest-api run build
-      - run: yarn workspace confiture-rest-api run start:prod &
-      - run: yarn workspace confiture-web-app run dev &
-      - run: npx wait-on http://localhost:3000 http://localhost:4000/api/healthcheck --timeout 120000
-      - run: yarn tests:run
-      - uses: actions/upload-artifact@v4
+
+      - name: Install dependencies
+        run: corepack enable && yarn install --immutable
+
+      - name: Generate prisma client and API types
+        run: yarn copytypes
+
+      - name: Generate RGAA files
+        run: yarn workspace confiture-web-app run generate:rgaa
+
+      - name: Apply migrations
+        run: yarn workspace confiture-rest-api run migrate:prod
+
+      - name: Build back
+        run: yarn workspace confiture-rest-api run build
+
+      - name: Launch back (port 4000)
+        run: yarn workspace confiture-rest-api run start:prod > back.log 2>&1 &
+
+      - name: Launch front (port 3000)
+        run: yarn workspace confiture-web-app run dev > front.log 2>&1 &
+
+      - name: Waiting front & back launched
+        run: npx wait-on http://localhost:3000 http://localhost:4000/api/healthcheck --timeout 120000
+
+      - name: Launch cypress tests
+        run: yarn tests:run
+
+      - name: Display logs if it fails
+        if: failure()
+        run: |
+          echo "--- back.log ---" && cat back.log || true
+          echo "--- front.log ---" && cat front.log || true
+
+      - name: Save screenshots if it fails
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
