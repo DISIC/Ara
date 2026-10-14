@@ -6,7 +6,9 @@ import { AuditPolicy } from "./audit.policy";
 import { AuditsService } from "./audits.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
+import { DuplicateAuditRequestDto } from "./dto/duplicate-audit-request.dto";
 import { TransferAuditRequestDto } from "./dto/transfer-audit-request.dto";
+import { UpdateAuditRequestDto } from "./dto/update-audit-request.dto";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ type: AuditResponseDto, excludeExtraneousValues: true })
@@ -29,8 +31,6 @@ export class AuditsController {
 
   @Get()
   async getAudits(@CurrentUser() user: User): Promise<AuditResponseDto[]> {
-    // FIXME: create a "readMultiple" permission?
-    await this.authorizationService.authorize(AuditPolicy, "read", user);
     return this.auditsService.getAudits(user.username);
   }
 
@@ -52,8 +52,13 @@ export class AuditsController {
   }
 
   @Patch(":uniqueId")
-  updateAudit(): Promise<AuditResponseDto> {
-    throw "todo";
+  async updateAudit(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User,
+    @Body() body: UpdateAuditRequestDto
+  ): Promise<AuditResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return this.auditsService.updateAudit(uniqueId, body);
   }
 
   @Delete(":uniqueId")
@@ -77,7 +82,12 @@ export class AuditsController {
   }
 
   @Post(":uniqueId/duplicate")
-  duplicateAudit(): Promise<AuditResponseDto> {
-    throw "todo";
+  async duplicateAudit(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User,
+    @Body() body: DuplicateAuditRequestDto
+  ): Promise<AuditResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "duplicate", user);
+    return this.auditsService.duplicateAudit(uniqueId, body.procedureName);
   }
 }

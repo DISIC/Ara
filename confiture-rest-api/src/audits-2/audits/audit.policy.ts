@@ -44,6 +44,11 @@ export class AuditPolicy {
     }
   }
 
+  // TODO: update this rule
+  async duplicate(user: User | null): Promise<boolean> {
+    return !!user;
+  }
+
   private getAudit(editUniqueId: string) {
     return this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId, isHidden: false },

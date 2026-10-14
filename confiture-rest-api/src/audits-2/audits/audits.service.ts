@@ -8,6 +8,7 @@ import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
+import { UpdateAuditRequestDto } from "./dto/update-audit-request.dto";
 
 @Injectable()
 export class AuditsService {
@@ -94,7 +95,7 @@ export class AuditsService {
     });
   }
 
-  async updateAudit(): Promise<AuditResponseDto> { throw "todo"; }
+  async updateAudit(_editUniqueId: string, _data: UpdateAuditRequestDto): Promise<AuditResponseDto> { throw "todo"; }
 
   /**
    * Mark an audit as deleted and anonymise auditor informations. Its data will not be deleted.
@@ -160,7 +161,11 @@ export class AuditsService {
     });
   }
 
-  async duplicateAudit(): Promise<AuditResponseDto> { throw "todo"; }
+  /**
+   * TODO:
+   * - handle sub-resources (pages, notes...) creation: with an event, in one big function...?
+   */
+  async duplicateAudit(_editUniqueId: string, _procedureName: string): Promise<AuditResponseDto> { throw "todo"; }
 
   //
   // utils methods
