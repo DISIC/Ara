@@ -1,0 +1,63 @@
+name: E2E
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: db-user
+          POSTGRES_PASSWORD: db-password
+          POSTGRES_DB: confiture-db
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-retries 10
+      mailpit:
+        image: axllent/mailpit
+        ports: ["1025:1025"]
+        env:
+          MP_SMTP_AUTH_ACCEPT_ANY: 1
+          MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    env:
+      DATABASE_URL: postgres://db-user:db-password@localhost:5432/confiture-db
+      DATABASE_SSL: false
+      TESTS_ENDPOINTS: 1
+      JWT_SECRET: test
+      FRONT_BASE_URL: http://localhost:3000
+      MAILER_USER: test@example.com
+      MAILER_PASSWORD: test
+      MAILER_SMTP_HOST: localhost
+      MAILER_SMTP_PORT: 1025
+      MAILER_SMTP_SECURE: false
+      GRIST_API_KEY: test
+      GRIST_DOC_ID: test
+      GRIST_TABLE_ID: test
+      S3_ENDPOINT: https://s3.example.com
+      S3_REGION: test
+      S3_BUCKET: test
+      S3_VIRTUAL_HOST: https://s3.example.com
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: corepack enable && yarn install --immutable
+      - run: yarn workspace confiture-rest-api exec prisma generate
+      - run: yarn workspace confiture-rest-api run migrate:prod
+      - run: yarn workspace confiture-rest-api run build
+      - run: yarn workspace confiture-rest-api run start:prod &
+      - run: yarn workspace confiture-web-app run dev &
+      - run: npx wait-on http://localhost:3000 http://localhost:4000/api/healthcheck --timeout 120000
+      - run: yarn tests:run
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
