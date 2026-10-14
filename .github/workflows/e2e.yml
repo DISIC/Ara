@@ -48,7 +48,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: yarn
-      - run: corepack enable && yarn install --immutable
+      - run: yarn install --immutable
       - run: yarn workspace confiture-rest-api exec prisma generate
       - run: yarn workspace confiture-rest-api run migrate:prod
       - run: yarn workspace confiture-rest-api run build
