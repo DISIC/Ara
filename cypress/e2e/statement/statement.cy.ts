@@ -4,7 +4,7 @@ import * as statementJson from "../../fixtures/statement.json";
 describe("Statement", () => {
   it("User can fill a11y statement", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/synthese`);
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("Compléter").invoke("removeAttr", "target").click();
 
       // General infos
@@ -73,7 +73,7 @@ describe("Statement", () => {
 
   it("User can copy statement html", () => {
     cy.createTestAudit({ fillStatement: true }).then(({ reportId }) => {
-      cy.visit(`/declaration/${reportId}`);
+      cy.visit(`http://localhost:3000/declaration/${reportId}`);
       cy.contains("Copier le code HTML").click();
       cy.contains("Code HTML copié");
       cy.window().focus();

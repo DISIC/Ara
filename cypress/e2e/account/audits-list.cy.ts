@@ -8,7 +8,7 @@ describe("Audits list", () => {
       cy.createTestAudit({ auditorEmail: username, isPristine: true });
       cy.createTestAudit({ auditorEmail: username });
       cy.createTestAudit({ auditorEmail: username }).as("audit");
-      cy.visit("/compte");
+      cy.visit("http://localhost:3000/compte");
     });
   });
   it("User can access all their audits", () => {
@@ -144,14 +144,14 @@ describe("Audits list", () => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-        `${Cypress.config("baseUrl")}/rapport/${audit.reportId}`
+        `http://localhost:3000/rapport/${audit.reportId}`
       );
       cy.contains("span", "Lien du rapport copié");
     });
   });
 
   it("User can copy statement link", () => {
-    cy.visit("/compte");
+    cy.visit("http://localhost:3000/compte");
 
     cy.get(".dropdown-container:last").contains("button", "Actions").click();
     cy.contains("button", "Copier le lien de la déclaration").click();
@@ -161,7 +161,7 @@ describe("Audits list", () => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-        `${Cypress.config("baseUrl")}/declaration/${audit.reportId}`
+        `http://localhost:3000/declaration/${audit.reportId}`
       );
       cy.contains("span", "Lien de la déclaration copié");
     });
@@ -213,7 +213,7 @@ describe("Audits list", () => {
       // @ts-ignore
       // TODO: remove `@ts-ignore` when the following issue is fixed:
       // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-      cy.visit(`/audits/${audit.editId}/parametres`);
+      cy.visit(`http://localhost:3000/audits/${audit.editId}/parametres`);
       cy.getByLabel("Adresse e-mail").should("have.value", newEmail);
     });
   });

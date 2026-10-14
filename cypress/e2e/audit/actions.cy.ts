@@ -3,20 +3,20 @@ import { TabSlug } from "../../../confiture-web-app/src/enums";
 describe("Actions", () => {
   it("User can go to settings page from audit", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres").click();
       cy.get("h1").contains("Paramètres de l’audit");
-      cy.location("pathname").should(
+      cy.url().should(
         "eq",
-        `/audits/${editId}/parametres`
+        `http://localhost:3000/audits/${editId}/parametres`
       );
     });
   });
 
   it("User can edit procedure name", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/parametres`);
+      cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
       cy.getByLabel("Nom du site ou du service audité").should(
         "have.value",
@@ -29,9 +29,9 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.location("pathname").should(
+      cy.url().should(
         "eq",
-        `/audits/${editId}/synthese`
+        `http://localhost:3000/audits/${editId}/synthese`
       );
       cy.get("h1").contains("Audit de mon gros site");
     });
@@ -39,7 +39,7 @@ describe("Actions", () => {
 
   it("User can edit pages", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation/`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres").click();
@@ -85,9 +85,9 @@ describe("Actions", () => {
         .type("https://example.com/parametres");
 
       cy.contains("Enregistrer les modifications").click();
-      cy.location("pathname").should(
+      cy.url().should(
         "eq",
-        `/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
       cy.get("[data-cy='tab-label']").then((els) => {
@@ -110,7 +110,7 @@ describe("Actions", () => {
 
   it("User can interchange page names", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation/`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres").click();
@@ -142,9 +142,9 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.location("pathname").should(
+      cy.url().should(
         "eq",
-        `/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
+        `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
       cy.get("[data-cy='tab-label']").then((els) => {
@@ -169,7 +169,7 @@ describe("Actions", () => {
 
   it("User can delete an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Actions").click();
       cy.contains("Supprimer l’audit").click();
@@ -177,14 +177,14 @@ describe("Actions", () => {
       cy.contains("Supprimer l’audit « Audit de mon petit site »");
       cy.get("dialog").contains("button", "Supprimer définitivement l’audit").click();
 
-      cy.location("pathname").should("eq", "/");
+      cy.url().should("eq", "http://localhost:3000/");
       cy.contains("Audit « Audit de mon petit site » supprimé");
     });
   });
 
   it("User can copy an audit", () => {
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
       cy.contains("button", "Dupliquer").click();
 
@@ -202,7 +202,7 @@ describe("Actions", () => {
     cy.task("clearDownloads");
 
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
       cy.contains("Actions").click();
       cy.contains("Exporter l’audit").click();
@@ -213,7 +213,7 @@ describe("Actions", () => {
 
   it("User can transfer an audit", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`/audits/${editId}/generation`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation`);
       cy.contains("button", "Actions").click();
       cy.contains("button", "Transférer").click();
 
@@ -249,12 +249,12 @@ describe("Actions", () => {
   it("User can't transfer an audit after logging out", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username, isPristine: true }).then(({ editId }) => {
-        cy.visit(`/audits/${editId}/generation`);
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
 
         cy.contains("button", username).click();
         cy.contains("button", "Me déconnecter").click();
 
-        cy.visit(`/audits/${editId}/synthese`);
+        cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
 
         cy.contains("button", "Actions").click();
         cy.contains("button", "Transférer").should("be.disabled");
@@ -264,7 +264,7 @@ describe("Actions", () => {
 
   it("User can transfer an audit without being logged in", () => {
     cy.createTestAudit({ isPristine: true }).then(({ editId }) => {
-      cy.visit(`/audits/${editId}/synthese`);
+      cy.visit(`http://localhost:3000/audits/${editId}/synthese`);
       cy.contains("button", "Actions").click();
       cy.contains("button", "Transférer").click();
 
