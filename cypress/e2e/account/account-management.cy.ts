@@ -4,7 +4,7 @@ describe("Account management", () => {
       const email = `john-doe-${Math.random()}@example.com`;
       cy.wrap(email).as("email");
 
-      cy.visit("/");
+      cy.visit("http://localhost:3000");
       cy.contains("a", "Créer un compte").click();
       cy.getByLabel("Adresse e-mail").type(email);
       cy.getByLabel("Mot de passe").type("pouetpouetpouet");
@@ -21,14 +21,14 @@ describe("Account management", () => {
         // Simulate receiving the verification link by email.
         cy.request(
           "POST",
-          "/api/tests/verification-token",
+          "http://localhost:3000/api/tests/verification-token",
           {
             username: email
           }
         )
           .its("body")
           .then((verificationToken) => {
-            const verificationLink = `/compte/validation?token=${verificationToken}`;
+            const verificationLink = `http://localhost:3000/compte/validation?token=${verificationToken}`;
             cy.visit(verificationLink);
           });
 
@@ -42,7 +42,7 @@ describe("Account management", () => {
         // Simulate the account being verified in another tab
         cy.request(
           "POST",
-          "/api/tests/verification-token",
+          "http://localhost:3000/api/tests/verification-token",
           {
             username: email
           }
@@ -67,7 +67,7 @@ describe("Account management", () => {
 
   it("User can not create account with already taken email", () => {
     cy.createTestAccount().then(({ username }) => {
-      cy.visit("/");
+      cy.visit("http://localhost:3000");
       cy.contains("a", "Créer un compte").click();
       cy.getByLabel("Adresse e-mail").type(username);
       cy.getByLabel("Mot de passe").type("blablablablablabla");
@@ -80,13 +80,13 @@ describe("Account management", () => {
   });
 
   it("User can not create account with expired verification token", () => {
-    cy.visit("/compte/validation?token=pouet");
+    cy.visit("http://localhost:3000/compte/validation?token=pouet");
     cy.contains("h1", "Désolé, votre lien n’est plus valide");
   });
 
   it("User can sign in with their account", () => {
     cy.createTestAccount().then(({ username, password }) => {
-      cy.visit("/compte/connexion");
+      cy.visit("http://localhost:3000/compte/connexion");
       cy.getByLabel("Adresse e-mail").type(username);
       cy.getByLabel("Mot de passe").type(password);
       cy.contains("button", "Se connecter").click();
@@ -98,7 +98,7 @@ describe("Account management", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username, isComplete: true });
 
-      cy.visit("/compte");
+      cy.visit("http://localhost:3000/compte");
       cy.contains("button", username).click();
       cy.contains("a", "Mon compte").click();
 
@@ -117,7 +117,7 @@ describe("Account management", () => {
 
   it("User can update their password", () => {
     cy.createTestAccount({ login: true }).then(({ username, password }) => {
-      cy.visit("/compte/parametres");
+      cy.visit("http://localhost:3000/compte/parametres");
 
       const newPassword = "totototototo";
 
@@ -149,7 +149,7 @@ describe("Account management", () => {
 
   it("User can reset their password", () => {
     cy.createTestAccount().then(({ username, password }) => {
-      cy.visit("/compte/connexion");
+      cy.visit("http://localhost:3000/compte/connexion");
       cy.contains("a", "Mot de passe oublié").click();
       cy.getByLabel("Adresse e-mail").type(username);
       cy.contains("button", "Valider").click();
@@ -160,10 +160,10 @@ describe("Account management", () => {
 
       cy.request(
         "POST",
-        "/api/tests/password-reset-verification-token",
+        "http://localhost:3000/api/tests/password-reset-verification-token",
         { username }
       ).then((resp) => {
-        const verificationLink = `/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
+        const verificationLink = `http://localhost:3000/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
         cy.visit(verificationLink);
 
         const newPassword = "blablablabla";
@@ -189,7 +189,7 @@ describe("Account management", () => {
 
   it("User can reset their password (logged in)", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.visit("/compte/parametres");
+      cy.visit("http://localhost:3000/compte/parametres");
       cy.contains("Changer de mot de passe").click();
       cy.contains("Mot de passe oublié ?").click();
 
@@ -200,10 +200,10 @@ describe("Account management", () => {
 
       cy.request(
         "POST",
-        "/api/tests/password-reset-verification-token",
+        "http://localhost:3000/api/tests/password-reset-verification-token",
         { username }
       ).then((resp) => {
-        const verificationLink = `/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
+        const verificationLink = `http://localhost:3000/compte/reinitialiser-mot-de-passe?token=${resp.body}`;
         cy.visit(verificationLink);
 
         const newPassword = "blablablabla";
@@ -220,7 +220,7 @@ describe("Account management", () => {
 
   it("User can update their email address", () => {
     cy.createTestAccount({ login: true }).then(({ password, uid }) => {
-      cy.visit("/compte/parametres");
+      cy.visit("http://localhost:3000/compte/parametres");
 
       const newEmail = `john-smith${Math.random()}@example.com`;
       cy.contains("button", "Changer d’adresse e-mail").click();
@@ -235,10 +235,10 @@ describe("Account management", () => {
       // Simulate receiving the verification link by email.
       cy.request(
         "POST",
-        "/api/tests/email-update-verification-token",
+        "http://localhost:3000/api/tests/email-update-verification-token",
         { uid }
       ).then((resp) => {
-        const verificationLink = `/compte/email-update-validation?token=${resp.body.token}`;
+        const verificationLink = `http://localhost:3000/compte/email-update-validation?token=${resp.body.token}`;
         cy.visit(verificationLink);
 
         cy.contains(`Votre adresse email : ${newEmail}`);
@@ -250,7 +250,7 @@ describe("Account management", () => {
   it("User can delete their account", () => {
     cy.createTestAccount({ login: true }).then(({ username, password }) => {
       cy.createTestAudit({ auditorEmail: username }).then(({ editId }) => {
-        cy.visit("/compte/parametres");
+        cy.visit("http://localhost:3000/compte/parametres");
 
         // Delete account form
         cy.contains("button", "Supprimer mon compte").click();
@@ -271,7 +271,7 @@ describe("Account management", () => {
         // cy.contains("button", "Envoyer mon avis").click();
         // cy.contains("Votre avis a bien été envoyé");
 
-        cy.visit(`/audits/${editId}/generation`);
+        cy.visit(`http://localhost:3000/audits/${editId}/generation`);
         cy.contains("Désolé, l’audit que vous cherchez a été supprimé.");
       });
     });

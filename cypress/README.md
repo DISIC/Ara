@@ -36,7 +36,3 @@ Les tests peuvent être lancés de 2 manières, depuis la racine du projet :
   ```js
   cy.contains("button", "Valider les paramètres").click();
   ```
-
-## CI
-
-Dans GitHub Actions, `CYPRESS_BASE_URL` pointe vers la review app Scalingo de la PR. En local, la valeur par défaut est `http://localhost:3000` (`cypress.config.ts`).

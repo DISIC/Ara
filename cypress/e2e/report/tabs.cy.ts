@@ -8,14 +8,14 @@ describe("Tabs", () => {
       isComplete: true,
       hasNoImprovementsComments: true
     }).then(({ reportId }) => {
-      cy.visit(`/rapport/${reportId}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Points d’amélioration").should("not.exist");
     });
   });
 
   it("User can see pages anchors in improvements tab", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
-      cy.visit(`/rapport/${reportId}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.get(".fr-sidemenu__item").then((els) => {
         expect(els).to.have.length(9);
@@ -25,7 +25,7 @@ describe("Tabs", () => {
 
   it("User can see pages anchors in errors tab", () => {
     cy.createTestAudit({ isComplete: true }).then(({ reportId }) => {
-      cy.visit(`/rapport/${reportId}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}`);
       cy.contains("button", "Détails des non-conformités").click();
       cy.get(".fr-sidemenu__item").then((els) => {
         expect(els).to.have.length(9);
@@ -37,7 +37,7 @@ describe("Tabs", () => {
     cy.createTestAudit().then(({ reportId }) => {
       const slug = TabSlug.REPORT_ERRORS_SLUG;
       const nextSlug = TabSlug.REPORT_IMPROVEMENTS_SLUG;
-      cy.visit(`/rapport/${reportId}/${slug}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
       testTabsWithPrevNext(slug, nextSlug);
     });
   });
@@ -45,7 +45,7 @@ describe("Tabs", () => {
   it("User can display the audit at a given tab directly thanks to a URL slug", () => {
     cy.createTestAudit().then(({ reportId }) => {
       const slug = TabSlug.REPORT_ERRORS_SLUG;
-      cy.visit(`/rapport/${reportId}/${slug}`);
+      cy.visit(`http://localhost:3000/rapport/${reportId}/${slug}`);
       testTabReachByURL(slug);
     });
   });

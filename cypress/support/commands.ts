@@ -191,7 +191,7 @@ interface CreateTestAuditOptions {
  * Create a test audit with specific options by calling tests API endpoints.
  */
 Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
-  cy.request("POST", "/api/tests/create-audit", {
+  cy.request("POST", "http://localhost:3000/api/tests/create-audit", {
     isComplete: options?.isComplete,
     isPristine: options?.isPristine,
     noImprovements: options?.hasNoImprovementsComments,
@@ -211,7 +211,7 @@ interface CreateTestAccountOptions {
 Cypress.Commands.add(
   "createTestAccount",
   (options?: CreateTestAccountOptions) => {
-    cy.request("POST", "/api/tests/create-verified-user")
+    cy.request("POST", "http://localhost:3000/api/tests/create-verified-user")
       .its("body")
       .as("userCredentials")
       .then(({ authToken }) => {
