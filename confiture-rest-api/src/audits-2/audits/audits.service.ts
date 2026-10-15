@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { isEqual } from "lodash";
 import { nanoid } from "nanoid";
-import { User } from "../../generated/prisma/client";
+import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
+import { AuthService } from "../../auth/auth.service";
+import { CriterionResultStatus, User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
@@ -16,7 +19,8 @@ export class AuditsService {
     private readonly prisma: PrismaService,
     private readonly pagesService: PagesService,
     private readonly resultsService: ResultsService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private readonly authService: AuthService
   ) {}
 
   //
@@ -95,7 +99,53 @@ export class AuditsService {
     });
   }
 
-  async updateAudit(_editUniqueId: string, _data: UpdateAuditRequestDto): Promise<AuditResponseDto> { throw "todo"; }
+  async updateAudit(editUniqueId: string, data: UpdateAuditRequestDto): Promise<AuditResponseDto> {
+    const previousAudit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId }
+    });
+
+    // Reset org when changing email from unverified to verified user.
+    const shouldResetOrganisation =
+      data.auditorEmail && previousAudit.auditorEmail &&
+      data.auditorEmail !== previousAudit.auditorEmail
+            && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
+            && await this.authService.isAccountVerified(data.auditorEmail);
+
+    const audit = await this.prisma.audit.update({
+      where: { editUniqueId },
+      data: {
+        procedureName: data.procedureName,
+        auditorName: data.auditorName,
+        auditType: data.auditType,
+        transverseElements: data.transverseElements,
+        ...(data.auditorEmail && {
+          auditor: {
+            connectOrCreate: {
+              create: { username: data.auditorEmail.toLowerCase() },
+              where: { username: data.auditorEmail.toLowerCase() }
+            }
+          }
+        }),
+        ...(shouldResetOrganisation && { auditorOrganisation: null })
+      }
+    });
+
+    // update audit edition date only if:
+    // - it has a `publicationDate`
+    // - transvereElements or type changed
+    if (audit.publicationDate && (previousAudit.auditType !== audit.auditType || !isEqual(previousAudit.transverseElements, audit.transverseElements))) {
+      const newDates = await this.updateAuditEditDate(editUniqueId);
+      Object.assign(audit, newDates);
+    }
+
+    // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
+    if (audit.statementPublicationDate && previousAudit.procedureName !== audit.procedureName) {
+      const newDates = await this.updateStatementDate(editUniqueId);
+      Object.assign(audit, newDates);
+    }
+
+    return audit;
+  }
 
   /**
    * Mark an audit as deleted and anonymise auditor informations. Its data will not be deleted.
@@ -177,5 +227,89 @@ export class AuditsService {
       select: { id: true }
     });
     return !!audit;
+  }
+
+  /**
+   * Erase an audit publicationDate & editionDate, only if the audit is no longer marked
+   * as completed after having been completed or
+   * Update an audit editionDate, only when it has a publication date.
+   * @returns the new publication and edition dates if they are updated, undefined otherwise
+   */
+  private async updateAuditEditDate(uniqueId: string): Promise<{ publicationDate: Date | null; editionDate: Date | null } | undefined> {
+    const [audit, auditIsComplete] = await Promise.all([
+      this.prisma.audit.findUniqueOrThrow({
+        where: {
+          editUniqueId: uniqueId
+        },
+        select: {
+          publicationDate: true
+        }
+      }),
+      this.isAuditComplete(uniqueId)
+    ]);
+
+    if (audit.publicationDate && !auditIsComplete) {
+      return this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { publicationDate: null, editionDate: null },
+        select: {
+          publicationDate: true,
+          editionDate: true
+        }
+      });
+    }
+
+    if (audit.publicationDate) {
+      return this.prisma.audit.update({
+        where: { editUniqueId: uniqueId },
+        data: { editionDate: new Date() },
+        select: {
+          publicationDate: true,
+          editionDate: true
+        }
+      });
+    }
+  }
+
+  // Either update statement publication or edition date
+  private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId: uniqueId },
+      select: { statementPublicationDate: true }
+    });
+
+    return this.prisma.audit.update({
+      where: { editUniqueId: uniqueId },
+      data: audit.statementPublicationDate
+        ? { statementEditionDate: new Date() }
+        : { statementPublicationDate: new Date() },
+      select: { statementEditionDate: true, statementPublicationDate: true }
+    });
+  }
+
+  private async isAuditComplete(uniqueId: string): Promise<boolean> {
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId: uniqueId },
+      include: {
+        pages: true
+      }
+    });
+
+    const testedCount = await this.prisma.criterionResult.count({
+      where: {
+        page: {
+          auditUniqueId: uniqueId
+        },
+        status: {
+          not: CriterionResultStatus.NOT_TESTED
+        },
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+      }
+    });
+
+    const expectedCount =
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
+
+    return testedCount === expectedCount;
   }
 }

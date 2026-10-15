@@ -1,5 +1,6 @@
 import { AuthorizationService } from "@nestjs/authorization";
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
+import { AuthRequired } from "../../auth/auth-required.decorator";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { Prisma, User } from "../../generated/prisma/client";
 import { AuditPolicy } from "./audit.policy";
@@ -30,6 +31,7 @@ export class AuditsController {
   }
 
   @Get()
+  @AuthRequired()
   async getAudits(@CurrentUser() user: User): Promise<AuditResponseDto[]> {
     return this.auditsService.getAudits(user.username);
   }

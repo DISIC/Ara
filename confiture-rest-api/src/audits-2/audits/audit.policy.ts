@@ -11,12 +11,16 @@ export class AuditPolicy {
     private readonly prisma: PrismaService
   ) {}
 
-  read(_user: User | null): boolean {
+  create(_user: User | null): boolean {
+    // anyone can create an audit
     return true;
   }
 
-  create(_user: User | null): boolean {
-    // anyone can create an audit
+  readMany(user: User | null): boolean {
+    return !!user && user.isVerified;
+  }
+
+  read(_user: User | null): boolean {
     return true;
   }
 

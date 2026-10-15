@@ -7,6 +7,7 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { Audit, AuditType, EmailStatus, EmailType, User } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
+import { EVENTS } from "../utils";
 import * as accountConfirmationEmail from "./account-confirmation-email";
 import * as accountVerificationEmail from "./account-verification-email";
 import * as auditCreationEmail from "./audit-creation-email";
@@ -177,7 +178,7 @@ export class MailService {
     });
   }
 
-  @OnEvent("audit.transfered")
+  @OnEvent(EVENTS.AUDIT_TRANSFERED)
   onAuditTranfered(payload: {
     audit: Pick<Audit, "editUniqueId" | "procedureName" | "auditorName" | "auditorEmail">;
     recipient: string;
