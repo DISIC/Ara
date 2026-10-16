@@ -47,10 +47,10 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
@@ -88,7 +88,7 @@ jobs:
           echo "--- front.log ---" && cat front.log || true
 
       - name: Save screenshots if it fails
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
