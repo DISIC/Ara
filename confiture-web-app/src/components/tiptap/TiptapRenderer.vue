@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Editor, EditorContent, useEditor } from "@tiptap/vue-3";
-import { onMounted, ref, ShallowRef } from "vue";
+import { onMounted, ShallowRef } from "vue";
 
 import { getTipTapRenderedExtensions } from "./tiptap-extensions";
 
@@ -33,14 +33,10 @@ const editor = useEditor({
 onMounted(() => {
   editor.value.commands.setContent(parseDocument(props.document));
 });
-
-const contentRef = ref<HTMLDivElement>();
 </script>
 
 <template>
-  <div ref="contentRef">
-    <editor-content :editor="editor" />
-  </div>
+  <editor-content :editor="editor" />
 </template>
 
 <style>
