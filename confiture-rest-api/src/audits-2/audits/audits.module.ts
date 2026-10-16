@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "../../auth/auth.module";
+import { FileStorageModule } from "../../file-storage/file-storage.module";
 import { PagesModule } from "../pages/pages.module";
 import { ResultsModule } from "../results/results.module";
 import { AuditPolicy } from "./audit.policy";
@@ -9,6 +10,6 @@ import { AuditsService } from "./audits.service";
 @Module({
   controllers: [AuditsController],
   providers: [AuditsService, AuditPolicy],
-  imports: [PagesModule, ResultsModule, AuthModule]
+  imports: [PagesModule, ResultsModule, AuthModule, FileStorageModule]
 })
 export class AuditsModule {}
