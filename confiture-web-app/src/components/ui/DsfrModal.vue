@@ -39,14 +39,23 @@ function show() {
     triggerElement.value = document.activeElement as HTMLElement;
   }
 
-  modalRef.value?.removeEventListener("transitionend", onFadedOut);
+  if (!modalRef.value) {
+    return;
+  }
+
+  modalRef.value.removeEventListener("transitionend", onFadedOut);
 
   dsfr(modalRef.value).modal.disclose();
 }
 
 function hide(options?: { getElementToFocus?: GetElementToFocusOnConceal }) {
   getElementToFocusOnConceal.value = options?.getElementToFocus;
-  modalRef.value?.addEventListener(
+
+  if (!modalRef.value) {
+    return;
+  }
+
+  modalRef.value.addEventListener(
     "transitionend",
     onFadedOut,
     { once: true }
