@@ -1,26 +1,27 @@
-import { IsArray, IsEmail, IsIn, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsIn, IsString } from "class-validator";
 import { AuditType } from "../../../generated/prisma/enums";
+import { IsUndefinable } from "../../../utils";
 
 export class UpdateAuditRequestDto {
   @IsString()
-  @IsOptional()
+  @IsUndefinable()
   procedureName?: string;
 
   @IsString()
   @IsIn(Object.values(AuditType))
-  @IsOptional()
+  @IsUndefinable()
   auditType?: AuditType;
 
   @IsString()
-  @IsOptional()
+  @IsUndefinable()
   auditorName?: string;
 
   @IsEmail()
-  @IsOptional()
+  @IsUndefinable()
   auditorEmail?: string;
 
   @IsArray()
   @IsString({ each: true })
-  @IsOptional()
+  @IsUndefinable()
   transverseElements?: string[];
 }

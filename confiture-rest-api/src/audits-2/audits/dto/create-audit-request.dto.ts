@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
-import { IsArray, IsBoolean, IsEmail, IsEnum, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsEnum, IsObject, IsString, ValidateNested } from "class-validator";
 import { AuditType } from "../../../generated/prisma/client";
+import { IsUndefinable } from "../../../utils";
 import { CreatePageRequestDto } from "../../pages/dto/create-page-request.dto";
 
 class PageElements {
@@ -30,10 +31,10 @@ export class CreateAuditRequestDto {
   @IsEmail()
   auditorEmail: string;
 
-  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreatePageRequestDto)
+  @IsUndefinable()
   pages?: CreatePageRequestDto[];
 
   @IsObject()
