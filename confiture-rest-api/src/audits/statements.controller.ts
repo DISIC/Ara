@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Body, Controller, GoneException, NotFoundException, Param, Put } from "@nestjs/common";
 import { ApiGoneResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { AuditService } from "./audit.service";

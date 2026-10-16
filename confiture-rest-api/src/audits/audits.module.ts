@@ -2,12 +2,12 @@ import { forwardRef, Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 
 import { AuthModule } from "../auth/auth.module";
+import { FileStorageModule } from "../file-storage/file-storage.module";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditExistsPipe } from "./audit.pipe";
 import { AuditService } from "./audit.service";
 import { AuditsController } from "./audits.controller";
-import { FileStorageService } from "./file-storage.service";
 import { NotCompliantItemsController } from "./not-compliant-items/not-compliant-items.controller";
 import { NotCompliantItemsService } from "./not-compliant-items/not-compliant-items.service";
 import { ReportsController } from "./reports.controller";
@@ -18,7 +18,6 @@ import { StatementsController } from "./statements.controller";
     AuditService,
     NotCompliantItemsService,
     MailService,
-    FileStorageService,
     AuditExportService,
     AuditExistsPipe
   ],
@@ -31,7 +30,8 @@ import { StatementsController } from "./statements.controller";
         callback(null, true);
       }
     }),
-    forwardRef(() => AuthModule)
+    forwardRef(() => AuthModule),
+    FileStorageModule
   ],
   exports: [AuditService]
 })

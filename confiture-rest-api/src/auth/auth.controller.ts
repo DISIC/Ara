@@ -15,8 +15,8 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
-import { AuditService } from "../audits/audit.service";
 import { FeedbackService } from "../feedback/feedback.service";
+import { User } from "../generated/prisma/client";
 import { MailService } from "../mail/mail.service";
 import { AuthRequired } from "./auth-required.decorator";
 import { AuthService, SigninError } from "./auth.service";
@@ -24,8 +24,7 @@ import { DeleteAccountResponseDto } from "./dto/delete-account-response.dto";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
 import { SigninDto } from "./dto/signin.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
-import { AuthenticationJwtPayload } from "./jwt-payloads";
-import { User } from "./user.decorator";
+import { User as CurrentUser } from "./user.decorator";
 
 @Controller("auth")
 @ApiTags("Authentication")
@@ -33,8 +32,7 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly email: MailService,
-    private readonly feedback: FeedbackService,
-    private readonly audit: AuditService
+    private readonly feedback: FeedbackService
   ) {}
 
   /**
@@ -67,9 +65,9 @@ export class AuthController {
   @Post("refresh")
   @AuthRequired()
   @ApiCreatedResponse({ type: String })
-  async refreshToken(@User() user: AuthenticationJwtPayload): Promise<string> {
+  async refreshToken(@CurrentUser() user: User): Promise<string> {
     try {
-      return await this.auth.refreshToken(user.sub);
+      return await this.auth.refreshToken(user.uid);
     } catch (e) {
       if (e instanceof SigninError) {
         throw new UnauthorizedException();
@@ -86,17 +84,15 @@ export class AuthController {
   @AuthRequired()
   async deleteAccount(
     @Body() body: DeleteAccountDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: User
   ): Promise<DeleteAccountResponseDto> {
-    if (!(await this.auth.checkCredentials(user.email, body.password))) {
+    if (!(await this.auth.checkCredentials(user.username, body.password))) {
       throw new UnauthorizedException();
     }
 
-    await this.audit.softDeleteAuditsByAuditorEmail(user.email);
-
     const feedbackToken = await this.feedback.generateFeedbackToken();
 
-    await this.auth.deleteAccount(user.email);
+    await this.auth.deleteAccount(user.username);
 
     return {
       feedbackToken
@@ -116,10 +112,10 @@ export class AuthController {
   @AuthRequired()
   async updatePassword(
     @Body() body: UpdatePasswordDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: User
   ) {
     const passwordCheck = await this.auth.checkCredentials(
-      user.email,
+      user.username,
       body.oldPassword
     );
 
@@ -131,10 +127,10 @@ export class AuthController {
       throw new BadRequestException();
     }
 
-    await this.auth.updatePassword(user.email, body.newPassword);
+    await this.auth.updatePassword(user.username, body.newPassword);
 
-    this.email.sendPasswordUpdateConfirmation(user.email).catch((err) => {
-      console.error(`Failed to send email for password update ${user.email}`);
+    this.email.sendPasswordUpdateConfirmation(user.username).catch((err) => {
+      console.error(`Failed to send email for password update ${user.username}`);
       console.error(err);
     });
 
