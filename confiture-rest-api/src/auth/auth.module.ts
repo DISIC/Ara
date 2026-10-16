@@ -27,8 +27,6 @@ import { UpdateEmailController } from "./update-email.controller";
       })
     }),
     FeedbackModule
-    // TODO: emit a event that AuditService listens to
-    // forwardRef(() => AuditsModule)
   ],
   exports: [AuthService]
 })

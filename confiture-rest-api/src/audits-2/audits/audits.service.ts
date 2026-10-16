@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { isEqual, omit, setWith } from "lodash";
 import { nanoid } from "nanoid";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
@@ -155,6 +155,21 @@ export class AuditsService {
   async softDeleteAudit(editUniqueId: string): Promise<void> {
     await this.prisma.audit.update({
       where: { editUniqueId },
+      data: {
+        isHidden: true,
+        auditorEmail: null,
+        auditorName: null,
+        auditorOrganisation: null
+      }
+    });
+  }
+  /** When an account is deleted, mark all associated audits as deleted. */
+  @OnEvent(EVENTS.ACCOUNT_DELETED)
+  async softDeleteAuditsByAuditorEmail(userEmail: string) {
+    await this.prisma.audit.updateMany({
+      where: {
+        auditorEmail: userEmail
+      },
       data: {
         isHidden: true,
         auditorEmail: null,

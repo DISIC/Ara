@@ -7,7 +7,9 @@ export function slugify(value: string): string {
 
 export enum EVENTS {
   AUDIT_CREATED = "audit.created",
-  AUDIT_TRANSFERED = "audit.transfered"
+  AUDIT_TRANSFERED = "audit.transfered",
+
+  ACCOUNT_DELETED = "account.deleted"
 }
 
 // Custom class-validator decorators

@@ -33,7 +33,6 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly email: MailService,
     private readonly feedback: FeedbackService
-    // private readonly audit: AuditService
   ) {}
 
   /**
@@ -90,9 +89,6 @@ export class AuthController {
     if (!(await this.auth.checkCredentials(user.username, body.password))) {
       throw new UnauthorizedException();
     }
-
-    // TODO: emit an event and handle the event in AuditService
-    // await this.audit.softDeleteAuditsByAuditorEmail(user.email);
 
     const feedbackToken = await this.feedback.generateFeedbackToken();
 
