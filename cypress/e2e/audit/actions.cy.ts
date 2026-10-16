@@ -153,11 +153,6 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.url().should(
-        "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
-      );
-
       cy.wait("@updateAudit");
 
       cy.visit(

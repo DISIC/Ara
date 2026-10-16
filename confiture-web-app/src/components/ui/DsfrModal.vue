@@ -39,28 +39,27 @@ function show() {
     triggerElement.value = document.activeElement as HTMLElement;
   }
 
-  if (!modalRef.value) {
-    return;
+  modalRef.value?.removeEventListener("transitionend", onFadedOut);
+
+  const instance = dsfr(modalRef.value);
+  if (instance) {
+    instance.modal.disclose();
   }
-
-  modalRef.value.removeEventListener("transitionend", onFadedOut);
-
-  dsfr(modalRef.value).modal.disclose();
 }
 
 function hide(options?: { getElementToFocus?: GetElementToFocusOnConceal }) {
   getElementToFocusOnConceal.value = options?.getElementToFocus;
 
-  if (!modalRef.value) {
-    return;
-  }
-
-  modalRef.value.addEventListener(
+  modalRef.value?.addEventListener(
     "transitionend",
     onFadedOut,
     { once: true }
   );
-  dsfr(modalRef.value).modal.conceal();
+
+  const instance = dsfr(modalRef.value);
+  if (instance) {
+    instance.modal.conceal();
+  }
 }
 
 async function onConceal() {
