@@ -38,12 +38,12 @@ jobs:
       GRIST_API_KEY: test
       GRIST_DOC_ID: test
       GRIST_TABLE_ID: test
-      S3_ENDPOINT: https://s3.example.com
-      S3_REGION: test
-      S3_BUCKET: test
-      S3_VIRTUAL_HOST: https://s3.example.com
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
+      S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+      S3_REGION: ${{ secrets.S3_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_VIRTUAL_HOST: ${{ secrets.S3_VIRTUAL_HOST }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
       - name: Check out Git repository
