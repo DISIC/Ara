@@ -38,6 +38,8 @@ describe("Actions", () => {
   });
 
   it("User can edit pages", () => {
+    cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
+
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
@@ -85,8 +87,15 @@ describe("Actions", () => {
         .type("https://example.com/parametres");
 
       cy.contains("Enregistrer les modifications").click();
+
       cy.url().should(
         "eq",
+        `http://localhost:3000/audits/${editId}/parametres`
+      );
+
+      cy.wait("@updateAudit");
+
+      cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
@@ -109,6 +118,8 @@ describe("Actions", () => {
   });
 
   it("User can interchange page names", () => {
+    cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
+
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
@@ -142,8 +153,9 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.url().should(
-        "eq",
+      cy.wait("@updateAudit");
+
+      cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 

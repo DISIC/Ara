@@ -41,17 +41,25 @@ function show() {
 
   modalRef.value?.removeEventListener("transitionend", onFadedOut);
 
-  dsfr(modalRef.value).modal.disclose();
+  const instance = dsfr(modalRef.value);
+  if (instance) {
+    instance.modal.disclose();
+  }
 }
 
 function hide(options?: { getElementToFocus?: GetElementToFocusOnConceal }) {
   getElementToFocusOnConceal.value = options?.getElementToFocus;
+
   modalRef.value?.addEventListener(
     "transitionend",
     onFadedOut,
     { once: true }
   );
-  dsfr(modalRef.value).modal.conceal();
+
+  const instance = dsfr(modalRef.value);
+  if (instance) {
+    instance.modal.conceal();
+  }
 }
 
 async function onConceal() {
