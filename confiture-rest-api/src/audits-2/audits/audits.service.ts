@@ -72,7 +72,6 @@ export class AuditsService {
       await this.pagesService.createPages(audit.editUniqueId, data.pages);
     }
 
-    // TODO: prefill results
     const topicNumbers = [
       ...(data.pageElements.frame ? [] : [2]),
       ...(data.pageElements.multimedia ? [] : [4]),
@@ -228,10 +227,6 @@ export class AuditsService {
     });
   }
 
-  /**
-   * TODO:
-   * - handle sub-resources (pages, notes...) creation: with an event, in one big function...?
-   */
   async duplicateAudit(sourceEditUniqueId: string, newProcedureName: string): Promise<AuditResponseDto> {
     const originalAudit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: sourceEditUniqueId, isHidden: false },
