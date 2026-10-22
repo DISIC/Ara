@@ -50,6 +50,22 @@ function closeFeedbackNotice() {
   showFeedbackNotice.value = false;
   localStorage.setItem(feedbackLocalStorageKey, "true");
 
+  focusPageHeading();
+}
+
+// Maintenance notice display
+// Hide from 26 oct 12:00
+const isExpired = new Date() < new Date("2026-10-26T11:00:00Z");
+const showMaintenanceNotice = ref(isExpired ?? true);
+
+function closeMaintenanceNotice() {
+  showMaintenanceNotice.value = false;
+
+  focusPageHeading();
+}
+
+// Focus page heading
+function focusPageHeading() {
   // Focus page h1 and set attributes if needed
   const pageHeading: HTMLHeadingElement | null =
     document.querySelector("main h1");
@@ -93,13 +109,39 @@ function closeFeedbackNotice() {
   <SiteHeader />
 
   <main id="main" role="main" tabindex="-1">
+    <div v-if="showMaintenanceNotice" class="fr-notice fr-notice--warning">
+      <div class="fr-container">
+        <div class="fr-notice__body">
+          <div>
+            <h1 class="fr-notice__title">
+              Maintenance de sécurité chez notre hébergeur
+            </h1>
+            <p class="fr-notice__desc fr-mt-2v maintenance-notice--description">
+              Jusqu’au <strong>lundi 26 octobre à 12&nbsp;h</strong>, des
+              ralentissements ou interruptions ponctuelles sont possibles sur
+              Ara. Aucune action n’est requise de votre part. Nous nous excusons
+              pour la gêne éventuelle.
+            </p>
+          </div>
+          <button
+            title="Masquer le message"
+            type="button"
+            class="fr-btn--close fr-btn"
+            @click="closeMaintenanceNotice"
+          >
+            Masquer le message
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
       <div class="fr-container">
         <div class="fr-notice__body">
           <p>
-            <span class="fr-notice__title">
-              Vos avis nous sont précieux pour améliorer cet outil, n’hésitez pas
-              à nous faire part de vos retours depuis ce
+            <span class="fr-notice__title fr-text--regular">
+              Vos avis nous sont précieux pour améliorer cet outil, n’hésitez
+              pas à nous faire part de vos retours depuis ce
               <RouterLink :to="{ name: 'feedback' }" target="_blank">
                 court formulaire
                 <span class="fr-sr-only">(nouvelle fenêtre)</span></RouterLink>.
@@ -109,7 +151,9 @@ function closeFeedbackNotice() {
             title="Masquer le message"
             class="fr-btn--close fr-btn"
             @click="closeFeedbackNotice"
-          >Masquer le message</button>
+          >
+            Masquer le message
+          </button>
         </div>
       </div>
     </div>
@@ -137,5 +181,9 @@ function closeFeedbackNotice() {
   &:has(.back-link) {
     padding-top: 1.5em !important;
   }
+}
+
+.maintenance-notice--description {
+  display: block;
 }
 </style>
