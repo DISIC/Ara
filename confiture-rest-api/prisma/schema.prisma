@@ -34,24 +34,25 @@ model Audit {
   transverseElements       String[]
 
   // A11y declaration edition step
-  initiator                String?
-  auditorOrganisation      String?
-  procedureUrl             String?
-  contactName              String?
-  contactEmail             String?
-  contactFormUrl           String?
-  technologies             String[]
-  tools                    String[]
-  environments             TestEnvironment[]
-  notCompliantContent      String?
-  derogatedContent         String?
-  notInScopeContent        String?
+  a11yStatement            A11yStatement?
+  initiator                String?           @ignore
+  auditorOrganisation      String?           @ignore
+  procedureUrl             String?           @ignore
+  contactName              String?           @ignore
+  contactEmail             String?           @ignore
+  contactFormUrl           String?           @ignore
+  technologies             String[]          @ignore
+  tools                    String[]          @ignore
+  environments             TestEnvironment[] @ignore
+  notCompliantContent      String?           @ignore
+  derogatedContent         String?           @ignore
+  notInScopeContent        String?           @ignore
   notes                    String?
   notesFiles               NotesFile[]
-  statementPublicationDate DateTime?
-  statementEditionDate     DateTime?
-  schemaPluriannuelUrl     String?
-  planActionUrl            String?
+  statementPublicationDate DateTime?         @ignore
+  statementEditionDate     DateTime?         @ignore
+  schemaPluriannuelUrl     String?           @ignore
+  planActionUrl            String?           @ignore
 
   // Misc
   creationDate    DateTime?
@@ -74,6 +75,31 @@ model Audit {
   @@unique([editUniqueId, consultUniqueId])
 }
 
+model A11yStatement {
+  id Int @id @default(autoincrement())
+
+  audit   Audit @relation(references: [id], fields: [auditId])
+  auditId Int   @unique
+
+  // A11y declaration edition step
+  initiator                String
+  auditorOrganisation      String
+  procedureUrl             String
+  // contactName              String?
+  contactEmail             String
+  contactFormUrl           String
+  technologies             String[]
+  tools                    String[]
+  environments             TestEnvironment[]
+  notCompliantContent      String?
+  derogatedContent         String?
+  notInScopeContent        String?
+  statementPublicationDate DateTime?
+  statementEditionDate     DateTime?
+  schemaPluriannuelUrl     String?
+  planActionUrl            String?
+}
+
 model TestEnvironment {
   id                  Int    @id @default(autoincrement())
   platform            String
@@ -81,9 +107,15 @@ model TestEnvironment {
   assistiveTechnology String
   browser             String
 
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
-  auditUniqueId String?
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade) @ignore
+  auditUniqueId String? @ignore
 
+  // TODO: make required once data is migrated
+  a11YStatement   A11yStatement? @relation(fields: [a11yStatementId], references: [id])
+  a11yStatementId Int?
+
+  // @@unique([platform, operatingSystem, assistiveTechnology, browser, a11yStatementId])
+  // TODO: replace below unique index with above when data is migrated
   @@unique([platform, operatingSystem, assistiveTechnology, browser, auditUniqueId])
 }
 
