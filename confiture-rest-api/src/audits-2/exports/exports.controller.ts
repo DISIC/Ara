@@ -12,12 +12,6 @@ export class ExportsController {
     private readonly authorizationService: AuthorizationService
   ) {}
 
-  /**
-   * TODO:
-   * - setup policy (true)
-   * - cleanup + doc
-   * - tests?
-   */
   @Get("/csv")
   async getCsvExport(
     @Param("uniqueId") uniqueId: string,

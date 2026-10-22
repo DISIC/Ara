@@ -35,9 +35,7 @@ export class ExportsService {
     return this.generateCsvExport(audit, results);
   }
 
-  async getAuditResults(
-    uniqueId: string
-  ): Promise<CriterionResultDto[]> {
+  async getAuditResults(uniqueId: string): Promise<CriterionResultDto[]> {
     const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUniqueOrThrow({
         include: {
@@ -130,12 +128,7 @@ export class ExportsService {
     });
   }
 
-  private generateCsvExport(
-    audit: Audit & {
-      pages: AuditedPage[];
-    },
-    results: CriterionResultDto[]
-  ) {
+  private generateCsvExport(audit: Audit & { pages: AuditedPage[] }, results: CriterionResultDto[]): StreamableFile {
     // Column headers
     const data: [string, string, ...string[]][] = [];
 
