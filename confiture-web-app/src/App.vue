@@ -55,7 +55,7 @@ function closeFeedbackNotice() {
 
 // Maintenance notice display
 // Hide from 26 oct 12:00
-const isExpired = new Date() < new Date("2026-10-26T12:00:00");
+const isExpired = new Date() < new Date("2026-10-26T11:00:00Z");
 const showMaintenanceNotice = ref(isExpired ?? true);
 
 function closeMaintenanceNotice() {
