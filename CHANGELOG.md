@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 22/10/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Corrige la redirection après la mise à jour des paramètres d’un audit ([#1621](https://github.com/DISIC/Ara/pull/1621))
+
 ### 10/08/2026
 
 #### <span aria-hidden="true">⚙️</span> Autres changements

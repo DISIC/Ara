@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { ref, computed } from "vue";
+import { onBeforeRouteLeave, RouteLocationRaw, useRoute, useRouter } from "vue-router";
 
 import AuditSettingsForm from "../../components/audit/AuditSettingsForm.vue";
 import LeaveModal from "../../components/audit/LeaveModal.vue";
@@ -8,7 +8,7 @@ import PageMeta from "../../components/PageMeta";
 import { useNotifications } from "../../composables/useNotifications";
 import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
-import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE } from "../../enums";
+import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITLE, FirstTab } from "../../enums";
 import { useAuditStore, useResultsStore } from "../../store";
 import { AuditPage, AuditType } from "../../types";
 
@@ -33,8 +33,6 @@ function showLeaveModal() {
   leaveModalRef.value?.show();
 }
 
-const settingsFormRef = ref<InstanceType<typeof AuditSettingsForm>>();
-
 function confirmLeave() {
   leaveModalRef.value?.hide();
   confirmedLeave.value = true;
@@ -54,6 +52,27 @@ onBeforeRouteLeave((to) => {
     leaveModalDestination.value = to.fullPath;
     showLeaveModal();
     return false;
+  }
+});
+
+const nextRoute = computed((): RouteLocationRaw => {
+  if (previousRoute.route) {
+    if (previousRoute.route.name === "audit-generation-full") {
+      return {
+        name: "audit-generation-full",
+        params: {
+          uniqueId: auditUniqueId,
+          tabSlug: FirstTab.AUDIT_SLUG
+        }
+      };
+    } else {
+      return previousRoute.route;
+    }
+  } else {
+    return {
+      name: "audit-overview",
+      params: { uniqueId: auditUniqueId }
+    };
   }
 });
 
@@ -97,10 +116,7 @@ function submitSettings(data: {
         resultsStore.$reset();
       }
 
-      router.push(previousRoute.route ?? {
-        name: "audit-overview",
-        params: { uniqueId: auditUniqueId }
-      });
+      router.push(nextRoute.value);
     })
     .catch((err) => {
       console.error(err);
@@ -122,7 +138,6 @@ function submitSettings(data: {
 
   <AuditSettingsForm
     v-if="auditStore.currentAudit"
-    ref="settingsFormRef"
     :audit="auditStore.currentAudit"
     @submit="submitSettings"
     @change="isPristine = false"
