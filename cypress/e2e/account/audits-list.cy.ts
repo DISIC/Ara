@@ -144,9 +144,9 @@ describe("Audits list", () => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-        `http://localhost:3000/rapport/${audit.reportId}`
+        `http://localhost:3000/rapport/${audit.reportId}/`
       );
-      cy.contains("span", "Lien du rapport copié");
+      cy.contains("button", "Lien du rapport copié");
     });
   });
 
@@ -161,9 +161,9 @@ describe("Audits list", () => {
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
         // "feat: [Add Typescript support for Aliases #8762"](https://github.com/cypress-io/cypress/issues/8762)
-        `http://localhost:3000/declaration/${audit.reportId}`
+        `http://localhost:3000/declaration/${audit.reportId}/`
       );
-      cy.contains("span", "Lien de la déclaration copié");
+      cy.contains("button", "Lien de la déclaration copié");
     });
   });
 
