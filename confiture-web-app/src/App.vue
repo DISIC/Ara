@@ -113,9 +113,9 @@ function focusPageHeading() {
       <div class="fr-container">
         <div class="fr-notice__body">
           <div>
-            <h2 class="fr-notice__title">
+            <h1 class="fr-notice__title">
               Maintenance de sécurité chez notre hébergeur
-            </h2>
+            </h1>
             <p class="fr-notice__desc fr-mt-2v maintenance-notice--description">
               Jusqu’au <strong>lundi 26 octobre à 12&nbsp;h</strong>, des
               ralentissements ou interruptions ponctuelles sont possibles sur
