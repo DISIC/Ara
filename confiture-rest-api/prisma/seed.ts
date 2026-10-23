@@ -80,18 +80,10 @@ async function generateSeeds() {
                   skipDuplicates: true
                 }
               }
-            : undefined,
-          environments: rawAudit.environments
-            ? {
-                createMany: {
-                  data: rawAudit.environments.createMany.data,
-                  skipDuplicates: true
-                }
-              }
             : undefined
         };
 
-        const { pages, transverseElementsPage, environments, auditTrace, ...updateData } = data;
+        const { pages, transverseElementsPage, auditTrace, ...updateData } = data;
 
         return tx.audit.upsert({
           where: {
