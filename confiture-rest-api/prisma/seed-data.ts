@@ -93,6 +93,12 @@ export const rawAudits = [
             operatingSystem: "MacOS",
             assistiveTechnology: "VoiceOver",
             browser: "Safari"
+          },
+          {
+            platform: "Ordinateur",
+            operatingSystem: "MacOS",
+            assistiveTechnology: "VoiceOver",
+            browser: "Firefox"
           }
         ]
       }
