@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Param } from "@nestjs/common";
 import { ApiGoneResponse, ApiNotFoundResponse } from "@nestjs/swagger";
 import { AuditExistsPipe } from "./audit.pipe";

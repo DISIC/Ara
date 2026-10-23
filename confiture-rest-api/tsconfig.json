@@ -13,7 +13,8 @@
     "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
@@ -23,7 +24,8 @@
     "rootDir": ".",
     "types": [
       "express",
-      "multer"
+      "multer",
+      "jest"
     ]
   }
 }
