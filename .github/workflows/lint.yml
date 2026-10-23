@@ -24,7 +24,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 24.21.0
+          node-version: 24.22.1
 
       - name: Install dependencies
         run: corepack enable && corepack prepare yarn@4.9.2 --activate && yarn install
