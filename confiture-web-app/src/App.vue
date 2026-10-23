@@ -119,8 +119,8 @@ function focusPageHeading() {
             <p class="fr-notice__desc fr-mt-2v maintenance-notice--description">
               Jusqu’au <strong>lundi 26 octobre à 12&nbsp;h</strong>, des
               ralentissements ou interruptions ponctuelles sont possibles sur
-              Ara. Aucune action n’est requise de votre part. Nous nous excusons
-              pour la gêne éventuelle.
+              Ara. En cas de difficulté, veuillez réessayer ultérieurement. Nous
+              nous excusons pour la gêne éventuelle.
             </p>
           </div>
           <button
