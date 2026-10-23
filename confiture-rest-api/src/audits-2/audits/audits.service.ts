@@ -23,7 +23,7 @@ export class AuditsService {
     private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
     private readonly fileStorageService: FileStorageService
-  ) {}
+  ) { }
 
   //
   // CRUD methods
@@ -109,8 +109,8 @@ export class AuditsService {
     const shouldResetOrganisation =
       data.auditorEmail && previousAudit.auditorEmail &&
       data.auditorEmail !== previousAudit.auditorEmail
-            && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
-            && await this.authService.isAccountVerified(data.auditorEmail);
+      && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
+      && await this.authService.isAccountVerified(data.auditorEmail);
 
     const audit = await this.prisma.audit.update({
       where: { editUniqueId },
@@ -140,10 +140,11 @@ export class AuditsService {
     }
 
     // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
-    if (audit.statementPublicationDate && previousAudit.procedureName !== audit.procedureName) {
-      const newDates = await this.updateStatementDate(editUniqueId);
-      Object.assign(audit, newDates);
-    }
+    // TODO: update statement date
+    // if (audit.statementPublicationDate && previousAudit.procedureName !== audit.procedureName) {
+    //   const newDates = await this.updateStatementDate(editUniqueId);
+    //   Object.assign(audit, newDates);
+    // }
 
     return audit;
   }
@@ -270,7 +271,12 @@ export class AuditsService {
             }
           }
         },
-        notesFiles: true
+        notesFiles: true,
+        a11yStatement: {
+          include: {
+            environments: true
+          }
+        }
       }
     });
 
@@ -287,21 +293,7 @@ export class AuditsService {
           "auditTraceId",
           "sourceAuditId",
           "transverseElementsPageId",
-          "auditorEmail",
-
-          // reset statement fields
-          "procedureUrl",
-          "initiator",
-          "auditorOrganisation",
-          "contactName",
-          "contactEmail",
-          "contactFormUrl",
-          "technologies",
-          "tools",
-          "environments",
-          "notCompliantContent",
-          "derogatedContent",
-          "notInScopeContent"
+          "auditorEmail"
         ]),
 
         ...(originalAudit.auditorEmail && {
@@ -328,16 +320,8 @@ export class AuditsService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
-        statementPublicationDate: undefined,
-        statementEditionDate: undefined,
 
-        environments: {
-          createMany: {
-            data: originalAudit.environments.map((e) =>
-              omit(e, ["id", "auditUniqueId"])
-            )
-          }
-        },
+        a11yStatement: undefined,
 
         transverseElementsPage: {
           create: {
@@ -405,9 +389,11 @@ export class AuditsService {
     sourceEditUniqueId: string,
     destinationEditUniqueId: string
   ): Promise<[
-    { [pageId: string]: {
-      [resultId: string]: Prisma.ExampleImageFileCreateInput;
-    }; },
+    {
+      [pageId: string]: {
+        [resultId: string]: Prisma.ExampleImageFileCreateInput;
+      };
+    },
     Prisma.NotesFileCreateWithoutAuditInput[]
   ]> {
     const sourceAudit = await this.prisma.audit.findFirstOrThrow({
@@ -581,20 +567,20 @@ export class AuditsService {
   }
 
   // Either update statement publication or edition date
-  private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
-    const audit = await this.prisma.audit.findUniqueOrThrow({
-      where: { editUniqueId: uniqueId },
-      select: { statementPublicationDate: true }
-    });
-
-    return this.prisma.audit.update({
-      where: { editUniqueId: uniqueId },
-      data: audit.statementPublicationDate
-        ? { statementEditionDate: new Date() }
-        : { statementPublicationDate: new Date() },
-      select: { statementEditionDate: true, statementPublicationDate: true }
-    });
-  }
+  // private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
+  //   const audit = await this.prisma.audit.findUniqueOrThrow({
+  //     where: { editUniqueId: uniqueId },
+  //     select: { statementPublicationDate: true }
+  //   });
+  //
+  //   return this.prisma.audit.update({
+  //     where: { editUniqueId: uniqueId },
+  //     data: audit.statementPublicationDate
+  //       ? { statementEditionDate: new Date() }
+  //       : { statementPublicationDate: new Date() },
+  //     select: { statementEditionDate: true, statementPublicationDate: true }
+  //   });
+  // }
 
   private async isAuditComplete(uniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findUniqueOrThrow({
