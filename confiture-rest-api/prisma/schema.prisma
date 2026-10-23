@@ -33,26 +33,10 @@ model Audit {
   showAuditorEmailInReport Boolean       @default(false)
   transverseElements       String[]
 
-  // A11y declaration edition step
-  a11yStatement            A11yStatement?
-  initiator                String?           @ignore
-  auditorOrganisation      String?           @ignore
-  procedureUrl             String?           @ignore
-  contactName              String?           @ignore
-  contactEmail             String?           @ignore
-  contactFormUrl           String?           @ignore
-  technologies             String[]          @ignore
-  tools                    String[]          @ignore
-  environments             TestEnvironment[] @ignore
-  notCompliantContent      String?           @ignore
-  derogatedContent         String?           @ignore
-  notInScopeContent        String?           @ignore
-  notes                    String?
-  notesFiles               NotesFile[]
-  statementPublicationDate DateTime?         @ignore
-  statementEditionDate     DateTime?         @ignore
-  schemaPluriannuelUrl     String?           @ignore
-  planActionUrl            String?           @ignore
+  a11yStatement A11yStatement?
+
+  notes      String?
+  notesFiles NotesFile[]
 
   // Misc
   creationDate    DateTime?
@@ -81,11 +65,9 @@ model A11yStatement {
   audit   Audit @relation(references: [id], fields: [auditId])
   auditId Int   @unique
 
-  // A11y declaration edition step
   initiator                String
   auditorOrganisation      String
   procedureUrl             String
-  // contactName              String?
   contactEmail             String
   contactFormUrl           String
   technologies             String[]
@@ -107,16 +89,10 @@ model TestEnvironment {
   assistiveTechnology String
   browser             String
 
-  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade) @ignore
-  auditUniqueId String? @ignore
+  a11YStatement   A11yStatement @relation(fields: [a11yStatementId], references: [id])
+  a11yStatementId Int
 
-  // TODO: make required once data is migrated
-  a11YStatement   A11yStatement? @relation(fields: [a11yStatementId], references: [id])
-  a11yStatementId Int?
-
-  // @@unique([platform, operatingSystem, assistiveTechnology, browser, a11yStatementId])
-  // TODO: replace below unique index with above when data is migrated
-  @@unique([platform, operatingSystem, assistiveTechnology, browser, auditUniqueId])
+  @@unique([platform, operatingSystem, assistiveTechnology, browser, a11yStatementId])
 }
 
 model AuditedPage {
