@@ -38,10 +38,10 @@ describe("Actions", () => {
   });
 
   it("User can edit pages", () => {
-    cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
+    // cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
 
     cy.createTestAudit().then(({ editId }) => {
-      // cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
+      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres").click();
