@@ -53,17 +53,6 @@ function closeFeedbackNotice() {
   focusPageHeading();
 }
 
-// Maintenance notice display
-// Hide from 26 oct 12:00
-const isExpired = new Date() < new Date("2026-10-26T11:00:00Z");
-const showMaintenanceNotice = ref(isExpired ?? true);
-
-function closeMaintenanceNotice() {
-  showMaintenanceNotice.value = false;
-
-  focusPageHeading();
-}
-
 // Focus page heading
 function focusPageHeading() {
   // Focus page h1 and set attributes if needed
@@ -109,32 +98,6 @@ function focusPageHeading() {
   <SiteHeader />
 
   <main id="main" role="main" tabindex="-1">
-    <div v-if="showMaintenanceNotice" class="fr-notice fr-notice--warning">
-      <div class="fr-container">
-        <div class="fr-notice__body">
-          <div>
-            <h1 class="fr-notice__title">
-              Maintenance de sécurité chez notre hébergeur
-            </h1>
-            <p class="fr-notice__desc fr-mt-2v maintenance-notice--description">
-              Jusqu’au <strong>lundi 26 octobre à 12&nbsp;h</strong>, des
-              ralentissements ou interruptions ponctuelles sont possibles sur
-              Ara. En cas de difficulté, veuillez réessayer ultérieurement. Nous
-              nous excusons pour la gêne éventuelle.
-            </p>
-          </div>
-          <button
-            title="Masquer le message"
-            type="button"
-            class="fr-btn--close fr-btn"
-            @click="closeMaintenanceNotice"
-          >
-            Masquer le message
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div v-if="showFeedbackNotice" class="fr-notice fr-notice--info">
       <div class="fr-container">
         <div class="fr-notice__body">
@@ -181,9 +144,5 @@ function focusPageHeading() {
   &:has(.back-link) {
     padding-top: 1.5em !important;
   }
-}
-
-.maintenance-notice--description {
-  display: block;
 }
 </style>
