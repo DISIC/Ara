@@ -110,7 +110,8 @@ export class TestsController {
           create: {
             name: "Éléments transverses",
             url: "",
-            slug: "elements-transverses"
+            slug: "elements-transverses",
+            order: -1
           }
         },
         pages: {
@@ -156,7 +157,7 @@ export class TestsController {
                 url: "https://example.com/faq",
                 slug: slugify("FAQ")
               }
-            ]
+            ].map((p, i) => ({ ...p, order: i }))
           }
         },
 

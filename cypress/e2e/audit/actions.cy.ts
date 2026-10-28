@@ -85,8 +85,13 @@ describe("Actions", () => {
         .type("https://example.com/parametres");
 
       cy.contains("Enregistrer les modifications").click();
+
       cy.url().should(
         "eq",
+        `http://localhost:3000/audits/${editId}/parametres`
+      );
+
+      cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
@@ -142,8 +147,7 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.url().should(
-        "eq",
+      cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
       );
 
