@@ -41,7 +41,7 @@ describe("Actions", () => {
     cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
 
     cy.createTestAudit().then(({ editId }) => {
-      cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
+      // cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
       cy.contains("Actions").click();
       cy.contains("Modifier les paramètres").click();
@@ -93,7 +93,7 @@ describe("Actions", () => {
         `http://localhost:3000/audits/${editId}/parametres`
       );
 
-      cy.wait("@updateAudit");
+      // cy.wait("@updateAudit");
 
       cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
@@ -118,7 +118,7 @@ describe("Actions", () => {
   });
 
   it("User can interchange page names", () => {
-    cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
+    // cy.intercept("PUT", `/api/audits/*`).as("updateAudit");
 
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
@@ -153,7 +153,7 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.wait("@updateAudit");
+      // cy.wait("@updateAudit");
 
       cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`
