@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 28/10/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Sémantique MD KO sur d'anciens audits ([#1625](https://github.com/DISIC/Ara/pull/1625))
+
 ### 22/10/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
