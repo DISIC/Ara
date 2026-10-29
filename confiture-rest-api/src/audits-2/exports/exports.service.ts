@@ -90,15 +90,15 @@ export class ExportsService {
       const criterionKey = c.topic + "." + c.criterium;
       const transverseStatus =
         CRITERIUM_STATUS[
-          resultsByCriteria[criterionKey].find(
+          resultsByCriteria[criterionKey]?.find(
             (r) => r.pageId === audit.transverseElementsPageId
-          )?.status ?? CRITERIUM_STATUS.NOT_TESTED
+          )?.status ?? CriterionResultStatus.NOT_TESTED
         ];
       const criteriumStatuses = audit.pages.map(
         (p) =>
           CRITERIUM_STATUS[
-            resultsByCriteria[criterionKey].find((r) => r.pageId === p.id)
-              ?.status ?? CRITERIUM_STATUS.NOT_TESTED
+            resultsByCriteria[criterionKey]?.find((r) => r.pageId === p.id)
+              ?.status ?? CriterionResultStatus.NOT_TESTED
           ]
       );
       data.push([criterionKey, transverseStatus, ...criteriumStatuses]);
