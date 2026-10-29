@@ -17,7 +17,7 @@ export class ExportsController {
     @Param("uniqueId") uniqueId: string,
     @CurrentUser() user?: User
   ): Promise<StreamableFile> {
-    await this.authorizationService.authorize(ExportsPolicy, "export", user);
+    await this.authorizationService.authorize(ExportsPolicy, "read", user);
     return await this.exportsService.getCsvExport(uniqueId);
   }
 }

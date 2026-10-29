@@ -2,9 +2,7 @@ import { Policy } from "@nestjs/authorization";
 
 @Policy()
 export class ExportsPolicy {
-  constructor() { }
-
-  export(): boolean {
+  read(): boolean {
     return true;
   }
 }
