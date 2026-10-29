@@ -2,6 +2,7 @@ import { AuthorizationService } from "@nestjs/authorization";
 import { Patch, Post, Delete, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
+import { AuditPolicy } from "../audits/audit.policy";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
 import { PagesService } from "./pages.service";
@@ -26,16 +27,20 @@ export class PagesController {
   @Get()
   async getPages(
     @Param("uniqueId") uniqueId: string,
-    @CurrentUser() _user: User | null
+    @CurrentUser() user: User | null
   ): Promise<PageResponseDto[]> {
-    // await this.authorizationService.authorize(AuditPolicy, "read", user, uniqueId);
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
     return await this.pageService.getPages(uniqueId);
   }
 
   @Get(":pageId")
   async getPage(
-  ) {
-    throw "todo";
+    @Param("uniqueId") uniqueId: string,
+    @Param("pageId") pageId: number,
+    @CurrentUser() user: User | null
+  ): Promise<PageResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
+    return await this.pageService.getPage(uniqueId, pageId);
   }
 
   @Patch(":pageId")
@@ -46,7 +51,11 @@ export class PagesController {
 
   @Delete(":pageId")
   async deletePage(
-  ) {
-    throw "todo";
+    @Param("uniqueId") uniqueId: string,
+    @Param("pageId") pageId: number,
+    @CurrentUser() user: User | null
+  ): Promise<PageResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.pageService.deletePage(uniqueId, pageId);
   }
 }
