@@ -54,7 +54,7 @@ export class ExportsService {
     audit: Audit & { pages: AuditedPage[] },
     results: CriterionResult[]
   ): StreamableFile {
-    const CRITERIUM_STATUS: Record<CriterionResultStatus, string> = {
+    const CRITERION_STATUS: Record<CriterionResultStatus, string> = {
       COMPLIANT: "C",
       NOT_TESTED: "NT",
       NOT_APPLICABLE: "NA",
@@ -81,19 +81,19 @@ export class ExportsService {
     criteria.forEach((c) => {
       const criterionKey = c.topic + "." + c.criterium;
       const transverseStatus =
-        CRITERIUM_STATUS[
+        CRITERION_STATUS[
           resultsByCriteria[criterionKey]?.find(
             (r) => r.pageId === audit.transverseElementsPageId
           )?.status ?? CriterionResultStatus.NOT_TESTED
         ];
-      const criteriumStatuses = audit.pages.map(
+      const criterionStatuses = audit.pages.map(
         (p) =>
-          CRITERIUM_STATUS[
+          CRITERION_STATUS[
             resultsByCriteria[criterionKey]?.find((r) => r.pageId === p.id)
               ?.status ?? CriterionResultStatus.NOT_TESTED
           ]
       );
-      data.push([criterionKey, transverseStatus, ...criteriumStatuses]);
+      data.push([criterionKey, transverseStatus, ...criterionStatuses]);
     });
 
     // compile data to CSV buffer
