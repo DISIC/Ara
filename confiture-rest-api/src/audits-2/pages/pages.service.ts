@@ -54,6 +54,24 @@ export class PagesService {
     });
   }
 
+  async getPage(editUniqueId: string, pageId: number): Promise<PageResponseDto> {
+    return await this.prisma.auditedPage.findFirstOrThrow({
+      where: {
+        auditUniqueId: editUniqueId,
+        id: pageId
+      }
+    });
+  }
+
+  async deletePage(editUniqueId: string, pageId: number): Promise<PageResponseDto> {
+    return await this.prisma.auditedPage.delete({
+      where: {
+        auditUniqueId: editUniqueId,
+        id: pageId
+      }
+    });
+  }
+
   // TODO: test me
   static generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
     const generatedSlugs: string[] = [];
