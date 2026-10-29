@@ -57,7 +57,7 @@ const auditIsReady = computed(() => {
           class="fr-btn fr-btn--tertiary fr-mb-0"
         >
           Consulter
-          <span class="fr-sr-only">le rapport (nouvelle fenêtre)</span>
+          <span class="fr-sr-only">&nbsp;le rapport (nouvelle fenêtre)</span>
         </RouterLink>
       </div>
 

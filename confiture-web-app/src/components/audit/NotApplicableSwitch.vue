@@ -62,7 +62,7 @@ watch(switchValue, async (switchValue) => {
       if (!auditStore.currentAudit?.publicationDate) {
         notify(
           "info",
-          "Bravo ! Vous êtes sur le point de terminer votre audit 🎉",
+          "Bravo&nbsp;! Vous êtes sur le point de terminer votre audit 🎉",
           auditStore.currentAudit?.auditType === AuditType.FULL
             ? "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit et rédiger la déclaration d’accessibilité."
             : "Une fois le dernier critère complété, vous pourrez livrer votre rapport d’audit",
@@ -102,7 +102,7 @@ function focusInput() {
       @change="$emit('toggle', switchValue)"
     />
     <label class="fr-toggle__label" :for="`topic-switch-${topicNumber}`">
-      <span class="fr-sr-only">Thématique {{ topicTitle }}</span>
+      <span class="fr-sr-only">Thématique {{ topicTitle }}&nbsp;</span>
       Non applicable
       {{
         pageId === transverseElementsPageId

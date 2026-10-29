@@ -23,7 +23,7 @@ const title = computed(() => {
 <template>
   <LazyAccordion disclose-color="var(--background-default-grey)">
     <template #title>
-      {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)"> (1)</strong><template v-else> (0)</template>
+      {{ baseTitle }}<strong v-if="!isTiptapDocumentEmpty(props.comment)">&nbsp;(1)</strong><template v-else>&nbsp;(0)</template>
     </template>
     <RichTextEditor
       type="criterium"

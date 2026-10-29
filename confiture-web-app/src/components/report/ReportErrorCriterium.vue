@@ -95,7 +95,7 @@ function getLabelError(notCompliantItemId?: number) {
 
         <h3 class="fr-mb-3v">
           <span class="fr-sr-only">{{ getLabelError(notCompliantItem.id) }}</span>
-          <span v-if="notCompliantItem.title" class="fr-sr-only"> : </span>
+          <span v-if="notCompliantItem.title" class="fr-sr-only">&nbsp;:&nbsp;</span>
           <span v-if="notCompliantItem.title">
             {{ notCompliantItem.title }}
           </span>
