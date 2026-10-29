@@ -2,10 +2,10 @@ import { Injectable, StreamableFile } from "@nestjs/common";
 import { groupBy } from "lodash";
 import * as XLSX from "xlsx";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
-import { CriterionResultDto } from "../../audits/dto/entities/criterion-result.dto";
 import {
   Audit,
   AuditedPage,
+  CriterionResult,
   CriterionResultStatus
 } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
@@ -25,7 +25,7 @@ export class ExportsService {
     return this.generateCsvExport(audit, results);
   }
 
-  async getAuditResults(uniqueId: string): Promise<CriterionResultDto[]> {
+  private async getAuditResults(uniqueId: string): Promise<CriterionResult[]> {
     const [results, transverseResults] = await Promise.all([
       this.prisma.criterionResult.findMany({
         where: {
@@ -34,10 +34,6 @@ export class ExportsService {
               editUniqueId: uniqueId
             }
           }
-        },
-        include: {
-          exampleImages: true,
-          notCompliantItems: true
         }
       }),
       this.prisma.criterionResult.findMany({
@@ -47,10 +43,6 @@ export class ExportsService {
               editUniqueId: uniqueId
             }
           }
-        },
-        include: {
-          exampleImages: true,
-          notCompliantItems: true
         }
       })
     ]);
@@ -60,7 +52,7 @@ export class ExportsService {
 
   private generateCsvExport(
     audit: Audit & { pages: AuditedPage[] },
-    results: CriterionResultDto[]
+    results: CriterionResult[]
   ): StreamableFile {
     const CRITERIUM_STATUS: Record<CriterionResultStatus, string> = {
       COMPLIANT: "C",
