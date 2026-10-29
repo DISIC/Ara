@@ -148,15 +148,12 @@ export class ExportsService {
     // Tests results
     criteria.forEach((c) => {
       const criterionKey = c.topic + "." + c.criterium;
-
-      // FIXME: better way to fix typescript issue
       const transverseStatus =
         CRITERIUM_STATUS[
           resultsByCriteria[criterionKey].find(
             (r) => r.pageId === audit.transverseElementsPageId
           )?.status ?? CRITERIUM_STATUS.NOT_TESTED
         ];
-      // FIXME: better way to fix typescript issue
       const criteriumStatuses = audit.pages.map(
         (p) =>
           CRITERIUM_STATUS[
