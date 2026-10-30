@@ -1,9 +1,11 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { Patch, Post, Delete, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors } from "@nestjs/common";
+import { Post, Delete, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors, Put } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
+import { AuditPolicy } from "../audits/audit.policy";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
+import { UpdatePagesRequestDto } from "./dto/update-pages-request.dto";
 import { PagesService } from "./pages.service";
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -18,35 +20,49 @@ export class PagesController {
   @Post()
   async createPage(
     @Param("uniqueId") uniqueId: string,
-    @Body() body: CreatePageRequestDto
+    @Body() body: CreatePageRequestDto,
+    @CurrentUser() user: User | null
   ): Promise<PageResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
     return await this.pageService.createPage(uniqueId, body);
   }
 
   @Get()
   async getPages(
     @Param("uniqueId") uniqueId: string,
-    @CurrentUser() _user: User | null
+    @CurrentUser() user: User | null
   ): Promise<PageResponseDto[]> {
-    // await this.authorizationService.authorize(AuditPolicy, "read", user, uniqueId);
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
     return await this.pageService.getPages(uniqueId);
   }
 
   @Get(":pageId")
   async getPage(
-  ) {
-    throw "todo";
+    @Param("uniqueId") uniqueId: string,
+    @Param("pageId") pageId: number,
+    @CurrentUser() user: User | null
+  ): Promise<PageResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
+    return await this.pageService.getPage(uniqueId, pageId);
   }
 
-  @Patch(":pageId")
-  async updatePage(
-  ) {
-    throw "todo";
+  @Put()
+  async updatePages(
+    @Param("uniqueId") uniqueId: string,
+    @Body() body: UpdatePagesRequestDto,
+    @CurrentUser() user: User | null
+  ): Promise<PageResponseDto[]> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.pageService.updatePages(uniqueId, body);
   }
 
   @Delete(":pageId")
   async deletePage(
-  ) {
-    throw "todo";
+    @Param("uniqueId") uniqueId: string,
+    @Param("pageId") pageId: number,
+    @CurrentUser() user: User | null
+  ): Promise<PageResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.pageService.deletePage(uniqueId, pageId);
   }
 }
