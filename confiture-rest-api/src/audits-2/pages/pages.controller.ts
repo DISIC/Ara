@@ -10,11 +10,7 @@ import { PagesService } from "./pages.service";
 
 /**
  * TODO:
- * - updatePages
- * - update audit dates
  * - unit tests
- * - duplicate audit duplicates pages
- * - console testing
  */
 
 @UseInterceptors(ClassSerializerInterceptor)
