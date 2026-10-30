@@ -9,6 +9,8 @@ export enum EVENTS {
   AUDIT_CREATED = "audit.created",
   AUDIT_TRANSFERED = "audit.transfered",
 
+  PAGES_UPDATED = "pages.updated",
+
   ACCOUNT_DELETED = "account.deleted"
 }
 

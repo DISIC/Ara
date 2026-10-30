@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { PrismaService } from "../../prisma.service";
-import { slugify } from "../../utils";
+import { EVENTS, slugify } from "../../utils";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
 import { UpdatePagesRequestDto } from "./dto/update-pages-request.dto";
@@ -10,7 +11,8 @@ export const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
 @Injectable()
 export class PagesService {
   constructor(
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2
   ) { }
 
   async createPage(editUniqueId: string, data: CreatePageRequestDto): Promise<PageResponseDto> {
@@ -112,6 +114,9 @@ export class PagesService {
           }
         });
       });
+
+      // update audit statement date
+      this.eventEmitter.emit(EVENTS.PAGES_UPDATED, editUniqueId);
 
       // only return updated pages
       const [_, ...updatedPages] = await Promise.all([deletion, ...upserts]);
