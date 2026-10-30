@@ -8,11 +8,6 @@ import { PageResponseDto } from "./dto/page-response.dto";
 import { UpdatePagesRequestDto } from "./dto/update-pages-request.dto";
 import { PagesService } from "./pages.service";
 
-/**
- * TODO:
- * - unit tests
- */
-
 @UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ type: PageResponseDto, excludeExtraneousValues: true })
 @Controller("/audits/:uniqueId/pages")

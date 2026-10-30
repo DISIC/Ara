@@ -133,7 +133,6 @@ export class PagesService {
     });
   }
 
-  // TODO: test me
   static generateManyUniqueSlugs(pageNames: string[], existingSlugs: string[]): string[] {
     const generatedSlugs: string[] = [];
     for (let i = 0; i < pageNames.length; i++) {
