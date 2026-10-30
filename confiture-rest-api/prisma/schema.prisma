@@ -17,11 +17,25 @@ enum AuditType {
   FULL // 106 criteria
 }
 
+enum AuditReference {
+  RGAA4
+  RGAA5Web
+  RGAA5Mobile
+  RGAA5Bureautique
+}
+
+enum MobileOperatingSystem {
+  IOS
+  ANDROID
+}
+
 model Audit {
   id Int @id @default(autoincrement())
 
   // Audit creation step
   auditType                AuditType
+  auditReference           AuditReference @default(RGAA4) // TODO remove default RGAA4 with a SQL script
+  mobileOperatingSystem    MobileOperatingSystem?
   procedureName            String
   pages                    AuditedPage[] @relation("UserPages")
   // single page for transverse elements
