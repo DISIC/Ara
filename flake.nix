@@ -15,19 +15,19 @@
       nodeInfo = {
         "x86_64-linux" = {
           url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz";
-          sha256 = "1v1p0kl4kcn55gdfy9rrzvman18hvd046fi7wk20bjwdbjx9vc39";
+          hash = "sha256-bBcqmrZxj3uAH7WnvUhq8u5eMnWAhqBLhPzOKqdwleY=";
         };
         "aarch64-linux" = {
           url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz";
-          sha256 = "0l00wfcxr6bxnmh2z8k79a3hbmr8r8y1gw390axqq3mdid9vzgq8";
+          hash = "sha256-26v3ocv5R+YFn/rSwnuABB25feoeVTtir97n8T/KM24=";
         };
         "x86_64-darwin" = {
           url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-darwin-x64.tar.xz";
-          sha256 = "00mzvj4069wlv449czbdahjkfv2fjv1ky74wshy80gszq88v5dfy";
+          hash = "sha256-ZeRQ+Qpuqs1QAPYRhhxM5l+tyH+BN5XcTtDA5fL8otQ=";
         };
         "aarch64-darwin" = {
           url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-darwin-arm64.tar.xz";
-          sha256 = "09rmqhzy5p54h96l0m86f948lnj03kiv4hr7664p52af3fvmr12f";
+          hash = "sha256-ZUunneYVVkfiIyGTK0Xyocy3BZdswzfJuOJ4vrCFpig=";
         };
       };
 
@@ -39,7 +39,7 @@
 
         src = pkgs.fetchurl {
           url = currentNodeInfo.url;
-          sha256 = currentNodeInfo.sha256;
+          hash = currentNodeInfo.hash;
         };
 
         installPhase = ''
