@@ -41,6 +41,8 @@ const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
 
+const isRgaa5 = computed(() => props.audit.auditReference.startsWith("RGAA_5"));
+
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();
@@ -137,11 +139,14 @@ defineExpose({
           :class="
             isInProgress || isNotStarted
               ? null
-              : {
-                'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                'fr-badge--new': audit.complianceLevel >= 50,
-                'fr-badge--error': audit.complianceLevel < 50
-              }
+              :
+                (isRgaa5 && audit.nbBlockingUserImpact > 0 ?
+                  { 'fr-badge--error': true } :
+                  {
+                    'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                    'fr-badge--new': audit.complianceLevel >= 50,
+                    'fr-badge--error': audit.complianceLevel < 50
+                  })
           "
         >
           <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité</span>
@@ -155,13 +160,15 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          {{
+          <span v-if="isRgaa5 && audit.nbBlockingUserImpact > 0">Non conforme</span>
+          <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"
               : audit.complianceLevel >= 50
                 ? "Partiellement conforme"
                 : "Non conforme"
-          }}
+          }}</span>
+
         </p>
       </div>
       <p v-else class="fr-m-0">
