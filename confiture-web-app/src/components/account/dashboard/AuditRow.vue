@@ -12,7 +12,9 @@ import {
   captureWithPayloads,
   formatBytes,
   formatDate,
+  getAuditReference,
   getCriteriaCount,
+  getVersionRgaa,
   slugify
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
@@ -123,10 +125,11 @@ defineExpose({
     </p>
 
     <!-- Type -->
-    <p class="fr-mb-0">
+    <div>
       <span class="fr-sr-only">Type </span>
-      {{ getCriteriaCount(audit.auditType) }} critères
-    </p>
+      <p class="fr-mb-0 fr-text--bold">{{ getAuditReference(audit.auditReference) }}</p>
+      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getVersionRgaa(audit.auditReference) }} </p>
+    </div>
 
     <!-- Compliance level / Progression level -->
     <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-lg-4w">
@@ -140,7 +143,7 @@ defineExpose({
             isInProgress || isNotStarted
               ? null
               :
-                (isRgaa5 && audit.nbBlockingUserImpact > 0 ?
+                (isRgaa5 && audit.countBlockingUserImpact > 0 ?
                   { 'fr-badge--error': true } :
                   {
                     'fr-badge--green-emeraude': audit.complianceLevel === 100,
@@ -160,7 +163,7 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          <span v-if="isRgaa5 && audit.nbBlockingUserImpact > 0">Non conforme</span>
+          <span v-if="isRgaa5 && audit.countBlockingUserImpact > 0">Non conforme</span>
           <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"
@@ -358,7 +361,7 @@ defineExpose({
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
+  grid-template-columns: 1.5fr 0.5fr 1fr 1.25fr 1.5fr 0.75fr 0.75fr;
   gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);

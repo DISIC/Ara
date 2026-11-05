@@ -19,6 +19,11 @@ const uniqueId = route.params.uniqueId as string;
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
 function getA11yLevel() {
+  if (report.data!.auditReference.startsWith("RGAA_5") &&
+    report.data!.countBlockingUserImpact > 0) {
+    return "non";
+  }
+
   if (report.data!.accessibilityRate === 100) {
     return "totalement";
   } else if (report.data!.accessibilityRate >= 50) {
