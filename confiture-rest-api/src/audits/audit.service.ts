@@ -31,6 +31,10 @@ import { UpdateStatementDto } from "./dto/requests/update-statement.dto";
 import { FileStorageService } from "./file-storage.service";
 import { AUDIT_PRISMA_SELECT } from "./prisma-selects";
 
+type CriterionResultWithItems = Prisma.CriterionResultGetPayload<{
+  include: { notCompliantItems: true };
+}>;
+
 const AUDIT_EDIT_INCLUDE = {
   environments: true,
   transverseElementsPage: true,
@@ -1797,6 +1801,7 @@ export class AuditService {
         isHidden: false
       },
       select: {
+        auditReference: true,
         procedureName: true,
         creationDate: true,
         auditType: true,
@@ -1806,12 +1811,20 @@ export class AuditService {
         transverseElementsPageId: true,
         pages: {
           select: {
-            results: true
+            results: {
+              include: {
+                notCompliantItems: true
+              }
+            }
           }
         },
         transverseElementsPage: {
           select: {
-            results: true
+            results: {
+              include: {
+                notCompliantItems: true
+              }
+            }
           }
         }
       }
@@ -1837,9 +1850,11 @@ export class AuditService {
 
       let complianceLevel = null;
 
+      let nbBlockingUserImpact = null;
+
       if (progress >= 1) {
         const resultsGroupedById = allResults.reduce<
-          Record<string, CriterionResult[]>
+          Record<string, CriterionResultWithItems[]>
         >((acc, c) => {
           const key = `${c.topic}.${c.criterium}`;
           if (acc[key]) {
@@ -1876,6 +1891,16 @@ export class AuditService {
         complianceLevel = Math.round(
           (compliantCriteria.length / applicableCriteria.length) * 100
         );
+
+        if (a.auditReference.startsWith("RGAA_5")) {
+          const notCompliantBlockingUserImpactCriteria = results2.filter((criteria) =>
+            criteria.some((c) => isNotCompliant(c) && c.notCompliantItems.some(
+              (i) => i.userImpact === CriterionResultUserImpact.BLOCKING
+            ))
+          ) ?? [];
+
+          nbBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
+        }
       }
 
       const statementIsPublished = !!a.initiator;
@@ -1888,6 +1913,7 @@ export class AuditService {
       return {
         ...pick(
           a,
+          "auditReference",
           "procedureName",
           "editUniqueId",
           "consultUniqueId",
@@ -1895,6 +1921,7 @@ export class AuditService {
           "auditType"
         ),
         complianceLevel,
+        nbBlockingUserImpact,
         status:
           progress === 0
             ? "NOT_STARTED"
