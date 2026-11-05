@@ -18,10 +18,10 @@ enum AuditType {
 }
 
 enum AuditReference {
-  RGAA4
-  RGAA5Web
-  RGAA5Mobile
-  RGAA5Bureautique
+  RGAA_4
+  RGAA_5_Web
+  RGAA_5_Mobile
+  RGAA_5_Document
 }
 
 model Audit {
@@ -29,7 +29,7 @@ model Audit {
 
   // Audit creation step
   auditType                AuditType
-  auditReference           AuditReference @default(RGAA4) // TODO remove default RGAA4 with a SQL script
+  auditReference           AuditReference @default(RGAA_4) // TODO remove default RGAA4 with a SQL script
   procedureName            String
   pages                    AuditedPage[] @relation("UserPages")
   // single page for transverse elements
