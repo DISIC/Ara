@@ -844,7 +844,7 @@
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
-- Mise à jour du DSFR qui corrige notamment l’utiliisation des flèches directionnelles dans les champs de texte situés dans les onglets ([#576](https://github.com/DISIC/Ara/pull/576))
+- Mise à jour du DSFR qui corrige notamment l’utilisation des flèches directionnelles dans les champs de texte situés dans les onglets ([#576](https://github.com/DISIC/Ara/pull/576))
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
