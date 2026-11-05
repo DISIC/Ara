@@ -15,5 +15,5 @@ export class AuditListingItemDto {
   estimatedCsvSize: number;
   statementIsPublished: boolean;
   progress: number;
-  nbBlockingUserImpact: number;
+  countBlockingUserImpact: number;
 }

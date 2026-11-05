@@ -3,6 +3,7 @@ import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
+import { AuditReference } from "./../../confiture-rest-api/src/generated/prisma/enums";
 
 import { FileListFile } from "./components/ui/FileList.vue";
 import {
@@ -298,4 +299,19 @@ export function isImage(file: File | FileListFile) {
   } else if ("mimetype" in file) {
     return file.mimetype.startsWith("image");
   }
+}
+
+export function getAuditReference(auditReference: AuditReference): string {
+  if (auditReference === AuditReference.RGAA_5_Document)
+    return "Bureautique";
+
+  if (auditReference === AuditReference.RGAA_5_Mobile) {
+    return "App. mobile";
+  }
+
+  return "Web";
+}
+
+export function getVersionRgaa(auditReference: AuditReference): string {
+  return auditReference.substring(0, 6).replace("_", " ");
 }

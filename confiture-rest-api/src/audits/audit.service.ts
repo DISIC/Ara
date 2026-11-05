@@ -41,6 +41,7 @@ const AUDIT_EDIT_INCLUDE = {
   pages: true,
   sourceAudit: {
     select: {
+      auditReference: true,
       procedureName: true
     }
   },
@@ -1170,7 +1171,8 @@ export class AuditService {
       notCompliantCriteria,
       applicableCriteria,
       notApplicableCriteria,
-      accessibilityRate
+      accessibilityRate,
+      countBlockingUserImpact
     } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const report: AuditReportDto = {
@@ -1182,6 +1184,7 @@ export class AuditService {
       procedureInitiator: audit.initiator,
       procedureName: audit.procedureName,
       procedureUrl: audit.procedureUrl,
+      auditReference: audit.auditReference,
       auditType: audit.auditType,
       creationDate: audit.creationDate,
       publishDate: audit.publicationDate,
@@ -1219,6 +1222,7 @@ export class AuditService {
         notApplicable: notApplicableCriteria.length
       },
 
+      countBlockingUserImpact,
       accessibilityRate,
 
       // FIXME: some of the return data is never asked to the user
@@ -1402,8 +1406,8 @@ export class AuditService {
     ]).then(results => results.flat());
   }
 
-  public static groupResultsByStatus(results: CriterionResult[], transversePageId: number) {
-    const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
+  public static groupResultsByStatus(results: CriterionResultWithItems[], transversePageId: number) {
+    const groupedCriteria = results.reduce<Record<string, CriterionResultWithItems[]>>(
       (acc, c) => {
         const key = `${c.topic}.${c.criterium}`;
         if (acc[key]) {
@@ -1437,6 +1441,12 @@ export class AuditService {
       return criteria.some((c) => isNotCompliant(c));
     });
 
+    const notCompliantBlockingUserImpactCriteria = applicableCriteria.filter((criteria) => {
+      return criteria.some((c) => isNotCompliant(c) && c.notCompliantItems.some(
+        (i) => i.userImpact === CriterionResultUserImpact.BLOCKING
+      ));
+    });
+
     const notApplicableCriteria = Object.values(groupedCriteria).filter(
       (criteria) => {
         // remove untested transverse criterion
@@ -1454,13 +1464,16 @@ export class AuditService {
         (compliantCriteria.length / applicableCriteria.length) * 100
       ) || 0;
 
+    const countBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
+
     return {
       groupedCriteria,
       applicableCriteria,
       compliantCriteria,
       notCompliantCriteria,
       notApplicableCriteria,
-      accessibilityRate
+      accessibilityRate,
+      countBlockingUserImpact
     };
   }
 
@@ -1850,7 +1863,7 @@ export class AuditService {
 
       let complianceLevel = null;
 
-      let nbBlockingUserImpact = null;
+      let countBlockingUserImpact = null;
 
       if (progress >= 1) {
         const resultsGroupedById = allResults.reduce<
@@ -1899,7 +1912,7 @@ export class AuditService {
             ))
           ) ?? [];
 
-          nbBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
+          countBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
         }
       }
 
@@ -1921,7 +1934,7 @@ export class AuditService {
           "auditType"
         ),
         complianceLevel,
-        nbBlockingUserImpact,
+        countBlockingUserImpact,
         status:
           progress === 0
             ? "NOT_STARTED"
@@ -1960,7 +1973,8 @@ export class AuditService {
     const results = await this.getAuditResults(audit);
 
     const {
-      accessibilityRate
+      accessibilityRate,
+      countBlockingUserImpact
     } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const statement: StatementDto = {
@@ -1971,6 +1985,8 @@ export class AuditService {
       publicationDate: audit.publicationDate,
       statementEditionDate: audit.statementEditionDate,
       statementPublicationDate: audit.statementPublicationDate,
+
+      auditReference: audit.auditReference,
 
       auditorName: audit.auditorName,
       auditorEmail: audit.auditorEmail,
@@ -1984,6 +2000,7 @@ export class AuditService {
       procedureUrl: audit.procedureUrl,
 
       accessibilityRate: accessibilityRate,
+      countBlockingUserImpact: countBlockingUserImpact,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,
