@@ -42,6 +42,8 @@ const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
 
+const isRgaa5 = computed(() => props.audit.auditReference.startsWith("RGAA_5"));
+
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
 const duplicateModal = ref<InstanceType<typeof DuplicateModal>>();

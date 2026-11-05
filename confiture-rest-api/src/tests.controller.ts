@@ -288,6 +288,22 @@ export class TestsController {
             const status = statuses[i];
             const userImpact = getUserImpact(i, body.auditReference, body.complianceRate);
 
+            let userImpact = userImpacts[i % 4];
+
+            if (body.nbBlockingUserImpact !== undefined &&
+             status === CriterionResultStatus.NOT_COMPLIANT &&
+             userImpact === CriterionResultUserImpact.BLOCKING) {
+              if (blockingLeft > 0) {
+                blockingLeft--;
+              } else {
+                userImpact = [
+                  CriterionResultUserImpact.MINOR,
+                  CriterionResultUserImpact.MAJOR,
+                  null
+                ][i % 3];
+              }
+            }
+
             return this.prisma.criterionResult.create({
               data: {
                 status,
