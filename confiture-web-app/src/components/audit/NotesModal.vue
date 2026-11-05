@@ -114,7 +114,7 @@ async function handleFileDeleted(
                 v-model="notes"
                 type="notes"
                 label="Points à signaler ne concernant pas l’accessibilité du site audité"
-                description="Exemple : temps de chargement excessif sur certaines pages, incohérences dans l'usage des couleurs, bug"
+                description="Exemple&nbsp;: temps de chargement excessif sur certaines pages, incohérences dans l'usage des couleurs, bug"
                 @update:model-value="handleNotesChange"
               />
 

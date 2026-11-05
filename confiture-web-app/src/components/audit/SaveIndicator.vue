@@ -113,7 +113,7 @@ watch(
   () => store.value.lastRequestFailed,
   () => {
     if (store.value.lastRequestFailed) {
-      saveText.value = "Information : vos saisies sont à nouveau enregistrées.";
+      saveText.value = "Information&nbsp;: vos saisies sont à nouveau enregistrées.";
 
       setTimeout(() => {
         saveText.value = "";
@@ -149,8 +149,12 @@ watch(
     </span>
     <p class="fr-m-0 save-indicator-label">{{ saveContent.status }}</p>
 
-    <p class="fr-sr-only" aria-live="polite" role="alert">
-      {{ saveText }}
+    <p
+      class="fr-sr-only"
+      aria-live="polite"
+      role="alert"
+      v-html="saveText"
+    >
     </p>
   </div>
 </template>
