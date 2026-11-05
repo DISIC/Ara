@@ -23,7 +23,7 @@ const stats = computed(() => {
             title: "Taux global<br /> de conformité",
             description: auditInProgress.value
               ? "Disponible à la fin de l’audit"
-              : REFERENTIAL,
+              : REFERENTIAL.RGAA_4,
             value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
             unit: "%",

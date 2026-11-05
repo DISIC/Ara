@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+import { AuditReference } from "../../../confiture-rest-api/src/generated/prisma/enums";
 import PageMeta from "../components/PageMeta";
 import TiptapRenderer from "../components/tiptap/TiptapRenderer.vue";
 import CopyButton from "../components/ui/CopyButton.vue";
@@ -225,7 +226,7 @@ const siteUrl = computed(() => {
               >{{ report.data.context.auditorOrganisation }}</strong>
               <mark v-else>[entité ayant réalisé l’audit]</mark>
               révèle que <strong>{{ report.data.accessibilityRate }}&nbsp;%</strong> des critères
-              du {{ REFERENTIAL }} sont respectés.
+              du {{ report.data.auditReference === AuditReference.RGAA_4 ? REFERENTIAL.RGAA_4 : REFERENTIAL.RGAA_5 }} sont respectés.
             </p>
             <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
             <p
