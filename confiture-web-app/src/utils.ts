@@ -3,6 +3,7 @@ import jwtDecode from "jwt-decode";
 import { HTTPError } from "ky";
 import { noop } from "lodash-es";
 import baseSlugify from "slugify";
+import { AuditReference } from "./../../confiture-rest-api/src/generated/prisma/enums";
 
 import { FileListFile } from "./components/ui/FileList.vue";
 import {

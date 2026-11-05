@@ -290,7 +290,7 @@ export class TestsController {
 
             let userImpact = userImpacts[i % 4];
 
-            if (body.nbBlockingUserImpact !== undefined &&
+            if (body.countBlockingUserImpact !== undefined &&
              status === CriterionResultStatus.NOT_COMPLIANT &&
              userImpact === CriterionResultUserImpact.BLOCKING) {
               if (blockingLeft > 0) {
