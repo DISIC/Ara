@@ -77,24 +77,34 @@ export const rawAudits = [
         ]
       }
     },
-    statementPublicationDate: new Date(),
-    initiator: "Mairie de Paris",
-    auditorOrganisation: "Ara Corp.",
-    procedureUrl: "https://example.com",
-    contactEmail: "help@example.com",
-    contactFormUrl: "https://example.com/contact",
-    technologies: ["HTML", "CSS", "JavaScript"],
-    tools: ["Axe devtools", "Lighthouse"],
-    environments: {
-      createMany: {
-        data: [
-          {
-            platform: "Ordinateur",
-            operatingSystem: "MacOS",
-            assistiveTechnology: "VoiceOver",
-            browser: "Safari"
+    a11yStatement: {
+      create: {
+        statementPublicationDate: new Date(),
+        initiator: "Mairie de Paris",
+        auditorOrganisation: "Ara Corp.",
+        procedureUrl: "https://example.com",
+        contactEmail: "help@example.com",
+        contactFormUrl: "https://example.com/contact",
+        technologies: ["HTML", "CSS", "JavaScript"],
+        tools: ["Axe devtools", "Lighthouse"],
+        environments: {
+          createMany: {
+            data: [
+              {
+                platform: "Ordinateur",
+                operatingSystem: "MacOS",
+                assistiveTechnology: "VoiceOver",
+                browser: "Safari"
+              },
+              {
+                platform: "Ordinateur",
+                operatingSystem: "MacOS",
+                assistiveTechnology: "VoiceOver",
+                browser: "Firefox"
+              }
+            ]
           }
-        ]
+        }
       }
     }
   },
@@ -215,24 +225,29 @@ export const rawAudits = [
         ]
       }
     },
-    statementPublicationDate: new Date(),
-    initiator: "Mairie de Paris",
-    auditorOrganisation: "Ara Corp.",
-    procedureUrl: "https://example.com",
-    contactEmail: "help@example.com",
-    contactFormUrl: "https://example.com/contact",
-    technologies: ["HTML", "CSS", "JavaScript"],
-    tools: ["Axe devtools", "Lighthouse"],
-    environments: {
-      createMany: {
-        data: [
-          {
-            platform: "Ordinateur",
-            operatingSystem: "MacOS",
-            assistiveTechnology: "VoiceOver",
-            browser: "Safari"
+    a11yStatement: {
+      create: {
+        statementPublicationDate: new Date(),
+        initiator: "Mairie de Paris",
+        auditorOrganisation: "Ara Corp.",
+        procedureUrl: "https://example.com",
+        contactEmail: "help@example.com",
+        contactFormUrl: "https://example.com/contact",
+        technologies: ["HTML", "CSS", "JavaScript"],
+        tools: ["Axe devtools", "Lighthouse"],
+        environments: {
+          createMany: {
+            skipDuplicates: true,
+            data: [
+              {
+                platform: "Ordinateur",
+                operatingSystem: "MacOS",
+                assistiveTechnology: "VoiceOver",
+                browser: "Safari"
+              }
+            ]
           }
-        ]
+        }
       }
     }
   },
