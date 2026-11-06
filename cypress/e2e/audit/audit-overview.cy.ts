@@ -1,4 +1,4 @@
-import { AuditReference } from "../../../confiture-rest-api/src/generated/prisma/enums";
+import { AuditReference } from "../../../confiture-web-app/src/types";
 
 describe("Audit Overview", () => {
   it("RGAA 4 audit overview", () => {

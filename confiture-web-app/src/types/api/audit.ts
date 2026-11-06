@@ -4,7 +4,8 @@ import {
   CreateDebugAuditDtoAuditType,
   CriterionResultDtoStatus,
   paths,
-  NotCompliantItemDtoUserImpact
+  NotCompliantItemDtoUserImpact,
+  AuditDtoAuditReference
 } from "../confiture-api";
 
 export type AuditEnvironment = components["schemas"]["TestEnvironmentDto"];
@@ -14,6 +15,8 @@ export type AuditPage = components["schemas"]["PageDto"];
 export type PageElements = components["schemas"]["PageElements"];
 
 export { CreateDebugAuditDtoAuditType as AuditType };
+
+export { AuditDtoAuditReference as AuditReference };
 
 export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
 

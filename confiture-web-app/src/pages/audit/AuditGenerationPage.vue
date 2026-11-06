@@ -2,8 +2,6 @@
 import { useResizeObserver } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-
-import { AuditReference } from "../../../../confiture-rest-api/src/generated/prisma/enums.js";
 import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
@@ -22,7 +20,7 @@ import {
   useFiltersStore,
   useResultsStore
 } from "../../store";
-import { AuditType, CriteriumResultStatus, TabData } from "../../types";
+import { AuditType, CriteriumResultStatus, TabData, AuditReference } from "../../types";
 import { pluralize } from "../../utils";
 
 const props = defineProps<{
