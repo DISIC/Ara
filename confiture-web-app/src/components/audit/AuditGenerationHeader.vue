@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { AuditReference } from "../../../../confiture-rest-api/src/generated/prisma/enums";
 import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
