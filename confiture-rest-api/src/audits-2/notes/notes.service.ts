@@ -5,6 +5,7 @@ import sharp from "sharp";
 import { FileStorageService } from "../../file-storage/file-storage.service";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
+import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 
@@ -92,5 +93,37 @@ export class NotesService {
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
     return noteFile;
+  }
+
+  async deleteNotesFile(editUniqueId: string, data: DeleteNotesFileRequestDto): Promise<boolean> {
+    const noteFilePromise = this.prisma.notesFile.findUniqueOrThrow({
+      where: {
+        id: data.fileId
+      }
+    });
+
+    const notesFile = await noteFilePromise;
+    const audit = await noteFilePromise.audit();
+
+    if (!audit || audit.editUniqueId !== editUniqueId) {
+      return false;
+    }
+
+    const filesToDelete = [notesFile.key];
+    if (notesFile.thumbnailKey) {
+      filesToDelete.push(notesFile.thumbnailKey);
+    }
+    await this.fileStorageService.deleteMultipleFiles(...filesToDelete);
+
+    await this.prisma.notesFile.delete({
+      where: {
+        id: data.fileId
+      }
+    });
+
+    // TODO: update the old way or with an even?
+    this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
+
+    return true;
   }
 }

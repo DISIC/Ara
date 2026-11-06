@@ -1,9 +1,10 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { Body, Controller, Get, HttpStatus, Param, ParseFilePipeBuilder, Post, Put, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, Post, Put, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
+import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 import { NotesService } from "./notes.service";
@@ -56,5 +57,15 @@ export class NotesController {
   ): Promise<NotesFileResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
     return await this.notesService.createNotesFile(uniqueId, file);
+  }
+
+  @Delete()
+  async deleteNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User | null,
+    @Body() body: DeleteNotesFileRequestDto
+  ): Promise<boolean> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.notesService.deleteNotesFile(uniqueId, body);
   }
 }
