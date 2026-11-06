@@ -219,6 +219,7 @@ export const useAuditStore = defineStore("audit", {
       if (originalAuditListingItem) {
         const newAuditListItem: AccountAudit = {
           auditType: newAudit.auditType,
+          auditReference: newAudit.auditReference,
           complianceLevel: originalAuditListingItem.complianceLevel,
           consultUniqueId: newAudit.consultUniqueId,
           creationDate: newAudit.creationDate!,
@@ -227,7 +228,8 @@ export const useAuditStore = defineStore("audit", {
           status: originalAuditListingItem.status,
           progress: originalAuditListingItem.progress,
           estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
-          statementIsPublished: originalAuditListingItem.statementIsPublished
+          statementIsPublished: originalAuditListingItem.statementIsPublished,
+          countBlockingUserImpact: originalAuditListingItem.countBlockingUserImpact
         };
         this.listing.push(newAuditListItem);
         localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(this.listing));

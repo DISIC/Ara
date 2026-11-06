@@ -9,6 +9,7 @@ import TopLink from "../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
+import { AuditReference } from "../types";
 import { formatDate, isSameDay, isTiptapDocumentEmpty } from "../utils";
 
 const report = useReportStore();
@@ -19,6 +20,11 @@ const uniqueId = route.params.uniqueId as string;
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
 function getA11yLevel() {
+  if (report.data!.auditReference.startsWith("RGAA_5") &&
+    report.data!.countBlockingUserImpact > 0) {
+    return "non";
+  }
+
   if (report.data!.accessibilityRate === 100) {
     return "totalement";
   } else if (report.data!.accessibilityRate >= 50) {
@@ -220,7 +226,7 @@ const siteUrl = computed(() => {
               >{{ report.data.context.auditorOrganisation }}</strong>
               <mark v-else>[entité ayant réalisé l’audit]</mark>
               révèle que <strong>{{ report.data.accessibilityRate }}&nbsp;%</strong> des critères
-              du {{ REFERENTIAL }} sont respectés.
+              du {{ report.data.auditReference === AuditReference.RGAA_4 ? REFERENTIAL.RGAA_4 : REFERENTIAL.RGAA_5 }} sont respectés.
             </p>
             <h4 class="fr-h2 fr-mb-2w fr-mb-md-3w">Contenus non accessibles</h4>
             <p

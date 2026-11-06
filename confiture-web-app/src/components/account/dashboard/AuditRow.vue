@@ -12,7 +12,9 @@ import {
   captureWithPayloads,
   formatBytes,
   formatDate,
+  getAuditReference,
   getCriteriaCount,
+  getVersionRgaa,
   slugify
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
@@ -40,6 +42,8 @@ const isNotStarted = computed(
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
+
+const isRgaa5 = computed(() => props.audit.auditReference.startsWith("RGAA_5"));
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
@@ -121,10 +125,11 @@ defineExpose({
     </p>
 
     <!-- Type -->
-    <p class="fr-mb-0">
+    <div>
       <span class="fr-sr-only">Type </span>
-      {{ getCriteriaCount(audit.auditType) }} critères
-    </p>
+      <p class="fr-mb-0 fr-text--bold">{{ getAuditReference(audit.auditReference, true) }}</p>
+      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getVersionRgaa(audit.auditReference) }} </p>
+    </div>
 
     <!-- Compliance level / Progression level -->
     <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-lg-4w">
@@ -137,11 +142,14 @@ defineExpose({
           :class="
             isInProgress || isNotStarted
               ? null
-              : {
-                'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                'fr-badge--new': audit.complianceLevel >= 50,
-                'fr-badge--error': audit.complianceLevel < 50
-              }
+              :
+                (isRgaa5 && audit.countBlockingUserImpact > 0 ?
+                  { 'fr-badge--error': true } :
+                  {
+                    'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                    'fr-badge--new': audit.complianceLevel >= 50,
+                    'fr-badge--error': audit.complianceLevel < 50
+                  })
           "
         >
           <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité</span>
@@ -155,13 +163,15 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          {{
+          <span v-if="isRgaa5 && audit.countBlockingUserImpact > 0">Non conforme</span>
+          <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"
               : audit.complianceLevel >= 50
                 ? "Partiellement conforme"
                 : "Non conforme"
-          }}
+          }}</span>
+
         </p>
       </div>
       <p v-else class="fr-m-0">
@@ -351,7 +361,7 @@ defineExpose({
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 1.75fr 0.5fr 0.75fr 1.25fr 1.5fr 0.75fr 0.75fr;
+  grid-template-columns: 1.5fr 0.5fr 1fr 1.25fr 1.5fr 0.75fr 0.75fr;
   gap: 1rem;
   align-items: center;
   border: 1px solid var(--border-default-grey);

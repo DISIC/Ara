@@ -31,6 +31,7 @@ export const AUDIT_PRISMA_SELECT: Prisma.AuditSelect = {
   consultUniqueId: true,
 
   auditType: true,
+  auditReference: true,
   procedureName: true,
   transverseElementsPageId: true,
   auditorName: true,

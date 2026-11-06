@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
 import {
+  AuditReference,
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "./generated/prisma/client";
@@ -74,6 +75,9 @@ export class TestsController {
       auditorEmail?: string;
       fillStatement?: boolean;
       publicationDate?: Date;
+      auditReference?: string;
+      isCompliant?: boolean;
+      countBlockingUserImpact?: number;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -94,7 +98,7 @@ export class TestsController {
           }
         },
         auditType: "FULL",
-        auditReference: "RGAA_4",
+        auditReference: body.auditReference as AuditReference ?? AuditReference.RGAA_4,
         procedureName: "Audit de mon petit site",
         auditor: {
           connectOrCreate: {
@@ -195,15 +199,45 @@ export class TestsController {
     });
 
     if (!body.isPristine) {
+      let blockingLeft = body.countBlockingUserImpact ?? 0;
+
+      const userImpacts = [
+        CriterionResultUserImpact.MINOR,
+        CriterionResultUserImpact.MAJOR,
+        CriterionResultUserImpact.BLOCKING,
+        null
+      ];
+
       await Promise.all(
         [completedAudit.transverseElementsPage, ...auditPages].flatMap((p) =>
 
           CRITERIA.map((c, i) => {
-            const status = [
-              CriterionResultStatus.COMPLIANT,
-              CriterionResultStatus.NOT_APPLICABLE,
-              CriterionResultStatus.NOT_COMPLIANT
-            ][i % 3];
+            const status = body.isCompliant
+              ? [
+                  CriterionResultStatus.COMPLIANT,
+                  CriterionResultStatus.NOT_APPLICABLE
+                ][i % 2]
+              : [
+                  CriterionResultStatus.COMPLIANT,
+                  CriterionResultStatus.NOT_APPLICABLE,
+                  CriterionResultStatus.NOT_COMPLIANT
+                ][i % 3];
+
+            let userImpact = userImpacts[i % 4];
+
+            if (body.countBlockingUserImpact !== undefined &&
+             status === CriterionResultStatus.NOT_COMPLIANT &&
+             userImpact === CriterionResultUserImpact.BLOCKING) {
+              if (blockingLeft > 0) {
+                blockingLeft--;
+              } else {
+                userImpact = [
+                  CriterionResultUserImpact.MINOR,
+                  CriterionResultUserImpact.MAJOR,
+                  null
+                ][i % 3];
+              }
+            }
 
             return this.prisma.criterionResult.create({
               data: {
@@ -218,12 +252,7 @@ export class TestsController {
                         title: `Titre de l’erreur`,
                         comment: `Une erreur ici`,
                         quickWin: i % 7 === 0,
-                        userImpact: [
-                          CriterionResultUserImpact.MINOR,
-                          CriterionResultUserImpact.MAJOR,
-                          CriterionResultUserImpact.BLOCKING,
-                          null
-                        ][i % 4]
+                        userImpact
                       }
                     }
                   : undefined,
