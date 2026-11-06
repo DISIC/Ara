@@ -301,12 +301,12 @@ export function isImage(file: File | FileListFile) {
   }
 }
 
-export function getAuditReference(auditReference: AuditReference): string {
+export function getAuditReference(auditReference: AuditReference, short = false): string {
   if (auditReference === AuditReference.RGAA_5_Document)
     return "Bureautique";
 
   if (auditReference === AuditReference.RGAA_5_Mobile) {
-    return "App. mobile";
+    return short ? "App. mobile" : "Application mobile";
   }
 
   return "Web";

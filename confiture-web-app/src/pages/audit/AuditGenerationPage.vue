@@ -318,6 +318,8 @@ filterStore.$reset();
     <AuditGenerationHeader
       ref="auditGenerationHeaderRef"
       :audit-name="auditStore.currentAudit.procedureName"
+      :audit-reference="auditStore.currentAudit.auditReference"
+      :audit-type="auditStore.currentAudit.auditType"
       :key-infos="headerInfos"
       :edit-unique-id="uniqueId"
     />
