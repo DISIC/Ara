@@ -1,4 +1,4 @@
-import { AuditReference } from "../../../confiture-rest-api/src/generated/prisma/enums";
+import { AuditReference } from "../../../confiture-web-app/src/types";
 
 describe("RGAA 4 or 5 Audit Compliance", () => {
   it("Account : a RGAA 4 audit with blocking user impacts is partially compliant", () => {

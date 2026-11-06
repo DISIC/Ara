@@ -2,7 +2,6 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import { AuditReference } from "../../../confiture-rest-api/src/generated/prisma/enums";
 import PageMeta from "../components/PageMeta";
 import TiptapRenderer from "../components/tiptap/TiptapRenderer.vue";
 import CopyButton from "../components/ui/CopyButton.vue";
@@ -10,6 +9,7 @@ import TopLink from "../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
+import { AuditReference } from "../types";
 import { formatDate, isSameDay, isTiptapDocumentEmpty } from "../utils";
 
 const report = useReportStore();
