@@ -7,6 +7,7 @@ import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
+import { NotesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 
 @Injectable()
@@ -17,7 +18,19 @@ export class NotesService {
     private readonly fileStorageService: FileStorageService
   ) {}
 
-  async getNotes(_editUniqueId: string) {}
+  async getNotes(editUniqueId: string): Promise<NotesResponseDto> {
+    const result = await this.prisma.audit.findUniqueOrThrow({
+      where: {
+        editUniqueId
+      },
+      select: {
+        notes: true,
+        notesFiles: true
+      }
+    });
+
+    return result;
+  }
 
   async updateNotes(
     editUniqueId: string,
