@@ -11,7 +11,9 @@ export enum EVENTS {
 
   PAGES_UPDATED = "pages.updated",
 
-  ACCOUNT_DELETED = "account.deleted"
+  ACCOUNT_DELETED = "account.deleted",
+
+  NOTES_UPDATED = "notes.updated"
 }
 
 // Custom class-validator decorators
