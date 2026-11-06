@@ -584,11 +584,15 @@ export class AuditsService {
   async onPagesUpdated(uniqueId: string): Promise<void> {
     const audit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: uniqueId },
-      select: { statementPublicationDate: true }
+      select: { statementPublicationDate: true, publicationDate: true }
     });
 
     if (audit.statementPublicationDate) {
       await this.updateStatementDate(uniqueId);
+    }
+
+    if (audit.publicationDate) {
+      await this.updateAuditEditDate(uniqueId);
     }
   }
 
