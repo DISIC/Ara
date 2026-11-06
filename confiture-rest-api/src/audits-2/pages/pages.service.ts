@@ -104,7 +104,8 @@ export class PagesService {
             name: p.name,
             url: p.url,
             slug: PagesService.generateUniqueSlug(p.name, existingPages.map(page => page.slug)),
-            order: i
+            order: i,
+            auditUniqueId: editUniqueId
           },
           update: {
             ...p,
