@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 
 import { REFERENTIAL, TabSlug } from "../../enums";
 import { useReportStore } from "../../store";
-import { AuditStatus, AuditType } from "../../types";
+import { AuditReference, AuditStatus, AuditType } from "../../types";
 import { getAuditStatus, pluralize, slugify } from "../../utils";
 import SummaryCard, { SummaryCardThemes } from "../SummaryCard.vue";
 
@@ -23,7 +23,9 @@ const stats = computed(() => {
             title: "Taux global<br /> de conformité",
             description: auditInProgress.value
               ? "Disponible à la fin de l’audit"
-              : REFERENTIAL.RGAA_4,
+              : (report.data?.auditReference === AuditReference.RGAA_4
+                  ? REFERENTIAL.RGAA_4
+                  : REFERENTIAL.RGAA_5),
             value: auditInProgress.value ? 0 : report.data?.accessibilityRate,
             total: 100,
             unit: "%",
