@@ -57,11 +57,13 @@ export class PagesService {
     });
   }
 
-  async getPage(editUniqueId: string, pageId: number): Promise<PageResponseDto> {
-    return await this.prisma.auditedPage.findFirstOrThrow({
+  async getPage(editUniqueId: string, slug: string): Promise<PageResponseDto> {
+    return await this.prisma.auditedPage.findUniqueOrThrow({
       where: {
-        auditUniqueId: editUniqueId,
-        id: pageId
+        auditUniqueId_slug: {
+          auditUniqueId: editUniqueId,
+          slug
+        }
       }
     });
   }
@@ -79,14 +81,13 @@ export class PagesService {
       const dataIds = data.pages.filter(p => p.id).map(p => p.id);
       const idsToDelete = existingPages.filter(p => !dataIds.includes(p.id)).map(p => p.id);
 
-      const deletion = idsToDelete.length
-        ? tx.auditedPage.deleteMany({
-            where: {
-              id: { in: idsToDelete }
-            }
-          })
-        // FIXME: meh or ok?
-        : Promise.resolve([]);
+      if (idsToDelete.length) {
+        await tx.auditedPage.deleteMany({
+          where: {
+            id: { in: idsToDelete }
+          }
+        });
+      }
 
       // add new pages and update existing ones
       const upserts = data.pages.map(async (p, i) => {
@@ -94,19 +95,16 @@ export class PagesService {
         const slug = existingPage?.slug ?? PagesService.generateUniqueSlug(p.name, existingPages.map(page => page.slug));
         return tx.auditedPage.upsert({
           where: {
-            id: p.id,
             auditUniqueId_slug: {
               auditUniqueId: editUniqueId,
               slug
             }
           },
-          // FIXME: order ok? is auditUniqueId needed?
           create: {
             name: p.name,
             url: p.url,
             slug: PagesService.generateUniqueSlug(p.name, existingPages.map(page => page.slug)),
-            order: i,
-            auditUniqueId: editUniqueId
+            order: i
           },
           update: {
             ...p,
@@ -115,21 +113,11 @@ export class PagesService {
         });
       });
 
-      // update audit statement date
+      // update audit statement and edition date
       this.eventEmitter.emit(EVENTS.PAGES_UPDATED, editUniqueId);
 
-      // only return updated pages
-      const [_, ...updatedPages] = await Promise.all([deletion, ...upserts]);
-      return updatedPages;
-    });
-  }
-
-  async deletePage(editUniqueId: string, pageId: number): Promise<PageResponseDto> {
-    return await this.prisma.auditedPage.delete({
-      where: {
-        auditUniqueId: editUniqueId,
-        id: pageId
-      }
+      // return updated pages
+      return await Promise.all(upserts);
     });
   }
 

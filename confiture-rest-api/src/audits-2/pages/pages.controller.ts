@@ -1,5 +1,5 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { Post, Delete, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors, Put } from "@nestjs/common";
+import { Post, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors, Put } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
@@ -23,7 +23,7 @@ export class PagesController {
     @Body() body: CreatePageRequestDto,
     @CurrentUser() user: User | null
   ): Promise<PageResponseDto> {
-    await this.authorizationService.authorize(AuditPolicy, "read", user);
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
     return await this.pageService.createPage(uniqueId, body);
   }
 
@@ -36,14 +36,14 @@ export class PagesController {
     return await this.pageService.getPages(uniqueId);
   }
 
-  @Get(":pageId")
+  @Get(":slug")
   async getPage(
     @Param("uniqueId") uniqueId: string,
-    @Param("pageId") pageId: number,
+    @Param("slug") slug: string,
     @CurrentUser() user: User | null
   ): Promise<PageResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "read", user);
-    return await this.pageService.getPage(uniqueId, pageId);
+    return await this.pageService.getPage(uniqueId, slug);
   }
 
   @Put()
@@ -54,15 +54,5 @@ export class PagesController {
   ): Promise<PageResponseDto[]> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
     return await this.pageService.updatePages(uniqueId, body);
-  }
-
-  @Delete(":pageId")
-  async deletePage(
-    @Param("uniqueId") uniqueId: string,
-    @Param("pageId") pageId: number,
-    @CurrentUser() user: User | null
-  ): Promise<PageResponseDto> {
-    await this.authorizationService.authorize(AuditPolicy, "update", user);
-    return await this.pageService.deletePage(uniqueId, pageId);
   }
 }
