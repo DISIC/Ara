@@ -1,6 +1,8 @@
 import type { Request } from "express";
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { AuthService } from "./auth.service";
+import { AuthenticationJwtPayload } from "./jwt-payloads";
 
 /**
  * Extract the authentication token and verifies it.
@@ -9,7 +11,7 @@ import { JwtService } from "@nestjs/jwt";
  */
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
-  constructor(private readonly jwt: JwtService) {}
+  constructor(private readonly jwt: JwtService, private readonly authService: AuthService) {}
 
   use(req: Request, res: any, next: (error?: any) => void) {
     const token = this.extractTokenFromHeader(req);
@@ -20,10 +22,12 @@ export class UserMiddleware implements NestMiddleware {
     }
 
     this.jwt
-      .verifyAsync(token)
+      .verifyAsync<AuthenticationJwtPayload>(token)
       .then((payload) => {
-        req["user"] = payload;
-        next();
+        this.authService.getUserByUid(payload.sub).then(user => {
+          req.user = user;
+          next();
+        }).catch(next);
       })
       .catch(next);
   }
