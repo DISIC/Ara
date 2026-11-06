@@ -94,6 +94,7 @@ export class TestsController {
           }
         },
         auditType: "FULL",
+        auditReference: "RGAA_4",
         procedureName: "Audit de mon petit site",
         auditor: {
           connectOrCreate: {

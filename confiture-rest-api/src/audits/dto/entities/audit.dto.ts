@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { AuditReference, AuditType } from "../../../generated/prisma/client";
 
-import { AuditType } from "../../../generated/prisma/client";
 import { NotesFileDto } from "./notes-file.dto";
 import { PageDto } from "./page.dto";
 import { TestEnvironmentDto } from "./test-environment.dto";
@@ -17,6 +17,7 @@ export class AuditDto {
 
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;
+  auditReference: AuditReference;
   procedureName: string;
   transverseElementsPageId: number;
   auditorName: string | null;
