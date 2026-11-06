@@ -18,6 +18,14 @@ const props = defineProps<{
 
 defineSlots<{ label(): void }>();
 
+defineExpose({ focusInput: () => {
+  const inputElementChecked: HTMLInputElement = document
+    .querySelector(`[id*="checkbox-group-${uniqueId}"]:checked`) as HTMLInputElement;
+  if (inputElementChecked) {
+    inputElementChecked.focus();
+  }
+} });
+
 const emit = defineEmits<{
   (e: "update:modelValue", payload: any): void;
 }>();

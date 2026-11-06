@@ -73,6 +73,9 @@ watch(switchValue, async (switchValue) => {
                 name: "audit-overview",
                 params: { uniqueId: uniqueId }
               }
+            },
+            actionAfterClose: () => {
+              focusInput();
             }
           }
         );

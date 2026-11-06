@@ -51,6 +51,8 @@ const canTransferAudit = computed(() => {
 
 const notify = useNotifications();
 
+const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
+
 const deleteModalRef = ref<InstanceType<typeof DeleteModal>>();
 const transferModalRef = ref<InstanceType<typeof TransferModal>>();
 const duplicateModalRef = ref<InstanceType<typeof DuplicateModal>>();
@@ -72,6 +74,9 @@ function duplicateAudit(name: string) {
           cb() {
             router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }
+        },
+        actionAfterClose: () => {
+          optionsDropdownRef?.value?.buttonRef?.focus();
         }
       });
     })
