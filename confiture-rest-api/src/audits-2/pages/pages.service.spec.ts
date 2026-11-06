@@ -1,3 +1,5 @@
+import { describe, it, expect } from "vitest";
+
 import { PagesService } from "./pages.service";
 
 describe("pagesService", () => {
