@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { AuditReference } from "../../../../confiture-rest-api/src/generated/prisma/enums";
 import { useDevMode } from "../../composables/useDevMode";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -12,10 +13,14 @@ import {
   useResultsStore,
   useSystemStore
 } from "../../store";
+import { AuditTypeString } from "../../types";
 import {
   captureWithPayloads,
   formatBytes,
   formatDate,
+  getAuditReference,
+  getCriteriaCount,
+  getVersionRgaa,
   isSameDay,
   slugify
 } from "../../utils";
@@ -30,6 +35,8 @@ import TransferModal from "./TransferModal.vue";
 
 const props = defineProps<{
   auditName: string;
+  auditReference: AuditReference;
+  auditType: AuditTypeString;
   keyInfos: {
     title: string;
     description: string;
@@ -252,7 +259,10 @@ onMounted(() => {
       problème lié à l’enregistrement
     </span>
   </h1>
-  <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
+  <p class="fr-text--xl fr-mb-1w">{{ auditName }}</p>
+  <p class="fr-text--sm fr-mb-4w">
+    {{ getAuditReference(auditReference) }} - {{ getCriteriaCount(auditType) }} critères - {{ getVersionRgaa(auditReference) }}
+  </p>
 
   <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">
     <div
