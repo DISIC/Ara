@@ -1,6 +1,6 @@
 import { AuditReference } from "../../../confiture-rest-api/src/generated/prisma/enums";
 
-describe("Compliance with RGAA 4 or 5 Audits", () => {
+describe("RGAA 4 or 5 Audit Compliance", () => {
   it("Account : a RGAA 4 audit with blocking user impacts is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_4, countBlockingUserImpact: 8 }).then(() => {
