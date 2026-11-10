@@ -19,7 +19,7 @@ Un lien vers [Ara](https://ara.numerique.gouv.fr/).
 ```
 Ceci est un bloc de code.
 Avec une deuxième ligne.
-Et du vrai code ci-après :
+Et du vrai code ci-après&nbsp;:
 ```
 
 ```
