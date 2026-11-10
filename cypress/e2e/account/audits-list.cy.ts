@@ -4,7 +4,11 @@ describe("Audits list", () => {
   // Create an logged in account and 4 associated audits (1 completed, 1 pristine and 2 in progress)
   beforeEach(() => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true });
+      cy.createTestAudit({
+        auditorEmail: username,
+        isComplete: true,
+        fillStatement: true
+      }).as("auditStatementFilled"); ;
       cy.createTestAudit({ auditorEmail: username, isPristine: true });
       cy.createTestAudit({ auditorEmail: username });
       cy.createTestAudit({ auditorEmail: username }).as("audit");
@@ -137,9 +141,9 @@ describe("Audits list", () => {
   });
 
   it("User can copy report link", () => {
-    cy.contains("button", "Actions").click();
-    cy.contains("button", "Copier le lien du rapport").click();
-    cy.get("@audit").then((audit) => {
+    cy.get("@auditStatementFilled").then((audit) => {
+      cy.get(".fr-badge--green-emeraude").parent().contains("button", "Actions").click()
+        .closest(".dropdown-container").contains("button", "Copier le lien du rapport").click();
       cy.assertClipboardValue(
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
@@ -151,12 +155,9 @@ describe("Audits list", () => {
   });
 
   it("User can copy statement link", () => {
-    cy.visit("http://localhost:3000/compte");
-
-    cy.get(".dropdown-container:last").contains("button", "Actions").click();
-    cy.contains("button", "Copier le lien de la déclaration").click();
-
-    cy.get("@audit").then((audit) => {
+    cy.get("@auditStatementFilled").then((audit) => {
+      cy.get(".fr-badge--green-emeraude").parent().contains("button", "Actions").click()
+        .closest(".dropdown-container").contains("button", "Copier le lien de la déclaration").click();
       cy.assertClipboardValue(
         // @ts-ignore
         // TODO: remove `@ts-ignore` when the following issue is fixed:
