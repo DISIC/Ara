@@ -47,11 +47,11 @@ const notify = useNotifications();
 
 const maxFileSizeHumanReadable = computed(() => formatBytes(props.maxFileSize));
 
-const acceptedFormatsHtml = computed(() => {
+const acceptedFormatsText = computed(() => {
   if (!props.acceptedFormats) {
     return "Tous les formats sont pris en compte";
   } else {
-    return "Fichiers supportés&#8239;: " + props.acceptedFormats.join(", ");
+    return "Fichiers supportés\u00A0: " + props.acceptedFormats.join(", ");
   }
 });
 
@@ -155,8 +155,8 @@ async function flOnDelete(
       >
         <label class="fr-label" :for="`file-upload-${id}`">
           {{ title }}
-          <span class="fr-hint-text">Taille maximale par fichier&#8239;: {{ maxFileSizeHumanReadable }}.
-            <span v-html="acceptedFormatsHtml"></span>.
+          <span class="fr-hint-text">Taille maximale par fichier&nbsp;: {{ maxFileSizeHumanReadable }}.
+            {{ acceptedFormatsText }}.
           </span>
         </label>
         <input

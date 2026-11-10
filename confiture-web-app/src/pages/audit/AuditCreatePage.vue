@@ -322,7 +322,7 @@ function setTopicAccordionStatus(
 
   <LeaveModal
     ref="leaveModalRef"
-    title="Quitter avant d’avoir terminé le paramétrage ? "
+    title="Quitter avant d’avoir terminé le paramétrage&#8239;? "
     icon="fr-icon-warning-line"
     confirm="Quitter le paramétrage"
     cancel="Annuler"

@@ -16,8 +16,8 @@ export function plain(data: AccountConfirmationEmailData): string {
   return `
     Bonjour,
 
-    Bienvenue sur Ara !
+    Bienvenue sur Ara&#8239;!
 
-    Connectez-vous pour accéder à votre espace : ${data.loginLink}.
+    Connectez-vous pour accéder à votre espace&nbsp;: ${data.loginLink}.
   `;
 }

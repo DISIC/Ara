@@ -11,7 +11,7 @@ import TopLink from "../../components/ui/TopLink.vue";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Données personnelles, suivi d’audience et vie privée</h1>
     <h2>Données personnelles</h2>
-    <h3>Qui est responsable d’Ara ?</h3>
+    <h3>Qui est responsable d’Ara&#8239;?</h3>
     <p>
       Ara est un outil d’audit d’accessibilité numérique développé au sein la
       direction interministérielle du numérique (DINUM).
@@ -20,7 +20,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       Le responsable du traitement des données est la DINUM, représentée par
       Stéphanie Schaer, directrice interministérielle du numérique.
     </p>
-    <h3>Pourquoi et comment vos données personnelles sont traitées ?</h3>
+    <h3>Pourquoi et comment vos données personnelles sont traitées&#8239;?</h3>
     <div class="fr-table fr-table--bordered fr-table--no-caption">
       <div class="fr-table__wrapper">
         <div class="fr-table__container">
@@ -71,7 +71,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         </div>
       </div>
     </div>
-    <h3>Qui nous aide à traiter vos données personnelles ?</h3>
+    <h3>Qui nous aide à traiter vos données personnelles&#8239;?</h3>
     <p>
       Afin d’héberger vos données personnelles, nous faisons appel à un
       sous-traitant. Avant de lui transmettre vos données, nous nous sommes
@@ -108,12 +108,12 @@ import TopLink from "../../components/ui/TopLink.vue";
         </div>
       </div>
     </div>
-    <h3>Quels sont vos droits ?</h3>
+    <h3>Quels sont vos droits&#8239;?</h3>
     <p>Vous disposez&nbsp;:</p>
     <ul>
-      <li>d’un droit d’information et d’un droit d’accès à vos données ;</li>
-      <li>d’un droit à la limitation du traitement de vos données ;</li>
-      <li>d’un droit de rectification ;</li>
+      <li>d’un droit d’information et d’un droit d’accès à vos données&#8239;;</li>
+      <li>d’un droit à la limitation du traitement de vos données&#8239;;</li>
+      <li>d’un droit de rectification&#8239;;</li>
       <li>d’un droit d’opposition.</li>
     </ul>
     <p>
@@ -151,7 +151,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
 
     <h3>
-      Ce site n’affiche pas de bannière de consentement aux cookies, pourquoi ?
+      Ce site n’affiche pas de bannière de consentement aux cookies, pourquoi&#8239;?
     </h3>
     <p>
       Nous respectons simplement la loi, qui dit que certains outils de suivi
@@ -166,9 +166,9 @@ import TopLink from "../../components/ui/TopLink.vue";
       votre personne.
     </p>
 
-    <h3>Je contribue à enrichir vos données, puis-je y accéder ?</h3>
+    <h3>Je contribue à enrichir vos données, puis-je y accéder&#8239;?</h3>
     <p class="fr-mb-0">
-      Bien sûr ! Les statistiques d’usage sont disponibles en accès libre sur
+      Bien sûr&#8239;! Les statistiques d’usage sont disponibles en accès libre sur
       <a href="https://stats.data.gouv.fr/">stats.data.gouv.fr</a>.
     </p>
     <div class="top-link">

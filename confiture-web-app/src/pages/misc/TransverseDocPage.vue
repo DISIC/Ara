@@ -6,8 +6,8 @@ import TopLink from "../../components/ui/TopLink.vue";
 
 <template>
   <PageMeta
-    title="Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;» ?"
-    description="Documentation pour expliquer comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;» ? du site ara.numerique.gouv.fr"
+    title="Comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;?"
+    description="Documentation pour expliquer comment utiliser l’onglet «&nbsp;Éléments transverses&nbsp;»&#8239;? du site ara.numerique.gouv.fr"
   />
 
   <section class="fr-my-0 fr-mx-auto content">

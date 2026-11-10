@@ -30,7 +30,7 @@ async function closeResendSuccessAlert() {
       Un lien pour confirmer votre adresse e-mail vient de vous être envoyé à l’adresse&nbsp;:<br /><strong>{{ userEmail }}</strong>
     </p>
 
-    <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu ?</h2>
+    <h2 class="fr-text--md fr-mb-1w">Aucun e-mail reçu&#8239;?</h2>
 
     <ul class="fr-text--sm fr-mb-1w">
       <li>Vérifiez votre dossier « courrier indésirable » (spams).</li>
@@ -59,7 +59,7 @@ async function closeResendSuccessAlert() {
     </div>
 
     <h2 class="fr-text--md fr-mb-1w">
-      L’adresse e-mail saisie est erronée ?
+      L’adresse e-mail saisie est erronée&#8239;?
     </h2>
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"

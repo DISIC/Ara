@@ -1,6 +1,6 @@
 # Ara
 
-Ara est une plateforme web basée sur le référentiel général d'amélioration de l'accessibilité (RGAA) qui permet aux auditeurs et auditrices de :
+Ara est une plateforme web basée sur le référentiel général d'amélioration de l'accessibilité (RGAA) qui permet aux auditeurs et auditrices de&nbsp;:
 
 - réaliser leurs audits d'accessibilité numérique en ligne,
 - générer automatiquement les rapports de ces audits ainsi que les déclarations d'accessibilité.
@@ -11,25 +11,25 @@ Ara est une plateforme web basée sur le référentiel général d'amélioration
 ## Organisation du code
 
 Ce projet est organisé en _monorepo_ (voir [Monorepo - Wikipedia](https://en.wikipedia.org/wiki/Monorepo)).\
-Les espaces de travail (_workspaces_) sont :
+Les espaces de travail (_workspaces_) sont&nbsp;:
 
 - `confiture-rest-api` (_backend_) ([Documentation du backend](./confiture-rest-api/README.md))
 - `confiture-web-app` (_frontend_) ([Documentation du frontend](./confiture-web-app/README.md))
 
 ## Prérequis
 
-- Environnement d'exécution JavaScript (_JavaScript runtime environment_) :\
+- Environnement d'exécution JavaScript (_JavaScript runtime environment_)&nbsp;:\
   [Node.js](https://nodejs.org) version `24.22.1`
-- Gestionnaire de paquets (_Package manager_) :\
+- Gestionnaire de paquets (_Package manager_)&nbsp;:\
   [Yarn 4 (Modern)](https://yarnpkg.com/) version `4.9.2`
-- Conteneurisation :\
+- Conteneurisation&nbsp;:\
   [Docker](https://www.docker.com)
 
 ## Installation
 
-Une seule commande pour :
+Une seule commande pour&nbsp;:
 
-- installer toutes les dépendances : backend + frontend
+- installer toutes les dépendances&nbsp;: backend + frontend
 - générer les fichiers requis du RGAA (critères et tests et méthodologies)
 - générer les types de l’API
 
@@ -42,7 +42,7 @@ yarn install
 
 ## Développement
 
-Une seule commande pour lancer les 2 serveurs backend et frontend en local en parallèle :
+Une seule commande pour lancer les 2 serveurs backend et frontend en local en parallèle&nbsp;:
 
 ```sh
 yarn dev
@@ -62,21 +62,21 @@ yarn dev
 **ESLint** est utilisé à la fois pour l’analyse statique du code et le formatage stylistique (indentation, etc.).
 Pour les fichiers non pris en charge par ESLint (CSS, HTML, Markdown, etc), ESLint utilise **Prettier** en tant qu’outil de formatage externe.
 Nous utilisons [la configuration ESLint d’Anthony Fu](https://github.com/antfu/eslint-config) comme base.
-Voir aussi la configuration de ce projet : [eslint.config.mjs](https://github.com/DISIC/Ara/blob/main/eslint.config.mjs)
+Voir aussi la configuration de ce projet&nbsp;: [eslint.config.mjs](https://github.com/DISIC/Ara/blob/main/eslint.config.mjs)
 
-Une vue de l’ensemble des règles de _lint_ est disponible en exécutant à la racine du projet :
+Une vue de l’ensemble des règles de _lint_ est disponible en exécutant à la racine du projet&nbsp;:
 
 ```sh
 yarn dlx @eslint/config-inspector
 ```
 
-On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet :
+On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet&nbsp;:
 
 ```sh
 yarn lint
 ```
 
-On peut _linter_ et corriger les erreurs corrigeables automatiquement avec :
+On peut _linter_ et corriger les erreurs corrigeables automatiquement avec&nbsp;:
 
 ```sh
 yarn lint --fix
@@ -86,13 +86,13 @@ yarn lint --fix
 
 **Stylelint** est utilisé pour linter le code CSS présent dans les fichiers `.css` et `.vue` du projet frontend.
 
-On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet :
+On peut _linter_ l’ensemble du projet en exécutant, à la racine du projet&nbsp;:
 
 ```sh
 yarn lint:styles
 ```
 
-On peut _linter_ et corriger les erreurs corrigeables automatiquement avec :
+On peut _linter_ et corriger les erreurs corrigeables automatiquement avec&nbsp;:
 
 ```sh
 yarn lint:styles --fix
@@ -100,12 +100,12 @@ yarn lint:styles --fix
 
 ## Éditeur de code VSCodium / VS Code
 
-Sont disponibles sur ce projet :
+Sont disponibles sur ce projet&nbsp;:
 
-- un paramètrage par défaut qui améliore l’expérience de développement :
-  - _lint_ et formatage automatique à la sauvegarde des fichiers ;
-  - on ne tient pas compte des règles stylistiques dans l'IDE, mais on continue à les corriger automatiquement.
-- des tâches pour _linter_ l’ensemble du projet (voir [Integrate with External Tools via Tasks](https://code.visualstudio.com/docs/debugtest/tasks)) :
+- un paramètrage par défaut qui améliore l’expérience de développement&nbsp;:
+  - _lint_ et formatage automatique à la sauvegarde des fichiers
+  - on ne tient pas compte des règles stylistiques dans l'IDE, mais on continue à les corriger automatiquement
+- des tâches pour _linter_ l’ensemble du projet (voir [Integrate with External Tools via Tasks](https://code.visualstudio.com/docs/debugtest/tasks))&nbsp;:
   - "Lint entire project"
   - "Lint + fix entire project"
   - "TypeScript: show all errors" pour les erreurs TypeScript non relevées par ESLint
@@ -117,7 +117,7 @@ Sont disponibles sur ce projet :
 
 ### Environnement de développement
 
-Le frontend est automatiquement déployé sur Scalingo :
+Le frontend est automatiquement déployé sur Scalingo&nbsp;:
 
 - La branche principale `main` est déployée sur [https://ara-dev.osc-secnum-fr1.scalingo.io/](https://ara-dev.osc-secnum-fr1.scalingo.io/).
 - Les branches des PR sont déployées sur [https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/](https://ara-dev-prXXXX.osc-secnum-fr1.scalingo.io/) (où XXX l’identifiant de la PR).
@@ -126,5 +126,4 @@ Chaque déploiement a sa propre base de données.
 
 ### Environnement de production
 
-L’application est automatiquement déployée en production avec Scalingo. Les
-migrations de base de donnée sont lancées automatiquement si besoin.
+L’application est automatiquement déployée en production avec Scalingo. Les migrations de base de donnée sont lancées automatiquement si besoin.

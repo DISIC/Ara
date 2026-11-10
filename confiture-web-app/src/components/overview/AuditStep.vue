@@ -66,7 +66,7 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModalRef.value?.hide();
 
-      notify("success", undefined, `Audit « ${name} » créé`, {
+      notify("success", undefined, `Audit «&nbsp;${name}&nbsp;» créé`, {
         action: {
           label: "Accéder à l’audit",
           cb() {
@@ -95,7 +95,7 @@ async function deleteAudit() {
 
     deleteModalRef.value?.hide();
 
-    notify("success", undefined, `Audit « ${auditProcedureName.value} » supprimé`);
+    notify("success", undefined, `Audit «&nbsp;${auditProcedureName.value}&nbsp;» supprimé`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"

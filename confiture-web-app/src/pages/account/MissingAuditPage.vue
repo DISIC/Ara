@@ -6,10 +6,10 @@ const accountStore = useAccountStore();
 </script>
 
 <template>
-  <PageMeta title="Audit manquant ?" />
+  <PageMeta title="Audit manquant&#8239;?" />
 
   <div class="wrapper fr-mb-6w">
-    <h1>Un audit n’apparaît pas dans votre espace&nbsp;?</h1>
+    <h1>Un audit n’apparaît pas dans votre espace&#8239;?</h1>
     <p class="fr-text--lg">
       Pour qu’un audit apparaisse dans votre espace, il doit être transféré à l’adresse e-mail de votre compte<template v-if="accountStore.account">
         &nbsp;: <strong>{{ accountStore.account.email }}</strong>.
@@ -38,7 +38,7 @@ const accountStore = useAccountStore();
   </div>
 
   <div class="fr-py-6w fr-px-2w banner">
-    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez un problème&nbsp;?</h2>
+    <h2 class="fr-h4 fr-mb-2w">Vous rencontrez un problème&#8239;?</h2>
     <p class="fr-mb-0">
       Contactez-nous par e-mail&nbsp;: <strong>ara@design.numerique.gouv.fr</strong>
     </p>

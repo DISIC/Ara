@@ -127,7 +127,7 @@ async function handleSubmit() {
     <div>
       <hr class="fr-mt-3w" />
 
-      <h2 class="fr-h5">Vous n’avez pas de compte ?</h2>
+      <h2 class="fr-h5">Vous n’avez pas de compte&#8239;?</h2>
 
       <div class="fr-btns-group fr-mb-3w">
         <RouterLink

@@ -44,9 +44,10 @@ const commonExtensions: Extensions = [
     underline: false
   }),
   CodeBlockLowlight.configure({ lowlight, defaultLanguage: "html" }),
+
   Typography.configure({
-    openDoubleQuote: "« ",
-    closeDoubleQuote: " »"
+    openDoubleQuote: "«\u00A0",
+    closeDoubleQuote: "\u00A0»"
   }),
   MarkdownExtension,
   Dropcursor.configure({ color: "var(--dsfr-outline)", width: 3 })

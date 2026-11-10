@@ -15,10 +15,10 @@ export function html(data: RequestPasswordResetEmailData): string {
 export function plain(data: RequestPasswordResetEmailData): string {
   return `Bonjour,
 
-Pour changer le mot de passe de votre compte, cliquez sur le bouton ci-dessous :
+Pour changer le mot de passe de votre compte, cliquez sur le bouton ci-dessous&nbsp;:
     
 ${data.verificationLink}
 
-Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
 `;
 }

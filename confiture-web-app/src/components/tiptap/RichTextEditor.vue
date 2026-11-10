@@ -39,7 +39,7 @@ function announceUploadSuccess(fileName: string) {
   if (fileName === "external") {
     uploadSuccess.value = "L’image a été correctement insérée";
   } else {
-    uploadSuccess.value = `L’image « ${fileName} » a été correctement insérée`;
+    uploadSuccess.value = `L’image «\u00A0${fileName}\u00A0» a été correctement insérée`;
   }
 
   setTimeout(() => {

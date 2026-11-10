@@ -7,7 +7,7 @@ const reportStore = useReportStore();
 
 <template>
   <PageMeta
-    title="Contactez-nous ou contribuez !"
+    title="Contactez-nous ou contribuez&#8239;!"
     description="Contactez-nous ou contribuez à l’amélioration d’Ara"
   />
 
@@ -45,7 +45,7 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues !</h2>
+    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues&#8239;!</h2>
 
     <div class="fr-callout">
       <p class="fr-callout__text">
