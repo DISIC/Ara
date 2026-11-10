@@ -129,7 +129,7 @@ const requirementClass = computed(() => {
         }"
         class="fr-link"
       >
-        Mot de passe oublié ?
+        Mot de passe oublié&#8239;?
       </RouterLink>
     </p>
   </div>

@@ -216,8 +216,8 @@ function isViewable(flFile: FileListFile) {
 
 function getDeleteModalTitle(flFile: FileListFile) {
   return isImage(flFile)
-    ? `Supprimer l’image « ${flFile.filename} » ?`
-    : `Supprimer le fichier ?`;
+    ? `Supprimer l’image «\u00A0${flFile.filename}\u00A0»\u202F?`
+    : `Supprimer le fichier\u202F?`;
 };
 
 function getDeleteModalMessage(flFile: FileListFile) {
@@ -354,7 +354,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
           <Transition name="inline-confirm">
             <form v-if="inlineConfirmPendingRange === i" class="inline-confirm">
               <fieldset class="fr-fieldset fr-mb-0">
-                <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
+                <legend class="fr-fieldset__legend fr-text--lg">{{ getDeleteModalTitle(file) }}</legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
                   <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline fr-btns-group--inline-sm fr-btns-group--icon-left">
                     <button

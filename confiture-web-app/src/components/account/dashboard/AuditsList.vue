@@ -39,7 +39,7 @@ async function deleteAudit() {
       setFocusAfterAction();
     }
 
-    notify("success", undefined, `Audit « ${selectedAuditName.value} » supprimé`);
+    notify("success", undefined, `Audit «&nbsp;${selectedAuditName.value}&nbsp;» supprimé`);
   } catch (error) {
     notify(
       "error",

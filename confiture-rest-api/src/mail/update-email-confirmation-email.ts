@@ -15,6 +15,6 @@ export function html(): string {
 export function plain(): string {
   return `L’adresse e-mail de votre compte Ara a bien bien été modifiée.
 
-Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
 `;
 }

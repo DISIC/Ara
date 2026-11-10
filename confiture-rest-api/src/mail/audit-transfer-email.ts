@@ -18,10 +18,10 @@ export function html(data: AuditTransferEmailData): string {
 export function plain(data: AuditTransferEmailData): string {
   return `Un audit vous a été transféré
 
-    ${data.senderName ? data.senderName + " (" + data.senderEmail + ")" : data.senderEmail} vous a transféré l’audit « ${data.procedureName} ». Si vous possédez un compte Ara, vous retrouverez cet audit dans votre espace.
+    ${data.senderName ? data.senderName + " (" + data.senderEmail + ")" : data.senderEmail} vous a transféré l’audit «&nbsp;${data.procedureName}&nbsp;». Si vous possédez un compte Ara, vous retrouverez cet audit dans votre espace.
 
     ${data.auditUrl}
 
-    Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+    Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
   `;
 }

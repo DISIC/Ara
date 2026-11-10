@@ -250,7 +250,7 @@ onBeforeRouteLeave((to) => {
     leaveModalDestination.value = to.fullPath;
 
     dialog.showConfirm({
-      title: "Quitter sans enregistrer vos modifications ?",
+      title: "Quitter sans enregistrer vos modifications\u202F?",
       message: "Les modifications de votre déclaration d’accessibilité ne seront pas enregistrées.",
       confirmLabel: "Quitter sans enregistrer",
       cancelLabel: "Reprendre les modifications",

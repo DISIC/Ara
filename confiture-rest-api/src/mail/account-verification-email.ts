@@ -16,13 +16,13 @@ export function plain(data: AccountVerificationEmailData): string {
   return `
     Bonjour,
 
-    Pour finaliser la création de votre compte, cliquez sur le bouton ci-dessous :
+    Pour finaliser la création de votre compte, cliquez sur le bouton ci-dessous&nbsp;:
     
     ${data.verificationLink}
     Cette action est possible pendant 1 heure.
 
     Si vous n’avez pas demandé la création de ce compte, vous pouvez ignorer et supprimer cet e-mail.
 
-    Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+    Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
   `;
 }
