@@ -45,7 +45,7 @@ async function bootstrap() {
     console.log(" ✅");
   }
 
-  console.log("✨ Done ! ✨");
+  console.log("✨ Done! ✨");
 
   await app.close();
 }

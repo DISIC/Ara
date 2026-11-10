@@ -13,10 +13,10 @@ export function html(data: UpdateEmailVerificationData): string {
 }
 
 export function plain(data: UpdateEmailVerificationData): string {
-  return `Pour finaliser le changement de votre adresse e-mail, cliquez sur le bouton ci-dessous :
+  return `Pour finaliser le changement de votre adresse e-mail, cliquez sur le bouton ci-dessous&nbsp;:
 
 ${data.verificationLink}
 
-Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
 `;
 }

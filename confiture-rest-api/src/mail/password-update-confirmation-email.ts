@@ -16,8 +16,8 @@ export function plain(data: PasswordUpdateConfirmationEmailData): string {
   return `
     Bonjour,
 
-    Connectez-vous avec votre nouveau mot de passe pour accéder à votre espace : ${data.loginLink}
+    Connectez-vous avec votre nouveau mot de passe pour accéder à votre espace&nbsp;: ${data.loginLink}
 
-    Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+    Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
   `;
 }

@@ -20,4 +20,4 @@ echo "🚧 BUILDING... Pruning dependencies"
 yarn workspaces focus --production --all
 yarn cache clean
 
-echo "✅ BUILDING DONE !"
+echo "✅ BUILDING DONE!"

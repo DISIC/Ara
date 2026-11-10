@@ -21,8 +21,8 @@
           Vous venez de créer l’audit «
           <strong>{{ procedureName }}</strong> ». {{#if is106Criteria}}Pour
           accéder à votre audit, rapport d’audit et déclaration d’accessibilité,
-          utilisez le lien ci-dessous :{{else}}Pour accéder à votre audit et
-          rapport d’audit, utilisez le lien ci-dessous :{{/if}}
+          utilisez le lien ci-dessous&nbsp;:{{else}}Pour accéder à votre audit et
+          rapport d’audit, utilisez le lien ci-dessous&nbsp;:{{/if}}
         </mj-text>
       </mj-column>
     </mj-section>
@@ -41,8 +41,8 @@
 
     <mj-section>
       <mj-column>
-        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
-        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <br/><a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
+        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara&#8239;?</mj-text>
+        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit&nbsp;: <br/><a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
       </mj-column>
     </mj-section>
 

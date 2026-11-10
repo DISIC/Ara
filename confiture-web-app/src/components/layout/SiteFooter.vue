@@ -19,7 +19,7 @@ const bottomLinks = [
     routeName: "site-map"
   },
   {
-    label: "Accessibilité&nbsp;: totalement conforme",
+    label: "Accessibilité\u00A0: totalement conforme",
     routeName: "accessibility"
   },
   {
@@ -155,7 +155,7 @@ function switchDevMode() {
       </div>
       <div class="fr-footer__partners">
         <p class="fr-footer__partners-title fr-mb-1w">
-          Conçu avec le soutien de notre partenaire :
+          Conçu avec le soutien de notre partenaire&nbsp;:
         </p>
         <div class="fr-footer__partners-logos">
           <div class="fr-footer__partners-main">
@@ -167,7 +167,7 @@ function switchDevMode() {
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
+                alt="Site du FIPHFP&nbsp;: Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
               />
             </a>
           </div>
@@ -184,7 +184,7 @@ function switchDevMode() {
               class="fr-footer__bottom-link"
               :to="{ name: link.routeName }"
             >
-              <span v-html="link.label"></span>
+              <span>{{ link.label }}</span>
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">

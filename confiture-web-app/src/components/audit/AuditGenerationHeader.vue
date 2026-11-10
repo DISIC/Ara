@@ -73,7 +73,7 @@ function confirmDuplicate(name: string) {
       isDuplicationLoading.value = false;
       duplicateModal.value?.hide();
 
-      const [notifyTitle, notifyDescription] = accountStore.account ? [undefined, `Audit « ${name} » créé`] : [`Audit « ${name} » créé`, "Un lien d’accès à l’audit vous a été envoyé par e-mail"];
+      const [notifyTitle, notifyDescription] = accountStore.account ? [undefined, `Audit «&nbsp;${name}&nbsp;» créé`] : [`Audit «&nbsp;${name}&nbsp;» créé`, "Un lien d’accès à l’audit vous a été envoyé par e-mail"];
       notify("success", notifyTitle, notifyDescription, {
         action: {
           label: "Accéder à l’audit",
@@ -110,7 +110,7 @@ async function transferAudit(newEmail: string) {
 
     transferModalRef.value?.hide();
 
-    notify("success", `Audit « ${props.auditName} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
+    notify("success", `Audit «&nbsp;${props.auditName}&nbsp;» transféré`, `Lien d’accès envoyé à ${newEmail}`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"
@@ -136,7 +136,7 @@ function confirmDelete() {
     .then(() => {
       resultStore.$reset();
 
-      notify("success", undefined, `Audit « ${auditName} » supprimé`);
+      notify("success", undefined, `Audit «&nbsp;${auditName}&nbsp;» supprimé`);
 
       if (accountStore.account) {
         router.push({ name: "account-dashboard" });

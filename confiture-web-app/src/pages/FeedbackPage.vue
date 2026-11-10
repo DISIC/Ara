@@ -147,7 +147,7 @@ const previousPageName =
         :class="{ 'fr-fieldset--error': error }"
       >
         <legend class="fr-fieldset__legend fr-text--regular">
-          Ce site est-il facile à utiliser ?
+          Ce site est-il facile à utiliser&#8239;?
         </legend>
         <div
           v-for="answer in availableRadioAnswers"
@@ -189,7 +189,7 @@ const previousPageName =
         :class="{ 'fr-fieldset--error': error }"
       >
         <legend class="fr-fieldset__legend fr-text--regular">
-          Le langage employé est-il facile à comprendre ?
+          Le langage employé est-il facile à comprendre&#8239;?
         </legend>
         <div
           v-for="answer in availableRadioAnswers"
@@ -222,7 +222,7 @@ const previousPageName =
       <DsfrFieldWithValidation
         id="general-feedback"
         v-model="feedback"
-        label="Quelles sont vos remarques générales ?"
+        label="Quelles sont vos remarques générales&#8239;?"
         hint="Indiquez ce que vous aimez, n'aimez pas ou les problèmes rencontrés."
         is-text-area
         :validation="[REQUIRED('Champ obligatoire. Indiquez vos remarques générales.')]"
@@ -233,7 +233,7 @@ const previousPageName =
       <DsfrFieldWithValidation
         id="changes"
         v-model="suggestions"
-        label="Que changeriez-vous ou ajouteriez-vous ?"
+        label="Que changeriez-vous ou ajouteriez-vous&#8239;?"
         hint="Indiquez vos besoins ou proposez-nous vos idées d'amélioration."
         is-text-area
         :validation="[REQUIRED('Champ obligatoire. Indiquez ce que vous ajouteriez ou changeriez.')]"
@@ -244,7 +244,7 @@ const previousPageName =
       <div class="fr-form-group fr-mb-4w narrow-content">
         <fieldset class="fr-fieldset">
           <legend class="fr-fieldset__legend fr-text--regular">
-            Si besoin, acceptez-vous d’être contacté par l’équipe de conception ?
+            Si besoin, acceptez-vous d’être contacté par l’équipe de conception&#8239;?
             <span class="fr-hint-text">Nous pourrions vous soliciter pour des
               tests utilisateur ou pour échanger sur vos besoins</span>
           </legend>

@@ -170,7 +170,7 @@ async function cancelEmailUpdate() {
       </p>
     </div>
 
-    <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu&nbsp;?</h3>
+    <h3 class="fr-text--sm fr-mb-1w">Aucun e-mail reçu&#8239;?</h3>
     <p class="fr-text--sm fr-mb-1w">
       Pensez à vérifier que vous n’avez pas reçu l’e-mail dans vos courriers
       indésirables. Sinon veuillez demander l’envoi d’un nouvel e-mail à l’aide
@@ -197,7 +197,7 @@ async function cancelEmailUpdate() {
     </div>
 
     <h3 class="fr-text--sm fr-mb-1w fr-mt-3v">
-      L’adresse e-mail saisie est erronée ?
+      L’adresse e-mail saisie est erronée&#8239;?
     </h3>
     <button
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"

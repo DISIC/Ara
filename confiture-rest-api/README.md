@@ -7,7 +7,7 @@ Le projet est une API [Nest.js](https://nestjs.com/) et utilise une base de donn
 > [!NOTE]
 > Si vous avez lancé `yarn install` à la racine du projet, les dépendances ont déjà été installées.
 
-Installer les dépendances :
+Installer les dépendances&nbsp;:
 
 ```sh
 yarn install
@@ -16,20 +16,20 @@ yarn install
 > [!IMPORTANT]
 > Les étapes suivantes sont à faire dans tous les cas.
 
-Créer le fichier de variables d’environnement :
+Créer le fichier de variables d’environnement&nbsp;:
 
 ```sh
 cp .env.example .env
 ```
 
-Remplir les variables d’environnement requises dans le `.env` :
+Remplir les variables d’environnement requises dans le `.env`&nbsp;:
 
 - `MAILER_USER` et `MAILER_PASSWORD` peuvent être générées via [https://ethereal.email/](https://ethereal.email/) en cliquant sur "Create Ethereal account".
 - `GRIST_*`, `S3_*` et `AWS_*` doivent être demandées en privé.
 - `JWT_SECRET` peut être laissé à sa valeur par défaut.
 - `DATABASE_SSL=false` est requis pour se connecter à une base de donnée sans SSL (par exemple, une base de développement locale)
 
-Lancer la base de données :
+Lancer la base de données&nbsp;:
 
 ```sh
 docker run --name confiture-db \
@@ -52,7 +52,7 @@ Pour lancer la génération des seeds :
 yarn db:seed
 ```
 
-Lancer les migrations de la base de données :
+Lancer les migrations de la base de données&nbsp;:
 
 ```sh
 yarn migrate:dev
@@ -60,7 +60,7 @@ yarn migrate:dev
 
 ## Développement
 
-Lancer le serveur local :
+Lancer le serveur local&nbsp;:
 
 ```sh
 yarn start:dev
@@ -75,13 +75,13 @@ yarn start:dev
 >
 > depuis la racine du projet.
 
-La documentation de l’API est disponible sur Swagger (requiert d’avoir lancé le serveur local) : [http://localhost:4000/swagger](http://localhost:4000/swagger)
+La documentation de l’API est disponible sur Swagger (requiert d’avoir lancé le serveur local)&nbsp;: [http://localhost:4000/swagger](http://localhost:4000/swagger)
 
 ## Création d’une nouvelle route API
 
 Chaque route doit définir clairement le type de donnée qu’elle reçoit et renvoie. Cela permet de générer des types qui peuvent être consommé par l’application front.
 
-Pour cela, définir des _DTO_ (data transfer object) pour la requête et pour la réponse (voir le dossier `src/audits/dto` pour des exemples) et les associer à la route via :
+Pour cela, définir des _DTO_ (data transfer object) pour la requête et pour la réponse (voir le dossier `src/audits/dto` pour des exemples) et les associer à la route via&nbsp;:
 
 - le décorateur `@Api***Response` (`@ApiOkResponse`, `@ApiCreadedResponse`, …)
 - le type du body marqué par `@Body`
