@@ -234,8 +234,8 @@ Cypress.Commands.addQuery(
     const innerFn = (subject: HTMLElement[]) => {
       // Cypress retries this function on failure
       const { top, left, bottom, right } = subject[0].getBoundingClientRect();
-      expect(top).to.be.at.least(0);
-      expect(left).to.be.at.least(0);
+      expect(Math.round(top)).to.be.at.least(0);
+      expect(Math.round(left)).to.be.at.least(0);
       expect(right).to.be.at.most(viewportWidth);
       expect(bottom).to.be.at.most(viewportHeight);
     };

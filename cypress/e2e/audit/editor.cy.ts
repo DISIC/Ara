@@ -54,10 +54,10 @@ describe("Editor", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").type("Copier coller de Markdown :{enter}");
-      cy.get(".tiptap").pasteText("../fixtures/mdContent.md");
-      cy.get(".tiptap strong").should("exist");
-      cy.get(".tiptap img").should("not.exist");
+      cy.get("#notes-modal .tiptap").type("Copier coller de Markdown :{enter}");
+      cy.get("#notes-modal .tiptap").pasteText("../fixtures/mdContent.md");
+      cy.get("#notes-modal .tiptap strong").should("exist");
+      cy.get("#notes-modal .tiptap img").should("not.exist");
     });
   });
 
@@ -68,10 +68,10 @@ describe("Editor", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get(".tiptap").type("Copier coller de texte HTML :{enter}");
-      cy.get(".tiptap").pasteText("../fixtures/notMdContent.txt");
-      cy.get(".tiptap strong").should("not.exist");
-      cy.get(".tiptap img").should("not.exist");
+      cy.get("#notes-modal .tiptap").type("Copier coller de texte HTML :{enter}");
+      cy.get("#notes-modal .tiptap").pasteText("../fixtures/notMDContent.txt");
+      cy.get("#notes-modal .tiptap strong").should("not.exist");
+      cy.get("#notes-modal .tiptap img").should("not.exist");
     });
   });
 
@@ -86,7 +86,7 @@ describe("Editor", () => {
 
       // 3. Copy-paste HTML content with 2 images
       cy.log("** Paste 1 image from clipboard **");
-      cy.get(".criterium-container .tiptap").pasteHTML("../fixtures/contentExample.html");
+      cy.get(".criterium-container .not-compliant-item:nth-child(1) .tiptap").pasteHTML("../fixtures/contentExample.html");
 
       // Editor content has changed => results updated
       cy.wait("@updateResults");
