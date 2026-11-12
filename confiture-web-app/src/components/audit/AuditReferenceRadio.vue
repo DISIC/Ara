@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import elementForm from "@gouvfr/dsfr/dist/artwork/pictograms/document/document.svg?no-inline";
 import { computed, ref } from "vue";
+import documentIcon from "../../assets/dsfr-custom-icons/reference-document.svg?no-inline";
+import mobileIcon from "../../assets/dsfr-custom-icons/reference-mobile.svg?no-inline";
+import webIcon from "../../assets/dsfr-custom-icons/reference-web.svg?no-inline";
 import { AuditReference } from "../../types";
-import DsfrArtwork from "../ui/DsfrArtwork.vue";
 
 const props = defineProps<{
   value: AuditReference;
@@ -28,28 +29,28 @@ const radios = [
     label: "Web",
     description: `<span class="fr-text--bold">Site consulté dans un navigateur</span> sur ordinateur, mobile ou tablette.`,
     disabled: false,
-    icon: elementForm
+    icon: webIcon
   },
   {
     reference: AuditReference.RGAA_5_Web,
     label: "Web",
     description: `<span class="fr-text--bold">Site consulté dans un navigateur</span> sur ordinateur, mobile ou tablette.`,
     disabled: false,
-    icon: elementForm
+    icon: webIcon
   },
   {
     reference: AuditReference.RGAA_5_Mobile,
     label: "App. mobile",
     description: `<span class="fr-text--bold">Application installée</span> sur mobile ou tablette.`,
     disabled: false,
-    icon: elementForm
+    icon: mobileIcon
   },
   {
     reference: AuditReference.RGAA_5_Document,
     label: "Bureautique",
     description: `<span class="fr-text--bold">Document bureautique :</span> texte, tableur, présentation, PDF, etc. Exception : les formulaires PDF.`,
     disabled: true,
-    icon: elementForm
+    icon: documentIcon
   }
 ];
 
@@ -61,16 +62,16 @@ const isDisabled = computed(() =>
 </script>
 
 <template>
-  <div :class="['fr-p-3w wrapper', { 'checked': checked, 'is-error': isError, 'is-disabled': isDisabled }]">
+  <div :class="[' wrapper', { 'checked': checked, 'is-error': isError, 'is-disabled': isDisabled }]">
 
     <div class="radio-header">
       <span v-if="isDisabled" class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">à venir</span>
 
-      <DsfrArtwork :file-path="currentRadioReference.icon" class="checkbox-artwork" />
+      <img alt="" :src="currentRadioReference.icon" />
 
     </div>
 
-    <div class="radio-body">
+    <div class="radio-body fr-p-3w">
       <div class="radio-layer" @click="!isDisabled && $emit('update:modelValue', value)" />
 
       <div class="fr-radio-group fr-radio-group--sm">
@@ -110,6 +111,22 @@ const isDisabled = computed(() =>
 
 .wrapper:not(.is-disabled).checked {
   --border-default-grey: var(--border-plain-blue-france);
+}
+
+.radio-header {
+  height: 9rem;
+  background: var(--background-alt-blue-france);
+  display: flex;
+}
+
+.radio-header img {
+  margin: auto;
+}
+
+.radio-header .fr-badge {
+  position: absolute;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .radio-layer {
