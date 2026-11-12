@@ -7,6 +7,7 @@ import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
+import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 
 @Injectable()
@@ -17,12 +18,24 @@ export class NotesService {
     private readonly fileStorageService: FileStorageService
   ) {}
 
-  async getNotes(_editUniqueId: string) {}
+  async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
+    const result = await this.prisma.audit.findUniqueOrThrow({
+      where: {
+        editUniqueId
+      },
+      select: {
+        notes: true,
+        notesFiles: true
+      }
+    });
+
+    return result;
+  }
 
   async updateNotes(
     editUniqueId: string,
     data: UpdateNotesRequestDto
-  ): Promise<string | null> {
+  ): Promise<NotesResponseDto> {
     const audit = await this.prisma.audit.update({
       where: {
         editUniqueId
@@ -38,7 +51,8 @@ export class NotesService {
     // TODO: update the old way or with an even?
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
-    return audit.notes;
+    // As we are updating notes, it always returns a string (even when actual content is empty).
+    return { notes: audit.notes! };
   }
 
   async createNotesFile(
