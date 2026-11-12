@@ -63,6 +63,11 @@ function submitAuditReference() {
 
     </div>
 
+    <p class="fr-text--sm fr-hint-text fr-mb-0">
+      <span class="fr-icon-information-line" aria-hidden="true" />
+      La version du RGAA ne peut pas être modifiée après la création d'un audit.
+    </p>
+
   </FormWithValidation>
 </template>
 <style scoped>
