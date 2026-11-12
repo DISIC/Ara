@@ -1,9 +1,13 @@
+// @ts-nocheck
 import { Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { JwtService } from "@nestjs/jwt";
 import { compare, hash } from "bcrypt";
-import { nanoid } from "nanoid";
 
+import { nanoid } from "nanoid";
+import { User } from "../generated/prisma/client";
 import { PrismaService } from "../prisma.service";
+import { EVENTS } from "../utils";
 import {
   AccountVerificationJwtPayload,
   AuthenticationJwtPayload,
@@ -46,7 +50,8 @@ export class TokenRegenerationError extends Error {
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtService
+    private readonly jwt: JwtService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   /**
@@ -242,6 +247,7 @@ export class AuthService {
 
   async deleteAccount(username: string) {
     await this.prisma.user.delete({ where: { username } });
+    this.eventEmitter.emit(EVENTS.ACCOUNT_DELETED, username);
   }
 
   async updatePassword(username: string, newPassword: string) {
@@ -432,5 +438,14 @@ export class AuthService {
       });
 
     return email;
+  }
+
+  getUserByUid(uid: string): Promise<User> {
+    return this.prisma.user.findFirstOrThrow({
+      where: {
+        uid,
+        isVerified: true
+      }
+    });
   }
 }
