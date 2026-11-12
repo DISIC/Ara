@@ -4,6 +4,12 @@
 
 <h2 class="fr-sr-only" id="2026">2026</h2>
 
+### 12/11/2026
+
+#### <span aria-hidden="true">🐛</span> Corrections
+
+- Le filtre impact de l'erreur est KO ([#1665](https://github.com/DISIC/Ara/pull/1665/))
+
 ### 28/10/2026
 
 #### <span aria-hidden="true">🐛</span> Corrections
