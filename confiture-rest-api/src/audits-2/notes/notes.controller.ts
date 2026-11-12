@@ -10,13 +10,6 @@ import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-respons
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 import { NotesService } from "./notes.service";
 
-/**
- * TODO:
- * - Document files
- * - Check guidelines if everything is ok
- * - Test with terminal
- */
-
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("/audits/:uniqueId/notes")
 export class NotesController {
@@ -24,6 +17,26 @@ export class NotesController {
     private readonly notesService: NotesService,
     private readonly authorizationService: AuthorizationService
   ) { }
+
+  @Post("files")
+  @SerializeOptions({ type: NotesFileResponseDto, excludeExtraneousValues: true })
+  @UseInterceptors(FileInterceptor("file"))
+  async createNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User | null,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 2000000
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+        })
+    ) file: Express.Multer.File
+  ): Promise<NotesFileResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.notesService.createNotesFile(uniqueId, file);
+  }
 
   @Get()
   @SerializeOptions({ type: NotesWithFilesResponseDto, excludeExtraneousValues: true })
@@ -46,27 +59,7 @@ export class NotesController {
     return await this.notesService.updateNotes(uniqueId, body);
   }
 
-  @Post()
-  @SerializeOptions({ type: NotesFileResponseDto, excludeExtraneousValues: true })
-  @UseInterceptors(FileInterceptor("file"))
-  async createNotesFile(
-    @Param("uniqueId") uniqueId: string,
-    @CurrentUser() user: User | null,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addMaxSizeValidator({
-          maxSize: 2000000
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-        })
-    ) file: Express.Multer.File
-  ): Promise<NotesFileResponseDto> {
-    await this.authorizationService.authorize(AuditPolicy, "update", user);
-    return await this.notesService.createNotesFile(uniqueId, file);
-  }
-
-  @Delete()
+  @Delete("files")
   async deleteNotesFile(
     @Param("uniqueId") uniqueId: string,
     @CurrentUser() user: User | null,

@@ -16,44 +16,7 @@ export class NotesService {
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
     private readonly fileStorageService: FileStorageService
-  ) {}
-
-  async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
-    const result = await this.prisma.audit.findUniqueOrThrow({
-      where: {
-        editUniqueId
-      },
-      select: {
-        notes: true,
-        notesFiles: true
-      }
-    });
-
-    return result;
-  }
-
-  async updateNotes(
-    editUniqueId: string,
-    data: UpdateNotesRequestDto
-  ): Promise<NotesResponseDto> {
-    const audit = await this.prisma.audit.update({
-      where: {
-        editUniqueId
-      },
-      data: {
-        notes: data.notes
-      },
-      select: {
-        notes: true
-      }
-    });
-
-    // TODO: update the old way or with an even?
-    this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
-
-    // As we are updating notes, it always returns a string (even when actual content is empty).
-    return { notes: audit.notes! };
-  }
+  ) { }
 
   async createNotesFile(
     editUniqueId: string,
@@ -103,10 +66,45 @@ export class NotesService {
       }
     });
 
-    // TODO: update the old way or with an even?
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
     return noteFile;
+  }
+
+  async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
+    const result = await this.prisma.audit.findUniqueOrThrow({
+      where: {
+        editUniqueId
+      },
+      select: {
+        notes: true,
+        notesFiles: true
+      }
+    });
+
+    return result;
+  }
+
+  async updateNotes(
+    editUniqueId: string,
+    data: UpdateNotesRequestDto
+  ): Promise<NotesResponseDto> {
+    const audit = await this.prisma.audit.update({
+      where: {
+        editUniqueId
+      },
+      data: {
+        notes: data.notes
+      },
+      select: {
+        notes: true
+      }
+    });
+
+    this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
+
+    // As we are updating notes, it always returns a string (even when actual content is empty).
+    return { notes: audit.notes! };
   }
 
   async deleteNotesFile(editUniqueId: string, data: DeleteNotesFileRequestDto): Promise<boolean> {
@@ -135,7 +133,6 @@ export class NotesService {
       }
     });
 
-    // TODO: update the old way or with an even?
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
     return true;
