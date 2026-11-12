@@ -63,7 +63,7 @@ function getLabelError(notCompliantItemId?: number) {
     <ul role="list" class="fr-raw-list">
       <li
         v-for="(notCompliantItem, index) in notCompliantItems"
-        :key="index"
+        :key="notCompliantItem.id"
         class="criterium-not-compliant-item"
       >
         <div :id="`${sectionId}_${notCompliantItem.id}`" class="criterium-not-compliant-item-header">
@@ -107,7 +107,6 @@ function getLabelError(notCompliantItemId?: number) {
             notCompliantItem.comment &&
               !isTiptapDocumentEmpty(notCompliantItem.comment)
           "
-          :key="error.topic + '.' + error.criterium"
           :document="notCompliantItem.comment"
         />
         <p v-else class="criterium-not-compliant-item-no-erreur">
