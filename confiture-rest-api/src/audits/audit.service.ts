@@ -1172,7 +1172,7 @@ export class AuditService {
       applicableCriteria,
       notApplicableCriteria,
       accessibilityRate,
-      countBlockingUserImpact
+      blockingNCCount
     } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const report: AuditReportDto = {
@@ -1222,7 +1222,7 @@ export class AuditService {
         notApplicable: notApplicableCriteria.length
       },
 
-      countBlockingUserImpact,
+      blockingNCCount,
       accessibilityRate,
 
       // FIXME: some of the return data is never asked to the user
@@ -1464,7 +1464,7 @@ export class AuditService {
         (compliantCriteria.length / applicableCriteria.length) * 100
       ) || 0;
 
-    const countBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
+    const blockingNCCount = notCompliantBlockingUserImpactCriteria.length;
 
     return {
       groupedCriteria,
@@ -1473,7 +1473,7 @@ export class AuditService {
       notCompliantCriteria,
       notApplicableCriteria,
       accessibilityRate,
-      countBlockingUserImpact
+      blockingNCCount
     };
   }
 
@@ -1863,7 +1863,7 @@ export class AuditService {
 
       let complianceLevel = null;
 
-      let countBlockingUserImpact = null;
+      let blockingNCCount = 0;
 
       if (progress >= 1) {
         const resultsGroupedById = allResults.reduce<
@@ -1905,14 +1905,14 @@ export class AuditService {
           (compliantCriteria.length / applicableCriteria.length) * 100
         );
 
-        if (a.auditReference.startsWith("RGAA_5")) {
+        if (a.auditReference?.startsWith("RGAA_5")) {
           const notCompliantBlockingUserImpactCriteria = results2.filter((criteria) =>
             criteria.some((c) => isNotCompliant(c) && c.notCompliantItems.some(
               (i) => i.userImpact === CriterionResultUserImpact.BLOCKING
             ))
           ) ?? [];
 
-          countBlockingUserImpact = notCompliantBlockingUserImpactCriteria.length;
+          blockingNCCount = notCompliantBlockingUserImpactCriteria.length;
         }
       }
 
@@ -1934,7 +1934,7 @@ export class AuditService {
           "auditType"
         ),
         complianceLevel,
-        countBlockingUserImpact,
+        blockingNCCount,
         status:
           progress === 0
             ? "NOT_STARTED"
@@ -1974,7 +1974,7 @@ export class AuditService {
 
     const {
       accessibilityRate,
-      countBlockingUserImpact
+      blockingNCCount
     } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
 
     const statement: StatementDto = {
@@ -2000,7 +2000,7 @@ export class AuditService {
       procedureUrl: audit.procedureUrl,
 
       accessibilityRate: accessibilityRate,
-      countBlockingUserImpact: countBlockingUserImpact,
+      blockingNCCount: blockingNCCount,
 
       notCompliantContent: audit.notCompliantContent,
       derogatedContent: audit.derogatedContent,

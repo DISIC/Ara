@@ -301,7 +301,7 @@ export function isImage(file: File | FileListFile) {
   }
 }
 
-export function getAuditReference(auditReference: AuditReference, short = false): string {
+export function getAuditReference(auditReference: AuditReference | undefined, short = false): string {
   if (auditReference === AuditReference.RGAA_5_Document)
     return "Bureautique";
 
@@ -312,6 +312,19 @@ export function getAuditReference(auditReference: AuditReference, short = false)
   return "Web";
 }
 
-export function getVersionRgaa(auditReference: AuditReference): string {
+export function getVersionRgaa(auditReference: AuditReference | undefined): string {
+  // RGAA 4 by default
+  if (!auditReference) {
+    return "RGAA 4";
+  }
+
   return auditReference.substring(0, 6).replace("_", " ");
+}
+
+export function isRgaa5(auditReference: AuditReference | undefined): boolean {
+  return !!auditReference?.startsWith("RGAA_5");
+}
+
+export function isConsideredNotCompliant(auditReference: AuditReference | undefined, blockingNCCount: number): boolean {
+  return isRgaa5(auditReference) && blockingNCCount > 0;
 }

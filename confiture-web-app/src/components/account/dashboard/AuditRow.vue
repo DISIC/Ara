@@ -15,6 +15,7 @@ import {
   getAuditReference,
   getCriteriaCount,
   getVersionRgaa,
+  isConsideredNotCompliant,
   slugify
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
@@ -42,8 +43,6 @@ const isNotStarted = computed(
 const isInProgress = computed(
   () => props.audit.status === AuditStatus.IN_PROGRESS
 );
-
-const isRgaa5 = computed(() => props.audit.auditReference.startsWith("RGAA_5"));
 
 const optionsDropdownRef = ref<InstanceType<typeof Dropdown>>();
 
@@ -143,13 +142,14 @@ defineExpose({
             isInProgress || isNotStarted
               ? null
               :
-                (isRgaa5 && audit.countBlockingUserImpact > 0 ?
-                  { 'fr-badge--error': true } :
-                  {
-                    'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                    'fr-badge--new': audit.complianceLevel >= 50,
-                    'fr-badge--error': audit.complianceLevel < 50
-                  })
+                (isConsideredNotCompliant(props.audit.auditReference,
+                                          props.audit.blockingNCCount) ?
+                                            { 'fr-badge--error': true } :
+                                            {
+                                              'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                                              'fr-badge--new': audit.complianceLevel >= 50,
+                                              'fr-badge--error': audit.complianceLevel < 50
+                                            })
           "
         >
           <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité</span>
@@ -163,7 +163,7 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          <span v-if="isRgaa5 && audit.countBlockingUserImpact > 0">Non conforme</span>
+          <span v-if="isConsideredNotCompliant(props.audit.auditReference, props.audit.blockingNCCount)">Non conforme</span>
           <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"

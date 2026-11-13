@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { AuditReference, AuditType } from "../../generated/prisma/client";
 
 export class AuditListingItemDto {
-  auditReference: AuditReference;
+  auditReference?: AuditReference;
   procedureName: string;
   editUniqueId: string;
   consultUniqueId: string;
@@ -15,5 +15,5 @@ export class AuditListingItemDto {
   estimatedCsvSize: number;
   statementIsPublished: boolean;
   progress: number;
-  countBlockingUserImpact: number;
+  blockingNCCount: number;
 }

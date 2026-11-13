@@ -18,14 +18,14 @@ export class StatementDto {
   contactEmail: string | null;
   contactFormUrl: string | null;
 
-  auditReference: AuditReference;
+  auditReference: AuditReference | null;
 
   procedureInitiator: string | null;
   procedureName: string;
   procedureUrl: string | null;
 
   accessibilityRate: number;
-  countBlockingUserImpact: number;
+  blockingNCCount: number;
 
   notCompliantContent: string | null;
   derogatedContent: string | null;
