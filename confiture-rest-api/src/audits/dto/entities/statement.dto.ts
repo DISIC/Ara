@@ -1,3 +1,4 @@
+import { AuditReference } from "../../../generated/prisma/enums";
 import { PageDto } from "./page.dto";
 import { TestEnvironmentDto } from "./test-environment.dto";
 
@@ -17,11 +18,14 @@ export class StatementDto {
   contactEmail: string | null;
   contactFormUrl: string | null;
 
+  auditReference: AuditReference | null;
+
   procedureInitiator: string | null;
   procedureName: string;
   procedureUrl: string | null;
 
   accessibilityRate: number;
+  blockingCount: number;
 
   notCompliantContent: string | null;
   derogatedContent: string | null;

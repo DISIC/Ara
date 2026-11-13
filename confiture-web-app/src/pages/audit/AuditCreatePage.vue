@@ -6,6 +6,8 @@ import LeaveModal from "../../components/audit/LeaveModal.vue";
 import NewAuditContactDetails from "../../components/audit/NewAuditContactDetails.vue";
 import NewAuditElements from "../../components/audit/NewAuditElements.vue";
 import NewAuditPages from "../../components/audit/NewAuditPages.vue";
+import NewAuditReference from "../../components/audit/NewAuditReference.vue";
+
 import NewAuditType from "../../components/audit/NewAuditType.vue";
 import PageMeta from "../../components/PageMeta";
 import BackLink from "../../components/ui/BackLink.vue";
@@ -15,7 +17,7 @@ import { DEFAULT_NOTIFICATION_ERROR_DESCRIPTION, DEFAULT_NOTIFICATION_ERROR_TITL
 import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
-import { AuditType, CreateAuditRequestData } from "../../types";
+import { AuditReference, AuditType, CreateAuditRequestData } from "../../types";
 import { captureWithPayloads } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
@@ -77,6 +79,7 @@ const accountStore = useAccountStore();
 // Steps management
 const currentStep = ref(0);
 const steps = [
+  "Choisissez le référentiel",
   "Choisissez un type d’audit",
   "Renseignez l’échantillon des pages à auditer",
   "Indiquez la présence d’éléments spécifiques",
@@ -87,6 +90,7 @@ const steps = [
 const stepHeadingRef = ref<HTMLHeadingElement>();
 
 interface CreateAuditFormData {
+  auditReference: AuditReference | null;
   auditType: AuditType | null;
   procedureName: string;
   pages: { name: string; url: string }[];
@@ -102,6 +106,7 @@ interface CreateAuditFormData {
 
 // Setup audit object
 const audit = ref<CreateAuditFormData>({
+  auditReference: null,
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
@@ -186,6 +191,7 @@ function submitAuditSettings() {
 
   const data: CreateAuditRequestData = {
     auditType: audit.value.auditType!,
+    auditReference: audit.value.auditReference!,
     procedureName: audit.value.procedureName,
     pages: audit.value.pages,
     pageElements: audit.value.pageElements,
@@ -288,17 +294,29 @@ function setTopicAccordionStatus(
         :data-fr-current-step="currentStep + 1"
         :data-fr-steps="steps.length"
       />
+      <p v-if="steps[currentStep + 1]" class="fr-mt-2w fr-text--sm">
+        <span class="fr-text--bold">Étape suivante&nbsp;:</span>&nbsp;{{ steps[currentStep + 1].toLowerCase() }}
+      </p>
     </div>
 
-    <NewAuditType
+    <NewAuditReference
       v-if="currentStep === 0"
+      ref="newAuditReferenceRef"
+      :audit-reference="audit.auditReference"
+      @submit="submitStep"
+    />
+
+    <NewAuditType
+      v-if="currentStep === 1"
       ref="newAuditTypeRef"
       :audit-type="audit.auditType"
+      :audit-reference="audit.auditReference"
       :procedure-name="audit.procedureName"
+      @previous="goToPreviousStep"
       @submit="submitStep"
     />
     <NewAuditPages
-      v-else-if="currentStep === 1"
+      v-else-if="currentStep === 2"
       :audit-type="audit.auditType"
       :pages="audit.pages"
       @previous="goToPreviousStep"
@@ -306,13 +324,13 @@ function setTopicAccordionStatus(
       @change="pagesArePristine = false"
     />
     <NewAuditElements
-      v-else-if="currentStep === 2"
+      v-else-if="currentStep === 3"
       :page-elements="audit.pageElements!"
       @previous="goToPreviousStep"
       @submit="submitStep"
     />
     <NewAuditContactDetails
-      v-else-if="currentStep === 3"
+      v-else-if="currentStep === 4"
       :email="audit.auditorEmail"
       :name="audit.auditorName"
       @previous="goToPreviousStep"

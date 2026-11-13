@@ -15,7 +15,7 @@ import TopLink from "../../components/ui/TopLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { REFERENTIAL, StaticTabLabel } from "../../enums";
 import { useReportStore } from "../../store";
-import { AuditStatus, CriteriumResultStatus, TabData } from "../../types";
+import { AuditStatus, CriteriumResultStatus, TabData, AuditReference } from "../../types";
 import {
   formatBytes,
   formatDate,
@@ -243,7 +243,7 @@ watch(
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-1v">
-        Référentiel : <strong>{{ REFERENTIAL }}</strong>
+        Référentiel : <strong>{{ report.data.auditReference === AuditReference.RGAA_4 ? REFERENTIAL.RGAA_4 : REFERENTIAL.RGAA_5 }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
         Auditeur ou auditrice :
