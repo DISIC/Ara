@@ -184,7 +184,7 @@ function switchDevMode() {
               class="fr-footer__bottom-link"
               :to="{ name: link.routeName }"
             >
-              <span>{{ link.label }}</span>
+              {{ link.label }}
             </RouterLink>
           </li>
           <li class="fr-footer__bottom-item">
