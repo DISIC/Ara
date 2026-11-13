@@ -3,7 +3,7 @@ import { AuditReference } from "../../../confiture-web-app/src/types";
 describe("RGAA 4 or 5 Audit Compliance", () => {
   it("Account : a RGAA 4 audit with blocking user impacts is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_4, blockingNCCount: 8 }).then(() => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_4, blockingCount: 8 }).then(() => {
         cy.visit("http://localhost:3000/compte");
 
         cy.contains("Terminé (1)");
@@ -27,7 +27,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Account : a RGAA 5 audit with no blocking user impact and many minor or major user impact is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, blockingNCCount: 0 }).then(() => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, blockingCount: 0 }).then(() => {
         cy.visit("http://localhost:3000/compte");
 
         cy.contains("Terminé (1)");
@@ -39,7 +39,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Account : a RGAA 5 audit with one blocking user impact is not compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, blockingNCCount: 1 }).then(() => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, blockingCount: 1 }).then(() => {
         cy.visit("http://localhost:3000/compte");
 
         cy.contains("Terminé (1)");
@@ -75,7 +75,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Statement : a RGAA 4 audit with blocking user impacts is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_4, blockingNCCount: 8 }).then(({ reportId }) => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_4, blockingCount: 8 }).then(({ reportId }) => {
         cy.visit(`http://localhost:3000/declaration/${reportId}`);
 
         cy.contains("afficher la mention « Accessibilité : partiellement conforme »");
@@ -99,7 +99,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Statement : a RGAA 5 audit with no blocking user impact and many minor or major user impact is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, blockingNCCount: 0 }).then(({ reportId }) => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, blockingCount: 0 }).then(({ reportId }) => {
         cy.visit(`http://localhost:3000/declaration/${reportId}`);
 
         cy.contains("afficher la mention « Accessibilité : partiellement conforme »");
@@ -111,7 +111,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Statement : a RGAA 5 audit with one blocking user impact is not compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, blockingNCCount: 1 }).then(({ reportId }) => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, blockingCount: 1 }).then(({ reportId }) => {
         cy.visit(`http://localhost:3000/declaration/${reportId}`);
 
         cy.contains("afficher la mention « Accessibilité : non conforme »");

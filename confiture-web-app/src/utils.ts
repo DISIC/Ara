@@ -312,7 +312,7 @@ export function getAuditReference(auditReference: AuditReference | undefined, sh
   return "Web";
 }
 
-export function getVersionRgaa(auditReference: AuditReference | undefined): string {
+export function getRgaaVersion(auditReference: AuditReference | undefined): string {
   // RGAA 4 by default
   if (!auditReference) {
     return "RGAA 4";
@@ -325,6 +325,6 @@ export function isRgaa5(auditReference: AuditReference | undefined): boolean {
   return !!auditReference?.startsWith("RGAA_5");
 }
 
-export function isConsideredNotCompliant(auditReference: AuditReference | undefined, blockingNCCount: number): boolean {
-  return isRgaa5(auditReference) && blockingNCCount > 0;
+export function isConsideredNotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
+  return isRgaa5(auditReference) && blockingCount > 0;
 }

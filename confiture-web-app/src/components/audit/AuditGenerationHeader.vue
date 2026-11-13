@@ -19,7 +19,7 @@ import {
   formatDate,
   getAuditReference,
   getCriteriaCount,
-  getVersionRgaa,
+  getRgaaVersion,
   isSameDay,
   slugify
 } from "../../utils";
@@ -260,7 +260,7 @@ onMounted(() => {
   </h1>
   <p class="fr-text--xl fr-mb-1w">{{ auditName }}</p>
   <p class="fr-text--sm fr-mb-4w">
-    {{ getAuditReference(auditReference) }} - {{ getCriteriaCount(auditType) }} critères - {{ getVersionRgaa(auditReference) }}
+    {{ getAuditReference(auditReference) }} - {{ getCriteriaCount(auditType) }} critères - {{ getRgaaVersion(auditReference) }}
   </p>
 
   <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">

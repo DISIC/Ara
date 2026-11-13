@@ -25,7 +25,7 @@ export class StatementDto {
   procedureUrl: string | null;
 
   accessibilityRate: number;
-  blockingNCCount: number;
+  blockingCount: number;
 
   notCompliantContent: string | null;
   derogatedContent: string | null;

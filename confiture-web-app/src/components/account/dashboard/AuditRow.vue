@@ -14,7 +14,7 @@ import {
   formatDate,
   getAuditReference,
   getCriteriaCount,
-  getVersionRgaa,
+  getRgaaVersion,
   isConsideredNotCompliant,
   slugify
 } from "../../../utils";
@@ -127,7 +127,7 @@ defineExpose({
     <div>
       <span class="fr-sr-only">Type </span>
       <p class="fr-mb-0 fr-text--bold">{{ getAuditReference(audit.auditReference, true) }}</p>
-      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getVersionRgaa(audit.auditReference) }} </p>
+      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getRgaaVersion(audit.auditReference) }} </p>
     </div>
 
     <!-- Compliance level / Progression level -->
@@ -143,7 +143,7 @@ defineExpose({
               ? null
               :
                 (isConsideredNotCompliant(props.audit.auditReference,
-                                          props.audit.blockingNCCount) ?
+                                          props.audit.blockingCount) ?
                                             { 'fr-badge--error': true } :
                                             {
                                               'fr-badge--green-emeraude': audit.complianceLevel === 100,
@@ -163,7 +163,7 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          <span v-if="isConsideredNotCompliant(props.audit.auditReference, props.audit.blockingNCCount)">Non conforme</span>
+          <span v-if="isConsideredNotCompliant(props.audit.auditReference, props.audit.blockingCount)">Non conforme</span>
           <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"
