@@ -4,12 +4,14 @@ import { AuditsModule as AuditResourcesModule } from "./audits/audits.module";
 import { ExportsModule } from "./exports/exports.module";
 import { NotFoundErrorInterceptor } from "./not-found-error.interceptor";
 import { PagesModule } from "./pages/pages.module";
+import { ResultsModule } from "./results/results.module";
 
 @Module({
   imports: [
     AuditResourcesModule,
     PagesModule,
-    ExportsModule
+    ExportsModule,
+    ResultsModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,
