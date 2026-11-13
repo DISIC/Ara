@@ -11,6 +11,7 @@ const props = defineProps<{
   checked: boolean;
   modelValue: AuditReference | null;
   isError?: boolean;
+  ariaDescribedBy?: string | null;
 }>();
 
 defineEmits(["update:modelValue"]);
@@ -63,7 +64,7 @@ const isDisabled = computed(() =>
 </script>
 
 <template>
-  <div :class="[' wrapper', { 'checked': checked, 'is-error': isError, 'is-disabled': isDisabled }]">
+  <div :class="[' wrapper', { 'checked': checked, 'is-error': isError && !isDisabled, 'is-disabled': isDisabled }]">
 
     <!-- Allow click on the whole radio square -->
     <div class="radio-layer" @click="!isDisabled && $emit('update:modelValue', value)" />
@@ -87,14 +88,14 @@ const isDisabled = computed(() =>
           :value="value"
           :checked="value === modelValue"
           required
-          :aria-describedby="`audit-reference-description-${value}`"
+          :aria-describedby="`${props.ariaDescribedBy} audit-reference-description-${value} ${(props.isError && !isDisabled ? 'audit-reference-error' : '')}`"
           :disabled="isDisabled"
           @change="
             $emit('update:modelValue', ($event.target as HTMLInputElement).value)
           "
         />
 
-        <label class="fr-label radio-label fr-h4 fr-mb-3w">{{ currentRadioReference.label }}</label>
+        <label class="fr-label radio-label fr-h4 fr-mb-3w" :for="`audit-reference-${value}`">{{ currentRadioReference.label }}</label>
 
         <p :id="`audit-reference-description-${value}`" v-html="currentRadioReference.description"></p>
       </div>
