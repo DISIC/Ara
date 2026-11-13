@@ -288,9 +288,10 @@ export class TestsController {
             const status = statuses[i];
             const userImpact = getUserImpact(i, body.auditReference, body.complianceRate);
 
+            // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
             let userImpact = userImpacts[i % 4];
 
-            if (body.countBlockingUserImpact !== undefined &&
+            if (body.blockingNCCount !== undefined &&
              status === CriterionResultStatus.NOT_COMPLIANT &&
              userImpact === CriterionResultUserImpact.BLOCKING) {
               if (blockingLeft > 0) {
