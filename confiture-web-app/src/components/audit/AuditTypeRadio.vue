@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
+import CodingIcon from "../../assets/dsfr-custom-icons/coding.svg";
 import { AuditType } from "../../types";
+
 import { getCriteriaCount } from "../../utils";
+import DsfrArtwork from "../ui/DsfrArtwork.vue";
 
 const props = defineProps<{
   value: AuditType;
@@ -10,8 +13,9 @@ const props = defineProps<{
   modelValue: string | null;
   goals: string[];
   documentationLink: string;
-  detailed?: boolean;
   isError?: boolean;
+  label: string;
+  tag?: string;
 }>();
 
 defineEmits(["update:modelValue"]);
@@ -27,74 +31,81 @@ defineExpose({
 
 // String used to describe input with goals, requirement and error if any
 const descriptionId = computed(() => {
-  let description;
-
-  if (props.detailed) {
-    description = `${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
-      + ` audit-type-prerequisite-${props.value}"`
+  return `${props.goals.map((_g, i) => `goal-${i}-${props.value}`).join(" ")}`
       + `${props.isError ? " audit-type-error" : ""}`
-    ;
-  } else {
-    description = `audit-type-name-${props.value}`;
-  }
-
-  return description;
-});
+  ;
+}
+);
 </script>
 
 <template>
-  <div :class="['fr-p-3w wrapper', { 'checked': checked, 'is-error': isError }]">
+  <div :class="['wrapper', { 'checked': checked, 'is-error': isError }]">
     <!-- Allow click on the whole radio square -->
     <div class="radio-layer" @click="$emit('update:modelValue', value)" />
 
-    <div class="fr-radio-group fr-radio-group--sm">
-      <input
-        :id="`audit-type-${value}`"
-        ref="inputRef"
-        class="radio-input"
-        type="radio"
-        name="audit-type"
-        :value="value"
-        :checked="value === modelValue"
-        required
-        :aria-describedby="descriptionId"
-        @change="
-          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-        "
-      />
-      <label
-        class="fr-label radio-label"
-        :class="
-          detailed ? 'fr-h4 fr-mb-3w' : 'fr-text--xl fr-text--bold fr-mb-0'
-        "
-        :for="`audit-type-${value}`"
-      >
-        {{ getCriteriaCount(value) }} critères
-      </label>
+    <div class="radio-header">
+      <span
+        v-if="tag"
+        :class="[
+          'fr-badge fr-badge--sm fr-badge--no-icon',
+          {
+            'fr-badge--purple-glycine': tag === 'Valeur légale',
+            'fr-badge--info ': tag === 'Bêta'
+          }
+        ]"
+      >{{ tag }}</span>
+
+      <DsfrArtwork :file-path="CodingIcon" />
+
     </div>
-    <div v-if="detailed" class="fr-pl-3w">
-      <ul class="fr-m-0 fr-mb-2w fr-p-0">
-        <li
-          v-for="(goal, i) in goals"
-          :id="`goal-${i}-${value}`"
-          :key="goal"
-          class="list-item"
-          :class="{ 'fr-mb-1w': i !== goals.length - 1 }"
+
+    <div class="radio-body fr-p-3w">
+      <div class="fr-radio-group fr-radio-group--sm">
+        <input
+          :id="`audit-type-${value}`"
+          ref="inputRef"
+          class="radio-input"
+          type="radio"
+          name="audit-type"
+          :value="value"
+          :checked="value === modelValue"
+          required
+          :aria-describedby="descriptionId"
+          @change="
+            $emit('update:modelValue', ($event.target as HTMLInputElement).value)
+          "
+        />
+        <label
+          class="fr-label radio-label"
+          :class="
+            'fr-text--xl fr-text--bold fr-mb-0'
+          "
+          :for="`audit-type-${value}`"
         >
-          <span
-            class="fr-icon-check-line fr-icon--sm list-item-icon"
-            aria-hidden="true"
-          />
-          {{ goal }}
-        </li>
-      </ul>
-      <p :id="`audit-type-prerequisite-${value}`" class="fr-text--sm prerequisite fr-mb-3v">
-        Nécessite de très bonnes connaissances techniques et du RGAA
-      </p>
+          {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
+        </label>
+      </div>
+      <div class="fr-pl-3w">
+        <p class="fr-mb-1w fr-text--bold">{{ label }}</p>
+        <p class="fr-text--sm fr-hint-text">{{ getCriteriaCount(value) }} critères</p>
+
+        <ul class="fr-m-0 fr-mb-2w fr-p-0">
+          <li
+            v-for="(goal, i) in goals"
+            :id="`goal-${i}-${value}`"
+            :key="goal"
+            class="list-item"
+            :class="{ 'fr-mb-1w': i !== goals.length - 1 }"
+          >
+            <span
+              class="fr-icon-check-line fr-icon--sm list-item-icon"
+              aria-hidden="true"
+            />
+            {{ goal }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <p v-else :id="`audit-type-name-${value}`" class="fr-text--xs fr-pl-3w fr-m-0">
-      {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
-    </p>
   </div>
 </template>
 
@@ -103,6 +114,7 @@ const descriptionId = computed(() => {
   flex-direction: column;
   border: 1px solid var(--border-default-grey);
   position: relative;
+  cursor: pointer;
 }
 
 .wrapper:hover {
@@ -116,7 +128,24 @@ const descriptionId = computed(() => {
 .radio-layer {
   position: absolute;
   inset: 0;
-  cursor: pointer;
+}
+
+.radio-header {
+  height: 9rem;
+  background: var(--background-alt-blue-france);
+  display: flex;
+}
+
+.radio-header .fr-badge {
+  position: absolute;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.radio-header svg {
+  width: 6rem;
+  height: 6rem;
+  margin: auto;
 }
 
 .is-error .radio-label {
@@ -152,10 +181,6 @@ const descriptionId = computed(() => {
 
 .radio-link {
   position: relative;
-}
-
-.prerequisite {
-  font-weight: 500;
 }
 
 /* Override DSFR radio input position to align with a larger label */
