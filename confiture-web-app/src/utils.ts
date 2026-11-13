@@ -11,7 +11,8 @@ import {
   AuditType,
   AuditTypeString,
   CriterionResultUserImpact,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  AuditReference
 } from "./types";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
@@ -298,4 +299,32 @@ export function isImage(file: File | FileListFile) {
   } else if ("mimetype" in file) {
     return file.mimetype.startsWith("image");
   }
+}
+
+export function getAuditReference(auditReference: AuditReference | undefined, short = false): string {
+  if (auditReference === AuditReference.RGAA_5_Document)
+    return "Bureautique";
+
+  if (auditReference === AuditReference.RGAA_5_Mobile) {
+    return short ? "App. mobile" : "Application mobile";
+  }
+
+  return "Web";
+}
+
+export function getRgaaVersion(auditReference: AuditReference | undefined): string {
+  // RGAA 4 by default
+  if (!auditReference) {
+    return "RGAA 4";
+  }
+
+  return auditReference.substring(0, 6).replace("_", " ");
+}
+
+export function isRgaa5(auditReference: AuditReference | undefined): boolean {
+  return !!auditReference?.startsWith("RGAA_5");
+}
+
+export function isConsideredNotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
+  return isRgaa5(auditReference) && blockingCount > 0;
 }

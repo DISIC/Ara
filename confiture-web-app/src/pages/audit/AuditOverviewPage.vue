@@ -11,6 +11,7 @@ import BackLink from "../../components/ui/BackLink.vue";
 import { useWrappedFetch } from "../../composables/useWrappedFetch";
 import { useAccountStore, useAuditStore, useResultsStore } from "../../store";
 import { AuditType } from "../../types";
+import { getAuditReference, getCriteriaCount, getRgaaVersion } from "../../utils.js";
 
 const route = useRoute();
 const uniqueId = computed(() => route.params.uniqueId as string);
@@ -87,10 +88,14 @@ const isLoggedInAndOwnAudit = computed(() => {
     <div class="content">
       <template v-if="isLoggedInAndOwnAudit">
         <h1 class="fr-mb-3v">Livrables</h1>
-        <p class="fr-text--xl fr-mb-4w">{{ audit.procedureName }}</p>
+        <p class="fr-text--xl fr-mb-1w">{{ audit.procedureName }}</p>
       </template>
 
-      <h1 v-else class="fr-mb-6w">{{ audit.procedureName }}</h1>
+      <h1 v-else class="fr-mb-1w">{{ audit.procedureName }}</h1>
+
+      <p class="fr-text--sm fr-mb-4w">
+        {{ getAuditReference(audit.auditReference) }} - {{ getCriteriaCount(audit.auditType) }} critères - {{ getRgaaVersion(audit.auditReference) }}
+      </p>
 
       <div class="fr-p-0 fr-m-0 overview-steps">
         <!-- Audit -->

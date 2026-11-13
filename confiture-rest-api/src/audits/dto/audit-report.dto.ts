@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  AuditReference,
   AuditType,
   CriterionResultStatus,
   CriterionResultUserImpact
@@ -34,6 +35,9 @@ export class AuditReportDto {
   @ApiProperty({ enum: AuditType })
   auditType: AuditType;
 
+  @ApiProperty({ enum: AuditReference })
+  auditReference: AuditReference;
+
   context: ReportContext;
 
   /**
@@ -41,6 +45,9 @@ export class AuditReportDto {
    * @example 86
    */
   accessibilityRate: number;
+
+  /** Count of blocking user impact */
+  blockingCount: number;
 
   criteriaCount: CriteriaCount;
 
