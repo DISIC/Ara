@@ -104,6 +104,8 @@ export class AuditService {
 
         auditType: data.auditType,
 
+        auditReference: data.auditReference,
+
         auditor: {
           connectOrCreate: {
             create: {
@@ -452,6 +454,7 @@ export class AuditService {
           tools: data.tools,
 
           auditType: data.auditType,
+          auditReference: data.auditReference,
 
           environments: {
             deleteMany: {

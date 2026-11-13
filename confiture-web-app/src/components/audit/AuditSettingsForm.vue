@@ -6,7 +6,7 @@ import { usePreviousRoute } from "../../composables/usePreviousRoute";
 import { EMAIL, REQUIRED } from "../../composables/validation";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
-import { Audit, AuditPage, AuditType, UpdateAuditRequestData } from "../../types";
+import { Audit, AuditPage, AuditReference, AuditType, UpdateAuditRequestData } from "../../types";
 import { formatEmail } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
@@ -41,6 +41,8 @@ defineExpose({
 const audits = [
   {
     value: AuditType.FULL,
+    tag: "Valeur légale",
+    label: "Pour mesurer la conformité au RGAA",
     goals: [
       "Identifier toutes les erreurs d’accessibilité",
       "Obtenir un taux global de conformité au RGAA ",
@@ -51,14 +53,10 @@ const audits = [
   },
   {
     value: AuditType.FAST,
+    tag: props.audit.auditReference === AuditReference.RGAA_4 ? "" : "Bêta",
+    label: "Pour estimer le niveau d'accessibilité",
     goals: ["Identifier les principales erreurs d’accessibilité"],
     documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
-  },
-  {
-    value: AuditType.COMPLEMENTARY,
-    goals: ["Approfondir l’audit 25 critères avec 25 critères supplémentaires"],
-    documentation:
-      "https://design.numerique.gouv.fr/outils/audit-complementaire/"
   }
 ];
 
@@ -160,6 +158,8 @@ const currentProcedureName = procedureName.value;
         v-model="auditType"
         class="audit-type"
         :value="type.value"
+        :label="type.label"
+        :tag="type.tag"
         :checked="auditType === type.value"
         :goals="type.goals"
         :documentation-link="type.documentation"

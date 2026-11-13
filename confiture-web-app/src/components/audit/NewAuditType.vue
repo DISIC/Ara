@@ -19,8 +19,16 @@ const emit = defineEmits<{
   (e: "submit", payload: { auditType: AuditType; procedureName: string }): void;
 }>();
 
+const procedureName = ref(props.procedureName ?? "");
+
+const auditType = ref(props.auditType ?? null);
+
+const auditReference = ref(props.auditReference ?? null);
+
 const fullAudit = {
   value: AuditType.FULL,
+  tag: "Valeur légale",
+  label: "Pour mesurer la conformité au RGAA",
   goals: [
     "Identifier toutes les erreurs d’accessibilité",
     "Obtenir un taux global de conformité au RGAA ",
@@ -30,25 +38,13 @@ const fullAudit = {
     "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
 };
 
-const partialAudits = [
-  {
-    value: AuditType.FAST,
-    goals: ["Identifier les principales erreurs d’accessibilité"],
-    documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
-  },
-  {
-    value: AuditType.COMPLEMENTARY,
-    goals: ["Approfondir l’audit 25 critères avec 25 critères supplémentaires"],
-    documentation:
-      "https://design.numerique.gouv.fr/outils/audit-complementaire/"
-  }
-];
-
-const procedureName = ref(props.procedureName ?? "");
-
-const auditType = ref(props.auditType ?? null);
-
-const auditReference = ref(props.auditReference ?? null);
+const partialAudit = {
+  value: AuditType.FAST,
+  tag: auditReference.value === AuditReference.RGAA_4 ? "" : "Bêta",
+  label: "Pour estimer le niveau d'accessibilité",
+  goals: ["Identifier les principales erreurs d’accessibilité"],
+  documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
+};
 
 function submitAuditType() {
   emit("submit", {
@@ -81,8 +77,7 @@ function fillSettings() {
     </div>
 
     <p class="fr-text--sm notice">
-      Sauf mentions contraires, tous les champs sont obligatoires. Au moins un
-      type d’audit doit être selectionné.
+      Tous les champs sont obligatoires.
     </p>
 
     <FieldValidation
@@ -92,58 +87,45 @@ function fillSettings() {
         REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
       ]"
     >
-      <!-- FIXME: make into a fielset + legend ? -->
       <div
-        class="fr-mb-4w fr-input-group"
+        class="fr-mb-4w fr-input-group audit-type-radios"
         :class="{ 'fr-input-group--error': !!error }"
       >
-        <h3 class="fr-h6 fr-mb-1w">Audit complet</h3>
-        <p class="fr-mb-2w">
-          Cet audit permet de mesurer la conformité au RGAA d’un site internet, il
-          a une <strong>valeur légale</strong>.
-        </p>
 
         <AuditTypeRadio
           :ref="focusRef"
           v-model="auditType"
-          class="fr-mb-3w audit-type"
           :value="fullAudit.value"
           :checked="auditType === fullAudit.value"
           :goals="fullAudit.goals"
           :documentation-link="fullAudit.documentation"
-          detailed
           :is-error="!!error"
+          :tag="fullAudit.tag"
+          :label="fullAudit.label"
         />
 
-        <h3 class="fr-h6 fr-mb-1w">Audits partiels</h3>
-        <p class="fr-mb-2w">
-          Ces audits permettent d’estimer l’accessibilité d’un site internet, ils
-          n’ont <strong>pas de valeur légale</strong>.
-        </p>
-        <div class="partial-audits">
-          <AuditTypeRadio
-            v-for="type in partialAudits"
-            :key="type.value"
-            :model-value="auditType"
-            class="audit-type"
-            :value="type.value"
-            :checked="auditType === type.value"
-            :goals="type.goals"
-            :documentation-link="type.documentation"
-            detailed
-            :is-error="!!error"
-            @update:model-value="auditType = $event"
-          />
-        </div>
-
-        <p
-          v-if="error"
-          id="audit-type-error"
-          class="fr-error-text"
-        >
-          {{ error }}
-        </p>
+        <AuditTypeRadio
+          :key="partialAudit.value"
+          :model-value="auditType"
+          :value="partialAudit.value"
+          :checked="auditType === partialAudit.value"
+          :goals="partialAudit.goals"
+          :documentation-link="partialAudit.documentation"
+          :is-error="!!error"
+          :tag="partialAudit.tag"
+          :label="partialAudit.label"
+          @update:model-value="auditType = $event"
+        />
       </div>
+
+      <p
+        v-if="error"
+        id="audit-type-error"
+        class="fr-error-text"
+      >
+        {{ error }}
+      </p>
+
     </FieldValidation>
 
     <DsfrFieldWithValidation
@@ -176,18 +158,18 @@ function fillSettings() {
 </template>
 
 <style scoped>
-.notice {
-  color: var(--text-mention-grey);
-}
-
-.partial-audits {
+.audit-type-radios {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 1rem;
 
   @media (width < 36rem) {
     grid-template-columns: 1fr;
   }
+}
+
+.notice {
+  color: var(--text-mention-grey);
 }
 
 .actions {
