@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested
 } from "class-validator";
-import { AuditType } from "../../../generated/prisma/client";
+import { AuditReference, AuditType } from "../../../generated/prisma/client";
 
 export class CreateAuditPage {
   /**
@@ -31,6 +31,13 @@ export class BaseAuditDto {
   @IsString()
   @IsIn(Object.values(AuditType))
   auditType: AuditType;
+
+  /**
+   * @example "RGAA_4"
+   */
+  @IsString()
+  @IsIn(Object.values(AuditReference))
+  auditReference: AuditReference;
 
   /**
    * @example "My procedure"

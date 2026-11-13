@@ -191,6 +191,7 @@ function submitAuditSettings() {
 
   const data: CreateAuditRequestData = {
     auditType: audit.value.auditType!,
+    auditReference: audit.value.auditReference!,
     procedureName: audit.value.procedureName,
     pages: audit.value.pages,
     pageElements: audit.value.pageElements,
