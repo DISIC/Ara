@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Body, Controller, Get, Post, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";

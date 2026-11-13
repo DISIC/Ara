@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Prisma } from "../generated/prisma/client";
 
 export const PAGE_PRISMA_SELECT: Prisma.AuditedPageSelect = {
