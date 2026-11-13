@@ -6,7 +6,7 @@ export class ResultsResponseDto {
   data: ResultDto[];
 }
 
-class ResultDto {
+export class ResultDto {
   status: CriterionResultStatus;
   compliantComment: string | null;
   exampleImages: ExampleImageFileDto[];
