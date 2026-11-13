@@ -37,8 +37,8 @@ defineExpose({ auditReference });
         class="fr-mb-4w fr-input-group"
         :class="{ 'fr-input-group--error': !!error }"
       >
-        <h3>RGAA 4</h3>
-        <p>Version <span class="fr-text--bold">en vigueur et référence réglementaire.</span></p>
+        <h3 id="rgaa4">RGAA 4</h3>
+        <p id="rgaa4-version">Version <span class="fr-text--bold">en vigueur et référence réglementaire.</span></p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -46,12 +46,14 @@ defineExpose({ auditReference });
             v-model="auditReference"
             :value="AuditReference.RGAA_4"
             :checked="auditReference === AuditReference.RGAA_4"
+            :is-error="!!error"
+            aria-described-by="rgaa4 rgaa4-version"
           />
         </div>
 
-        <h3 class="fr-mt-4w">RGAA 5&nbsp;<span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">bêta</span></h3>
+        <h3 id="rgaa5" class="fr-mt-4w">RGAA 5&nbsp;<span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">bêta</span></h3>
 
-        <p>Version <span class="fr-text--bold">utilisable dès maintenant,</span> mais pas encore en vigueur. Entrera en vigueur par décret en 2027.</p>
+        <p id="rgaa5-version">Version <span class="fr-text--bold">utilisable dès maintenant,</span> mais pas encore en vigueur. Entrera en vigueur par décret en 2027.</p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -59,6 +61,8 @@ defineExpose({ auditReference });
             v-model="auditReference"
             :value="AuditReference.RGAA_5_Web"
             :checked="auditReference === AuditReference.RGAA_5_Web"
+            :is-error="!!error"
+            aria-described-by="rgaa5 rgaa5-version"
           />
 
           <AuditReferenceRadio
@@ -66,6 +70,7 @@ defineExpose({ auditReference });
             v-model="auditReference"
             :value="AuditReference.RGAA_5_Mobile"
             :checked="auditReference === AuditReference.RGAA_5_Mobile"
+            aria-described-by="rgaa5 rgaa5-version"
           />
 
           <AuditReferenceRadio
@@ -73,6 +78,8 @@ defineExpose({ auditReference });
             v-model="auditReference"
             :value="AuditReference.RGAA_5_Document"
             :checked="auditReference === AuditReference.RGAA_5_Document"
+            :is-error="!!error"
+            aria-described-by="rgaa5 rgaa5-version"
           />
         </div>
         <p
