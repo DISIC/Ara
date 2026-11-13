@@ -10,7 +10,7 @@ import { useWrappedFetch } from "../composables/useWrappedFetch";
 import { REFERENTIAL } from "../enums";
 import { useReportStore } from "../store";
 import { AuditReference } from "../types";
-import { formatDate, isSameDay, isTiptapDocumentEmpty } from "../utils";
+import { formatDate, isConsideredNotCompliant, isSameDay, isTiptapDocumentEmpty } from "../utils";
 
 const report = useReportStore();
 
@@ -20,8 +20,10 @@ const uniqueId = route.params.uniqueId as string;
 useWrappedFetch(() => report.fetchReport(uniqueId));
 
 function getA11yLevel() {
-  if (report.data!.auditReference.startsWith("RGAA_5") &&
-    report.data!.countBlockingUserImpact > 0) {
+  if (isConsideredNotCompliant(
+    report.data!.auditReference,
+    report.data!.blockingNCCount
+  )) {
     return "non";
   }
 

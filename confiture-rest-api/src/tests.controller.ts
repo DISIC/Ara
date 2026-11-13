@@ -75,9 +75,9 @@ export class TestsController {
       auditorEmail?: string;
       fillStatement?: boolean;
       publicationDate?: Date;
-      auditReference?: string;
+      auditReference?: AuditReference;
       isCompliant?: boolean;
-      countBlockingUserImpact?: number;
+      blockingNCCount?: number;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -200,7 +200,7 @@ export class TestsController {
     });
 
     if (!body.isPristine) {
-      let blockingLeft = body.countBlockingUserImpact ?? 0;
+      let blockingLeft = body.blockingNCCount ?? 0;
 
       const userImpacts = [
         CriterionResultUserImpact.MINOR,
@@ -224,9 +224,10 @@ export class TestsController {
                   CriterionResultStatus.NOT_COMPLIANT
                 ][i % 3];
 
+            // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
             let userImpact = userImpacts[i % 4];
 
-            if (body.countBlockingUserImpact !== undefined &&
+            if (body.blockingNCCount !== undefined &&
              status === CriterionResultStatus.NOT_COMPLIANT &&
              userImpact === CriterionResultUserImpact.BLOCKING) {
               if (blockingLeft > 0) {
