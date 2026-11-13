@@ -4,6 +4,7 @@ import documentIcon from "../../assets/dsfr-custom-icons/reference-document.svg?
 import mobileIcon from "../../assets/dsfr-custom-icons/reference-mobile.svg?no-inline";
 import webIcon from "../../assets/dsfr-custom-icons/reference-web.svg?no-inline";
 import { AuditReference } from "../../types";
+import DsfrArtwork from "../ui/DsfrArtwork.vue";
 
 const props = defineProps<{
   value: AuditReference;
@@ -64,15 +65,17 @@ const isDisabled = computed(() =>
 <template>
   <div :class="[' wrapper', { 'checked': checked, 'is-error': isError, 'is-disabled': isDisabled }]">
 
+    <!-- Allow click on the whole radio square -->
+    <div class="radio-layer" @click="!isDisabled && $emit('update:modelValue', value)" />
+
     <div class="radio-header">
       <span v-if="isDisabled" class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">à venir</span>
 
-      <img alt="" :src="currentRadioReference.icon" />
+      <DsfrArtwork :file-path="currentRadioReference.icon" />
 
     </div>
 
-    <div class="radio-body fr-p-3w">
-      <div class="radio-layer" @click="!isDisabled && $emit('update:modelValue', value)" />
+    <div class="radio-body fr-p-3w" @click="!isDisabled && $emit('update:modelValue', value)">
 
       <div class="fr-radio-group fr-radio-group--sm">
         <input
@@ -103,6 +106,11 @@ const isDisabled = computed(() =>
 .wrapper {
   position: relative;
   border: 1px solid var(--border-default-grey);
+  cursor: pointer;
+}
+
+.wrapper.is-disabled {
+  cursor: not-allowed;
 }
 
 .wrapper:not(.is-disabled):hover {
@@ -119,8 +127,28 @@ const isDisabled = computed(() =>
   display: flex;
 }
 
-.radio-header img {
+.is-disabled .radio-header {
+  background: var(--background-default-grey-hover);
+}
+
+.is-disabled .radio-body {
+  opacity: 0.6;
+}
+
+.radio-header img,
+.radio-header i,
+.radio-header svg {
   margin: auto;
+}
+
+svg {
+  width: 6rem;
+  height: 6rem;
+}
+
+.is-disabled .radio-header svg {
+  filter: grayscale(1);
+  opacity: 0.6;
 }
 
 .radio-header .fr-badge {
@@ -132,11 +160,6 @@ const isDisabled = computed(() =>
 .radio-layer {
   position: absolute;
   inset: 0;
-  cursor: pointer;
-}
-
-.is-disabled .radio-layer {
-  cursor: not-allowed;
 }
 
 .is-error .radio-label {

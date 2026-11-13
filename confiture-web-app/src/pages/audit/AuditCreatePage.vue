@@ -300,15 +300,18 @@ function setTopicAccordionStatus(
 
     <NewAuditReference
       v-if="currentStep === 0"
-      ref="newAuditReference"
+      ref="newAuditReferenceRef"
       :audit-reference="audit.auditReference"
+      @submit="submitStep"
     />
 
     <NewAuditType
       v-if="currentStep === 1"
       ref="newAuditTypeRef"
       :audit-type="audit.auditType"
+      :audit-reference="audit.auditReference"
       :procedure-name="audit.procedureName"
+      @previous="goToPreviousStep"
       @submit="submitStep"
     />
     <NewAuditPages
