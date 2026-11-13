@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { REQUIRED } from "../../composables/validation";
-import { AuditType } from "../../types";
+import { AuditReference, AuditType } from "../../types";
 import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
 import FieldValidation from "../validation/FieldValidation.vue";
 import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
@@ -10,10 +10,12 @@ import AuditTypeRadio from "./AuditTypeRadio.vue";
 
 const props = defineProps<{
   auditType: string | null;
+  auditReference: AuditReference | null;
   procedureName: string;
 }>();
 
 const emit = defineEmits<{
+  (e: "previous"): void;
   (e: "submit", payload: { auditType: AuditType; procedureName: string }): void;
 }>();
 
@@ -46,6 +48,8 @@ const procedureName = ref(props.procedureName ?? "");
 
 const auditType = ref(props.auditType ?? null);
 
+const auditReference = ref(props.auditReference ?? null);
+
 function submitAuditType() {
   emit("submit", {
     auditType: auditType.value as AuditType,
@@ -53,7 +57,11 @@ function submitAuditType() {
   });
 }
 
-defineExpose({ procedureName, auditType });
+function goToPreviousStep() {
+  emit("previous");
+}
+
+defineExpose({ procedureName, auditReference, auditType });
 
 // Dev mode
 const isDevMode = useDevMode();
@@ -150,6 +158,14 @@ function fillSettings() {
 
     <div class="actions">
       <button
+        type="button"
+        class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-left-s-line"
+        @click="goToPreviousStep"
+      >
+        Étape précédente
+      </button>
+
+      <button
         type="submit"
         class="fr-btn fr-btn--icon-right fr-icon-arrow-right-s-line"
       >
@@ -176,6 +192,6 @@ function fillSettings() {
 
 .actions {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
 }
 </style>
