@@ -229,7 +229,7 @@ export const useAuditStore = defineStore("audit", {
           progress: originalAuditListingItem.progress,
           estimatedCsvSize: originalAuditListingItem.estimatedCsvSize,
           statementIsPublished: originalAuditListingItem.statementIsPublished,
-          blockingNCCount: originalAuditListingItem.blockingNCCount
+          blockingCount: originalAuditListingItem.blockingCount
         };
         this.listing.push(newAuditListItem);
         localStorage.setItem(AUDIT_LISTING_CACHE_STORAGE_KEY, JSON.stringify(this.listing));

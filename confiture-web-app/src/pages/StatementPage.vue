@@ -22,7 +22,7 @@ useWrappedFetch(() => report.fetchReport(uniqueId));
 function getA11yLevel() {
   if (isConsideredNotCompliant(
     report.data!.auditReference,
-    report.data!.blockingNCCount
+    report.data!.blockingCount
   )) {
     return "non";
   }

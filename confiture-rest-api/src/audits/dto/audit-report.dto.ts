@@ -47,7 +47,7 @@ export class AuditReportDto {
   accessibilityRate: number;
 
   /** Count of blocking user impact */
-  blockingNCCount: number;
+  blockingCount: number;
 
   criteriaCount: CriteriaCount;
 

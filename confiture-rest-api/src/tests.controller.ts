@@ -77,7 +77,7 @@ export class TestsController {
       publicationDate?: Date;
       auditReference?: AuditReference;
       isCompliant?: boolean;
-      blockingNCCount?: number;
+      blockingCount?: number;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -98,7 +98,7 @@ export class TestsController {
           }
         },
         auditType: "FULL",
-        auditReference: body.auditReference as AuditReference ?? AuditReference.RGAA_4,
+        auditReference: body.auditReference ?? AuditReference.RGAA_4,
         procedureName: "Audit de mon petit site",
         auditor: {
           connectOrCreate: {
@@ -200,7 +200,9 @@ export class TestsController {
     });
 
     if (!body.isPristine) {
-      let blockingLeft = body.blockingNCCount ?? 0;
+      // Defined the number of remaining blocking required
+      // for an audit to be partially compliant or non-compliant with RGAA 5
+      let blockingLeft = body.blockingCount ?? 0;
 
       const userImpacts = [
         CriterionResultUserImpact.MINOR,
@@ -227,7 +229,7 @@ export class TestsController {
             // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
             let userImpact = userImpacts[i % 4];
 
-            if (body.blockingNCCount !== undefined &&
+            if (body.blockingCount !== undefined &&
              status === CriterionResultStatus.NOT_COMPLIANT &&
              userImpact === CriterionResultUserImpact.BLOCKING) {
               if (blockingLeft > 0) {
