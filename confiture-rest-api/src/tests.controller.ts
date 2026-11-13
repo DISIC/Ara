@@ -291,7 +291,7 @@ export class TestsController {
             // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
             let userImpact = userImpacts[i % 4];
 
-            if (body.blockingNCCount !== undefined &&
+            if (body.blockingCount !== undefined &&
              status === CriterionResultStatus.NOT_COMPLIANT &&
              userImpact === CriterionResultUserImpact.BLOCKING) {
               if (blockingLeft > 0) {
