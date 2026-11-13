@@ -54,7 +54,7 @@ async function createDebugAudit(isCustom: boolean = false) {
 
   const audit = await debugStore.createDebugAudit(data);
 
-  notify("success", "", `Audit de débug « ${audit.procedureName} » créé`);
+  notify("success", "", `Audit de débug «&nbsp;${audit.procedureName}&nbsp;» créé`);
   return router.push({ name: "audit-generation", params: { uniqueId: audit.editUniqueId } });
 }
 </script>

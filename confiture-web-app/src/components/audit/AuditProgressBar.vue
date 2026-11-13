@@ -64,9 +64,7 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
           'fr-text--xs': !inline
         }
       ]"
-    >
-      {{ progressPercentage }} %
-    </span>
+    >{{ progressPercentage }}&nbsp;%</span>
     <div class="audit-progress-bar" />
   </div>
 </template>

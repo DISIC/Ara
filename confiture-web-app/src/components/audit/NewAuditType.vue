@@ -84,7 +84,7 @@ function fillSettings() {
         REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
       ]"
     >
-      <!-- FIXME: make into a fielset + legend ? -->
+      <!-- FIXME: make into a fielset + legend? -->
       <div
         class="fr-mb-4w fr-input-group"
         :class="{ 'fr-input-group--error': !!error }"

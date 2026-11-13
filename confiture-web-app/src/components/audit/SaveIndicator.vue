@@ -74,16 +74,17 @@ const saveContent = computed(() => {
 const relativeLastSaveDate = ref<string>();
 
 function formatInterval(seconds: number) {
+  // Note: we use narrow non-breakable spaces between numbers and time units
   if (seconds < 60) {
     return `il y a quelques secondes`;
   } else if (seconds < 60 * 60) {
-    return `il y a ${Math.floor(seconds / 60)} min`;
+    return `il y a ${Math.floor(seconds / 60)}\u202Fmin`;
   } else if (seconds < 60 * 60 * 24) {
     const hours = Math.floor(seconds / (60 * 60));
     const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
     return minutes > 0
-      ? `il y a ${hours} h ${minutes} min`
-      : `il y a ${hours} h`;
+      ? `il y a ${hours}\u202Fh ${minutes}\u202Fmin`
+      : `il y a ${hours}\u202Fh`;
   } else if (seconds < 60 * 60 * 24 * 7) {
     const days = Math.floor(seconds / (60 * 60 * 24));
     return `il y a ${days} ${pluralize("jour", "jours", days)}`;
@@ -113,7 +114,7 @@ watch(
   () => store.value.lastRequestFailed,
   () => {
     if (store.value.lastRequestFailed) {
-      saveText.value = "Information : vos saisies sont à nouveau enregistrées.";
+      saveText.value = "Information&nbsp;: vos saisies sont à nouveau enregistrées.";
 
       setTimeout(() => {
         saveText.value = "";
@@ -149,8 +150,12 @@ watch(
     </span>
     <p class="fr-m-0 save-indicator-label">{{ saveContent.status }}</p>
 
-    <p class="fr-sr-only" aria-live="polite" role="alert">
-      {{ saveText }}
+    <p
+      class="fr-sr-only"
+      aria-live="polite"
+      role="alert"
+      v-html="saveText"
+    >
     </p>
   </div>
 </template>

@@ -99,7 +99,7 @@ function submitSettings(data: {
         notify(
           "success",
           undefined,
-          `Paramètres de l’audit « ${data.procedureName} » mis à jour`,
+          `Paramètres de l’audit «&nbsp;${data.procedureName}&nbsp;» mis à jour`,
           { action:
               {
                 label: "Accéder à l’audit",
@@ -145,7 +145,7 @@ function submitSettings(data: {
 
   <LeaveModal
     ref="leaveModalRef"
-    title="Quitter sans enregistrer vos modifications ?"
+    title="Quitter sans enregistrer vos modifications&#8239;?"
     icon="fr-icon-warning-line"
     confirm="Quitter sans enregistrer"
     cancel="Reprendre les modifications"

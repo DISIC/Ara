@@ -11,7 +11,7 @@ import TopLink from "../../components/ui/TopLink.vue";
   <section class="fr-my-0 fr-mx-auto content">
     <h1>Données personnelles, suivi d’audience et vie privée</h1>
     <h2>Données personnelles</h2>
-    <h3>Qui est responsable d’Ara ?</h3>
+    <h3>Qui est responsable d’Ara&#8239;?</h3>
     <p>
       Ara est un outil d’audit d’accessibilité numérique développé au sein la
       direction interministérielle du numérique (DINUM).
@@ -20,7 +20,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       Le responsable du traitement des données est la DINUM, représentée par
       Stéphanie Schaer, directrice interministérielle du numérique.
     </p>
-    <h3>Pourquoi et comment vos données personnelles sont traitées ?</h3>
+    <h3>Pourquoi et comment vos données personnelles sont traitées&#8239;?</h3>
     <div class="fr-table fr-table--bordered fr-table--no-caption">
       <div class="fr-table__wrapper">
         <div class="fr-table__container">
@@ -46,8 +46,8 @@ import TopLink from "../../components/ui/TopLink.vue";
                   </td>
                   <td>
                     Mission d’intérêt public relevant de la compétence de la
-                    DINUM (article 6 – 5° du décret n<sup>o</sup> 2019-1088 du
-                    25 octobre 2019)
+                    DINUM (article 6 – 5° du décret n<sup>o</sup>&nbsp;2019-1088 du
+                    25&nbsp;octobre 2019)
                   </td>
                   <td rowspan="2">
                     L’utilisateur·rice peut supprimer son compte et ses données
@@ -62,7 +62,7 @@ import TopLink from "../../components/ui/TopLink.vue";
                 </tr>
                 <tr>
                   <td>Prénom et nom</td>
-                  <td>« Signer » le rapport d’accessibilité</td>
+                  <td>«&nbsp;Signer&nbsp;» le rapport d’accessibilité</td>
                   <td>Intérêt légitime</td>
                 </tr>
               </tbody>
@@ -71,7 +71,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         </div>
       </div>
     </div>
-    <h3>Qui nous aide à traiter vos données personnelles ?</h3>
+    <h3>Qui nous aide à traiter vos données personnelles&#8239;?</h3>
     <p>
       Afin d’héberger vos données personnelles, nous faisons appel à un
       sous-traitant. Avant de lui transmettre vos données, nous nous sommes
@@ -108,18 +108,18 @@ import TopLink from "../../components/ui/TopLink.vue";
         </div>
       </div>
     </div>
-    <h3>Quels sont vos droits ?</h3>
-    <p>Vous disposez :</p>
+    <h3>Quels sont vos droits&#8239;?</h3>
+    <p>Vous disposez&nbsp;:</p>
     <ul>
-      <li>d’un droit d’information et d’un droit d’accès à vos données ;</li>
-      <li>d’un droit à la limitation du traitement de vos données ;</li>
-      <li>d’un droit de rectification ;</li>
+      <li>d’un droit d’information et d’un droit d’accès à vos données&#8239;;</li>
+      <li>d’un droit à la limitation du traitement de vos données&#8239;;</li>
+      <li>d’un droit de rectification&#8239;;</li>
       <li>d’un droit d’opposition.</li>
     </ul>
     <p>
-      Pour les exercer, contactez-nous par message électronique : dpd@pm.gouv.fr
+      Pour les exercer, contactez-nous par message électronique&nbsp;: dpd@pm.gouv.fr
     </p>
-    <p>Ou par voie postale à l’adresse suivante :</p>
+    <p>Ou par voie postale à l’adresse suivante&nbsp;:</p>
     <p>
       Services du Premier ministre<br />
       À l’attention du délégué à la protection des données (DPD)<br />
@@ -134,7 +134,7 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
     <p>
       Pour vous aider dans votre démarche, vous trouverez un modèle de demande
-      élaboré par la CNIL ici :
+      élaboré par la CNIL ici&nbsp;:
       <a href="https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces">www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces</a>.
     </p>
     <p>
@@ -145,13 +145,13 @@ import TopLink from "../../components/ui/TopLink.vue";
     <h2>Suivi d’audience et vie privée</h2>
     <h3>Cookies déposés et <span lang="en">opt-out</span></h3>
     <p>
-      Ce site dépose un petit fichier texte (un « cookie ») sur votre appareil
+      Ce site dépose un petit fichier texte (un «&nbsp;cookie&nbsp;») sur votre appareil
       lorsque vous le consultez. Cela nous permet de mesurer le nombre de
       visites et de comprendre quelles sont les pages les plus consultées.
     </p>
 
     <h3>
-      Ce site n’affiche pas de bannière de consentement aux cookies, pourquoi ?
+      Ce site n’affiche pas de bannière de consentement aux cookies, pourquoi&#8239;?
     </h3>
     <p>
       Nous respectons simplement la loi, qui dit que certains outils de suivi
@@ -160,15 +160,15 @@ import TopLink from "../../components/ui/TopLink.vue";
     </p>
     <p>
       Nous utilisons pour cela Matomo, un outil libre, paramétré pour être en
-      conformité avec la recommandation « Cookies » de la CNIL. Cela signifie
+      conformité avec la recommandation «&nbsp;Cookies&nbsp;» de la CNIL. Cela signifie
       que votre adresse IP, par exemple, est anonymisée avant d’être
       enregistrée. Il est donc impossible d’associer vos visites sur ce site à
       votre personne.
     </p>
 
-    <h3>Je contribue à enrichir vos données, puis-je y accéder ?</h3>
+    <h3>Je contribue à enrichir vos données, puis-je y accéder&#8239;?</h3>
     <p class="fr-mb-0">
-      Bien sûr ! Les statistiques d’usage sont disponibles en accès libre sur
+      Bien sûr&#8239;! Les statistiques d’usage sont disponibles en accès libre sur
       <a href="https://stats.data.gouv.fr/">stats.data.gouv.fr</a>.
     </p>
     <div class="top-link">

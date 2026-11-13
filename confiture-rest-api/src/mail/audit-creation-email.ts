@@ -8,7 +8,7 @@ export interface AuditCreationEmailData {
 }
 
 export function subject(data: AuditCreationEmailData): string {
-  return `Accéder à l’audit « ${data.procedureName} »`;
+  return `Accéder à l’audit «\u00A0${data.procedureName}\u00A0»`;
 }
 
 export function html(data: AuditCreationEmailData): string {
@@ -19,15 +19,15 @@ export function plain(data: AuditCreationEmailData): string {
   return `
     Accéder à l’audit
 
-    Vous venez de créer l’audit « ${data.procedureName} ».
+    Vous venez de créer l’audit «&nbsp;${data.procedureName}&nbsp;».
     Pour accéder à votre audit ${
       data.is106Criteria
         ? ", rapport d’audit et déclaration d’accessibilité"
         : "et rapport d’audit"
-    }, utilisez le lien ci-dessous :
+    }, utilisez le lien ci-dessous&nbsp;:
 
     ${data.overviewUrl}
 
-    Besoin d’aide ? Écrivez-nous : ara@design.numerique.gouv.fr
+    Besoin d’aide&#8239;? Écrivez-nous&nbsp;: ara@design.numerique.gouv.fr
   `;
 }

@@ -19,7 +19,7 @@ const bottomLinks = [
     routeName: "site-map"
   },
   {
-    label: "Accessibilité : totalement conforme",
+    label: "Accessibilité\u00A0: totalement conforme",
     routeName: "accessibility"
   },
   {
@@ -106,19 +106,18 @@ function switchDevMode() {
               class="fr-link fr-text--sm"
               href="https://design.numerique.gouv.fr/"
               target="_blank"
-            >DesignGouv<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la <a
+            >DesignGouv<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>, une équipe de la <a
               class="fr-link fr-text--sm"
               href="https://www.numerique.gouv.fr/dinum/"
               target="_blank"
             >
-              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>,
+              direction interministérielle du numérique (DINUM)<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>,
             avec le soutien du
             <a
               class="fr-link fr-text--sm"
               href="https://www.fiphfp.fr/"
               target="_blank"
-            >FIPHFP<span class="fr-sr-only">
-              Fonds pour l’insertion des personnes handicapées dans la
+            >FIPHFP<span class="fr-sr-only">&nbsp;Fonds pour l’insertion des personnes handicapées dans la
               Fonction publique (nouvelle fenêtre)
             </span></a>.
           </p>
@@ -128,39 +127,35 @@ function switchDevMode() {
                 class="fr-footer__content-link"
                 href="https://info.gouv.fr"
                 target="_blank"
-              >info.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+              >info.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://www.service-public.gouv.fr"
                 target="_blank"
-              >service-public.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+              >service-public.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://legifrance.gouv.fr"
                 target="_blank"
-              >legifrance.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+              >legifrance.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
             <li class="fr-footer__content-item">
               <a
                 class="fr-footer__content-link"
                 href="https://data.gouv.fr"
                 target="_blank"
-              >data.gouv.fr
-                <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+              >data.gouv.fr<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
             </li>
           </ul>
         </div>
       </div>
       <div class="fr-footer__partners">
         <p class="fr-footer__partners-title fr-mb-1w">
-          Conçu avec le soutien de notre partenaire :
+          Conçu avec le soutien de notre partenaire&nbsp;:
         </p>
         <div class="fr-footer__partners-logos">
           <div class="fr-footer__partners-main">
@@ -172,7 +167,7 @@ function switchDevMode() {
               <img
                 class="fr-footer__logo logo-partner"
                 :src="fiphfpLogo"
-                alt="Site du FIPHFP : Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
+                alt="Site du FIPHFP&nbsp;: Fonds pour l’insertion des personnes handicapées dans la Fonction publique (nouvelle fenêtre)"
               />
             </a>
           </div>
@@ -219,8 +214,7 @@ function switchDevMode() {
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
               rel="noreferrer noopener"
-            >licence etalab-2.0
-              <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+            >licence etalab-2.0 <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
           </p>
         </div>
       </div>
