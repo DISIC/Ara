@@ -40,9 +40,9 @@ yarn dev
 
 ## Guidelines
 
-### Media queries "Desktop first"
+### Media queries _Desktop-first_
 
-Utiliser les media queries en "desktop first" et avec la notation suivante avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture)&nbsp;:
+Utiliser les media queries en _Desktop-first_ avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture), en suivant la notation suivante&nbsp;:
 
 ```css
 @media (width < 62rem) {
@@ -52,7 +52,9 @@ Utiliser les media queries en "desktop first" et avec la notation suivante avec 
 
 ### Ordre des classes CSS
 
-Ordonner les classes CSS de la manière suivante&nbsp;: `<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`. Exemple&nbsp;:
+Ordonner les classes CSS de la manière suivante&nbsp;:<br>
+`<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`.<br>
+Exemple&nbsp;:
 
 ```html
 <button class="fr-btn fr-btn--secondary fr-mt-4w submit-button">...</button>
@@ -82,13 +84,13 @@ const data = (await api
 Utiliser des valeurs d’attributs HTML `id` compréhensibles afin de facilement savoir à quoi elles font référence. Exemple&nbsp;:
 
 ```html
-<li :id="`error-${errorId}`">...</li>
+<li :id="`error-${errorId}`">…</li>
 ```
 
 Au lieu de&nbsp;:
 
 ```html
-<li :id="errorId">...</li>
+<li :id="errorId">…</li>
 ```
 
 ### Validation des formulaires
@@ -142,11 +144,11 @@ Il extiste des variantes des composants de champs fréquement utilisés (`<DsfrF
 </template>
 ```
 
-Cas particuliers : certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.
+Cas particuliers&nbsp;: certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.
 
 ### Utilisation des liens
 
-Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre, deux pré-requis :
+Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre, deux pré-requis&nbsp;:
 
 - créer un `<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>` à l'intérieur du lien en complément du libellé pour signifier qu'on ouvre le lien dans une nouvelle fenêtre.
 
@@ -154,11 +156,11 @@ Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre,
 
 Même sans `target`, Si vous affichez uniquement un visuel sur votre lien, mettre un libellé explicite avec `<span class="fr-sr-only">&nbsp;libellé explicite</span>` à l'intérieur votre lien. C'est aussi valable pour le `button`.
 
-Aussi, selon l'article [Title, ce faux ami de l'accessibilité](https://www.24joursdeweb.fr/2025/title-ce-faux-ami-de-l-accessibilite), l'attribut `title` n'est pas conseillé pour des raisons d'accessibilité. Ecrivez le libellé de manière explicite ou utilisez le `span class="fr-sr-only"`.
+Aussi, selon l'article [Title, ce faux ami de l'accessibilité](https://www.24joursdeweb.fr/2025/title-ce-faux-ami-de-l-accessibilite), l'attribut `title` n'est pas conseillé pour des raisons d'accessibilité. Écrivez le libellé de manière explicite ou utilisez le `span class="fr-sr-only"`.
 
-Il est important d'ajouter `&nbsp` comme espace insécable pour avoir un espace entre le texte affiché et le texte caché. Sinon, il n'y a pas d'espace entre les deux - ce qui donnerait : `nouveau liencaché` si on met ce code `<a>nouveau lien<span class="sr-fr-only">caché</span></a>`. Si on met un simple espace, NVDA l'ignore.
-Source : [Update the visually-hidden class](https://www.drupal.org/project/drupal/issues/3591112) (EN)
-Selon l'article, ce défaut est présent uniquement avec :
+Il est important d'ajouter `&nbsp;` comme espace insécable pour avoir un espace entre le texte affiché et le texte caché. Sinon, il n'y a pas d'espace entre les deux - ce qui donnerait&nbsp;: `nouveau liencaché` si on met ce code `<a>nouveau lien<span class="sr-fr-only">caché</span></a>`. Si on met un simple espace, NVDA l'ignore.
+Source&nbsp;: [Update the visually-hidden class](https://www.drupal.org/project/drupal/issues/3591112) (EN)
+Selon l'article, ce défaut est présent uniquement avec&nbsp;:
 
 - JAWS et Chrome/Edge/IE11
 - NVDA et Chrome/Edge (mais pas NVDA et Firefox)

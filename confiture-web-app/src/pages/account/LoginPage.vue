@@ -105,7 +105,7 @@ async function handleSubmit() {
         required
         autocomplete="email"
         :validation="[REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
-                      EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
+                      EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')]"
       />
 
       <DsfrPasswordWithValidation

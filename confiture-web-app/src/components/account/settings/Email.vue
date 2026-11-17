@@ -231,7 +231,7 @@ async function cancelEmailUpdate() {
       required
       :validation="[
         REQUIRED('Champ obligatoire. Saisissez votre nouvelle adresse e-mail.'),
-        EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
+        EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')
       ]"
     />
 

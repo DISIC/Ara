@@ -27,7 +27,7 @@ const accountStore = useAccountStore();
     <ol class="fr-pl-6w fr-mb-3v">
       <li class="fr-mb-1w">Ouvrez la page «&nbsp;Audit&nbsp;»</li>
       <li class="fr-mb-1w">Ouvrez le menu «&nbsp;Actions&nbsp;» situé en haut à droite de la page</li>
-      <li class="fr-mb-1w">Cliquez dans le menu sur « Transférer »</li>
+      <li class="fr-mb-1w">Cliquez dans le menu sur «&nbsp;Transférer&nbsp;»</li>
       <li class="fr-mb-1w">Renseignez l’adresse e-mail de votre compte<template v-if="accountStore.account">
         &nbsp;: {{ accountStore.account.email }}
       </template><template v-else>.</template></li>

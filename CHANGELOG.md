@@ -413,8 +413,8 @@
 #### <span aria-hidden="true">🐛</span> Corrections
 
 - Plusieurs améliorations sur la navigation entre les différents onglets pendant l’audit et dans le rapport ([#950](https://github.com/DISIC/Ara/pull/950))&nbsp;:
-  - les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutés dans l’historique de navigation&nbsp;;
-  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran&nbsp;;
+  - les panneaux d’onglet sont désormais considérés comme des pages qui ont leur adresse (URL) propre et sont ajoutés dans l’historique de navigation&#8239;;
+  - lorsque l’on accède à un onglet, la page défile pour placer les onglets en haut de l’écran&#8239;;
   - l’onglet actif reste toujours visible, même sur petit écran et avec une navigation au clavier.
 - Corrige le contraste des cartes de types d’audit ([#1056](https://github.com/DISIC/Ara/pull/1056))
 
@@ -570,7 +570,7 @@
 
 #### <span aria-hidden="true">⚙️</span> Autres changements
 
-- Change le texte du bouton principal des audits à 0&#8239;% dans la liste des audits de «&nbsp;Continuer l’audit&nbsp;» à «&nbsp;Commencer l’audit&nbsp;» ([#843](https://github.com/DISIC/Ara/pull/843))
+- Change le texte du bouton principal des audits à 0&nbsp;% dans la liste des audits de «&nbsp;Continuer l’audit&nbsp;» à «&nbsp;Commencer l’audit&nbsp;» ([#843](https://github.com/DISIC/Ara/pull/843))
 
 #### <span aria-hidden="true">🐛</span> Corrections
 
@@ -674,7 +674,7 @@
 
 #### <span aria-hidden="true">🚀</span> Nouvelles fonctionnalités
 
-- Ajoute la possibilité de télécharger (téléverser) des fichiers – «&nbsp;pièces jointes&nbsp;» – au niveau des annotations de l’audit ([#723](https://github.com/DISIC/Ara/pull/723))&nbsp;:
+- Ajoute la possibilité de télécharger (téléverser) des fichiers —&nbsp;«&nbsp;pièces jointes&nbsp;»&nbsp;— au niveau des annotations de l’audit ([#723](https://github.com/DISIC/Ara/pull/723))&nbsp;:
   - Agrandissement de la zone d’annotation en panneau latéral
   - Sauvegarde automatique des changements
   - Création d’un composant d’ajout de fichier commun (critères non conformes + annotations)

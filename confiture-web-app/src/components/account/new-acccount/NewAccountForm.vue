@@ -50,7 +50,7 @@ async function handleSubmit() {
           err.response.status === 400 &&
           body.message.includes("username must be an email")
         ) {
-          emailField.value?.setError("Format incorrect. Utilisez le format : nom@domaine.fr.", true);
+          emailField.value?.setError("Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.", true);
         } else {
           // Unkown error
           notify(
@@ -85,7 +85,7 @@ async function handleSubmit() {
         required
         :validation="[
           REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
-          EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')
+          EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')
         ]"
       />
 

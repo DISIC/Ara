@@ -401,7 +401,7 @@ onMounted(() => {
                 >
                   Exporter l’audit
                   <span class="fr-text--xs fr-text--regular download-meta">
-                    CSV – {{ formatBytes(csvExportSizeEstimation, 2) }}
+                    CSV –&nbsp;{{ formatBytes(csvExportSizeEstimation, 2) }}
                   </span>
                 </a>
               </li>

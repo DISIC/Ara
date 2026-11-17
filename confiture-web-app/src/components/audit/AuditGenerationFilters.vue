@@ -259,7 +259,7 @@ const notApplicableCount = computed(
             >
               <span>{{ topic.number }}.</span>
               <span>{{ topic.title }}</span>
-              <span class="fr-text--sm fr-m-0 topic-filter-value">{{ topic.value }}%</span>
+              <span class="fr-text--sm fr-m-0 topic-filter-value">{{ topic.value }}&nbsp;%</span>
               <div class="topic-filter-progress" />
             </RouterLink>
           </li>

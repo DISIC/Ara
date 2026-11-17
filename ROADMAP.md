@@ -26,12 +26,13 @@
 <p class="mention">Fonctionnalités identifiées et intégrées à la feuille de route.</p>
 
 - **Export vers outils de ticketing**
-  _ Permettre de créer des tickets depuis le rapport vers les outils de ticketing.
+  - Permettre de créer des tickets depuis le rapport vers les outils de ticketing.
 - **Export des livrables**
   - Permettre l'export de la grille d’audit et du rapport.
 - **Audit par « non-conformités »**
   - Introduire la possibilité de relever directement les non-conformités au fil de l’analyse, sans suivre obligatoirement la liste des critères. L'audit « par critère » restera disponible.
 - **Recherche et organisation des audits**
-  - Amélioration de la recherche et du filtrage dans la page « Mes audits ».
+  - Améliorer la recherche et le filtrage dans la page «&nbsp;Mes audits&nbsp;».
+  - Permettre de regrouper les audits pour faciliter leur organisation.
 - **Collaboration multi-auditeurices**
   - Permettre à plusieurs auditeurices de travailler simultanément sur un même audit.

@@ -63,7 +63,7 @@ async function transferAudit(newEmail: string) {
       setFocusAfterAction();
     }
 
-    notify("success", `Audit « ${selectedAuditName.value} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
+    notify("success", `Audit «&nbsp;${selectedAuditName.value}&nbsp;» transféré`, `Lien d’accès envoyé à ${newEmail}`);
   } catch (error) {
     notify(
       "error",
