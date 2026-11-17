@@ -317,7 +317,7 @@ defineExpose({
             >
               Télécharger la grille d’audit<span class="fr-sr-only">&nbsp;{{ audit.procedureName }}</span>
               <span class="fr-text--xs fr-text--regular dropdown-item-meta">
-                CSV – {{ formatBytes(audit.estimatedCsvSize, 2) }}
+                CSV –&nbsp;{{ formatBytes(audit.estimatedCsvSize, 2) }}
               </span>
             </a>
           </li>

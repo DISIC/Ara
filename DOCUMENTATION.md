@@ -47,7 +47,7 @@ Taux de conformité = (27 / 89) * 100 = 30,34%
 
 ## Statut d’un audit
 
-Un audit est considéré...
+Un audit est considéré…
 
 - **En cours** si tous les critères ne sont pas testés (hors éléments transverses).
 - **Terminé** si tous les critères sont testés (hors éléments transverses) et qu’il a une date de publication.
@@ -57,19 +57,19 @@ Un audit est considéré...
 
 ### Création de l'audit
 
-Date à laquelle le paramétrage initial de l’audit est validé :
+Date à laquelle le paramétrage initial de l’audit est validé&nbsp;:
 
 - Soumission du formulaire de paramétrage d'un audit.
 
 ### Publication de l'audit
 
-Date à laquelle le dernier critère d'un audit est évalué :
+Date à laquelle le dernier critère d'un audit est évalué&nbsp;:
 
 - Évaluation (C, NC ou NA) du dernier critère "Non testé" d'un audit.
 
 ### Modification de l'audit
 
-Date à laquelle un audit terminé est modifié :
+Date à laquelle un audit terminé est modifié&nbsp;:
 
 - Soumission du formulaire de paramétrage d'un audit.
 - Modification du statut, commentaire d'un critère d'un audit.
@@ -78,13 +78,13 @@ Date à laquelle un audit terminé est modifié :
 
 ### Publication de la déclaration d'accessibilité
 
-Date à laquelle la déclaration d'accessibilité est publiée pour la première fois :
+Date à laquelle la déclaration d'accessibilité est publiée pour la première fois&nbsp;:
 
 - Soumission du formulaire de déclaration d'accessibilité.
 
 ### Modification de la déclaration d'accessibilité
 
-Date à laquelle une déclaration d'accessibilité déjà publiée est modifiée :
+Date à laquelle une déclaration d'accessibilité déjà publiée est modifiée&nbsp;:
 
 - Lors de la soumission du formulaire de déclaration d'accessibilité.
-- Lors de la mise à jour de l'audit (paramètres, statut d'un critère...).
+- Lors de la mise à jour de l'audit (paramètres, statut d'un critère…).

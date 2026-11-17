@@ -321,7 +321,7 @@ const siteUrl = computed(() => {
                 v-for="page in report.data.context.samples.slice(1)"
                 :key="page.name"
               >
-                {{ page.name }} – {{ page.url }}
+                {{ page.name }}&nbsp;– {{ page.url }}
               </li>
             </ul>
             <h4 class="fr-h2">Retour d’information et contact</h4>

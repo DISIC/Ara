@@ -320,7 +320,7 @@ function confirmLeave() {
       id="initiator"
       v-model="auditInitiator"
       label="Entité qui a demandé l’audit"
-      hint="Exemples : Ministère de l’intérieur, Mairie de Toulouse"
+      hint="Exemples&nbsp;: Ministère de l’intérieur, Mairie de Toulouse"
       type="text"
       required
       :validation="[
@@ -392,7 +392,7 @@ function confirmLeave() {
         >
           <FieldValidation
             v-slot="{ error, focusRef }"
-            :validation="[EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
+            :validation="[EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')]"
             :value="contactEmail"
           >
             <DsfrField
@@ -400,7 +400,7 @@ function confirmLeave() {
               :ref="focusRef"
               v-model="contactEmail"
               label="Adresse e-mail de contact"
-              hint="Format attendu : nom@domaine.fr"
+              hint="Format attendu&nbsp;: nom@domaine.fr"
               type="email"
               :error="
                 sectionError || error
@@ -452,7 +452,7 @@ function confirmLeave() {
         v-model="technologies"
         :error="error"
         label="Ajouter des technologies"
-        hint="Exemples : HTML, CSS, Javascript"
+        hint="Exemples&nbsp;: HTML, CSS, Javascript"
         add-label="les technologies"
       />
     </FieldValidation>

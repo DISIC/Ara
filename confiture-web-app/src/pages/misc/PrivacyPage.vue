@@ -46,7 +46,7 @@ import TopLink from "../../components/ui/TopLink.vue";
                   </td>
                   <td>
                     Mission d’intérêt public relevant de la compétence de la
-                    DINUM (article 6 – 5° du décret n<sup>o</sup>&nbsp;2019-1088 du
+                    DINUM (article 6&nbsp;– 5° du décret n<sup>o</sup>&nbsp;2019-1088 du
                     25&nbsp;octobre 2019)
                   </td>
                   <td rowspan="2">

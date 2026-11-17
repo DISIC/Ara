@@ -144,7 +144,7 @@ describe("Audit", () => {
 
     // Check topic "Cadres" completion is 100%
     cy.get(".topic-filter-item").eq(1).contains("Cadres");
-    cy.get(".topic-filter-item").eq(1).contains("100%");
+    cy.get(".topic-filter-item").eq(1).contains("100 %");
 
     cy.get(".audit-progress-label").contains("Progression de l’audit");
   });

@@ -40,13 +40,13 @@ docker run --name confiture-db \
              postgres:14
 ```
 
-Optionnellement, il est possible d’ajouter la variable d’environnement `DATABASE_SEEDS` pour pré-remplir la base de données avec des comptes utilisateurs dont le format est `email:password` séparés par une `,`. Exemple :
+Optionnellement, il est possible d’ajouter la variable d’environnement `DATABASE_SEEDS` pour pré-remplir la base de données avec des comptes utilisateurs dont le format est `email:password` séparés par une `,`. Exemple&nbsp;:
 
 ```sh
 DATABASE_SEEDS="johndoe@email.com:my-secret-password,pierredurand@email.com:my-more-secret-password"
 ```
 
-Pour lancer la génération des seeds :
+Pour lancer la génération des seeds&nbsp;:
 
 ```sh
 yarn db:seed
@@ -101,7 +101,7 @@ class MyController {
     // explicitely type the return type of the function to make sure we send
     // exactly what we want to the client
   ): Promise<FoobarDto> {
-    // ...
+    // …
   }
 }
 ```

@@ -156,7 +156,7 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // X résultats pour « [search] » - [tabName] - Audit [procedureName]
+  // X résultats pour «&nbsp;[search]&nbsp;» - [tabName] - Audit [procedureName]
   const titleParts = [];
   const curAudit = auditStore.currentAudit;
 
@@ -171,7 +171,7 @@ const pageTitle = computed(() => {
       "résultat",
       "résultats",
       filterResultsCount.value
-    )} pour « ${filterStore.search} »`;
+    )} pour «\u00A0${filterStore.search}\u00A0»`;
 
     titleParts.push(results);
   }
@@ -189,7 +189,7 @@ const pageTitle = computed(() => {
 
   titleParts.push(tabName, "Audit " + procedureName);
 
-  return titleParts.join(" - ");
+  return titleParts.join("\u00A0– ");
 });
 
 const tabsData = computed((): TabData[] => {

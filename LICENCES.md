@@ -46,9 +46,9 @@ Le «&nbsp;Concédant&nbsp;» concède au «&nbsp;Réutilisateur&nbsp;» un droi
 
 **Sous réserve de&nbsp;:**
 
-- mentionner la paternité de l’«Information»&nbsp;: sa source (a minima le nom du «&nbsp;Concédant&nbsp;») et la date de la dernière mise à jour de l’«&nbsp;Information&nbsp;» réutilisée.
+- mentionner la paternité de l’«&nbsp;Information&nbsp;»&nbsp;: sa source (a minima le nom du «&nbsp;Concédant&nbsp;») et la date de la dernière mise à jour de l’«&nbsp;Information&nbsp;» réutilisée.
 
-Le «&nbsp;Réutilisateur&nbsp;» peut notamment s’ acquitter de cette condition en indiquant l’adresse (URL) renvoyant vers «&nbsp;l’Information&nbsp;» et assurant une mention effective de sa paternité.
+Le «&nbsp;Réutilisateur&nbsp;» peut notamment s’acquitter de cette condition en indiquant l’adresse (URL) renvoyant vers «&nbsp;l’Information&nbsp;» et assurant une mention effective de sa paternité.
 
 **Par exemple&nbsp;:**
 
@@ -68,7 +68,7 @@ Les éventuels «&nbsp;Droits de propriété intellectuelle&nbsp;» détenus par
 
 ### Responsabilité
 
-L’ «Information» est mise à disposition telle que produite ou reçue, sans autre garantie expresse ou tacite qui n’est pas prévue par la présente licence. L’absence de défauts ou d’erreurs éventuellement contenues dans l’ «Information», comme la fourniture continue de l’ «&nbsp;Information&nbsp;» n’est pas garantie par le «Concédant». Il ne peut être tenu pour responsable de toute perte, préjudice ou dommage de quelque sorte causé à des tiers du fait de la «&nbsp;Réutilisation&nbsp;».
+L’«&nbsp;Information&nbsp;» est mise à disposition telle que produite ou reçue, sans autre garantie expresse ou tacite qui n’est pas prévue par la présente licence. L’absence de défauts ou d’erreurs éventuellement contenues dans l’ «Information», comme la fourniture continue de l’ «&nbsp;Information&nbsp;» n’est pas garantie par le «Concédant». Il ne peut être tenu pour responsable de toute perte, préjudice ou dommage de quelque sorte causé à des tiers du fait de la «&nbsp;Réutilisation&nbsp;».
 
 Le «&nbsp;Réutilisateur&nbsp;» est seul responsable de la «&nbsp;Réutilisation&nbsp;» de l’«&nbsp;Information&nbsp;».
 

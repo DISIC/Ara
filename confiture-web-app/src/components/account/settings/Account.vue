@@ -17,7 +17,7 @@ const accountStore = useAccountStore();
 const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
-const confirmPhraseValidation = [REQUIRED(`Champ obligatoire. Saisissez la phrase « ${VALIDATION_STRING} ».`), EQUAL(VALIDATION_STRING, "Saisie incorrecte. Vérifiez votre saisie.")];
+const confirmPhraseValidation = [REQUIRED(`Champ obligatoire. Saisissez la phrase «\u00A0${VALIDATION_STRING}\u00A0».`), EQUAL(VALIDATION_STRING, "Saisie incorrecte. Vérifiez votre saisie.")];
 const confirmPhrase = ref("");
 
 const passwordField = useTemplateRef("password-field");

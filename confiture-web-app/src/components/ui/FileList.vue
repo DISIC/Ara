@@ -201,7 +201,7 @@ function getFileName(flFile: FileListFile) {
 function getFileDetails(flFile: FileListFile) {
   const name = flFile.filename;
   const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
-  return extension + " – " + formatBytes(flFile.size);
+  return extension + "\u00A0–\u00A0" + formatBytes(flFile.size);
 }
 
 function getFullFileName(flFile: FileListFile) {

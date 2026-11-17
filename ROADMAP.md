@@ -29,7 +29,7 @@
 <p class="mention">Fonctionnalités identifiées et intégrées à la feuille de route.</p>
 
 - **Recherche et organisation des audits**
-  - Améliorer la recherche et le filtrage dans la page « Mes audits ».
+  - Améliorer la recherche et le filtrage dans la page «&nbsp;Mes audits&nbsp;».
   - Permettre de regrouper les audits pour faciliter leur organisation.
 - **Collaboration multi-auditeurices**
   - Permettre à plusieurs auditeurices de travailler simultanément sur un même audit.

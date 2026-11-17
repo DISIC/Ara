@@ -119,7 +119,7 @@ async function transferAudit(newEmail: string) {
 
     transferModalRef.value?.hide();
 
-    notify("success", `Audit « ${auditProcedureName.value} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
+    notify("success", `Audit «&nbsp;${auditProcedureName.value}&nbsp;» transféré`, `Lien d’accès envoyé à ${newEmail}`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"
@@ -228,7 +228,7 @@ async function transferAudit(newEmail: string) {
               !isSameDay(audit.publicationDate, audit.editionDate)
           "
         >
-          – Mis à jour le
+          –&nbsp;Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
           }}</time></template>
