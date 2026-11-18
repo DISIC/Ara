@@ -49,7 +49,7 @@ export class NotesService {
       await this.fileStorageService.uploadFile(file.buffer, file.mimetype, key);
     }
 
-    const noteFile = await this.prisma.notesFile.create({
+    const notesFile = await this.prisma.notesFile.create({
       data: {
         audit: {
           connect: {
@@ -68,7 +68,7 @@ export class NotesService {
 
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
-    return noteFile;
+    return notesFile;
   }
 
   async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
