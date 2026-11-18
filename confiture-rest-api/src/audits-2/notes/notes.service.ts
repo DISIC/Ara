@@ -5,7 +5,6 @@ import sharp from "sharp";
 import { FileStorageService } from "../../file-storage/file-storage.service";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
-import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
 import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
@@ -24,13 +23,13 @@ export class NotesService {
   ): Promise<NotesFileResponseDto> {
     const randomPrefix = nanoid();
 
-    const key = `audits/${editUniqueId}/${randomPrefix}/${file.originalname}`;
+    const key = `audits/${randomPrefix}/${file.originalname}`;
 
     let thumbnailKey: string | undefined;
 
     if (file.mimetype.startsWith("image")) {
       // If it's an image, create a thumbnail and upload it
-      thumbnailKey = `audits/${editUniqueId}/${randomPrefix}/thumbnail_${file.originalname}`;
+      thumbnailKey = `audits/${randomPrefix}/thumbnail_${file.originalname}`;
 
       const thumbnailBuffer = await sharp(file.buffer)
         .resize(200, 200, { fit: "inside" })
@@ -53,7 +52,8 @@ export class NotesService {
       data: {
         audit: {
           connect: {
-            editUniqueId
+            editUniqueId,
+            isHidden: false
           }
         },
 
@@ -74,7 +74,8 @@ export class NotesService {
   async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
     const result = await this.prisma.audit.findUniqueOrThrow({
       where: {
-        editUniqueId
+        editUniqueId,
+        isHidden: false
       },
       select: {
         notes: true,
@@ -91,7 +92,8 @@ export class NotesService {
   ): Promise<NotesResponseDto> {
     const audit = await this.prisma.audit.update({
       where: {
-        editUniqueId
+        editUniqueId,
+        isHidden: false
       },
       data: {
         notes: data.notes
@@ -107,19 +109,14 @@ export class NotesService {
     return { notes: audit.notes! };
   }
 
-  async deleteNotesFile(editUniqueId: string, data: DeleteNotesFileRequestDto): Promise<boolean> {
-    const noteFilePromise = this.prisma.notesFile.findUniqueOrThrow({
+  async deleteNotesFile(editUniqueId: string, fileId: number): Promise<void> {
+    const notesFile = await this.prisma.notesFile.findUniqueOrThrow({
       where: {
-        id: data.fileId
+        id: fileId,
+        auditUniqueId: editUniqueId,
+        isHidden: false
       }
     });
-
-    const notesFile = await noteFilePromise;
-    const audit = await noteFilePromise.audit();
-
-    if (!audit || audit.editUniqueId !== editUniqueId) {
-      return false;
-    }
 
     const filesToDelete = [notesFile.key];
     if (notesFile.thumbnailKey) {
@@ -129,12 +126,13 @@ export class NotesService {
 
     await this.prisma.notesFile.delete({
       where: {
-        id: data.fileId
+        id: fileId,
+        audit: {
+          isHidden: false
+        }
       }
     });
 
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
-
-    return true;
   }
 }

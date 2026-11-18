@@ -1,10 +1,9 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, Post, Put, SerializeOptions, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, ParseIntPipe, Post, Put, SerializeOptions, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
-import { DeleteNotesFileRequestDto } from "./dto/delete-notes-file-request.dto";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
 import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
@@ -59,13 +58,13 @@ export class NotesController {
     return await this.notesService.updateNotes(uniqueId, body);
   }
 
-  @Delete("files")
+  @Delete("files/:fileId")
   async deleteNotesFile(
     @Param("uniqueId") uniqueId: string,
-    @CurrentUser() user: User | null,
-    @Body() body: DeleteNotesFileRequestDto
-  ): Promise<boolean> {
+    @Param("fileId", new ParseIntPipe()) fileId: number,
+    @CurrentUser() user: User | null
+  ): Promise<void> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
-    return await this.notesService.deleteNotesFile(uniqueId, body);
+    return await this.notesService.deleteNotesFile(uniqueId, fileId);
   }
 }
