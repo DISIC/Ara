@@ -15,7 +15,7 @@ export class StatementResponseDto {
   @Expose()
   initiator: string;
   @Expose()
-  auditorOrganisation: string;
+  auditorOrganisation: string | null;
   @Expose()
   procedureUrl: string;
   @Expose()

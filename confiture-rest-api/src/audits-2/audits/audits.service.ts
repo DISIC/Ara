@@ -159,24 +159,42 @@ export class AuditsService {
         isHidden: true,
         auditorEmail: null,
         auditorName: null,
-        auditorOrganisation: null
+        a11yStatement: {
+          update: {
+            data: {
+              auditorOrganisation: null
+            }
+          }
+        }
       }
     });
   }
+
   /** When an account is deleted, mark all associated audits as deleted. */
   @OnEvent(EVENTS.ACCOUNT_DELETED)
   async softDeleteAuditsByAuditorEmail(userEmail: string) {
-    await this.prisma.audit.updateMany({
-      where: {
-        auditorEmail: userEmail
-      },
-      data: {
-        isHidden: true,
-        auditorEmail: null,
-        auditorName: null,
-        auditorOrganisation: null
-      }
-    });
+    await this.prisma.$transaction([
+      this.prisma.audit.updateMany({
+        where: {
+          auditorEmail: userEmail
+        },
+        data: {
+          isHidden: true,
+          auditorEmail: null,
+          auditorName: null
+        }
+      }),
+      this.prisma.a11yStatement.updateMany({
+        where: {
+          audit: {
+            auditorEmail: userEmail
+          }
+        },
+        data: {
+          auditorOrganisation: null
+        }
+      })
+    ]);
   }
 
   //
@@ -204,8 +222,14 @@ export class AuditsService {
     const audit = await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: {
-        auditorOrganisation: null,
         auditorName: newOwner?.name ?? null,
+        a11yStatement: {
+          update: {
+            data: {
+              auditorOrganisation: null
+            }
+          }
+        },
         auditor: {
           connectOrCreate: {
             where: { username: newEmail },
@@ -232,7 +256,6 @@ export class AuditsService {
     const originalAudit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: sourceEditUniqueId, isHidden: false },
       include: {
-        environments: true,
         transverseElementsPage: {
           include: {
             results: {
@@ -271,12 +294,7 @@ export class AuditsService {
             }
           }
         },
-        notesFiles: true,
-        a11yStatement: {
-          include: {
-            environments: true
-          }
-        }
+        notesFiles: true
       }
     });
 
@@ -320,8 +338,6 @@ export class AuditsService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
-
-        a11yStatement: undefined,
 
         transverseElementsPage: {
           create: {
@@ -586,12 +602,8 @@ export class AuditsService {
   async onPagesUpdated(uniqueId: string): Promise<void> {
     const audit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: uniqueId },
-      select: { statementPublicationDate: true, publicationDate: true }
+      select: { publicationDate: true }
     });
-
-    if (audit.statementPublicationDate) {
-      await this.updateStatementDate(uniqueId);
-    }
 
     if (audit.publicationDate) {
       await this.updateAuditEditDate(uniqueId);
