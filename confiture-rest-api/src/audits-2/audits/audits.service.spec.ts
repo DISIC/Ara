@@ -1,9 +1,11 @@
+import { describe } from "vitest";
+
 describe("auditsService", () => {
-  describe("updateAudit", () => {
+  describe.todo("updateAudit", () => {
     // TODO: test
   });
 
-  describe("duplicateAudit", () => {
+  describe.todo("duplicateAudit", () => {
     // TODO: test
   });
 });

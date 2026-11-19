@@ -24,8 +24,7 @@
     "rootDir": ".",
     "types": [
       "express",
-      "multer",
-      "jest"
+      "multer"
     ]
   }
 }

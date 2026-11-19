@@ -582,6 +582,38 @@ export class AuditsService {
   //   });
   // }
 
+  @OnEvent(EVENTS.PAGES_UPDATED)
+  async onPagesUpdated(uniqueId: string): Promise<void> {
+    const audit = await this.prisma.audit.findFirstOrThrow({
+      where: { editUniqueId: uniqueId },
+      select: { statementPublicationDate: true, publicationDate: true }
+    });
+
+    if (audit.statementPublicationDate) {
+      await this.updateStatementDate(uniqueId);
+    }
+
+    if (audit.publicationDate) {
+      await this.updateAuditEditDate(uniqueId);
+    }
+  }
+
+  // Either update statement publication or edition date
+  // private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
+  //   const audit = await this.prisma.audit.findUniqueOrThrow({
+  //     where: { editUniqueId: uniqueId },
+  //     select: { statementPublicationDate: true }
+  //   });
+  //
+  //   return this.prisma.audit.update({
+  //     where: { editUniqueId: uniqueId },
+  //     data: audit.statementPublicationDate
+  //       ? { statementEditionDate: new Date() }
+  //       : { statementPublicationDate: new Date() },
+  //     select: { statementEditionDate: true, statementPublicationDate: true }
+  //   });
+  // }
+
   private async isAuditComplete(uniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findUniqueOrThrow({
       where: { editUniqueId: uniqueId },
