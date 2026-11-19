@@ -1,7 +1,17 @@
 // @ts-nocheck
 import { Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
-import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
+import _, {
+  intersectionBy,
+  isEqual,
+  omit,
+  orderBy,
+  partition,
+  pick,
+  setWith,
+  sortBy,
+  uniqBy
+} from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 
@@ -62,17 +72,39 @@ const isTransverse = (c: CriterionResult, transversePageId: number) =>
 const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
 
 // Detect whether names are identical but in a different order
-const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; order: number }[], previousAuditPages: { name: string; order: number }[]) => {
-  const intersectingCurrentAuditPages = intersectionBy(currentAuditPages, previousAuditPages, x => x.name);
-  const intersectingPreviousAuditPages = intersectionBy(previousAuditPages, currentAuditPages, x => x.name);
+const hasNamesAreIdenticalButReordered = (
+  currentAuditPages: { name: string; order: number }[],
+  previousAuditPages: { name: string; order: number }[]
+) => {
+  const intersectingCurrentAuditPages = intersectionBy(
+    currentAuditPages,
+    previousAuditPages,
+    (x) => x.name
+  );
+  const intersectingPreviousAuditPages = intersectionBy(
+    previousAuditPages,
+    currentAuditPages,
+    (x) => x.name
+  );
 
-  const namesInOrder = orderBy(intersectingCurrentAuditPages, x => x.order).map(p => p.name);
-  const previousNamesInOrder = orderBy(intersectingPreviousAuditPages, x => x.order).map(p => p.name);
+  const namesInOrder = orderBy(
+    intersectingCurrentAuditPages,
+    (x) => x.order
+  ).map((p) => p.name);
+  const previousNamesInOrder = orderBy(
+    intersectingPreviousAuditPages,
+    (x) => x.order
+  ).map((p) => p.name);
 
-  return isEqual(namesInOrder.length, previousNamesInOrder.length) &&
-        !isEqual(JSON.stringify(namesInOrder), JSON.stringify(previousNamesInOrder)) &&
-        namesInOrder.every(name => previousNamesInOrder.includes(name)) &&
-        previousNamesInOrder.every(name => namesInOrder.includes(name));
+  return (
+    isEqual(namesInOrder.length, previousNamesInOrder.length) &&
+    !isEqual(
+      JSON.stringify(namesInOrder),
+      JSON.stringify(previousNamesInOrder)
+    ) &&
+    namesInOrder.every((name) => previousNamesInOrder.includes(name)) &&
+    previousNamesInOrder.every((name) => namesInOrder.includes(name))
+  );
 };
 
 @Injectable()
@@ -81,7 +113,7 @@ export class AuditService {
     private readonly prisma: PrismaService,
     private readonly fileStorageService: FileStorageService,
     private readonly authService: AuthService
-  ) { }
+  ) {}
 
   async createAudit(data: CreateAuditDto): Promise<AuditDto> {
     const editUniqueId = nanoid();
@@ -181,9 +213,11 @@ export class AuditService {
    * @param pages An array of objects containing a name property
    * @returns An shallow copy of the `pages` array with added `slug` property that is guaranteed to be unique within that array
    */
-  private generatePageSlugs<T extends { name: string }>(pages: T[]): (T & { slug: string })[] {
+  private generatePageSlugs<T extends { name: string }>(
+    pages: T[]
+  ): (T & { slug: string })[] {
     const existingSlugs = new Set<string>([TRANSVERSE_ELEMENTS_SLUG]);
-    const pagesWithSlug = pages.map(page => {
+    const pagesWithSlug = pages.map((page) => {
       let slug = slugify(page.name);
       for (let i = 1; ; i++) {
         if (!existingSlugs.has(slug)) {
@@ -202,7 +236,10 @@ export class AuditService {
    * @param isHidden look for hidden audits, default: false
    * @returns true if the audit exists in db, false otherwise
    */
-  async checkIfAuditExists(editUniqueId: string, isHidden: boolean = false): Promise<boolean> {
+  async checkIfAuditExists(
+    editUniqueId: string,
+    isHidden: boolean = false
+  ): Promise<boolean> {
     const audit = await this.prisma.audit.findFirst({
       where: { editUniqueId, isHidden },
       select: { id: true }
@@ -221,9 +258,7 @@ export class AuditService {
 
   async getResultsWithEditUniqueId(
     uniqueId: string
-  ): Promise<
-    CriterionResultDto[]
-  > {
+  ): Promise<CriterionResultDto[]> {
     const [audit, pages, results, transverseResults] = await Promise.all([
       this.prisma.audit.findUnique({
         include: {
@@ -248,7 +283,6 @@ export class AuditService {
           exampleImages: true,
           notCompliantItems: true
         }
-
       }),
       this.prisma.criterionResult.findMany({
         where: {
@@ -283,7 +317,11 @@ export class AuditService {
    * [r1, r2, r4] -> [r1, r2, r3 (filler), r4, r5 (filler), ..., r106 (filler)]
    * ```
    */
-  private getResultsWithPlaceholders(pageId: number, auditType: AuditType, existingResults: CriterionResultDto[]): CriterionResultDto[] {
+  private getResultsWithPlaceholders(
+    pageId: number,
+    auditType: AuditType,
+    existingResults: CriterionResultDto[]
+  ): CriterionResultDto[] {
     return CRITERIA_BY_AUDIT_TYPE[auditType].map((criterion) => {
       const existingResult = existingResults.find(
         (result) =>
@@ -313,7 +351,10 @@ export class AuditService {
     });
   }
 
-  async getPageWithResults(uniqueId: string, pageSlug: string): Promise<GetPageWithResultsDto | null> {
+  async getPageWithResults(
+    uniqueId: string,
+    pageSlug: string
+  ): Promise<GetPageWithResultsDto | null> {
     const [audit, page] = await Promise.all([
       // fetch audit type
       this.prisma.audit.findUnique({
@@ -378,7 +419,11 @@ export class AuditService {
     }
 
     // add placeholder results
-    page.results = this.getResultsWithPlaceholders(page.id, audit.auditType, page.results);
+    page.results = this.getResultsWithPlaceholders(
+      page.id,
+      audit.auditType,
+      page.results
+    );
 
     return page;
   }
@@ -402,15 +447,23 @@ export class AuditService {
 
       if (updatedPages.length > 0) {
         // If reorganization detected, temporarily rename to avoid database integrity constraints
-        if (hasNamesAreIdenticalButReordered(updatedPages, previousAudit.pages)) {
+        if (
+          hasNamesAreIdenticalButReordered(updatedPages, previousAudit.pages)
+        ) {
           await this.prisma.$transaction(async (tx) => {
             // temporary slugs
             for (const p of updatedPages) {
-              await tx.auditedPage.update({ where: { id: p.id }, data: { slug: `${p.slug}_temp` } });
+              await tx.auditedPage.update({
+                where: { id: p.id },
+                data: { slug: `${p.slug}_temp` }
+              });
             }
             // real slugs
             for (const p of updatedPages) {
-              await tx.auditedPage.update({ where: { id: p.id }, data: { slug: p.slug } });
+              await tx.auditedPage.update({
+                where: { id: p.id },
+                data: { slug: p.slug }
+              });
             }
           });
         }
@@ -418,9 +471,11 @@ export class AuditService {
 
       // Reset org when changing email from unverified to verified user.
       const shouldResetOrganisation =
-        data.auditorEmail !== previousAudit.auditorEmail
-        && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
-        && await this.authService.isAccountVerified(data.auditorEmail);
+        data.auditorEmail !== previousAudit.auditorEmail &&
+        !(await this.authService.isAccountVerified(
+          previousAudit.auditorEmail
+        )) &&
+        (await this.authService.isAccountVerified(data.auditorEmail));
 
       const audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
@@ -437,7 +492,9 @@ export class AuditService {
             }
           },
           auditorName: data.auditorName,
-          auditorOrganisation: shouldResetOrganisation ? null : data.auditorOrganisation,
+          auditorOrganisation: shouldResetOrganisation
+            ? null
+            : data.auditorOrganisation,
 
           contactName: data.contactName,
           contactEmail: data.contactEmail,
@@ -477,13 +534,13 @@ export class AuditService {
             upsert: data.environments.map((environment) => ({
               where: {
                 platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
-                    {
-                      auditUniqueId: uniqueId,
-                      platform: environment.platform,
-                      operatingSystem: environment.operatingSystem,
-                      assistiveTechnology: environment.assistiveTechnology,
-                      browser: environment.browser
-                    }
+                  {
+                    auditUniqueId: uniqueId,
+                    platform: environment.platform,
+                    operatingSystem: environment.operatingSystem,
+                    assistiveTechnology: environment.assistiveTechnology,
+                    browser: environment.browser
+                  }
               },
               create: environment,
               update: environment
@@ -525,31 +582,46 @@ export class AuditService {
       let returnedAudit: AuditDto = audit;
 
       // check the differences between the audit after and before the update
-      const changedProperties: (keyof typeof audit)[] =
-        _
-          .differenceWith(Object.entries(audit), Object.entries(previousAudit), _.isEqual)
-          .map(entries => entries[0] as keyof typeof audit)
-          .filter(el => !["notesFiles", "transverseElementsPage", "pages"].includes(el));
+      const changedProperties: (keyof typeof audit)[] = _.differenceWith(
+        Object.entries(audit),
+        Object.entries(previousAudit),
+        _.isEqual
+      )
+        .map((entries) => entries[0] as keyof typeof audit)
+        .filter(
+          (el) =>
+            !["notesFiles", "transverseElementsPage", "pages"].includes(el)
+        );
 
       const pagesChanged = !isEqual(
-        audit.pages.map(p => pick(p, ["id", "name", "url", "order"])),
-        previousAudit.pages.map(p => pick(p, ["id", "name", "url", "order"]))
+        audit.pages.map((p) => pick(p, ["id", "name", "url", "order"])),
+        previousAudit.pages.map((p) => pick(p, ["id", "name", "url", "order"]))
       );
 
       // update audit edition date only if:
       // - it has a `publicationDate`
       // - a property other than below has been changed
-      const ignoredChanges: (keyof typeof audit)[] = ["auditorName", "procedureName", "auditorEmail"];
-      if ((!changedProperties.every(changedProperty => ignoredChanges.includes(changedProperty)) || pagesChanged) && audit.publicationDate) {
+      const ignoredChanges: (keyof typeof audit)[] = [
+        "auditorName",
+        "procedureName",
+        "auditorEmail"
+      ];
+      if (
+        (!changedProperties.every((changedProperty) =>
+          ignoredChanges.includes(changedProperty)
+        ) ||
+          pagesChanged) &&
+        audit.publicationDate
+      ) {
         returnedAudit = await this.updateAuditEditDate(uniqueId);
       }
 
       // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
       if (
         audit.statementPublicationDate &&
-        (
-          !isEqual(previousAudit.pages, audit.pages ||
-          changedProperties.includes("procedureName"))
+        !isEqual(
+          previousAudit.pages,
+          audit.pages || changedProperties.includes("procedureName")
         )
       ) {
         returnedAudit = (await this.updateStatementDate(uniqueId)) ?? audit;
@@ -574,7 +646,9 @@ export class AuditService {
     data: PatchAuditDto
   ): Promise<Audit | undefined> {
     try {
-      let audit = await this.prisma.audit.findUnique({ where: { editUniqueId: uniqueId } });
+      let audit = await this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId }
+      });
       audit = await this.prisma.audit.update({
         where: { editUniqueId: uniqueId },
         data: {
@@ -602,40 +676,43 @@ export class AuditService {
       .map((item) => {
         const result: PrismaPromise<any>[] = [];
 
-        const newNotCompliantItems = item.notCompliantItems?.filter((x) => !x.id) ?? [];
+        const newNotCompliantItems =
+          item.notCompliantItems?.filter((x) => !x.id) ?? [];
 
-        const existingNotCompliantItems = item.notCompliantItems
-          .filter((x) => x.id);
+        const existingNotCompliantItems = item.notCompliantItems.filter(
+          (x) => x.id
+        );
 
-        const notCompliantItemsToDelete = this.prisma.notCompliantItem.deleteMany({
-          where: {
-            id: {
-              notIn: existingNotCompliantItems.map((x) => x.id)
-            },
-            criterionResult: {
-              criterium: item.criterium,
-              topic: item.topic,
-              pageId: item.pageId,
-              page: {
-                OR: [
-                  {
-                    auditUniqueId: uniqueId
-                  },
-                  {
-                    auditTransverse: {
-                      editUniqueId: uniqueId
+        const notCompliantItemsToDelete =
+          this.prisma.notCompliantItem.deleteMany({
+            where: {
+              id: {
+                notIn: existingNotCompliantItems.map((x) => x.id)
+              },
+              criterionResult: {
+                criterium: item.criterium,
+                topic: item.topic,
+                pageId: item.pageId,
+                page: {
+                  OR: [
+                    {
+                      auditUniqueId: uniqueId
+                    },
+                    {
+                      auditTransverse: {
+                        editUniqueId: uniqueId
+                      }
                     }
-                  }
-                ]
+                  ]
+                }
               }
             }
-          }
-        });
+          });
 
         result.push(notCompliantItemsToDelete);
 
-        const notCompliantItemsToUpdate = existingNotCompliantItems
-          .map((notCompliantItem) => {
+        const notCompliantItemsToUpdate = existingNotCompliantItems.map(
+          (notCompliantItem) => {
             return this.prisma.notCompliantItem.update({
               where: {
                 id: notCompliantItem.id,
@@ -659,7 +736,8 @@ export class AuditService {
               },
               data: omit(notCompliantItem, ["id"])
             });
-          });
+          }
+        );
 
         result.push(...notCompliantItemsToUpdate);
 
@@ -674,13 +752,14 @@ export class AuditService {
           status: item.status,
           compliantComment: item.compliantComment,
           notApplicableComment: item.notApplicableComment,
-          notCompliantItems: newNotCompliantItems.length > 0
-            ? {
-                createMany: {
-                  data: newNotCompliantItems
+          notCompliantItems:
+            newNotCompliantItems.length > 0
+              ? {
+                  createMany: {
+                    data: newNotCompliantItems
+                  }
                 }
-              }
-            : undefined
+              : undefined
         };
 
         result.push(
@@ -701,9 +780,7 @@ export class AuditService {
       })
       .flat();
 
-    await this.prisma.$transaction([
-      ...promises
-    ]);
+    await this.prisma.$transaction([...promises]);
     await this.updateAuditEditDate(uniqueId);
 
     // Update `statementPublicationDate` on:
@@ -722,7 +799,8 @@ export class AuditService {
       }
     });
 
-    const statusChanged = body.data.length === 1 && criterium.status !== body.data[0].status;
+    const statusChanged =
+      body.data.length === 1 && criterium.status !== body.data[0].status;
 
     if (body.data.length > 1 || statusChanged) {
       const audit = await this.prisma.audit.findUnique({
@@ -810,7 +888,10 @@ export class AuditService {
     // Checks whether its a user page or transverse page
     const audit =
       page.url === ""
-        ? await exampleImageFilePromise.criterionResult().page().auditTransverse()
+        ? await exampleImageFilePromise
+            .criterionResult()
+            .page()
+            .auditTransverse()
         : await exampleImageFilePromise.criterionResult().page().audit();
 
     if (!audit || audit.editUniqueId !== editUniqueId) {
@@ -913,6 +994,15 @@ export class AuditService {
       return false;
     }
 
+    this.prisma.notesFile.findUnique({
+      where: {
+        id: fileId,
+        audit: {
+          editUniqueId: editUniqueId
+        }
+      }
+    });
+
     const filesToDelete = [notesFile.key];
     if (notesFile.thumbnailKey) {
       filesToDelete.push(notesFile.thumbnailKey);
@@ -954,7 +1044,9 @@ export class AuditService {
       const keysToDelete = [];
       if (exampleImageFiles.length > 0) {
         keysToDelete.push(
-          ...exampleImageFiles.map((file) => [file.key, file.thumbnailKey]).flat()
+          ...exampleImageFiles
+            .map((file) => [file.key, file.thumbnailKey])
+            .flat()
         );
       }
       if (notesFiles.length > 0) {
@@ -1168,7 +1260,10 @@ export class AuditService {
       applicableCriteria,
       notApplicableCriteria,
       accessibilityRate
-    } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
+    } = AuditService.groupResultsByStatus(
+      results,
+      audit.transverseElementsPageId
+    );
 
     const report: AuditReportDto = {
       consultUniqueId: audit.consultUniqueId,
@@ -1208,7 +1303,9 @@ export class AuditService {
           results.filter(
             (r) =>
               r.status === CriterionResultStatus.NOT_COMPLIANT &&
-              r.notCompliantItems.some(x => x.userImpact === CriterionResultUserImpact.BLOCKING)
+              r.notCompliantItems.some(
+                (x) => x.userImpact === CriterionResultUserImpact.BLOCKING
+              )
           ),
           (r) => `${r.topic}.${r.criterium}`
         ).length,
@@ -1372,7 +1469,12 @@ export class AuditService {
     return report;
   }
 
-  private getAuditResults(audit: Pick<Audit, "editUniqueId" | "auditType" | "transverseElementsPageId">) {
+  private getAuditResults(
+    audit: Pick<
+      Audit,
+      "editUniqueId" | "auditType" | "transverseElementsPageId"
+    >
+  ) {
     return Promise.all([
       this.prisma.criterionResult.findMany({
         where: {
@@ -1396,10 +1498,13 @@ export class AuditService {
           notCompliantItems: true
         }
       })
-    ]).then(results => results.flat());
+    ]).then((results) => results.flat());
   }
 
-  public static groupResultsByStatus(results: CriterionResult[], transversePageId: number) {
+  public static groupResultsByStatus(
+    results: CriterionResult[],
+    transversePageId: number
+  ) {
     const groupedCriteria = results.reduce<Record<string, CriterionResult[]>>(
       (acc, c) => {
         const key = `${c.topic}.${c.criterium}`;
@@ -1420,13 +1525,12 @@ export class AuditService {
     const compliantCriteria = applicableCriteria.filter((criteria) => {
       // remove untested transverse criterion
       const withoutUntestedTrans = criteria.filter(
-        (c) =>
-          !isTransverse(c, transversePageId) || !isNotTested(c)
+        (c) => !isTransverse(c, transversePageId) || !isNotTested(c)
       );
 
       return (
         withoutUntestedTrans.some((c) => isCompliant(c)) &&
-          withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
+        withoutUntestedTrans.every((c) => isCompliant(c) || isNotApplicable(c))
       );
     });
 
@@ -1438,8 +1542,7 @@ export class AuditService {
       (criteria) => {
         // remove untested transverse criterion
         const withoutUntestedTrans = criteria.filter(
-          (c) =>
-            !isTransverse(c, transversePageId) || !isNotTested(c)
+          (c) => !isTransverse(c, transversePageId) || !isNotTested(c)
         );
 
         return withoutUntestedTrans.every((c) => isNotApplicable(c));
@@ -1487,7 +1590,10 @@ export class AuditService {
     return testedCount === expectedCount;
   }
 
-  async duplicateAudit(sourceUniqueId: string, newAuditName: string): Promise<AuditDto> {
+  async duplicateAudit(
+    sourceUniqueId: string,
+    newAuditName: string
+  ): Promise<AuditDto> {
     const originalAudit = await this.prisma.audit.findFirst({
       where: { editUniqueId: sourceUniqueId, isHidden: false },
       include: {
@@ -1726,10 +1832,11 @@ export class AuditService {
                         r.id
                       ][e.id]
                   )
-
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
+                  create: r.notCompliantItems.map((item) => ({
+                    ...omit(item, ["id"])
+                  }))
                 }
               }))
             }
@@ -1751,7 +1858,9 @@ export class AuditService {
                   )
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
+                  create: r.notCompliantItems.map((item) => ({
+                    ...omit(item, ["id"])
+                  }))
                 }
               }))
             }
@@ -1921,7 +2030,9 @@ export class AuditService {
   /**
    * Returns a Promise that resolves to the accessibility statement data or null if the audit cannot be found
    */
-  async getAuditStatementWithConsultId(consultUniqueId: string): Promise<StatementDto | null> {
+  async getAuditStatementWithConsultId(
+    consultUniqueId: string
+  ): Promise<StatementDto | null> {
     const audit = await this.prisma.audit.findUnique({
       where: { consultUniqueId },
       select: AUDIT_PRISMA_SELECT
@@ -1933,9 +2044,10 @@ export class AuditService {
 
     const results = await this.getAuditResults(audit);
 
-    const {
-      accessibilityRate
-    } = AuditService.groupResultsByStatus(results, audit.transverseElementsPageId);
+    const { accessibilityRate } = AuditService.groupResultsByStatus(
+      results,
+      audit.transverseElementsPageId
+    );
 
     const statement: StatementDto = {
       consultUniqueId: audit.consultUniqueId,
@@ -2018,13 +2130,13 @@ export class AuditService {
           upsert: data.environments.map((environment) => ({
             where: {
               platform_operatingSystem_assistiveTechnology_browser_auditUniqueId:
-                    {
-                      auditUniqueId: editUniqueId,
-                      platform: environment.platform,
-                      operatingSystem: environment.operatingSystem,
-                      assistiveTechnology: environment.assistiveTechnology,
-                      browser: environment.browser
-                    }
+                {
+                  auditUniqueId: editUniqueId,
+                  platform: environment.platform,
+                  operatingSystem: environment.operatingSystem,
+                  assistiveTechnology: environment.assistiveTechnology,
+                  browser: environment.browser
+                }
             },
             create: environment,
             update: environment
@@ -2049,10 +2161,11 @@ export class AuditService {
    */
   async transferAudit(uniqueId: string, newEmail: string) {
     // Get original audit email
-    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUnique({
-      where: { editUniqueId: uniqueId },
-      select: { auditorEmail: true }
-    });
+    const { auditorEmail: originalAuditEmail } =
+      await this.prisma.audit.findUnique({
+        where: { editUniqueId: uniqueId },
+        select: { auditorEmail: true }
+      });
 
     // Get new owner info
     const user = await this.prisma.user.findUnique({

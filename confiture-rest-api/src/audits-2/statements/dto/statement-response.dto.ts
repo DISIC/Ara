@@ -2,8 +2,6 @@ import { Expose, Type } from "class-transformer";
 
 class TestEnvironmentDto {
   @Expose()
-  id: number;
-  @Expose()
   platform: string;
   @Expose()
   operatingSystem: string;
