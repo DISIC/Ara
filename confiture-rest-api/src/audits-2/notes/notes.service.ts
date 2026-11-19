@@ -114,7 +114,9 @@ export class NotesService {
       where: {
         id: fileId,
         auditUniqueId: editUniqueId,
-        isHidden: false
+        audit: {
+          isHidden: false
+        }
       }
     });
 
