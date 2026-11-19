@@ -10,6 +10,7 @@ import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
+import { StatementsService } from "../statements/statements.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 import { UpdateAuditRequestDto } from "./dto/update-audit-request.dto";
@@ -22,7 +23,8 @@ export class AuditsService {
     private readonly resultsService: ResultsService,
     private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
-    private readonly fileStorageService: FileStorageService
+    private readonly fileStorageService: FileStorageService,
+    private readonly statementsService: StatementsService
   ) { }
 
   //
@@ -139,12 +141,10 @@ export class AuditsService {
       Object.assign(audit, newDates);
     }
 
-    // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
-    // TODO: update statement date
-    // if (audit.statementPublicationDate && previousAudit.procedureName !== audit.procedureName) {
-    //   const newDates = await this.updateStatementDate(editUniqueId);
-    //   Object.assign(audit, newDates);
-    // }
+    // Update statement date when `procedureName` change
+    if (previousAudit.procedureName !== audit.procedureName) {
+      await this.statementsService.updateStatementDate(editUniqueId);
+    }
 
     return audit;
   }

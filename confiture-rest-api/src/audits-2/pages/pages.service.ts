@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS, slugify } from "../../utils";
+import { StatementsService } from "../statements/statements.service";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
 import { UpdatePagesRequestDto } from "./dto/update-pages-request.dto";
@@ -12,7 +13,8 @@ export const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
 export class PagesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private readonly statementsService: StatementsService
   ) { }
 
   async createPage(editUniqueId: string, data: CreatePageRequestDto): Promise<PageResponseDto> {
@@ -24,9 +26,13 @@ export class PagesService {
     })).map(el => el.slug);
     const slug = PagesService.generateUniqueSlug(data.name, existingSlugs);
 
-    return this.prisma.auditedPage.create({
+    const page = await this.prisma.auditedPage.create({
       data: { ...data, slug, order: existingSlugs.length + 1, audit: { connect: { editUniqueId } } }
     });
+
+    await this.statementsService.updateStatementDate(editUniqueId);
+
+    return page;
   }
 
   async createPages(editUniqueId: string, data: CreatePageRequestDto[]): Promise<PageResponseDto[]> {
@@ -39,7 +45,7 @@ export class PagesService {
 
     const slugs = PagesService.generateManyUniqueSlugs(data.map(x => x.name), existingSlugs);
 
-    return this.prisma.auditedPage.createManyAndReturn({
+    const pages = await this.prisma.auditedPage.createManyAndReturn({
       data: data.map((p, i) => ({
         ...p,
         slug: slugs[i],
@@ -47,6 +53,10 @@ export class PagesService {
         auditUniqueId: editUniqueId
       }))
     });
+
+    await this.statementsService.updateStatementDate(editUniqueId);
+
+    return pages;
   }
 
   async getPages(editUniqueId: string): Promise<PageResponseDto[]> {
@@ -115,7 +125,10 @@ export class PagesService {
       });
 
       // update audit statement and edition date
+      // TODO: call service directly
       this.eventEmitter.emit(EVENTS.PAGES_UPDATED, editUniqueId);
+
+      await this.statementsService.updateStatementDate(editUniqueId);
 
       // return updated pages
       return await Promise.all(upserts);

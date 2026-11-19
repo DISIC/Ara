@@ -3,6 +3,7 @@ import { AuthModule } from "../../auth/auth.module";
 import { FileStorageModule } from "../../file-storage/file-storage.module";
 import { PagesModule } from "../pages/pages.module";
 import { ResultsModule } from "../results/results.module";
+import { StatementsModule } from "../statements/statements.module";
 import { AuditPolicy } from "./audit.policy";
 import { AuditsController } from "./audits.controller";
 import { AuditsService } from "./audits.service";
@@ -10,6 +11,6 @@ import { AuditsService } from "./audits.service";
 @Module({
   controllers: [AuditsController],
   providers: [AuditsService, AuditPolicy],
-  imports: [PagesModule, ResultsModule, AuthModule, FileStorageModule]
+  imports: [PagesModule, ResultsModule, AuthModule, FileStorageModule, StatementsModule]
 })
 export class AuditsModule {}

@@ -4,6 +4,7 @@ import { StatementsService } from "./statements.service";
 
 @Module({
   controllers: [StatementsController],
-  providers: [StatementsService]
+  providers: [StatementsService],
+  exports: [StatementsService]
 })
 export class StatementsModule { }

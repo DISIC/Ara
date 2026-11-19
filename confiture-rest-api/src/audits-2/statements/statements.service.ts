@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
 import { PrismaService } from "../../prisma.service";
 import { StatementResponseDto } from "./dto/statement-response.dto";
 import { UpdateStatementRequestDto } from "./dto/update-statement-request.dto";
@@ -79,10 +78,7 @@ export class StatementsService {
     });
   }
 
-  // TODO: call on page update
-  // TODO: call on audit name change
   // TODO: call on any result status change
-  @OnEvent("audit.updated.name")
   async updateStatementDate(uniqueId: string) {
     await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
