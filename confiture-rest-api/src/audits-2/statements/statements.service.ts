@@ -10,7 +10,6 @@ export class StatementsService {
   async getStatement(
     auditEditUniqueId: string
   ): Promise<StatementResponseDto | null> {
-    // make sure the audit exists
     return await this.prisma.audit
       .findFirstOrThrow({
         where: {
@@ -18,7 +17,6 @@ export class StatementsService {
           isHidden: false
         }
       })
-      // before fetching its statement using prisma’s "fluent" API
       .a11yStatement({
         include: {
           environments: true

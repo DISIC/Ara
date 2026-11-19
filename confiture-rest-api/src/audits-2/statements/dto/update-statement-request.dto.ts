@@ -5,10 +5,13 @@ import { IsNullable } from "../../../utils";
 class UpdateTestEnvironmentDto {
   @IsString()
   platform: string;
+
   @IsString()
   operatingSystem: string;
+
   @IsString()
   assistiveTechnology: string;
+
   @IsString()
   browser: string;
 }
