@@ -10,6 +10,7 @@ import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
+import { StatementsService } from "../statements/statements.service";
 import { AuditResponseDto } from "./dto/audit-response.dto";
 import { CreateAuditRequestDto } from "./dto/create-audit-request.dto";
 import { UpdateAuditRequestDto } from "./dto/update-audit-request.dto";
@@ -22,7 +23,8 @@ export class AuditsService {
     private readonly resultsService: ResultsService,
     private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
-    private readonly fileStorageService: FileStorageService
+    private readonly fileStorageService: FileStorageService,
+    private readonly statementsService: StatementsService
   ) { }
 
   //
@@ -126,10 +128,13 @@ export class AuditsService {
               where: { username: data.auditorEmail.toLowerCase() }
             }
           }
-        }),
-        ...(shouldResetOrganisation && { auditorOrganisation: null })
+        })
       }
     });
+
+    if (shouldResetOrganisation) {
+      await this.statementsService.resetAuditorOrganisation(editUniqueId);
+    }
 
     // update audit edition date only if:
     // - it has a `publicationDate`
@@ -139,12 +144,10 @@ export class AuditsService {
       Object.assign(audit, newDates);
     }
 
-    // Update statement date when `procedureName` or `pages` change and if there is a `statementPublicationDate`
-    // TODO: update statement date
-    // if (audit.statementPublicationDate && previousAudit.procedureName !== audit.procedureName) {
-    //   const newDates = await this.updateStatementDate(editUniqueId);
-    //   Object.assign(audit, newDates);
-    // }
+    // Update statement date when `procedureName` change
+    if (previousAudit.procedureName !== audit.procedureName) {
+      await this.statementsService.updateStatementDate(editUniqueId);
+    }
 
     return audit;
   }
@@ -154,29 +157,42 @@ export class AuditsService {
    */
   async softDeleteAudit(editUniqueId: string): Promise<void> {
     await this.prisma.audit.update({
-      where: { editUniqueId },
+      where: { editUniqueId, isHidden: false },
       data: {
         isHidden: true,
         auditorEmail: null,
-        auditorName: null,
-        auditorOrganisation: null
+        auditorName: null
       }
     });
+
+    await this.statementsService.resetAuditorOrganisation(editUniqueId);
   }
+
   /** When an account is deleted, mark all associated audits as deleted. */
   @OnEvent(EVENTS.ACCOUNT_DELETED)
   async softDeleteAuditsByAuditorEmail(userEmail: string) {
-    await this.prisma.audit.updateMany({
-      where: {
-        auditorEmail: userEmail
-      },
-      data: {
-        isHidden: true,
-        auditorEmail: null,
-        auditorName: null,
-        auditorOrganisation: null
-      }
-    });
+    await this.prisma.$transaction([
+      this.prisma.audit.updateMany({
+        where: {
+          auditorEmail: userEmail
+        },
+        data: {
+          isHidden: true,
+          auditorEmail: null,
+          auditorName: null
+        }
+      }),
+      this.prisma.a11yStatement.updateMany({
+        where: {
+          audit: {
+            auditorEmail: userEmail
+          }
+        },
+        data: {
+          auditorOrganisation: null
+        }
+      })
+    ]);
   }
 
   //
@@ -204,7 +220,6 @@ export class AuditsService {
     const audit = await this.prisma.audit.update({
       where: { editUniqueId: uniqueId },
       data: {
-        auditorOrganisation: null,
         auditorName: newOwner?.name ?? null,
         auditor: {
           connectOrCreate: {
@@ -216,6 +231,8 @@ export class AuditsService {
         }
       }
     });
+
+    await this.statementsService.resetAuditorOrganisation(uniqueId);
 
     this.eventEmitter.emit(EVENTS.AUDIT_TRANSFERED, {
       audit: {
@@ -232,7 +249,6 @@ export class AuditsService {
     const originalAudit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: sourceEditUniqueId, isHidden: false },
       include: {
-        environments: true,
         transverseElementsPage: {
           include: {
             results: {
@@ -271,12 +287,7 @@ export class AuditsService {
             }
           }
         },
-        notesFiles: true,
-        a11yStatement: {
-          include: {
-            environments: true
-          }
-        }
+        notesFiles: true
       }
     });
 
@@ -320,8 +331,6 @@ export class AuditsService {
         creationDate: new Date(),
         editionDate: undefined,
         publicationDate: originalAudit.publicationDate ? new Date() : undefined,
-
-        a11yStatement: undefined,
 
         transverseElementsPage: {
           create: {
@@ -570,12 +579,8 @@ export class AuditsService {
   async onPagesUpdated(uniqueId: string): Promise<void> {
     const audit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: uniqueId },
-      select: { statementPublicationDate: true, publicationDate: true }
+      select: { publicationDate: true }
     });
-
-    if (audit.statementPublicationDate) {
-      await this.updateStatementDate(uniqueId);
-    }
 
     if (audit.publicationDate) {
       await this.updateAuditEditDate(uniqueId);
@@ -586,22 +591,6 @@ export class AuditsService {
   async onNotesUpdated(uniqueId: string): Promise<void> {
     await this.updateAuditEditDate(uniqueId);
   }
-
-  // Either update statement publication or edition date
-  // private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
-  //   const audit = await this.prisma.audit.findUniqueOrThrow({
-  //     where: { editUniqueId: uniqueId },
-  //     select: { statementPublicationDate: true }
-  //   });
-  //
-  //   return this.prisma.audit.update({
-  //     where: { editUniqueId: uniqueId },
-  //     data: audit.statementPublicationDate
-  //       ? { statementEditionDate: new Date() }
-  //       : { statementPublicationDate: new Date() },
-  //     select: { statementEditionDate: true, statementPublicationDate: true }
-  //   });
-  // }
 
   private async isAuditComplete(uniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findUniqueOrThrow({
