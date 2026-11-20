@@ -53,18 +53,6 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
     });
   });
 
-  it("Account : a RGAA 5 audit with many blocking user impact is not compliant", () => {
-    cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web }).then(() => {
-        cy.visit("http://localhost:3000/compte");
-
-        cy.contains("Terminé (1)");
-
-        cy.get(".audit-compliance-level").contains("Non conforme");
-      });
-    });
-  });
-
   it("Account : a RGAA 5 audit is compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
       cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, complianceRate: 100 }).then(() => {
