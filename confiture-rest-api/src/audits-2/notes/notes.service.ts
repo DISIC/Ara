@@ -17,6 +17,10 @@ export class NotesService {
     private readonly fileStorageService: FileStorageService
   ) { }
 
+  /**
+   * Creates notes file and uploads it on S3
+   * @event EVENTS.NOTES_UPDATED
+   */
   async createNotesFile(
     editUniqueId: string,
     file: Express.Multer.File
@@ -106,7 +110,7 @@ export class NotesService {
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
     // As we are updating notes, it always returns a string (even when actual content is empty).
-    return { notes: audit.notes! };
+    return { notes: audit.notes };
   }
 
   async deleteNotesFile(editUniqueId: string, fileId: number): Promise<void> {
