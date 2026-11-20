@@ -8,7 +8,7 @@ describe("Common", () => {
       }).then(({ editId, reportId }) => {
         // TODO: include OnboardingModal donut when fixed
         cy.visit("http://localhost:3000/compte");
-        cy.get(".audit-compliance-level").should("contain.text", "51\u00A0%");
+        cy.get(".audit-compliance-level").should("contain.text", "Taux de conformité\u00A0 51\u00A0%Partiellement conforme");
 
         cy.visit(`http://localhost:3000/declarations/${reportId}`);
         cy.contains(`51 % des critères`);

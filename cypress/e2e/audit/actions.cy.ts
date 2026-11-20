@@ -37,7 +37,7 @@ describe("Actions", () => {
     });
   });
 
-  it.only("User can edit pages", () => {
+  it("User can edit pages", () => {
     cy.intercept("PUT", `/api/audits/*`).as("updateParams");
 
     cy.createTestAudit().then(({ editId }) => {
