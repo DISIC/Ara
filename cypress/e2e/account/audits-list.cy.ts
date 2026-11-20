@@ -8,7 +8,7 @@ describe("Audits list", () => {
         auditorEmail: username,
         isComplete: true,
         fillStatement: true
-      }).as("auditStatementFilled"); ;
+      }).as("auditStatementFilled");
       cy.createTestAudit({ auditorEmail: username, isPristine: true });
       cy.createTestAudit({ auditorEmail: username });
       cy.createTestAudit({ auditorEmail: username }).as("audit");
