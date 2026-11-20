@@ -81,7 +81,7 @@ const currentStep = ref(0);
 const steps = [
   "Choisissez le référentiel",
   "Choisissez un type d’audit",
-  "Renseignez l’échantillon des pages à auditer",
+  "Renseignez l’échantillon",
   "Indiquez la présence d’éléments spécifiques",
   ...(accountStore.account && accountStore.account.name
     ? []
@@ -282,7 +282,7 @@ function setTopicAccordionStatus(
 
   <div class="content">
     <h1 class="fr-mb-6w">Paramétrer un audit</h1>
-    <div class="fr-stepper fr-mb-9v">
+    <div class="fr-stepper fr-mb-12v">
       <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h2">
         {{ steps[currentStep] }}
         <span class="fr-stepper__state">

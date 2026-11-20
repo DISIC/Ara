@@ -79,17 +79,34 @@ export function formatStatus(
   return FORMATTED_STATUS[status];
 }
 
-const CRITERIA_COUNT = {
-  [AuditType.FAST]: 25,
-  [AuditType.COMPLEMENTARY]: 50,
-  [AuditType.FULL]: 106
+const CRITERIA_COUNT: Record<AuditReference, Record<AuditType, number>> = {
+  [AuditReference.RGAA_4]: {
+    [AuditType.FAST]: 25,
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 106
+  },
+  [AuditReference.RGAA_5_Web]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142
+  },
+  [AuditReference.RGAA_5_Mobile]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142 // TODO
+  },
+  [AuditReference.RGAA_5_Document]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142 // TODO
+  }
 };
 
 /**
  * Return the number of criteria for a given audit type.
  */
-export function getCriteriaCount(auditType: AuditTypeString): number {
-  return CRITERIA_COUNT[auditType];
+export function getCriteriaCount(auditType: AuditTypeString, auditReference: AuditReference | undefined | null): number {
+  return CRITERIA_COUNT[auditReference ?? AuditReference.RGAA_4][auditType];
 }
 
 /**
@@ -103,7 +120,7 @@ export function getAuditStatus(report: AuditReport): string {
 
   if (
     report.results.filter((r) => r.pageId !== transversePageId).length !==
-      getCriteriaCount(report.auditType) *
+      getCriteriaCount(report.auditType, report.auditReference) *
         (report.context.samples.length - 1) ||
     report?.results
       .filter((r) => r.pageId !== transversePageId)
@@ -312,7 +329,7 @@ export function getAuditReference(auditReference: AuditReference | undefined, sh
   return "Web";
 }
 
-export function getRgaaVersion(auditReference: AuditReference | undefined): string {
+export function getRgaaVersion(auditReference: AuditReference | undefined | null): string {
   // RGAA 4 by default
   if (!auditReference) {
     return "RGAA 4";

@@ -42,16 +42,16 @@ const radios = [
   },
   {
     reference: AuditReference.RGAA_5_Mobile,
-    label: "App. mobile",
-    description: `<span class="fr-text--bold">Application installée</span> sur mobile ou tablette.`,
+    label: "App mobile",
+    description: `<span class="fr-text--bold">Application native</span> IOS ou Android installée sur mobile ou tablette.`,
     disabled: false,
     icon: mobileIcon
   },
   {
     reference: AuditReference.RGAA_5_Document,
     label: "Bureautique",
-    description: `<span class="fr-text--bold">Document bureautique :</span> texte, tableur, présentation, PDF, etc. Exception : les formulaires PDF.`,
-    disabled: true,
+    description: `<span class="fr-text--bold">Document bureautique :</span> texte, présentation, PDF, etc. Exception : formulaires PDF.`,
+    disabled: false,
     icon: documentIcon
   }
 ];
