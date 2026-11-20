@@ -77,18 +77,33 @@ export class StatementsService {
   }
 
   // TODO: call on any result status change
-  async updateStatementDate(uniqueId: string) {
-    await this.prisma.audit.update({
-      where: { editUniqueId: uniqueId },
-      data: {
-        a11yStatement: {
-          update: {
-            data: {
-              statementEditionDate: new Date()
-            }
-          }
-        }
-      }
+  /** Update statement date of audit if the statement exists. */
+  async updateStatementDate(editUniqueId: string) {
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId },
+      select: { id: true, a11yStatement: true }
     });
+
+    if (audit.a11yStatement) {
+      await this.prisma.a11yStatement.update({
+        where: { auditId: audit.id },
+        data: { statementEditionDate: new Date() }
+      });
+    }
+  }
+
+  /** Reset auditor org of audit’s statement if the statement exists. */
+  async resetAuditorOrganisation(editUniqueId: string) {
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId },
+      select: { id: true, a11yStatement: true }
+    });
+
+    if (audit.a11yStatement) {
+      await this.prisma.a11yStatement.update({
+        where: { auditId: audit.id },
+        data: { auditorOrganisation: null }
+      });
+    }
   }
 }

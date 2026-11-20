@@ -128,10 +128,13 @@ export class AuditsService {
               where: { username: data.auditorEmail.toLowerCase() }
             }
           }
-        }),
-        ...(shouldResetOrganisation && { auditorOrganisation: null })
+        })
       }
     });
+
+    if (shouldResetOrganisation) {
+      await this.statementsService.resetAuditorOrganisation(editUniqueId);
+    }
 
     // update audit edition date only if:
     // - it has a `publicationDate`
@@ -154,20 +157,15 @@ export class AuditsService {
    */
   async softDeleteAudit(editUniqueId: string): Promise<void> {
     await this.prisma.audit.update({
-      where: { editUniqueId },
+      where: { editUniqueId, isHidden: false },
       data: {
         isHidden: true,
         auditorEmail: null,
-        auditorName: null,
-        a11yStatement: {
-          update: {
-            data: {
-              auditorOrganisation: null
-            }
-          }
-        }
+        auditorName: null
       }
     });
+
+    await this.statementsService.resetAuditorOrganisation(editUniqueId);
   }
 
   /** When an account is deleted, mark all associated audits as deleted. */
@@ -223,13 +221,6 @@ export class AuditsService {
       where: { editUniqueId: uniqueId },
       data: {
         auditorName: newOwner?.name ?? null,
-        a11yStatement: {
-          update: {
-            data: {
-              auditorOrganisation: null
-            }
-          }
-        },
         auditor: {
           connectOrCreate: {
             where: { username: newEmail },
@@ -240,6 +231,8 @@ export class AuditsService {
         }
       }
     });
+
+    await this.statementsService.resetAuditorOrganisation(uniqueId);
 
     this.eventEmitter.emit(EVENTS.AUDIT_TRANSFERED, {
       audit: {
