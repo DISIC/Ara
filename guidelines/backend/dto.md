@@ -1,3 +1,6 @@
+TODO:
+- routes qui renvoient différentes réponses pour une meme ressource: dto spécifiques (ex : `UpdateResourceResponse`, `GetResourceResponseDto`)
+
 # DTO
 
 Un DTO précise la liste des propriétés d’une entité ou d’une requête d’API.
