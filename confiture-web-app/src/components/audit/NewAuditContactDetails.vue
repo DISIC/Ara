@@ -27,7 +27,7 @@ const nameValue = ref(props.name ?? "");
 
 const email = useFormField(props.email ?? "", [
   REQUIRED("Champ obligatoire. Saisissez votre adresse e-mail."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr.")
+  EMAIL("Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.")
 ]);
 
 function submitAuditContactDetails() {
@@ -80,7 +80,7 @@ function fillSettings() {
         @update:model-value="email.value.value = $event"
       >
         <template #hint>
-          Permet de vous envoyer le lien d'accès à l’audit et aux livrables.<br />Format attendu : nom@domaine.fr
+          Permet de vous envoyer le lien d'accès à l’audit et aux livrables.<br />Format attendu&nbsp;: nom@domaine.fr
         </template>
       </DsfrField>
 

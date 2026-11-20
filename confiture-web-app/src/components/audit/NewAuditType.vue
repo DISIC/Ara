@@ -84,7 +84,7 @@ function fillSettings() {
         REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
       ]"
     >
-      <!-- FIXME: make into a fielset + legend ? -->
+      <!-- FIXME: make into a fielset + legend? -->
       <div
         class="fr-mb-4w fr-input-group"
         :class="{ 'fr-input-group--error': !!error }"
@@ -143,7 +143,7 @@ function fillSettings() {
       v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service à auditer"
-      hint="Exemples : Service-Public, Demande de permis de conduire"
+      hint="Exemples&nbsp;: Service-Public, Demande de permis de conduire"
       required
       :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
     />

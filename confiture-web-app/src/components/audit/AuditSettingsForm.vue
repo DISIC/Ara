@@ -146,7 +146,7 @@ const currentProcedureName = procedureName.value;
       v-model="procedureName"
       class="fr-mb-6w"
       label="Nom du site ou du service audité"
-      hint="Exemples : Service-Public, Demande de permis de conduire"
+      hint="Exemples&nbsp;: Service-Public, Demande de permis de conduire"
       required
       :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
       @update:model-value="onChange"
@@ -201,12 +201,12 @@ const currentProcedureName = procedureName.value;
         v-model="auditorEmail"
         class="fr-mb-0"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu&nbsp;: nom@domaine.fr"
         type="email"
         required
         :validation="[
           REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
-          EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format : nom@domaine.fr')
+          EMAIL('Le format de l’adresse e-mail est incorrect. Veuillez saisir une adresse e-mail au format\u00A0: nom@domaine.fr')
         ]"
         @update:model-value="onChange"
       />

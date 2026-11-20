@@ -7,7 +7,7 @@ const reportStore = useReportStore();
 
 <template>
   <PageMeta
-    title="Contactez-nous ou contribuez !"
+    title="Contactez-nous ou contribuez&#8239;!"
     description="Contactez-nous ou contribuez à l’amélioration d’Ara"
   />
 
@@ -18,23 +18,23 @@ const reportStore = useReportStore();
         class="fr-link"
         target="_blank"
         href="https://design.numerique.gouv.fr/"
-      >DesignGouv <span class="fr-sr-only">(nouvelle fenêtre)</span></a>, une équipe de la
+      >DesignGouv<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>, une équipe de la
       <a
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
-      >direction interministérielle du numérique (DINUM)<span class="fr-sr-only">(nouvelle fenêtre)</span></a>, avec le soutien du
+      >direction interministérielle du numérique (DINUM)<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>, avec le soutien du
       <a
         class="fr-link"
         href="https://www.fiphfp.fr/"
         target="_blank"
       >FIPHFP<span class="fr-sr-only">
-        Fonds pour l’insertion des personnes handicapées dans la
+        &nbsp;Fonds pour l’insertion des personnes handicapées dans la
         Fonction publique (nouvelle fenêtre)
       </span></a>.
     </p>
     <p :class="{ 'fr-mb-5w': !reportStore.data }">
-      Contactez-nous par e-mail :
+      Contactez-nous par e-mail&nbsp;:
       <strong>ara@design.numerique.gouv.fr</strong>.
     </p>
 
@@ -45,7 +45,7 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues !</h2>
+    <h2 class="fr-mb-4w">Vos contributions sont les bienvenues&#8239;!</h2>
 
     <div class="fr-callout">
       <p class="fr-callout__text">
@@ -54,10 +54,10 @@ const reportStore = useReportStore();
       </p>
     </div>
 
-    <p>Vous pouvez également :</p>
+    <p>Vous pouvez également&nbsp;:</p>
     <ul>
       <li>
-        Nous écrire par e-mail :
+        Nous écrire par e-mail&nbsp;:
         <strong>ara@design.numerique.gouv.fr</strong>.
       </li>
       <li>
@@ -67,7 +67,7 @@ const reportStore = useReportStore();
           target="_blank"
           rel="noreferrer noopener"
           href="https://github.com/DISIC/Ara"
-        >dépôt <span class="fr-sr-only">(nouvelle fenêtre)</span>
+        >dépôt<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
         (le
         <a
@@ -75,8 +75,7 @@ const reportStore = useReportStore();
           target="_blank"
           rel="noreferrer noopener"
           href="https://github.com/DISIC/Ara/blob/main/CONTRIBUTING.md"
-        >guide de contribution
-          <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+        >guide de contribution<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
         est disponible à la racine du dépôt).
       </li>
     </ul>

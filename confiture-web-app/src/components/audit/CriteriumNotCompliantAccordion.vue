@@ -247,7 +247,7 @@ function onUpdateNotCompliantItemClick(
     @opened="lazyAccordionOpened"
   >
     <template #title>
-      Erreurs et recommandations <span :class="{ 'fr-text--bold': notCompliantItemsCount > 0 }"> ({{ notCompliantItemsCount }})</span>
+      Erreurs et recommandations <span :class="{ 'fr-text--bold': notCompliantItemsCount > 0 }">&nbsp;({{ notCompliantItemsCount }})</span>
     </template>
 
     <div v-for="(item, index) in orderedItems" :key="id + '-not-compliant-item-' + item.id" class="not-compliant-item">

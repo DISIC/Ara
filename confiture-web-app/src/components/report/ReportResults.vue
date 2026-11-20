@@ -135,7 +135,7 @@ const transverseNotCompliantCount = computed(() => {
         <div :id="`accordion-${accordionUniqueId}`" class="fr-collapse">
           <p>
             Le taux global de conformité au RGAA est calculé de la manière
-            suivante :
+            suivante&nbsp;:
           </p>
 
           <p class="fr-text--bold">C / (C + NC)</p>
@@ -196,7 +196,7 @@ const transverseNotCompliantCount = computed(() => {
                         rel="noopener noreferrer"
                       >
                         {{ row[0] }}
-                        <span class="fr-sr-only">(nouvelle fenêtre)</span>
+                        <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
                       </a>
                     </td>
                     <td v-for="data in row.slice(1)" :key="data">{{ data }}</td>

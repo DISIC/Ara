@@ -17,7 +17,7 @@ export { CreateDebugAuditDtoAuditType as AuditType };
 
 export type AuditTypeString = `${CreateDebugAuditDtoAuditType}`;
 
-// FIXME: missing PUBLISHABLE ?
+// FIXME: missing PUBLISHABLE?
 export { AuditListingItemDtoStatus as AuditStatus };
 
 /** An audit object as returned by the API. */

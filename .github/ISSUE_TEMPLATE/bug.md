@@ -7,8 +7,8 @@ assignees: ''
 
 ---
 
-- **Relevé par** : [Prénom]
-- **Le** : [xx/xx/xx]
+- **Relevé par**&nbsp;: [Prénom]
+- **Le**&nbsp;: [xx/xx/xx]
 
 ## Description du problème
 

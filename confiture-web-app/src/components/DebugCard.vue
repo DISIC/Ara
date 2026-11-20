@@ -26,9 +26,9 @@ const selectedAuditType = ref(AuditType.FULL);
 const auditorEmail = ref(accountStore.account?.email ?? "email@example.com");
 const procedureName = ref("Ma procédure");
 const auditCompletions = [
-  { value: AuditCompletion.PRISTINE, label: "Vierge (0%)" },
-  { value: AuditCompletion.ALMOST_COMPLETED, label: "Quasi terminé (99%)" },
-  { value: AuditCompletion.COMPLETED, label: "Terminé (100%)" }
+  { value: AuditCompletion.PRISTINE, label: "Vierge (0\u00A0%)" },
+  { value: AuditCompletion.ALMOST_COMPLETED, label: "Quasi terminé (99\u00A0%)" },
+  { value: AuditCompletion.COMPLETED, label: "Terminé (100\u00A0%)" }
 ];
 const selectedAuditCompletion = ref(AuditCompletion.PRISTINE);
 const fillStatement = ref(false);
@@ -54,7 +54,7 @@ async function createDebugAudit(isCustom: boolean = false) {
 
   const audit = await debugStore.createDebugAudit(data);
 
-  notify("success", "", `Audit de débug « ${audit.procedureName} » créé`);
+  notify("success", "", `Audit de débug «&nbsp;${audit.procedureName}&nbsp;» créé`);
   return router.push({ name: "audit-generation", params: { uniqueId: audit.editUniqueId } });
 }
 </script>

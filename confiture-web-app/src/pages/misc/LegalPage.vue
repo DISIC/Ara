@@ -17,8 +17,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       <a
         href="https://design.numerique.gouv.fr"
         target="_blank"
-      >Design des services numériques
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+      >Design des services numériques<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
       de la Direction interministérielle du numérique, un service du Premier
       ministre.
     </p>
@@ -26,9 +25,9 @@ import TopLink from "../../components/ui/TopLink.vue";
       DINUM<br />
       20 avenue de Ségur<br />
       75007 Paris<br />
-      Tel. accueil : 01.71.21.01.70<br />
-      SIRET : 12000101100010 (secrétariat général du gouvernement)<br />
-      SIREN : 120 001 011
+      Tel. accueil&nbsp;: 01.71.21.01.70<br />
+      SIRET&nbsp;: 12000101100010 (secrétariat général du gouvernement)<br />
+      SIREN&nbsp;: 120 001 011
     </p>
 
     <h2>Directrice de publication</h2>
@@ -40,8 +39,7 @@ import TopLink from "../../components/ui/TopLink.vue";
       <a
         href="https://design.numerique.gouv.fr"
         target="_blank"
-      >Design et Accessibilité
-        <span class="fr-sr-only">(nouvelle fenêtre)</span></a>
+      >Design et Accessibilité<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
       et utilise le système de design de l’État.
     </p>
 
@@ -52,7 +50,7 @@ import TopLink from "../../components/ui/TopLink.vue";
         href="https://github.com/DISIC/Ara/"
         rel="noreferrer noopener"
         target="_blank"
-      >Github <span class="fr-sr-only">(nouvelle fenêtre)</span></a>.
+      >Github<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>.
     </p>
 
     <h2>Propriété intellectuelle et liens</h2>

@@ -39,7 +39,7 @@ function announceUploadSuccess(fileName: string) {
   if (fileName === "external") {
     uploadSuccess.value = "L’image a été correctement insérée";
   } else {
-    uploadSuccess.value = `L’image « ${fileName} » a été correctement insérée`;
+    uploadSuccess.value = `L’image «\u00A0${fileName}\u00A0» a été correctement insérée`;
   }
 
   setTimeout(() => {
@@ -67,7 +67,7 @@ function announceUploadSuccess(fileName: string) {
     @update:model-value="$emit('update:comment', $event)"
     @image:uploaded="announceUploadSuccess"
   />
-  <p :id="`rich-text-editor-size-image-${uniqueId}`" class="fr-text--xs fr-mt-1w fr-mb-2w editor-description">Taille maximale par image : 2 Mo. Une seule image peut être ajoutée à la fois.</p>
+  <p :id="`rich-text-editor-size-image-${uniqueId}`" class="fr-text--xs fr-mt-1w fr-mb-2w editor-description">Taille maximale par image&nbsp;: 2&nbsp;Mo. Une seule image peut être ajoutée à la fois.</p>
 </template>
 
 <style scoped>

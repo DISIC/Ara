@@ -66,7 +66,7 @@ function duplicateAudit(name: string) {
     .then((newAuditId) => {
       duplicateModalRef.value?.hide();
 
-      notify("success", undefined, `Audit « ${name} » créé`, {
+      notify("success", undefined, `Audit «&nbsp;${name}&nbsp;» créé`, {
         action: {
           label: "Accéder à l’audit",
           cb() {
@@ -95,7 +95,7 @@ async function deleteAudit() {
 
     deleteModalRef.value?.hide();
 
-    notify("success", undefined, `Audit « ${auditProcedureName.value} » supprimé`);
+    notify("success", undefined, `Audit «&nbsp;${auditProcedureName.value}&nbsp;» supprimé`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"
@@ -119,7 +119,7 @@ async function transferAudit(newEmail: string) {
 
     transferModalRef.value?.hide();
 
-    notify("success", `Audit « ${auditProcedureName.value} » transféré`, `Lien d’accès envoyé à ${newEmail}`);
+    notify("success", `Audit «&nbsp;${auditProcedureName.value}&nbsp;» transféré`, `Lien d’accès envoyé à ${newEmail}`);
 
     router.push({
       name: accountStore.account ? "account-dashboard" : "home"
@@ -228,7 +228,7 @@ async function transferAudit(newEmail: string) {
               !isSameDay(audit.publicationDate, audit.editionDate)
           "
         >
-          – Mis à jour le
+          –&nbsp;Mis à jour le
           <time :datetime="audit.editionDate.toString()">{{
             formatDate(audit.editionDate)
           }}</time></template>

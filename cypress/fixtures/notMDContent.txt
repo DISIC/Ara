@@ -9,7 +9,7 @@
 </blockquote>
 <p><code title="`code`">Ceci est un code en ligne</code></p>
 <pre><code title="```codeblock```">Ceci est un bloc de code.
-Avec une deuxième ligne.\nEt du vrai code ci-aorès&nbsp;:
+Avec une deuxième ligne.\nEt du vrai code ci-après&nbsp;:
 </code></pre>
 <pre><code>const a = "foo";
 const b = "bar";

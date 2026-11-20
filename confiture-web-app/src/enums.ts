@@ -30,7 +30,7 @@ export const MAX_UPLOAD_FILES_COUNT = 1;
 export const FILE_SIZE_LIMIT = 2_000_000;
 
 export const DEFAULT_NOTIFICATION_ERROR_TITLE = "Erreur inconnue";
-export const DEFAULT_NOTIFICATION_ERROR_DESCRIPTION = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numerique.gouv.fr";
+export const DEFAULT_NOTIFICATION_ERROR_DESCRIPTION = "Réessayez. Si le problème persiste, contactez-nous\u00A0: ara@design.numerique.gouv.fr";
 
 enum FileMessage {
   DELETE_ERROR_TIMEOUT = "Échec de la suppression. Vérifiez votre connexion et réessayez.",
@@ -45,7 +45,7 @@ enum FileMessage {
   UPLOAD_ERROR_TIMEOUT = "Échec de l'importation. Vérifiez votre connexion et réessayez.",
   UPLOAD_SUCCESS = "Fichier [FILE] ajouté.",
   UPLOAD_SUCCESS_IMAGE = "Image [FILE] ajoutée.",
-  UNKNOWN_ERROR = "Réessayez. Si le problème persiste, contactez-nous : ara@design.numérique.fr"
+  UNKNOWN_ERROR = "Réessayez. Si le problème persiste, contactez-nous\u00A0: ara@design.numerique.gouv.fr"
 }
 
 export function getFileMessage(fileMessage: keyof typeof FileMessage, options?: {

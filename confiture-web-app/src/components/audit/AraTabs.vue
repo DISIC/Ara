@@ -250,7 +250,7 @@ watch(
           <span v-if="tabs[i].diplayLabelSuffix">
             {{ tabs[i].diplayLabelSuffix }}
           </span>
-          <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">{{ tabs[i].hiddenLabelSuffix }}</span>
+          <span v-if="tabs[i].hiddenLabelSuffix" class="fr-sr-only">&nbsp;{{ tabs[i].hiddenLabelSuffix }}</span>
         </button>
       </li>
     </ul>

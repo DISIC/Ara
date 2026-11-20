@@ -156,7 +156,7 @@ const filterResultsCount = computed(() =>
 );
 
 const pageTitle = computed(() => {
-  // X résultats pour « [search] » - [tabName] - Audit [procedureName]
+  // X résultats pour «&nbsp;[search]&nbsp;» - [tabName] - Audit [procedureName]
   const titleParts = [];
   const curAudit = auditStore.currentAudit;
 
@@ -171,7 +171,7 @@ const pageTitle = computed(() => {
       "résultat",
       "résultats",
       filterResultsCount.value
-    )} pour « ${filterStore.search} »`;
+    )} pour «\u00A0${filterStore.search}\u00A0»`;
 
     titleParts.push(results);
   }
@@ -189,7 +189,7 @@ const pageTitle = computed(() => {
 
   titleParts.push(tabName, "Audit " + procedureName);
 
-  return titleParts.join(" - ");
+  return titleParts.join("\u00A0– ");
 });
 
 const tabsData = computed((): TabData[] => {
@@ -199,7 +199,7 @@ const tabsData = computed((): TabData[] => {
       ? [
           {
             label: StaticTabLabel.AUDIT_COMMON_ELEMENTS_TAB_LABEL,
-            diplayLabelSuffix: " (optionnel)",
+            diplayLabelSuffix: "\u00A0(optionnel)",
             icon: "fr-icon-layout-3-line",
             component: AuditGenerationPageCriteria,
             componentParams: {
@@ -211,7 +211,7 @@ const tabsData = computed((): TabData[] => {
       : []),
     ...(auditStore.currentAudit?.pages.map((p) => ({
       label: p.name,
-      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? " (entièrement évalué)" : undefined,
+      hiddenLabelSuffix: resultsStore.isPageCompleted(p.id) ? "(entièrement évalué)" : undefined,
       id: p.id,
       icon: resultsStore.isPageCompleted(p.id) ? "fr-icon-check-line" : undefined,
       component: AuditGenerationPageCriteria,

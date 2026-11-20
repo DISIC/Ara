@@ -38,6 +38,8 @@ describe("Actions", () => {
   });
 
   it("User can edit pages", () => {
+    cy.intercept("PUT", `/api/audits/*`).as("updateParams");
+
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/generation/`);
 
@@ -86,10 +88,7 @@ describe("Actions", () => {
 
       cy.contains("Enregistrer les modifications").click();
 
-      cy.url().should(
-        "eq",
-        `http://localhost:3000/audits/${editId}/parametres`
-      );
+      cy.wait(["@updateParams"]);
 
       cy.visit(
         `http://localhost:3000/audits/${editId}/generation/${TabSlug.AUDIT_COMMON_ELEMENTS_SLUG}`

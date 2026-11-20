@@ -9,13 +9,13 @@ La partie style utilise le [DSFR (Système de Design de l'État)](https://www.sy
 > [!NOTE]
 > Si vous avez lancé `yarn install` à la racine du projet, ces étapes ont déjà été lancées au moment du `postinstall`
 
-Installer les dépendances :
+Installer les dépendances&nbsp;:
 
 ```sh
 yarn install
 ```
 
-Générer les fichiers requis du RGAA (critères et tests et méthodologies) :
+Générer les fichiers requis du RGAA (critères et tests et méthodologies)&nbsp;:
 
 ```sh
 yarn generate:rgaa
@@ -23,7 +23,7 @@ yarn generate:rgaa
 
 ## Développement
 
-Lancer le [serveur local sur le port 3000](http://localhost:3000) :
+Lancer le [serveur local sur le port 3000](http://localhost:3000)&nbsp;:
 
 ```sh
 yarn dev
@@ -40,9 +40,9 @@ yarn dev
 
 ## Guidelines
 
-### Media queries "Desktop first"
+### Media queries _Desktop-first_
 
-Utiliser les media queries en "desktop first" et avec la notation suivante avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture) :
+Utiliser les media queries en _Desktop-first_ avec les [valeurs de points de rupture du DSFR](https://www.systeme-de-design.gouv.fr/elements-d-interface/fondamentaux-techniques/grille-et-points-de-rupture), en suivant la notation suivante&nbsp;:
 
 ```css
 @media (width < 62rem) {
@@ -52,7 +52,9 @@ Utiliser les media queries en "desktop first" et avec la notation suivante avec 
 
 ### Ordre des classes CSS
 
-Ordonner les classes CSS de la manière suivante : `<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`. Exemple :
+Ordonner les classes CSS de la manière suivante&nbsp;:<br>
+`<1. classes du composant DSFR> <2. classes utilitaires du DSFR> <3. classes custom>`.<br>
+Exemple&nbsp;:
 
 ```html
 <button class="fr-btn fr-btn--secondary fr-mt-4w submit-button">...</button>
@@ -64,7 +66,7 @@ Ordonner les classes CSS de la manière suivante : `<1. classes du composant DS
 
 ### Types de l’API
 
-Lors des interactions avec le backend, utiliser les types générés dans `src/types/confiture-api.ts`. Pour générer ce fichier, utiliser la commande `yarn copytypes` depuis le dossier racine du projet. Exemple :
+Lors des interactions avec le backend, utiliser les types générés dans `src/types/confiture-api.ts`. Pour générer ce fichier, utiliser la commande `yarn copytypes` depuis le dossier racine du projet. Exemple&nbsp;:
 
 ```typescript
 import { paths } from "./confiture-api";
@@ -79,16 +81,16 @@ const data = (await api
 
 ### Nommage des attributs `id`
 
-Utiliser des valeurs d’attributs HTML `id` compréhensibles afin de facilement savoir à quoi elles font référence. Exemple :
+Utiliser des valeurs d’attributs HTML `id` compréhensibles afin de facilement savoir à quoi elles font référence. Exemple&nbsp;:
 
 ```html
-<li :id="`error-${errorId}`">...</li>
+<li :id="`error-${errorId}`">…</li>
 ```
 
-Au lieu de :
+Au lieu de&nbsp;:
 
 ```html
-<li :id="errorId">...</li>
+<li :id="errorId">…</li>
 ```
 
 ### Validation des formulaires
@@ -142,16 +144,130 @@ Il extiste des variantes des composants de champs fréquement utilisés (`<DsfrF
 </template>
 ```
 
-Cas particuliers : certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.
+Cas particuliers&nbsp;: certains champs ou groupes de champs peuvent avoir des règles de validation spécifiques (par exemple la présence d’au moins un des deux champs). Dans ces cas rares, il n’est pas toujours possible d’utiliser le `useFormField()` et il est plus facile d’utiliser une fonction `validate()` propre au composant.
 
 ### Utilisation des liens
 
-Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre, deux pré-requis :
+Quand on utilise `target=_blank` pour ouvrir un lien dans une nouvelle fenêtre, deux pré-requis&nbsp;:
 
-- créer un `<span class="fr-sr-only">(nouvelle fenêtre)</span>` à l'intérieur du lien en complément du libellé pour signifier qu'on ouvre le lien dans une nouvelle fenêtre.
+- créer un `<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>` à l'intérieur du lien en complément du libellé pour signifier qu'on ouvre le lien dans une nouvelle fenêtre.
 
 - ajouter l'attribut `rel="noopener noreferrer"` que quand c'est un lien externe. Si ce sont des liens de confiance comme ceux du gouvernement, on n'aura pas besoin d'ajouter ce `rel="noopener"` car c'est une valeur par défaut quand on définit `target="blank"` ([source](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener)).
 
-Même sans `target`, Si vous affichez uniquement un visuel sur votre lien, mettre un libellé explicite avec `<span class="fr-sr-only">libellé explicite</span>` à l'intérieur votre lien. C'est aussi valable pour le `button`.
+Même sans `target`, Si vous affichez uniquement un visuel sur votre lien, mettre un libellé explicite avec `<span class="fr-sr-only">&nbsp;libellé explicite</span>` à l'intérieur votre lien. C'est aussi valable pour le `button`.
 
-Aussi, selon l'article [Title, ce faux ami de l'accessibilité](https://www.24joursdeweb.fr/2025/title-ce-faux-ami-de-l-accessibilite), l'attribut `title` n'est pas conseillé pour des raisons d'accessibilité. Ecrivez le libellé de manière explicite ou utilisez le `span class="fr-sr-only"`.
+Aussi, selon l'article [Title, ce faux ami de l'accessibilité](https://www.24joursdeweb.fr/2025/title-ce-faux-ami-de-l-accessibilite), l'attribut `title` n'est pas conseillé pour des raisons d'accessibilité. Écrivez le libellé de manière explicite ou utilisez le `span class="fr-sr-only"`.
+
+Il est important d'ajouter `&nbsp;` comme espace insécable pour avoir un espace entre le texte affiché et le texte caché. Sinon, il n'y a pas d'espace entre les deux - ce qui donnerait&nbsp;: `nouveau liencaché` si on met ce code `<a>nouveau lien<span class="sr-fr-only">caché</span></a>`. Si on met un simple espace, NVDA l'ignore.
+Source&nbsp;: [Update the visually-hidden class](https://www.drupal.org/project/drupal/issues/3591112) (EN)
+Selon l'article, ce défaut est présent uniquement avec&nbsp;:
+
+- JAWS et Chrome/Edge/IE11
+- NVDA et Chrome/Edge (mais pas NVDA et Firefox)
+
+Ce bug a été remonté comme [issue](https://github.com/nvaccess/nvda/issues/10208#issue-492903433) (EN) sur le github de NVDA en 2019, issue toujours ouverte.
+C'est présent uniquement lorsque c'est un **span en sr-only**.
+
+### Microtypo
+
+Suivre les règles de microtypographie française.
+
+#### Les espaces insécables
+
+##### Quand les utiliser&#8239;?
+
+- **Espace insécable**
+  - devant les caractères suivants&nbsp;:
+    `:`, `%`, "—" (tiret M), "–" (tiret N)
+  - à l’intérieur des paires de caractères suivantes&nbsp;:
+    `« »`, `— —` (tirets M)
+
+- **Espace insécable fine**
+  - devant les caractères suivants&nbsp;:
+    `!`, `?`, `;`, unité (`min`, `h`, `Ko`, `Mo`, etc.)
+
+**Comment les utiliser dans le code&#8239;?**
+
+🚫 Ne pas utiliser le caractère «&nbsp;directement&nbsp;» car il ne sera pas
+facilement identifiable dans le code.
+
+✅ Utiliser le caractère HTML échappé
+
+- dans les templates Vue.js
+- dans les props correspondant à des slots
+- dans le contenu des attributs `v-html`
+
+✅ Utiliser le caractère Unicode
+
+- dans les scripts JavaScript ou Typescript
+- les props ou variables utilisées entre les `{{ }}` dans les templates
+- dans le sujet (`subject`) des e-mails envoyés
+  (entre les `{{ }}`)
+- **Espace insécable**
+  - HTML échappé&nbsp;: `&nbsp;`
+  - Unicode&nbsp;: `\u00A0`
+
+- **Espace insécable fine**
+  - HTML échappé&nbsp;: `&#8239;`
+  - Unicode&nbsp;: `\u202F`
+
+#### Les points de suspensions
+
+- 🚫 Ne pas utiliser "..." (trois points)
+
+- ✅ Utiliser "…" (caractère unique)
+  - MacOS&nbsp;: `⌥ + .`
+  - Windows&nbsp;: `alt + 0133`
+
+#### Les apostrophes
+
+- 🚫 Ne pas utiliser l’apostrophe dactylographique `'` (touche 4) sauf pour marquer les unités de temps en anglais (2'30'')
+- ✅ Utiliser l’apostrophe typographique `ʼ` («&nbsp;virgule haute&nbsp;»)
+  - MacOS&nbsp;: `⌥ + '`
+  - Windows&nbsp;: `alt + 0146`
+
+  > L’accessibilité numérique
+
+#### Les guillemets
+
+- 🚫 Ne pas utiliser les guillemets droits `" "`
+- ✅ Utiliser les guillemets `« »` pour les citations
+
+- ✅ Utiliser les guillemets `“ ”` anglais pour une citation à l’intérieur de guillemets français
+  - MacOS&nbsp;: `⌥ + "` et `⌥ + ⇧ + "`
+  - Windows&nbsp;: `alt + 0147` et `alt + 0148`
+
+  > «&nbsp;Il m’a répondu “peut-être”.&nbsp;» (`«&nbsp;Il m’a répondu “peut-être”.&nbsp;»`)
+
+#### Les tirets
+
+- ✅ Utiliser le trait d’union `-` dans les mots composés («&nbsp;_dash_&nbsp;» en anglais)
+- ✅ Utiliser le «&nbsp;tiret M&nbsp;» `—` pour séparer une idée au sein d’une phrase («&nbsp;_em dash_&nbsp;» en anglais)
+  - MacOS&nbsp;: `⌥ + -"`
+  - Windows&nbsp;: `alt + 0151`
+
+  > L’intelligence artificielle améliore parfois l’accessibilité –&nbsp;par exemple
+  > en proposant une transcription automatique de séquence sonore&nbsp;— mais attention
+  > à ne pas tomber dans le piège de la solution miracle&#8239;!<br>
+  > (`[…] l’accessibilité –&nbsp;par exemple […] sonore&nbsp;— mais attention […]`)
+  >
+  > Elle permet aussi d’expliciter les points bloquants pour les rendre explicites
+  > aux personnes concernées&nbsp;— en attendant qu’ils soient corrigés évidemment.<br>
+  > (`[…] personnes concernées&nbsp;— en attendant […]`)
+
+- ✅ Utiliser le «&nbsp;tiret N&nbsp;» `–` pour lier les nombres ou par exemple les mois d’un intervalle
+  - MacOS&nbsp;: `⌥ + ⇧ + -"`
+  - Windows&nbsp;: `alt + 0150` ou `Win + -`
+
+  > 1–9, juin–août
+
+  On pourra aussi l’utiliser avec une espace insécable avant et parfois après.
+
+  > PDF&nbsp;–&nbsp;1,2&#8239;Mo (`PDF&nbsp;–&nbsp;1,2&#8239;Mo`)
+  >
+  > Contact&nbsp;– https://example.com/contact (`Contact&nbsp;– https://example.com/contact`)
+  >
+  > 20 mai&nbsp;– 18 juin (`20 mai&nbsp;– 18 juin`) ou mieux&nbsp;: du 20 mai au 18 juin)
+
+- 💡 Note&nbsp;: Le signe moins `−` a lui aussi son propre signe (dans les équations)
+  > 3&nbsp;×&nbsp;2&nbsp;−&nbsp;5&nbsp;=&nbsp;1 (`3&nbsp;×&nbsp;2&nbsp;−&nbsp;5&nbsp;=&nbsp;1`)

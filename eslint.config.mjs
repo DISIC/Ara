@@ -165,7 +165,7 @@ export default antfu({
       "vue/prefer-template": "off", // TODO Check this rule
       "vue/singleline-html-element-content-newline": "off", // TODO Check this rule
       "vue/no-irregular-whitespace": ["error", {
-        skipStrings: true,
+        skipStrings: false,
         skipComments: true,
         skipRegExps: true,
         skipTemplates: true,

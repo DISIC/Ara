@@ -34,7 +34,7 @@ const confirmEmail = ref("");
 
 const validationRules = [
   REQUIRED("Champ obligatoire. Saisissez l'adresse e-mail du destinataire."),
-  EMAIL("Format incorrect. Utilisez le format : nom@domaine.fr"),
+  EMAIL("Format incorrect. Utilisez le format\u00A0: nom@domaine.fr"),
   ...(accountStore.account
     ? [NOT_EQUAL(accountStore.account?.email, "Cet audit est déjà associé à votre compte. Saisissez une adresse e-mail différente.")]
     : []
@@ -80,7 +80,7 @@ function handleClose() {
               </div>
               <div class="fr-modal__content">
                 <h1 :id="`transfer-modal-title-${id}`" class="fr-modal__title">
-                  Transférer l’audit « {{ procedureName }} »
+                  Transférer l’audit «&nbsp;{{ procedureName }}&nbsp;»
                 </h1>
                 <p class="fr-text--sm fr-mb-2w">
                   Vous n’aurez plus accès à l’audit. Votre destinataire recevra par <span style="white-space: nowrap">e-mail</span> un lien d’accès à l’audit.
@@ -91,7 +91,7 @@ function handleClose() {
                   :value="email"
                   :validation="validationRules"
                 >
-                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" type="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format : nom@domaine.fr" class="fr-mb-2w" />
+                  <DsfrField :id="`email-${uniqueId}`" :ref="focusRef" v-model="email" type="email" :error="error" label="Adresse e-mail du destinataire" hint="Au format&nbsp;: nom@domaine.fr" class="fr-mb-2w" />
                 </FieldValidation>
 
                 <FieldValidation
@@ -99,7 +99,7 @@ function handleClose() {
                   :value="confirmEmail"
                   :validation="[...validationRules, EQUAL(() => email, 'Saisie incorrecte. Les deux adresses e-mail doivent être identiques.')]"
                 >
-                  <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" type="email" :error="error" label="Confirmer e-mail du destinataire" hint="Au format : nom@domaine.fr" />
+                  <DsfrField :id="`confirmEmail-${uniqueId}`" :ref="focusRef" v-model="confirmEmail" type="email" :error="error" label="Confirmer e-mail du destinataire" hint="Au format&nbsp;: nom@domaine.fr" />
                 </FieldValidation>
               </div>
               <div class="fr-modal__footer">

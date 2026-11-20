@@ -250,7 +250,7 @@ onBeforeRouteLeave((to) => {
     leaveModalDestination.value = to.fullPath;
 
     dialog.showConfirm({
-      title: "Quitter sans enregistrer vos modifications ?",
+      title: "Quitter sans enregistrer vos modifications\u202F?",
       message: "Les modifications de votre déclaration d’accessibilité ne seront pas enregistrées.",
       confirmLabel: "Quitter sans enregistrer",
       cancelLabel: "Reprendre les modifications",
@@ -308,7 +308,7 @@ function confirmLeave() {
     <h1 class="fr-mb-3v">Déclaration d’accessibilité</h1>
     <p class="fr-text--xl fr-mb-2w">{{ auditStore.currentAudit.procedureName }}</p>
     <p v-if="auditStore.currentAudit.statementPublicationDate" class="fr-text--sm fr-m-0 dates">
-      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)"> - Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
+      Rédigée le {{ formatDate(auditStore.currentAudit.statementPublicationDate) }}<template v-if="auditStore.currentAudit.statementEditionDate && !isSameDay(auditStore.currentAudit.statementPublicationDate, auditStore.currentAudit.statementEditionDate)">&nbsp;-&nbsp;Mise à jour le {{ formatDate(auditStore.currentAudit.statementEditionDate) }}</template>
     </p>
     <p class="fr-text--xs fr-mb-2w fr-mt-4w mandatory-notice">
       Sauf mention contraire, tous les champs sont obligatoires.
@@ -320,7 +320,7 @@ function confirmLeave() {
       id="initiator"
       v-model="auditInitiator"
       label="Entité qui a demandé l’audit"
-      hint="Exemples : Ministère de l’intérieur, Mairie de Toulouse"
+      hint="Exemples&nbsp;: Ministère de l’intérieur, Mairie de Toulouse"
       type="text"
       required
       :validation="[
@@ -373,7 +373,7 @@ function confirmLeave() {
       </p>
 
       <p id="contact-section-subtitle" class="fr-mb-2w">
-        Renseignez au moins un des deux moyens de contact suivant :
+        Renseignez au moins un des deux moyens de contact suivant&nbsp;:
       </p>
 
       <FieldValidation
@@ -392,7 +392,7 @@ function confirmLeave() {
         >
           <FieldValidation
             v-slot="{ error, focusRef }"
-            :validation="[EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
+            :validation="[EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')]"
             :value="contactEmail"
           >
             <DsfrField
@@ -400,7 +400,7 @@ function confirmLeave() {
               :ref="focusRef"
               v-model="contactEmail"
               label="Adresse e-mail de contact"
-              hint="Format attendu : nom@domaine.fr"
+              hint="Format attendu&nbsp;: nom@domaine.fr"
               type="email"
               :error="
                 sectionError || error
@@ -420,7 +420,7 @@ function confirmLeave() {
               :ref="focusRef"
               v-model="contactFormUrl"
               label="Formulaire de contact en ligne"
-              hint="Exemple : contact@ministere.gouv.fr"
+              hint="Exemple&nbsp;: contact@ministere.gouv.fr"
               type="url"
               placeholder="https://"
               :error="
@@ -452,7 +452,7 @@ function confirmLeave() {
         v-model="technologies"
         :error="error"
         label="Ajouter des technologies"
-        hint="Exemples : HTML, CSS, Javascript"
+        hint="Exemples&nbsp;: HTML, CSS, Javascript"
         add-label="les technologies"
       />
     </FieldValidation>

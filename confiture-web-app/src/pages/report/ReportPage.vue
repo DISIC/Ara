@@ -231,22 +231,21 @@ watch(
       </p>
 
       <p class="fr-mb-1v">
-        URL du site audité :
+        URL du site audité&nbsp;:
         <a v-if="siteUrl" class="fr-link" target="_blank" :href="siteUrl" rel="noreferrer noopener">
-          {{ siteUrl }}
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          {{ siteUrl }}<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </a>
         <template v-else>Non renseignée</template>
       </p>
       <p class="fr-mb-1v">
-        Type d’audit :
+        Type d’audit&nbsp;:
         <strong>{{ report.data.criteriaCount.total }} critères</strong>
       </p>
       <p class="fr-mb-1v">
-        Référentiel : <strong>{{ REFERENTIAL }}</strong>
+        Référentiel&nbsp;: <strong>{{ REFERENTIAL }}</strong>
       </p>
       <p v-if="report.data.context.auditorName" class="fr-mb-1v">
-        Auditeur ou auditrice :
+        Auditeur ou auditrice&nbsp;:
         <strong>{{ report.data.context.auditorName }}</strong>
       </p>
       <p v-if="report.data.procedureInitiator">
@@ -255,8 +254,7 @@ watch(
           class="fr-link"
           target="_blank"
         >
-          Accéder à la déclaration d’accessibilité
-          <span class="fr-sr-only">(nouvelle fenêtre)</span>
+          Accéder à la déclaration d’accessibilité<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span>
         </RouterLink>
       </p>
     </div>
