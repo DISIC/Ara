@@ -582,6 +582,11 @@ export class AuditsService {
     }
   }
 
+  @OnEvent(EVENTS.NOTES_UPDATED)
+  async onNotesUpdated(uniqueId: string): Promise<void> {
+    await this.updateAuditEditDate(uniqueId);
+  }
+
   // Either update statement publication or edition date
   // private async updateStatementDate(uniqueId: string): Promise<{ statementEditionDate: Date | null; statementPublicationDate: Date | null }> {
   //   const audit = await this.prisma.audit.findUniqueOrThrow({

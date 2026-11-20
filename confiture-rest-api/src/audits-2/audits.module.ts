@@ -3,13 +3,15 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 import { AuditsModule as AuditResourcesModule } from "./audits/audits.module";
 import { ExportsModule } from "./exports/exports.module";
 import { NotFoundErrorInterceptor } from "./not-found-error.interceptor";
+import { NotesModule } from "./notes/notes.module";
 import { PagesModule } from "./pages/pages.module";
 
 @Module({
   imports: [
     AuditResourcesModule,
     PagesModule,
-    ExportsModule
+    ExportsModule,
+    NotesModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,
