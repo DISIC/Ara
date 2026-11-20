@@ -4,7 +4,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
-import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
+import { CreateNotesFileResponseDto } from "./dto/create-notes-file-response.dto";
 import { NotesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
@@ -19,7 +19,7 @@ export class NotesController {
   ) { }
 
   @Post("files")
-  @SerializeOptions({ type: NotesFileResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({ type: CreateNotesFileResponseDto, excludeExtraneousValues: true })
   @UseInterceptors(FileInterceptor("file"))
   async createNotesFile(
     @Param("uniqueId") uniqueId: string,
@@ -33,7 +33,7 @@ export class NotesController {
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
         })
     ) file: Express.Multer.File
-  ): Promise<NotesFileResponseDto> {
+  ): Promise<CreateNotesFileResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
     return await this.notesService.createNotesFile(uniqueId, file);
   }

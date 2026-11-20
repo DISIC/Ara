@@ -1,10 +1,10 @@
 import { Expose } from "class-transformer";
-import { NotesFileResponseDto } from "./notes-file-response.dto";
+import { CreateNotesFileResponseDto } from "./create-notes-file-response.dto";
 
 export class NotesResponseDto {
   @Expose()
   notes: string | null; // JSON or Markdown string
 
   @Expose()
-  notesFiles: NotesFileResponseDto[];
+  notesFiles: CreateNotesFileResponseDto[];
 }

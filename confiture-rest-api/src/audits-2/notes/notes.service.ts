@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { FileStorageService } from "../../file-storage/file-storage.service";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
-import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
+import { CreateNotesFileResponseDto } from "./dto/create-notes-file-response.dto";
 import { NotesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
 import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
@@ -25,7 +25,7 @@ export class NotesService {
   async createNotesFile(
     editUniqueId: string,
     file: Express.Multer.File
-  ): Promise<NotesFileResponseDto> {
+  ): Promise<CreateNotesFileResponseDto> {
     const randomPrefix = nanoid();
 
     const key = `audits/${randomPrefix}/${file.originalname}`;
