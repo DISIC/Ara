@@ -1,0 +1,71 @@
+import { AuthorizationService } from "@nestjs/authorization";
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, ParseIntPipe, Post, Put, SerializeOptions, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { User as CurrentUser } from "../../auth/user.decorator";
+import { User } from "../../generated/prisma/client";
+import { AuditPolicy } from "../audits/audit.policy";
+import { CreateNotesFileResponseDto } from "./dto/create-notes-file-response.dto";
+import { NotesResponseDto } from "./dto/notes-response.dto";
+import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
+import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
+import { NotesService } from "./notes.service";
+
+@UseInterceptors(ClassSerializerInterceptor)
+@Controller("/audits/:uniqueId/notes")
+export class NotesController {
+  constructor(
+    private readonly notesService: NotesService,
+    private readonly authorizationService: AuthorizationService
+  ) { }
+
+  @Post("files")
+  @SerializeOptions({ type: CreateNotesFileResponseDto, excludeExtraneousValues: true })
+  @UseInterceptors(FileInterceptor("file"))
+  async createNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User | null,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 2000000
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+        })
+    ) file: Express.Multer.File
+  ): Promise<CreateNotesFileResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.notesService.createNotesFile(uniqueId, file);
+  }
+
+  @Get()
+  @SerializeOptions({ type: NotesResponseDto, excludeExtraneousValues: true })
+  async getNotes(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User | null
+  ): Promise<NotesResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "read", user);
+    return await this.notesService.getNotes(uniqueId);
+  }
+
+  @Put()
+  @SerializeOptions({ type: UpdateNotesResponseDto, excludeExtraneousValues: true })
+  async updateNotes(
+    @Param("uniqueId") uniqueId: string,
+    @CurrentUser() user: User | null,
+    @Body() body: UpdateNotesRequestDto
+  ): Promise<UpdateNotesResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.notesService.updateNotes(uniqueId, body);
+  }
+
+  @Delete("files/:fileId")
+  async deleteNotesFile(
+    @Param("uniqueId") uniqueId: string,
+    @Param("fileId", new ParseIntPipe()) fileId: number,
+    @CurrentUser() user: User | null
+  ): Promise<void> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    return await this.notesService.deleteNotesFile(uniqueId, fileId);
+  }
+}
