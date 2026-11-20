@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { lowerFirst } from "lodash-es";
 import { ref } from "vue";
 import { useDevMode } from "../../composables/useDevMode";
 import { REQUIRED } from "../../composables/validation";
@@ -151,7 +152,7 @@ function fillSettings() {
       :label="LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
       :hint="HINT_LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
       required
-      :validation="[REQUIRED(`Champ obligatoire. Saisissez ${LABEL_FIELD[auditReference || AuditReference.RGAA_4]}.`)]"
+      :validation="[REQUIRED(`Champ obligatoire. Saisissez le ${lowerFirst(LABEL_FIELD[auditReference || AuditReference.RGAA_4])}.`)]"
     />
 
     <div class="actions">

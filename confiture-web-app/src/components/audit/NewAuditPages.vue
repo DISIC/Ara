@@ -2,12 +2,13 @@
 import { nextTick, ref, watch } from "vue";
 
 import { useDevMode } from "../../composables/useDevMode";
-import { AuditPage, AuditType } from "../../types";
+import { AuditPage, AuditReference, AuditType } from "../../types";
 import PagesSample from "../audit/PagesSample.vue";
 import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
 
 const props = defineProps<{
   auditType: AuditType | null;
+  auditReference: AuditReference | null;
   pages: Omit<AuditPage, "id" | "order">[];
 }>();
 
@@ -54,6 +55,13 @@ function fillSettings() {
     { name: "Contact", url: "https://example.com/contact" }
   ];
 }
+
+const REQUIRED_LABEL = {
+  [AuditReference.RGAA_4]: "Sauf mentions contraires, tous les champs sont obligatoires. L’échantillon doit posséder au moins une page.",
+  [AuditReference.RGAA_5_Web]: "Sauf mentions contraires, tous les champs sont obligatoires. L’échantillon doit posséder au moins une page.",
+  [AuditReference.RGAA_5_Mobile]: "Tous les champs sont obligatoires. L’échantillon doit posséder au moins un écran.",
+  [AuditReference.RGAA_5_Document]: " Sauf mentions contraires, tous les champs sont obligatoires. L’échantillon doit posséder au moins un document."
+};
 </script>
 
 <template>
@@ -65,10 +73,15 @@ function fillSettings() {
     </div>
 
     <p class="fr-text--sm notice">
-      Sauf mentions contraires, tous les champs sont obligatoires. L'échantillon doit possdéder au moins une page.
+      {{ REQUIRED_LABEL[props.auditReference || AuditReference.RGAA_4] }}
     </p>
 
-    <PagesSample ref="pagesSampleRef" v-model="pages" class="fr-mb-3w" />
+    <PagesSample
+      ref="pagesSampleRef"
+      v-model="pages"
+      class="fr-mb-3w"
+      :audit-reference="auditReference"
+    />
 
     <div class="fr-mb-6w add-page-button-wrapper">
       <button

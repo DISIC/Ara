@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { lowerFirst } from "lodash-es";
 
+import { computed, nextTick, ref, watch } from "vue";
 import { useNotifications } from "../../composables/useNotifications";
 import { REQUIRED, URL } from "../../composables/validation";
-import { AuditPage } from "../../types";
+import { AuditPage, AuditReference } from "../../types";
 import { URL_REGEX } from "../../utils";
 import DsfrField from "../ui/DsfrField.vue";
 import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
 
 const props = defineProps<{
   modelValue: Omit<AuditPage, "id" | "order">[];
+  auditReference: AuditReference | null;
+
 }>();
 
 const emit = defineEmits<{
@@ -38,6 +41,20 @@ const pageUrlErrors = ref<Array<string | undefined>>(
   props.modelValue.map(() => undefined)
 );
 
+const LABEL_FIELD = {
+  [AuditReference.RGAA_4]: "Nom de la page",
+  [AuditReference.RGAA_5_Web]: "Nom de la page",
+  [AuditReference.RGAA_5_Mobile]: "Nom de l'écran",
+  [AuditReference.RGAA_5_Document]: "Nom du document"
+};
+
+const TYPE_LABEL = {
+  [AuditReference.RGAA_4]: "Page",
+  [AuditReference.RGAA_5_Web]: "Page",
+  [AuditReference.RGAA_5_Mobile]: "Écran",
+  [AuditReference.RGAA_5_Document]: "Document"
+};
+
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -60,7 +77,7 @@ async function deletePage(i: number) {
   notify(
     "success",
     undefined,
-    `La page ${pageName ? pageName : ""} a bien été supprimée`
+    `La ${lowerFirst(TYPE_LABEL[props.auditReference || AuditReference.RGAA_4])} ${pageName ? pageName : ""} a bien été supprimée`
   );
   previousField.inputRef?.focus();
 }
@@ -109,13 +126,29 @@ function updatePageOrder(startIndex: number, endIndex: number) {
   // Focus `endIndex` select
   pageOrderSelectRefs.value?.at(endIndex)?.focus();
 
-  positionSuccessMessage.value = `Page déplacée en  position ${
+  positionSuccessMessage.value = `${TYPE_LABEL[props.auditReference || AuditReference.RGAA_4]} déplacée en position ${
     endIndex + 1
   } sur ${pages.value.length}`;
 }
 
+const isRequired = computed(() => {
+  return (props.auditReference === AuditReference.RGAA_4
+    || !props.auditReference);
+});
+
+const LABEL = {
+  [AuditReference.RGAA_4]: "URL de la page",
+  [AuditReference.RGAA_5_Web]: "URL de la page (optionnel)",
+  [AuditReference.RGAA_5_Document]: "URL du document si disponible (optionnel)"
+};
+
 const nameValidation = [REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.")];
-const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer."), URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")];
+const urlValidation = computed(() => [
+  ...(isRequired.value
+    ? [REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer.")]
+    : []),
+  URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")
+]);
 </script>
 
 <template>
@@ -127,7 +160,7 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
       :class="{ 'fr-mb-3w': i !== pages.length - 1 }"
     >
       <legend class="page-legend">
-        <h3 class="fr-h6 fr-mb-0">Page {{ i + 1 }}</h3>
+        <h3 class="fr-h6 fr-mb-0">{{ TYPE_LABEL[auditReference || AuditReference.RGAA_4] }} {{ i + 1 }}</h3>
       </legend>
 
       <div class="page-right-actions">
@@ -138,12 +171,12 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
           @click="deletePage(i)"
         >
           Supprimer
-          <span class="fr-sr-only">la page {{ i + 1 }}</span>
+          <span class="fr-sr-only">la {{ lowerFirst(TYPE_LABEL[auditReference || AuditReference.RGAA_4]) }} {{ i + 1 }}</span>
         </button>
 
         <div class="fr-select-group fr-mb-0">
           <label class="fr-label fr-sr-only" :for="`page-order-${i}`">
-            Position de la page {{ i + 1 }}
+            Position de la {{ lowerFirst(TYPE_LABEL[auditReference || AuditReference.RGAA_4]) }} {{ i + 1 }}
           </label>
           <select
             :id="`page-order-${i}`"
@@ -172,17 +205,18 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
         :id="`page-name-${i + 1}`"
         ref="pageNameFieldRefs"
         v-model="page.name"
-        label="Nom de la page"
+        :label="LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
         class="fr-mt-7w"
         :validation="nameValidation"
       />
 
       <DsfrFieldWithValidation
+        v-if="auditReference !== AuditReference.RGAA_5_Mobile"
         :id="`page-url-${i + 1}`"
         v-model="page.url"
-        label="URL de la page"
+        :label="LABEL[auditReference || AuditReference.RGAA_4]"
         type="text"
-        required
+        :required="isRequired ? true : undefined"
         :pattern="URL_REGEX"
         :validation="urlValidation"
       >
