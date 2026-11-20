@@ -186,8 +186,7 @@ interface CreateTestAuditOptions {
   fillStatement?: boolean;
   publicationDate?: string;
   auditReference?: string;
-  isCompliant?: boolean;
-  blockingCount?: number;
+  complianceRate?: number;
 }
 
 /**
@@ -202,8 +201,7 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     fillStatement: options?.fillStatement,
     publicationDate: options?.publicationDate,
     auditReference: options?.auditReference,
-    isCompliant: options?.isCompliant,
-    blockingCount: options?.blockingCount
+    complianceRate: options?.complianceRate
   }).its("body");
 });
 
