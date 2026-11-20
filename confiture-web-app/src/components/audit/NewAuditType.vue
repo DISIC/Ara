@@ -31,7 +31,7 @@ const fullAudit = {
   label: "Pour mesurer la conformité au RGAA",
   goals: [
     "Identifier toutes les erreurs d’accessibilité",
-    "Obtenir un taux global de conformité au RGAA ",
+    "Obtenir un taux global de conformité au RGAA",
     "Générer une déclaration d’accessibilité"
   ],
   documentation:
@@ -84,7 +84,7 @@ function fillSettings() {
       v-slot="{ error, focusRef }"
       :value="auditType"
       :validation="[
-        REQUIRED('Sélection obligatoire. Choissisez un type d’audit.')
+        REQUIRED('Sélection obligatoire. Choisissez un type d’audit.')
       ]"
     >
       <div
@@ -102,6 +102,7 @@ function fillSettings() {
           :is-error="!!error"
           :tag="fullAudit.tag"
           :label="fullAudit.label"
+          :audit-reference="auditReference"
         />
 
         <AuditTypeRadio
@@ -114,17 +115,18 @@ function fillSettings() {
           :is-error="!!error"
           :tag="partialAudit.tag"
           :label="partialAudit.label"
+          :audit-reference="auditReference"
           @update:model-value="auditType = $event"
         />
-      </div>
 
-      <p
-        v-if="error"
-        id="audit-type-error"
-        class="fr-error-text"
-      >
-        {{ error }}
-      </p>
+        <p
+          v-if="error"
+          id="audit-type-error"
+          class="fr-error-text fr-mt-0"
+        >
+          {{ error }}
+        </p>
+      </div>
 
     </FieldValidation>
 

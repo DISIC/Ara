@@ -2,9 +2,9 @@
 import { computed, ref } from "vue";
 
 import CodingIcon from "../../assets/dsfr-custom-icons/coding.svg";
-import { AuditType } from "../../types";
+import { AuditReference, AuditType } from "../../types";
 
-import { getCriteriaCount } from "../../utils";
+import { getCriteriaCount, getRgaaVersion } from "../../utils";
 import DsfrArtwork from "../ui/DsfrArtwork.vue";
 
 const props = defineProps<{
@@ -16,6 +16,7 @@ const props = defineProps<{
   isError?: boolean;
   label: string;
   tag?: string;
+  auditReference: AuditReference | null;
 }>();
 
 defineEmits(["update:modelValue"]);
@@ -86,8 +87,8 @@ const descriptionId = computed(() => {
         </label>
       </div>
       <div class="fr-pl-3w">
-        <p class="fr-mb-1w fr-text--bold">{{ label }}</p>
-        <p class="fr-text--sm fr-hint-text">{{ getCriteriaCount(value) }} critères</p>
+        <p class="fr-mb-1w fr-text--bold">{{ label.replace("RGAA", getRgaaVersion(auditReference)) }}</p>
+        <p class="fr-text--sm fr-hint-text">{{ getCriteriaCount(value, auditReference) }} critères</p>
 
         <ul class="fr-m-0 fr-mb-2w fr-p-0">
           <li
@@ -101,7 +102,7 @@ const descriptionId = computed(() => {
               class="fr-icon-check-line fr-icon--sm list-item-icon"
               aria-hidden="true"
             />
-            {{ goal }}
+            {{ goal.replace("RGAA", getRgaaVersion(auditReference)) }}
           </li>
         </ul>
       </div>

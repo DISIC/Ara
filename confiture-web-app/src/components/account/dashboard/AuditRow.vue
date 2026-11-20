@@ -127,7 +127,7 @@ defineExpose({
     <div>
       <span class="fr-sr-only">Type </span>
       <p class="fr-mb-0 fr-text--bold">{{ getAuditReference(audit.auditReference, true) }}</p>
-      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getRgaaVersion(audit.auditReference) }} </p>
+      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType, audit.auditReference) }} critères -  {{ getRgaaVersion(audit.auditReference) }} </p>
     </div>
 
     <!-- Compliance level / Progression level -->

@@ -58,20 +58,14 @@ function fillSettings() {
 
 <template>
   <FormWithValidation @submit="submitAuditPages">
-    <div v-if="isDevMode" class="fr-mb-4w">
+    <div v-if="isDevMode" class="fr-mb-3w">
       <button class="fr-btn" type="button" @click="fillSettings">
         [DEV] Remplir les paramètres
       </button>
     </div>
 
     <p class="fr-text--sm notice">
-      Sauf mentions contraires, tous les champs sont obligatoires. Au moins une
-      page à auditer doit être renseignée.
-    </p>
-
-    <p v-if="auditType === AuditType.FULL" class="fr-mb-2w">
-      Par défaut nous vous proposons les pages obligatoires prévues par le RGAA
-      quand elles sont disponibles sur le site à auditer.
+      Sauf mentions contraires, tous les champs sont obligatoires. L'échantillon doit possdéder au moins une page.
     </p>
 
     <PagesSample ref="pagesSampleRef" v-model="pages" class="fr-mb-3w" />

@@ -30,7 +30,7 @@ defineExpose({ auditReference });
     <FieldValidation
       v-slot="{ error, focusRef }"
       :value="auditReference"
-      :validation="[REQUIRED('Sélection obligatoire. Choissisez un référentiel.')]"
+      :validation="[REQUIRED('Sélection obligatoire. Sélectionnez un référentiel.')]"
     >
 
       <div
