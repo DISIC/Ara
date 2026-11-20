@@ -12,8 +12,9 @@ Tous les utilisateurs n’ont pas les mêmes droits selon la ressource, le statu
   })
   export class AuditsModule {}
   ```
-- Le fichier de policy va lister un ensemble de règles pour certaines actions (`read`, `update`, `transfer`...) sous forme de fonctions qui renvoient un boolean : `true` si l’utilisateur a le droit de faire l’action, `false` sinon.
-- Cette fonction prends a minima l’utilisateur courant (`user`) en argument. Il est possible de lui en passer d’autre (exemple : `auditUniqueId`).
+- Le fichier de policy liste un ensemble de règles pour certaines actions (`read`, `update`, `transfer`...) sous forme de fonctions qui renvoient un boolean : `true` si l’utilisateur a le droit de faire l’action, `false` sinon.
+- La policy doit avoir le décorateur `@Policy()` pour être déclarée en tant que telle.
+- Cette fonction prend a minima l’utilisateur courant (`user`) en argument. Il est possible de lui en passer d’autre (exemple : `auditUniqueId`).
 
 ```ts
 @Policy()
@@ -38,9 +39,9 @@ export class AuditPolicy {
 
 ## Utilisation des permissions
 
-- Chaque appel à une route d’API va être soumis à une permission du fichier de policy dans le controller. Même si une route est en accès public, il faut créer une policy qui renvoie explicitement `true`.
-- Il faut importer le `authorizationService` dans le controller et vérifier les permissions dès la première ligne de la fonction avec la méthode `authorize()`.
-- Si l’utilisateur a la permission, la suite de la méthode s’exécute. Sinon, la méthode renvoie une erreur HTTP 401 ou 403.
+- Chaque appel à une route d’API va être soumis à une permission du fichier de policy dans le contrôleur. Même si une route est en accès public, il faut créer une policy qui renvoie explicitement `true`.
+- Il faut importer le `authorizationService` dans le contrôleur et vérifier les permissions dès la première ligne de la fonction avec la méthode `authorize()`.
+- Si l’utilisateur a la permission, la suite de la méthode s’exécute. Sinon, la méthode renvoie une erreur HTTP 401 "Unauthorized" ou 403 "Forbidden".
 
 ```ts
 @Delete(":uniqueId")

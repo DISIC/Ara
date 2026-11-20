@@ -1,3 +1,7 @@
+TODO:
+- quand utiliser les events ? entre modules différents ? entre scopes différents (audit <-> auth) ?
+- typer les paylaods d'events ?
+
 # Événements
 
 Les événements permettent de communiquer entre plusieurs modules ou de déclencher des mécanique comme l'envoi d'emails.
