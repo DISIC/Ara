@@ -2,7 +2,7 @@ import * as auditJson from "../../fixtures/audit.json";
 import { createNotCompliantItem, shouldHaveNotCompliantItem } from "../common";
 
 describe("Audit", () => {
-  it("User can create an audit", () => {
+  it("User can create an RGAA 4 audit", () => {
     function fillPageField(pageIndex: number, field: string, content: string) {
       cy.contains(`Page ${pageIndex}`)
         .parent()
@@ -19,8 +19,12 @@ describe("Audit", () => {
     // Navigate to new audit page
     cy.contains("a", "Je réalise un audit").click();
 
+    // Choose RGAA 4 audit
+    cy.get("[id='audit-reference-RGAA_4']").check({ force: true });
+    cy.contains("button", "Étape suivante").click();
+
     // Fill fields
-    cy.contains("106 critères").click();
+    cy.contains("Audit complet").click();
 
     cy.contains("Nom du site ou du service à auditer")
       .parent()
@@ -67,6 +71,79 @@ describe("Audit", () => {
 
     // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
+    cy.contains("Web - 106 critères - RGAA 4");
+  });
+
+  it("User can create an RGAA 5 audit", () => {
+    function fillPageField(pageIndex: number, field: string, content: string) {
+      cy.contains(`Page ${pageIndex}`)
+        .parent()
+        .parent()
+        .contains(field)
+        .parent()
+        .find("input")
+        .clear()
+        .type(content);
+    }
+
+    cy.visit("http://localhost:3000");
+
+    // Navigate to new audit page
+    cy.contains("a", "Je réalise un audit").click();
+
+    // Choose RGAA 5 Web audit
+    cy.get("[id='audit-reference-RGAA_5_Web']").check({ force: true });
+    cy.contains("button", "Étape suivante").click();
+
+    // Fill fields
+    cy.contains("Audit complet").click();
+
+    cy.contains("Nom du site ou du service à auditer")
+      .parent()
+      .find("input")
+      .type(auditJson.procedureName);
+
+    cy.contains("button", "Étape suivante").click();
+    cy.contains("button", "Ajouter une page").click();
+
+    fillPageField(1, "Nom de la page", auditJson.pages[0].name);
+    fillPageField(1, "URL de la page", auditJson.pages[0].url);
+    fillPageField(2, "Nom de la page", auditJson.pages[1].name);
+    fillPageField(2, "URL de la page", auditJson.pages[1].url);
+    fillPageField(3, "Nom de la page", auditJson.pages[2].name);
+    fillPageField(3, "URL de la page", auditJson.pages[2].url);
+    fillPageField(4, "Nom de la page", auditJson.pages[3].name);
+    fillPageField(4, "URL de la page", auditJson.pages[3].url);
+    fillPageField(5, "Nom de la page", auditJson.pages[4].name);
+    fillPageField(5, "URL de la page", auditJson.pages[4].url);
+    fillPageField(6, "Nom de la page", auditJson.pages[5].name);
+    fillPageField(6, "URL de la page", auditJson.pages[5].url);
+    fillPageField(7, "Nom de la page", auditJson.pages[6].name);
+    fillPageField(7, "URL de la page", auditJson.pages[6].url);
+    fillPageField(8, "Nom de la page", auditJson.pages[7].name);
+    fillPageField(8, "URL de la page", auditJson.pages[7].url);
+
+    cy.contains("button", "Étape suivante").click();
+
+    cy.contains("button", "Ignorer cette étape").click();
+
+    // Fill auditor informations
+    cy.contains("Adresse e-mail")
+      .parent()
+      .find("input")
+      .type(auditJson.auditorEmail);
+
+    cy.contains("Prénom et nom (optionnel)")
+      .parent()
+      .find("input")
+      .type(auditJson.auditorName);
+
+    // Submit new audit form
+    cy.contains("Valider les paramètres").click();
+
+    // Check user is redirect to audit generation page
+    cy.get("h1").contains(auditJson.procedureName);
+    cy.contains("Web - 106 critères - RGAA 5");
   });
 
   it("User can create an audit with prefilled NA topics", () => {
@@ -86,8 +163,12 @@ describe("Audit", () => {
     // Navigate to new audit page
     cy.contains("a", "Je réalise un audit").click();
 
+    // Choose RGAA 5 Web audit
+    cy.get("[id='audit-reference-RGAA_4']").check({ force: true });
+    cy.contains("button", "Étape suivante").click();
+
     // Fill fields
-    cy.contains("106 critères").click();
+    cy.contains("Audit complet").click();
 
     cy.contains("Nom du site ou du service à auditer")
       .parent()

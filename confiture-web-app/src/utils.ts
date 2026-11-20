@@ -11,7 +11,8 @@ import {
   AuditType,
   AuditTypeString,
   CriterionResultUserImpact,
-  CriteriumResultStatus
+  CriteriumResultStatus,
+  AuditReference
 } from "./types";
 
 const formatter = new Intl.DateTimeFormat("fr-FR", {
@@ -78,17 +79,34 @@ export function formatStatus(
   return FORMATTED_STATUS[status];
 }
 
-const CRITERIA_COUNT = {
-  [AuditType.FAST]: 25,
-  [AuditType.COMPLEMENTARY]: 50,
-  [AuditType.FULL]: 106
+const CRITERIA_COUNT: Record<AuditReference, Record<AuditType, number>> = {
+  [AuditReference.RGAA_4]: {
+    [AuditType.FAST]: 25,
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 106
+  },
+  [AuditReference.RGAA_5_Web]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142
+  },
+  [AuditReference.RGAA_5_Mobile]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142 // TODO
+  },
+  [AuditReference.RGAA_5_Document]: {
+    [AuditType.FAST]: 25, // TODO
+    [AuditType.COMPLEMENTARY]: 50, // UNUSED
+    [AuditType.FULL]: 142 // TODO
+  }
 };
 
 /**
  * Return the number of criteria for a given audit type.
  */
-export function getCriteriaCount(auditType: AuditTypeString): number {
-  return CRITERIA_COUNT[auditType];
+export function getCriteriaCount(auditType: AuditTypeString, auditReference: AuditReference | undefined | null): number {
+  return CRITERIA_COUNT[auditReference ?? AuditReference.RGAA_4][auditType];
 }
 
 /**
@@ -102,7 +120,7 @@ export function getAuditStatus(report: AuditReport): string {
 
   if (
     report.results.filter((r) => r.pageId !== transversePageId).length !==
-      getCriteriaCount(report.auditType) *
+      getCriteriaCount(report.auditType, report.auditReference) *
         (report.context.samples.length - 1) ||
     report?.results
       .filter((r) => r.pageId !== transversePageId)
@@ -298,4 +316,32 @@ export function isImage(file: File | FileListFile) {
   } else if ("mimetype" in file) {
     return file.mimetype.startsWith("image");
   }
+}
+
+export function getAuditReference(auditReference: AuditReference | undefined, short = false): string {
+  if (auditReference === AuditReference.RGAA_5_Document)
+    return "Bureautique";
+
+  if (auditReference === AuditReference.RGAA_5_Mobile) {
+    return short ? "App. mobile" : "Application mobile";
+  }
+
+  return "Web";
+}
+
+export function getRgaaVersion(auditReference: AuditReference | undefined | null): string {
+  // RGAA 4 by default
+  if (!auditReference) {
+    return "RGAA 4";
+  }
+
+  return auditReference.substring(0, 6).replace("_", " ");
+}
+
+export function isRgaa5(auditReference: AuditReference | undefined): boolean {
+  return !!auditReference?.startsWith("RGAA_5");
+}
+
+export function isConsideredNotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
+  return isRgaa5(auditReference) && blockingCount > 0;
 }
