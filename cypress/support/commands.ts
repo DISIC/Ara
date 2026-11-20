@@ -185,6 +185,8 @@ interface CreateTestAuditOptions {
   auditorEmail?: string;
   fillStatement?: boolean;
   publicationDate?: string;
+  auditReference?: string;
+  complianceRate?: number;
 }
 
 /**
@@ -197,7 +199,9 @@ Cypress.Commands.add("createTestAudit", (options?: CreateTestAuditOptions) => {
     noImprovements: options?.hasNoImprovementsComments,
     auditorEmail: options?.auditorEmail,
     fillStatement: options?.fillStatement,
-    publicationDate: options?.publicationDate
+    publicationDate: options?.publicationDate,
+    auditReference: options?.auditReference,
+    complianceRate: options?.complianceRate
   }).its("body");
 });
 
