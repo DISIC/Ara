@@ -17,7 +17,7 @@ const ALL_USER_IMPACTS = [
   null
 ];
 
-const NOT_BLOCKING_USER_IMPACTS = [
+const NON_BLOCKING_USER_IMPACTS = [
   CriterionResultUserImpact.MINOR,
   CriterionResultUserImpact.MAJOR,
   null
@@ -78,16 +78,15 @@ function buildStatuses(
  */
 function getUserImpact(
   index: number,
-  auditReference: AuditReference,
   complianceRate?: number
 ): CriterionResultUserImpact | null {
   if (complianceRate === 99) {
     return CriterionResultUserImpact.BLOCKING;
   }
 
-  return complianceRate === undefined || auditReference === AuditReference.RGAA_4
+  return complianceRate === undefined
     ? ALL_USER_IMPACTS[index % 4]
-    : NOT_BLOCKING_USER_IMPACTS[index % 3];
+    : NON_BLOCKING_USER_IMPACTS[index % 3];
 }
 
 @Controller("tests")
@@ -286,7 +285,7 @@ export class TestsController {
 
           CRITERIA.map((c, i) => {
             const status = statuses[i];
-            const userImpact = getUserImpact(i, body.auditReference, body.complianceRate);
+            const userImpact = getUserImpact(i, body.complianceRate);
 
             // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
             let userImpact = userImpacts[i % 4];
@@ -308,10 +307,10 @@ export class TestsController {
             return this.prisma.criterionResult.create({
               data: {
                 status,
-                notApplicableComment: body.noImprovements || status !== CriterionResultStatus.NOT_APPLICABLE
+                notApplicableComment: body.noImprovements
                   ? null
                   : "Attention quand même si ça devient applicable",
-                compliantComment: body.noImprovements || status !== CriterionResultStatus.COMPLIANT ? null : "Peut mieux faire",
+                compliantComment: body.noImprovements ? null : "Peut mieux faire",
                 notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
                   ? {
                       create: {
