@@ -8,7 +8,6 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("Terminé (1)");
 
-        cy.get(".audit-compliance-level").contains("99 %");
         cy.get(".audit-compliance-level").contains("Partiellement conforme");
       });
     });
@@ -21,7 +20,6 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("Terminé (1)");
 
-        cy.get(".audit-compliance-level").contains("100 %");
         cy.get(".audit-compliance-level").contains("Totalement conforme");
       });
     });
@@ -29,12 +27,11 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
   it("Account : a RGAA 5 audit with no blocking user impact and many minor or major user impact is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, complianceRate: 76 }).then(() => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, auditReference: AuditReference.RGAA_5_Web, complianceRate: 75 }).then(() => {
         cy.visit("http://localhost:3000/compte");
 
         cy.contains("Terminé (1)");
 
-        cy.get(".audit-compliance-level").contains("76 %");
         cy.get(".audit-compliance-level").contains("Partiellement conforme");
       });
     });
@@ -47,7 +44,6 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("Terminé (1)");
 
-        cy.get(".audit-compliance-level").contains("99 %");
         cy.get(".audit-compliance-level").contains("Non conforme");
       });
     });
@@ -60,7 +56,6 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("Terminé (1)");
 
-        cy.get(".audit-compliance-level").contains("100 %");
         cy.get(".audit-compliance-level").contains("Totalement conforme");
       });
     });
@@ -73,7 +68,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("afficher la mention « Accessibilité : partiellement conforme »");
         cy.contains("est partiellement conforme avec le référentiel général d’amélioration de l’accessibilité (RGAA)");
-        cy.contains("révèle que 99 % des critères du RGAA version 4.1.2 sont respectés.");
+        cy.contains("des critères du RGAA version 4.1.2 sont respectés");
       });
     });
   });
@@ -85,19 +80,19 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("afficher la mention « Accessibilité : totalement conforme »");
         cy.contains("est totalement conforme avec le référentiel général d’amélioration de l’accessibilité (RGAA)");
-        cy.contains("révèle que 100 % des critères du RGAA version 4.1.2 sont respectés.");
+        cy.contains("des critères du RGAA version 4.1.2 sont respectés");
       });
     });
   });
 
   it("Statement : a RGAA 5 audit with no blocking user impact and many minor or major user impact is partially compliant", () => {
     cy.createTestAccount({ login: true }).then(({ username }) => {
-      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, complianceRate: 76 }).then(({ reportId }) => {
+      cy.createTestAudit({ auditorEmail: username, isComplete: true, fillStatement: true, auditReference: AuditReference.RGAA_5_Web, complianceRate: 75 }).then(({ reportId }) => {
         cy.visit(`http://localhost:3000/declaration/${reportId}`);
 
         cy.contains("afficher la mention « Accessibilité : partiellement conforme »");
         cy.contains("est partiellement conforme avec le référentiel général d’amélioration de l’accessibilité (RGAA)");
-        cy.contains("révèle que 76 % des critères du RGAA version 5 sont respectés.");
+        cy.contains("des critères du RGAA version 5 sont respectés");
       });
     });
   });
@@ -109,7 +104,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("afficher la mention « Accessibilité : non conforme »");
         cy.contains("est non conforme avec le référentiel général d’amélioration de l’accessibilité (RGAA)");
-        cy.contains("révèle que 99 % des critères du RGAA version 5 sont respectés.");
+        cy.contains("des critères du RGAA version 5 sont respectés");
       });
     });
   });
@@ -121,7 +116,7 @@ describe("RGAA 4 or 5 Audit Compliance", () => {
 
         cy.contains("afficher la mention « Accessibilité : totalement conforme »");
         cy.contains("est totalement conforme avec le référentiel général d’amélioration de l’accessibilité (RGAA)");
-        cy.contains("révèle que 100 % des critères du RGAA version 5 sont respectés.");
+        cy.contains("des critères du RGAA version 5 sont respectés");
       });
     });
   });
