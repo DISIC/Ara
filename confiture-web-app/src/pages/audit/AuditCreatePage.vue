@@ -76,19 +76,6 @@ onUnmounted(() => {
 
 const accountStore = useAccountStore();
 
-// Steps management
-const currentStep = ref(0);
-const steps = [
-  "Choisissez le référentiel",
-  "Choisissez un type d’audit",
-  "Renseignez l’échantillon",
-  "Indiquez la présence d’éléments spécifiques",
-  ...(accountStore.account && accountStore.account.name
-    ? []
-    : ["Indiquez vos coordonnées"])
-];
-const stepHeadingRef = ref<HTMLHeadingElement>();
-
 interface CreateAuditFormData {
   auditReference: AuditReference | null;
   auditType: AuditType | null;
@@ -114,6 +101,31 @@ const audit = ref<CreateAuditFormData>({
   auditorEmail: accountStore.account?.email ?? "",
   auditorName: accountStore.account?.name ?? ""
 });
+
+const stepEchantillonLabel = computed(() => {
+  if (audit.value.auditReference === AuditReference.RGAA_5_Mobile) {
+    return "Renseigner les écrans de l'échantillon";
+  }
+
+  if (audit.value.auditReference === AuditReference.RGAA_5_Document) {
+    return "Renseigner les documents de l'échantillon";
+  }
+
+  return "Renseignez les pages de l’échantillon";
+});
+
+// Steps management
+const currentStep = ref(0);
+const steps = computed(() => [
+  "Choisissez le référentiel",
+  "Choisissez un type d’audit",
+  stepEchantillonLabel.value,
+  "Indiquez la présence d’éléments spécifiques",
+  ...(accountStore.account && accountStore.account.name
+    ? []
+    : ["Indiquez vos coordonnées"])
+]);
+const stepHeadingRef = ref<HTMLHeadingElement>();
 
 // Default pages per audit type
 const fullDefaultPages = [
@@ -154,7 +166,7 @@ async function submitStep(payload: Partial<CreateAuditFormData>) {
     ...payload
   };
 
-  if (currentStep.value === steps.length - 1) {
+  if (currentStep.value === steps.value.length - 1) {
     submitAuditSettings();
   } else {
     currentStep.value += 1;
@@ -319,6 +331,7 @@ function setTopicAccordionStatus(
       v-else-if="currentStep === 2"
       :audit-type="audit.auditType"
       :pages="audit.pages"
+      :audit-reference="audit.auditReference"
       @previous="goToPreviousStep"
       @submit="submitStep"
       @change="pagesArePristine = false"
