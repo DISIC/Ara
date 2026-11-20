@@ -46,6 +46,20 @@ const partialAudit = {
   documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
 };
 
+const LABEL_FIELD = {
+  [AuditReference.RGAA_4]: "Nom du site ou du service à auditer",
+  [AuditReference.RGAA_5_Web]: "Nom du site ou du service à auditer",
+  [AuditReference.RGAA_5_Mobile]: "Nom de l'application mobile à auditer",
+  [AuditReference.RGAA_5_Document]: "Nom du document ou de l’ensemble de documents à auditer"
+};
+
+const HINT_LABEL_FIELD = {
+  [AuditReference.RGAA_4]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Web]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Mobile]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Document]: "Exemples&nbsp;:&nbsp;Rapport annuel (ODT), Kit de communication (ensemble de documents PDF)"
+};
+
 function submitAuditType() {
   emit("submit", {
     auditType: auditType.value as AuditType,
@@ -134,10 +148,10 @@ function fillSettings() {
       id="procedure-name"
       v-model="procedureName"
       class="fr-mb-6w"
-      label="Nom du site ou du service à auditer"
-      hint="Exemples&nbsp;: Service-Public, Demande de permis de conduire"
+      :label="LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
+      :hint="HINT_LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
       required
-      :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
+      :validation="[REQUIRED(`Champ obligatoire. Saisissez ${LABEL_FIELD[auditReference || AuditReference.RGAA_4]}.`)]"
     />
 
     <div class="actions">
