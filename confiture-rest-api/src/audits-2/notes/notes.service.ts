@@ -6,8 +6,9 @@ import { FileStorageService } from "../../file-storage/file-storage.service";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
-import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-response.dto";
+import { NotesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
+import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
 
 @Injectable()
 export class NotesService {
@@ -75,7 +76,7 @@ export class NotesService {
     return notesFile;
   }
 
-  async getNotes(editUniqueId: string): Promise<NotesWithFilesResponseDto> {
+  async getNotes(editUniqueId: string): Promise<NotesResponseDto> {
     const result = await this.prisma.audit.findUniqueOrThrow({
       where: {
         editUniqueId,
@@ -93,7 +94,7 @@ export class NotesService {
   async updateNotes(
     editUniqueId: string,
     data: UpdateNotesRequestDto
-  ): Promise<NotesResponseDto> {
+  ): Promise<UpdateNotesResponseDto> {
     const audit = await this.prisma.audit.update({
       where: {
         editUniqueId,
@@ -110,7 +111,7 @@ export class NotesService {
     this.eventEmitter.emit(EVENTS.NOTES_UPDATED, editUniqueId);
 
     // As we are updating notes, it always returns a string (even when actual content is empty).
-    return { notes: audit.notes };
+    return { notes: audit.notes! };
   }
 
   async deleteNotesFile(editUniqueId: string, fileId: number): Promise<void> {

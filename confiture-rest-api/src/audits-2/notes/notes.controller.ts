@@ -5,8 +5,9 @@ import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
 import { NotesFileResponseDto } from "./dto/notes-file-response.dto";
-import { NotesResponseDto, NotesWithFilesResponseDto } from "./dto/notes-response.dto";
+import { NotesResponseDto } from "./dto/notes-response.dto";
 import { UpdateNotesRequestDto } from "./dto/update-notes-request.dto";
+import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
 import { NotesService } from "./notes.service";
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -38,22 +39,22 @@ export class NotesController {
   }
 
   @Get()
-  @SerializeOptions({ type: NotesWithFilesResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({ type: NotesResponseDto, excludeExtraneousValues: true })
   async getNotes(
     @Param("uniqueId") uniqueId: string,
     @CurrentUser() user: User | null
-  ): Promise<NotesWithFilesResponseDto> {
+  ): Promise<NotesResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "read", user);
     return await this.notesService.getNotes(uniqueId);
   }
 
   @Put()
-  @SerializeOptions({ type: NotesResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({ type: UpdateNotesResponseDto, excludeExtraneousValues: true })
   async updateNotes(
     @Param("uniqueId") uniqueId: string,
     @CurrentUser() user: User | null,
     @Body() body: UpdateNotesRequestDto
-  ): Promise<NotesResponseDto> {
+  ): Promise<UpdateNotesResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
     return await this.notesService.updateNotes(uniqueId, body);
   }
