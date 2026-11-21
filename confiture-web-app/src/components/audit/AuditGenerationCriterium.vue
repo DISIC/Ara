@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from "lodash-es";
 import { marked } from "marked";
-import { computed, ref } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { useFileHandler } from "../../composables/useFileHandler";
 import { useIsOffline } from "../../composables/useIsOffline";
 import { useNotifications } from "../../composables/useNotifications";
@@ -121,6 +121,7 @@ const transverseNotCompliantItems = computed((): NotCompliantItem[] => {
   return [];
 });
 
+const statusRef = useTemplateRef("statusRef");
 const showTransverseComment = ref(false);
 
 function toggleTransverseComment() {
@@ -184,6 +185,9 @@ function updateResultStatus(status: CriteriumResultStatus) {
                   name: "audit-overview",
                   params: { uniqueId: props.auditUniqueId }
                 }
+              },
+              actionAfterClose: () => {
+                statusRef?.value?.focusInput();
               }
             }
           );
@@ -264,6 +268,7 @@ const parentCriterium = computed(() => {
       }`"
     >
       <RadioGroup
+        ref="statusRef"
         :disabled="isOffline"
         :model-value="result.status"
         hide-label

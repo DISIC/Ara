@@ -59,6 +59,9 @@ function duplicateAudit(name: string) {
           cb() {
             router.push({ name: "audit-generation", params: { uniqueId: newAuditId } });
           }
+        },
+        actionAfterClose: () => {
+          optionsDropdownRef?.value?.buttonRef?.focus();
         }
       });
     })
