@@ -32,7 +32,7 @@ const fullAudit = {
   label: "Pour mesurer la conformité au RGAA",
   goals: [
     "Identifier toutes les erreurs d’accessibilité",
-    "Obtenir un taux global de conformité au RGAA",
+    "Obtenir un taux de conformité au RGAA",
     "Générer une déclaration d’accessibilité"
   ],
   documentation:
@@ -41,7 +41,6 @@ const fullAudit = {
 
 const partialAudit = {
   value: AuditType.FAST,
-  tag: auditReference.value === AuditReference.RGAA_4 ? "" : "Bêta",
   label: "Pour estimer le niveau d'accessibilité",
   goals: ["Identifier les principales erreurs d’accessibilité"],
   documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
@@ -128,7 +127,6 @@ function fillSettings() {
           :goals="partialAudit.goals"
           :documentation-link="partialAudit.documentation"
           :is-error="!!error"
-          :tag="partialAudit.tag"
           :label="partialAudit.label"
           :audit-reference="auditReference"
           @update:model-value="auditType = $event"

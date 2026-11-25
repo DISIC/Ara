@@ -3,7 +3,7 @@ import { lowerFirst } from "lodash-es";
 
 import { computed, nextTick, ref, watch } from "vue";
 import { useNotifications } from "../../composables/useNotifications";
-import { REQUIRED, URL } from "../../composables/validation";
+import { URL } from "../../composables/validation";
 import { AuditPage, AuditReference } from "../../types";
 import { URL_REGEX } from "../../utils";
 import DsfrField from "../ui/DsfrField.vue";
@@ -131,22 +131,13 @@ function updatePageOrder(startIndex: number, endIndex: number) {
   } sur ${pages.value.length}`;
 }
 
-const isRequired = computed(() => {
-  return (props.auditReference === AuditReference.RGAA_4
-    || !props.auditReference);
-});
-
 const LABEL = {
   [AuditReference.RGAA_4]: "URL de la page",
-  [AuditReference.RGAA_5_Web]: "URL de la page (optionnel)",
-  [AuditReference.RGAA_5_Document]: "URL du document si disponible (optionnel)"
+  [AuditReference.RGAA_5_Web]: "URL de la page",
+  [AuditReference.RGAA_5_Document]: "URL du document si disponible"
 };
 
-const nameValidation = [REQUIRED("Champ obligatoire. Saisissez le nom de la page à auditer.")];
 const urlValidation = computed(() => [
-  ...(isRequired.value
-    ? [REQUIRED("Champ obligatoire. Saisissez l’URL de la page à auditer.")]
-    : []),
   URL("Format incorrect. Saisissez une URL commençant par https:// ou http://")
 ]);
 </script>
@@ -201,13 +192,12 @@ const urlValidation = computed(() => [
         </div>
       </div>
 
-      <DsfrFieldWithValidation
+      <DsfrField
         :id="`page-name-${i + 1}`"
         ref="pageNameFieldRefs"
         v-model="page.name"
         :label="LABEL_FIELD[auditReference || AuditReference.RGAA_4]"
         class="fr-mt-7w"
-        :validation="nameValidation"
       />
 
       <DsfrFieldWithValidation
@@ -216,10 +206,12 @@ const urlValidation = computed(() => [
         v-model="page.url"
         :label="LABEL[auditReference || AuditReference.RGAA_4]"
         type="text"
-        :required="isRequired ? true : undefined"
         :pattern="URL_REGEX"
         :validation="urlValidation"
       >
+        <template #optional>
+          <span class="fr-hint-text">&nbsp;(optionnel)</span>
+        </template>
         <template #hint>
           Saisissez une URL commençant par <code>https://</code> ou
           <code>http://</code>

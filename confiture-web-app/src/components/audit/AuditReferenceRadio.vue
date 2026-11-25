@@ -76,7 +76,7 @@ const isDisabled = computed(() =>
 
     </div>
 
-    <div class="radio-body fr-p-3w" @click="!isDisabled && $emit('update:modelValue', value)">
+    <div class="radio-body fr-p-7v" @click="!isDisabled && $emit('update:modelValue', value)">
 
       <div class="fr-radio-group fr-radio-group--sm">
         <input
@@ -95,9 +95,9 @@ const isDisabled = computed(() =>
           "
         />
 
-        <label class="fr-label radio-label fr-h4 fr-mb-3w" :for="`audit-reference-${value}`">{{ currentRadioReference.label }}</label>
+        <label class="fr-label radio-label fr-h6 fr-mb-1w" :for="`audit-reference-${value}`">{{ currentRadioReference.label }}</label>
 
-        <p :id="`audit-reference-description-${value}`" v-html="currentRadioReference.description"></p>
+        <p :id="`audit-reference-description-${value}`" class="fr-text--sm fr-mb-0" v-html="currentRadioReference.description"></p>
       </div>
     </div>
   </div>
@@ -123,7 +123,7 @@ const isDisabled = computed(() =>
 }
 
 .radio-header {
-  height: 9rem;
+  height: 7.5rem;
   background: var(--background-alt-blue-france);
   display: flex;
 }
@@ -177,6 +177,7 @@ svg {
   background-position:
     0 0.5rem,
     0 0.5rem !important;
+  padding-left: 2rem;
 }
 
 .fr-radio-group--sm input[type="radio"] + label::before {

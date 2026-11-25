@@ -18,7 +18,7 @@ import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
 import { AuditReference, AuditType, CreateAuditRequestData } from "../../types";
-import { captureWithPayloads } from "../../utils";
+import { captureWithPayloads, getRgaaVersion } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -363,7 +363,7 @@ function setTopicAccordionStatus(
 
 <template>
   <PageMeta
-    :title="`Paramétrer un audit, étape ${currentStep + 1} sur ${steps.length}, ${
+    :title="`Paramétrer un audit ${audit?.auditReference && currentStep + 1 > 1 ? getRgaaVersion(audit.auditReference) : ''}, étape ${currentStep + 1} sur ${steps.length}, ${
       steps[currentStep]
     }`"
     description="Pour paramétrer un nouvel audit indiquez le type d'audit, renseignez l'échantillon des pages à auditer, nommez votre audit et indiquer vos coordonnées pour recevoir les liens de votre audit, de votre rapport d'audit généré automatiquement et de votre déclaration d'accessibilité"
@@ -375,7 +375,7 @@ function setTopicAccordionStatus(
   />
 
   <div class="content">
-    <h1 class="fr-mb-6w">Paramétrer un audit</h1>
+    <h1 class="fr-mb-3w">Paramétrer un audit {{ audit?.auditReference && currentStep + 1 > 1 ? getRgaaVersion(audit.auditReference) : '' }}</h1>
     <div class="fr-stepper fr-mb-12v">
       <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h3">
         {{ steps[currentStep] }}

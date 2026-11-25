@@ -37,8 +37,8 @@ defineExpose({ auditReference });
         class="fr-mb-4w fr-input-group"
         :class="{ 'fr-input-group--error': !!error }"
       >
-        <h3 id="rgaa4">RGAA 4</h3>
-        <p id="rgaa4-version">Version <span class="fr-text--bold">en vigueur et référence réglementaire.</span></p>
+        <h3 id="rgaa4" class="fr-h5 fr-mb-1v">RGAA 4</h3>
+        <p id="rgaa4-version" class="fr-mb-3v">Version <span class="fr-text--bold">en vigueur.</span></p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -51,9 +51,9 @@ defineExpose({ auditReference });
           />
         </div>
 
-        <h3 id="rgaa5" class="fr-mt-4w">RGAA 5&nbsp;<span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">bêta</span></h3>
+        <h3 id="rgaa5" class="fr-mt-4w fr-h5 fr-mb-1v">RGAA 5&nbsp;<span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">bêta</span></h3>
 
-        <p id="rgaa5-version">Version <span class="fr-text--bold">utilisable dès maintenant,</span> mais pas encore en vigueur. Entrera en vigueur par décret en 2027.</p>
+        <p id="rgaa5-version" class="fr-mb-3v">Version <span class="fr-text--bold">utilisable dès maintenant</span>. Entrera en vigueur par décret en 2027.</p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -93,8 +93,8 @@ defineExpose({ auditReference });
       </div>
     </FieldValidation>
 
-    <p class="fr-text--sm fr-hint-text fr-mb-0">
-      <span class="fr-icon-information-line" aria-hidden="true" />
+    <p class="fr-text--xs fr-hint-text fr-mb-0">
+      <span class="fr-icon-information-line fr-icon--xs" aria-hidden="true" />
       La version du RGAA ne peut pas être modifiée après la création d'un audit.
     </p>
 
