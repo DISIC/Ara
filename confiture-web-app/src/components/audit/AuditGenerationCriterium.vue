@@ -326,8 +326,9 @@ const parentCriterium = computed(() => {
             transverseStatus === CriteriumResultStatus.NOT_COMPLIANT
               ? "les erreurs"
               : "le commentaire"
-          }}
-          <span class="fr-sr-only">transverse</span>
+          }}<span class="fr-sr-only">&nbsp;transverse{{
+            transverseStatus === CriteriumResultStatus.NOT_COMPLIANT ? "s" : ""
+          }}</span>
           <span class="fr-icon-arrow-down-s-line fr-icon--sm" />
         </button>
       </div>

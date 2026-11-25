@@ -214,7 +214,7 @@ function switchDevMode() {
               href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
               target="_blank"
               rel="noreferrer noopener"
-            >licence etalab-2.0 <span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
+            >licence etalab-2.0<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>
           </p>
         </div>
       </div>

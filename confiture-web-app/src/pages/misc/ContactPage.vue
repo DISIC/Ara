@@ -23,15 +23,14 @@ const reportStore = useReportStore();
         class="fr-link"
         target="_blank"
         href="https://www.numerique.gouv.fr/dinum/"
-      >direction interministérielle du numérique (DINUM)<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>, avec le soutien du
+      >direction interministérielle du numérique (DINUM)<span class="fr-sr-only">&nbsp;(nouvelle fenêtre)</span></a>,
+      avec le soutien du
       <a
         class="fr-link"
         href="https://www.fiphfp.fr/"
         target="_blank"
-      >FIPHFP<span class="fr-sr-only">
-        &nbsp;Fonds pour l’insertion des personnes handicapées dans la
-        Fonction publique (nouvelle fenêtre)
-      </span></a>.
+      >FIPHFP<span class="fr-sr-only">&nbsp;Fonds pour l’insertion des personnes
+        handicapées dans la Fonction publique (nouvelle fenêtre)</span></a>.
     </p>
     <p :class="{ 'fr-mb-5w': !reportStore.data }">
       Contactez-nous par e-mail&nbsp;:

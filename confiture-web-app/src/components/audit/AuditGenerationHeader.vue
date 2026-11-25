@@ -246,11 +246,8 @@ onMounted(() => {
   </div>
 
   <h1 class="fr-mb-3v">
-    Audit
-    <span class="fr-sr-only">
-      Ara enregistre automatiquement vos saisies. Vous serez alerté en cas de
-      problème lié à l’enregistrement
-    </span>
+    Audit<span class="fr-sr-only">&nbsp;Ara enregistre automatiquement vos saisies.
+      Vous serez alerté en cas de problème lié à l’enregistrement.</span>
   </h1>
   <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
 

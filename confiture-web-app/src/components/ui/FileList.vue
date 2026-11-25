@@ -234,8 +234,8 @@ function getDeleteModalCancelLabel(flFile: FileListFile) {
 
 function getDeleteModalConfirmLabel(flFile: FileListFile) {
   return isImage(flFile) ?
-    `Supprimer l’image<span class="fr-sr-only"> ${getFileName(flFile)}</span>`
-    : `Supprimer le fichier<span class="fr-sr-only"> ${getFileName(flFile)}</span>`;
+    `Supprimer l’image<span class="fr-sr-only">&nbsp;${getFileName(flFile)}</span>`
+    : `Supprimer le fichier<span class="fr-sr-only">&nbsp;${getFileName(flFile)}</span>`;
 };
 
 function getElementToFocusAfterDelete(range: number): HTMLElement | null {
@@ -319,8 +319,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 :disabled="isOffline ? true : undefined"
                 target="_blank"
               >
-                Voir
-                <span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
+                Voir<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
@@ -331,8 +330,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 :disabled="isOffline ? true : undefined"
                 :title="`Télécharger ${getFullFileName(file)}`"
               >
-                Télécharger
-                <span class="sr-only">&nbsp;{{ getFullFileName(file) }}</span>
+                Télécharger<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }}</span>
               </a>
             </li>
             <li v-if="!readonly">
@@ -346,8 +344,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 @click="handleFileDelete(
                   file, i, $event.target as HTMLButtonElement)"
               >
-                Supprimer
-                <span class="sr-only">{{ getFullFileName(file) }}</span>
+                Supprimer<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }}</span>
               </button>
             </li>
           </ul>
