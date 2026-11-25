@@ -210,17 +210,38 @@ const steps = computed(() => [
 const stepHeadingRef = ref<HTMLHeadingElement>();
 
 // Default pages per audit type
-const fullDefaultPages = [
-  { name: "Accueil", url: "" },
-  { name: "Contact", url: "" },
-  { name: "Mentions légales", url: "" },
-  { name: "Accessibilité", url: "" },
-  { name: "Plan du site", url: "" },
-  { name: "Aide", url: "" },
-  { name: "Authentification", url: "" }
-];
+const fullDefaultPages = {
+  [AuditReference.RGAA_4]: [
+    { name: "Accueil", url: "" },
+    { name: "Contact", url: "" },
+    { name: "Mentions légales", url: "" },
+    { name: "Accessibilité", url: "" },
+    { name: "Plan du site", url: "" },
+    { name: "Aide", url: "" },
+    { name: "Authentification", url: "" }
+  ],
+  [AuditReference.RGAA_5_Web]: [
+    { name: "Accueil", url: "" },
+    { name: "Contact", url: "" },
+    { name: "Accessibilité", url: "" },
+    { name: "Plan du site", url: "" },
+    { name: "Aide", url: "" },
+    { name: "Authentification", url: "" }
+  ],
+  [AuditReference.RGAA_5_Mobile]: [
+    { name: "Accueil", url: "" },
+    { name: "Contact", url: "" },
+    { name: "Mentions légales", url: "" },
+    { name: "Accessibilité", url: "" },
+    { name: "Aide", url: "" },
+    { name: "Authentification", url: "" },
+    { name: "Plan du service", url: "" },
+    { name: "Recherche", url: "" }
+  ],
+  [AuditReference.RGAA_5_Document]: [{ name: "", url: "" }]
+};
 
-const fastAndComplementaryDefaultPages = [{ name: "Accueil", url: "" }];
+const fastAndComplementaryDefaultPages = [{ name: "", url: "" }];
 
 // Update default pages except if pages has been changed by user
 const pagesArePristine = ref(true);
@@ -238,7 +259,9 @@ watch(auditType, (newValue) => {
   }
 
   if (newValue === AuditType.FULL && pagesArePristine.value) {
-    audit.value.pages = [...fullDefaultPages];
+    audit.value.pages = [
+      ...fullDefaultPages[audit.value.auditReference || AuditReference.RGAA_4]
+    ];
   }
 });
 
