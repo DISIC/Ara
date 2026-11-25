@@ -26,7 +26,7 @@
 <p class="mention">Fonctionnalités identifiées et intégrées à la feuille de route.</p>
 
 - **Export vers outils de ticketing**
-  _ Permettre de créer des tickets depuis le rapport vers les outils de ticketing.
+  - Permettre de créer des tickets depuis le rapport vers les outils de ticketing.
 - **Export des livrables**
   - Permettre l'export de la grille d’audit et du rapport.
 - **Audit par « non-conformités »**
