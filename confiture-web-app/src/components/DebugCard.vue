@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { useNotifications } from "../composables/useNotifications";
 import router from "../router";
 import { useAccountStore, useDebugStore } from "../store";
-import { AuditType, CreateDebugAuditRequestData } from "../types";
+import { AuditReference, AuditType, CreateDebugAuditRequestData } from "../types";
 import { getCriteriaCount } from "../utils";
 import DsfrField from "./ui/DsfrField.vue";
 
@@ -89,7 +89,7 @@ async function createDebugAudit(isCustom: boolean = false) {
                   type="radio"
                   name="debug-audit-type"
                 >
-                <label class="fr-label" :for="`debug-audit-type-${auditType}`">{{ getCriteriaCount(auditType) }} critères</label>
+                <label class="fr-label" :for="`debug-audit-type-${auditType}`">{{ getCriteriaCount(auditType, AuditReference.RGAA_4) }} critères</label>
               </div>
             </div>
           </fieldset>

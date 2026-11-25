@@ -163,12 +163,13 @@ const currentProcedureName = procedureName.value;
         :checked="auditType === type.value"
         :goals="type.goals"
         :documentation-link="type.documentation"
+        :audit-reference="audit.auditReference"
         @update:model-value="onChange"
       />
     </div>
 
     <h2 class="fr-h4">Échantillon des pages à auditer</h2>
-    <PagesSample ref="pagesSampleRef" v-model="pages" class="fr-mb-3w" />
+    <PagesSample ref="pagesSampleRef" v-model="pages" class="fr-mb-3w" :audit-reference="audit.auditReference" />
 
     <div class="fr-mb-6w add-page-button-wrapper">
       <button
