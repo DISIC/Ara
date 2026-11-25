@@ -15,7 +15,15 @@ export class ResultsService {
     uniqueId: string,
     slug: string
   ): Promise<ResultResponseDto[]> {
-    throw "todo"
+    return await this.prisma.criterionResult.findMany({
+      where: {
+        page: {
+          auditUniqueId: uniqueId,
+          slug
+        }
+      },
+      include: { exampleImages: true }
+    });
   }
 
   async updateResult(
