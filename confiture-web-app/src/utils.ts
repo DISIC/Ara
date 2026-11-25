@@ -86,17 +86,17 @@ const CRITERIA_COUNT: Record<AuditReference, Record<AuditType, number>> = {
     [AuditType.FULL]: 106
   },
   [AuditReference.RGAA_5_Web]: {
-    [AuditType.FAST]: 25, // TODO
+    [AuditType.FAST]: 35,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
     [AuditType.FULL]: 142
   },
   [AuditReference.RGAA_5_Mobile]: {
-    [AuditType.FAST]: 25, // TODO
+    [AuditType.FAST]: 29,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
     [AuditType.FULL]: 142 // TODO
   },
   [AuditReference.RGAA_5_Document]: {
-    [AuditType.FAST]: 25, // TODO
+    [AuditType.FAST]: 10,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
     [AuditType.FULL]: 142 // TODO
   }

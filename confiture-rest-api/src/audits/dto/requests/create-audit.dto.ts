@@ -70,6 +70,27 @@ class PageElements {
 
   @IsBoolean()
   frame: boolean;
+
+  @IsBoolean()
+  images: boolean;
+
+  @IsBoolean()
+  documentation: boolean;
+
+  @IsBoolean()
+  outils: boolean;
+
+  @IsBoolean()
+  authentification: boolean;
+
+  @IsBoolean()
+  communication: boolean;
+
+  @IsBoolean()
+  services: boolean;
+
+  @IsBoolean()
+  liens: boolean;
 }
 
 export class CreateAuditDto extends BaseAuditDto {

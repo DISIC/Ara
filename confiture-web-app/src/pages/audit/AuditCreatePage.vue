@@ -86,9 +86,84 @@ interface CreateAuditFormData {
     table: boolean;
     form: boolean;
     frame: boolean;
+    images: boolean;
+    documentation: boolean;
+    outils: boolean;
+    authentification: boolean;
+    communication: boolean;
+    services: boolean;
+    liens: boolean;
   };
   auditorEmail: string;
   auditorName: string;
+}
+
+function getPageElementsRgaa(auditReference: AuditReference | null) {
+  if (auditReference === AuditReference.RGAA_5_Web) {
+    return {
+      multimedia: true,
+      table: true,
+      form: true,
+      frame: true,
+      images: true,
+      documentation: true,
+      outils: true,
+      authentification: true,
+      communication: true,
+      services: false,
+      liens: false,
+      couleurs: false
+    };
+  }
+
+  if (auditReference === AuditReference.RGAA_5_Mobile) {
+    return {
+      multimedia: true,
+      table: true,
+      form: true,
+      frame: false,
+      images: true,
+      documentation: true,
+      outils: true,
+      authentification: false,
+      communication: true,
+      services: true,
+      liens: false,
+      couleurs: false
+    };
+  }
+
+  if (auditReference === AuditReference.RGAA_5_Document) {
+    return {
+      multimedia: true,
+      table: true,
+      form: true,
+      frame: true,
+      images: true,
+      documentation: false,
+      outils: true,
+      authentification: false,
+      communication: false,
+      services: false,
+      liens: true,
+      couleurs: true
+    };
+  }
+
+  return {
+    multimedia: true,
+    table: true,
+    form: true,
+    frame: true,
+    images: true,
+    documentation: false,
+    outils: false,
+    authentification: false,
+    communication: false,
+    services: false,
+    liens: false,
+    couleurs: false
+  };
 }
 
 // Setup audit object
@@ -97,10 +172,17 @@ const audit = ref<CreateAuditFormData>({
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
-  pageElements: { multimedia: true, table: true, form: true, frame: true },
+  pageElements: getPageElementsRgaa(null),
   auditorEmail: accountStore.account?.email ?? "",
   auditorName: accountStore.account?.name ?? ""
 });
+
+watch(
+  () => audit.value.auditReference,
+  (ref) => {
+    audit.value.pageElements = getPageElementsRgaa(ref);
+  }
+);
 
 const stepEchantillonLabel = computed(() => {
   if (audit.value.auditReference === AuditReference.RGAA_5_Mobile) {
@@ -295,7 +377,7 @@ function setTopicAccordionStatus(
   <div class="content">
     <h1 class="fr-mb-6w">Paramétrer un audit</h1>
     <div class="fr-stepper fr-mb-12v">
-      <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h2">
+      <h2 ref="stepHeadingRef" tabindex="-1" class="fr-stepper__title fr-h3">
         {{ steps[currentStep] }}
         <span class="fr-stepper__state">
           Étape {{ currentStep + 1 }} sur {{ steps.length }}
@@ -339,6 +421,7 @@ function setTopicAccordionStatus(
     <NewAuditElements
       v-else-if="currentStep === 3"
       :page-elements="audit.pageElements!"
+      :audit-reference="audit.auditReference"
       @previous="goToPreviousStep"
       @submit="submitStep"
     />
