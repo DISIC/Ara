@@ -5,6 +5,7 @@ import { ExportsModule } from "./exports/exports.module";
 import { NotFoundErrorInterceptor } from "./not-found-error.interceptor";
 import { NotesModule } from "./notes/notes.module";
 import { PagesModule } from "./pages/pages.module";
+import { ResultsModule } from "./results/results.module";
 import { StatementsModule } from "./statements/statements.module";
 
 @Module({
@@ -13,7 +14,8 @@ import { StatementsModule } from "./statements/statements.module";
     PagesModule,
     StatementsModule,
     ExportsModule,
-    NotesModule
+    NotesModule,
+    ResultsModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,
