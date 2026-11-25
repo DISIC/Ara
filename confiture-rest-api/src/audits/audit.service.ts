@@ -1680,7 +1680,7 @@ export class AuditService {
         ...(originalAudit.auditorEmail && {
           auditor: {
             connect: {
-              // FIXME: shouldnt the new audit be under the user who duplicated the audit ?
+              // FIXME: shouldnt the new audit be under the user who duplicated the audit?
               username: originalAudit.auditorEmail.toLowerCase()
             }
           }

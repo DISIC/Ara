@@ -100,12 +100,12 @@ async function handleSubmit() {
         ref="emailField"
         v-model="userEmail"
         label="Adresse e-mail"
-        hint="Format attendu : nom@domaine.fr"
+        hint="Format attendu&nbsp;: nom@domaine.fr"
         type="email"
         required
         autocomplete="email"
         :validation="[REQUIRED('Champ obligatoire. Saisissez votre adresse e-mail.'),
-                      EMAIL('Format incorrect. Utilisez le format : nom@domaine.fr.')]"
+                      EMAIL('Format incorrect. Utilisez le format\u00A0: nom@domaine.fr.')]"
       />
 
       <DsfrPasswordWithValidation
@@ -127,7 +127,7 @@ async function handleSubmit() {
     <div>
       <hr class="fr-mt-3w" />
 
-      <h2 class="fr-h5">Vous n’avez pas de compte ?</h2>
+      <h2 class="fr-h5">Vous n’avez pas de compte&#8239;?</h2>
 
       <div class="fr-btns-group fr-mb-3w">
         <RouterLink

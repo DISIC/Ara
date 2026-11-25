@@ -117,7 +117,7 @@ const router = createRouter({
       name: "transverseDoc",
       component: TransverseDocPage,
       meta: {
-        name: "Comment utiliser l’onglet « Éléments transverses » ?"
+        name: "Comment utiliser l’onglet «\u00A0Éléments transverses\u00A0»\u202F?"
       }
     },
     // Account pages
@@ -263,7 +263,7 @@ const router = createRouter({
     },
     // Report pages
     {
-      path: "/rapport/:uniqueId/",
+      path: "/rapport/:uniqueId",
       name: "report",
       redirect: (to: any) => {
         return {

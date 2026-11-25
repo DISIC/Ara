@@ -96,7 +96,7 @@ const requirementClass = computed(() => {
         class="fr-messages-group"
         aria-live="assertive"
       >
-        <p class="fr-message">Votre mot de passe doit contenir :</p>
+        <p class="fr-message">Votre mot de passe doit contenir&nbsp;:</p>
         <p
           v-for="requirement in requirements"
           :key="requirement"
@@ -129,7 +129,7 @@ const requirementClass = computed(() => {
         }"
         class="fr-link"
       >
-        Mot de passe oublié ?
+        Mot de passe oublié&#8239;?
       </RouterLink>
     </p>
   </div>

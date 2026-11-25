@@ -137,8 +137,7 @@ const urlValidation = [REQUIRED("Champ obligatoire. Saisissez l’URL de la page
           type="button"
           @click="deletePage(i)"
         >
-          Supprimer
-          <span class="fr-sr-only">la page {{ i + 1 }}</span>
+          Supprimer<span class="fr-sr-only">&nbsp;la page {{ i + 1 }}</span>
         </button>
 
         <div class="fr-select-group fr-mb-0">

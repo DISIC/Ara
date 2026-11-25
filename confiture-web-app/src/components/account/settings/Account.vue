@@ -17,7 +17,7 @@ const accountStore = useAccountStore();
 const notify = useNotifications();
 
 const VALIDATION_STRING = "je confirme vouloir supprimer mon compte";
-const confirmPhraseValidation = [REQUIRED(`Champ obligatoire. Saisissez la phrase « ${VALIDATION_STRING} ».`), EQUAL(VALIDATION_STRING, "Saisie incorrecte. Vérifiez votre saisie.")];
+const confirmPhraseValidation = [REQUIRED(`Champ obligatoire. Saisissez la phrase «\u00A0${VALIDATION_STRING}\u00A0».`), EQUAL(VALIDATION_STRING, "Saisie incorrecte. Vérifiez votre saisie.")];
 const confirmPhrase = ref("");
 
 const passwordField = useTemplateRef("password-field");
@@ -76,7 +76,7 @@ async function hideAccountDeletionForm() {
         v-model="confirmPhrase"
         type="text"
         required
-        :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte : ${VALIDATION_STRING}`"
+        :label="`Saisissez la phrase suivante pour confirmer la suppression de votre compte&nbsp;: ${VALIDATION_STRING}`"
         hint="N’utilisez pas de majuscules, ni d’espace au début ou à la fin de votre saisie."
         :validation="confirmPhraseValidation"
       />

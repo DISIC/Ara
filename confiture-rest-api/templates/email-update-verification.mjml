@@ -17,7 +17,7 @@
           Confirmer votre nouvelle adresse e-mail
         </mj-text>
         <mj-text padding-bottom="24px">
-          Pour finaliser le changement de votre adresse e-mail, cliquez sur le bouton ci-dessous :
+          Pour finaliser le changement de votre adresse e-mail, cliquez sur le bouton ci-dessous&nbsp;:
         </mj-text>
         <mj-button href="{{verificationLink}}" mj-class="blue-button"
           >Valider mon adresse e-mail</mj-button

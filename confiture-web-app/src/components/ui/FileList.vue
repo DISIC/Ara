@@ -201,7 +201,7 @@ function getFileName(flFile: FileListFile) {
 function getFileDetails(flFile: FileListFile) {
   const name = flFile.filename;
   const extension = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
-  return extension + " – " + formatBytes(flFile.size);
+  return extension + "\u00A0–\u00A0" + formatBytes(flFile.size);
 }
 
 function getFullFileName(flFile: FileListFile) {
@@ -216,8 +216,8 @@ function isViewable(flFile: FileListFile) {
 
 function getDeleteModalTitle(flFile: FileListFile) {
   return isImage(flFile)
-    ? `Supprimer l’image « ${flFile.filename} » ?`
-    : `Supprimer le fichier ?`;
+    ? `Supprimer l’image «\u00A0${flFile.filename}\u00A0»\u202F?`
+    : `Supprimer le fichier\u202F?`;
 };
 
 function getDeleteModalMessage(flFile: FileListFile) {
@@ -234,8 +234,8 @@ function getDeleteModalCancelLabel(flFile: FileListFile) {
 
 function getDeleteModalConfirmLabel(flFile: FileListFile) {
   return isImage(flFile) ?
-    `Supprimer l’image<span class="fr-sr-only"> ${getFileName(flFile)}</span>`
-    : `Supprimer le fichier<span class="fr-sr-only"> ${getFileName(flFile)}</span>`;
+    `Supprimer l’image<span class="fr-sr-only">&nbsp;${getFileName(flFile)}</span>`
+    : `Supprimer le fichier<span class="fr-sr-only">&nbsp;${getFileName(flFile)}</span>`;
 };
 
 function getElementToFocusAfterDelete(range: number): HTMLElement | null {
@@ -319,8 +319,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 :disabled="isOffline ? true : undefined"
                 target="_blank"
               >
-                Voir
-                <span class="fr-sr-only">{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
+                Voir<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }} (nouvelle fenêtre)</span>
               </a>
             </li>
             <li>
@@ -331,8 +330,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 :disabled="isOffline ? true : undefined"
                 :title="`Télécharger ${getFullFileName(file)}`"
               >
-                Télécharger
-                <span class="sr-only">{{ getFullFileName(file) }}</span>
+                Télécharger<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }}</span>
               </a>
             </li>
             <li v-if="!readonly">
@@ -346,15 +344,14 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                 @click="handleFileDelete(
                   file, i, $event.target as HTMLButtonElement)"
               >
-                Supprimer
-                <span class="sr-only">{{ getFullFileName(file) }}</span>
+                Supprimer<span class="fr-sr-only">&nbsp;{{ getFullFileName(file) }}</span>
               </button>
             </li>
           </ul>
           <Transition name="inline-confirm">
             <form v-if="inlineConfirmPendingRange === i" class="inline-confirm">
               <fieldset class="fr-fieldset fr-mb-0">
-                <legend class="fr-fieldset__legend fr-text--lg" v-html="getDeleteModalTitle(file)"></legend>
+                <legend class="fr-fieldset__legend fr-text--lg">{{ getDeleteModalTitle(file) }}</legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
                   <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline fr-btns-group--inline-sm fr-btns-group--icon-left">
                     <button
@@ -363,7 +360,7 @@ function getElementToFocusAfterDelete(range: number): HTMLElement | null {
                       type="button"
                       @click="inlineDeleteCancel(i)"
                     >
-                      Annuler<span class="fr-sr-only"> la suppression de {{ getFullFileName(file) }}</span>
+                      Annuler<span class="fr-sr-only">&nbsp;la suppression de {{ getFullFileName(file) }}</span>
                     </button>
                     <button
                       class="fr-btn"

@@ -235,7 +235,7 @@ const errorId = "error-" + uniqueId;
             :validation="platformValidation"
             class="fr-m-0"
             label="Appareil"
-            hint="Exemples : mobile, borne interactive"
+            hint="Exemples&nbsp;: mobile, borne interactive"
             type="text"
             :required="customEnvironments.length > 1"
           />
@@ -246,7 +246,7 @@ const errorId = "error-" + uniqueId;
             :validation="osValidation"
             class="fr-m-0"
             label="Logiciel d’exploitation"
-            hint="Exemple : macOS"
+            hint="Exemple&nbsp;: macOS"
             type="text"
             :required="customEnvironments.length > 1"
           />
@@ -257,7 +257,7 @@ const errorId = "error-" + uniqueId;
             :validation="atValidation"
             class="fr-m-0"
             label="Technologie d’assistance"
-            hint="Exemple : VoiceOver"
+            hint="Exemple&nbsp;: VoiceOver"
             type="text"
             :required="customEnvironments.length > 1"
           />
@@ -267,7 +267,7 @@ const errorId = "error-" + uniqueId;
             v-model="env.browser"
             :validation="browserValidation"
             label="Navigateur"
-            hint="Exemple : Safari"
+            hint="Exemple&nbsp;: Safari"
             type="text"
             :required="customEnvironments.length > 1"
           />

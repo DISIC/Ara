@@ -17,7 +17,7 @@
           Confirmer votre adresse e-mail
         </mj-text>
         <mj-text padding-bottom="24px">
-          Pour finaliser la création de votre compte, cliquez sur le bouton ci-dessous :
+          Pour finaliser la création de votre compte, cliquez sur le bouton ci-dessous&nbsp;:
         </mj-text>
         <mj-button href="{{verificationLink}}" mj-class="blue-button">Valider mon adresse e-mail</mj-button>
         <mj-text align="center" font-weight="700" padding-bottom="24px">

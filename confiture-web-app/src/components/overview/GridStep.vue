@@ -76,8 +76,8 @@ const csvExportSizeEstimation = computed(() => {
         id="audit-grid-step-download-informations"
         class="fr-text--xs fr-mb-0 fr-mt-1v"
       >
-        Contient seulement les résultats des critères.<br />CSV –
-        {{ formatBytes(csvExportSizeEstimation, 2) }}.
+        Contient seulement les résultats des critères.
+        <br />CSV –&nbsp;{{ formatBytes(csvExportSizeEstimation, 2) }}.
       </p>
     </div>
   </StepCard>

@@ -8,38 +8,38 @@ Le statut final d’un critère est déterminé en calculant le résultat de l�
 
 ### Critères applicables
 
-Un critère est applicable si :
+Un critère est applicable si&nbsp;:
 
 - il est conforme ou non-conforme sur au moins une page ou sur les éléments transverses.
 
 ### Critères non-applicables
 
-Un critère est non-applicable si :
+Un critère est non-applicable si&nbsp;:
 
 - il est non-applicable sur l’ensemble des pages et sur les éléments transverses testés.
 
 ### Critères conformes
 
-Un critère est conforme si :
+Un critère est conforme si&nbsp;:
 
 - il est conforme ou non-applicable sur l’ensemble des pages et sur les éléments transverses testés.
 - il est conforme sur au moins une page ou sur les éléments transverses testés.
 
 ### Critères non-conformes
 
-Un critère est non-conforme si :
+Un critère est non-conforme si&nbsp;:
 
 - il est non-conforme sur au moins une page ou sur les éléments transverses.
 
 ## Taux de conformité d’un audit
 
-Le taux de conformité d’un audit se fait selon le calcul suivant :
+Le taux de conformité d’un audit se fait selon le calcul suivant&nbsp;:
 
 ```
 Taux de conformité = (Nombre de critères conformes / Nombre de critères applicables) * 100
 ```
 
-Exemple avec 89 critères applicables et 27 critères conformes :
+Exemple avec 89 critères applicables et 27 critères conformes&nbsp;:
 
 ```
 Taux de conformité = (27 / 89) * 100 = 30,34%
@@ -47,7 +47,7 @@ Taux de conformité = (27 / 89) * 100 = 30,34%
 
 ## Statut d’un audit
 
-Un audit est considéré...
+Un audit est considéré…
 
 - **En cours** si tous les critères ne sont pas testés (hors éléments transverses).
 - **Terminé** si tous les critères sont testés (hors éléments transverses) et qu’il a une date de publication.
@@ -57,19 +57,19 @@ Un audit est considéré...
 
 ### Création de l'audit
 
-Date à laquelle le paramétrage initial de l’audit est validé :
+Date à laquelle le paramétrage initial de l’audit est validé&nbsp;:
 
 - Soumission du formulaire de paramétrage d'un audit.
 
 ### Publication de l'audit
 
-Date à laquelle le dernier critère d'un audit est évalué :
+Date à laquelle le dernier critère d'un audit est évalué&nbsp;:
 
 - Évaluation (C, NC ou NA) du dernier critère "Non testé" d'un audit.
 
 ### Modification de l'audit
 
-Date à laquelle un audit terminé est modifié :
+Date à laquelle un audit terminé est modifié&nbsp;:
 
 - Soumission du formulaire de paramétrage d'un audit.
 - Modification du statut, commentaire d'un critère d'un audit.
@@ -78,13 +78,13 @@ Date à laquelle un audit terminé est modifié :
 
 ### Publication de la déclaration d'accessibilité
 
-Date à laquelle la déclaration d'accessibilité est publiée pour la première fois :
+Date à laquelle la déclaration d'accessibilité est publiée pour la première fois&nbsp;:
 
 - Soumission du formulaire de déclaration d'accessibilité.
 
 ### Modification de la déclaration d'accessibilité
 
-Date à laquelle une déclaration d'accessibilité déjà publiée est modifiée :
+Date à laquelle une déclaration d'accessibilité déjà publiée est modifiée&nbsp;:
 
 - Lors de la soumission du formulaire de déclaration d'accessibilité.
-- Lors de la mise à jour de l'audit (paramètres, statut d'un critère...).
+- Lors de la mise à jour de l'audit (paramètres, statut d'un critère…).

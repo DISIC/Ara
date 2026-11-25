@@ -54,7 +54,7 @@ describe("Editor", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get("#notes-modal .tiptap").type("Copier coller de Markdown :{enter}");
+      cy.get("#notes-modal .tiptap").type("Copier coller de Markdown\u00A0:{enter}");
       cy.get("#notes-modal .tiptap").pasteText("../fixtures/mdContent.md");
       cy.get("#notes-modal .tiptap strong").should("exist");
       cy.get("#notes-modal .tiptap img").should("not.exist");
@@ -68,7 +68,7 @@ describe("Editor", () => {
       cy.get(".notes-desktop-link")
         .contains("button", "Ajouter des observations")
         .click();
-      cy.get("#notes-modal .tiptap").type("Copier coller de texte HTML :{enter}");
+      cy.get("#notes-modal .tiptap").type("Copier coller de texte HTML\u00A0:{enter}");
       cy.get("#notes-modal .tiptap").pasteText("../fixtures/notMDContent.txt");
       cy.get("#notes-modal .tiptap strong").should("not.exist");
       cy.get("#notes-modal .tiptap img").should("not.exist");

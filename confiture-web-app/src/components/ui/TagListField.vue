@@ -98,7 +98,7 @@ const listId = useId();
         class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line fr-mt-1w"
         @click="addTags"
       >
-        Ajouter <span class="fr-sr-only">{{ addLabel }}</span>
+        Ajouter<span class="fr-sr-only">&nbsp;{{ addLabel }}</span>
       </button>
     </template>
   </DsfrField>
@@ -110,7 +110,7 @@ const listId = useId();
         type="button"
         @click="removeTag(i)"
       >
-        <span class="fr-sr-only">Retirer</span>
+        <span class="fr-sr-only">Retirer&nbsp;</span>
         {{ tag }}
       </button>
     </li>

@@ -64,7 +64,7 @@ function handleClose() {
                 <h1 :id="`duplicate-modal-title-${id}`" class="fr-modal__title">
                   Dupliquer l’audit
                   <template v-if="originalAuditName">
-                    « {{ originalAuditName }} »
+                    «&nbsp;{{ originalAuditName }}&nbsp;»
                   </template>
                 </h1>
                 <p class="fr-text--sm fr-mb-2w">
@@ -75,7 +75,7 @@ function handleClose() {
                   ref="duplicateAuditNameRef"
                   v-model="duplicateAuditName"
                   label="Nom de la copie"
-                  :hint="`Exemple : contre-audit ${
+                  :hint="`Exemple&nbsp;: contre-audit ${
                     originalAuditName ?? 'site DesignGouv'
                   }`"
                   type="text"

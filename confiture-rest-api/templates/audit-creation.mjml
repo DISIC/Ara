@@ -1,9 +1,9 @@
 <mjml>
   <mj-head>
-    <mj-title>Accéder à l’audit « {{ procedureName }} »</mj-title>
+    <mj-title>Accéder à l’audit «&nbsp;{{ procedureName }}&nbsp;»</mj-title>
     <mj-include path="./styles.mjml" />
     <mj-attributes>
-      <mj-preview>Accéder à l’audit « {{ procedureName }} »</mj-preview>
+      <mj-preview>Accéder à l’audit «&nbsp;{{ procedureName }}&nbsp;»</mj-preview>
     </mj-attributes>
   </mj-head>
   <mj-body>
@@ -18,11 +18,10 @@
           déclaration{{else}}Accéder à votre audit et rapport{{/if}}
         </mj-text>
         <mj-text padding-bottom="12px">
-          Vous venez de créer l’audit «
-          <strong>{{ procedureName }}</strong> ». {{#if is106Criteria}}Pour
+          Vous venez de créer l’audit «&nbsp;<strong>{{ procedureName }}</strong>&nbsp;». {{#if is106Criteria}}Pour
           accéder à votre audit, rapport d’audit et déclaration d’accessibilité,
-          utilisez le lien ci-dessous :{{else}}Pour accéder à votre audit et
-          rapport d’audit, utilisez le lien ci-dessous :{{/if}}
+          utilisez le lien ci-dessous&nbsp;:{{else}}Pour accéder à votre audit et
+          rapport d’audit, utilisez le lien ci-dessous&nbsp;:{{/if}}
         </mj-text>
       </mj-column>
     </mj-section>
@@ -41,8 +40,8 @@
 
     <mj-section>
       <mj-column>
-        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara ?</mj-text>
-        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit : <br/><a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
+        <mj-text font-size="16px" font-weight="700" padding-top="32px" padding-bottom="12px">Vous ne possédez pas encore de compte Ara&#8239;?</mj-text>
+        <mj-text>Créez votre compte pour retrouver facilement tous vos audits au même endroit&nbsp;: <br/><a href="https://ara.numerique.gouv.fr/compte/nouveau" style="color: #000091">Créer un compte Ara</a></mj-text>
       </mj-column>
     </mj-section>
 

@@ -37,9 +37,7 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
       }
     ]"
   >
-    <span :class="['audit-progress-label', { 'fr-sr-only': inline }]">
-      {{ label }}
-    </span>
+    <span :class="['audit-progress-label', { 'fr-sr-only': inline }]">{{ label }}&nbsp;</span>
     <template v-if="tooltipLabel && $slots['tooltip-content']">
       <button
         class="fr-btn--tooltip fr-btn"
@@ -64,9 +62,7 @@ const progressBarSize = computed(() => `${props.size / 16}rem`);
           'fr-text--xs': !inline
         }
       ]"
-    >
-      {{ progressPercentage }} %
-    </span>
+    >{{ progressPercentage }}&nbsp;%</span>
     <div class="audit-progress-bar" />
   </div>
 </template>
