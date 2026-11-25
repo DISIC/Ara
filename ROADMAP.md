@@ -33,5 +33,5 @@
   - Introduire la possibilité de relever directement les non-conformités au fil de l’analyse, sans suivre obligatoirement la liste des critères. L'audit « par critère » restera disponible.
 - **Recherche et organisation des audits**
   - Amélioration de la recherche et du filtrage dans la page « Mes audits ».
-* **Collaboration multi-auditeurices**
-  * Permettre à plusieurs auditeurices de travailler simultanément sur un même audit.
+- **Collaboration multi-auditeurices**
+  - Permettre à plusieurs auditeurices de travailler simultanément sur un même audit.
