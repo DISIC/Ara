@@ -1,36 +1,41 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma.service";
-import { ResultsResponseDto } from "./dto/results-response.dto";
+import { ResultResponseDto } from "./dto/result-response.dto";
+import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
 
 @Injectable()
 export class ResultsService {
-  constructor(
-    private readonly prisma: PrismaService
-  ) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   //
   // CRUD methods
   //
 
-  async getResults(uniqueId: string, slug: string): Promise<ResultsResponseDto> {
-    const results = await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          auditUniqueId: uniqueId,
-          slug
-        }
-      },
-      include: { exampleImages: true }
-    });
+  async getResults(
+    uniqueId: string,
+    slug: string
+  ): Promise<ResultResponseDto[]> {
+    throw "todo"
+  }
 
-    return { data: results };
+  async updateResult(
+    uniqueId: string,
+    slug: string,
+    topic: number,
+    criterion: number,
+    data: UpdateResultRequestDto
+  ): Promise<ResultResponseDto> {
+    throw "todo";
   }
 
   //
   // Action methods
   //
 
-  async prefillNotApplicableTopics(_auditUniqueId: string, _notApplicableTopics: number[]) {
+  async prefillNotApplicableTopics(
+    _auditUniqueId: string,
+    _notApplicableTopics: number[]
+  ) {
     // TODO: implement this
     return;
   }

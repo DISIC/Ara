@@ -1,13 +1,30 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { ClassSerializerInterceptor, Controller, Get, Param, SerializeOptions, UseInterceptors } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
-import { ResultsResponseDto } from "./dto/results-response.dto";
+import { ResultResponseDto } from "./dto/result-response.dto";
+import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
 import { ResultsService } from "./results.service";
+import { UpdateResultParams } from "./update-result.params";
+
+export const CRITERION_REGEXP = /^\d+.\d+$/;
+
+function formattedCriterionParams(criterionString: string): { topic: number; criterion: number } {
+  if (!CRITERION_REGEXP.test(criterionString)) {
+    throw new Error(`Cannot parse string "${criterionString}" as reference criterion`);
+  }
+
+  const [topic, criterion] = criterionString.split(".").map(Number);
+
+  return {
+    topic,
+    criterion
+  };
+}
 
 @UseInterceptors(ClassSerializerInterceptor)
-@SerializeOptions({ type: ResultsResponseDto, excludeExtraneousValues: true })
+@SerializeOptions({ type: ResultResponseDto, excludeExtraneousValues: true })
 @Controller("/audits/:uniqueId/pages/:slug/results")
 export class ResultsController {
   constructor(
@@ -24,8 +41,19 @@ export class ResultsController {
     @Param("uniqueId") uniqueId: string,
     @Param("slug") slug: string,
     @CurrentUser() user: User
-  ): Promise<ResultsResponseDto> {
+  ): Promise<ResultResponseDto[]> {
     await this.authorizationService.authorize(AuditPolicy, "read", user);
     return this.resultsService.getResults(uniqueId, slug);
+  }
+
+  @Patch(":criterion")
+  async updateResult(
+    @Param() { uniqueId, slug, criterion }: UpdateResultParams,
+    @CurrentUser() user: User,
+    @Body() body: UpdateResultRequestDto
+  ): Promise<ResultResponseDto> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    const { criterion: formattedCriterion, topic } = formattedCriterionParams(criterion);
+    return this.resultsService.updateResult(uniqueId, slug, topic, formattedCriterion, body);
   }
 }

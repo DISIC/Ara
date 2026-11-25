@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 
 class TestEnvironmentDto {
   @Expose()
@@ -37,6 +37,7 @@ export class StatementResponseDto {
   tools: string[];
 
   @Expose()
+  @Type(() => TestEnvironmentDto)
   environments: TestEnvironmentDto[];
 
   @Expose()
