@@ -155,7 +155,7 @@ async function transferAudit(newEmail: string) {
           v-if="audit.auditType"
           class="fr-badge fr-badge--info fr-badge--no-icon"
         >
-          {{ getCriteriaCount(audit.auditType) }}
+          {{ getCriteriaCount(audit.auditType, audit.auditReference) }}
           critères
         </p>
       </h2>
