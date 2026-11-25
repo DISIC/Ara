@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-irregular-whitespace -->
 <script lang="ts" setup>
 import { ref } from "vue";
 

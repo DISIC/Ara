@@ -20,7 +20,6 @@ export default antfu({
       "dot-notation": "off", // TODO Check this rule
       "eqeqeq": "off", // TODO Check this rule
       "import/consistent-type-specifier-style": "off", // TODO Check this rule
-      "no-irregular-whitespace": "off",
       "no-throw-literal": "off", // TODO Check this rule
       "no-undef-init": "off", // TODO Check this rule
       "no-unneeded-ternary": "off", // TODO Check this rule
@@ -163,15 +162,7 @@ export default antfu({
       "vue/padding-line-between-blocks": "off", // TODO Check this rule
       "vue/prefer-separate-static-class": "off", // TODO Check this rule
       "vue/prefer-template": "off", // TODO Check this rule
-      "vue/singleline-html-element-content-newline": "off", // TODO Check this rule
-      "vue/no-irregular-whitespace": ["error", {
-        skipStrings: false,
-        skipComments: true,
-        skipRegExps: true,
-        skipTemplates: true,
-        skipHTMLAttributeValues: true,
-        skipHTMLTextContents: true
-      }]
+      "vue/singleline-html-element-content-newline": "off" // TODO Check this rule
     }
   },
 
@@ -206,17 +197,6 @@ export default antfu({
     "regexp/prefer-d": "off", // TODO Check this rule
     "regexp/strict": "off", // TODO Check this rule
     "regexp/use-ignore-case": "off" // TODO Check this rule
-  }
-}, {
-  files: ["**/*.{js,mjs,ts}"],
-  rules: {
-    "no-irregular-whitespace": ["error", {
-      skipComments: true,
-      skipJSXText: true,
-      skipRegExps: true,
-      skipStrings: true,
-      skipTemplates: true
-    }]
   }
 }, {
   files: ["confiture-rest-api/**/*.{js,mjs,ts}"],
