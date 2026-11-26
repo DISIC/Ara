@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { AuditsModule as AuditResourcesModule } from "./audits/audits.module";
+import { ExampleImagesModule } from "./example-images/example-images.module";
 import { ExportsModule } from "./exports/exports.module";
 import { NotFoundErrorInterceptor } from "./not-found-error.interceptor";
 import { NotesModule } from "./notes/notes.module";
@@ -15,7 +16,8 @@ import { StatementsModule } from "./statements/statements.module";
     StatementsModule,
     ExportsModule,
     NotesModule,
-    ResultsModule
+    ResultsModule,
+    ExampleImagesModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,
