@@ -15,7 +15,7 @@ import {
   getAuditReference,
   getCriteriaCount,
   getRgaaVersion,
-  isConsideredNotCompliant,
+  isAuditNotCompliant,
   slugify
 } from "../../../utils";
 import AuditProgressBar from "../../audit/AuditProgressBar.vue";
@@ -142,14 +142,14 @@ defineExpose({
             isInProgress || isNotStarted
               ? null
               :
-                (isConsideredNotCompliant(props.audit.auditReference,
-                                          props.audit.blockingCount) ?
-                                            { 'fr-badge--error': true } :
-                                            {
-                                              'fr-badge--green-emeraude': audit.complianceLevel === 100,
-                                              'fr-badge--new': audit.complianceLevel >= 50,
-                                              'fr-badge--error': audit.complianceLevel < 50
-                                            })
+                (isAuditNotCompliant(props.audit.auditReference,
+                                     props.audit.blockingCount) ?
+                                       { 'fr-badge--error': true } :
+                                       {
+                                         'fr-badge--green-emeraude': audit.complianceLevel === 100,
+                                         'fr-badge--new': audit.complianceLevel >= 50,
+                                         'fr-badge--error': audit.complianceLevel < 50
+                                       })
           "
         >
           <span v-if="!isInProgress" class="fr-sr-only">Taux de conformité&nbsp;</span>
@@ -163,7 +163,7 @@ defineExpose({
           v-if="!isInProgress && !isNotStarted"
           class="fr-text--xs fr-mb-0 fr-mt-1v"
         >
-          <span v-if="isConsideredNotCompliant(props.audit.auditReference, props.audit.blockingCount)">Non conforme</span>
+          <span v-if="isAuditNotCompliant(props.audit.auditReference, props.audit.blockingCount)">Non conforme</span>
           <span v-else>{{
             audit.complianceLevel === 100
               ? "Totalement conforme"
