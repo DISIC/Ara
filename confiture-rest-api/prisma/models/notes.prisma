@@ -1,0 +1,21 @@
+/// File attached to audit notes.
+model NotesFile {
+  id               Int    @id @default(autoincrement())
+  originalFilename String
+
+  // The default mimetype set to "image/unknown" to handle existing files
+  // in the DB (before the property has been added).
+  // Originally, all files were images.
+  mimetype String @default("image/unknown")
+
+  size Int
+
+  // S3 storage key
+  key          String
+  thumbnailKey String?
+
+  audit         Audit?  @relation(fields: [auditUniqueId], references: [editUniqueId], onDelete: Cascade)
+  auditUniqueId String?
+
+  @@map("AuditFile")
+}

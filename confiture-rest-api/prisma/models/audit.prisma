@@ -1,0 +1,54 @@
+model Audit {
+  id Int @id @default(autoincrement())
+
+  // Audit creation step
+  auditType                AuditType
+  procedureName            String
+  pages                    AuditedPage[] @relation("UserPages")
+  // single page for transverse elements
+  transverseElementsPage   AuditedPage   @relation("TransversePage", fields: [transverseElementsPageId], references: [id])
+  transverseElementsPageId Int           @unique
+  auditorName              String?
+  auditorEmail             String?
+  auditor                  User?         @relation(fields: [auditorEmail], references: [username])
+  showAuditorEmailInReport Boolean       @default(false)
+  transverseElements       String[]
+
+  a11yStatement A11yStatement?
+
+  notes      String?
+  notesFiles NotesFile[]
+
+  // Misc
+  creationDate    DateTime?
+  publicationDate DateTime?
+  editionDate     DateTime?
+  editUniqueId    String     @unique
+  consultUniqueId String     @unique
+  auditTraceId    Int        @unique
+  auditTrace      AuditTrace @relation(fields: [auditTraceId], references: [id])
+
+  // Audit duplication history
+  sourceAudit   Audit?  @relation("AuditDuplicationHistory", fields: [sourceAuditId], references: [id])
+  sourceAuditId Int?
+  auditCopies   Audit[] @relation("AuditDuplicationHistory")
+
+  // As of https://github.com/DISIC/Ara/pull/662, when an audit is deleted, its
+  // data is longer editable, but the report remainn available
+  isHidden Boolean @default(false)
+
+  @@unique([editUniqueId, consultUniqueId])
+}
+
+model AuditTrace {
+  id                   Int    @id @default(autoincrement())
+  auditEditUniqueId    String @unique
+  auditConsultUniqueId String @unique
+  Audit                Audit?
+}
+
+enum AuditType {
+  FAST // 25 criteria
+  COMPLEMENTARY // 50 criteria
+  FULL // 106 criteria
+}

@@ -1,0 +1,54 @@
+model CriterionResult {
+  id Int @id @default(autoincrement())
+
+  status CriterionResultStatus @default(NOT_TESTED)
+
+  compliantComment String?
+
+  notCompliantComment String?                    @map("errorDescription") @ignore
+  userImpact          CriterionResultUserImpact? @ignore
+  exampleImages       ExampleImageFile[]
+  quickWin            Boolean                    @default(false) @ignore
+
+  notApplicableComment String?
+
+  topic     Int
+  criterium Int
+
+  // Results are linked through the page url and audit unique id.
+  pageId Int
+  page   AuditedPage @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  notCompliantItems NotCompliantItem[]
+
+  @@unique([pageId, topic, criterium])
+}
+
+/// Image file attached to specific criterium result when not compliant.
+model ExampleImageFile {
+  id               Int    @id @default(autoincrement())
+  originalFilename String
+
+  // The default mimetype set to "image/unknown" to handle existing files
+  // in the DB (before the property has been added).
+  // Originally, all files were images.
+  mimetype String @default("image/unknown")
+
+  size Int
+
+  // S3 storage keys
+  key          String
+  thumbnailKey String
+
+  criterionResult   CriterionResult? @relation(fields: [criterionResultId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  criterionResultId Int?
+
+  @@map("StoredFile")
+}
+
+enum CriterionResultStatus {
+  COMPLIANT
+  NOT_COMPLIANT
+  NOT_APPLICABLE
+  NOT_TESTED
+}

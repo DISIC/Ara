@@ -1,0 +1,17 @@
+model User {
+  id  Int    @id @default(autoincrement())
+  uid String @unique @default(uuid())
+
+  username String  @unique
+  password String?
+
+  isVerified      Boolean @default(false)
+  verificationJti String?
+
+  name String?
+
+  newEmail                String?
+  newEmailVerificationJti String?
+
+  audits Audit[]
+}

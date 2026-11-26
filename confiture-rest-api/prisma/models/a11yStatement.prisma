@@ -1,0 +1,35 @@
+model A11yStatement {
+  id Int @id @default(autoincrement())
+
+  audit   Audit @relation(references: [id], fields: [auditId])
+  auditId Int   @unique
+
+  initiator                String
+  auditorOrganisation      String
+  procedureUrl             String
+  contactEmail             String
+  contactFormUrl           String
+  technologies             String[]
+  tools                    String[]
+  environments             TestEnvironment[]
+  notCompliantContent      String?
+  derogatedContent         String?
+  notInScopeContent        String?
+  statementPublicationDate DateTime?
+  statementEditionDate     DateTime?
+  schemaPluriannuelUrl     String?
+  planActionUrl            String?
+}
+
+model TestEnvironment {
+  id                  Int    @id @default(autoincrement())
+  platform            String
+  operatingSystem     String
+  assistiveTechnology String
+  browser             String
+
+  a11YStatement   A11yStatement @relation(fields: [a11yStatementId], references: [id])
+  a11yStatementId Int
+
+  @@unique([platform, operatingSystem, assistiveTechnology, browser, a11yStatementId])
+}

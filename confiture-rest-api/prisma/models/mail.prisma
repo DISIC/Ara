@@ -1,0 +1,26 @@
+model EmailLog {
+  id Int @id @default(autoincrement())
+
+  to     String
+  type   EmailType
+  status EmailStatus
+
+  createdAt   DateTime @default(now())
+  lastAttempt DateTime @default(now())
+}
+
+enum EmailStatus {
+  SUCCESS
+  FAILURE
+}
+
+enum EmailType {
+  AUDIT_CREATION
+  ACCOUNT_VERIFICATION
+  ACCOUNT_CONFIRMATION
+  PASSWORD_UPDATE_CONFIRMATION
+  EMAIL_UPDATE_VERIFICATION
+  EMAIL_UPDATE_CONFIRMATION
+  PASSWORD_RESET_REQUEST
+  AUDIT_TRANSFER
+}
