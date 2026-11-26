@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma.service";
 import { ResultResponseDto } from "./dto/result-response.dto";
 import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
+import { UpdateResultsRequestDto } from "./dto/update-results-request.dto";
 
 @Injectable()
 export class ResultsService {
@@ -15,15 +16,21 @@ export class ResultsService {
     uniqueId: string,
     slug: string
   ): Promise<ResultResponseDto[]> {
-    return await this.prisma.criterionResult.findMany({
-      where: {
-        page: {
-          auditUniqueId: uniqueId,
-          slug
+    // TODO: check topic/criterion is valid combination in audit reference
+
+    return this.prisma.auditedPage
+      .findUniqueOrThrow({
+        where: {
+          auditUniqueId_slug: {
+            auditUniqueId: uniqueId,
+            slug
+          },
+          audit: {
+            isHidden: false
+          }
         }
-      },
-      include: { exampleImages: true }
-    });
+      })
+      .results({ include: { exampleImages: true } });
   }
 
   async updateResult(
@@ -33,7 +40,99 @@ export class ResultsService {
     criterion: number,
     data: UpdateResultRequestDto
   ): Promise<ResultResponseDto> {
-    throw "todo";
+    const page = await this.prisma.auditedPage.findUniqueOrThrow({
+      where: {
+        auditUniqueId_slug: {
+          auditUniqueId: uniqueId,
+          slug
+        },
+        audit: {
+          isHidden: false
+        }
+      }
+    });
+
+    const result = await this.prisma.criterionResult.upsert({
+      where: {
+        pageId_topic_criterium: {
+          pageId: page.id,
+          topic,
+          criterium: criterion
+        }
+      },
+      create: {
+        page: { connect: { id: page.id } },
+        topic,
+        criterium: criterion,
+        status: data.status,
+        compliantComment: data.compliantComment,
+        notApplicableComment: data.notApplicableComment
+      },
+      update: {
+        topic,
+        criterium: criterion,
+        status: data.status,
+        compliantComment: data.compliantComment,
+        notApplicableComment: data.notApplicableComment
+      },
+      include: {
+        exampleImages: true
+      }
+    });
+
+    // TODO: update stuff after result update
+
+    return result;
+  }
+
+  async updateResults(
+    uniqueId: string,
+    slug: string,
+    data: UpdateResultsRequestDto[]
+  ): Promise<void> {
+    await this.prisma.auditedPage.update({
+      where: {
+        auditUniqueId_slug: {
+          auditUniqueId: uniqueId,
+          slug
+        },
+        audit: {
+          isHidden: false
+        }
+      },
+      data: {
+        results: {
+          // TODO: filter data
+          updateMany: data.map(dto => ({
+            data: {
+              status: dto.status,
+              compliantComment: dto.compliantComment,
+              notApplicableComment: dto.notApplicableComment
+            },
+            where: {
+              topic: dto.topic,
+              criterium: dto.criterion
+            }
+          })),
+          createMany: {
+            // TODO: filter data
+            data: data.map((dto) => ({
+              criterium: dto.criterion,
+              topic: dto.topic,
+              status: dto.status,
+              compliantComment: dto.compliantComment,
+              notApplicableComment: dto.notApplicableComment
+            })),
+            skipDuplicates: true
+          }
+        }
+      },
+      include: {
+        results: true
+      }
+    });
+
+    // TODO: update stuff after result update
   }
 
   //

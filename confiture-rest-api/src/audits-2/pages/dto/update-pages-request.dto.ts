@@ -14,6 +14,7 @@ class UpdatedPage {
   url: string;
 }
 
+// TODO: directly use UpdatedPage[] where needed and delete this dto
 export class UpdatePagesRequestDto {
   @IsArray()
   @ValidateNested({ each: true })

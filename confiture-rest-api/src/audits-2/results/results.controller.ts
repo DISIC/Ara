@@ -1,10 +1,11 @@
 import { AuthorizationService } from "@nestjs/authorization";
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, SerializeOptions, UseInterceptors } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, ParseArrayPipe, Patch, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { User as CurrentUser } from "../../auth/user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
 import { ResultResponseDto } from "./dto/result-response.dto";
 import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
+import { UpdateResultsRequestDto } from "./dto/update-results-request.dto";
 import { ResultsService } from "./results.service";
 import { UpdateResultParams } from "./update-result.params";
 
@@ -53,7 +54,19 @@ export class ResultsController {
     @Body() body: UpdateResultRequestDto
   ): Promise<ResultResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
+
     const { criterion: formattedCriterion, topic } = formattedCriterionParams(criterion);
     return this.resultsService.updateResult(uniqueId, slug, topic, formattedCriterion, body);
+  }
+
+  @Patch()
+  async updateResults(
+    @Param("uniqueId") uniqueId: string,
+    @Param("slug") slug: string,
+    @CurrentUser() user: User,
+    @Body(new ParseArrayPipe({ items: UpdateResultsRequestDto })) body: UpdateResultsRequestDto[]
+  ): Promise<void> {
+    await this.authorizationService.authorize(AuditPolicy, "update", user);
+    await this.resultsService.updateResults(uniqueId, slug, body);
   }
 }

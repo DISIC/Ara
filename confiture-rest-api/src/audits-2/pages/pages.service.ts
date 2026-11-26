@@ -18,6 +18,7 @@ export class PagesService {
   ) { }
 
   async createPage(editUniqueId: string, data: CreatePageRequestDto): Promise<PageResponseDto> {
+    // TODO: query making sure audit exists and is not hidden
     const existingSlugs = (await this.prisma.auditedPage.findMany({
       where: {
         auditUniqueId: editUniqueId
@@ -36,6 +37,7 @@ export class PagesService {
   }
 
   async createPages(editUniqueId: string, data: CreatePageRequestDto[]): Promise<PageResponseDto[]> {
+    // TODO: query making sure audit exists and is not hidden
     const existingSlugs = (await this.prisma.auditedPage.findMany({
       where: {
         auditUniqueId: editUniqueId
@@ -60,6 +62,7 @@ export class PagesService {
   }
 
   async getPages(editUniqueId: string): Promise<PageResponseDto[]> {
+    // TODO: query making sure audit exists and is not hidden
     return await this.prisma.auditedPage.findMany({
       where: {
         auditUniqueId: editUniqueId
@@ -68,6 +71,7 @@ export class PagesService {
   }
 
   async getPage(editUniqueId: string, slug: string): Promise<PageResponseDto> {
+    // TODO: query making sure audit exists and is not hidden
     return await this.prisma.auditedPage.findUniqueOrThrow({
       where: {
         auditUniqueId_slug: {
@@ -80,6 +84,7 @@ export class PagesService {
 
   async updatePages(editUniqueId: string, data: UpdatePagesRequestDto): Promise<PageResponseDto[]> {
     return this.prisma.$transaction(async (tx) => {
+      // TODO: query making sure audit exists and is not hidden
       const existingPages = await tx.auditedPage.findMany({
         where: {
           auditUniqueId: editUniqueId
