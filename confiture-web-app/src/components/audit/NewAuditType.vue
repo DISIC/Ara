@@ -54,10 +54,10 @@ const LABEL_FIELD = {
 };
 
 const HINT_LABEL_FIELD = {
-  [AuditReference.RGAA_4]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
-  [AuditReference.RGAA_5_Web]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
-  [AuditReference.RGAA_5_Mobile]: "Exemples&nbsp;:&nbsp;Service-Public, Demande de permis de conduire",
-  [AuditReference.RGAA_5_Document]: "Exemples&nbsp;:&nbsp;Rapport annuel (ODT), Kit de communication (ensemble de documents PDF)"
+  [AuditReference.RGAA_4]: "Exemples : Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Web]: "Exemples : Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Mobile]: "Exemples : Service-Public, Demande de permis de conduire",
+  [AuditReference.RGAA_5_Document]: "Exemples : Rapport annuel (ODT), Kit de communication (ensemble de documents PDF)"
 };
 
 function submitAuditType() {

@@ -120,8 +120,6 @@ describe("Audit", () => {
     fillPageField(6, "URL de la page", auditJson.pages[5].url);
     fillPageField(7, "Nom de la page", auditJson.pages[6].name);
     fillPageField(7, "URL de la page", auditJson.pages[6].url);
-    fillPageField(8, "Nom de la page", auditJson.pages[7].name);
-    fillPageField(8, "URL de la page", auditJson.pages[7].url);
 
     cy.contains("button", "Étape suivante").click();
 
@@ -143,7 +141,7 @@ describe("Audit", () => {
 
     // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
-    cy.contains("Web - 106 critères - RGAA 5");
+    cy.contains("Web - 140 critères - RGAA 5");
   });
 
   it("User can create an audit with prefilled NA topics", () => {
@@ -197,7 +195,7 @@ describe("Audit", () => {
 
     cy.contains("button", "Étape suivante").click();
 
-    cy.get(".checkboxes .checkbox-wrapper").last().click();
+    cy.get(".checkboxes .checkbox-wrapper").eq(1).click();
 
     cy.contains("button", "Étape suivante").click();
 

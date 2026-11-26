@@ -120,10 +120,10 @@ function goToPreviousStep() {
 
 function submitAuditElements() {
   emit("submit", {
-    pageElements: pageElements.value.reduce(
-      (acc, val) => ({ ...acc, [val.key]: val.value }),
-      {}
-    ) as PageElements
+    pageElements: {
+      ...props.pageElements,
+      ...Object.fromEntries(pageElements.value.map((el) => [el.key, el.value]))
+    } as PageElements
   });
 }
 
