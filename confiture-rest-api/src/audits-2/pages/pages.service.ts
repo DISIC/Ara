@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS, slugify } from "../../utils";
+import { CRITERIA } from "../results/criteria";
 import { StatementsService } from "../statements/statements.service";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
 import { PageResponseDto } from "./dto/page-response.dto";
@@ -18,17 +19,36 @@ export class PagesService {
   ) { }
 
   async createPage(editUniqueId: string, data: CreatePageRequestDto): Promise<PageResponseDto> {
-    // TODO: query making sure audit exists and is not hidden
     const existingSlugs = (await this.prisma.auditedPage.findMany({
       where: {
-        auditUniqueId: editUniqueId
+        auditUniqueId: editUniqueId,
+        audit: {
+          isHidden: false
+        }
       },
       select: { slug: true }
     })).map(el => el.slug);
     const slug = PagesService.generateUniqueSlug(data.name, existingSlugs);
 
     const page = await this.prisma.auditedPage.create({
-      data: { ...data, slug, order: existingSlugs.length + 1, audit: { connect: { editUniqueId } } }
+      data: {
+        ...data,
+        audit: {
+          connect: { editUniqueId }
+        },
+        slug,
+        order: existingSlugs.length + 1,
+
+        // TODO: make database migration to create results for every existing pages
+        results: {
+          createMany: {
+            data: CRITERIA.map(c => ({
+              criterium: c.criterium,
+              topic: c.topic
+            }))
+          }
+        }
+      }
     });
 
     await this.statementsService.updateStatementDate(editUniqueId);
@@ -37,10 +57,12 @@ export class PagesService {
   }
 
   async createPages(editUniqueId: string, data: CreatePageRequestDto[]): Promise<PageResponseDto[]> {
-    // TODO: query making sure audit exists and is not hidden
     const existingSlugs = (await this.prisma.auditedPage.findMany({
       where: {
-        auditUniqueId: editUniqueId
+        auditUniqueId: editUniqueId,
+        audit: {
+          isHidden: false
+        }
       },
       select: { slug: true }
     })).map(el => el.slug);
@@ -52,7 +74,16 @@ export class PagesService {
         ...p,
         slug: slugs[i],
         order: i,
-        auditUniqueId: editUniqueId
+        auditUniqueId: editUniqueId,
+        // TODO: make database migration to create results for every existing pages
+        results: {
+          createMany: {
+            data: CRITERIA.map(c => ({
+              criterium: c.criterium,
+              topic: c.topic
+            }))
+          }
+        }
       }))
     });
 
@@ -62,20 +93,24 @@ export class PagesService {
   }
 
   async getPages(editUniqueId: string): Promise<PageResponseDto[]> {
-    // TODO: query making sure audit exists and is not hidden
     return await this.prisma.auditedPage.findMany({
       where: {
-        auditUniqueId: editUniqueId
+        auditUniqueId: editUniqueId,
+        audit: {
+          isHidden: false
+        }
       }
     });
   }
 
   async getPage(editUniqueId: string, slug: string): Promise<PageResponseDto> {
-    // TODO: query making sure audit exists and is not hidden
     return await this.prisma.auditedPage.findUniqueOrThrow({
       where: {
         auditUniqueId_slug: {
           auditUniqueId: editUniqueId,
+          audit: {
+            isHidden: false
+          },
           slug
         }
       }
@@ -84,10 +119,12 @@ export class PagesService {
 
   async updatePages(editUniqueId: string, data: UpdatePagesRequestDto): Promise<PageResponseDto[]> {
     return this.prisma.$transaction(async (tx) => {
-      // TODO: query making sure audit exists and is not hidden
       const existingPages = await tx.auditedPage.findMany({
         where: {
-          auditUniqueId: editUniqueId
+          auditUniqueId: editUniqueId,
+          audit: {
+            isHidden: false
+          }
         },
         select: { id: true, slug: true }
       });

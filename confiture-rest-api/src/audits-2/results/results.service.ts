@@ -63,7 +63,7 @@ export class ResultsService {
       }
     });
 
-    const result = await this.prisma.criterionResult.upsert({
+    const result = await this.prisma.criterionResult.update({
       where: {
         pageId_topic_criterium: {
           pageId: page.id,
@@ -71,17 +71,7 @@ export class ResultsService {
           criterium: criterion
         }
       },
-      create: {
-        page: { connect: { id: page.id } },
-        topic,
-        criterium: criterion,
-        status: data.status,
-        compliantComment: data.compliantComment,
-        notApplicableComment: data.notApplicableComment
-      },
-      update: {
-        topic,
-        criterium: criterion,
+      data: {
         status: data.status,
         compliantComment: data.compliantComment,
         notApplicableComment: data.notApplicableComment
@@ -113,7 +103,6 @@ export class ResultsService {
       },
       data: {
         results: {
-          // TODO: filter data
           updateMany: data.map((dto) => ({
             data: {
               status: dto.status,
@@ -124,18 +113,7 @@ export class ResultsService {
               topic: dto.topic,
               criterium: dto.criterion
             }
-          })),
-          createMany: {
-            // TODO: filter data
-            data: data.map((dto) => ({
-              criterium: dto.criterion,
-              topic: dto.topic,
-              status: dto.status,
-              compliantComment: dto.compliantComment,
-              notApplicableComment: dto.notApplicableComment
-            })),
-            skipDuplicates: true
-          }
+          }))
         }
       },
       include: {
