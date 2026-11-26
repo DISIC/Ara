@@ -411,7 +411,7 @@ function setTopicAccordionStatus(
         :data-fr-current-step="currentStep + 1"
         :data-fr-steps="steps.length"
       />
-      <p v-if="steps[currentStep + 1]" class="fr-mt-2w fr-text--sm">
+      <p v-if="steps[currentStep + 1]" class="fr-mt-2w fr-text--xs">
         <span class="fr-text--bold">Étape suivante&nbsp;:</span>&nbsp;{{ steps[currentStep + 1].toLowerCase() }}
       </p>
     </div>

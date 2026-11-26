@@ -50,7 +50,7 @@ const descriptionId = computed(() => {
         :class="[
           'fr-badge fr-badge--sm fr-badge--no-icon',
           {
-            'fr-badge--purple-glycine': tag === 'Valeur légale',
+            'fr-badge--yellow-moutarde': tag === 'Valeur légale',
             'fr-badge--info ': tag === 'Bêta'
           }
         ]"
@@ -60,7 +60,7 @@ const descriptionId = computed(() => {
 
     </div>
 
-    <div class="radio-body fr-p-3w">
+    <div class="radio-body fr-p-4w">
       <div class="fr-radio-group fr-radio-group--sm">
         <input
           :id="`audit-type-${value}`"
@@ -79,16 +79,16 @@ const descriptionId = computed(() => {
         <label
           class="fr-label radio-label"
           :class="
-            'fr-text--xl fr-text--bold fr-mb-0'
+            'fr-h5 fr-text--bold fr-mb-0'
           "
           :for="`audit-type-${value}`"
         >
           {{ value === AuditType.FULL ? "Audit complet" : "Audit partiel" }}
         </label>
       </div>
-      <div class="fr-pl-3w">
-        <p class="fr-mb-1w fr-text--bold">{{ label.replace("RGAA", getRgaaVersion(auditReference)) }}</p>
-        <p class="fr-text--sm fr-hint-text">{{ getCriteriaCount(value, auditReference) }} critères</p>
+      <div class="fr-pl-4w">
+        <p class="fr-mb-1v fr-text--regular">{{ label.replace("RGAA", getRgaaVersion(auditReference)) }}</p>
+        <p class="fr-text--xs fr-hint-text fr-mb-3w">{{ getCriteriaCount(value, auditReference) }} critères</p>
 
         <ul class="fr-m-0 fr-mb-2w fr-p-0">
           <li
@@ -96,12 +96,8 @@ const descriptionId = computed(() => {
             :id="`goal-${i}-${value}`"
             :key="goal"
             class="list-item"
-            :class="{ 'fr-mb-1w': i !== goals.length - 1 }"
+            :class="{ 'fr-mb-2v': i !== goals.length - 1 }"
           >
-            <span
-              class="fr-icon-check-line fr-icon--sm list-item-icon"
-              aria-hidden="true"
-            />
             {{ goal.replace("RGAA", getRgaaVersion(auditReference)) }}
           </li>
         </ul>
@@ -133,14 +129,14 @@ const descriptionId = computed(() => {
 
 .radio-header {
   height: 9rem;
-  background: var(--background-alt-blue-france);
+  background: var(--blue-france-925-125);
   display: flex;
 }
 
 .radio-header .fr-badge {
   position: absolute;
-  margin-top: 0.5rem;
-  margin-left: 0.5rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
 }
 
 .radio-header svg {
@@ -166,18 +162,7 @@ const descriptionId = computed(() => {
   display: flex;
   align-items: first baseline;
   gap: 0.5rem;
-}
-
-.list-item-icon {
-  background-color: var(--background-contrast-info);
-  color: var(--text-default-info);
-  height: 1.5rem;
-  width: 1.5rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  padding-bottom: 0;
 }
 
 .radio-link {
@@ -189,9 +174,11 @@ const descriptionId = computed(() => {
   background-position:
     0 0.5rem,
     0 0.5rem !important;
+  padding-left: 2rem;
 }
 
 .fr-radio-group--sm input[type="radio"] + label::before {
   top: 0.5rem;
+  margin-left: -2rem;
 }
 </style>

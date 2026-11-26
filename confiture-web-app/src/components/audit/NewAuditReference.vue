@@ -34,11 +34,11 @@ defineExpose({ auditReference });
     >
 
       <div
-        class="fr-mb-4w fr-input-group"
+        class="fr-mb-5w fr-input-group"
         :class="{ 'fr-input-group--error': !!error }"
       >
         <h3 id="rgaa4" class="fr-h5 fr-mb-1v">RGAA 4</h3>
-        <p id="rgaa4-version" class="fr-mb-3v">Version <span class="fr-text--bold">en vigueur.</span></p>
+        <p id="rgaa4-version" class="fr-mb-3v fr-text--sm">Version <span class="fr-text--bold">en vigueur.</span></p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -53,7 +53,7 @@ defineExpose({ auditReference });
 
         <h3 id="rgaa5" class="fr-mt-4w fr-h5 fr-mb-1v">RGAA 5&nbsp;<span class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">bêta</span></h3>
 
-        <p id="rgaa5-version" class="fr-mb-3v">Version <span class="fr-text--bold">utilisable dès maintenant</span>. Entrera en vigueur par décret en 2027.</p>
+        <p id="rgaa5-version" class="fr-mb-3v fr-text--sm">Version <span class="fr-text--bold">utilisable dès maintenant</span>. Entrera en vigueur par décret en 2027.</p>
 
         <div class="audit-reference-radios">
           <AuditReferenceRadio
@@ -125,7 +125,7 @@ h3 > span {
 }
 
 .actions {
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: right;
 }

@@ -210,7 +210,7 @@ const urlValidation = computed(() => [
         :validation="urlValidation"
       >
         <template #optional>
-          <span class="fr-hint-text">&nbsp;(optionnel)</span>
+          <span class="optional fr-text--sm fr-mb-0">&nbsp;(optionnel)</span>
         </template>
         <template #hint>
           Saisissez une URL commençant par <code>https://</code> ou
@@ -244,5 +244,10 @@ const urlValidation = computed(() => [
     flex-wrap: wrap;
     margin-top: 4rem;
   }
+}
+
+.optional {
+  margin-top: 0.15em;
+  color: var(--text-mention-grey);
 }
 </style>

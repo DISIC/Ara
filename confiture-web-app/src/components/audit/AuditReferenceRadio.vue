@@ -124,7 +124,7 @@ const isDisabled = computed(() =>
 
 .radio-header {
   height: 7.5rem;
-  background: var(--background-alt-blue-france);
+  background: var(--blue-france-925-125);
   display: flex;
 }
 
