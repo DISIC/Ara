@@ -76,7 +76,7 @@ const isDisabled = computed(() =>
 
     </div>
 
-    <div class="radio-body fr-p-7v" @click="!isDisabled && $emit('update:modelValue', value)">
+    <div class="radio-body fr-p-4w" @click="!isDisabled && $emit('update:modelValue', value)">
 
       <div class="fr-radio-group fr-radio-group--sm">
         <input
@@ -97,7 +97,7 @@ const isDisabled = computed(() =>
 
         <label class="fr-label radio-label fr-h6 fr-mb-1w" :for="`audit-reference-${value}`">{{ currentRadioReference.label }}</label>
 
-        <p :id="`audit-reference-description-${value}`" class="fr-text--sm fr-mb-0" v-html="currentRadioReference.description"></p>
+        <p :id="`audit-reference-description-${value}`" class="fr-text--xs fr-mb-0" v-html="currentRadioReference.description"></p>
       </div>
     </div>
   </div>

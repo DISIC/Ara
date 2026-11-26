@@ -7,13 +7,13 @@ import { EMAIL, REQUIRED } from "../../composables/validation";
 import router from "../../router";
 import { useAccountStore } from "../../store/account";
 import { Audit, AuditPage, AuditReference, AuditType, UpdateAuditRequestData } from "../../types";
-import { formatEmail } from "../../utils";
+import { formatEmail, getAuditReference, getAuditType, getRgaaVersion } from "../../utils";
 import BackLink from "../ui/BackLink.vue";
 import DsfrField from "../ui/DsfrField.vue";
 import TopLink from "../ui/TopLink.vue";
 import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
 import FormWithValidation from "../validation/form-with-validation/FormWithValidation.vue";
-import AuditTypeRadio from "./AuditTypeRadio.vue";
+import AuditTypeRadioShort from "./AuditTypeRadioShort.vue";
 import PagesSample from "./PagesSample.vue";
 
 const props = defineProps<{
@@ -40,25 +40,19 @@ defineExpose({
 
 const audits = [
   {
-    value: AuditType.FULL,
-    tag: "Valeur légale",
-    label: "Pour mesurer la conformité au RGAA",
-    goals: [
-      "Identifier toutes les erreurs d’accessibilité",
-      "Obtenir un taux global de conformité au RGAA ",
-      "Générer une déclaration d’accessibilité"
-    ],
-    documentation:
-      "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/"
+    value: AuditType.FULL
   },
   {
-    value: AuditType.FAST,
-    tag: props.audit.auditReference === AuditReference.RGAA_4 ? "" : "Bêta",
-    label: "Pour estimer le niveau d'accessibilité",
-    goals: ["Identifier les principales erreurs d’accessibilité"],
-    documentation: "https://design.numerique.gouv.fr/outils/audit-rapide/"
+    value: AuditType.FAST
   }
 ];
+
+const LABEL_FIELD = {
+  [AuditReference.RGAA_4]: "Nom du site ou du service à auditer",
+  [AuditReference.RGAA_5_Web]: "Nom du site ou du service à auditer",
+  [AuditReference.RGAA_5_Mobile]: "Nom de l'application mobile à auditer",
+  [AuditReference.RGAA_5_Document]: "Nom du document ou de l’ensemble de documents à auditer"
+};
 
 const route = useRoute();
 const previousRoute = usePreviousRoute();
@@ -133,17 +127,18 @@ const currentProcedureName = procedureName.value;
 
   <FormWithValidation class="content" @submit="onSubmit">
     <h1 class="fr-mb-3v">Paramètres de l’audit</h1>
-    <p class="fr-text--xl fr-mb-4w">{{ currentProcedureName }}</p>
+    <p class="fr-text--xl fr-mb-3v">{{ currentProcedureName }}</p>
+    <p class="fr-text--md fr-mb-6w reference">{{ getAuditReference(audit.auditReference) }} &bull; {{ getAuditType(audit.auditType) }} &bull; {{ getRgaaVersion(audit.auditReference) }}</p>
 
-    <p class="fr-text--sm fr-mb-2w notice">
+    <p class="fr-text--sm fr-mb-3w notice">
       Sauf mentions contraires, tous les champs sont obligatoires.
     </p>
 
     <DsfrFieldWithValidation
       id="procedure-name"
       v-model="procedureName"
-      class="fr-mb-6w"
-      label="Nom du site ou du service audité"
+      class="fr-mb-4w"
+      :label="LABEL_FIELD[audit.auditReference]"
       hint="Exemples&nbsp;: Service-Public, Demande de permis de conduire"
       required
       :validation="[REQUIRED('Champ obligatoire. Saisissez le nom du site ou du service à auditer.')]"
@@ -152,17 +147,13 @@ const currentProcedureName = procedureName.value;
 
     <h2 class="fr-h4 fr-mb-3w">Type d’audit</h2>
     <div class="fr-mb-4w audits">
-      <AuditTypeRadio
+      <AuditTypeRadioShort
         v-for="type in audits"
         :key="type.value"
         v-model="auditType"
         class="audit-type"
         :value="type.value"
-        :label="type.label"
-        :tag="type.tag"
         :checked="auditType === type.value"
-        :goals="type.goals"
-        :documentation-link="type.documentation"
         :audit-reference="audit.auditReference"
         @update:model-value="onChange"
       />
@@ -239,6 +230,7 @@ const currentProcedureName = procedureName.value;
   margin: 0 auto;
 }
 
+.reference,
 .notice {
   color: var(--text-mention-grey);
 }

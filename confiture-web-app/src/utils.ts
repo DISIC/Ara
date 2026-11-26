@@ -88,17 +88,17 @@ const CRITERIA_COUNT: Record<AuditReference, Record<AuditType, number>> = {
   [AuditReference.RGAA_5_Web]: {
     [AuditType.FAST]: 35,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
-    [AuditType.FULL]: 142
+    [AuditType.FULL]: 140
   },
   [AuditReference.RGAA_5_Mobile]: {
     [AuditType.FAST]: 29,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
-    [AuditType.FULL]: 142 // TODO
+    [AuditType.FULL]: 113
   },
   [AuditReference.RGAA_5_Document]: {
     [AuditType.FAST]: 10,
     [AuditType.COMPLEMENTARY]: 50, // UNUSED
-    [AuditType.FULL]: 142 // TODO
+    [AuditType.FULL]: 49
   }
 };
 
@@ -327,6 +327,14 @@ export function getAuditReference(auditReference: AuditReference | undefined, sh
   }
 
   return "Web";
+}
+
+export function getAuditType(auditType: AuditType) {
+  if (auditType === AuditType.FULL) {
+    return "Complet";
+  }
+
+  return "Partiel";
 }
 
 export function getRgaaVersion(auditReference: AuditReference | undefined | null): string {
