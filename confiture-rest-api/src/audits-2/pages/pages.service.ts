@@ -129,6 +129,7 @@ export class PagesService {
         select: { id: true, slug: true }
       });
 
+      // TODO: make sure to avoid conflicts with pages with same name
       // delete pages that are not in data but in existing pages
       const dataIds = data.pages.filter(p => p.id).map(p => p.id);
       const idsToDelete = existingPages.filter(p => !dataIds.includes(p.id)).map(p => p.id);
