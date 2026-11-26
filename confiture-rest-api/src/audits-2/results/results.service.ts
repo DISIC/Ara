@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { AuditType } from "../../generated/prisma/enums";
 import { PrismaService } from "../../prisma.service";
+import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { ResultResponseDto } from "./dto/result-response.dto";
 import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
 import { UpdateResultsRequestDto } from "./dto/update-results-request.dto";
@@ -16,9 +18,16 @@ export class ResultsService {
     uniqueId: string,
     slug: string
   ): Promise<ResultResponseDto[]> {
-    // TODO: check topic/criterion is valid combination in audit reference
+    // TODO: return placeholder results
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: {
+        editUniqueId: uniqueId,
+        isHidden: false
+      },
+      select: { auditType: true }
+    });
 
-    return this.prisma.auditedPage
+    const results = await this.prisma.auditedPage
       .findUniqueOrThrow({
         where: {
           auditUniqueId_slug: {
@@ -31,6 +40,8 @@ export class ResultsService {
         }
       })
       .results({ include: { exampleImages: true } });
+
+    return ResultsService.filterResults(results, audit.auditType);
   }
 
   async updateResult(
@@ -103,7 +114,7 @@ export class ResultsService {
       data: {
         results: {
           // TODO: filter data
-          updateMany: data.map(dto => ({
+          updateMany: data.map((dto) => ({
             data: {
               status: dto.status,
               compliantComment: dto.compliantComment,
@@ -145,5 +156,21 @@ export class ResultsService {
   ) {
     // TODO: implement this
     return;
+  }
+
+  //
+  // Utility methods
+  //
+
+  /** Filter given results depending on audit type. */
+  static filterResults<R extends { topic: number; criterium: number }>(
+    results: R[],
+    auditType: AuditType
+  ): R[] {
+    return results.filter((r) =>
+      CRITERIA_BY_AUDIT_TYPE[auditType].some(
+        (c) => c.topic === r.topic && c.criterium === r.criterium
+      )
+    );
   }
 }
