@@ -328,6 +328,6 @@ export function isRgaa5(auditReference: AuditReference | undefined): boolean {
 /**
  * Tells if an audit is not compliant given its reference (RGAA4 or RGAA5) and the number of not compliant criteria with blocking issues
  */
-export function isAuditNotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
+export function isAuditRgaa5NotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
   return isRgaa5(auditReference) && blockingCount > 0;
 }
