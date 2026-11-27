@@ -356,3 +356,52 @@ export function isRgaa5(auditReference: AuditReference | undefined): boolean {
 export function isAuditRgaa5NotCompliant(auditReference: AuditReference | undefined, blockingCount: number): boolean {
   return isRgaa5(auditReference) && blockingCount > 0;
 }
+
+export function getTopicsByAuditReference(auditReference: AuditReference | undefined, pageElements: any) {
+  if (auditReference === AuditReference.RGAA_5_Web) {
+    return [
+      ...(pageElements.images ? [] : [1]),
+      ...(pageElements.frame ? [] : [2]),
+      ...(pageElements.multimedia ? [] : [4]),
+      ...(pageElements.table ? [] : [5]),
+      ...(pageElements.form ? [] : [11]),
+      ...(pageElements.documentation ? [] : [14]),
+      ...(pageElements.tools ? [] : [15]),
+      ...(pageElements.authentication ? [] : [16]),
+      ...(pageElements.communication ? [] : [17])
+    ];
+  }
+
+  if (auditReference === AuditReference.RGAA_5_Mobile) {
+    return [
+      ...(pageElements.images ? [] : [1]),
+      ...(pageElements.frame ? [] : [2]),
+      ...(pageElements.multimedia ? [] : [4]),
+      ...(pageElements.table ? [] : [5]),
+      ...(pageElements.form ? [] : [11]),
+      ...(pageElements.documentation ? [] : [12]),
+      ...(pageElements.tools ? [] : [13]),
+      ...(pageElements.services ? [] : []), // TODO
+      ...(pageElements.communication ? [] : [15])
+    ];
+  }
+
+  if (auditReference === AuditReference.RGAA_5_Document) {
+    return [
+      ...(pageElements.images ? [] : [1]),
+      ...(pageElements.colors ? [] : [2]),
+      ...(pageElements.multimedia ? [] : [4]),
+      ...(pageElements.table ? [] : [5]),
+      ...(pageElements.links ? [] : []), // TODO
+      ...(pageElements.tools ? [] : [10])
+    ];
+  }
+
+  return [
+    ...(pageElements.images ? [] : [1]),
+    ...(pageElements.frame ? [] : [2]),
+    ...(pageElements.multimedia ? [] : [4]),
+    ...(pageElements.table ? [] : [5]),
+    ...(pageElements.form ? [] : [11])
+  ];
+}

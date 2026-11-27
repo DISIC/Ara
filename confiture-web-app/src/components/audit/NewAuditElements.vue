@@ -60,8 +60,8 @@ const staticElements = {
     { label: "Tableaux", icon: elementTable, key: "table" },
     { label: "Formulaires", icon: elementForm, key: "form" },
     { label: "Documentation \n et fonctionnalités d'accessibilité", icon: elementFrame, key: "documentation" },
-    { label: "Outils d'édition", icon: elementFrame, key: "outils" },
-    { label: "Authentification et CAPTCHA", icon: elementFrame, key: "authentification" },
+    { label: "Outils d'édition", icon: elementFrame, key: "tools" },
+    { label: "Authentification et CAPTCHA", icon: elementFrame, key: "authentication" },
     { label: "Communication en temps réel", icon: elementFrame, key: "communication" }
   ],
   [AuditReference.RGAA_5_Mobile]: [
@@ -79,8 +79,8 @@ const staticElements = {
     { label: "Tableaux", icon: elementTable, key: "table" },
     { label: "Formulaires", icon: elementForm, key: "form" },
     { label: "Documentation \n et fonctionnalités d'accessibilité", icon: elementFrame, key: "documentation" },
-    { label: "Outils d'édition", icon: elementFrame, key: "outils" },
-    { label: "Services d'assitance", icon: elementFrame, key: "services" },
+    { label: "Outils d'édition", icon: elementFrame, key: "tools" },
+    { label: "Services d'assistance", icon: elementFrame, key: "services" },
     { label: "Communication en temps réel", icon: elementFrame, key: "communication" }
   ],
   [AuditReference.RGAA_5_Document]: [
@@ -89,7 +89,7 @@ const staticElements = {
       icon: elementMultimedia,
       key: "images"
     },
-    { label: "Couleurs", icon: elementFrame, key: "couleurs" },
+    { label: "Couleurs", icon: elementFrame, key: "colors" },
     {
       label: "Multimédia",
       hint: "Vidéo, audio ou animation",
@@ -97,8 +97,8 @@ const staticElements = {
       key: "multimedia"
     },
     { label: "Tableaux", icon: elementTable, key: "table" },
-    { label: "Liens", icon: elementTable, key: "liens" },
-    { label: "Outils d'édition", icon: elementFrame, key: "outils" }
+    { label: "Liens", icon: elementTable, key: "links" },
+    { label: "Outils d'édition", icon: elementFrame, key: "tools" }
   ]
 };
 

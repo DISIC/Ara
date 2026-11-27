@@ -58,7 +58,7 @@ export class BaseAuditDto {
   auditorEmail: string;
 }
 
-class PageElements {
+export class PageElements {
   @IsBoolean()
   multimedia: boolean;
 
@@ -78,10 +78,10 @@ class PageElements {
   documentation: boolean;
 
   @IsBoolean()
-  outils: boolean;
+  tools: boolean;
 
   @IsBoolean()
-  authentification: boolean;
+  authentication: boolean;
 
   @IsBoolean()
   communication: boolean;
@@ -90,7 +90,10 @@ class PageElements {
   services: boolean;
 
   @IsBoolean()
-  liens: boolean;
+  links: boolean;
+
+  @IsBoolean()
+  colors: boolean;
 }
 
 export class CreateAuditDto extends BaseAuditDto {

@@ -18,7 +18,7 @@ import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
 import { AuditReference, AuditType, CreateAuditRequestData } from "../../types";
-import { captureWithPayloads, getRgaaVersion } from "../../utils";
+import { captureWithPayloads, getRgaaVersion, getTopicsByAuditReference } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -88,11 +88,12 @@ interface CreateAuditFormData {
     frame: boolean;
     images: boolean;
     documentation: boolean;
-    outils: boolean;
-    authentification: boolean;
+    tools: boolean;
+    authentication: boolean;
     communication: boolean;
     services: boolean;
-    liens: boolean;
+    links: boolean;
+    colors: boolean;
   };
   auditorEmail: string;
   auditorName: string;
@@ -107,12 +108,12 @@ function getPageElementsRgaa(auditReference: AuditReference | null) {
       frame: true,
       images: true,
       documentation: true,
-      outils: true,
-      authentification: true,
+      tools: true,
+      authentication: true,
       communication: true,
       services: false,
-      liens: false,
-      couleurs: false
+      links: false,
+      colors: false
     };
   }
 
@@ -124,12 +125,12 @@ function getPageElementsRgaa(auditReference: AuditReference | null) {
       frame: false,
       images: true,
       documentation: true,
-      outils: true,
-      authentification: false,
+      tools: true,
+      authentication: false,
       communication: true,
       services: true,
-      liens: false,
-      couleurs: false
+      links: false,
+      colors: false
     };
   }
 
@@ -141,12 +142,12 @@ function getPageElementsRgaa(auditReference: AuditReference | null) {
       frame: true,
       images: true,
       documentation: false,
-      outils: true,
-      authentification: false,
+      tools: true,
+      authentication: false,
       communication: false,
       services: false,
-      liens: true,
-      couleurs: true
+      links: true,
+      colors: true
     };
   }
 
@@ -157,12 +158,12 @@ function getPageElementsRgaa(auditReference: AuditReference | null) {
     frame: true,
     images: true,
     documentation: false,
-    outils: false,
-    authentification: false,
+    tools: false,
+    authentication: false,
     communication: false,
     services: false,
-    liens: false,
-    couleurs: false
+    links: false,
+    colors: false
   };
 }
 
@@ -323,13 +324,10 @@ function submitAuditSettings() {
         auditStore.showAuditEmailAlert = true;
       }
 
-      const topicsToHide = [
-        ...(audit.value.pageElements?.images ? [] : [1]),
-        ...(audit.value.pageElements?.frame ? [] : [2]),
-        ...(audit.value.pageElements?.multimedia ? [] : [4]),
-        ...(audit.value.pageElements?.table ? [] : [5]),
-        ...(audit.value.pageElements?.form ? [] : [11])
-      ];
+      const topicsToHide = getTopicsByAuditReference(
+        audit.value.auditReference || AuditReference.RGAA_4,
+        audit.value.pageElements
+      );
 
       setTopicAccordionStatus(
         newAudit.editUniqueId,
