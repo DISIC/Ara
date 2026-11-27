@@ -12,7 +12,6 @@ import {
   CriterionResultUserImpact,
   Prisma
 } from "../generated/prisma/client";
-
 import { PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
 import { slugify } from "../utils";

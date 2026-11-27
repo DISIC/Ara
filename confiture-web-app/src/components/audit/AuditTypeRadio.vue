@@ -3,7 +3,6 @@ import { computed, ref } from "vue";
 
 import CodingIcon from "../../assets/dsfr-custom-icons/coding.svg";
 import { AuditReference, AuditType } from "../../types";
-
 import { getCriteriaCount, getRgaaVersion } from "../../utils";
 import DsfrArtwork from "../ui/DsfrArtwork.vue";
 

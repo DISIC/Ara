@@ -12,7 +12,6 @@ import DsfrFieldWithValidation from "../validation/DsfrFieldWithValidation.vue";
 const props = defineProps<{
   modelValue: Omit<AuditPage, "id" | "order">[];
   auditReference: AuditReference | null;
-
 }>();
 
 const emit = defineEmits<{
