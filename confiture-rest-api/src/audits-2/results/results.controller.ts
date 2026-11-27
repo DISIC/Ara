@@ -22,6 +22,9 @@ import { UpdateResultParams } from "./update-result.params";
 
 export const CRITERION_REGEXP = /^\d+.\d+$/;
 
+/**
+ * Make sure criterion route param matches the correct format X.Y: 1.10, 10.12, 1.2...
+ */
 function formattedCriterionParams(criterionString: string): {
   topic: number;
   criterion: number;
@@ -69,7 +72,6 @@ export class ResultsController {
     @Param() { uniqueId, slug, criterion }: UpdateResultParams,
     @CurrentUser() user: User,
     @Body() body: UpdateResultRequestDto
-    // @Res({ passthrough: true }) res: Response
   ): Promise<ResultResponseDto> {
     await this.authorizationService.authorize(AuditPolicy, "update", user);
 

@@ -121,32 +121,39 @@ export class ResultsService {
             }
           }))
         }
-      },
-      include: {
-        results: true
       }
     });
 
-    // TODO: update stuff after result update
+    // TODO: update publicationDate?
     this.eventEmitter.emit(EVENTS.RESULT_UPDATED, uniqueId);
-  }
-
-  //
-  // Action methods
-  //
-
-  async prefillNotApplicableTopics(
-    _auditUniqueId: string,
-    _notApplicableTopics: number[]
-  ) {
-    // TODO: implement this
-    return;
   }
 
   //
   // Utility methods
   //
 
+  /** Set status of results to APPLICABLE if in given topics */
+  async prefillNotApplicableTopics(
+    uniqueId: string,
+    notApplicableTopics: number[]
+  ): Promise<void> {
+    await this.prisma.criterionResult.updateMany({
+      where: {
+        page: {
+          OR: [
+            { audit: { editUniqueId: uniqueId } },
+            { auditTransverse: { editUniqueId: uniqueId } }
+          ]
+        },
+        topic: { in: notApplicableTopics }
+      },
+      data: {
+        status: CriterionResultStatus.NOT_APPLICABLE
+      }
+    });
+  }
+
+  /** Determine if an audit is complete by comparing results count with total count depending on audit type. */
   async isAuditComplete(uniqueId: string): Promise<boolean> {
     const audit = await this.prisma.audit.findUniqueOrThrow({
       where: { editUniqueId: uniqueId },
