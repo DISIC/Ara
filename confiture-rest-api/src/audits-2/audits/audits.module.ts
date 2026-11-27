@@ -11,6 +11,13 @@ import { AuditsService } from "./audits.service";
 @Module({
   controllers: [AuditsController],
   providers: [AuditsService, AuditPolicy],
-  imports: [PagesModule, ResultsModule, AuthModule, FileStorageModule, StatementsModule]
+  imports: [
+    PagesModule,
+    ResultsModule,
+    AuthModule,
+    FileStorageModule,
+    StatementsModule
+  ],
+  exports: [AuditsService]
 })
 export class AuditsModule {}

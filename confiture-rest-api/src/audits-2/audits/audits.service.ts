@@ -2,10 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { isEqual, omit, setWith } from "lodash";
 import { nanoid } from "nanoid";
-import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
 import { AuthService } from "../../auth/auth.service";
 import { FileStorageService } from "../../file-storage/file-storage.service";
-import { CriterionResultStatus, Prisma, User } from "../../generated/prisma/client";
+import { Prisma, User } from "../../generated/prisma/client";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
@@ -25,13 +24,16 @@ export class AuditsService {
     private readonly authService: AuthService,
     private readonly fileStorageService: FileStorageService,
     private readonly statementsService: StatementsService
-  ) { }
+  ) {}
 
   //
   // CRUD methods
   //
 
-  async createAudit(data: CreateAuditRequestDto, user?: User): Promise<AuditResponseDto> {
+  async createAudit(
+    data: CreateAuditRequestDto,
+    user?: User
+  ): Promise<AuditResponseDto> {
     const editUniqueId = nanoid();
     const consultUniqueId = nanoid();
 
@@ -80,7 +82,10 @@ export class AuditsService {
       ...(data.pageElements.table ? [] : [5]),
       ...(data.pageElements.form ? [] : [11])
     ];
-    await this.resultsService.prefillNotApplicableTopics(editUniqueId, topicNumbers);
+    await this.resultsService.prefillNotApplicableTopics(
+      editUniqueId,
+      topicNumbers
+    );
 
     this.eventEmitter.emit(EVENTS.AUDIT_CREATED, { audit, createdBy: user });
 
@@ -102,17 +107,21 @@ export class AuditsService {
     });
   }
 
-  async updateAudit(editUniqueId: string, data: UpdateAuditRequestDto): Promise<AuditResponseDto> {
+  async updateAudit(
+    editUniqueId: string,
+    data: UpdateAuditRequestDto
+  ): Promise<AuditResponseDto> {
     const previousAudit = await this.prisma.audit.findUniqueOrThrow({
       where: { editUniqueId }
     });
 
     // Reset org when changing email from unverified to verified user.
     const shouldResetOrganisation =
-      data.auditorEmail && previousAudit.auditorEmail &&
-      data.auditorEmail !== previousAudit.auditorEmail
-      && !(await this.authService.isAccountVerified(previousAudit.auditorEmail))
-      && await this.authService.isAccountVerified(data.auditorEmail);
+      data.auditorEmail &&
+      previousAudit.auditorEmail &&
+      data.auditorEmail !== previousAudit.auditorEmail &&
+      !(await this.authService.isAccountVerified(previousAudit.auditorEmail)) &&
+      (await this.authService.isAccountVerified(data.auditorEmail));
 
     const audit = await this.prisma.audit.update({
       where: { editUniqueId },
@@ -139,7 +148,11 @@ export class AuditsService {
     // update audit edition date only if:
     // - it has a `publicationDate`
     // - transvereElements or type changed
-    if (audit.publicationDate && (previousAudit.auditType !== audit.auditType || !isEqual(previousAudit.transverseElements, audit.transverseElements))) {
+    if (
+      audit.publicationDate &&
+      (previousAudit.auditType !== audit.auditType ||
+        !isEqual(previousAudit.transverseElements, audit.transverseElements))
+    ) {
       const newDates = await this.updateAuditEditDate(editUniqueId);
       Object.assign(audit, newDates);
     }
@@ -199,12 +212,17 @@ export class AuditsService {
   // action methods
   //
 
-  async transferAudit(uniqueId: string, newEmail: string, user?: User): Promise<void> {
+  async transferAudit(
+    uniqueId: string,
+    newEmail: string,
+    user?: User
+  ): Promise<void> {
     // Get original audit email
-    const { auditorEmail: originalAuditEmail } = await this.prisma.audit.findUniqueOrThrow({
-      where: { editUniqueId: uniqueId },
-      select: { auditorEmail: true }
-    });
+    const { auditorEmail: originalAuditEmail } =
+      await this.prisma.audit.findUniqueOrThrow({
+        where: { editUniqueId: uniqueId },
+        select: { auditorEmail: true }
+      });
 
     // Get new owner info
     const newOwner = await this.prisma.user.findUnique({
@@ -245,7 +263,10 @@ export class AuditsService {
     });
   }
 
-  async duplicateAudit(sourceEditUniqueId: string, newProcedureName: string): Promise<AuditResponseDto> {
+  async duplicateAudit(
+    sourceEditUniqueId: string,
+    newProcedureName: string
+  ): Promise<AuditResponseDto> {
     const originalAudit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: sourceEditUniqueId, isHidden: false },
       include: {
@@ -294,7 +315,8 @@ export class AuditsService {
     const duplicateEditUniqueId = nanoid();
     const duplicateConsultUniqueId = nanoid();
 
-    const [imagesCreateData, notesFilesCreateData] = await this.duplicateAuditFiles(sourceEditUniqueId, duplicateEditUniqueId);
+    const [imagesCreateData, notesFilesCreateData] =
+      await this.duplicateAuditFiles(sourceEditUniqueId, duplicateEditUniqueId);
 
     const newAudit = await this.prisma.audit.create({
       data: {
@@ -345,10 +367,11 @@ export class AuditsService {
                         r.id
                       ][e.id]
                   )
-
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
+                  create: r.notCompliantItems.map((item) => ({
+                    ...omit(item, ["id"])
+                  }))
                 }
               }))
             }
@@ -370,7 +393,9 @@ export class AuditsService {
                   )
                 },
                 notCompliantItems: {
-                  create: r.notCompliantItems.map((item) => ({ ...omit(item, ["id"]) }))
+                  create: r.notCompliantItems.map((item) => ({
+                    ...omit(item, ["id"])
+                  }))
                 }
               }))
             }
@@ -397,14 +422,16 @@ export class AuditsService {
   private async duplicateAuditFiles(
     sourceEditUniqueId: string,
     destinationEditUniqueId: string
-  ): Promise<[
-    {
-      [pageId: string]: {
-        [resultId: string]: Prisma.ExampleImageFileCreateInput;
-      };
-    },
-    Prisma.NotesFileCreateWithoutAuditInput[]
-  ]> {
+  ): Promise<
+    [
+      {
+        [pageId: string]: {
+          [resultId: string]: Prisma.ExampleImageFileCreateInput;
+        };
+      },
+      Prisma.NotesFileCreateWithoutAuditInput[]
+    ]
+  > {
     const sourceAudit = await this.prisma.audit.findFirstOrThrow({
       where: { editUniqueId: sourceEditUniqueId, isHidden: false },
       select: {
@@ -446,7 +473,8 @@ export class AuditsService {
 
     // contains s3 file duplications which will be executed together by calling
     // `fileStorageService.duplicateMultipleFiles()`
-    const fileDuplications: { originalKey: string; destinationKey: string }[] = [];
+    const fileDuplications: { originalKey: string; destinationKey: string }[] =
+      [];
 
     [...sourceAudit.pages, sourceAudit.transverseElementsPage].forEach((p) => {
       p.results.forEach((r) => {
@@ -539,7 +567,11 @@ export class AuditsService {
    * Update an audit editionDate, only when it has a publication date.
    * @returns the new publication and edition dates if they are updated, undefined otherwise
    */
-  private async updateAuditEditDate(uniqueId: string): Promise<{ publicationDate: Date | null; editionDate: Date | null } | undefined> {
+  private async updateAuditEditDate(
+    uniqueId: string
+  ): Promise<
+    { publicationDate: Date | null; editionDate: Date | null } | undefined
+  > {
     const [audit, auditIsComplete] = await Promise.all([
       this.prisma.audit.findUniqueOrThrow({
         where: {
@@ -549,7 +581,7 @@ export class AuditsService {
           publicationDate: true
         }
       }),
-      this.isAuditComplete(uniqueId)
+      this.resultsService.isAuditComplete(uniqueId)
     ]);
 
     if (audit.publicationDate && !auditIsComplete) {
@@ -592,29 +624,8 @@ export class AuditsService {
     await this.updateAuditEditDate(uniqueId);
   }
 
-  private async isAuditComplete(uniqueId: string): Promise<boolean> {
-    const audit = await this.prisma.audit.findUniqueOrThrow({
-      where: { editUniqueId: uniqueId },
-      include: {
-        pages: true
-      }
-    });
-
-    const testedCount = await this.prisma.criterionResult.count({
-      where: {
-        page: {
-          auditUniqueId: uniqueId
-        },
-        status: {
-          not: CriterionResultStatus.NOT_TESTED
-        },
-        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
-      }
-    });
-
-    const expectedCount =
-      CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
-
-    return testedCount === expectedCount;
+  @OnEvent(EVENTS.RESULT_UPDATED)
+  async onResultUpdated(uniqueId: string): Promise<void> {
+    await this.updateAuditEditDate(uniqueId);
   }
 }
