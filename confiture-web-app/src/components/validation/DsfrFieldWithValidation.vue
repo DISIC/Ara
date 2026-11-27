@@ -40,6 +40,7 @@ defineOptions({
       v-model="model"
       :error="error"
     >
+      <template v-if="$slots.optional" #optional><slot name="optional" /></template>
       <template v-if="$slots.hint" #hint><slot name="hint" /></template>
       <template v-if="$slots.trailing" #trailing><slot name="trailing" /></template>
     </DsfrField>

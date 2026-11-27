@@ -51,9 +51,12 @@ describe("Audits list", () => {
     // Create a new audit but auditor email field should not be present
     cy.contains("a", "Démarrer un nouvel audit").click();
 
-    cy.contains("106 critères").click();
+    cy.contains("Web").click();
+    cy.contains("button", "Étape suivante").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Audit complet").click();
+
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);
@@ -93,9 +96,12 @@ describe("Audits list", () => {
 
     cy.contains("a", "Démarrer un nouvel audit").click();
 
-    cy.contains("106 critères").click();
+    cy.contains("Web").click();
+    cy.contains("button", "Étape suivante").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Audit complet").click();
+
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);

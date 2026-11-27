@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested
 } from "class-validator";
-import { AuditType } from "../../../generated/prisma/client";
+import { AuditReference, AuditType } from "../../../generated/prisma/client";
 
 export class CreateAuditPage {
   /**
@@ -33,6 +33,13 @@ export class BaseAuditDto {
   auditType: AuditType;
 
   /**
+   * @example "RGAA_4"
+   */
+  @IsString()
+  @IsIn(Object.values(AuditReference))
+  auditReference: AuditReference;
+
+  /**
    * @example "My procedure"
    */
   @IsString()
@@ -51,7 +58,7 @@ export class BaseAuditDto {
   auditorEmail: string;
 }
 
-class PageElements {
+export class PageElements {
   @IsBoolean()
   multimedia: boolean;
 
@@ -63,6 +70,30 @@ class PageElements {
 
   @IsBoolean()
   frame: boolean;
+
+  @IsBoolean()
+  images: boolean;
+
+  @IsBoolean()
+  documentation: boolean;
+
+  @IsBoolean()
+  tools: boolean;
+
+  @IsBoolean()
+  authentication: boolean;
+
+  @IsBoolean()
+  communication: boolean;
+
+  @IsBoolean()
+  services: boolean;
+
+  @IsBoolean()
+  links: boolean;
+
+  @IsBoolean()
+  colors: boolean;
 }
 
 export class CreateAuditDto extends BaseAuditDto {

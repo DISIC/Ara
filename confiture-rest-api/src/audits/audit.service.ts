@@ -3,7 +3,6 @@ import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
-
 import { AuthService } from "../auth/auth.service";
 import {
   Audit,
@@ -104,6 +103,8 @@ export class AuditService {
 
         auditType: data.auditType,
 
+        auditReference: data.auditReference,
+
         auditor: {
           connectOrCreate: {
             create: {
@@ -151,12 +152,21 @@ export class AuditService {
       newAudit.transverseElementsPageId,
       ...newAudit.pages.map((p) => p.id)
     ];
+
     const topicNumbers = [
+      ...(data.pageElements.images ? [] : [1]),
       ...(data.pageElements.frame ? [] : [2]),
+      ...(data.pageElements.colors ? [] : [3]),
       ...(data.pageElements.multimedia ? [] : [4]),
       ...(data.pageElements.table ? [] : [5]),
-      ...(data.pageElements.form ? [] : [11])
+      ...(data.pageElements.links ? [] : [6]),
+      ...(data.pageElements.form ? [] : [11]),
+      ...(data.pageElements.documentation ? [] : [14]),
+      ...(data.pageElements.tools ? [] : [15]),
+      ...(data.pageElements.authentication ? [] : [16]),
+      ...(data.pageElements.communication ? [] : [17])
     ];
+
     const criteria = CRITERIA_BY_AUDIT_TYPE[newAudit.auditType].filter(
       ({ topic }) => topicNumbers.includes(topic)
     );
@@ -452,6 +462,7 @@ export class AuditService {
           tools: data.tools,
 
           auditType: data.auditType,
+          auditReference: data.auditReference,
 
           environments: {
             deleteMany: {

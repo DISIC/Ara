@@ -124,7 +124,7 @@ defineExpose({
     <!-- Type -->
     <p class="fr-mb-0">
       <span class="fr-sr-only">Type&nbsp;</span>
-      {{ getCriteriaCount(audit.auditType) }} critères
+      {{ getCriteriaCount(audit.auditType, audit.auditReference) }} critères
     </p>
 
     <!-- Compliance level / Progression level -->

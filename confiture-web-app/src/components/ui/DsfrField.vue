@@ -5,6 +5,7 @@ export interface DsfrFieldProps {
   modelValue?: string;
   label: string;
   labelSrOnly?: string;
+  optional?: string;
   hint?: string;
   type?: "text" | "email" | "url";
   required?: boolean;
@@ -41,10 +42,16 @@ defineExpose({
 <template>
   <div :class="['fr-input-group', { 'fr-input-group--error': isError }]">
     <label class="fr-label" :for="inputId">
-      {{ label }}<span
-        v-if="labelSrOnly"
-        class="fr-sr-only"
-      >&nbsp;{{ labelSrOnly }}</span> <span
+      <div class="fr-label-row">
+        {{ label }}<span
+          v-if="labelSrOnly"
+          class="fr-sr-only"
+        >&nbsp;{{ labelSrOnly }}</span>
+        <template v-if="optional || $slots.optional">
+          <slot name="optional">{{ optional }}</slot>
+        </template>
+      </div>
+      <span
         v-if="hint || $slots.hint"
         class="fr-hint-text"
       ><slot name="hint">{{ hint }}</slot></span>
@@ -72,3 +79,10 @@ defineExpose({
     </p>
   </div>
 </template>
+
+<style scoped>
+.fr-label-row {
+  display: flex;
+  flex-direction: row;
+}
+</style>

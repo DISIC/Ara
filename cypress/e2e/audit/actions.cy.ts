@@ -18,12 +18,12 @@ describe("Actions", () => {
     cy.createTestAudit().then(({ editId }) => {
       cy.visit(`http://localhost:3000/audits/${editId}/parametres`);
 
-      cy.getByLabel("Nom du site ou du service audité").should(
+      cy.getByLabel("Nom du site ou du service à auditer").should(
         "have.value",
         "Audit de mon petit site"
       );
 
-      cy.getByLabel("Nom du site ou du service audité")
+      cy.getByLabel("Nom du site ou du service à auditer")
         .clear()
         .type("Audit de mon gros site");
 
