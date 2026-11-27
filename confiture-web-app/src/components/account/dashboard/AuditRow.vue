@@ -12,9 +12,7 @@ import {
   captureWithPayloads,
   formatBytes,
   formatDate,
-  getAuditReference,
   getCriteriaCount,
-  getRgaaVersion,
   isAuditRgaa5NotCompliant,
   slugify
 } from "../../../utils";
@@ -124,11 +122,10 @@ defineExpose({
     </p>
 
     <!-- Type -->
-    <div>
+    <p class="fr-mb-0">
       <span class="fr-sr-only">Type&nbsp;</span>
-      <p class="fr-mb-0 fr-text--bold">{{ getAuditReference(audit.auditReference, true) }}</p>
-      <p class="fr-mb-0 fr-text--sm">{{ getCriteriaCount(audit.auditType) }} critères -  {{ getRgaaVersion(audit.auditReference) }} </p>
-    </div>
+      {{ getCriteriaCount(audit.auditType) }} critères
+    </p>
 
     <!-- Compliance level / Progression level -->
     <div v-if="audit.status === AuditStatus.COMPLETED" class="fr-mr-lg-4w">

@@ -12,14 +12,10 @@ import {
   useResultsStore,
   useSystemStore
 } from "../../store";
-import { AuditTypeString, AuditReference } from "../../types";
 import {
   captureWithPayloads,
   formatBytes,
   formatDate,
-  getAuditReference,
-  getCriteriaCount,
-  getRgaaVersion,
   isSameDay,
   slugify
 } from "../../utils";
@@ -34,8 +30,6 @@ import TransferModal from "./TransferModal.vue";
 
 const props = defineProps<{
   auditName: string;
-  auditReference: AuditReference;
-  auditType: AuditTypeString;
   keyInfos: {
     title: string;
     description: string;
@@ -255,10 +249,7 @@ onMounted(() => {
     Audit<span class="fr-sr-only">&nbsp;Ara enregistre automatiquement vos saisies.
       Vous serez alerté en cas de problème lié à l’enregistrement.</span>
   </h1>
-  <p class="fr-text--xl fr-mb-1w">{{ auditName }}</p>
-  <p class="fr-text--sm fr-mb-4w">
-    {{ getAuditReference(auditReference) }} - {{ getCriteriaCount(auditType) }} critères - {{ getRgaaVersion(auditReference) }}
-  </p>
+  <p class="fr-text--xl fr-mb-4w">{{ auditName }}</p>
 
   <div ref="stickyIndicator" class="fr-grid-row fr-mb-3w sticky-indicator">
     <div
