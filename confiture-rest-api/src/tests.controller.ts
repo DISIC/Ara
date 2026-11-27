@@ -10,6 +10,86 @@ import {
 import { PrismaService } from "./prisma.service";
 import { slugify } from "./utils";
 
+const ALL_USER_IMPACTS = [
+  CriterionResultUserImpact.MINOR,
+  CriterionResultUserImpact.MAJOR,
+  CriterionResultUserImpact.BLOCKING,
+  null
+];
+
+const NOT_BLOCKING_USER_IMPACTS = [
+  CriterionResultUserImpact.MINOR,
+  CriterionResultUserImpact.MAJOR,
+  null
+];
+
+/**
+ * Statuses for each criterion, so that the audit gets the wanted compliance rate
+ * (compliant / (compliant + not compliant), not applicable excluded).
+ * - 100: only compliant or not applicable
+ * - 99: exactly one not compliant
+ * - other: more compliant than the rate asked
+ * - undefined: cycle through all statuses
+ */
+function buildStatuses(
+  total: number,
+  complianceRate?: number
+): CriterionResultStatus[] {
+  if (complianceRate === undefined) {
+    return Array.from(
+      { length: total },
+      (_, i) =>
+        [
+          CriterionResultStatus.COMPLIANT,
+          CriterionResultStatus.NOT_APPLICABLE,
+          CriterionResultStatus.NOT_COMPLIANT
+        ][i % 3]
+    );
+  }
+
+  // One criterion out of three is not applicable, others are applicable
+  const statuses = Array.from<unknown, CriterionResultStatus>({ length: total }, (_, i) =>
+    i % 3 === 2
+      ? CriterionResultStatus.NOT_APPLICABLE
+      : CriterionResultStatus.COMPLIANT);
+
+  const applicableIndexes = statuses.flatMap((s, i) =>
+    s === CriterionResultStatus.COMPLIANT ? [i] : []
+  );
+
+  const notCompliantCount =
+    complianceRate >= 100
+      ? 0
+      : Math.max(
+          1,
+          Math.floor((applicableIndexes.length * (100 - complianceRate)) / 100)
+        );
+
+  for (const i of applicableIndexes.slice(0, notCompliantCount)) {
+    statuses[i] = CriterionResultStatus.NOT_COMPLIANT;
+  }
+
+  return statuses;
+}
+
+/**
+ * At 99%, the only not compliant criterion is blocking (RGAA 5 non-compliant).
+ * Otherwise, no blocking user impact.
+ */
+function getUserImpact(
+  index: number,
+  auditReference: AuditReference,
+  complianceRate?: number
+): CriterionResultUserImpact | null {
+  if (complianceRate === 99) {
+    return CriterionResultUserImpact.BLOCKING;
+  }
+
+  return complianceRate === undefined || auditReference === AuditReference.RGAA_4
+    ? ALL_USER_IMPACTS[index % 4]
+    : NOT_BLOCKING_USER_IMPACTS[index % 3];
+}
+
 @Controller("tests")
 export class TestsController {
   constructor(
@@ -76,8 +156,7 @@ export class TestsController {
       fillStatement?: boolean;
       publicationDate?: Date;
       auditReference?: AuditReference;
-      isCompliant?: boolean;
-      blockingCount?: number;
+      complianceRate?: number;
     }
   ) {
     const editUniqueId = `edit-${nanoid()}`;
@@ -200,73 +279,22 @@ export class TestsController {
     });
 
     if (!body.isPristine) {
-      // Defined the number of remaining blocking required
-      // for an audit to be partially compliant or non-compliant with RGAA 5
-      let blockingLeft = body.blockingCount ?? 0;
-
-      const userImpacts = [
-        CriterionResultUserImpact.MINOR,
-        CriterionResultUserImpact.MAJOR,
-        CriterionResultUserImpact.BLOCKING,
-        null
-      ];
+      const statuses = buildStatuses(CRITERIA.length, body.complianceRate);
 
       await Promise.all(
         [completedAudit.transverseElementsPage, ...auditPages].flatMap((p) =>
 
           CRITERIA.map((c, i) => {
-            const status = body.isCompliant
-              ? [
-                  CriterionResultStatus.COMPLIANT,
-                  CriterionResultStatus.NOT_APPLICABLE
-                ][i % 2]
-              : [
-                  CriterionResultStatus.COMPLIANT,
-                  CriterionResultStatus.NOT_APPLICABLE,
-                  CriterionResultStatus.NOT_COMPLIANT
-                ][i % 3];
-
-            // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
-            let userImpact = userImpacts[i % 4];
-
-            if (body.blockingCount !== undefined &&
-             status === CriterionResultStatus.NOT_COMPLIANT &&
-             userImpact === CriterionResultUserImpact.BLOCKING) {
-              if (blockingLeft > 0) {
-                blockingLeft--;
-              } else {
-                userImpact = [
-                  CriterionResultUserImpact.MINOR,
-                  CriterionResultUserImpact.MAJOR,
-                  null
-                ][i % 3];
-              }
-            }
-
-            // Cycle through `MINOR`, `MAJOR`, `BLOCKING` and `null`
-            let userImpact = userImpacts[i % 4];
-
-            if (body.blockingCount !== undefined &&
-             status === CriterionResultStatus.NOT_COMPLIANT &&
-             userImpact === CriterionResultUserImpact.BLOCKING) {
-              if (blockingLeft > 0) {
-                blockingLeft--;
-              } else {
-                userImpact = [
-                  CriterionResultUserImpact.MINOR,
-                  CriterionResultUserImpact.MAJOR,
-                  null
-                ][i % 3];
-              }
-            }
+            const status = statuses[i];
+            const userImpact = getUserImpact(i, body.auditReference, body.complianceRate);
 
             return this.prisma.criterionResult.create({
               data: {
                 status,
-                notApplicableComment: body.noImprovements
+                notApplicableComment: body.noImprovements || status !== CriterionResultStatus.NOT_APPLICABLE
                   ? null
                   : "Attention quand même si ça devient applicable",
-                compliantComment: body.noImprovements ? null : "Peut mieux faire",
+                compliantComment: body.noImprovements || status !== CriterionResultStatus.COMPLIANT ? null : "Peut mieux faire",
                 notCompliantItems: status === CriterionResultStatus.NOT_COMPLIANT
                   ? {
                       create: {
