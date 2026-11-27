@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 import { FileStorageService } from "../../file-storage/file-storage.service";
-import { PrismaService } from "../../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { CreateNotesFileResponseDto } from "./dto/create-notes-file-response.dto";
 import { NotesResponseDto } from "./dto/notes-response.dto";
@@ -13,6 +13,7 @@ import { UpdateNotesResponseDto } from "./dto/update-notes-response.dto";
 @Injectable()
 export class NotesService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
     private readonly fileStorageService: FileStorageService

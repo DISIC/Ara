@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { PrismaService } from "../../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 import { EVENTS, slugify } from "../../utils";
 import { StatementsService } from "../statements/statements.service";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";
@@ -12,6 +12,7 @@ export const TRANSVERSE_ELEMENTS_SLUG: string = "elements-transverses";
 @Injectable()
 export class PagesService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
     private readonly statementsService: StatementsService

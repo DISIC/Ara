@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Readable } from "stream";
-import { Injectable, StreamableFile } from "@nestjs/common";
+import { Inject, Injectable, StreamableFile } from "@nestjs/common";
 import { groupBy } from "lodash";
 import * as XLSX from "xlsx";
 import {
@@ -9,7 +9,7 @@ import {
   CriterionResultStatus
 } from "../generated/prisma/client";
 
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { AuditService } from "./audit.service";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
@@ -27,6 +27,7 @@ const CRITERIUM_STATUS: Record<CriterionResultStatus, string> = {
 export class AuditExportService {
   constructor(
     private readonly auditService: AuditService,
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService
   ) { }
 

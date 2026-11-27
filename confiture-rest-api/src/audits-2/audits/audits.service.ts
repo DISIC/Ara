@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { isEqual, omit, setWith } from "lodash";
 import { nanoid } from "nanoid";
@@ -6,7 +6,7 @@ import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
 import { AuthService } from "../../auth/auth.service";
 import { FileStorageService } from "../../file-storage/file-storage.service";
 import { CriterionResultStatus, Prisma, User } from "../../generated/prisma/client";
-import { PrismaService } from "../../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { PagesService, TRANSVERSE_ELEMENTS_SLUG } from "../pages/pages.service";
 import { ResultsService } from "../results/results.service";
@@ -18,6 +18,7 @@ import { UpdateAuditRequestDto } from "./dto/update-audit-request.dto";
 @Injectable()
 export class AuditsService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly pagesService: PagesService,
     private readonly resultsService: ResultsService,

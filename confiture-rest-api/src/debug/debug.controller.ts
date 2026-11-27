@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Body, Controller, Get, Post, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Post, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { nanoid } from "nanoid";
@@ -12,13 +12,14 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "../generated/prisma/client";
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { CreateDebugAuditDto } from "./create-debug-audit.dto";
 
 @Controller("debug")
 @ApiTags("Debug")
 export class DebugController {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly config: ConfigService
   ) { }

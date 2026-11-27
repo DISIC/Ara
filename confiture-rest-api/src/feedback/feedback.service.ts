@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import got, { HTTPError } from "got";
 import { nanoid } from "nanoid";
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { NewFeedbackDto } from "./dto/new-feedback.dto";
 
 @Injectable()
@@ -11,6 +11,7 @@ export class FeedbackService {
   constructor(
     private readonly config: ConfigService,
     private readonly jwt: JwtService,
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService
   ) {}
 

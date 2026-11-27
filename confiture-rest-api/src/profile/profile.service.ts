@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace";
 
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { PatchProfileDto } from "./patch-profile.dto";
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaService) { }
 
   async patchProfile(userEmail: string, body: PatchProfileDto) {
     try {

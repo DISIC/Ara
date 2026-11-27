@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../prisma.service";
+import { Inject, Injectable } from "@nestjs/common";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 import { StatementResponseDto } from "./dto/statement-response.dto";
 import { UpdateStatementRequestDto } from "./dto/update-statement-request.dto";
 
 @Injectable()
 export class StatementsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaService) { }
 
   async getStatement(
     auditEditUniqueId: string
