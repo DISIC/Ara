@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { AuditType } from "../../generated/prisma/enums";
 import { PrismaService } from "../../prisma.service";
+import { EVENTS } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
 import { ResultResponseDto } from "./dto/result-response.dto";
 import { UpdateResultRequestDto } from "./dto/update-result-request.dto";
@@ -8,7 +10,10 @@ import { UpdateResultsRequestDto } from "./dto/update-results-request.dto";
 
 @Injectable()
 export class ResultsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2
+  ) {}
 
   //
   // CRUD methods
@@ -81,7 +86,8 @@ export class ResultsService {
       }
     });
 
-    // TODO: update stuff after result update
+    // TODO: update publicationDate?
+    this.eventEmitter.emit(EVENTS.RESULT_UPDATED);
 
     return result;
   }
