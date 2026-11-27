@@ -1,6 +1,6 @@
 import { AuthorizationService } from "@nestjs/authorization";
 import { Post, Controller, Get, Body, Param, ClassSerializerInterceptor, SerializeOptions, UseInterceptors, Put } from "@nestjs/common";
-import { User as CurrentUser } from "../../auth/user.decorator";
+import { CurrentUser } from "../../auth/current-user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
 import { CreatePageRequestDto } from "./dto/create-page-request.dto";

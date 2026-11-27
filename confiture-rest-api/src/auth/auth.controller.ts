@@ -20,11 +20,11 @@ import { User } from "../generated/prisma/client";
 import { MailService } from "../mail/mail.service";
 import { AuthRequired } from "./auth-required.decorator";
 import { AuthService, SigninError } from "./auth.service";
+import { CurrentUser } from "./current-user.decorator";
 import { DeleteAccountResponseDto } from "./dto/delete-account-response.dto";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
 import { SigninDto } from "./dto/signin.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
-import { User as CurrentUser } from "./user.decorator";
 
 @Controller("auth")
 @ApiTags("Authentication")

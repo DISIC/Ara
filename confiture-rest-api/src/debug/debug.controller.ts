@@ -6,8 +6,8 @@ import { nanoid } from "nanoid";
 import { CRITERIA } from "../audits/criteria";
 import { AuditDto } from "../audits/dto/entities/audit.dto";
 import { AUDIT_PRISMA_SELECT } from "../audits/prisma-selects";
+import { CurrentUser } from "../auth/current-user.decorator";
 import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
-import { User } from "../auth/user.decorator";
 import {
   CriterionResultStatus,
   CriterionResultUserImpact
@@ -40,7 +40,7 @@ export class DebugController {
   })
   async createAudit(
     @Body() body: CreateDebugAuditDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
     const editUniqueId = nanoid();
     const reportUniqueId = nanoid();

@@ -28,8 +28,8 @@ import {
 } from "@nestjs/swagger";
 
 import { AuthRequired } from "../auth/auth-required.decorator";
+import { CurrentUser } from "../auth/current-user.decorator";
 import { AuthenticationJwtPayload } from "../auth/jwt-payloads";
-import { User } from "../auth/user.decorator";
 import { MailService } from "../mail/mail.service";
 import { AuditExportService } from "./audit-export.service";
 import { AuditId } from "./audit-id.decorator";
@@ -65,7 +65,7 @@ export class AuditsController {
   })
   async createAudit(
     @Body() body: CreateAuditDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
     const audit = await this.auditService.createAudit(body);
 
@@ -85,7 +85,7 @@ export class AuditsController {
   @Get()
   @AuthRequired()
   @ApiOkResponse({ type: AuditListingItemDto, isArray: true })
-  async getAuditList(@User() user: AuthenticationJwtPayload): Promise<AuditListingItemDto[]> {
+  async getAuditList(@CurrentUser() user: AuthenticationJwtPayload): Promise<AuditListingItemDto[]> {
     return this.auditService.getAuditsByAuditorEmail(user.email);
   }
 
@@ -289,7 +289,7 @@ export class AuditsController {
   async duplicateAudit(
     @AuditId() uniqueId: string,
     @Body() body: DuplicateAuditDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ): Promise<AuditDto> {
     const newAudit = await this.auditService.duplicateAudit(
       uniqueId,
@@ -325,7 +325,7 @@ export class AuditsController {
   async transferAudit(
     @AuditId() uniqueId: string,
     @Body() body: TransferAuditDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ) {
     const canTransfer = await this.auditService.canUserTransferAudit(uniqueId, user?.email);
 
