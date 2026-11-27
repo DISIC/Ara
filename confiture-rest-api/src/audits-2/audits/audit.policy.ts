@@ -1,6 +1,7 @@
 import { Policy } from "@nestjs/authorization";
+import { Inject } from "@nestjs/common";
 import { User } from "../../generated/prisma/client";
-import { PrismaService } from "../../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 
 const isAuditInAccount = (audit: { auditor: null | { isVerified: boolean } }): boolean => audit.auditor?.isVerified ?? false;
 const isUserAuditOwner = (user: { username: string } | null, audit: { auditorEmail: string | null }): boolean => !!audit.auditorEmail && audit.auditorEmail === user?.username;
@@ -8,6 +9,7 @@ const isUserAuditOwner = (user: { username: string } | null, audit: { auditorEma
 @Policy()
 export class AuditPolicy {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService
   ) {}
 

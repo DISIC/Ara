@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../../prisma.service";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 import { AuditService } from "../audit.service";
 import { NotCompliantItemDto } from "../dto/entities/not-compliant-item.dto";
 import { NOT_COMPLIANT_ITEM_SELECT } from "../prisma-selects";
@@ -9,6 +9,7 @@ import { UpdateNotCompliantItemDto } from "./dto/update-not-compliant-item.dto";
 @Injectable()
 export class NotCompliantItemsService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly auditService: AuditService
   ) { }

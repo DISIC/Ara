@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { PrismaPromise } from "@prisma/client/runtime/client";
 import _, { intersectionBy, isEqual, omit, orderBy, partition, pick, setWith, sortBy, uniqBy } from "lodash";
 import { nanoid } from "nanoid";
@@ -14,7 +14,7 @@ import {
   CriterionResultUserImpact,
   Prisma
 } from "../generated/prisma/client";
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import * as RGAA from "../rgaa.json";
 import { slugify } from "../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
@@ -78,6 +78,7 @@ const hasNamesAreIdenticalButReordered = (currentAuditPages: { name: string; ord
 @Injectable()
 export class AuditService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly fileStorageService: FileStorageService,
     private readonly authService: AuthService

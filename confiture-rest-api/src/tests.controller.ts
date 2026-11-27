@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { nanoid } from "nanoid";
 import { CRITERIA } from "./audits/criteria";
 import { AuthService } from "./auth/auth.service";
@@ -6,12 +6,13 @@ import {
   CriterionResultStatus,
   CriterionResultUserImpact
 } from "./generated/prisma/client";
-import { PrismaService } from "./prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "./prisma.service";
 import { slugify } from "./utils";
 
 @Controller("tests")
 export class TestsController {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly auth: AuthService
   ) {}

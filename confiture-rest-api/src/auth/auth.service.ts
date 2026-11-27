@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { JwtService } from "@nestjs/jwt";
 import { compare, hash } from "bcrypt";
 
 import { nanoid } from "nanoid";
 import { User } from "../generated/prisma/client";
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { EVENTS } from "../utils";
 import {
   AccountVerificationJwtPayload,
@@ -49,10 +49,11 @@ export class TokenRegenerationError extends Error {
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly eventEmitter: EventEmitter2
-  ) {}
+  ) { }
 
   /**
    * Create a new unverified user and return a verification token.

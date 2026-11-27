@@ -1,4 +1,4 @@
-import { Injectable, StreamableFile } from "@nestjs/common";
+import { Inject, Injectable, StreamableFile } from "@nestjs/common";
 import { groupBy } from "lodash";
 import * as XLSX from "xlsx";
 import { CRITERIA_BY_AUDIT_TYPE } from "../../audits/criteria";
@@ -8,11 +8,11 @@ import {
   CriterionResult,
   CriterionResultStatus
 } from "../../generated/prisma/client";
-import { PrismaService } from "../../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../../prisma.service";
 
 @Injectable()
 export class ExportsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaService) { }
 
   async getCsvExport(uniqueId: string): Promise<StreamableFile> {
     const audit = await this.prisma.audit.findUniqueOrThrow({

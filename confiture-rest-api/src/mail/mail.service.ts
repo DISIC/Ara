@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { OnEvent } from "@nestjs/event-emitter";
 import { createTransport, getTestMessageUrl, Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { Audit, AuditType, EmailStatus, EmailType, User } from "../generated/prisma/client";
-import { PrismaService } from "../prisma.service";
+import { PRISMA_SERVICE, PrismaService } from "../prisma.service";
 import { EVENTS } from "../utils";
 import * as accountConfirmationEmail from "./account-confirmation-email";
 import * as accountVerificationEmail from "./account-verification-email";
@@ -37,6 +37,7 @@ export class MailService {
 
   constructor(
     private readonly config: ConfigService,
+    @Inject(PRISMA_SERVICE)
     private readonly prisma: PrismaService
   ) {
     this.transporter = createTransport({
