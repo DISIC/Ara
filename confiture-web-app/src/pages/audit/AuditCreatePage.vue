@@ -324,6 +324,7 @@ function submitAuditSettings() {
       }
 
       const topicsToHide = [
+        ...(audit.value.pageElements?.images ? [] : [1]),
         ...(audit.value.pageElements?.frame ? [] : [2]),
         ...(audit.value.pageElements?.multimedia ? [] : [4]),
         ...(audit.value.pageElements?.table ? [] : [5]),

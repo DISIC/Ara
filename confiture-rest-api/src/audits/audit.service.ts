@@ -154,6 +154,7 @@ export class AuditService {
       ...newAudit.pages.map((p) => p.id)
     ];
     const topicNumbers = [
+      ...(data.pageElements.images ? [] : [1]),
       ...(data.pageElements.frame ? [] : [2]),
       ...(data.pageElements.multimedia ? [] : [4]),
       ...(data.pageElements.table ? [] : [5]),
