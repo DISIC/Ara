@@ -12,7 +12,7 @@ import {
   UseInterceptors
 } from "@nestjs/common";
 import { ApiOkResponse } from "@nestjs/swagger";
-import { User as CurrentUser } from "../../auth/user.decorator";
+import { CurrentUser } from "../../auth/current-user.decorator";
 import { User } from "../../generated/prisma/client";
 import { AuditPolicy } from "../audits/audit.policy";
 import { StatementResponseDto } from "./dto/statement-response.dto";

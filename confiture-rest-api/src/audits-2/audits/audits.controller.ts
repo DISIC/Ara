@@ -1,7 +1,7 @@
 import { AuthorizationService } from "@nestjs/authorization";
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, GoneException, NotFoundException, Param, Patch, Post, SerializeOptions, UseInterceptors } from "@nestjs/common";
 import { AuthRequired } from "../../auth/auth-required.decorator";
-import { User as CurrentUser } from "../../auth/user.decorator";
+import { CurrentUser } from "../../auth/current-user.decorator";
 import { Prisma, User } from "../../generated/prisma/client";
 import { AuditPolicy } from "./audit.policy";
 import { AuditsService } from "./audits.service";

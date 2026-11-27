@@ -20,10 +20,10 @@ import {
   TokenRegenerationError,
   UsernameAlreadyExistsError
 } from "./auth.service";
+import { CurrentUser } from "./current-user.decorator";
 import { UpdateEmailDto } from "./dto/update-email.dto";
 import { VerifyEmailUpdateDto } from "./dto/verify-email-update.dto";
 import { AuthenticationJwtPayload } from "./jwt-payloads";
-import { User } from "./user.decorator";
 
 @Controller("auth")
 @ApiTags("Authentication")
@@ -46,7 +46,7 @@ export class UpdateEmailController {
   @AuthRequired()
   async updateEmail(
     @Body() body: UpdateEmailDto,
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ) {
     if (!(await this.auth.checkCredentialsWithUid(user.sub, body.password))) {
       throw new UnauthorizedException();
@@ -74,7 +74,7 @@ export class UpdateEmailController {
   @HttpCode(200)
   @AuthRequired()
   async resendNewEmailVerificationEmail(
-    @User() user: AuthenticationJwtPayload
+    @CurrentUser() user: AuthenticationJwtPayload
   ) {
     try {
       const { token, email } =
@@ -108,7 +108,7 @@ export class UpdateEmailController {
 
   @Post("account/cancel-email-update")
   @AuthRequired()
-  async cancelEmailUpdate(@User() user: AuthenticationJwtPayload) {
+  async cancelEmailUpdate(@CurrentUser() user: AuthenticationJwtPayload) {
     await this.auth.cancelEmailUpdate(user.email);
   }
 
@@ -119,7 +119,7 @@ export class UpdateEmailController {
   })
   @AuthRequired()
   async isNewEmailVerified(
-    @User() user: AuthenticationJwtPayload,
+    @CurrentUser() user: AuthenticationJwtPayload,
     @Query("email") email: string
   ) {
     return await this.auth.userHasEmail(user.sub, email);
