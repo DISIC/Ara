@@ -47,10 +47,10 @@ const partialAudit = {
 };
 
 const LABEL_FIELD = {
-  [AuditReference.RGAA_4]: "Nom du site ou du service à auditer",
-  [AuditReference.RGAA_5_Web]: "Nom du site ou du service à auditer",
-  [AuditReference.RGAA_5_Mobile]: "Nom de l'application mobile à auditer",
-  [AuditReference.RGAA_5_Document]: "Nom du document ou de l’ensemble de documents à auditer"
+  [AuditReference.RGAA_4]: "Nom du site ou du service",
+  [AuditReference.RGAA_5_Web]: "Nom du site ou du service",
+  [AuditReference.RGAA_5_Mobile]: "Nom de l'application mobile",
+  [AuditReference.RGAA_5_Document]: "Nom du document ou de l’ensemble de documents"
 };
 
 const HINT_LABEL_FIELD = {

@@ -56,7 +56,7 @@ describe("Audits list", () => {
 
     cy.contains("Audit complet").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);
@@ -101,7 +101,7 @@ describe("Audits list", () => {
 
     cy.contains("Audit complet").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);

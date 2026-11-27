@@ -26,7 +26,7 @@ describe("Audit", () => {
     // Fill fields
     cy.contains("Audit complet").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);
@@ -98,7 +98,7 @@ describe("Audit", () => {
     // Fill fields
     cy.contains("Audit complet").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);
@@ -141,7 +141,7 @@ describe("Audit", () => {
 
     // Check user is redirect to audit generation page
     cy.get("h1").contains(auditJson.procedureName);
-    cy.contains("Web - 140 critères - RGAA 5");
+    cy.contains("Web - 142 critères - RGAA 5");
   });
 
   it("User can create an audit with prefilled NA topics", () => {
@@ -168,7 +168,7 @@ describe("Audit", () => {
     // Fill fields
     cy.contains("Audit complet").click();
 
-    cy.contains("Nom du site ou du service à auditer")
+    cy.contains("Nom du site ou du service")
       .parent()
       .find("input")
       .type(auditJson.procedureName);

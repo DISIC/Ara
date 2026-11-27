@@ -18,7 +18,7 @@ import router from "../../router";
 import { useAuditStore } from "../../store";
 import { useAccountStore } from "../../store/account";
 import { AuditReference, AuditType, CreateAuditRequestData } from "../../types";
-import { captureWithPayloads, getRgaaVersion, getTopicsByAuditReference } from "../../utils";
+import { captureWithPayloads, getRgaaVersion } from "../../utils";
 
 const leaveModalRef = ref<InstanceType<typeof LeaveModal>>();
 const leaveModalDestination = ref<string>("");
@@ -99,91 +99,29 @@ interface CreateAuditFormData {
   auditorName: string;
 }
 
-function getPageElementsRgaa(auditReference: AuditReference | null) {
-  if (auditReference === AuditReference.RGAA_5_Web) {
-    return {
-      multimedia: true,
-      table: true,
-      form: true,
-      frame: true,
-      images: true,
-      documentation: true,
-      tools: true,
-      authentication: true,
-      communication: true,
-      services: false,
-      links: false,
-      colors: false
-    };
-  }
-
-  if (auditReference === AuditReference.RGAA_5_Mobile) {
-    return {
-      multimedia: true,
-      table: true,
-      form: true,
-      frame: false,
-      images: true,
-      documentation: true,
-      tools: true,
-      authentication: false,
-      communication: true,
-      services: true,
-      links: false,
-      colors: false
-    };
-  }
-
-  if (auditReference === AuditReference.RGAA_5_Document) {
-    return {
-      multimedia: true,
-      table: true,
-      form: true,
-      frame: true,
-      images: true,
-      documentation: false,
-      tools: true,
-      authentication: false,
-      communication: false,
-      services: false,
-      links: true,
-      colors: true
-    };
-  }
-
-  return {
-    multimedia: true,
-    table: true,
-    form: true,
-    frame: true,
-    images: true,
-    documentation: false,
-    tools: false,
-    authentication: false,
-    communication: false,
-    services: false,
-    links: false,
-    colors: false
-  };
-}
-
 // Setup audit object
 const audit = ref<CreateAuditFormData>({
   auditReference: null,
   auditType: null,
   procedureName: "",
   pages: [{ name: "", url: "" }],
-  pageElements: getPageElementsRgaa(null),
+  pageElements: {
+    multimedia: true,
+    table: true,
+    form: true,
+    frame: true,
+    images: true,
+    documentation: true,
+    tools: true,
+    authentication: true,
+    communication: true,
+    services: true,
+    links: true,
+    colors: true
+  },
   auditorEmail: accountStore.account?.email ?? "",
   auditorName: accountStore.account?.name ?? ""
 });
-
-watch(
-  () => audit.value.auditReference,
-  (ref) => {
-    audit.value.pageElements = getPageElementsRgaa(ref);
-  }
-);
 
 const stepEchantillonLabel = computed(() => {
   if (audit.value.auditReference === AuditReference.RGAA_5_Mobile) {
@@ -324,10 +262,19 @@ function submitAuditSettings() {
         auditStore.showAuditEmailAlert = true;
       }
 
-      const topicsToHide = getTopicsByAuditReference(
-        audit.value.auditReference || AuditReference.RGAA_4,
-        audit.value.pageElements
-      );
+      const topicsToHide = [
+        ...(data.pageElements?.images ? [] : [1]),
+        ...(data.pageElements?.frame ? [] : [2]),
+        ...(data.pageElements?.colors ? [] : [3]),
+        ...(data.pageElements?.multimedia ? [] : [4]),
+        ...(data.pageElements?.table ? [] : [5]),
+        ...(data.pageElements?.links ? [] : [6]),
+        ...(data.pageElements?.form ? [] : [11]),
+        ...(data.pageElements?.documentation ? [] : [14]),
+        ...(data.pageElements?.tools ? [] : [15]),
+        ...(data.pageElements?.authentication ? [] : [16]),
+        ...(data.pageElements?.communication ? [] : [17])
+      ];
 
       setTopicAccordionStatus(
         newAudit.editUniqueId,

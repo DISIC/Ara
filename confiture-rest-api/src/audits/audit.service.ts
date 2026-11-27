@@ -6,7 +6,6 @@ import sharp from "sharp";
 import { AuthService } from "../auth/auth.service";
 import {
   Audit,
-  AuditReference,
   AuditType,
   CriterionResult,
   CriterionResultStatus,
@@ -24,7 +23,7 @@ import { AuditDto } from "./dto/entities/audit.dto";
 import { CriterionResultDto } from "./dto/entities/criterion-result.dto";
 import { StatementDto } from "./dto/entities/statement.dto";
 import { GetPageWithResultsDto } from "./dto/get-page-with-results.dto";
-import { CreateAuditDto, PageElements } from "./dto/requests/create-audit.dto";
+import { CreateAuditDto } from "./dto/requests/create-audit.dto";
 import { PatchAuditDto } from "./dto/requests/patch-audit.dto";
 import { UpdateAuditDto } from "./dto/requests/update-audit.dto";
 import { UpdateResultsDto } from "./dto/requests/update-results.dto";
@@ -155,7 +154,19 @@ export class AuditService {
       ...newAudit.pages.map((p) => p.id)
     ];
 
-    const topicNumbers = this.getTopicsByAuditReference(newAudit.auditReference, data.pageElements);
+    const topicNumbers = [
+      ...(data.pageElements.images ? [] : [1]),
+      ...(data.pageElements.frame ? [] : [2]),
+      ...(data.pageElements.colors ? [] : [3]),
+      ...(data.pageElements.multimedia ? [] : [4]),
+      ...(data.pageElements.table ? [] : [5]),
+      ...(data.pageElements.links ? [] : [6]),
+      ...(data.pageElements.form ? [] : [11]),
+      ...(data.pageElements.documentation ? [] : [14]),
+      ...(data.pageElements.tools ? [] : [15]),
+      ...(data.pageElements.authentication ? [] : [16]),
+      ...(data.pageElements.communication ? [] : [17])
+    ];
 
     const criteria = CRITERIA_BY_AUDIT_TYPE[newAudit.auditType].filter(
       ({ topic }) => topicNumbers.includes(topic)
@@ -175,55 +186,6 @@ export class AuditService {
     });
 
     return newAudit;
-  }
-
-  private getTopicsByAuditReference(auditReference: AuditReference | undefined, pageElements: PageElements) {
-    if (auditReference === AuditReference.RGAA_5_Web) {
-      return [
-        ...(pageElements.images ? [] : [1]),
-        ...(pageElements.frame ? [] : [2]),
-        ...(pageElements.multimedia ? [] : [4]),
-        ...(pageElements.table ? [] : [5]),
-        ...(pageElements.form ? [] : [11]),
-        ...(pageElements.documentation ? [] : [14]),
-        ...(pageElements.tools ? [] : [15]),
-        ...(pageElements.authentication ? [] : [16]),
-        ...(pageElements.communication ? [] : [17])
-      ];
-    }
-
-    if (auditReference === AuditReference.RGAA_5_Mobile) {
-      return [
-        ...(pageElements.images ? [] : [1]),
-        ...(pageElements.frame ? [] : [2]),
-        ...(pageElements.multimedia ? [] : [4]),
-        ...(pageElements.table ? [] : [5]),
-        ...(pageElements.form ? [] : [11]),
-        ...(pageElements.documentation ? [] : [12]),
-        ...(pageElements.tools ? [] : [13]),
-        ...(pageElements.services ? [] : []), // TODO
-        ...(pageElements.communication ? [] : [15])
-      ];
-    }
-
-    if (auditReference === AuditReference.RGAA_5_Document) {
-      return [
-        ...(pageElements.images ? [] : [1]),
-        ...(pageElements.colors ? [] : [2]),
-        ...(pageElements.multimedia ? [] : [4]),
-        ...(pageElements.table ? [] : [5]),
-        ...(pageElements.links ? [] : []), // TODO
-        ...(pageElements.tools ? [] : [10])
-      ];
-    }
-
-    return [
-      ...(pageElements.images ? [] : [1]),
-      ...(pageElements.frame ? [] : [2]),
-      ...(pageElements.multimedia ? [] : [4]),
-      ...(pageElements.table ? [] : [5]),
-      ...(pageElements.form ? [] : [11])
-    ];
   }
 
   /**

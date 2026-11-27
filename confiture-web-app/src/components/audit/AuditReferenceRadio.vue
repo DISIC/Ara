@@ -97,7 +97,7 @@ const isDisabled = computed(() =>
 
         <label class="fr-label radio-label fr-h6 fr-mb-1w" :for="`audit-reference-${value}`">{{ currentRadioReference.label }}</label>
 
-        <p :id="`audit-reference-description-${value}`" class="fr-text--xs fr-mb-0" v-html="currentRadioReference.description"></p>
+        <p :id="`audit-reference-description-${value}`" class="fr-text--xs fr-mb-0 fr-hint-text" v-html="currentRadioReference.description"></p>
       </div>
     </div>
   </div>

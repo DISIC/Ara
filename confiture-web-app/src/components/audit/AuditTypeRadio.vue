@@ -87,7 +87,7 @@ const descriptionId = computed(() => {
         </label>
       </div>
       <div class="fr-pl-4w">
-        <p class="fr-mb-1v fr-text--regular">{{ label.replace("RGAA", getRgaaVersion(auditReference)) }}</p>
+        <p class="fr-mb-1v fr-text--medium">{{ label.replace("RGAA", getRgaaVersion(auditReference)) }}</p>
         <p class="fr-text--xs fr-hint-text fr-mb-3w">{{ getCriteriaCount(value, auditReference) }} critères</p>
 
         <ul class="fr-m-0 fr-mb-2w fr-p-0">
@@ -161,6 +161,10 @@ const descriptionId = computed(() => {
 .radio-input {
   /* When the browser scrolls to the required input from the bottom of the form, show the entire "radio block" */
   scroll-margin-top: 6rem;
+}
+
+.fr-text--medium {
+  font-weight: 500;
 }
 
 .list-heading {
