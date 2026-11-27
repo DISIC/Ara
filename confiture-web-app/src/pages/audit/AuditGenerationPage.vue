@@ -2,7 +2,6 @@
 import { useResizeObserver } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-
 import AraTabs from "../../components/audit/AraTabs.vue";
 import AuditGenerationFilters from "../../components/audit/AuditGenerationFilters.vue";
 import AuditGenerationHeader from "../../components/audit/AuditGenerationHeader.vue";
@@ -21,7 +20,7 @@ import {
   useFiltersStore,
   useResultsStore
 } from "../../store";
-import { AuditType, CriteriumResultStatus, TabData } from "../../types";
+import { AuditType, CriteriumResultStatus, TabData, AuditReference } from "../../types";
 import { pluralize } from "../../utils";
 
 const props = defineProps<{
@@ -111,7 +110,9 @@ const headerInfos = computed(() => [
           title: "Taux global<br /> de conformité",
           description: auditIsInProgress.value
             ? "Disponible à la fin de l’audit"
-            : REFERENTIAL,
+            : (auditStore.currentAudit?.auditReference === AuditReference.RGAA_4
+                ? REFERENTIAL.RGAA_4
+                : REFERENTIAL.RGAA_5),
           value: auditIsInProgress.value ? 0 : complianceLevel.value,
           unit: "%",
           theme: SummaryCardThemes.Blue,
@@ -315,6 +316,8 @@ filterStore.$reset();
     <AuditGenerationHeader
       ref="auditGenerationHeaderRef"
       :audit-name="auditStore.currentAudit.procedureName"
+      :audit-reference="auditStore.currentAudit.auditReference"
+      :audit-type="auditStore.currentAudit.auditType"
       :key-infos="headerInfos"
       :edit-unique-id="uniqueId"
     />
