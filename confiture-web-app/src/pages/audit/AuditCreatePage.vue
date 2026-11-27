@@ -76,6 +76,19 @@ onUnmounted(() => {
 
 const accountStore = useAccountStore();
 
+// Steps management
+const currentStep = ref(0);
+const steps = computed(() => [
+  "Choisissez le référentiel",
+  "Choisissez un type d’audit",
+  stepEchantillonLabel.value,
+  "Indiquez la présence d’éléments spécifiques",
+  ...(accountStore.account && accountStore.account.name
+    ? []
+    : ["Indiquez vos coordonnées"])
+]);
+const stepHeadingRef = ref<HTMLHeadingElement>();
+
 interface CreateAuditFormData {
   auditReference: AuditReference | null;
   auditType: AuditType | null;
@@ -134,19 +147,6 @@ const stepEchantillonLabel = computed(() => {
 
   return "Renseignez les pages de l’échantillon";
 });
-
-// Steps management
-const currentStep = ref(0);
-const steps = computed(() => [
-  "Choisissez le référentiel",
-  "Choisissez un type d’audit",
-  stepEchantillonLabel.value,
-  "Indiquez la présence d’éléments spécifiques",
-  ...(accountStore.account && accountStore.account.name
-    ? []
-    : ["Indiquez vos coordonnées"])
-]);
-const stepHeadingRef = ref<HTMLHeadingElement>();
 
 // Default pages per audit type
 const fullDefaultPages = {
