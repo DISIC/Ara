@@ -334,11 +334,12 @@ const parentCriterium = computed(() => {
       </div>
 
       <template v-if="showTransverseComment && transverseComment">
-
-        <TiptapRenderer
-          :document="transverseComment"
-          class="fr-mt-5w"
-        />
+        <div key="transverse-comment">
+          <TiptapRenderer
+            :document="transverseComment"
+            class="fr-mt-5w"
+          />
+        </div>
       </template>
 
       <template
@@ -347,7 +348,7 @@ const parentCriterium = computed(() => {
       >
         <div
           v-for="(notCompliantItem, i) in transverseNotCompliantItems"
-          :key="i"
+          :key="`tranverse-comment-not-compliant-${i}`"
           class="criterium-transverse-notice-separator"
         >
           <p v-if="notCompliantItem.title" class="fr-h3 fr-mt-3v">{{ notCompliantItem.title }}</p>
