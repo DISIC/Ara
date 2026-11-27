@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import documentIcon from "../../assets/dsfr-custom-icons/reference-document.svg?no-inline";
-import mobileIcon from "../../assets/dsfr-custom-icons/reference-mobile.svg?no-inline";
-import webIcon from "../../assets/dsfr-custom-icons/reference-web.svg?no-inline";
+import mobileIcon from "../../assets/dsfr-custom-icons/application-mobile.svg?no-inline";
+import documentIcon from "../../assets/dsfr-custom-icons/bureautique.svg?no-inline";
+import webIcon from "../../assets/dsfr-custom-icons/web.svg?no-inline";
 import { AuditReference } from "../../types";
 import DsfrArtwork from "../ui/DsfrArtwork.vue";
 
