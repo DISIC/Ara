@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { AuditType } from "../../generated/prisma/enums";
+import { AuditType, CriterionResultStatus } from "../../generated/prisma/enums";
 import { PrismaService } from "../../prisma.service";
 import { EVENTS } from "../../utils";
 import { CRITERIA_BY_AUDIT_TYPE } from "./criteria";
@@ -87,7 +87,7 @@ export class ResultsService {
     });
 
     // TODO: update publicationDate?
-    this.eventEmitter.emit(EVENTS.RESULT_UPDATED);
+    this.eventEmitter.emit(EVENTS.RESULT_UPDATED, uniqueId);
 
     return result;
   }
@@ -128,6 +128,7 @@ export class ResultsService {
     });
 
     // TODO: update stuff after result update
+    this.eventEmitter.emit(EVENTS.RESULT_UPDATED, uniqueId);
   }
 
   //
@@ -145,6 +146,32 @@ export class ResultsService {
   //
   // Utility methods
   //
+
+  async isAuditComplete(uniqueId: string): Promise<boolean> {
+    const audit = await this.prisma.audit.findUniqueOrThrow({
+      where: { editUniqueId: uniqueId },
+      include: {
+        pages: true
+      }
+    });
+
+    const testedCount = await this.prisma.criterionResult.count({
+      where: {
+        page: {
+          auditUniqueId: uniqueId
+        },
+        status: {
+          not: CriterionResultStatus.NOT_TESTED
+        },
+        OR: CRITERIA_BY_AUDIT_TYPE[audit.auditType]
+      }
+    });
+
+    const expectedCount =
+      CRITERIA_BY_AUDIT_TYPE[audit.auditType].length * audit.pages.length;
+
+    return testedCount === expectedCount;
+  }
 
   /** Filter given results depending on audit type. */
   static filterResults<R extends { topic: number; criterium: number }>(

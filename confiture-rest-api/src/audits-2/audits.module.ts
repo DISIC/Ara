@@ -19,9 +19,11 @@ import { StatementsModule } from "./statements/statements.module";
     ResultsModule,
     ExampleImagesModule
   ],
-  providers: [{
-    provide: APP_INTERCEPTOR,
-    useClass: NotFoundErrorInterceptor
-  }]
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: NotFoundErrorInterceptor
+    }
+  ]
 })
-export class AuditsModule { }
+export class AuditsModule {}
