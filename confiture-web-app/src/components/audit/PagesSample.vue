@@ -147,7 +147,7 @@ const urlValidation = computed(() => [
     <fieldset
       v-for="(page, i) in pages"
       :key="i"
-      class="fr-p-2w fr-p-md-4w page-card"
+      class="fr-p-md-3w page-card"
       :class="{ 'fr-mb-3w': i !== pages.length - 1 }"
     >
       <legend class="page-legend">

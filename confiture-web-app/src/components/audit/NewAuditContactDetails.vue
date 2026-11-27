@@ -90,9 +90,13 @@ function fillSettings() {
         v-model="nameValue"
         autocomplete="name"
         class="fr-mb-6w"
-        label="Prénom et nom (optionnel)"
+        label="Prénom et nom"
         hint="Sera affiché dans le rapport d’audit pour permettre à la personne qui a demandé l’audit de vous identifier en cas de question."
-      />
+      >
+        <template #optional>
+          <span class="optional fr-text--sm fr-mb-0">&nbsp;(optionnel)</span>
+        </template>
+      </DsfrField>
     </div>
 
     <div class="actions">
@@ -123,5 +127,10 @@ function fillSettings() {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.optional {
+  margin-top: 0.15em;
+  color: var(--text-mention-grey);
 }
 </style>

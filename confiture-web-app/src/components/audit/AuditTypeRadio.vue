@@ -98,6 +98,11 @@ const descriptionId = computed(() => {
             class="list-item"
             :class="{ 'fr-mb-2v': i !== goals.length - 1 }"
           >
+            <span
+              v-if="goals.length > 1"
+              class="fr-icon-check-line fr-icon--sm list-item-icon"
+              aria-hidden="true"
+            />
             {{ goal.replace("RGAA", getRgaaVersion(auditReference)) }}
           </li>
         </ul>
@@ -129,8 +134,12 @@ const descriptionId = computed(() => {
 
 .radio-header {
   height: 9rem;
-  background: var(--blue-france-925-125);
+  background-color: var(--background-alt-blue-france);
   display: flex;
+}
+
+.wrapper:hover .radio-header {
+  background-color: var(--background-action-low-blue-france);
 }
 
 .radio-header .fr-badge {
@@ -163,6 +172,19 @@ const descriptionId = computed(() => {
   align-items: first baseline;
   gap: 0.5rem;
   padding-bottom: 0;
+}
+
+.list-item-icon {
+  background-color: var(--background-contrast-info);
+  color: var(--text-default-info);
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
 }
 
 .radio-link {
